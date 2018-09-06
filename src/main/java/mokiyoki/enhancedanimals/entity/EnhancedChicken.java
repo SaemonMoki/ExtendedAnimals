@@ -349,55 +349,56 @@ public class EnhancedChicken extends EntityAnimal {
                                 pattern = 0;
                                 ground = 15;
                             }
-                        } else{
-                                //incomplete columbian
-                                pattern = 43;
-                                ground = 15;
-                        }
-                    }else if (Columbian == 3) {
-                            if (Melanin == 3) {
-                                //regular wheaten
-                                pattern = 22;
-                                ground = 10;
-                            } else if (Melanin == 2) {
-                                //regular double laced
-                                pattern = 92;
-                                ground = 15;
-                            } else {
-                                //double laced wheaten
-                                pattern = 92;
-                                ground = 10;
-                            }
-                        } else if (Columbian == 1) {
-                            if (Melanin == 3) {
-                                //Colombian
-                                pattern = 36;
-                                ground = 15;
-                            } else {
-                                //single laced
-                                pattern = 85;
-                                ground = 15;
-                            }
                         } else {
-                            if (Melanin == 3) {
-                                if (genes[24] == 4 || genes[25] == 4) {
-                                    // incomplete buff
-                                    pattern = 22;
-                                    ground = 15;
-                                } else {
-                                    //buff
-                                    pattern = 0;
-                                    ground = 15;
-                                }
-                            }else{
-                                    //spangled
-                                    pattern = 99;
-                                    ground = 15;
+                            //incomplete columbian
+                            pattern = 43;
+                            ground = 15;
+                        }
+                    }
+                    } else {
+                    if (Columbian == 3) {
+                        if (Melanin == 3) {
+                            //regular wheaten
+                            pattern = 22;
+                            ground = 10;
+                        } else if (Melanin == 2) {
+                            //regular double laced
+                            pattern = 92;
+                            ground = 15;
+                        } else {
+                            //double laced wheaten
+                            pattern = 92;
+                            ground = 10;
+                        }
+                    } else if (Columbian == 1) {
+                        if (Melanin == 3) {
+                            //Colombian
+                            pattern = 36;
+                            ground = 15;
+                        } else {
+                            //single laced
+                            pattern = 85;
+                            ground = 15;
+                        }
+                    } else {
+                        if (Melanin == 3) {
+                            if (genes[24] == 4 || genes[25] == 4) {
+                                // incomplete buff
+                                pattern = 22;
+                                ground = 15;
+                            } else {
+                                //buff
+                                pattern = 0;
+                                ground = 15;
                             }
+                        }else{
+                            //spangled
+                            pattern = 99;
+                            ground = 15;
                         }
                     }
                 }
-            }
+                    }
             //partridge based
             else{
                 if (PatternGene == 1){
@@ -479,6 +480,7 @@ public class EnhancedChicken extends EntityAnimal {
                 }
             }
 
+
             //ground colour tint
             if (genes[0] == 1){
                 //gold
@@ -540,6 +542,7 @@ public class EnhancedChicken extends EntityAnimal {
 
         }
 
+        //white marking genes
         if (genes[3] == 2){
             //Barred
             white = 1;
@@ -614,6 +617,7 @@ public class EnhancedChicken extends EntityAnimal {
             }
 
         }
+
 
 
 

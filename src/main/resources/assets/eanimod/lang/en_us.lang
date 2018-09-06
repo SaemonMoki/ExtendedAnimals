@@ -1,0 +1,25 @@
+//Items
+item.egg_white.name=White Egg
+item.egg_blue.name=Blue Egg
+item.egg_cream.name=Cream Egg
+item.egg_pink.name=Pink Egg
+item.egg_dark_cream.name=Brown Egg
+item.egg_dark_pink.name=Brown Egg
+item.egg_brown.name=Brown Egg
+item.egg_dark_brown.name=Dark Brown Egg
+item.egg_grey.name=Grey Egg
+item.egg_spring_green.name=Green Egg
+item.egg_green.name=Green Egg
+item.egg_grey_green.name=Green Egg
+item.egg_olive_green.name=Olive Green Egg
+item.egg_dark_green.name=Dark Green Egg
+item.chicken_raw_melanized.name=Raw Melanized Chicken
+item.chicken_cooked_melanized.name=Cooked Melanized Chicken
+
+//Blocks
+tile.post_oak.name=Oak Post
+tile.post_dark_oak.name=Dark Oak Post
+tile.post_acacia.name=Acacia Post
+tile.post_birch.name=Birch Post
+tile.post_jungle.name=Jungle Post
+tile.post_spruce.name=Spruce Post

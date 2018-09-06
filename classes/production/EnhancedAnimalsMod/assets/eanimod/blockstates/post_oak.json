@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=down": { "model": "eanimod:post_oak" },
+    "facing=up": { "model": "eanimod:post_oak" },
+    "facing=north": { "model": "eanimod:post_oak", "x": 90 },
+    "facing=south": { "model": "eanimod:post_oak", "x": 90 },
+    "facing=west": { "model": "eanimod:post_oak", "x": 90, "y": 90 },
+    "facing=east": { "model": "eanimod:post_oak", "x": 90, "y": 90 }
+  }
+}

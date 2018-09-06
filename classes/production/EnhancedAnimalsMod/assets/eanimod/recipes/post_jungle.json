@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+          [
+            " P ",
+            " S ",
+            " P "
+          ],
+
+  "key":
+  {
+    "S":
+    {
+      "item": "minecraft:stick"
+    },
+    "P":
+    {
+      "item": "minecraft:planks",
+      "data": 3
+    }
+  },
+  "result":
+  {
+    "item": "eanimod:post_jungle",
+    "count": 3
+  }
+}

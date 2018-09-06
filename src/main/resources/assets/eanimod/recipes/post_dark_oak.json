@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+          [
+            " P ",
+            " S ",
+            " P "
+          ],
+
+  "key":
+  {
+    "S":
+    {
+      "item": "minecraft:stick"
+    },
+    "P":
+    {
+      "item": "minecraft:planks",
+      "data": 5
+    }
+  },
+  "result":
+  {
+    "item": "eanimod:post_dark_oak",
+    "count": 3
+  }
+}

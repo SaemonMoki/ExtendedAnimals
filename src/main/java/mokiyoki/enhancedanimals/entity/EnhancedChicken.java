@@ -110,8 +110,6 @@ public class EnhancedChicken extends EntityAnimal {
         //spawn egg in overworld
 
 
-
-
         return null;
     }
 
@@ -324,11 +322,11 @@ public class EnhancedChicken extends EntityAnimal {
                         if (Melanin == 3) {
                             //regular wheaten
                             pattern = 22;
-                            colour = 10;
+                            ground = 10;
                         } else {
                             //funace wheaten
                             pattern = 15;
-                            colour = 10;
+                            ground = 10;
                         }
                     } else if (Columbian == 1) {
                         if (Melanin == 3) {
@@ -342,7 +340,7 @@ public class EnhancedChicken extends EntityAnimal {
                         }
                     } else {
                         if (Melanin == 3) {
-                            if (genes[24] = 4 || genes[25] = 4) {
+                            if (genes[24] == 4 || genes[25] == 4) {
                                 // incomplete buff
                                 pattern = 22;
                                 ground = 15;
@@ -350,18 +348,17 @@ public class EnhancedChicken extends EntityAnimal {
                                 //Buff
                                 pattern = 0;
                                 ground = 15;
-                            }else{
+                            }
+                        } else{
                                 //incomplete columbian
                                 pattern = 43;
                                 ground = 15;
-                            }
                         }
-                    }else{
-                        if (Columbian == 3) {
+                    }else if (Columbian == 3) {
                             if (Melanin == 3) {
                                 //regular wheaten
                                 pattern = 22;
-                                colour = 10;
+                                ground = 10;
                             } else if (Melanin == 2) {
                                 //regular double laced
                                 pattern = 92;
@@ -383,7 +380,7 @@ public class EnhancedChicken extends EntityAnimal {
                             }
                         } else {
                             if (Melanin == 3) {
-                                if (genes[24] = 4 || genes[25] = 4) {
+                                if (genes[24] == 4 || genes[25] == 4) {
                                     // incomplete buff
                                     pattern = 22;
                                     ground = 15;
@@ -391,11 +388,11 @@ public class EnhancedChicken extends EntityAnimal {
                                     //buff
                                     pattern = 0;
                                     ground = 15;
-                                }else{
+                                }
+                            }else{
                                     //spangled
                                     pattern = 99;
                                     ground = 15;
-                                }
                             }
                         }
                     }
@@ -487,7 +484,7 @@ public class EnhancedChicken extends EntityAnimal {
                 //gold
                 ground = ground +2;
             }
-            if (genes[0] == 1 && ((genes[32] != 3 && genes[33] != 3) || (genes[36] == 2 && genes[37] ==2)){
+            if (genes[0] == 1 && ((genes[32] != 3 && genes[33] != 3) || (genes[36] == 2 && genes[37] ==2))){
                 //lemon or cream but backwards
                 ground = ground +1;
             }
@@ -515,14 +512,14 @@ public class EnhancedChicken extends EntityAnimal {
                         }
                     }else {
                         // lavender + choc = dun
-                        pattern = pattern +5
+                        pattern = pattern +5;
                     }
                 }else{
                     if (genes[1] == 1){
                         if (genes[40] == 2 && genes[41] == 2) {
                             //splash
                             pattern = pattern +2;
-                        }else (genes[40] == 2 || genes[41] == 2) {
+                        }else if(genes[40] == 2 || genes[41] == 2) {
                             //blue
                             pattern = pattern +1;
                         }
@@ -1181,9 +1178,9 @@ public class EnhancedChicken extends EntityAnimal {
 
     public static class GroupData implements IEntityLivingData
     {
-        public Int[] groupGenes;
+        public int[] groupGenes;
 
-        public GroupData(Int[] groupGenes)
+        public GroupData(int[] groupGenes)
         {
             this.groupGenes = groupGenes;
         }

@@ -1190,6 +1190,10 @@ public class EnhancedChicken extends EntityAnimal {
         }
     }
 
+    public int[] getGenes(){
+        return this.genes;
+    }
+
 
 
 

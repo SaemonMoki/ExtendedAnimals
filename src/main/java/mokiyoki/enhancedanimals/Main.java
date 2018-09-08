@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals;
 
-import mokiyoki.enhancedanimals.proxy.CommonProxy;
+import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.util.Reference;
 
 import net.minecraftforge.fml.common.Mod;
@@ -21,22 +21,22 @@ public class Main {
     @Instance
     public static Main instance;
 
-    @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.COMMON_PROXY_CLASS)
-    public static CommonProxy proxy;
+    @SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
+    public static IProxy proxy;
 
     @EventHandler
-    public static void PreInit(FMLPreInitializationEvent event) {
-
+    public static void preInit(FMLPreInitializationEvent event) {
+        proxy.preInit(event);
     }
 
     @EventHandler
     public static void init(FMLInitializationEvent event) {
-
+        proxy.init(event);
     }
 
     @EventHandler
-    public static void PostInit(FMLPostInitializationEvent event) {
-
+    public static void postInit(FMLPostInitializationEvent event) {
+        proxy.postInit(event);
     }
 
 }

@@ -14,6 +14,7 @@ import scala.Int;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by saemon and moki on 30/08/2018.
@@ -22,66 +23,66 @@ public class EnhancedChicken extends EntityAnimal {
     // [4] duckwing, partridge, wheaten, solid
     // [5] silver, salmon, lemon, gold, mahogany
     private static final String[] CHICKEN_TEXTURES_GROUND = new String[] {
-        "textures/entities/chicken/ground_duckwing_silver",   "textures/entities/chicken/ground_duckwing_salmon",   "textures/entities/chicken/ground_duckwing_lemon",
-        "textures/entities/chicken/ground_duckwing_gold",     "textures/entities/chicken/ground_duckwing_mahogany", "textures/entities/chicken/ground_solid_silver",
-        "textures/entities/chicken/ground_solid_silver",      "textures/entities/chicken/ground_partridge_lemon",   "textures/entities/chicken/ground_partridge_gold",
-        "textures/entities/chicken/ground_partridge_mahogany","textures/entities/chicken/ground_wheaten_silver",    "textures/entities/chicken/ground_wheaten_salmon",
-        "textures/entities/chicken/ground_wheaten_lemon",     "textures/entities/chicken/ground_wheaten_gold",      "textures/entities/chicken/ground_wheaten_mahogany",
-        "textures/entities/chicken/ground_solid_silver",      "textures/entities/chicken/ground_solid_silver",      "textures/entities/chicken/ground_solid_cream",
-        "textures/entities/chicken/ground_solid_buff",        "textures/entities/chicken/ground_solid_mahogany"
+        "ground_duckwing_silver.png",   "ground_duckwing_salmon.png",   "ground_duckwing_lemon.png",
+        "ground_duckwing_gold.png",     "ground_duckwing_mahogany.png", "ground_solid_silver.png",
+        "ground_solid_silver.png",      "ground_partridge_lemon.png",   "ground_partridge_gold.png",
+        "ground_partridge_mahogany.png","ground_wheaten_silver.png",    "ground_wheaten_salmon.png",
+        "ground_wheaten_lemon.png",     "ground_wheaten_gold.png",      "ground_wheaten_mahogany.png",
+        "ground_solid_silver.png",      "ground_solid_silver.png",      "ground_solid_cream.png",
+        "ground_solid_buff.png",        "ground_solid_mahogany.png"
     };
     private static final String[] CHICKEN_TEXTURES_PATTERN = new String[] {                                             // [7]  black,blue,splash,lavender,white,dun,chocolate
-        "","textures/entities/chicken/pattern_solid.png","textures/entities/chicken/pattern_solid_blue.png",            // [17] none,solid,birchen,duckwing,wheaten,quail,columbian,darkbrown,lakenvelder,moorhead,blacktail,penciled,bsinglelaced,singlelaced,doublelaced,spangled,partridge-penciled
-        "textures/entities/chicken/pattern_solid_splash.png", "textures/entities/chicken/pattern_solid_lav.png","textures/entities/chicken/pattern_solid_white.png",
-        "textures/entities/chicken/pattern_solid_dun.png", "textures/entities/chicken/pattern_solid_choc.png","textures/entities/chicken/pattern_birchen.png",
-        "textures/entities/chicken/pattern_birchen_blue.png", "textures/entities/chicken/pattern_birchen_splash.png","textures/entities/chicken/pattern_birchen_lav.png",
-        "textures/entities/chicken/pattern_birchen_white.png", "textures/entities/chicken/pattern_birchen_dun.png", "textures/entities/chicken/pattern_birchen_choc.png",
-        "textures/entities/chicken/pattern_duckwing.png","textures/entities/chicken/pattern_duckwing_blue.png", "textures/entities/chicken/pattern_duckwing_splash.png",
-        "textures/entities/chicken/pattern_duckwing_lav.png","textures/entities/chicken/pattern_duckwing_white.png", "textures/entities/chicken/pattern_duckwing_dun.png",
-        "textures/entities/chicken/pattern_duckwing_choc.png","textures/entities/chicken/pattern_wheaten.png","textures/entities/chicken/pattern_wheaten_blue.png",
-        "textures/entities/chicken/pattern_wheaten_splash.png","textures/entities/chicken/pattern_wheaten_lav.png","textures/entities/chicken/pattern_wheaten_white.png",
-        "textures/entities/chicken/pattern_wheaten_dun.png", "textures/entities/chicken/pattern_wheaten_choc.png","textures/entities/chicken/pattern_quail.png",
-        "textures/entities/chicken/pattern_quail_blue.png","textures/entities/chicken/pattern_quail_splash.png","textures/entities/chicken/pattern_quail_lav.png",
-        "textures/entities/chicken/pattern_quail_white.png","textures/entities/chicken/pattern_quail_dun.png", "textures/entities/chicken/pattern_quail_choc.png",
-        "textures/entities/chicken/pattern_columbian.png","textures/entities/chicken/pattern_columbian_blue.png", "textures/entities/chicken/pattern_columbian_splash.png",
-        "textures/entities/chicken/pattern_columbian_lav.png","textures/entities/chicken/pattern_columbian_white.png", "textures/entities/chicken/pattern_columbian_dun.png",
-        "textures/entities/chicken/pattern_columbian_choc.png","textures/entities/chicken/pattern_darkbrown.png","textures/entities/chicken/pattern_darkbrown_blue.png",
-        "textures/entities/chicken/pattern_darkbrown_splash.png","textures/entities/chicken/pattern_darkbrown_lav.png","textures/entities/chicken/pattern_darkbrown_white.png",
-        "textures/entities/chicken/pattern_darkbrown_dun.png", "textures/entities/chicken/pattern_darkbrown_choc.png","textures/entities/chicken/pattern_lakenvelder.png",
-        "textures/entities/chicken/pattern_lakenvelder_blue.png", "textures/entities/chicken/pattern_lakenvelder_splash.png","textures/entities/chicken/pattern_lakenvelder_lav.png",
-        "textures/entities/chicken/pattern_lakenvelder_white.png", "textures/entities/chicken/pattern_lakenvelder_dun.png","textures/entities/chicken/pattern_lakenvelder_choc.png",
-        "textures/entities/chicken/pattern_moorhead.png","textures/entities/chicken/pattern_moorhead_blue.png", "textures/entities/chicken/pattern_moorhead_splash.png",
-        "textures/entities/chicken/pattern_moorhead_lav.png","textures/entities/chicken/pattern_moorhead_white.png", "textures/entities/chicken/pattern_moorhead_dun.png",
-        "textures/entities/chicken/pattern_moorhead_choc.png","textures/entities/chicken/pattern_blacktail.png","textures/entities/chicken/pattern_blacktail_blue.png",
-        "textures/entities/chicken/pattern_blacktail_splash.png","textures/entities/chicken/pattern_blacktail_lav.png","textures/entities/chicken/pattern_blacktail_white.png",
-        "textures/entities/chicken/pattern_blacktail_dun.png", "textures/entities/chicken/pattern_blacktail_choc.png","textures/entities/chicken/pattern_penciled.png",
-        "textures/entities/chicken/pattern_penciled_blue.png", "textures/entities/chicken/pattern_penciled_splash.png","textures/entities/chicken/pattern_penciled_lav.png",
-        "textures/entities/chicken/pattern_penciled_white.png","textures/entities/chicken/pattern_penciled_dun.png", "textures/entities/chicken/pattern_penciled_choc.png",
-        "textures/entities/chicken/pattern_bsinglelaced.png","textures/entities/chicken/pattern_bsinglelaced_blue.png","textures/entities/chicken/pattern_bsinglelaced_splash.png",
-        "textures/entities/chicken/pattern_bsinglelaced_lav.png","textures/entities/chicken/pattern_bsinglelaced_white.png", "textures/entities/chicken/pattern_bsinglelaced_dun.png",
-        "textures/entities/chicken/pattern_bsinglelaced_choc.png","textures/entities/chicken/pattern_singlelaced.png","textures/entities/chicken/pattern_singlelaced_blue.png",
-        "textures/entities/chicken/pattern_singlelaced_splash.png","textures/entities/chicken/pattern_singlelaced_lav.png","textures/entities/chicken/pattern_singlelaced_white.png",
-        "textures/entities/chicken/pattern_singlelaced_dun.png", "textures/entities/chicken/pattern_singlelaced_choc.png","textures/entities/chicken/pattern_doublelaced.png",
-        "textures/entities/chicken/pattern_doublelaced_blue.png", "textures/entities/chicken/pattern_doublelaced_splash.png","textures/entities/chicken/pattern_doublelaced_lav.png",
-        "textures/entities/chicken/pattern_doublelaced_white.png","textures/entities/chicken/pattern_doublelaced_dun.png", "textures/entities/chicken/pattern_doublelaced_choc.png",
-        "textures/entities/chicken/pattern_spangled.png","textures/entities/chicken/pattern_spangled_blue.png","textures/entities/chicken/pattern_spangled_splash.png",
-        "textures/entities/chicken/pattern_spangled_lav.png","textures/entities/chicken/pattern_spangled_white.png", "textures/entities/chicken/pattern_spangled_dun.png",
-        "textures/entities/chicken/pattern_spangled_choc.png","textures/entities/chicken/pattern_prdgpenciled.png", "textures/entities/chicken/pattern_prdgpenciled_blue.png",
-        "textures/entities/chicken/pattern_prdgpenciled_splash.png","textures/entities/chicken/pattern_prdgpenciled_lav.png", "textures/entities/chicken/pattern_prdgpenciled_white.png",
-        "textures/entities/chicken/pattern_prdgpenciled_dun.png", "textures/entities/chicken/pattern_prdgpenciled_choc.png",
+        "","pattern_solid.png","pattern_solid_blue.png",            // [17] none,solid,birchen,duckwing,wheaten,quail,columbian,darkbrown,lakenvelder,moorhead,blacktail,penciled,bsinglelaced,singlelaced,doublelaced,spangled,partridge-penciled
+        "pattern_solid_splash.png", "pattern_solid_lav.png","pattern_solid_white.png",
+        "pattern_solid_dun.png", "pattern_solid_choc.png","pattern_birchen.png",
+        "pattern_birchen_blue.png", "pattern_birchen_splash.png","pattern_birchen_lav.png",
+        "pattern_birchen_white.png", "pattern_birchen_dun.png", "pattern_birchen_choc.png",
+        "pattern_duckwing.png","pattern_duckwing_blue.png", "pattern_duckwing_splash.png",
+        "pattern_duckwing_lav.png","pattern_duckwing_white.png", "pattern_duckwing_dun.png",
+        "pattern_duckwing_choc.png","pattern_wheaten.png","pattern_wheaten_blue.png",
+        "pattern_wheaten_splash.png","pattern_wheaten_lav.png","pattern_wheaten_white.png",
+        "pattern_wheaten_dun.png", "pattern_wheaten_choc.png","pattern_quail.png",
+        "pattern_quail_blue.png","pattern_quail_splash.png","pattern_quail_lav.png",
+        "pattern_quail_white.png","pattern_quail_dun.png", "pattern_quail_choc.png",
+        "pattern_columbian.png","pattern_columbian_blue.png", "pattern_columbian_splash.png",
+        "pattern_columbian_lav.png","pattern_columbian_white.png", "pattern_columbian_dun.png",
+        "pattern_columbian_choc.png","pattern_darkbrown.png","pattern_darkbrown_blue.png",
+        "pattern_darkbrown_splash.png","pattern_darkbrown_lav.png","pattern_darkbrown_white.png",
+        "pattern_darkbrown_dun.png", "pattern_darkbrown_choc.png","pattern_lakenvelder.png",
+        "pattern_lakenvelder_blue.png", "pattern_lakenvelder_splash.png","pattern_lakenvelder_lav.png",
+        "pattern_lakenvelder_white.png", "pattern_lakenvelder_dun.png","pattern_lakenvelder_choc.png",
+        "pattern_moorhead.png","pattern_moorhead_blue.png", "pattern_moorhead_splash.png",
+        "pattern_moorhead_lav.png","pattern_moorhead_white.png", "pattern_moorhead_dun.png",
+        "pattern_moorhead_choc.png","pattern_blacktail.png","pattern_blacktail_blue.png",
+        "pattern_blacktail_splash.png","pattern_blacktail_lav.png","pattern_blacktail_white.png",
+        "pattern_blacktail_dun.png", "pattern_blacktail_choc.png","pattern_penciled.png",
+        "pattern_penciled_blue.png", "pattern_penciled_splash.png","pattern_penciled_lav.png",
+        "pattern_penciled_white.png","pattern_penciled_dun.png", "pattern_penciled_choc.png",
+        "pattern_bsinglelaced.png","pattern_bsinglelaced_blue.png","pattern_bsinglelaced_splash.png",
+        "pattern_bsinglelaced_lav.png","pattern_bsinglelaced_white.png", "pattern_bsinglelaced_dun.png",
+        "pattern_bsinglelaced_choc.png","pattern_singlelaced.png","pattern_singlelaced_blue.png",
+        "pattern_singlelaced_splash.png","pattern_singlelaced_lav.png","pattern_singlelaced_white.png",
+        "pattern_singlelaced_dun.png", "pattern_singlelaced_choc.png","pattern_doublelaced.png",
+        "pattern_doublelaced_blue.png", "pattern_doublelaced_splash.png","pattern_doublelaced_lav.png",
+        "pattern_doublelaced_white.png","pattern_doublelaced_dun.png", "pattern_doublelaced_choc.png",
+        "pattern_spangled.png","pattern_spangled_blue.png","pattern_spangled_splash.png",
+        "pattern_spangled_lav.png","pattern_spangled_white.png", "pattern_spangled_dun.png",
+        "pattern_spangled_choc.png","pattern_prdgpenciled.png", "pattern_prdgpenciled_blue.png",
+        "pattern_prdgpenciled_splash.png","pattern_prdgpenciled_lav.png", "pattern_prdgpenciled_white.png",
+        "pattern_prdgpenciled_dun.png", "pattern_prdgpenciled_choc.png",
     };
     private static final String[] CHICKEN_TEXTURES_WHITE = new String[] {
-        "","textures/entities/chicken/white_barred.png","textures/entities/chicken/white_mottles.png","textures/entities/chicken/white_crested.png"
+        "","white_barred.png","white_mottles.png","white_crested.png"
     };
     private static final String[] CHICKEN_TEXTURES_SHANKS = new String[] {
-        "textures/entities/chicken/shanks_horn.png","textures/entities/chicken/shanks_yellow.png","textures/entities/chicken/shanks_willow.png","textures/entities/chicken/shanks_black.png",
-        "textures/entities/chicken/shanks_verywhite.png","textures/entities/chicken/shanks_white.png", "textures/entities/chicken/shanks_slate.png", "textures/entities/chicken/shanks_black.png",
+        "shanks_horn.png","shanks_yellow.png","shanks_willow.png","shanks_black.png",
+        "shanks_verywhite.png","shanks_white.png", "shanks_slate.png", "shanks_black.png",
     };
     private static final String[] CHICKEN_TEXTURES_COMB = new String[] {
-        "textures/entities/chicken/comb_black.png","textures/entities/chicken/comb_mulberry.png","textures/entities/chicken/comb_red.png"
+        "comb_black.png","comb_mulberry.png","comb_red.png"
     };
     private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
-        "textures/entities/chicken/eyes_albino.png","textures/entities/chicken/eyes_black.png"
+        "eyes_albino.png","eyes_black.png"
     };
 
     private static final int WTC = 90;
@@ -111,6 +112,14 @@ public class EnhancedChicken extends EntityAnimal {
 
 
         return null;
+    }
+
+    public String getChickenTexture() {
+        if (this.chickenTextures.isEmpty()) {
+            this.setTexturePaths();
+        }
+        return this.chickenTextures.stream().collect(Collectors.joining(", ","[","]"));
+
     }
 
     @SideOnly(Side.CLIENT)
@@ -145,7 +154,7 @@ public class EnhancedChicken extends EntityAnimal {
                 ground = 17;
                 pattern = 0;
                 white = 0;
-                comb = 3;
+                comb = 2;
                 eyes = 0;
                 isAlbino = true;
             }
@@ -625,8 +634,12 @@ public class EnhancedChicken extends EntityAnimal {
 
         //after finished genes
         this.chickenTextures.add(CHICKEN_TEXTURES_GROUND[ground]);
-        this.chickenTextures.add(CHICKEN_TEXTURES_PATTERN[pattern]);
-        this.chickenTextures.add(CHICKEN_TEXTURES_WHITE[white]);
+        if (pattern != 0){
+            this.chickenTextures.add(CHICKEN_TEXTURES_PATTERN[pattern]);
+        }
+        if (white!= 0){
+            this.chickenTextures.add(CHICKEN_TEXTURES_WHITE[white]);
+        }
         this.chickenTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
         this.chickenTextures.add(CHICKEN_TEXTURES_COMB[comb]);
         this.chickenTextures.add(CHICKEN_TEXTURES_EYES[eyes]);

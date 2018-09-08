@@ -20,6 +20,7 @@ import java.util.Map;
 public class RenderEnhancedChicken extends RenderLiving<EnhancedChicken>
 {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
+    private static final String ENHANCED_CHICKEN_TEXTURE_LOCATION = "eanimod:textures/entities/chicken/";
 
     public RenderEnhancedChicken(RenderManager render)
     {
@@ -31,9 +32,15 @@ public class RenderEnhancedChicken extends RenderLiving<EnhancedChicken>
      */
     protected ResourceLocation getEntityTexture(EnhancedChicken entity)
     {
-            ResourceLocation resourcelocation = new ResourceLocation("enhancedChicken/");
-            Minecraft.getMinecraft().getTextureManager().loadTexture(resourcelocation, new LayeredTexture(entity.getVariantTexturePaths()));
-            LAYERED_LOCATION_CACHE.put("enhancedChicken/", resourcelocation);
+        String s = entity.getChickenTexture();
+        ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
+
+        if (resourcelocation == null)
+        {
+            resourcelocation = new ResourceLocation(s);
+            Minecraft.getMinecraft().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, entity.getVariantTexturePaths()));
+            LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+        }
 
         return resourcelocation;
     }

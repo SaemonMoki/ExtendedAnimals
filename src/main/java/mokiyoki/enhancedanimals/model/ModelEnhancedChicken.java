@@ -133,7 +133,7 @@ public class ModelEnhancedChicken extends ModelBase {
             }
         }
 
-        if(Waddles == true){
+        if(Waddles){
             this.chin = new ModelRenderer(this, 0, 15);
             this.chin.addBox(-1F, 13F, -6F, 2, 2, 1);
         }

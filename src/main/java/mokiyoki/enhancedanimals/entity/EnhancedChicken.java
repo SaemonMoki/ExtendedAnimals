@@ -102,7 +102,7 @@ public class EnhancedChicken extends EntityAnimal {
     public float oFlap;
     public float wingRotDelta = 1.0F;
 
-    private static final int WTC = 90;
+    private static final int WTC = 10;
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
     //'father' gene variables list
@@ -220,7 +220,7 @@ public class EnhancedChicken extends EntityAnimal {
         return null;
     }
 
-//    @SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     public String getChickenTexture() {
         if (this.chickenTextures.isEmpty()) {
             this.setTexturePaths();
@@ -229,7 +229,7 @@ public class EnhancedChicken extends EntityAnimal {
 
     }
 
-//    @SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     public String[] getVariantTexturePaths()
     {
         if (this.chickenTextures.isEmpty()) {
@@ -239,7 +239,7 @@ public class EnhancedChicken extends EntityAnimal {
         return this.chickenTextures.stream().toArray(String[]::new);
     }
 
-//    @SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     private void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if(genesForText!=null){
@@ -1321,7 +1321,7 @@ public class EnhancedChicken extends EntityAnimal {
     }
 
     public int[] getGenes(){
-        return this.genes;
+        return getSharedGenes();
     }
 
 

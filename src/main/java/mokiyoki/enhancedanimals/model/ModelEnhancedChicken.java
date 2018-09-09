@@ -32,30 +32,36 @@ public class ModelEnhancedChicken extends ModelBase {
 
         //TODO create the following below for EVERY piece. Can have multiple boxes to a single piece.
         //the below is the default from regular chicken
-        this.head = new ModelRenderer(this, 0, 0);
-        this.head.addBox(-2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F);
-        this.head.setRotationPoint(0.0F, 15.0F, -4.0F);
-        this.bill = new ModelRenderer(this, 14, 0);
-        this.bill.addBox(-2.0F, -4.0F, -4.0F, 4, 2, 2, 0.0F);
-        this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
-        this.chin = new ModelRenderer(this, 14, 4);
-        this.chin.addBox(-1.0F, -2.0F, -3.0F, 2, 2, 2, 0.0F);
-        this.chin.setRotationPoint(0.0F, 15.0F, -4.0F);
-        this.body = new ModelRenderer(this, 0, 9);
-        this.body.addBox(-3.0F, -4.0F, -3.0F, 6, 8, 6, 0.0F);
-        this.body.setRotationPoint(0.0F, 16.0F, 0.0F);
+
+        this.bill = new ModelRenderer(this, 30, 0);
+        this.bill.addBox(-1F, 11F, -7F, 2, 2, 2);
+        //main body
+        this.body = new ModelRenderer(this, 6, 0);
+        this.body.addBox(-3F, 13F, -3F, 6, 6, 8);
+        this.body.setTextureOffset(34,10);
+        this.body.addBox(-0.5F, 12F, 3F, 1, 4, 5);
+        this.body.setTextureOffset(35, 11);
+        this.body.addBox(-0.5F, 11F, 4F, 1, 1, 4);
+        //right shank
         this.rightLeg = new ModelRenderer(this, 26, 0);
-        this.rightLeg.addBox(-1.0F, 0.0F, -3.0F, 3, 5, 3);
-        this.rightLeg.setRotationPoint(-2.0F, 19.0F, 1.0F);
+        this.rightLeg.addBox(1F, 18.5F, 1F, 1, 5, 1);
+        this.rightLeg.setTextureOffset(4,5);
+        this.rightLeg.addBox(0F, 23F, -1F, 3, 1, 2);
+        this.rightLeg.setTextureOffset(7,6);
+        this.rightLeg.addBox(1F, 23F, -2F, 1, 1, 1);
+        //left shank
         this.leftLeg = new ModelRenderer(this, 26, 0);
-        this.leftLeg.addBox(-1.0F, 0.0F, -3.0F, 3, 5, 3);
-        this.leftLeg.setRotationPoint(1.0F, 19.0F, 1.0F);
-        this.rightWing = new ModelRenderer(this, 24, 13);
-        this.rightWing.addBox(0.0F, 0.0F, -3.0F, 1, 4, 6);
-        this.rightWing.setRotationPoint(-4.0F, 13.0F, 0.0F);
-        this.leftWing = new ModelRenderer(this, 24, 13);
-        this.leftWing.addBox(-1.0F, 0.0F, -3.0F, 1, 4, 6);
-        this.leftWing.setRotationPoint(4.0F, 13.0F, 0.0F);
+        this.leftLeg.addBox(-2F, 18.5F, 1F, 1, 5, 1);
+        this.leftLeg.setTextureOffset(4,5);
+        this.leftLeg.addBox(-3F, 23F, -1F, 3, 1, 2);
+        this.leftLeg.setTextureOffset(7,6);
+        this.leftLeg.addBox(-2F, 23F, -2F, 1, 1, 1);
+
+        this.rightWing = new ModelRenderer(this, 35, 0);
+        this.rightWing.addBox(-4F, 13F, -1F, 1, 4, 6);
+
+        this.leftWing = new ModelRenderer(this, 49, 0);
+        this.leftWing.addBox(3F, 13F, -1F, 1, 4, 6);
     }
 
 
@@ -69,47 +75,101 @@ public class ModelEnhancedChicken extends ModelBase {
         //or the leg could have the shorter box added to it and/or the feather box.
         //ie: which comb to render
         //this.head.render(scale);
+        if(genes[52] ==2 && genes[53] == 2){
+            this.head = new ModelRenderer(this, 6, 14);
+            this.head.addBox(-2F, 9F, -5F, 4, 6, 3);
+        }else{
+            this.head = new ModelRenderer(this, 6, 14);
+            this.head.addBox(-2F, 9F, -5F, 4, 4, 3);
+            this.head.setTextureOffset(5,0);
+            this.head.addBox(-1F, 13F, -4F, 2, 3, 2);
+        }
+
+        if(genes[50] == 1 || genes[51] == 1){
+            if((genes[46] == 1 || genes[47] == 1) && (genes[48] == 1 || genes[49] == 1)){
+                //walnut comb
+                this.head.setTextureOffset(0,15);
+                this.head.addBox(-1F, 7.5F, -5F, 2, 2, 2);
+            }else if(genes[46] == 1 || genes[47] == 1){
+                //rose comb
+                this.head.setTextureOffset(0,15);
+                this.head.addBox(-0.5F, 9F, -6F, 3, 4, 3, 0.5F);
+                this.head.addBox(-0.5F, 8F, -5F, 2, 3, 2, 0.5F);
+                this.head.addBox(-0.5F, 7F, -4F, 1, 1, 1);
+                this.chin = new ModelRenderer(this, 0, 15);
+                this.chin.addBox(1F, 9F, 6F, 2, 2, 1);
+            }else if(genes[48] == 1 || genes[49] == 1){
+                //pea comb
+                this.head.setTextureOffset(0,15);
+                this.head.addBox(-0.5F, 8F, -6F, 1, 1, 1, 0.5F);
+                this.head.addBox(-0.5F, 7.5F, -5.5F, 1, 1, 1);
+                this.head.addBox(-0.5F, 7F, -5F, 1, 1, 1, 0.5F);
+            }else{
+                //single comb
+                this.head.setTextureOffset(0,15);
+                this.head.addBox(-0.5F, 8F, -6F, 2, 3, 2, 0.5F);
+                this.head.addBox(-0.5F, 7F, -5F, 2, 3, 2, 0.5F);
+                this.head.addBox(-0.5F, 7F, -4F, 1, 1, 1);
+                this.head.addBox(-0.5F, 7F, -3F, 1, 2, 1);
+                this.head.addBox(-0.5F, 7F, -2F, 1, 1, 1);
+                this.chin = new ModelRenderer(this, 0, 15);
+                this.chin.addBox(1F, 9F, 6F, 2, 2, 1);
+            }
+        }else{
+            if(genes[46] == 2 && genes[47] == 2 && genes[48] == 2 && genes[49] == 2){
+                //v comb
+                this.head.setTextureOffset(0,15);
+                this.chin = new ModelRenderer(this, 0, 15);
+                this.chin.addBox(1F, 9F, 6F, 2, 2, 1);
+            }else{
+                if(genes[48] == 2 && genes[49] == 2){
+                    //only waddles
+                    this.chin = new ModelRenderer(this, 0, 15);
+                    this.chin.addBox(1F, 9F, 6F, 2, 2, 1);
+                }
+            }
+        }
 
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
-        if (this.isChild)
-        {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0.0F, 5.0F * scale, 2.0F * scale);
+//        if (this.isChild)
+//        {
+//            GlStateManager.pushMatrix();
+//            GlStateManager.translate(0.0F, 5.0F * scale, 2.0F * scale);
+//            this.head.render(scale);
+//            this.bill.render(scale);
+//            this.chin.render(scale);
+//            GlStateManager.popMatrix();
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scale(0.5F, 0.5F, 0.5F);
+//            GlStateManager.translate(0.0F, 24.0F * scale, 0.0F);
+//            this.body.render(scale);
+//            this.rightLeg.render(scale);
+//            this.leftLeg.render(scale);
+//            this.rightWing.render(scale);
+//            this.leftWing.render(scale);
+//            GlStateManager.popMatrix();
+//        }
+//        else
+//        {
             this.head.render(scale);
             this.bill.render(scale);
-            this.chin.render(scale);
-            GlStateManager.popMatrix();
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(0.5F, 0.5F, 0.5F);
-            GlStateManager.translate(0.0F, 24.0F * scale, 0.0F);
+////            this.chin.render(scale);
             this.body.render(scale);
             this.rightLeg.render(scale);
             this.leftLeg.render(scale);
             this.rightWing.render(scale);
             this.leftWing.render(scale);
-            GlStateManager.popMatrix();
-        }
-        else
-        {
-            this.head.render(scale);
-            this.bill.render(scale);
-            this.chin.render(scale);
-            this.body.render(scale);
-            this.rightLeg.render(scale);
-            this.leftLeg.render(scale);
-            this.rightWing.render(scale);
-            this.leftWing.render(scale);
-        }
+ //       }
 
-    }
+  }
 
     /**
      * Sets the model's various rotation angles. For bipeds, par1 and par2 are used for animating the movement of arms
      * and legs, where par1 represents the time(so that arms and legs swing back and forth) and par2 represents how
      * "far" arms and legs can swing at most.
      */
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
+/*    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
     {
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
@@ -117,11 +177,11 @@ public class ModelEnhancedChicken extends ModelBase {
         this.bill.rotateAngleY = this.head.rotateAngleY;
         this.chin.rotateAngleX = this.head.rotateAngleX;
         this.chin.rotateAngleY = this.head.rotateAngleY;
-        this.body.rotateAngleX = ((float)Math.PI / 2F);
+        this.body.rotateAngleX = ((float)Math.PI / 1F);
         this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
         this.rightWing.rotateAngleZ = ageInTicks;
         this.leftWing.rotateAngleZ = -ageInTicks;
     }
-
+*/
 }

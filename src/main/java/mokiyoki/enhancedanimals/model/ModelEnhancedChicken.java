@@ -69,6 +69,7 @@ public class ModelEnhancedChicken extends ModelBase {
         EnhancedChicken enhancedChicken = (EnhancedChicken)entityIn;
 
         int[] genes = enhancedChicken.getGenes();
+        boolean Waddles = false;
 
         //TODO do the below render call for EVERY box. Use the 'genes' array from above to decide on which boxes you want to render and which to not render.
         //you might be able to use the same stuff from above where it calls '.addBox' for each thing. ie: the head could have the comb added to it.
@@ -96,8 +97,7 @@ public class ModelEnhancedChicken extends ModelBase {
                 this.head.addBox(-0.5F, 9F, -6F, 1, 1, 1, 0.5F);
                 this.head.addBox(-0.5F, 8F, -5F, 1, 1, 1, 0.25F);
                 this.head.addBox(-0.5F, 7F, -4F, 1, 1, 1);
-                this.chin = new ModelRenderer(this, 0, 15);
-                this.chin.addBox(-1F, 13F, -6F, 2, 2, 1);
+                Waddles = true;
             }else if(genes[48] == 1 || genes[49] == 1){
                 //pea comb
                 this.head.setTextureOffset(0,15);
@@ -113,9 +113,7 @@ public class ModelEnhancedChicken extends ModelBase {
                 this.head.addBox(-0.5F, 8F, -4F, 1, 1, 1);
                 this.head.addBox(-0.5F, 7F, -3F, 1, 2, 1);
                 this.head.addBox(-0.5F, 8F, -2F, 1, 1, 1);
-
-                this.chin = new ModelRenderer(this, 0, 15);
-                this.chin.addBox(-1F, 13F, -6F, 2, 2, 1);
+                Waddles = true;
             }
         }else{
             if(genes[46] == 2 && genes[47] == 2 && genes[48] == 2 && genes[49] == 2){
@@ -126,15 +124,18 @@ public class ModelEnhancedChicken extends ModelBase {
                 this.head.addBox(-1F, 8F, -5.25F, 1, 1, 1, -0.2F);
                 this.head.addBox(.1F, 7.7F, -5F, 1, 1, 1, -0.3F);
                 this.head.addBox(-1.1F, 7.7F, -5F, 1, 1, 1, -0.3F);
-                this.chin = new ModelRenderer(this, 0, 15);
-                this.chin.addBox(-1F, 13F, -6F, 2, 2, 1);
+                Waddles = true;
             }else{
                 if(genes[48] == 2 && genes[49] == 2){
                     //only waddles
-                    this.chin = new ModelRenderer(this, 0, 15);
-                    this.chin.addBox(-1F, 13F, -6F, 2, 2, 1);
+                    Waddles = true;
                 }
             }
+        }
+
+        if(Waddles == true){
+            this.chin = new ModelRenderer(this, 0, 15);
+            this.chin.addBox(-1F, 13F, -6F, 2, 2, 1);
         }
 
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
@@ -161,7 +162,9 @@ public class ModelEnhancedChicken extends ModelBase {
 //        {
             this.head.render(scale);
             this.bill.render(scale);
-            this.chin.render(scale);
+            if(Waddles == true) {
+                this.chin.render(scale);
+            }
             this.body.render(scale);
             this.rightLeg.render(scale);
             this.leftLeg.render(scale);

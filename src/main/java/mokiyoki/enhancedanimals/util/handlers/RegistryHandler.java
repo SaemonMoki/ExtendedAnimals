@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.util.IHasModel;
 
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -33,8 +34,8 @@ public class RegistryHandler {
     @SubscribeEvent
     public static void onEntitiesRegistry(RegistryEvent.Register<EntityEntry> event)
     {
-        event.getRegistry().registerAll(
-                EntityEntryBuilder.create().entity(EnhancedChicken.class).name("enhanced_chicken").id(Reference.MOD_ID + ":enhanced_chicken", Reference.ENHANCED_CHICKEN).tracker(64, 1, true).build());
+        event.getRegistry().register(
+                EntityEntryBuilder.create().entity(EnhancedChicken.class).name("enhanced_chicken").id(Reference.MOD_ID + ":enhanced_chicken", Reference.ENHANCED_CHICKEN).tracker(64, 1, true).egg(0,1).build());
     }
 
     @SubscribeEvent

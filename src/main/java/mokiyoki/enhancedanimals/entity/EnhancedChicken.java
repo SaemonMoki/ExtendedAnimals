@@ -219,7 +219,7 @@ public class EnhancedChicken extends EntityAnimal {
         int eyes = 1;
 
         int Columbian= 3;
-        int Dlocus= 0;
+//        int Dlocus= 0;
         int Melanin= 0;
         int PatternGene= 1;
 
@@ -239,10 +239,10 @@ public class EnhancedChicken extends EntityAnimal {
             }
         } else {
 
-            ///checks dlocus genes for only dominant gene returns [ 1 2 3 4 ]
-            for (int a = 1; genes[24] == a || genes[25] == a || 4 < a; a++) {
-                Dlocus = Dlocus++;
-            }
+//            ///checks dlocus genes for only dominant gene returns [ 1 2 3 4 ]
+//            for (int a = 1; genes[24] == a || genes[25] == a || a > 4; a++) {
+//                Dlocus = Dlocus++;
+//            }
             /// figures out if Columbian gene is wildtype and if not what gene is dominant returns [ 1 2 3 ]
             if (genes[28] != 3 && genes[29] != 3) {
                 if ((genes[28] == 1 && genes[29] == 1) || genes[2] == 1 && (genes[28] == 1 || genes[29] == 1)) {
@@ -263,7 +263,7 @@ public class EnhancedChicken extends EntityAnimal {
             //figures out which pattern and ground colour it needs
 
             //black based
-            if (Dlocus == 1) {
+            if (genes[24] == 1 || genes[25] == 1) {
                 if (Melanin == 1) {
                     if (Columbian == 1 || Columbian == 3) {
                         pattern = 1;
@@ -333,7 +333,7 @@ public class EnhancedChicken extends EntityAnimal {
                 }
             }
             //duckwing based
-            else if (Dlocus == 2){
+            else if (genes[24] == 2 || genes[25] == 2){
                 if (Columbian == 3){
                     if (Melanin == 3) {
                         if (PatternGene == 1) {
@@ -404,7 +404,7 @@ public class EnhancedChicken extends EntityAnimal {
                 }
             }
             //wheaten based
-            else if (Dlocus == 3) {
+            else if (genes[24] == 3 || genes[25] == 3) {
                 if (PatternGene == 1) {
                     if (Columbian == 3) {
                         if (Melanin == 3) {
@@ -486,9 +486,9 @@ public class EnhancedChicken extends EntityAnimal {
                         }
                     }
                 }
-                    }
+            }
             //partridge based
-            else{
+            else if (genes[24] == 4 || genes[25] == 4){
                 if (PatternGene == 1){
                     if (Columbian == 3){
                         if (Melanin == 3){

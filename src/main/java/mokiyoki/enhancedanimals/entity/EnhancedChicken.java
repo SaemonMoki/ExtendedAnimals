@@ -41,7 +41,7 @@ public class EnhancedChicken extends EntityAnimal {
         "ground_solid_buff.png",        "ground_solid_mahogany.png"
     };
     private static final String[] CHICKEN_TEXTURES_PATTERN = new String[] {                                             // [7]  black,blue,splash,lavender,white,dun,chocolate
-        "","pattern_solid.png","pattern_solid_blue.png",            // [17] none,solid,birchen,duckwing,wheaten,quail,columbian,darkbrown,lakenvelder,moorhead,blacktail,penciled,bsinglelaced,singlelaced,doublelaced,spangled,partridge-penciled
+        "","pattern_solid.png","pattern_solid_blue.png",            // [17] none,solid,birchen,duckwing,wheaten,quail,columbian,darkbrown,lakenvelder,moorhead,blacktail,penciled,bsinglelace,singlelace,doublelace,spangled,partridge-penciled
         "pattern_solid_splash.png", "pattern_solid_lav.png","pattern_solid_white.png",
         "pattern_solid_dun.png", "pattern_solid_choc.png","pattern_birchen.png",
         "pattern_birchen_blue.png", "pattern_birchen_splash.png","pattern_birchen_lav.png",
@@ -67,13 +67,13 @@ public class EnhancedChicken extends EntityAnimal {
         "pattern_blacktail_dun.png", "pattern_blacktail_choc.png","pattern_penciled.png",
         "pattern_penciled_blue.png", "pattern_penciled_splash.png","pattern_penciled_lav.png",
         "pattern_penciled_white.png","pattern_penciled_dun.png", "pattern_penciled_choc.png",
-        "pattern_bsinglelaced.png","pattern_bsinglelaced_blue.png","pattern_bsinglelaced_splash.png",
-        "pattern_bsinglelaced_lav.png","pattern_bsinglelaced_white.png", "pattern_bsinglelaced_dun.png",
-        "pattern_bsinglelaced_choc.png","pattern_singlelaced.png","pattern_singlelaced_blue.png",
-        "pattern_singlelaced_splash.png","pattern_singlelaced_lav.png","pattern_singlelaced_white.png",
-        "pattern_singlelaced_dun.png", "pattern_singlelaced_choc.png","pattern_doublelaced.png",
-        "pattern_doublelaced_blue.png", "pattern_doublelaced_splash.png","pattern_doublelaced_lav.png",
-        "pattern_doublelaced_white.png","pattern_doublelaced_dun.png", "pattern_doublelaced_choc.png",
+        "pattern_bsinglelace.png","pattern_bsinglelace_blue.png","pattern_bsinglelace_splash.png",
+        "pattern_bsinglelace_lav.png","pattern_bsinglelace_white.png", "pattern_bsinglelace_dun.png",
+        "pattern_bsinglelace_choc.png","pattern_singlelace.png","pattern_singlelace_blue.png",
+        "pattern_singlelace_splash.png","pattern_singlelace_lav.png","pattern_singlelace_white.png",
+        "pattern_singlelace_dun.png", "pattern_singlelace_choc.png","pattern_doublelace.png",
+        "pattern_doublelace_blue.png", "pattern_doublelace_splash.png","pattern_doublelace_lav.png",
+        "pattern_doublelace_white.png","pattern_doublelace_dun.png", "pattern_doublelace_choc.png",
         "pattern_spangled.png","pattern_spangled_blue.png","pattern_spangled_splash.png",
         "pattern_spangled_lav.png","pattern_spangled_white.png", "pattern_spangled_dun.png",
         "pattern_spangled_choc.png","pattern_prdgpenciled.png", "pattern_prdgpenciled_blue.png",
@@ -104,7 +104,7 @@ public class EnhancedChicken extends EntityAnimal {
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
     //'father' gene variables list
-    private int[] genes = new int[70];
+    private int[] genes;
     private int[] mateGenes = new int[70];
     private int[] mitosisGenes = new int[70];
     private int[] mateMitosisGenes = new int[70];
@@ -575,7 +575,7 @@ public class EnhancedChicken extends EntityAnimal {
                 ground = ground +2;
             }
             if (genes[0] == 1 && ((genes[32] == 3 && genes[33] == 3) || (genes[36] == 2 && genes[37] == 2))){
-                //lemon or cream but backwards
+                //its not dilute or lavender
                 ground = ground +1;
             }
             if (genes[34] == 1 || genes[35] == 1){
@@ -652,10 +652,10 @@ public class EnhancedChicken extends EntityAnimal {
             if (genes[4] == 1 && (genes[42] == 1 || genes[43] == 1)){
                 //comb and shanks are black
                 comb = 0;
-                shanks = 4;
+                shanks = 3;
             }
             if (genes[24] == 1 && genes[25] == 1){
-                shanks =4;
+                shanks =3;
                 // makes mulbery comb
                 if (genes[30] == 2){
                     comb = 1;
@@ -668,17 +668,12 @@ public class EnhancedChicken extends EntityAnimal {
             }
 
             // if dominant white or lavender lighten by 1 shade
-            if ((genes[38] == 1 && genes[39] == 1) || (genes[36] == 1 && genes[37] == 1)){
+            if ((genes[38] == 1 && genes[39] == 1) || (genes[36] == 1 && genes[37] == 1) || (genes[3] == 2)){
                 shanks--;
             }
 
             // if splash or blue lighten by 1 shade
             if (genes[40] == 2 || genes[41] == 2){
-                shanks--;
-            }
-
-            //if barring lighten by 1 shade
-            if (genes[3] == 2){
                 shanks--;
             }
 
@@ -695,8 +690,12 @@ public class EnhancedChicken extends EntityAnimal {
             //makes sure its not off the chart
             if (shanks < 0 ){
                 shanks = 0;
-            }else if (shanks > 4 ){
-                shanks = 4;
+            }else if (shanks > 3 ){
+                shanks = 3;
+            }
+
+            if (shanks < 2 && comb == 0){
+                comb = 1;
             }
 
             //makes the shanks and beak their white or yellow varient

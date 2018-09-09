@@ -101,7 +101,7 @@ public class ModelEnhancedChicken extends ModelBase {
             }else if(genes[48] == 1 || genes[49] == 1){
                 //pea comb
                 this.head.setTextureOffset(0,15);
-                this.head.addBox(-0.5F, 9F, -6F, 1, 1, 1, -0.2F);
+                this.head.addBox(-0.5F, 9F, -6F, 1, 1, 2, -0.2F);
                 this.head.addBox(-0.5F, 8.5F, -5.5F, 1, 1, 1);
                 this.head.addBox(-0.5F, 8F, -5F, 1, 1, 1,-0.2F);
             }else{

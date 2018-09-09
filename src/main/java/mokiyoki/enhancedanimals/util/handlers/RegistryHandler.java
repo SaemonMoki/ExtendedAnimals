@@ -33,8 +33,12 @@ public class RegistryHandler {
     @SubscribeEvent
     public static void onEntitiesRegistry(RegistryEvent.Register<EntityEntry> event)
     {
-        event.getRegistry().registerAll(
-                EntityEntryBuilder.create().entity(EnhancedChicken.class).name("enhanced_chicken").id(Reference.MOD_ID + ":enhanced_chicken", Reference.ENHANCED_CHICKEN).tracker(64, 1, true).build());
+        event.getRegistry().register(
+                EntityEntryBuilder.create()
+                        .entity(EnhancedChicken.class)
+                        .id(Reference.MOD_ID + ":enhanced_chicken", Reference.ENHANCED_CHICKEN)
+                        .tracker(64, 1, true)
+                        .build());
     }
 
     @SubscribeEvent

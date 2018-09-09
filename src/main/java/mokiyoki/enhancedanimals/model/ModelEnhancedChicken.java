@@ -89,43 +89,50 @@ public class ModelEnhancedChicken extends ModelBase {
             if((genes[46] == 1 || genes[47] == 1) && (genes[48] == 1 || genes[49] == 1)){
                 //walnut comb
                 this.head.setTextureOffset(0,15);
-                this.head.addBox(-1F, 7.5F, -5F, 2, 2, 2);
+                this.head.addBox(-0.5F, 8.5F, -5.5F, 1, 1, 1, 0.5F);
             }else if(genes[46] == 1 || genes[47] == 1){
                 //rose comb
                 this.head.setTextureOffset(0,15);
-                this.head.addBox(-0.5F, 9F, -6F, 3, 4, 3, 0.5F);
-                this.head.addBox(-0.5F, 8F, -5F, 2, 3, 2, 0.5F);
+                this.head.addBox(-0.5F, 9F, -6F, 1, 1, 1, 0.5F);
+                this.head.addBox(-0.5F, 8F, -5F, 1, 1, 1, 0.25F);
                 this.head.addBox(-0.5F, 7F, -4F, 1, 1, 1);
                 this.chin = new ModelRenderer(this, 0, 15);
-                this.chin.addBox(1F, 9F, 6F, 2, 2, 1);
+                this.chin.addBox(-1F, 13F, -6F, 2, 2, 1);
             }else if(genes[48] == 1 || genes[49] == 1){
                 //pea comb
                 this.head.setTextureOffset(0,15);
-                this.head.addBox(-0.5F, 8F, -6F, 1, 1, 1, 0.5F);
-                this.head.addBox(-0.5F, 7.5F, -5.5F, 1, 1, 1);
-                this.head.addBox(-0.5F, 7F, -5F, 1, 1, 1, 0.5F);
+                this.head.addBox(-0.5F, 9F, -6F, 1, 1, 1, -0.2F);
+                this.head.addBox(-0.5F, 8.5F, -5.5F, 1, 1, 1);
+                this.head.addBox(-0.5F, 8F, -5F, 1, 1, 1,-0.2F);
             }else{
                 //single comb
                 this.head.setTextureOffset(0,15);
-                this.head.addBox(-0.5F, 8F, -6F, 2, 3, 2, 0.5F);
-                this.head.addBox(-0.5F, 7F, -5F, 2, 3, 2, 0.5F);
-                this.head.addBox(-0.5F, 7F, -4F, 1, 1, 1);
+                this.head.addBox(-0.5F, 9F, -6F, 1, 1, 1);
+                this.head.addBox(-0.5F, 8.5F, -6F, 1, 1, 1);
+                this.head.addBox(-0.5F, 7.5F, -5F, 1, 2, 1);
+                this.head.addBox(-0.5F, 8F, -4F, 1, 1, 1);
                 this.head.addBox(-0.5F, 7F, -3F, 1, 2, 1);
-                this.head.addBox(-0.5F, 7F, -2F, 1, 1, 1);
+                this.head.addBox(-0.5F, 8F, -2F, 1, 1, 1);
+
                 this.chin = new ModelRenderer(this, 0, 15);
-                this.chin.addBox(1F, 9F, 6F, 2, 2, 1);
+                this.chin.addBox(-1F, 13F, -6F, 2, 2, 1);
             }
         }else{
             if(genes[46] == 2 && genes[47] == 2 && genes[48] == 2 && genes[49] == 2){
                 //v comb
                 this.head.setTextureOffset(0,15);
+                this.head.addBox(-0.5F, 8.5F, -5.5F, 1, 1, 1);
+                this.head.addBox(0F, 8F, -5.25F, 1, 1, 1, -0.2F);
+                this.head.addBox(-1F, 8F, -5.25F, 1, 1, 1, -0.2F);
+                this.head.addBox(.1F, 7.7F, -5F, 1, 1, 1, -0.3F);
+                this.head.addBox(-1.1F, 7.7F, -5F, 1, 1, 1, -0.3F);
                 this.chin = new ModelRenderer(this, 0, 15);
-                this.chin.addBox(1F, 9F, 6F, 2, 2, 1);
+                this.chin.addBox(-1F, 13F, -6F, 2, 2, 1);
             }else{
                 if(genes[48] == 2 && genes[49] == 2){
                     //only waddles
                     this.chin = new ModelRenderer(this, 0, 15);
-                    this.chin.addBox(1F, 9F, 6F, 2, 2, 1);
+                    this.chin.addBox(-1F, 13F, -6F, 2, 2, 1);
                 }
             }
         }
@@ -154,7 +161,7 @@ public class ModelEnhancedChicken extends ModelBase {
 //        {
             this.head.render(scale);
             this.bill.render(scale);
-////            this.chin.render(scale);
+            this.chin.render(scale);
             this.body.render(scale);
             this.rightLeg.render(scale);
             this.leftLeg.render(scale);

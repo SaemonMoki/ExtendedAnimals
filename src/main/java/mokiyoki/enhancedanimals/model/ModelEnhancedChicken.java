@@ -96,23 +96,27 @@ public class ModelEnhancedChicken extends ModelBase {
                 this.head.setTextureOffset(0,15);
                 this.head.addBox(-0.5F, 9F, -6F, 1, 1, 1, 0.5F);
                 this.head.addBox(-0.5F, 8F, -5F, 1, 1, 1, 0.25F);
-                this.head.addBox(-0.5F, 7F, -4F, 1, 1, 1);
+                if(genes[54] == 3 && genes[55] == 3) {
+                    this.head.addBox(-0.5F, 7F, -4F, 1, 1, 1);
+                }
                 Waddles = true;
             }else if(genes[48] == 1 || genes[49] == 1){
                 //pea comb
                 this.head.setTextureOffset(0,15);
                 this.head.addBox(-0.5F, 9F, -6F, 1, 1, 2, -0.2F);
                 this.head.addBox(-0.5F, 8.5F, -5.5F, 1, 1, 1);
-                this.head.addBox(-0.5F, 8F, -5F, 1, 1, 1,-0.2F);
+                this.head.addBox(-0.5F, 8F, -5F, 1, 2, 1,-0.2F);
             }else{
                 //single comb
                 this.head.setTextureOffset(0,15);
                 this.head.addBox(-0.5F, 9F, -6F, 1, 1, 1);
                 this.head.addBox(-0.5F, 8.5F, -6F, 1, 1, 1);
                 this.head.addBox(-0.5F, 7.5F, -5F, 1, 2, 1);
-                this.head.addBox(-0.5F, 8F, -4F, 1, 1, 1);
-                this.head.addBox(-0.5F, 7F, -3F, 1, 2, 1);
-                this.head.addBox(-0.5F, 8F, -2F, 1, 1, 1);
+                if(genes[54] == 3 && genes[55] == 3) {
+                    this.head.addBox(-0.5F, 8F, -4F, 1, 1, 1);
+                    this.head.addBox(-0.5F, 7F, -3F, 1, 2, 1);
+                    this.head.addBox(-0.5F, 8F, -2F, 1, 1, 1);
+                }
                 Waddles = true;
             }
         }else{
@@ -133,9 +137,110 @@ public class ModelEnhancedChicken extends ModelBase {
             }
         }
 
+        //bearded
+        if (genes[56] == 1 || genes[57] == 1){
+            //is bearded
+            this.head.setTextureOffset(22,14);
+            this.head.addBox(-2.5F, 11.5F, -5.5F, 2, 3, 3, 0.1F);
+            this.head.setTextureOffset(22,14);
+            this.head.addBox(0.5F, 11.5F, -5.5F, 2, 3, 3, 0.1F);
+            this.head.setTextureOffset(20,14);
+            this.head.addBox(-2F, 12.5F, -6.5F, 4, 3, 3, 0.1F);
+            Waddles = false;
+        }
+
         if(Waddles){
             this.chin = new ModelRenderer(this, 0, 15);
             this.chin.addBox(-1F, 13F, -6F, 2, 2, 1);
+        }
+
+        //crestedness
+        if((genes[54] == 2 || genes[55] == 2) && (genes[54] != 1 && genes[55] != 1)){
+                //forward crest
+            this.head.setTextureOffset(45,18);
+            this.head.addBox(-1.5F, 7F, -6F, 3, 3, 3, 0.2F);
+        }else if(genes[54] == 1 || genes[55] == 1){
+            if(genes[54] == genes[55]){
+                //big crest
+                this.head.setTextureOffset(43,17);
+                this.head.addBox(-2F, 6F, -5.5F, 4, 4, 4, 0.4F);
+            }else{
+                //small crest
+                this.head.setTextureOffset(45,18);
+                this.head.addBox(-1.5F, 6.5F, -5F, 3, 3, 3, 0.1F);
+            }
+        }
+
+        //feather feets
+        if(genes[58] == 1 || genes[59] == 1){
+            if(genes[60] ==1 || genes[61] == 1){
+                //2nd level foot feathers
+                //shanks
+                this.rightLeg.setTextureOffset(44,0);
+                this.rightLeg.addBox(1.1F, 19F, 0F, 2, 3, 3);
+
+                this.leftLeg.setTextureOffset(44,0);
+                this.leftLeg.addBox(-3.1F, 19F, 0F, 2, 3, 3);
+                //feets
+                this.rightLeg.setTextureOffset(46,10);
+                this.rightLeg.addBox(0.5F, 22F, -2.5F, 3, 2, 5);
+
+                this.leftLeg.setTextureOffset(46,10);
+                this.leftLeg.addBox(-6.5F, 22F, -2.5F, 3, 2, 5);
+            } else {
+                //1st level foot feathers
+                //shanks
+                this.rightLeg.setTextureOffset(44,0);
+                this.rightLeg.addBox(1.1F, 19F, 0F, 2, 3, 3);
+
+                this.leftLeg.setTextureOffset(44,0);
+                this.leftLeg.addBox(-3.1F, 19F, 0F, 2, 3, 3);
+            }
+        } else if(genes[58] == 2 || genes[59] == 2){
+            if(genes[60] ==1 || genes[61] == 1){
+                //3rd level foot feathers
+               //shanks
+                this.rightLeg.setTextureOffset(44,0);
+                this.rightLeg.addBox(1.1F, 19F, 0F, 2, 3, 3);
+
+                this.leftLeg.setTextureOffset(44,0);
+                this.leftLeg.addBox(-3.1F, 19F, 0F, 2, 3, 3);
+                //feets
+                this.rightLeg.setTextureOffset(46,10);
+                this.rightLeg.addBox(0.5F, 22F, -2.5F, 3, 2, 5);
+
+                this.leftLeg.setTextureOffset(46,10);
+                this.leftLeg.addBox(-3.5F, 22F, -2.5F, 3, 2, 5);
+                //toes
+                this.rightLeg.setTextureOffset(17,3);
+                this.rightLeg.addBox(4.5F, 23.9F, -2.5F, 4, 0, 5);
+
+                this.leftLeg.setTextureOffset(17,3);
+                this.leftLeg.addBox(-6.5F, 23.9F, -2.5F, 4, 0, 5);
+            } else {
+                //2nd level foot feathers
+                this.rightLeg.setTextureOffset(44,0);
+                this.rightLeg.addBox(1.1F, 19F, 0F, 2, 3, 3);
+
+                this.leftLeg.setTextureOffset(44,0);
+                this.leftLeg.addBox(-3.1F, 19F, 0F, 2, 3, 3);
+                //feets
+                this.rightLeg.setTextureOffset(46,10);
+                this.rightLeg.addBox(0.5F, 22F, -2.5F, 3, 2, 5);
+
+                this.leftLeg.setTextureOffset(46,10);
+                this.leftLeg.addBox(-3.5F, 22F, -2.5F, 3, 2, 5);
+            }
+        } else {
+            if (genes[60] == 1 || genes[61] == 1) {
+                //1st level foot feathers
+                //shanks
+                this.rightLeg.setTextureOffset(44, 0);
+                this.rightLeg.addBox(1.1F, 19F, 0F, 2, 3, 3);
+
+                this.leftLeg.setTextureOffset(44, 0);
+                this.leftLeg.addBox(-3.1F, 19F, 0F, 2, 3, 3);
+            }
         }
 
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
@@ -162,7 +267,7 @@ public class ModelEnhancedChicken extends ModelBase {
 //        {
             this.head.render(scale);
             this.bill.render(scale);
-            if(Waddles == true) {
+            if(Waddles) {
                 this.chin.render(scale);
             }
             this.body.render(scale);

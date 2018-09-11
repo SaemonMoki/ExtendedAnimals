@@ -109,7 +109,7 @@ public class ModelEnhancedChicken extends ModelBase {
         this.rightFeather1.addBox(1.1F, 19F, 0F, 2, 3, 3);
 
         this.leftFeather1 = new ModelRenderer(this,44,0);
-        this.leftFeather1.addBox(-2.9F, 19F, 0F, 2, 3, 3);
+        this.leftFeather1.addBox(-3.1F, 19F, 0F, 2, 3, 3);
 
         this.rightFeather2 = new ModelRenderer(this,46,10);
         this.rightFeather2.addBox(0.5F, 22F, -2.5F, 3, 2, 5);
@@ -118,10 +118,10 @@ public class ModelEnhancedChicken extends ModelBase {
         this.leftFeather2.addBox(-3.5F, 22F, -2.5F, 3, 2, 5);
 
         this.rightFeather3 = new ModelRenderer(this,17,3);
-        this.rightFeather3.addBox(4.5F, 23.9F, -2.5F, 4, 0, 5);
+        this.rightFeather3.addBox(3.5F, 23.9F, -2.5F, 4, 0, 5);
 
         this.leftFeather3 = new ModelRenderer(this,17,3);
-        this.leftFeather3.addBox(-6.5F, 23.9F, -2.5F, 4, 0, 5);
+        this.leftFeather3.addBox(-7.5F, 23.9F, -2.5F, 4, 0, 5);
 
         this.leftLeg = new ModelRenderer(this, 26, 0);
         this.leftLeg.addBox(-2F, 18.5F, 1F, 1, 5, 1);

@@ -265,16 +265,13 @@ public class EnhancedChicken extends EntityAnimal {
                     ground = 16;
                     pattern = 0;
                     white = 0;
+                    shanks = 4;
                     comb = 2;
                     eyes = 0;
                     isAlbino = true;
                 }
             } else {
 
-//            ///checks dlocus genesForText for only dominant gene returns [ 1 2 3 4 ]
-//            for (int a = 1; genesForText[24] == a || genesForText[25] == a || a > 4; a++) {
-//                Dlocus = Dlocus++;
-//            }
                 /// figures out if Columbian gene is wildtype and if not what gene is dominant returns [ 1 2 3 ]
                 if (genesForText[28] != 3 && genesForText[29] != 3) {
                     if ((genesForText[28] == 1 && genesForText[29] == 1) || genesForText[2] == 1 && (genesForText[28] == 1 || genesForText[29] == 1)) {
@@ -619,7 +616,7 @@ public class EnhancedChicken extends EntityAnimal {
                 if(genesForText[38] == 1 && genesForText[39] == 1){
                     //domwhite
                     pattern = pattern +4;
-                }else if(genesForText[38] == 1 && genesForText[39] == 1){
+                }else if(genesForText[38] == 1 || genesForText[39] == 1){
                     // spotted domwhite
                     pattern = pattern +4;
                 }else {
@@ -875,7 +872,6 @@ public class EnhancedChicken extends EntityAnimal {
 
     private int[] createInitialGenes() {
         int[] initialGenes = new int[70];
-
         //TODO create biome WTC variable [hot and dry biomes, hot and wet biomes, cold biomes] WTC is all others
 
 /**

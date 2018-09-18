@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "eanimod:items/egg_green_grey"
+    "layer0": "eanimod:items/egg_browndark"
   }
 }

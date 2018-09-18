@@ -1,34 +1,30 @@
 package mokiyoki.enhancedanimals.init;
 
-import mokiyoki.enhancedanimals.items.ItemBase;
+import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.item.Item;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
 /**
  * Created by moki on 24/08/2018.
  */
-public class ModItems
-{
-    public static final List<Item> ITEMS = new ArrayList<Item>();
-
-    public static final Item EGG_WHITE = new ItemBase("egg_white");
-    public static final Item EGG_BLUE = new ItemBase("egg_blue");
-    public static final Item EGG_CREAM = new ItemBase("egg_cream");
-    public static final Item EGG_PINK = new ItemBase("egg_pink");
-    public static final Item EGG_BROWN = new ItemBase("egg_brown");
-    public static final Item EGG_SPRING_GREEN = new ItemBase("egg_spring_green");
-    public static final Item EGG_GREY = new ItemBase("egg_grey");
-    public static final Item EGG_GREEN = new ItemBase("egg_green");
-    public static final Item EGG_DARK_CREAM = new ItemBase("egg_dark_cream");
-    public static final Item EGG_DARK_PINK = new ItemBase("egg_dark_pink");
-    public static final Item EGG_DARK_BROWN = new ItemBase("egg_dark_brown");
-    public static final Item EGG_OLIVE = new ItemBase("egg_olive");
-    public static final Item EGG_GREEN_GREY = new ItemBase("egg_green_grey");
-    public static final Item EGG_DARK_GREEN = new ItemBase("egg_dark_green");
-
-    public static final Item CHICKEN_COOKED_MELANIZED = new ItemBase("chicken_cooked_melanized");
-    public static final Item CHICKEN_RAW_MELANIZED = new ItemBase("chicken_raw_melanized");
-
+@ObjectHolder(Reference.MODID)
+public class ModItems {
+    public static final Item EggWhite = new EnhancedEgg("eggWhite", "egg_white");
+    public static final Item EggCream = new EnhancedEgg ("eggCream", "egg_cream");
+    public static final Item EggCreamDark = new EnhancedEgg ("eggCreamDark", "egg_creamdark");
+    public static final Item EggPink = new EnhancedEgg ("eggPink", "egg_pink");
+    public static final Item EggPinkDark = new EnhancedEgg ("eggPinkDark", "egg_pinkdark");
+    public static final Item EggBrown = new EnhancedEgg ("eggBrown", "egg_brown");
+    public static final Item EggBrownDark = new EnhancedEgg ("eggBrownDark", "egg_browndark");
+    public static final Item EggBlue = new EnhancedEgg ("eggBlue", "egg_blue");
+    public static final Item EggGreenLight = new EnhancedEgg ("eggGreenLight", "egg_greenlight");
+    public static final Item EggGreen = new EnhancedEgg ("eggGreen", "egg_green");
+    public static final Item EggGrey = new EnhancedEgg ("eggGrey", "egg_grey");
+    public static final Item EggGreyGreen = new EnhancedEgg ("eggGreyGreen", "egg_greygreen");
+    public static final Item EggOlive = new EnhancedEgg ("eggOlive", "egg_olive");
+    public static final Item EggGreenDark = new EnhancedEgg ("eggGreenDark", "egg_greendark");
 }
+
+//CHICKEN_COOKED_MELANIZED = null;
+//CHICKEN_RAW_MELANIZED = null;

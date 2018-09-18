@@ -224,26 +224,46 @@ public class ModelEnhancedChicken extends ModelBase {
 
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
-//        if (this.isChild)
-//        {
-//            GlStateManager.pushMatrix();
-//            GlStateManager.translate(0.0F, 5.0F * scale, 2.0F * scale);
-//            this.head.render(scale);
-//            this.bill.render(scale);
-//            this.chin.render(scale);
-//            GlStateManager.popMatrix();
-//            GlStateManager.pushMatrix();
-//            GlStateManager.scale(0.5F, 0.5F, 0.5F);
-//            GlStateManager.translate(0.0F, 24.0F * scale, 0.0F);
-//            this.body.render(scale);
-//            this.rightLeg.render(scale);
-//            this.leftLeg.render(scale);
-//            this.rightWing.render(scale);
-//            this.leftWing.render(scale);
-//            GlStateManager.popMatrix();
-//        }
-//        else
-//        {
+        if (this.isChild)
+        {
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(0.6F, 0.6F, 0.6F);
+            GlStateManager.translate(0.0F, 18.0F * scale, 0.1F);
+            if(nakedNeck){
+                this.headNakedNeck.render(scale);
+            }else{
+                this.head.render(scale);
+            }
+            this.bill.render(scale);
+            if(chin == 1) {
+                this.chin.render(scale);
+            }else if(chin == 2){
+                this.beard.render(scale);
+            }
+            if(crest >= 1){
+                this.forwardCrest.render(scale);
+            }
+            GlStateManager.popMatrix();
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(0.4F, 0.4F, 0.4F);
+            GlStateManager.translate(0.0F, 35.0F * scale, 0.0F);
+            this.body.render(scale);
+            this.rightLeg.render(scale);
+            this.leftLeg.render(scale);
+            if(fFeet >= 1){
+                this.leftFeather1.render(scale);
+                this.rightFeather1.render(scale);
+                if(fFeet >= 2){
+                    this.leftFeather2.render(scale);
+                    this.rightFeather2.render(scale);
+                }
+            }
+            this.rightWing.render(scale);
+            this.leftWing.render(scale);
+            GlStateManager.popMatrix();
+        }
+        else
+        {
             if(nakedNeck){
                 this.headNakedNeck.render(scale);;
             }else{
@@ -290,28 +310,69 @@ public class ModelEnhancedChicken extends ModelBase {
             this.rightWing.render(scale);
             this.leftWing.render(scale);
             this.bill.render(scale);
- //       }
+        }
 
   }
+
 
     /**
      * Sets the model's various rotation angles. For bipeds, par1 and par2 are used for animating the movement of arms
      * and legs, where par1 represents the time(so that arms and legs swing back and forth) and par2 represents how
      * "far" arms and legs can swing at most.
      */
-/*    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
+
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
     {
+        //head stuff
+        this.head.rotationPointX = 0F;
+        this.head.rotationPointY = 0F;
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
+
+//        this.head.rotateAngleX = headPitch * 0.008726646F;
+//        this.head.rotateAngleY = netHeadYaw * 0.008726646F;
+        this.headNakedNeck.rotateAngleX = this.head.rotateAngleX;
+        this.headNakedNeck.rotateAngleY = this.head.rotateAngleY;
+        this.smallCrest.rotateAngleX = this.head.rotateAngleX;
+        this.smallCrest.rotateAngleY = this.head.rotateAngleY;
+        this.bigCrest.rotateAngleX = this.head.rotateAngleX;
+        this.bigCrest.rotateAngleY = this.head.rotateAngleY;
+        this.forwardCrest.rotateAngleX = this.head.rotateAngleX;
+        this.forwardCrest.rotateAngleY = this.head.rotateAngleY;
         this.bill.rotateAngleX = this.head.rotateAngleX;
         this.bill.rotateAngleY = this.head.rotateAngleY;
         this.chin.rotateAngleX = this.head.rotateAngleX;
         this.chin.rotateAngleY = this.head.rotateAngleY;
-        this.body.rotateAngleX = ((float)Math.PI / 1F);
-        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-        this.rightWing.rotateAngleZ = ageInTicks;
-        this.leftWing.rotateAngleZ = -ageInTicks;
+        this.beard.rotateAngleX = this.head.rotateAngleX;
+        this.beard.rotateAngleY = this.head.rotateAngleY;
+        this.combSingle.rotateAngleX = this.head.rotateAngleX;
+        this.combSingle.rotateAngleY = this.head.rotateAngleY;
+        this.combRose.rotateAngleX = this.head.rotateAngleX;
+        this.combRose.rotateAngleY = this.head.rotateAngleY;
+        this.combPea.rotateAngleX = this.head.rotateAngleX;
+        this.combPea.rotateAngleY = this.head.rotateAngleY;
+        this.combWalnut.rotateAngleX = this.head.rotateAngleX;
+        this.combWalnut.rotateAngleY = this.head.rotateAngleY;
+        this.combV.rotateAngleX = this.head.rotateAngleX;
+        this.combV.rotateAngleY = this.head.rotateAngleY;
+        //leg stuff
+        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
+        this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 0.5F * limbSwingAmount;
+        this.rightFeather1.rotateAngleX = this.rightLeg.rotateAngleX;
+        this.rightFeather1.rotateAngleY = this.rightLeg.rotateAngleY;
+        this.rightFeather2.rotateAngleX = this.rightLeg.rotateAngleX;
+        this.rightFeather2.rotateAngleY = this.rightLeg.rotateAngleY;
+        this.rightFeather3.rotateAngleX = this.rightLeg.rotateAngleX;
+        this.rightFeather3.rotateAngleY = this.rightLeg.rotateAngleY;
+        this.leftFeather1.rotateAngleX = this.leftLeg.rotateAngleX;
+        this.leftFeather1.rotateAngleY = this.leftLeg.rotateAngleY;
+        this.leftFeather2.rotateAngleX = this.leftLeg.rotateAngleX;
+        this.leftFeather2.rotateAngleY = this.leftLeg.rotateAngleY;
+        this.leftFeather3.rotateAngleX = this.leftLeg.rotateAngleX;
+        this.leftFeather3.rotateAngleY = this.leftLeg.rotateAngleY;
+        //wing stuff
+//        this.rightWing.rotateAngleZ = ageInTicks;
+//        this.leftWing.rotateAngleZ = -ageInTicks;
     }
-*/
+
 }

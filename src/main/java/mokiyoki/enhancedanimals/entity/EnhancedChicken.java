@@ -1,11 +1,19 @@
 package mokiyoki.enhancedanimals.entity;
 
+import com.google.common.collect.Sets;
+import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
@@ -13,6 +21,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -96,13 +105,15 @@ public class EnhancedChicken extends EntityAnimal {
         "eyes_albino.png","eyes_black.png"
     };
 
+    private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
     public float wingRotation;
     public float destPos;
     public float oFlapSpeed;
     public float oFlap;
     public float wingRotDelta = 1.0F;
+    public int timeUntilNextEgg;
 
-    private static final int WTC = 10;
+    private static final int WTC = 80;
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
     //'father' gene variables list
@@ -114,8 +125,23 @@ public class EnhancedChicken extends EntityAnimal {
     public EnhancedChicken(World worldIn) {
         super(worldIn);
         this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
+        this.timeUntilNextEgg = this.rand.nextInt(2000); //TODO make some genes to alter these numbers
         this.setPathPriority(PathNodeType.WATER, 0.0F); //TODO investigate what this do and how/if needed
         //TODO set up here, any defaults of variables you create that you need. ie: All initial genes
+
+    }
+
+    protected void initEntityAI()
+    {
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(1, new EntityAIPanic(this, 1.4D));
+        this.tasks.addTask(2, new EntityAIMate(this, 1.0D));
+        this.tasks.addTask(3, new EntityAITempt(this, 1.0D, false, TEMPTATION_ITEMS));
+        this.tasks.addTask(4, new EntityAIFollowParent(this, 1.1D));
+        this.tasks.addTask(5, new EntityAIWanderAvoidWater(this, 1.0D));
+        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
+        this.tasks.addTask(7, new EntityAIEatGrass(this));//TODO make an animation that suits chickens
+        this.tasks.addTask(8, new EntityAILookIdle(this));
 
     }
 
@@ -183,6 +209,17 @@ public class EnhancedChicken extends EntityAnimal {
         }
 
         this.wingRotation += this.wingRotDelta * 2.0F;
+
+        if (!this.world.isRemote && !this.isChild() && --this.timeUntilNextEgg <= 0)
+        {
+            this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+//            this.dropItem(getEggColour(resolveEggColour()), 1);
+//            ItemStack itemStack = new ItemStack(ModItems.EggWhite, 1, 0);
+//            itemStack.
+//           entityDropItem(itemStack, 0.0F);
+            this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
+        }
+
     }
 
     public void fall(float distance, float damageMultiplier)
@@ -209,15 +246,109 @@ public class EnhancedChicken extends EntityAnimal {
         this.playSound(SoundEvents.ENTITY_CHICKEN_STEP, 0.15F, 1.0F);
     }
 
+    public boolean isBreedingItem(ItemStack stack)
+    {
+        return TEMPTATION_ITEMS.contains(stack.getItem());
+    }
+
     @Nullable
     @Override
     public EntityAgeable createChild(EntityAgeable ageable) {
-        //create egg item
-        //set parent genes for both. I think its this. for mum, ageable for dad.
-        //spawn egg in overworld
+//        if (!this.world.isRemote && !this.isChild() && --this.timeUntilNextEgg <= 0)
+//        {
+//            this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+////            ItemStack itemStack = new ItemStack(getEggColour(resolveEggColour()), 1, 0);
+////            this.dropItem(getEggColour(resolveEggColour()), 1);
+////            entityDropItem(itemStack, 0.0F);
+//            this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
+//        }
+//        return null;
+//
+//    }
+
+        EnhancedChicken enhancedchicken = new EnhancedChicken(this.world);
+        enhancedchicken.setGrowingAge(-48000);
+//        enhancedchicken.setGenes(this.getEggGenes());
+
+        return enhancedchicken;
+    }
 
 
+    private Item getEggColour(int eggColourGene){
+
+        switch (eggColourGene) {
+            case 0:
+                Item item = Item.REGISTRY.getObject(new ResourceLocation("eanimod:egg_white"));
+                return ModItems.EggWhite;
+//                return new EnhancedEgg("eggWhite", "egg_white");
+            case 1:
+                return ModItems.EggCream;
+//                return new EnhancedEgg ("eggCream", "egg_cream");
+//            case 2:
+//                return new EnhancedEgg ("eggCreamDark", "egg_creamdark");
+//            case 3:
+//                return new EnhancedEgg ("eggPink", "egg_pink");
+//            case 4:
+//                return new EnhancedEgg ("eggPinkDark", "egg_pinkdark");
+//            case 5:
+//                return new EnhancedEgg ("eggBrown", "egg_brown");
+//            case 6:
+//                return new EnhancedEgg ("eggBrownDark", "egg_browndark");
+//            case 7:
+//                return new EnhancedEgg ("eggBlue", "egg_blue");
+//            case 8:
+//                return new EnhancedEgg ("eggGreenLight", "egg_greenlight");
+//            case 9:
+//                return new EnhancedEgg ("eggGreen", "egg_green");
+//            case 10:
+//                return new EnhancedEgg ("eggGrey", "egg_grey");
+//            case 11:
+//                return new EnhancedEgg ("eggGreyGreen", "egg_greygreen");
+//            case 12:
+//                return new EnhancedEgg ("eggOlive", "egg_olive");
+//            case 13:
+//                return new EnhancedEgg ("eggGreenDark", "egg_greendark");
+        }
+
+        //TODO set up exception handling and put an exception here we should NEVER get here.
         return null;
+    }
+
+    private int resolveEggColour(){
+        int eggColour = 0;
+
+        if(genes[5] == 2){
+
+            if(genes[64] == 1 || genes[65] == 1 || genes[66] == 1 || genes[67] == 1){
+                //egg is brown
+                eggColour = eggColour + 5;
+            }else if((genes[64] == 2 || genes[65] == 2) && (genes[66] == 2 || genes[67] == 2)){
+                //egg is brown
+                eggColour = eggColour + 5;
+            }else if(genes[66] == 2 || genes[67] == 2){
+                //egg is cream
+                eggColour = eggColour + 2;
+            }else if(genes[64] == 2 || genes[65] == 2){
+                //egg is pink
+                eggColour = eggColour + 3;
+            }else{
+                //egg is white
+                eggColour = 0;
+            }
+
+        }
+
+//darkens egg if already brown shande
+        if((eggColour != 0 || eggColour != 8) && (genes[68] == 1 || genes[69] == 1)){
+            eggColour = eggColour +1;
+        }
+
+//toggles blue egg version
+        if(genes[62] == 1 || genes[63] == 1){
+            eggColour = eggColour +7;
+        }
+
+        return eggColour;
     }
 
     @SideOnly(Side.CLIENT)
@@ -886,7 +1017,7 @@ public class EnhancedChicken extends EntityAnimal {
         }
 
         //Chocolate [ wildtype, chocolate ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+        if(ThreadLocalRandom.current().nextInt(100)>95){
             initialGenes[1] = (ThreadLocalRandom.current().nextInt(2)+1);
 
         } else {
@@ -902,7 +1033,7 @@ public class EnhancedChicken extends EntityAnimal {
         }
 
         //Barred [ wildtype, barred ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+        if(ThreadLocalRandom.current().nextInt(100)>95){
             initialGenes[3] = (ThreadLocalRandom.current().nextInt(2)+1);
 
         } else {

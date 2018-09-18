@@ -1,11 +1,13 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -15,6 +17,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.block.material.Material;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -22,7 +25,7 @@ import java.util.List;
 /**
  * Created by moki on 25/08/2018.
  */
-public class Post extends BlockBase {
+public class Post extends Block {
 
     public static final net.minecraft.block.properties.PropertyDirection FACING = PropertyDirection.create("facing");
     public static final AxisAlignedBB [] BOUNDING_BOXES = new AxisAlignedBB[] {new AxisAlignedBB(0.375D, 0.0D, 0.375D, 0.625D, 1D, 0.625D), new AxisAlignedBB(0.0D, 0.375D, 0.375D, 1D, 0.625D, 0.625D), new AxisAlignedBB(0.375D, 0.375D, 0.0D, 0.625D, 0.625D, 1D)};
@@ -30,15 +33,32 @@ public class Post extends BlockBase {
     public static final AxisAlignedBB EASTWEST_AABB = new AxisAlignedBB(0.0D, 0.375D, 0.375D, 1D, 0.625D, 0.625D);
     public static final AxisAlignedBB NORTHSOUTH_AABB = new AxisAlignedBB(0.375D, 0.375D, 0.0D, 0.625D, 0.625D, 1D);
 
-    public Post(String name, Material material) {
-        super(name, material);
-        setSoundType(SoundType.WOOD);
+    public Post(Material material, String unlocalizedName, String registryName) {
+        this(material, SoundType.WOOD, unlocalizedName, registryName);
+    }
+
+    public Post(Material material, SoundType sound, String unlocalizedName, String registryName) {
+        super(material);
+        setUnlocalizedName(Reference.MODID + "." + unlocalizedName);
+        setRegistryName(registryName);
+        setCreativeTab(CreativeTabs.MISC);
+        setSoundType(sound);
         setHardness(2.0F);
         setResistance(15.0F);
         setHarvestLevel("axe", 0);
         setLightOpacity(0);
-//        setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+        setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
+
+//    public Post(String name, Material material) {
+//        super(name, material);
+//        setSoundType(SoundType.WOOD);
+//        setHardness(2.0F);
+//        setResistance(15.0F);
+//        setHarvestLevel("axe", 0);
+//        setLightOpacity(0);
+////        setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+//    }
 
     public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
     {

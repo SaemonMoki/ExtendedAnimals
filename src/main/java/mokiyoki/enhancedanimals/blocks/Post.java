@@ -41,7 +41,7 @@ public class Post extends Block {
         super(material);
         setUnlocalizedName(Reference.MODID + "." + unlocalizedName);
         setRegistryName(registryName);
-        setCreativeTab(CreativeTabs.MISC);
+        setCreativeTab(CreativeTabs.DECORATIONS);
         setSoundType(sound);
         setHardness(2.0F);
         setResistance(15.0F);

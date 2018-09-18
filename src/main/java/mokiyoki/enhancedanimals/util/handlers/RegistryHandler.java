@@ -27,8 +27,7 @@ public class RegistryHandler {
 
     @SubscribeEvent
     public static void registerBlocks(Register<Block> event) {
-        final Block[] blocks = {
-                    new BlockBase(Material.WOOD, "blockBasic", "basic_block")
+        final Block[] blocks = {ModBlocks.PostAcacia,ModBlocks.PostBirch,ModBlocks.PostDarkOak,ModBlocks.PostJungle,ModBlocks.PostOak,ModBlocks.PostSpruce
         };
 
             event.getRegistry().registerAll(blocks);
@@ -40,7 +39,12 @@ public class RegistryHandler {
                               ModItems.EggBlue,ModItems.EggGreenLight,ModItems.EggGreen,ModItems.EggGrey,ModItems.EggGreyGreen,ModItems.EggOlive,ModItems.EggGreenDark};
 
         final Item[] itemBlocks = {
-                new ItemBlock(ModBlocks.BASIC_BLOCK).setRegistryName(ModBlocks.BASIC_BLOCK.getRegistryName())
+                new ItemBlock(ModBlocks.PostAcacia).setRegistryName(ModBlocks.PostAcacia.getRegistryName()),
+                new ItemBlock(ModBlocks.PostBirch).setRegistryName(ModBlocks.PostBirch.getRegistryName()),
+                new ItemBlock(ModBlocks.PostDarkOak).setRegistryName(ModBlocks.PostDarkOak.getRegistryName()),
+                new ItemBlock(ModBlocks.PostJungle).setRegistryName(ModBlocks.PostJungle.getRegistryName()),
+                new ItemBlock(ModBlocks.PostOak).setRegistryName(ModBlocks.PostOak.getRegistryName()),
+                new ItemBlock(ModBlocks.PostSpruce).setRegistryName(ModBlocks.PostSpruce.getRegistryName()),
         };
 
         event.getRegistry().registerAll(items);

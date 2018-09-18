@@ -1,7 +1,10 @@
 package mokiyoki.enhancedanimals.init;
 
+import mokiyoki.enhancedanimals.blocks.BlockBase;
+import mokiyoki.enhancedanimals.blocks.Post;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 
 /**
@@ -10,14 +13,11 @@ import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 @ObjectHolder(Reference.MODID)
 public class ModBlocks {
 
-    public static final Block BASIC_BLOCK = null;
+    public static final Block PostAcacia = new Post(Material.WOOD,"postAcacia", "post_acacia");
+    public static final Block PostBirch = new Post(Material.WOOD,"postBirch", "post_birch");
+    public static final Block PostDarkOak = new Post(Material.WOOD,"postDarkOak", "post_dark_oak");
+    public static final Block PostJungle = new Post(Material.WOOD,"postJungle", "post_jungle");
+    public static final Block PostOak = new Post(Material.WOOD,"postOak", "post_oak");
+    public static final Block PostSpruce = new Post(Material.WOOD,"postSpruce", "post_spruce");
 
 }
-//Blocks
-//    public static final Block POST_ACACIA = new Post_Acacia("post_acacia", Material.WOOD);
-//    public static final Block POST_BIRCH = new Post_Birch("post_birch", Material.WOOD);
-//    public static final Block POST_DARK_OAK = new Post_Dark_Oak("post_dark_oak", Material.WOOD);
-//    public static final Block POST_JUNGLE = new Post_Jungle("post_jungle", Material.WOOD);
-//    public static final Block POST_OAK = new Post_Oak("post_oak", Material.WOOD);
-//    public static final Block POST_SPRUCE = new Post_Spruce("post_spruce", Material.WOOD);
-//}

@@ -18,9 +18,12 @@ item.chicken_raw_melanized.name=Raw Melanized Chicken
 item.chicken_cooked_melanized.name=Cooked Melanized Chicken
 
 //Blocks
-tile.eanimod.post_oak.name=Oak Post
-tile.eanimod.post_dark_oak.name=Dark Oak Post
-tile.eanimod.post_acacia.name=Acacia Post
-tile.eanimod.post_birch.name=Birch Post
-tile.eanimod.post_jungle.name=Jungle Post
-tile.eanimod.post_spruce.name=Spruce Post
+tile.eanimod.postOak.name=Oak Post
+tile.eanimod.postDarkOak.name=Dark Oak Post
+tile.eanimod.postAcacia.name=Acacia Post
+tile.eanimod.postBirch.name=Birch Post
+tile.eanimod.postJungle.name=Jungle Post
+tile.eanimod.postSpruce.name=Spruce Post
+
+//Spawn eggs
+entity.enhanced_chicken.name=Enhanced Chicken

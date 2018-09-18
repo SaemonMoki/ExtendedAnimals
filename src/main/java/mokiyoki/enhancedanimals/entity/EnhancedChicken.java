@@ -265,11 +265,14 @@ public class EnhancedChicken extends EntityAnimal {
 //        return null;
 //
 //    }
-
+        this.mateGenes = ((EnhancedChicken)ageable).getGenes();
+        mixMateMitosisGenes();
+        mixMitosisGenes();
         EnhancedChicken enhancedchicken = new EnhancedChicken(this.world);
         enhancedchicken.setGrowingAge(-48000);
-//        enhancedchicken.setGenes(this.getEggGenes());
-
+        int[] babyGenes = getEggGenes();
+        enhancedchicken.setGenes(babyGenes);
+        enhancedchicken.setSharedGenes(babyGenes);
         return enhancedchicken;
     }
 
@@ -1437,18 +1440,23 @@ public class EnhancedChicken extends EntityAnimal {
         return initialGenes;
     }
 
+    public void setGenes(int[] genes) {
+        this.genes = genes;
+    }
+
+    public int[] getGenes(){
+        return this.genes;
+    }
+
     public static class GroupData implements IEntityLivingData
     {
-        public int[] groupGenes;
 
+        public int[] groupGenes;
         public GroupData(int[] groupGenes)
         {
             this.groupGenes = groupGenes;
         }
-    }
 
-    public int[] getGenes(){
-        return getSharedGenes();
     }
 
 

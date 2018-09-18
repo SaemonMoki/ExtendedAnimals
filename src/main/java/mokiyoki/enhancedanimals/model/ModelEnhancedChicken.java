@@ -155,7 +155,7 @@ public class ModelEnhancedChicken extends ModelBase {
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale){
         EnhancedChicken enhancedChicken = (EnhancedChicken)entityIn;
 
-        int[] genes = enhancedChicken.getGenes();
+        int[] genes = enhancedChicken.getSharedGenes();
         boolean nakedNeck = false;
         int crest = 0; // [0, 1, 2, 3]      [none, small, forward, big]
         int fFeet = 0; // [0, 1, 2, 3]      [none, 1, 1&2, 1&2&3]

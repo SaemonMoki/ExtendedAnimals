@@ -24,6 +24,7 @@ public class ModelEnhancedChicken extends ModelBase {
     private ModelRenderer forwardCrest;
     private ModelRenderer combSingle;
     private ModelRenderer combRose;
+    private ModelRenderer combRose2;
     private ModelRenderer combPea;
     private ModelRenderer combWalnut;
     private ModelRenderer combV;
@@ -76,6 +77,11 @@ public class ModelEnhancedChicken extends ModelBase {
         this.combRose.addBox(-0.5F, 8F, -5F, 1, 1, 1, 0.25F);
         this.combRose.addBox(-0.5F, 7F, -4F, 1, 1, 1);
 
+        this.combRose2 = new ModelRenderer(this,0,15);
+        this.combRose2.addBox(-0.5F, 9F, -6F, 1, 1, 1, 0.5F);
+        this.combRose2.addBox(-0.5F, 8F, -5F, 1, 1, 1, 0.25F);
+        this.combRose2.addBox(-0.5F, 8F, -4F, 1, 1, 1);
+
         this.combPea = new ModelRenderer(this,0,15);
         this.combPea.addBox(-0.5F, 9F, -6F, 1, 1, 2, -0.2F);
         this.combPea.addBox(-0.5F, 8.5F, -5.5F, 1, 1, 1);
@@ -117,10 +123,11 @@ public class ModelEnhancedChicken extends ModelBase {
         this.leftFeather2 = new ModelRenderer(this,46,10);
         this.leftFeather2.addBox(-3.5F, 22F, -2.5F, 3, 2, 5);
 
-        this.rightFeather3 = new ModelRenderer(this,17,3);
+        this.rightFeather3 = new ModelRenderer(this,42,10);
         this.rightFeather3.addBox(3.5F, 23.9F, -2.5F, 4, 0, 5);
 
-        this.leftFeather3 = new ModelRenderer(this,17,3);
+        this.leftFeather3 = new ModelRenderer(this,42,10);
+        this.leftFeather3.mirror = true;
         this.leftFeather3.addBox(-7.5F, 23.9F, -2.5F, 4, 0, 5);
 
         this.leftLeg = new ModelRenderer(this, 26, 0);
@@ -159,33 +166,40 @@ public class ModelEnhancedChicken extends ModelBase {
         boolean nakedNeck = false;
         int crest = 0; // [0, 1, 2, 3]      [none, small, forward, big]
         int fFeet = 0; // [0, 1, 2, 3]      [none, 1, 1&2, 1&2&3]
-        int comb = 0; // [0, 1, 2, 3, 4, 5] [none, single, rose, pea, walnut, v]
+        int comb = 0; // [0, 1, 2, 3, 4, 5, 6] [none, single, rose, rose2, pea, walnut, v]
         int chin = 0; // [0, 1, 2]          [none, waddles, beard]
 
         if(genes[52] ==1 || genes[53] == 1){
             nakedNeck = true;
         }
 
-        if(genes[50] == 1 || genes[51] == 1){
-            if((genes[46] == 1 || genes[47] == 1) && (genes[48] == 1 || genes[49] == 1)){
-                //walnut
-                comb = 4;
-            }else if(genes[46] == 1 || genes[47] == 1){
-                //rose
-                comb = 2;
+        if(genes[50] == 1 && genes[51] == 1){
+            if (genes[48] == 1 || genes[49] == 1){
+                chin = 0;
+                if(genes[46] == 3 || genes[47] == 3){
+                    //peacomb
+                    comb = 4;
+                }else{
+                    //walnut
+                    comb = 5;
+                }
+            }else{
                 chin = 1;
-            }else if(genes[48] == 1 || genes[49] == 1){
-                //pea
-                comb = 3;
-            }else {
-                //single
-                comb = 1;
-                chin = 1;
+                if(genes[46] == 3 && genes[47] == 3) {
+                    //single comb
+                    comb = 1;
+                }else if(genes[46] == 1 || genes[47] == 1){
+                    //rose comb
+                    comb = 2;
+                }else{
+                    //rose comb2
+                    comb = 3;
+                }
             }
         }else{
-            if(genes[46] == 2 && genes[47] == 2 && genes[48] == 2 && genes[49] == 2){
+            if(genes[46] == 3 && genes[47] == 3 && genes[48] == 2 && genes[49] == 2){
                 //v comb
-                comb = 5;
+                comb = 6;
                 chin = 1;
             }else{
                 if(genes[48] == 2 && genes[49] == 2){
@@ -286,15 +300,17 @@ public class ModelEnhancedChicken extends ModelBase {
                     }
                 }
             }
-            if(comb == 1){
+            if(comb == 1 && crest == 0){
                 this.combSingle.render(scale);
-            }else if(comb == 2){
+            }else if(comb == 2 && crest == 0){
                 this.combRose.render(scale);
             }else if(comb == 3){
+                this.combRose2.render(scale);
+            }else if(comb == 4 || (comb == 1 && crest != 0)){
                 this.combPea.render(scale);
-            }else if(comb == 4){
+            }else if(comb == 5 || ((comb == 2 || comb == 3) && crest != 0)){
                 this.combWalnut.render(scale);
-            }else if(comb == 5){
+            }else if(comb == 6){
                 this.combV.render(scale);
             }
             if(crest == 1){
@@ -349,6 +365,8 @@ public class ModelEnhancedChicken extends ModelBase {
         this.combSingle.rotateAngleY = this.head.rotateAngleY;
         this.combRose.rotateAngleX = this.head.rotateAngleX;
         this.combRose.rotateAngleY = this.head.rotateAngleY;
+        this.combRose2.rotateAngleX = this.head.rotateAngleX;
+        this.combRose2.rotateAngleY = this.head.rotateAngleY;
         this.combPea.rotateAngleX = this.head.rotateAngleX;
         this.combPea.rotateAngleY = this.head.rotateAngleY;
         this.combWalnut.rotateAngleX = this.head.rotateAngleX;

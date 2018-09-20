@@ -24,7 +24,7 @@ public class RenderEnhancedChicken extends RenderLiving<EnhancedChicken>
 
     public RenderEnhancedChicken(RenderManager render)
     {
-        super(render, new ModelEnhancedChicken(), 0.75F);
+        super(render, new ModelEnhancedChicken(), 0.5F);
     }
 
     /**

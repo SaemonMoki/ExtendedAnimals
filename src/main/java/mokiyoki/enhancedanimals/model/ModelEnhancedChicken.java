@@ -5,6 +5,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -47,55 +48,62 @@ public class ModelEnhancedChicken extends ModelBase {
         this.textureWidth = 64;
         this.textureHeight = 64;
 
+        int combRy = -15;
+        int combRz = 3;
+
         this.head = new ModelRenderer(this, 6, 14);
-        this.head.addBox(-2F, 9F, -5F, 4, 6, 3);
+        this.head.addBox(-2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F);
 
         this.headNakedNeck = new ModelRenderer(this, 6, 14);
-        this.headNakedNeck.addBox(-2F, 9F, -5F, 4, 4, 3);
+        this.headNakedNeck.addBox(-2.0F, -6.0F, -2.0F, 4, 4, 3, 0.0F);
         this.headNakedNeck.setTextureOffset(5,0);
-        this.headNakedNeck.addBox(-1F, 13F, -4F, 2, 3, 2);
+        this.headNakedNeck.addBox(-1F, (13F+combRy), (-4F+combRz), 2, 3, 2);
 
         this.bigCrest = new ModelRenderer(this,43,17);
-        this.bigCrest.addBox(-2F, 6F, -5.5F, 4, 4, 4, 0.4F);
+        this.bigCrest.addBox(-2F, (6F+combRy), (-5.5F+combRz), 4, 4, 4, 0.4F);
 
         this.smallCrest = new ModelRenderer(this,45,18);
-        this.smallCrest.addBox(-1.5F, 6.5F, -5F, 3, 3, 3, 0.1F);
+        this.smallCrest.addBox(-1.5F, (6.5F+combRy), (-5F+combRz), 3, 3, 3, 0.1F);
 
         this.forwardCrest = new ModelRenderer(this,45,18);
-        this.forwardCrest.addBox(-1.5F, 7F, -6F, 3, 3, 3, 0.2F);
+        this.forwardCrest.addBox(-1.5F, (7F+combRy), (-6F+combRz), 3, 3, 3, 0.2F);
 
+        int combSy = -3;
+        int combSz = 3;
         this.combSingle = new ModelRenderer(this,0,15);
-        this.combSingle.addBox(-0.5F, 9F, -6F, 1, 1, 1);
-        this.combSingle.addBox(-0.5F, 8.5F, -6F, 1, 1, 1);
-        this.combSingle.addBox(-0.5F, 7.5F, -5F, 1, 2, 1);
-        this.combSingle.addBox(-0.5F, 8F, -4F, 1, 1, 1);
-        this.combSingle.addBox(-0.5F, 7F, -3F, 1, 2, 1);
-        this.combSingle.addBox(-0.5F, 8F, -2F, 1, 1, 1);
+        this.combSingle.addBox(-0.5F, (-3.0F+combSy), (-6F+combSz), 1, 1, 1);
+        this.combSingle.addBox(-0.5F, (-3.5F+combSy), (-6F+combSz), 1, 1, 1);
+        this.combSingle.addBox(-0.5F, (-4.5F+combSy), (-5F+combSz), 1, 2, 1);
+        this.combSingle.addBox(-0.5F, (-4F+combSy), (-4F+combSz), 1, 1, 1);
+        this.combSingle.addBox(-0.5F, (-4.5F+combSy), (-3F+combSz), 1, 2, 1);
+        this.combSingle.addBox(-0.5F, (-3.5F+combSy), (-2F+combSz), 1, 1, 1);
 
         this.combRose = new ModelRenderer(this,0,15);
-        this.combRose.addBox(-0.5F, 9F, -6F, 1, 1, 1, 0.5F);
-        this.combRose.addBox(-0.5F, 8F, -5F, 1, 1, 1, 0.25F);
-        this.combRose.addBox(-0.5F, 7F, -4F, 1, 1, 1);
+        this.combRose.addBox(-0.5F, (9F+combRy), (-6F+combRz), 1, 1, 1, 0.5F);
+        this.combRose.addBox(-0.5F, (8F+combRy), (-5F+combRz), 1, 1, 1, 0.25F);
+        this.combRose.addBox(-0.5F, (7F+combRy), (-4F+combRz), 1, 1, 1);
 
         this.combRose2 = new ModelRenderer(this,0,15);
-        this.combRose2.addBox(-0.5F, 9F, -6F, 1, 1, 1, 0.5F);
-        this.combRose2.addBox(-0.5F, 8F, -5F, 1, 1, 1, 0.25F);
-        this.combRose2.addBox(-0.5F, 8F, -4F, 1, 1, 1);
+        this.combRose2.addBox(-0.5F, (9F+combRy), (-6F+combRz), 1, 1, 1, 0.5F);
+        this.combRose2.addBox(-0.5F, (8F+combRy), (-5F+combRz), 1, 1, 1, 0.25F);
+        this.combRose2.addBox(-0.5F, (8F+combRy), (-4F+combRz), 1, 1, 1);
 
+        int combPy = -15;
+        int combPz = 3;
         this.combPea = new ModelRenderer(this,0,15);
-        this.combPea.addBox(-0.5F, 9F, -6F, 1, 1, 2, -0.2F);
-        this.combPea.addBox(-0.5F, 8.5F, -5.5F, 1, 1, 1);
-        this.combPea.addBox(-0.5F, 8F, -5F, 1, 2, 1,-0.2F);
+        this.combPea.addBox(-0.5F, (9F+combPy), (-6F+combPz), 1, 1, 2, -0.2F);
+        this.combPea.addBox(-0.5F, (8.5F+combPy), (-5.5F+combPz), 1, 1, 1);
+        this.combPea.addBox(-0.5F, (8F+combPy), (-5F+combPz), 1, 2, 1,-0.2F);
 
         this.combWalnut = new ModelRenderer(this,0,15);
-        this.combWalnut.addBox(-0.5F, 8.5F, -5.5F, 1, 1, 1, 0.5F);
+        this.combWalnut.addBox(-0.5F, (8.5F+combRy), (-5.5F+combRz), 1, 1, 1, 0.5F);
 
         this.combV = new ModelRenderer(this,0,15);
-        this.combV.addBox(-0.5F, 8.5F, -5.5F, 1, 1, 1);
-        this.combV.addBox(0F, 8F, -5.25F, 1, 1, 1, -0.2F);
-        this.combV.addBox(-1F, 8F, -5.25F, 1, 1, 1, -0.2F);
-        this.combV.addBox(.1F, 7.7F, -5F, 1, 1, 1, -0.3F);
-        this.combV.addBox(-1.1F, 7.7F, -5F, 1, 1, 1, -0.3F);
+        this.combV.addBox(-0.5F, (8.5F+combRy), (-5.5F+combRz), 1, 1, 1);
+        this.combV.addBox(0F, (8F+combRy), (-5.25F+combRz), 1, 1, 1, -0.2F);
+        this.combV.addBox(-1F, (8F+combRy), (-5.25F+combRz), 1, 1, 1, -0.2F);
+        this.combV.addBox(.1F, (7.7F+combRy), (-5F+combRz), 1, 1, 1, -0.3F);
+        this.combV.addBox(-1.1F, (7.7F+combRy), (-5F+combRz), 1, 1, 1, -0.3F);
 
         this.body = new ModelRenderer(this, 6, 0);
         this.body.addBox(-3F, 13F, -3F, 6, 6, 8);
@@ -138,23 +146,26 @@ public class ModelEnhancedChicken extends ModelBase {
         this.leftLeg.addBox(-2F, 23F, -2F, 1, 1, 1);
 
         this.rightWing = new ModelRenderer(this, 35, 0);
-        this.rightWing.addBox(-4F, 13F, -1F, 1, 4, 6);
+        this.rightWing.addBox(0.0F, 0.0F, -3.0F, 1, 4, 6);
+        this.rightWing.setRotationPoint(-4.0F, 13.0F, 0.0F);
 
         this.leftWing = new ModelRenderer(this, 49, 0);
-        this.leftWing.addBox(3F, 13F, -1F, 1, 4, 6);
+        this.leftWing.addBox(-1.0F, 0.0F, -3.0F, 1, 4, 6);
+        this.leftWing.setRotationPoint(4.0F, 13.0F, 0.0F);
 
         this.bill = new ModelRenderer(this, 30, 0);
-        this.bill.addBox(-1F, 11F, -7F, 2, 2, 2);
+        this.bill.addBox(-1.0F, -4.0F, -4.0F, 2, 2, 2, 0.0F);
+        this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
 
-        this.chin = new ModelRenderer(this, 0, 15);
-        this.chin.addBox(-1F, 13F, -6F, 2, 2, 1);
+        this.chin = new ModelRenderer(this, 0, 14);
+        this.chin.addBox(-1.0F, -2.0F, -3.0F, 2, 2, 2, 0.0F);
 
         this.beard = new ModelRenderer(this,22,14);
-        this.beard.addBox(-2.5F, 11.5F, -5.5F, 2, 3, 3, 0.1F);
+        this.beard.addBox(-2.5F, (11.5F+combRy), (-5.5F+combRz), 2, 3, 3, 0.1F);
         this.beard.setTextureOffset(22,14);
-        this.beard.addBox(0.5F, 11.5F, -5.5F, 2, 3, 3, 0.1F);
+        this.beard.addBox(0.5F, (11.5F+combRy), (-5.5F+combRz), 2, 3, 3, 0.1F);
         this.beard.setTextureOffset(20,14);
-        this.beard.addBox(-2F, 12.5F, -6.5F, 4, 3, 3, 0.1F);
+        this.beard.addBox(-2F, (12.5F+combRy), (-6.5F+combRz), 4, 3, 3, 0.1F);
 
     }
 
@@ -176,7 +187,7 @@ public class ModelEnhancedChicken extends ModelBase {
         if(genes[50] == 1 && genes[51] == 1){
             if (genes[48] == 1 || genes[49] == 1){
                 chin = 0;
-                if(genes[46] == 3 || genes[47] == 3){
+                if(genes[46] == 3 && genes[47] == 3){
                     //peacomb
                     comb = 4;
                 }else{
@@ -340,57 +351,62 @@ public class ModelEnhancedChicken extends ModelBase {
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
     {
         //head stuff
-        this.head.rotationPointX = 0F;
-        this.head.rotationPointY = 0F;
+        this.head.rotationPointY = 15F;
+        this.head.rotationPointZ = -4F;
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
-//        this.head.rotateAngleX = headPitch * 0.008726646F;
-//        this.head.rotateAngleY = netHeadYaw * 0.008726646F;
-        this.headNakedNeck.rotateAngleX = this.head.rotateAngleX;
-        this.headNakedNeck.rotateAngleY = this.head.rotateAngleY;
-        this.smallCrest.rotateAngleX = this.head.rotateAngleX;
-        this.smallCrest.rotateAngleY = this.head.rotateAngleY;
-        this.bigCrest.rotateAngleX = this.head.rotateAngleX;
-        this.bigCrest.rotateAngleY = this.head.rotateAngleY;
-        this.forwardCrest.rotateAngleX = this.head.rotateAngleX;
-        this.forwardCrest.rotateAngleY = this.head.rotateAngleY;
-        this.bill.rotateAngleX = this.head.rotateAngleX;
-        this.bill.rotateAngleY = this.head.rotateAngleY;
-        this.chin.rotateAngleX = this.head.rotateAngleX;
-        this.chin.rotateAngleY = this.head.rotateAngleY;
-        this.beard.rotateAngleX = this.head.rotateAngleX;
-        this.beard.rotateAngleY = this.head.rotateAngleY;
-        this.combSingle.rotateAngleX = this.head.rotateAngleX;
-        this.combSingle.rotateAngleY = this.head.rotateAngleY;
-        this.combRose.rotateAngleX = this.head.rotateAngleX;
-        this.combRose.rotateAngleY = this.head.rotateAngleY;
-        this.combRose2.rotateAngleX = this.head.rotateAngleX;
-        this.combRose2.rotateAngleY = this.head.rotateAngleY;
-        this.combPea.rotateAngleX = this.head.rotateAngleX;
-        this.combPea.rotateAngleY = this.head.rotateAngleY;
-        this.combWalnut.rotateAngleX = this.head.rotateAngleX;
-        this.combWalnut.rotateAngleY = this.head.rotateAngleY;
-        this.combV.rotateAngleX = this.head.rotateAngleX;
-        this.combV.rotateAngleY = this.head.rotateAngleY;
+        copyModelAngles(head, headNakedNeck);
+
+        copyModelAngles(head, bill);
+        copyModelAngles(head, chin);
+
+        copyModelAngles(head, smallCrest);
+        copyModelAngles(head, bigCrest);
+        copyModelAngles(head, forwardCrest);
+
+        copyModelAngles(head, combSingle);
+        copyModelAngles(head, combRose);
+        copyModelAngles(head, combRose2);
+        copyModelAngles(head, combPea);
+        copyModelAngles(head, combWalnut);
+        copyModelAngles(head, combV);
+
+        copyModelAngles(head, beard);
+
         //leg stuff
         this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
         this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 0.5F * limbSwingAmount;
-        this.rightFeather1.rotateAngleX = this.rightLeg.rotateAngleX;
-        this.rightFeather1.rotateAngleY = this.rightLeg.rotateAngleY;
-        this.rightFeather2.rotateAngleX = this.rightLeg.rotateAngleX;
-        this.rightFeather2.rotateAngleY = this.rightLeg.rotateAngleY;
-        this.rightFeather3.rotateAngleX = this.rightLeg.rotateAngleX;
-        this.rightFeather3.rotateAngleY = this.rightLeg.rotateAngleY;
-        this.leftFeather1.rotateAngleX = this.leftLeg.rotateAngleX;
-        this.leftFeather1.rotateAngleY = this.leftLeg.rotateAngleY;
-        this.leftFeather2.rotateAngleX = this.leftLeg.rotateAngleX;
-        this.leftFeather2.rotateAngleY = this.leftLeg.rotateAngleY;
-        this.leftFeather3.rotateAngleX = this.leftLeg.rotateAngleX;
-        this.leftFeather3.rotateAngleY = this.leftLeg.rotateAngleY;
+        copyModelAngles(rightLeg, rightFeather1);
+        copyModelAngles(rightLeg, rightFeather2);
+        copyModelAngles(rightLeg, rightFeather3);
+        copyModelAngles(leftLeg, leftFeather1);
+        copyModelAngles(leftLeg, leftFeather2);
+        copyModelAngles(leftLeg, leftFeather3);
+
         //wing stuff
 //        this.rightWing.rotateAngleZ = ageInTicks;
 //        this.leftWing.rotateAngleZ = -ageInTicks;
+    }
+
+    public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime){
+        boolean sitting = false; //TODO actually make some sitting AI
+        //sitting
+
+        EnhancedChicken enhancedChicken = (EnhancedChicken)entitylivingbaseIn;
+        this.body.rotationPointY = 0F;
+        this.head.rotationPointY = 0F;
+
+        if(sitting){
+            this.body.rotationPointY += 4F;
+            this.head.rotationPointY += 4F;
+        }
+        //pecking ground
+
+        //scratching (eating grass)
+
+        //crowing
+
     }
 
 }

@@ -20,9 +20,9 @@ public class EventHandler {
         Entity entity = event.getEntity();
         World world = event.getWorld();
         if (entity instanceof EntityChicken) {
-            EnhancedChicken enhancedChicken = new EnhancedChicken(world);
-            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
-            world.spawnEntity(enhancedChicken);
+//            EnhancedChicken enhancedChicken = new EnhancedChicken(world);
+//            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
+//            world.spawnEntity(enhancedChicken);
             event.setCanceled(true);
         }
 

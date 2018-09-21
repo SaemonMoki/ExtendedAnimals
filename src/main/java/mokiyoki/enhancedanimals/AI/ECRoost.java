@@ -1,4 +1,4 @@
 package mokiyoki.enhancedanimals.AI;
 
-public class EnhancedChickenSit {
+public class ECRoost {
 }

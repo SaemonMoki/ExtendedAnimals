@@ -21,7 +21,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -116,18 +115,17 @@ public class EnhancedChicken extends EntityAnimal {
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
     //'father' gene variables list
-    private int[] genes = new int[70];
-    private int[] mateGenes = new int[70];
-    private int[] mitosisGenes = new int[70];
-    private int[] mateMitosisGenes = new int[70];
+    private static final int GENES_LENGTH = 74;
+    private int[] genes = new int[GENES_LENGTH];
+    private int[] mateGenes = new int[GENES_LENGTH];
+    private int[] mitosisGenes = new int[GENES_LENGTH];
+    private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
     public EnhancedChicken(World worldIn) {
         super(worldIn);
         this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
         this.timeUntilNextEgg = this.rand.nextInt(2000); //TODO make some genes to alter these numbers
         this.setPathPriority(PathNodeType.WATER, 0.0F); //TODO investigate what this do and how/if needed
-        //TODO set up here, any defaults of variables you create that you need. ie: All initial genes
-
     }
 
     protected void initEntityAI()
@@ -217,10 +215,11 @@ public class EnhancedChicken extends EntityAnimal {
             this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
         }
 
-        //TODO find roost and sit on it, after tick 22812 find a suitable roost (horizontal post) that can be reached. If chicken gets to the chosen spot sit, after tick 13000 sit anyways. after tick 22812 stop sitting
-        if (this.world.getWorldTime() >= 12000 && this.world.getWorldTime() <= 22812){ //my initial attempt
-            //is sitting
+        if (!this.world.isRemote){
+            leathalGenes();
         }
+
+        //TODO find roost and sit on it, after tick 22812 find a suitable roost (horizontal post) that can be reached. If chicken gets to the chosen spot sit, after tick 13000 sit anyways. after tick 22812 stop sitting
 
         //TODO if "is child" and parent is sitting go under parent, possibly turn off ability to collide.
 
@@ -230,6 +229,21 @@ public class EnhancedChicken extends EntityAnimal {
 
     public void fall(float distance, float damageMultiplier)
     {
+    }
+
+    public void leathalGenes(){
+        if(genes[70] == 2 && genes[71] == 2){
+            this.setDead();
+            this.isDead = true;
+        }else if(genes[72] == 2 && genes[73] == 2){
+            this.setDead();
+            this.isDead = true;
+        }
+    }
+
+    public void setDead()
+    {
+        this.isDead = true;
     }
 
     protected SoundEvent getAmbientSound()
@@ -275,7 +289,7 @@ public class EnhancedChicken extends EntityAnimal {
         mixMateMitosisGenes();
         mixMitosisGenes();
         EnhancedChicken enhancedchicken = new EnhancedChicken(this.world);
-        enhancedchicken.setGrowingAge(-100);
+        enhancedchicken.setGrowingAge(0);
         int[] babyGenes = getEggGenes();
         enhancedchicken.setGenes(babyGenes);
         enhancedchicken.setSharedGenes(babyGenes);
@@ -825,7 +839,7 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[40] == 2 && genesForText[41] == 2) {
                                     //splash
                                     pattern = pattern + 2;
-                                } else if (genesForText[40] != 1 || genesForText[41] != 1) {
+                                } else if (genesForText[40] == 2 || genesForText[41] == 2) {
                                     //blue
                                     if (pattern == 1 && PatternGene == 2) {
                                         //blue laced ... super special gene combo for blue andalusians
@@ -899,7 +913,7 @@ public class EnhancedChicken extends EntityAnimal {
                         shanks++;
                     }
 
-                    //TODO replace this with a new r.black gene
+                    //TODO replace this with a new r.black shank gene
                     // if columbian toggle doesnt matter darken by 1
                     if ((genesForText[2] == 1 && genesForText[28] == 2 && genesForText[29] == 2) || (genesForText[2] == 2 && genesForText[28] == 1 && genesForText[29] == 1)) {
                         shanks++;
@@ -1015,7 +1029,7 @@ public class EnhancedChicken extends EntityAnimal {
 
     public int[] getEggGenes() {
         Random rand = new Random();
-        int[] eggGenes = new int[70];
+        int[] eggGenes = new int[GENES_LENGTH];
 
         for(int i =0; i< 20; i++) {
             boolean thisOrMate = rand.nextBoolean();
@@ -1038,7 +1052,6 @@ public class EnhancedChicken extends EntityAnimal {
         return eggGenes;
     }
 
-
     @Nullable
     @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
@@ -1059,7 +1072,7 @@ public class EnhancedChicken extends EntityAnimal {
     }
 
     private int[] createInitialGenes() {
-        int[] initialGenes = new int[70];
+        int[] initialGenes = new int[GENES_LENGTH];
         //TODO create biome WTC variable [hot and dry biomes, hot and wet biomes, cold biomes] WTC is all others
 
 
@@ -1440,7 +1453,7 @@ public class EnhancedChicken extends EntityAnimal {
         }
 
         //Pea [ pea, wildtype ]
-        if((ThreadLocalRandom.current().nextInt(100)>WTC) && (wildType != 2 || wildType != 4)){
+        if((ThreadLocalRandom.current().nextInt(100)>WTC && (wildType == 0 || wildType == 3))){
             initialGenes[48] = (ThreadLocalRandom.current().nextInt(2)+1);
 
         } else {
@@ -1450,7 +1463,7 @@ public class EnhancedChicken extends EntityAnimal {
                 initialGenes[48] = (2);
             }
         }
-        if((ThreadLocalRandom.current().nextInt(100)>WTC) && (wildType != 2 || wildType != 4)){
+        if((ThreadLocalRandom.current().nextInt(100)>WTC && (wildType == 0 || wildType == 3))){
             initialGenes[49] = (ThreadLocalRandom.current().nextInt(2)+1);
         } else {
             if(wildType == 3){
@@ -1461,12 +1474,12 @@ public class EnhancedChicken extends EntityAnimal {
         }
 
         //Duplex comb or v comb [ wildtype, duplex ]   // reversed dominance, cold biome exclusive
-        if((ThreadLocalRandom.current().nextInt(100)>WTC) && (wildType != 2 && wildType != 4) || wildType == 3){
+        if((ThreadLocalRandom.current().nextInt(100)>WTC) && wildType == 3){
             initialGenes[50] = (ThreadLocalRandom.current().nextInt(2)+1);
         } else {
             initialGenes[50] = (1);
         }
-        if((ThreadLocalRandom.current().nextInt(100)>WTC) && (wildType != 2 && wildType != 4) || wildType == 3){
+        if((ThreadLocalRandom.current().nextInt(100)>WTC) && wildType == 3){
             initialGenes[51] = (ThreadLocalRandom.current().nextInt(2)+1);
         } else {
                 initialGenes[51] = (1);
@@ -1617,6 +1630,24 @@ public class EnhancedChicken extends EntityAnimal {
             } else {
                 initialGenes[69] = (2);
             }
+        }
+
+        //creeper gene [ wildtype, creeper ] (short legs not exploding bushes)
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[70] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[71] = (1);
+        }else{
+            initialGenes[70] = (1);
+            initialGenes[71] = (1);
+        }
+
+        //rumpless [ wildtype, rumpless ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[72] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[73] = (1);
+        }else{
+            initialGenes[72] = (1);
+            initialGenes[73] = (1);
         }
 
     // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken AI modifiers

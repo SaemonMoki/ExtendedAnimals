@@ -16,6 +16,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelEnhancedChicken extends ModelBase {
 
+    private boolean sitting = false; //TODO actually make some sitting AI
+    private int pose = 0;
+    private int mutation = 0;
+
 //TODO create a ModelRenderer for EVERY box.
     //the below is the default from regular chicken
     private ModelRenderer head;
@@ -30,6 +34,7 @@ public class ModelEnhancedChicken extends ModelBase {
     private ModelRenderer combWalnut;
     private ModelRenderer combV;
     private ModelRenderer body;
+    private ModelRenderer tail;
     private ModelRenderer rightLeg;
     private ModelRenderer rightFeather1;
     private ModelRenderer rightFeather2;
@@ -107,43 +112,44 @@ public class ModelEnhancedChicken extends ModelBase {
 
         this.body = new ModelRenderer(this, 6, 0);
         this.body.addBox(-3F, 13F, -3F, 6, 6, 8);
-        this.body.setTextureOffset(34,10);
-        this.body.addBox(-0.5F, 12F, 3F, 1, 4, 5);
-        this.body.setTextureOffset(35, 11);
-        this.body.addBox(-0.5F, 11F, 4F, 1, 1, 4);
+
+        this.tail = new ModelRenderer(this,34,10);
+        this.tail.addBox(-0.5F, 12F, 3F, 1, 4, 5);
+        this.tail.setTextureOffset(35, 11);
+        this.tail.addBox(-0.5F, 11F, 4F, 1, 1, 4);
 
         this.rightLeg = new ModelRenderer(this, 26, 0);
-        this.rightLeg.addBox(1F, 18.5F, 1F, 1, 5, 1);
+        this.rightLeg.addBox(1F, (18.5F+combPy), 1F, 1, 5, 1);
         this.rightLeg.setTextureOffset(4,5);
-        this.rightLeg.addBox(0F, 23F, -1F, 3, 1, 2);
+        this.rightLeg.addBox(0F, (23F+combPy), -1F, 3, 1, 2);
         this.rightLeg.setTextureOffset(7,6);
-        this.rightLeg.addBox(1F, 23F, -2F, 1, 1, 1);
+        this.rightLeg.addBox(1F, (23F+combPy), -2F, 1, 1, 1);
 
         this.rightFeather1 = new ModelRenderer(this,44,0);
-        this.rightFeather1.addBox(1.1F, 19F, 0F, 2, 3, 3);
+        this.rightFeather1.addBox(1.1F, (19F+combPy), 0F, 2, 3, 3);
 
         this.leftFeather1 = new ModelRenderer(this,44,0);
-        this.leftFeather1.addBox(-3.1F, 19F, 0F, 2, 3, 3);
+        this.leftFeather1.addBox(-3.1F, (19F+combPy), 0F, 2, 3, 3);
 
         this.rightFeather2 = new ModelRenderer(this,46,10);
-        this.rightFeather2.addBox(0.5F, 22F, -2.5F, 3, 2, 5);
+        this.rightFeather2.addBox(0.5F, (22F+combPy), -2.5F, 3, 2, 5);
 
         this.leftFeather2 = new ModelRenderer(this,46,10);
-        this.leftFeather2.addBox(-3.5F, 22F, -2.5F, 3, 2, 5);
+        this.leftFeather2.addBox(-3.5F, (22F+combPy), -2.5F, 3, 2, 5);
 
         this.rightFeather3 = new ModelRenderer(this,42,10);
-        this.rightFeather3.addBox(3.5F, 23.9F, -2.5F, 4, 0, 5);
+        this.rightFeather3.addBox(3.5F, (23.9F+combPy), -2.5F, 4, 0, 5);
 
         this.leftFeather3 = new ModelRenderer(this,42,10);
         this.leftFeather3.mirror = true;
-        this.leftFeather3.addBox(-7.5F, 23.9F, -2.5F, 4, 0, 5);
+        this.leftFeather3.addBox(-7.5F, (23.9F+combPy), -2.5F, 4, 0, 5);
 
         this.leftLeg = new ModelRenderer(this, 26, 0);
-        this.leftLeg.addBox(-2F, 18.5F, 1F, 1, 5, 1);
+        this.leftLeg.addBox(-2F, (18.5F+combPy), 1F, 1, 5, 1);
         this.leftLeg.setTextureOffset(4,5);
-        this.leftLeg.addBox(-3F, 23F, -1F, 3, 1, 2);
+        this.leftLeg.addBox(-3F, (23F+combPy), -1F, 3, 1, 2);
         this.leftLeg.setTextureOffset(7,6);
-        this.leftLeg.addBox(-2F, 23F, -2F, 1, 1, 1);
+        this.leftLeg.addBox(-2F, (23F+combPy), -2F, 1, 1, 1);
 
         this.rightWing = new ModelRenderer(this, 35, 0);
         this.rightWing.addBox(0.0F, 0.0F, -3.0F, 1, 4, 6);
@@ -166,6 +172,9 @@ public class ModelEnhancedChicken extends ModelBase {
         this.beard.addBox(0.5F, (11.5F+combRy), (-5.5F+combRz), 2, 3, 3, 0.1F);
         this.beard.setTextureOffset(20,14);
         this.beard.addBox(-2F, (12.5F+combRy), (-6.5F+combRz), 4, 3, 3, 0.1F);
+
+        this.body.addChild(rightWing);
+        this.body.addChild(leftWing);
 
     }
 
@@ -247,6 +256,8 @@ public class ModelEnhancedChicken extends ModelBase {
         }
 
 
+
+
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
         if (this.isChild)
@@ -260,9 +271,7 @@ public class ModelEnhancedChicken extends ModelBase {
                 this.head.render(scale);
             }
             this.bill.render(scale);
-            if(chin == 1) {
-                this.chin.render(scale);
-            }else if(chin == 2){
+            if(chin == 2){
                 this.beard.render(scale);
             }
             if(crest >= 1){
@@ -283,8 +292,6 @@ public class ModelEnhancedChicken extends ModelBase {
                     this.rightFeather2.render(scale);
                 }
             }
-            this.rightWing.render(scale);
-            this.leftWing.render(scale);
             GlStateManager.popMatrix();
         }
         else
@@ -331,11 +338,12 @@ public class ModelEnhancedChicken extends ModelBase {
             }else if(crest == 3){
                 this.bigCrest.render(scale);
             }
+            if(genes[72] != 2 && genes[73] != 2){
+                this.tail.render(scale);
+            }
             this.body.render(scale);
             this.rightLeg.render(scale);
             this.leftLeg.render(scale);
-            this.rightWing.render(scale);
-            this.leftWing.render(scale);
             this.bill.render(scale);
         }
 
@@ -351,7 +359,16 @@ public class ModelEnhancedChicken extends ModelBase {
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
     {
         //head stuff
-        this.head.rotationPointY = 15F;
+
+        if(this.pose == 1){
+            this.head.rotationPointY = 19F;
+        }else{
+            if(this.mutation == 1){
+                this.head.rotationPointY = 18F;
+            }else{
+                this.head.rotationPointY = 15F;
+            }
+        }
         this.head.rotationPointZ = -4F;
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
@@ -375,8 +392,10 @@ public class ModelEnhancedChicken extends ModelBase {
         copyModelAngles(head, beard);
 
         //leg stuff
-        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
-        this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 0.5F * limbSwingAmount;
+        this.rightLeg.rotationPointY = 15F;
+        this.leftLeg.rotationPointY = 15F;
+        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
         copyModelAngles(rightLeg, rightFeather1);
         copyModelAngles(rightLeg, rightFeather2);
         copyModelAngles(rightLeg, rightFeather3);
@@ -385,21 +404,31 @@ public class ModelEnhancedChicken extends ModelBase {
         copyModelAngles(leftLeg, leftFeather3);
 
         //wing stuff
-//        this.rightWing.rotateAngleZ = ageInTicks;
-//        this.leftWing.rotateAngleZ = -ageInTicks;
+        this.rightWing.rotateAngleZ = ageInTicks;
+        this.leftWing.rotateAngleZ = -ageInTicks;
     }
 
-    public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime){
-        boolean sitting = false; //TODO actually make some sitting AI
+    public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime)
+    {
+        int[] sharedGenes = ((EnhancedChicken)entitylivingbaseIn).getSharedGenes();
+
+        if (sharedGenes[70] == 2 || sharedGenes [71] == 2) {
+            this.body.rotationPointY = 3F;
+            this.tail.rotationPointY = 3F;
+            this.mutation = 1;
+        } else {
+            this.body.rotationPointY = 0F;
+            this.tail.rotationPointY = 0F;
+            this.mutation = 0;
+        }
+
         //sitting
-
-        EnhancedChicken enhancedChicken = (EnhancedChicken)entitylivingbaseIn;
-        this.body.rotationPointY = 0F;
-        this.head.rotationPointY = 0F;
-
         if(sitting){
-            this.body.rotationPointY += 4F;
-            this.head.rotationPointY += 4F;
+            this.body.rotationPointY = 4F;
+            this.tail.rotationPointY = 4F;
+            this.pose = 1;
+        } else {
+            this.pose = 0;
         }
         //pecking ground
 

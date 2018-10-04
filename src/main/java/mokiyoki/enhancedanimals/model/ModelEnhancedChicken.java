@@ -20,34 +20,33 @@ public class ModelEnhancedChicken extends ModelBase {
     private int pose = 0;
     private int mutation = 0;
 
-//TODO create a ModelRenderer for EVERY box.
-    //the below is the default from regular chicken
-    private ModelRenderer head;
-    private ModelRenderer headNakedNeck;
-    private ModelRenderer bigCrest;
-    private ModelRenderer smallCrest;
-    private ModelRenderer forwardCrest;
-    private ModelRenderer combSingle;
-    private ModelRenderer combRose;
-    private ModelRenderer combRose2;
-    private ModelRenderer combPea;
-    private ModelRenderer combWalnut;
-    private ModelRenderer combV;
-    private ModelRenderer body;
-    private ModelRenderer tail;
-    private ModelRenderer rightLeg;
-    private ModelRenderer rightFeather1;
-    private ModelRenderer rightFeather2;
-    private ModelRenderer rightFeather3;
-    private ModelRenderer leftLeg;
-    private ModelRenderer leftFeather1;
-    private ModelRenderer leftFeather2;
-    private ModelRenderer leftFeather3;
-    private ModelRenderer rightWing;
-    private ModelRenderer leftWing;
-    private ModelRenderer bill;
-    private ModelRenderer chin;
-    private ModelRenderer beard;
+    //the below is all chicken parts
+    private final ModelRenderer head;
+    private final ModelRenderer headNakedNeck;
+    private final ModelRenderer bigCrest;
+    private final ModelRenderer smallCrest;
+    private final ModelRenderer forwardCrest;
+    private final ModelRenderer combSingle;
+    private final ModelRenderer combRose;
+    private final ModelRenderer combRose2;
+    private final ModelRenderer combPea;
+    private final ModelRenderer combWalnut;
+    private final ModelRenderer combV;
+    private final ModelRenderer body;
+    private final ModelRenderer tail;
+    private final ModelRenderer rightLeg;
+    private final ModelRenderer rightFeather1;
+    private final ModelRenderer rightFeather2;
+    private final ModelRenderer rightFeather3;
+    private final ModelRenderer leftLeg;
+    private final ModelRenderer leftFeather1;
+    private final ModelRenderer leftFeather2;
+    private final ModelRenderer leftFeather3;
+    private final ModelRenderer rightWing;
+    private final ModelRenderer leftWing;
+    private final ModelRenderer bill;
+    private final ModelRenderer chin;
+    private final ModelRenderer beard;
 
     public ModelEnhancedChicken(){
         this.textureWidth = 64;
@@ -297,7 +296,7 @@ public class ModelEnhancedChicken extends ModelBase {
         else
         {
             if(nakedNeck){
-                this.headNakedNeck.render(scale);;
+                this.headNakedNeck.render(scale);
             }else{
                 this.head.render(scale);
             }

@@ -1,7 +1,9 @@
 package mokiyoki.enhancedanimals.proxy;
 
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedChicken;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedRabbit;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
@@ -9,9 +11,6 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by moki on 24/08/2018.
@@ -26,6 +25,7 @@ public class ClientProxy implements IProxy {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(EnhancedChicken.class, renderManager -> new RenderEnhancedChicken(renderManager));
+        RenderingRegistry.registerEntityRenderingHandler(EnhancedRabbit.class, renderManager -> new RenderEnhancedRabbit(renderManager));
     }
 
     @Override

@@ -1,18 +1,24 @@
 package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Sets;
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
@@ -21,18 +27,79 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class EnhancedRabbit extends EntityAnimal {
 
-    private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedChicken.class, DataSerializers.STRING);
+    private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedRabbit.class, DataSerializers.STRING);
+
+    private static final String[] RABBIT_TEXTURES_UNDER = new String[] {
+        "under_cream.png", "under_grey.png", "under_white.png"
+    };
+
+    private static final String[] RABBIT_TEXTURES_MIDDLE = new String[] {
+        "", "middle_agoutiorange.png", "middle_agoutitan.png", "middle_agoutilighttan.png", "middle_agouticream.png", "middle_agoutigrey.png", "middle_agoutiwhite.png",
+        "middle_orange.png", "middle_tan.png", "middle_lighttan.png", "middle_cream.png", "middle_grey.png", "middle_white.png"
+    };
+
+    private static final String[] RABBIT_TEXTURES_TOP = new String[] {
+        "", "agouti_black.png", "agouti_blue.png", "agouti_chocolate.png", "agouti_lilac.png",
+        "tan_black.png", "tan_blue.png", "tan_chocolate.png", "tan_lilac.png",
+        "self_black.png", "self_blue.png", "self_chocolate.png", "self_lilac.png"
+    };
+
+    // higher numbers are more white
+    private static final String[] RABBIT_TEXTURES_DUTCH = new String[] {
+        "", "dutch0.png", "dutch1.png", "dutch2.png"
+    };
+
+    // higher numbers are more white
+    private static final String[] RABBIT_TEXTURES_BROKEN = new String[] {
+        "", "spots_broken.png", "spots_charlie.png"
+    };
+
+    // higher numbers are more white
+    private static final String[] RABBIT_TEXTURES_HEADSPOT = new String[] {
+        "", "spots_ear.png", "spots_star0.png", "spots_star1.png", "spots_star2.png", "spots_snip.png", "spots_stripe.png"
+    };
+
+    // higher numbers are more white
+    private static final String[] RABBIT_TEXTURES_FOOTSPOT = new String[] {
+        "", "spots_boots.png", "spots_righttoes.png", "spots_toes.png"
+    };
+
+    // higher numbers are more white
+    private static final String[] RABBIT_TEXTURES_BODYSPOT = new String[] {
+        "", "spots_collar.png"
+    };
+
+    private static final String[] RABBIT_TEXTURES_FUR = new String[] {
+       "fur_normal.png", "fur_angora.png", "fur_rex.png", "fur_satin.png"
+    };
+
+    private static final String[] RABBIT_TEXTURES_EYES = new String[] {
+        "eyes_black.png", "eyes_brown.png", "eyes_amber.png", "eyes_grey.png", "eyes_ruby.png", "eyes_albino.png"
+    };
+
+    private static final String[] RABBIT_TEXTURES_VIENNAEYES = new String[] {
+        "", "eyes_vienna.png", "eyes_viennaright.png", "eyes_viennaleft.png"
+    };
+
+    private static final String[] RABBIT_TEXTURES_SKIN = new String[] {
+        "skin_pink.png", "skin_brown.png", "skin_black.png", "skin_white.png"
+    };
 
     private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(Item.getItemFromBlock(Blocks.YELLOW_FLOWER), Item.getItemFromBlock(Blocks.TALLGRASS), Items.CARROT);
 
+    private final List<String> rabbitTextures = new ArrayList<>();
+
     private static final int WTC = 90;
-    private static final int GENES_LENGTH = 50;
+    private static final int GENES_LENGTH = 75;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -81,10 +148,57 @@ public class EnhancedRabbit extends EntityAnimal {
         return sharedGenesArray;
     }
 
+    public float getEyeHeight()
+    {
+        return this.height;
+    }
+
+    protected void applyEntityAttributes()
+    {
+        super.applyEntityAttributes();
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+    }
+
+    public void onLivingUpdate()
+    {
+
+    }
+
+    public void fall(float distance, float damageMultiplier)
+    {
+
+    }
+
+    protected SoundEvent getAmbientSound()
+    {
+        return SoundEvents.ENTITY_RABBIT_AMBIENT;
+    }
+
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn)
+    {
+        return SoundEvents.ENTITY_RABBIT_HURT;
+    }
+
+    protected SoundEvent getDeathSound()
+    {
+        return SoundEvents.ENTITY_RABBIT_DEATH;
+    }
+
+    protected void playStepSound(BlockPos pos, Block blockIn)
+    {
+        this.playSound(SoundEvents.ENTITY_RABBIT_JUMP, 0.15F, 1.0F);
+    }
+
+    public boolean isBreedingItem(ItemStack stack)
+    {
+        return TEMPTATION_ITEMS.contains(stack.getItem());
+    }
+
     public EntityAgeable createChild(EntityAgeable ageable) {
 //
 //    }
-        this.mateGenes = ((EnhancedChicken) ageable).getGenes();
+        this.mateGenes = ((EnhancedRabbit) ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
         EnhancedRabbit enhancedrabbit = new EnhancedRabbit(this.world);
@@ -118,14 +232,169 @@ public class EnhancedRabbit extends EntityAnimal {
     }
 
     @SideOnly(Side.CLIENT)
+    public String getRabbitTexture() {
+        if (this.rabbitTextures.isEmpty()) {
+            this.setTexturePaths();
+        }
+        return this.rabbitTextures.stream().collect(Collectors.joining(", ","[","]"));
+
+    }
+
+    @SideOnly(Side.CLIENT)
+    public String[] getVariantTexturePaths()
+    {
+        if (this.rabbitTextures.isEmpty()) {
+            this.setTexturePaths();
+        }
+
+        return this.rabbitTextures.stream().toArray(String[]::new);
+    }
+
+    @SideOnly(Side.CLIENT)
     private void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
+            int under = 0;
+            int middle = 0;
+            int top = 0;
+            int dutch = 0;
+            int broken = 0;
+            int spothead = 0;
+            int spotfoot = 0;
+            int spotbody = 0;
+            int fur = 0;
+            int eyes = 0;
+            int vienna = 0;
+            int skin = 0;
+            // i is a random modifier
+            String i = getCachedUniqueIdString();
 
 
+            if(genesForText[4] == 6 && genesForText[5] == 6){
+                //Red Eyed White (albino)
+                under = 2;
+                eyes = 5;
 
+            }else{
+            if(genesForText[14] == 2 && genesForText[15] == 2){
+                //Blue Eyed White
+                under = 2;
+                vienna = 1;
+
+            }else{
+
+                if(genesForText[0] == 1 || genesForText[1] == 1){
+                    //agouti
+                    under = 0;
+                    middle = 2;
+                    top = 1;
+                }else if(genesForText[0] == 2 || genesForText[1] == 2){
+                    //otter
+                    under = 0;
+                    middle = 2;
+                    top = 5;
+                }else{
+                    //self
+                    under = 0;
+                    middle = 2;
+                    top = 9;
+                }
+
+                //top layer "black" colour variations
+                if(genesForText[2] == 2 && genesForText[3] == 2){
+                    if(genesForText[6] == 2 && genesForText[7] == 2){
+                        //lilac
+                        under = under - 1;
+                        middle = middle + 1;
+                        top = top + 3;
+                    }else{
+                        //chocolate
+                        middle = middle + 1;
+                        top = top + 2;
+                    }
+                }else{
+                    if(genesForText[6] == 2 && genesForText[7] == 2){
+                        //blue
+                        middle = middle + 1;
+                        top = top + 1;
+                    }
+                }
+                if(genesForText[10] == 2 && genesForText[11] == 2){
+                    broken = 2;
+                }else if(genesForText[10] == 2 || genesForText[11] == 2){
+                    broken = 1;
+                }
+                if(genesForText[12] == 2 && genesForText[13] == 2){
+                    dutch = 1;
+                }
+                if(genesForText[15] == 2 || genesForText[16] == 2){
+                    if( Character.isDigit(i.charAt(2)) && Character.isLetter(i.charAt(5)) ){
+                        vienna = 1;
+                    }else if(Character.isDigit(i.charAt(5))){
+                            if((i.charAt(5)) <= 4 ){
+                                vienna = 4;
+                            }else{
+                                vienna = 2;
+                            }
+                    }
+                }
+//                 Wildtype+, Dark Chinchilla, Light Chinchilla, Pale Chinchilla, Himalayan, Albino
+                if(genesForText[4] != 1 && genesForText[5] != 1){
+                    under = 2;
+                    middle = 0;
+                    if (genesForText[4] < 4 && genesForText[5] < 4){
+                        eyes = 5;
+                    } else if (genesForText[4] < 2 && genesForText[5] < 2){
+                        eyes = 4;
+                    }
+                }
+                //coat genes 26 angora, 28 rex, 30 satin
+                if(genesForText[28] == 2 && genesForText[29] == 2){
+                    fur = 2;
+                }else if (genesForText[26] == 2 && genesForText[27] == 2){
+                    fur = 1;
+                }else if (genesForText[30] == 2 && genesForText[31] == 2){
+                    fur = 3;
+                }
+
+
+            }
         }
-    }
+
+
+            this.rabbitTextures.add(RABBIT_TEXTURES_UNDER[under]);
+            if(middle != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_MIDDLE[middle]);
+            }
+            if(top != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_TOP[top]);
+            }
+            if(dutch != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_DUTCH[dutch]);
+            }
+            if(broken != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_BROKEN[broken]);
+            }
+            if(spothead != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_HEADSPOT[spothead]);
+            }
+            if(spotfoot != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_FOOTSPOT[spotfoot]);
+            }
+            if(spotbody != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_BODYSPOT[spotbody]);
+            }
+            this.rabbitTextures.add(RABBIT_TEXTURES_FUR[fur]);
+            this.rabbitTextures.add(RABBIT_TEXTURES_EYES[eyes]);
+            if(vienna != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_VIENNAEYES[vienna]);
+            }
+            this.rabbitTextures.add(RABBIT_TEXTURES_SKIN[skin]);
+
+
+        } //if genes are not null end bracket
+
+    } // setTexturePaths end bracket
 
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
@@ -205,11 +474,11 @@ public class EnhancedRabbit extends EntityAnimal {
         livingdata = super.onInitialSpawn(difficulty, livingdata);
         int[] spawnGenes;
 
-        if (livingdata instanceof EnhancedChicken.GroupData) {
-            spawnGenes = ((EnhancedChicken.GroupData) livingdata).groupGenes;
+        if (livingdata instanceof EnhancedRabbit.GroupData) {
+            spawnGenes = ((EnhancedRabbit.GroupData) livingdata).groupGenes;
         } else {
             spawnGenes = createInitialGenes();
-            livingdata = new EnhancedChicken.GroupData(spawnGenes);
+            livingdata = new EnhancedRabbit.GroupData(spawnGenes);
         }
 
         this.genes = spawnGenes;
@@ -219,17 +488,17 @@ public class EnhancedRabbit extends EntityAnimal {
 
     private int[] createInitialGenes() {
         int[] initialGenes = new int[GENES_LENGTH];
-        //TODO create biome WTC variable [hot and dry biomes, hot and wet biomes, cold biomes] WTC is all others
+        //TODO create biome WTC variable [hot and dry biomes, cold biomes ] WTC is neutral biomes "all others"
 
 
         //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
-        int wildType = 0;
-        Biome biome = this.world.getBiome(new BlockPos(this));
+//        int wildType = 0;
+//        Biome biome = this.world.getBiome(new BlockPos(this));
 
-        if (biome.getDefaultTemperature() >= 0.9F && biome.getRainfall() > 0.8F) // hot and wet (jungle)
-        {
-            wildType = 1;
-        }
+//        if (biome.getDefaultTemperature() >= 0.9F && biome.getRainfall() > 0.8F) // hot and wet (jungle)
+//        {
+//            wildType = 1;
+//        }
 
 
 /**
@@ -326,20 +595,6 @@ public class EnhancedRabbit extends EntityAnimal {
 
         //Dutch [ wildtype, dutch]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[10] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[11] = (1);
-        }
-
-        //Vienna [ wildtype, vienna]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[12] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
@@ -352,7 +607,7 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[13] = (1);
         }
 
-        //Wideband [ wildtype, wideband]
+        //Vienna [ wildtype, vienna]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[14] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -366,7 +621,7 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[15] = (1);
         }
 
-        //Silver [ wildtype, silver]
+        //Wideband [ wildtype, wideband]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[16] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -380,7 +635,7 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[17] = (1);
         }
 
-        //Lutino [ wildtype, lutino]
+        //Silver [ wildtype, silver]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[18] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -394,11 +649,7 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[19] = (1);
         }
 
-        /**
-         * Coat Genes
-         */
-
-        //Furless [ wildtype, furless]
+        //Lutino [ wildtype, lutino]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -412,7 +663,11 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[21] = (1);
         }
 
-        //Lion Mane [ wildtype, lion mane]
+        /**
+         * Coat Genes
+         */
+
+        //Furless [ wildtype, furless]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[22] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -426,7 +681,7 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[23] = (1);
         }
 
-        //Angora [ wildtype, dutch]
+        //Lion Mane [ wildtype, lion mane]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[24] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -440,7 +695,7 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[25] = (1);
         }
 
-        //Rex [ wildtype, dutch]
+        //Angora [ wildtype, angora]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -454,7 +709,7 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[27] = (1);
         }
 
-        //Satin [ wildtype, dutch]
+        //Rex [ wildtype, rex]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -468,7 +723,7 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[29] = (1);
         }
 
-        //Waved [ wildtype, dutch]
+        //Satin [ wildtype, satin]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[30] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -482,11 +737,7 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[31] = (1);
         }
 
-        /**
-         * Shape and Size Genes
-         */
-
-        //Dwarf [ wildtype, dwarf]
+        //Waved [ wildtype, waved]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -500,63 +751,67 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[33] = (1);
         }
 
-        //Lop1 [ wildtype, halflop, lop1]
+        /**
+         * Shape and Size Genes
+         */
+
+        //Dwarf [ wildtype, dwarf]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[34] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[34] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[34] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[35] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[35] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[35] = (1);
         }
 
-        //Lop2 [ wildtype, lop2]
+        //Lop1 [ wildtype, halflop, lop1]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[36] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
             initialGenes[36] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[37] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[37] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
             initialGenes[37] = (1);
         }
 
-        //long ears [ wildtype, longer ears, longest ears]
+        //Lop2 [ wildtype, lop2]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[38] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[38] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[39] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[39] = (1);
         }
 
-        //ear length bias [ normal ears, shorter ears, longest ears ]
+        //long ears [ wildtype, longer ears, longest ears]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[40] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
             initialGenes[40] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[41] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[41] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
             initialGenes[41] = (1);
         }
 
-        //longer body [ normal length, longer body ]
+        //ear length bias [ normal ears, shorter ears, longest ears ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[42] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -570,32 +825,46 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[43] = (1);
         }
 
+        //longer body [ normal length, longer body ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[44] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[44] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[45] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[45] = (1);
+        }
+
         //Size tendency [ small, normal, small2, big, extra large ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[44] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
-        } else {
-            initialGenes[44] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[45] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
-        } else {
-            initialGenes[45] = (2);
-        }
-
-        //Size Enhancer [ big, normal, small ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[46] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[46] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
             initialGenes[46] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[47] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[47] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
             initialGenes[47] = (2);
+        }
+
+        //Size Enhancer [ big, normal, small ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[48] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[48] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[49] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[49] = (2);
         }
 
         return initialGenes;

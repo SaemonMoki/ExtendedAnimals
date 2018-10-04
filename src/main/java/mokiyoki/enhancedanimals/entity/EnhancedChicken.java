@@ -39,9 +39,10 @@ import java.util.stream.Collectors;
  * Created by saemon and moki on 30/08/2018.
  */
 public class EnhancedChicken extends EntityAnimal {
+
+    private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedChicken.class, DataSerializers.STRING);
     /** [4] duckwing, partridge, wheaten, solid
         [5] silver, salmon, lemon, gold, mahogany */
-    private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedChicken.class, DataSerializers.STRING);
     private static final String[] CHICKEN_TEXTURES_GROUND = new String[] {
         "ground_duckwing_silver.png",   "ground_duckwing_salmon.png",   "ground_duckwing_lemon.png",
         "ground_duckwing_gold.png",     "ground_duckwing_mahogany.png", "ground_solid_silver.png",
@@ -115,7 +116,7 @@ public class EnhancedChicken extends EntityAnimal {
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
     //'father' gene variables list
-    private static final int GENES_LENGTH = 74;
+    private static final int GENES_LENGTH = 75;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -1673,10 +1674,5 @@ public class EnhancedChicken extends EntityAnimal {
         }
 
     }
-
-
-
-
-
 }
 

@@ -62,7 +62,7 @@ public class EnhancedLayeredTexture extends LayeredTexture {
             }
             catch (IOException ioexception)
             {
-                LOGGER.error("Couldn't load layered image", (Throwable)ioexception);
+                LOGGER.error("Couldn't load enhanced layered image", (Throwable)ioexception);
             }
             finally
             {

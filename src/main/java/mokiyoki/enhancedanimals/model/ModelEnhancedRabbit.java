@@ -114,6 +114,7 @@ public class ModelEnhancedRabbit extends ModelBase
             this.rabbitLeftFoot.render(scale);
             this.rabbitRightFoot.render(scale);
             this.rabbitBody.render(scale);
+            this.rabbitButt.render(scale);
             this.rabbitLeftArm.render(scale);
             this.rabbitRightArm.render(scale);
             this.rabbitTail.render(scale);

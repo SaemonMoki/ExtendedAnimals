@@ -24,9 +24,12 @@ public class ECRoost extends EntityAIBase {
     {
         if (!this.enhancedChicken.world.isDaytime() && !this.enhancedChicken.isSitting()) {
             List<BlockPos> allPostPos = this.enhancedChicken.world.getCapability(PostCapabilityProvider.POST_CAP, null).getAllPostPos();
-            BlockPos blockPosToGoTo = calculateClosestPost(allPostPos);
-            postPos = blockPosToGoTo;
-            return true;
+            if(allPostPos != null && !allPostPos.isEmpty()) {
+                BlockPos blockPosToGoTo = calculateClosestPost(allPostPos);
+                postPos = blockPosToGoTo;
+                return true;
+            }
+            return false;
         }
         return false;
     }
@@ -63,10 +66,12 @@ public class ECRoost extends EntityAIBase {
 
     public void startExecuting()
     {
-        int i = postPos.getX();
-        int j = postPos.getY();
-        int k = postPos.getZ();
-        this.enhancedChicken.getNavigator().tryMoveToXYZ((double)i, (double)j+1, (double)k, 1.0D);
+        if(postPos!=null) {
+            int i = postPos.getX();
+            int j = postPos.getY();
+            int k = postPos.getZ();
+            this.enhancedChicken.getNavigator().tryMoveToXYZ((double)i, (double)j+1, (double)k, 1.0D);
+        }
     }
 
     public void resetTask()

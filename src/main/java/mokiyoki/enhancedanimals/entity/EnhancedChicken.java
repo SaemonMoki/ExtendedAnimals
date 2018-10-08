@@ -116,7 +116,7 @@ public class EnhancedChicken extends EntityAnimal {
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
     //'father' gene variables list
-    private static final int GENES_LENGTH = 75;
+    private static final int GENES_LENGTH = 74;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -189,8 +189,6 @@ public class EnhancedChicken extends EntityAnimal {
     public void onLivingUpdate()
     {
         super.onLivingUpdate();
-        this.oFlap = this.wingRotation;
-        this.oFlapSpeed = this.destPos;
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
         this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
 
@@ -1171,7 +1169,7 @@ public class EnhancedChicken extends EntityAnimal {
 */
 
         for (int i = 7; i < 20; i++ ) {
-            initialGenes[i] = (1);
+            initialGenes[i] = (10);
         }
 
 /**
@@ -1233,7 +1231,7 @@ public class EnhancedChicken extends EntityAnimal {
             // birchen is cold biome wildtype
             }else if(wildType == 3){
                 initialGenes[24] = (1);
-            // duckwing is jungle wildtype
+            // duckwing is jungle "true" wildtype
             }else{
                 initialGenes[24] = (2);
             }
@@ -1243,7 +1241,7 @@ public class EnhancedChicken extends EntityAnimal {
         } else {
             // swamps have a mixture but no black
             if(wildType == 4){
-                initialGenes[24] = (ThreadLocalRandom.current().nextInt(3)+2);
+                initialGenes[25] = (ThreadLocalRandom.current().nextInt(3)+2);
             }
             // partridge is savanna wild type
             else if (wildType == 2) {
@@ -1251,7 +1249,7 @@ public class EnhancedChicken extends EntityAnimal {
             // birchen is cold biome wildtype
             }else if(wildType == 3){
                 initialGenes[25] = (1);
-            // duckwing is jungle wildtype
+            // duckwing is jungle "true" wildtype
             }else{
                 initialGenes[25] = (2);
             }
@@ -1281,7 +1279,6 @@ public class EnhancedChicken extends EntityAnimal {
         }else {
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
                 initialGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
             } else {
                 initialGenes[27] = (1);
             }
@@ -1392,26 +1389,22 @@ public class EnhancedChicken extends EntityAnimal {
         if(wildType == 2){
             if(ThreadLocalRandom.current().nextInt(100)>WTC){
                 initialGenes[42] = (ThreadLocalRandom.current().nextInt(2)+1);
-
             } else {
                 initialGenes[42] = (2);
             }
             if(ThreadLocalRandom.current().nextInt(100)>WTC){
                 initialGenes[43] = (ThreadLocalRandom.current().nextInt(2)+1);
-
             } else {
                 initialGenes[43] = (2);
             }
         }else{
             if(ThreadLocalRandom.current().nextInt(100)>(WTC+((100-WTC)/1.1))){
                 initialGenes[42] = (ThreadLocalRandom.current().nextInt(2)+1);
-
             } else {
                 initialGenes[42] = (2);
             }
             if(ThreadLocalRandom.current().nextInt(100)>(WTC+((100-WTC)/1.1))){
                 initialGenes[43] = (ThreadLocalRandom.current().nextInt(2)+1);
-
             } else {
                 initialGenes[43] = (2);
             }
@@ -1427,8 +1420,7 @@ public class EnhancedChicken extends EntityAnimal {
             }else{
                 initialGenes[44] = (2);
             }
-        }
-                //homozygous white legs only in jungle
+        }       //homozygous white legs only in jungle
         if(ThreadLocalRandom.current().nextInt(100)>(WTC+((100-WTC)/2)) && wildType == 1){
             initialGenes[45] = (ThreadLocalRandom.current().nextInt(2)+1);
         } else {
@@ -1578,9 +1570,9 @@ public class EnhancedChicken extends EntityAnimal {
 
         } else {
             if(wildType == 2){
-                initialGenes[64] = (2);
+                initialGenes[65] = (2);
             }else {
-                initialGenes[64] = (3);
+                initialGenes[65] = (3);
             }
         }
 

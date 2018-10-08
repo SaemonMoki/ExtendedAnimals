@@ -5,7 +5,12 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.*;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityRabbit;
+import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -20,6 +25,7 @@ import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -98,8 +104,10 @@ public class EnhancedRabbit extends EntityAnimal {
 
     private final List<String> rabbitTextures = new ArrayList<>();
 
+    public float destPos;
+
     private static final int WTC = 90;
-    private static final int GENES_LENGTH = 75;
+    private static final int GENES_LENGTH = 50;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -108,11 +116,19 @@ public class EnhancedRabbit extends EntityAnimal {
     public EnhancedRabbit(World worldIn) {
         super(worldIn);
         this.setSize(0.4F, 0.5F);
+        this.setPathPriority(PathNodeType.WATER, 0.0F);
         //TODO Add the jumping stuff
     }
 
     protected void initEntityAI() {
-
+        this.tasks.addTask(1, new EntityAISwimming(this));
+        this.tasks.addTask(2, new EntityAIMate(this, 0.8D));
+        this.tasks.addTask(3, new EntityAITempt(this, 1.0D, Items.CARROT, false));
+        this.tasks.addTask(3, new EntityAITempt(this, 1.0D, Items.GOLDEN_CARROT, false));
+        this.tasks.addTask(3, new EntityAITempt(this, 1.0D, Item.getItemFromBlock(Blocks.YELLOW_FLOWER), false));
+        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 0.6D));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
+        this.tasks.addTask(8, new EntityAILookIdle(this));
     }
 
     //TODO put the rest of the jumping stuff here
@@ -162,7 +178,9 @@ public class EnhancedRabbit extends EntityAnimal {
 
     public void onLivingUpdate()
     {
-
+        super.onLivingUpdate();
+        this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
+        this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
     }
 
     public void fall(float distance, float damageMultiplier)
@@ -275,25 +293,24 @@ public class EnhancedRabbit extends EntityAnimal {
                 under = 2;
                 eyes = 5;
 
-            }else{
-            if(genesForText[14] == 2 && genesForText[15] == 2){
+            }else if(genesForText[14] == 2 && genesForText[15] == 2){
                 //Blue Eyed White
                 under = 2;
                 vienna = 1;
 
             }else{
 
-                if(genesForText[0] == 1 || genesForText[1] == 1){
+                if (genesForText[0] == 1 || genesForText[1] == 1) {
                     //agouti
                     under = 0;
                     middle = 2;
                     top = 1;
-                }else if(genesForText[0] == 2 || genesForText[1] == 2){
+                } else if (genesForText[0] == 2 || genesForText[1] == 2) {
                     //otter
                     under = 0;
                     middle = 2;
                     top = 5;
-                }else{
+                } else {
                     //self
                     under = 0;
                     middle = 2;
@@ -301,53 +318,78 @@ public class EnhancedRabbit extends EntityAnimal {
                 }
 
                 //top layer "black" colour variations
-                if(genesForText[2] == 2 && genesForText[3] == 2){
-                    if(genesForText[6] == 2 && genesForText[7] == 2){
+                if (genesForText[2] == 2 && genesForText[3] == 2) {
+                    if (genesForText[6] == 2 && genesForText[7] == 2) {
                         //lilac
                         under = under - 1;
                         middle = middle + 1;
                         top = top + 3;
-                    }else{
+                    } else {
                         //chocolate
                         middle = middle + 1;
                         top = top + 2;
                     }
-                }else{
-                    if(genesForText[6] == 2 && genesForText[7] == 2){
+                } else {
+                    if (genesForText[6] == 2 && genesForText[7] == 2) {
                         //blue
                         middle = middle + 1;
                         top = top + 1;
                     }
                 }
-                if(genesForText[10] == 2 && genesForText[11] == 2){
+                if (genesForText[10] == 2 && genesForText[11] == 2) {
                     broken = 2;
-                }else if(genesForText[10] == 2 || genesForText[11] == 2){
+                } else if (genesForText[10] == 2 || genesForText[11] == 2) {
                     broken = 1;
                 }
-                if(genesForText[12] == 2 && genesForText[13] == 2){
+                if (genesForText[12] == 2 && genesForText[13] == 2) {
                     dutch = 1;
                 }
-                if(genesForText[15] == 2 || genesForText[16] == 2){
-                    if( Character.isDigit(i.charAt(2)) && Character.isLetter(i.charAt(5)) ){
+                //Vienna Eyes and Spots
+                if (genesForText[14] == 2 || genesForText[15] == 2) {
+                    //NOT GENETIC VARIATIONS
+                    if (Character.isDigit(i.charAt(2)) && Character.isLetter(i.charAt(5))) {
                         vienna = 1;
-                    }else if(Character.isDigit(i.charAt(5))){
-                            if((i.charAt(5)) <= 4 ){
-                                vienna = 4;
-                            }else{
-                                vienna = 2;
-                            }
+                    } else if (Character.isDigit(i.charAt(5))) {
+                        if ((i.charAt(5)) <= 4) {
+                            vienna = 4;
+                        } else {
+                            vienna = 2;
+                        }
                     }
+                    //spothead 0-6
+                    if (Character.isDigit(i.charAt(4)) && Character.isLetter(i.charAt(6))) {
+                        spothead = 1;
+                    } else if (Character.isDigit(i.charAt(6))) {
+                        if ((i.charAt(6)) <= 4) {
+                            spothead = 2;
+                        } else {
+                            spothead = 3;
+                        }
+                    } else if (Character.isDigit(i.charAt(7))) {
+                        if (i.charAt(7) >= 5) {
+                            spothead = 4;
+                        } else {
+                            spothead = 5;
+                        }
+                    } else {
+                        if (Character.isLetter(i.charAt(8))) {
+                            spothead = 6;
+                        }
+                    }
+                    //END OF NON GENETIC VARIATIONS
                 }
+
 //                 Wildtype+, Dark Chinchilla, Light Chinchilla, Pale Chinchilla, Himalayan, Albino
-                if(genesForText[4] != 1 && genesForText[5] != 1){
+                if (genesForText[4] != 1 && genesForText[5] != 1) {
                     under = 2;
                     middle = 0;
-                    if (genesForText[4] < 4 && genesForText[5] < 4){
+                    if (genesForText[4] < 4 && genesForText[5] < 4) {
                         eyes = 5;
-                    } else if (genesForText[4] < 2 && genesForText[5] < 2){
+                    } else if (genesForText[4] < 2 && genesForText[5] < 2) {
                         eyes = 4;
                     }
                 }
+            }
                 //coat genes 26 angora, 28 rex, 30 satin
                 if(genesForText[28] == 2 && genesForText[29] == 2){
                     fur = 2;
@@ -358,8 +400,6 @@ public class EnhancedRabbit extends EntityAnimal {
                 }
 
 
-            }
-        }
 
 
             this.rabbitTextures.add(RABBIT_TEXTURES_UNDER[under]);
@@ -430,7 +470,7 @@ public class EnhancedRabbit extends EntityAnimal {
 
     public void punnetSquare(int[] mitosis, int[] parentGenes) {
         Random rand = new Random();
-        for (int i = 20; i < genes.length; i = (i + 2)) {
+        for (int i = 0; i < genes.length; i = (i + 2)) {
             boolean mateOddOrEven = rand.nextBoolean();
             if (mateOddOrEven) {
                 mitosis[i] = parentGenes[i + 1];
@@ -442,21 +482,11 @@ public class EnhancedRabbit extends EntityAnimal {
         }
     }
 
-
     public int[] getBunnyGenes() {
         Random rand = new Random();
         int[] bunnyGenes = new int[GENES_LENGTH];
 
-        for (int i = 0; i < 20; i++) {
-            boolean thisOrMate = rand.nextBoolean();
-            if (thisOrMate) {
-                bunnyGenes[i] = genes[i];
-            } else {
-                bunnyGenes[i] = mateGenes[i];
-            }
-        }
-
-        for (int i = 20; i < genes.length; i++) {
+        for (int i = 0; i < genes.length; i++) {
             boolean thisOrMate = rand.nextBoolean();
             if (thisOrMate) {
                 bunnyGenes[i] = mitosisGenes[i];

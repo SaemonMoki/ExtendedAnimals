@@ -24,7 +24,7 @@ public class RenderEnhancedRabbit extends RenderLiving<EnhancedRabbit>
 
     public RenderEnhancedRabbit(RenderManager render)
     {
-        super(render, new ModelEnhancedRabbit(), 0.5F);
+        super(render, new ModelEnhancedRabbit(), 0.25F);
     }
 
     /**

@@ -1,8 +1,15 @@
 package mokiyoki.enhancedanimals;
 
+import mokiyoki.enhancedanimals.capability.egg.EggCapability;
+import mokiyoki.enhancedanimals.capability.egg.EggCapabilityStorage;
+import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
+import mokiyoki.enhancedanimals.capability.post.IPostCapability;
+import mokiyoki.enhancedanimals.capability.post.PostCapability;
+import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
 import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.util.Reference;
 
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -26,6 +33,8 @@ public class Main {
 
     @EventHandler
     public static void preInit(FMLPreInitializationEvent event) {
+        CapabilityManager.INSTANCE.register(IPostCapability.class, new PostCapabilityStorage(), PostCapability::new);
+        CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapability::new);
         proxy.preInit(event);
     }
 

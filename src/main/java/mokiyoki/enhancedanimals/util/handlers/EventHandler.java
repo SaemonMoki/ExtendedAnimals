@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
-import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityRabbit;

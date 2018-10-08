@@ -1,8 +1,11 @@
 package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Sets;
+import mokiyoki.enhancedanimals.AI.ECRoost;
+import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
@@ -22,6 +25,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.datafix.fixes.BookPagesStrictJSON;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
@@ -41,8 +45,9 @@ import java.util.stream.Collectors;
 public class EnhancedChicken extends EntityAnimal {
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedChicken.class, DataSerializers.STRING);
+    private static final DataParameter<Boolean> SITTING = EntityDataManager.<Boolean>createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
     /** [4] duckwing, partridge, wheaten, solid
-        [5] silver, salmon, lemon, gold, mahogany */
+     [5] silver, salmon, lemon, gold, mahogany */
     private static final String[] CHICKEN_TEXTURES_GROUND = new String[] {
         "ground_duckwing_silver.png",   "ground_duckwing_salmon.png",   "ground_duckwing_lemon.png",
         "ground_duckwing_gold.png",     "ground_duckwing_mahogany.png", "ground_solid_silver.png",
@@ -116,11 +121,10 @@ public class EnhancedChicken extends EntityAnimal {
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
     //'father' gene variables list
-    private static final int GENES_LENGTH = 74;
-    private int[] genes = new int[GENES_LENGTH];
-    private int[] mateGenes = new int[GENES_LENGTH];
-    private int[] mitosisGenes = new int[GENES_LENGTH];
-    private int[] mateMitosisGenes = new int[GENES_LENGTH];
+    private int[] genes = new int[Reference.CHICKEN_GENES_LENGTH];
+    private int[] mateGenes = new int[Reference.CHICKEN_GENES_LENGTH];
+    private int[] mitosisGenes = new int[Reference.CHICKEN_GENES_LENGTH];
+    private int[] mateMitosisGenes = new int[Reference.CHICKEN_GENES_LENGTH];
 
     public EnhancedChicken(World worldIn) {
         super(worldIn);
@@ -140,12 +144,14 @@ public class EnhancedChicken extends EntityAnimal {
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
         this.tasks.addTask(7, new EntityAIEatGrass(this));//TODO make an animation that suits chickens
         this.tasks.addTask(8, new EntityAILookIdle(this));
+        this.tasks.addTask(9, new ECRoost(this));
 
     }
 
     protected void entityInit() {
         super.entityInit();
         this.dataManager.register(SHARED_GENES, new String());
+        this.dataManager.register(SITTING, new Boolean(false));
     }
 
     public void setSharedGenes(int[] genes) {
@@ -174,6 +180,14 @@ public class EnhancedChicken extends EntityAnimal {
         return sharedGenesArray;
     }
 
+    public boolean isSitting() {
+        return this.dataManager.get(SITTING);
+    }
+
+    public void setSitting(Boolean isSitting) {
+        this.dataManager.set(SITTING, isSitting);
+    }
+
     public float getEyeHeight()
     {
         return this.height;
@@ -189,6 +203,8 @@ public class EnhancedChicken extends EntityAnimal {
     public void onLivingUpdate()
     {
         super.onLivingUpdate();
+        this.oFlap = this.wingRotation;
+        this.oFlapSpeed = this.destPos;
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
         this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
 
@@ -211,6 +227,10 @@ public class EnhancedChicken extends EntityAnimal {
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
 //            this.dropItem(Items.EGG, 1);
             this.dropItem(getEggColour(resolveEggColour()), 1); //TODO replace this with the hatching eggs
+            ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, 0);
+            eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).setGenes(getEggGenes());
+            NBTTagCompound nbtTagCompound = eggItem.serializeNBT();
+            eggItem.deserializeNBT(nbtTagCompound);
             this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
         }
 
@@ -1028,7 +1048,7 @@ public class EnhancedChicken extends EntityAnimal {
 
     public int[] getEggGenes() {
         Random rand = new Random();
-        int[] eggGenes = new int[GENES_LENGTH];
+        int[] eggGenes = new int[Reference.CHICKEN_GENES_LENGTH];
 
         for(int i =0; i< 20; i++) {
             boolean thisOrMate = rand.nextBoolean();
@@ -1071,7 +1091,7 @@ public class EnhancedChicken extends EntityAnimal {
     }
 
     private int[] createInitialGenes() {
-        int[] initialGenes = new int[GENES_LENGTH];
+        int[] initialGenes = new int[Reference.CHICKEN_GENES_LENGTH];
         //TODO create biome WTC variable [hot and dry biomes, hot and wet biomes, cold biomes] WTC is all others
 
 

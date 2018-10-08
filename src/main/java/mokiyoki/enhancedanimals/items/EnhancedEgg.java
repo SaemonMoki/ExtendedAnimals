@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.items;
 
+import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.creativetab.CreativeTabs;
@@ -7,12 +8,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 /**
  * Created by moki on 24/08/2018.
@@ -55,4 +58,17 @@ public class EnhancedEgg extends Item {
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
     }
 
+    @Override
+    public boolean getShareTag()
+    {
+        return false;
+    }
+
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+        EggCapabilityProvider provider = new EggCapabilityProvider();
+
+
+        return provider;
+    }
 }

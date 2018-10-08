@@ -1,8 +1,12 @@
 package mokiyoki.enhancedanimals.proxy;
 
+import mokiyoki.enhancedanimals.capability.post.IPostCapability;
+import mokiyoki.enhancedanimals.capability.post.PostCapability;
+import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

@@ -5,7 +5,6 @@ import mokiyoki.enhancedanimals.AI.ECRoost;
 import mokiyoki.enhancedanimals.AI.ECSandBath;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityAgeable;
@@ -27,7 +26,6 @@ import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.datafix.fixes.BookPagesStrictJSON;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
@@ -47,7 +45,7 @@ import java.util.stream.Collectors;
 public class EnhancedChicken extends EntityAnimal {
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedChicken.class, DataSerializers.STRING);
-    private static final DataParameter<Boolean> SITTING = EntityDataManager.<Boolean>createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> ROOSTING = EntityDataManager.<Boolean>createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
     /** [4] duckwing, partridge, wheaten, solid
      [5] silver, salmon, lemon, gold, mahogany */
     private static final String[] CHICKEN_TEXTURES_GROUND = new String[] {
@@ -166,7 +164,7 @@ public class EnhancedChicken extends EntityAnimal {
     protected void entityInit() {
         super.entityInit();
         this.dataManager.register(SHARED_GENES, new String());
-        this.dataManager.register(SITTING, new Boolean(false));
+        this.dataManager.register(ROOSTING, new Boolean(false));
     }
 
     public void setSharedGenes(int[] genes) {
@@ -195,12 +193,12 @@ public class EnhancedChicken extends EntityAnimal {
         return sharedGenesArray;
     }
 
-    public boolean isSitting() {
-        return this.dataManager.get(SITTING);
+    public boolean isRoosting() {
+        return this.dataManager.get(ROOSTING);
     }
 
-    public void setSitting(Boolean isSitting) {
-        this.dataManager.set(SITTING, isSitting);
+    public void setRoosting(boolean isRoosting) {
+        this.dataManager.set(ROOSTING, isRoosting);
     }
 
     public float getEyeHeight()

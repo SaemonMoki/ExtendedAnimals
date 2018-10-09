@@ -20,16 +20,21 @@ public class ECRoost extends EntityAIBase {
         this.enhancedChicken = (EnhancedChicken) entityIn;
     }
 
-    public boolean shouldExecute()
-    {
-        if (!this.enhancedChicken.world.isDaytime() && !this.enhancedChicken.isSitting()) {
-            List<BlockPos> allPostPos = this.enhancedChicken.world.getCapability(PostCapabilityProvider.POST_CAP, null).getAllPostPos();
-            if(allPostPos != null && !allPostPos.isEmpty()) {
-                BlockPos blockPosToGoTo = calculateClosestPost(allPostPos);
-                postPos = blockPosToGoTo;
-                return true;
+    public boolean shouldExecute() {
+        if (!this.enhancedChicken.world.isDaytime()) {
+            if (!this.enhancedChicken.isRoosting()) {
+                List<BlockPos> allPostPos = this.enhancedChicken.world.getCapability(PostCapabilityProvider.POST_CAP, null).getAllPostPos();
+                if (allPostPos != null && !allPostPos.isEmpty()) {
+                    BlockPos blockPosToGoTo = calculateClosestPost(allPostPos);
+                    postPos = blockPosToGoTo;
+                    return true;
+                }
+                return false;
             }
             return false;
+        }
+        if (this.enhancedChicken.isRoosting()){
+            this.enhancedChicken.setRoosting(false);
         }
         return false;
     }
@@ -59,9 +64,12 @@ public class ECRoost extends EntityAIBase {
         return (int)pos.distanceSq(this.enhancedChicken.getPosition());
     }
 
-    public boolean shouldContinueExecuting()
-    {
-        return !this.enhancedChicken.getNavigator().noPath();
+    public boolean shouldContinueExecuting() {
+        if (this.enhancedChicken.getNavigator().noPath()) {
+            this.enhancedChicken.setRoosting(true);
+            return false;
+        }
+        return true;
     }
 
     public void startExecuting()
@@ -82,25 +90,15 @@ public class ECRoost extends EntityAIBase {
 //    public void updateTask()
 //    {
 //        super.updateTask();
-//        this.enhancedChicken.setSitting(false);
+//        this.enhancedChicken.setRoosting(false);
 //
 //        if (!this.getIsAboveDestination())
 //        {
-//            this.enhancedChicken.setSitting(false);
+//            this.enhancedChicken.setRoosting(false);
 //        }
-//        else if (!this.enhancedChicken.isSitting())
+//        else if (!this.enhancedChicken.isRoosting())
 //        {
-//            this.enhancedChicken.setSitting(true);
+//            this.enhancedChicken.setRoosting(true);
 //        }
-//    }
-
-//    protected boolean shouldMoveTo(World worldIn, BlockPos pos) {
-//            IBlockState iblockstate = worldIn.getBlockState(pos);
-//            Block block = iblockstate.getBlock();
-//
-//            if (block == ModBlocks.PostAcacia || block == ModBlocks.PostBirch || block == ModBlocks.PostDarkOak || block == ModBlocks.PostJungle || block == ModBlocks.PostOak || block == ModBlocks.PostSpruce) {
-//                return true;
-//            }
-//            return false;
 //    }
 }

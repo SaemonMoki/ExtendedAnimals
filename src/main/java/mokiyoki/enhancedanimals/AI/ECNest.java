@@ -1,4 +1,4 @@
 package mokiyoki.enhancedanimals.AI;
 
-public class ECSit {
+public class ECNest {
 }

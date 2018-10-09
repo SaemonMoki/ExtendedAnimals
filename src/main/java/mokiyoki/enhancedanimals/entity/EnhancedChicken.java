@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Sets;
 import mokiyoki.enhancedanimals.AI.ECRoost;
+import mokiyoki.enhancedanimals.AI.ECSandBath;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
@@ -24,6 +25,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.datafix.fixes.BookPagesStrictJSON;
 import net.minecraft.util.math.BlockPos;
@@ -116,6 +118,10 @@ public class EnhancedChicken extends EntityAnimal {
     public float oFlap;
     public float wingRotDelta = 1.0F;
     public int timeUntilNextEgg;
+    private int grassTimer;
+    private int sandBathTimer;
+    private EntityAIEatGrass entityAIEatGrass;
+    private ECSandBath ecSandBath;
 
     private static final int WTC = 90;
     private int broodingCount;
@@ -135,6 +141,8 @@ public class EnhancedChicken extends EntityAnimal {
 
     protected void initEntityAI()
     {
+        this.entityAIEatGrass = new EntityAIEatGrass(this);
+        this.ecSandBath = new ECSandBath(this);
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(1, new EntityAIPanic(this, 1.4D));
         this.tasks.addTask(2, new EntityAIMate(this, 1.0D));
@@ -146,6 +154,13 @@ public class EnhancedChicken extends EntityAnimal {
         this.tasks.addTask(8, new EntityAILookIdle(this));
         this.tasks.addTask(9, new ECRoost(this));
 
+    }
+
+    protected void updateAITasks()
+    {
+        this.grassTimer = this.entityAIEatGrass.getEatingGrassTimer();
+        this.sandBathTimer = this.ecSandBath.getSandBathTimer();
+        super.updateAITasks();
     }
 
     protected void entityInit() {
@@ -222,6 +237,7 @@ public class EnhancedChicken extends EntityAnimal {
 
         this.wingRotation += this.wingRotDelta * 2.0F;
 
+
         if (!this.world.isRemote && !this.isChild() && --this.timeUntilNextEgg <= 0)
         {
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
@@ -238,11 +254,23 @@ public class EnhancedChicken extends EntityAnimal {
             leathalGenes();
         }
 
+        if (this.world.isRemote)
+        {
+            this.grassTimer = Math.max(0, this.grassTimer - 1);
+        }
+
+        if(this.grassTimer == 4){
+            this.world.spawnParticle(EnumParticleTypes.FALLING_DUST, this.posX, this.posY - 1D, this.posZ, 0.0D, 0.2D, 0.0D);
+            this.wingRotDelta = 1.0F;
+        }
+
         //TODO find roost and sit on it, after tick 22812 find a suitable roost (horizontal post) that can be reached. If chicken gets to the chosen spot sit, after tick 13000 sit anyways. after tick 22812 stop sitting
 
         //TODO if "is child" and parent is sitting go under parent, possibly turn off ability to collide.
 
-        //TODO if "is child" and parent is near by ride on parent's back
+        //TODO if "is child" and parent is 1 block over or less and doesn't have a passenger ride on parent's back
+
+        //TODO if it is daytime and if this chicken can crow and (it randomly wants to crow OR another chicken near by is crowing) then crow.
 
     }
 
@@ -260,6 +288,7 @@ public class EnhancedChicken extends EntityAnimal {
         }
     }
 
+    //I have no idea why this is done this way maybe preventing it missing it?
     public void setDead()
     {
         this.isDead = true;
@@ -283,6 +312,22 @@ public class EnhancedChicken extends EntityAnimal {
     protected void playStepSound(BlockPos pos, Block blockIn)
     {
         this.playSound(SoundEvents.ENTITY_CHICKEN_STEP, 0.15F, 1.0F);
+    }
+
+    /**
+     * Chicken grass eating and sand bathing
+    */
+
+    //TODO make the grass eating actions
+    //TODO make the sand bathing actions
+
+    //also provides sand bath bonus
+    public void eatGrassBonus()
+    {
+        if (this.isChild())
+        {
+            this.addGrowth(60);
+        }
     }
 
     public boolean isBreedingItem(ItemStack stack)

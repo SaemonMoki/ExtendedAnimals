@@ -16,7 +16,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelEnhancedChicken extends ModelBase {
 
-    private boolean sitting = false; //TODO actually make some sitting AI
+    private boolean nesting = false; //TODO actually make some nesting AI
+    private boolean roosting = true; //TODO actually make some roosting AI
     private int pose = 0;
     private int mutation = 0;
 
@@ -152,11 +153,11 @@ public class ModelEnhancedChicken extends ModelBase {
 
         this.rightWing = new ModelRenderer(this, 35, 0);
         this.rightWing.addBox(0.0F, 0.0F, -3.0F, 1, 4, 6);
-        this.rightWing.setRotationPoint(-4.0F, 13.0F, 0.0F);
+        this.rightWing.setRotationPoint(-4.0F, 13.0F, 1.0F);
 
         this.leftWing = new ModelRenderer(this, 49, 0);
         this.leftWing.addBox(-1.0F, 0.0F, -3.0F, 1, 4, 6);
-        this.leftWing.setRotationPoint(4.0F, 13.0F, 0.0F);
+        this.leftWing.setRotationPoint(4.0F, 13.0F, 1.0F);
 
         this.bill = new ModelRenderer(this, 30, 0);
         this.bill.addBox(-1.0F, -4.0F, -4.0F, 2, 2, 2, 0.0F);
@@ -360,8 +361,10 @@ public class ModelEnhancedChicken extends ModelBase {
         //head stuff
 
         if(this.pose == 1){
-            this.head.rotationPointY = 19F;
-        }else{
+            this.head.rotationPointY = 22F;
+        } else if (this.pose == 2){
+            this.head.rotationPointY = 21F;
+        } else{
             if(this.mutation == 1){
                 this.head.rotationPointY = 18F;
             }else{
@@ -405,13 +408,20 @@ public class ModelEnhancedChicken extends ModelBase {
         //wing stuff
         this.rightWing.rotateAngleZ = ageInTicks;
         this.leftWing.rotateAngleZ = -ageInTicks;
+
     }
 
     public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime)
     {
         int[] sharedGenes = ((EnhancedChicken)entitylivingbaseIn).getSharedGenes();
 
-        if (sharedGenes[70] == 2 || sharedGenes [71] == 2) {
+            this.rightLeg.rotationPointX = 0F;
+            this.leftLeg.rotationPointX = 0F;
+            this.rightLeg.rotationPointY = 0F;
+            this.leftLeg.rotationPointY = 0F;
+
+        //gene variations
+        if ((sharedGenes[70] == 2 || sharedGenes [71] == 2) && (!nesting && !roosting)) {
             this.body.rotationPointY = 3F;
             this.tail.rotationPointY = 3F;
             this.mutation = 1;
@@ -420,14 +430,24 @@ public class ModelEnhancedChicken extends ModelBase {
             this.tail.rotationPointY = 0F;
             this.mutation = 0;
         }
-
-        //sitting
-        if(sitting){
-            this.body.rotationPointY = 4F;
-            this.tail.rotationPointY = 4F;
+        //behaviour animations
+        //nesting "moves legs together to remove clipping"
+        if(nesting){
+            this.body.rotationPointY = 5F;
+            this.tail.rotationPointY = 5F;
+            this.rightLeg.rotationPointX = this.rightLeg.rotationPointX - 0.1F;
+            this.leftLeg.rotationPointX = this.leftLeg.rotationPointX + 0.1F;
             this.pose = 1;
         } else {
-            this.pose = 0;
+            if(roosting){
+                this.body.rotationPointY = 5F;
+                this.tail.rotationPointY = 5F;
+                this.rightLeg.rotationPointY = 1F;
+                this.leftLeg.rotationPointY = 1F;
+                this.pose = 2;
+            } else {
+                this.pose = 0;
+            }
         }
         //pecking ground
 

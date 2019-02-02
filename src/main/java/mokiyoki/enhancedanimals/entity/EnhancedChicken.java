@@ -1,8 +1,9 @@
 package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Sets;
-import mokiyoki.enhancedanimals.AI.ECRoost;
-import mokiyoki.enhancedanimals.AI.ECSandBath;
+import mokiyoki.enhancedanimals.ai.ECRoost;
+import mokiyoki.enhancedanimals.ai.ECSandBath;
+import mokiyoki.enhancedanimals.ai.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -146,7 +147,7 @@ public class EnhancedChicken extends EntityAnimal {
         this.tasks.addTask(2, new EntityAIMate(this, 1.0D));
         this.tasks.addTask(3, new EntityAITempt(this, 1.0D, false, TEMPTATION_ITEMS));
         this.tasks.addTask(4, new EntityAIFollowParent(this, 1.1D));
-        this.tasks.addTask(5, new EntityAIWanderAvoidWater(this, 1.0D));
+        this.tasks.addTask(5, new ECWanderAvoidWater(this, 1.0D));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
         this.tasks.addTask(7, new EntityAIEatGrass(this));//TODO make an animation that suits chickens
         this.tasks.addTask(8, new EntityAILookIdle(this));
@@ -1706,7 +1707,7 @@ public class EnhancedChicken extends EntityAnimal {
             initialGenes[73] = (1);
         }
 
-    // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken AI modifiers
+    // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken ai modifiers
 
         return initialGenes;
     }

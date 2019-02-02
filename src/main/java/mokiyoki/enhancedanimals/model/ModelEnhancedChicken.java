@@ -16,8 +16,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelEnhancedChicken extends ModelBase {
 
-    private boolean nesting = false; //TODO actually make some nesting AI
-    private boolean roosting = true; //TODO actually make some roosting AI
+    private boolean nesting = false; //TODO actually make some nesting ai
+    private boolean roosting = true; //TODO actually make some roosting ai
     private int pose = 0;
     private int mutation = 0;
 

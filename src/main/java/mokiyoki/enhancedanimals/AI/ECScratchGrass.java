@@ -1,4 +1,4 @@
-package mokiyoki.enhancedanimals.AI;
+package mokiyoki.enhancedanimals.ai;
 
 public class ECScratchGrass {
 }

@@ -1,4 +1,4 @@
-package mokiyoki.enhancedanimals.AI;
+package mokiyoki.enhancedanimals.ai;
 
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;

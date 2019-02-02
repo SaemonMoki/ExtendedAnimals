@@ -1,21 +1,11 @@
-package mokiyoki.enhancedanimals.AI;
+package mokiyoki.enhancedanimals.ai;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockSand;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.block.state.pattern.BlockStateMatcher;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.Random;
 
 public class ECSandBath  extends EntityAIBase
 {

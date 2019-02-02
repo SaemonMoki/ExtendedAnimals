@@ -30,9 +30,9 @@ public class ModelRegistryHandler {
         registerModel(ModItems.EggGreyGreen);
         registerModel(ModItems.EggOlive);
         registerModel(ModItems.EggGreenDark);
+        registerModel(ModItems.RawChickenPale);
+        registerModel(ModItems.RawChickenDark);
 
-//        registerModel(ModItems.CHICKEN_RAW_MELANIZED);
-//        registerModel(ModItems.CHICKEN_COOKED_MELANIZED);
         registerModel(Item.getItemFromBlock(ModBlocks.PostAcacia));
         registerModel(Item.getItemFromBlock(ModBlocks.PostBirch));
         registerModel(Item.getItemFromBlock(ModBlocks.PostDarkOak));

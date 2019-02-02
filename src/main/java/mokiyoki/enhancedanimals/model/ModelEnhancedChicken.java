@@ -27,7 +27,9 @@ public class ModelEnhancedChicken extends ModelBase {
     private final ModelRenderer bigCrest;
     private final ModelRenderer smallCrest;
     private final ModelRenderer forwardCrest;
+    private final ModelRenderer combSmallSingle;
     private final ModelRenderer combSingle;
+    private final ModelRenderer combLargeSingle;
     private final ModelRenderer combRose;
     private final ModelRenderer combRose2;
     private final ModelRenderer combPea;
@@ -46,8 +48,14 @@ public class ModelEnhancedChicken extends ModelBase {
     private final ModelRenderer rightWing;
     private final ModelRenderer leftWing;
     private final ModelRenderer bill;
+    private final ModelRenderer smallChin;
     private final ModelRenderer chin;
+    private final ModelRenderer bigChin;
+    private final ModelRenderer beardChin;
+    private final ModelRenderer peaChin;
     private final ModelRenderer beard;
+    private final ModelRenderer beardNN;
+
 
     public ModelEnhancedChicken(){
         this.textureWidth = 64;
@@ -75,13 +83,33 @@ public class ModelEnhancedChicken extends ModelBase {
 
         int combSy = -3;
         int combSz = 3;
-        this.combSingle = new ModelRenderer(this,0,15);
+
+        this.combSmallSingle = new ModelRenderer(this,0,14);
+        this.combSmallSingle.addBox(-0.5F, (-3.0F+combSy), (-6F+combSz), 1, 1, 1);
+        this.combSmallSingle.addBox(-0.5F, (-3.5F+combSy), (-6F+combSz), 1, 1, 1);
+        this.combSmallSingle.addBox(-0.5F, (-4.5F+combSy), (-5F+combSz), 1, 2, 1);
+        this.combSmallSingle.addBox(-0.5F, (-4F+combSy), (-4F+combSz), 1, 1, 1);
+        this.combSmallSingle.addBox(-0.5F, (-4.5F+combSy), (-3F+combSz), 1, 2, 1);
+        this.combSmallSingle.addBox(-0.5F, (-3.5F+combSy), (-2F+combSz), 1, 1, 1);
+
+        this.combSingle = new ModelRenderer(this,0,14);
         this.combSingle.addBox(-0.5F, (-3.0F+combSy), (-6F+combSz), 1, 1, 1);
         this.combSingle.addBox(-0.5F, (-3.5F+combSy), (-6F+combSz), 1, 1, 1);
         this.combSingle.addBox(-0.5F, (-4.5F+combSy), (-5F+combSz), 1, 2, 1);
         this.combSingle.addBox(-0.5F, (-4F+combSy), (-4F+combSz), 1, 1, 1);
         this.combSingle.addBox(-0.5F, (-4.5F+combSy), (-3F+combSz), 1, 2, 1);
         this.combSingle.addBox(-0.5F, (-3.5F+combSy), (-2F+combSz), 1, 1, 1);
+
+        this.combLargeSingle = new ModelRenderer(this,0,14);
+        this.combLargeSingle.addBox(-0.5F, (-4.5F+combSy), (-6.5F+combSz), 1, 1, 1);
+        this.combLargeSingle.addBox(-0.5F, (-3.5F+combSy), (-6F+combSz), 1, 2, 1);
+        this.combLargeSingle.addBox(-0.5F, (-5.5F+combSy), (-5F+combSz), 1, 3, 1);
+        this.combLargeSingle.addBox(-0.5F, (-4.5F+combSy), (-4F+combSz), 1, 2, 1);
+        this.combLargeSingle.addBox(-0.5F, (-6F+combSy), (-3F+combSz), 1, 3, 1);
+        this.combLargeSingle.addBox(-0.5F, (-4.5F+combSy), (-2F+combSz), 1, 2, 1);
+        this.combLargeSingle.addBox(-0.5F, (-5.5F+combSy), (-1F+combSz), 1, 3, 1);
+        this.combLargeSingle.addBox(-0.5F, (-4F+combSy), (0F+combSz), 1, 1, 1);
+
 
         this.combRose = new ModelRenderer(this,0,15);
         this.combRose.addBox(-0.5F, (9F+combRy), (-6F+combRz), 1, 1, 1, 0.5F);
@@ -101,7 +129,7 @@ public class ModelEnhancedChicken extends ModelBase {
         this.combPea.addBox(-0.5F, (8F+combPy), (-5F+combPz), 1, 2, 1,-0.2F);
 
         this.combWalnut = new ModelRenderer(this,0,15);
-        this.combWalnut.addBox(-0.5F, (8.5F+combRy), (-5.5F+combRz), 1, 1, 1, 0.5F);
+        this.combPea.addBox(-0.5F, (8.5F+combPy), (-5.5F+combPz), 1, 1, 1);
 
         this.combV = new ModelRenderer(this,0,15);
         this.combV.addBox(-0.5F, (8.5F+combRy), (-5.5F+combRz), 1, 1, 1);
@@ -132,10 +160,10 @@ public class ModelEnhancedChicken extends ModelBase {
         this.leftFeather1.addBox(-3.1F, (19F+combPy), 0F, 2, 3, 3);
 
         this.rightFeather2 = new ModelRenderer(this,46,10);
-        this.rightFeather2.addBox(0.5F, (22F+combPy), -2.5F, 3, 2, 5);
+        this.rightFeather2.addBox(1.5F, (22F+combPy), -2.5F, 2, 2, 5);
 
         this.leftFeather2 = new ModelRenderer(this,46,10);
-        this.leftFeather2.addBox(-3.5F, (22F+combPy), -2.5F, 3, 2, 5);
+        this.leftFeather2.addBox(-3.5F, (22F+combPy), -2.5F, 2, 2, 5);
 
         this.rightFeather3 = new ModelRenderer(this,42,10);
         this.rightFeather3.addBox(3.5F, (23.9F+combPy), -2.5F, 4, 0, 5);
@@ -163,8 +191,20 @@ public class ModelEnhancedChicken extends ModelBase {
         this.bill.addBox(-1.0F, -4.0F, -4.0F, 2, 2, 2, 0.0F);
         this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
 
-        this.chin = new ModelRenderer(this, 0, 14);
-        this.chin.addBox(-1.0F, -2.0F, -3.0F, 2, 2, 2, 0.0F);
+        this.smallChin = new ModelRenderer(this, 0, 13);
+        this.smallChin.addBox(-1.0F, -2.0F, -3.0F, 2, 1, 2, 0.0F);
+
+        this.chin = new ModelRenderer(this, 0, 13);
+        this.chin.addBox(-1.0F, -2.0F, -3.0F, 2, 2, 1, 0.0F);
+
+        this.bigChin = new ModelRenderer(this, 0, 13);
+        this.bigChin.addBox(-1.0F, -2.0F, -3.0F, 2, 3, 1, 0.0F);
+
+        this.peaChin = new ModelRenderer(this, 0, 13);
+        this.peaChin.addBox(-0.5F, -2.0F, -3.0F, 1, 1, 2, 0.0F);
+
+        this.beardChin = new ModelRenderer(this, 0, 13);
+        this.beardChin.addBox(-1.5F, -2.5F, -3.0F, 3, 1, 1, 0.0F);
 
         this.beard = new ModelRenderer(this,22,14);
         this.beard.addBox(-2.5F, (11.5F+combRy), (-5.5F+combRz), 2, 3, 3, 0.1F);
@@ -172,6 +212,14 @@ public class ModelEnhancedChicken extends ModelBase {
         this.beard.addBox(0.5F, (11.5F+combRy), (-5.5F+combRz), 2, 3, 3, 0.1F);
         this.beard.setTextureOffset(20,14);
         this.beard.addBox(-2F, (12.5F+combRy), (-6.5F+combRz), 4, 3, 3, 0.1F);
+
+        this.beardNN = new ModelRenderer(this,22,14);
+        this.beardNN.addBox(-2.5F, (11.5F+combRy), (-5.5F+combRz), 2, 3, 3, 0.1F);
+        this.beardNN.setTextureOffset(22,14);
+        this.beardNN.addBox(0.5F, (11.5F+combRy), (-5.5F+combRz), 2, 3, 3, 0.1F);
+        this.beardNN.setTextureOffset(20,14);
+        this.beardNN.addBox(-2F, (12.5F+combRy), (-6.5F+combRz), 4, 2, 3, 0.1F);
+
 
         this.body.addChild(rightWing);
         this.body.addChild(leftWing);
@@ -186,10 +234,13 @@ public class ModelEnhancedChicken extends ModelBase {
 
         int[] genes = enhancedChicken.getSharedGenes();
         boolean nakedNeck = false;
-        int crest = 0; // [0, 1, 2, 3]      [none, small, forward, big]
-        int fFeet = 0; // [0, 1, 2, 3]      [none, 1, 1&2, 1&2&3]
-        int comb = 0; // [0, 1, 2, 3, 4, 5, 6] [none, single, rose, rose2, pea, walnut, v]
-        int chin = 0; // [0, 1, 2]          [none, waddles, beard]
+        int crest = 0; // [0, 1, 2, 3]          [none, small, forward, big]
+        int fFeet = 0; // [0, 1, 2, 3]          [none, 1, 1&2, 1&2&3]
+        int comb = 0;  // [0, 1, 2, 3, 4, 5, 6] [none, single, rose, rose2, pea, walnut, v]
+        int chin = 0;  // [0, 1, 2, 3, 4, 5]    [none, small waddles, waddles, large waddles, peacomb waddles, beard waddles]
+        int beard = 0; // [0, 1, 2 ]            [none, beard, naked neck beard]
+        float size = 1;  // [] [
+        float height = 0; //this just puts the chicken on the ground
 
         if(genes[52] ==1 || genes[53] == 1){
             nakedNeck = true;
@@ -201,6 +252,9 @@ public class ModelEnhancedChicken extends ModelBase {
                 if(genes[46] == 3 && genes[47] == 3){
                     //peacomb
                     comb = 4;
+                    if(genes[80] == 2 && genes[81] == 2 && (genes[82] == 1 || genes[83] == 1) && genes[84] == 2 && genes[85] == 2){
+                        chin = 4;
+                    }
                 }else{
                     //walnut
                     comb = 5;
@@ -257,8 +311,50 @@ public class ModelEnhancedChicken extends ModelBase {
                 fFeet = fFeet + 1;
         }
 
+        //chicken size
+        if (genes[74] == 1){
+            size = size - 0.1F;
+        } else if (genes[74] == 3){
+            size = size + 0.1F;
+        }
+        if (genes[75] == 1){
+            size = size - 0.1F;
+        } else if (genes[75] == 3){
+            size = size + 0.1F;
+        }
+        if (genes[76] != 1 && genes[77] != 1){
+            if (genes[76] == 2 || genes[77] == 2){
+                size = size + 0.1F;
+            }else if (genes[76] == 3 && genes[77] == 3){
+                size = size + 0.2F;
+            }
+        }
+        if (genes[78] == 2 && genes[79] == 2){
+            size = size + 0.1F;
+        }
+        if (genes[7] == 2){
+            size = size - 0.2F;
+        }
+        if (genes[8] == 2){
+            if (size < 0.8){
+                size = size - 0.1F;
+            }else if(size < 1.4){
+                size = size - 0.2F;
+            }else{
+                size = size - 0.3F;
+            }
+        }
+        if (genes[20] != 1 && genes[21] != 1 && size > 0.9){
+            size = size - 0.1F;
+        }
 
+        if (size < 0.5){
+            size = 0.5F;
+        }
 
+        size = 0.5F;
+//        height = (2 * (size*size)) - (6 * size) + 4;
+          height = 1.5F;
 
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
@@ -266,7 +362,7 @@ public class ModelEnhancedChicken extends ModelBase {
         {
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.6F, 0.6F, 0.6F);
-            GlStateManager.translate(0.0F, 18.0F * scale, 0.1F);
+            GlStateManager.translate(0.0F, 19.0F * scale, 0.1F);
             if(nakedNeck){
                 this.headNakedNeck.render(scale);
             }else{
@@ -282,7 +378,7 @@ public class ModelEnhancedChicken extends ModelBase {
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GlStateManager.translate(0.0F, 35.0F * scale, 0.0F);
+            GlStateManager.translate(0.0F, 36.0F * scale, 0.0F);
             this.body.render(scale);
             this.rightLeg.render(scale);
             this.leftLeg.render(scale);
@@ -298,6 +394,9 @@ public class ModelEnhancedChicken extends ModelBase {
         }
         else
         {
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(size, size, size);
+            GlStateManager.translate(0.0F, height, 0.0F);
             if(nakedNeck){
                 this.headNakedNeck.render(scale);
             }else{
@@ -308,20 +407,20 @@ public class ModelEnhancedChicken extends ModelBase {
             }else if(chin == 2){
                 this.beard.render(scale);
             }
-            if(fFeet >= 1){
+            if(fFeet >= 1) {
                 this.leftFeather1.render(scale);
                 this.rightFeather1.render(scale);
-                if(fFeet >= 2){
+                if (fFeet >= 2) {
                     this.leftFeather2.render(scale);
                     this.rightFeather2.render(scale);
-                    if(fFeet == 3){
+                    if (fFeet == 3) {
                         this.leftFeather3.render(scale);
                         this.rightFeather3.render(scale);
                     }
                 }
             }
             if(comb == 1 && crest == 0){
-                this.combSingle.render(scale);
+                this.combLargeSingle.render(scale);
             }else if(comb == 2 && crest == 0){
                 this.combRose.render(scale);
             }else if(comb == 3){
@@ -347,6 +446,7 @@ public class ModelEnhancedChicken extends ModelBase {
             this.rightLeg.render(scale);
             this.leftLeg.render(scale);
             this.bill.render(scale);
+            GlStateManager.popMatrix();
         }
 
   }
@@ -380,13 +480,19 @@ public class ModelEnhancedChicken extends ModelBase {
         copyModelAngles(head, headNakedNeck);
 
         copyModelAngles(head, bill);
+        copyModelAngles(head, smallChin);
         copyModelAngles(head, chin);
+        copyModelAngles(head, bigChin);
+        copyModelAngles(head, beardChin);
+        copyModelAngles(head, peaChin);
 
         copyModelAngles(head, smallCrest);
         copyModelAngles(head, bigCrest);
         copyModelAngles(head, forwardCrest);
 
+        copyModelAngles(head, combSmallSingle);
         copyModelAngles(head, combSingle);
+        copyModelAngles(head, combLargeSingle);
         copyModelAngles(head, combRose);
         copyModelAngles(head, combRose2);
         copyModelAngles(head, combPea);

@@ -1228,11 +1228,27 @@ public class EnhancedChicken extends EntityAnimal {
             initialGenes[6] = (1);
         }
 
+        //dwarf [ normal, slight dwarf ]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[7] = (ThreadLocalRandom.current().nextInt(3)+1);
+
+        } else {
+            initialGenes[7] = (1);
+        }
+
+        //dwarf 2 [ normal, very dwarf ]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[8] = (ThreadLocalRandom.current().nextInt(3)+1);
+
+        } else {
+            initialGenes[8] = (1);
+        }
+
 /**
 * unused parent linked genes
 */
 
-        for (int i = 7; i < 20; i++ ) {
+        for (int i = 9; i < 20; i++ ) {
             initialGenes[i] = (10);
         }
 
@@ -1707,7 +1723,69 @@ public class EnhancedChicken extends EntityAnimal {
             initialGenes[73] = (1);
         }
 
-    // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken ai modifiers
+        //base size [ smaller, wildtype, larger ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[74] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[74] = (2);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[75] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[75] = (2);
+        }
+
+        //Size addition [ normal, larger, largest ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[76] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[76] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[77] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[77] = (1);
+        }
+
+        //Size multiplier [ normal, larger ] (second growth maybe?)
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[78] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[79] = (1);
+        }else{
+            initialGenes[78] = (1);
+            initialGenes[79] = (1);
+        }
+
+        //small comb [ small, normal ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[80] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[81] = (2);
+        }else{
+            initialGenes[80] = (2);
+            initialGenes[81] = (2);
+        }
+
+        //large comb [ large, normal ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[82] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[83] = (2);
+        }else{
+            initialGenes[82] = (2);
+            initialGenes[83] = (2);
+        }
+
+        //waddle reducer [ small, normal ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[84] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[85] = (2);
+        }else{
+            initialGenes[84] = (2);
+            initialGenes[85] = (2);
+        }
+
+    // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken AI modifiers
 
         return initialGenes;
     }

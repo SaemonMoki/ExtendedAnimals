@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.init;
 
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.items.RawChicken;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
@@ -24,7 +25,6 @@ public class ModItems {
     public static final Item EggGreyGreen = new EnhancedEgg ("eggGreyGreen", "egg_greygreen");
     public static final Item EggOlive = new EnhancedEgg ("eggOlive", "egg_olive");
     public static final Item EggGreenDark = new EnhancedEgg ("eggGreenDark", "egg_greendark");
+    public static final Item RawChickenPale = new RawChicken("rawChickenPale", "rawchicken_pale");
+    public static final Item RawChickenDark = new RawChicken("rawChickenDark", "rawchicken_dark");
 }
-
-//CHICKEN_COOKED_MELANIZED = null;
-//CHICKEN_RAW_MELANIZED = null;

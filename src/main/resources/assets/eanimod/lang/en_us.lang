@@ -13,9 +13,8 @@ item.eanimod.eggGrey.name=Grey Egg
 item.eanimod.eggGreyGreen.name=Green Egg
 item.eanimod.eggOlive.name=Olive Green Egg
 item.eanimod.eggGreenDark.name=Olive Green Egg
-
-item.chicken_raw_melanized.name=Raw Melanized Chicken
-item.chicken_cooked_melanized.name=Cooked Melanized Chicken
+item.eanimod.rawChickenPale.name=Raw Chicken
+item.eanimod.rawChickenDark.name=Raw Chicken
 
 //Blocks
 tile.eanimod.postOak.name=Oak Post

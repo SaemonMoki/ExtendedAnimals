@@ -375,9 +375,30 @@ public class ModelEnhancedChicken extends ModelBase {
             size = 0.5F;
         }
 
-        size = 0.5F;
-//        height = (2 * (size*size)) - (6 * size) + 4;
-          height = 1.5F;
+        if (Float.compare(size, (float) 0.5)==0) {
+            height = (float) 1.5;
+        } else if (Float.compare(size, (float) 0.6)==0) {
+            height = (float) 1.0;
+        } else if (Float.compare(size, (float) 0.7)==0) {
+            height = (float) 0.65;
+        } else if (Float.compare(size, (float) 0.8)==0) {
+            height = (float) 0.4;
+        } else if (Float.compare(size, (float) 0.9)==0) {
+            height = (float) 0.165;
+        } else if (Float.compare(size, (float) 1.0)==0) {
+            height = (float) 0.0;
+        } else if (Float.compare(size, (float) 1.1)==0) {
+            height = (float) -0.15;
+        } else if (Float.compare(size, (float) 1.2)==0) {
+            height = (float) -0.25;
+        } else if (Float.compare(size, (float) 1.3)==0) {
+           height = (float) -0.35;
+        } else if (Float.compare(size, (float) 1.4)==0) {
+            height = (float) -0.425;
+        } else {
+            //for size 1.5
+            height = (float) -0.5;
+        }
 
           //comb size [80 and 81 small / 82 and 83 large]
         if (genes[80] == 2){

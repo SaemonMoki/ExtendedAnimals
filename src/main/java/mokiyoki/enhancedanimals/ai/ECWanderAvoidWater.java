@@ -25,7 +25,7 @@ public class ECWanderAvoidWater extends EntityAIWander {
 
     public boolean shouldExecute() {
         if (!enhancedChicken.isRoosting()) {
-            super.shouldExecute();
+            return super.shouldExecute();
         }
         return false;
     }

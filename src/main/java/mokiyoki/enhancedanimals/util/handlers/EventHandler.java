@@ -2,8 +2,10 @@ package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityRabbit;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -23,6 +25,7 @@ public class EventHandler {
         if (entity instanceof EntityChicken) {
             EnhancedChicken enhancedChicken = new EnhancedChicken(world);
             enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
+            enhancedChicken.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(enhancedChicken)), (IEntityLivingData)null);
             world.spawnEntity(enhancedChicken);
             event.setCanceled(true);
         }

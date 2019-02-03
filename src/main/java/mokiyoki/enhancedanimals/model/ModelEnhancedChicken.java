@@ -248,19 +248,24 @@ public class ModelEnhancedChicken extends ModelBase {
         this.beardChin = new ModelRenderer(this, 0, 13);
         this.beardChin.addBox(-1.5F, -2.5F, -3.0F, 3, 1, 1, 0.0F);
 
-        this.beard = new ModelRenderer(this,22,14);
-        this.beard.addBox(-2.5F, (11.5F+combRy), (-5.5F+combRz), 2, 3, 3, 0.1F);
-        this.beard.setTextureOffset(22,14);
-        this.beard.addBox(0.5F, (11.5F+combRy), (-5.5F+combRz), 2, 3, 3, 0.1F);
-        this.beard.setTextureOffset(20,14);
-        this.beard.addBox(-2F, (12.5F+combRy), (-6.5F+combRz), 4, 3, 3, 0.1F);
+        this.beard = new ModelRenderer(this,22,15);
+        this.beard.addBox(-3F, -4F, -2F, 1, 2, 2);
+        this.beard.addBox(-2.5F, -3F, -2.75F, 2, 2, 2);
+        this.beard.setTextureOffset(20,16);
+        this.beard.addBox(-1F, -2.25F, -3F, 2, 2, 2);
+        this.beard.addBox(-0.5F, -2F, -3.75F, 1, 1, 1);
+        this.beard.setTextureOffset(22,15);
+        this.beard.addBox(2F, -4F, -2F, 1, 2, 2);
+        this.beard.addBox(0.5F, -3F, -2.75F, 2, 2, 2);
 
-        this.beardNN = new ModelRenderer(this,22,14);
-        this.beardNN.addBox(-2.5F, (11.5F+combRy), (-5.5F+combRz), 2, 3, 3, 0.1F);
-        this.beardNN.setTextureOffset(22,14);
-        this.beardNN.addBox(0.5F, (11.5F+combRy), (-5.5F+combRz), 2, 3, 3, 0.1F);
-        this.beardNN.setTextureOffset(20,14);
-        this.beardNN.addBox(-2F, (12.5F+combRy), (-6.5F+combRz), 4, 2, 3, 0.1F);
+        this.beardNN = new ModelRenderer(this,22,15);
+        this.beardNN.addBox(-3F, -4F, -2F, 1, 2, 2);
+        this.beardNN.addBox(-2F, -3F, -2.75F, 2, 2, 2);
+        this.beardNN.setTextureOffset(20,16);
+        this.beardNN.addBox(-0.5F, -2F, -3.5F, 1, 1, 1);
+        this.beardNN.setTextureOffset(22,15);
+        this.beardNN.addBox(2F, -4F, -2F, 1, 2, 2);
+        this.beardNN.addBox(0F, -3F, -2.75F, 2, 2, 2);
 
 
         this.body.addChild(rightWing);
@@ -484,7 +489,7 @@ public class ModelEnhancedChicken extends ModelBase {
         } else {
             GlStateManager.pushMatrix();
             GlStateManager.scale(size, size, size);
-            GlStateManager.translate(0.0F, height * scale, 0.0F);
+            GlStateManager.translate(0.0F, height, 0.0F);
             if (nakedNeck) {
                 this.headNakedNeck.render(scale);
             } else {
@@ -497,7 +502,7 @@ public class ModelEnhancedChicken extends ModelBase {
                 this.beardNN.render(scale);
             }
 
-            if ((wSize == 3 || wSize == 4)) {
+            if ((wSize == 2 || wSize == 3 || wSize == 4)) {
 
                 if (beard != 0 && (comb == 1 || comb == 2 || comb == 3)) {
                     this.beardChin.render(scale);
@@ -506,12 +511,13 @@ public class ModelEnhancedChicken extends ModelBase {
                 if (beard == 0) {
                     if (comb == 4 || comb == 5) {
                         this.peaChin.render(scale);
-                    }else{
-                        this.bigChin.render(scale);
                     }
                 }
-            } else if (beard == 0 && (comb != 4 && comb != 5)){
-                if (wSize == 2 || wSize == 1){
+            }
+            if (beard == 0 && (comb != 4 && comb != 5)){
+                if (wSize == 4 || wSize == 3){
+                    this.bigChin.render(scale);
+                } else if (wSize == 2 || wSize == 1){
                     this.chin.render(scale);
                 }else{
                     this.smallChin.render(scale);
@@ -611,6 +617,7 @@ public class ModelEnhancedChicken extends ModelBase {
         copyModelAngles(head, combV);
 
         copyModelAngles(head, beard);
+        copyModelAngles(head, beardNN);
 
         //leg stuff
         this.rightLeg.rotationPointY = 15F;

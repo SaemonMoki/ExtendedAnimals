@@ -134,7 +134,7 @@ public class EnhancedChicken extends EntityAnimal {
     public EnhancedChicken(World worldIn) {
         super(worldIn);
         this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
-        this.timeUntilNextEgg = this.rand.nextInt(2000); //TODO make some genes to alter these numbers
+        this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
         this.setPathPriority(PathNodeType.WATER, 0.0F); //TODO investigate what this do and how/if needed
     }
 
@@ -211,7 +211,7 @@ public class EnhancedChicken extends EntityAnimal {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(3.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 
@@ -293,6 +293,22 @@ public class EnhancedChicken extends EntityAnimal {
     {
         this.isDead = true;
     }
+
+
+    public void onDeath(DamageSource cause)
+    {
+        super.onDeath(cause);
+
+        if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1))
+        {
+            this.entityDropItem(new ItemStack(ModItems.RawChickenDark, 1, 0), 0.0F);
+        }else{
+            this.entityDropItem(new ItemStack(Items.CHICKEN, 1, 0), 0.0F);
+        }
+
+        this.entityDropItem(new ItemStack(Items.FEATHER, 1, 0), 0.0F);
+    }
+
 
     protected SoundEvent getAmbientSound()
     {

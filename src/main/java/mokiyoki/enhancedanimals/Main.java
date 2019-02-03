@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
 import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
+import mokiyoki.enhancedanimals.init.Smelting;
 import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.util.Reference;
 
@@ -41,6 +42,7 @@ public class Main {
     @EventHandler
     public static void init(FMLInitializationEvent event) {
         proxy.init(event);
+        Smelting.init();
     }
 
     @EventHandler

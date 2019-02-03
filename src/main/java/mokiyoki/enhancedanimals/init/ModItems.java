@@ -26,6 +26,6 @@ public class ModItems {
     public static final Item EggGreyGreen = new EnhancedEgg ("eggGreyGreen", "egg_greygreen");
     public static final Item EggOlive = new EnhancedEgg ("eggOlive", "egg_olive");
     public static final Item EggGreenDark = new EnhancedEgg ("eggGreenDark", "egg_greendark");
-    public static final Item RawChickenDark = new RawChicken("rawChickenDark", "rawchicken_dark");
-    public static final Item CookedChickenDark = new CookedChicken("cookedChickenDark", "cookedchicken_dark");
+    public static final Item RawChickenDark = new RawChicken("rawChickenDark", "rawchicken_dark", 2, 1.2F, true);
+    public static final Item CookedChickenDark = new CookedChicken("cookedChickenDark", "cookedchicken_dark", 6, 7.2F, false);
 }

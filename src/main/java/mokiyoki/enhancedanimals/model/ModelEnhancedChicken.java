@@ -27,9 +27,11 @@ public class ModelEnhancedChicken extends ModelBase {
     private final ModelRenderer bigCrest;
     private final ModelRenderer smallCrest;
     private final ModelRenderer forwardCrest;
+    private final ModelRenderer combXtraSmallSingle;
     private final ModelRenderer combSmallSingle;
     private final ModelRenderer combSingle;
     private final ModelRenderer combLargeSingle;
+    private final ModelRenderer combXtraLargeSingle;
     private final ModelRenderer combRose;
     private final ModelRenderer combRose2;
     private final ModelRenderer combPea;
@@ -84,15 +86,23 @@ public class ModelEnhancedChicken extends ModelBase {
         int combSy = -3;
         int combSz = 3;
 
-        this.combSmallSingle = new ModelRenderer(this,0,14);
-        this.combSmallSingle.addBox(-0.5F, (-3.0F+combSy), (-6F+combSz), 1, 1, 1);
-        this.combSmallSingle.addBox(-0.5F, (-3.5F+combSy), (-6F+combSz), 1, 1, 1);
-        this.combSmallSingle.addBox(-0.5F, (-4.5F+combSy), (-5F+combSz), 1, 2, 1);
-        this.combSmallSingle.addBox(-0.5F, (-4F+combSy), (-4F+combSz), 1, 1, 1);
-        this.combSmallSingle.addBox(-0.5F, (-4.5F+combSy), (-3F+combSz), 1, 2, 1);
-        this.combSmallSingle.addBox(-0.5F, (-3.5F+combSy), (-2F+combSz), 1, 1, 1);
+        this.combXtraSmallSingle = new ModelRenderer(this,0,14);
+        this.combXtraSmallSingle.addBox(-0.5F, (-3.5F+combSy), (-5.5F+combSz), 1, 2, 1, -0.25F);
+        this.combXtraSmallSingle.addBox(-0.5F, (-4F+combSy), (-5F+combSz), 1, 2, 1,-0.25F);
+        this.combXtraSmallSingle.addBox(-0.5F, (-3.75F+combSy), (-4.5F+combSz), 1, 1, 1,-0.25F);
+        this.combXtraSmallSingle.addBox(-0.5F, (-4.25F+combSy), (-4F+combSz), 1, 2, 1,-0.25F);
+        this.combXtraSmallSingle.addBox(-0.5F, (-3.75F+combSy), (-3.5F+combSz), 1, 1, 1,-0.25F);
+        this.combXtraSmallSingle.addBox(-0.5F, (-4F+combSy), (-3.25F+combSz), 1, 1, 1,-0.25F);
 
-        this.combSingle = new ModelRenderer(this,0,14);
+        this.combSmallSingle = new ModelRenderer(this,0,13);
+        this.combSmallSingle.addBox(-0.5F, -6.75F, -2.25F, 1, 2, 1, -0.125F);
+        this.combSmallSingle.addBox(-0.5F, -7.5F, -1.75F, 1, 1, 1, -0.125F);
+        this.combSmallSingle.addBox(-0.5F, -6.75F, -1.5F, 1, 1, 2, -0.125F);
+        this.combSmallSingle.addBox(-0.5F, -7.5F, -0.5F, 1, 1, 1, -0.125F);
+        this.combSmallSingle.addBox(-0.5F, -6.75F, 0F, 1, 1, 1, -0.125F);
+        this.combSmallSingle.addBox(-0.5F, -7F, 0.75F, 1, 1, 1, -0.125F);
+
+        this.combSingle = new ModelRenderer(this,0,13);
         this.combSingle.addBox(-0.5F, (-3.0F+combSy), (-6F+combSz), 1, 1, 1);
         this.combSingle.addBox(-0.5F, (-3.5F+combSy), (-6F+combSz), 1, 1, 1);
         this.combSingle.addBox(-0.5F, (-4.5F+combSy), (-5F+combSz), 1, 2, 1);
@@ -110,6 +120,18 @@ public class ModelEnhancedChicken extends ModelBase {
         this.combLargeSingle.addBox(-0.5F, (-5.5F+combSy), (-1F+combSz), 1, 3, 1);
         this.combLargeSingle.addBox(-0.5F, (-4F+combSy), (0F+combSz), 1, 1, 1);
 
+        this.combXtraLargeSingle = new ModelRenderer(this,0,13);
+        this.combXtraLargeSingle.addBox(-0.5F, (-5.5F+combSy), (-6.5F+combSz), 1, 2, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, (-4.5F+combSy), (-6F+combSz), 1, 3, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, (-7F+combSy), (-5F+combSz), 1, 4, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, (-5.5F+combSy), (-4F+combSz), 1, 3, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, (-6.5F+combSy), (-3F+combSz), 1, 4, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, (-7.5F+combSy), (-2.5F+combSz), 1, 1, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, (-5.5F+combSy), (-2F+combSz), 1, 3, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, (-6.5F+combSy), (-1F+combSz), 1, 4, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, (-7F+combSy), (-0.5F+combSz), 1, 1, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, (-5F+combSy), (0F+combSz), 1, 2, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, (-5.5F+combSy), (1F+combSz), 1, 2, 1);
 
         this.combRose = new ModelRenderer(this,0,15);
         this.combRose.addBox(-0.5F, (9F+combRy), (-6F+combRz), 1, 1, 1, 0.5F);
@@ -241,6 +263,7 @@ public class ModelEnhancedChicken extends ModelBase {
         int beard = 0; // [0, 1, 2 ]            [none, beard, naked neck beard]
         float size = 1;  // [] [
         float height = 0; //this just puts the chicken on the ground
+        int cSize = 0; // [0, 1, 2, 3, 4]
 
         if(genes[52] ==1 || genes[53] == 1){
             nakedNeck = true;
@@ -356,6 +379,20 @@ public class ModelEnhancedChicken extends ModelBase {
 //        height = (2 * (size*size)) - (6 * size) + 4;
           height = 1.5F;
 
+          //comb size [80 and 81 small / 82 and 83 large]
+        if (genes[80] == 2){
+            cSize = cSize + 1;
+        }
+        if (genes[81] == 2){
+            cSize = cSize +1;
+        }
+        if (genes[82] == 1){
+            cSize = cSize +1;
+        }
+        if (genes[83] == 1){
+            cSize = cSize +1;
+        }
+
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
         if (this.isChild)
@@ -420,7 +457,17 @@ public class ModelEnhancedChicken extends ModelBase {
                 }
             }
             if(comb == 1 && crest == 0){
-                this.combLargeSingle.render(scale);
+                if (cSize == 0) {
+                    this.combXtraSmallSingle.render(scale);
+                } else if (cSize == 1) {
+                    this.combSmallSingle.render(scale);
+                } else if (cSize == 2) {
+                    this.combSingle.render(scale);
+                } else if (cSize == 3) {
+                    this.combLargeSingle.render(scale);
+                } else {
+                    this.combXtraLargeSingle.render(scale);
+                }
             }else if(comb == 2 && crest == 0){
                 this.combRose.render(scale);
             }else if(comb == 3){
@@ -490,9 +537,11 @@ public class ModelEnhancedChicken extends ModelBase {
         copyModelAngles(head, bigCrest);
         copyModelAngles(head, forwardCrest);
 
+        copyModelAngles(head, combXtraSmallSingle);
         copyModelAngles(head, combSmallSingle);
         copyModelAngles(head, combSingle);
         copyModelAngles(head, combLargeSingle);
+        copyModelAngles(head, combXtraLargeSingle);
         copyModelAngles(head, combRose);
         copyModelAngles(head, combRose2);
         copyModelAngles(head, combPea);

@@ -1785,7 +1785,7 @@ public class EnhancedChicken extends EntityAnimal {
             initialGenes[85] = (2);
         }
 
-    // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken AI modifiers
+    // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken ai modifiers
 
         return initialGenes;
     }

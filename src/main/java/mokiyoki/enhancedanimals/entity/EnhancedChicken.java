@@ -181,15 +181,17 @@ public class EnhancedChicken extends EntityAnimal {
 
     public int[] getSharedGenes() {
         String sharedGenes = ((String)this.dataManager.get(SHARED_GENES)).toString();
+        int[] sharedGenesArray;
         if(sharedGenes.isEmpty()){
-            return null;
-        }
-        String[] genesToSplit = sharedGenes.split(",");
-        int[] sharedGenesArray = new int[genesToSplit.length];
-
-        for (int i = 0; i < sharedGenesArray.length; i++) {
-            //parse and store each value into int[] to be returned
-            sharedGenesArray[i] = Integer.parseInt(genesToSplit[i]);
+            sharedGenesArray = createInitialGenes();
+            setSharedGenes(sharedGenesArray);
+        } else {
+            String[] genesToSplit = sharedGenes.split(",");
+            sharedGenesArray = new int[genesToSplit.length];
+            for (int i = 0; i < sharedGenesArray.length; i++) {
+                //parse and store each value into int[] to be returned
+                sharedGenesArray[i] = Integer.parseInt(genesToSplit[i]);
+            }
         }
         return sharedGenesArray;
     }

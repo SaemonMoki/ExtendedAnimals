@@ -30,8 +30,8 @@ public class ModelRegistryHandler {
         registerModel(ModItems.EggGreyGreen);
         registerModel(ModItems.EggOlive);
         registerModel(ModItems.EggGreenDark);
-        registerModel(ModItems.RawChickenPale);
         registerModel(ModItems.RawChickenDark);
+        registerModel(ModItems.CookedChickenDark);
 
         registerModel(Item.getItemFromBlock(ModBlocks.PostAcacia));
         registerModel(Item.getItemFromBlock(ModBlocks.PostBirch));

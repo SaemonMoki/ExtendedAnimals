@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.init;
 
+import mokiyoki.enhancedanimals.items.CookedChicken;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.items.RawChicken;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -25,6 +26,6 @@ public class ModItems {
     public static final Item EggGreyGreen = new EnhancedEgg ("eggGreyGreen", "egg_greygreen");
     public static final Item EggOlive = new EnhancedEgg ("eggOlive", "egg_olive");
     public static final Item EggGreenDark = new EnhancedEgg ("eggGreenDark", "egg_greendark");
-    public static final Item RawChickenPale = new RawChicken("rawChickenPale", "rawchicken_pale");
     public static final Item RawChickenDark = new RawChicken("rawChickenDark", "rawchicken_dark");
+    public static final Item CookedChickenDark = new CookedChicken("cookedChickenDark", "cookedchicken_dark");
 }

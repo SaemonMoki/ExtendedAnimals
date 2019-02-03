@@ -62,7 +62,7 @@ public class EnhancedChicken extends EntityAnimal {
         [17] none,solid,birchen,duckwing,wheaten,quail,columbian,darkbrown,lakenvelder,moorhead,blacktail,penciled,bsinglelace,singlelace,doublelace,spangled,partridge-penciled */
     private static final String[] CHICKEN_TEXTURES_PATTERN = new String[] {
         "pattern_solid.png","pattern_solid_blue.png", "pattern_solid_splash.png","pattern_solid_splashlav.png","pattern_solid_splashdun.png",                                   // 0
-        "pattern_solid_splashchoc.png", "pattern_solid_lav.png","pattern_solid_white.png", "pattern_solid_dun.png", "pattern_solid_choc.png",                                   // 5
+        "pattern_solid_splashchoc.png", "pattern_solid_lav.png","ground_solid_silver.png", "pattern_solid_dun.png", "pattern_solid_choc.png",                                   // 5
         "pattern_birchen.png", "pattern_birchen_blue.png", "pattern_birchen_splash.png","pattern_birchen_splashlav.png","pattern_birchen_splashdun.png",                        //10
         "pattern_birchen_splashchoc.png","pattern_birchen_lav.png", "pattern_birchen_white.png", "pattern_birchen_dun.png", "pattern_birchen_choc.png",                         //15
         "pattern_duckwing.png","pattern_duckwing_blue.png", "pattern_duckwing_splash.png","pattern_duckwing_splashlav.png","pattern_duckwing_splashdun.png",                    //20
@@ -1162,9 +1162,6 @@ public class EnhancedChicken extends EntityAnimal {
                 wildType = 4;
             }
 
-
-
-
 /**
  * parent linked genes
  */
@@ -1785,6 +1782,42 @@ public class EnhancedChicken extends EntityAnimal {
         }else{
             initialGenes[84] = (2);
             initialGenes[85] = (2);
+        }
+
+        //wing placement near back [ centered, up on back, centered2 ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[86] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[87] = (1);
+        }else{
+            initialGenes[86] = (1);
+            initialGenes[87] = (1);
+        }
+
+        //wings down [ centered, tilted down, pointed down ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[88] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[89] = (1);
+        }else{
+            initialGenes[88] = (1);
+            initialGenes[89] = (1);
+        }
+
+        //wing length [ normal, 5 short ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[90] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[91] = (1);
+        }else {
+            initialGenes[90] = (1);
+            initialGenes[91] = (1);
+        }
+
+        //wing thickness [ normal, 3 wide ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[92] = (ThreadLocalRandom.current().nextInt(2) + 1);
+                initialGenes[93] = (1);
+            }else {
+                initialGenes[92] = (1);
+                initialGenes[93] = (1);
         }
 
     // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken ai modifiers

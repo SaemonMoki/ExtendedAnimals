@@ -48,7 +48,11 @@ public class ModelEnhancedChicken extends ModelBase {
     private final ModelRenderer leftFeather2;
     private final ModelRenderer leftFeather3;
     private final ModelRenderer rightWing;
+    private final ModelRenderer rightWingShort;
+    private final ModelRenderer rightWingSmall;
     private final ModelRenderer leftWing;
+    private final ModelRenderer leftWingShort;
+    private final ModelRenderer leftWingSmall;
     private final ModelRenderer bill;
     private final ModelRenderer smallChin;
     private final ModelRenderer chin;
@@ -205,9 +209,25 @@ public class ModelEnhancedChicken extends ModelBase {
         this.rightWing.addBox(0.0F, 0.0F, -3.0F, 1, 4, 6);
         this.rightWing.setRotationPoint(-4.0F, 13.0F, 1.0F);
 
+        this.rightWingShort = new ModelRenderer(this, 35, 0);
+        this.rightWingShort.addBox(0.0F, 0.0F, -3.0F, 1, 4, 6, -0.125F);
+        this.rightWingShort.setRotationPoint(-4.0F, 13.0F, 1.0F);
+
+        this.rightWingSmall = new ModelRenderer(this, 35, 0);
+        this.rightWingSmall.addBox(0.0F, 0.0F, -3.0F, 1, 4, 6, -0.25F);
+        this.rightWingSmall.setRotationPoint(-4.0F, 13.0F, 1.0F);
+
         this.leftWing = new ModelRenderer(this, 49, 0);
         this.leftWing.addBox(-1.0F, 0.0F, -3.0F, 1, 4, 6);
         this.leftWing.setRotationPoint(4.0F, 13.0F, 1.0F);
+
+        this.leftWingShort = new ModelRenderer(this, 49, 0);
+        this.leftWingShort.addBox(-1.0F, 0.0F, -3.0F, 1, 4, 6, -0.125F);
+        this.leftWingShort.setRotationPoint(4.0F, 13.0F, 1.0F);
+
+        this.leftWingSmall = new ModelRenderer(this, 49, 0);
+        this.leftWingSmall.addBox(-1.0F, 0.0F, -3.0F, 1, 4, 6, -0.25F);
+        this.leftWingSmall.setRotationPoint(4.0F, 13.0F, 1.0F);
 
         this.bill = new ModelRenderer(this, 30, 0);
         this.bill.addBox(-1.0F, -4.0F, -4.0F, 2, 2, 2, 0.0F);
@@ -249,8 +269,8 @@ public class ModelEnhancedChicken extends ModelBase {
     }
 
 
-    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale){
-        EnhancedChicken enhancedChicken = (EnhancedChicken)entityIn;
+    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        EnhancedChicken enhancedChicken = (EnhancedChicken) entityIn;
 
         this.roosting = enhancedChicken.isRoosting();
 
@@ -259,119 +279,118 @@ public class ModelEnhancedChicken extends ModelBase {
         int crest = 0; // [0, 1, 2, 3]          [none, small, forward, big]
         int fFeet = 0; // [0, 1, 2, 3]          [none, 1, 1&2, 1&2&3]
         int comb = 0;  // [0, 1, 2, 3, 4, 5, 6] [none, single, rose, rose2, pea, walnut, v]
-        int chin = 0;  // [0, 1, 2, 3, 4, 5]    [none, small waddles, waddles, large waddles, peacomb waddles, beard waddles]
+//        int chin = 0;  // [0, 1, 2, 3]    [none, waddles, peacomb waddles, beard waddles]
         int beard = 0; // [0, 1, 2 ]            [none, beard, naked neck beard]
         float size = 1;  // [] [
         float height = 0; //this just puts the chicken on the ground
         int cSize = 0; // [0, 1, 2, 3, 4]
+        int wSize = 0; // [0, 1, 2, 3, 4]
+        int wingSize = 0; // [0, 1, 2]
 
-        if(genes[52] ==1 || genes[53] == 1){
+        if (genes[52] == 1 || genes[53] == 1) {
             nakedNeck = true;
         }
 
-        if(genes[50] == 1 && genes[51] == 1){
-            if (genes[48] == 1 || genes[49] == 1){
-                chin = 0;
-                if(genes[46] == 3 && genes[47] == 3){
+        if (genes[50] == 1 && genes[51] == 1) {
+            if (genes[48] == 1 || genes[49] == 1) {
+                if (genes[46] == 3 && genes[47] == 3) {
                     //peacomb
                     comb = 4;
-                    if(genes[80] == 2 && genes[81] == 2 && (genes[82] == 1 || genes[83] == 1) && genes[84] == 2 && genes[85] == 2){
-                        chin = 4;
-                    }
-                }else{
+                } else {
                     //walnut
                     comb = 5;
                 }
-            }else{
-                chin = 1;
-                if(genes[46] == 3 && genes[47] == 3) {
+            } else {
+                if (genes[46] == 3 && genes[47] == 3) {
                     //single comb
                     comb = 1;
-                }else if(genes[46] == 1 || genes[47] == 1){
+                } else if (genes[46] == 1 || genes[47] == 1) {
                     //rose comb
                     comb = 2;
-                }else{
+                } else {
                     //rose comb2
                     comb = 3;
                 }
             }
-        }else{
-            if(genes[46] == 3 && genes[47] == 3 && genes[48] == 2 && genes[49] == 2){
+        } else {
+            if (genes[46] == 3 && genes[47] == 3 && genes[48] == 2 && genes[49] == 2) {
                 //v comb
                 comb = 6;
-                chin = 1;
-            }else{
-                if(genes[48] == 2 && genes[49] == 2){
+            } else {
+                if (genes[48] == 2 && genes[49] == 2) {
                     //only waddles
-                    chin = 1;
                 }
             }
         }
 
         //bearded
-        if (genes[56] == 1 || genes[57] == 1){
-            chin = 2;
+        if (genes[56] == 1 || genes[57] == 1) {
+            if (genes[52] == 1 || genes[53] == 1) {
+                beard = 2;
+            } else {
+                beard = 1;
+            }
         }
 
         //crestedness
-        if((genes[54] == 2 || genes[55] == 2) && (genes[54] != 1 && genes[55] != 1)){
-                crest = 2;
-        }else if(genes[54] == 1 || genes[55] == 1){
-            if(genes[54] == genes[55]){
+        if ((genes[54] == 2 || genes[55] == 2) && (genes[54] != 1 && genes[55] != 1)) {
+            crest = 2;
+        } else if (genes[54] == 1 || genes[55] == 1) {
+            if (genes[54] == genes[55]) {
                 crest = 3;
-            }else{
+            } else {
                 crest = 1;
             }
         }
 
         //feather feets
-        if(genes[58] == 1 || genes[59] == 1) {
+        if (genes[58] == 1 || genes[59] == 1) {
             fFeet = fFeet + 1;
-        }else if(genes[58] == 2 || genes[59] == 2){
+        } else if (genes[58] == 2 || genes[59] == 2) {
             fFeet = fFeet + 2;
         }
         if (genes[60] == 1 || genes[61] == 1) {
-                fFeet = fFeet + 1;
+            fFeet = fFeet + 1;
         }
 
         //chicken size
-        if (genes[74] == 1){
+        if (genes[74] == 1) {
             size = size - 0.1F;
-        } else if (genes[74] == 3){
+        } else if (genes[74] == 3) {
             size = size + 0.1F;
         }
-        if (genes[75] == 1){
+        if (genes[75] == 1) {
             size = size - 0.1F;
-        } else if (genes[75] == 3){
+        } else if (genes[75] == 3) {
             size = size + 0.1F;
         }
-        if (genes[76] != 1 && genes[77] != 1){
-            if (genes[76] == 2 || genes[77] == 2){
+        if (genes[76] != 1 && genes[77] != 1) {
+            if (genes[76] == 2 || genes[77] == 2) {
                 size = size + 0.1F;
-            }else if (genes[76] == 3 && genes[77] == 3){
+            } else if (genes[76] == 3 && genes[77] == 3) {
                 size = size + 0.2F;
             }
         }
-        if (genes[78] == 2 && genes[79] == 2){
+        if (genes[78] == 2 && genes[79] == 2) {
             size = size + 0.1F;
         }
-        if (genes[7] == 2){
+        if (genes[7] == 2) {
             size = size - 0.2F;
         }
-        if (genes[8] == 2){
-            if (size < 0.8){
+        if (genes[8] == 2) {
+            if (size < 0.8) {
                 size = size - 0.1F;
-            }else if(size < 1.4){
+            } else if (size < 1.4) {
                 size = size - 0.2F;
-            }else{
+            } else {
                 size = size - 0.3F;
             }
         }
-        if (genes[20] != 1 && genes[21] != 1 && size > 0.9){
+        if (genes[20] != 1 && genes[21] != 1 && size > 0.9) {
             size = size - 0.1F;
         }
 
-        if (size < 0.5){
+        if (size < 0.5) {
             size = 0.5F;
         }
 
@@ -400,37 +419,50 @@ public class ModelEnhancedChicken extends ModelBase {
             height = (float) -0.5;
         }
 
-          //comb size [80 and 81 small / 82 and 83 large]
-        if (genes[80] == 2){
+        //comb size [80 and 81 small / 82 and 83 large]
+        if (genes[80] == 2) {
             cSize = cSize + 1;
         }
-        if (genes[81] == 2){
-            cSize = cSize +1;
+        if (genes[81] == 2) {
+            cSize = cSize + 1;
         }
-        if (genes[82] == 1){
-            cSize = cSize +1;
+        if (genes[82] == 1) {
+            cSize = cSize + 1;
         }
-        if (genes[83] == 1){
-            cSize = cSize +1;
+        if (genes[83] == 1) {
+            cSize = cSize + 1;
+        }
+
+        wSize = cSize;
+
+        if (genes[84] == 1 && genes[85] == 1 && wSize > 0) {
+            wSize = wSize - 1;
+        }
+
+        if (genes[90] == 1 || genes[91] == 1){
+            wingSize = 2;
+        } else if (genes[92] == 1 || genes[92] == 1){
+            wingSize = 1;
         }
 
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
-        if (this.isChild)
-        {
+        if (this.isChild) {
             GlStateManager.pushMatrix();
             GlStateManager.scale(0.6F, 0.6F, 0.6F);
             GlStateManager.translate(0.0F, 19.0F * scale, 0.1F);
-            if(nakedNeck){
+            if (nakedNeck) {
                 this.headNakedNeck.render(scale);
-            }else{
+            } else {
                 this.head.render(scale);
             }
             this.bill.render(scale);
-            if(chin == 2){
+            if (beard == 1) {
                 this.beard.render(scale);
+            } else if (beard == 2) {
+                this.beardNN.render(scale);
             }
-            if(crest >= 1){
+            if (crest >= 1) {
                 this.forwardCrest.render(scale);
             }
             GlStateManager.popMatrix();
@@ -440,43 +472,52 @@ public class ModelEnhancedChicken extends ModelBase {
             this.body.render(scale);
             this.rightLeg.render(scale);
             this.leftLeg.render(scale);
-            if(fFeet >= 1){
-                this.leftFeather1.render(scale);
-                this.rightFeather1.render(scale);
-                if(fFeet >= 2){
-                    this.leftFeather2.render(scale);
-                    this.rightFeather2.render(scale);
-                }
-            }
-            GlStateManager.popMatrix();
-        }
-        else
-        {
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(size, size, size);
-            GlStateManager.translate(0.0F, height, 0.0F);
-            if(nakedNeck){
-                this.headNakedNeck.render(scale);
-            }else{
-                this.head.render(scale);
-            }
-            if(chin == 1) {
-                this.chin.render(scale);
-            }else if(chin == 2){
-                this.beard.render(scale);
-            }
-            if(fFeet >= 1) {
+            if (fFeet >= 1) {
                 this.leftFeather1.render(scale);
                 this.rightFeather1.render(scale);
                 if (fFeet >= 2) {
                     this.leftFeather2.render(scale);
                     this.rightFeather2.render(scale);
-                    if (fFeet == 3) {
-                        this.leftFeather3.render(scale);
-                        this.rightFeather3.render(scale);
-                    }
                 }
             }
+            GlStateManager.popMatrix();
+        } else {
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(size, size, size);
+            GlStateManager.translate(0.0F, height * scale, 0.0F);
+            if (nakedNeck) {
+                this.headNakedNeck.render(scale);
+            } else {
+                this.head.render(scale);
+            }
+
+            if (beard == 1) {
+                this.beard.render(scale);
+            } else if (beard == 2) {
+                this.beardNN.render(scale);
+            }
+
+            if ((wSize == 3 || wSize == 4)) {
+
+                if (beard != 0 && (comb == 1 || comb == 2 || comb == 3)) {
+                    this.beardChin.render(scale);
+                }
+
+                if (beard == 0) {
+                    if (comb == 4 || comb == 5) {
+                        this.peaChin.render(scale);
+                    }else{
+                        this.bigChin.render(scale);
+                    }
+                }
+            } else if (beard == 0 && (comb != 4 && comb != 5)){
+                if (wSize == 2 || wSize == 1){
+                    this.chin.render(scale);
+                }else{
+                    this.smallChin.render(scale);
+                }
+            }
+
             if(comb == 1 && crest == 0){
                 if (cSize == 0) {
                     this.combXtraSmallSingle.render(scale);

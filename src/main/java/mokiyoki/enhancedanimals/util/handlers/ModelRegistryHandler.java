@@ -30,8 +30,16 @@ public class ModelRegistryHandler {
         registerModel(ModItems.EggGreyGreen);
         registerModel(ModItems.EggOlive);
         registerModel(ModItems.EggGreenDark);
+        registerModel(ModItems.RawChickenDarkSmall);
         registerModel(ModItems.RawChickenDark);
+        registerModel(ModItems.RawChickenDarkBig);
+        registerModel(ModItems.RawChickenPaleSmall);
+        registerModel(ModItems.RawChickenPaleBig);
+        registerModel(ModItems.CookedChickenDarkSmall);
         registerModel(ModItems.CookedChickenDark);
+        registerModel(ModItems.CookedChickenDarkBig);
+        registerModel(ModItems.CookedChickenPaleSmall);
+        registerModel(ModItems.CookedChickenPaleBig);
 
         registerModel(Item.getItemFromBlock(ModBlocks.PostAcacia));
         registerModel(Item.getItemFromBlock(ModBlocks.PostBirch));

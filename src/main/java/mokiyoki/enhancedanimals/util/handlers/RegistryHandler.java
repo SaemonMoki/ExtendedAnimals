@@ -43,7 +43,8 @@ public class RegistryHandler {
     public static void registerItems(Register<Item> event) {
         final Item[] items = {ModItems.EggWhite,ModItems.EggCream,ModItems.EggCreamDark,ModItems.EggPink,ModItems.EggPinkDark,ModItems.EggBrown,ModItems.EggBrownDark,
                               ModItems.EggBlue,ModItems.EggGreenLight,ModItems.EggGreen,ModItems.EggGrey,ModItems.EggGreyGreen,ModItems.EggOlive,ModItems.EggGreenDark,
-                              ModItems.RawChickenDark, ModItems.CookedChickenDark};
+                              ModItems.RawChickenDarkSmall, ModItems.RawChickenDark, ModItems.RawChickenDarkBig, ModItems.CookedChickenDarkSmall, ModItems.CookedChickenDark,
+                              ModItems.CookedChickenDarkBig, ModItems.RawChickenPaleSmall, ModItems.RawChickenPaleBig, ModItems.CookedChickenPaleSmall, ModItems.CookedChickenPaleBig};
 
         final Item[] itemBlocks = {
                 new ItemBlock(ModBlocks.PostAcacia).setRegistryName(ModBlocks.PostAcacia.getRegistryName()),

@@ -122,6 +122,20 @@ public class EnhancedChicken extends EntityAnimal {
     private EntityAIEatGrass entityAIEatGrass;
     private ECSandBath ecSandBath;
 
+    /** these are lethal creeper chicken only information */
+
+//    private static final DataParameter<Integer> STATE = EntityDataManager.<Integer>createKey(EnhancedChicken.class, DataSerializers.VARINT);
+//    private static final DataParameter<Boolean> IGNITED = EntityDataManager.<Boolean>createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
+//
+//    private int lastActiveTime;
+//    /** The amount of time since the creeper was close enough to the player to ignite */
+//    private int timeSinceIgnited;
+//    private int fuseTime = 60;
+//    /** Explosion radius for this creeper. */
+//    private int explosionRadius = 2;
+
+    /** end of lethal creeper chicken only information */
+
     private static final int WTC = 90;
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
@@ -251,7 +265,7 @@ public class EnhancedChicken extends EntityAnimal {
         }
 
         if (!this.world.isRemote){
-            leathalGenes();
+            lethalGenes();
         }
 
         if (this.world.isRemote)
@@ -278,13 +292,83 @@ public class EnhancedChicken extends EntityAnimal {
     {
     }
 
-    public void leathalGenes(){
-        if(genes[70] == 2 && genes[71] == 2){
-            this.setDead();
-            this.isDead = true;
-        }else if(genes[72] == 2 && genes[73] == 2){
-            this.setDead();
-            this.isDead = true;
+//    public void onUpdate()
+//    {
+//        if (this.isEntityAlive() && genes[70] == 2 && genes[71] == 2)
+//        {
+//            this.lastActiveTime = this.timeSinceIgnited;
+//
+//            if (this.hasIgnited())
+//            {
+//                this.setCreeperState(1);
+//            }
+//
+//            int i = this.getCreeperState();
+//
+//            if (i > 0 && this.timeSinceIgnited == 0)
+//            {
+//                this.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
+//            }
+//
+//            this.timeSinceIgnited += i;
+//
+//            if (this.timeSinceIgnited < 0)
+//            {
+//                this.timeSinceIgnited = 0;
+//            }
+//
+//            if (this.timeSinceIgnited >= this.fuseTime)
+//            {
+//                this.timeSinceIgnited = this.fuseTime;
+//                this.explode();
+//            }
+//        }
+//
+//        super.onUpdate();
+//    }
+//
+//    public int getCreeperState()
+//    {
+//        return ((Integer)this.dataManager.get(STATE)).intValue();
+//    }
+//
+//    /**
+//     * Sets the state of creeper, -1 to idle and 1 to be 'in fuse'
+//     */
+//    public void setCreeperState(int state)
+//    {
+//        this.dataManager.set(STATE, Integer.valueOf(state));
+//    }
+//
+//    private void explode()
+//    {
+//        if (!this.world.isRemote)
+//        {
+//            boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.world, this);
+//            this.dead = true;
+//            this.world.createExplosion(this, this.posX, this.posY, this.posZ, (float)this.explosionRadius, flag);
+//            this.setDead();
+//        }
+//    }
+//
+//    public boolean hasIgnited()
+//    {
+//        return ((Boolean)this.dataManager.get(IGNITED)).booleanValue();
+//    }
+//
+//    public void ignite()
+//    {
+//        this.dataManager.set(IGNITED, Boolean.valueOf(true));
+//    }
+
+    public void lethalGenes(){
+
+        if(genes[70] == 2 && genes[71] == 2) {
+                this.setDead();
+                this.isDead = true;
+        } else if(genes[72] == 2 && genes[73] == 2){
+                this.setDead();
+                this.isDead = true;
         }
     }
 
@@ -296,14 +380,114 @@ public class EnhancedChicken extends EntityAnimal {
 
 
     public void onDeath(DamageSource cause)
+
     {
         super.onDeath(cause);
 
+        float size = 1;
+
         if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1))
+
         {
-            this.entityDropItem(new ItemStack(ModItems.RawChickenDark, 1, 0), 0.0F);
+            //chicken size
+            if (genes[74] == 1) {
+                size = size - 0.1F;
+            } else if (genes[74] == 3) {
+                size = size + 0.1F;
+            }
+            if (genes[75] == 1) {
+                size = size - 0.1F;
+            } else if (genes[75] == 3) {
+                size = size + 0.1F;
+            }
+            if (genes[76] != 1 && genes[77] != 1) {
+                if (genes[76] == 2 || genes[77] == 2) {
+                    size = size + 0.1F;
+                } else if (genes[76] == 3 && genes[77] == 3) {
+                    size = size + 0.2F;
+                }
+            }
+            if (genes[78] == 2 && genes[79] == 2) {
+                size = size + 0.1F;
+            }
+            if (genes[7] == 2) {
+                size = size - 0.2F;
+            }
+            if (genes[8] == 2) {
+                if (size < 0.8) {
+                    size = size - 0.1F;
+                } else if (size < 1.4) {
+                    size = size - 0.2F;
+                } else {
+                    size = size - 0.3F;
+                }
+            }
+            if (genes[20] != 1 && genes[21] != 1 && size > 0.9) {
+                size = size - 0.1F;
+            }
+
+            if (size < 0.5F) {
+                size = 0.5F;
+            }
+
+            if (size <= 0.8F) {
+                this.entityDropItem(new ItemStack(ModItems.RawChickenDarkSmall, 1, 0), 0.0F);
+            } else if (size >= 1.3F) {
+                this.entityDropItem(new ItemStack(ModItems.RawChickenDarkBig, 1, 0), 0.0F);
+            }else {
+                this.entityDropItem(new ItemStack(ModItems.RawChickenDark, 1, 0), 0.0F);
+            }
+
         }else{
-            this.entityDropItem(new ItemStack(Items.CHICKEN, 1, 0), 0.0F);
+
+            //chicken size
+            if (genes[74] == 1) {
+                size = size - 0.1F;
+            } else if (genes[74] == 3) {
+                size = size + 0.1F;
+            }
+            if (genes[75] == 1) {
+                size = size - 0.1F;
+            } else if (genes[75] == 3) {
+                size = size + 0.1F;
+            }
+            if (genes[76] != 1 && genes[77] != 1) {
+                if (genes[76] == 2 || genes[77] == 2) {
+                    size = size + 0.1F;
+                } else if (genes[76] == 3 && genes[77] == 3) {
+                    size = size + 0.2F;
+                }
+            }
+            if (genes[78] == 2 && genes[79] == 2) {
+                size = size + 0.1F;
+            }
+            if (genes[7] == 2) {
+                size = size - 0.2F;
+            }
+            if (genes[8] == 2) {
+                if (size < 0.8) {
+                    size = size - 0.1F;
+                } else if (size < 1.4) {
+                    size = size - 0.2F;
+                } else {
+                    size = size - 0.3F;
+                }
+            }
+            if (genes[20] != 1 && genes[21] != 1 && size > 0.9) {
+                size = size - 0.1F;
+            }
+
+            if (size < 0.5F) {
+                size = 0.5F;
+            }
+
+            if (size <= 0.8F) {
+                this.entityDropItem(new ItemStack(ModItems.RawChickenPaleSmall, 1, 0), 0.0F);
+            } else if (size >= 1.3F) {
+                this.entityDropItem(new ItemStack(ModItems.RawChickenPaleBig, 1, 0), 0.0F);
+            }else {
+                this.entityDropItem(new ItemStack(Items.CHICKEN, 1, 0), 0.0F);
+            }
         }
 
         this.entityDropItem(new ItemStack(Items.FEATHER, 1, 0), 0.0F);
@@ -1833,6 +2017,32 @@ public class EnhancedChicken extends EntityAnimal {
             }else {
                 initialGenes[92] = (1);
                 initialGenes[93] = (1);
+        }
+
+        //wing angle multiplier [none, 1.1, 1.5]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[94] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[94] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[95] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[95] = (1);
+        }
+
+        //wing angle multiplier 2 [none, 1.1, 1.5]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[96] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[96] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[97] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[97] = (1);
         }
 
     // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken ai modifiers

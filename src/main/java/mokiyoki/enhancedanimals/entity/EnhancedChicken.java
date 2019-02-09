@@ -379,16 +379,12 @@ public class EnhancedChicken extends EntityAnimal {
     }
 
 
-    public void onDeath(DamageSource cause)
-
-    {
+    public void onDeath(DamageSource cause) {
         super.onDeath(cause);
 
         float size = 1;
 
-        if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1))
-
-        {
+        if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
             //chicken size
             if (genes[74] == 1) {
                 size = size - 0.1F;
@@ -431,11 +427,11 @@ public class EnhancedChicken extends EntityAnimal {
             }
 
             if (size <= 0.8F) {
-                this.entityDropItem(new ItemStack(ModItems.RawChickenDarkSmall, 1, 0), 0.0F);
+                this.dropItem(ModItems.RawChickenDarkSmall, 1);
             } else if (size >= 1.3F) {
-                this.entityDropItem(new ItemStack(ModItems.RawChickenDarkBig, 1, 0), 0.0F);
+                this.dropItem(ModItems.RawChickenDarkBig, 1);
             }else {
-                this.entityDropItem(new ItemStack(ModItems.RawChickenDark, 1, 0), 0.0F);
+                this.dropItem(ModItems.RawChickenDark, 1);
             }
 
         }else{
@@ -482,15 +478,14 @@ public class EnhancedChicken extends EntityAnimal {
             }
 
             if (size <= 0.8F) {
-                this.entityDropItem(new ItemStack(ModItems.RawChickenPaleSmall, 1, 0), 0.0F);
+                this.dropItem(ModItems.RawChickenPaleSmall, 1);
             } else if (size >= 1.3F) {
-                this.entityDropItem(new ItemStack(ModItems.RawChickenPaleBig, 1, 0), 0.0F);
+                this.dropItem(ModItems.RawChickenPaleBig, 1);
             }else {
-                this.entityDropItem(new ItemStack(Items.CHICKEN, 1, 0), 0.0F);
+                this.dropItem(Items.CHICKEN, 1);
             }
         }
-
-        this.entityDropItem(new ItemStack(Items.FEATHER, 1, 0), 0.0F);
+        this.dropItem(Items.FEATHER, 1);
     }
 
 

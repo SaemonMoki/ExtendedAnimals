@@ -24,6 +24,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * Created by moki on 24/08/2018.
@@ -57,6 +58,22 @@ public class RegistryHandler {
 
         event.getRegistry().registerAll(items);
         event.getRegistry().registerAll(itemBlocks);
+
+        OreDictionary.registerOre("egg", ModItems.EggWhite);
+        OreDictionary.registerOre("egg", ModItems.EggCream);
+        OreDictionary.registerOre("egg", ModItems.EggCreamDark);
+        OreDictionary.registerOre("egg", ModItems.EggPink);
+        OreDictionary.registerOre("egg", ModItems.EggPinkDark);
+        OreDictionary.registerOre("egg", ModItems.EggBrown);
+        OreDictionary.registerOre("egg", ModItems.EggBrownDark);
+        OreDictionary.registerOre("egg", ModItems.EggBlue);
+        OreDictionary.registerOre("egg", ModItems.EggGreenLight);
+        OreDictionary.registerOre("egg", ModItems.EggGreen);
+        OreDictionary.registerOre("egg", ModItems.EggGrey);
+        OreDictionary.registerOre("egg", ModItems.EggGreyGreen);
+        OreDictionary.registerOre("egg", ModItems.EggOlive);
+        OreDictionary.registerOre("egg", ModItems.EggGreenDark);
+
     }
 
 //    @SubscribeEvent

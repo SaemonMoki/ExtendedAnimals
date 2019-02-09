@@ -381,111 +381,114 @@ public class EnhancedChicken extends EntityAnimal {
 
     public void onDeath(DamageSource cause) {
         super.onDeath(cause);
+        if (!this.world.isRemote) {
 
-        float size = 1;
+            float size = 1;
 
-        if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
-            //chicken size
-            if (genes[74] == 1) {
-                size = size - 0.1F;
-            } else if (genes[74] == 3) {
-                size = size + 0.1F;
-            }
-            if (genes[75] == 1) {
-                size = size - 0.1F;
-            } else if (genes[75] == 3) {
-                size = size + 0.1F;
-            }
-            if (genes[76] != 1 && genes[77] != 1) {
-                if (genes[76] == 2 || genes[77] == 2) {
-                    size = size + 0.1F;
-                } else if (genes[76] == 3 && genes[77] == 3) {
-                    size = size + 0.2F;
-                }
-            }
-            if (genes[78] == 2 && genes[79] == 2) {
-                size = size + 0.1F;
-            }
-            if (genes[7] == 2) {
-                size = size - 0.2F;
-            }
-            if (genes[8] == 2) {
-                if (size < 0.8) {
+            if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
+                //chicken size
+                if (genes[74] == 1) {
                     size = size - 0.1F;
-                } else if (size < 1.4) {
-                    size = size - 0.2F;
-                } else {
-                    size = size - 0.3F;
+                } else if (genes[74] == 3) {
+                    size = size + 0.1F;
                 }
-            }
-            if (genes[20] != 1 && genes[21] != 1 && size > 0.9) {
-                size = size - 0.1F;
-            }
+                if (genes[75] == 1) {
+                    size = size - 0.1F;
+                } else if (genes[75] == 3) {
+                    size = size + 0.1F;
+                }
+                if (genes[76] != 1 && genes[77] != 1) {
+                    if (genes[76] == 2 || genes[77] == 2) {
+                        size = size + 0.1F;
+                    } else if (genes[76] == 3 && genes[77] == 3) {
+                        size = size + 0.2F;
+                    }
+                }
+                if (genes[78] == 2 && genes[79] == 2) {
+                    size = size + 0.1F;
+                }
+                if (genes[7] == 2) {
+                    size = size - 0.2F;
+                }
+                if (genes[8] == 2) {
+                    if (size < 0.8) {
+                        size = size - 0.1F;
+                    } else if (size < 1.4) {
+                        size = size - 0.2F;
+                    } else {
+                        size = size - 0.3F;
+                    }
+                }
+                if (genes[20] != 1 && genes[21] != 1 && size > 0.9) {
+                    size = size - 0.1F;
+                }
 
-            if (size < 0.5F) {
-                size = 0.5F;
-            }
+                if (size < 0.5F) {
+                    size = 0.5F;
+                }
 
-            if (size <= 0.8F) {
+                if (size <= 0.8F) {
                 this.dropItem(ModItems.RawChickenDarkSmall, 1);
-            } else if (size >= 1.3F) {
+                } else if (size >= 1.3F) {
                 this.dropItem(ModItems.RawChickenDarkBig, 1);
-            }else {
-                this.dropItem(ModItems.RawChickenDark, 1);
-            }
-
-        }else{
-
-            //chicken size
-            if (genes[74] == 1) {
-                size = size - 0.1F;
-            } else if (genes[74] == 3) {
-                size = size + 0.1F;
-            }
-            if (genes[75] == 1) {
-                size = size - 0.1F;
-            } else if (genes[75] == 3) {
-                size = size + 0.1F;
-            }
-            if (genes[76] != 1 && genes[77] != 1) {
-                if (genes[76] == 2 || genes[77] == 2) {
-                    size = size + 0.1F;
-                } else if (genes[76] == 3 && genes[77] == 3) {
-                    size = size + 0.2F;
-                }
-            }
-            if (genes[78] == 2 && genes[79] == 2) {
-                size = size + 0.1F;
-            }
-            if (genes[7] == 2) {
-                size = size - 0.2F;
-            }
-            if (genes[8] == 2) {
-                if (size < 0.8) {
-                    size = size - 0.1F;
-                } else if (size < 1.4) {
-                    size = size - 0.2F;
                 } else {
-                    size = size - 0.3F;
+                this.dropItem(ModItems.RawChickenDark, 1);
+                }
+
+            } else {
+
+                //chicken size
+                if (genes[74] == 1) {
+                    size = size - 0.1F;
+                } else if (genes[74] == 3) {
+                    size = size + 0.1F;
+                }
+                if (genes[75] == 1) {
+                    size = size - 0.1F;
+                } else if (genes[75] == 3) {
+                    size = size + 0.1F;
+                }
+                if (genes[76] != 1 && genes[77] != 1) {
+                    if (genes[76] == 2 || genes[77] == 2) {
+                        size = size + 0.1F;
+                    } else if (genes[76] == 3 && genes[77] == 3) {
+                        size = size + 0.2F;
+                    }
+                }
+                if (genes[78] == 2 && genes[79] == 2) {
+                    size = size + 0.1F;
+                }
+                if (genes[7] == 2) {
+                    size = size - 0.2F;
+                }
+                if (genes[8] == 2) {
+                    if (size < 0.8) {
+                        size = size - 0.1F;
+                    } else if (size < 1.4) {
+                        size = size - 0.2F;
+                    } else {
+                        size = size - 0.3F;
+                    }
+                }
+                if (genes[20] != 1 && genes[21] != 1 && size > 0.9) {
+                    size = size - 0.1F;
+                }
+
+                if (size < 0.5F) {
+                    size = 0.5F;
+                }
+
+                if (size <= 0.8F) {
+                this.dropItem(ModItems.RawChickenPaleSmall, 1);
+                } else if (size >= 1.3F) {
+                this.dropItem(ModItems.RawChickenPaleBig, 1);
+                } else {
+                this.dropItem(Items.CHICKEN, 1);
                 }
             }
-            if (genes[20] != 1 && genes[21] != 1 && size > 0.9) {
-                size = size - 0.1F;
-            }
+            this.dropItem(Items.FEATHER, 1);
 
-            if (size < 0.5F) {
-                size = 0.5F;
-            }
-
-            if (size <= 0.8F) {
-                this.dropItem(ModItems.RawChickenPaleSmall, 1);
-            } else if (size >= 1.3F) {
-                this.dropItem(ModItems.RawChickenPaleBig, 1);
-            }else {
-                this.dropItem(Items.CHICKEN, 1);
-            }
         }
-        this.dropItem(Items.FEATHER, 1);
     }
 
 

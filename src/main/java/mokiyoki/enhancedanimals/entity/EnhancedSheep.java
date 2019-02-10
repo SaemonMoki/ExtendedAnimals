@@ -1,22 +1,28 @@
 package mokiyoki.enhancedanimals.entity;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemDye;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -24,17 +30,24 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
-public class EnhancedSheep extends EntityAnimal {
+public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.common.IShearable{
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedSheep.class, DataSerializers.STRING);
+    private static final DataParameter<Byte> DYE_COLOR = EntityDataManager.<Byte>createKey(EnhancedSheep.class, DataSerializers.BYTE);
+
 
     private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(Item.getItemFromBlock(Blocks.MELON_BLOCK), Item.getItemFromBlock(Blocks.PUMPKIN), Item.getItemFromBlock(Blocks.TALLGRASS), Item.getItemFromBlock(Blocks.HAY_BLOCK), Items.CARROT, Items.WHEAT);
 
+    /** Map from EnumDyeColor to RGB values for passage to GlStateManager.color() */
+    private static final Map<EnumDyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(EnumDyeColor.class);
+
     private static final int WTC = 90;
+    private final List<String> sheepTextures = new ArrayList<>();
+    private final List<String> sheepFleeceTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 50;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
@@ -44,7 +57,7 @@ public class EnhancedSheep extends EntityAnimal {
     public EnhancedSheep(World worldIn) {
         super(worldIn);
         this.setSize(0.4F, 0.5F);
-        //TODO Add the jumping stuff
+
     }
 
     private int sheepTimer;
@@ -74,6 +87,14 @@ public class EnhancedSheep extends EntityAnimal {
     protected void entityInit() {
         super.entityInit();
         this.dataManager.register(SHARED_GENES, new String());
+        this.dataManager.register(DYE_COLOR, Byte.valueOf((byte)0));
+    }
+
+    protected void applyEntityAttributes()
+    {
+        super.applyEntityAttributes();
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(8.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
     }
 
     public void setSharedGenes(int[] genes) {
@@ -102,6 +123,26 @@ public class EnhancedSheep extends EntityAnimal {
         return sharedGenesArray;
     }
 
+    public EnumDyeColor getFleeceColor()
+    {
+        return EnumDyeColor.byMetadata(this.dataManager.get(DYE_COLOR) & 15);
+    }
+
+    /**
+     * Sets the wool color of this sheep
+     */
+    public void setFleeceColor(EnumDyeColor color)
+    {
+        byte b0 = this.dataManager.get(DYE_COLOR);
+        this.dataManager.set(DYE_COLOR, (byte) (b0 & 240 | color.getMetadata() & 15));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public static float[] getDyeRgb(EnumDyeColor dyeColor)
+    {
+        return DYE_TO_RGB.get(dyeColor);
+    }
+
     public EntityAgeable createChild(EntityAgeable ageable) {
 //
 //    }
@@ -116,8 +157,190 @@ public class EnhancedSheep extends EntityAnimal {
         return enhancedsheep;
     }
 
+    private static float[] createSheepColor(EnumDyeColor dyeColor)
+    {
+        float[] afloat = dyeColor.getColorComponentValues();
+        float f = 0.75F;
+        return new float[] {afloat[0] * 0.75F, afloat[1] * 0.75F, afloat[2] * 0.75F};
+    }
+
+    public boolean getSheared()
+    {
+        return (this.dataManager.get(DYE_COLOR) & 16) != 0;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public String getSheepTexture() {
+        if (this.sheepTextures.isEmpty()) {
+            this.setTexturePaths();
+        }
+        return this.sheepTextures.stream().collect(Collectors.joining(", ","[","]"));
+
+    }
+
+    @SideOnly(Side.CLIENT)
+    public String[] getVariantTexturePaths()
+    {
+        if (this.sheepTextures.isEmpty()) {
+            this.setTexturePaths();
+        }
+
+        return this.sheepTextures.stream().toArray(String[]::new);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void setTexturePaths() {
+        this.sheepTextures.add("sheep.png");
+    }
+
+    @SideOnly(Side.CLIENT)
+    public String getSheepFleeceTexture() {
+        if (this.sheepFleeceTextures.isEmpty()) {
+            this.setFleeceTexturePaths();
+        }
+        return this.sheepFleeceTextures.stream().collect(Collectors.joining(", ","[","]"));
+
+    }
+
+    @SideOnly(Side.CLIENT)
+    public String[] getVariantFleeceTexturePaths()
+    {
+        if (this.sheepFleeceTextures.isEmpty()) {
+            this.setFleeceTexturePaths();
+        }
+
+        return this.sheepFleeceTextures.stream().toArray(String[]::new);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void setFleeceTexturePaths() {
+        this.sheepFleeceTextures.add("sheep_wool.png");
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void handleStatusUpdate(byte id)
+    {
+        if (id == 10)
+        {
+            this.sheepTimer = 40;
+        }
+        else
+        {
+            super.handleStatusUpdate(id);
+        }
+    }
+
+
+    //EATING???
+
+    @SideOnly(Side.CLIENT)
+    public float getHeadRotationPointY(float p_70894_1_)
+    {
+        if (this.sheepTimer <= 0)
+        {
+            return 0.0F;
+        }
+        else if (this.sheepTimer >= 4 && this.sheepTimer <= 36)
+        {
+            return 1.0F;
+        }
+        else
+        {
+            return this.sheepTimer < 4 ? ((float)this.sheepTimer - p_70894_1_) / 4.0F : -((float)(this.sheepTimer - 40) - p_70894_1_) / 4.0F;
+        }
+    }
+    //EATING???
+    @SideOnly(Side.CLIENT)
+    public float getHeadRotationAngleX(float p_70890_1_)
+    {
+        if (this.sheepTimer > 4 && this.sheepTimer <= 36)
+        {
+            float f = ((float)(this.sheepTimer - 4) - p_70890_1_) / 32.0F;
+            return ((float)Math.PI / 5F) + ((float)Math.PI * 7F / 100F) * MathHelper.sin(f * 28.7F);
+        }
+        else
+        {
+            return this.sheepTimer > 0 ? ((float)Math.PI / 5F) : this.rotationPitch * 0.017453292F;
+        }
+    }
+
+
+    public boolean processInteract(EntityPlayer player, EnumHand hand)
+    {
+        ItemStack itemstack = player.getHeldItem(hand);
+
+//        if (false && itemstack.getItem() == Items.SHEARS && !this.getSheared() && !this.isChild())   //Forge: Moved to onSheared
+//        {
+//            if (!this.world.isRemote)
+//            {
+//                this.setSheared(true);
+//                int i = 1 + this.rand.nextInt(3);
+//
+//                for (int j = 0; j < i; ++j)
+//                {
+//                    EntityItem entityitem = this.entityDropItem(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, this.getFleeceColor().getMetadata()), 1.0F);
+//                    entityitem.motionY += (double)(this.rand.nextFloat() * 0.05F);
+//                    entityitem.motionX += (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.1F);
+//                    entityitem.motionZ += (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.1F);
+//                }
+//            }
+//
+//            itemstack.damageItem(1, player);
+//            this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, 1.0F);
+//        }
+
+        if (itemstack.getItem() instanceof ItemDye && !this.isChild() && !this.getSheared()) {
+                EnumDyeColor col = EnumDyeColor.byDyeDamage(itemstack.getItemDamage());
+                if (this.getFleeceColor() != col) {
+                    if (!player.isCreative())
+                        itemstack.shrink(1);
+
+                    this.setFleeceColor(col);
+                    return true;
+                }
+                return true;
+        }
+
+        return super.processInteract(player, hand);
+    }
+
+    /**
+     * make a sheep sheared if set to true
+     */
+    public void setSheared(boolean sheared) {
+        byte b0 = ((Byte)this.dataManager.get(DYE_COLOR)).byteValue();
+
+        if (sheared)
+        {
+            this.dataManager.set(DYE_COLOR, Byte.valueOf((byte)(b0 | 16)));
+        }
+        else
+        {
+            this.dataManager.set(DYE_COLOR, Byte.valueOf((byte)(b0 & -17)));
+        }
+    }
+
+    @Override public boolean isShearable(ItemStack item, net.minecraft.world.IBlockAccess world, BlockPos pos){ return !this.getSheared() && !this.isChild(); }
+    @Override
+    public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IBlockAccess world, BlockPos pos, int fortune)
+    {
+        this.setSheared(true);
+        int i = 1 + this.rand.nextInt(3);
+
+        java.util.List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
+        for (int j = 0; j < i; ++j)
+            ret.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, this.getFleeceColor().getMetadata()));
+
+        this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, 1.0F);
+        return ret;
+    }
+
+
     public void writeEntityToNBT(NBTTagCompound compound) {
         super.writeEntityToNBT(compound);
+
+        compound.setBoolean("Sheared", this.getSheared());
+        compound.setByte("Colour", (byte)this.getFleeceColor().getMetadata());
 
         //store this sheeps's genes
         NBTTagList geneList = new NBTTagList();
@@ -138,39 +361,14 @@ public class EnhancedSheep extends EntityAnimal {
         compound.setTag("FatherGenes", mateGeneList);
     }
 
-    @SideOnly(Side.CLIENT)
-    private void setTexturePaths() {
-        int[] genesForText = getSharedGenes();
-        if (genesForText != null) {
-
-            if(genesForText[4] == 6 && genesForText[5] == 6){
-                //Red Eyed White (albino)
-
-            }else{
-                if(genesForText[12] == 2 && genesForText[13] == 2){
-                    //Blue Eyed White
-
-                }else{
-
-                    if(genesForText[0] == 1 || genesForText[1] == 1){
-                        //agouti
-                    }else if(genesForText[0] == 2 || genesForText[1] == 2){
-                        //otter
-                    }else{
-                        //self
-                    }
-
-                } // not bew
-            } //not albino
-
-        } //if genes are not null
-    } // setTexturePaths end bracket
-
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
     public void readEntityFromNBT(NBTTagCompound compound) {
         super.readEntityFromNBT(compound);
+
+        this.setSheared(compound.getBoolean("Sheared"));
+        this.setFleeceColor(EnumDyeColor.byMetadata(compound.getByte("Color")));
 
         NBTTagList geneList = compound.getTagList("Genes", 10);
         for (int i = 0; i < geneList.tagCount(); ++i) {
@@ -253,7 +451,34 @@ public class EnhancedSheep extends EntityAnimal {
 
         this.genes = spawnGenes;
         setSharedGenes(genes);
+        this.setFleeceColor(getRandomSheepColor(this.world.rand));
         return livingdata;
+    }
+
+    public static EnumDyeColor getRandomSheepColor(Random random)
+    {
+        int i = random.nextInt(100);
+
+        if (i < 5)
+        {
+            return EnumDyeColor.BLACK;
+        }
+        else if (i < 10)
+        {
+            return EnumDyeColor.GRAY;
+        }
+        else if (i < 15)
+        {
+            return EnumDyeColor.SILVER;
+        }
+        else if (i < 18)
+        {
+            return EnumDyeColor.BROWN;
+        }
+        else
+        {
+            return random.nextInt(500) == 0 ? EnumDyeColor.PINK : EnumDyeColor.WHITE;
+        }
     }
 
     private int[] createInitialGenes() {
@@ -403,5 +628,15 @@ public class EnhancedSheep extends EntityAnimal {
             this.groupGenes = groupGenes;
         }
 
+    }
+
+    static
+    {
+        for (EnumDyeColor enumdyecolor : EnumDyeColor.values())
+        {
+            DYE_TO_RGB.put(enumdyecolor, createSheepColor(enumdyecolor));
+        }
+
+        DYE_TO_RGB.put(EnumDyeColor.WHITE, new float[] {0.9019608F, 0.9019608F, 0.9019608F});
     }
 }

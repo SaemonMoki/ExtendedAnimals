@@ -122,20 +122,6 @@ public class EnhancedChicken extends EntityAnimal {
     private EntityAIEatGrass entityAIEatGrass;
     private ECSandBath ecSandBath;
 
-    /** these are lethal creeper chicken only information */
-
-//    private static final DataParameter<Integer> STATE = EntityDataManager.<Integer>createKey(EnhancedChicken.class, DataSerializers.VARINT);
-//    private static final DataParameter<Boolean> IGNITED = EntityDataManager.<Boolean>createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
-//
-//    private int lastActiveTime;
-//    /** The amount of time since the creeper was close enough to the player to ignite */
-//    private int timeSinceIgnited;
-//    private int fuseTime = 60;
-//    /** Explosion radius for this creeper. */
-//    private int explosionRadius = 2;
-
-    /** end of lethal creeper chicken only information */
-
     private static final int WTC = 90;
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
@@ -291,75 +277,6 @@ public class EnhancedChicken extends EntityAnimal {
     public void fall(float distance, float damageMultiplier)
     {
     }
-
-//    public void onUpdate()
-//    {
-//        if (this.isEntityAlive() && genes[70] == 2 && genes[71] == 2)
-//        {
-//            this.lastActiveTime = this.timeSinceIgnited;
-//
-//            if (this.hasIgnited())
-//            {
-//                this.setCreeperState(1);
-//            }
-//
-//            int i = this.getCreeperState();
-//
-//            if (i > 0 && this.timeSinceIgnited == 0)
-//            {
-//                this.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
-//            }
-//
-//            this.timeSinceIgnited += i;
-//
-//            if (this.timeSinceIgnited < 0)
-//            {
-//                this.timeSinceIgnited = 0;
-//            }
-//
-//            if (this.timeSinceIgnited >= this.fuseTime)
-//            {
-//                this.timeSinceIgnited = this.fuseTime;
-//                this.explode();
-//            }
-//        }
-//
-//        super.onUpdate();
-//    }
-//
-//    public int getCreeperState()
-//    {
-//        return ((Integer)this.dataManager.get(STATE)).intValue();
-//    }
-//
-//    /**
-//     * Sets the state of creeper, -1 to idle and 1 to be 'in fuse'
-//     */
-//    public void setCreeperState(int state)
-//    {
-//        this.dataManager.set(STATE, Integer.valueOf(state));
-//    }
-//
-//    private void explode()
-//    {
-//        if (!this.world.isRemote)
-//        {
-//            boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.world, this);
-//            this.dead = true;
-//            this.world.createExplosion(this, this.posX, this.posY, this.posZ, (float)this.explosionRadius, flag);
-//            this.setDead();
-//        }
-//    }
-//
-//    public boolean hasIgnited()
-//    {
-//        return ((Boolean)this.dataManager.get(IGNITED)).booleanValue();
-//    }
-//
-//    public void ignite()
-//    {
-//        this.dataManager.set(IGNITED, Boolean.valueOf(true));
-//    }
 
     public void lethalGenes(){
 

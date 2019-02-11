@@ -56,8 +56,13 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
     public EnhancedSheep(World worldIn) {
         super(worldIn);
-        this.setSize(0.4F, 0.5F);
+        this.setSize(0.4F, 1F);
 
+    }
+
+    public float getEyeHeight()
+    {
+        return this.height;
     }
 
     private int sheepTimer;
@@ -451,34 +456,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
         this.genes = spawnGenes;
         setSharedGenes(genes);
-        this.setFleeceColor(getRandomSheepColor(this.world.rand));
         return livingdata;
-    }
-
-    public static EnumDyeColor getRandomSheepColor(Random random)
-    {
-        int i = random.nextInt(100);
-
-        if (i < 5)
-        {
-            return EnumDyeColor.BLACK;
-        }
-        else if (i < 10)
-        {
-            return EnumDyeColor.GRAY;
-        }
-        else if (i < 15)
-        {
-            return EnumDyeColor.SILVER;
-        }
-        else if (i < 18)
-        {
-            return EnumDyeColor.BROWN;
-        }
-        else
-        {
-            return random.nextInt(500) == 0 ? EnumDyeColor.PINK : EnumDyeColor.WHITE;
-        }
     }
 
     private int[] createInitialGenes() {

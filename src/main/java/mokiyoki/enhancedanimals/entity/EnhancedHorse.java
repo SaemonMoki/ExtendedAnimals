@@ -24,15 +24,24 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 public class EnhancedHorse extends EntityAnimal {
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedHorse.class, DataSerializers.STRING);
 
+    private static final String[] HORSE_TEXTURES_UNDER = new String[] {
+            "under_cream.png", "under_grey.png", "under_white.png"
+    };
+
     private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(Item.getItemFromBlock(Blocks.MELON_BLOCK), Item.getItemFromBlock(Blocks.PUMPKIN), Item.getItemFromBlock(Blocks.TALLGRASS), Item.getItemFromBlock(Blocks.HAY_BLOCK), Items.CARROT, Items.WHEAT);
+
+    private final List<String> horseTextures = new ArrayList<>();
 
     private static final int WTC = 90;
     private static final int GENES_LENGTH = 50;
@@ -125,6 +134,25 @@ public class EnhancedHorse extends EntityAnimal {
             mateGeneList.appendTag(nbttagcompound);
         }
         compound.setTag("FatherGenes", mateGeneList);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public String getHorseTexture() {
+        if (this.horseTextures.isEmpty()) {
+            this.setTexturePaths();
+        }
+        return this.horseTextures.stream().collect(Collectors.joining(", ","[","]"));
+
+    }
+
+    @SideOnly(Side.CLIENT)
+    public String[] getVariantTexturePaths()
+    {
+        if (this.horseTextures.isEmpty()) {
+            this.setTexturePaths();
+        }
+
+        return this.horseTextures.stream().toArray(String[]::new);
     }
 
     @SideOnly(Side.CLIENT)

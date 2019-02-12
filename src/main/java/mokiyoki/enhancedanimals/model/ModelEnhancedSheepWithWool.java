@@ -17,7 +17,7 @@ public class ModelEnhancedSheepWithWool extends ModelQuadruped
     {
         super(12, 0.0F);
         this.head = new ModelRenderer(this, 0, 0);
-        this.head.addBox(-3.0F, -4.0F, -4.0F, 6, 6, 6, 0.6F);
+        this.head.addBox(-3.0F, -10.0F, -4.0F, 6, 6, 6, 0.6F);
         this.head.setRotationPoint(0.0F, 6.0F, -8.0F);
         this.body = new ModelRenderer(this, 28, 8);
         this.body.addBox(-4.0F, -10.0F, -7.0F, 8, 16, 6, 1.75F);

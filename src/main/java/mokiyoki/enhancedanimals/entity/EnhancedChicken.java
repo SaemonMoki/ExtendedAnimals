@@ -94,7 +94,8 @@ public class EnhancedChicken extends EntityAnimal {
         "pattern_prdgpenciled.png", "pattern_prdgpenciled_blue.png", "pattern_prdgpenciled_splash.png","pattern_prdgpenciled_splashlav.png","pattern_prdgpenciled_splashdun.png",//150
         "pattern_prdgpenciled_splashchoc.png","pattern_prdgpenciled_lav.png", "pattern_prdgpenciled_white.png", "pattern_prdgpenciled_dun.png", "pattern_prdgpenciled_choc.png", //155
         "pattern_bluelaced",    //special case number 160
-        ""                      //special case patternless 161
+        "",                     //special case patternless 161
+        "48.png"                //high res test
     };
     private static final String[] CHICKEN_TEXTURES_WHITE = new String[] {
         "","white_barred.png","white_mottles.png","white_crested.png"

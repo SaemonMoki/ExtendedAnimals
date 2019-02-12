@@ -102,6 +102,16 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
     }
 
+    public void onLivingUpdate()
+    {
+        if (this.world.isRemote)
+        {
+            this.sheepTimer = Math.max(0, this.sheepTimer - 1);
+        }
+
+        super.onLivingUpdate();
+    }
+
     public void setSharedGenes(int[] genes) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < genes.length; i++) {
@@ -239,7 +249,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     //EATING???
 
     @SideOnly(Side.CLIENT)
-    public float getHeadRotationPointY(float p_70894_1_)
+    public float getHeadRotationPointY(float partialTickTime)
     {
         if (this.sheepTimer <= 0)
         {
@@ -251,16 +261,16 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         }
         else
         {
-            return this.sheepTimer < 4 ? ((float)this.sheepTimer - p_70894_1_) / 4.0F : -((float)(this.sheepTimer - 40) - p_70894_1_) / 4.0F;
+            return this.sheepTimer < 4 ? ((float)this.sheepTimer - partialTickTime) / 4.0F : -((float)(this.sheepTimer - 40) - partialTickTime) / 4.0F;
         }
     }
     //EATING???
     @SideOnly(Side.CLIENT)
-    public float getHeadRotationAngleX(float p_70890_1_)
+    public float getHeadRotationAngleX(float partialTickTime)
     {
         if (this.sheepTimer > 4 && this.sheepTimer <= 36)
         {
-            float f = ((float)(this.sheepTimer - 4) - p_70890_1_) / 32.0F;
+            float f = ((float)(this.sheepTimer - 4) - partialTickTime) / 32.0F;
             return ((float)Math.PI / 5F) + ((float)Math.PI * 7F / 100F) * MathHelper.sin(f * 28.7F);
         }
         else

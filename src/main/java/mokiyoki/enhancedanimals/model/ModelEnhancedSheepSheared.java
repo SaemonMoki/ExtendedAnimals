@@ -31,9 +31,10 @@ public class ModelEnhancedSheepSheared extends ModelBase {
         this.head.addBox(-2.5F, -8.0F, -5.0F, 5, 4, 4, 0.0F); //skull
         this.head.setTextureOffset(0, 8);
         this.head.addBox(-2.0F, -8.0F, -8.0F, 4, 3, 3, 0.0F); //nose
+//        this.head.addBox(-3.0F, 0.0F, -6.0F, 1, 2, 1, 0.0F); //horns duplicate it
+
         this.head.setTextureOffset(34, 0);
         this.head.addBox(-2.0F, -7.0F, -4.0F, 4, 9, 4, 0.0F); //neck
-//        this.head.addBox(-3.0F, 0.0F, -6.0F, 1, 2, 1, 0.0F); //horns duplicate it
 
         this.earsR = new ModelRenderer(this, 50, 0);
         this.earsR.addBox(-5.0F, -8.5F, -2.0F, 3, 2, 1, 0.0F); //ear right
@@ -128,7 +129,7 @@ public class ModelEnhancedSheepSheared extends ModelBase {
         this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
         this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
         this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        this.head.rotateAngleX = 1.2F + this.headRotationAngleX;   //might need to merge this with another line
+        this.head.rotateAngleX = 1F + this.headRotationAngleX;   //might need to merge this with another line
 
         copyModelAngles(head, earsR);
         copyModelAngles(head, earsL);

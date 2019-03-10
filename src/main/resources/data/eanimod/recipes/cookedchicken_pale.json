@@ -1,0 +1,9 @@
+{
+  "type": "smelting",
+  "ingredient": {
+    "item": "eanimod:rawchicken_pale"
+  },
+  "result": "eanimod:cookedchicken_pale",
+  "experience": 0.35,
+  "cookingtime": 200
+}

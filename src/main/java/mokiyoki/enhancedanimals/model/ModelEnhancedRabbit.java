@@ -1,16 +1,14 @@
 package mokiyoki.enhancedanimals.model;
 
-import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ModelEnhancedRabbit extends ModelBase
 {
     private final ModelRenderer rabbitLeftFoot;
@@ -101,16 +99,16 @@ public class ModelEnhancedRabbit extends ModelBase
         {
             float f = 1.5F;
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.56666666F, 0.56666666F, 0.56666666F);
-            GlStateManager.translate(0.0F, 22.0F * scale, 2.0F * scale);
+            GlStateManager.scalef(0.56666666F, 0.56666666F, 0.56666666F);
+            GlStateManager.translatef(0.0F, 22.0F * scale, 2.0F * scale);
             this.rabbitHead.render(scale);
             this.rabbitLeftEar.render(scale);
             this.rabbitRightEar.render(scale);
             this.rabbitNose.render(scale);
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GlStateManager.translate(0.0F, 36.0F * scale, 0.0F);
+            GlStateManager.scalef(0.4F, 0.4F, 0.4F);
+            GlStateManager.translatef(0.0F, 36.0F * scale, 0.0F);
             this.rabbitLeftFoot.render(scale);
             this.rabbitRightFoot.render(scale);
             this.rabbitBody.render(scale);
@@ -123,8 +121,8 @@ public class ModelEnhancedRabbit extends ModelBase
         else
         {
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.6F, 0.6F, 0.6F);
-            GlStateManager.translate(0.0F, 16.0F * scale, 0.0F);
+            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
+            GlStateManager.translatef(0.0F, 16.0F * scale, 0.0F);
             this.rabbitLeftFoot.render(scale);
             this.rabbitRightFoot.render(scale);
             this.rabbitBody.render(scale);

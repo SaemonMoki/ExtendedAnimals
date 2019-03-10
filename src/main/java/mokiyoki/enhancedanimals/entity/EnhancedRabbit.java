@@ -1,21 +1,16 @@
 package mokiyoki.enhancedanimals.entity;
 
-import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityRabbit;
-import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
@@ -28,17 +23,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+
+import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_RABBIT;
 
 public class EnhancedRabbit extends EntityAnimal {
 
@@ -100,7 +95,7 @@ public class EnhancedRabbit extends EntityAnimal {
         "skin_pink.png", "skin_brown.png", "skin_black.png", "skin_white.png"
     };
 
-    private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(Item.getItemFromBlock(Blocks.YELLOW_FLOWER), Item.getItemFromBlock(Blocks.TALLGRASS), Items.CARROT);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION_YELLOW, Items.CARROT, Items.GOLDEN_CARROT);
 
     private final List<String> rabbitTextures = new ArrayList<>();
 
@@ -114,7 +109,7 @@ public class EnhancedRabbit extends EntityAnimal {
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
     public EnhancedRabbit(World worldIn) {
-        super(worldIn);
+        super(ENHANCED_RABBIT, worldIn);
         this.setSize(0.4F, 0.5F);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
         //TODO Add the jumping stuff
@@ -123,9 +118,7 @@ public class EnhancedRabbit extends EntityAnimal {
     protected void initEntityAI() {
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(2, new EntityAIMate(this, 0.8D));
-        this.tasks.addTask(3, new EntityAITempt(this, 1.0D, Items.CARROT, false));
-        this.tasks.addTask(3, new EntityAITempt(this, 1.0D, Items.GOLDEN_CARROT, false));
-        this.tasks.addTask(3, new EntityAITempt(this, 1.0D, Item.getItemFromBlock(Blocks.YELLOW_FLOWER), false));
+        this.tasks.addTask(3, new EntityAITempt(this, 1.0D, TEMPTATION_ITEMS, false));
         this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 0.6D));
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
@@ -133,8 +126,8 @@ public class EnhancedRabbit extends EntityAnimal {
 
     //TODO put the rest of the jumping stuff here
 
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
     }
 
@@ -169,16 +162,15 @@ public class EnhancedRabbit extends EntityAnimal {
         return this.height;
     }
 
-    protected void applyEntityAttributes()
-    {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+    protected void registerAttributes() {
+        super.registerAttributes();
+        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
+        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 
-    public void onLivingUpdate()
+    public void livingTick()
     {
-        super.onLivingUpdate();
+        super.livingTick();
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
         this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
     }
@@ -203,19 +195,15 @@ public class EnhancedRabbit extends EntityAnimal {
         return SoundEvents.ENTITY_RABBIT_DEATH;
     }
 
-    protected void playStepSound(BlockPos pos, Block blockIn)
-    {
+    protected void playStepSound(BlockPos pos, Block blockIn) {
         this.playSound(SoundEvents.ENTITY_RABBIT_JUMP, 0.15F, 1.0F);
     }
 
-    public boolean isBreedingItem(ItemStack stack)
-    {
-        return TEMPTATION_ITEMS.contains(stack.getItem());
+    public boolean isBreedingItem(ItemStack stack) {
+        return TEMPTATION_ITEMS.test(stack);
     }
 
     public EntityAgeable createChild(EntityAgeable ageable) {
-//
-//    }
         this.mateGenes = ((EnhancedRabbit) ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
@@ -227,15 +215,15 @@ public class EnhancedRabbit extends EntityAnimal {
         return enhancedrabbit;
     }
 
-    public void writeEntityToNBT(NBTTagCompound compound) {
-        super.writeEntityToNBT(compound);
+    public void writeAdditional(NBTTagCompound compound) {
+        super.writeAdditional(compound);
 
         //store this rabbits's genes
         NBTTagList geneList = new NBTTagList();
         for (int i = 0; i < genes.length; i++) {
             NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInteger("Gene", genes[i]);
-            geneList.appendTag(nbttagcompound);
+            nbttagcompound.setInt("Gene", genes[i]);
+            geneList.add(nbttagcompound);
         }
         compound.setTag("Genes", geneList);
 
@@ -243,13 +231,13 @@ public class EnhancedRabbit extends EntityAnimal {
         NBTTagList mateGeneList = new NBTTagList();
         for (int i = 0; i < mateGenes.length; i++) {
             NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInteger("Gene", mateGenes[i]);
-            mateGeneList.appendTag(nbttagcompound);
+            nbttagcompound.setInt("Gene", mateGenes[i]);
+            mateGeneList.add(nbttagcompound);
         }
         compound.setTag("FatherGenes", mateGeneList);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getRabbitTexture() {
         if (this.rabbitTextures.isEmpty()) {
             this.setTexturePaths();
@@ -258,7 +246,7 @@ public class EnhancedRabbit extends EntityAnimal {
 
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String[] getVariantTexturePaths()
     {
         if (this.rabbitTextures.isEmpty()) {
@@ -268,7 +256,7 @@ public class EnhancedRabbit extends EntityAnimal {
         return this.rabbitTextures.stream().toArray(String[]::new);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
@@ -437,22 +425,22 @@ public class EnhancedRabbit extends EntityAnimal {
     } // setTexturePaths end bracket
 
     /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
+     * (abstract) Protected helper method to read subclass entity assets from NBT.
      */
-    public void readEntityFromNBT(NBTTagCompound compound) {
-        super.readEntityFromNBT(compound);
+    public void readAdditional(NBTTagCompound compound) {
+        super.readAdditional(compound);
 
-        NBTTagList geneList = compound.getTagList("Genes", 10);
-        for (int i = 0; i < geneList.tagCount(); ++i) {
-            NBTTagCompound nbttagcompound = geneList.getCompoundTagAt(i);
-            int gene = nbttagcompound.getInteger("Gene");
+        NBTTagList geneList = compound.getList("Genes", 10);
+        for (int i = 0; i < geneList.size(); ++i) {
+            NBTTagCompound nbttagcompound = geneList.getCompound(i);
+            int gene = nbttagcompound.getInt("Gene");
             genes[i] = gene;
         }
 
-        NBTTagList mateGeneList = compound.getTagList("FatherGenes", 10);
-        for (int i = 0; i < mateGeneList.tagCount(); ++i) {
-            NBTTagCompound nbttagcompound = mateGeneList.getCompoundTagAt(i);
-            int gene = nbttagcompound.getInteger("Gene");
+        NBTTagList mateGeneList = compound.getList("FatherGenes", 10);
+        for (int i = 0; i < mateGeneList.size(); ++i) {
+            NBTTagCompound nbttagcompound = mateGeneList.getCompound(i);
+            int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
 
@@ -500,15 +488,15 @@ public class EnhancedRabbit extends EntityAnimal {
 
     @Nullable
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
-        livingdata = super.onInitialSpawn(difficulty, livingdata);
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata, @Nullable NBTTagCompound itemNbt) {
+        livingdata = super.onInitialSpawn(difficulty, livingdata, itemNbt);
         int[] spawnGenes;
 
-        if (livingdata instanceof EnhancedRabbit.GroupData) {
-            spawnGenes = ((EnhancedRabbit.GroupData) livingdata).groupGenes;
+        if (livingdata instanceof GroupData) {
+            spawnGenes = ((GroupData) livingdata).groupGenes;
         } else {
             spawnGenes = createInitialGenes();
-            livingdata = new EnhancedRabbit.GroupData(spawnGenes);
+            livingdata = new GroupData(spawnGenes);
         }
 
         this.genes = spawnGenes;

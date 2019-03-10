@@ -1,13 +1,13 @@
 package mokiyoki.enhancedanimals.renderer;
 
-import com.google.common.collect.Lists;
 import net.minecraft.client.renderer.texture.LayeredTexture;
+import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.resources.IResource;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,11 +16,12 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * Created by saemon on 8/09/2018.
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class EnhancedLayeredTexture extends LayeredTexture {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -34,45 +35,39 @@ public class EnhancedLayeredTexture extends LayeredTexture {
     }
 
     @Override
-    public void loadTexture(IResourceManager resourceManager) throws IOException
-    {
-        this.deleteGlTexture();
-        BufferedImage bufferedimage = null;
+    public void loadTexture(IResourceManager manager) throws IOException {
+        Iterator<String> iterator = this.layeredTextureNames.iterator();
+        String s = iterator.next();
 
-        for (String s : this.layeredTextureNames)
-        {
-            IResource iresource = null;
-
-            try
-            {
-                if (s != null)
-                {
-                    iresource = resourceManager.getResource(new ResourceLocation(modLocation+s));
-                    BufferedImage bufferedimage1 = TextureUtil.readBufferedImage(iresource.getInputStream());
-
-                    if (bufferedimage == null)
-                    {
-                        bufferedimage = new BufferedImage(bufferedimage1.getWidth(), bufferedimage1.getHeight(), 2);
-                    }
-
-                    bufferedimage.getGraphics().drawImage(bufferedimage1, 0, 0, (ImageObserver)null);
+        try (
+                IResource iresource = manager.getResource(new ResourceLocation(modLocation+s));
+                NativeImage nativeimage = NativeImage.read(iresource.getInputStream());
+        ) {
+            while(true) {
+                if (!iterator.hasNext()) {
+                    TextureUtil.allocateTexture(this.getGlTextureId(), nativeimage.getWidth(), nativeimage.getHeight());
+                    nativeimage.uploadTextureSub(0, 0, 0, false);
+                    break;
                 }
 
-                continue;
+                String s1 = iterator.next();
+                if (s1 != null) {
+                    try (
+                            IResource iresource1 = manager.getResource(new ResourceLocation(modLocation+s1));
+                            NativeImage nativeimage1 = NativeImage.read(iresource1.getInputStream());
+                    ) {
+                        for(int i = 0; i < nativeimage1.getHeight(); ++i) {
+                            for(int j = 0; j < nativeimage1.getWidth(); ++j) {
+                                nativeimage.blendPixel(j, i, nativeimage1.getPixelRGBA(j, i));
+                            }
+                        }
+                    }
+                }
             }
-            catch (IOException ioexception)
-            {
-                LOGGER.error("Couldn't load enhanced layered image", (Throwable)ioexception);
-            }
-            finally
-            {
-                IOUtils.closeQuietly((Closeable)iresource);
-            }
-
-            return;
+        } catch (IOException ioexception) {
+            LOGGER.error("Couldn't load layered image", (Throwable)ioexception);
         }
 
-        TextureUtil.uploadTextureImage(this.getGlTextureId(), bufferedimage);
     }
 
 }

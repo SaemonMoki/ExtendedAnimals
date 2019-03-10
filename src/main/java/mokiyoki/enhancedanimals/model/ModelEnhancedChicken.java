@@ -1,19 +1,19 @@
 package mokiyoki.enhancedanimals.model;
 
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by saemon on 8/09/2018.
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ModelEnhancedChicken extends ModelBase {
 
     private boolean nesting = false; //TODO actually make some nesting ai
@@ -348,8 +348,6 @@ public class ModelEnhancedChicken extends ModelBase {
         this.beardNN.setTextureOffset(2,29);
         this.beardNN.addBox(2F, -4F, -2F, 1, 2, 2);
         this.beardNN.addBox(0F, -3F, -2.75F, 2, 2, 2);
-
-
     }
 
 
@@ -544,8 +542,8 @@ public class ModelEnhancedChicken extends ModelBase {
 
         if (this.isChild && size >= 0.65) {
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.6F, 0.6F, 0.6F);
-            GlStateManager.translate(0.0F, -1.8F + 1.8F/0.6F, 0.1F);
+            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
+            GlStateManager.translatef(0.0F, -1.8F + 1.8F/0.6F, 0.1F);
             if (nakedNeck) {
                 this.headNakedNeck.render(scale);
             } else {
@@ -564,8 +562,8 @@ public class ModelEnhancedChicken extends ModelBase {
 
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GlStateManager.translate(0.0F, -1.5F + 1.5F/0.4F, 0.0F);
+            GlStateManager.scalef(0.4F, 0.4F, 0.4F);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.4F, 0.0F);
 
             this.body.render(scale);
             this.rightLeg.render(scale);
@@ -592,8 +590,8 @@ public class ModelEnhancedChicken extends ModelBase {
 
 
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.3F, 0.3F, 0.3F);
-            GlStateManager.translate(0.0F, -1.6F + 1.6F/0.3F, 0.1F);
+            GlStateManager.scalef(0.3F, 0.3F, 0.3F);
+            GlStateManager.translatef(0.0F, -1.6F + 1.6F/0.3F, 0.1F);
             if (nakedNeck) {
                 this.headNakedNeck.render(scale);
             } else {
@@ -612,8 +610,8 @@ public class ModelEnhancedChicken extends ModelBase {
 
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.2F, 0.2F, 0.2F);
-            GlStateManager.translate(0.0F, -1.5F + 1.5F/0.2F, 0.0F);
+            GlStateManager.scalef(0.2F, 0.2F, 0.2F);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.2F, 0.0F);
 
             this.body.render(scale);
             this.rightLeg.render(scale);
@@ -639,8 +637,8 @@ public class ModelEnhancedChicken extends ModelBase {
 
         } else {
             GlStateManager.pushMatrix();
-            GlStateManager.scale(size, size, size);
-            GlStateManager.translate(0.0F, -1.5F + 1.5F/size, 0.0F);
+            GlStateManager.scalef(size, size, size);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/size, 0.0F);
             if (nakedNeck) {
                 this.headNakedNeck.render(scale);
             } else {

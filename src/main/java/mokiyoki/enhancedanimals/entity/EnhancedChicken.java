@@ -1,10 +1,8 @@
 package mokiyoki.enhancedanimals.entity;
 
-import com.google.common.collect.Sets;
 import mokiyoki.enhancedanimals.ai.ECRoost;
 import mokiyoki.enhancedanimals.ai.ECSandBath;
 import mokiyoki.enhancedanimals.ai.ECWanderAvoidWater;
-import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
@@ -18,6 +16,7 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
@@ -25,20 +24,21 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+
+import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_CHICKEN;
 
 /**
  * Created by saemon and moki on 30/08/2018.
@@ -153,7 +153,7 @@ public class EnhancedChicken extends EntityAnimal {
         "eyes_albino.png","eyes_black.png"
     };
 
-    private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
     public float wingRotation;
     public float destPos;
     public float oFlapSpeed;
@@ -175,7 +175,7 @@ public class EnhancedChicken extends EntityAnimal {
     private int[] mateMitosisGenes = new int[Reference.CHICKEN_GENES_LENGTH];
 
     public EnhancedChicken(World worldIn) {
-        super(worldIn);
+        super(ENHANCED_CHICKEN, worldIn);
         this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
         this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
         this.setPathPriority(PathNodeType.WATER, 0.0F); //TODO investigate what this do and how/if needed
@@ -205,8 +205,8 @@ public class EnhancedChicken extends EntityAnimal {
         super.updateAITasks();
     }
 
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(ROOSTING, new Boolean(false));
     }
@@ -251,16 +251,15 @@ public class EnhancedChicken extends EntityAnimal {
         return this.height;
     }
 
-    protected void applyEntityAttributes()
-    {
-        super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(3.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+    protected void registerAttributes() {
+        super.registerAttributes();
+        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(3.0D);
+        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 
-    public void onLivingUpdate()
+    public void livingTick()
     {
-        super.onLivingUpdate();
+        super.livingTick();
         this.oFlap = this.wingRotation;
         this.oFlapSpeed = this.destPos;
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
@@ -285,11 +284,12 @@ public class EnhancedChicken extends EntityAnimal {
         {
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
 //            this.dropItem(Items.EGG, 1);
-            this.dropItem(getEggColour(resolveEggColour()), 1); //TODO replace this with the hatching eggs
-            ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, 0);
-            eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).setGenes(getEggGenes());
-            NBTTagCompound nbtTagCompound = eggItem.serializeNBT();
-            eggItem.deserializeNBT(nbtTagCompound);
+            this.entityDropItem(getEggColour(resolveEggColour()), 1);
+//            this.dropItem(getEggColour(resolveEggColour()), 1); //TODO replace this with the hatching eggs
+//            ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, 0);
+//            eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).setGenes(getEggGenes());
+//            NBTTagCompound nbtTagCompound = eggItem.serializeNBT();
+//            eggItem.deserializeNBT(nbtTagCompound);
             this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
         }
 
@@ -297,13 +297,11 @@ public class EnhancedChicken extends EntityAnimal {
             lethalGenes();
         }
 
-        if (this.world.isRemote)
-        {
+        if (this.world.isRemote) {
             this.grassTimer = Math.max(0, this.grassTimer - 1);
         }
 
         if(this.grassTimer == 4){
-            this.world.spawnParticle(EnumParticleTypes.FALLING_DUST, this.posX, this.posY - 1D, this.posZ, 0.0D, 0.2D, 0.0D);
             this.wingRotDelta = 1.0F;
         }
 
@@ -324,18 +322,10 @@ public class EnhancedChicken extends EntityAnimal {
     public void lethalGenes(){
 
         if(genes[70] == 2 && genes[71] == 2) {
-                this.setDead();
-                this.isDead = true;
+                this.remove();
         } else if(genes[72] == 2 && genes[73] == 2){
-                this.setDead();
-                this.isDead = true;
+                this.remove();
         }
-    }
-
-    //I have no idea why this is done this way maybe preventing it missing it?
-    public void setDead()
-    {
-        this.isDead = true;
     }
 
 
@@ -377,11 +367,11 @@ public class EnhancedChicken extends EntityAnimal {
                 }
 
                 if (size <= 0.7F) {
-                this.dropItem(ModItems.RawChickenDarkSmall, 1);
+                this.entityDropItem(ModItems.RawChicken_DarkSmall, 1);
                 } else if (size >= 0.9F) {
-                this.dropItem(ModItems.RawChickenDarkBig, 1);
+                this.entityDropItem(ModItems.RawChicken_DarkBig, 1);
                 } else {
-                this.dropItem(ModItems.RawChickenDark, 1);
+                this.entityDropItem(ModItems.RawChicken_Dark, 1);
                 }
 
             } else {
@@ -417,14 +407,14 @@ public class EnhancedChicken extends EntityAnimal {
                 }
 
                 if (size <= 0.7F) {
-                    this.dropItem(ModItems.RawChickenPaleSmall, 1);
+                    this.entityDropItem(ModItems.RawChicken_PaleSmall, 1);
                 } else if (size >= 0.9F) {
-                    this.dropItem(Items.CHICKEN, 1);
+                    this.entityDropItem(Items.CHICKEN, 1);
                 } else {
-                    this.dropItem(ModItems.RawChickenPale, 1);
+                    this.entityDropItem(ModItems.RawChicken_Pale, 1);
                 }
             }
-            this.dropItem(Items.FEATHER, 1);
+            this.entityDropItem(Items.FEATHER, 1);
 
         }
     }
@@ -468,7 +458,7 @@ public class EnhancedChicken extends EntityAnimal {
 
     public boolean isBreedingItem(ItemStack stack)
     {
-        return TEMPTATION_ITEMS.contains(stack.getItem());
+        return TEMPTATION_ITEMS.test(stack);
     }
 
     @Nullable
@@ -502,46 +492,46 @@ public class EnhancedChicken extends EntityAnimal {
         switch (eggColourGene) {
             case 0:
 //                Item item = Item.REGISTRY.getObject(new ResourceLocation("eanimod:egg_white"));
-                return ModItems.EggWhite;
+                return ModItems.Egg_White;
 //                return new EnhancedEgg("eggWhite", "egg_white");
             case 1:
-                return ModItems.EggCream;
+                return ModItems.Egg_Cream;
 //                return new EnhancedEgg ("eggCream", "egg_cream");
             case 2:
-                return ModItems.EggCreamDark;
+                return ModItems.Egg_CreamDark;
 //                return new EnhancedEgg ("eggCreamDark", "egg_creamdark");
             case 3:
-                return ModItems.EggPink;
+                return ModItems.Egg_Pink;
 //                return new EnhancedEgg ("eggPink", "egg_pink");
             case 4:
-                return ModItems.EggPinkDark;
+                return ModItems.Egg_PinkDark;
 //                return new EnhancedEgg ("eggPinkDark", "egg_pinkdark");
             case 5:
-                return ModItems.EggBrown;
+                return ModItems.Egg_Brown;
 //                return new EnhancedEgg ("eggBrown", "egg_brown");
             case 6:
-                return ModItems.EggBrownDark;
+                return ModItems.Egg_BrownDark;
 //                return new EnhancedEgg ("eggBrownDark", "egg_browndark");
             case 7:
-                return ModItems.EggBlue;
+                return ModItems.Egg_Blue;
 //                return new EnhancedEgg ("eggBlue", "egg_blue");
             case 8:
-                return ModItems.EggGreenLight;
+                return ModItems.Egg_GreenLight;
 //                return new EnhancedEgg ("eggGreenLight", "egg_greenlight");
             case 9:
-                return ModItems.EggGreen;
+                return ModItems.Egg_Green;
 //                return new EnhancedEgg ("eggGreen", "egg_green");
             case 10:
-                return ModItems.EggGrey;
+                return ModItems.Egg_Grey;
 //                return new EnhancedEgg ("eggGrey", "egg_grey");
             case 11:
-                return ModItems.EggGreyGreen;
+                return ModItems.Egg_GreyGreen;
 //                return new EnhancedEgg ("eggGreyGreen", "egg_greygreen");
             case 12:
-                return ModItems.EggOlive;
+                return ModItems.Egg_Olive;
 //                return new EnhancedEgg ("eggOlive", "egg_olive");
             case 13:
-                return ModItems.EggGreenDark;
+                return ModItems.Egg_GreenDark;
 //                return new EnhancedEgg ("eggGreenDark", "egg_greendark");
         }
 
@@ -590,16 +580,16 @@ public class EnhancedChicken extends EntityAnimal {
         return eggColour;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String getChickenTexture() {
         if (this.chickenTextures.isEmpty()) {
             this.setTexturePaths();
         }
-        return this.chickenTextures.stream().collect(Collectors.joining(", ","[","]"));
+        return this.chickenTextures.stream().collect(Collectors.joining("/","enhanced_chicken/",""));
 
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public String[] getVariantTexturePaths()
     {
         if (this.chickenTextures.isEmpty()) {
@@ -609,7 +599,7 @@ public class EnhancedChicken extends EntityAnimal {
         return this.chickenTextures.stream().toArray(String[]::new);
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if(genesForText!=null){
@@ -1625,16 +1615,15 @@ public class EnhancedChicken extends EntityAnimal {
 
 
 
-    public void writeEntityToNBT(NBTTagCompound compound)
-    {
-        super.writeEntityToNBT(compound);
+    public void writeAdditional(NBTTagCompound compound) {
+        super.writeAdditional(compound);
 
         //store this chicken's genes
         NBTTagList geneList = new NBTTagList();
         for(int i = 0; i< genes.length; i++){
             NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInteger("Gene", genes[i]);
-            geneList.appendTag(nbttagcompound);
+            nbttagcompound.setInt("Gene", genes[i]);
+            geneList.add(nbttagcompound);
         }
         compound.setTag("Genes", geneList);
 
@@ -1642,8 +1631,8 @@ public class EnhancedChicken extends EntityAnimal {
         NBTTagList mateGeneList = new NBTTagList();
         for(int i = 0; i< mateGenes.length; i++){
             NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInteger("Gene", mateGenes[i]);
-            mateGeneList.appendTag(nbttagcompound);
+            nbttagcompound.setInt("Gene", mateGenes[i]);
+            mateGeneList.add(nbttagcompound);
         }
         compound.setTag("FatherGenes", mateGeneList);
     }
@@ -1651,20 +1640,20 @@ public class EnhancedChicken extends EntityAnimal {
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
-    public void readEntityFromNBT(NBTTagCompound compound) {
-        super.readEntityFromNBT(compound);
+    public void readAdditional(NBTTagCompound compound) {
+        super.readAdditional(compound);
 
-        NBTTagList geneList = compound.getTagList("Genes", 10);
-        for (int i = 0; i < geneList.tagCount(); ++i) {
-            NBTTagCompound nbttagcompound = geneList.getCompoundTagAt(i);
-            int gene = nbttagcompound.getInteger("Gene");
+        NBTTagList geneList = compound.getList("Genes", 10);
+        for (int i = 0; i < geneList.size(); ++i) {
+            NBTTagCompound nbttagcompound = geneList.getCompound(i);
+            int gene = nbttagcompound.getInt("Gene");
             genes[i] = gene;
         }
 
-        NBTTagList mateGeneList = compound.getTagList("FatherGenes", 10);
-        for (int i = 0; i < mateGeneList.tagCount(); ++i) {
-            NBTTagCompound nbttagcompound = mateGeneList.getCompoundTagAt(i);
-            int gene = nbttagcompound.getInteger("Gene");
+        NBTTagList mateGeneList = compound.getList("FatherGenes", 10);
+        for (int i = 0; i < mateGeneList.size(); ++i) {
+            NBTTagCompound nbttagcompound = mateGeneList.getCompound(i);
+            int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
 
@@ -1722,21 +1711,20 @@ public class EnhancedChicken extends EntityAnimal {
 
     @Nullable
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
-    {
-        livingdata = super.onInitialSpawn(difficulty, livingdata);
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData entityLivingData, @Nullable NBTTagCompound itemNbt) {
+        entityLivingData = super.onInitialSpawn(difficulty, entityLivingData, itemNbt);
         int[] spawnGenes;
 
-        if (livingdata instanceof EnhancedChicken.GroupData) {
-            spawnGenes = ((GroupData)livingdata).groupGenes;
+        if (entityLivingData instanceof EnhancedChicken.GroupData) {
+            spawnGenes = ((GroupData)entityLivingData).groupGenes;
         } else {
             spawnGenes = createInitialGenes();
-            livingdata = new EnhancedChicken.GroupData(spawnGenes);
+            entityLivingData = new GroupData(spawnGenes);
         }
 
         this.genes = spawnGenes;
         setSharedGenes(genes);
-        return livingdata;
+        return entityLivingData;
     }
 
     private int[] createInitialGenes() {
@@ -1748,11 +1736,11 @@ public class EnhancedChicken extends EntityAnimal {
             int wildType = 0;
             Biome biome = this.world.getBiome(new BlockPos(this));
 
-            if (biome.getDefaultTemperature() >= 0.9F && biome.getRainfall() > 0.8F) // hot and wet (jungle)
+            if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
             {
                 wildType  = 1;
             }
-            else if (biome.getDefaultTemperature() >= 0.9F && biome.getRainfall() < 0.3F) // hot and dry (savanna)
+            else if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() < 0.3F) // hot and dry (savanna)
             {
                 wildType = 2;
             }
@@ -1760,7 +1748,7 @@ public class EnhancedChicken extends EntityAnimal {
             {
                 wildType = 3;
             }
-            else if (biome.getDefaultTemperature() >= 0.8F && biome.getRainfall() > 0.8F)
+            else if (biome.getDefaultTemperature() >= 0.8F && biome.getDownfall() > 0.8F)
             {
                 wildType = 4;
             }

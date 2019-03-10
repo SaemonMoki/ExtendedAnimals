@@ -82,21 +82,16 @@ public class ECSandBath  extends EntityAIBase
     /**
      * Keep ticking a continuous task that has already been started
      */
-    public void updateTask()
-    {
+    public void updateTask() {
         this.sandBathTimer = Math.max(0, this.sandBathTimer - 1);
 
-        if (this.sandBathTimer == 4)
-        {
+        if (this.sandBathTimer == 4) {
             BlockPos blockpos = new BlockPos(this.sandBatherEntity.posX, this.sandBatherEntity.posY, this.sandBatherEntity.posZ);
-
                 BlockPos blockpos1 = blockpos.down();
 
-                if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.SAND)
-                {
-                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.sandBatherEntity))
-                    {
-                        this.entityWorld.playEvent(2001, blockpos1, Block.getIdFromBlock(Blocks.SAND));
+                if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.SAND) {
+                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.sandBatherEntity)) {
+                        this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.SAND.getDefaultState()));
                         this.entityWorld.setBlockState(blockpos1, Blocks.SAND.getDefaultState(), 2);
                     }
                     this.sandBatherEntity.eatGrassBonus();

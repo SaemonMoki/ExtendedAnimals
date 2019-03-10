@@ -1,0 +1,9 @@
+{
+  "type": "smelting",
+  "ingredient": {
+    "item": "eanimod:rawchicken_darkbig"
+  },
+  "result": "eanimod:cookedchicken_darkbig",
+  "experience": 0.35,
+  "cookingtime": 200
+}

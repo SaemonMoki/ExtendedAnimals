@@ -1,10 +1,12 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
+import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityLlama;
 import net.minecraft.entity.passive.EntityRabbit;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -18,25 +20,21 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void replaceVanillaMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
+        World world = event.getWorld();
         if (entity instanceof EntityChicken) {
-            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
-                event.setCanceled(true);
-            }
+            EnhancedChicken enhancedChicken = new EnhancedChicken(world);
+//            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
+            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0.0F, 0.0F);
+//            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+            enhancedChicken.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(enhancedChicken)), (IEntityLivingData)null, null);
+            world.spawnEntity(enhancedChicken);
+            event.setCanceled(true);
         }
         if (entity instanceof EntityRabbit) {
-            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
-                event.setCanceled(true);
-            }
-        }
-        if (entity instanceof EntityLlama) {
-            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
-                event.setCanceled(true);
-            }
-        }
-        if (entity instanceof EntitySheep) {
-            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
-                event.setCanceled(true);
-            }
+//            EnhancedChicken enhancedChicken = new EnhancedChicken(world);
+//            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
+//            world.spawnEntity(enhancedChicken);
+            event.setCanceled(true);
         }
 
     }

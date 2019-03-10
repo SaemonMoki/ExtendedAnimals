@@ -8,24 +8,25 @@ import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
  * Created by saemon on 8/09/2018.
  */
-@EventBusSubscriber
+//@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void replaceVanillaMobs(EntityJoinWorldEvent event) {
+    public void replaceVanillaMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
         World world = event.getWorld();
         if (entity instanceof EntityChicken) {
             EnhancedChicken enhancedChicken = new EnhancedChicken(world);
-            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
-            enhancedChicken.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(enhancedChicken)), (IEntityLivingData)null);
+//            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
+            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0.0F, 0.0F);
+//            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+            enhancedChicken.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(enhancedChicken)), (IEntityLivingData)null, null);
             world.spawnEntity(enhancedChicken);
             event.setCanceled(true);
         }

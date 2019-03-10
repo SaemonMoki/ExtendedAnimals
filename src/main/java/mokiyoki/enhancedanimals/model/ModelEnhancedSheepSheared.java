@@ -11,12 +11,15 @@ import net.minecraft.util.math.MathHelper;
 public class ModelEnhancedSheepSheared extends ModelBase {
 
     private float headRotationAngleX;
+    private float f12 = 0F;
 
     private final ModelRenderer head;
     private final ModelRenderer earsR;
     private final ModelRenderer earsL;
     private final ModelRenderer body;
-    private final ModelRenderer tail;
+    private final ModelRenderer tailBase;
+    private final ModelRenderer tailMiddle;
+    private final ModelRenderer tailTip;
     public final ModelRenderer leg1;
     public final ModelRenderer leg2;
     public final ModelRenderer leg3;
@@ -45,12 +48,15 @@ public class ModelEnhancedSheepSheared extends ModelBase {
         this.body = new ModelRenderer(this, 2, 0);
         this.body.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 0.0F);
 
-        this.tail = new ModelRenderer(this, 50, 6);
-        this.tail.addBox(-1.0F, 9.0F, 14.0F, 2, 3, 1);
-        this.tail.setTextureOffset( 56, 6);
-        this.tail.addBox(-0.5F, 12.0F, 14.0F, 1, 3, 1);
-        this.tail.setTextureOffset( 60, 6);
-        this.tail.addBox(-0.5F, 15.0F, 14.0F, 1, 3, 1);
+        this.tailBase = new ModelRenderer(this, 50, 6);
+        this.tailBase.addBox(-1.0F, 0.0F, 0.0F, 2, 3, 1);
+        this.tailBase.setRotationPoint(0.0F, 9.0F, 14.0F);
+
+        this.tailMiddle = new ModelRenderer(this, 56, 6);
+        this.tailMiddle.addBox(-0.5F, 12.0F, 14.0F, 1, 3, 1);
+
+        this.tailTip = new ModelRenderer(this, 60, 6);
+        this.tailTip.addBox(-0.5F, 15.0F, 14.0F, 1, 3, 1);
 
         this.leg1 = new ModelRenderer(this, 0, 22);
         this.leg1.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3);
@@ -84,7 +90,9 @@ public class ModelEnhancedSheepSheared extends ModelBase {
             GlStateManager.translate(0.0F, 20.0F * scale, 0.0F);
 
             this.body.render(scale);
-            this.tail.render(scale);
+            this.tailBase.render(scale);
+            this.tailMiddle.render(scale);
+            this.tailTip.render(scale);
 
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
@@ -104,7 +112,9 @@ public class ModelEnhancedSheepSheared extends ModelBase {
             this.earsR.render(scale);
             this.earsL.render(scale);
             this.body.render(scale);
-            this.tail.render(scale);
+            this.tailBase.render(scale);
+            this.tailMiddle.render(scale);
+            this.tailTip.render(scale);
             this.leg1.render(scale);
             this.leg2.render(scale);
             this.leg3.render(scale);
@@ -129,6 +139,9 @@ public class ModelEnhancedSheepSheared extends ModelBase {
         this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
         this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
         this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+
+        this.tailBase.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+
         this.head.rotateAngleX = 1F + this.headRotationAngleX;   //might need to merge this with another line
 
         copyModelAngles(head, earsR);
@@ -147,5 +160,6 @@ public class ModelEnhancedSheepSheared extends ModelBase {
         super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
         this.head.rotationPointY = 9.0F + ((EnhancedSheep)entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
         this.headRotationAngleX = ((EnhancedSheep)entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
+
     }
 }

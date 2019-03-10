@@ -34,12 +34,12 @@ public class ModelRegistryHandler {
         registerModel(ModItems.RawChickenDark);
         registerModel(ModItems.RawChickenDarkBig);
         registerModel(ModItems.RawChickenPaleSmall);
-        registerModel(ModItems.RawChickenPaleBig);
+        registerModel(ModItems.RawChickenPale);
         registerModel(ModItems.CookedChickenDarkSmall);
         registerModel(ModItems.CookedChickenDark);
         registerModel(ModItems.CookedChickenDarkBig);
         registerModel(ModItems.CookedChickenPaleSmall);
-        registerModel(ModItems.CookedChickenPaleBig);
+        registerModel(ModItems.CookedChickenPale);
 
         registerModel(Item.getItemFromBlock(ModBlocks.PostAcacia));
         registerModel(Item.getItemFromBlock(ModBlocks.PostBirch));

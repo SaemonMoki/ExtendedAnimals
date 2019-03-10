@@ -1,7 +1,5 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
-import mokiyoki.enhancedanimals.blocks.BlockBase;
-import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
@@ -10,14 +8,9 @@ import mokiyoki.enhancedanimals.init.ModItems;
 
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent.Register;
 
 import net.minecraftforge.event.RegistryEvent;
@@ -46,7 +39,7 @@ public class RegistryHandler {
         final Item[] items = {ModItems.EggWhite,ModItems.EggCream,ModItems.EggCreamDark,ModItems.EggPink,ModItems.EggPinkDark,ModItems.EggBrown,ModItems.EggBrownDark,
                               ModItems.EggBlue,ModItems.EggGreenLight,ModItems.EggGreen,ModItems.EggGrey,ModItems.EggGreyGreen,ModItems.EggOlive,ModItems.EggGreenDark,
                               ModItems.RawChickenDarkSmall, ModItems.RawChickenDark, ModItems.RawChickenDarkBig, ModItems.CookedChickenDarkSmall, ModItems.CookedChickenDark,
-                              ModItems.CookedChickenDarkBig, ModItems.RawChickenPaleSmall, ModItems.RawChickenPaleBig, ModItems.CookedChickenPaleSmall, ModItems.CookedChickenPaleBig};
+                              ModItems.CookedChickenDarkBig, ModItems.RawChickenPaleSmall, ModItems.RawChickenPale, ModItems.CookedChickenPaleSmall, ModItems.CookedChickenPale};
 
         final Item[] itemBlocks = {
                 new ItemBlock(ModBlocks.PostAcacia).setRegistryName(ModBlocks.PostAcacia.getRegistryName()),

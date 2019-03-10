@@ -27,13 +27,13 @@ public class ModItems {
     public static final Item EggOlive = new EnhancedEgg ("eggOlive", "egg_olive");
     public static final Item EggGreenDark = new EnhancedEgg ("eggGreenDark", "egg_greendark");
     public static final Item RawChickenDarkSmall = new RawChicken("rawChickenDarkSmall", "rawchicken_darksmall", 1, 0.5F, true);
-    public static final Item RawChickenDark = new RawChicken("rawChickenDark", "rawchicken_dark", 2, 1.2F, true);
-    public static final Item RawChickenDarkBig = new RawChicken("rawChickenDarkBig", "rawchicken_darkbig", 2, 2.2F, true);
+    public static final Item RawChickenDark = new RawChicken("rawChickenDark", "rawchicken_dark", 2, 1F, true);
+    public static final Item RawChickenDarkBig = new RawChicken("rawChickenDarkBig", "rawchicken_darkbig", 2, 1.2F, true);
     public static final Item RawChickenPaleSmall = new RawChicken("rawChickenPaleSmall", "rawchicken_palesmall", 1, 0.5F, true);
-    public static final Item RawChickenPaleBig = new RawChicken("rawChickenPaleBig", "rawchicken_palebig", 2, 2.2F, true);
+    public static final Item RawChickenPale = new RawChicken("rawChickenPale", "rawchicken_pale", 2, 1F, true);
     public static final Item CookedChickenDarkSmall = new CookedChicken("cookedChickenDarkSmall", "cookedchicken_darksmall", 3, 3.6F, false);
-    public static final Item CookedChickenDark = new CookedChicken("cookedChickenDark", "cookedchicken_dark", 6, 7.2F, false);
-    public static final Item CookedChickenDarkBig = new CookedChicken("cookedChickenDarkBig", "cookedchicken_darkBig", 6, 10.2F, false);
+    public static final Item CookedChickenDark = new CookedChicken("cookedChickenDark", "cookedchicken_dark", 4, 5F, false);
+    public static final Item CookedChickenDarkBig = new CookedChicken("cookedChickenDarkBig", "cookedchicken_darkBig", 6, 7.2F, false);
     public static final Item CookedChickenPaleSmall = new CookedChicken("cookedChickenPaleSmall", "cookedchicken_palesmall", 3, 3.6F, false);
-    public static final Item CookedChickenPaleBig = new CookedChicken("cookedChickenPaleBig", "cookedchicken_palebig", 6, 10.2F, false);
+    public static final Item CookedChickenPale = new CookedChicken("cookedChickenPale", "cookedchicken_pale", 4, 5F, false);
 }

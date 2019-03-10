@@ -17,12 +17,12 @@ item.eanimod.rawChickenDarkSmall.name=Raw Chicken
 item.eanimod.rawChickenDark.name=Raw Chicken
 item.eanimod.rawChickenDarkBig.name=Raw Chicken
 item.eanimod.rawChickenPaleSmall.name=Raw Chicken
-item.eanimod.rawChickenPaleBig.name=Raw Chicken
+item.eanimod.rawChickenPale.name=Raw Chicken
 item.eanimod.cookedChickenDarkSmall.name=Cooked Chicken
 item.eanimod.cookedChickenDark.name=Cooked Chicken
 item.eanimod.cookedChickenDarkBig.name=Cooked Chicken
 item.eanimod.cookedChickenPaleSmall.name=Cooked Chicken
-item.eanimod.cookedChickenPaleBig.name=Cooked Chicken
+item.eanimod.cookedChickenPale.name=Cooked Chicken
 
 //Blocks
 tile.eanimod.postOak.name=Oak Post

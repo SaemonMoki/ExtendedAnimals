@@ -1,13 +1,16 @@
 package mokiyoki.enhancedanimals.model;
 
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class ModelEnhancedSheepSheared extends ModelBase {
 
     private float headRotationAngleX;
@@ -77,8 +80,8 @@ public class ModelEnhancedSheepSheared extends ModelBase {
 
         if (this.isChild) {
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.6F, 0.6F, 0.6F);
-            GlStateManager.translate(0.0F, 15.0F * scale, 0.0F);
+            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
+            GlStateManager.translatef(0.0F, 15.0F * scale, 0.0F);
 
             this.head.render(scale);
             this.earsR.render(scale);
@@ -86,8 +89,8 @@ public class ModelEnhancedSheepSheared extends ModelBase {
 
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.5F, 0.5F, 0.5F);
-            GlStateManager.translate(0.0F, 20.0F * scale, 0.0F);
+            GlStateManager.scalef(0.5F, 0.5F, 0.5F);
+            GlStateManager.translatef(0.0F, 20.0F * scale, 0.0F);
 
             this.body.render(scale);
             this.tailBase.render(scale);
@@ -96,8 +99,8 @@ public class ModelEnhancedSheepSheared extends ModelBase {
 
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.5F, 0.7F, 0.5F);
-            GlStateManager.translate(0.0F, 10.0F * scale, 0.0F);
+            GlStateManager.scalef(0.5F, 0.7F, 0.5F);
+            GlStateManager.translatef(0.0F, 10.0F * scale, 0.0F);
 
             this.leg1.render(scale);
             this.leg2.render(scale);
@@ -160,6 +163,5 @@ public class ModelEnhancedSheepSheared extends ModelBase {
         super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
         this.head.rotationPointY = 9.0F + ((EnhancedSheep)entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
         this.headRotationAngleX = ((EnhancedSheep)entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
-
     }
 }

@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
+import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -28,6 +29,7 @@ public class RegistryHandler {
     public static final EntityType<EnhancedChicken> ENHANCED_CHICKEN = EntityType.Builder.create(EnhancedChicken.class, EnhancedChicken::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_chicken");
     public static final EntityType<EnhancedRabbit> ENHANCED_RABBIT = EntityType.Builder.create(EnhancedRabbit.class, EnhancedRabbit::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_rabbit");
     public static final EntityType<EnhancedSheep> ENHANCED_SHEEP = EntityType.Builder.create(EnhancedSheep.class, EnhancedSheep::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_sheep");
+    public static final EntityType<EnhancedLlama> ENHANCED_LLAMA = EntityType.Builder.create(EnhancedLlama.class, EnhancedLlama::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_llama");
 
 
     @SubscribeEvent
@@ -82,6 +84,7 @@ public class RegistryHandler {
         event.getRegistry().register(ENHANCED_CHICKEN.setRegistryName("enhanced_chicken"));
         event.getRegistry().register(ENHANCED_RABBIT.setRegistryName("enhanced_rabbit"));
         event.getRegistry().register(ENHANCED_SHEEP.setRegistryName("enhanced_sheep"));
+        event.getRegistry().register(ENHANCED_LLAMA.setRegistryName("enhanced_llama"));
         event.getRegistry().register(ENHANCED_ENTITY_EGG_ENTITY_TYPE.setRegistryName("enhanced_entity_egg"));
     }
 

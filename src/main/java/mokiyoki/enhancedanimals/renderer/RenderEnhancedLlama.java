@@ -23,7 +23,7 @@ public class RenderEnhancedLlama extends RenderLiving<EnhancedLlama>
 
     public RenderEnhancedLlama(RenderManager render)
     {
-        super(render, new ModelEnhancedLlama(), 0.75F);
+        super(render, new ModelEnhancedLlama(), 0.25F);
     }
 
     /**
@@ -37,7 +37,7 @@ public class RenderEnhancedLlama extends RenderLiving<EnhancedLlama>
         if (resourcelocation == null)
         {
             resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_LLAMA_TEXTURE_LOCATION, null, entity.getVariantTexturePaths()));
+            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_LLAMA_TEXTURE_LOCATION, entity.getVariantTexturePaths()));
             LAYERED_LOCATION_CACHE.put(s, resourcelocation);
         }
 

@@ -1,11 +1,17 @@
 package mokiyoki.enhancedanimals.entity;
 
-import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.SharedMonsterAttributes;
+import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
+import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -18,6 +24,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
@@ -25,17 +32,24 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_LLAMA;
 
-public class EnhancedLlama extends EntityAnimal {
+public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
+
+    private static final Predicate<Entity> IS_BREEDING = (entity) -> {
+        return entity instanceof EnhancedLlama && ((EnhancedLlama)entity).isBreeding();
+    };
+
+    private static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
+
+    private static final DataParameter<Byte> STATUS = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.BYTE);
 
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
             "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blackred.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png", "fawn.png"
@@ -89,6 +103,15 @@ public class EnhancedLlama extends EntityAnimal {
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
+    protected int temper;
+    private int jumpRearingCounter;
+
+    private boolean didSpit;
+    @Nullable
+    private EnhancedLlama caravanHead;
+    @Nullable
+    private EnhancedLlama caravanTail;
+
     public EnhancedLlama(World worldIn) {
         super(ENHANCED_LLAMA, worldIn);
         this.setSize(0.4F, 0.5F);
@@ -97,12 +120,18 @@ public class EnhancedLlama extends EntityAnimal {
     }
 
     protected void initEntityAI() {
-        this.tasks.addTask(1, new EntityAISwimming(this));
-        this.tasks.addTask(2, new EntityAIMate(this, 0.8D));
-        this.tasks.addTask(3, new EntityAITempt(this, 1.0D, TEMPTATION_ITEMS, false));
-        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 0.6D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(1, new ECRunAroundLikeCrazy(this, 1.2D));
+        this.tasks.addTask(2, new ECLlamaFollowCaravan(this, (double)2.1F));
+        this.tasks.addTask(3, new EntityAIAttackRanged(this, 1.25D, 40, 20.0F));
+        this.tasks.addTask(3, new EntityAIPanic(this, 1.2D));
+        this.tasks.addTask(4, new EntityAIMate(this, 1.0D));
+        this.tasks.addTask(5, new EntityAIFollowParent(this, 1.0D));
+        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 0.7D));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
+        this.targetTasks.addTask(1, new EnhancedLlama.AIHurtByTarget(this));
+        this.targetTasks.addTask(2, new EnhancedLlama.AIDefendTarget(this));
     }
 
     //TODO put the rest of the jumping stuff here
@@ -110,6 +139,8 @@ public class EnhancedLlama extends EntityAnimal {
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
+        this.dataManager.register(STATUS, (byte)0);
+        this.dataManager.register(OWNER_UNIQUE_ID, Optional.empty());
     }
 
     public void setSharedGenes(int[] genes) {
@@ -154,11 +185,6 @@ public class EnhancedLlama extends EntityAnimal {
         super.livingTick();
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
         this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
-    }
-
-    public void fall(float distance, float damageMultiplier)
-    {
-
     }
 
     protected SoundEvent getAmbientSound()
@@ -219,7 +245,7 @@ public class EnhancedLlama extends EntityAnimal {
         if (this.llamaTextures.isEmpty()) {
             this.setTexturePaths();
         }
-        return this.llamaTextures.stream().collect(Collectors.joining(", ","[","]"));
+        return this.llamaTextures.stream().collect(Collectors.joining("/","enhanced_llama/",""));
 
     }
 
@@ -337,10 +363,12 @@ public class EnhancedLlama extends EntityAnimal {
             if ( genesForText[10] == 2 && genesForText[11] == 2){
                 //piebald
 
-                if ( Character.isDigit(uuid.charAt(4)) ){
-                    piebald = 1 + uuid.charAt(4);
+                char[] charArry = uuid.toCharArray();
+
+                if ( Character.isDigit(charArry[4]) ){
+                    piebald = 1 + (charArry[4]);
                 } else {
-                    char d = uuid.charAt(4);
+                    char d = charArry[4];
 
                     switch (d){
                         case 'a':
@@ -681,6 +709,272 @@ public class EnhancedLlama extends EntityAnimal {
 
     public int[] getGenes() {
         return this.genes;
+    }
+
+
+    private void spit(EntityLivingBase target) {
+        EnhancedEntityLlamaSpit entityllamaspit = new EnhancedEntityLlamaSpit(this.world, this);
+        double d0 = target.posX - this.posX;
+        double d1 = target.getBoundingBox().minY + (double)(target.height / 3.0F) - entityllamaspit.posY;
+        double d2 = target.posZ - this.posZ;
+        float f = MathHelper.sqrt(d0 * d0 + d2 * d2) * 0.2F;
+        entityllamaspit.shoot(d0, d1 + (double)f, d2, 1.5F, 10.0F);
+        this.world.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_LLAMA_SPIT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+        this.world.spawnEntity(entityllamaspit);
+        this.didSpit = true;
+    }
+
+    private void setDidSpit(boolean didSpitIn) {
+        this.didSpit = didSpitIn;
+    }
+
+    public void fall(float distance, float damageMultiplier) {
+        int i = MathHelper.ceil((distance * 0.5F - 3.0F) * damageMultiplier);
+        if (i > 0) {
+            if (distance >= 6.0F) {
+                this.attackEntityFrom(DamageSource.FALL, (float)i);
+                if (this.isBeingRidden()) {
+                    for(Entity entity : this.getRecursivePassengers()) {
+                        entity.attackEntityFrom(DamageSource.FALL, (float)i);
+                    }
+                }
+            }
+
+            IBlockState iblockstate = this.world.getBlockState(new BlockPos(this.posX, this.posY - 0.2D - (double)this.prevRotationYaw, this.posZ));
+            Block block = iblockstate.getBlock();
+            if (!iblockstate.isAir() && !this.isSilent()) {
+                SoundType soundtype = block.getSoundType();
+                this.world.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
+            }
+
+        }
+    }
+
+    public void leaveCaravan() {
+        if (this.caravanHead != null) {
+            this.caravanHead.caravanTail = null;
+        }
+
+        this.caravanHead = null;
+    }
+
+    public void joinCaravan(EnhancedLlama caravanHeadIn) {
+        this.caravanHead = caravanHeadIn;
+        this.caravanHead.caravanTail = this;
+    }
+
+    public boolean hasCaravanTrail() {
+        return this.caravanTail != null;
+    }
+
+    public boolean inCaravan() {
+        return this.caravanHead != null;
+    }
+
+    @Nullable
+    public EnhancedLlama getCaravanHead() {
+        return this.caravanHead;
+    }
+
+    protected double followLeashSpeed() {
+        return 2.0D;
+    }
+
+    protected void followMother() {
+        if (!this.inCaravan() && this.isChild()) {
+            if (this.isBreeding() && this.isChild() && !this.isEatingHaystack()) {
+                EnhancedLlama llama = this.getClosestHorse(this, 16.0D);
+                if (llama != null && this.getDistanceSq(llama) > 4.0D) {
+                    this.navigator.getPathToEntityLiving(llama);
+                }
+            }
+        }
+    }
+    public boolean isBreeding() {
+        return this.getHorseWatchableBoolean(8);
+    }
+
+    public boolean isEatingHaystack() {
+        return this.getHorseWatchableBoolean(16);
+    }
+
+    protected boolean getHorseWatchableBoolean(int p_110233_1_) {
+        return (this.dataManager.get(STATUS) & p_110233_1_) != 0;
+    }
+
+    public boolean isTame() {
+        return this.getHorseWatchableBoolean(2);
+    }
+
+    public void makeMad() {
+        this.makeHorseRear();
+        SoundEvent soundevent = this.getAngrySound();
+        if (soundevent != null) {
+            this.playSound(soundevent, this.getSoundVolume(), this.getSoundPitch());
+        }
+
+    }
+
+    private void makeHorseRear() {
+        if (this.canPassengerSteer() || this.isServerWorld()) {
+            this.jumpRearingCounter = 1;
+            this.setRearing(true);
+        }
+
+    }
+
+    public void setRearing(boolean rearing) {
+        if (rearing) {
+            this.setEatingHaystack(false);
+        }
+
+        this.setHorseWatchableBoolean(32, rearing);
+    }
+
+    public void setEatingHaystack(boolean p_110227_1_) {
+        this.setHorseWatchableBoolean(16, p_110227_1_);
+    }
+
+    protected void setHorseWatchableBoolean(int p_110208_1_, boolean p_110208_2_) {
+        byte b0 = this.dataManager.get(STATUS);
+        if (p_110208_2_) {
+            this.dataManager.set(STATUS, (byte)(b0 | p_110208_1_));
+        } else {
+            this.dataManager.set(STATUS, (byte)(b0 & ~p_110208_1_));
+        }
+
+    }
+
+    @Nullable
+    protected SoundEvent getAngrySound() {
+        this.makeHorseRear();
+        return null;
+    }
+
+    public int increaseTemper(int p_110198_1_) {
+        int i = MathHelper.clamp(this.getTemper() + p_110198_1_, 0, this.getMaxTemper());
+        this.setTemper(i);
+        return i;
+    }
+
+    public int getMaxTemper() {
+        return 100;
+    }
+
+    public int getTemper() {
+        return this.temper;
+    }
+
+    public void setTemper(int temperIn) {
+        this.temper = temperIn;
+    }
+
+    public boolean setTamedBy(EntityPlayer player) {
+        this.setOwnerUniqueId(player.getUniqueID());
+        this.setHorseTamed(true);
+        if (player instanceof EntityPlayerMP) {
+            CriteriaTriggers.TAME_ANIMAL.trigger((EntityPlayerMP)player, this);
+        }
+
+        this.world.setEntityState(this, (byte)7);
+        return true;
+    }
+
+    public void setOwnerUniqueId(@Nullable UUID uniqueId) {
+        this.dataManager.set(OWNER_UNIQUE_ID, Optional.ofNullable(uniqueId));
+    }
+
+    public void setHorseTamed(boolean tamed) {
+        this.setHorseWatchableBoolean(2, tamed);
+    }
+
+    @Nullable
+    protected EnhancedLlama getClosestHorse(Entity entityIn, double distance) {
+        double d0 = Double.MAX_VALUE;
+        Entity entity = null;
+
+        for(Entity entity1 : this.world.getEntitiesInAABBexcluding(entityIn, entityIn.getBoundingBox().expand(distance, distance, distance), IS_BREEDING)) {
+            double d1 = entity1.getDistanceSq(entityIn.posX, entityIn.posY, entityIn.posZ);
+            if (d1 < d0) {
+                entity = entity1;
+                d0 = d1;
+            }
+        }
+
+        return (EnhancedLlama)entity;
+    }
+
+    @Nullable
+    protected EnhancedLlama getClosestLlama(Entity entityIn, double distance) {
+        double d0 = Double.MAX_VALUE;
+        Entity entity = null;
+
+        for(Entity entity1 : this.world.getEntitiesInAABBexcluding(entityIn, entityIn.getBoundingBox().expand(distance, distance, distance), IS_BREEDING)) {
+            double d1 = entity1.getDistanceSq(entityIn.posX, entityIn.posY, entityIn.posZ);
+            if (d1 < d0) {
+                entity = entity1;
+                d0 = d1;
+            }
+        }
+
+        return (EnhancedLlama)entity;
+    }
+
+    public boolean canEatGrass() {
+        return false;
+    }
+
+    /**
+     * Attack the specified entity using a ranged attack.
+     */
+    public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) {
+        this.spit(target);
+    }
+
+    public void setSwingingArms(boolean swingingArms) {
+    }
+
+    static class AIDefendTarget extends EntityAINearestAttackableTarget<EntityWolf> {
+        public AIDefendTarget(EnhancedLlama llama) {
+            super(llama, EntityWolf.class, 16, false, true, (Predicate<EntityWolf>)null);
+        }
+
+        /**
+         * Returns whether the EntityAIBase should begin execution.
+         */
+        public boolean shouldExecute() {
+            if (super.shouldExecute() && this.targetEntity != null && !this.targetEntity.isTamed()) {
+                return true;
+            } else {
+                this.taskOwner.setAttackTarget((EntityLivingBase)null);
+                return false;
+            }
+        }
+
+        protected double getTargetDistance() {
+            return super.getTargetDistance() * 0.25D;
+        }
+    }
+
+    static class AIHurtByTarget extends EntityAIHurtByTarget {
+        public AIHurtByTarget(EnhancedLlama llama) {
+            super(llama, false);
+        }
+
+        /**
+         * Returns whether an in-progress EntityAIBase should continue executing
+         */
+        public boolean shouldContinueExecuting() {
+            if (this.taskOwner instanceof EnhancedLlama) {
+                EnhancedLlama entityllama = (EnhancedLlama)this.taskOwner;
+                if (entityllama.didSpit) {
+                    entityllama.setDidSpit(false);
+                    return false;
+                }
+            }
+
+            return super.shouldContinueExecuting();
+        }
     }
 
     public static class GroupData implements IEntityLivingData {

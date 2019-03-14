@@ -34,3 +34,6 @@ tile.eanimod.postSpruce.name=Spruce Post
 
 //Spawn eggs
 entity.enhanced_chicken.name=Enhanced Chicken
+entity.enhanced_sheep.name=Enhanced Sheep
+entity.enhanced_llama.name=Enhanced Llama
+entity.enhanced_rabbit.name=Enhanced Rabbit

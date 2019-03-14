@@ -38,44 +38,42 @@ public class EnhancedLlama extends EntityAnimal {
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
 
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
-            "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blackred.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png"
+            "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blackred.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png", "fawn.png"
     };
 
     private static final String[] LLAMA_TEXTURES_PATTERN = new String[] {
-            "", "pattern_paleshaded.png", "pattern_shaded.png", "pattern_blackred.png", "pattern_bay.png", "pattern_mahogany.png", "pattern_blacktan.png", "black.png"
+            "", "pattern_paleshaded.png", "pattern_shaded.png", "pattern_blackred.png", "pattern_bay.png", "pattern_mahogany.png", "pattern_blacktan.png"
     };
 
     private static final String[] LLAMA_TEXTURES_ROAN = new String[] {
-            "", "agouti_black.png", "agouti_blue.png", "agouti_chocolate.png", "agouti_lilac.png",
-            "tan_black.png", "tan_blue.png", "tan_chocolate.png", "tan_lilac.png",
-            "self_black.png", "self_blue.png", "self_chocolate.png", "self_lilac.png"
+            "", "roan_0.png", "roan_1.png", "roan_2.png", "roan_3.png", "roan_4.png", "roan_5.png", "roan_6.png", "roan_7.png", "roan_8.png", "roan_9.png", "roan_a.png", "roan_b.png", "roan_c.png", "roan_d.png", "roan_e.png", "roan_f.png"
     };
 
     // higher numbers are more white
     private static final String[] LLAMA_TEXTURES_TUXEDO = new String[] {
-            "", "dutch0.png", "dutch1.png", "dutch2.png"
+            "", "tuxedo_0.png", "tuxedo_1.png", "tuxedo_2.png", "tuxedo_3.png", "tuxedo_4.png", "tuxedo_5.png", "tuxedo_6.png", "tuxedo_7.png", "tuxedo_8.png", "tuxedo_9.png", "tuxedo_a.png", "tuxedo_b.png", "tuxedo_c.png", "tuxedo_d.png", "tuxedo_e.png", "tuxedo_f.png"
     };
 
     // higher numbers are more white
     private static final String[] LLAMA_TEXTURES_PIEBALD = new String[] {
-            "", "spots_broken.png", "spots_charlie.png"
+            "", "piebald_0.png", "piebald_1.png", "piebald_2.png", "piebald_3.png", "piebald_4.png", "piebald_5.png", "piebald_6.png", "piebald_7.png", "piebald_8.png", "piebald_9.png", "piebald_a.png", "piebald_b.png", "piebald_c.png", "piebald_d.png", "piebald_e.png", "piebald_f.png"
     };
 
     // higher numbers are more white
     private static final String[] LLAMA_TEXTURES_DOMWHITE = new String[] {
-            "", "spots_ear.png", "spots_star0.png", "spots_star1.png", "spots_star2.png", "spots_snip.png", "spots_stripe.png"
+            "", "domwhite_leaky.png", "domwhite_tinted.png", "domwhite_solid.png"
     };
 
     private static final String[] LLAMA_TEXTURES_FUR = new String[] {
-            "fur_normal.png", "fur_angora.png", "fur_rex.png", "fur_satin.png"
+            "fur_short.png", "fur_medium.png", "fur_long.png", "fur_short_suri.png", "fur_medium_suri.png", "fur_long_suri.png"
     };
 
     private static final String[] LLAMA_TEXTURES_EYES = new String[] {
-            "eyes_black.png", "eyes_brown.png", "eyes_amber.png", "eyes_grey.png", "eyes_ruby.png", "eyes_albino.png"
+            "eyes_black.png", "eyes_blue", "eyes_iceblue"
     };
 
     private static final String[] LLAMA_TEXTURES_SKIN = new String[] {
-            "skin_pink.png", "skin_brown.png", "skin_black.png", "skin_white.png"
+            "skin_black.png", "skin_pink.png"
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION_YELLOW, Items.CARROT, Items.GOLDEN_CARROT);
@@ -249,62 +247,191 @@ public class EnhancedLlama extends EntityAnimal {
             int eyes = 0;
             int skin = 0;
             // i is a random modifier
-            String i = getCachedUniqueIdString();
+            String uuid = getCachedUniqueIdString();
 
 
             if ( genesForText[14] == 1 || genesForText[15] == 1 ){
                 //Dominant Black
+                ground = 7;
             } else if ( genesForText[14] == 3 || genesForText[15] == 3 ){
                 //fawn self
+                ground = 8;
             }else{
                 if ( genesForText[16] == 1 || genesForText[17] == 1 ){
                     //pale shaded fawn
+                        ground = 1;
+                        pattern = 1;
                 } else if ( genesForText[16] == 2 || genesForText[17] == 2 ){
                     //shaded fawn
+                        ground = 2;
+                        pattern = 2;
                 } else if ( genesForText[16] == 3 || genesForText[17] == 3 ){
                     //black trimmed red
+                        ground = 3;
+                        pattern = 3;
                 } else if ( genesForText[16] == 4 || genesForText[17] == 4 ){
                     //bay
+                        ground = 4;
+                        pattern = 4;
                 } else if ( genesForText[16] == 5 || genesForText[17] == 5 ){
                     //mahogany
+                        ground = 5;
+                        pattern = 5;
                 }else if ( genesForText[16] == 1 || genesForText[17] == 1 ){
                     //black and tan
+                        ground = 6;
+                        pattern = 6;
                 }else{
                     //black
+                        ground = 7;
                 }
             }
 
-            if ( genesForText[8] == 1 || genesForText[9] == 1){
+            if ( genesForText[6] == 1 || genesForText[7] == 1){
+                //dominant white   0 1 2 3 4 5 6 7 8 9 a b c d e f
+
+                if ( Character.isDigit(uuid.charAt(1)) ){
+                    if (uuid.charAt(1) < 5 ){
+                        domwhite = 1;
+                    } else {
+                        domwhite = 2;
+                    }
+                }else{
+                        domwhite = 3;
+                }
 
             }
 
-            if ( genesForText[10] == 1 || genesForText[11] == 1){
+            if ( genesForText[8] == 1 || genesForText[9] == 1){
+                //roan
 
+                if ( Character.isDigit(uuid.charAt(2)) ){
+                    roan = 1 + uuid.charAt(2);
+                } else {
+                    char d = uuid.charAt(2);
+
+                    switch (d){
+                        case 'a':
+                            roan = 11;
+                            break;
+                        case 'b':
+                            roan = 12;
+                            break;
+                        case 'c':
+                            roan = 13;
+                            break;
+                        case 'd':
+                            roan = 14;
+                            break;
+                        case 'e':
+                            roan = 15;
+                            break;
+                        case 'f':
+                            roan = 16;
+                            break;
+                        //TODO add debugging default option
+                    }
+                }
+            }
+
+            if ( genesForText[10] == 2 && genesForText[11] == 2){
+                //piebald
+
+                if ( Character.isDigit(uuid.charAt(4)) ){
+                    piebald = 1 + uuid.charAt(4);
+                } else {
+                    char d = uuid.charAt(4);
+
+                    switch (d){
+                        case 'a':
+                            piebald = 11;
+                            break;
+                        case 'b':
+                            piebald = 12;
+                            break;
+                        case 'c':
+                            piebald = 13;
+                            break;
+                        case 'd':
+                            piebald = 14;
+                            break;
+                        case 'e':
+                            piebald = 15;
+                            break;
+                        case 'f':
+                            piebald = 16;
+                            break;
+                        //TODO add debugging default option
+                    }
+                }
             }
 
             if ( genesForText[12] == 1 || genesForText[13] == 1){
+                //tuxedo
 
+                if ( Character.isDigit(uuid.charAt(6)) ){
+                    tux = 1 + uuid.charAt(6);
+                } else {
+                    char d = uuid.charAt(6);
+
+                    switch (d){
+                        case 'a':
+                            tux = 11;
+                            break;
+                        case 'b':
+                            tux = 12;
+                            break;
+                        case 'c':
+                            tux = 13;
+                            break;
+                        case 'd':
+                            tux = 14;
+                            break;
+                        case 'e':
+                            tux = 15;
+                            break;
+                        case 'f':
+                            tux = 16;
+                            break;
+                        //TODO add debugging default option
+                    }
+                }
             }
 
-            if ( genesForText[14] == 1 || genesForText[15] == 1){
-
+            if (domwhite > 0){
+                skin = 1;
+                if (piebald > 0){
+                    eyes = 1;
+                }
             }
 
 
 
             this.llamaTextures.add(LLAMA_TEXTURES_GROUND[ground]);
 
+        if (pattern != 0) {
             this.llamaTextures.add(LLAMA_TEXTURES_PATTERN[pattern]);
+        }
 
+        if (roan != 0) {
             this.llamaTextures.add(LLAMA_TEXTURES_ROAN[roan]);
+        }
 
+        if (tux != 0) {
             this.llamaTextures.add(LLAMA_TEXTURES_TUXEDO[tux]);
+        }
 
+        if (piebald != 0) {
             this.llamaTextures.add(LLAMA_TEXTURES_PIEBALD[piebald]);
+        }
 
+        if (domwhite != 0) {
             this.llamaTextures.add(LLAMA_TEXTURES_DOMWHITE[domwhite]);
+        }
 
+        if (fur != 0) {
             this.llamaTextures.add(LLAMA_TEXTURES_FUR[fur]);
+        }
 
             this.llamaTextures.add(LLAMA_TEXTURES_EYES[eyes]);
 

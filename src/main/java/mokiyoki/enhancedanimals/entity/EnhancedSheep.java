@@ -224,7 +224,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         if (this.sheepTextures.isEmpty()) {
             this.setTexturePaths();
         }
-        return this.sheepTextures.stream().collect(Collectors.joining(", ","[","]"));
+        return this.sheepTextures.stream().collect(Collectors.joining("/","enhanced_sheep/",""));
 
     }
 

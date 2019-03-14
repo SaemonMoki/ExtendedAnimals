@@ -83,7 +83,7 @@ public class EnhancedLlama extends EntityAnimal {
     public float destPos;
 
     private static final int WTC = 90;
-    private static final int GENES_LENGTH = 50;
+    private static final int GENES_LENGTH = 18;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];

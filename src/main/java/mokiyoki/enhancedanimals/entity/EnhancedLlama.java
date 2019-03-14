@@ -273,8 +273,7 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
             int eyes = 0;
             int skin = 0;
             // i is a random modifier
-            String uuid = getCachedUniqueIdString();
-
+            char[] uuidArry = getCachedUniqueIdString().toCharArray();
 
             if ( genesForText[14] == 1 || genesForText[15] == 1 ){
                 //Dominant Black
@@ -316,8 +315,8 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
             if ( genesForText[6] == 1 || genesForText[7] == 1){
                 //dominant white   0 1 2 3 4 5 6 7 8 9 a b c d e f
 
-                if ( Character.isDigit(uuid.charAt(1)) ){
-                    if (uuid.charAt(1) < 5 ){
+                if ( Character.isDigit(uuidArry[1]) ){
+                    if ((uuidArry[1]-48) < 5 ){
                         domwhite = 1;
                     } else {
                         domwhite = 2;
@@ -331,10 +330,10 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
             if ( genesForText[8] == 1 || genesForText[9] == 1){
                 //roan
 
-                if ( Character.isDigit(uuid.charAt(2)) ){
-                    roan = 1 + uuid.charAt(2);
+                if (Character.isDigit(uuidArry[2])){
+                    roan = 1 + (uuidArry[2]-48);
                 } else {
-                    char d = uuid.charAt(2);
+                    char d = uuidArry[2];
 
                     switch (d){
                         case 'a':
@@ -363,12 +362,10 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
             if ( genesForText[10] == 2 && genesForText[11] == 2){
                 //piebald
 
-                char[] charArry = uuid.toCharArray();
-
-                if ( Character.isDigit(charArry[4]) ){
-                    piebald = 1 + (charArry[4]);
+                if ( Character.isDigit(uuidArry[4]) ){
+                    piebald = 1 + (uuidArry[4] - 48);
                 } else {
-                    char d = charArry[4];
+                    char d = uuidArry[4];
 
                     switch (d){
                         case 'a':
@@ -397,10 +394,10 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
             if ( genesForText[12] == 1 || genesForText[13] == 1){
                 //tuxedo
 
-                if ( Character.isDigit(uuid.charAt(6)) ){
-                    tux = 1 + uuid.charAt(6);
+                if ( Character.isDigit(uuidArry[6]) ){
+                    tux = 1 + (uuidArry[6]-48);
                 } else {
-                    char d = uuid.charAt(6);
+                    char d = uuidArry[6];
 
                     switch (d){
                         case 'a':

@@ -242,7 +242,7 @@ public class EnhancedRabbit extends EntityAnimal {
         if (this.rabbitTextures.isEmpty()) {
             this.setTexturePaths();
         }
-        return this.rabbitTextures.stream().collect(Collectors.joining(", ","[","]"));
+        return this.rabbitTextures.stream().collect(Collectors.joining("/","enhanced_rabbit",""));
 
     }
 

@@ -56,8 +56,12 @@ public class RegistryHandler {
         };
 
 
-        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_CHICKEN, 0,1, new Item.Properties()
+        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_chicken_spawn_egg"));
+        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34, new Item.Properties()
+                .group(ItemGroup.MISC)).setRegistryName("enhanced_llama_spawn_egg"));
+        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_SHEEP, 0xCDB29C,0x7B4B34, new Item.Properties()
+                .group(ItemGroup.MISC)).setRegistryName("enhanced_sheep_spawn_egg"));
 
         event.getRegistry().registerAll(items);
         event.getRegistry().registerAll(itemBlocks);

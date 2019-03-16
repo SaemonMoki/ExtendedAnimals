@@ -161,7 +161,7 @@ public class EnhancedChicken extends EntityAnimal {
     public EnhancedChicken(World worldIn) {
         super(ENHANCED_CHICKEN, worldIn);
         this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
-        this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(600) + 600); //TODO make some genes to alter these numbers
+        this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
         this.setPathPriority(PathNodeType.WATER, 0.0F); //TODO investigate what this do and how/if needed
     }
 
@@ -280,7 +280,7 @@ public class EnhancedChicken extends EntityAnimal {
             NBTTagCompound nbtTagCompound = eggItem.serializeNBT();
             eggItem.deserializeNBT(nbtTagCompound);
             this.entityDropItem(eggItem, 1);
-            this.timeUntilNextEgg = this.rand.nextInt(600) + 600;
+            this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
         }
 
         if (!this.world.isRemote){
@@ -458,6 +458,11 @@ public class EnhancedChicken extends EntityAnimal {
         mixMateMitosisGenes();
         mixMitosisGenes();
         ((EnhancedChicken)ageable).setMateGenes(this.genes);
+
+        this.setGrowingAge(6000);
+        this.resetInLove();
+        ageable.setGrowingAge(6000);
+        ((EnhancedChicken)ageable).resetInLove();
 
         return null;
     }

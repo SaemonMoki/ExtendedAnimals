@@ -1,36 +1,32 @@
 package mokiyoki.enhancedanimals.items;
 
+import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 /**
  * Created by moki on 24/08/2018.
  */
 public class EnhancedEgg extends Item {
 
-    private String[] arrayOfDifferences;
+    private int[] arrayOfDifferences;
 
     public EnhancedEgg(Properties properties) {
         super(properties);
     }
 
-//    public EnhancedEgg(String unlocalizedName, String registryName) {
-//        setUnlocalizedName(Reference.MODID + "." + unlocalizedName);
-//        setRegistryName(registryName);
-//        setCreativeTab(CreativeTabs.FOOD);
-//        setMaxStackSize(1);
-//    }
-
-    public void setDifference(String[] arrayOfDifferences){
+    public void setDifference(int[] arrayOfDifferences){
         this.arrayOfDifferences = arrayOfDifferences;
     }
 
@@ -45,7 +41,7 @@ public class EnhancedEgg extends Item {
         worldIn.playSound((EntityPlayer)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_EGG_THROW, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 
         if (!worldIn.isRemote) {
-            EnhancedEntityEgg entityegg = new EnhancedEntityEgg(worldIn, playerIn);
+            EnhancedEntityEgg entityegg = new EnhancedEntityEgg(worldIn, playerIn, itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
             entityegg.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
             worldIn.spawnEntity(entityegg);
         }
@@ -61,11 +57,10 @@ public class EnhancedEgg extends Item {
         return false;
     }
 
-//    @Override
-//    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-//        EggCapabilityProvider provider = new EggCapabilityProvider();
-//
-//
-//        return provider;
-//    }
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+        EggCapabilityProvider provider = new EggCapabilityProvider();
+
+        return provider;
+    }
 }

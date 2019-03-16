@@ -20,10 +20,12 @@ public class EggCapabilityProvider implements ICapabilitySerializable<INBTBase> 
 
     private IEggCapability instance = EGG_CAP.getDefaultInstance();
 
+    private final LazyOptional<IEggCapability> holder = LazyOptional.of(() -> instance);
+
     @Nullable
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-        return capability == EGG_CAP ? (LazyOptional<T>) this.instance : null;
+        return capability == EGG_CAP ? holder.cast() : null;
     }
 
     @Override

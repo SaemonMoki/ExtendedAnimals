@@ -3,7 +3,9 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.ECRoost;
 import mokiyoki.enhancedanimals.ai.ECSandBath;
 import mokiyoki.enhancedanimals.ai.ECWanderAvoidWater;
+import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityAgeable;
@@ -159,7 +161,7 @@ public class EnhancedChicken extends EntityAnimal {
     public EnhancedChicken(World worldIn) {
         super(ENHANCED_CHICKEN, worldIn);
         this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
-        this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
+        this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(600) + 600); //TODO make some genes to alter these numbers
         this.setPathPriority(PathNodeType.WATER, 0.0F); //TODO investigate what this do and how/if needed
     }
 
@@ -202,6 +204,10 @@ public class EnhancedChicken extends EntityAnimal {
             }
         }
         this.dataManager.set(SHARED_GENES, sb.toString());
+    }
+
+    public void setSharedGenesFromEntityEgg(String genes) {
+        this.dataManager.set(SHARED_GENES, genes);
     }
 
     public int[] getSharedGenes() {
@@ -266,13 +272,15 @@ public class EnhancedChicken extends EntityAnimal {
         {
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
 //            this.dropItem(Items.EGG, 1);
-            this.entityDropItem(getEggColour(resolveEggColour()), 1);
+//            this.entityDropItem(getEggColour(resolveEggColour()), 1);
 //            this.dropItem(getEggColour(resolveEggColour()), 1); //TODO replace this with the hatching eggs
-//            ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, 0);
-//            eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).setGenes(getEggGenes());
-//            NBTTagCompound nbtTagCompound = eggItem.serializeNBT();
-//            eggItem.deserializeNBT(nbtTagCompound);
-            this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
+            ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
+            ((EnhancedEgg)eggItem.getItem()).setDifference(getEggGenes());
+            eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).setGenes(getEggGenes());
+            NBTTagCompound nbtTagCompound = eggItem.serializeNBT();
+            eggItem.deserializeNBT(nbtTagCompound);
+            this.entityDropItem(eggItem, 1);
+            this.timeUntilNextEgg = this.rand.nextInt(600) + 600;
         }
 
         if (!this.world.isRemote){
@@ -446,26 +454,12 @@ public class EnhancedChicken extends EntityAnimal {
     @Nullable
     @Override
     public EntityAgeable createChild(EntityAgeable ageable) {
-//        if (!this.world.isRemote && !this.isChild() && --this.timeUntilNextEgg <= 0)
-//        {
-//            this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
-////            ItemStack itemStack = new ItemStack(getEggColour(resolveEggColour()), 1, 0);
-////            this.dropItem(getEggColour(resolveEggColour()), 1);
-////            entityDropItem(itemStack, 0.0F);
-//            this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
-//        }
-//        return null;
-//
-//    }
         this.mateGenes = ((EnhancedChicken)ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
-        EnhancedChicken enhancedchicken = new EnhancedChicken(this.world);
-        enhancedchicken.setGrowingAge(0);
-        int[] babyGenes = getEggGenes();
-        enhancedchicken.setGenes(babyGenes);
-        enhancedchicken.setSharedGenes(babyGenes);
-        return enhancedchicken;
+        ((EnhancedChicken)ageable).setMateGenes(this.genes);
+
+        return null;
     }
 
 
@@ -2306,6 +2300,10 @@ public class EnhancedChicken extends EntityAnimal {
 
     public int[] getGenes(){
         return this.genes;
+    }
+
+    public void setMateGenes(int[] mateGenes){
+        this.mateGenes = genes;
     }
 
     public static class GroupData implements IEntityLivingData

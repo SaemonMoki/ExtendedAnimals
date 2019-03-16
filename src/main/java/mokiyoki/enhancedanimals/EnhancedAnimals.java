@@ -1,5 +1,8 @@
 package mokiyoki.enhancedanimals;
 
+import mokiyoki.enhancedanimals.capability.egg.EggCapability;
+import mokiyoki.enhancedanimals.capability.egg.EggCapabilityStorage;
+import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
 import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
@@ -50,7 +53,7 @@ public class EnhancedAnimals {
         // some preinit code
         proxy.init(event);
         CapabilityManager.INSTANCE.register(IPostCapability.class, new PostCapabilityStorage(), PostCapability::new);
-//        CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapability::new);
+        CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapability::new);
     }
 
     private void doClientSetup(final FMLClientSetupEvent event) {

@@ -293,7 +293,6 @@ public class EnhancedChicken extends EntityAnimal {
 //            this.entityDropItem(getEggColour(resolveEggColour()), 1);
 //            this.dropItem(getEggColour(resolveEggColour()), 1); //TODO replace this with the hatching eggs
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
-            ((EnhancedEgg)eggItem.getItem()).setDifference(getEggGenes());
             eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).setGenes(getEggGenes());
             NBTTagCompound nbtTagCompound = eggItem.serializeNBT();
             eggItem.deserializeNBT(nbtTagCompound);
@@ -476,6 +475,8 @@ public class EnhancedChicken extends EntityAnimal {
         mixMateMitosisGenes();
         mixMitosisGenes();
         ((EnhancedChicken)ageable).setMateGenes(this.genes);
+        ((EnhancedChicken)ageable).mixMateMitosisGenes();
+        ((EnhancedChicken)ageable).mixMitosisGenes();
 
         this.setGrowingAge(6000);
         this.resetInLove();
@@ -1682,28 +1683,44 @@ public class EnhancedChicken extends EntityAnimal {
 
 
     public int[] getEggGenes() {
-        Random rand = new Random();
-        int[] eggGenes = new int[Reference.CHICKEN_GENES_LENGTH];
+        if (!infertile()) {
+            Random rand = new Random();
+            int[] eggGenes = new int[Reference.CHICKEN_GENES_LENGTH];
 
-        for(int i =0; i< 20; i++) {
-            boolean thisOrMate = rand.nextBoolean();
-            if (thisOrMate){
-                eggGenes[i] = genes[i];
-            } else {
-                eggGenes[i] = mateGenes[i];
+            for(int i =0; i< 20; i++) {
+                boolean thisOrMate = rand.nextBoolean();
+                if (thisOrMate){
+                    eggGenes[i] = genes[i];
+                } else {
+                    eggGenes[i] = mateGenes[i];
+                }
+            }
+
+            for(int i =20; i< genes.length; i++) {
+                boolean thisOrMate = rand.nextBoolean();
+                if (thisOrMate){
+                    eggGenes[i] = mitosisGenes[i];
+                } else {
+                    eggGenes[i] = mateMitosisGenes[i];
+                }
+            }
+
+            return eggGenes;
+        } else {
+            return null;
+        }
+    }
+
+    private boolean infertile() {
+        if (mateGenes == null || mateGenes.length == 0) {
+            return true;
+        }
+        for (int i = 0; i< mateGenes.length; i++) {
+            if (mateGenes[i] == 0) {
+                return true;
             }
         }
-
-        for(int i =20; i< genes.length; i++) {
-            boolean thisOrMate = rand.nextBoolean();
-            if (thisOrMate){
-                eggGenes[i] = mitosisGenes[i];
-            } else {
-                eggGenes[i] = mateMitosisGenes[i];
-            }
-        }
-
-        return eggGenes;
+        return false;
     }
 
     @Nullable

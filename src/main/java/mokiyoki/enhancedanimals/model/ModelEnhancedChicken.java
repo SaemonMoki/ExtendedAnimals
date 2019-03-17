@@ -16,8 +16,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedChicken extends ModelBase {
 
-    private boolean nesting = false;
-    private boolean roosting = true;
+    private boolean nesting = false; //TODO actually make some nesting ai
+    private boolean roosting = true; //TODO actually make some roosting ai
     private int pose = 0;
     private int mutation = 0;
     private float wingAngle = 0; //[between 0 - -1.5]
@@ -160,15 +160,15 @@ public class ModelEnhancedChicken extends ModelBase {
         this.combRose.addBox(-0.5F, (7F+combRy), (-4F+combRz), 1, 1, 1);
 
         this.combLargeRose = new ModelRenderer(this,0,0);
-        this.combLargeRose.addBox(-1.0F, -6.0F, -3.0F, 2, 2, 1);
-        this.combLargeRose.addBox(-0.5F, -7.0F, -2.5F, 1, 1, 2, 0.2F);
-        this.combLargeRose.addBox(-0.5F, -8.0F, -0.5F, 1, 2, 1);
-        this.combLargeRose.addBox(-0.5F, -9.0F, -0.0F, 1, 1, 1);
+        this.combLargeRose.addBox(-1F, (9F+combRy), (-6F+combRz), 2, 2, 1);
+        this.combLargeRose.addBox(-0.5F, (8F+combRy), (-5F+combRz), 1, 1, 2);
+        this.combLargeRose.addBox(-0.5F, (8F+combRy), (-5F+combRz), 1, 2, 1);
+        this.combLargeRose.addBox(-0.5F, (7F+combRy), (-4F+combRz), 1, 1, 1);
 
         this.combSmallRose2 = new ModelRenderer(this,0,0);
-        this.combSmallRose2.addBox(-0.5F, -6.0F, -2.5F, 1, 1, 1, 0.1F);
-        this.combSmallRose2.addBox(-0.5F, -6.5F, -2.0F, 1, 1, 1);
-        this.combSmallRose2.addBox(-0.5F, -6.4F, -1F, 1, 1, 1);
+        this.combSmallRose2.addBox(-0.5F, (9F+combRy), (-6F+combRz), 1, 1, 1, 0.5F);
+        this.combSmallRose2.addBox(-0.5F, (8F+combRy), (-5F+combRz), 1, 1, 1, 0.25F);
+        this.combSmallRose2.addBox(-0.5F, (8F+combRy), (-4F+combRz), 1, 1, 1);
 
         this.combRose2 = new ModelRenderer(this,0,0);
         this.combRose2.addBox(-0.5F, (9F+combRy), (-6F+combRz), 1, 1, 1, 0.5F);
@@ -176,9 +176,9 @@ public class ModelEnhancedChicken extends ModelBase {
         this.combRose2.addBox(-0.5F, (8F+combRy), (-4F+combRz), 1, 1, 1);
 
         this.combLargeRose2 = new ModelRenderer(this,0,0);
-        this.combLargeRose2.addBox(-1.0F, -6.0F, -3.0F, 2, 2, 1);
-        this.combLargeRose2.addBox(-1.0F, -6.75F, -2.5F, 2, 1, 2);
-        this.combLargeRose2.addBox(-0.5F, -6.5F, -0.5F, 1, 1, 1, 0.2F);
+        this.combLargeRose2.addBox(-0.5F, (9F+combRy), (-6F+combRz), 1, 1, 1, 0.5F);
+        this.combLargeRose2.addBox(-0.5F, (8F+combRy), (-5F+combRz), 1, 1, 1, 0.25F);
+        this.combLargeRose2.addBox(-0.5F, (8F+combRy), (-4F+combRz), 1, 1, 1);
 
         int combPy = -15;
         int combPz = 3;
@@ -690,7 +690,7 @@ public class ModelEnhancedChicken extends ModelBase {
                     this.combSmallRose.render(scale);
                 }else if (cSize == 1 || cSize == 2 || cSize == 3) {
                     this.combRose.render(scale);
-                }else{
+                }else if (cSize == 4){
                     this.combLargeRose.render(scale);
                 }
             }else if(comb == 3){
@@ -698,7 +698,7 @@ public class ModelEnhancedChicken extends ModelBase {
                     this.combSmallRose2.render(scale);
                 }else if (cSize == 1 || cSize == 2 || cSize == 3) {
                     this.combRose2.render(scale);
-                }else{
+                }else if (cSize == 4){
                     this.combLargeRose2.render(scale);
                 }
             }else if(comb == 4 || (comb == 1 && crest != 0)){
@@ -838,7 +838,6 @@ public class ModelEnhancedChicken extends ModelBase {
         copyModelAngles(leftLeg, leftFeather3);
 
         //body angle
-        //TODO make wing angles and body angles work
 //        this.body.rotateAngleX = -bodyangle;
 
         //tail stuff
@@ -850,7 +849,7 @@ public class ModelEnhancedChicken extends ModelBase {
 
         //wing stuff
 
-//        this.rightWing.rotationPointZ = -(1 - 1*5);
+//        this.rightWing.rotationPointZ = -1;
 //        this.leftWing.rotationPointZ = -1;
 //        this.rightWing.rotationPointY = 13;
 //        this.leftWing.rotationPointY = 13;

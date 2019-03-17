@@ -41,7 +41,14 @@ public class EnhancedEgg extends Item {
         worldIn.playSound((EntityPlayer)null, playerIn.posX, playerIn.posY, playerIn.posZ, SoundEvents.ENTITY_EGG_THROW, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 
         if (!worldIn.isRemote) {
-            EnhancedEntityEgg entityegg = new EnhancedEntityEgg(worldIn, playerIn, itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+            int[] eggGenes = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes();
+            EnhancedEntityEgg entityegg;
+            if (eggGenes != null) {
+                entityegg = new EnhancedEntityEgg(worldIn, playerIn, eggGenes);
+            } else {
+                entityegg = new EnhancedEntityEgg(worldIn, playerIn, null);
+            }
+
             entityegg.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
             worldIn.spawnEntity(entityegg);
         }

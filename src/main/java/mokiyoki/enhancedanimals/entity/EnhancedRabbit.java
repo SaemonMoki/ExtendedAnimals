@@ -43,15 +43,46 @@ public class EnhancedRabbit extends EntityAnimal {
         "under_cream.png", "under_grey.png", "under_white.png"
     };
 
-    private static final String[] RABBIT_TEXTURES_MIDDLE = new String[] {
-        "", "middle_agoutiorange.png", "middle_agoutitan.png", "middle_agoutilighttan.png", "middle_agouticream.png", "middle_agoutigrey.png", "middle_agoutiwhite.png",
-        "middle_orange.png", "middle_tan.png", "middle_lighttan.png", "middle_cream.png", "middle_grey.png", "middle_white.png"
+    // 1 7 13
+    private static final String[] RABBIT_TEXTURES_LOWER = new String[] {
+        "", "middle_agoutiorange.png", "middle_orange.png", "chinchilla_orange.png",
+            "middle_agoutitan.png", "middle_tan.png", "chinchilla_tan.png",
+            "middle_agoutilighttan.png", "middle_lighttan.png", "chinchilla_lighttan.png",
+            "middle_agouticream.png", "middle_cream.png", "chinchilla_cream.png",
+            "middle_agoutigrey.png", "middle_grey.png", "chinchilla_grey.png",
+            "middle_agoutiwhite.png", "middle_white.png", "chinchilla_white.png"
     };
 
+    private static final String[] RABBIT_TEXTURES_MIDDLE = new String[] {
+            "", "middle_agoutiorange.png", "middle_orange.png", "chinchilla_orange.png",
+            "middle_agoutitan.png", "middle_tan.png", "chinchilla_tan.png",
+            "middle_agoutilighttan.png", "middle_lighttan.png", "chinchilla_lighttan.png",
+            "middle_agouticream.png", "middle_cream.png", "chinchilla_cream.png",
+            "middle_agoutigrey.png", "middle_grey.png", "chinchilla_grey.png",
+            "middle_agoutiwhite.png", "middle_white.png", "chinchilla_white.png"
+    };
+
+    private static final String[] RABBIT_TEXTURES_HIGHER = new String[] {
+            "", "middle_agoutiorange.png", "middle_orange.png", "chinchilla_orange.png",
+            "middle_agoutitan.png", "middle_tan.png", "chinchilla_tan.png",
+            "middle_agoutilighttan.png", "middle_lighttan.png", "chinchilla_lighttan.png",
+            "middle_agouticream.png", "middle_cream.png", "chinchilla_cream.png",
+            "middle_agoutigrey.png", "middle_grey.png", "chinchilla_grey.png",
+            "middle_agoutiwhite.png", "middle_white.png", "chinchilla_white.png"
+    };
+
+    // 1 5 9
     private static final String[] RABBIT_TEXTURES_TOP = new String[] {
-        "", "agouti_black.png", "agouti_blue.png", "agouti_chocolate.png", "agouti_lilac.png",
-        "tan_black.png", "tan_blue.png", "tan_chocolate.png", "tan_lilac.png",
-        "self_black.png", "self_blue.png", "self_chocolate.png", "self_lilac.png"
+        "", "agouti_black.png", "agouti_blue.png", "agouti_choc.png", "agouti_lilac.png",
+            "agouti_seal_black.png", "agouti_seal_blue.png", "agouti_seal_choc.png", "agouti_seal_lilac.png",
+            "agouti_sable_black.png", "agouti_sable_blue.png", "agouti_sable_choc.png", "agouti_sable_lilac.png",
+            "agouti_himi_black.png", "agouti_himi_blue.png", "agouti_himi_choc.png", "agouti_himi_lilac.png",
+            "tan_black.png", "tan_blue.png", "tan_choc.png", "tan_lilac.png",
+            "tan_seal_black.png", "tan_seal_blue.png", "tan_seal_choc.png", "tan_seal_lilac.png",
+            "tan_sable_black.png", "tan_sable_blue.png", "tan_sable_choc.png", "tan_sable_lilac.png",
+            "tan_himi_black.png", "tan_himi_blue.png", "tan_himi_choc.png", "tan_himi_lilac.png",
+
+
     };
 
     // higher numbers are more white
@@ -261,8 +292,12 @@ public class EnhancedRabbit extends EntityAnimal {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
             int under = 0;
+            int lower = 0;
             int middle = 0;
+            int higher = 0;
             int top = 0;
+            int dilutions = 4;
+            int tints = 6;
             int dutch = 0;
             int broken = 0;
             int spothead = 0;
@@ -276,7 +311,7 @@ public class EnhancedRabbit extends EntityAnimal {
             String i = getCachedUniqueIdString();
 
 
-            if(genesForText[4] == 6 && genesForText[5] == 6){
+            if(genesForText[4] == 5 && genesForText[5] == 5){
                 //Red Eyed White (albino)
                 under = 2;
                 eyes = 5;
@@ -286,23 +321,48 @@ public class EnhancedRabbit extends EntityAnimal {
                 under = 2;
                 vienna = 1;
 
-            }else{
+            }else {
 
-                if (genesForText[0] == 1 || genesForText[1] == 1) {
-                    //agouti
-                    under = 0;
-                    middle = 2;
-                    top = 1;
-                } else if (genesForText[0] == 2 || genesForText[1] == 2) {
-                    //otter
-                    under = 0;
-                    middle = 2;
-                    top = 5;
-                } else {
-                    //self
-                    under = 0;
-                    middle = 2;
-                    top = 9;
+                if ( genesForText[4] == 1 || genesForText[5] == 1 ){
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //agouti
+                    } else if (genesForText[0] == 2 || genesForText[1] == 2) {
+                        //otter
+                    } else {
+                        //self
+                    }
+                }else if ( genesForText[4] == 2 || genesForText[5] == 2 ){
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //agouti
+                    } else if (genesForText[0] == 2 || genesForText[1] == 2) {
+                        //otter
+                    } else {
+                        //self
+                    }
+                }else if ( genesForText[4] == 3 && genesForText[5] == 3 ){
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //agouti
+                    } else if (genesForText[0] == 2 || genesForText[1] == 2) {
+                        //otter
+                    } else {
+                        //self
+                    }
+                }else if ( genesForText[4] == 3 || genesForText[5] == 3 ){
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //agouti
+                    } else if (genesForText[0] == 2 || genesForText[1] == 2) {
+                        //otter
+                    } else {
+                        //self
+                    }
+                }else if ( genesForText[4] == 4 || genesForText[5] == 4 ){
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //agouti
+                    } else if (genesForText[0] == 2 || genesForText[1] == 2) {
+                        //otter
+                    } else {
+                        //self
+                    }
                 }
 
                 //top layer "black" colour variations
@@ -366,18 +426,8 @@ public class EnhancedRabbit extends EntityAnimal {
                     }
                     //END OF NON GENETIC VARIATIONS
                 }
-
-//                 Wildtype+, Dark Chinchilla, Light Chinchilla, Pale Chinchilla, Himalayan, Albino
-                if (genesForText[4] != 1 && genesForText[5] != 1) {
-                    under = 2;
-                    middle = 0;
-                    if (genesForText[4] < 4 && genesForText[5] < 4) {
-                        eyes = 5;
-                    } else if (genesForText[4] < 2 && genesForText[5] < 2) {
-                        eyes = 4;
-                    }
-                }
             }
+
                 //coat genes 26 angora, 28 rex, 30 satin
                 if(genesForText[28] == 2 && genesForText[29] == 2){
                     fur = 2;
@@ -391,8 +441,14 @@ public class EnhancedRabbit extends EntityAnimal {
 
 
             this.rabbitTextures.add(RABBIT_TEXTURES_UNDER[under]);
+            if (lower != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_LOWER[lower]);
+            }
             if(middle != 0) {
                 this.rabbitTextures.add(RABBIT_TEXTURES_MIDDLE[middle]);
+            }
+            if(higher != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_HIGHER[higher]);
             }
             if(top != 0) {
                 this.rabbitTextures.add(RABBIT_TEXTURES_TOP[top]);
@@ -555,15 +611,15 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[3] = (1);
         }
 
-        //Colour Completion [ Wildtype+, Dark Chinchilla, Light Chinchilla, Pale Chinchilla, Himalayan, Albino ]
+        //Colour Completion [ Wildtype+, Dark Chinchilla, Light Chinchilla, Himalayan, Albino ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[4] = (ThreadLocalRandom.current().nextInt(6) + 1);
+            initialGenes[4] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
             initialGenes[4] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[5] = (ThreadLocalRandom.current().nextInt(6) + 1);
+            initialGenes[5] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
             initialGenes[5] = (1);

@@ -115,9 +115,27 @@ public class EnhancedChicken extends EntityAnimal {
         "pattern_xtradarkincompletequail_splashchoc.png",  "pattern_xtradarkincompletequail_lav.png", "pattern_xtradarkincompletequail_white.png", "pattern_xtradarkincompletequail_dun.png", "pattern_xtradarkincompletequail_choc.png",     //245
         "pattern_spangledc.png", "pattern_spangledc_blue.png", "pattern_spangledc_splash.png", "pattern_spangledc_splashlav.png", "pattern_spangledc_splashdun.png",    //250
         "pattern_spangledc_splashchoc.png",  "pattern_spangledc_lav.png", "pattern_spangledc_white.png", "pattern_spangledc_dun.png", "pattern_spangledc_choc.png",     //255
-        "pattern_bluelaced",    //special case number 300
-        "",                     //special case patternless 301
-        "48.png"                //test a texture 302
+        "pattern_multilacedduckwing.png", "pattern_multilacedduckwing_blue.png", "pattern_multilacedduckwing_splash.png", "pattern_multilacedduckwing_splashlav.png", "pattern_multilacedduckwing_splashdun.png",    //260
+        "pattern_multilacedduckwing_splashchoc.png",  "pattern_multilacedduckwing_lav.png", "pattern_multilacedduckwing_white.png", "pattern_multilacedduckwing_dun.png", "pattern_multilacedduckwing_choc.png",     //265
+        "pattern_incompletelaced.png", "pattern_incompletelaced_blue.png", "pattern_incompletelaced_splash.png", "pattern_incompletelaced_splashlav.png", "pattern_incompletelaced_splashdun.png",    //270
+        "pattern_incompletelaced_splashchoc.png",  "pattern_incompletelaced_lav.png", "pattern_incompletelaced_white.png", "pattern_incompletelaced_dun.png", "pattern_incompletelaced_choc.png",     //275
+        "pattern_xtradarkwheaten.png", "pattern_xtradarkwheaten_blue.png", "pattern_xtradarkwheaten_splash.png", "pattern_xtradarkwheaten_splashlav.png", "pattern_xtradarkwheaten_splashdun.png",    //280
+        "pattern_xtradarkwheaten_splashchoc.png",  "pattern_xtradarkwheaten_lav.png", "pattern_xtradarkwheaten_white.png", "pattern_xtradarkwheaten_dun.png", "pattern_xtradarkwheaten_choc.png",     //285
+        "pattern_incompletequail.png", "pattern_incompletequail_blue.png", "pattern_incompletequail_splash.png", "pattern_incompletequail_splashlav.png", "pattern_incompletequail_splashdun.png",    //290
+        "pattern_incompletequail_splashchoc.png",  "pattern_incompletequail_lav.png", "pattern_incompletequail_white.png", "pattern_incompletequail_dun.png", "pattern_incompletequail_choc.png",     //295
+        "pattern_incompletecolumbian.png", "pattern_incompletecolumbian_blue.png", "pattern_incompletecolumbian_splash.png", "pattern_incompletecolumbian_splashlav.png", "pattern_incompletecolumbian_splashdun.png",    //300
+        "pattern_incompletecolumbian_splashchoc.png",  "pattern_incompletecolumbian_lav.png", "pattern_incompletecolumbian_white.png", "pattern_incompletecolumbian_dun.png", "pattern_incompletecolumbian_choc.png",     //305
+        "pattern_xtradarkincompletecolumbian.png", "pattern_xtradarkincompletecolumbian_blue.png", "pattern_xtradarkincompletecolumbian_splash.png", "pattern_xtradarkincompletecolumbian_splashlav.png", "pattern_xtradarkincompletecolumbian_splashdun.png",    //310
+        "pattern_xtradarkincompletecolumbian_splashchoc.png",  "pattern_xtradarkincompletecolumbian_lav.png", "pattern_xtradarkincompletecolumbian_white.png", "pattern_xtradarkincompletecolumbian_dun.png", "pattern_xtradarkincompletecolumbian_choc.png",     //315
+        "pattern_incompletesinglelace.png", "pattern_incompletesinglelace_blue.png", "pattern_incompletesinglelace_splash.png", "pattern_incompletesinglelace_splashlav.png", "pattern_incompletesinglelace_splashdun.png",    //320
+        "pattern_incompletesinglelace_splashchoc.png",  "pattern_incompletesinglelace_lav.png", "pattern_incompletesinglelace_white.png", "pattern_incompletesinglelace_dun.png", "pattern_incompletesinglelace_choc.png",     //325
+            "pattern_xtradarksinglelace.png", "pattern_xtradarksinglelace_blue.png", "pattern_xtradarksinglelace_splash.png", "pattern_xtradarksinglelace_splashlav.png", "pattern_xtradarksinglelace_splashdun.png",    //330
+            "pattern_xtradarksinglelace_splashchoc.png",  "pattern_xtradarksinglelace_lav.png", "pattern_xtradarksinglelace_white.png", "pattern_xtradarksinglelace_dun.png", "pattern_xtradarksinglelace_choc.png",     //335
+            "pattern_darkpenciled.png", "pattern_darkpenciled_blue.png", "pattern_darkpenciled_splash.png", "pattern_darkpenciled_splashlav.png", "pattern_darkpenciled_splashdun.png",    //340
+            "pattern_darkpenciled_splashchoc.png",  "pattern_darkpenciled_lav.png", "pattern_darkpenciled_white.png", "pattern_darkpenciled_dun.png", "pattern_darkpenciled_choc.png",     //345
+            "pattern_bluelaced",    //special case number 400
+        "",                     //special case patternless 401
+        "48.png"                //test a texture 402
     };
     private static final String[] CHICKEN_TEXTURES_MOORHEAD = new String[] {
         "", "moorhead_black.png", "moorhead_blue.png", "moorhead_splash.png", "moorhead_splashlav.png", "moorhead_splash.png", "moorhead_splashdun.png",
@@ -594,9 +612,7 @@ public class EnhancedChicken extends EntityAnimal {
             int ptrncolours = 10; //number of pattern colours
 
             int moorheadtoggle = 0;
-            int Columbian= 3;
             int Melanin= 0;
-            int PatternGene= 1;
 
             //TODO fix up columbian type patterns to look more varried
             //TODO add in heterozygous pattern variations
@@ -608,11 +624,11 @@ public class EnhancedChicken extends EntityAnimal {
                 if (genesForText[20] == 2 || genesForText[21] == 2) {                                                                   //sets recessive white or albino
                     //recessive white
                     ground = 15;
-                    pattern = 301;
+                    pattern = 401;
                 } else {
                     //albino
                     ground = 15;
-                    pattern = 301;
+                    pattern = 401;
                     white = 0;
                     shanks = 4;
                     comb = 2;
@@ -625,7 +641,7 @@ public class EnhancedChicken extends EntityAnimal {
                     if (genesForText[24] == 5 && genesForText[25] == 5){
                         if(genesForText[28] == 1 && genesForText[29] == 1 && genesForText[98] == 1 && genesForText[99] == 1){
                             //xtradark birchen
-                            pattern = 170;
+                            pattern = 17;
                             ground = 0;
                         }else{
                             //solid black
@@ -634,16 +650,16 @@ public class EnhancedChicken extends EntityAnimal {
                         }
                     } else if (genesForText[24] == 1 || genesForText[25] == 1){
                             //xtradark birchen
-                            pattern = 170;
+                            pattern = 17;
                             ground = 0;
                     } else {
                         if(genesForText[28] == 1 && genesForText[29] == 1 && genesForText[98] == 1 && genesForText[99] == 1){
                             //leaky black
-                            pattern = 180;
+                            pattern = 18;
                             ground = 0;
                         }else{
                             //xtradark birchen
-                            pattern = 170;
+                            pattern = 17;
                             ground = 0;
                         }
                     }
@@ -655,39 +671,39 @@ public class EnhancedChicken extends EntityAnimal {
                                     if(genesForText[26] == 1 || genesForText[27] == 1){
                                         if(genesForText[100] == 2 && genesForText[101] == 2){
                                             //xtra dark birchen single lace
-                                            pattern = 190;
+                                            pattern = 19;
                                             ground = 15;
                                         }else{
                                             //birchen single laced
-                                            pattern = 110;
+                                            pattern = 11;
                                             ground = 15;
                                         }
                                     }else{
                                         //extended patterned columbian
-                                        pattern = 50;
+                                        pattern = 5;
                                         ground = 15;
                                     }
                                 } else if (genesForText[30] == 1 || genesForText[31] == 1){
                                     if(genesForText[26] == 1 || genesForText[27] == 1){
                                         if(genesForText[100] == 2 && genesForText[101] == 2){
                                             //moorhead doublehalfspangled
-                                            pattern = 200;
+                                            pattern = 20;
                                             ground = 15;
                                             moorhead = 1;
                                         }else{
                                             //doublehalfspangle
-                                            pattern = 200;
+                                            pattern = 20;
                                             ground = 15;
                                         }
 
                                     }else{
                                         if(genesForText[100] == 2 && genesForText[101] == 2){
                                             //overly dark columbian
-                                            pattern = 50;
+                                            pattern = 5;
                                             ground = 15;
                                         }else{
                                             //moorheaded columbian
-                                            pattern = 50;
+                                            pattern = 5;
                                             ground = 15;
                                             moorhead = 1;
                                         }
@@ -696,25 +712,25 @@ public class EnhancedChicken extends EntityAnimal {
                                     if(genesForText[26] == 1 || genesForText[27] == 1){
                                         if(genesForText[100] == 2 && genesForText[101] == 2){
                                             //moorhead doublehalfspangled
-                                            pattern = 200;
+                                            pattern = 20;
                                             ground = 15;
                                             moorhead = 1;
                                         }else{
                                             //doublehalfspangle
-                                            pattern = 200;
-                                            ground = 15;
+                                                pattern = 20;
+                                                ground = 15;
                                         }
 
                                     }else{
                                         if(genesForText[100] == 2 && genesForText[101] == 2){
                                             //moorhead transverse penciled
-                                            pattern = 100;
-                                            ground = 15;
-                                            moorhead = 1;
+                                                pattern = 34;
+                                                ground = 15;
+                                                moorhead = 1;
                                         }else{
                                             //transverse penciled
-                                            pattern = 100;
-                                            ground = 15;
+                                                pattern = 10;
+                                                ground = 15;
                                         }
                                     }
                                 }
@@ -722,30 +738,31 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[30] == 1 || genesForText[31] == 1){
                                     if (genesForText[26] == 1 || genesForText[27] == 1) {
                                             //dark doublehalfspangle
-                                            pattern = 210;
-                                            ground = 15;
+                                                pattern = 21;
+                                                ground = 15;
                                     }else{
                                             //dark messy quail
-                                            pattern = 220;
-                                            pattern = 15;
+                                                pattern = 22;
+                                                ground = 15;
                                     }
                                 }else{
                                     if (genesForText[26] == 1 || genesForText[27] == 1){
                                         if (genesForText[100] == 2 && genesForText[101] == 2){
                                             //dark transverse penciled
                                             //TODO what are the different qualities of transverse penciled
-                                            pattern = 100;
-                                            ground = 10;
-                                            moorhead = 1;
+                                                pattern = 34;
+                                                ground = 5;
+                                                moorhead = 1;
                                         }else{
                                             //incomplete penciled
-                                            pattern = 100;
-                                            ground = 10;
+                                                //TODO make incomplete transverse penciled
+                                                pattern = 10;
+                                                ground = 5;
                                         }
                                     }else{
                                             //dark quail mealy
-                                            pattern = 230;
-                                            ground = 10;
+                                                pattern = 23;
+                                                ground = 5;
                                     }
 
                                 }
@@ -753,22 +770,22 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[30] == 1 || genesForText[31] == 1){
                                     if (genesForText[100] == 2 || genesForText[101] == 2){
                                         //solid black
-                                        pattern = 0;
-                                        ground = 15;
+                                            pattern = 0;
+                                            ground = 15;
                                     }else {
                                         // leaky black
-                                        pattern = 180;
-                                        ground = 0;
+                                            pattern = 18;
+                                            ground = 0;
                                     }
                                 }else{
                                     if (genesForText[100] == 1 && genesForText[101] == 1){
                                         //leaky black
-                                        pattern = 180;
-                                        ground = 0;
+                                            pattern = 18;
+                                            ground = 5;
                                     }else{
                                         //birchen
-                                        pattern = 10;
-                                        ground = 0;
+                                            pattern = 1;
+                                            ground = 5;
                                     }
                                 }
                             }
@@ -779,34 +796,34 @@ public class EnhancedChicken extends EntityAnimal {
                                         if(genesForText[100] == 2 && genesForText[101] == 2){
                                             //extended patterned halfspangle
                                             //TODO what is this pattern really?
-                                            pattern = 160;
-                                            ground = 15;
-                                            moorhead = 1;
+                                                pattern = 16;
+                                                ground = 15;
+                                                moorhead = 1;
                                         }else{
                                             //halfspangle
-                                            pattern = 160;
-                                            ground = 15;
+                                                pattern = 16;
+                                                ground = 15;
                                         }
                                     }else{
                                            //incomplete columbian
-                                            pattern = 60;
-                                            ground = 15;
+                                                pattern = 6;
+                                                ground = 15;
                                     }
                                 }else{
                                     if (genesForText[26] == 1 || genesForText[27] == 1){
                                         if (genesForText[100] == 2 && genesForText[101] == 2){
                                             //extended patterned transverse penciled
-                                            pattern = 100;
-                                            ground = 10;
-                                            moorhead = 1;
+                                                pattern = 34;
+                                                ground = 15;
+                                                moorhead = 1;
                                         }else{
                                             // transverse penciled
-                                            pattern = 100;
-                                            ground = 10;
+                                                pattern = 10;
+                                                ground = 5;
                                         }
                                     }else{
                                         // columbian
-                                            pattern = 50;
+                                            pattern = 5;
                                             ground = 15;
 
                                     }
@@ -814,22 +831,22 @@ public class EnhancedChicken extends EntityAnimal {
                             }else{
                                 if (genesForText[30] == 1 || genesForText[31] == 1) {
                                         if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                            //solid
+                                            //solid black
                                             pattern = 0;
                                             ground = 15;
                                         }else{
                                             //leaky black
-                                            pattern = 180;
-                                            ground = 0;
+                                            pattern = 18;
+                                            ground = 15;
                                         }
                                 }else{
                                         if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //leaky black
-                                            pattern = 180;
-                                            ground = 0;
+                                            pattern = 18;
+                                            ground = 15;
                                         }else{
                                             //birchen
-                                            pattern = 10;
+                                            pattern = 1;
                                             ground = 0;
                                         }
                                 }
@@ -840,46 +857,45 @@ public class EnhancedChicken extends EntityAnimal {
                                     if (genesForText[26] == 1 || genesForText[27] == 1) {
                                         if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //extended patterned spangled
-                                            pattern = 140;
+                                            pattern = 14;
                                             ground = 15;
                                         } else {
                                             // spangled
-                                            pattern = 160;
+                                            pattern = 16;
                                             ground = 15;
                                         }
                                     } else {
                                         if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //extended patterned incomplete quail
-                                            pattern = 240;
-                                            ground = 10;
-                                            moorhead = 1;
+                                            pattern = 24;
+                                            ground = 15;
                                         } else {
                                             // incomplete quail
-                                            pattern = 240;
-                                            ground = 10;
+                                            pattern = 29;
+                                            ground = 5;
                                         }
                                     }
                                 } else {
                                     if (genesForText[26] == 1 || genesForText[27] == 1) {
                                         if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //extended traverse penciled
-                                            pattern = 100;
-                                            ground = 10;
+                                            pattern = 34;
+                                            ground = 15;
                                             moorhead = 1;
                                         } else {
                                             //traverse penciled
-                                            pattern = 100;
-                                            ground = 10;
+                                            pattern = 10;
+                                            ground = 5;
                                         }
                                     } else {
                                         if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //extended patterned incomplete quail
-                                            pattern = 240;
+                                            pattern = 24;
                                             ground = 10;
                                             moorhead = 1;
                                         } else {
                                             // incomplete quail
-                                            pattern = 240;
+                                            pattern = 29;
                                             ground = 10;
                                         }
                                     }
@@ -892,12 +908,12 @@ public class EnhancedChicken extends EntityAnimal {
                                 } else {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         //leaky black
-                                        pattern = 180;
-                                        ground = 10;
+                                        pattern = 18;
+                                        ground = 5;
                                     } else {
                                         //birchen
-                                        pattern = 10;
-                                        ground = 10;
+                                        pattern = 1;
+                                        ground = 5;
                                     }
                                 }
                             }
@@ -911,28 +927,28 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[26] == 1 || genesForText[27] == 1){
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         // extended patterned halfspangled
-                                            pattern = 160;
+                                            pattern = 16;
                                             ground = 0;
                                     }else{
                                         //  halfspangled
-                                            pattern = 250;
+                                            pattern = 25;
                                             ground = 0;
                                     }
                                 }else{
                                         //  incomplete quail
-                                            pattern = 240;
+                                            pattern = 29;
                                             ground = 10;
 
                                 }
                             }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         //  moorhead columbian w/ less hackle markings
-                                            pattern = 60;
+                                            pattern = 6;
                                             ground = 0;
                                             moorhead = 1;
                                     }else{
                                         //  columbian w/ less hackle markings
-                                            pattern = 60;
+                                            pattern = 6;
                                             ground = 0;
                                     }
                             }
@@ -941,26 +957,40 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[26] == 1 || genesForText[27] == 1){
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         // extended patterned incomplete laced
-
-
+                                        pattern = 27;
+                                        ground = 5;
+                                        moorhead = 1;
                                     }else{
                                         //  incomplete laced
+                                        pattern = 27;
+                                        ground = 5;
                                     }
                                 }else{
                                         //  quail
+                                        pattern = 4;
+                                        ground = 5;
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1){
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         // extended patterned incomplete laced?
+                                        pattern = 27;
+                                        ground = 15;
+                                        moorhead = 1;
                                     }else{
                                         //  columbian
+                                        pattern = 5;
+                                        ground = 15;
                                     }
                                 }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         //  incomplete quail
+                                            pattern = 29;
+                                            ground = 15;
                                     }else{
-                                        //  gold columbian
+                                        //  columbian
+                                            pattern = 5;
+                                            ground = 15;
                                     }
                                 }
                             }
@@ -971,24 +1001,39 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[26] == 1 || genesForText[27] == 1){
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         // extended patterned spangled
+                                        pattern = 14;
+                                        ground = 15;
                                     }else{
                                         //  spangled
+                                        pattern = 160;
+                                        ground = 15;
                                     }
                                 }else{
                                         //  incomplete quail
+                                        pattern = 29;
+                                        ground = 15;
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1){
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         // extended patterned transverse pencilled
+                                            pattern = 34;
+                                            ground = 5;
                                     }else{
                                         //  transverse pencilled
+                                            pattern = 10;
+                                            ground = 5;
                                     }
                                 }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         //  incomplete quail
+                                            pattern = 29;
+                                            ground = 15;
                                     }else{
                                         //  incomplete columbian w/ less hackle markings
+                                            pattern = 30;
+                                            ground = 15;
+
                                     }
                                 }
                             }
@@ -997,24 +1042,41 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[26] == 1 || genesForText[27] == 1){
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         // extended patterned incomplete doublelaced
+                                            pattern = 21;
+                                            ground = 5;
+                                            moorhead = 1;
                                     }else{
                                         //  incomplete doublelaced
+                                            pattern = 21;
+                                            ground = 5;
                                     }
                                 }else{
                                         //  incomplete quail
+                                            pattern = 29;
+                                            ground = 5;
+
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1){
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         // extended patterned multiple laced duckwing
+                                        pattern = 26;
+                                        ground = 0;
+                                        moorhead = 1;
                                     }else{
                                         //  multiple laced duckwing
+                                        pattern = 26;
+                                        ground = 0;
                                     }
                                 }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         //  incomplete quail
+                                        pattern = 29;
+                                        ground = 0;
                                     }else{
                                         // duckwing
+                                        pattern = 2;
+                                        ground = 0;
                                     }
                                 }
                             }
@@ -1031,24 +1093,39 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned halfspangled
+                                            pattern = 25;
+                                            ground = 5;
                                     } else {
                                         //  halfspangled
+                                            pattern = 25;
+                                            ground = 5;
                                     }
                                 }else{
                                         // extended patterened incomplete columbian w/ less hackle markings
+                                            pattern = 30;
+                                            ground = 15;
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // moorhead incomplete columbian w/ less hackle markings
+                                        pattern = 401;
+                                        ground = 15;
+                                        moorhead = 1;
                                     } else {
                                         // nearly buff
+                                        pattern = 9;
+                                        ground = 15;
                                     }
                                 }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // moorhead incomplete columbian w/ less hackle markings
+                                        pattern = 8;
+                                        ground = 15;
                                     } else {
                                         // buff
+                                        pattern = 401;
+                                        ground = 15;
                                     }
                                 }
                             }
@@ -1057,24 +1134,39 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned incomplete laced
+                                            pattern = 20;
+                                            ground = 5;
                                     } else {
                                         //  incomplete laced
+                                            pattern = 27;
+                                            ground = 5;
                                     }
                                 }else{
                                         //  quail
+                                        pattern = 4;
+                                        ground = 5;
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned incomplete laced
+                                            pattern = 20;
+                                            ground = 5;
                                     } else {
                                         //  columbian
+                                            pattern = 5;
+                                            ground = 15;
                                     }
                                 }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned columbian
+                                            pattern = 5;
+                                            ground = 15;
+                                            moorhead = 1;
                                     } else {
                                         // columbian
+                                            pattern = 5;
+                                            ground = 15;
                                     }
                                 }
                             }
@@ -1085,17 +1177,27 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned spangled
+                                         pattern = 14;
+                                         ground = 15;
                                     } else {
                                         // spangled
+                                            pattern = 16;
+                                            ground = 15;
                                     }
                                 }else{
                                         // extended patterned incomplete columbian w/ less hackle markings
+                                        pattern = 31;
+                                        ground = 15;
                                 }
                             }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned incomplete columbian w/ less hackle markings
+                                        pattern = 31;
+                                        ground = 15;
                                     } else {
                                         // incomplete columbian w/ less hackle markings
+                                        pattern = 30;
+                                        ground = 15;
                                     }
                             }
                         }else{
@@ -1103,17 +1205,28 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned doublelaced
+                                        pattern = 13;
+                                        ground = 15;
+                                        moorhead = 1;
                                     } else {
                                         // double laced
+                                        pattern = 13;
+                                        ground = 15;
                                     }
                                 }else{
-                                        // extended patterened wheaten
+                                        // extended patterned wheaten
+                                        pattern = 28;
+                                        ground = 10;
                                 }
                             }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned wheaten
+                                        pattern = 28;
+                                        ground = 10;
                                     } else {
                                         // wheaten
+                                        pattern = 3;
+                                        ground = 10;
                                     }
                             }
                         }
@@ -1127,17 +1240,28 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterened halfspangled
+                                            pattern = 16;
+                                            ground = 15;
+                                            moorhead = 1;
                                     } else {
                                         // halfspangled
+                                            pattern = 16;
+                                            ground = 15;
                                     }
                                 }else{
                                         // extended patterened incomplete quail
+                                            pattern = 24;
+                                            ground = 5;
                                 }
                             }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // moorhead incomplete columbian w/ less hackle markings
+                                        // moorhead
+                                        pattern = 8;
+                                        ground = 15;
                                     } else {
                                         // incomplete columbian w/ less hackle markings
+                                        pattern = 30;
+                                        ground = 15;
                                     }
                             }
                         }else{
@@ -1145,24 +1269,39 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned single laced
+                                        pattern = 33;
+                                        ground = 15;
+                                        moorhead = 1;
                                     } else {
-                                        // patterned single laced
+                                        // single laced
+                                        pattern = 12;
+                                        ground = 15;
                                     }
                                 }else{
                                         // quail
+                                        pattern = 4;
+                                        ground = 5;
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned incomplete single laced
+                                        pattern = 32;
+                                        ground = 15;
                                     } else {
                                         // columbian
+                                        pattern = 5;
+                                        ground = 15;
                                     }
                                 }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // lakenvelder
+                                        pattern = 7;
+                                        ground = 15;
                                     } else {
                                         // columbian
+                                        pattern = 5;
+                                        ground = 15;
                                     }
                                 }
                             }
@@ -1173,24 +1312,39 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned spangled
+                                        pattern = 14;
+                                        ground = 15;
                                     } else {
                                         // spangled
+                                        pattern = 16;
+                                        ground = 15;
                                     }
                                 }else{
                                         // incomplete quail
+                                        pattern = 29;
+                                        ground = 15;
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned transverse penciled
+                                        pattern = 34;
+                                        ground = 5;
                                     } else {
                                         // transverse penciled
+                                        pattern = 10;
+                                        ground = 5;
                                     }
                                 }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // incomplete quail
+                                        pattern = 29;
+                                        ground = 15;
+
                                     } else {
                                         // incomplete columbian w/ less hackle markings
+                                        pattern = 30;
+                                        ground = 15;
                                     }
                                 }
                             }
@@ -1199,28 +1353,48 @@ public class EnhancedChicken extends EntityAnimal {
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned doublelaced
+                                        pattern = 13;
+                                        ground = 15;
+                                        moorhead = 1;
                                     } else {
                                         // doublelaced
+                                        pattern = 13;
+                                        ground = 15;
                                     }
                                 }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned partridge/brown halfspangled/laced? but darker head?
+                                        pattern = 20;
+                                        ground = 5;
+                                        moorhead = 1;
                                     } else {
                                         // extended patterned partridge/brown halfspangled/laced?
+                                        pattern = 20;
+                                        ground = 5;
                                     }
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned multiple laced partridge
+                                        pattern = 26;
+                                        ground = 5;
+                                        moorhead = 1;
                                     } else {
                                         // multiple laced partridge
+                                        pattern = 15;
+                                        ground = 5;
                                     }
                                 }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned partridge
+                                        pattern = 2;
+                                        ground = 5;
+                                        moorhead = 1;
                                     } else {
                                         // partridge
+                                        pattern = 2;
+                                        ground = 5;
                                     }
                                 }
                             }
@@ -1244,7 +1418,7 @@ public class EnhancedChicken extends EntityAnimal {
                     ground = ground + 1;
                 }
 
-                if (pattern < 300) {
+                if (pattern < 400) {
                     if (moorhead == 1){
                         moorheadtoggle = 1;
                     }
@@ -1315,7 +1489,7 @@ public class EnhancedChicken extends EntityAnimal {
                                     //blue
                                     if (genesForText[15] == 4 && genesForText[16] == 4 && (genesForText[30] == 1 && genesForText[31] == 1)) {
                                         //blue laced ... super special gene combo for blue andalusian type pattern
-                                        pattern = 110;
+                                        pattern = 11;
                                         ground = 20;
                                         moorhead = moorhead + 0;
                                     } else {
@@ -1420,7 +1594,7 @@ public class EnhancedChicken extends EntityAnimal {
 
 //            after finished genesForText
             this.chickenTextures.add(CHICKEN_TEXTURES_GROUND[ground]);
-            if (pattern != 301){
+            if (pattern != 401){
                 this.chickenTextures.add(CHICKEN_TEXTURES_PATTERN[pattern]);
             }
             if (moorhead != 0){
@@ -2209,10 +2383,25 @@ public class EnhancedChicken extends EntityAnimal {
         //wing placement near back [ centered+, up on back, centered2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[86] = (ThreadLocalRandom.current().nextInt(3) + 1);
-            initialGenes[87] = (1);
         }else{
-            initialGenes[86] = (1);
-            initialGenes[87] = (1);
+            if (wildType == 1){
+                initialGenes[86] = (1);
+            }else if (wildType == 2){
+                initialGenes[86] = (3);
+            }else{
+                initialGenes[86] = (2);
+            }
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[87] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            if (wildType == 1){
+                initialGenes[87] = (1);
+            }else if (wildType == 2){
+                initialGenes[87] = (3);
+            }else{
+                initialGenes[87] = (2);
+            }
         }
 
         //wings down [ centered+, tilted down, pointed down ]

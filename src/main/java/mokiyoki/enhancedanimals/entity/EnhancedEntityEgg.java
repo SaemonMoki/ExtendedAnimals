@@ -1,7 +1,5 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
-import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
 import mokiyoki.enhancedanimals.init.ModItems;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,7 +7,6 @@ import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Particles;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -19,7 +16,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_ENTITY_EGG_ENTITY_TYPE;
 
@@ -49,14 +45,19 @@ public class EnhancedEntityEgg extends EntityThrowable {
     }
 
     public void setGenes(int[] eggGenes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < eggGenes.length; i++){
-            sb.append(eggGenes[i]);
-            if (i != eggGenes.length -1){
-                sb.append(",");
+        if (eggGenes != null) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < eggGenes.length; i++){
+                sb.append(eggGenes[i]);
+                if (i != eggGenes.length -1){
+                    sb.append(",");
+                }
             }
+            this.getDataManager().set(GENES, sb.toString());
+        } else {
+            this.getDataManager().set(GENES, "INFERTILE");
         }
-        this.getDataManager().set(GENES, sb.toString());
+
     }
 
     public String getGenes() {
@@ -87,22 +88,23 @@ public class EnhancedEntityEgg extends EntityThrowable {
         }
 
         if (!this.world.isRemote) {
-            if (this.rand.nextInt(8) == 0) {
-                int i = 1;
-                if (this.rand.nextInt(32) == 0) {
-                    i = 4;
-                }
+            if (!getGenes().equals("INFERTILE")) {
+                //            if (this.rand.nextInt(8) == 0) {
+//                int i = 1;
+//                if (this.rand.nextInt(32) == 0) {
+//                    i = 4;
+//                }
 
-                for (int j = 0; j < i; ++j) {
-                    EnhancedChicken enhancedchicken = new EnhancedChicken(this.world);
-                    enhancedchicken.setSharedGenesFromEntityEgg(getGenes());
-                    enhancedchicken.setGenes(enhancedchicken.getSharedGenes());
-                    enhancedchicken.setGrowingAge(-24000);
-                    enhancedchicken.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-                    this.world.spawnEntity(enhancedchicken);
-                }
+//                for (int j = 0; j < i; ++j) {
+                EnhancedChicken enhancedchicken = new EnhancedChicken(this.world);
+                enhancedchicken.setSharedGenesFromEntityEgg(getGenes());
+                enhancedchicken.setGenes(enhancedchicken.getSharedGenes());
+                enhancedchicken.setGrowingAge(-24000);
+                enhancedchicken.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+                this.world.spawnEntity(enhancedchicken);
+//                }
+//            }
             }
-
             this.world.setEntityState(this, (byte)3);
             this.remove();
         }

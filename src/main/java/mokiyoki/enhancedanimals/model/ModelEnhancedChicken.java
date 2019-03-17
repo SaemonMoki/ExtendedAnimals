@@ -838,7 +838,7 @@ public class ModelEnhancedChicken extends ModelBase {
         copyModelAngles(leftLeg, leftFeather3);
 
         //body angle
-        this.body.rotateAngleX = -bodyangle;
+//        this.body.rotateAngleX = -bodyangle;
 
         //tail stuff
         copyModelAngles(body, tail);
@@ -849,20 +849,20 @@ public class ModelEnhancedChicken extends ModelBase {
 
         //wing stuff
 
-        this.rightWing.rotationPointZ = -(1 - 1*5);
-        this.leftWing.rotationPointZ = -1;
-        this.rightWing.rotationPointY = 13;
-        this.leftWing.rotationPointY = 13;
+//        this.rightWing.rotationPointZ = -1;
+//        this.leftWing.rotationPointZ = -1;
+//        this.rightWing.rotationPointY = 13;
+//        this.leftWing.rotationPointY = 13;
 
         this.rightWing.rotateAngleZ = ageInTicks;
         this.leftWing.rotateAngleZ = -ageInTicks;
         this.rightWingSmall.rotateAngleZ = ageInTicks;
         this.leftWingSmall.rotateAngleZ = -ageInTicks;
 
-        this.rightWing.rotateAngleX = -wingAngle - bodyangle ;
-        this.leftWing.rotateAngleX = -wingAngle - bodyangle;
-        this.rightWingSmall.rotateAngleX = -wingAngle - bodyangle;
-        this.leftWingSmall.rotateAngleX = -wingAngle - bodyangle;
+//        this.rightWing.rotateAngleX = -wingAngle - bodyangle ;
+//        this.leftWing.rotateAngleX = -wingAngle - bodyangle;
+//        this.rightWingSmall.rotateAngleX = -wingAngle - bodyangle;
+//        this.leftWingSmall.rotateAngleX = -wingAngle - bodyangle;
     }
 
     public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime)
@@ -939,22 +939,22 @@ public class ModelEnhancedChicken extends ModelBase {
 
         /**       wing position variants         */
 
-        if (sharedGenes[86] == 1 && sharedGenes[87] == 1 || (sharedGenes[86] == 3 && sharedGenes[87] == 3)){
+        if ((sharedGenes[86] == 1 && sharedGenes[87] == 1) || (sharedGenes[86] == 3 && sharedGenes[87] == 3)){
             this.rightWing.rotationPointY = this.rightWing.rotationPointY + 1F;
             this.leftWing.rotationPointY = this.leftWing.rotationPointY + 1F;
             this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + 1F;
             this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + 1F;
-        } else if ((sharedGenes[86] == 2 || sharedGenes[87] == 2) && (sharedGenes[86] == 1 || sharedGenes[87] == 1)){
+        } else if (sharedGenes[86] == 1 || sharedGenes[87] == 1){
             this.rightWing.rotationPointY = this.rightWing.rotationPointY + 0.5F;
             this.leftWing.rotationPointY = this.leftWing.rotationPointY + 0.5F;
             this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + 0.5F;
             this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + 0.5F;
         }
 
-            this.rightWing.rotationPointY = this.rightWing.rotationPointY + wingAngle* 2.2F;
-            this.leftWing.rotationPointY = this.leftWing.rotationPointY + wingAngle * 2.2F;
-            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + wingAngle * 2.2F;
-            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + wingAngle * 2.2F;
+//            this.rightWing.rotationPointY = this.rightWing.rotationPointY + wingAngle* 2.2F;
+//            this.leftWing.rotationPointY = this.leftWing.rotationPointY + wingAngle * 2.2F;
+//            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + wingAngle * 2.2F;
+//            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + wingAngle * 2.2F;
     }
 
 }

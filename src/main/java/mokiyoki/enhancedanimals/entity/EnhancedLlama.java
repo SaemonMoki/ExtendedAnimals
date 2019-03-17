@@ -12,8 +12,11 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.Particles;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
@@ -90,14 +93,14 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
             "skin_black.png", "skin_pink.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION_YELLOW, Items.CARROT, Items.GOLDEN_CARROT);
-
     private final List<String> llamaTextures = new ArrayList<>();
+
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.CARROT);
 
     public float destPos;
 
     private static final int WTC = 90;
-    private static final int GENES_LENGTH = 18;
+    private static final int GENES_LENGTH = 20;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -114,9 +117,8 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
 
     public EnhancedLlama(World worldIn) {
         super(ENHANCED_LLAMA, worldIn);
-        this.setSize(0.4F, 0.5F);
+        this.setSize(0.9F, 1.87F);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
-        //TODO Add the jumping stuff
     }
 
     protected void initEntityAI() {
@@ -134,7 +136,6 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
         this.targetTasks.addTask(2, new EnhancedLlama.AIDefendTarget(this));
     }
 
-    //TODO put the rest of the jumping stuff here
 
     protected void registerData() {
         super.registerData();
@@ -202,7 +203,18 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
         return SoundEvents.ENTITY_LLAMA_DEATH;
     }
 
-    public boolean isBreedingItem(ItemStack stack) {
+    protected void playStepSound(BlockPos pos, IBlockState blockIn) {
+        this.playSound(SoundEvents.ENTITY_LLAMA_STEP, 0.15F, 1.0F);
+    }
+
+    protected void playChestEquipSound() {
+        this.playSound(SoundEvents.ENTITY_LLAMA_CHEST, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+    }
+
+//    protected SoundEvent getAngrySound() { super.getAngrySound(); return SoundEvents.ENTITY_LLAMA_ANGRY; }
+
+    public boolean isBreedingItem(ItemStack stack)
+    {
         return TEMPTATION_ITEMS.test(stack);
     }
 
@@ -302,7 +314,7 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
                     //mahogany
                         ground = 5;
                         pattern = 5;
-                }else if ( genesForText[16] == 1 || genesForText[17] == 1 ){
+                }else if ( genesForText[16] == 6 || genesForText[17] == 6 ){
                     //black and tan
                         ground = 6;
                         pattern = 6;
@@ -418,6 +430,10 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
                         case 'f':
                             tux = 16;
                             break;
+                        default:
+                            ground = 0;
+                            pattern = 0;
+                            tux = 0;
                         //TODO add debugging default option
                     }
                 }
@@ -646,13 +662,13 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
             initialGenes[10] = (ThreadLocalRandom.current().nextInt(2)+1);
 
         } else {
-            initialGenes[10] = (2);
+            initialGenes[10] = (1);
         }
         if(ThreadLocalRandom.current().nextInt(100)>WTC){
             initialGenes[11] = (ThreadLocalRandom.current().nextInt(2)+1);
 
         } else {
-            initialGenes[11] = (2);
+            initialGenes[11] = (1);
         }
 
         //Tuxedo [ tuxedo, wildtype ]
@@ -694,6 +710,20 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
 
         } else {
             initialGenes[17] = (2);
+        }
+
+        //Banana Ears genes [ no banana, banana, bananaless ]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[18] = (ThreadLocalRandom.current().nextInt(3)+1);
+
+        } else {
+            initialGenes[18] = (2);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[19] = (ThreadLocalRandom.current().nextInt(3)+1);
+
+        } else {
+            initialGenes[19] = (2);
         }
 
 

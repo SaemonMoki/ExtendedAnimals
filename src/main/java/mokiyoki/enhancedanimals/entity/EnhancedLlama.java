@@ -90,6 +90,9 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
             "skin_black.png", "skin_pink.png"
     };
 
+    private static final String LLAMA_CHEST_TEXTURE = "chest.png";
+
+
     private final List<String> llamaTextures = new ArrayList<>();
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.CARROT);
@@ -324,6 +327,16 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     public boolean isBreedingItem(ItemStack stack)
     {
         return TEMPTATION_ITEMS.test(stack);
+    }
+
+    @Override
+    public void setChested(boolean chested) {
+        super.setChested(chested);
+        if (chested && !this.llamaTextures.contains(LLAMA_CHEST_TEXTURE)) {
+            this.llamaTextures.add(LLAMA_CHEST_TEXTURE);
+        } else if (!chested && this.llamaTextures.contains(LLAMA_CHEST_TEXTURE)) {
+            this.llamaTextures.remove(LLAMA_CHEST_TEXTURE);
+        }
     }
 
     public EntityAgeable createChild(EntityAgeable ageable) {
@@ -566,6 +579,10 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
 
 
         } //if genes are not null end bracket
+        if (this.hasChest()) {
+            this.llamaTextures.add(LLAMA_CHEST_TEXTURE);
+
+        }
 
     } // setTexturePaths end bracket
 
@@ -684,31 +701,31 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     private void setStrengthAndInventory() {
         int inv = 1;
         int str = 1;
-        if (genes[22] != 1 ||  genes[23] !=1) {
-            if (genes[22] == 2 && genes[23] == 2) {
+        if (genes[2] != 1 &&  genes[3] !=1) {
+            if (genes[2] == 2 && genes[3] == 2) {
                 inv = inv + 1;
-            } else if (genes[22] == 3 && genes[23] == 3) {
+            } else if (genes[2] == 3 && genes[3] == 3) {
                 inv = inv + 1;
             } else {
                 inv = inv + 2;
             }
         }
 
-        if (genes[24] == 1 || genes[25] ==1) {
+        if (genes[4] == 1 && genes[5] ==1) {
             str = inv;
-        }else if (genes[24] == 2 && genes[25] == 2) {
+        }else if (genes[4] == 2 && genes[5] == 2) {
             str = inv + 1;
-        } else if (genes[24] == 3 && genes[25] == 3) {
+        } else if (genes[4] == 3 && genes[5] == 3) {
             str = inv + 1;
         } else {
             str = inv + 2;
         }
 
 
-        if (genes[20] != 1 || genes[21] !=1) {
-            if (genes[20] == 2 && genes[21] == 2){
+        if (genes[0] != 1 && genes[1] !=1) {
+            if (genes[0] == 2 && genes[1] == 2){
                 inv = inv + 1;
-            } else if (genes[20] == 3 && genes[21] == 3){
+            } else if (genes[0] == 3 && genes[1] == 3){
                 inv = inv + 1;
             } else {
                 inv = inv + 2;

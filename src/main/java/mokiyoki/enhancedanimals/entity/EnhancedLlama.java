@@ -330,11 +330,12 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         this.mateGenes = ((EnhancedLlama) ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
+        int[] babyGenes = getCriaGenes();
         EnhancedLlama enhancedllama = new EnhancedLlama(this.world);
         enhancedllama.setGrowingAge(0);
-        int[] babyGenes = getCriaGenes();
         enhancedllama.setGenes(babyGenes);
         enhancedllama.setSharedGenes(babyGenes);
+        enhancedllama.setStrengthAndInventory();
         return enhancedllama;
     }
 
@@ -676,7 +677,46 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
 
         this.genes = spawnGenes;
         setSharedGenes(genes);
+        setStrengthAndInventory();
         return livingdata;
+    }
+
+    private void setStrengthAndInventory() {
+        int inv = 1;
+        int str = 1;
+        if (genes[22] != 1 ||  genes[23] !=1) {
+            if (genes[22] == 2 && genes[23] == 2) {
+                inv = inv + 1;
+            } else if (genes[22] == 3 && genes[23] == 3) {
+                inv = inv + 1;
+            } else {
+                inv = inv + 2;
+            }
+        }
+
+        if (genes[24] == 1 || genes[25] ==1) {
+            str = inv;
+        }else if (genes[24] == 2 && genes[25] == 2) {
+            str = inv + 1;
+        } else if (genes[24] == 3 && genes[25] == 3) {
+            str = inv + 1;
+        } else {
+            str = inv + 2;
+        }
+
+
+        if (genes[20] != 1 || genes[21] !=1) {
+            if (genes[20] == 2 && genes[21] == 2){
+                inv = inv + 1;
+            } else if (genes[20] == 3 && genes[21] == 3){
+                inv = inv + 1;
+            } else {
+                inv = inv + 2;
+            }
+        }
+
+        setStrength(str);
+        setInventory(inv);
     }
 
     private int[] createInitialGenes() {

@@ -1,10 +1,11 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
+import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityChicken;
+import net.minecraft.entity.passive.EntityLlama;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -24,19 +25,23 @@ public class EventHandler {
         World world = event.getWorld();
         if (entity instanceof EntityChicken) {
             EnhancedChicken enhancedChicken = new EnhancedChicken(world);
-//            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
             enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0.0F, 0.0F);
-//            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
             enhancedChicken.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(enhancedChicken)), (IEntityLivingData)null, null);
             world.spawnEntity(enhancedChicken);
-//            event.setCanceled(true);
+            event.setCanceled(true);
         }
         if (entity instanceof EntityRabbit) {
-            EnhancedRabbit enhancedRabbit = new EnhancedRabbit(world);
-            enhancedRabbit.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
-            enhancedRabbit.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(enhancedRabbit)), (IEntityLivingData)null);
-            world.spawnEntity(enhancedRabbit);
+//            EnhancedChicken enhancedChicken = new EnhancedChicken(world);
+//            enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
+//            world.spawnEntity(enhancedChicken);
 //            event.setCanceled(true);
+        }
+        if (entity instanceof EntityLlama) {
+            EnhancedLlama enhancedLlama = new EnhancedLlama(world);
+            enhancedLlama.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0.0F, 0.0F);
+            enhancedLlama.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(enhancedLlama)), (IEntityLivingData)null, null);
+            world.spawnEntity(enhancedLlama);
+            event.setCanceled(true);
         }
 
     }

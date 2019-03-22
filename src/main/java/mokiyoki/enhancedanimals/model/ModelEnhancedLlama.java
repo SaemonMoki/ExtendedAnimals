@@ -13,6 +13,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedLlama extends ModelBase {
 
+    private final ModelRenderer chest1;
+    private final ModelRenderer chest2;
+
     private boolean banana = false;
 
     private final ModelRenderer head;
@@ -68,6 +71,15 @@ public class ModelEnhancedLlama extends ModelBase {
         this.body = new ModelRenderer(this, 0, 39);
         this.body.addBox(-6F, 0F, 0F, 12, 10, 18, 0.0F);
         this.body.setRotationPoint(0F, 2F, -2F);
+
+        this.chest1 = new ModelRenderer(this, 74, 44);
+        this.chest1.addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3);
+        this.chest1.setRotationPoint(-8.5F, 3.0F, 8.0F);
+        this.chest1.rotateAngleY = ((float)Math.PI / 2F);
+        this.chest2 = new ModelRenderer(this, 74, 57);
+        this.chest2.addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3);
+        this.chest2.setRotationPoint(5.5F, 3.0F, 8.0F);
+        this.chest2.rotateAngleY = ((float)Math.PI / 2F);
 
         this.tail = new ModelRenderer(this, 0, 25);
         this.tail.addBox(-3.0F, -2.0F, 15.0F, 6, 6, 6);
@@ -197,6 +209,11 @@ public class ModelEnhancedLlama extends ModelBase {
             this.toeInnerBackR.render(scale);
             this.toeOuterBackL.render(scale);
             this.toeInnerBackL.render(scale);
+
+            if (enhancedLlama.hasChest()) {
+                this.chest1.render(scale);
+                this.chest2.render(scale);
+            }
 
         }
     }

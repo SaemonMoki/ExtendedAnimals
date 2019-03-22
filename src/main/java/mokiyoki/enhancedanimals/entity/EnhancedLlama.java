@@ -2,20 +2,22 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockCarpet;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
+import net.minecraft.entity.passive.AbstractChestHorse;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityLlama;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.Particles;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -42,17 +44,12 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_LLAMA;
 
-public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
+public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMob {
 
-    private static final Predicate<Entity> IS_BREEDING = (entity) -> {
-        return entity instanceof EnhancedLlama && ((EnhancedLlama)entity).isBreeding();
-    };
-
-    private static final DataParameter<Optional<UUID>> OWNER_UNIQUE_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.OPTIONAL_UNIQUE_ID);
-
+    private static final DataParameter<Integer> DATA_STRENGTH_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> DATA_INVENTORY_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
-
-    private static final DataParameter<Byte> STATUS = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.BYTE);
+    private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
 
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
             "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blackred.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png", "fawn.png"
@@ -107,7 +104,6 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
     protected int temper;
-    private int jumpRearingCounter;
 
     private boolean didSpit;
     @Nullable
@@ -140,9 +136,115 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
-        this.dataManager.register(STATUS, (byte)0);
-        this.dataManager.register(OWNER_UNIQUE_ID, Optional.empty());
+        this.dataManager.register(DATA_STRENGTH_ID, 0);
+        this.dataManager.register(DATA_INVENTORY_ID, 0);
+        this.dataManager.register(DATA_COLOR_ID, -1);
     }
+
+    private void setStrength(int strengthIn) {
+        this.dataManager.set(DATA_STRENGTH_ID, strengthIn);
+    }
+
+    public int getStrength() {
+        return this.dataManager.get(DATA_STRENGTH_ID);
+    }
+
+    private void setInventory(int inventoryIn) {
+        this.dataManager.set(DATA_INVENTORY_ID, inventoryIn);
+    }
+
+    public int getInventory() {
+        return this.dataManager.get(DATA_INVENTORY_ID);
+    }
+
+
+    protected int getInventorySize() {
+        return this.hasChest() ? 2 + 3 * this.getInventoryColumns() : super.getInventorySize();
+    }
+
+    public int getInventoryColumns() {
+        return this.getInventory();
+    }
+
+    public void updatePassenger(Entity passenger) {
+        if (this.isPassenger(passenger)) {
+            float f = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
+            float f1 = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
+            float f2 = 0.3F;
+            passenger.setPosition(this.posX + (double)(0.3F * f1), this.posY + this.getMountedYOffset() + passenger.getYOffset(), this.posZ - (double)(0.3F * f));
+        }
+    }
+
+    /**
+     * Returns the Y offset from the entity's position for any entity riding this one.
+     */
+    public double getMountedYOffset() {
+        return (double)this.height * 0.67D;
+    }
+
+    /**
+     * returns true if all the conditions for steering the entity are met. For pigs, this is true if it is being ridden
+     * by a player and the player is holding a carrot-on-a-stick
+     */
+    public boolean canBeSteered() {
+        return false;
+    }
+
+    protected boolean handleEating(EntityPlayer player, ItemStack stack) {
+        int i = 0;
+        int j = 0;
+        float f = 0.0F;
+        boolean flag = false;
+        Item item = stack.getItem();
+        if (item == Items.WHEAT) {
+            i = 10;
+            j = 3;
+            f = 2.0F;
+        } else if (item == Blocks.HAY_BLOCK.asItem()) {
+            i = 90;
+            j = 6;
+            f = 10.0F;
+            if (this.isTame() && this.getGrowingAge() == 0 && this.canBreed()) {
+                flag = true;
+                this.setInLove(player);
+            }
+        }
+
+        if (this.getHealth() < this.getMaxHealth() && f > 0.0F) {
+            this.heal(f);
+            flag = true;
+        }
+
+        if (this.isChild() && i > 0) {
+            this.world.spawnParticle(Particles.HAPPY_VILLAGER, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + 0.5D + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, 0.0D, 0.0D, 0.0D);
+            if (!this.world.isRemote) {
+                this.addGrowth(i);
+            }
+
+            flag = true;
+        }
+
+        if (j > 0 && (flag || !this.isTame()) && this.getTemper() < this.getMaxTemper()) {
+            flag = true;
+            if (!this.world.isRemote) {
+                this.increaseTemper(j);
+            }
+        }
+
+        if (flag && !this.isSilent()) {
+            this.world.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_LLAMA_EAT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+        }
+
+        return flag;
+    }
+
+    /**
+     * Dead and sleeping entities cannot move
+     */
+    protected boolean isMovementBlocked() {
+        return this.getHealth() <= 0.0F || this.isEatingHaystack();
+    }
+
 
     public void setSharedGenes(int[] genes) {
         StringBuilder sb = new StringBuilder();
@@ -188,6 +290,12 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
         this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public boolean hasColor() {
+        return this.getColor() != null;
+    }
+
+
     protected SoundEvent getAmbientSound()
     {
         return SoundEvents.ENTITY_LLAMA_AMBIENT;
@@ -230,28 +338,6 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
         return enhancedllama;
     }
 
-    public void writeAdditional(NBTTagCompound compound) {
-        super.writeAdditional(compound);
-
-        //store this llamas's genes
-        NBTTagList geneList = new NBTTagList();
-        for (int i = 0; i < genes.length; i++) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("Gene", genes[i]);
-            geneList.add(nbttagcompound);
-        }
-        compound.setTag("Genes", geneList);
-
-        //store this llamas's mate's genes
-        NBTTagList mateGeneList = new NBTTagList();
-        for (int i = 0; i < mateGenes.length; i++) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("Gene", mateGenes[i]);
-            mateGeneList.add(nbttagcompound);
-        }
-        compound.setTag("FatherGenes", mateGeneList);
-    }
-
     @OnlyIn(Dist.CLIENT)
     public String getLlamaTexture() {
         if (this.llamaTextures.isEmpty()) {
@@ -262,8 +348,7 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String[] getVariantTexturePaths()
-    {
+    public String[] getVariantTexturePaths() {
         if (this.llamaTextures.isEmpty()) {
             this.setTexturePaths();
         }
@@ -483,10 +568,37 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
 
     } // setTexturePaths end bracket
 
-    /**
-     * (abstract) Protected helper method to read subclass entity assets from NBT.
-     */
+    public void writeAdditional(NBTTagCompound compound) {
+        super.writeAdditional(compound);
+
+        //store this llamas's genes
+        NBTTagList geneList = new NBTTagList();
+        for (int i = 0; i < genes.length; i++) {
+            NBTTagCompound nbttagcompound = new NBTTagCompound();
+            nbttagcompound.setInt("Gene", genes[i]);
+            geneList.add(nbttagcompound);
+        }
+        compound.setTag("Genes", geneList);
+
+        //store this llamas's mate's genes
+        NBTTagList mateGeneList = new NBTTagList();
+        for (int i = 0; i < mateGenes.length; i++) {
+            NBTTagCompound nbttagcompound = new NBTTagCompound();
+            nbttagcompound.setInt("Gene", mateGenes[i]);
+            mateGeneList.add(nbttagcompound);
+        }
+        compound.setTag("FatherGenes", mateGeneList);
+
+        compound.setInt("Strength", this.getStrength());
+        compound.setInt("Inventory", this.getInventory());
+        if (!this.horseChest.getStackInSlot(1).isEmpty()) {
+            compound.setTag("DecorItem", this.horseChest.getStackInSlot(1).write(new NBTTagCompound()));
+        }
+    }
+
     public void readAdditional(NBTTagCompound compound) {
+        this.setStrength(compound.getInt("Strength"));
+        this.setInventory(compound.getInt("Inventory"));
         super.readAdditional(compound);
 
         NBTTagList geneList = compound.getList("Genes", 10);
@@ -504,6 +616,10 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
         }
 
         setSharedGenes(genes);
+
+        if (compound.contains("DecorItem", 10)) {
+            this.horseChest.setInventorySlotContents(1, ItemStack.read(compound.getCompound("DecorItem")));
+        }
 
     }
 
@@ -809,32 +925,12 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
 
     protected void followMother() {
         if (!this.inCaravan() && this.isChild()) {
-            if (this.isBreeding() && this.isChild() && !this.isEatingHaystack()) {
-                EnhancedLlama llama = this.getClosestHorse(this, 16.0D);
-                if (llama != null && this.getDistanceSq(llama) > 4.0D) {
-                    this.navigator.getPathToEntityLiving(llama);
-                }
-            }
+            super.followMother();
         }
     }
-    public boolean isBreeding() {
-        return this.getHorseWatchableBoolean(8);
-    }
 
-    public boolean isEatingHaystack() {
-        return this.getHorseWatchableBoolean(16);
-    }
-
-    protected boolean getHorseWatchableBoolean(int p_110233_1_) {
-        return (this.dataManager.get(STATUS) & p_110233_1_) != 0;
-    }
-
-    public boolean isTame() {
-        return this.getHorseWatchableBoolean(2);
-    }
 
     public void makeMad() {
-        this.makeHorseRear();
         SoundEvent soundevent = this.getAngrySound();
         if (soundevent != null) {
             this.playSound(soundevent, this.getSoundVolume(), this.getSoundPitch());
@@ -842,46 +938,44 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
 
     }
 
-    private void makeHorseRear() {
-        if (this.canPassengerSteer() || this.isServerWorld()) {
-            this.jumpRearingCounter = 1;
-            this.setRearing(true);
-        }
-
-    }
-
-    public void setRearing(boolean rearing) {
-        if (rearing) {
-            this.setEatingHaystack(false);
-        }
-
-        this.setHorseWatchableBoolean(32, rearing);
-    }
-
-    public void setEatingHaystack(boolean p_110227_1_) {
-        this.setHorseWatchableBoolean(16, p_110227_1_);
-    }
-
-    protected void setHorseWatchableBoolean(int p_110208_1_, boolean p_110208_2_) {
-        byte b0 = this.dataManager.get(STATUS);
-        if (p_110208_2_) {
-            this.dataManager.set(STATUS, (byte)(b0 | p_110208_1_));
-        } else {
-            this.dataManager.set(STATUS, (byte)(b0 & ~p_110208_1_));
-        }
-
-    }
-
-    @Nullable
     protected SoundEvent getAngrySound() {
-        this.makeHorseRear();
-        return null;
+        return SoundEvents.ENTITY_LLAMA_ANGRY;
     }
 
     public int increaseTemper(int p_110198_1_) {
         int i = MathHelper.clamp(this.getTemper() + p_110198_1_, 0, this.getMaxTemper());
         this.setTemper(i);
         return i;
+    }
+
+    /**
+     * Updates the items in the saddle and armor slots of the horse's inventory.
+     */
+    protected void updateHorseSlots() {
+        if (!this.world.isRemote) {
+            super.updateHorseSlots();
+            this.setColor(func_195403_g(this.horseChest.getStackInSlot(1)));
+        }
+    }
+
+    private void setColor(@Nullable EnumDyeColor color) {
+        this.dataManager.set(DATA_COLOR_ID, color == null ? -1 : color.getId());
+    }
+
+    @Nullable
+    private static EnumDyeColor func_195403_g(ItemStack p_195403_0_) {
+        Block block = Block.getBlockFromItem(p_195403_0_.getItem());
+        return block instanceof BlockCarpet ? ((BlockCarpet)block).getColor() : null;
+    }
+
+    @Nullable
+    public EnumDyeColor getColor() {
+        int i = this.dataManager.get(DATA_COLOR_ID);
+        return i == -1 ? null : EnumDyeColor.byId(i);
+    }
+
+    public boolean canMateWith(EntityAnimal otherAnimal) {
+        return otherAnimal != this && otherAnimal instanceof EnhancedLlama && this.canMate() && ((EnhancedLlama)otherAnimal).canMate();
     }
 
     public int getMaxTemper() {
@@ -894,57 +988,6 @@ public class EnhancedLlama extends EntityAnimal implements IRangedAttackMob {
 
     public void setTemper(int temperIn) {
         this.temper = temperIn;
-    }
-
-    public boolean setTamedBy(EntityPlayer player) {
-        this.setOwnerUniqueId(player.getUniqueID());
-        this.setHorseTamed(true);
-        if (player instanceof EntityPlayerMP) {
-            CriteriaTriggers.TAME_ANIMAL.trigger((EntityPlayerMP)player, this);
-        }
-
-        this.world.setEntityState(this, (byte)7);
-        return true;
-    }
-
-    public void setOwnerUniqueId(@Nullable UUID uniqueId) {
-        this.dataManager.set(OWNER_UNIQUE_ID, Optional.ofNullable(uniqueId));
-    }
-
-    public void setHorseTamed(boolean tamed) {
-        this.setHorseWatchableBoolean(2, tamed);
-    }
-
-    @Nullable
-    protected EnhancedLlama getClosestHorse(Entity entityIn, double distance) {
-        double d0 = Double.MAX_VALUE;
-        Entity entity = null;
-
-        for(Entity entity1 : this.world.getEntitiesInAABBexcluding(entityIn, entityIn.getBoundingBox().expand(distance, distance, distance), IS_BREEDING)) {
-            double d1 = entity1.getDistanceSq(entityIn.posX, entityIn.posY, entityIn.posZ);
-            if (d1 < d0) {
-                entity = entity1;
-                d0 = d1;
-            }
-        }
-
-        return (EnhancedLlama)entity;
-    }
-
-    @Nullable
-    protected EnhancedLlama getClosestLlama(Entity entityIn, double distance) {
-        double d0 = Double.MAX_VALUE;
-        Entity entity = null;
-
-        for(Entity entity1 : this.world.getEntitiesInAABBexcluding(entityIn, entityIn.getBoundingBox().expand(distance, distance, distance), IS_BREEDING)) {
-            double d1 = entity1.getDistanceSq(entityIn.posX, entityIn.posY, entityIn.posZ);
-            if (d1 < d0) {
-                entity = entity1;
-                d0 = d1;
-            }
-        }
-
-        return (EnhancedLlama)entity;
     }
 
     public boolean canEatGrass() {

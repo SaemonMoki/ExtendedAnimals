@@ -1402,6 +1402,8 @@ public class EnhancedChicken extends EntityAnimal {
                         }
                     }
 
+                }else{
+                    eyes = 0;
                 }
 
 
@@ -2318,7 +2320,7 @@ public class EnhancedChicken extends EntityAnimal {
         }
 
         //creeper gene [ wildtype, creeper ] (short legs not exploding bushes)
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2))) {
             initialGenes[70] = (ThreadLocalRandom.current().nextInt(2) + 1);
             initialGenes[71] = (1);
         }else{

@@ -13,79 +13,105 @@ public class ModelEnhancedRabbit extends ModelBase
 {
     private final ModelRenderer rabbitLeftFoot;
     private final ModelRenderer rabbitRightFoot;
+    private final ModelRenderer rabbitLeftCalf;
+    private final ModelRenderer rabbitRightCalf;
+    private final ModelRenderer rabbitLeftThigh;
+    private final ModelRenderer rabbitRightThigh;
     private final ModelRenderer rabbitBody;
+    private final ModelRenderer rabbitButtRound;
     private final ModelRenderer rabbitButt;
+    private final ModelRenderer rabbitButtTube;
     private final ModelRenderer rabbitLeftArm;
     private final ModelRenderer rabbitRightArm;
-    private final ModelRenderer rabbitHead;
+    private final ModelRenderer rabbitHeadLeft;
+    private final ModelRenderer rabbitHeadRight;
+    private final ModelRenderer rabbitHeadMuzzle;
     private final ModelRenderer rabbitRightEar;
     private final ModelRenderer rabbitLeftEar;
     private final ModelRenderer rabbitTail;
     private final ModelRenderer rabbitNose;
-    private float jumpRotation;
+//    private float jumpRotation;
 
     public ModelEnhancedRabbit()
     {
         this.textureWidth = 64;
         this.textureHeight = 64;
 
-        this.rabbitLeftFoot = new ModelRenderer(this, 49, 12);
-        this.rabbitLeftFoot.addBox(-1.0F, 5.5F, -3.7F, 2, 1, 5);
-        this.rabbitLeftFoot.setRotationPoint(1.9F, 17.5F, 4.2F);
-        this.setRotationOffset(this.rabbitLeftFoot, 0.0F, 0.0F, 0.0F);
+        this.rabbitLeftFoot = new ModelRenderer(this, 0, 55);
+        this.rabbitLeftFoot.addBox(0F, 0F, 0F, 3, 8, 1);
+        this.rabbitLeftFoot.setRotationPoint(-5.0F, 0F, 0F);
 
-        this.rabbitRightFoot = new ModelRenderer(this, 44, 0);
-        this.rabbitRightFoot.addBox(-1.0F, 5.5F, -3.7F, 2, 1, 5);
-        this.rabbitRightFoot.setRotationPoint(-1.9F, 17.5F, 4.2F);
-        this.setRotationOffset(this.rabbitRightFoot, 0.0F, 0.0F, 0.0F);
+        this.rabbitRightFoot = new ModelRenderer(this, 8, 55);
+        this.rabbitRightFoot.addBox(0F, 0F, 0F, 3, 8, 1);
+        this.rabbitRightFoot.setRotationPoint(0F, 0F, 0F);
 
-        this.rabbitBody = new ModelRenderer(this, 0, 11);
-        this.rabbitBody.addBox(-3.0F, -3.2F, -12.0F, 5, 4, 5);
-        this.rabbitBody.setRotationPoint(0.5F, 19.0F, 8.0F);
-        this.setRotationOffset(this.rabbitBody, 0.34906584F, 0.0F, 0.0F);
+        this.rabbitLeftCalf = new ModelRenderer(this, 0, 49);
+        this.rabbitLeftCalf.addBox(0F, 0F, 0F, 3, 5, 1);
+        this.rabbitLeftCalf.setRotationPoint(-5.0F, 0F, 0F);
 
-        this.rabbitButt = new ModelRenderer(this, 24, 11);
-        this.rabbitButt.addBox(-3.0F, -0.5F, -8.0F, 6, 5, 6);
-        this.rabbitButt.setRotationPoint(0.0F, 19.0F, 8.0F);
+        this.rabbitRightCalf = new ModelRenderer(this, 18, 49);
+        this.rabbitRightCalf.addBox(0F, 0F, 0F, 3, 5, 1);
+        this.rabbitRightCalf.setRotationPoint(0F, 0F, 0F);
 
-        this.rabbitLeftArm = new ModelRenderer(this, 50, 18);
-        this.rabbitLeftArm.addBox(-1.0F, 6.0F, -3.0F, 2, 1, 4);
-        this.rabbitLeftArm.setRotationPoint(1.9F, 17.0F, -1.0F);
+        this.rabbitLeftThigh = new ModelRenderer(this, 0, 37);
+        this.rabbitLeftThigh.addBox(0F, 0F, 0F, 3, 6, 6);
+        this.rabbitLeftThigh.setRotationPoint(-4.5F, 17F, 4F);
 
-        this.rabbitRightArm = new ModelRenderer(this, 45, 6);
-        this.rabbitRightArm.addBox(-1.0F, 6.0F, -3.0F, 2, 1, 4);
-        this.rabbitRightArm.setRotationPoint(-1.9F, 17.0F, -1.0F);
+        this.rabbitRightThigh = new ModelRenderer(this, 18, 37);
+        this.rabbitRightThigh.addBox(0F, 0F, 0F, 3, 6, 6);
+        this.rabbitRightThigh.setRotationPoint(1.5F, 17F, 4F);
 
-        this.rabbitHead = new ModelRenderer(this, 6, 0);
-        this.rabbitHead.addBox(-2.5F, 2.0F, -5.0F, 4, 4, 4);
-        this.rabbitHead.setRotationPoint(0.5F, 16.0F, -1.0F);
-        this.setRotationOffset(this.rabbitHead, 0.0F, 0.0F, 0.0F);
+        this.rabbitBody = new ModelRenderer(this, 7, 8);
+        this.rabbitBody.addBox(-3.5F, 0F, 0F, 7, 7, 9);
+        this.rabbitBody.setRotationPoint(0F, 16.0F, -4.5F);
 
-        this.rabbitRightEar = new ModelRenderer(this, 0, 2);
-        this.rabbitRightEar.addBox(-2.5F, -3.0F, -1.0F, 2, 5, 1);
-        this.rabbitRightEar.setRotationPoint(0.0F, 16.0F, -1.0F);
-        this.setRotationOffset(this.rabbitRightEar, 0.0F, -0.2617994F, 0.0F);
+        this.rabbitButtRound = new ModelRenderer(this, 30, 0);
+        this.rabbitButtRound.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 0.5F);
+        this.rabbitButtRound.setRotationPoint(0.0F, 14.0F, 2.5F);
 
-        this.rabbitLeftEar = new ModelRenderer(this, 34, 2);
-        this.rabbitLeftEar.addBox(0.5F, -3.0F, -1.0F, 2, 5, 1);
-        this.rabbitLeftEar.setRotationPoint(0.0F, 16.0F, -1.0F);
-        this.setRotationOffset(this.rabbitLeftEar, 0.0F, 0.2617994F, 0.0F);
+        this.rabbitButt = new ModelRenderer(this, 30, 0);
+        this.rabbitButt.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8);
+        this.rabbitButt.setRotationPoint(0.0F, 15.0F, 2.5F);
 
-        this.rabbitTail = new ModelRenderer(this, 58, 0);
-        this.rabbitTail.addBox(-1.5F, 1.5F, 0.0F, 2, 2, 1);
-        this.rabbitTail.setRotationPoint(0.0F, 20.0F, 7.0F);
-        this.setRotationOffset(this.rabbitTail, -0.3490659F, 0.0F, 0.0F);
+        this.rabbitButtTube = new ModelRenderer(this, 30, 0);
+        this.rabbitButtTube.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, -0.49F);
+        this.rabbitButtTube.setRotationPoint(0.0F, 16.1F, 2.5F);
 
-        this.rabbitNose = new ModelRenderer(this, 22, 2);
-        this.rabbitNose.addBox(-2F, 3.0F, -6.0F, 3, 3, 3);
-        this.setRotationOffset(this.rabbitNose, 0.0F, 0.0F, 0.0F);
-    }
+        this.rabbitLeftArm = new ModelRenderer(this, 16, 56);
+        this.rabbitLeftArm.addBox(0.0F, 0.0F, 0.0F, 3, 6, 2);
+        this.rabbitLeftArm.setRotationPoint(-4.5F, 21.0F, -2.0F);
 
-    private void setRotationOffset(ModelRenderer renderer, float x, float y, float z)
-    {
-        renderer.rotateAngleX = x;
-        renderer.rotateAngleY = y;
-        renderer.rotateAngleZ = z;
+        this.rabbitRightArm = new ModelRenderer(this, 26, 56);
+        this.rabbitRightArm.addBox(0.0F, 0F, 0F, 3, 6, 2);
+        this.rabbitRightArm.setRotationPoint(1.5F, 21.0F, -2.0F);
+
+        this.rabbitHeadLeft = new ModelRenderer(this, 0, 24);
+        this.rabbitHeadLeft.addBox(0.0F, 0.0F, 0.0F, 3, 6, 6);
+        this.rabbitHeadLeft.setRotationPoint(0.0F, 14.0F, -9.0F);
+
+        this.rabbitHeadRight = new ModelRenderer(this, 18, 24);
+        this.rabbitHeadRight.addBox(-3.0F, 0F, 0F, 3, 6, 6);
+        this.rabbitHeadRight.setRotationPoint(0.0F, 14.0F, -9.0F);
+
+        this.rabbitHeadMuzzle = new ModelRenderer(this, 0, 8);
+        this.rabbitHeadMuzzle.addBox(-2F, 1.5F, -2F, 4, 4, 4);
+        this.rabbitHeadMuzzle.setRotationPoint(0.0F, 0.0F, 0.0F);
+
+        this.rabbitNose = new ModelRenderer(this, 0, 8);
+        this.rabbitNose.addBox(-0.5F, 1.6F, -2.1F, 1, 1, 1);
+//        this.setRotationOffset(this.rabbitNose, 0.0F, 0.0F, 0.0F);
+
+        this.rabbitLeftEar = new ModelRenderer(this, 0, 0);
+        this.rabbitLeftEar.addBox(0.0F, -7.0F, 2.0F, 4, 7, 1);
+        this.rabbitLeftEar.setRotationPoint(1.0F, 14.0F, 0.0F);
+
+        this.rabbitRightEar = new ModelRenderer(this, 10, 0);
+        this.rabbitRightEar.addBox(-4.0F, -7.0F, 2.0F, 4, 7, 1);
+        this.rabbitRightEar.setRotationPoint(-1.0F, 14.0F, 0.0F);
+
+        this.rabbitTail = new ModelRenderer(this, 20, 0);
+        this.rabbitTail.addBox(-1.5F, 2.0F, 8.0F, 3, 4, 2);
+        this.rabbitTail.setRotationPoint(0.0F, 0.0F, 0.0F);
     }
 
     /**
@@ -97,22 +123,30 @@ public class ModelEnhancedRabbit extends ModelBase
 
         if (this.isChild)
         {
-            float f = 1.5F;
+//            float f = 1.5F;
             GlStateManager.pushMatrix();
             GlStateManager.scalef(0.56666666F, 0.56666666F, 0.56666666F);
             GlStateManager.translatef(0.0F, 22.0F * scale, 2.0F * scale);
-            this.rabbitHead.render(scale);
+            this.rabbitHeadLeft.render(scale);
+            this.rabbitHeadRight.render(scale);
+            this.rabbitHeadMuzzle.render(scale);
+            this.rabbitNose.render(scale);
             this.rabbitLeftEar.render(scale);
             this.rabbitRightEar.render(scale);
-            this.rabbitNose.render(scale);
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
             GlStateManager.scalef(0.4F, 0.4F, 0.4F);
             GlStateManager.translatef(0.0F, 36.0F * scale, 0.0F);
             this.rabbitLeftFoot.render(scale);
             this.rabbitRightFoot.render(scale);
+            this.rabbitLeftCalf.render(scale);
+            this.rabbitRightCalf.render(scale);
+            this.rabbitLeftThigh.render(scale);
+            this.rabbitRightThigh.render(scale);
             this.rabbitBody.render(scale);
+//            this.rabbitButtRound.render(scale);
             this.rabbitButt.render(scale);
+//            this.rabbitButtTube.render(scale);
             this.rabbitLeftArm.render(scale);
             this.rabbitRightArm.render(scale);
             this.rabbitTail.render(scale);
@@ -120,21 +154,29 @@ public class ModelEnhancedRabbit extends ModelBase
         }
         else
         {
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
-            GlStateManager.translatef(0.0F, 16.0F * scale, 0.0F);
-            this.rabbitLeftFoot.render(scale);
-            this.rabbitRightFoot.render(scale);
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
+//            GlStateManager.translatef(0.0F, 16.0F * scale, 0.0F);
+            this.rabbitHeadLeft.render(scale);
+            this.rabbitHeadRight.render(scale);
+            this.rabbitHeadMuzzle.render(scale);
+            this.rabbitNose.render(scale);
+            this.rabbitLeftEar.render(scale);
+            this.rabbitRightEar.render(scale);
+//            this.rabbitLeftFoot.render(scale);
+//            this.rabbitRightFoot.render(scale);
+//            this.rabbitLeftCalf.render(scale);
+//            this.rabbitRightCalf.render(scale);
+            this.rabbitLeftThigh.render(scale);
+            this.rabbitRightThigh.render(scale);
             this.rabbitBody.render(scale);
+////            this.rabbitButtRound.render(scale);
             this.rabbitButt.render(scale);
+////            this.rabbitButtTube.render(scale);
             this.rabbitLeftArm.render(scale);
             this.rabbitRightArm.render(scale);
-            this.rabbitHead.render(scale);
-            this.rabbitRightEar.render(scale);
-            this.rabbitLeftEar.render(scale);
             this.rabbitTail.render(scale);
-            this.rabbitNose.render(scale);
-            GlStateManager.popMatrix();
+//            GlStateManager.popMatrix();
         }
     }
 
@@ -145,17 +187,20 @@ public class ModelEnhancedRabbit extends ModelBase
      */
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
     {
-        float f = ageInTicks - (float)entityIn.ticksExisted;
-        this.rabbitHead.rotateAngleX = headPitch * 0.017453292F;
-        copyModelAngles(rabbitHead, rabbitNose);
-        this.rabbitRightEar.rotateAngleX = headPitch * 0.017453292F;
-        this.rabbitLeftEar.rotateAngleX = headPitch * 0.017453292F;
-        this.rabbitNose.rotateAngleY = netHeadYaw * 0.017453292F;
-        this.rabbitHead.rotateAngleY = netHeadYaw * 0.017453292F;
-        this.rabbitRightEar.rotateAngleY = this.rabbitNose.rotateAngleY - 0.2617994F;
-        this.rabbitLeftEar.rotateAngleY = this.rabbitNose.rotateAngleY + 0.2617994F;
-        this.rabbitLeftFoot.rotateAngleX = this.jumpRotation * 50.0F * 0.017453292F;
-        this.rabbitRightFoot.rotateAngleX = this.jumpRotation * 50.0F * 0.017453292F;
+//        float f = ageInTicks - (float)entityIn.ticksExisted;
+        this.rabbitHeadLeft.rotateAngleX = headPitch * 0.017453292F;
+        this.rabbitHeadLeft.rotateAngleY = netHeadYaw * 0.017453292F;
+        copyModelAngles(rabbitHeadLeft, rabbitHeadRight);
+        copyModelAngles(rabbitHeadLeft, rabbitHeadMuzzle);
+        copyModelAngles(rabbitHeadLeft, rabbitNose);
+        copyModelAngles(rabbitHeadLeft, rabbitLeftEar);
+        copyModelAngles(rabbitHeadLeft, rabbitRightEar);
+//        this.rabbitNose.rotateAngleY = netHeadYaw * 0.017453292F;
+//        this.rabbitRightEar.rotateAngleY = this.rabbitNose.rotateAngleY - 0.2617994F;
+//        this.rabbitLeftEar.rotateAngleY = this.rabbitNose.rotateAngleY + 0.2617994F;
+//        this.rabbitLeftFoot.rotateAngleX = this.jumpRotation * 50.0F * 0.017453292F;
+//        this.rabbitRightFoot.rotateAngleX = this.jumpRotation * 50.0F * 0.017453292F;
+        copyModelAngles(rabbitButt, rabbitTail);
     }
 
     /**

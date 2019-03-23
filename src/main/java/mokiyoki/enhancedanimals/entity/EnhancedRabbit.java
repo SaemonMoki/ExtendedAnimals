@@ -73,7 +73,7 @@ public class EnhancedRabbit extends EntityAnimal {
 
     // 1 5 9
     private static final String[] RABBIT_TEXTURES_TOP = new String[] {
-        "", "agouti_black.png", "agouti_blue.png", "agouti_choc.png", "agouti_lilac.png",
+        "error.png", "agouti_black.png", "agouti_blue.png", "agouti_choc.png", "agouti_lilac.png",
             "agouti_seal_black.png", "agouti_seal_blue.png", "agouti_seal_choc.png", "agouti_seal_lilac.png",
             "agouti_sable_black.png", "agouti_sable_blue.png", "agouti_sable_choc.png", "agouti_sable_lilac.png",
             "agouti_himi_black.png", "agouti_himi_blue.png", "agouti_himi_choc.png", "agouti_himi_lilac.png",
@@ -450,9 +450,9 @@ public class EnhancedRabbit extends EntityAnimal {
             if(higher != 0) {
                 this.rabbitTextures.add(RABBIT_TEXTURES_HIGHER[higher]);
             }
-            if(top != 0) {
-                this.rabbitTextures.add(RABBIT_TEXTURES_TOP[top]);
-            }
+//            if(top != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_TOP[0]);
+//            }
             if(dutch != 0) {
                 this.rabbitTextures.add(RABBIT_TEXTURES_DUTCH[dutch]);
             }

@@ -139,13 +139,55 @@ public class ModelEnhancedRabbit extends ModelBase
      * Sets the models various rotation angles then renders the model.
      */
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        EnhancedRabbit enhancedRabbit = (EnhancedRabbit) entityIn;
+
+        int[] genes = enhancedRabbit.getSharedGenes();
+        float size = 1F; // [minimum size = 0.3 maximum size = 1]
+
+        if (genes[46] < 5){
+            size = size - 0.07F;
+            if (genes[46] < 4){
+                size = size - 0.07F;
+                if (genes[46] < 3){
+                    size = size - 0.07F;
+                    if (genes[46] < 2){
+                        size = size - 0.03F;
+                    }
+                }
+            }
+        }
+        if (genes[46] < 5){
+            size = size - 0.07F;
+            if (genes[46] < 4){
+                size = size - 0.07F;
+                if (genes[46] < 3){
+                    size = size - 0.07F;
+                    if (genes[46] < 2){
+                        size = size - 0.03F;
+                    }
+                }
+            }
+        }
+        if (genes[48] == 3 && genes[49] == 3){
+            size = size - 0.075F;
+        }else if (genes[48] == 2 && genes[49] == 2){
+            size = size - 0.05F;
+        }else if (genes[48] == 2 || genes[49] == 2){
+            size = size - 0.025F;
+        }
+
+        if (genes[34] == 2 || genes[35] == 2){
+            size = 0.3F + ((size - 0.3F)/2F);
+        }
+
+
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
         if (this.isChild) {
 //            float f = 1.5F;
             GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.56666666F, 0.56666666F, 0.56666666F);
-            GlStateManager.translatef(0.0F, 22.0F * scale, 2.0F * scale);
+            GlStateManager.scalef(0.28F, 0.28F, 0.28F);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.28F, 2.0F * scale);
             this.rabbitHeadLeft.render(scale);
             this.rabbitHeadRight.render(scale);
             this.rabbitHeadMuzzle.render(scale);
@@ -154,12 +196,8 @@ public class ModelEnhancedRabbit extends ModelBase
             this.rabbitRightEar.render(scale);
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.4F, 0.4F, 0.4F);
-            GlStateManager.translatef(0.0F, 36.0F * scale, 0.0F);
-//            this.rabbitLeftFoot.render(scale);
-//            this.rabbitRightFoot.render(scale);
-//            this.rabbitLeftCalf.render(scale);
-//            this.rabbitRightCalf.render(scale);
+            GlStateManager.scalef(0.20F, 0.20F, 0.20F);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.2F, 0.0F);
             this.rabbitLeftThigh.render(scale);
             this.rabbitRightThigh.render(scale);
             this.rabbitBody.render(scale);
@@ -171,19 +209,15 @@ public class ModelEnhancedRabbit extends ModelBase
             this.rabbitTail.render(scale);
             GlStateManager.popMatrix();
         } else {
-//            GlStateManager.pushMatrix();
-//            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
-//            GlStateManager.translatef(0.0F, 16.0F * scale, 0.0F);
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(size, size, size);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/size, 0.0F);
             this.rabbitHeadLeft.render(scale);
             this.rabbitHeadRight.render(scale);
             this.rabbitHeadMuzzle.render(scale);
             this.rabbitNose.render(scale);
             this.rabbitLeftEar.render(scale);
             this.rabbitRightEar.render(scale);
-//            this.rabbitLeftFoot.render(scale);
-//            this.rabbitRightFoot.render(scale);
-//            this.rabbitLeftCalf.render(scale);
-//            this.rabbitRightCalf.render(scale);
             this.rabbitLeftThigh.render(scale);
             this.rabbitRightThigh.render(scale);
             this.rabbitBody.render(scale);
@@ -193,7 +227,7 @@ public class ModelEnhancedRabbit extends ModelBase
             this.rabbitLeftArm.render(scale);
             this.rabbitRightArm.render(scale);
             this.rabbitTail.render(scale);
-//            GlStateManager.popMatrix();
+            GlStateManager.popMatrix();
         }
     }
 
@@ -214,6 +248,7 @@ public class ModelEnhancedRabbit extends ModelBase
         this.rabbitNose.rotateAngleY = netHeadYaw * 0.017453292F;
         this.rabbitRightEar.rotateAngleY = this.rabbitNose.rotateAngleY - 0.2617994F;
         this.rabbitLeftEar.rotateAngleY = this.rabbitNose.rotateAngleY + 0.2617994F;
+        //TODO add twitching nose
 
         this.jumpRotation = MathHelper.sin(((EnhancedRabbit)entityIn).getJumpCompletion(f) * (float)Math.PI);
         if (this.jumpRotation == 0.0F) {
@@ -223,6 +258,10 @@ public class ModelEnhancedRabbit extends ModelBase
             this.rabbitRightCalf.rotateAngleX = 2.0F;
             this.rabbitLeftArm.rotateAngleX = -1.6F;
             this.rabbitRightArm.rotateAngleX = -1.6F;
+            this.rabbitBody.rotateAngleX = 0.0F;
+            this.rabbitButtRound.rotateAngleX = 0.0F;
+            this.rabbitButt.rotateAngleX = 0.0F;
+            this.rabbitButtTube.rotateAngleX = 0.0F;
         } else {
             this.rabbitLeftFoot.rotateAngleX = 3.0F + this.jumpRotation * 80.0F * ((float)Math.PI / 180F);
             this.rabbitRightFoot.rotateAngleX = 3.0F + this.jumpRotation * 80.0F * ((float)Math.PI / 180F);

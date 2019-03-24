@@ -2529,8 +2529,7 @@ public class EnhancedChicken extends EntityAnimal {
     {
 
         public int[] groupGenes;
-        public GroupData(int[] groupGenes)
-        {
+        public GroupData(int[] groupGenes) {
             this.groupGenes = groupGenes;
         }
 

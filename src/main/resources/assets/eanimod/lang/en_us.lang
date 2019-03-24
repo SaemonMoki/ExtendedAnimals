@@ -23,6 +23,9 @@ item.eanimod.cookedChickenDark.name=Cooked Chicken
 item.eanimod.cookedChickenDarkBig.name=Cooked Chicken
 item.eanimod.cookedChickenPaleSmall.name=Cooked Chicken
 item.eanimod.cookedChickenPale.name=Cooked Chicken
+item.eanimod.rawRabbitSmall.name=Raw Rabbit
+item.eanimod.cookedRabbitSmall.name=Cooked Rabbit
+item.eanimod.rabbitStewWeak.name=Weak Rabbit Stew
 
 //Blocks
 tile.eanimod.postOak.name=Oak Post

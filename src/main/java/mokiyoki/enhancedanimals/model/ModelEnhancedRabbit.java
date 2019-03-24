@@ -33,6 +33,7 @@ public class ModelEnhancedRabbit extends ModelBase
     private final ModelRenderer rabbitTail;
     private final ModelRenderer rabbitNose;
     private float jumpRotation;
+    private float testerFloat;
 
     public ModelEnhancedRabbit()
     {
@@ -91,11 +92,13 @@ public class ModelEnhancedRabbit extends ModelBase
 
         this.rabbitLeftArm = new ModelRenderer(this, 16, 56);
         this.rabbitLeftArm.addBox(0.0F, 0.0F, 0.0F, 3, 6, 2);
-        this.rabbitLeftArm.setRotationPoint(-4.5F, 21.0F, -2.0F);
+        this.rabbitLeftArm.setRotationPoint(-3.5F, 23.5F, -2.0F);
+        this.setRotationOffset(this.rabbitLeftArm, -1.6F, 0.0F, 0.0F);
 
         this.rabbitRightArm = new ModelRenderer(this, 26, 56);
         this.rabbitRightArm.addBox(0.0F, 0F, 0F, 3, 6, 2);
-        this.rabbitRightArm.setRotationPoint(1.5F, 21.0F, -2.0F);
+        this.rabbitRightArm.setRotationPoint(0.5F, 23.5F, -2.0F);
+        this.setRotationOffset(this.rabbitRightArm, -1.6F, 0.0F, 0.0F);
 
         this.rabbitHeadLeft = new ModelRenderer(this, 0, 24);
         this.rabbitHeadLeft.addBox(0.0F, 0.0F, 0.0F, 3, 6, 6);
@@ -218,16 +221,20 @@ public class ModelEnhancedRabbit extends ModelBase
             this.rabbitRightFoot.rotateAngleX = 3.0F;
             this.rabbitLeftCalf.rotateAngleX = 2.0F;
             this.rabbitRightCalf.rotateAngleX = 2.0F;
+            this.rabbitLeftArm.rotateAngleX = -1.6F;
+            this.rabbitRightArm.rotateAngleX = -1.6F;
         } else {
             this.rabbitLeftFoot.rotateAngleX = 3.0F + this.jumpRotation * 80.0F * ((float)Math.PI / 180F);
             this.rabbitRightFoot.rotateAngleX = 3.0F + this.jumpRotation * 80.0F * ((float)Math.PI / 180F);
             this.rabbitLeftCalf.rotateAngleX = 2.0F - (this.jumpRotation * +50.0F * ((float)Math.PI / 180F));
             this.rabbitRightCalf.rotateAngleX = 2.0F - (this.jumpRotation * +50.0F * ((float)Math.PI / 180F));
+            this.rabbitLeftArm.rotateAngleX = -1.6F - (this.jumpRotation * -40.0F - 11.0F) * ((float)Math.PI / 180F);
+            this.rabbitRightArm.rotateAngleX = -1.6F - (this.jumpRotation * -40.0F - 11.0F) * ((float)Math.PI / 180F);
+            this.rabbitButt.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
+//            this.rabbitBody.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
         }
         this.rabbitLeftThigh.rotateAngleX = (this.jumpRotation * 50.0F - 21.0F) * ((float)Math.PI / 180F);
         this.rabbitRightThigh.rotateAngleX = (this.jumpRotation * 50.0F - 21.0F) * ((float)Math.PI / 180F);
-        this.rabbitLeftArm.rotateAngleX = (this.jumpRotation * -40.0F - 11.0F) * ((float)Math.PI / 180F);
-        this.rabbitRightArm.rotateAngleX = (this.jumpRotation * -40.0F - 11.0F) * ((float)Math.PI / 180F);
 
 
         copyModelAngles(rabbitButt, rabbitTail);

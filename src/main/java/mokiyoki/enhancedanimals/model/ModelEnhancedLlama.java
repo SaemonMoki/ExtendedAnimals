@@ -136,6 +136,35 @@ public class ModelEnhancedLlama extends ModelBase {
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
         EnhancedLlama enhancedLlama = (EnhancedLlama) entityIn;
 
+        int[] genes = enhancedLlama.getSharedGenes();
+
+        float size = 1;
+
+        if (genes[0] < 3){
+            size = size - 0.025F;
+            if (genes[0] < 2){
+                size = size - 0.025F;
+            }
+        }
+        if (genes[1] < 3){
+            size = size - 0.025F;
+            if (genes[1] < 2){
+                size = size - 0.025F;
+            }
+        }
+        if (genes[2] < 3){
+            size = size - 0.025F;
+            if (genes[2] < 2){
+                size = size - 0.025F;
+            }
+        }
+        if (genes[3] < 3){
+            size = size - 0.025F;
+            if (genes[3] < 2){
+                size = size - 0.025F;
+            }
+        }
+
         if (this.isChild) {
             GlStateManager.pushMatrix();
             GlStateManager.scalef(0.6F, 0.6F, 0.6F);
@@ -185,6 +214,10 @@ public class ModelEnhancedLlama extends ModelBase {
 
         }else {
 
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(size, size, size);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/size, 0.0F);
+
             this.head.render(scale);
             this.earsR.render(scale);
             this.earsL.render(scale);
@@ -214,6 +247,8 @@ public class ModelEnhancedLlama extends ModelBase {
                 this.chest1.render(scale);
                 this.chest2.render(scale);
             }
+
+            GlStateManager.popMatrix();
 
         }
     }

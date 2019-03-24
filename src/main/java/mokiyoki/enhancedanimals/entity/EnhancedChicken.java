@@ -26,6 +26,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -166,6 +167,7 @@ public class EnhancedChicken extends EntityAnimal {
     private int sandBathTimer;
     private EntityAIEatGrass entityAIEatGrass;
     private ECSandBath ecSandBath;
+    private String dropMeatType;
 
     private static final int WTC = 90;
     private int broodingCount;
@@ -336,96 +338,6 @@ public class EnhancedChicken extends EntityAnimal {
     }
 
 
-    public void onDeath(DamageSource cause) {
-        super.onDeath(cause);
-        if (!this.world.isRemote) {
-
-            float size = 1;
-
-            if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
-                //chicken size
-                if(genes[74] == 1){
-                    size = size - 0.05F;
-                }else if(genes[74] == 2){
-                    size = size - 0.025F;
-                }
-                if(genes[75] == 1){
-                    size = size - 0.05F;
-                }else if(genes[75] == 2){
-                    size = size - 0.025F;
-                }
-
-                if(genes[76] == 1 || genes[77] == 1){
-                    size = size - 0.05F;
-                }else if(genes[76] == 3 && genes[77] == 3){
-                    size = size - 0.1F;
-                }
-
-                if(genes[78] == 1 || genes[79] == 1){
-                    size = size * 0.94F;
-                }
-
-                if(genes[7] == 2){
-                    size = size * 0.9F;
-                }
-
-                if(genes[8] == 2){
-                    size = size * 0.75F;
-                }
-
-                if (size <= 0.7F) {
-                this.entityDropItem(ModItems.RawChicken_DarkSmall, 1);
-                } else if (size >= 0.9F) {
-                this.entityDropItem(ModItems.RawChicken_DarkBig, 1);
-                } else {
-                this.entityDropItem(ModItems.RawChicken_Dark, 1);
-                }
-
-            } else {
-
-                //chicken size
-                if(genes[74] == 1){
-                    size = size - 0.05F;
-                }else if(genes[74] == 2){
-                    size = size - 0.025F;
-                }
-                if(genes[75] == 1){
-                    size = size - 0.05F;
-                }else if(genes[75] == 2){
-                    size = size - 0.025F;
-                }
-
-                if(genes[76] == 1 || genes[77] == 1){
-                    size = size - 0.05F;
-                }else if(genes[76] == 3 && genes[77] == 3){
-                    size = size - 0.1F;
-                }
-
-                if(genes[78] == 1 || genes[79] == 1){
-                    size = size * 0.94F;
-                }
-
-                if(genes[7] == 2){
-                    size = size * 0.9F;
-                }
-
-                if(genes[8] == 2){
-                    size = size * 0.75F;
-                }
-
-                if (size <= 0.7F) {
-                    this.entityDropItem(ModItems.RawChicken_PaleSmall, 1);
-                } else if (size >= 0.9F) {
-                    this.entityDropItem(Items.CHICKEN, 1);
-                } else {
-                    this.entityDropItem(ModItems.RawChicken_Pale, 1);
-                }
-            }
-            this.entityDropItem(Items.FEATHER, 1);
-
-        }
-    }
-
 
     protected SoundEvent getAmbientSound()
     {
@@ -590,8 +502,7 @@ public class EnhancedChicken extends EntityAnimal {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String[] getVariantTexturePaths()
-    {
+    public String[] getVariantTexturePaths() {
         if (this.chickenTextures.isEmpty()) {
             this.setTexturePaths();
         }
@@ -1613,6 +1524,101 @@ public class EnhancedChicken extends EntityAnimal {
     }
 
 
+    @Override
+    @Nullable
+    protected ResourceLocation getLootTable() {
+
+        if (!this.world.isRemote) {
+
+            float size = 1;
+
+            if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
+                //chicken size
+                if(genes[74] == 1){
+                    size = size - 0.05F;
+                }else if(genes[74] == 2){
+                    size = size - 0.025F;
+                }
+                if(genes[75] == 1){
+                    size = size - 0.05F;
+                }else if(genes[75] == 2){
+                    size = size - 0.025F;
+                }
+
+                if(genes[76] == 1 || genes[77] == 1){
+                    size = size - 0.05F;
+                }else if(genes[76] == 3 && genes[77] == 3){
+                    size = size - 0.1F;
+                }
+
+                if(genes[78] == 1 || genes[79] == 1){
+                    size = size * 0.94F;
+                }
+
+                if(genes[7] == 2){
+                    size = size * 0.9F;
+                }
+
+                if(genes[8] == 2){
+                    size = size * 0.75F;
+                }
+
+                if (size <= 0.7F) {
+                    dropMeatType = "rawchicken_darksmall";
+                } else if (size >= 0.9F) {
+                    dropMeatType = "rawchicken_darkbig";
+                } else {
+                    dropMeatType = "rawchicken_dark";
+                }
+
+            } else {
+
+                //chicken size
+                if(genes[74] == 1){
+                    size = size - 0.05F;
+                }else if(genes[74] == 2){
+                    size = size - 0.025F;
+                }
+                if(genes[75] == 1){
+                    size = size - 0.05F;
+                }else if(genes[75] == 2){
+                    size = size - 0.025F;
+                }
+
+                if(genes[76] == 1 || genes[77] == 1){
+                    size = size - 0.05F;
+                }else if(genes[76] == 3 && genes[77] == 3){
+                    size = size - 0.1F;
+                }
+
+                if(genes[78] == 1 || genes[79] == 1){
+                    size = size * 0.94F;
+                }
+
+                if(genes[7] == 2){
+                    size = size * 0.9F;
+                }
+
+                if(genes[8] == 2){
+                    size = size * 0.75F;
+                }
+
+                if (size <= 0.7F) {
+                    dropMeatType = "rawchicken_palesmall";
+                } else if (size >= 0.9F) {
+                    dropMeatType = "rawchicken";
+                } else {
+                    dropMeatType = "rawchicken_pale";
+                }
+            }
+        }
+
+        return new ResourceLocation(Reference.MODID, "enhanced_chicken");
+    }
+
+    public String getDropMeatType() {
+        return dropMeatType;
+    }
 
 
     public void writeAdditional(NBTTagCompound compound) {

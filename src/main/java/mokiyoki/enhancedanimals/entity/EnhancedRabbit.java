@@ -16,11 +16,12 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -130,7 +131,10 @@ public class EnhancedRabbit extends EntityAnimal {
 
     private final List<String> rabbitTextures = new ArrayList<>();
 
-    public float destPos;
+    private int jumpTicks;
+    private int jumpDuration;
+    private boolean wasOnGround;
+    private int currentMoveTypeDuration;
 
     private static final int WTC = 90;
     private static final int GENES_LENGTH = 50;
@@ -142,8 +146,9 @@ public class EnhancedRabbit extends EntityAnimal {
     public EnhancedRabbit(World worldIn) {
         super(ENHANCED_RABBIT, worldIn);
         this.setSize(0.4F, 0.5F);
-        this.setPathPriority(PathNodeType.WATER, 0.0F);
-        //TODO Add the jumping stuff
+        this.jumpHelper = new EnhancedRabbit.RabbitJumpHelper(this);
+        this.moveHelper = new EnhancedRabbit.RabbitMoveHelper(this);
+        this.setMovementSpeed(0.0D);
     }
 
     protected void initEntityAI() {
@@ -155,12 +160,154 @@ public class EnhancedRabbit extends EntityAnimal {
         this.tasks.addTask(8, new EntityAILookIdle(this));
     }
 
-    //TODO put the rest of the jumping stuff here
+    protected float getJumpUpwardsMotion() {
+        if (!this.collidedHorizontally && (!this.moveHelper.isUpdating() || !(this.moveHelper.getY() > this.posY + 0.5D))) {
+            Path path = this.navigator.getPath();
+            if (path != null && path.getCurrentPathIndex() < path.getCurrentPathLength()) {
+                Vec3d vec3d = path.getPosition(this);
+                if (vec3d.y > this.posY + 0.5D) {
+                    return 0.5F;
+                }
+            }
+
+            return this.moveHelper.getSpeed() <= 0.6D ? 0.2F : 0.3F;
+        } else {
+            return 0.5F;
+        }
+    }
+
+    /**
+     * Causes this entity to do an upwards motion (jumping).
+     */
+    protected void jump() {
+        super.jump();
+        double d0 = this.moveHelper.getSpeed();
+        if (d0 > 0.0D) {
+            double d1 = this.motionX * this.motionX + this.motionZ * this.motionZ;
+            if (d1 < 0.010000000000000002D) {
+                this.moveRelative(0.0F, 0.0F, 1.0F, 0.1F);
+            }
+        }
+
+        if (!this.world.isRemote) {
+            this.world.setEntityState(this, (byte)1);
+        }
+
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getJumpCompletion(float tick) {
+        return this.jumpDuration == 0 ? 0.0F : ((float)this.jumpTicks + tick) / (float)this.jumpDuration;
+    }
+
+    public void setMovementSpeed(double newSpeed) {
+        this.getNavigator().setSpeed(newSpeed);
+        this.moveHelper.setMoveTo(this.moveHelper.getX(), this.moveHelper.getY(), this.moveHelper.getZ(), newSpeed);
+    }
+
+    public void setJumping(boolean jumping) {
+        super.setJumping(jumping);
+        if (jumping) {
+            this.playSound(this.getJumpSound(), this.getSoundVolume(), ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F) * 0.8F);
+        }
+
+    }
+
+    public void startJumping() {
+        this.setJumping(true);
+        this.jumpDuration = 10;
+        this.jumpTicks = 0;
+    }
 
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
     }
+
+    public void updateAITasks() {
+        if (this.currentMoveTypeDuration > 0) {
+            --this.currentMoveTypeDuration;
+        }
+
+        //TODO SEAMUS add in carrot raid functions
+//        if (this.carrotTicks > 0) {
+//            this.carrotTicks -= this.rand.nextInt(3);
+//            if (this.carrotTicks < 0) {
+//                this.carrotTicks = 0;
+//            }
+//        }
+
+        if (this.onGround) {
+            if (!this.wasOnGround) {
+                this.setJumping(false);
+                this.checkLandingDelay();
+            }
+
+            EnhancedRabbit.RabbitJumpHelper enhancedRabbit$rabbitjumphelper = (EnhancedRabbit.RabbitJumpHelper)this.jumpHelper;
+            if (!enhancedRabbit$rabbitjumphelper.getIsJumping()) {
+                if (this.moveHelper.isUpdating() && this.currentMoveTypeDuration == 0) {
+                    Path path = this.navigator.getPath();
+                    Vec3d vec3d = new Vec3d(this.moveHelper.getX(), this.moveHelper.getY(), this.moveHelper.getZ());
+                    if (path != null && path.getCurrentPathIndex() < path.getCurrentPathLength()) {
+                        vec3d = path.getPosition(this);
+                    }
+
+                    this.calculateRotationYaw(vec3d.x, vec3d.z);
+                    this.startJumping();
+                }
+            } else if (!enhancedRabbit$rabbitjumphelper.canJump()) {
+                this.enableJumpControl();
+            }
+        }
+
+        this.wasOnGround = this.onGround;
+    }
+
+    /**
+     * Attempts to create sprinting particles if the entity is sprinting and not in water.
+     */
+    public void spawnRunningParticles() {
+    }
+
+    private void calculateRotationYaw(double x, double z) {
+        this.rotationYaw = (float)(MathHelper.atan2(z - this.posZ, x - this.posX) * (double)(180F / (float)Math.PI)) - 90.0F;
+    }
+
+    private void enableJumpControl() {
+        ((EnhancedRabbit.RabbitJumpHelper)this.jumpHelper).setCanJump(true);
+    }
+
+    private void disableJumpControl() {
+        ((EnhancedRabbit.RabbitJumpHelper)this.jumpHelper).setCanJump(false);
+    }
+
+    private void updateMoveTypeDuration() {
+        if (this.moveHelper.getSpeed() < 2.2D) {
+            this.currentMoveTypeDuration = 10;
+        } else {
+            this.currentMoveTypeDuration = 1;
+        }
+
+    }
+
+    private void checkLandingDelay() {
+        this.updateMoveTypeDuration();
+        this.disableJumpControl();
+    }
+
+
+    @OnlyIn(Dist.CLIENT)
+    public void handleStatusUpdate(byte id) {
+        if (id == 1) {
+            this.createRunningParticles();
+            this.jumpDuration = 10;
+            this.jumpTicks = 0;
+        } else {
+            super.handleStatusUpdate(id);
+        }
+
+    }
+
 
     public void setSharedGenes(int[] genes) {
         StringBuilder sb = new StringBuilder();
@@ -202,13 +349,90 @@ public class EnhancedRabbit extends EntityAnimal {
     public void livingTick()
     {
         super.livingTick();
-        this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
-        this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
+        if (this.jumpTicks != this.jumpDuration) {
+            ++this.jumpTicks;
+        } else if (this.jumpDuration != 0) {
+            this.jumpTicks = 0;
+            this.jumpDuration = 0;
+            this.setJumping(false);
+        }
     }
 
     public void fall(float distance, float damageMultiplier)
     {
 
+    }
+
+    public class RabbitJumpHelper extends EntityJumpHelper {
+        private final EnhancedRabbit rabbit;
+        private boolean canJump;
+
+        public RabbitJumpHelper(EnhancedRabbit rabbit) {
+            super(rabbit);
+            this.rabbit = rabbit;
+        }
+
+        public boolean getIsJumping() {
+            return this.isJumping;
+        }
+
+        public boolean canJump() {
+            return this.canJump;
+        }
+
+        public void setCanJump(boolean canJumpIn) {
+            this.canJump = canJumpIn;
+        }
+
+        /**
+         * Called to actually make the entity jump if isJumping is true.
+         */
+        public void tick() {
+            if (this.isJumping) {
+                this.rabbit.startJumping();
+                this.isJumping = false;
+            }
+
+        }
+    }
+
+    static class RabbitMoveHelper extends EntityMoveHelper {
+        private final EnhancedRabbit rabbit;
+        private double nextJumpSpeed;
+
+        public RabbitMoveHelper(EnhancedRabbit rabbit) {
+            super(rabbit);
+            this.rabbit = rabbit;
+        }
+
+        public void tick() {
+            if (this.rabbit.onGround && !this.rabbit.isJumping && !((EnhancedRabbit.RabbitJumpHelper)this.rabbit.jumpHelper).getIsJumping()) {
+                this.rabbit.setMovementSpeed(0.0D);
+            } else if (this.isUpdating()) {
+                this.rabbit.setMovementSpeed(this.nextJumpSpeed);
+            }
+
+            super.tick();
+        }
+
+        /**
+         * Sets the speed and location to move to
+         */
+        public void setMoveTo(double x, double y, double z, double speedIn) {
+            if (this.rabbit.isInWater()) {
+                speedIn = 1.5D;
+            }
+
+            super.setMoveTo(x, y, z, speedIn);
+            if (speedIn > 0.0D) {
+                this.nextJumpSpeed = speedIn;
+            }
+
+        }
+    }
+
+    protected SoundEvent getJumpSound() {
+        return SoundEvents.ENTITY_RABBIT_JUMP;
     }
 
     protected SoundEvent getAmbientSound()
@@ -268,6 +492,30 @@ public class EnhancedRabbit extends EntityAnimal {
         compound.setTag("FatherGenes", mateGeneList);
     }
 
+    /**
+     * (abstract) Protected helper method to read subclass entity assets from NBT.
+     */
+    public void readAdditional(NBTTagCompound compound) {
+        super.readAdditional(compound);
+
+        NBTTagList geneList = compound.getList("Genes", 10);
+        for (int i = 0; i < geneList.size(); ++i) {
+            NBTTagCompound nbttagcompound = geneList.getCompound(i);
+            int gene = nbttagcompound.getInt("Gene");
+            genes[i] = gene;
+        }
+
+        NBTTagList mateGeneList = compound.getList("FatherGenes", 10);
+        for (int i = 0; i < mateGeneList.size(); ++i) {
+            NBTTagCompound nbttagcompound = mateGeneList.getCompound(i);
+            int gene = nbttagcompound.getInt("Gene");
+            mateGenes[i] = gene;
+        }
+
+        setSharedGenes(genes);
+
+    }
+
     @OnlyIn(Dist.CLIENT)
     public String getRabbitTexture() {
         if (this.rabbitTextures.isEmpty()) {
@@ -278,8 +526,7 @@ public class EnhancedRabbit extends EntityAnimal {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String[] getVariantTexturePaths()
-    {
+    public String[] getVariantTexturePaths() {
         if (this.rabbitTextures.isEmpty()) {
             this.setTexturePaths();
         }
@@ -479,30 +726,6 @@ public class EnhancedRabbit extends EntityAnimal {
         } //if genes are not null end bracket
 
     } // setTexturePaths end bracket
-
-    /**
-     * (abstract) Protected helper method to read subclass entity assets from NBT.
-     */
-    public void readAdditional(NBTTagCompound compound) {
-        super.readAdditional(compound);
-
-        NBTTagList geneList = compound.getList("Genes", 10);
-        for (int i = 0; i < geneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = geneList.getCompound(i);
-            int gene = nbttagcompound.getInt("Gene");
-            genes[i] = gene;
-        }
-
-        NBTTagList mateGeneList = compound.getList("FatherGenes", 10);
-        for (int i = 0; i < mateGeneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = mateGeneList.getCompound(i);
-            int gene = nbttagcompound.getInt("Gene");
-            mateGenes[i] = gene;
-        }
-
-        setSharedGenes(genes);
-
-    }
 
     public void mixMitosisGenes() {
         punnetSquare(mitosisGenes, genes);

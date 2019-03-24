@@ -6,11 +6,16 @@ import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
 import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
+import mokiyoki.enhancedanimals.loot.EnhancedChickenLootCondition;
 import mokiyoki.enhancedanimals.proxy.ClientProxy;
 import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.proxy.ServerProxy;
+import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityHandler;
 import mokiyoki.enhancedanimals.util.handlers.EventHandler;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.DistExecutor;
@@ -54,6 +59,10 @@ public class EnhancedAnimals {
         proxy.init(event);
         CapabilityManager.INSTANCE.register(IPostCapability.class, new PostCapabilityStorage(), PostCapability::new);
         CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapability::new);
+
+        LootTableList.register(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
+        LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());
+
     }
 
     private void doClientSetup(final FMLClientSetupEvent event) {

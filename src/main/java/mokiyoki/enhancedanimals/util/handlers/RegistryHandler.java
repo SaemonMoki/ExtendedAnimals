@@ -10,14 +10,23 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.init.Biomes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemSpawnEgg;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.Set;
 
 /**
  * Created by moki on 24/08/2018.
@@ -44,7 +53,8 @@ public class RegistryHandler {
         final Item[] items = {ModItems.Egg_White, ModItems.Egg_Cream, ModItems.Egg_CreamDark, ModItems.Egg_Pink, ModItems.Egg_PinkDark, ModItems.Egg_Brown, ModItems.Egg_BrownDark,
                 ModItems.Egg_Blue, ModItems.Egg_GreenLight, ModItems.Egg_Green, ModItems.Egg_Grey, ModItems.Egg_GreyGreen, ModItems.Egg_Olive, ModItems.Egg_GreenDark,
                 ModItems.RawChicken_DarkSmall, ModItems.RawChicken_Dark, ModItems.RawChicken_DarkBig, ModItems.CookedChicken_DarkSmall, ModItems.CookedChicken_Dark,
-                ModItems.CookedChicken_DarkBig, ModItems.RawChicken_PaleSmall, ModItems.RawChicken_Pale, ModItems.CookedChicken_PaleSmall, ModItems.CookedChicken_Pale};
+                ModItems.CookedChicken_DarkBig, ModItems.RawChicken_PaleSmall, ModItems.RawChicken_Pale, ModItems.CookedChicken_PaleSmall, ModItems.CookedChicken_Pale,
+                ModItems.RawRabbit_Small, ModItems.CookedRabbit_Small, ModItems.RabbitStew_Weak};
 
         final Item[] itemBlocks = {
                 new ItemBlock(ModBlocks.Post_Acacia, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Acacia.getRegistryName()),
@@ -60,9 +70,9 @@ public class RegistryHandler {
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_chicken_spawn_egg"));
         event.getRegistry().register(new ItemSpawnEgg(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_llama_spawn_egg"));
-        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_SHEEP, 0xCDB29C,0x7B4B34, new Item.Properties()
+        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_SHEEP, 0x000000,0x000000, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_sheep_spawn_egg"));
-        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_RABBIT, 0xCDB29C,0x7B4B34, new Item.Properties()
+        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_RABBIT, 0xCA8349,0x553C36, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_rabbit_spawn_egg"));
 
         event.getRegistry().registerAll(items);
@@ -92,6 +102,18 @@ public class RegistryHandler {
         event.getRegistry().register(ENHANCED_SHEEP.setRegistryName("enhanced_sheep"));
         event.getRegistry().register(ENHANCED_LLAMA.setRegistryName("enhanced_llama"));
         event.getRegistry().register(ENHANCED_ENTITY_EGG_ENTITY_TYPE.setRegistryName("enhanced_entity_egg"));
+
+        EntitySpawnPlacementRegistry.register(ENHANCED_CHICKEN, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
+        EntitySpawnPlacementRegistry.register(ENHANCED_RABBIT, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
+        EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
+//
+//        for (Biome biome : ForgeRegistries.BIOMES) {
+//
+//            Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biome);
+//            if (!biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName())) {
+//                biome.addSpawn(EnumCreatureType.CREATURE, new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
+//            }
+//        }
     }
 
 }

@@ -1,0 +1,22 @@
+{
+  "type": "crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:carrot"
+    },
+    {
+      "item": "eanimod:cookedrabbit_small"
+    },
+    {
+      "item": "minecraft:brown_mushroom"
+    },
+    {
+      "item": "minecraft:bowl"
+    },
+    {
+      "item": "minecraft:baked_potato"
+    }
+  ],
+  "result": "eanimod:rabbitstew_weak",
+  "group": "stew"
+}

@@ -7,6 +7,8 @@ import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
 import mokiyoki.enhancedanimals.loot.EnhancedChickenLootCondition;
+import mokiyoki.enhancedanimals.loot.EnhancedLlamaLootCondition;
+import mokiyoki.enhancedanimals.loot.EnhancedRabbitLootCondition;
 import mokiyoki.enhancedanimals.proxy.ClientProxy;
 import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.proxy.ServerProxy;
@@ -62,6 +64,12 @@ public class EnhancedAnimals {
 
         LootTableList.register(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
         LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());
+
+        LootTableList.register(new ResourceLocation(Reference.MODID, "enhanced_rabbit"));
+        LootConditionManager.registerCondition(new EnhancedRabbitLootCondition.Serializer());
+
+        LootTableList.register(new ResourceLocation(Reference.MODID, "enhanced_llama"));
+        LootConditionManager.registerCondition(new EnhancedLlamaLootCondition.Serializer());
 
     }
 

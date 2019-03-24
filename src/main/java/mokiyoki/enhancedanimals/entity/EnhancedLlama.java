@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
+import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCarpet;
 import net.minecraft.block.SoundType;
@@ -10,7 +11,6 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.AbstractChestHorse;
 import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityLlama;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -28,6 +28,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -98,9 +99,10 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.CARROT);
 
     public float destPos;
+    private String dropMeatType;
 
     private static final int WTC = 90;
-    private static final int GENES_LENGTH = 20;
+    private static final int GENES_LENGTH = 22;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -298,6 +300,24 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         return this.getColor() != null;
     }
 
+    @Override
+    @Nullable
+    protected ResourceLocation getLootTable() {
+
+        if (genes[20] == 1 || genes[21] == 1){
+            //drops leather
+            dropMeatType = "leather";
+        }else{
+            //drops wool
+            dropMeatType = "brown_wool";
+        }
+
+        return new ResourceLocation(Reference.MODID, "enhanced_llama");
+    }
+
+    public String getDropMeatType() {
+        return dropMeatType;
+    }
 
     protected SoundEvent getAmbientSound()
     {
@@ -899,6 +919,19 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
             initialGenes[19] = (2);
         }
 
+        //Suri coat genes [ normal, suri ]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[20] = (ThreadLocalRandom.current().nextInt(2)+1);
+
+        } else {
+            initialGenes[20] = (1);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[21] = (ThreadLocalRandom.current().nextInt(2)+1);
+
+        } else {
+            initialGenes[21] = (1);
+        }
 
         return initialGenes;
     }

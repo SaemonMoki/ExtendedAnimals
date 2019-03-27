@@ -38,14 +38,16 @@ public class EggCapabilityStorage implements Capability.IStorage<IEggCapability>
     @Override
     public void readNBT(Capability<IEggCapability> capability, IEggCapability instance, EnumFacing side, INBTBase nbt) {
         NBTTagCompound compound = (NBTTagCompound) nbt;
-        int[] genes = new int[Reference.CHICKEN_GENES_LENGTH];
 
         NBTTagList geneList = compound.getList("Genes", 10);
-        for (int i = 0; i < geneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = geneList.getCompound(i);
-            int gene = nbttagcompound.getInt("Gene");
-            genes[i] = gene;
+        if (geneList.size()>0) {
+            int[] genes = new int[Reference.CHICKEN_GENES_LENGTH];
+            for (int i = 0; i < geneList.size(); ++i) {
+                NBTTagCompound nbttagcompound = geneList.getCompound(i);
+                int gene = nbttagcompound.getInt("Gene");
+                genes[i] = gene;
+            }
+            instance.setGenes(genes);
         }
-        instance.setGenes(genes);
     }
 }

@@ -1,14 +1,15 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.block.BlockCarrot;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -20,16 +21,13 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorldReaderBase;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,74 +50,85 @@ public class EnhancedRabbit extends EntityAnimal {
 
     // 1 7 13
     private static final String[] RABBIT_TEXTURES_LOWER = new String[] {
-        ""
+        "", "middle_agoutiorange.png", "middle_orange.png", "chinchilla_orange.png",
+            "middle_agoutitan.png", "middle_tan.png", "chinchilla_tan.png",
+            "middle_agoutilighttan.png", "middle_lighttan.png", "chinchilla_lighttan.png",
+            "middle_agouticream.png", "middle_cream.png", "chinchilla_cream.png",
+            "middle_agoutigrey.png", "middle_grey.png", "chinchilla_grey.png",
+            "middle_agoutiwhite.png", "middle_white.png", "chinchilla_white.png"
     };
 
     private static final String[] RABBIT_TEXTURES_MIDDLE = new String[] {
-            "", "middle_orange.png", "middle_orangetan.png", "middle_orangeagouti.png",
-                "under_cream.png", "middle_creamtan.png", "middle_creamagouti.png",
-                "under_white.png", "middle_whitetan.png", "middle_whiteagouti.png"
+            "", "middle_agoutiorange.png", "middle_orange.png", "chinchilla_orange.png",
+            "middle_agoutitan.png", "middle_tan.png", "chinchilla_tan.png",
+            "middle_agoutilighttan.png", "middle_lighttan.png", "chinchilla_lighttan.png",
+            "middle_agouticream.png", "middle_cream.png", "chinchilla_cream.png",
+            "middle_agoutigrey.png", "middle_grey.png", "chinchilla_grey.png",
+            "middle_agoutiwhite.png", "middle_white.png", "chinchilla_white.png"
     };
 
     private static final String[] RABBIT_TEXTURES_HIGHER = new String[] {
-            "", "higher_agouti.png", "higher_tan.png", "higher_self.png",
-            "higher_agouti_blue.png", "higher_tan_blue.png", "higher_self_blue.png",
-            "higher_agouti_choc.png", "higher_tan_choc.png", "higher_self_choc.png",
-            "higher_agouti_lilac.png", "higher_tan_lilac.png", "higher_self_lilac.png",
-            "higher_agoutiseal.png", "higher_tanseal.png", "higher_selfseal.png",
-            "higher_agoutiseal_blue.png", "higher_tanseal_blue.png", "higher_selfseal_blue.png",
-            "higher_agoutiseal_choc.png", "higher_tanseal_choc.png", "higher_selfseal_choc.png",
-            "higher_agoutiseal_lilac.png", "higher_tanseal_lilac.png", "higher_selfseal_lilac.png",
-            "higher_agoutisable.png", "higher_tansable.png", "higher_selfsable.png",
-            "higher_agoutisable_blue.png", "higher_tansable_blue.png", "higher_selfsable_blue.png",
-            "higher_agoutisable_choc.png", "higher_tansable_choc.png", "higher_selfsable_choc.png",
-            "higher_agoutisable_lilac.png", "higher_tansable_lilac.png", "higher_selfsable_lilac.png",
-            "higher_agoutihimy.png", "higher_tanhimy.png", "higher_selfhimy.png",
-            "higher_agoutihimy_blue.png", "higher_tanhimy_blue.png", "higher_selfhimy_blue.png",
-            "higher_agoutihimy_choc.png", "higher_tanhimy_choc.png", "higher_selfhimy_choc.png",
-            "higher_agoutihimy_lilac.png", "higher_tanhimy_lilac.png", "higher_selfhimy_lilac.png"
+            "", "middle_agoutiorange.png", "middle_orange.png", "chinchilla_orange.png",
+            "middle_agoutitan.png", "middle_tan.png", "chinchilla_tan.png",
+            "middle_agoutilighttan.png", "middle_lighttan.png", "chinchilla_lighttan.png",
+            "middle_agouticream.png", "middle_cream.png", "chinchilla_cream.png",
+            "middle_agoutigrey.png", "middle_grey.png", "chinchilla_grey.png",
+            "middle_agoutiwhite.png", "middle_white.png", "chinchilla_white.png"
     };
 
     // 1 5 9
     private static final String[] RABBIT_TEXTURES_TOP = new String[] {
-        "", "top_steal.png", "top_stealdark.png", "top_tan.png", "top_self.png",
-        "top_steal_blue.png", "top_stealdark_blue.png", "top_tan_blue.png", "top_self_blue.png",
-        "top_steal_choc.png", "top_stealdark_choc.png", "top_tan_choc.png", "top_self_choc.png",
-        "top_steal_lilac.png", "top_stealdark_lilac.png", "top_tan_lilac.png", "top_self_lilac.png",
-            "top_harly0.png", "top_harly1.png", "top_harly2.png", "top_harly3.png", "top_harly4.png", "top_harly5.png", "top_harly6.png", "top_harly7.png", "top_harly8.png", "top_harly9.png", "top_harlya.png", "top_harlyb.png", "top_harlyc.png", "top_harlyd.png", "top_harlye.png", "top_harlyf.png",
-            "top_harly0_blue.png", "top_harly1_blue.png", "top_harly2_blue.png", "top_harly3_blue.png", "top_harly4_blue.png", "top_harly5_blue.png", "top_harly6_blue.png", "top_harly7_blue.png", "top_harly8_blue.png", "top_harly9_blue.png", "top_harlya_blue.png", "top_harlyb_blue.png", "top_harlyc_blue.png", "top_harlyd_blue.png", "top_harlye_blue.png", "top_harlyf_blue.png",
-            "top_harly0_choc.png", "top_harly1_choc.png", "top_harly2_choc.png", "top_harly3_choc.png", "top_harly4_choc.png", "top_harly5_choc.png", "top_harly6_choc.png", "top_harly7_choc.png", "top_harly8_choc.png", "top_harly9_choc.png", "top_harlya_choc.png", "top_harlyb_choc.png", "top_harlyc_choc.png", "top_harlyd_choc.png", "top_harlye_choc.png", "top_harlyf_choc.png",
-            "top_harly0_lilac.png", "top_harly1_lilac.png", "top_harly2_lilac.png", "top_harly3_lilac.png", "top_harly4_lilac.png", "top_harly5_lilac.png", "top_harly6_lilac.png", "top_harly7_lilac.png", "top_harly8_lilac.png", "top_harly9_lilac.png", "top_harlya_lilac.png", "top_harlyb_lilac.png", "top_harlyc_lilac.png", "top_harlyd_lilac.png", "top_harlye_lilac.png", "top_harlyf_lilac.png",
+        "error.png", "agouti_black.png", "agouti_blue.png", "agouti_choc.png", "agouti_lilac.png",
+            "agouti_seal_black.png", "agouti_seal_blue.png", "agouti_seal_choc.png", "agouti_seal_lilac.png",
+            "agouti_sable_black.png", "agouti_sable_blue.png", "agouti_sable_choc.png", "agouti_sable_lilac.png",
+            "agouti_himi_black.png", "agouti_himi_blue.png", "agouti_himi_choc.png", "agouti_himi_lilac.png",
+            "tan_black.png", "tan_blue.png", "tan_choc.png", "tan_lilac.png",
+            "tan_seal_black.png", "tan_seal_blue.png", "tan_seal_choc.png", "tan_seal_lilac.png",
+            "tan_sable_black.png", "tan_sable_blue.png", "tan_sable_choc.png", "tan_sable_lilac.png",
+            "tan_himi_black.png", "tan_himi_blue.png", "tan_himi_choc.png", "tan_himi_lilac.png",
+
+
     };
 
+    // higher numbers are more white
     private static final String[] RABBIT_TEXTURES_DUTCH = new String[] {
-        "", "dutch0.png", "dutch1.png", "dutch2.png", "dutch3.png", "dutch4.png", "dutch5.png", "dutch6.png", "dutch7.png", "dutch8.png", "dutch9.png", "dutcha.png", "dutchb.png", "dutchc.png", "dutchd.png", "dutche.png", "dutchf.png"
+        "", "dutch0.png", "dutch1.png", "dutch2.png"
     };
 
     // higher numbers are more white
     private static final String[] RABBIT_TEXTURES_BROKEN = new String[] {
-        "", "broken0.png", "broken1.png", "broken2.png", "broken3.png", "broken4.png", "broken5.png", "broken6.png", "broken7.png", "broken8.png", "broken9.png", "brokena.png", "brokenb.png", "brokenc.png", "brokend.png", "brokene.png", "brokenf.png",
-            "charlie0.png", "charlie1.png", "charlie2.png", "charlie3.png", "charlie4.png", "charlie5.png", "charlie6.png", "charlie7.png", "charlie8.png", "charlie9.png", "charliea.png", "charlieb.png", "charliec.png", "charlied.png", "charliee.png", "charlief.png",
+        "", "spots_broken.png", "spots_charlie.png"
     };
 
-    private static final String[] RABBIT_TEXTURES_VIENNA = new String[] {
-            "", "vienna0.png", "vienna1.png", "vienna2.png", "vienna3.png", "vienna4.png", "vienna5.png", "vienna6.png", "vienna7.png", "vienna8.png", "vienna9.png", "viennaa.png", "viennab.png", "viennac.png", "viennad.png", "viennae.png", "viennaf.png"
+    // higher numbers are more white
+    private static final String[] RABBIT_TEXTURES_HEADSPOT = new String[] {
+        "", "spots_ear.png", "spots_star0.png", "spots_star1.png", "spots_star2.png", "spots_snip.png", "spots_stripe.png"
+    };
+
+    // higher numbers are more white
+    private static final String[] RABBIT_TEXTURES_FOOTSPOT = new String[] {
+        "", "spots_boots.png", "spots_righttoes.png", "spots_toes.png"
+    };
+
+    // higher numbers are more white
+    private static final String[] RABBIT_TEXTURES_BODYSPOT = new String[] {
+        "", "spots_collar.png"
     };
 
     private static final String[] RABBIT_TEXTURES_FUR = new String[] {
-       "", "fur_angora.png", "fur_normal.png", "fur_satin.png"
+       "fur_normal.png", "fur_angora.png", "fur_rex.png", "fur_satin.png"
     };
 
     private static final String[] RABBIT_TEXTURES_EYES = new String[] {
-        "eyes_black.png", "eyes_grey.png", "eyes_albino.png"
+        "eyes_black.png", "eyes_brown.png", "eyes_amber.png", "eyes_grey.png", "eyes_ruby.png", "eyes_albino.png"
     };
 
     private static final String[] RABBIT_TEXTURES_VIENNAEYES = new String[] {
-        "", "", "", "", "", "", "", "", "eyes_blue.png", "eyes_blue.png", "eyes_blue.png", "eyes_blue.png", "eyes_bluel.png", "eyes_bluel.png", "eyes_bluel.png", "eyes_bluer.png", "eyes_bluer.png", "eyes_bluer.png"
+        "", "eyes_vienna.png", "eyes_viennaright.png", "eyes_viennaleft.png"
     };
 
     private static final String[] RABBIT_TEXTURES_SKIN = new String[] {
-        "skin_pink.png", "skin_brown.png", "skin_white.png"
+        "skin_pink.png", "skin_brown.png", "skin_black.png", "skin_white.png"
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION_YELLOW, Items.CARROT, Items.GOLDEN_CARROT);
@@ -130,7 +139,7 @@ public class EnhancedRabbit extends EntityAnimal {
     private int jumpDuration;
     private boolean wasOnGround;
     private int currentMoveTypeDuration;
-    private String dropMeatType;
+    private int carrotTicks;
 
     private static final int WTC = 90;
     private static final int GENES_LENGTH = 50;
@@ -154,6 +163,13 @@ public class EnhancedRabbit extends EntityAnimal {
         this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 0.6D));
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
+
+        this.tasks.addTask(1, new EnhancedRabbit.AIPanic(this, 2.2D));
+        this.tasks.addTask(4, new EnhancedRabbit.AIAvoidEntity<>(this, EntityPlayer.class, 8.0F, 2.2D, 2.2D));
+        this.tasks.addTask(4, new EnhancedRabbit.AIAvoidEntity<>(this, EntityWolf.class, 10.0F, 2.2D, 2.2D));
+        this.tasks.addTask(4, new EnhancedRabbit.AIAvoidEntity<>(this, EntityMob.class, 4.0F, 2.2D, 2.2D));
+        this.tasks.addTask(5, new EnhancedRabbit.AIRaidFarm(this));
+
     }
 
     protected float getJumpUpwardsMotion() {
@@ -392,6 +408,10 @@ public class EnhancedRabbit extends EntityAnimal {
         }
     }
 
+    private boolean isCarrotEaten() {
+        return this.carrotTicks == 0;
+    }
+
     static class RabbitMoveHelper extends EntityMoveHelper {
         private final EnhancedRabbit rabbit;
         private double nextJumpSpeed;
@@ -427,61 +447,131 @@ public class EnhancedRabbit extends EntityAnimal {
         }
     }
 
-    @Override
-    @Nullable
-    protected ResourceLocation getLootTable() {
 
-        if (!this.world.isRemote) {
+    static class AIAvoidEntity<T extends Entity> extends EntityAIAvoidEntity<T> {
+        private final EnhancedRabbit rabbit;
 
-            float size = 1F; // [minimum size = 0.3 maximum size = 1]
-
-            if (genes[46] < 5){
-                size = size - 0.07F;
-                if (genes[46] < 4){
-                    size = size - 0.07F;
-                    if (genes[46] < 3){
-                        size = size - 0.07F;
-                        if (genes[46] < 2){
-                            size = size - 0.03F;
-                        }
-                    }
-                }
-            }
-            if (genes[46] < 5){
-                size = size - 0.07F;
-                if (genes[46] < 4){
-                    size = size - 0.07F;
-                    if (genes[46] < 3){
-                        size = size - 0.07F;
-                        if (genes[46] < 2){
-                            size = size - 0.03F;
-                        }
-                    }
-                }
-            }
-            if (genes[48] == 3 && genes[49] == 3){
-                size = size - 0.075F;
-            }else if (genes[48] == 2 && genes[49] == 2){
-                size = size - 0.05F;
-            }else if (genes[48] == 2 || genes[49] == 2){
-                size = size - 0.025F;
-            }
-
-            if (genes[34] == 2 || genes[35] == 2){
-                size = 0.3F + ((size - 0.3F)/2F);
-            }
-                if (size <= 0.8F) {
-                    dropMeatType = "rawrabbit_small";
-                } else {
-                    dropMeatType = "rawrabbit";
-                }
+        public AIAvoidEntity(EnhancedRabbit rabbit, Class<T> p_i46403_2_, float p_i46403_3_, double p_i46403_4_, double p_i46403_6_) {
+            super(rabbit, p_i46403_2_, p_i46403_3_, p_i46403_4_, p_i46403_6_);
+            this.rabbit = rabbit;
         }
 
-        return new ResourceLocation(Reference.MODID, "enhanced_rabbit");
+        /**
+         * Returns whether the EntityAIBase should begin execution.
+         */
+        public boolean shouldExecute() {
+            return super.shouldExecute();
+        }
     }
 
-    public String getDropMeatType() {
-        return dropMeatType;
+    static class AIEvilAttack extends EntityAIAttackMelee {
+        public AIEvilAttack(EnhancedRabbit rabbit) {
+            super(rabbit, 1.4D, true);
+        }
+
+        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+            return (double)(4.0F + attackTarget.width);
+        }
+    }
+
+    static class AIPanic extends EntityAIPanic {
+        private final EnhancedRabbit rabbit;
+
+        public AIPanic(EnhancedRabbit rabbit, double speedIn) {
+            super(rabbit, speedIn);
+            this.rabbit = rabbit;
+        }
+
+        /**
+         * Keep ticking a continuous task that has already been started
+         */
+        public void tick() {
+            super.tick();
+            this.rabbit.setMovementSpeed(this.speed);
+        }
+    }
+
+    static class AIRaidFarm extends EntityAIMoveToBlock {
+        private final EnhancedRabbit rabbit;
+        private boolean wantsToRaid;
+        private boolean canRaid;
+
+        public AIRaidFarm(EnhancedRabbit rabbitIn) {
+            super(rabbitIn, (double)0.7F, 16);
+            this.rabbit = rabbitIn;
+        }
+
+        /**
+         * Returns whether the EntityAIBase should begin execution.
+         */
+        public boolean shouldExecute() {
+            if (this.runDelay <= 0) {
+                if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.rabbit.world, this.rabbit)) {
+                    return false;
+                }
+
+                this.canRaid = false;
+                this.wantsToRaid = this.rabbit.isCarrotEaten();
+                this.wantsToRaid = true;
+            }
+
+            return super.shouldExecute();
+        }
+
+        /**
+         * Returns whether an in-progress EntityAIBase should continue executing
+         */
+        public boolean shouldContinueExecuting() {
+            return this.canRaid && super.shouldContinueExecuting();
+        }
+
+        /**
+         * Keep ticking a continuous task that has already been started
+         */
+        public void tick() {
+            super.tick();
+            this.rabbit.getLookHelper().setLookPosition((double)this.destinationBlock.getX() + 0.5D, (double)(this.destinationBlock.getY() + 1), (double)this.destinationBlock.getZ() + 0.5D, 10.0F, (float)this.rabbit.getVerticalFaceSpeed());
+            if (this.getIsAboveDestination()) {
+                World world = this.rabbit.world;
+                BlockPos blockpos = this.destinationBlock.up();
+                IBlockState iblockstate = world.getBlockState(blockpos);
+                Block block = iblockstate.getBlock();
+                if (this.canRaid && block instanceof BlockCarrot) {
+                    Integer integer = iblockstate.get(BlockCarrot.AGE);
+                    if (integer == 0) {
+                        world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 2);
+                        world.destroyBlock(blockpos, true);
+                    } else {
+                        world.setBlockState(blockpos, iblockstate.with(BlockCarrot.AGE, Integer.valueOf(integer - 1)), 2);
+                        world.playEvent(2001, blockpos, Block.getStateId(iblockstate));
+                    }
+
+                    this.rabbit.carrotTicks = 40;
+                }
+
+                this.canRaid = false;
+                this.runDelay = 10;
+            }
+
+        }
+
+        /**
+         * Return true to set given position as destination
+         */
+        protected boolean shouldMoveTo(IWorldReaderBase worldIn, BlockPos pos) {
+            Block block = worldIn.getBlockState(pos).getBlock();
+            if (block == Blocks.FARMLAND && this.wantsToRaid && !this.canRaid) {
+                pos = pos.up();
+                IBlockState iblockstate = worldIn.getBlockState(pos);
+                block = iblockstate.getBlock();
+                if (block instanceof BlockCarrot && ((BlockCarrot)block).isMaxAge(iblockstate)) {
+                    this.canRaid = true;
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
     protected SoundEvent getJumpSound() {
@@ -596,353 +686,182 @@ public class EnhancedRabbit extends EntityAnimal {
             int middle = 0;
             int higher = 0;
             int top = 0;
+            int dilutions = 4;
+            int tints = 6;
             int dutch = 0;
             int broken = 0;
-            int vienna = 0;
+            int spothead = 0;
+            int spotfoot = 0;
+            int spotbody = 0;
             int fur = 0;
             int eyes = 0;
-            int vieye = 0;
+            int vienna = 0;
             int skin = 0;
-
-            int UNDER = 3;
-            int HIGH = 3;
-            int TOPS = 4;
-            int shade = 0; // [ 0 = black, 1 = blue, 2 = choc, 3 = lilac ]
-            int c = 0; // [ 0 = normal or chinchilla, 1 = seal, 2 = sable, 3 = himilayan ]
             // i is a random modifier
-            char[] uuidArry = getCachedUniqueIdString().toCharArray();
+            String i = getCachedUniqueIdString();
 
 
             if(genesForText[4] == 5 && genesForText[5] == 5){
                 //Red Eyed White (albino)
                 under = 2;
-                eyes = 2;
+                eyes = 5;
 
             }else if(genesForText[14] == 2 && genesForText[15] == 2){
                 //Blue Eyed White
                 under = 2;
-                vieye = 8;
+                vienna = 1;
 
             }else {
 
+                if ( genesForText[4] == 1 || genesForText[5] == 1 ){
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //agouti
+                    } else if (genesForText[0] == 2 || genesForText[1] == 2) {
+                        //otter
+                    } else {
+                        //self
+                    }
+                }else if ( genesForText[4] == 2 || genesForText[5] == 2 ){
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //agouti
+                    } else if (genesForText[0] == 2 || genesForText[1] == 2) {
+                        //otter
+                    } else {
+                        //self
+                    }
+                }else if ( genesForText[4] == 3 && genesForText[5] == 3 ){
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //agouti
+                    } else if (genesForText[0] == 2 || genesForText[1] == 2) {
+                        //otter
+                    } else {
+                        //self
+                    }
+                }else if ( genesForText[4] == 3 || genesForText[5] == 3 ){
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //agouti
+                    } else if (genesForText[0] == 2 || genesForText[1] == 2) {
+                        //otter
+                    } else {
+                        //self
+                    }
+                }else if ( genesForText[4] == 4 || genesForText[5] == 4 ){
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //agouti
+                    } else if (genesForText[0] == 2 || genesForText[1] == 2) {
+                        //otter
+                    } else {
+                        //self
+                    }
+                }
+
+                //top layer "black" colour variations
                 if (genesForText[2] == 2 && genesForText[3] == 2) {
                     if (genesForText[6] == 2 && genesForText[7] == 2) {
                         //lilac
-                        shade = 3;
-                        eyes = 1;
+                        under = under - 1;
+                        middle = middle + 1;
+                        top = top + 3;
                     } else {
                         //chocolate
-                        shade = 2;
+                        middle = middle + 1;
+                        top = top + 2;
                     }
                 } else {
                     if (genesForText[6] == 2 && genesForText[7] == 2) {
                         //blue
-                        shade = 1;
-                        eyes = 1;
+                        middle = middle + 1;
+                        top = top + 1;
                     }
                 }
-
-                if(genesForText[8] == 1 || genesForText[9] == 1){
-                    //steal
-                    if(genesForText[8] == 1 && genesForText[9] == 1){
-                        top = 2 + ( TOPS * shade);
-                    }else {
-                        top = 1 + (TOPS * shade);
-                    }
-                    if (genesForText[4] == 1 || genesForText[5] == 1){
-                        middle = 1;
-                    }else{
-                        middle = 7;
-                    }
-                }else if (genesForText[8] != 2 && genesForText[9] != 2 && (genesForText[8] == 3 || genesForText[9] == 3)){
-                    //harlequin
-                    top = 17 + ( 16 * shade);
-                    //TODO add harlequin variations here
-                    if (genesForText[4] == 1 || genesForText[5] == 1){
-                        middle = 1;
-                    }else{
-                        middle = 7;
-                    }
-                }else {
-
-                    if (genesForText[4] > 2 && genesForText[5] > 2){
-                        if (genesForText[4] == 3 && genesForText[5] == 3){
-                            //seal
-                            c = 13;
-                        }else if (genesForText[4] == 3 || genesForText[5] == 3){
-                            //sable
-                            c = 26;
-                        }else{
-                            //himilayan
-                            c = 39;
-                        }
-                    }
-
-                    if (genesForText[0] == 1 || genesForText[1] == 1) {
-                        //agouti
-                        if (genesForText[8] == 4 && genesForText[9] == 4) {
-                            //orange extension wide band
-                            higher = 0;
-                            top = 0;
-                            if (genesForText[4] == 1 || genesForText[5] == 1) {
-                                //orange
-                                middle = 1;
-                            } else {
-                                //white
-                                middle = 7;
-                            }
-                        } else {
-                            higher = 1;
-                            if (genesForText[4] == 1 || genesForText[5] == 1) {
-                                //orange
-                                middle = 3;
-                            } else {
-                                //white
-                                middle = 9;
-                            }
-                        }
-                    } else if (genesForText[0] == 2 || genesForText[1] == 2) {
-                        //tan
-                        if (genesForText[8] == 4 && genesForText[9] == 4) {
-                            //orange extension wide band
-                            top = 3 + (TOPS * shade);
-                            if (genesForText[4] == 1 || genesForText[5] == 1) {
-                                //orange
-                                middle = 1;
-                            } else {
-                                //white
-                                middle = 2;
-                            }
-                        } else {
-                            higher = 2;
-                            if (genesForText[4] == 1 || genesForText[5] == 1) {
-                                //orange
-                                middle = 2;
-                            } else {
-                                //white
-                                middle = 8;
-                            }
-                        }
-                    } else {
-                        //self
-                        if (genesForText[8] == 4 && genesForText[9] == 4) {
-                            //wide band orange rabbits
-                            top = 4 + (TOPS * shade);
-                            if (genesForText[4] == 1 || genesForText[5] == 1) {
-                                //orange
-                                middle = 1;
-                            } else {
-                                //white
-                                middle = 2;
-                            }
-                        } else {
-                            //self
-                            higher = 3;
-                            if (genesForText[4] == 1 || genesForText[5] == 1) {
-                                //orange
-                                middle = 1;
-                            } else {
-                                //white
-                                middle = 7;
-                            }
-                        }
-                    }
-                }
-
-                if (higher != 0){
-                    //this sets the black to the correct black coverage and black shade
-                    higher = higher + (HIGH * shade) + c;
-                }
-
-                if (genesForText[4] >= 4 && genesForText[5] >= 4){
-                    eyes = 2;
-                }
-
-                //vieye Eyes and Spots
-                if (genesForText[14] == 2 || genesForText[15] == 2) {
-                    //Random variants of vienna marked
-                    //eyes
-                    if (genesForText[4] < 4 && genesForText[5] < 4) {
-                        if (Character.isDigit(uuidArry[1])) {
-                            vieye = 1 + (uuidArry[1] - 48);
-                        } else {
-                            char d = uuidArry[1];
-
-                            switch (d) {
-                                case 'a':
-                                    vieye = 11;
-                                    break;
-                                case 'b':
-                                    vieye = 12;
-                                    break;
-                                case 'c':
-                                    vieye = 13;
-                                    break;
-                                case 'd':
-                                    vieye = 14;
-                                    break;
-                                case 'e':
-                                    vieye = 15;
-                                    break;
-                                case 'f':
-                                    vieye = 16;
-                                    break;
-                                default:
-                                    vieye = 0;
-                            }
-                        }
-                    }
-
-                    //spots
-                    if ( Character.isDigit(uuidArry[2]) ){
-                        if ( Character.isDigit(uuidArry[3]) ){
-                            vienna = 1 + (uuidArry[3]-48);
-                        }else{
-                            char d = uuidArry[3];
-
-                            switch (d) {
-                                case 'a':
-                                    vienna = 11;
-                                    break;
-                                case 'b':
-                                    vienna = 12;
-                                    break;
-                                case 'c':
-                                    vienna = 13;
-                                    break;
-                                case 'd':
-                                    vienna = 14;
-                                    break;
-                                case 'e':
-                                    vienna = 15;
-                                    break;
-                                case 'f':
-                                    vienna = 16;
-                                    break;
-                                default:
-                                    vienna = 0;
-                            }
-                        }
-                    }
-                }
-
-                if (genesForText[10] == 2 || genesForText[11] == 2) {
-                    //broken patterned
-                    if ( Character.isDigit(uuidArry[5]) ){
-                        broken = 1 + (uuidArry[5]-48);
-                    } else {
-                        char d = uuidArry[5];
-
-                        switch (d) {
-                            case 'a':
-                                broken = 11;
-                                break;
-                            case 'b':
-                                broken = 12;
-                                break;
-                            case 'c':
-                                broken = 13;
-                                break;
-                            case 'd':
-                                broken = 14;
-                                break;
-                            case 'e':
-                                broken = 15;
-                                break;
-                            case 'f':
-                                broken = 16;
-                                break;
-                            default:
-                                broken = 0;
-                        }
-                    }
-
-                    if (genesForText[10] == 2 && genesForText[11] == 2){
-                        //charlie patterned
-                        broken = broken * 2;
-                    }
+                if (genesForText[10] == 2 && genesForText[11] == 2) {
+                    broken = 2;
+                } else if (genesForText[10] == 2 || genesForText[11] == 2) {
+                    broken = 1;
                 }
                 if (genesForText[12] == 2 && genesForText[13] == 2) {
-                    //dutch patterned
-                    //TODO add dutch textures with 16 variations
-                    if ( Character.isDigit(uuidArry[5]) ){
-                        dutch = 1 + (uuidArry[5]-48);
-                    } else {
-                        char d = uuidArry[5];
-
-                        switch (d) {
-                            case 'a':
-                                dutch = 11;
-                                break;
-                            case 'b':
-                                dutch = 12;
-                                break;
-                            case 'c':
-                                dutch = 13;
-                                break;
-                            case 'd':
-                                dutch = 14;
-                                break;
-                            case 'e':
-                                dutch = 15;
-                                break;
-                            case 'f':
-                                dutch = 16;
-                                break;
-                            default:
-                                dutch = 0;
+                    dutch = 1;
+                }
+                //Vienna Eyes and Spots
+                if (genesForText[14] == 2 || genesForText[15] == 2) {
+                    //NOT GENETIC VARIATIONS
+                    if (Character.isDigit(i.charAt(2)) && Character.isLetter(i.charAt(5))) {
+                        vienna = 1;
+                    } else if (Character.isDigit(i.charAt(5))) {
+                        if ((i.charAt(5)) <= 4) {
+                            vienna = 4;
+                        } else {
+                            vienna = 2;
                         }
                     }
+                    //spothead 0-6
+                    if (Character.isDigit(i.charAt(4)) && Character.isLetter(i.charAt(6))) {
+                        spothead = 1;
+                    } else if (Character.isDigit(i.charAt(6))) {
+                        if ((i.charAt(6)) <= 4) {
+                            spothead = 2;
+                        } else {
+                            spothead = 3;
+                        }
+                    } else if (Character.isDigit(i.charAt(7))) {
+                        if (i.charAt(7) >= 5) {
+                            spothead = 4;
+                        } else {
+                            spothead = 5;
+                        }
+                    } else {
+                        if (Character.isLetter(i.charAt(8))) {
+                            spothead = 6;
+                        }
+                    }
+                    //END OF NON GENETIC VARIATIONS
                 }
-
             }
 
                 //coat genes 26 angora, 28 rex, 30 satin
-            if(genesForText[28] == 2 && genesForText[29] == 2){
-                //angora
-                fur = 1;
-            }else if (genesForText[26] == 1 || genesForText[27] == 1){
-                if (genesForText[30] == 2 && genesForText[31] == 2){
-                    //satin
-                    fur = 3;
-                }else {
-                    //normal
+                if(genesForText[28] == 2 && genesForText[29] == 2){
                     fur = 2;
+                }else if (genesForText[26] == 2 && genesForText[27] == 2){
+                    fur = 1;
+                }else if (genesForText[30] == 2 && genesForText[31] == 2){
+                    fur = 3;
                 }
-            }
-            //otherwise rex aka no fur filter
 
 
 
 
             this.rabbitTextures.add(RABBIT_TEXTURES_UNDER[under]);
-//            if (lower != 0) {
-//                this.rabbitTextures.add(RABBIT_TEXTURES_LOWER[lower]);
-//            }
+            if (lower != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_LOWER[lower]);
+            }
             if(middle != 0) {
                 this.rabbitTextures.add(RABBIT_TEXTURES_MIDDLE[middle]);
             }
             if(higher != 0) {
                 this.rabbitTextures.add(RABBIT_TEXTURES_HIGHER[higher]);
             }
-            if(top != 0) {
-                this.rabbitTextures.add(RABBIT_TEXTURES_TOP[top]);
-            }
+//            if(top != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_TOP[0]);
+//            }
             if(dutch != 0) {
                 this.rabbitTextures.add(RABBIT_TEXTURES_DUTCH[dutch]);
             }
             if(broken != 0) {
                 this.rabbitTextures.add(RABBIT_TEXTURES_BROKEN[broken]);
             }
-            if (vienna != 0){
-                this.rabbitTextures.add(RABBIT_TEXTURES_VIENNA[vienna]);
+            if(spothead != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_HEADSPOT[spothead]);
             }
-            if (fur != 0) {
-                this.rabbitTextures.add(RABBIT_TEXTURES_FUR[fur]);
+            if(spotfoot != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_FOOTSPOT[spotfoot]);
             }
+            if(spotbody != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_BODYSPOT[spotbody]);
+            }
+            this.rabbitTextures.add(RABBIT_TEXTURES_FUR[fur]);
             this.rabbitTextures.add(RABBIT_TEXTURES_EYES[eyes]);
-            if(vieye > 7) {
-                this.rabbitTextures.add(RABBIT_TEXTURES_VIENNAEYES[vieye]);
+            if(vienna != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_VIENNAEYES[vienna]);
             }
             this.rabbitTextures.add(RABBIT_TEXTURES_SKIN[skin]);
 
@@ -1011,14 +930,15 @@ public class EnhancedRabbit extends EntityAnimal {
         int[] initialGenes = new int[GENES_LENGTH];
         //TODO create biome WTC variable [hot and dry biomes, cold biomes ] WTC is neutral biomes "all others"
 
-        //[ 0=desert wildtype, 1=cold wildtype ]
-        int wildType = 0;
-        Biome biome = this.world.getBiome(new BlockPos(this));
 
-        if (biome.getDefaultTemperature() < 0.3F) // cold
-        {
-            wildType  = 1;
-        }
+        //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
+//        int wildType = 0;
+//        Biome biome = this.world.getBiome(new BlockPos(this));
+
+//        if (biome.getDefaultTemperature() >= 0.9F && biome.getRainfall() > 0.8F) // hot and wet (jungle)
+//        {
+//            wildType = 1;
+//        }
 
 
 /**
@@ -1059,30 +979,16 @@ public class EnhancedRabbit extends EntityAnimal {
 
         //Colour Completion [ Wildtype+, Dark Chinchilla, Light Chinchilla, Himalayan, Albino ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            if (wildType == 0){
-                initialGenes[4] = (ThreadLocalRandom.current().nextInt(5) + 1);
-            }else{
-                initialGenes[4] = (ThreadLocalRandom.current().nextInt(4) + 2);
-            }
+            initialGenes[4] = (ThreadLocalRandom.current().nextInt(5) + 1);
+
         } else {
-            if (wildType == 0){
-                initialGenes[4] = (1);
-            }else {
-                initialGenes[4] = (2);
-            }
+            initialGenes[4] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            if (wildType == 0){
-                initialGenes[5] = (ThreadLocalRandom.current().nextInt(5) + 1);
-            }else{
-                initialGenes[5] = (ThreadLocalRandom.current().nextInt(4) + 2);
-            }
+            initialGenes[5] = (ThreadLocalRandom.current().nextInt(5) + 1);
+
         } else {
-            if (wildType == 0){
-                initialGenes[5] = (1);
-            }else {
-                initialGenes[5] = (2);
-            }
+            initialGenes[5] = (1);
         }
 
         //Dilute [ wildtype, dilute ]
@@ -1099,18 +1005,18 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[7] = (1);
         }
 
-        //E Locus [ Steel, Wildtype, Japanese Brindle, Non Extension ]
+        //E Locus [ Dominant Black, Steel, Wildtype, Japanese Brindle, Non Extension ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[8] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[8] = (2);
+            initialGenes[8] = (3);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[9] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[9] = (2);
+            initialGenes[9] = (3);
         }
 
         //Spotted [ wildtype, spotted ]
@@ -1220,11 +1126,7 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[24] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            if (wildType == 1){
-                initialGenes[24] = (2);
-            }else {
-                initialGenes[24] = (1);
-            }
+            initialGenes[24] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[25] = (ThreadLocalRandom.current().nextInt(2) + 1);
@@ -1238,11 +1140,7 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            if (wildType == 1){
-                initialGenes[26] = (2);
-            }else {
-                initialGenes[26] = (1);
-            }
+            initialGenes[26] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);

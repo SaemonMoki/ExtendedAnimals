@@ -370,11 +370,6 @@ public class EnhancedRabbit extends EntityAnimal {
         }
     }
 
-    public void fall(float distance, float damageMultiplier)
-    {
-
-    }
-
     public class RabbitJumpHelper extends EntityJumpHelper {
         private final EnhancedRabbit rabbit;
         private boolean canJump;

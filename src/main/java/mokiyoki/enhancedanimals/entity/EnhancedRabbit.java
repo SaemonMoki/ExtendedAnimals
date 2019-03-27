@@ -1,12 +1,15 @@
 package mokiyoki.enhancedanimals.entity;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.block.BlockCarrot;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
@@ -23,6 +26,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorldReaderBase;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -135,6 +139,7 @@ public class EnhancedRabbit extends EntityAnimal {
     private int jumpDuration;
     private boolean wasOnGround;
     private int currentMoveTypeDuration;
+    private int carrotTicks;
 
     private static final int WTC = 90;
     private static final int GENES_LENGTH = 50;
@@ -158,6 +163,13 @@ public class EnhancedRabbit extends EntityAnimal {
         this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 0.6D));
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
+
+        this.tasks.addTask(1, new EnhancedRabbit.AIPanic(this, 2.2D));
+        this.tasks.addTask(4, new EnhancedRabbit.AIAvoidEntity<>(this, EntityPlayer.class, 8.0F, 2.2D, 2.2D));
+        this.tasks.addTask(4, new EnhancedRabbit.AIAvoidEntity<>(this, EntityWolf.class, 10.0F, 2.2D, 2.2D));
+        this.tasks.addTask(4, new EnhancedRabbit.AIAvoidEntity<>(this, EntityMob.class, 4.0F, 2.2D, 2.2D));
+        this.tasks.addTask(5, new EnhancedRabbit.AIRaidFarm(this));
+
     }
 
     protected float getJumpUpwardsMotion() {
@@ -396,6 +408,10 @@ public class EnhancedRabbit extends EntityAnimal {
         }
     }
 
+    private boolean isCarrotEaten() {
+        return this.carrotTicks == 0;
+    }
+
     static class RabbitMoveHelper extends EntityMoveHelper {
         private final EnhancedRabbit rabbit;
         private double nextJumpSpeed;
@@ -428,6 +444,133 @@ public class EnhancedRabbit extends EntityAnimal {
                 this.nextJumpSpeed = speedIn;
             }
 
+        }
+    }
+
+
+    static class AIAvoidEntity<T extends Entity> extends EntityAIAvoidEntity<T> {
+        private final EnhancedRabbit rabbit;
+
+        public AIAvoidEntity(EnhancedRabbit rabbit, Class<T> p_i46403_2_, float p_i46403_3_, double p_i46403_4_, double p_i46403_6_) {
+            super(rabbit, p_i46403_2_, p_i46403_3_, p_i46403_4_, p_i46403_6_);
+            this.rabbit = rabbit;
+        }
+
+        /**
+         * Returns whether the EntityAIBase should begin execution.
+         */
+        public boolean shouldExecute() {
+            return super.shouldExecute();
+        }
+    }
+
+    static class AIEvilAttack extends EntityAIAttackMelee {
+        public AIEvilAttack(EnhancedRabbit rabbit) {
+            super(rabbit, 1.4D, true);
+        }
+
+        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
+            return (double)(4.0F + attackTarget.width);
+        }
+    }
+
+    static class AIPanic extends EntityAIPanic {
+        private final EnhancedRabbit rabbit;
+
+        public AIPanic(EnhancedRabbit rabbit, double speedIn) {
+            super(rabbit, speedIn);
+            this.rabbit = rabbit;
+        }
+
+        /**
+         * Keep ticking a continuous task that has already been started
+         */
+        public void tick() {
+            super.tick();
+            this.rabbit.setMovementSpeed(this.speed);
+        }
+    }
+
+    static class AIRaidFarm extends EntityAIMoveToBlock {
+        private final EnhancedRabbit rabbit;
+        private boolean wantsToRaid;
+        private boolean canRaid;
+
+        public AIRaidFarm(EnhancedRabbit rabbitIn) {
+            super(rabbitIn, (double)0.7F, 16);
+            this.rabbit = rabbitIn;
+        }
+
+        /**
+         * Returns whether the EntityAIBase should begin execution.
+         */
+        public boolean shouldExecute() {
+            if (this.runDelay <= 0) {
+                if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.rabbit.world, this.rabbit)) {
+                    return false;
+                }
+
+                this.canRaid = false;
+                this.wantsToRaid = this.rabbit.isCarrotEaten();
+                this.wantsToRaid = true;
+            }
+
+            return super.shouldExecute();
+        }
+
+        /**
+         * Returns whether an in-progress EntityAIBase should continue executing
+         */
+        public boolean shouldContinueExecuting() {
+            return this.canRaid && super.shouldContinueExecuting();
+        }
+
+        /**
+         * Keep ticking a continuous task that has already been started
+         */
+        public void tick() {
+            super.tick();
+            this.rabbit.getLookHelper().setLookPosition((double)this.destinationBlock.getX() + 0.5D, (double)(this.destinationBlock.getY() + 1), (double)this.destinationBlock.getZ() + 0.5D, 10.0F, (float)this.rabbit.getVerticalFaceSpeed());
+            if (this.getIsAboveDestination()) {
+                World world = this.rabbit.world;
+                BlockPos blockpos = this.destinationBlock.up();
+                IBlockState iblockstate = world.getBlockState(blockpos);
+                Block block = iblockstate.getBlock();
+                if (this.canRaid && block instanceof BlockCarrot) {
+                    Integer integer = iblockstate.get(BlockCarrot.AGE);
+                    if (integer == 0) {
+                        world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 2);
+                        world.destroyBlock(blockpos, true);
+                    } else {
+                        world.setBlockState(blockpos, iblockstate.with(BlockCarrot.AGE, Integer.valueOf(integer - 1)), 2);
+                        world.playEvent(2001, blockpos, Block.getStateId(iblockstate));
+                    }
+
+                    this.rabbit.carrotTicks = 40;
+                }
+
+                this.canRaid = false;
+                this.runDelay = 10;
+            }
+
+        }
+
+        /**
+         * Return true to set given position as destination
+         */
+        protected boolean shouldMoveTo(IWorldReaderBase worldIn, BlockPos pos) {
+            Block block = worldIn.getBlockState(pos).getBlock();
+            if (block == Blocks.FARMLAND && this.wantsToRaid && !this.canRaid) {
+                pos = pos.up();
+                IBlockState iblockstate = worldIn.getBlockState(pos);
+                block = iblockstate.getBlock();
+                if (block instanceof BlockCarrot && ((BlockCarrot)block).isMaxAge(iblockstate)) {
+                    this.canRaid = true;
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 

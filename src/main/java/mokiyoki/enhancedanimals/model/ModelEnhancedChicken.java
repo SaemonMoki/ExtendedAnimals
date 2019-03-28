@@ -160,15 +160,15 @@ public class ModelEnhancedChicken extends ModelBase {
         this.combRose.addBox(-0.5F, (7F+combRy), (-4F+combRz), 1, 1, 1);
 
         this.combLargeRose = new ModelRenderer(this,0,0);
-        this.combLargeRose.addBox(-1F, (9F+combRy), (-6F+combRz), 2, 2, 1);
-        this.combLargeRose.addBox(-0.5F, (8F+combRy), (-5F+combRz), 1, 1, 2);
-        this.combLargeRose.addBox(-0.5F, (8F+combRy), (-5F+combRz), 1, 2, 1);
-        this.combLargeRose.addBox(-0.5F, (7F+combRy), (-4F+combRz), 1, 1, 1);
+        this.combLargeRose.addBox(-1.0F, -6.0F, -3.0F, 2, 2, 1);
+        this.combLargeRose.addBox(-0.5F, -7.0F, -2.5F, 1, 1, 2, 0.2F);
+        this.combLargeRose.addBox(-0.5F, -8.0F, -0.5F, 1, 2, 1);
+        this.combLargeRose.addBox(-0.5F, -9.0F, -0.0F, 1, 1, 1);
 
         this.combSmallRose2 = new ModelRenderer(this,0,0);
-        this.combSmallRose2.addBox(-0.5F, (9F+combRy), (-6F+combRz), 1, 1, 1, 0.5F);
-        this.combSmallRose2.addBox(-0.5F, (8F+combRy), (-5F+combRz), 1, 1, 1, 0.25F);
-        this.combSmallRose2.addBox(-0.5F, (8F+combRy), (-4F+combRz), 1, 1, 1);
+        this.combSmallRose2.addBox(-0.5F, -6.0F, -2.5F, 1, 1, 1, 0.1F);
+        this.combSmallRose2.addBox(-0.5F, -6.5F, -2.0F, 1, 1, 1);
+        this.combSmallRose2.addBox(-0.5F, -6.4F, -1F, 1, 1, 1);
 
         this.combRose2 = new ModelRenderer(this,0,0);
         this.combRose2.addBox(-0.5F, (9F+combRy), (-6F+combRz), 1, 1, 1, 0.5F);
@@ -176,9 +176,9 @@ public class ModelEnhancedChicken extends ModelBase {
         this.combRose2.addBox(-0.5F, (8F+combRy), (-4F+combRz), 1, 1, 1);
 
         this.combLargeRose2 = new ModelRenderer(this,0,0);
-        this.combLargeRose2.addBox(-0.5F, (9F+combRy), (-6F+combRz), 1, 1, 1, 0.5F);
-        this.combLargeRose2.addBox(-0.5F, (8F+combRy), (-5F+combRz), 1, 1, 1, 0.25F);
-        this.combLargeRose2.addBox(-0.5F, (8F+combRy), (-4F+combRz), 1, 1, 1);
+        this.combLargeRose2.addBox(-1.0F, -6.0F, -3.0F, 2, 2, 1);
+        this.combLargeRose2.addBox(-1.0F, -6.75F, -2.5F, 2, 1, 2);
+        this.combLargeRose2.addBox(-0.5F, -6.5F, -0.5F, 1, 1, 1, 0.2F);
 
         int combPy = -15;
         int combPz = 3;
@@ -348,8 +348,6 @@ public class ModelEnhancedChicken extends ModelBase {
         this.beardNN.setTextureOffset(2,29);
         this.beardNN.addBox(2F, -4F, -2F, 1, 2, 2);
         this.beardNN.addBox(0F, -3F, -2.75F, 2, 2, 2);
-
-
     }
 
 
@@ -692,7 +690,7 @@ public class ModelEnhancedChicken extends ModelBase {
                     this.combSmallRose.render(scale);
                 }else if (cSize == 1 || cSize == 2 || cSize == 3) {
                     this.combRose.render(scale);
-                }else if (cSize == 4){
+                }else{
                     this.combLargeRose.render(scale);
                 }
             }else if(comb == 3){
@@ -700,7 +698,7 @@ public class ModelEnhancedChicken extends ModelBase {
                     this.combSmallRose2.render(scale);
                 }else if (cSize == 1 || cSize == 2 || cSize == 3) {
                     this.combRose2.render(scale);
-                }else if (cSize == 4){
+                }else{
                     this.combLargeRose2.render(scale);
                 }
             }else if(comb == 4 || (comb == 1 && crest != 0)){
@@ -942,22 +940,22 @@ public class ModelEnhancedChicken extends ModelBase {
 
         /**       wing position variants         */
 
-        if (sharedGenes[86] == 1 && sharedGenes[87] == 1 || (sharedGenes[86] == 3 && sharedGenes[87] == 3)){
+        if ((sharedGenes[86] == 1 && sharedGenes[87] == 1) || (sharedGenes[86] == 3 && sharedGenes[87] == 3)){
             this.rightWing.rotationPointY = this.rightWing.rotationPointY + 1F;
             this.leftWing.rotationPointY = this.leftWing.rotationPointY + 1F;
             this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + 1F;
             this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + 1F;
-        } else if ((sharedGenes[86] == 2 || sharedGenes[87] == 2) && (sharedGenes[86] == 1 || sharedGenes[87] == 1)){
+        } else if (sharedGenes[86] == 1 || sharedGenes[87] == 1){
             this.rightWing.rotationPointY = this.rightWing.rotationPointY + 0.5F;
             this.leftWing.rotationPointY = this.leftWing.rotationPointY + 0.5F;
             this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + 0.5F;
             this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + 0.5F;
         }
 
-            this.rightWing.rotationPointY = this.rightWing.rotationPointY + wingAngle* 2.2F;
-            this.leftWing.rotationPointY = this.leftWing.rotationPointY + wingAngle * 2.2F;
-            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + wingAngle * 2.2F;
-            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + wingAngle * 2.2F;
+//            this.rightWing.rotationPointY = this.rightWing.rotationPointY + wingAngle* 2.2F;
+//            this.leftWing.rotationPointY = this.leftWing.rotationPointY + wingAngle * 2.2F;
+//            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + wingAngle * 2.2F;
+//            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + wingAngle * 2.2F;
     }
 
 }

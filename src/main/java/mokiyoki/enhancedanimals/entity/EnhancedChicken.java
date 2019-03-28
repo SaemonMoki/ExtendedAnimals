@@ -50,110 +50,108 @@ public class EnhancedChicken extends EntityAnimal {
     /** [4] duckwing, partridge, wheaten, solid
      [5] silver, salmon, lemon, gold, mahogany */
     private static final String[] CHICKEN_TEXTURES_GROUND = new String[] {
-            "ground_duckwing_silver.png",   "ground_duckwing_salmon.png",   "ground_duckwing_lemon.png",
-            "ground_duckwing_gold.png",     "ground_duckwing_mahogany.png", "ground_solid_silver.png",
-            "ground_solid_silver.png",      "ground_partridge_lemon.png",   "ground_partridge_gold.png",
-            "ground_partridge_mahogany.png","ground_wheaten_silver.png",    "ground_wheaten_salmon.png",
-            "ground_wheaten_lemon.png",     "ground_wheaten_gold.png",      "ground_wheaten_mahogany.png",
-            "ground_solid_silver.png",      "ground_solid_silver.png",      "ground_solid_cream.png",
-            "ground_solid_buff.png",        "ground_solid_mahogany.png",    "pattern_solid_blue.png"
+        "ground_duckwing_silver.png",   "ground_duckwing_salmon.png",   "ground_duckwing_lemon.png",
+        "ground_duckwing_gold.png",     "ground_duckwing_mahogany.png", "ground_solid_silver.png",
+        "ground_solid_silver.png",      "ground_partridge_lemon.png",   "ground_partridge_gold.png",
+        "ground_partridge_mahogany.png","ground_wheaten_silver.png",    "ground_wheaten_salmon.png",
+        "ground_wheaten_lemon.png",     "ground_wheaten_gold.png",      "ground_wheaten_mahogany.png",
+        "ground_solid_silver.png",      "ground_solid_silver.png",      "ground_solid_cream.png",
+        "ground_solid_buff.png",        "ground_solid_mahogany.png",    "pattern_solid_blue.png"
     };
-
+    /** [10]  black,blue,splash,splashLav,splashDun,splashChoc,lavender,white,dun,chocolate
+        [18] solid,birchen,duckwing,wheaten,quail,columbian,darkbrown,lakenvelder,moorhead,blacktail,penciled,bsinglelace,singlelace,doublelace,spangled,partridge-penciled, halfmoon spangle, bluelace/none */
     private static final String[] CHICKEN_TEXTURES_PATTERN = new String[] {
-            "pattern_solid.png","pattern_solid_blue.png", "pattern_solid_splash.png","pattern_solid_splashlav.png","pattern_solid_splashdun.png",                                   // 0
-            "pattern_solid_splashchoc.png", "pattern_solid_lav.png","ground_solid_silver.png", "pattern_solid_dun.png", "pattern_solid_choc.png",                                   // 5
-            "pattern_birchen.png", "pattern_birchen_blue.png", "pattern_birchen_splash.png","pattern_birchen_splashlav.png","pattern_birchen_splashdun.png",                        //10
-            "pattern_birchen_splashchoc.png","pattern_birchen_lav.png", "pattern_birchen_white.png", "pattern_birchen_dun.png", "pattern_birchen_choc.png",                         //15
-            "pattern_duckwing.png","pattern_duckwing_blue.png", "pattern_duckwing_splash.png","pattern_duckwing_splashlav.png","pattern_duckwing_splashdun.png",                    //20
-            "pattern_duckwing_splashchoc.png", "pattern_duckwing_lav.png","pattern_duckwing_white.png", "pattern_duckwing_dun.png", "pattern_duckwing_choc.png",                    //25
-            "pattern_wheaten.png","pattern_wheaten_blue.png", "pattern_wheaten_splash.png","pattern_wheaten_splashlav.png","pattern_wheaten_splashdun.png",                         //30
-            "pattern_wheaten_splashchoc.png","pattern_wheaten_lav.png","pattern_wheaten_white.png", "pattern_wheaten_dun.png", "pattern_wheaten_choc.png",                          //35
-            "pattern_quail.png", "pattern_quail_blue.png","pattern_quail_splash.png","pattern_quail_splashlav.png","pattern_quail_splashdun.png",                                   //40
-            "pattern_quail_splashchoc.png","pattern_quail_lav.png", "pattern_quail_white.png","pattern_quail_dun.png", "pattern_quail_choc.png",                                    //45
-            "pattern_columbian.png","pattern_columbian_blue.png", "pattern_columbian_splash.png","pattern_columbian_splashlav.png","pattern_columbian_splashdun.png",               //50
-            "pattern_columbian_splashchoc.png", "pattern_columbian_lav.png","pattern_columbian_white.png", "pattern_columbian_dun.png", "pattern_columbian_choc.png",               //55
-            "pattern_darkbrown.png","pattern_darkbrown_blue.png", "pattern_darkbrown_splash.png","pattern_darkbrown_splashlav.png","pattern_darkbrown_splashdun.png",               //60
-            "pattern_darkbrown_splashchoc.png","pattern_darkbrown_lav.png","pattern_darkbrown_white.png", "pattern_darkbrown_dun.png", "pattern_darkbrown_choc.png",                //65
-            "pattern_lakenvelder.png", "pattern_lakenvelder_blue.png", "pattern_lakenvelder_splash.png","pattern_lakenvelder_splashlav.png","pattern_lakenvelder_splashdun.png",    //70
-            "pattern_lakenvelder_splashchoc.png","pattern_lakenvelder_lav.png", "pattern_lakenvelder_white.png", "pattern_lakenvelder_dun.png","pattern_lakenvelder_choc.png",      //75
-            "pattern_moorhead.png","pattern_moorhead_blue.png", "pattern_moorhead_splash.png","pattern_moorhead_splashlav.png","pattern_moorhead_splashdun.png",                    //80
-            "pattern_moorhead_splashchoc.png", "pattern_moorhead_lav.png","pattern_moorhead_white.png", "pattern_moorhead_dun.png", "pattern_moorhead_choc.png",                    //85
-            "pattern_blacktail.png","pattern_blacktail_blue.png", "pattern_blacktail_splash.png","pattern_blacktail_splashlav.png","pattern_blacktail_splashdun.png",               //90
-            "pattern_blacktail_splashchoc.png","pattern_blacktail_lav.png","pattern_blacktail_white.png", "pattern_blacktail_dun.png", "pattern_blacktail_choc.png",                //95
-            "pattern_penciled.png", "pattern_penciled_blue.png", "pattern_penciled_splash.png","pattern_penciled_splashlav.png","pattern_penciled_splashdun.png",                   //100
-            "pattern_penciled_splashchoc.png","pattern_penciled_lav.png", "pattern_penciled_white.png","pattern_penciled_dun.png", "pattern_penciled_choc.png",                     //105
-            "pattern_bsinglelace.png","pattern_bsinglelace_blue.png","pattern_bsinglelace_splash.png","pattern_bsinglelace_splashlav.png","pattern_bsinglelace_splashdun.png",      //110
-            "pattern_bsinglelace_splashchoc.png", "pattern_bsinglelace_lav.png","pattern_bsinglelace_white.png", "pattern_bsinglelace_dun.png", "pattern_bsinglelace_choc.png",     //115
-            "pattern_singlelace.png","pattern_singlelace_blue.png", "pattern_singlelace_splash.png","pattern_singlelace_splashlav.png","pattern_singlelace_splashdun.png",          //120
-            "pattern_singlelace_splashchoc.png","pattern_singlelace_lav.png","pattern_singlelace_white.png", "pattern_singlelace_dun.png", "pattern_singlelace_choc.png",           //125
-            "pattern_doublelace.png", "pattern_doublelace_blue.png", "pattern_doublelace_splash.png","pattern_doublelace_splashlav.png","pattern_doublelace_splashdun.png",         //130
-            "pattern_doublelace_splashchoc.png","pattern_doublelace_lav.png", "pattern_doublelace_white.png","pattern_doublelace_dun.png", "pattern_doublelace_choc.png",           //135
-            "pattern_spangled.png","pattern_spangled_blue.png","pattern_spangled_splash.png","pattern_spangled_splashlav.png","pattern_spangled_splashdun.png",                     //140
-            "pattern_spangled_splashchoc.png", "pattern_spangled_lav.png","pattern_spangled_white.png", "pattern_spangled_dun.png", "pattern_spangled_choc.png",                    //145
-            "pattern_prdgpenciled.png", "pattern_prdgpenciled_blue.png", "pattern_prdgpenciled_splash.png","pattern_prdgpenciled_splashlav.png","pattern_prdgpenciled_splashdun.png",//150
-            "pattern_prdgpenciled_splashchoc.png","pattern_prdgpenciled_lav.png", "pattern_prdgpenciled_white.png", "pattern_prdgpenciled_dun.png", "pattern_prdgpenciled_choc.png", //155
-            "pattern_spangledhm.png","pattern_spangledhm_blue.png","pattern_spangledhm_splash.png","pattern_spangledhm_splashlav.png","pattern_spangledhm_splashdun.png",            //160
-            "pattern_spangledhm_splashchoc.png", "pattern_spangledhm_lav.png","pattern_spangledhm_white.png", "pattern_spangledhm_dun.png", "pattern_spangledhm_choc.png",           //165
-            "pattern_xtradarkbirchen.png", "pattern_xtradarkbirchen_blue.png", "pattern_xtradarkbirchen_splash.png", "pattern_xtradarkbirchen_splashlav.png", "pattern_xtradarkbirchen_splashdun.png",  //170
-            "pattern_xtradarkbirchen_splashchoc.png",  "pattern_xtradarkbirchen_lav.png", "pattern_xtradarkbirchen_white.png", "pattern_xtradarkbirchen_dun.png", "pattern_xtradarkbirchen_choc.png",   //175
-            "pattern_leakyblack.png", "pattern_leakyblack_blue.png", "pattern_leakyblack_splash.png", "pattern_leakyblack_splashlav.png", "pattern_leakyblack_splashdun.png",        //180
-            "pattern_leakyblack_splashchoc.png",  "pattern_leakyblack_lav.png", "pattern_leakyblack_white.png", "pattern_leakyblack_dun.png", "pattern_leakyblack_choc.png",         //185
-            "pattern_xtradarkbsinglace.png", "pattern_xtradarkbsinglace_blue.png", "pattern_xtradarkbsinglace_splash.png", "pattern_xtradarkbsinglace_splashlav.png", "pattern_xtradarkbsinglace_splashdun.png",    //190
-            "pattern_xtradarkbsinglace_splashchoc.png",  "pattern_xtradarkbsinglace_lav.png", "pattern_xtradarkbsinglace_white.png", "pattern_xtradarkbsinglace_dun.png", "pattern_xtradarkbsinglace_choc.png",     //195
-            "pattern_doublehalfspangle.png", "pattern_doublehalfspangle_blue.png", "pattern_doublehalfspangle_splash.png", "pattern_doublehalfspangle_splashlav.png", "pattern_doublehalfspangle_splashdun.png",    //200
-            "pattern_doublehalfspangle_splashchoc.png",  "pattern_doublehalfspangle_lav.png", "pattern_doublehalfspangle_white.png", "pattern_doublehalfspangle_dun.png", "pattern_doublehalfspangle_choc.png",     //205
-            "pattern_xtradarkdoublehalfspangle.png", "pattern_xtradarkdoublehalfspangle_blue.png", "pattern_xtradarkdoublehalfspangle_splash.png", "pattern_xtradarkdoublehalfspangle_splashlav.png", "pattern_xtradarkdoublehalfspangle_splashdun.png",    //210
-            "pattern_xtradarkdoublehalfspangle_splashchoc.png",  "pattern_xtradarkdoublehalfspangle_lav.png", "pattern_xtradarkdoublehalfspangle_white.png", "pattern_xtradarkdoublehalfspangle_dun.png", "pattern_xtradarkdoublehalfspangle_choc.png",     //215
-            "pattern_xtradarkmessyquail.png", "pattern_xtradarkmessyquail_blue.png", "pattern_xtradarkmessyquail_splash.png", "pattern_xtradarkmessyquail_splashlav.png", "pattern_xtradarkmessyquail_splashdun.png",    //220
-            "pattern_xtradarkmessyquail_splashchoc.png",  "pattern_xtradarkmessyquail_lav.png", "pattern_xtradarkmessyquail_white.png", "pattern_xtradarkmessyquail_dun.png", "pattern_xtradarkmessyquail_choc.png",     //225
-            "pattern_mealyquail.png", "pattern_mealyquail_blue.png", "pattern_mealyquail_splash.png", "pattern_mealyquail_splashlav.png", "pattern_mealyquail_splashdun.png",    //230
-            "pattern_mealyquail_splashchoc.png",  "pattern_mealyquail_lav.png", "pattern_mealyquail_white.png", "pattern_mealyquail_dun.png", "pattern_mealyquail_choc.png",     //235
-            "pattern_xtradarkincompletequail.png", "pattern_xtradarkincompletequail_blue.png", "pattern_xtradarkincompletequail_splash.png", "pattern_xtradarkincompletequail_splashlav.png", "pattern_xtradarkincompletequail_splashdun.png",    //240
-            "pattern_xtradarkincompletequail_splashchoc.png",  "pattern_xtradarkincompletequail_lav.png", "pattern_xtradarkincompletequail_white.png", "pattern_xtradarkincompletequail_dun.png", "pattern_xtradarkincompletequail_choc.png",     //245
-            "pattern_spangledc.png", "pattern_spangledc_blue.png", "pattern_spangledc_splash.png", "pattern_spangledc_splashlav.png", "pattern_spangledc_splashdun.png",    //250
-            "pattern_spangledc_splashchoc.png",  "pattern_spangledc_lav.png", "pattern_spangledc_white.png", "pattern_spangledc_dun.png", "pattern_spangledc_choc.png",     //255
-            "pattern_multilacedduckwing.png", "pattern_multilacedduckwing_blue.png", "pattern_multilacedduckwing_splash.png", "pattern_multilacedduckwing_splashlav.png", "pattern_multilacedduckwing_splashdun.png",    //260
-            "pattern_multilacedduckwing_splashchoc.png",  "pattern_multilacedduckwing_lav.png", "pattern_multilacedduckwing_white.png", "pattern_multilacedduckwing_dun.png", "pattern_multilacedduckwing_choc.png",     //265
-            "pattern_incompletelaced.png", "pattern_incompletelaced_blue.png", "pattern_incompletelaced_splash.png", "pattern_incompletelaced_splashlav.png", "pattern_incompletelaced_splashdun.png",    //270
-            "pattern_incompletelaced_splashchoc.png",  "pattern_incompletelaced_lav.png", "pattern_incompletelaced_white.png", "pattern_incompletelaced_dun.png", "pattern_incompletelaced_choc.png",     //275
-            "pattern_xtradarkwheaten.png", "pattern_xtradarkwheaten_blue.png", "pattern_xtradarkwheaten_splash.png", "pattern_xtradarkwheaten_splashlav.png", "pattern_xtradarkwheaten_splashdun.png",    //280
-            "pattern_xtradarkwheaten_splashchoc.png",  "pattern_xtradarkwheaten_lav.png", "pattern_xtradarkwheaten_white.png", "pattern_xtradarkwheaten_dun.png", "pattern_xtradarkwheaten_choc.png",     //285
-            "pattern_incompletequail.png", "pattern_incompletequail_blue.png", "pattern_incompletequail_splash.png", "pattern_incompletequail_splashlav.png", "pattern_incompletequail_splashdun.png",    //290
-            "pattern_incompletequail_splashchoc.png",  "pattern_incompletequail_lav.png", "pattern_incompletequail_white.png", "pattern_incompletequail_dun.png", "pattern_incompletequail_choc.png",     //295
-            "pattern_incompletecolumbian.png", "pattern_incompletecolumbian_blue.png", "pattern_incompletecolumbian_splash.png", "pattern_incompletecolumbian_splashlav.png", "pattern_incompletecolumbian_splashdun.png",    //300
-            "pattern_incompletecolumbian_splashchoc.png",  "pattern_incompletecolumbian_lav.png", "pattern_incompletecolumbian_white.png", "pattern_incompletecolumbian_dun.png", "pattern_incompletecolumbian_choc.png",     //305
-            "pattern_xtradarkincompletecolumbian.png", "pattern_xtradarkincompletecolumbian_blue.png", "pattern_xtradarkincompletecolumbian_splash.png", "pattern_xtradarkincompletecolumbian_splashlav.png", "pattern_xtradarkincompletecolumbian_splashdun.png",    //310
-            "pattern_xtradarkincompletecolumbian_splashchoc.png",  "pattern_xtradarkincompletecolumbian_lav.png", "pattern_xtradarkincompletecolumbian_white.png", "pattern_xtradarkincompletecolumbian_dun.png", "pattern_xtradarkincompletecolumbian_choc.png",     //315
-            "pattern_incompletesinglelace.png", "pattern_incompletesinglelace_blue.png", "pattern_incompletesinglelace_splash.png", "pattern_incompletesinglelace_splashlav.png", "pattern_incompletesinglelace_splashdun.png",    //320
-            "pattern_incompletesinglelace_splashchoc.png",  "pattern_incompletesinglelace_lav.png", "pattern_incompletesinglelace_white.png", "pattern_incompletesinglelace_dun.png", "pattern_incompletesinglelace_choc.png",     //325
+        "pattern_solid.png","pattern_solid_blue.png", "pattern_solid_splash.png","pattern_solid_splashlav.png","pattern_solid_splashdun.png",                                   // 0
+        "pattern_solid_splashchoc.png", "pattern_solid_lav.png","ground_solid_silver.png", "pattern_solid_dun.png", "pattern_solid_choc.png",                                   // 5
+        "pattern_birchen.png", "pattern_birchen_blue.png", "pattern_birchen_splash.png","pattern_birchen_splashlav.png","pattern_birchen_splashdun.png",                        //10
+        "pattern_birchen_splashchoc.png","pattern_birchen_lav.png", "pattern_birchen_white.png", "pattern_birchen_dun.png", "pattern_birchen_choc.png",                         //15
+        "pattern_duckwing.png","pattern_duckwing_blue.png", "pattern_duckwing_splash.png","pattern_duckwing_splashlav.png","pattern_duckwing_splashdun.png",                    //20
+        "pattern_duckwing_splashchoc.png", "pattern_duckwing_lav.png","pattern_duckwing_white.png", "pattern_duckwing_dun.png", "pattern_duckwing_choc.png",                    //25
+        "pattern_wheaten.png","pattern_wheaten_blue.png", "pattern_wheaten_splash.png","pattern_wheaten_splashlav.png","pattern_wheaten_splashdun.png",                         //30
+        "pattern_wheaten_splashchoc.png","pattern_wheaten_lav.png","pattern_wheaten_white.png", "pattern_wheaten_dun.png", "pattern_wheaten_choc.png",                          //35
+        "pattern_quail.png", "pattern_quail_blue.png","pattern_quail_splash.png","pattern_quail_splashlav.png","pattern_quail_splashdun.png",                                   //40
+        "pattern_quail_splashchoc.png","pattern_quail_lav.png", "pattern_quail_white.png","pattern_quail_dun.png", "pattern_quail_choc.png",                                    //45
+        "pattern_columbian.png","pattern_columbian_blue.png", "pattern_columbian_splash.png","pattern_columbian_splashlav.png","pattern_columbian_splashdun.png",               //50
+        "pattern_columbian_splashchoc.png", "pattern_columbian_lav.png","pattern_columbian_white.png", "pattern_columbian_dun.png", "pattern_columbian_choc.png",               //55
+        "pattern_darkbrown.png","pattern_darkbrown_blue.png", "pattern_darkbrown_splash.png","pattern_darkbrown_splashlav.png","pattern_darkbrown_splashdun.png",               //60
+        "pattern_darkbrown_splashchoc.png","pattern_darkbrown_lav.png","pattern_darkbrown_white.png", "pattern_darkbrown_dun.png", "pattern_darkbrown_choc.png",                //65
+        "pattern_lakenvelder.png", "pattern_lakenvelder_blue.png", "pattern_lakenvelder_splash.png","pattern_lakenvelder_splashlav.png","pattern_lakenvelder_splashdun.png",    //70
+        "pattern_lakenvelder_splashchoc.png","pattern_lakenvelder_lav.png", "pattern_lakenvelder_white.png", "pattern_lakenvelder_dun.png","pattern_lakenvelder_choc.png",      //75
+        "pattern_moorhead.png","pattern_moorhead_blue.png", "pattern_moorhead_splash.png","pattern_moorhead_splashlav.png","pattern_moorhead_splashdun.png",                    //80
+        "pattern_moorhead_splashchoc.png", "pattern_moorhead_lav.png","pattern_moorhead_white.png", "pattern_moorhead_dun.png", "pattern_moorhead_choc.png",                    //85
+        "pattern_blacktail.png","pattern_blacktail_blue.png", "pattern_blacktail_splash.png","pattern_blacktail_splashlav.png","pattern_blacktail_splashdun.png",               //90
+        "pattern_blacktail_splashchoc.png","pattern_blacktail_lav.png","pattern_blacktail_white.png", "pattern_blacktail_dun.png", "pattern_blacktail_choc.png",                //95
+        "pattern_penciled.png", "pattern_penciled_blue.png", "pattern_penciled_splash.png","pattern_penciled_splashlav.png","pattern_penciled_splashdun.png",                   //100
+        "pattern_penciled_splashchoc.png","pattern_penciled_lav.png", "pattern_penciled_white.png","pattern_penciled_dun.png", "pattern_penciled_choc.png",                     //105
+        "pattern_bsinglelace.png","pattern_bsinglelace_blue.png","pattern_bsinglelace_splash.png","pattern_bsinglelace_splashlav.png","pattern_bsinglelace_splashdun.png",      //110
+        "pattern_bsinglelace_splashchoc.png", "pattern_bsinglelace_lav.png","pattern_bsinglelace_white.png", "pattern_bsinglelace_dun.png", "pattern_bsinglelace_choc.png",     //115
+        "pattern_singlelace.png","pattern_singlelace_blue.png", "pattern_singlelace_splash.png","pattern_singlelace_splashlav.png","pattern_singlelace_splashdun.png",          //120
+        "pattern_singlelace_splashchoc.png","pattern_singlelace_lav.png","pattern_singlelace_white.png", "pattern_singlelace_dun.png", "pattern_singlelace_choc.png",           //125
+        "pattern_doublelace.png", "pattern_doublelace_blue.png", "pattern_doublelace_splash.png","pattern_doublelace_splashlav.png","pattern_doublelace_splashdun.png",         //130
+        "pattern_doublelace_splashchoc.png","pattern_doublelace_lav.png", "pattern_doublelace_white.png","pattern_doublelace_dun.png", "pattern_doublelace_choc.png",           //135
+        "pattern_spangled.png","pattern_spangled_blue.png","pattern_spangled_splash.png","pattern_spangled_splashlav.png","pattern_spangled_splashdun.png",                     //140
+        "pattern_spangled_splashchoc.png", "pattern_spangled_lav.png","pattern_spangled_white.png", "pattern_spangled_dun.png", "pattern_spangled_choc.png",                    //145
+        "pattern_prdgpenciled.png", "pattern_prdgpenciled_blue.png", "pattern_prdgpenciled_splash.png","pattern_prdgpenciled_splashlav.png","pattern_prdgpenciled_splashdun.png",//150
+        "pattern_prdgpenciled_splashchoc.png","pattern_prdgpenciled_lav.png", "pattern_prdgpenciled_white.png", "pattern_prdgpenciled_dun.png", "pattern_prdgpenciled_choc.png", //155
+        "pattern_spangledhm.png","pattern_spangledhm_blue.png","pattern_spangledhm_splash.png","pattern_spangledhm_splashlav.png","pattern_spangledhm_splashdun.png",            //160
+        "pattern_spangledhm_splashchoc.png", "pattern_spangledhm_lav.png","pattern_spangledhm_white.png", "pattern_spangledhm_dun.png", "pattern_spangledhm_choc.png",           //165
+        "pattern_xtradarkbirchen.png", "pattern_xtradarkbirchen_blue.png", "pattern_xtradarkbirchen_splash.png", "pattern_xtradarkbirchen_splashlav.png", "pattern_xtradarkbirchen_splashdun.png",  //170
+        "pattern_xtradarkbirchen_splashchoc.png",  "pattern_xtradarkbirchen_lav.png", "pattern_xtradarkbirchen_white.png", "pattern_xtradarkbirchen_dun.png", "pattern_xtradarkbirchen_choc.png",   //175
+        "pattern_leakyblack.png", "pattern_leakyblack_blue.png", "pattern_leakyblack_splash.png", "pattern_leakyblack_splashlav.png", "pattern_leakyblack_splashdun.png",        //180
+        "pattern_leakyblack_splashchoc.png",  "pattern_leakyblack_lav.png", "pattern_leakyblack_white.png", "pattern_leakyblack_dun.png", "pattern_leakyblack_choc.png",         //185
+        "pattern_xtradarkbsinglace.png", "pattern_xtradarkbsinglace_blue.png", "pattern_xtradarkbsinglace_splash.png", "pattern_xtradarkbsinglace_splashlav.png", "pattern_xtradarkbsinglace_splashdun.png",    //190
+        "pattern_xtradarkbsinglace_splashchoc.png",  "pattern_xtradarkbsinglace_lav.png", "pattern_xtradarkbsinglace_white.png", "pattern_xtradarkbsinglace_dun.png", "pattern_xtradarkbsinglace_choc.png",     //195
+        "pattern_doublehalfspangle.png", "pattern_doublehalfspangle_blue.png", "pattern_doublehalfspangle_splash.png", "pattern_doublehalfspangle_splashlav.png", "pattern_doublehalfspangle_splashdun.png",    //200
+        "pattern_doublehalfspangle_splashchoc.png",  "pattern_doublehalfspangle_lav.png", "pattern_doublehalfspangle_white.png", "pattern_doublehalfspangle_dun.png", "pattern_doublehalfspangle_choc.png",     //205
+        "pattern_xtradarkdoublehalfspangle.png", "pattern_xtradarkdoublehalfspangle_blue.png", "pattern_xtradarkdoublehalfspangle_splash.png", "pattern_xtradarkdoublehalfspangle_splashlav.png", "pattern_xtradarkdoublehalfspangle_splashdun.png",    //210
+        "pattern_xtradarkdoublehalfspangle_splashchoc.png",  "pattern_xtradarkdoublehalfspangle_lav.png", "pattern_xtradarkdoublehalfspangle_white.png", "pattern_xtradarkdoublehalfspangle_dun.png", "pattern_xtradarkdoublehalfspangle_choc.png",     //215
+        "pattern_xtradarkmessyquail.png", "pattern_xtradarkmessyquail_blue.png", "pattern_xtradarkmessyquail_splash.png", "pattern_xtradarkmessyquail_splashlav.png", "pattern_xtradarkmessyquail_splashdun.png",    //220
+        "pattern_xtradarkmessyquail_splashchoc.png",  "pattern_xtradarkmessyquail_lav.png", "pattern_xtradarkmessyquail_white.png", "pattern_xtradarkmessyquail_dun.png", "pattern_xtradarkmessyquail_choc.png",     //225
+        "pattern_mealyquail.png", "pattern_mealyquail_blue.png", "pattern_mealyquail_splash.png", "pattern_mealyquail_splashlav.png", "pattern_mealyquail_splashdun.png",    //230
+        "pattern_mealyquail_splashchoc.png",  "pattern_mealyquail_lav.png", "pattern_mealyquail_white.png", "pattern_mealyquail_dun.png", "pattern_mealyquail_choc.png",     //235
+        "pattern_xtradarkincompletequail.png", "pattern_xtradarkincompletequail_blue.png", "pattern_xtradarkincompletequail_splash.png", "pattern_xtradarkincompletequail_splashlav.png", "pattern_xtradarkincompletequail_splashdun.png",    //240
+        "pattern_xtradarkincompletequail_splashchoc.png",  "pattern_xtradarkincompletequail_lav.png", "pattern_xtradarkincompletequail_white.png", "pattern_xtradarkincompletequail_dun.png", "pattern_xtradarkincompletequail_choc.png",     //245
+        "pattern_spangledc.png", "pattern_spangledc_blue.png", "pattern_spangledc_splash.png", "pattern_spangledc_splashlav.png", "pattern_spangledc_splashdun.png",    //250
+        "pattern_spangledc_splashchoc.png",  "pattern_spangledc_lav.png", "pattern_spangledc_white.png", "pattern_spangledc_dun.png", "pattern_spangledc_choc.png",     //255
+        "pattern_multilacedduckwing.png", "pattern_multilacedduckwing_blue.png", "pattern_multilacedduckwing_splash.png", "pattern_multilacedduckwing_splashlav.png", "pattern_multilacedduckwing_splashdun.png",    //260
+        "pattern_multilacedduckwing_splashchoc.png",  "pattern_multilacedduckwing_lav.png", "pattern_multilacedduckwing_white.png", "pattern_multilacedduckwing_dun.png", "pattern_multilacedduckwing_choc.png",     //265
+        "pattern_incompletelaced.png", "pattern_incompletelaced_blue.png", "pattern_incompletelaced_splash.png", "pattern_incompletelaced_splashlav.png", "pattern_incompletelaced_splashdun.png",    //270
+        "pattern_incompletelaced_splashchoc.png",  "pattern_incompletelaced_lav.png", "pattern_incompletelaced_white.png", "pattern_incompletelaced_dun.png", "pattern_incompletelaced_choc.png",     //275
+        "pattern_xtradarkwheaten.png", "pattern_xtradarkwheaten_blue.png", "pattern_xtradarkwheaten_splash.png", "pattern_xtradarkwheaten_splashlav.png", "pattern_xtradarkwheaten_splashdun.png",    //280
+        "pattern_xtradarkwheaten_splashchoc.png",  "pattern_xtradarkwheaten_lav.png", "pattern_xtradarkwheaten_white.png", "pattern_xtradarkwheaten_dun.png", "pattern_xtradarkwheaten_choc.png",     //285
+        "pattern_incompletequail.png", "pattern_incompletequail_blue.png", "pattern_incompletequail_splash.png", "pattern_incompletequail_splashlav.png", "pattern_incompletequail_splashdun.png",    //290
+        "pattern_incompletequail_splashchoc.png",  "pattern_incompletequail_lav.png", "pattern_incompletequail_white.png", "pattern_incompletequail_dun.png", "pattern_incompletequail_choc.png",     //295
+        "pattern_incompletecolumbian.png", "pattern_incompletecolumbian_blue.png", "pattern_incompletecolumbian_splash.png", "pattern_incompletecolumbian_splashlav.png", "pattern_incompletecolumbian_splashdun.png",    //300
+        "pattern_incompletecolumbian_splashchoc.png",  "pattern_incompletecolumbian_lav.png", "pattern_incompletecolumbian_white.png", "pattern_incompletecolumbian_dun.png", "pattern_incompletecolumbian_choc.png",     //305
+        "pattern_xtradarkincompletecolumbian.png", "pattern_xtradarkincompletecolumbian_blue.png", "pattern_xtradarkincompletecolumbian_splash.png", "pattern_xtradarkincompletecolumbian_splashlav.png", "pattern_xtradarkincompletecolumbian_splashdun.png",    //310
+        "pattern_xtradarkincompletecolumbian_splashchoc.png",  "pattern_xtradarkincompletecolumbian_lav.png", "pattern_xtradarkincompletecolumbian_white.png", "pattern_xtradarkincompletecolumbian_dun.png", "pattern_xtradarkincompletecolumbian_choc.png",     //315
+        "pattern_incompletesinglelace.png", "pattern_incompletesinglelace_blue.png", "pattern_incompletesinglelace_splash.png", "pattern_incompletesinglelace_splashlav.png", "pattern_incompletesinglelace_splashdun.png",    //320
+        "pattern_incompletesinglelace_splashchoc.png",  "pattern_incompletesinglelace_lav.png", "pattern_incompletesinglelace_white.png", "pattern_incompletesinglelace_dun.png", "pattern_incompletesinglelace_choc.png",     //325
             "pattern_xtradarksinglelace.png", "pattern_xtradarksinglelace_blue.png", "pattern_xtradarksinglelace_splash.png", "pattern_xtradarksinglelace_splashlav.png", "pattern_xtradarksinglelace_splashdun.png",    //330
             "pattern_xtradarksinglelace_splashchoc.png",  "pattern_xtradarksinglelace_lav.png", "pattern_xtradarksinglelace_white.png", "pattern_xtradarksinglelace_dun.png", "pattern_xtradarksinglelace_choc.png",     //335
             "pattern_darkpenciled.png", "pattern_darkpenciled_blue.png", "pattern_darkpenciled_splash.png", "pattern_darkpenciled_splashlav.png", "pattern_darkpenciled_splashdun.png",    //340
             "pattern_darkpenciled_splashchoc.png",  "pattern_darkpenciled_lav.png", "pattern_darkpenciled_white.png", "pattern_darkpenciled_dun.png", "pattern_darkpenciled_choc.png",     //345
             "pattern_bluelaced",    //special case number 400
-            "",                     //special case patternless 401
-            "48.png"                //test a texture 402
+        "",                     //special case patternless 401
+        "48.png"                //test a texture 402
     };
-
     private static final String[] CHICKEN_TEXTURES_MOORHEAD = new String[] {
-            "", "moorhead_black.png", "moorhead_blue.png", "moorhead_splash.png", "moorhead_splashlav.png", "moorhead_splash.png", "moorhead_splashdun.png",
+        "", "moorhead_black.png", "moorhead_blue.png", "moorhead_splash.png", "moorhead_splashlav.png", "moorhead_splash.png", "moorhead_splashdun.png",
             "moorhead_splashchoc.png", "moorhead_lav.png", "moorhead_white.png", "moorhead_dun.png", "moorhead_choc.png",
     };
-
     private static final String[] CHICKEN_TEXTURES_WHITE = new String[] {
-	        "","white_barred.png","white_mottles.png","white_crested.png"
+        "","white_barred.png","white_mottles.png","white_crested.png"
     };
-
-private static final String[] CHICKEN_TEXTURES_SHANKS = new String[] {
+    private static final String[] CHICKEN_TEXTURES_SHANKS = new String[] {
         "shanks_horn.png","shanks_yellow.png","shanks_willow.png","shanks_black.png",
         "shanks_verywhite.png","shanks_white.png", "shanks_slate.png", "shanks_black.png",
-        };
-private static final String[] CHICKEN_TEXTURES_COMB = new String[] {
+    };
+    private static final String[] CHICKEN_TEXTURES_COMB = new String[] {
         "comb_black.png","comb_mulberry.png","comb_red.png"
-        };
-private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
+    };
+    private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
         "eyes_albino.png","eyes_black.png"
-        };
+    };
 
     private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
     public float wingRotation;
@@ -662,9 +660,9 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                             ground = 15;
                         }
                     } else if (genesForText[24] == 1 || genesForText[25] == 1){
-                        //xtradark birchen
-                        pattern = 17;
-                        ground = 0;
+                            //xtradark birchen
+                            pattern = 17;
+                            ground = 0;
                     } else {
                         if(genesForText[28] == 1 && genesForText[29] == 1 && genesForText[98] == 1 && genesForText[99] == 1){
                             //leaky black
@@ -678,259 +676,259 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                     }
                 } else if (genesForText[24] == 1 || genesForText[25] == 1){
                     //birchen tree
-                    if (genesForText[28] == 1 && genesForText[29] == 1){
-                        if (genesForText[98] == 1 && genesForText[99] == 1){
-                            if (genesForText[30] == 1 && genesForText[31] == 1){
-                                if(genesForText[26] == 1 || genesForText[27] == 1){
-                                    if(genesForText[100] == 2 && genesForText[101] == 2){
-                                        //xtra dark birchen single lace
-                                        pattern = 19;
-                                        ground = 15;
+                        if (genesForText[28] == 1 && genesForText[29] == 1){
+                            if (genesForText[98] == 1 && genesForText[99] == 1){
+                                if (genesForText[30] == 1 && genesForText[31] == 1){
+                                    if(genesForText[26] == 1 || genesForText[27] == 1){
+                                        if(genesForText[100] == 2 && genesForText[101] == 2){
+                                            //xtra dark birchen single lace
+                                            pattern = 19;
+                                            ground = 15;
+                                        }else{
+                                            //birchen single laced
+                                            pattern = 11;
+                                            ground = 15;
+                                        }
                                     }else{
-                                        //birchen single laced
-                                        pattern = 11;
-                                        ground = 15;
-                                    }
-                                }else{
-                                    //extended patterned columbian
-                                    pattern = 5;
-                                    ground = 15;
-                                }
-                            } else if (genesForText[30] == 1 || genesForText[31] == 1){
-                                if(genesForText[26] == 1 || genesForText[27] == 1){
-                                    if(genesForText[100] == 2 && genesForText[101] == 2){
-                                        //moorhead doublehalfspangled
-                                        pattern = 20;
-                                        ground = 15;
-                                        moorhead = 1;
-                                    }else{
-                                        //doublehalfspangle
-                                        pattern = 20;
-                                        ground = 15;
-                                    }
-
-                                }else{
-                                    if(genesForText[100] == 2 && genesForText[101] == 2){
-                                        //overly dark columbian
+                                        //extended patterned columbian
                                         pattern = 5;
                                         ground = 15;
+                                    }
+                                } else if (genesForText[30] == 1 || genesForText[31] == 1){
+                                    if(genesForText[26] == 1 || genesForText[27] == 1){
+                                        if(genesForText[100] == 2 && genesForText[101] == 2){
+                                            //moorhead doublehalfspangled
+                                            pattern = 20;
+                                            ground = 15;
+                                            moorhead = 1;
+                                        }else{
+                                            //doublehalfspangle
+                                            pattern = 20;
+                                            ground = 15;
+                                        }
+
                                     }else{
-                                        //moorheaded columbian
-                                        pattern = 5;
-                                        ground = 15;
-                                        moorhead = 1;
+                                        if(genesForText[100] == 2 && genesForText[101] == 2){
+                                            //overly dark columbian
+                                            pattern = 5;
+                                            ground = 15;
+                                        }else{
+                                            //moorheaded columbian
+                                            pattern = 5;
+                                            ground = 15;
+                                            moorhead = 1;
+                                        }
+                                    }
+                                }else{
+                                    if(genesForText[26] == 1 || genesForText[27] == 1){
+                                        if(genesForText[100] == 2 && genesForText[101] == 2){
+                                            //moorhead doublehalfspangled
+                                            pattern = 20;
+                                            ground = 15;
+                                            moorhead = 1;
+                                        }else{
+                                            //doublehalfspangle
+                                                pattern = 20;
+                                                ground = 15;
+                                        }
+
+                                    }else{
+                                        if(genesForText[100] == 2 && genesForText[101] == 2){
+                                            //moorhead transverse penciled
+                                                pattern = 34;
+                                                ground = 15;
+                                                moorhead = 1;
+                                        }else{
+                                            //transverse penciled
+                                                pattern = 10;
+                                                ground = 15;
+                                        }
                                     }
                                 }
-                            }else{
-                                if(genesForText[26] == 1 || genesForText[27] == 1){
-                                    if(genesForText[100] == 2 && genesForText[101] == 2){
-                                        //moorhead doublehalfspangled
-                                        pattern = 20;
-                                        ground = 15;
-                                        moorhead = 1;
+                            } else if (genesForText[98] == 1 || genesForText[99] == 1){
+                                if (genesForText[30] == 1 || genesForText[31] == 1){
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                            //dark doublehalfspangle
+                                                pattern = 21;
+                                                ground = 15;
                                     }else{
-                                        //doublehalfspangle
-                                        pattern = 20;
-                                        ground = 15;
+                                            //dark messy quail
+                                                pattern = 22;
+                                                ground = 15;
+                                    }
+                                }else{
+                                    if (genesForText[26] == 1 || genesForText[27] == 1){
+                                        if (genesForText[100] == 2 && genesForText[101] == 2){
+                                            //dark transverse penciled
+                                            //TODO what are the different qualities of transverse penciled
+                                                pattern = 34;
+                                                ground = 5;
+                                                moorhead = 1;
+                                        }else{
+                                            //incomplete penciled
+                                                //TODO make incomplete transverse penciled
+                                                pattern = 10;
+                                                ground = 5;
+                                        }
+                                    }else{
+                                            //dark quail mealy
+                                                pattern = 23;
+                                                ground = 5;
                                     }
 
+                                }
+                            }else{
+                                if (genesForText[30] == 1 || genesForText[31] == 1){
+                                    if (genesForText[100] == 2 || genesForText[101] == 2){
+                                        //solid black
+                                            pattern = 0;
+                                            ground = 15;
+                                    }else {
+                                        // leaky black
+                                            pattern = 18;
+                                            ground = 0;
+                                    }
                                 }else{
-                                    if(genesForText[100] == 2 && genesForText[101] == 2){
-                                        //moorhead transverse penciled
-                                        pattern = 34;
-                                        ground = 15;
-                                        moorhead = 1;
+                                    if (genesForText[100] == 1 && genesForText[101] == 1){
+                                        //leaky black
+                                            pattern = 18;
+                                            ground = 5;
                                     }else{
-                                        //transverse penciled
-                                        pattern = 10;
-                                        ground = 15;
+                                        //birchen
+                                            pattern = 1;
+                                            ground = 5;
                                     }
                                 }
                             }
-                        } else if (genesForText[98] == 1 || genesForText[99] == 1){
-                            if (genesForText[30] == 1 || genesForText[31] == 1){
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    //dark doublehalfspangle
-                                    pattern = 21;
-                                    ground = 15;
-                                }else{
-                                    //dark messy quail
-                                    pattern = 22;
-                                    ground = 15;
-                                }
-                            }else{
-                                if (genesForText[26] == 1 || genesForText[27] == 1){
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
-                                        //dark transverse penciled
-                                        //TODO what are the different qualities of transverse penciled
-                                        pattern = 34;
-                                        ground = 5;
-                                        moorhead = 1;
+                        }else if (genesForText[28] == 1 || genesForText[29] == 1){
+                            if (genesForText[98] == 1 || genesForText[99] == 1){
+                                if (genesForText[30] == 1 || genesForText[31] == 1){
+                                    if (genesForText[26] == 1 || genesForText[27] == 1){
+                                        if(genesForText[100] == 2 && genesForText[101] == 2){
+                                            //extended patterned halfspangle
+                                            //TODO what is this pattern really?
+                                                pattern = 16;
+                                                ground = 15;
+                                                moorhead = 1;
+                                        }else{
+                                            //halfspangle
+                                                pattern = 16;
+                                                ground = 15;
+                                        }
                                     }else{
-                                        //incomplete penciled
-                                        //TODO make incomplete transverse penciled
-                                        pattern = 10;
-                                        ground = 5;
+                                           //incomplete columbian
+                                                pattern = 6;
+                                                ground = 15;
                                     }
                                 }else{
-                                    //dark quail mealy
-                                    pattern = 23;
-                                    ground = 5;
-                                }
+                                    if (genesForText[26] == 1 || genesForText[27] == 1){
+                                        if (genesForText[100] == 2 && genesForText[101] == 2){
+                                            //extended patterned transverse penciled
+                                                pattern = 34;
+                                                ground = 15;
+                                                moorhead = 1;
+                                        }else{
+                                            // transverse penciled
+                                                pattern = 10;
+                                                ground = 5;
+                                        }
+                                    }else{
+                                        // columbian
+                                            pattern = 5;
+                                            ground = 15;
 
-                            }
-                        }else{
-                            if (genesForText[30] == 1 || genesForText[31] == 1){
-                                if (genesForText[100] == 2 || genesForText[101] == 2){
-                                    //solid black
-                                    pattern = 0;
-                                    ground = 15;
-                                }else {
-                                    // leaky black
-                                    pattern = 18;
-                                    ground = 0;
+                                    }
                                 }
                             }else{
-                                if (genesForText[100] == 1 && genesForText[101] == 1){
-                                    //leaky black
-                                    pattern = 18;
-                                    ground = 5;
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            //solid black
+                                            pattern = 0;
+                                            ground = 15;
+                                        }else{
+                                            //leaky black
+                                            pattern = 18;
+                                            ground = 15;
+                                        }
                                 }else{
-                                    //birchen
-                                    pattern = 1;
-                                    ground = 5;
-                                }
-                            }
-                        }
-                    }else if (genesForText[28] == 1 || genesForText[29] == 1){
-                        if (genesForText[98] == 1 || genesForText[99] == 1){
-                            if (genesForText[30] == 1 || genesForText[31] == 1){
-                                if (genesForText[26] == 1 || genesForText[27] == 1){
-                                    if(genesForText[100] == 2 && genesForText[101] == 2){
-                                        //extended patterned halfspangle
-                                        //TODO what is this pattern really?
-                                        pattern = 16;
-                                        ground = 15;
-                                        moorhead = 1;
-                                    }else{
-                                        //halfspangle
-                                        pattern = 16;
-                                        ground = 15;
-                                    }
-                                }else{
-                                    //incomplete columbian
-                                    pattern = 6;
-                                    ground = 15;
-                                }
-                            }else{
-                                if (genesForText[26] == 1 || genesForText[27] == 1){
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
-                                        //extended patterned transverse penciled
-                                        pattern = 34;
-                                        ground = 15;
-                                        moorhead = 1;
-                                    }else{
-                                        // transverse penciled
-                                        pattern = 10;
-                                        ground = 5;
-                                    }
-                                }else{
-                                    // columbian
-                                    pattern = 5;
-                                    ground = 15;
-
-                                }
-                            }
-                        }else{
-                            if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                    //solid black
-                                    pattern = 0;
-                                    ground = 15;
-                                }else{
-                                    //leaky black
-                                    pattern = 18;
-                                    ground = 15;
-                                }
-                            }else{
-                                if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                    //leaky black
-                                    pattern = 18;
-                                    ground = 15;
-                                }else{
-                                    //birchen
-                                    pattern = 1;
-                                    ground = 0;
-                                }
-                            }
-                        }
-                    } else {
-                        if (genesForText[98] == 1 || genesForText[99] == 1) {
-                            if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        //extended patterned spangled
-                                        pattern = 14;
-                                        ground = 15;
-                                    } else {
-                                        // spangled
-                                        pattern = 16;
-                                        ground = 15;
-                                    }
-                                } else {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        //extended patterned incomplete quail
-                                        pattern = 24;
-                                        ground = 15;
-                                    } else {
-                                        // incomplete quail
-                                        pattern = 29;
-                                        ground = 5;
-                                    }
-                                }
-                            } else {
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        //extended traverse penciled
-                                        pattern = 34;
-                                        ground = 15;
-                                        moorhead = 1;
-                                    } else {
-                                        //traverse penciled
-                                        pattern = 10;
-                                        ground = 5;
-                                    }
-                                } else {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        //extended patterned incomplete quail
-                                        pattern = 24;
-                                        ground = 10;
-                                        moorhead = 1;
-                                    } else {
-                                        // incomplete quail
-                                        pattern = 29;
-                                        ground = 10;
-                                    }
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            //leaky black
+                                            pattern = 18;
+                                            ground = 15;
+                                        }else{
+                                            //birchen
+                                            pattern = 1;
+                                            ground = 0;
+                                        }
                                 }
                             }
                         } else {
-                            if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                //solid black
-                                pattern = 0;
-                                ground = 15;
-                            } else {
-                                if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                    //leaky black
-                                    pattern = 18;
-                                    ground = 5;
+                            if (genesForText[98] == 1 || genesForText[99] == 1) {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            //extended patterned spangled
+                                            pattern = 14;
+                                            ground = 15;
+                                        } else {
+                                            // spangled
+                                            pattern = 16;
+                                            ground = 15;
+                                        }
+                                    } else {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            //extended patterned incomplete quail
+                                            pattern = 24;
+                                            ground = 15;
+                                        } else {
+                                            // incomplete quail
+                                            pattern = 29;
+                                            ground = 5;
+                                        }
+                                    }
                                 } else {
-                                    //birchen
-                                    pattern = 1;
-                                    ground = 5;
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            //extended traverse penciled
+                                            pattern = 34;
+                                            ground = 15;
+                                            moorhead = 1;
+                                        } else {
+                                            //traverse penciled
+                                            pattern = 10;
+                                            ground = 5;
+                                        }
+                                    } else {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            //extended patterned incomplete quail
+                                            pattern = 24;
+                                            ground = 10;
+                                            moorhead = 1;
+                                        } else {
+                                            // incomplete quail
+                                            pattern = 29;
+                                            ground = 10;
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    //solid black
+                                    pattern = 0;
+                                    ground = 15;
+                                } else {
+                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        //leaky black
+                                        pattern = 18;
+                                        ground = 5;
+                                    } else {
+                                        //birchen
+                                        pattern = 1;
+                                        ground = 5;
+                                    }
                                 }
                             }
                         }
-                    }
 
                 }else if (genesForText[24] == 2 || genesForText[25] == 2){
                     //duckwing tree
@@ -940,30 +938,30 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                                 if (genesForText[26] == 1 || genesForText[27] == 1){
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         // extended patterned halfspangled
-                                        pattern = 16;
-                                        ground = 0;
+                                            pattern = 16;
+                                            ground = 0;
                                     }else{
                                         //  halfspangled
-                                        pattern = 25;
-                                        ground = 0;
+                                            pattern = 25;
+                                            ground = 0;
                                     }
                                 }else{
-                                    //  incomplete quail
-                                    pattern = 29;
-                                    ground = 10;
+                                        //  incomplete quail
+                                            pattern = 29;
+                                            ground = 10;
 
                                 }
                             }else{
-                                if (genesForText[100] == 2 && genesForText[101] == 2){
-                                    //  moorhead columbian w/ less hackle markings
-                                    pattern = 6;
-                                    ground = 0;
-                                    moorhead = 1;
-                                }else{
-                                    //  columbian w/ less hackle markings
-                                    pattern = 6;
-                                    ground = 0;
-                                }
+                                    if (genesForText[100] == 2 && genesForText[101] == 2){
+                                        //  moorhead columbian w/ less hackle markings
+                                            pattern = 6;
+                                            ground = 0;
+                                            moorhead = 1;
+                                    }else{
+                                        //  columbian w/ less hackle markings
+                                            pattern = 6;
+                                            ground = 0;
+                                    }
                             }
                         }else{
                             if (genesForText[30] == 1 || genesForText[31] == 1){
@@ -979,9 +977,9 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                                         ground = 5;
                                     }
                                 }else{
-                                    //  quail
-                                    pattern = 4;
-                                    ground = 5;
+                                        //  quail
+                                        pattern = 4;
+                                        ground = 5;
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1){
@@ -998,12 +996,12 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                                 }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         //  incomplete quail
-                                        pattern = 29;
-                                        ground = 15;
+                                            pattern = 29;
+                                            ground = 15;
                                     }else{
                                         //  columbian
-                                        pattern = 5;
-                                        ground = 15;
+                                            pattern = 5;
+                                            ground = 15;
                                     }
                                 }
                             }
@@ -1022,30 +1020,30 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                                         ground = 15;
                                     }
                                 }else{
-                                    //  incomplete quail
-                                    pattern = 29;
-                                    ground = 15;
+                                        //  incomplete quail
+                                        pattern = 29;
+                                        ground = 15;
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1){
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         // extended patterned transverse pencilled
-                                        pattern = 34;
-                                        ground = 5;
+                                            pattern = 34;
+                                            ground = 5;
                                     }else{
                                         //  transverse pencilled
-                                        pattern = 10;
-                                        ground = 5;
+                                            pattern = 10;
+                                            ground = 5;
                                     }
                                 }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         //  incomplete quail
-                                        pattern = 29;
-                                        ground = 15;
+                                            pattern = 29;
+                                            ground = 15;
                                     }else{
                                         //  incomplete columbian w/ less hackle markings
-                                        pattern = 30;
-                                        ground = 15;
+                                            pattern = 30;
+                                            ground = 15;
 
                                     }
                                 }
@@ -1055,18 +1053,18 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                                 if (genesForText[26] == 1 || genesForText[27] == 1){
                                     if (genesForText[100] == 2 && genesForText[101] == 2){
                                         // extended patterned incomplete doublelaced
-                                        pattern = 21;
-                                        ground = 5;
-                                        moorhead = 1;
+                                            pattern = 21;
+                                            ground = 5;
+                                            moorhead = 1;
                                     }else{
                                         //  incomplete doublelaced
-                                        pattern = 21;
-                                        ground = 5;
+                                            pattern = 21;
+                                            ground = 5;
                                     }
                                 }else{
-                                    //  incomplete quail
-                                    pattern = 29;
-                                    ground = 5;
+                                        //  incomplete quail
+                                            pattern = 29;
+                                            ground = 5;
 
                                 }
                             }else{
@@ -1106,17 +1104,17 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned halfspangled
-                                        pattern = 25;
-                                        ground = 5;
+                                            pattern = 25;
+                                            ground = 5;
                                     } else {
                                         //  halfspangled
-                                        pattern = 25;
-                                        ground = 5;
+                                            pattern = 25;
+                                            ground = 5;
                                     }
                                 }else{
-                                    // extended patterened incomplete columbian w/ less hackle markings
-                                    pattern = 30;
-                                    ground = 15;
+                                        // extended patterened incomplete columbian w/ less hackle markings
+                                            pattern = 30;
+                                            ground = 15;
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
@@ -1147,39 +1145,39 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned incomplete laced
-                                        pattern = 20;
-                                        ground = 5;
+                                            pattern = 20;
+                                            ground = 5;
                                     } else {
                                         //  incomplete laced
-                                        pattern = 27;
-                                        ground = 5;
+                                            pattern = 27;
+                                            ground = 5;
                                     }
                                 }else{
-                                    //  quail
-                                    pattern = 4;
-                                    ground = 5;
+                                        //  quail
+                                        pattern = 4;
+                                        ground = 5;
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned incomplete laced
-                                        pattern = 20;
-                                        ground = 5;
+                                            pattern = 20;
+                                            ground = 5;
                                     } else {
                                         //  columbian
-                                        pattern = 5;
-                                        ground = 15;
+                                            pattern = 5;
+                                            ground = 15;
                                     }
                                 }else{
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned columbian
-                                        pattern = 5;
-                                        ground = 15;
-                                        moorhead = 1;
+                                            pattern = 5;
+                                            ground = 15;
+                                            moorhead = 1;
                                     } else {
                                         // columbian
-                                        pattern = 5;
-                                        ground = 15;
+                                            pattern = 5;
+                                            ground = 15;
                                     }
                                 }
                             }
@@ -1190,28 +1188,28 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned spangled
-                                        pattern = 14;
-                                        ground = 15;
+                                         pattern = 14;
+                                         ground = 15;
                                     } else {
                                         // spangled
-                                        pattern = 16;
-                                        ground = 15;
+                                            pattern = 16;
+                                            ground = 15;
                                     }
                                 }else{
-                                    // extended patterned incomplete columbian w/ less hackle markings
-                                    pattern = 31;
-                                    ground = 15;
+                                        // extended patterned incomplete columbian w/ less hackle markings
+                                        pattern = 31;
+                                        ground = 15;
                                 }
                             }else{
-                                if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                    // extended patterned incomplete columbian w/ less hackle markings
-                                    pattern = 31;
-                                    ground = 15;
-                                } else {
-                                    // incomplete columbian w/ less hackle markings
-                                    pattern = 30;
-                                    ground = 15;
-                                }
+                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        // extended patterned incomplete columbian w/ less hackle markings
+                                        pattern = 31;
+                                        ground = 15;
+                                    } else {
+                                        // incomplete columbian w/ less hackle markings
+                                        pattern = 30;
+                                        ground = 15;
+                                    }
                             }
                         }else{
                             if (genesForText[30] == 1 || genesForText[31] == 1) {
@@ -1227,20 +1225,20 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                                         ground = 15;
                                     }
                                 }else{
-                                    // extended patterned wheaten
-                                    pattern = 28;
-                                    ground = 10;
+                                        // extended patterned wheaten
+                                        pattern = 28;
+                                        ground = 10;
                                 }
                             }else{
-                                if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                    // extended patterned wheaten
-                                    pattern = 28;
-                                    ground = 10;
-                                } else {
-                                    // wheaten
-                                    pattern = 3;
-                                    ground = 10;
-                                }
+                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        // extended patterned wheaten
+                                        pattern = 28;
+                                        ground = 10;
+                                    } else {
+                                        // wheaten
+                                        pattern = 3;
+                                        ground = 10;
+                                    }
                             }
                         }
                     }
@@ -1253,29 +1251,29 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterened halfspangled
-                                        pattern = 16;
-                                        ground = 15;
-                                        moorhead = 1;
+                                            pattern = 16;
+                                            ground = 15;
+                                            moorhead = 1;
                                     } else {
                                         // halfspangled
-                                        pattern = 16;
-                                        ground = 15;
+                                            pattern = 16;
+                                            ground = 15;
                                     }
                                 }else{
-                                    // extended patterened incomplete quail
-                                    pattern = 24;
-                                    ground = 5;
+                                        // extended patterened incomplete quail
+                                            pattern = 24;
+                                            ground = 5;
                                 }
                             }else{
-                                if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                    // moorhead
-                                    pattern = 8;
-                                    ground = 15;
-                                } else {
-                                    // incomplete columbian w/ less hackle markings
-                                    pattern = 30;
-                                    ground = 15;
-                                }
+                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        // moorhead
+                                        pattern = 8;
+                                        ground = 15;
+                                    } else {
+                                        // incomplete columbian w/ less hackle markings
+                                        pattern = 30;
+                                        ground = 15;
+                                    }
                             }
                         }else{
                             if (genesForText[30] == 1 || genesForText[31] == 1) {
@@ -1291,9 +1289,9 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                                         ground = 15;
                                     }
                                 }else{
-                                    // quail
-                                    pattern = 4;
-                                    ground = 5;
+                                        // quail
+                                        pattern = 4;
+                                        ground = 5;
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
@@ -1333,9 +1331,9 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                                         ground = 15;
                                     }
                                 }else{
-                                    // incomplete quail
-                                    pattern = 29;
-                                    ground = 15;
+                                        // incomplete quail
+                                        pattern = 29;
+                                        ground = 15;
                                 }
                             }else{
                                 if (genesForText[26] == 1 || genesForText[27] == 1) {
@@ -1523,87 +1521,87 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
                 }
             }
 
-            //white marking genesForText
-            if (genesForText[3] == 2) {
-                //Barred
-                white = 1;
-            } else {
-                if (genesForText[22] == 2 && genesForText[23] == 2) {
-                    //mottled
-                    white = 2;
+                //white marking genesForText
+                if (genesForText[3] == 2) {
+                    //Barred
+                    white = 1;
                 } else {
-                    if (pattern > 8 && Melanin != 2 && (genesForText[54] != 3 && genesForText[55] != 3) && genesForText[6] == 2) {
-                        //white crest
-                        white = 3;
+                    if (genesForText[22] == 2 && genesForText[23] == 2) {
+                        //mottled
+                        white = 2;
+                    } else {
+                        if (pattern > 8 && Melanin != 2 && (genesForText[54] != 3 && genesForText[55] != 3) && genesForText[6] == 2) {
+                            //white crest
+                            white = 3;
+                        }
                     }
                 }
-            }
 
-            // figures out the shank, comb, and skin colour if its not albino
-            if (!isAlbino) {
-                //gets comb colour
-                if (genesForText[4] == 1 && (genesForText[42] == 1 || genesForText[43] == 1)) {
-                    //comb and shanks are black
-                    comb = 0;
-                    shanks = 3;
-                }
-                if (genesForText[24] == 1 && genesForText[25] == 1) {
-                    shanks = 3;
-                    // makes mulbery comb
-                    if (genesForText[30] == 2) {
+                // figures out the shank, comb, and skin colour if its not albino
+                if (!isAlbino) {
+                    //gets comb colour
+                    if (genesForText[4] == 1 && (genesForText[42] == 1 || genesForText[43] == 1)) {
+                        //comb and shanks are black
+                        comb = 0;
+                        shanks = 3;
+                    }
+                    if (genesForText[24] == 1 && genesForText[25] == 1) {
+                        shanks = 3;
+                        // makes mulbery comb
+                        if (genesForText[30] == 2) {
+                            comb = 1;
+                        }
+                    }
+                    //shanks starts at 3 btw
+                    // if Dilute is Dilute and the shanks arnt darkened by extened black lighten by 1 shade
+                    if ((genesForText[24] != 1 && genesForText[25] != 1) && (genesForText[32] == 1 || genesForText[33] == 1)) {
+                        shanks--;
+                    }
+
+                    //if barred or mottled lighten by 1 shade
+                    if(genesForText[3] == 2 || (genesForText[22] == 2 && genesForText[23] == 2)){
+                        shanks--;
+                    }
+
+                    // if dominant white or lavender lighten by 1 shade
+                    if ((genesForText[38] == 1 && genesForText[39] == 1) || (genesForText[36] == 1 && genesForText[37] == 1)) {
+                        shanks--;
+                    }
+
+                    // if splash or blue lighten by 1 shade
+                    if (genesForText[40] == 2 || genesForText[41] == 2) {
+                        shanks--;
+                    }
+
+                    //if its melanized
+                    if (Melanin == 2) {
+                        shanks++;
+                    }
+
+                    //TODO replace this with a new r.black shank gene
+                    // if columbian toggle doesnt matter darken by 1
+                    if ((genesForText[2] == 1 && genesForText[28] == 2 && genesForText[29] == 2) || (genesForText[2] == 2 && genesForText[28] == 1 && genesForText[29] == 1)) {
+                        shanks++;
+                    }
+
+                    //makes sure its not off the chart
+                    if (shanks < 0) {
+                        shanks = 0;
+                    } else if (shanks > 3) {
+                        shanks = 3;
+                    }
+
+                    //lightens comb to mulberry if lightness is extreme enough
+                    if (shanks < 2 && comb == 0) {
                         comb = 1;
                     }
-                }
-                //shanks starts at 3 btw
-                // if Dilute is Dilute and the shanks arnt darkened by extened black lighten by 1 shade
-                if ((genesForText[24] != 1 && genesForText[25] != 1) && (genesForText[32] == 1 || genesForText[33] == 1)) {
-                    shanks--;
-                }
 
-                //if barred or mottled lighten by 1 shade
-                if(genesForText[3] == 2 || (genesForText[22] == 2 && genesForText[23] == 2)){
-                    shanks--;
-                }
+                    //makes the shanks and beak their white or yellow varient
+                    if (genesForText[44] == 1 || genesForText[45] == 1) {
+                        shanks = shanks + 4;
+                    }
 
-                // if dominant white or lavender lighten by 1 shade
-                if ((genesForText[38] == 1 && genesForText[39] == 1) || (genesForText[36] == 1 && genesForText[37] == 1)) {
-                    shanks--;
-                }
-
-                // if splash or blue lighten by 1 shade
-                if (genesForText[40] == 2 || genesForText[41] == 2) {
-                    shanks--;
-                }
-
-                //if its melanized
-                if (Melanin == 2) {
-                    shanks++;
-                }
-
-                //TODO replace this with a new r.black shank gene
-                // if columbian toggle doesnt matter darken by 1
-                if ((genesForText[2] == 1 && genesForText[28] == 2 && genesForText[29] == 2) || (genesForText[2] == 2 && genesForText[28] == 1 && genesForText[29] == 1)) {
-                    shanks++;
-                }
-
-                //makes sure its not off the chart
-                if (shanks < 0) {
-                    shanks = 0;
-                } else if (shanks > 3) {
-                    shanks = 3;
-                }
-
-                //lightens comb to mulberry if lightness is extreme enough
-                if (shanks < 2 && comb == 0) {
-                    comb = 1;
-                }
-
-                //makes the shanks and beak their white or yellow varient
-                if (genesForText[44] == 1 || genesForText[45] == 1) {
-                    shanks = shanks + 4;
-                }
-
-            }
+        }
 
 
 
@@ -2318,7 +2316,7 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
         }
 
         //creeper gene [ wildtype, creeper ] (short legs not exploding bushes)
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2))) {
             initialGenes[70] = (ThreadLocalRandom.current().nextInt(2) + 1);
             initialGenes[71] = (1);
         }else{
@@ -2400,10 +2398,25 @@ private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
         //wing placement near back [ centered+, up on back, centered2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[86] = (ThreadLocalRandom.current().nextInt(3) + 1);
-            initialGenes[87] = (1);
         }else{
-            initialGenes[86] = (1);
-            initialGenes[87] = (1);
+            if (wildType == 1){
+                initialGenes[86] = (1);
+            }else if (wildType == 2){
+                initialGenes[86] = (3);
+            }else{
+                initialGenes[86] = (2);
+            }
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[87] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            if (wildType == 1){
+                initialGenes[87] = (1);
+            }else if (wildType == 2){
+                initialGenes[87] = (3);
+            }else{
+                initialGenes[87] = (2);
+            }
         }
 
         //wings down [ centered+, tilted down, pointed down ]

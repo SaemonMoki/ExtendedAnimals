@@ -16,8 +16,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ModelEnhancedChicken extends ModelBase {
 
-    private boolean nesting = false; //TODO actually make some nesting ai
-    private boolean roosting = true; //TODO actually make some roosting ai
+    private boolean nesting = false;
+    private boolean roosting = true;
     private int pose = 0;
     private int mutation = 0;
     private float wingAngle = 0; //[between 0 - -1.5]
@@ -840,7 +840,8 @@ public class ModelEnhancedChicken extends ModelBase {
         copyModelAngles(leftLeg, leftFeather3);
 
         //body angle
-        this.body.rotateAngleX = -bodyangle;
+        //TODO make wing angles and body angles work
+//        this.body.rotateAngleX = -bodyangle;
 
         //tail stuff
         copyModelAngles(body, tail);
@@ -851,20 +852,20 @@ public class ModelEnhancedChicken extends ModelBase {
 
         //wing stuff
 
-        this.rightWing.rotationPointZ = -(1 - 1*5);
-        this.leftWing.rotationPointZ = -1;
-        this.rightWing.rotationPointY = 13;
-        this.leftWing.rotationPointY = 13;
+//        this.rightWing.rotationPointZ = -(1 - 1*5);
+//        this.leftWing.rotationPointZ = -1;
+//        this.rightWing.rotationPointY = 13;
+//        this.leftWing.rotationPointY = 13;
 
         this.rightWing.rotateAngleZ = ageInTicks;
         this.leftWing.rotateAngleZ = -ageInTicks;
         this.rightWingSmall.rotateAngleZ = ageInTicks;
         this.leftWingSmall.rotateAngleZ = -ageInTicks;
 
-        this.rightWing.rotateAngleX = -wingAngle - bodyangle ;
-        this.leftWing.rotateAngleX = -wingAngle - bodyangle;
-        this.rightWingSmall.rotateAngleX = -wingAngle - bodyangle;
-        this.leftWingSmall.rotateAngleX = -wingAngle - bodyangle;
+//        this.rightWing.rotateAngleX = -wingAngle - bodyangle ;
+//        this.leftWing.rotateAngleX = -wingAngle - bodyangle;
+//        this.rightWingSmall.rotateAngleX = -wingAngle - bodyangle;
+//        this.leftWingSmall.rotateAngleX = -wingAngle - bodyangle;
     }
 
     public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime)

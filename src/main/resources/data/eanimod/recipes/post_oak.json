@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+  [
+    "   ",
+    "SSS",
+    "   "
+  ],
+
+  "key":
+  {
+    "S":
+    {
+      "item": "minecraft:oak_slab"
+    }
+  },
+  "result":
+  {
+    "item": "eanimod:post_oak",
+    "count": 3
+  }
+}

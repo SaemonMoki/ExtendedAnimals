@@ -997,7 +997,7 @@ public class EnhancedRabbit extends EntityAnimal {
 
                     if (genesForText[10] == 2 && genesForText[11] == 2){
                         //charlie patterned
-                        broken = broken * 2;
+                        broken = broken +16;
                     }
                 }
                 if (genesForText[12] == 2 && genesForText[13] == 2) {
@@ -1200,7 +1200,7 @@ public class EnhancedRabbit extends EntityAnimal {
             if (wildType == 0){
                 initialGenes[4] = (ThreadLocalRandom.current().nextInt(5) + 1);
             }else{
-                initialGenes[4] = (ThreadLocalRandom.current().nextInt(4) + 2);
+                initialGenes[4] = (ThreadLocalRandom.current().nextInt(3) + 3);
             }
         } else {
             if (wildType == 0){
@@ -1213,7 +1213,7 @@ public class EnhancedRabbit extends EntityAnimal {
             if (wildType == 0){
                 initialGenes[5] = (ThreadLocalRandom.current().nextInt(5) + 1);
             }else{
-                initialGenes[5] = (ThreadLocalRandom.current().nextInt(4) + 2);
+                initialGenes[5] = (ThreadLocalRandom.current().nextInt(3) + 2);
             }
         } else {
             if (wildType == 0){

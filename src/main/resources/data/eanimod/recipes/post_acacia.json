@@ -3,21 +3,16 @@
 
   "pattern":
           [
-            " P ",
-            " S ",
-            " P "
+            "   ",
+            "SSS",
+            "   "
           ],
 
   "key":
   {
     "S":
     {
-      "item": "minecraft:stick"
-    },
-    "P":
-    {
-      "item": "minecraft:planks",
-      "data": 4
+      "item": "minecraft:acacia_slab"
     }
   },
   "result":

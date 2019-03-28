@@ -32,14 +32,14 @@ public class ModItems {
     public static final Item RawChicken_DarkBig = new RawChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),2, 2.2F, true).setRegistryName(Reference.MODID, "rawchicken_darkbig");
     public static final Item RawChicken_PaleSmall = new RawChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),1, 0.5F, true).setRegistryName(Reference.MODID, "rawchicken_palesmall");
     public static final Item RawChicken_Pale = new RawChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),2, 2.2F, true).setRegistryName(Reference.MODID, "rawchicken_pale");
-    public static final Item CookedChicken_DarkSmall = new CookedChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),3, 3.6F, true).setRegistryName(Reference.MODID, "cookedchicken_darksmall");
-    public static final Item CookedChicken_Dark = new CookedChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),6, 7.2F, true).setRegistryName(Reference.MODID, "cookedchicken_dark");
-    public static final Item CookedChicken_DarkBig = new CookedChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),6, 10/2F, true).setRegistryName(Reference.MODID, "cookedchicken_darkbig");
-    public static final Item CookedChicken_PaleSmall = new CookedChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),3, 3.6F, true).setRegistryName(Reference.MODID, "cookedchicken_palesmall");
-    public static final Item CookedChicken_Pale = new CookedChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),6, 10.2F, true).setRegistryName(Reference.MODID, "cookedchicken_pale");
+    public static final Item CookedChicken_DarkSmall = new CookedChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),3, 3.6F, false).setRegistryName(Reference.MODID, "cookedchicken_darksmall");
+    public static final Item CookedChicken_Dark = new CookedChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),6, 7.2F, false).setRegistryName(Reference.MODID, "cookedchicken_dark");
+    public static final Item CookedChicken_DarkBig = new CookedChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),6, 10/2F, false).setRegistryName(Reference.MODID, "cookedchicken_darkbig");
+    public static final Item CookedChicken_PaleSmall = new CookedChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),3, 3.6F, false).setRegistryName(Reference.MODID, "cookedchicken_palesmall");
+    public static final Item CookedChicken_Pale = new CookedChicken(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),6, 10.2F, false).setRegistryName(Reference.MODID, "cookedchicken_pale");
 
     public static final Item RawRabbit_Small = new RawRabbit(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),1, 1F, true).setRegistryName(Reference.MODID, "rawrabbit_small");
-    public static final Item CookedRabbit_Small = new CookedRabbit(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),4, 5F, true).setRegistryName(Reference.MODID, "cookedrabbit_small");
+    public static final Item CookedRabbit_Small = new CookedRabbit(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),4, 5F, false).setRegistryName(Reference.MODID, "cookedrabbit_small");
     public static final Item RabbitStew_Weak = new RabbitStew(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),8, 10F, false).setRegistryName(Reference.MODID, "rabbitstew_weak");
 
 }

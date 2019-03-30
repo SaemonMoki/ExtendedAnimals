@@ -53,7 +53,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
 
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
-            "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blackred.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png", "fawn.png"
+            "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blacktan.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png", "fawn.png"
     };
 
     private static final String[] LLAMA_TEXTURES_PATTERN = new String[] {
@@ -84,7 +84,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     };
 
     private static final String[] LLAMA_TEXTURES_EYES = new String[] {
-            "eyes_black.png", "eyes_blue", "eyes_iceblue"
+            "eyes_black.png", "eyes_blue.png", "eyes_iceblue.png"
     };
 
     private static final String[] LLAMA_TEXTURES_SKIN = new String[] {
@@ -102,7 +102,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     private String dropMeatType;
 
     private static final int WTC = 90;
-    private static final int GENES_LENGTH = 22;
+    private static final int GENES_LENGTH = 28;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -933,8 +933,53 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
             initialGenes[21] = (1);
         }
 
+        //Coat Length genes [ normal, Longer, Longest ]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[22] = (ThreadLocalRandom.current().nextInt(3)+1);
+
+        } else {
+            initialGenes[22] = (1);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[23] = (ThreadLocalRandom.current().nextInt(3)+1);
+
+        } else {
+            initialGenes[23] = (1);
+        }
+
+        //Coat Length suppressor [ normal, shorter ]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[24] = (ThreadLocalRandom.current().nextInt(3)+1);
+
+        } else {
+            initialGenes[24] = (1);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[25] = (ThreadLocalRandom.current().nextInt(3)+1);
+
+        } else {
+            initialGenes[25] = (1);
+        }
+
+        //Coat Length amplifier [ normal, double ]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[26] = (ThreadLocalRandom.current().nextInt(3)+1);
+
+        } else {
+            initialGenes[26] = (1);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[27] = (ThreadLocalRandom.current().nextInt(3)+1);
+
+        } else {
+            initialGenes[27] = (1);
+        }
+
+
         return initialGenes;
     }
+
+
 
     public void setGenes(int[] genes) {
         this.genes = genes;

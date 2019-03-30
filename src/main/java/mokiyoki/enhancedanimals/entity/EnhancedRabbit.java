@@ -138,7 +138,7 @@ public class EnhancedRabbit extends EntityAnimal {
     private String dropMeatType;
 
     private static final int WTC = 90;
-    private static final int GENES_LENGTH = 50;
+    private static final int GENES_LENGTH = 56;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -1035,11 +1035,12 @@ public class EnhancedRabbit extends EntityAnimal {
 
             }
 
-                //coat genes 26 angora, 28 rex, 30 satin
-            if(genesForText[28] == 2 && genesForText[29] == 2){
+                // [ "", "fur_angora.png", "fur_normal.png", "fur_satin.png" ]
+                // [ coat genes 26/27 angora, 28/29 rex, 30/31 satin ]
+            if(genesForText[26] == 2 && genesForText[27] == 2){
                 //angora
                 fur = 1;
-            }else if (genesForText[26] == 1 || genesForText[27] == 1){
+            }else if (genesForText[28] == 1 || genesForText[29] == 1){
                 if (genesForText[30] == 2 && genesForText[31] == 2){
                     //satin
                     fur = 3;
@@ -1340,18 +1341,18 @@ public class EnhancedRabbit extends EntityAnimal {
          */
 
         //Furless [ wildtype, furless]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[22] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            initialGenes[22] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//        } else {
             initialGenes[22] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[23] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
+//        }
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            initialGenes[23] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//        } else {
             initialGenes[23] = (1);
-        }
+//        }
 
         //Lion Mane [ wildtype, lion mane]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -1372,21 +1373,17 @@ public class EnhancedRabbit extends EntityAnimal {
         }
 
         //Angora [ wildtype, angora]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 1) {
             initialGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            if (wildType == 1){
-                initialGenes[26] = (2);
-            }else {
                 initialGenes[26] = (1);
-            }
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 1) {
             initialGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[27] = (1);
+                initialGenes[27] = (1);
         }
 
         //Rex [ wildtype, rex]
@@ -1545,6 +1542,56 @@ public class EnhancedRabbit extends EntityAnimal {
 
         } else {
             initialGenes[49] = (2);
+        }
+
+        //Fur Length Enhancer 1 [ normal, longer, normal]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[50] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[50] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[51] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[51] = (1);
+        }
+
+        //Fur Length Enhancer 2 [ normal, longer, longest]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[52] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[52] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[53] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[53] = (1);
+        }
+
+        //Fur Length Enhancer 3 [ shorter, normal]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[54] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            if (wildType == 1){
+                initialGenes[54] = (2);
+            }else {
+                initialGenes[54] = (1);
+            }
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[55] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            if (wildType == 1){
+                initialGenes[55] = (2);
+            }else {
+                initialGenes[55] = (1);
+            }
         }
 
         return initialGenes;

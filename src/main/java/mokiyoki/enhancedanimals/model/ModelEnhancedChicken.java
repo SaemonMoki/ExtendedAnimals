@@ -773,17 +773,17 @@ public class ModelEnhancedChicken extends ModelBase {
     {
         //head stuff
 
-        float bodyangle = 0.5F;
+//        float bodyangle = 0.5F;
 
         if(this.pose == 1){
-            this.head.rotationPointY = 22F - bodyangle;
+            this.head.rotationPointY = 22F;
         } else if (this.pose == 2){
-            this.head.rotationPointY = 21F - bodyangle;
+            this.head.rotationPointY = 21F;
         } else{
             if(this.mutation == 1){
-                this.head.rotationPointY = 18F - bodyangle;
+                this.head.rotationPointY = 18F;
             }else{
-                this.head.rotationPointY = 15F - bodyangle;
+                this.head.rotationPointY = 15F;
             }
         }
         this.head.rotationPointZ = -3F;

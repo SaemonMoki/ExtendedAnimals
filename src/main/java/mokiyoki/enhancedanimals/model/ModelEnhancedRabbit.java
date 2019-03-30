@@ -20,8 +20,16 @@ public class ModelEnhancedRabbit extends ModelBase
     private final ModelRenderer rabbitLeftThigh;
     private final ModelRenderer rabbitRightThigh;
     private final ModelRenderer rabbitBody;
+    private final ModelRenderer rabbitBodyAngora1;
+    private final ModelRenderer rabbitBodyAngora2;
+    private final ModelRenderer rabbitBodyAngora3;
+    private final ModelRenderer rabbitBodyAngora4;
     private final ModelRenderer rabbitButtRound;
     private final ModelRenderer rabbitButt;
+    private final ModelRenderer rabbitButtAngora1;
+    private final ModelRenderer rabbitButtAngora2;
+    private final ModelRenderer rabbitButtAngora3;
+    private final ModelRenderer rabbitButtAngora4;
     private final ModelRenderer rabbitButtTube;
     private final ModelRenderer rabbitLeftArm;
     private final ModelRenderer rabbitRightArm;
@@ -75,8 +83,24 @@ public class ModelEnhancedRabbit extends ModelBase
         this.rabbitRightThigh.addChild(rabbitRightCalf);
 
         this.rabbitBody = new ModelRenderer(this, 7, 8);
-        this.rabbitBody.addBox(-3.5F, 0F, 0F, 7, 7, 9);
+        this.rabbitBody.addBox(-3.5F, 0F, 0F, 7, 7, 9,0.5F);
         this.rabbitBody.setRotationPoint(0F, 16.0F, -4.5F);
+
+        this.rabbitBodyAngora1 = new ModelRenderer(this, 7, 8);
+        this.rabbitBodyAngora1.addBox(-3.5F, 0F, 0F, 7, 7, 9, 1F);
+        this.rabbitBodyAngora1.setRotationPoint(0F, 15.5F, -4.5F);
+
+        this.rabbitBodyAngora2 = new ModelRenderer(this, 7, 8);
+        this.rabbitBodyAngora2.addBox(-3.5F, 0F, 0F, 7, 7, 9, 2F);
+        this.rabbitBodyAngora2.setRotationPoint(0F, 15.0F, -4.5F);
+
+        this.rabbitBodyAngora3 = new ModelRenderer(this, 7, 8);
+        this.rabbitBodyAngora3.addBox(-3.5F, 0F, 0F, 7, 7, 9, 3F);
+        this.rabbitBodyAngora3.setRotationPoint(0F, 14.5F, -4.5F);
+
+        this.rabbitBodyAngora4 = new ModelRenderer(this, 7, 8);
+        this.rabbitBodyAngora4.addBox(-3.5F, 0F, 0F, 7, 7, 9, 4F);
+        this.rabbitBodyAngora4.setRotationPoint(0F, 14.0F, -4.5F);
 
         this.rabbitButtRound = new ModelRenderer(this, 30, 0);
         this.rabbitButtRound.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 0.5F);
@@ -85,6 +109,22 @@ public class ModelEnhancedRabbit extends ModelBase
         this.rabbitButt = new ModelRenderer(this, 30, 0);
         this.rabbitButt.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8);
         this.rabbitButt.setRotationPoint(0.0F, 15.0F, 2.5F);
+
+        this.rabbitButtAngora1 = new ModelRenderer(this, 30, 0);
+        this.rabbitButtAngora1.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 1F);
+        this.rabbitButtAngora1.setRotationPoint(0.0F, 14.5F, 2.5F);
+
+        this.rabbitButtAngora2 = new ModelRenderer(this, 30, 0);
+        this.rabbitButtAngora2.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 2F);
+        this.rabbitButtAngora2.setRotationPoint(0.0F, 14.0F, 2.5F);
+
+        this.rabbitButtAngora3 = new ModelRenderer(this, 30, 0);
+        this.rabbitButtAngora3.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 3F);
+        this.rabbitButtAngora3.setRotationPoint(0.0F, 13.5F, 2.5F);
+
+        this.rabbitButtAngora4 = new ModelRenderer(this, 30, 0);
+        this.rabbitButtAngora4.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 4F);
+        this.rabbitButtAngora4.setRotationPoint(0.0F, 13.0F, 2.5F);
 
         this.rabbitButtTube = new ModelRenderer(this, 30, 0);
         this.rabbitButtTube.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, -0.49F);
@@ -143,6 +183,7 @@ public class ModelEnhancedRabbit extends ModelBase
 
         int[] genes = enhancedRabbit.getSharedGenes();
         float size = 1F; // [minimum size = 0.3 maximum size = 1]
+        int angora = 0; // [level 1, level 2]
 
         if (genes[46] < 5){
             size = size - 0.07F;
@@ -168,16 +209,40 @@ public class ModelEnhancedRabbit extends ModelBase
                 }
             }
         }
-        if (genes[48] == 3 && genes[49] == 3){
+        if ( genes[48] == 3 && genes[49] == 3){
             size = size - 0.075F;
-        }else if (genes[48] == 2 && genes[49] == 2){
+        }else if ( genes[48] == 2 && genes[49] == 2){
             size = size - 0.05F;
-        }else if (genes[48] == 2 || genes[49] == 2){
+        }else if ( genes[48] == 2 || genes[49] == 2){
             size = size - 0.025F;
         }
 
-        if (genes[34] == 2 || genes[35] == 2){
+        if ( genes[34] == 2 || genes[35] == 2){
             size = 0.3F + ((size - 0.3F)/2F);
+        }
+
+        if ( genes[26] == 2 && genes[27] == 2 && !this.isChild){
+            if (genes[50] == 1 && genes[51] == 1 || genes[50] == 3 && genes[51] == 3){
+                angora = 1;
+            }else if ( genes[50] == 1 || genes[51] == 1 || genes[50] == 3 || genes[51] == 3){
+                angora = 2;
+            }else{
+                angora = 3;
+            }
+
+            if ( genes[52] >= 2 && genes[53] >= 2 ){
+                angora = angora + 1;
+                if ( genes[52] == 3 && genes[53] == 3 ){
+                    angora = angora + 1;
+                }
+            }
+
+            if ( genes[54] == 1 || genes[55] == 1){
+                angora = angora - 1;
+                if ( genes[54] == 1 && genes[55] == 1){
+                    angora = angora - 1;
+                }
+            }
         }
 
 
@@ -220,10 +285,35 @@ public class ModelEnhancedRabbit extends ModelBase
             this.rabbitRightEar.render(scale);
             this.rabbitLeftThigh.render(scale);
             this.rabbitRightThigh.render(scale);
-            this.rabbitBody.render(scale);
-//            this.rabbitButtRound.render(scale);
-            this.rabbitButt.render(scale);
-////            this.rabbitButtTube.render(scale);
+            if (angora == 0){
+                this.rabbitBody.render(scale);
+                //this.rabbitButtRound.render(scale);
+                this.rabbitButt.render(scale);
+                //this.rabbitButtTube.render(scale);
+            }else{
+                if(angora == 1){
+                    this.rabbitBodyAngora1.render(scale);
+                    //this.rabbitButtRoundAngora1.render(scale);
+                    this.rabbitButtAngora1.render(scale);
+                    //this.rabbitButtTubeAngora1.render(scale);
+                }else if(angora == 2){
+                    this.rabbitBodyAngora2.render(scale);
+                    //this.rabbitButtRoundAngora2.render(scale);
+                    this.rabbitButtAngora2.render(scale);
+                    //this.rabbitButtTubeAngora2.render(scale);
+                }else if(angora == 3){
+                    this.rabbitBodyAngora3.render(scale);
+                    //this.rabbitButtRoundAngora3.render(scale);
+                    this.rabbitButtAngora3.render(scale);
+                    //this.rabbitButtTubeAngora3.render(scale);
+                }else if(angora == 4){
+                    this.rabbitBodyAngora4.render(scale);
+                    //this.rabbitButtRoundAngora4.render(scale);
+                    this.rabbitButtAngora4.render(scale);
+                    //this.rabbitButtTubeAngora4.render(scale);
+                }
+            }
+
             this.rabbitLeftArm.render(scale);
             this.rabbitRightArm.render(scale);
             this.rabbitTail.render(scale);
@@ -259,8 +349,16 @@ public class ModelEnhancedRabbit extends ModelBase
             this.rabbitLeftArm.rotateAngleX = -1.6F;
             this.rabbitRightArm.rotateAngleX = -1.6F;
             this.rabbitBody.rotateAngleX = 0.0F;
+            this.rabbitBodyAngora1.rotateAngleX = 0.0F;
+            this.rabbitBodyAngora2.rotateAngleX = 0.0F;
+            this.rabbitBodyAngora3.rotateAngleX = 0.0F;
+            this.rabbitBodyAngora4.rotateAngleX = 0.0F;
             this.rabbitButtRound.rotateAngleX = 0.0F;
             this.rabbitButt.rotateAngleX = 0.0F;
+            this.rabbitButtAngora1.rotateAngleX = 0.0F;
+            this.rabbitButtAngora2.rotateAngleX = 0.0F;
+            this.rabbitButtAngora3.rotateAngleX = 0.0F;
+            this.rabbitButtAngora4.rotateAngleX = 0.0F;
             this.rabbitButtTube.rotateAngleX = 0.0F;
         } else {
             this.rabbitLeftFoot.rotateAngleX = 3.0F + this.jumpRotation * 80.0F * ((float)Math.PI / 180F);
@@ -270,7 +368,15 @@ public class ModelEnhancedRabbit extends ModelBase
             this.rabbitLeftArm.rotateAngleX = -1.6F - (this.jumpRotation * -40.0F - 11.0F) * ((float)Math.PI / 180F);
             this.rabbitRightArm.rotateAngleX = -1.6F - (this.jumpRotation * -40.0F - 11.0F) * ((float)Math.PI / 180F);
             this.rabbitButt.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
+            this.rabbitButtAngora1.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
+            this.rabbitButtAngora2.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
+            this.rabbitButtAngora3.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
+            this.rabbitButtAngora4.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
             this.rabbitBody.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
+            this.rabbitBodyAngora1.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
+            this.rabbitBodyAngora2.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
+            this.rabbitBodyAngora3.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
+            this.rabbitBodyAngora4.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
         }
         this.rabbitLeftThigh.rotateAngleX = (this.jumpRotation * 50.0F - 21.0F) * ((float)Math.PI / 180F);
         this.rabbitRightThigh.rotateAngleX = (this.jumpRotation * 50.0F - 21.0F) * ((float)Math.PI / 180F);

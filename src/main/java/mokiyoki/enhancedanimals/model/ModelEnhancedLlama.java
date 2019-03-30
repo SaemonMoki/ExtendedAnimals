@@ -17,8 +17,10 @@ public class ModelEnhancedLlama extends ModelBase {
     private final ModelRenderer chest2;
 
     private boolean banana = false;
+    private float coatlength = 0.0F;
 
     private final ModelRenderer head;
+    private final ModelRenderer neckWool;
     private final ModelRenderer earsR;
     private final ModelRenderer earsL;
     private final ModelRenderer earsTopR;
@@ -28,9 +30,13 @@ public class ModelEnhancedLlama extends ModelBase {
     private final ModelRenderer body;
     private final ModelRenderer tail;
     private final ModelRenderer leg1;
+    private final ModelRenderer leg1Wool;
     private final ModelRenderer leg2;
+    private final ModelRenderer leg2Wool;
     private final ModelRenderer leg3;
+    private final ModelRenderer leg3Wool;
     private final ModelRenderer leg4;
+    private final ModelRenderer leg4Wool;
     private final ModelRenderer toeOuterFrontR;
     private final ModelRenderer toeInnerFrontR;
     private final ModelRenderer toeOuterFrontL;
@@ -46,10 +52,15 @@ public class ModelEnhancedLlama extends ModelBase {
         this.textureHeight = 96;
 
         this.head = new ModelRenderer(this, 0, 0);
-        this.head.addBox(-4F, -14F, 0F, 8, 18, 6, 0.0F); //head and neck
+        this.head.addBox(-4.0F, -14.0F, 0.0F, 8, 18, 6); //head and neck
         this.head.setTextureOffset(28, 0);
-        this.head.addBox(-2F, -12F, -4F, 4, 4, 4, 0.0F); //nose
+        this.head.addBox(-2.0F, -12.0F, -4.0F, 4, 4, 4, 0.0F); //nose
         this.head.setRotationPoint(0, 5, -6);
+
+        this.neckWool = new ModelRenderer(this, 0, 10);
+        this.neckWool.addBox(-4.0F, -8.0F, 0.0F, 8, 8, 6, 0.2F); //head and neck
+        this.neckWool.setTextureOffset(0, 13);
+        this.neckWool.addBox(-4.0F, 0.0F, 0.0F, 8, 4, 6, 0.2F); //head and neck
 
         this.earsR = new ModelRenderer(this, 44, 0);
         this.earsR.addBox(-4F, -17F, 2F, 3, 3, 2, 0.0F); //ear right
@@ -69,7 +80,7 @@ public class ModelEnhancedLlama extends ModelBase {
         this.earsTopBananaL.addBox(0.5F, -18F, 2F, 3, 1, 2, 0.0F); //ear left
 
         this.body = new ModelRenderer(this, 0, 39);
-        this.body.addBox(-6F, 0F, 0F, 12, 10, 18, 0.0F);
+        this.body.addBox(-6F, 0F, 0F, 12, 10, 18);
         this.body.setRotationPoint(0F, 2F, -2F);
 
         this.chest1 = new ModelRenderer(this, 74, 44);
@@ -88,17 +99,33 @@ public class ModelEnhancedLlama extends ModelBase {
         this.leg1.addBox(0.0F, 0F, 0.0F, 3, 11, 3);
         this.leg1.setRotationPoint(-5, 12,-1);
 
+        this.leg1Wool = new ModelRenderer(this, 0, 68);
+        this.leg1Wool.addBox(0.0F, 0F, 0.0F, 3, 7, 3);
+        this.leg1Wool.setRotationPoint(-5, 12,-1);
+
         this.leg2 = new ModelRenderer(this, 12, 68);
         this.leg2.addBox(0.0F, 0F, 0.0F, 3, 11, 3);
         this.leg2.setRotationPoint(2, 12,-1);
+
+        this.leg2Wool = new ModelRenderer(this, 12, 68);
+        this.leg2Wool.addBox(0.0F, 0F, 0.0F, 3, 7, 3);
+        this.leg2Wool.setRotationPoint(2, 12,-1);
 
         this.leg3 = new ModelRenderer(this, 0, 82);
         this.leg3.addBox(0.0F, 0F, 0.0F, 3, 11, 3);
         this.leg3.setRotationPoint(-5, 12,12);
 
+        this.leg3Wool = new ModelRenderer(this, 0, 82);
+        this.leg3Wool.addBox(0.0F, 0F, 0.0F, 3, 7, 3);
+        this.leg3Wool.setRotationPoint(-5, 12,12);
+
         this.leg4 = new ModelRenderer(this, 12, 82);
         this.leg4.addBox(0.0F, 0F, 0.0F, 3, 11, 3);
         this.leg4.setRotationPoint(2, 12,12);
+
+        this.leg4Wool = new ModelRenderer(this, 12, 82);
+        this.leg4Wool.addBox(0.0F, 0F, 0.0F, 3, 7, 3);
+        this.leg4Wool.setRotationPoint(2, 12,12);
 
         this.toeOuterFrontR = new ModelRenderer(this, 26, 70);
         this.toeOuterFrontR.addBox(-0.85F, 10F, -2.5F, 3, 3, 4, -0.75F);
@@ -130,6 +157,12 @@ public class ModelEnhancedLlama extends ModelBase {
 //        leg4.addChild(toeOuterBackL);
 //        leg4.addChild(toeInnerBackL);
 
+    }
+
+    private void setRotationOffset(ModelRenderer renderer, float x, float y, float z) {
+        renderer.rotateAngleX = x;
+        renderer.rotateAngleY = y;
+        renderer.rotateAngleZ = z;
     }
 
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
@@ -217,10 +250,10 @@ public class ModelEnhancedLlama extends ModelBase {
             GlStateManager.pushMatrix();
             GlStateManager.scalef(size, size, size);
             GlStateManager.translatef(0.0F, -1.5F + 1.5F/size, 0.0F);
-
             this.head.render(scale);
             this.earsR.render(scale);
             this.earsL.render(scale);
+
             if (banana){
                 this.earsTopBananaR.render(scale);
                 this.earsTopBananaL.render(scale);
@@ -228,8 +261,8 @@ public class ModelEnhancedLlama extends ModelBase {
                 this.earsTopR.render(scale);
                 this.earsTopL.render(scale);
             }
+
             this.body.render(scale);
-            this.tail.render(scale);
             this.leg1.render(scale);
             this.leg2.render(scale);
             this.leg3.render(scale);
@@ -247,8 +280,28 @@ public class ModelEnhancedLlama extends ModelBase {
                 this.chest1.render(scale);
                 this.chest2.render(scale);
             }
-
             GlStateManager.popMatrix();
+
+
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(size, size, size);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/size, 0.0F);
+            if ( coatlength > 0){
+                this.neckWool.render(scale);
+                this.leg1Wool.render(scale);
+                this.leg2Wool.render(scale);
+                this.leg3Wool.render(scale);
+                this.leg4Wool.render(scale);
+            }
+            GlStateManager.popMatrix();
+
+
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(size, size, size);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/size, 0.0F);
+            this.tail.render(scale);
+            GlStateManager.popMatrix();
+
 
         }
     }
@@ -270,6 +323,7 @@ public class ModelEnhancedLlama extends ModelBase {
         this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
         this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
 
+        copyModelAngles(head, neckWool);
         copyModelAngles(head, earsR);
         copyModelAngles(head, earsL);
         copyModelAngles(head, earsTopR);
@@ -280,15 +334,19 @@ public class ModelEnhancedLlama extends ModelBase {
         copyModelAngles(body, tail);
 
         //TODO fix the toes so they angle properly and maintain the angle while they walk
+        copyModelAngles(leg1, leg1Wool);
         copyModelAngles(leg1, toeOuterFrontR);
         copyModelAngles(leg1, toeInnerFrontR);
 
+        copyModelAngles(leg2, leg2Wool);
         copyModelAngles(leg2, toeOuterFrontL);
         copyModelAngles(leg2, toeInnerFrontL);
 
+        copyModelAngles(leg3, leg3Wool);
         copyModelAngles(leg3, toeOuterBackR);
         copyModelAngles(leg3, toeInnerBackR);
 
+        copyModelAngles(leg4, leg4Wool);
         copyModelAngles(leg4, toeOuterBackL);
         copyModelAngles(leg4, toeInnerBackL);
 
@@ -302,11 +360,39 @@ public class ModelEnhancedLlama extends ModelBase {
     {
         int[] sharedGenes = ((EnhancedLlama)entitylivingbaseIn).getSharedGenes();
 
+        float coatlength = 0;
+
         // banana ears
         if ( sharedGenes[18] != 1 && sharedGenes[19] != 1){
             if (sharedGenes[18] == 2 || sharedGenes[19] == 2){
                 banana = true;
             }
+        }
+
+        if ( !this.isChild && (sharedGenes[22] >= 2 || sharedGenes[23] >= 2) ){
+            if (sharedGenes[22] == 3 && sharedGenes[23] == 3){
+                coatlength = 1.25F;
+            }else if (sharedGenes[22] == 3 || sharedGenes[23] == 3) {
+                coatlength = 1F;
+            }else if (sharedGenes[22] == 2 && sharedGenes[23] == 2) {
+                coatlength = 0.75F;
+            }else {
+                coatlength = 0.5F;
+            }
+
+            if (sharedGenes[24] == 2){
+                coatlength = coatlength - 0.25F;
+            }
+            if (sharedGenes[25] == 2){
+                coatlength = coatlength - 0.25F;
+            }
+
+            if (sharedGenes[26] == 2 && sharedGenes[27] == 2){
+                coatlength = coatlength + (0.75F * (coatlength/1.75F));
+            }
+
+        }else{
+            coatlength = 0;
         }
 
 //        super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);

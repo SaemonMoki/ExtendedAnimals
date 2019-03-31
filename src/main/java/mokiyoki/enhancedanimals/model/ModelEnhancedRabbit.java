@@ -230,16 +230,16 @@ public class ModelEnhancedRabbit extends ModelBase
                 angora = 3;
             }
 
-            if ( genes[52] >= 2 && genes[53] >= 2 ){
+            if ( genes[52] >= 2 && genes[53] >= 2){
                 angora = angora + 1;
-                if ( genes[52] == 3 && genes[53] == 3 ){
+                if ( genes[52] == 3 && genes[53] == 3 && angora <= 3){
                     angora = angora + 1;
                 }
             }
 
-            if ( genes[54] == 1 || genes[55] == 1){
+            if ( genes[54] == 1 || genes[55] == 1 && angora >= 2){
                 angora = angora - 1;
-                if ( genes[54] == 1 && genes[55] == 1){
+                if ( genes[54] == 1 && genes[55] == 1 && angora >= 2){
                     angora = angora - 1;
                 }
             }

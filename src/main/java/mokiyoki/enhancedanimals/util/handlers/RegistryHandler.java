@@ -104,16 +104,28 @@ public class RegistryHandler {
         event.getRegistry().register(ENHANCED_ENTITY_EGG_ENTITY_TYPE.setRegistryName("enhanced_entity_egg"));
 
         EntitySpawnPlacementRegistry.register(ENHANCED_CHICKEN, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_RABBIT, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
+        EntitySpawnPlacementRegistry.register(ENHANCED_RABBIT, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
+        EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
 //
-//        for (Biome biome : ForgeRegistries.BIOMES) {
-//
-//            Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biome);
-//            if (!biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName())) {
-//                biome.addSpawn(EnumCreatureType.CREATURE, new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
-//            }
-//        }
+        for (Biome biome : ForgeRegistries.BIOMES) {
+
+            Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biome);
+
+            //Enhanced Chicken Spawning
+            if (!biome.getRegistryName().equals(Biomes.PLAINS.getRegistryName())) {
+                biome.getSpawns(EnumCreatureType.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
+            }
+
+            //Enhanced Rabbit Spawning
+            if (!biome.getRegistryName().equals(Biomes.PLAINS.getRegistryName())) {
+                biome.getSpawns(EnumCreatureType.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 10, 2, 3));
+            }
+
+            //Enhanced Llama Spawning
+            if (!biome.getRegistryName().equals(Biomes.PLAINS.getRegistryName())) {
+                biome.getSpawns(EnumCreatureType.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_LLAMA, 5, 4, 6));
+            }
+        }
     }
 
 }

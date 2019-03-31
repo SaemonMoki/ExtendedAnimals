@@ -24,8 +24,6 @@ public class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void replaceVanillaMobs(EntityJoinWorldEvent event) {
-        //TODO why are groups only being spawned as 0-1 animals?
-        //TODO more animals are spawned when the world and chunks were unloaded. this multiplies the number of animals exponentially
         Entity entity = event.getEntity();
         World world = event.getWorld();
         int randomSpawn = (ThreadLocalRandom.current().nextInt(4));

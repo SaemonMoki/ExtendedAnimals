@@ -45,10 +45,11 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_LLAMA;
 
-public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMob {
+public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMob, net.minecraftforge.common.IShearable {
 
     private static final DataParameter<Integer> DATA_STRENGTH_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DATA_INVENTORY_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
     private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
 
@@ -110,6 +111,10 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
 
     protected int temper;
 
+    private int maxCoatLength;
+    private int currentCoatLength;
+    private int timeForGrowth = 0;
+
     private boolean didSpit;
     @Nullable
     private EnhancedLlama caravanHead;
@@ -143,6 +148,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(DATA_STRENGTH_ID, 0);
         this.dataManager.register(DATA_INVENTORY_ID, 0);
+        this.dataManager.register(COAT_LENGTH, -1);
         this.dataManager.register(DATA_COLOR_ID, -1);
     }
 
@@ -160,6 +166,14 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
 
     public int getInventory() {
         return this.dataManager.get(DATA_INVENTORY_ID);
+    }
+
+    private void setCoatLength(int coatLength) {
+        this.dataManager.set(COAT_LENGTH, coatLength);
+    }
+
+    public int getCoatLength() {
+        return this.dataManager.get(COAT_LENGTH);
     }
 
 
@@ -288,11 +302,20 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 
-    public void livingTick()
-    {
+    public void livingTick() {
         super.livingTick();
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
         this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
+        timeForGrowth++;
+        if (timeForGrowth >= 24000) {
+            timeForGrowth = 0;
+            if (maxCoatLength > currentCoatLength) {
+                currentCoatLength++;
+                setCoatLength(currentCoatLength);
+            }
+        }
+
+
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -342,11 +365,46 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         this.playSound(SoundEvents.ENTITY_LLAMA_CHEST, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
     }
 
-//    protected SoundEvent getAngrySound() { super.getAngrySound(); return SoundEvents.ENTITY_LLAMA_ANGRY; }
-
     public boolean isBreedingItem(ItemStack stack)
     {
         return TEMPTATION_ITEMS.test(stack);
+    }
+
+    @Override
+    public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, BlockPos pos) {
+        if (currentCoatLength >=0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IWorld world, BlockPos pos, int fortune) {
+        java.util.List<ItemStack> ret = new java.util.ArrayList<>();
+        if (!this.world.isRemote) {
+            if (currentCoatLength == 1) {
+                int i = this.rand.nextInt(3);
+                if (i>2){
+                    ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                }
+            } else if (currentCoatLength == 2) {
+                int i = this.rand.nextInt(1);
+                if (i>0){
+                    ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                }
+            } else if (currentCoatLength == 3) {
+                int i = this.rand.nextInt(3);
+                if (i>0){
+                    ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                }
+            } else if (currentCoatLength == 4) {
+                ret.add(new ItemStack(Blocks.BROWN_WOOL));
+            }
+
+        }
+        currentCoatLength = -1;
+        setCoatLength(currentCoatLength);
+        return ret;
     }
 
     @Override
@@ -369,6 +427,9 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         enhancedllama.setGenes(babyGenes);
         enhancedllama.setSharedGenes(babyGenes);
         enhancedllama.setStrengthAndInventory();
+        enhancedllama.setMaxCoatLength();
+        enhancedllama.currentCoatLength = enhancedllama.maxCoatLength;
+        enhancedllama.setCoatLength(enhancedllama.currentCoatLength);
         return enhancedllama;
     }
 
@@ -629,6 +690,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
 
         compound.setInt("Strength", this.getStrength());
         compound.setInt("Inventory", this.getInventory());
+        compound.setFloat("CoatLength", this.getCoatLength());
         if (!this.horseChest.getStackInSlot(1).isEmpty()) {
             compound.setTag("DecorItem", this.horseChest.getStackInSlot(1).write(new NBTTagCompound()));
         }
@@ -637,6 +699,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     public void readAdditional(NBTTagCompound compound) {
         this.setStrength(compound.getInt("Strength"));
         this.setInventory(compound.getInt("Inventory"));
+        this.setCoatLength(compound.getInt("CoatLength"));
         super.readAdditional(compound);
 
         NBTTagList geneList = compound.getList("Genes", 10);
@@ -658,6 +721,9 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         if (compound.contains("DecorItem", 10)) {
             this.horseChest.setInventorySlotContents(1, ItemStack.read(compound.getCompound("DecorItem")));
         }
+
+        //resets the max so we don't have to store it
+        setMaxCoatLength();
 
     }
 
@@ -715,6 +781,9 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         this.genes = spawnGenes;
         setSharedGenes(genes);
         setStrengthAndInventory();
+        setMaxCoatLength();
+        this.currentCoatLength = this.maxCoatLength;
+        setCoatLength(this.currentCoatLength);
         return livingdata;
     }
 
@@ -754,6 +823,51 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
 
         setStrength(str);
         setInventory(inv);
+    }
+
+    private void setMaxCoatLength() {
+        float maxCoatLength = 0.0F;
+
+        if ( !this.isChild() && (genes[22] >= 2 || genes[23] >= 2) ){
+            if (genes[22] == 3 && genes[23] == 3){
+                maxCoatLength = 1.25F;
+            }else if (genes[22] == 3 || genes[23] == 3) {
+                maxCoatLength = 1F;
+            }else if (genes[22] == 2 && genes[23] == 2) {
+                maxCoatLength = 0.75F;
+            }else {
+                maxCoatLength = 0.5F;
+            }
+
+            if (genes[24] == 2){
+                maxCoatLength = maxCoatLength - 0.25F;
+            }
+            if (genes[25] == 2){
+                maxCoatLength = maxCoatLength - 0.25F;
+            }
+
+            if (genes[26] == 2 && genes[27] == 2){
+                maxCoatLength = maxCoatLength + (0.75F * (maxCoatLength/1.75F));
+            }
+
+        }else{
+            maxCoatLength = 0;
+        }
+
+        if (maxCoatLength < 0.5){
+            maxCoatLength = 0;
+        }else if (maxCoatLength < 1){
+            maxCoatLength = 1;
+        }else if (maxCoatLength < 1.5){
+            maxCoatLength = 2;
+        }else if (maxCoatLength < 2) {
+            maxCoatLength = 3;
+        }else{
+            maxCoatLength = 4;
+        }
+
+        this.maxCoatLength = (int)maxCoatLength;
+
     }
 
     private int[] createInitialGenes() {

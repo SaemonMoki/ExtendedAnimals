@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelEnhancedSheepSheared extends ModelBase {
+public class ModelEnhancedSheep extends ModelBase {
 
     private float headRotationAngleX;
     private float f12 = 0F;
@@ -20,6 +20,7 @@ public class ModelEnhancedSheepSheared extends ModelBase {
     private final ModelRenderer earsR;
     private final ModelRenderer earsL;
     private final ModelRenderer body;
+    private final ModelRenderer wool;
     private final ModelRenderer tailBase;
     private final ModelRenderer tailMiddle;
     private final ModelRenderer tailTip;
@@ -28,7 +29,7 @@ public class ModelEnhancedSheepSheared extends ModelBase {
     public final ModelRenderer leg3;
     public final ModelRenderer leg4;
 
-    public ModelEnhancedSheepSheared()
+    public ModelEnhancedSheep()
     {
         this.textureWidth = 64;
         this.textureHeight = 64;
@@ -50,6 +51,9 @@ public class ModelEnhancedSheepSheared extends ModelBase {
 //        float bodyY = 15;
         this.body = new ModelRenderer(this, 2, 0);
         this.body.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 0.0F);
+
+        this.wool = new ModelRenderer(this, 2, 0);
+        this.wool.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 0.5F);
 
         this.tailBase = new ModelRenderer(this, 50, 6);
         this.tailBase.addBox(-1.0F, 0.0F, 0.0F, 2, 3, 1);

@@ -111,7 +111,7 @@ public class EnhancedRabbit extends EntityAnimal {
     };
 
     private static final String[] RABBIT_TEXTURES_FUR = new String[] {
-       "", "fur_angora.png", "fur_normal.png", "fur_satin.png"
+       "", "fur_normal.png", "fur_satin.png", "fur_angora1.png" , "fur_angora2.png", "fur_angora4.png", "fur_angora4.png"
     };
 
     private static final String[] RABBIT_TEXTURES_EYES = new String[] {
@@ -1035,18 +1035,40 @@ public class EnhancedRabbit extends EntityAnimal {
 
             }
 
-                // [ "", "fur_angora.png", "fur_normal.png", "fur_satin.png" ]
+                // [ "", "fur_angora1.png", "fur_normal.png", "fur_satin.png" ]
                 // [ coat genes 26/27 angora, 28/29 rex, 30/31 satin ]
             if(genesForText[26] == 2 && genesForText[27] == 2){
                 //angora
-                fur = 1;
+                if ( genesForText[26] == 2 && genesForText[27] == 2){
+                    if (genesForText[50] == 1 && genesForText[51] == 1 || genesForText[50] == 3 && genesForText[51] == 3){
+                        fur = 3;
+                    }else if ( genesForText[50] == 1 || genesForText[51] == 1 || genesForText[50] == 3 || genesForText[51] == 3){
+                        fur = 4;
+                    }else{
+                        fur = 5;
+                    }
+
+                    if ( genesForText[52] >= 2 && genesForText[53] >= 2){
+                        fur = fur + 1;
+                        if ( genesForText[52] == 3 && genesForText[53] == 3 && fur <= 5){
+                            fur = fur + 1;
+                        }
+                    }
+
+                    if ( genesForText[54] == 1 || genesForText[55] == 1 && fur >= 4){
+                        fur = fur - 1;
+                        if ( genesForText[54] == 1 && genesForText[55] == 1 && fur >= 4){
+                            fur = fur - 1;
+                        }
+                    }
+                }
             }else if (genesForText[28] == 1 || genesForText[29] == 1){
                 if (genesForText[30] == 2 && genesForText[31] == 2){
                     //satin
-                    fur = 3;
+                    fur = 2;
                 }else {
                     //normal
-                    fur = 2;
+                    fur = 1;
                 }
             }
             //otherwise rex aka no fur filter

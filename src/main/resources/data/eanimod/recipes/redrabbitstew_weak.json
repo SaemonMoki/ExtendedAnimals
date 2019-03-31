@@ -17,6 +17,8 @@
       "item": "minecraft:baked_potato"
     }
   ],
-  "result": "eanimod:rabbitstew_weak",
+  "result": {
+    "item": "eanimod:rabbitstew_weak"
+  },
   "group": "stew"
 }

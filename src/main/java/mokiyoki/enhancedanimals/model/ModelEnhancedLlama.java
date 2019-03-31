@@ -300,6 +300,8 @@ public class ModelEnhancedLlama extends ModelBase {
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
         EnhancedLlama enhancedLlama = (EnhancedLlama) entityIn;
 
+        this.coatlength = enhancedLlama.getCoatLength();
+
         int[] genes = enhancedLlama.getSharedGenes();
 
         float size = 1;
@@ -565,44 +567,6 @@ public class ModelEnhancedLlama extends ModelBase {
             if (sharedGenes[18] == 2 || sharedGenes[19] == 2){
                 banana = true;
             }
-        }
-
-        if ( !this.isChild && (sharedGenes[22] >= 2 || sharedGenes[23] >= 2) ){
-            if (sharedGenes[22] == 3 && sharedGenes[23] == 3){
-                coatlength = 1.25F;
-            }else if (sharedGenes[22] == 3 || sharedGenes[23] == 3) {
-                coatlength = 1F;
-            }else if (sharedGenes[22] == 2 && sharedGenes[23] == 2) {
-                coatlength = 0.75F;
-            }else {
-                coatlength = 0.5F;
-            }
-
-            if (sharedGenes[24] == 2){
-                coatlength = coatlength - 0.25F;
-            }
-            if (sharedGenes[25] == 2){
-                coatlength = coatlength - 0.25F;
-            }
-
-            if (sharedGenes[26] == 2 && sharedGenes[27] == 2){
-                coatlength = coatlength + (0.75F * (coatlength/1.75F));
-            }
-
-        }else{
-            coatlength = 0;
-        }
-
-        if (coatlength < 0.5){
-            coatlength = 0;
-        }else if (coatlength < 1){
-            coatlength = 1;
-        }else if (coatlength < 1.5){
-            coatlength = 2;
-        }else if (coatlength < 2) {
-            coatlength = 3;
-        }else{
-            coatlength = 4;
         }
 
         //TODO make coatlength calculations less dumb

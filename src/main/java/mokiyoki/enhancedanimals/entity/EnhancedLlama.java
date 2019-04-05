@@ -81,7 +81,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     };
 
     private static final String[] LLAMA_TEXTURES_FUR = new String[] {
-            "fur_short.png", "fur_medium.png", "fur_long.png", "fur_short_suri.png", "fur_medium_suri.png", "fur_long_suri.png"
+            "", "fur_suri.png"
     };
 
     private static final String[] LLAMA_TEXTURES_EYES = new String[] {
@@ -624,6 +624,11 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
                 if (piebald > 0){
                     eyes = 1;
                 }
+            }
+
+            //suri coat texture
+            if (genesForText[20] == 2 && genesForText[21] == 2){
+                fur = 1;
             }
 
 

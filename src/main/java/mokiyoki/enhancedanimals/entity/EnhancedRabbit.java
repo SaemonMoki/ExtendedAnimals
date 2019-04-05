@@ -46,9 +46,11 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_RABBIT;
 
-public class EnhancedRabbit extends EntityAnimal {
+public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.common.IShearable {
 
+    private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedRabbit.class, DataSerializers.STRING);
+    private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
 
     private static final String[] RABBIT_TEXTURES_UNDER = new String[] {
         "under_cream.png", "under_grey.png", "under_white.png"
@@ -115,11 +117,12 @@ public class EnhancedRabbit extends EntityAnimal {
     };
 
     private static final String[] RABBIT_TEXTURES_EYES = new String[] {
-        "eyes_black.png", "eyes_grey.png", "eyes_albino.png"
+        "eyes_black.png", "eyes_grey.png", "eyes_albino.png", "eyes_pink.png"
     };
 
     private static final String[] RABBIT_TEXTURES_VIENNAEYES = new String[] {
-        "", "", "", "", "", "", "", "", "eyes_blue.png", "eyes_blue.png", "eyes_blue.png", "eyes_blue.png", "eyes_bluel.png", "eyes_bluel.png", "eyes_bluel.png", "eyes_bluer.png", "eyes_bluer.png", "eyes_bluer.png"
+        "", "", "", "", "", "", "", "", "eyes_blue.png", "eyes_blue.png", "eyes_blue.png", "eyes_blue.png", "eyes_bluel.png", "eyes_bluel.png", "eyes_bluel.png", "eyes_bluer.png", "eyes_bluer.png", "eyes_bluer.png",
+        "", "", "", "", "", "", "", "", "eyes_albino.png", "eyes_albino.png", "eyes_albino.png", "eyes_albino.png", "eyes_redl.png", "eyes_redl.png", "eyes_redl.png", "eyes_redr.png", "eyes_redr.png", "eyes_redr.png"
     };
 
     private static final String[] RABBIT_TEXTURES_SKIN = new String[] {
@@ -136,6 +139,10 @@ public class EnhancedRabbit extends EntityAnimal {
     private int currentMoveTypeDuration;
     private int carrotTicks;
     private String dropMeatType;
+
+    private int maxCoatLength;
+    private int currentCoatLength;
+    private int timeForGrowth = 0;
 
     private static final int WTC = 90;
     private static final int GENES_LENGTH = 56;
@@ -230,20 +237,22 @@ public class EnhancedRabbit extends EntityAnimal {
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
+        this.dataManager.register(COAT_LENGTH, 0);
+        this.dataManager.register(DATA_COLOR_ID, -1);
+    }
+
+    private void setCoatLength(int coatLength) {
+        this.dataManager.set(COAT_LENGTH, coatLength);
+    }
+
+    public int getCoatLength() {
+        return this.dataManager.get(COAT_LENGTH);
     }
 
     public void updateAITasks() {
         if (this.currentMoveTypeDuration > 0) {
             --this.currentMoveTypeDuration;
         }
-
-        //TODO SEAMUS add in carrot raid functions
-//        if (this.carrotTicks > 0) {
-//            this.carrotTicks -= this.rand.nextInt(3);
-//            if (this.carrotTicks < 0) {
-//                this.carrotTicks = 0;
-//            }
-//        }
 
         if (this.onGround) {
             if (!this.wasOnGround) {
@@ -364,6 +373,41 @@ public class EnhancedRabbit extends EntityAnimal {
             this.jumpDuration = 0;
             this.setJumping(false);
         }
+        timeForGrowth++;
+        if (maxCoatLength == 1){
+            if (timeForGrowth >= 48000) {
+                timeForGrowth = 0;
+                if (maxCoatLength > currentCoatLength) {
+                    currentCoatLength++;
+                    setCoatLength(currentCoatLength);
+                }
+            }
+        }else if (maxCoatLength == 2){
+            if (timeForGrowth >= 24000) {
+                timeForGrowth = 0;
+                if (maxCoatLength > currentCoatLength) {
+                    currentCoatLength++;
+                    setCoatLength(currentCoatLength);
+                }
+            }
+        }else if (maxCoatLength == 3){
+            if (timeForGrowth >= 16000) {
+                timeForGrowth = 0;
+                if (maxCoatLength > currentCoatLength) {
+                    currentCoatLength++;
+                    setCoatLength(currentCoatLength);
+                }
+            }
+        }else if (maxCoatLength == 4){
+            if (timeForGrowth >= 12000) {
+                timeForGrowth = 0;
+                if (maxCoatLength > currentCoatLength) {
+                    currentCoatLength++;
+                    setCoatLength(currentCoatLength);
+                }
+            }
+        }
+
     }
 
     public class RabbitJumpHelper extends EntityJumpHelper {
@@ -649,6 +693,43 @@ public class EnhancedRabbit extends EntityAnimal {
         return TEMPTATION_ITEMS.test(stack);
     }
 
+    @Override
+    public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, BlockPos pos) {
+        if (currentCoatLength >=1) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IWorld world, BlockPos pos, int fortune) {
+        java.util.List<ItemStack> ret = new java.util.ArrayList<>();
+        if (!this.world.isRemote) {
+            if (currentCoatLength == 1) {
+                int i = this.rand.nextInt(3);
+                if (i>2){
+                    ret.add(new ItemStack(Blocks.WHITE_WOOL));
+                }
+            } else if (currentCoatLength == 2) {
+                int i = this.rand.nextInt(1);
+                if (i>0){
+                    ret.add(new ItemStack(Blocks.WHITE_WOOL));
+                }
+            } else if (currentCoatLength == 3) {
+                int i = this.rand.nextInt(3);
+                if (i>0){
+                    ret.add(new ItemStack(Blocks.WHITE_WOOL));
+                }
+            } else if (currentCoatLength == 4) {
+                ret.add(new ItemStack(Blocks.WHITE_WOOL));
+            }
+
+        }
+        currentCoatLength = 0;
+        setCoatLength(currentCoatLength);
+        return ret;
+    }
+
     public EntityAgeable createChild(EntityAgeable ageable) {
         this.mateGenes = ((EnhancedRabbit) ageable).getGenes();
         mixMateMitosisGenes();
@@ -658,6 +739,9 @@ public class EnhancedRabbit extends EntityAnimal {
         int[] babyGenes = getBunnyGenes();
         enhancedrabbit.setGenes(babyGenes);
         enhancedrabbit.setSharedGenes(babyGenes);
+        enhancedrabbit.setMaxCoatLength();
+        enhancedrabbit.currentCoatLength = enhancedrabbit.maxCoatLength;
+        enhancedrabbit.setCoatLength(enhancedrabbit.currentCoatLength);
         return enhancedrabbit;
     }
 
@@ -704,6 +788,9 @@ public class EnhancedRabbit extends EntityAnimal {
         }
 
         setSharedGenes(genes);
+
+        //resets the max so we don't have to store it
+        setMaxCoatLength();
 
     }
 
@@ -892,9 +979,7 @@ public class EnhancedRabbit extends EntityAnimal {
                     higher = higher + (HIGH * shade) + c;
                 }
 
-                if (genesForText[4] >= 4 && genesForText[5] >= 4){
-                    eyes = 2;
-                }
+
 
                 //vieye Eyes and Spots
                 if (genesForText[14] == 2 || genesForText[15] == 2) {
@@ -962,6 +1047,22 @@ public class EnhancedRabbit extends EntityAnimal {
                             }
                         }
                     }
+                }
+
+                if (genesForText[4] >= 4 && genesForText[5] >= 4){
+                    eyes = 2;
+                    vieye = 0;
+                }else if (genesForText[20] == 2 && genesForText[21] == 2){
+                    if (eyes == 1){
+                        eyes = 2;
+                    }else{
+                        eyes = 3;
+                    }
+
+                    if (vieye != 0) {
+                        vieye = vieye + 16;
+                    }
+
                 }
 
                 if (genesForText[10] == 2 || genesForText[11] == 2) {
@@ -1165,21 +1266,62 @@ public class EnhancedRabbit extends EntityAnimal {
 
         this.genes = spawnGenes;
         setSharedGenes(genes);
+        setMaxCoatLength();
+        this.currentCoatLength = this.maxCoatLength;
+        setCoatLength(this.currentCoatLength);
         return livingdata;
+    }
+
+    private void setMaxCoatLength() {
+        float angora = 0.0F;
+
+        if ( genes[26] == 2 && genes[27] == 2){
+            if (genes[50] == 1 && genes[51] == 1 || genes[50] == 3 && genes[51] == 3){
+                angora = 1;
+            }else if ( genes[50] == 1 || genes[51] == 1 || genes[50] == 3 || genes[51] == 3){
+                angora = 2;
+            }else{
+                angora = 3;
+            }
+
+            if ( genes[52] >= 2 && genes[53] >= 2){
+                angora = angora + 1;
+                if ( genes[52] == 3 && genes[53] == 3 && angora <= 3){
+                    angora = angora + 1;
+                }
+            }
+
+            if ( genes[54] == 1 || genes[55] == 1 && angora >= 2){
+                angora = angora - 1;
+                if ( genes[54] == 1 && genes[55] == 1 && angora >= 2){
+                    angora = angora - 1;
+                }
+            }
+        }
+
+        this.maxCoatLength = (int)angora;
+
     }
 
     private int[] createInitialGenes() {
         int[] initialGenes = new int[GENES_LENGTH];
         //TODO create biome WTC variable [hot and dry biomes, cold biomes ] WTC is neutral biomes "all others"
 
-        //[ 0=desert wildtype, 1=cold wildtype ]
+        //[ 0=forest wildtype, 1=cold wildtype, 2=desert wildtype, 3=extreme cold ]
         int wildType = 0;
         Biome biome = this.world.getBiome(new BlockPos(this));
 
-        if (biome.getDefaultTemperature() < 0.3F) // cold
+        if (biome.getDefaultTemperature() < 0.5F) // cold
         {
             wildType  = 1;
+        }else if (biome.getDefaultTemperature() > 0.8F) // desert
+        {
+            wildType = 2;
+        }else if (biome.getDefaultTemperature() < 0.5F) // cold
+        {
+            wildType  = 3;
         }
+
 
 
 /**
@@ -1222,42 +1364,59 @@ public class EnhancedRabbit extends EntityAnimal {
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             if (wildType == 0){
                 initialGenes[4] = (ThreadLocalRandom.current().nextInt(5) + 1);
-            }else{
+                initialGenes[5] = (ThreadLocalRandom.current().nextInt(5) + 1);
+            }else if (wildType == 1 || wildType == 3){
                 initialGenes[4] = (ThreadLocalRandom.current().nextInt(3) + 3);
+                initialGenes[5] = (ThreadLocalRandom.current().nextInt(3) + 2);
+            }else{
+                initialGenes[4] = (ThreadLocalRandom.current().nextInt(5) + 1);
             }
         } else {
             if (wildType == 0){
                 initialGenes[4] = (1);
-            }else {
+                initialGenes[5] = (1);
+            }else if (wildType == 1 || wildType == 3) {
                 initialGenes[4] = (2);
+                initialGenes[5] = (2);
+            }else{
+                initialGenes[4] = (1);
             }
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            if (wildType == 0){
+        if (wildType == 2) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
                 initialGenes[5] = (ThreadLocalRandom.current().nextInt(5) + 1);
-            }else{
-                initialGenes[5] = (ThreadLocalRandom.current().nextInt(3) + 2);
-            }
-        } else {
-            if (wildType == 0){
+            } else {
                 initialGenes[5] = (1);
-            }else {
-                initialGenes[5] = (2);
             }
         }
 
         //Dilute [ wildtype, dilute ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        if (wildType == 1) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC/2) {
+                initialGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        } else {
-            initialGenes[6] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[7] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                initialGenes[6] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC/2) {
+                initialGenes[7] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        } else {
-            initialGenes[7] = (1);
+            } else {
+                initialGenes[7] = (1);
+            }
+        }else {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[6] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[7] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[7] = (1);
+            }
         }
 
         //E Locus [ Steel, Wildtype, Japanese Brindle, Non Extension ]
@@ -1265,13 +1424,25 @@ public class EnhancedRabbit extends EntityAnimal {
             initialGenes[8] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[8] = (2);
+            if (wildType == 0){
+                initialGenes[8] = (3);
+            }else if(wildType == 3) {
+                initialGenes[8] = (4);
+            }else {
+                initialGenes[8] = (2);
+            }
+
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[9] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[9] = (2);
+            if (wildType == 3){
+                initialGenes[9] = (4);
+            }else{
+                initialGenes[9] = (2);
+            }
+
         }
 
         //Spotted [ wildtype, spotted ]
@@ -1345,17 +1516,32 @@ public class EnhancedRabbit extends EntityAnimal {
         }
 
         //Lutino [ wildtype, lutino]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        if (wildType == 2){
+            if (ThreadLocalRandom.current().nextInt(100) > WTC/3) {
+                initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        } else {
-            initialGenes[20] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                initialGenes[20] = (2);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        } else {
-            initialGenes[21] = (1);
+            } else {
+                initialGenes[21] = (2);
+            }
+        }else {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[20] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[21] = (1);
+            }
         }
 
         /**

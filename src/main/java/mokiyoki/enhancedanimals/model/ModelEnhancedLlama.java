@@ -18,7 +18,7 @@ public class ModelEnhancedLlama extends ModelBase {
 
     private boolean banana = false;
     private boolean suri = false;
-    private float coatlength = 0.0F;
+    private int coatlength = 0;
 
     private final ModelRenderer head;
     private final ModelRenderer headShaved;

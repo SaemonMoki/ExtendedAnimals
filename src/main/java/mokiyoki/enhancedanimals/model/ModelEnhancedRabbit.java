@@ -13,6 +13,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedRabbit extends ModelBase
 {
+
+    private int coatlength = 0;
+
     private final ModelRenderer rabbitLeftFoot;
     private final ModelRenderer rabbitRightFoot;
     private final ModelRenderer rabbitLeftCalf;
@@ -181,9 +184,11 @@ public class ModelEnhancedRabbit extends ModelBase
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         EnhancedRabbit enhancedRabbit = (EnhancedRabbit) entityIn;
 
+        this.coatlength = enhancedRabbit.getCoatLength();
+
         int[] genes = enhancedRabbit.getSharedGenes();
+
         float size = 1F; // [minimum size = 0.3 maximum size = 1]
-        int angora = 0; // [level 1, level 2]
 
         if (genes[46] < 5){
             size = size - 0.07F;
@@ -220,31 +225,6 @@ public class ModelEnhancedRabbit extends ModelBase
         if ( genes[34] == 2 || genes[35] == 2){
             size = 0.3F + ((size - 0.3F)/2F);
         }
-
-        if ( genes[26] == 2 && genes[27] == 2 && !this.isChild){
-            if (genes[50] == 1 && genes[51] == 1 || genes[50] == 3 && genes[51] == 3){
-                angora = 1;
-            }else if ( genes[50] == 1 || genes[51] == 1 || genes[50] == 3 || genes[51] == 3){
-                angora = 2;
-            }else{
-                angora = 3;
-            }
-
-            if ( genes[52] >= 2 && genes[53] >= 2){
-                angora = angora + 1;
-                if ( genes[52] == 3 && genes[53] == 3 && angora <= 3){
-                    angora = angora + 1;
-                }
-            }
-
-            if ( genes[54] == 1 || genes[55] == 1 && angora >= 2){
-                angora = angora - 1;
-                if ( genes[54] == 1 && genes[55] == 1 && angora >= 2){
-                    angora = angora - 1;
-                }
-            }
-        }
-
 
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
 
@@ -285,28 +265,28 @@ public class ModelEnhancedRabbit extends ModelBase
             this.rabbitRightEar.render(scale);
             this.rabbitLeftThigh.render(scale);
             this.rabbitRightThigh.render(scale);
-            if (angora == 0){
+            if (coatlength == 0){
                 this.rabbitBody.render(scale);
                 //this.rabbitButtRound.render(scale);
                 this.rabbitButt.render(scale);
                 //this.rabbitButtTube.render(scale);
             }else{
-                if(angora == 1){
+                if(coatlength == 1){
                     this.rabbitBodyAngora1.render(scale);
                     //this.rabbitButtRoundAngora1.render(scale);
                     this.rabbitButtAngora1.render(scale);
                     //this.rabbitButtTubeAngora1.render(scale);
-                }else if(angora == 2){
+                }else if(coatlength == 2){
                     this.rabbitBodyAngora2.render(scale);
                     //this.rabbitButtRoundAngora2.render(scale);
                     this.rabbitButtAngora2.render(scale);
                     //this.rabbitButtTubeAngora2.render(scale);
-                }else if(angora == 3){
+                }else if(coatlength == 3){
                     this.rabbitBodyAngora3.render(scale);
                     //this.rabbitButtRoundAngora3.render(scale);
                     this.rabbitButtAngora3.render(scale);
                     //this.rabbitButtTubeAngora3.render(scale);
-                }else if(angora == 4){
+                }else if(coatlength == 4){
                     this.rabbitBodyAngora4.render(scale);
                     //this.rabbitButtRoundAngora4.render(scale);
                     this.rabbitButtAngora4.render(scale);

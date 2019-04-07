@@ -86,7 +86,6 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
             "higher_agoutihimy_lilac.png", "higher_tanhimy_lilac.png", "higher_selfhimy_lilac.png"
     };
 
-    // 1 5 9
     private static final String[] RABBIT_TEXTURES_TOP = new String[] {
         "", "top_steal.png", "top_stealdark.png", "top_tan.png", "top_self.png",
         "top_steal_blue.png", "top_stealdark_blue.png", "top_tan_blue.png", "top_self_blue.png",
@@ -102,7 +101,6 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         "", "dutch0.png", "dutch1.png", "dutch2.png", "dutch3.png", "dutch4.png", "dutch5.png", "dutch6.png", "dutch7.png", "dutch8.png", "dutch9.png", "dutcha.png", "dutchb.png", "dutchc.png", "dutchd.png", "dutche.png", "dutchf.png"
     };
 
-    // higher numbers are more white
     private static final String[] RABBIT_TEXTURES_BROKEN = new String[] {
         "", "broken0.png", "broken1.png", "broken2.png", "broken3.png", "broken4.png", "broken5.png", "broken6.png", "broken7.png", "broken8.png", "broken9.png", "brokena.png", "brokenb.png", "brokenc.png", "brokend.png", "brokene.png", "brokenf.png",
             "charlie0.png", "charlie1.png", "charlie2.png", "charlie3.png", "charlie4.png", "charlie5.png", "charlie6.png", "charlie7.png", "charlie8.png", "charlie9.png", "charliea.png", "charlieb.png", "charliec.png", "charlied.png", "charliee.png", "charlief.png",
@@ -1253,12 +1251,14 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         Random rand = new Random();
         int[] bunnyGenes = new int[GENES_LENGTH];
 
-        for (int i = 0; i < genes.length; i++) {
+        for (int i = 0; i < genes.length; i = (i + 2)) {
             boolean thisOrMate = rand.nextBoolean();
             if (thisOrMate) {
                 bunnyGenes[i] = mitosisGenes[i];
+                bunnyGenes[i+1] = mateMitosisGenes[i+1];
             } else {
                 bunnyGenes[i] = mateMitosisGenes[i];
+                bunnyGenes[i+1] = mitosisGenes[i+1];
             }
         }
 

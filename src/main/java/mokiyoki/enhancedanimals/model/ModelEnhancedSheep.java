@@ -60,10 +60,12 @@ public class ModelEnhancedSheep extends ModelBase {
         this.tailBase.setRotationPoint(0.0F, 9.0F, 14.0F);
 
         this.tailMiddle = new ModelRenderer(this, 56, 6);
-        this.tailMiddle.addBox(-0.5F, 12.0F, 14.0F, 1, 3, 1);
+        this.tailMiddle.addBox(-0.5F, 0.0F, 0.0F, 1, 3, 1);
+        this.tailMiddle.setRotationPoint(0.0F, 3.0F, 0.0F);
 
         this.tailTip = new ModelRenderer(this, 60, 6);
-        this.tailTip.addBox(-0.5F, 15.0F, 14.0F, 1, 3, 1);
+        this.tailTip.addBox(-0.5F, 0.0F, 0.0F, 1, 3, 1);
+        this.tailTip.setRotationPoint(0.0F, 3.0F, 0.0F);
 
         this.leg1 = new ModelRenderer(this, 0, 22);
         this.leg1.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3);
@@ -77,6 +79,9 @@ public class ModelEnhancedSheep extends ModelBase {
         this.leg4 = new ModelRenderer(this, 36, 22);
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3);
         this.leg4.setRotationPoint(1, 14,11);
+
+        this.tailBase.addChild(tailMiddle);
+        this.tailMiddle.addChild(tailTip);
     }
 
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
@@ -98,8 +103,6 @@ public class ModelEnhancedSheep extends ModelBase {
 
             this.body.render(scale);
             this.tailBase.render(scale);
-            this.tailMiddle.render(scale);
-            this.tailTip.render(scale);
 
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
@@ -120,8 +123,6 @@ public class ModelEnhancedSheep extends ModelBase {
             this.earsL.render(scale);
             this.body.render(scale);
             this.tailBase.render(scale);
-            this.tailMiddle.render(scale);
-            this.tailTip.render(scale);
             this.leg1.render(scale);
             this.leg2.render(scale);
             this.leg3.render(scale);
@@ -141,13 +142,21 @@ public class ModelEnhancedSheep extends ModelBase {
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
-//        this.body.rotateAngleX = ((float)Math.PI / 2F);
+        //        this.body.rotateAngleX = ((float)Math.PI / 2F);
         this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-        this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
+        this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
         this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
 
-        this.tailBase.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        if (isChild) {
+            this.tailBase.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 1.3F * limbSwingAmount;
+            this.tailMiddle.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+            this.tailTip.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 1.5F * limbSwingAmount;
+        }else{
+            this.tailBase.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.4F * limbSwingAmount;
+            this.tailMiddle.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
+            this.tailTip.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.6F * limbSwingAmount;
+        }
 
         this.head.rotateAngleX = 1F + this.headRotationAngleX;   //might need to merge this with another line
 

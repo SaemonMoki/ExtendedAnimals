@@ -1718,12 +1718,14 @@ public class EnhancedChicken extends EntityAnimal {
                 }
             }
 
-            for(int i =20; i< genes.length; i++) {
+            for(int i =20; i< genes.length; i = (i+2)) {
                 boolean thisOrMate = rand.nextBoolean();
                 if (thisOrMate){
                     eggGenes[i] = mitosisGenes[i];
+                    eggGenes[i+1] = mateMitosisGenes[i+1];
                 } else {
                     eggGenes[i] = mateMitosisGenes[i];
+                    eggGenes[i+1] = mitosisGenes[i+1];
                 }
             }
 

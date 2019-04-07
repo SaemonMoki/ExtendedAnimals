@@ -371,41 +371,42 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
             this.jumpDuration = 0;
             this.setJumping(false);
         }
-        timeForGrowth++;
-        if (maxCoatLength == 1){
-            if (timeForGrowth >= 48000) {
-                timeForGrowth = 0;
-                if (maxCoatLength > currentCoatLength) {
-                    currentCoatLength++;
-                    setCoatLength(currentCoatLength);
+        if (!this.world.isRemote) {
+            timeForGrowth++;
+            if (maxCoatLength == 1){
+                if (timeForGrowth >= 48000) {
+                    timeForGrowth = 0;
+                    if (maxCoatLength > currentCoatLength) {
+                        currentCoatLength++;
+                        setCoatLength(currentCoatLength);
+                    }
                 }
-            }
-        }else if (maxCoatLength == 2){
-            if (timeForGrowth >= 24000) {
-                timeForGrowth = 0;
-                if (maxCoatLength > currentCoatLength) {
-                    currentCoatLength++;
-                    setCoatLength(currentCoatLength);
+            }else if (maxCoatLength == 2){
+                if (timeForGrowth >= 24000) {
+                    timeForGrowth = 0;
+                    if (maxCoatLength > currentCoatLength) {
+                        currentCoatLength++;
+                        setCoatLength(currentCoatLength);
+                    }
                 }
-            }
-        }else if (maxCoatLength == 3){
-            if (timeForGrowth >= 16000) {
-                timeForGrowth = 0;
-                if (maxCoatLength > currentCoatLength) {
-                    currentCoatLength++;
-                    setCoatLength(currentCoatLength);
+            }else if (maxCoatLength == 3){
+                if (timeForGrowth >= 16000) {
+                    timeForGrowth = 0;
+                    if (maxCoatLength > currentCoatLength) {
+                        currentCoatLength++;
+                        setCoatLength(currentCoatLength);
+                    }
                 }
-            }
-        }else if (maxCoatLength == 4){
-            if (timeForGrowth >= 12000) {
-                timeForGrowth = 0;
-                if (maxCoatLength > currentCoatLength) {
-                    currentCoatLength++;
-                    setCoatLength(currentCoatLength);
+            }else if (maxCoatLength == 4){
+                if (timeForGrowth >= 12000) {
+                    timeForGrowth = 0;
+                    if (maxCoatLength > currentCoatLength) {
+                        currentCoatLength++;
+                        setCoatLength(currentCoatLength);
+                    }
                 }
             }
         }
-
     }
 
     public class RabbitJumpHelper extends EntityJumpHelper {

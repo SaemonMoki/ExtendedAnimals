@@ -15,12 +15,27 @@ public class ModelEnhancedSheep extends ModelBase {
 
     private float headRotationAngleX;
     private float f12 = 0F;
+    private int coatlength = 0;
 
     private final ModelRenderer head;
     private final ModelRenderer earsR;
     private final ModelRenderer earsL;
     private final ModelRenderer body;
-    private final ModelRenderer wool;
+    private final ModelRenderer wool1;
+    private final ModelRenderer wool2;
+    private final ModelRenderer wool3;
+    private final ModelRenderer wool4;
+    private final ModelRenderer wool5;
+    private final ModelRenderer wool6;
+    private final ModelRenderer wool7;
+    private final ModelRenderer wool8;
+    private final ModelRenderer wool9;
+    private final ModelRenderer wool10;
+    private final ModelRenderer wool11;
+    private final ModelRenderer wool12;
+    private final ModelRenderer wool13;
+    private final ModelRenderer wool14;
+    private final ModelRenderer wool15;
     private final ModelRenderer tailBase;
     private final ModelRenderer tailMiddle;
     private final ModelRenderer tailTip;
@@ -52,8 +67,50 @@ public class ModelEnhancedSheep extends ModelBase {
         this.body = new ModelRenderer(this, 2, 0);
         this.body.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 0.0F);
 
-        this.wool = new ModelRenderer(this, 2, 0);
-        this.wool.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 0.5F);
+        this.wool1 = new ModelRenderer(this, 2, 0);
+        this.wool1.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 0.2F);
+
+        this.wool2 = new ModelRenderer(this, 2, 0);
+        this.wool2.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 0.4F);
+
+        this.wool3 = new ModelRenderer(this, 2, 0);
+        this.wool3.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 0.6F);
+
+        this.wool4 = new ModelRenderer(this, 2, 0);
+        this.wool4.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 0.8F);
+
+        this.wool5 = new ModelRenderer(this, 2, 0);
+        this.wool5.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 1.0F);
+
+        this.wool6 = new ModelRenderer(this, 2, 0);
+        this.wool6.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 1.2F);
+
+        this.wool7 = new ModelRenderer(this, 2, 0);
+        this.wool7.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 1.4F);
+
+        this.wool8 = new ModelRenderer(this, 2, 0);
+        this.wool8.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 1.6F);
+
+        this.wool9 = new ModelRenderer(this, 2, 0);
+        this.wool9.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 1.8F);
+
+        this.wool10 = new ModelRenderer(this, 2, 0);
+        this.wool10.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 2.0F);
+
+        this.wool11 = new ModelRenderer(this, 2, 0);
+        this.wool11.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 2.2F);
+
+        this.wool12 = new ModelRenderer(this, 2, 0);
+        this.wool12.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 2.4F);
+
+        this.wool13 = new ModelRenderer(this, 2, 0);
+        this.wool13.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 2.6F);
+
+        this.wool14 = new ModelRenderer(this, 2, 0);
+        this.wool14.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 2.8F);
+
+        this.wool15 = new ModelRenderer(this, 2, 0);
+        this.wool15.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 3.0F);
 
         this.tailBase = new ModelRenderer(this, 50, 6);
         this.tailBase.addBox(-1.0F, 0.0F, 0.0F, 2, 3, 1);
@@ -86,6 +143,10 @@ public class ModelEnhancedSheep extends ModelBase {
 
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
+
+        EnhancedSheep enhancedSheep = (EnhancedSheep) entityIn;
+
+        this.coatlength = enhancedSheep.getCoatLength();
 
         if (this.isChild) {
             GlStateManager.pushMatrix();
@@ -121,7 +182,38 @@ public class ModelEnhancedSheep extends ModelBase {
             this.head.render(scale);
             this.earsR.render(scale);
             this.earsL.render(scale);
-            this.body.render(scale);
+                this.body.render(scale);
+             if (coatlength == 1){
+                this.wool1.render(scale);
+            }else if (coatlength == 2){
+                this.wool2.render(scale);
+            }else if (coatlength == 3){
+                this.wool3.render(scale);
+            }else if (coatlength == 4){
+                this.wool4.render(scale);
+            }else if (coatlength == 5){
+                this.wool5.render(scale);
+            }else if (coatlength == 6){
+                this.wool6.render(scale);
+            }else if (coatlength == 7){
+                this.wool7.render(scale);
+            }else if (coatlength == 8){
+                this.wool8.render(scale);
+            }else if (coatlength == 9){
+                this.wool9.render(scale);
+            }else if (coatlength == 10){
+                this.wool10.render(scale);
+            }else if (coatlength == 11){
+                this.wool11.render(scale);
+            }else if (coatlength == 12){
+                this.wool12.render(scale);
+            }else if (coatlength == 13){
+                this.wool13.render(scale);
+            }else if (coatlength == 14){
+                this.wool14.render(scale);
+            }else if (coatlength == 15){
+                this.wool15.render(scale);
+            }
             this.tailBase.render(scale);
             this.leg1.render(scale);
             this.leg2.render(scale);

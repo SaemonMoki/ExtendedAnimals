@@ -306,7 +306,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         super.livingTick();
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
         this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
-        if (this.world.isRemote) {
+        if (!this.world.isRemote) {
             timeForGrowth++;
             if (timeForGrowth >= 24000) {
                 timeForGrowth = 0;

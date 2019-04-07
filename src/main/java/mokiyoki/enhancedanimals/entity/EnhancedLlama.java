@@ -721,6 +721,20 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
             mateGenes[i] = gene;
         }
 
+        //TODO add a proper calculation for this
+        for (int i = 0; i < genes.length; i++) {
+            if (genes[i] == 0) {
+                genes[i] = 1;
+            }
+        }
+        if (mateGenes[0] != 0) {
+            for (int i = 0; i < mateGenes.length; i++) {
+                if (mateGenes[i] == 0) {
+                    mateGenes[i] = 1;
+                }
+            }
+        }
+
         setSharedGenes(genes);
 
         if (compound.contains("DecorItem", 10)) {

@@ -383,17 +383,17 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         if (!this.world.isRemote) {
             if (currentCoatLength == 1) {
-                int i = this.rand.nextInt(3);
-                if (i>2){
+                int i = this.rand.nextInt(4);
+                if (i>3){
                     ret.add(new ItemStack(Blocks.BROWN_WOOL));
                 }
             } else if (currentCoatLength == 2) {
-                int i = this.rand.nextInt(1);
+                int i = this.rand.nextInt(2);
                 if (i>0){
                     ret.add(new ItemStack(Blocks.BROWN_WOOL));
                 }
             } else if (currentCoatLength == 3) {
-                int i = this.rand.nextInt(3);
+                int i = this.rand.nextInt(4);
                 if (i>0){
                     ret.add(new ItemStack(Blocks.BROWN_WOOL));
                 }

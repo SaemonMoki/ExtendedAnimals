@@ -306,12 +306,14 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         super.livingTick();
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
         this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
-        timeForGrowth++;
-        if (timeForGrowth >= 24000) {
-            timeForGrowth = 0;
-            if (maxCoatLength > currentCoatLength) {
-                currentCoatLength++;
-                setCoatLength(currentCoatLength);
+        if (this.world.isRemote) {
+            timeForGrowth++;
+            if (timeForGrowth >= 24000) {
+                timeForGrowth = 0;
+                if (maxCoatLength > currentCoatLength) {
+                    currentCoatLength++;
+                    setCoatLength(currentCoatLength);
+                }
             }
         }
 
@@ -372,7 +374,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
 
     @Override
     public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, BlockPos pos) {
-        if (currentCoatLength >=0) {
+        if (!this.world.isRemote && currentCoatLength >=0 && !isChild()) {
             return true;
         }
         return false;
@@ -381,7 +383,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     @Override
     public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IWorld world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
-        if (!this.world.isRemote) {
+        if (!this.world.isRemote && !isChild()) {
             if (currentCoatLength == 1) {
                 int i = this.rand.nextInt(4);
                 if (i>3){

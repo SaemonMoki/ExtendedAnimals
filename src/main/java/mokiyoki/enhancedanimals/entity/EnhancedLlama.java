@@ -772,12 +772,14 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         Random rand = new Random();
         int[] criaGenes = new int[GENES_LENGTH];
 
-        for (int i = 0; i < genes.length; i++) {
+        for (int i = 0; i < genes.length; i = (i + 2)) {
             boolean thisOrMate = rand.nextBoolean();
             if (thisOrMate) {
                 criaGenes[i] = mitosisGenes[i];
+                criaGenes[i+1] = mateMitosisGenes[i+1];
             } else {
                 criaGenes[i] = mateMitosisGenes[i];
+                criaGenes[i+1] = mitosisGenes[i+1];
             }
         }
 

@@ -877,115 +877,115 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         }
 
         //added wool length 1 [ wildtype, wool1 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[20] = (2);
+            initialGenes[20] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[21] = (2);
+            initialGenes[21] = (1);
         }
 
         //added wool length 2 [ wildtype, wool2 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[22] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[22] = (2);
+            initialGenes[22] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[23] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[23] = (2);
+            initialGenes[23] = (1);
         }
 
         //added wool length 3 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[24] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[24] = (2);
+            initialGenes[24] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[25] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[25] = (2);
+            initialGenes[25] = (1);
         }
 
         //added wool length 4 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[26] = (2);
+            initialGenes[26] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[27] = (2);
+            initialGenes[27] = (1);
         }
 
         //added wool length 5 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[28] = (2);
+            initialGenes[28] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[29] = (2);
+            initialGenes[29] = (1);
         }
 
         //added wool length 6 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[30] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[30] = (2);
+            initialGenes[30] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[31] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[31] = (2);
+            initialGenes[31] = (1);
         }
 
         //added wool length 7 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[32] = (2);
+            initialGenes[32] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[33] = (2);
+            initialGenes[33] = (1);
         }
 
         //added wool length 8 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[34] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[34] = (2);
+            initialGenes[34] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[35] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[35] = (2);
+            initialGenes[35] = (1);
         }
 
         return initialGenes;

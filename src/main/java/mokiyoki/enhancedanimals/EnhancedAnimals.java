@@ -1,10 +1,10 @@
 package mokiyoki.enhancedanimals;
 
-import mokiyoki.enhancedanimals.capability.egg.EggCapability;
+import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityStorage;
 import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
 import mokiyoki.enhancedanimals.capability.post.IPostCapability;
-import mokiyoki.enhancedanimals.capability.post.PostCapability;
+import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
 import mokiyoki.enhancedanimals.loot.EnhancedChickenLootCondition;
 import mokiyoki.enhancedanimals.loot.EnhancedLlamaLootCondition;
@@ -67,8 +67,8 @@ public class EnhancedAnimals {
     private void setup(final FMLCommonSetupEvent event) {
         // some preinit code
         proxy.init(event);
-        CapabilityManager.INSTANCE.register(IPostCapability.class, new PostCapabilityStorage(), PostCapability::new);
-        CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapability::new);
+        CapabilityManager.INSTANCE.register(IPostCapability.class, new PostCapabilityStorage(), PostCapabilityProvider::new);
+        CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapabilityProvider::new);
 
         LootTableList.register(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
         LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());

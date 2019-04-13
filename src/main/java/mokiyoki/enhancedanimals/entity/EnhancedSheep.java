@@ -189,7 +189,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
             this.sheepTimer = Math.max(0, this.sheepTimer - 1);
         }
 
-        if (!this.world.isRemote && maxCoatLength != 0) {
+        if (!this.world.isRemote) {
             timeForGrowth++;
             if (timeForGrowth >= (24000 / maxCoatLength)) {
                 timeForGrowth = 0;
@@ -230,7 +230,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
     @Override
     public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, BlockPos pos) {
-        if (!this.world.isRemote && currentCoatLength >0 && !isChild()) {
+        if (currentCoatLength >=1) {
             return true;
         }
         return false;

@@ -706,7 +706,8 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     public void readAdditional(NBTTagCompound compound) {
         this.setStrength(compound.getInt("Strength"));
         this.setInventory(compound.getInt("Inventory"));
-        this.setCoatLength(compound.getInt("CoatLength"));
+        currentCoatLength = compound.getInt("CoatLength");
+        this.setCoatLength(currentCoatLength);
         super.readAdditional(compound);
 
         NBTTagList geneList = compound.getList("Genes", 10);

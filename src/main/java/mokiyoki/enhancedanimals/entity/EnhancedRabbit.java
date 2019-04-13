@@ -694,7 +694,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
 
     @Override
     public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, BlockPos pos) {
-        if (currentCoatLength >=1) {
+        if (!this.world.isRemote && currentCoatLength >=1) {
             return true;
         }
         return false;
@@ -764,6 +764,8 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
             mateGeneList.add(nbttagcompound);
         }
         compound.setTag("FatherGenes", mateGeneList);
+
+        compound.setFloat("CoatLength", this.getCoatLength());
     }
 
     /**
@@ -771,6 +773,9 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
      */
     public void readAdditional(NBTTagCompound compound) {
         super.readAdditional(compound);
+
+        currentCoatLength = compound.getInt("CoatLength");
+        this.setCoatLength(currentCoatLength);
 
         NBTTagList geneList = compound.getList("Genes", 10);
         for (int i = 0; i < geneList.size(); ++i) {

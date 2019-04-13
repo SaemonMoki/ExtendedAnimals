@@ -230,7 +230,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
     @Override
     public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, BlockPos pos) {
-        if (currentCoatLength >=1) {
+        if (!this.world.isRemote && currentCoatLength >=1) {
             return true;
         }
         return false;
@@ -433,8 +433,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String[] getVariantFleeceTexturePaths()
-    {
+    public String[] getVariantFleeceTexturePaths() {
         if (this.sheepFleeceTextures.isEmpty()) {
             this.setFleeceTexturePaths();
         }
@@ -448,8 +447,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id)
-    {
+    public void handleStatusUpdate(byte id) {
         if (id == 10) {
             this.sheepTimer = 40;
         } else {
@@ -461,8 +459,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     //EATING???
 
     @OnlyIn(Dist.CLIENT)
-    public float getHeadRotationPointY(float partialTickTime)
-    {
+    public float getHeadRotationPointY(float partialTickTime) {
         if (this.sheepTimer <= 0)
         {
             return 0.0F;
@@ -478,8 +475,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     }
     //EATING???
     @OnlyIn(Dist.CLIENT)
-    public float getHeadRotationAngleX(float partialTickTime)
-    {
+    public float getHeadRotationAngleX(float partialTickTime) {
         if (this.sheepTimer > 4 && this.sheepTimer <= 36)
         {
             float f = ((float)(this.sheepTimer - 4) - partialTickTime) / 32.0F;
@@ -559,7 +555,8 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
      */
     public void readAdditional(NBTTagCompound compound) {
 
-        this.setCoatLength(compound.getInt("CoatLength"));
+        currentCoatLength = compound.getInt("CoatLength");
+        this.setCoatLength(currentCoatLength);
 
         super.readAdditional(compound);
 

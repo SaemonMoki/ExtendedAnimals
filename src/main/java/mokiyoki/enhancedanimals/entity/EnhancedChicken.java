@@ -182,7 +182,7 @@ public class EnhancedChicken extends EntityAnimal {
         super(ENHANCED_CHICKEN, worldIn);
         this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
         this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
-        this.setPathPriority(PathNodeType.WATER, 0.0F); //TODO investigate what this do and how/if needed
+        this.setPathPriority(PathNodeType.WATER, 0.0F);
     }
 
     protected void initEntityAI()
@@ -291,9 +291,6 @@ public class EnhancedChicken extends EntityAnimal {
         if (!this.world.isRemote && !this.isChild() && --this.timeUntilNextEgg <= 0)
         {
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
-//            this.dropItem(Items.EGG, 1);
-//            this.entityDropItem(getEggColour(resolveEggColour()), 1);
-//            this.dropItem(getEggColour(resolveEggColour()), 1); //TODO replace this with the hatching eggs
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
             eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).setGenes(getEggGenes());
             NBTTagCompound nbtTagCompound = eggItem.serializeNBT();
@@ -314,9 +311,7 @@ public class EnhancedChicken extends EntityAnimal {
             this.wingRotDelta = 1.0F;
         }
 
-        //TODO find roost and sit on it, after tick 22812 find a suitable roost (horizontal post) that can be reached. If chicken gets to the chosen spot sit, after tick 13000 sit anyways. after tick 22812 stop sitting
-
-        //TODO if "is child" and parent is sitting go under parent, possibly turn off ability to collide.
+       //TODO if "is child" and parent is sitting go under parent, possibly turn off ability to collide.
 
         //TODO if "is child" and parent is 1 block over or less and doesn't have a passenger ride on parent's back
 
@@ -528,7 +523,7 @@ public class EnhancedChicken extends EntityAnimal {
 
             //TODO fix up columbian type patterns to look more varried
             //TODO add in heterozygous pattern variations
-            //TODO redo ground colours to use autosomal red
+            //TODO redo ground colours to use autosomal red and more fleshed out
 
             boolean isAlbino = false;
 
@@ -1663,7 +1658,6 @@ public class EnhancedChicken extends EntityAnimal {
             mateGenes[i] = gene;
         }
 
-        //TODO add a proper calculation for this
         for (int i = 0; i < genes.length; i++) {
             if (genes[i] == 0) {
                 genes[i] = 1;
@@ -1767,8 +1761,6 @@ public class EnhancedChicken extends EntityAnimal {
 
     private int[] createInitialGenes() {
         int[] initialGenes = new int[Reference.CHICKEN_GENES_LENGTH];
-        //TODO create biome WTC variable [hot and dry biomes, hot and wet biomes, cold biomes] WTC is all others
-
 
             //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
             int wildType = 0;

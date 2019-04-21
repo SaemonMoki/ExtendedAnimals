@@ -407,6 +407,11 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                 }
             }
         }
+
+        if (!this.world.isRemote){
+            lethalGenes();
+        }
+
     }
 
     public class RabbitJumpHelper extends EntityJumpHelper {
@@ -659,6 +664,13 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         }
 
         return new ResourceLocation(Reference.MODID, "enhanced_rabbit");
+    }
+
+    public void lethalGenes(){
+
+        if(genes[34] == 2 && genes[35] == 2) {
+            this.remove();
+        }
     }
 
     public String getDropMeatType() {
@@ -1663,14 +1675,9 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         //Dwarf [ wildtype, dwarf]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[34] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
+            initialGenes[35] = (1);
         } else {
             initialGenes[34] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[35] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
             initialGenes[35] = (1);
         }
 

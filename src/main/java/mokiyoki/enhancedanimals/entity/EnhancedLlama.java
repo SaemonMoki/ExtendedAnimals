@@ -28,6 +28,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -262,6 +263,24 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
      */
     protected boolean isMovementBlocked() {
         return this.getHealth() <= 0.0F || this.isEatingHaystack();
+    }
+
+    @Override
+    public boolean processInteract(EntityPlayer entityPlayer, EnumHand hand) {
+        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+        if (itemStack.getItem() != Items.SHEARS) {
+            super.processInteract(entityPlayer, hand);
+        } else {
+            List<ItemStack> woolToDrop = onSheared(itemStack, null, null, 0);
+            java.util.Random rand = new java.util.Random();
+            for (ItemStack stack : woolToDrop) {
+                net.minecraft.entity.item.EntityItem ent = this.entityDropItem(stack, 1.0F);
+                ent.motionY += rand.nextFloat() * 0.05F;
+                ent.motionX += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
+                ent.motionZ += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
+            }
+        }
+        return true;
     }
 
 

@@ -58,32 +58,48 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
 
     // 1 7 13
     private static final String[] RABBIT_TEXTURES_LOWER = new String[] {
-        ""
+        "", "middle_orange.png", "middle_orangetan.png", "middle_orangeagouti.png",
     };
 
     private static final String[] RABBIT_TEXTURES_MIDDLE = new String[] {
-            "", "middle_orange.png", "middle_orangetan.png", "middle_orangeagouti.png",
-                "under_cream.png", "middle_creamtan.png", "middle_creamagouti.png",
-                "under_white.png", "middle_whitetan.png", "middle_whiteagouti.png"
+        "", "middle_orange.png", "middle_orangetan.png", "middle_orangeagouti.png",
+            "under_cream.png", "middle_creamtan.png", "middle_creamagouti.png",
+            "under_white.png", "middle_whitetan.png", "middle_whiteagouti.png"
     };
 
     private static final String[] RABBIT_TEXTURES_HIGHER = new String[] {
-            "", "higher_agouti.png", "higher_tan.png", "higher_self.png",
-            "higher_agouti_blue.png", "higher_tan_blue.png", "higher_self_blue.png",
-            "higher_agouti_choc.png", "higher_tan_choc.png", "higher_self_choc.png",
-            "higher_agouti_lilac.png", "higher_tan_lilac.png", "higher_self_lilac.png",
-            "higher_agoutiseal.png", "higher_tanseal.png", "higher_selfseal.png",
-            "higher_agoutiseal_blue.png", "higher_tanseal_blue.png", "higher_selfseal_blue.png",
-            "higher_agoutiseal_choc.png", "higher_tanseal_choc.png", "higher_selfseal_choc.png",
-            "higher_agoutiseal_lilac.png", "higher_tanseal_lilac.png", "higher_selfseal_lilac.png",
-            "higher_agoutisable.png", "higher_tansable.png", "higher_selfsable.png",
-            "higher_agoutisable_blue.png", "higher_tansable_blue.png", "higher_selfsable_blue.png",
-            "higher_agoutisable_choc.png", "higher_tansable_choc.png", "higher_selfsable_choc.png",
-            "higher_agoutisable_lilac.png", "higher_tansable_lilac.png", "higher_selfsable_lilac.png",
-            "higher_agoutihimy.png", "higher_tanhimy.png", "higher_selfhimy.png",
-            "higher_agoutihimy_blue.png", "higher_tanhimy_blue.png", "higher_selfhimy_blue.png",
-            "higher_agoutihimy_choc.png", "higher_tanhimy_choc.png", "higher_selfhimy_choc.png",
-            "higher_agoutihimy_lilac.png", "higher_tanhimy_lilac.png", "higher_selfhimy_lilac.png"
+        "", "higher_agouti.png", "higher_tan.png", "higher_self.png",
+        "higher_agouti_blue.png", "higher_tan_blue.png", "higher_self_blue.png",
+        "higher_agouti_choc.png", "higher_tan_choc.png", "higher_self_choc.png",
+        "higher_agouti_lilac.png", "higher_tan_lilac.png", "higher_self_lilac.png",
+        "higher_agoutiseal.png", "higher_tanseal.png", "higher_selfseal.png",
+        "higher_agoutiseal_blue.png", "higher_tanseal_blue.png", "higher_selfseal_blue.png",
+        "higher_agoutiseal_choc.png", "higher_tanseal_choc.png", "higher_selfseal_choc.png",
+        "higher_agoutiseal_lilac.png", "higher_tanseal_lilac.png", "higher_selfseal_lilac.png",
+        "higher_agoutisable.png", "higher_tansable.png", "higher_selfsable.png",
+        "higher_agoutisable_blue.png", "higher_tansable_blue.png", "higher_selfsable_blue.png",
+        "higher_agoutisable_choc.png", "higher_tansable_choc.png", "higher_selfsable_choc.png",
+        "higher_agoutisable_lilac.png", "higher_tansable_lilac.png", "higher_selfsable_lilac.png",
+        "higher_agoutihimy.png", "higher_tanhimy.png", "higher_selfhimy.png",
+        "higher_agoutihimy_blue.png", "higher_tanhimy_blue.png", "higher_selfhimy_blue.png",
+        "higher_agoutihimy_choc.png", "higher_tanhimy_choc.png", "higher_selfhimy_choc.png",
+        "higher_agoutihimy_lilac.png", "higher_tanhimy_lilac.png", "higher_selfhimy_lilac.png",
+        "higher_agouti_lutino.png", "higher_tan_lutino.png", "higher_self_lutino.png",
+        "higher_agouti_blue_lutino.png", "higher_tan_blue_lutino.png", "higher_self_blue_lutino.png",
+        "higher_agouti_choc_lutino.png", "higher_tan_choc_lutino.png", "higher_self_choc_lutino.png",
+        "higher_agouti_lilac_lutino.png", "higher_tan_lilac_lutino.png", "higher_self_lilac_lutino.png",
+        "higher_agoutiseal_lutino.png", "higher_tanseal_lutino.png", "higher_selfseal_lutino.png",
+        "higher_agoutiseal_blue_lutino.png", "higher_tanseal_blue_lutino.png", "higher_selfseal_blue_lutino.png",
+        "higher_agoutiseal_choc_lutino.png", "higher_tanseal_choc_lutino.png", "higher_selfseal_choc_lutino.png",
+        "higher_agoutiseal_lilac_lutino.png", "higher_tanseal_lilac_lutino.png", "higher_selfseal_lilac_lutino.png",
+        "higher_agoutisable_lutino.png", "higher_tansable_lutino.png", "higher_selfsable_lutino.png",
+        "higher_agoutisable_blue_lutino.png", "higher_tansable_blue_lutino.png", "higher_selfsable_blue_lutino.png",
+        "higher_agoutisable_choc_lutino.png", "higher_tansable_choc_lutino.png", "higher_selfsable_choc_lutino.png",
+        "higher_agoutisable_lilac_lutino.png", "higher_tansable_lilac_lutino.png", "higher_selfsable_lilac_lutino.png",
+        "higher_agoutihimy_lutino.png", "higher_tanhimy_lutino.png", "higher_selfhimy_lutino.png",
+        "higher_agoutihimy_blue_lutino.png", "higher_tanhimy_blue_lutino.png", "higher_selfhimy_blue_lutino.png",
+        "higher_agoutihimy_choc_lutino.png", "higher_tanhimy_choc_lutino.png", "higher_selfhimy_choc_lutino.png",
+        "higher_agoutihimy_lilac_lutino.png", "higher_tanhimy_lilac_lutino.png", "higher_selfhimy_lilac_lutino.png"
     };
 
     private static final String[] RABBIT_TEXTURES_TOP = new String[] {
@@ -91,10 +107,18 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         "top_steal_blue.png", "top_stealdark_blue.png", "top_tan_blue.png", "top_self_blue.png",
         "top_steal_choc.png", "top_stealdark_choc.png", "top_tan_choc.png", "top_self_choc.png",
         "top_steal_lilac.png", "top_stealdark_lilac.png", "top_tan_lilac.png", "top_self_lilac.png",
+        "top_steal_lutino.png", "top_stealdark_lutino.png", "top_tan_lutino.png", "top_self_lutino.png",
+        "top_steal_blue_lutino.png", "top_stealdark_blue_lutino.png", "top_tan_blue_lutino.png", "top_self_blue_lutino.png",
+        "top_steal_choc_lutino.png", "top_stealdark_choc_lutino.png", "top_tan_choc_lutino.png", "top_self_choc_lutino.png",
+        "top_steal_lilac_lutino.png", "top_stealdark_lilac_lutino.png", "top_tan_lilac_lutino.png", "top_self_lilac_lutino.png",
             "top_harly0.png", "top_harly1.png", "top_harly2.png", "top_harly3.png", "top_harly4.png", "top_harly5.png", "top_harly6.png", "top_harly7.png", "top_harly8.png", "top_harly9.png", "top_harlya.png", "top_harlyb.png", "top_harlyc.png", "top_harlyd.png", "top_harlye.png", "top_harlyf.png",
             "top_harly0_blue.png", "top_harly1_blue.png", "top_harly2_blue.png", "top_harly3_blue.png", "top_harly4_blue.png", "top_harly5_blue.png", "top_harly6_blue.png", "top_harly7_blue.png", "top_harly8_blue.png", "top_harly9_blue.png", "top_harlya_blue.png", "top_harlyb_blue.png", "top_harlyc_blue.png", "top_harlyd_blue.png", "top_harlye_blue.png", "top_harlyf_blue.png",
             "top_harly0_choc.png", "top_harly1_choc.png", "top_harly2_choc.png", "top_harly3_choc.png", "top_harly4_choc.png", "top_harly5_choc.png", "top_harly6_choc.png", "top_harly7_choc.png", "top_harly8_choc.png", "top_harly9_choc.png", "top_harlya_choc.png", "top_harlyb_choc.png", "top_harlyc_choc.png", "top_harlyd_choc.png", "top_harlye_choc.png", "top_harlyf_choc.png",
             "top_harly0_lilac.png", "top_harly1_lilac.png", "top_harly2_lilac.png", "top_harly3_lilac.png", "top_harly4_lilac.png", "top_harly5_lilac.png", "top_harly6_lilac.png", "top_harly7_lilac.png", "top_harly8_lilac.png", "top_harly9_lilac.png", "top_harlya_lilac.png", "top_harlyb_lilac.png", "top_harlyc_lilac.png", "top_harlyd_lilac.png", "top_harlye_lilac.png", "top_harlyf_lilac.png",
+            "top_harly0_lutino.png", "top_harly1_lutino.png", "top_harly2_lutino.png", "top_harly3_lutino.png", "top_harly4_lutino.png", "top_harly5_lutino.png", "top_harly6_lutino.png", "top_harly7_lutino.png", "top_harly8_lutino.png", "top_harly9_lutino.png", "top_harlya_lutino.png", "top_harlyb_lutino.png", "top_harlyc_lutino.png", "top_harlyd_lutino.png", "top_harlye_lutino.png", "top_harlyf_lutino.png",
+            "top_harly0_blue_lutino.png", "top_harly1_blue_lutino.png", "top_harly2_blue_lutino.png", "top_harly3_blue_lutino.png", "top_harly4_blue_lutino.png", "top_harly5_blue_lutino.png", "top_harly6_blue_lutino.png", "top_harly7_blue_lutino.png", "top_harly8_blue_lutino.png", "top_harly9_blue_lutino.png", "top_harlya_blue_lutino.png", "top_harlyb_blue_lutino.png", "top_harlyc_blue_lutino.png", "top_harlyd_blue_lutino.png", "top_harlye_blue_lutino.png", "top_harlyf_blue_lutino.png",
+            "top_harly0_choc_lutino.png", "top_harly1_choc_lutino.png", "top_harly2_choc_lutino.png", "top_harly3_choc_lutino.png", "top_harly4_choc_lutino.png", "top_harly5_choc_lutino.png", "top_harly6_choc_lutino.png", "top_harly7_choc_lutino.png", "top_harly8_choc_lutino.png", "top_harly9_choc_lutino.png", "top_harlya_choc_lutino.png", "top_harlyb_choc_lutino.png", "top_harlyc_choc_lutino.png", "top_harlyd_choc_lutino.png", "top_harlye_choc_lutino.png", "top_harlyf_choc_lutino.png",
+            "top_harly0_lilac_lutino.png", "top_harly1_lilac_lutino.png", "top_harly2_lilac_lutino.png", "top_harly3_lilac_lutino.png", "top_harly4_lilac_lutino.png", "top_harly5_lilac_lutino.png", "top_harly6_lilac_lutino.png", "top_harly7_lilac_lutino.png", "top_harly8_lilac_lutino.png", "top_harly9_lilac_lutino.png", "top_harlya_lilac_lutino.png", "top_harlyb_lilac_lutino.png", "top_harlyc_lilac_lutino.png", "top_harlyd_lilac_lutino.png", "top_harlye_lilac_lutino.png", "top_harlyf_lilac_lutino.png",
     };
 
     private static final String[] RABBIT_TEXTURES_DUTCH = new String[] {
@@ -120,12 +144,14 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
 
     private static final String[] RABBIT_TEXTURES_VIENNAEYES = new String[] {
         "", "", "", "", "", "", "", "", "eyes_blue.png", "eyes_blue.png", "eyes_blue.png", "eyes_blue.png", "eyes_bluel.png", "eyes_bluel.png", "eyes_bluel.png", "eyes_bluer.png", "eyes_bluer.png", "eyes_bluer.png",
-        "", "", "", "", "", "", "", "", "eyes_albino.png", "eyes_albino.png", "eyes_albino.png", "eyes_albino.png", "eyes_redl.png", "eyes_redl.png", "eyes_redl.png", "eyes_redr.png", "eyes_redr.png", "eyes_redr.png"
+            "", "", "", "", "", "", "", "eyes_albino.png", "eyes_albino.png", "eyes_albino.png", "eyes_albino.png", "eyes_redl.png", "eyes_redl.png", "eyes_redl.png", "eyes_redr.png", "eyes_redr.png", "eyes_redr.png"
     };
 
     private static final String[] RABBIT_TEXTURES_SKIN = new String[] {
         "skin_pink.png", "skin_brown.png", "skin_white.png"
     };
+
+    //TODO find broken texture spawns in desert
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION_YELLOW, Items.CARROT, Items.GOLDEN_CARROT);
 
@@ -911,7 +937,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                     }
                 }else if (genesForText[8] != 2 && genesForText[9] != 2 && (genesForText[8] == 3 || genesForText[9] == 3)){
                     //harlequin
-                    top = 17 + ( 16 * shade);
+                    top = 33 + ( 16 * shade);
                     //TODO add harlequin variations here
                     if (genesForText[4] == 1 || genesForText[5] == 1){
                         middle = 1;
@@ -1009,8 +1035,6 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                     higher = higher + (HIGH * shade) + c;
                 }
 
-
-
                 //vieye Eyes and Spots
                 if (genesForText[14] == 2 || genesForText[15] == 2) {
                     //Random variants of vienna marked
@@ -1083,6 +1107,31 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                     eyes = 2;
                     vieye = 0;
                 }else if (genesForText[20] == 2 && genesForText[21] == 2){
+                    //lutino variations
+                    if (higher != 0){
+                        higher = higher + 48;
+                    }
+                    if (top != 0){
+                        if (top <= 16){
+                            //sets standard variation layers to their lutino version
+                            top = top + 16;
+                        }else{
+                            //sets random variation layers to their lutino version
+                            top = top + 64;
+                        }
+                    }
+
+                    if(genesForText[4] == 1 || genesForText[5] == 1){
+                        if (genesForText[0] == 1 || genesForText[1] == 1){
+                            lower = 2;
+                        }else if (genesForText[0] == 2 || genesForText[1] == 2){
+                            lower = 2;
+                        }else{
+                            lower = 3;
+                        }
+                    }
+
+                    //lutino eye colour variations including vienna versions
                     if (eyes == 1){
                         eyes = 2;
                     }else{
@@ -1170,27 +1219,25 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                 // [ coat genes 26/27 angora, 28/29 rex, 30/31 satin ]
             if(genesForText[26] == 2 && genesForText[27] == 2){
                 //angora
-                if ( genesForText[26] == 2 && genesForText[27] == 2){
-                    if (genesForText[50] == 1 && genesForText[51] == 1 || genesForText[50] == 3 && genesForText[51] == 3){
-                        fur = 3;
-                    }else if ( genesForText[50] == 1 || genesForText[51] == 1 || genesForText[50] == 3 || genesForText[51] == 3){
-                        fur = 4;
-                    }else{
-                        fur = 5;
-                    }
+                if (genesForText[50] == 1 && genesForText[51] == 1 || genesForText[50] == 3 && genesForText[51] == 3){
+                    fur = 3;
+                }else if ( genesForText[50] == 1 || genesForText[51] == 1 || genesForText[50] == 3 || genesForText[51] == 3){
+                    fur = 4;
+                }else{
+                    fur = 5;
+                }
 
-                    if ( genesForText[52] >= 2 && genesForText[53] >= 2){
+                if ( genesForText[52] >= 2 && genesForText[53] >= 2){
+                    fur = fur + 1;
+                    if ( genesForText[52] == 3 && genesForText[53] == 3 && fur <= 5){
                         fur = fur + 1;
-                        if ( genesForText[52] == 3 && genesForText[53] == 3 && fur <= 5){
-                            fur = fur + 1;
-                        }
                     }
+                }
 
-                    if ( genesForText[54] == 1 || genesForText[55] == 1 && fur >= 4){
+                if ( genesForText[54] == 1 || genesForText[55] == 1 && fur >= 4){
+                    fur = fur - 1;
+                    if ( genesForText[54] == 1 && genesForText[55] == 1 && fur >= 4){
                         fur = fur - 1;
-                        if ( genesForText[54] == 1 && genesForText[55] == 1 && fur >= 4){
-                            fur = fur - 1;
-                        }
                     }
                 }
             }else if (genesForText[28] == 1 || genesForText[29] == 1){
@@ -1208,9 +1255,9 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
 
 
             this.rabbitTextures.add(RABBIT_TEXTURES_UNDER[under]);
-//            if (lower != 0) {
-//                this.rabbitTextures.add(RABBIT_TEXTURES_LOWER[lower]);
-//            }
+            if (lower != 0) {
+                this.rabbitTextures.add(RABBIT_TEXTURES_LOWER[lower]);
+            }
             if(middle != 0) {
                 this.rabbitTextures.add(RABBIT_TEXTURES_MIDDLE[middle]);
             }
@@ -1233,8 +1280,8 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                 this.rabbitTextures.add(RABBIT_TEXTURES_FUR[fur]);
             }
             this.rabbitTextures.add(RABBIT_TEXTURES_EYES[eyes]);
-            if(vieye > 7) {
-                this.rabbitTextures.add(RABBIT_TEXTURES_VIENNAEYES[vieye]);
+                if(vieye > 7 && (vieye <= 17 || vieye >= 25)) {
+                    this.rabbitTextures.add(RABBIT_TEXTURES_VIENNAEYES[vieye]);
             }
             this.rabbitTextures.add(RABBIT_TEXTURES_SKIN[skin]);
 

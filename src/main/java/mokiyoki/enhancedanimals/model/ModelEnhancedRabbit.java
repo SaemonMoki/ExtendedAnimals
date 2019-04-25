@@ -15,6 +15,7 @@ public class ModelEnhancedRabbit extends ModelBase
 {
 
     private int coatlength = 0;
+    private boolean dwarf = false;
 
     private final ModelRenderer rabbitLeftFoot;
     private final ModelRenderer rabbitRightFoot;
@@ -49,6 +50,8 @@ public class ModelEnhancedRabbit extends ModelBase
     private final ModelRenderer rabbitHeadMuzzle;
     private final ModelRenderer rabbitRightEar;
     private final ModelRenderer rabbitLeftEar;
+    private final ModelRenderer rabbitRightEarDwarf;
+    private final ModelRenderer rabbitLeftEarDwarf;
     private final ModelRenderer rabbitTail;
     private final ModelRenderer rabbitNose;
     private float jumpRotation;
@@ -201,6 +204,14 @@ public class ModelEnhancedRabbit extends ModelBase
         this.rabbitRightEar.addBox(-4.0F, -7.0F, 2.0F, 4, 7, 1);
         this.rabbitRightEar.setRotationPoint(-1.0F, 14.0F, 0.0F);
 
+        this.rabbitLeftEarDwarf = new ModelRenderer(this, 0, 0);
+        this.rabbitLeftEarDwarf.addBox(0.0F, -4.0F, 2.0F, 4, 4, 1);
+        this.rabbitLeftEarDwarf.setRotationPoint(1.0F, 14.0F, 0.0F);
+
+        this.rabbitRightEarDwarf = new ModelRenderer(this, 10, 0);
+        this.rabbitRightEarDwarf.addBox(-4.0F, -4.0F, 2.0F, 4, 4, 1);
+        this.rabbitRightEarDwarf.setRotationPoint(-1.0F, 14.0F, 0.0F);
+
         this.rabbitTail = new ModelRenderer(this, 20, 0);
         this.rabbitTail.addBox(-1.5F, 2.0F, 8.0F, 3, 4, 2);
         this.rabbitTail.setRotationPoint(0.0F, 0.0F, 0.0F);
@@ -257,7 +268,10 @@ public class ModelEnhancedRabbit extends ModelBase
         }
 
         if ( genes[34] == 2 || genes[35] == 2){
+            dwarf = true;
             size = 0.3F + ((size - 0.3F)/2F);
+        }else{
+            dwarf = false;
         }
 
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
@@ -271,8 +285,13 @@ public class ModelEnhancedRabbit extends ModelBase
             this.rabbitHeadRight.render(scale);
             this.rabbitHeadMuzzle.render(scale);
             this.rabbitNose.render(scale);
-            this.rabbitLeftEar.render(scale);
-            this.rabbitRightEar.render(scale);
+            if (dwarf){
+                this.rabbitLeftEarDwarf.render(scale);
+                this.rabbitRightEarDwarf.render(scale);
+            }else{
+                this.rabbitLeftEar.render(scale);
+                this.rabbitRightEar.render(scale);
+            }
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
             GlStateManager.scalef(0.20F, 0.20F, 0.20F);
@@ -306,8 +325,13 @@ public class ModelEnhancedRabbit extends ModelBase
             }
             this.rabbitHeadMuzzle.render(scale);
             this.rabbitNose.render(scale);
-            this.rabbitLeftEar.render(scale);
-            this.rabbitRightEar.render(scale);
+            if (genes[34] == 2 || genes[35] == 2){
+                this.rabbitLeftEarDwarf.render(scale);
+                this.rabbitRightEarDwarf.render(scale);
+            }else{
+                this.rabbitLeftEar.render(scale);
+                this.rabbitRightEar.render(scale);
+            }
             this.rabbitLeftThigh.render(scale);
             this.rabbitRightThigh.render(scale);
             if (coatlength == 0){
@@ -367,10 +391,29 @@ public class ModelEnhancedRabbit extends ModelBase
         this.rabbitNose.rotateAngleY = netHeadYaw * 0.017453292F;
         this.rabbitLeftEar.rotateAngleY = this.rabbitNose.rotateAngleY + 0.2617994F;
         this.rabbitRightEar.rotateAngleY = this.rabbitNose.rotateAngleY - 0.2617994F;
+        copyModelAngles(rabbitLeftEar, rabbitLeftEarDwarf);
+        copyModelAngles(rabbitRightEar, rabbitRightEarDwarf);
         copyModelAngles(rabbitLeftEar, rabbitLionEarL);
         copyModelAngles(rabbitRightEar, rabbitLionEarR);
         copyModelAngles(rabbitLeftEar, rabbitLionEarL1);
         copyModelAngles(rabbitRightEar, rabbitLionEarR1);
+
+        this.rabbitButtRound.rotationPointZ = 2.5F;
+        this.rabbitButt.rotationPointZ = 2.5F;
+        this.rabbitButtTube.rotationPointZ = 2.5F;
+
+        if(dwarf){
+            this.rabbitButtRound.rotationPointZ = 0.5F;
+            this.rabbitButt.rotationPointZ = 0.5F;
+            this.rabbitButtTube.rotationPointZ = 0.5F;
+
+            this.rabbitHeadMuzzle.rotationPointZ = this.rabbitHeadLeft.rotationPointZ - 1.0F;
+            this.rabbitNose.rotationPointZ = this.rabbitHeadLeft.rotationPointZ - 1.0F;
+        }else{
+            this.rabbitHeadMuzzle.rotationPointZ = this.rabbitHeadLeft.rotationPointZ + 1.0F;
+            this.rabbitNose.rotationPointZ = this.rabbitHeadLeft.rotationPointZ + 1.0F;
+        }
+
         //TODO add twitching nose
 
         this.jumpRotation = MathHelper.sin(((EnhancedRabbit)entityIn).getJumpCompletion(f) * (float)Math.PI);

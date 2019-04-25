@@ -1498,7 +1498,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
             }
         }
 
-        //E Locus [ Steel, Wildtype, Japanese Brindle, Non Extension ]
+        //E Locus [ Steel, Wildtype, Brindle, Non Extension ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[8] = (ThreadLocalRandom.current().nextInt(4) + 1);
 

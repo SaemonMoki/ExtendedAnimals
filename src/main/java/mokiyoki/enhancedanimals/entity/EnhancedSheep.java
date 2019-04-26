@@ -48,15 +48,19 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     private static final DataParameter<Byte> DYE_COLOR = EntityDataManager.<Byte>createKey(EnhancedSheep.class, DataSerializers.BYTE);
 
     private static final String[] SHEEP_TEXTURES_UNDER = new String[] {
-            "solid_tan.png", "solid_black.png", "solid_choc", "solid_lighttan.png"
+            "c_solid_tan.png", "c_solid_black.png", "c_solid_choc", "c_solid_lighttan.png"
     };
 
     private static final String[] SHEEP_TEXTURES_PATTERN = new String[] {
-            "", "solid_white.png", "badger_black.png", "badger_choc.png", "mouflonbadger_black.png", "mouflonbadger_choc.png", "mouflon_black.png", "mouflon_choc.png", "blue_black.png", "blue_choc.png", "solid_black.png", "solid_choc.png"
+            "", "c_solid_white.png", "c_badger_black.png", "c_badger_choc.png", "c_mouflonbadger_black.png", "c_mouflonbadger_choc.png", "c_mouflon_black.png", "c_mouflon_choc.png", "c_blue_black.png", "c_blue_choc.png", "c_solid_black.png", "c_solid_choc.png"
     };
 
     private static final String[] SHEEP_TEXTURES_GREY = new String[] {
-            "", "grey.png"
+            "", "c_grey.png"
+    };
+
+    private static final String[] SHEEP_TEXTURES_SPOTS = new String[] {
+            "", "c_spot0.png",  "c_spot1.png",  "c_spot2.png", "c_spot3.png",  "c_spot4.png",  "c_spot5.png", "c_spot6.png",  "c_spot7.png",  "c_spot8.png", "c_spot9.png",  "c_spota.png",  "c_spotb.png", "c_spotc.png",  "c_spotd.png",  "c_spote.png",  "c_spotf.png"
     };
 
     private static final String[] SHEEP_TEXTURES_SKIN = new String[] {
@@ -68,7 +72,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     };
 
     private static final String[] SHEEP_TEXTURES_FUR = new String[] {
-            "fur_wooly.png"
+            "c_fur_wooly.png"
     };
 
     private static final String[] SHEEP_TEXTURES_EYES = new String[] {

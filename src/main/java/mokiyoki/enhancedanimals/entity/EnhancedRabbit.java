@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCarrot;
@@ -14,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,6 +25,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -51,6 +54,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedRabbit.class, DataSerializers.STRING);
     private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
+    private static final DataParameter<Boolean> NOSE_WIGGLING = EntityDataManager.<Boolean>createKey(EnhancedRabbit.class, DataSerializers.BOOLEAN);
 
     private static final String[] RABBIT_TEXTURES_UNDER = new String[] {
         "under_cream.png", "under_grey.png", "under_white.png"
@@ -263,6 +267,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(COAT_LENGTH, 0);
         this.dataManager.register(DATA_COLOR_ID, -1);
+        this.dataManager.register(NOSE_WIGGLING, false);
     }
 
     private void setCoatLength(int coatLength) {
@@ -271,6 +276,14 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
 
     public int getCoatLength() {
         return this.dataManager.get(COAT_LENGTH);
+    }
+
+    public void setNoseWiggling(boolean wiggling) {
+        this.dataManager.set(NOSE_WIGGLING, wiggling);
+    }
+
+    public boolean isNoseWiggling() {
+        return this.dataManager.get(NOSE_WIGGLING);
     }
 
     public void updateAITasks() {
@@ -349,6 +362,15 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
 
     }
 
+    @Override
+    public boolean processInteract(EntityPlayer entityPlayer, EnumHand hand) {
+        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+        Item item = itemStack.getItem();
+        if (item instanceof DebugGenesBook) {
+            ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
+        }
+        return super.processInteract(entityPlayer, hand);
+    }
 
     public void setSharedGenes(int[] genes) {
         StringBuilder sb = new StringBuilder();

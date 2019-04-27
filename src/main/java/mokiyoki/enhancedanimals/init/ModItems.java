@@ -42,5 +42,7 @@ public class ModItems {
     public static final Item CookedRabbit_Small = new CookedRabbit(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),4, 5F, false).setRegistryName(Reference.MODID, "cookedrabbit_small");
     public static final Item RabbitStew_Weak = new RabbitStew(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64),8, 10F, false).setRegistryName(Reference.MODID, "rabbitstew_weak");
 
+    public static final Item Debug_Gene_Book = new DebugGenesBook(new Item.Properties().group(ItemGroup.MISC).maxStackSize(1)).setRegistryName(Reference.MODID, "debug_gene_book");
+
 }
 

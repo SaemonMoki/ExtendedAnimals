@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
+import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCarpet;
@@ -19,6 +20,7 @@ import net.minecraft.init.Particles;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.NBTTagCompound;
@@ -268,9 +270,10 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     @Override
     public boolean processInteract(EntityPlayer entityPlayer, EnumHand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
-        if (itemStack.getItem() != Items.SHEARS) {
-            super.processInteract(entityPlayer, hand);
-        } else {
+        Item item = itemStack.getItem();
+        if (item instanceof DebugGenesBook) {
+            ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
+        } else if (item instanceof ItemShears) {
             List<ItemStack> woolToDrop = onSheared(itemStack, null, null, 0);
             java.util.Random rand = new java.util.Random();
             for (ItemStack stack : woolToDrop) {
@@ -280,7 +283,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
                 ent.motionZ += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
             }
         }
-        return true;
+        return super.processInteract(entityPlayer, hand);
     }
 
 

@@ -523,46 +523,58 @@ public class ModelEnhancedSheep extends ModelBase {
 
         // values from: [ 0.1F to 0.4F]
         float hornSpacing = 0.4F;
+        float hornGrowth = (entityIn.ticksExisted/24000.0F);
+        float hornGrowing = 1.0F;
 
-        this.hornL0.rotationPointX = -hornSpacing;
-        this.hornL01.rotationPointY = -2.8F + 0.8F;
-        this.hornL02.rotationPointY = -2.8F + 0.8F;
-        this.hornL03.rotationPointY = -2.8F + 0.8F;
-        this.hornL04.rotationPointY = -2.8F + 0.8F;
-        this.hornL05.rotationPointY = -2.8F + 0.8F;
-        this.hornL06.rotationPointY = -2.8F + 0.8F;
-        this.hornL07.rotationPointY = -2.8F + 0.8F;
-        this.hornL08.rotationPointY = -2.8F + 0.8F;
-        this.hornL09.rotationPointY = -2.8F + 0.8F;
-        this.hornL1.rotationPointY = -2.9F + 1.0F;
-        this.hornL2.rotationPointY = -2.9F + 1.2F;
-        this.hornL3.rotationPointY = -2.9F + 1.4F;
-        this.hornL4.rotationPointY = -2.9F + 1.8F;
-        this.hornL5.rotationPointY = -2.9F + 2.0F;
-        this.hornL6.rotationPointY = -2.9F + 2.1124F;
-        this.hornL7.rotationPointY = -2.9F + 2.2250F;
-        this.hornL8.rotationPointY = -2.9F + 2.3624F;
-        this.hornL9.rotationPointY = -2.9F + 2.5F;
+        if (hornGrowth > 1) {
+            if (hornGrowing < 2){
+                hornGrowing = hornGrowing / 2;
+            }
+            this.hornL9.rotationPointY = (-2.9F + 2.5F) * hornGrowing;
+            this.hornR9.rotationPointY = (-2.9F + 2.5F) * hornGrowing;
+            if (hornGrowing > 3){
 
-        this.hornR0.rotationPointX = hornSpacing;
-        this.hornR01.rotationPointY = -2.8F + 0.8F;
-        this.hornR02.rotationPointY = -2.8F + 0.8F;
-        this.hornR03.rotationPointY = -2.8F + 0.8F;
-        this.hornR04.rotationPointY = -2.8F + 0.8F;
-        this.hornR05.rotationPointY = -2.8F + 0.8F;
-        this.hornR06.rotationPointY = -2.8F + 0.8F;
-        this.hornR07.rotationPointY = -2.8F + 0.8F;
-        this.hornR08.rotationPointY = -2.8F + 0.8F;
-        this.hornR09.rotationPointY = -2.8F + 0.8F;
-        this.hornR1.rotationPointY = -2.9F + 1.0F;
-        this.hornR2.rotationPointY = -2.9F + 1.2F;
-        this.hornR3.rotationPointY = -2.9F + 1.4F;
-        this.hornR4.rotationPointY = -2.9F + 1.8F;
-        this.hornR5.rotationPointY = -2.9F + 2.0F;
-        this.hornR6.rotationPointY = -2.9F + 2.1124F;
-        this.hornR7.rotationPointY = -2.9F + 2.2250F;
-        this.hornR8.rotationPointY = -2.9F + 2.3624F;
-        this.hornR9.rotationPointY = -2.9F + 2.5F;
+                this.hornL8.rotationPointY = -2.9F + 2.3624F;
+                this.hornL7.rotationPointY = -2.9F + 2.2250F;
+                this.hornL6.rotationPointY = -2.9F + 2.1124F;
+                this.hornL5.rotationPointY = -2.9F + 2.0F;
+                this.hornL4.rotationPointY = -2.9F + 1.8F;
+                this.hornL3.rotationPointY = -2.9F + 1.4F;
+                this.hornL2.rotationPointY = -2.9F + 1.2F;
+                this.hornL1.rotationPointY = -2.9F + 1.0F;
+                this.hornL09.rotationPointY = -2.8F + 0.8F;
+                this.hornL08.rotationPointY = -2.8F + 0.8F;
+                this.hornL07.rotationPointY = -2.8F + 0.8F;
+                this.hornL06.rotationPointY = -2.8F + 0.8F;
+                this.hornL05.rotationPointY = -2.8F + 0.8F;
+                this.hornL04.rotationPointY = -2.8F + 0.8F;
+                this.hornL03.rotationPointY = -2.8F + 0.8F;
+                this.hornL02.rotationPointY = -2.8F + 0.8F;
+                this.hornL01.rotationPointY = -2.8F + 0.8F;
+                this.hornL0.rotationPointX = -hornSpacing;
+
+                this.hornR0.rotationPointX = hornSpacing;
+                this.hornR01.rotationPointY = -2.8F + 0.8F;
+                this.hornR02.rotationPointY = -2.8F + 0.8F;
+                this.hornR03.rotationPointY = -2.8F + 0.8F;
+                this.hornR04.rotationPointY = -2.8F + 0.8F;
+                this.hornR05.rotationPointY = -2.8F + 0.8F;
+                this.hornR06.rotationPointY = -2.8F + 0.8F;
+                this.hornR07.rotationPointY = -2.8F + 0.8F;
+                this.hornR08.rotationPointY = -2.8F + 0.8F;
+                this.hornR09.rotationPointY = -2.8F + 0.8F;
+                this.hornR1.rotationPointY = -2.9F + 1.0F;
+                this.hornR2.rotationPointY = -2.9F + 1.2F;
+                this.hornR3.rotationPointY = -2.9F + 1.4F;
+                this.hornR4.rotationPointY = -2.9F + 1.8F;
+                this.hornR5.rotationPointY = -2.9F + 2.0F;
+                this.hornR6.rotationPointY = -2.9F + 2.1124F;
+                this.hornR7.rotationPointY = -2.9F + 2.2250F;
+                this.hornR8.rotationPointY = -2.9F + 2.3624F;
+
+            }
+
+        }
 
         //the curve overback
         // [ -0.degreesF * goldenRatio ];

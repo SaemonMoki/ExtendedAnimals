@@ -1,13 +1,11 @@
 package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -31,6 +29,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -45,7 +44,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedSheep.class, DataSerializers.STRING);
-    private static final DataParameter<Byte> DYE_COLOR = EntityDataManager.<Byte>createKey(EnhancedSheep.class, DataSerializers.BYTE);
+    private static final DataParameter<Byte> DYE_COLOUR = EntityDataManager.<Byte>createKey(EnhancedSheep.class, DataSerializers.BYTE);
 
     private static final String[] SHEEP_TEXTURES_UNDER = new String[] {
             "c_solid_tan.png", "c_solid_black.png", "c_solid_choc", "c_solid_lighttan.png"
@@ -114,9 +113,6 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT);
 
-    /** Map from EnumDyeColor to RGB values for passage to GlStateManager.color() */
-    private static final Map<EnumDyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(EnumDyeColor.class);
-
     private static final int WTC = 90;
     private final List<String> sheepTextures = new ArrayList<>();
     private final List<String> sheepFleeceTextures = new ArrayList<>();
@@ -134,6 +130,42 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         super(ENHANCED_SHEEP, worldIn);
         this.setSize(0.4F, 1F);
 
+    }
+
+    /** Map from EnumDyeColor to RGB values for passage to GlStateManager.color() */
+    private static final Map<EnumDyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(Arrays.stream(EnumDyeColor.values()).collect(Collectors.toMap((EnumDyeColor p_200204_0_) -> {
+        return p_200204_0_;
+    }, EnhancedSheep::createSheepColor)));
+
+    private static float[] createSheepColor(EnumDyeColor enumDyeColour) {
+        if (enumDyeColour == EnumDyeColor.WHITE) {
+//            return new float[]{0.9019608F, 0.9019608F, 0.9019608F};
+            return new float[]{1.0F, 1.0F, 1.0F};
+        } else {
+            float[] afloat = enumDyeColour.getColorComponentValues();
+            float f = 0.75F;
+            return new float[]{afloat[0] * f, afloat[1] * f, afloat[2] * f};
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static float[] getDyeRgb(EnumDyeColor dyeColour) {
+        return DYE_TO_RGB.get(dyeColour);
+    }
+
+    /**
+     * Gets the wool color of this sheep.
+     */
+    public EnumDyeColor getFleeceColour() {
+        return EnumDyeColor.byId(this.dataManager.get(DYE_COLOUR) & 15);
+    }
+
+    /**
+     * Sets the wool color of this sheep
+     */
+    public void setFleeceColour(EnumDyeColor colour) {
+        byte b0 = this.dataManager.get(DYE_COLOUR);
+        this.dataManager.set(DYE_COLOUR, (byte)(b0 & 240 | colour.getId() & 15));
     }
 
     public float getEyeHeight()
@@ -169,7 +201,50 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(COAT_LENGTH, 0);
-        this.dataManager.register(DYE_COLOR, Byte.valueOf((byte)0));
+        this.dataManager.register(DYE_COLOUR, Byte.valueOf((byte)0));
+    }
+
+    @Nullable
+    protected ResourceLocation getLootTable() {
+        if (this.getSheared()) {
+            return LootTableList.ENTITIES_SHEEP;
+        } else {
+            switch(this.getFleeceColour()) {
+                case WHITE:
+                default:
+                    return LootTableList.ENTITIES_SHEEP_WHITE;
+                case ORANGE:
+                    return LootTableList.ENTITIES_SHEEP_ORANGE;
+                case MAGENTA:
+                    return LootTableList.ENTITIES_SHEEP_MAGENTA;
+                case LIGHT_BLUE:
+                    return LootTableList.ENTITIES_SHEEP_LIGHT_BLUE;
+                case YELLOW:
+                    return LootTableList.ENTITIES_SHEEP_YELLOW;
+                case LIME:
+                    return LootTableList.ENTITIES_SHEEP_LIME;
+                case PINK:
+                    return LootTableList.ENTITIES_SHEEP_PINK;
+                case GRAY:
+                    return LootTableList.ENTITIES_SHEEP_GRAY;
+                case LIGHT_GRAY:
+                    return LootTableList.ENTITIES_SHEEP_LIGHT_GRAY;
+                case CYAN:
+                    return LootTableList.ENTITIES_SHEEP_CYAN;
+                case PURPLE:
+                    return LootTableList.ENTITIES_SHEEP_PURPLE;
+                case BLUE:
+                    return LootTableList.ENTITIES_SHEEP_BLUE;
+                case BROWN:
+                    return LootTableList.ENTITIES_SHEEP_BROWN;
+                case GREEN:
+                    return LootTableList.ENTITIES_SHEEP_GREEN;
+                case RED:
+                    return LootTableList.ENTITIES_SHEEP_RED;
+                case BLACK:
+                    return LootTableList.ENTITIES_SHEEP_BLACK;
+            }
+        }
     }
 
     private void setCoatLength(int coatLength) {
@@ -295,24 +370,6 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         return sharedGenesArray;
     }
 
-    public EnumDyeColor getFleeceColor() {
-        return EnumDyeColor.byId(this.dataManager.get(DYE_COLOR) & 15);
-    }
-
-    /**
-     * Sets the wool color of this sheep
-     */
-    public void setFleeceColor(EnumDyeColor color) {
-        byte b0 = this.dataManager.get(DYE_COLOR);
-        this.dataManager.set(DYE_COLOR, (byte)(b0 & 240 | color.getId() & 15));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static float[] getDyeRgb(EnumDyeColor dyeColor)
-    {
-        return DYE_TO_RGB.get(dyeColor);
-    }
-
     public EntityAgeable createChild(EntityAgeable ageable) {
 //
 //    }
@@ -330,16 +387,9 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         return enhancedsheep;
     }
 
-    private static float[] createSheepColor(EnumDyeColor dyeColor)
-    {
-        float[] afloat = dyeColor.getColorComponentValues();
-        float f = 0.75F;
-        return new float[] {afloat[0] * 0.75F, afloat[1] * 0.75F, afloat[2] * 0.75F};
-    }
-
     public boolean getSheared()
     {
-        return (this.dataManager.get(DYE_COLOR) & 16) != 0;
+        return (this.dataManager.get(DYE_COLOUR) & 16) != 0;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -492,46 +542,40 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     }
 
 
-//    public boolean processInteract(EntityPlayer player, EnumHand hand) {
-//    ItemStack itemstack = player.getHeldItem(hand);
-//      if (false && itemstack.getItem() == Items.SHEARS && !this.getSheared() && !this.isChild()) { //Forge: Moved to onSheared
-//        if (!this.world.isRemote) {
-//            this.setSheared(true);
-//            int i = 1 + this.rand.nextInt(3);
-//
-//            for(int j = 0; j < i; ++j) {
-//                EntityItem entityitem = this.entityDropItem(WOOL_BY_COLOR.get(this.getFleeceColor()), 1);
-//                if (entityitem != null) {
-//                    entityitem.motionY += (double)(this.rand.nextFloat() * 0.05F);
-//                    entityitem.motionX += (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.1F);
-//                    entityitem.motionZ += (double)((this.rand.nextFloat() - this.rand.nextFloat()) * 0.1F);
-//                }
-//            }
-//        }
-//
-//        itemstack.damageItem(1, player);
-//        this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, 1.0F);
-//    }
-//
-//      return super.processInteract(player, hand);
-//    }
+    @Override
+    public boolean processInteract(EntityPlayer entityPlayer, EnumHand hand) {
+        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+        Item item = itemStack.getItem();
+        if (item == Items.WATER_BUCKET) {
+            this.setFleeceColour(EnumDyeColor.WHITE);
+        } else if (item instanceof ItemDye) {
+            EnumDyeColor enumdyecolor = ((ItemDye)item).getDyeColor();
+            if (enumdyecolor != this.getFleeceColour()) {
+                this.setFleeceColour(enumdyecolor);
+                if (!entityPlayer.abilities.isCreativeMode) {
+                    itemStack.shrink(1);
+                }
+            }
+        }
+        return true;
+    }
 
     /**
      * make a sheep sheared if set to true
      */
     public void setSheared(boolean sheared) {
-        byte b0 = this.dataManager.get(DYE_COLOR);
+        byte b0 = this.dataManager.get(DYE_COLOUR);
         if (sheared) {
-            this.dataManager.set(DYE_COLOR, (byte)(b0 | 16));
+            this.dataManager.set(DYE_COLOUR, (byte)(b0 | 16));
         } else {
-            this.dataManager.set(DYE_COLOR, (byte)(b0 & -17));
+            this.dataManager.set(DYE_COLOUR, (byte)(b0 & -17));
         }
     }
 
     public void writeAdditional(NBTTagCompound compound) {
         super.writeAdditional(compound);
 
-        compound.setByte("Color", (byte)this.getFleeceColor().getId());
+        compound.setByte("Colour", (byte)this.getFleeceColour().getId());
 
         //store this sheeps's genes
         NBTTagList geneList = new NBTTagList();
@@ -564,7 +608,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
         super.readAdditional(compound);
 
-        this.setFleeceColor(EnumDyeColor.byId(compound.getByte("Color")));
+        this.setFleeceColour(EnumDyeColor.byId(compound.getByte("Colour")));
 
         NBTTagList geneList = compound.getList("Genes", 10);
         for (int i = 0; i < geneList.size(); ++i) {
@@ -646,6 +690,10 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         setMaxCoatLength();
         this.currentCoatLength = this.maxCoatLength;
         setCoatLength(this.currentCoatLength);
+
+        //"White" is considered no dye
+        this.setFleeceColour(EnumDyeColor.WHITE);
+
         return livingdata;
     }
 
@@ -1008,15 +1056,5 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
             this.groupGenes = groupGenes;
         }
 
-    }
-
-    static
-    {
-        for (EnumDyeColor enumdyecolor : EnumDyeColor.values())
-        {
-            DYE_TO_RGB.put(enumdyecolor, createSheepColor(enumdyecolor));
-        }
-
-        DYE_TO_RGB.put(EnumDyeColor.WHITE, new float[] {0.9019608F, 0.9019608F, 0.9019608F});
     }
 }

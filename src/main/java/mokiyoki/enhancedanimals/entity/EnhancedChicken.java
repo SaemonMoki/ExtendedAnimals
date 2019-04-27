@@ -291,6 +291,8 @@ public class EnhancedChicken extends EntityAnimal {
         if (!this.world.isRemote && !this.isChild() && --this.timeUntilNextEgg <= 0)
         {
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+            mixMateMitosisGenes();
+            mixMitosisGenes();
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
             eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).setGenes(getEggGenes());
             NBTTagCompound nbtTagCompound = eggItem.serializeNBT();

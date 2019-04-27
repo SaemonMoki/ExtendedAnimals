@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Maps;
+import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
@@ -546,18 +548,22 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     public boolean processInteract(EntityPlayer entityPlayer, EnumHand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
-        if (item == Items.WATER_BUCKET) {
-            this.setFleeceColour(EnumDyeColor.WHITE);
-        } else if (item instanceof ItemDye) {
-            EnumDyeColor enumdyecolor = ((ItemDye)item).getDyeColor();
-            if (enumdyecolor != this.getFleeceColour()) {
-                this.setFleeceColour(enumdyecolor);
-                if (!entityPlayer.abilities.isCreativeMode) {
-                    itemStack.shrink(1);
+        if (!this.world.isRemote) {
+            if (item == Items.WATER_BUCKET) {
+                this.setFleeceColour(EnumDyeColor.WHITE);
+            } else if (item instanceof ItemDye) {
+                EnumDyeColor enumdyecolor = ((ItemDye)item).getDyeColor();
+                if (enumdyecolor != this.getFleeceColour()) {
+                    this.setFleeceColour(enumdyecolor);
+                    if (!entityPlayer.abilities.isCreativeMode) {
+                        itemStack.shrink(1);
+                    }
                 }
+            } else if (item instanceof DebugGenesBook) {
+                ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
             }
         }
-        return true;
+        return super.processInteract(entityPlayer, hand);
     }
 
     /**

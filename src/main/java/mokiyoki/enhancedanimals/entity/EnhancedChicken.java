@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.ai.ECSandBath;
 import mokiyoki.enhancedanimals.ai.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
@@ -26,6 +27,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -213,6 +215,16 @@ public class EnhancedChicken extends EntityAnimal {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(ROOSTING, new Boolean(false));
+    }
+
+    @Override
+    public boolean processInteract(EntityPlayer entityPlayer, EnumHand hand) {
+        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+        Item item = itemStack.getItem();
+        if (item instanceof DebugGenesBook) {
+            ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
+        }
+        return super.processInteract(entityPlayer, hand);
     }
 
     public void setSharedGenes(int[] genes) {

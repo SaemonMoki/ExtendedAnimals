@@ -1,7 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Maps;
-import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityAgeable;
@@ -49,11 +48,13 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     private static final DataParameter<Byte> DYE_COLOUR = EntityDataManager.<Byte>createKey(EnhancedSheep.class, DataSerializers.BYTE);
 
     private static final String[] SHEEP_TEXTURES_UNDER = new String[] {
-            "c_solid_tan.png", "c_solid_black.png", "c_solid_choc", "c_solid_lighttan.png"
+            "c_solid_tan.png", "c_solid_black.png", "c_solid_choc", "c_solid_lighttan.png",
+            "c_solid_tan_red.png", "c_solid_choc.png", "c_solid_tan", "c_solid_lighttan_red.png"
     };
 
     private static final String[] SHEEP_TEXTURES_PATTERN = new String[] {
-            "", "c_solid_white.png", "c_badger_black.png", "c_badger_choc.png", "c_mouflonbadger_black.png", "c_mouflonbadger_choc.png", "c_mouflon_black.png", "c_mouflon_choc.png", "c_blue_black.png", "c_blue_choc.png", "c_solid_black.png", "c_solid_choc.png"
+            "", "c_solid_white.png", "c_badger_black.png", "c_badger_choc.png", "c_mouflonbadger_black.png", "c_mouflonbadger_choc.png", "c_mouflon_black.png", "c_mouflon_choc.png", "c_blue_black.png", "c_blue_choc.png", "c_solid_black.png", "c_solid_choc.png",
+                "c_solid_white.png", "c_badger_black_red.png", "c_badger_choc_red.png", "c_mouflonbadger_black_red.png", "c_mouflonbadger_choc_red.png", "c_mouflon_black_red.png", "c_mouflon_choc_red.png", "c_blue_black_red.png", "c_blue_choc_red.png", "c_solid_black_red.png", "c_solid_choc_red.png"
     };
 
     private static final String[] SHEEP_TEXTURES_GREY = new String[] {
@@ -137,9 +138,9 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     /** Map from EnumDyeColor to RGB values for passage to GlStateManager.color() */
     private static final Map<EnumDyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(Arrays.stream(EnumDyeColor.values()).collect(Collectors.toMap((EnumDyeColor p_200204_0_) -> {
         return p_200204_0_;
-    }, EnhancedSheep::createSheepColor)));
+    }, EnhancedSheep::createSheepDyeColor)));
 
-    private static float[] createSheepColor(EnumDyeColor enumDyeColour) {
+    private static float[] createSheepDyeColor(EnumDyeColor enumDyeColour) {
         if (enumDyeColour == EnumDyeColor.WHITE) {
 //            return new float[]{0.9019608F, 0.9019608F, 0.9019608F};
             return new float[]{1.0F, 1.0F, 1.0F};
@@ -158,14 +159,14 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     /**
      * Gets the wool color of this sheep.
      */
-    public EnumDyeColor getFleeceColour() {
+    public EnumDyeColor getFleeceDyeColour() {
         return EnumDyeColor.byId(this.dataManager.get(DYE_COLOUR) & 15);
     }
 
     /**
      * Sets the wool color of this sheep
      */
-    public void setFleeceColour(EnumDyeColor colour) {
+    public void setFleeceDyeColour(EnumDyeColor colour) {
         byte b0 = this.dataManager.get(DYE_COLOUR);
         this.dataManager.set(DYE_COLOUR, (byte)(b0 & 240 | colour.getId() & 15));
     }
@@ -211,40 +212,44 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         if (this.getSheared()) {
             return LootTableList.ENTITIES_SHEEP;
         } else {
-            switch(this.getFleeceColour()) {
-                case WHITE:
-                default:
-                    return LootTableList.ENTITIES_SHEEP_WHITE;
-                case ORANGE:
-                    return LootTableList.ENTITIES_SHEEP_ORANGE;
-                case MAGENTA:
-                    return LootTableList.ENTITIES_SHEEP_MAGENTA;
-                case LIGHT_BLUE:
-                    return LootTableList.ENTITIES_SHEEP_LIGHT_BLUE;
-                case YELLOW:
-                    return LootTableList.ENTITIES_SHEEP_YELLOW;
-                case LIME:
-                    return LootTableList.ENTITIES_SHEEP_LIME;
-                case PINK:
-                    return LootTableList.ENTITIES_SHEEP_PINK;
-                case GRAY:
-                    return LootTableList.ENTITIES_SHEEP_GRAY;
-                case LIGHT_GRAY:
-                    return LootTableList.ENTITIES_SHEEP_LIGHT_GRAY;
-                case CYAN:
-                    return LootTableList.ENTITIES_SHEEP_CYAN;
-                case PURPLE:
-                    return LootTableList.ENTITIES_SHEEP_PURPLE;
-                case BLUE:
-                    return LootTableList.ENTITIES_SHEEP_BLUE;
-                case BROWN:
-                    return LootTableList.ENTITIES_SHEEP_BROWN;
-                case GREEN:
-                    return LootTableList.ENTITIES_SHEEP_GREEN;
-                case RED:
-                    return LootTableList.ENTITIES_SHEEP_RED;
-                case BLACK:
-                    return LootTableList.ENTITIES_SHEEP_BLACK;
+            if (genes[4] == 1 || genes[5] ==1 || (genes[0] == 6 && genes[1] == 6)){
+                return LootTableList.ENTITIES_SHEEP_BLACK;
+            }else {
+                switch (this.getFleeceDyeColour()) {
+                    case WHITE:
+                    default:
+                        return LootTableList.ENTITIES_SHEEP_WHITE;
+                    case ORANGE:
+                        return LootTableList.ENTITIES_SHEEP_ORANGE;
+                    case MAGENTA:
+                        return LootTableList.ENTITIES_SHEEP_MAGENTA;
+                    case LIGHT_BLUE:
+                        return LootTableList.ENTITIES_SHEEP_LIGHT_BLUE;
+                    case YELLOW:
+                        return LootTableList.ENTITIES_SHEEP_YELLOW;
+                    case LIME:
+                        return LootTableList.ENTITIES_SHEEP_LIME;
+                    case PINK:
+                        return LootTableList.ENTITIES_SHEEP_PINK;
+                    case GRAY:
+                        return LootTableList.ENTITIES_SHEEP_GRAY;
+                    case LIGHT_GRAY:
+                        return LootTableList.ENTITIES_SHEEP_LIGHT_GRAY;
+                    case CYAN:
+                        return LootTableList.ENTITIES_SHEEP_CYAN;
+                    case PURPLE:
+                        return LootTableList.ENTITIES_SHEEP_PURPLE;
+                    case BLUE:
+                        return LootTableList.ENTITIES_SHEEP_BLUE;
+                    case BROWN:
+                        return LootTableList.ENTITIES_SHEEP_BROWN;
+                    case GREEN:
+                        return LootTableList.ENTITIES_SHEEP_GREEN;
+                    case RED:
+                        return LootTableList.ENTITIES_SHEEP_RED;
+                    case BLACK:
+                        return LootTableList.ENTITIES_SHEEP_BLACK;
+                }
             }
         }
     }
@@ -303,8 +308,9 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         this.setSheared(false);
         if (this.isChild()) {
             this.addGrowth(60);
-        }else if (currentCoatLength < maxCoatLength){
+        }else if (maxCoatLength > currentCoatLength){
             this.currentCoatLength ++ ;
+            setCoatLength(currentCoatLength);
         }
 
     }
@@ -321,23 +327,135 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IWorld world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         if (!this.world.isRemote) {
+            int woolCount = 0;
             if (currentCoatLength == 1) {
-                int i = this.rand.nextInt(4);
-                if (i>3){
-                    ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                int i = this.rand.nextInt(5);
+                if (i>4){
+                    woolCount++;
                 }
             } else if (currentCoatLength == 2) {
-                int i = this.rand.nextInt(2);
-                if (i>0){
-                    ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                int i = this.rand.nextInt(5);
+                if (i>3){
+                    woolCount++;
                 }
             } else if (currentCoatLength == 3) {
-                int i = this.rand.nextInt(4);
-                if (i>0){
-                    ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                int i = this.rand.nextInt(5);
+                if (i>2){
+                    woolCount++;
                 }
             } else if (currentCoatLength == 4) {
-                ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                int i = this.rand.nextInt(5);
+                if (i>1) {
+                    woolCount++;
+                }
+            } else if (currentCoatLength >= 5) {
+                woolCount++;
+
+                if (currentCoatLength == 6) {
+                    int i = this.rand.nextInt(5);
+                    if (i>4){
+                        woolCount++;
+                    }
+                } else if (currentCoatLength == 7) {
+                    int i = this.rand.nextInt(5);
+                    if (i>3){
+                        woolCount++;
+                    }
+                } else if (currentCoatLength == 8) {
+                    int i = this.rand.nextInt(5);
+                    if (i>2){
+                        woolCount++;
+                    }
+                } else if (currentCoatLength == 9) {
+                    int i = this.rand.nextInt(5);
+                    if (i>1) {
+                        woolCount++;
+                    }
+                } else if (currentCoatLength >= 10) {
+                    woolCount++;
+                    if (currentCoatLength == 11) {
+                        int i = this.rand.nextInt(5);
+                        if (i>4){
+                            woolCount++;
+                        }
+                    } else if (currentCoatLength == 12) {
+                        int i = this.rand.nextInt(5);
+                        if (i>3){
+                            woolCount++;
+                        }
+                    } else if (currentCoatLength == 13) {
+                        int i = this.rand.nextInt(5);
+                        if (i>2){
+                            woolCount++;
+                        }
+                    } else if (currentCoatLength == 14) {
+                        int i = this.rand.nextInt(5);
+                        if (i>1) {
+                            woolCount++;
+                        }
+                    } else if (currentCoatLength >= 15) {
+                        woolCount++;
+                    }
+                }
+            }
+
+            for (int c = 0-woolCount; c < 0; c++){
+
+                if (genes[4] == 1 || genes[5] ==1 || (genes[0] == 6 && genes[1] == 6)){
+                    ret.add(new ItemStack(Blocks.BLACK_WOOL));
+                }else {
+                    switch (this.getFleeceDyeColour()) {
+                        case WHITE:
+                        default:
+                            ret.add(new ItemStack(Blocks.WHITE_WOOL));
+                            break;
+                        case ORANGE:
+                            ret.add(new ItemStack(Blocks.ORANGE_WOOL));
+                            break;
+                        case MAGENTA:
+                            ret.add(new ItemStack(Blocks.MAGENTA_WOOL));
+                            break;
+                        case LIGHT_BLUE:
+                            ret.add(new ItemStack(Blocks.LIGHT_BLUE_WOOL));
+                            break;
+                        case YELLOW:
+                            ret.add(new ItemStack(Blocks.YELLOW_WOOL));
+                            break;
+                        case LIME:
+                            ret.add(new ItemStack(Blocks.LIME_WOOL));
+                            break;
+                        case PINK:
+                            ret.add(new ItemStack(Blocks.PINK_WOOL));
+                            break;
+                        case GRAY:
+                            ret.add(new ItemStack(Blocks.GRAY_WOOL));
+                            break;
+                        case LIGHT_GRAY:
+                            ret.add(new ItemStack(Blocks.LIGHT_GRAY_WOOL));
+                            break;
+                        case CYAN:
+                            ret.add(new ItemStack(Blocks.CYAN_WOOL));
+                            break;
+                        case PURPLE:
+                            ret.add(new ItemStack(Blocks.PURPLE_WOOL));
+                            break;
+                        case BLUE:
+                            ret.add(new ItemStack(Blocks.BLUE_WOOL));
+                            break;
+                        case BROWN:
+                            ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                            break;
+                        case GREEN:
+                            ret.add(new ItemStack(Blocks.GREEN_WOOL));
+                            break;
+                        case RED:
+                            ret.add(new ItemStack(Blocks.RED_WOOL));
+                            break;
+                        case BLACK:
+                            ret.add(new ItemStack(Blocks.BLACK_WOOL));
+                            break;
+                    }
+                }
             }
 
         }
@@ -373,8 +491,6 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     }
 
     public EntityAgeable createChild(EntityAgeable ageable) {
-//
-//    }
         this.mateGenes = ((EnhancedSheep) ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
@@ -456,11 +572,19 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
                 }else{
                     pattern = 10;
                 }
+
+                //red variant
+                if (genesForText[4] == 3 && genesForText[5] == 3){
+                    under = under + 4;
+                    pattern = pattern + 11;
+                }
             }
 
             if (genesForText[2] == 2 && genesForText[3] == 2){
                 pattern = pattern + 1;
             }
+
+
 
 
          this.sheepTextures.add(SHEEP_TEXTURES_UNDER[under]);
@@ -479,6 +603,8 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         }
     }
 
+
+//TODO ask Saemon if this is needed any more
     @OnlyIn(Dist.CLIENT)
     public String getSheepFleeceTexture() {
         if (this.sheepFleeceTextures.isEmpty()) {
@@ -550,11 +676,11 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         Item item = itemStack.getItem();
         if (!this.world.isRemote) {
             if (item == Items.WATER_BUCKET) {
-                this.setFleeceColour(EnumDyeColor.WHITE);
+                this.setFleeceDyeColour(EnumDyeColor.WHITE);
             } else if (item instanceof ItemDye) {
                 EnumDyeColor enumdyecolor = ((ItemDye)item).getDyeColor();
-                if (enumdyecolor != this.getFleeceColour()) {
-                    this.setFleeceColour(enumdyecolor);
+                if (enumdyecolor != this.getFleeceDyeColour()) {
+                    this.setFleeceDyeColour(enumdyecolor);
                     if (!entityPlayer.abilities.isCreativeMode) {
                         itemStack.shrink(1);
                     }
@@ -581,7 +707,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     public void writeAdditional(NBTTagCompound compound) {
         super.writeAdditional(compound);
 
-        compound.setByte("Colour", (byte)this.getFleeceColour().getId());
+        compound.setByte("Colour", (byte)this.getFleeceDyeColour().getId());
 
         //store this sheeps's genes
         NBTTagList geneList = new NBTTagList();
@@ -614,7 +740,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
         super.readAdditional(compound);
 
-        this.setFleeceColour(EnumDyeColor.byId(compound.getByte("Colour")));
+        this.setFleeceDyeColour(EnumDyeColor.byId(compound.getByte("Colour")));
 
         NBTTagList geneList = compound.getList("Genes", 10);
         for (int i = 0; i < geneList.size(); ++i) {
@@ -698,7 +824,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         setCoatLength(this.currentCoatLength);
 
         //"White" is considered no dye
-        this.setFleeceColour(EnumDyeColor.WHITE);
+        this.setFleeceDyeColour(EnumDyeColor.WHITE);
 
         return livingdata;
     }
@@ -787,13 +913,13 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
             initialGenes[0] = (ThreadLocalRandom.current().nextInt(6) + 1);
 
         } else {
-            initialGenes[0] = (4);
+            initialGenes[0] = (5);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[1] = (ThreadLocalRandom.current().nextInt(6) + 1);
 
         } else {
-            initialGenes[1] = (4);
+            initialGenes[1] = (5);
         }
 
         //Chocolate [ Wildtype+, chocolate ]

@@ -77,11 +77,13 @@ public class ModelEnhancedLlama extends ModelBase {
         this.textureWidth = 96;
         this.textureHeight = 96;
 
+        float xMove = -6.0F;
+
         this.head = new ModelRenderer(this, 0, 0);
         this.head.addBox(-4.0F, -14.0F, 0.0F, 8, 18, 6, 0.0F); //head and neck
         this.head.setTextureOffset(28, 0);
         this.head.addBox(-2.0F, -12.0F, -4.0F, 4, 4, 4, 0.0F); //nose
-        this.head.setRotationPoint(0, 5, -6);
+        this.head.setRotationPoint(0, 5, -6 + xMove);
 
         this.headShaved = new ModelRenderer(this, 0, 0);
         this.headShaved.addBox(-4.0F, -14.0F, 0.0F, 8, 6, 6, 0.0F); //head and neck
@@ -132,7 +134,7 @@ public class ModelEnhancedLlama extends ModelBase {
 
         this.body = new ModelRenderer(this, 0, 39);
         this.body.addBox(-6.0F, 0.0F, 0.0F, 12, 10, 18);
-        this.body.setRotationPoint(0.0F, 2.0F, -2.0F);
+        this.body.setRotationPoint(0.0F, 2.0F, -2.0F + xMove);
 
         this.bodyShaved = new ModelRenderer(this, 0, 39);
         this.bodyShaved.addBox(-6.0F, 1.0F, 0.0F, 12, 10, 18, -1.0F);
@@ -156,11 +158,11 @@ public class ModelEnhancedLlama extends ModelBase {
 
         this.chest1 = new ModelRenderer(this, 74, 44);
         this.chest1.addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3);
-        this.chest1.setRotationPoint(-8.5F, 3.0F, 8.0F);
+        this.chest1.setRotationPoint(-8.5F, 3.0F, 10.0F + xMove);
         this.chest1.rotateAngleY = ((float)Math.PI / 2F);
         this.chest2 = new ModelRenderer(this, 74, 57);
         this.chest2.addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3);
-        this.chest2.setRotationPoint(5.5F, 3.0F, 8.0F);
+        this.chest2.setRotationPoint(5.5F, 3.0F, 10.0F + xMove);
         this.chest2.rotateAngleY = ((float)Math.PI / 2F);
 
         this.tail = new ModelRenderer(this, 0, 25);
@@ -180,7 +182,7 @@ public class ModelEnhancedLlama extends ModelBase {
 
         this.leg1 = new ModelRenderer(this, 0, 68);
         this.leg1.addBox(0.0F, 0.0F, 0.0F, 3, 11, 3);
-        this.leg1.setRotationPoint(-5.0F, 12.0F,-1.0F);
+        this.leg1.setRotationPoint(-5.0F, 12.0F,-1.0F + xMove);
 
         this.leg1Wool1 = new ModelRenderer(this, 0, 68);
         this.leg1Wool1.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.5F);
@@ -200,7 +202,7 @@ public class ModelEnhancedLlama extends ModelBase {
 
         this.leg2 = new ModelRenderer(this, 12, 68);
         this.leg2.addBox(0.0F, 0.0F, 0.0F, 3, 11, 3);
-        this.leg2.setRotationPoint(2.0F, 12.0F,-1.0F);
+        this.leg2.setRotationPoint(2.0F, 12.0F,-1.0F + xMove);
 
         this.leg2Wool1 = new ModelRenderer(this, 12, 68);
         this.leg2Wool1.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.5F);
@@ -220,7 +222,7 @@ public class ModelEnhancedLlama extends ModelBase {
 
         this.leg3 = new ModelRenderer(this, 0, 82);
         this.leg3.addBox(0.0F, 0F, 0.0F, 3, 11, 3);
-        this.leg3.setRotationPoint(-5.0F, 12.0F,12.0F);
+        this.leg3.setRotationPoint(-5.0F, 12.0F,12.0F + xMove);
 
         this.leg3Wool1 = new ModelRenderer(this, 0, 82);
         this.leg3Wool1.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.5F);
@@ -240,7 +242,7 @@ public class ModelEnhancedLlama extends ModelBase {
 
         this.leg4 = new ModelRenderer(this, 12, 82);
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 11, 3);
-        this.leg4.setRotationPoint(2.0F, 12.0F,12.0F);
+        this.leg4.setRotationPoint(2.0F, 12.0F,12.0F + xMove);
 
         this.leg4Wool1 = new ModelRenderer(this, 12, 82);
         this.leg4Wool1.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.5F);
@@ -496,13 +498,13 @@ public class ModelEnhancedLlama extends ModelBase {
 
         if ( suri && coatlength >= 0 ) {
             if (coatlength >= 1) {
-                this.neckWool1.rotationPointY = this.head.rotationPointY + (coatlength/2);
-                this.body1.rotationPointY = this.body.rotationPointY + (coatlength/2);
-                this.tail1.rotationPointY = this.body.rotationPointY + (coatlength/3);
-                this.leg1Wool1.rotationPointY = this.leg1.rotationPointY + (coatlength/2);
-                this.leg2Wool1.rotationPointY = this.leg2.rotationPointY + (coatlength/2);
-                this.leg3Wool1.rotationPointY = this.leg3.rotationPointY + (coatlength/2);
-                this.leg4Wool1.rotationPointY = this.leg4.rotationPointY + (coatlength/2);
+                this.neckWool1.rotationPointY = this.head.rotationPointY + (coatlength/2.0F);
+                this.body1.rotationPointY = this.body.rotationPointY + (coatlength/2.0F);
+                this.tail1.rotationPointY = this.body.rotationPointY + (coatlength/3.0F);
+                this.leg1Wool1.rotationPointY = this.leg1.rotationPointY + (coatlength/2.0F);
+                this.leg2Wool1.rotationPointY = this.leg2.rotationPointY + (coatlength/2.0F);
+                this.leg3Wool1.rotationPointY = this.leg3.rotationPointY + (coatlength/2.0F);
+                this.leg4Wool1.rotationPointY = this.leg4.rotationPointY + (coatlength/2.0F);
             }
         }
         copyModelAngles(neckWool1, neckWool2);

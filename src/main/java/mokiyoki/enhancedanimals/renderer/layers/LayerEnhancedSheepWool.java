@@ -41,7 +41,7 @@ public class LayerEnhancedSheepWool implements LayerRenderer<EnhancedSheep> {
                 float[] afloat2 = EnhancedSheep.getDyeRgb(EnumDyeColor.byId(l));
                 GlStateManager.color3f(afloat1[0] * (1.0F - f) + afloat2[0] * f, afloat1[1] * (1.0F - f) + afloat2[1] * f, afloat1[2] * (1.0F - f) + afloat2[2] * f);
             } else {
-                float[] afloat = EnhancedSheep.getDyeRgb(entitylivingbaseIn.getFleeceColour());
+                float[] afloat = EnhancedSheep.getDyeRgb(entitylivingbaseIn.getFleeceDyeColour());
                 GlStateManager.color3f(afloat[0], afloat[1], afloat[2]);
             }
 

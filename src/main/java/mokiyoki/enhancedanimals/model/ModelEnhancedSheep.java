@@ -88,6 +88,8 @@ public class ModelEnhancedSheep extends ModelBase {
         this.textureWidth = 64;
         this.textureHeight = 64;
 
+        float xMove = -6.0F;
+
         this.head = new ModelRenderer(this, 0, 0);
         this.head.addBox(-2.5F, -8.0F, -5.0F, 5, 4, 4, 0.0F); //skull
         this.head.setTextureOffset(0, 8);
@@ -95,10 +97,11 @@ public class ModelEnhancedSheep extends ModelBase {
 
         this.head.setTextureOffset(34, 0);
         this.head.addBox(-2.0F, -7.0F, -4.0F, 4, 9, 4, 0.0F); //neck
+        this.head.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
         this.hornBase = new ModelRenderer(this, 0, 36);
         this.hornBase.addBox(-1.5F, -8.9F, -4.1F, 3, 3, 3, -1.0F);
-        this.hornBase.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.hornBase.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
         // scale down by 0.1 for each
         this.hornL0 = new ModelRenderer(this, 0, 36);
@@ -260,6 +263,7 @@ public class ModelEnhancedSheep extends ModelBase {
 
         this.body = new ModelRenderer(this, 2, 0);
         this.body.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 0.0F);
+        this.body.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
         this.wool1 = new ModelRenderer(this, 2, 0);
         this.wool1.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 0.2F);
@@ -308,7 +312,7 @@ public class ModelEnhancedSheep extends ModelBase {
 
         this.tailBase = new ModelRenderer(this, 50, 6);
         this.tailBase.addBox(-1.0F, 0.0F, 0.0F, 2, 3, 1);
-        this.tailBase.setRotationPoint(0.0F, 9.0F, 14.0F);
+        this.tailBase.setRotationPoint(0.0F, 9.0F, 14.0F + xMove);
 
         this.tailMiddle = new ModelRenderer(this, 56, 6);
         this.tailMiddle.addBox(-0.5F, 0.0F, 0.0F, 1, 3, 1);
@@ -320,16 +324,16 @@ public class ModelEnhancedSheep extends ModelBase {
 
         this.leg1 = new ModelRenderer(this, 0, 22);
         this.leg1.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3);
-        this.leg1.setRotationPoint(-4, 14,-2);
+        this.leg1.setRotationPoint(-4, 14,-2 + xMove);
         this.leg2 = new ModelRenderer(this, 12, 22);
         this.leg2.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3);
-        this.leg2.setRotationPoint(1, 14,-2);
+        this.leg2.setRotationPoint(1, 14,-2 + xMove);
         this.leg3 = new ModelRenderer(this, 24, 22);
         this.leg3.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3);
-        this.leg3.setRotationPoint(-4, 14,11);
+        this.leg3.setRotationPoint(-4, 14,11 + xMove);
         this.leg4 = new ModelRenderer(this, 36, 22);
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3);
-        this.leg4.setRotationPoint(1, 14,11);
+        this.leg4.setRotationPoint(1, 14,11 + xMove);
 
         this.tailBase.addChild(tailMiddle);
         this.tailMiddle.addChild(tailTip);
@@ -519,62 +523,67 @@ public class ModelEnhancedSheep extends ModelBase {
         this.earsL.rotateAngleY = this.earsL.rotateAngleY + 0.15F;
         this.earsR.rotateAngleY = this.earsR.rotateAngleY - 0.15F;
 
+        copyModelAngles(body, wool1);
+        copyModelAngles(body, wool2);
+        copyModelAngles(body, wool3);
+        copyModelAngles(body, wool4);
+        copyModelAngles(body, wool5);
+        copyModelAngles(body, wool6);
+        copyModelAngles(body, wool7);
+        copyModelAngles(body, wool8);
+        copyModelAngles(body, wool9);
+        copyModelAngles(body, wool10);
+        copyModelAngles(body, wool11);
+        copyModelAngles(body, wool12);
+        copyModelAngles(body, wool13);
+        copyModelAngles(body, wool14);
+        copyModelAngles(body, wool15);
+
         copyModelAngles(head, hornBase);
 
         // values from: [ 0.1F to 0.4F]
         float hornSpacing = 0.4F;
         float hornGrowth = (entityIn.ticksExisted/24000.0F);
-        float hornGrowing = 1.0F;
 
-        if (hornGrowth > 1) {
-            if (hornGrowing < 2){
-                hornGrowing = hornGrowing / 2;
-            }
-            this.hornL9.rotationPointY = (-2.9F + 2.5F) * hornGrowing;
-            this.hornR9.rotationPointY = (-2.9F + 2.5F) * hornGrowing;
-            if (hornGrowing > 3){
+            this.hornL9.rotationPointY = -0.4F;
+            this.hornR9.rotationPointY = -0.4F;
+            this.hornL8.rotationPointY = -0.5376F;
+            this.hornR8.rotationPointY = -0.5376F;
+            this.hornL7.rotationPointY = -0.675F;
+            this.hornR7.rotationPointY = -0.675F;
+            this.hornL6.rotationPointY = -0.7876F;
+            this.hornR6.rotationPointY = -0.7876F;
+            this.hornL5.rotationPointY = -0.9F;
+            this.hornR5.rotationPointY = -0.9F;
+            this.hornL4.rotationPointY = -1.1F;
+            this.hornR4.rotationPointY = -1.1F;
+            this.hornL3.rotationPointY = -1.4F;
+            this.hornR3.rotationPointY = -1.4F;
+            this.hornL2.rotationPointY = -1.7F;
+            this.hornR2.rotationPointY = -1.7F;
+            this.hornL1.rotationPointY = -1.9F;
+            this.hornR1.rotationPointY = -1.9F;
+            this.hornL09.rotationPointY = -2.0F;
+            this.hornR09.rotationPointY = -2.0F;
+//            this.hornL08.rotationPointY = -2.0F;
+//            this.hornR08.rotationPointY = -2.0F;
+//            this.hornL07.rotationPointY = -2.0F;
+//            this.hornR07.rotationPointY = -2.0F;
+//            this.hornL06.rotationPointY = -2.0F;
+//            this.hornR06.rotationPointY = -2.0F;
+//            this.hornL05.rotationPointY = -2.0F;
+//            this.hornR05.rotationPointY = -2.0F;
+//            this.hornL04.rotationPointY = -2.0F;
+//            this.hornR04.rotationPointY = -2.0F;
+//            this.hornL03.rotationPointY = -2.0F;
+//            this.hornR03.rotationPointY = -2.0F;
+//            this.hornL02.rotationPointY = -2.0F;
+//            this.hornR02.rotationPointY = -2.0F;
+//            this.hornL01.rotationPointY = -2.0F;
+//            this.hornR01.rotationPointY = -2.0F;
 
-                this.hornL8.rotationPointY = -2.9F + 2.3624F;
-                this.hornL7.rotationPointY = -2.9F + 2.2250F;
-                this.hornL6.rotationPointY = -2.9F + 2.1124F;
-                this.hornL5.rotationPointY = -2.9F + 2.0F;
-                this.hornL4.rotationPointY = -2.9F + 1.8F;
-                this.hornL3.rotationPointY = -2.9F + 1.4F;
-                this.hornL2.rotationPointY = -2.9F + 1.2F;
-                this.hornL1.rotationPointY = -2.9F + 1.0F;
-                this.hornL09.rotationPointY = -2.8F + 0.8F;
-                this.hornL08.rotationPointY = -2.8F + 0.8F;
-                this.hornL07.rotationPointY = -2.8F + 0.8F;
-                this.hornL06.rotationPointY = -2.8F + 0.8F;
-                this.hornL05.rotationPointY = -2.8F + 0.8F;
-                this.hornL04.rotationPointY = -2.8F + 0.8F;
-                this.hornL03.rotationPointY = -2.8F + 0.8F;
-                this.hornL02.rotationPointY = -2.8F + 0.8F;
-                this.hornL01.rotationPointY = -2.8F + 0.8F;
-                this.hornL0.rotationPointX = -hornSpacing;
-
-                this.hornR0.rotationPointX = hornSpacing;
-                this.hornR01.rotationPointY = -2.8F + 0.8F;
-                this.hornR02.rotationPointY = -2.8F + 0.8F;
-                this.hornR03.rotationPointY = -2.8F + 0.8F;
-                this.hornR04.rotationPointY = -2.8F + 0.8F;
-                this.hornR05.rotationPointY = -2.8F + 0.8F;
-                this.hornR06.rotationPointY = -2.8F + 0.8F;
-                this.hornR07.rotationPointY = -2.8F + 0.8F;
-                this.hornR08.rotationPointY = -2.8F + 0.8F;
-                this.hornR09.rotationPointY = -2.8F + 0.8F;
-                this.hornR1.rotationPointY = -2.9F + 1.0F;
-                this.hornR2.rotationPointY = -2.9F + 1.2F;
-                this.hornR3.rotationPointY = -2.9F + 1.4F;
-                this.hornR4.rotationPointY = -2.9F + 1.8F;
-                this.hornR5.rotationPointY = -2.9F + 2.0F;
-                this.hornR6.rotationPointY = -2.9F + 2.1124F;
-                this.hornR7.rotationPointY = -2.9F + 2.2250F;
-                this.hornR8.rotationPointY = -2.9F + 2.3624F;
-
-            }
-
-        }
+            this.hornL0.rotationPointX = -hornSpacing;
+            this.hornR0.rotationPointX = hornSpacing;
 
         //the curve overback
         // [ -0.degreesF * goldenRatio ];
@@ -585,20 +594,20 @@ public class ModelEnhancedSheep extends ModelBase {
         float hornRootAngleZ = 0.25F;
         //gradient should be 0 to 1
         float hornCurveGradientX = 0.50F;
-        float hornCurve = 0.30F;
+        float hornCurve = 0.20F;
         float hornCurveX = -0.50F;
-        float hornCurveY = 0.25F;
+        float hornCurveY = 0.00F;
         float hornCurveZ = 0.00F;
 
         this.hornL0.rotateAngleX = (-hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F))) - hornRootAngleX;
-        this.hornL01.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL02.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL03.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL04.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL05.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL06.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL07.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL08.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL01.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL02.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL03.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL04.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL05.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL06.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL07.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL08.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
         this.hornL09.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
         this.hornL1.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.4F));
         this.hornL2.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.3F));
@@ -611,14 +620,14 @@ public class ModelEnhancedSheep extends ModelBase {
         this.hornL9.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.6F));
 
         this.hornR0.rotateAngleX = (-hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F))) - hornRootAngleX;
-        this.hornR01.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR02.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR03.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR04.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR05.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR06.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR07.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR08.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR01.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR02.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR03.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR04.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR05.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR06.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR07.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR08.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
         this.hornR09.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
         this.hornR1.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.4F));
         this.hornR2.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.3F));
@@ -632,14 +641,14 @@ public class ModelEnhancedSheep extends ModelBase {
 
 
         this.hornL0.rotateAngleY = hornCurve + hornRootAngleY;
-        this.hornL01.rotateAngleY = hornCurve;
-        this.hornL02.rotateAngleY = hornCurve;
-        this.hornL03.rotateAngleY = hornCurve;
-        this.hornL04.rotateAngleY = hornCurve;
-        this.hornL05.rotateAngleY = hornCurve;
-        this.hornL06.rotateAngleY = hornCurve;
-        this.hornL07.rotateAngleY = hornCurve;
-        this.hornL08.rotateAngleY = hornCurve;
+//        this.hornL01.rotateAngleY = hornCurve;
+//        this.hornL02.rotateAngleY = hornCurve;
+//        this.hornL03.rotateAngleY = hornCurve;
+//        this.hornL04.rotateAngleY = hornCurve;
+//        this.hornL05.rotateAngleY = hornCurve;
+//        this.hornL06.rotateAngleY = hornCurve;
+//        this.hornL07.rotateAngleY = hornCurve;
+//        this.hornL08.rotateAngleY = hornCurve;
         this.hornL09.rotateAngleY = hornCurve;
         this.hornL1.rotateAngleY = hornCurve;
         this.hornL2.rotateAngleY = hornCurve;
@@ -652,14 +661,14 @@ public class ModelEnhancedSheep extends ModelBase {
         this.hornL9.rotateAngleY = hornCurve;
 
         this.hornR0.rotateAngleY = -hornCurve - hornRootAngleY;
-        this.hornR01.rotateAngleY = -hornCurve;
-        this.hornR02.rotateAngleY = -hornCurve;
-        this.hornR03.rotateAngleY = -hornCurve;
-        this.hornR04.rotateAngleY = -hornCurve;
-        this.hornR05.rotateAngleY = -hornCurve;
-        this.hornR06.rotateAngleY = -hornCurve;
-        this.hornR07.rotateAngleY = -hornCurve;
-        this.hornR08.rotateAngleY = -hornCurve;
+//        this.hornR01.rotateAngleY = -hornCurve;
+//        this.hornR02.rotateAngleY = -hornCurve;
+//        this.hornR03.rotateAngleY = -hornCurve;
+//        this.hornR04.rotateAngleY = -hornCurve;
+//        this.hornR05.rotateAngleY = -hornCurve;
+//        this.hornR06.rotateAngleY = -hornCurve;
+//        this.hornR07.rotateAngleY = -hornCurve;
+//        this.hornR08.rotateAngleY = -hornCurve;
         this.hornR09.rotateAngleY = -hornCurve;
         this.hornR1.rotateAngleY = -hornCurve;
         this.hornR2.rotateAngleY = -hornCurve;
@@ -673,14 +682,14 @@ public class ModelEnhancedSheep extends ModelBase {
 
 
         this.hornL0.rotateAngleZ = hornCurve + hornRootAngleZ;
-        this.hornL01.rotateAngleZ = hornCurve;
-        this.hornL02.rotateAngleZ = hornCurve;
-        this.hornL03.rotateAngleZ = hornCurve;
-        this.hornL04.rotateAngleZ = hornCurve;
-        this.hornL05.rotateAngleZ = hornCurve;
-        this.hornL06.rotateAngleZ = hornCurve;
-        this.hornL07.rotateAngleZ = hornCurve;
-        this.hornL08.rotateAngleZ = hornCurve;
+//        this.hornL01.rotateAngleZ = hornCurve;
+//        this.hornL02.rotateAngleZ = hornCurve;
+//        this.hornL03.rotateAngleZ = hornCurve;
+//        this.hornL04.rotateAngleZ = hornCurve;
+//        this.hornL05.rotateAngleZ = hornCurve;
+//        this.hornL06.rotateAngleZ = hornCurve;
+//        this.hornL07.rotateAngleZ = hornCurve;
+//        this.hornL08.rotateAngleZ = hornCurve;
         this.hornL09.rotateAngleZ = hornCurve;
         this.hornL1.rotateAngleZ = hornCurve;
         this.hornL2.rotateAngleZ = hornCurve;
@@ -693,14 +702,14 @@ public class ModelEnhancedSheep extends ModelBase {
         this.hornL9.rotateAngleZ = hornCurve;
 
         this.hornR0.rotateAngleZ = -hornCurve - hornRootAngleZ;
-        this.hornR01.rotateAngleZ = -hornCurve;
-        this.hornR02.rotateAngleZ = -hornCurve;
-        this.hornR03.rotateAngleZ = -hornCurve;
-        this.hornR04.rotateAngleZ = -hornCurve;
-        this.hornR05.rotateAngleZ = -hornCurve;
-        this.hornR06.rotateAngleZ = -hornCurve;
-        this.hornR07.rotateAngleZ = -hornCurve;
-        this.hornR08.rotateAngleZ = -hornCurve;
+//        this.hornR01.rotateAngleZ = -hornCurve;
+//        this.hornR02.rotateAngleZ = -hornCurve;
+//        this.hornR03.rotateAngleZ = -hornCurve;
+//        this.hornR04.rotateAngleZ = -hornCurve;
+//        this.hornR05.rotateAngleZ = -hornCurve;
+//        this.hornR06.rotateAngleZ = -hornCurve;
+//        this.hornR07.rotateAngleZ = -hornCurve;
+//        this.hornR08.rotateAngleZ = -hornCurve;
         this.hornR09.rotateAngleZ = -hornCurve;
         this.hornR1.rotateAngleZ = -hornCurve;
         this.hornR2.rotateAngleZ = -hornCurve;
@@ -711,6 +720,8 @@ public class ModelEnhancedSheep extends ModelBase {
         this.hornR7.rotateAngleZ = -hornCurve;
         this.hornR8.rotateAngleZ = -hornCurve;
         this.hornR9.rotateAngleZ = -hornCurve;
+
+
 
     }
 

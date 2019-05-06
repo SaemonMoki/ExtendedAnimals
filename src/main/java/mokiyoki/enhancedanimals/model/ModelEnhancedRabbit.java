@@ -67,43 +67,45 @@ public class ModelEnhancedRabbit extends ModelBase
         this.textureWidth = 64;
         this.textureHeight = 64;
 
+        float xMove = -2.0F;
+
         this.rabbitLeftFoot = new ModelRenderer(this, 0, 55);
         this.rabbitLeftFoot.addBox(0F, 0F, 0F, 3, 8, 1);
-        this.rabbitLeftFoot.setRotationPoint(0.0F, 5.0F, 1.0F);
+        this.rabbitLeftFoot.setRotationPoint(0.0F, 5.0F, 1.0F + xMove);
         this.setRotationOffset(this.rabbitLeftFoot, 3.0F, 0.0F, 0.0F);
         this.rabbitLeftFoot.mirror = true;
 
         this.rabbitRightFoot = new ModelRenderer(this, 8, 55);
         this.rabbitRightFoot.addBox(0F, 0F, 0F, 3, 8, 1);
-        this.rabbitRightFoot.setRotationPoint(0F, 5.0F, 1.0F);
+        this.rabbitRightFoot.setRotationPoint(0F, 5.0F, 1.0F + xMove);
         this.setRotationOffset(this.rabbitRightFoot, 3.0F, 0.0F, 0.0F);
         this.rabbitRightFoot.mirror = true;
 
         this.rabbitLeftCalf = new ModelRenderer(this, 0, 49);
         this.rabbitLeftCalf.addBox(0F, 0F, 0F, 3, 5, 1);
-        this.rabbitLeftCalf.setRotationPoint(0.0F, 6.5F, 2.7F);
+        this.rabbitLeftCalf.setRotationPoint(0.0F, 6.5F, 2.7F + xMove);
         this.setRotationOffset(this.rabbitLeftCalf, 2.0F, 0.0F, 0.0F);
         this.rabbitLeftCalf.addChild(rabbitLeftFoot);
 
         this.rabbitRightCalf = new ModelRenderer(this, 18, 49);
         this.rabbitRightCalf.addBox(0F, 0F, 0F, 3, 5, 1);
-        this.rabbitRightCalf.setRotationPoint(0, 6.5F, 2.7F);
+        this.rabbitRightCalf.setRotationPoint(0, 6.5F, 2.7F + xMove);
         this.setRotationOffset(this.rabbitRightCalf, 2.0F, 0.0F, 0.0F);
         this.rabbitRightCalf.addChild(rabbitRightFoot);
 
         this.rabbitLeftThigh = new ModelRenderer(this, 0, 37);
         this.rabbitLeftThigh.addBox(0F, 0F, 0F, 3, 6, 6);
-        this.rabbitLeftThigh.setRotationPoint(-4.5F, 17F, 4F);
+        this.rabbitLeftThigh.setRotationPoint(-4.5F, 17F, 4F + xMove);
         this.rabbitLeftThigh.addChild(rabbitLeftCalf);
 
         this.rabbitRightThigh = new ModelRenderer(this, 18, 37);
         this.rabbitRightThigh.addBox(0F, 0F, 0F, 3, 6, 6);
-        this.rabbitRightThigh.setRotationPoint(1.5F, 17F, 4F);
+        this.rabbitRightThigh.setRotationPoint(1.5F, 17F, 4F + xMove);
         this.rabbitRightThigh.addChild(rabbitRightCalf);
 
         this.rabbitBody = new ModelRenderer(this, 7, 8);
         this.rabbitBody.addBox(-3.5F, 0.0F, 0.0F, 7, 7, 9,0.5F);
-        this.rabbitBody.setRotationPoint(0F, 16.0F, -4.5F);
+        this.rabbitBody.setRotationPoint(0F, 16.0F, -4.5F + xMove);
 
         this.rabbitBodyAngora1 = new ModelRenderer(this, 7, 8);
         this.rabbitBodyAngora1.addBox(-3.5F, 0F, 0F, 7, 7, 9, 1F);
@@ -123,11 +125,11 @@ public class ModelEnhancedRabbit extends ModelBase
 
         this.rabbitButtRound = new ModelRenderer(this, 30, 0);
         this.rabbitButtRound.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 0.5F);
-        this.rabbitButtRound.setRotationPoint(0.0F, 14.0F, 2.5F);
+        this.rabbitButtRound.setRotationPoint(0.0F, 14.0F, 2.5F + xMove);
 
         this.rabbitButt = new ModelRenderer(this, 30, 0);
         this.rabbitButt.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8);
-        this.rabbitButt.setRotationPoint(0.0F, 15.0F, 2.5F);
+        this.rabbitButt.setRotationPoint(0.0F, 15.0F, 2.5F + xMove);
 
         this.rabbitButtAngora1 = new ModelRenderer(this, 30, 0);
         this.rabbitButtAngora1.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 1F);
@@ -147,36 +149,36 @@ public class ModelEnhancedRabbit extends ModelBase
 
         this.rabbitButtTube = new ModelRenderer(this, 30, 0);
         this.rabbitButtTube.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, -0.49F);
-        this.rabbitButtTube.setRotationPoint(0.0F, 16.1F, 2.5F);
+        this.rabbitButtTube.setRotationPoint(0.0F, 16.1F, 2.5F + xMove);
 
         this.rabbitLeftArm = new ModelRenderer(this, 16, 56);
         this.rabbitLeftArm.addBox(0.0F, 0.0F, 0.0F, 3, 6, 2);
-        this.rabbitLeftArm.setRotationPoint(-3.5F, 23.5F, -2.0F);
+        this.rabbitLeftArm.setRotationPoint(-3.5F, 23.5F, -2.0F + xMove);
         this.setRotationOffset(this.rabbitLeftArm, -1.6F, 0.0F, 0.0F);
 
         this.rabbitRightArm = new ModelRenderer(this, 26, 56);
         this.rabbitRightArm.addBox(0.0F, 0F, 0F, 3, 6, 2);
-        this.rabbitRightArm.setRotationPoint(0.5F, 23.5F, -2.0F);
+        this.rabbitRightArm.setRotationPoint(0.5F, 23.5F, -2.0F + xMove);
         this.setRotationOffset(this.rabbitRightArm, -1.6F, 0.0F, 0.0F);
 
         this.rabbitHeadLeft = new ModelRenderer(this, 0, 24);
         this.rabbitHeadLeft.addBox(0.0F, 0.0F, 0.0F, 3, 6, 6);
-        this.rabbitHeadLeft.setRotationPoint(0.0F, 14.0F, -9.0F);
+        this.rabbitHeadLeft.setRotationPoint(0.0F, 14.0F, -9.0F + xMove);
 
         this.rabbitHeadRight = new ModelRenderer(this, 18, 24);
         this.rabbitHeadRight.addBox(-3.0F, 0F, 0F, 3, 6, 6);
-        this.rabbitHeadRight.setRotationPoint(0.0F, 14.0F, -9.0F);
+        this.rabbitHeadRight.setRotationPoint(0.0F, 14.0F, -9.0F + xMove);
 
         this.rabbitHeadMuzzle = new ModelRenderer(this, 0, 8);
         this.rabbitHeadMuzzle.addBox(-2F, 1.5F, -2F, 4, 4, 4);
-        this.rabbitHeadMuzzle.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.rabbitHeadMuzzle.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
         this.rabbitNose = new ModelRenderer(this, 0, 8);
         this.rabbitNose.addBox(-0.5F, 1.6F, -2.1F, 1, 1, 1);
 
         this.rabbitHeadMuzzleDwarf = new ModelRenderer(this, 0, 8);
         this.rabbitHeadMuzzleDwarf.addBox(-2F, 1.5F, -1F, 4, 4, 4);
-        this.rabbitHeadMuzzleDwarf.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.rabbitHeadMuzzleDwarf.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
         this.rabbitNoseDwarf = new ModelRenderer(this, 0, 8);
         this.rabbitNoseDwarf.addBox(-0.5F, 1.6F, -1.1F, 1, 1, 1);
@@ -209,11 +211,11 @@ public class ModelEnhancedRabbit extends ModelBase
 
         this.rabbitLeftEar = new ModelRenderer(this, 0, 0);
         this.rabbitLeftEar.addBox(0.0F, -7.0F, 2.0F, 4, 7, 1);
-        this.rabbitLeftEar.setRotationPoint(1.0F, 14.0F, 0.0F);
+        this.rabbitLeftEar.setRotationPoint(1.0F, 14.0F, 0.0F + xMove);
 
         this.rabbitRightEar = new ModelRenderer(this, 10, 0);
         this.rabbitRightEar.addBox(-4.0F, -7.0F, 2.0F, 4, 7, 1);
-        this.rabbitRightEar.setRotationPoint(-1.0F, 14.0F, 0.0F);
+        this.rabbitRightEar.setRotationPoint(-1.0F, 14.0F, 0.0F + xMove);
 
         this.rabbitLeftEarDwarf = new ModelRenderer(this, 0, 0);
         this.rabbitLeftEarDwarf.addBox(0.0F, -4.0F, 2.0F, 4, 4, 1);
@@ -225,7 +227,7 @@ public class ModelEnhancedRabbit extends ModelBase
 
         this.rabbitTail = new ModelRenderer(this, 20, 0);
         this.rabbitTail.addBox(-1.5F, 2.0F, 8.0F, 3, 4, 2);
-        this.rabbitTail.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.rabbitTail.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
     }
 
     private void setRotationOffset(ModelRenderer renderer, float x, float y, float z) {

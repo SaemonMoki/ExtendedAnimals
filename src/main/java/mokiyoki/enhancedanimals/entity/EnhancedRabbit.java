@@ -115,14 +115,22 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         "top_steal_blue_lutino.png", "top_stealdark_blue_lutino.png", "top_tan_blue_lutino.png", "top_self_blue_lutino.png",
         "top_steal_choc_lutino.png", "top_stealdark_choc_lutino.png", "top_tan_choc_lutino.png", "top_self_choc_lutino.png",
         "top_steal_lilac_lutino.png", "top_stealdark_lilac_lutino.png", "top_tan_lilac_lutino.png", "top_self_lilac_lutino.png",
-            "top_harly0.png", "top_harly1.png", "top_harly2.png", "top_harly3.png", "top_harly4.png", "top_harly5.png", "top_harly6.png", "top_harly7.png", "top_harly8.png", "top_harly9.png", "top_harlya.png", "top_harlyb.png", "top_harlyc.png", "top_harlyd.png", "top_harlye.png", "top_harlyf.png",
-            "top_harly0_blue.png", "top_harly1_blue.png", "top_harly2_blue.png", "top_harly3_blue.png", "top_harly4_blue.png", "top_harly5_blue.png", "top_harly6_blue.png", "top_harly7_blue.png", "top_harly8_blue.png", "top_harly9_blue.png", "top_harlya_blue.png", "top_harlyb_blue.png", "top_harlyc_blue.png", "top_harlyd_blue.png", "top_harlye_blue.png", "top_harlyf_blue.png",
-            "top_harly0_choc.png", "top_harly1_choc.png", "top_harly2_choc.png", "top_harly3_choc.png", "top_harly4_choc.png", "top_harly5_choc.png", "top_harly6_choc.png", "top_harly7_choc.png", "top_harly8_choc.png", "top_harly9_choc.png", "top_harlya_choc.png", "top_harlyb_choc.png", "top_harlyc_choc.png", "top_harlyd_choc.png", "top_harlye_choc.png", "top_harlyf_choc.png",
-            "top_harly0_lilac.png", "top_harly1_lilac.png", "top_harly2_lilac.png", "top_harly3_lilac.png", "top_harly4_lilac.png", "top_harly5_lilac.png", "top_harly6_lilac.png", "top_harly7_lilac.png", "top_harly8_lilac.png", "top_harly9_lilac.png", "top_harlya_lilac.png", "top_harlyb_lilac.png", "top_harlyc_lilac.png", "top_harlyd_lilac.png", "top_harlye_lilac.png", "top_harlyf_lilac.png",
-            "top_harly0_lutino.png", "top_harly1_lutino.png", "top_harly2_lutino.png", "top_harly3_lutino.png", "top_harly4_lutino.png", "top_harly5_lutino.png", "top_harly6_lutino.png", "top_harly7_lutino.png", "top_harly8_lutino.png", "top_harly9_lutino.png", "top_harlya_lutino.png", "top_harlyb_lutino.png", "top_harlyc_lutino.png", "top_harlyd_lutino.png", "top_harlye_lutino.png", "top_harlyf_lutino.png",
-            "top_harly0_blue_lutino.png", "top_harly1_blue_lutino.png", "top_harly2_blue_lutino.png", "top_harly3_blue_lutino.png", "top_harly4_blue_lutino.png", "top_harly5_blue_lutino.png", "top_harly6_blue_lutino.png", "top_harly7_blue_lutino.png", "top_harly8_blue_lutino.png", "top_harly9_blue_lutino.png", "top_harlya_blue_lutino.png", "top_harlyb_blue_lutino.png", "top_harlyc_blue_lutino.png", "top_harlyd_blue_lutino.png", "top_harlye_blue_lutino.png", "top_harlyf_blue_lutino.png",
-            "top_harly0_choc_lutino.png", "top_harly1_choc_lutino.png", "top_harly2_choc_lutino.png", "top_harly3_choc_lutino.png", "top_harly4_choc_lutino.png", "top_harly5_choc_lutino.png", "top_harly6_choc_lutino.png", "top_harly7_choc_lutino.png", "top_harly8_choc_lutino.png", "top_harly9_choc_lutino.png", "top_harlya_choc_lutino.png", "top_harlyb_choc_lutino.png", "top_harlyc_choc_lutino.png", "top_harlyd_choc_lutino.png", "top_harlye_choc_lutino.png", "top_harlyf_choc_lutino.png",
-            "top_harly0_lilac_lutino.png", "top_harly1_lilac_lutino.png", "top_harly2_lilac_lutino.png", "top_harly3_lilac_lutino.png", "top_harly4_lilac_lutino.png", "top_harly5_lilac_lutino.png", "top_harly6_lilac_lutino.png", "top_harly7_lilac_lutino.png", "top_harly8_lilac_lutino.png", "top_harly9_lilac_lutino.png", "top_harlya_lilac_lutino.png", "top_harlyb_lilac_lutino.png", "top_harlyc_lilac_lutino.png", "top_harlyd_lilac_lutino.png", "top_harlye_lilac_lutino.png", "top_harlyf_lilac_lutino.png",
+        "top_harly0.png", "top_harly1.png", "top_harly2.png", "top_harly3.png", "top_harly4.png", "top_harly5.png", "top_harly6.png", "top_harly7.png", "top_harly8.png", "top_harly9.png", "top_harlya.png", "top_harlyb.png", "top_harlyc.png", "top_harlyd.png", "top_harlye.png", "top_harlyf.png",
+        "top_harly0_blue.png", "top_harly1_blue.png", "top_harly2_blue.png", "top_harly3_blue.png", "top_harly4_blue.png", "top_harly5_blue.png", "top_harly6_blue.png", "top_harly7_blue.png", "top_harly8_blue.png", "top_harly9_blue.png", "top_harlya_blue.png", "top_harlyb_blue.png", "top_harlyc_blue.png", "top_harlyd_blue.png", "top_harlye_blue.png", "top_harlyf_blue.png",
+        "top_harly0_choc.png", "top_harly1_choc.png", "top_harly2_choc.png", "top_harly3_choc.png", "top_harly4_choc.png", "top_harly5_choc.png", "top_harly6_choc.png", "top_harly7_choc.png", "top_harly8_choc.png", "top_harly9_choc.png", "top_harlya_choc.png", "top_harlyb_choc.png", "top_harlyc_choc.png", "top_harlyd_choc.png", "top_harlye_choc.png", "top_harlyf_choc.png",
+        "top_harly0_lilac.png", "top_harly1_lilac.png", "top_harly2_lilac.png", "top_harly3_lilac.png", "top_harly4_lilac.png", "top_harly5_lilac.png", "top_harly6_lilac.png", "top_harly7_lilac.png", "top_harly8_lilac.png", "top_harly9_lilac.png", "top_harlya_lilac.png", "top_harlyb_lilac.png", "top_harlyc_lilac.png", "top_harlyd_lilac.png", "top_harlye_lilac.png", "top_harlyf_lilac.png",
+        "top_japbrindle0.png", "top_japbrindle1.png", "top_japbrindle2.png", "top_japbrindle3.png", "top_japbrindle4.png", "top_japbrindle5.png", "top_japbrindle6.png", "top_japbrindle7.png", "top_japbrindle8.png", "top_japbrindle9.png", "top_japbrindlea.png", "top_japbrindleb.png", "top_japbrindlec.png", "top_japbrindled.png", "top_japbrindlee.png", "top_japbrindlef.png",
+        "top_japbrindle0_blue.png", "top_japbrindle1_blue.png", "top_japbrindle2_blue.png", "top_japbrindle3_blue.png", "top_japbrindle4_blue.png", "top_japbrindle5_blue.png", "top_japbrindle6_blue.png", "top_japbrindle7_blue.png", "top_japbrindle8_blue.png", "top_japbrindle9_blue.png", "top_japbrindlea_blue.png", "top_japbrindleb_blue.png", "top_japbrindlec_blue.png", "top_japbrindled_blue.png", "top_japbrindlee_blue.png", "top_japbrindlef_blue.png",
+        "top_japbrindle0_choc.png", "top_japbrindle1_choc.png", "top_japbrindle2_choc.png", "top_japbrindle3_choc.png", "top_japbrindle4_choc.png", "top_japbrindle5_choc.png", "top_japbrindle6_choc.png", "top_japbrindle7_choc.png", "top_japbrindle8_choc.png", "top_japbrindle9_choc.png", "top_japbrindlea_choc.png", "top_japbrindleb_choc.png", "top_japbrindlec_choc.png", "top_japbrindled_choc.png", "top_japbrindlee_choc.png", "top_japbrindlef_choc.png",
+        "top_japbrindle0_lilac.png", "top_japbrindle1_lilac.png", "top_japbrindle2_lilac.png", "top_japbrindle3_lilac.png", "top_japbrindle4_lilac.png", "top_japbrindle5_lilac.png", "top_japbrindle6_lilac.png", "top_japbrindle7_lilac.png", "top_japbrindle8_lilac.png", "top_japbrindle9_lilac.png", "top_japbrindlea_lilac.png", "top_japbrindleb_lilac.png", "top_japbrindlec_lilac.png", "top_japbrindled_lilac.png", "top_japbrindlee_lilac.png", "top_japbrindlef_lilac.png",
+        "top_harly0_lutino.png", "top_harly1_lutino.png", "top_harly2_lutino.png", "top_harly3_lutino.png", "top_harly4_lutino.png", "top_harly5_lutino.png", "top_harly6_lutino.png", "top_harly7_lutino.png", "top_harly8_lutino.png", "top_harly9_lutino.png", "top_harlya_lutino.png", "top_harlyb_lutino.png", "top_harlyc_lutino.png", "top_harlyd_lutino.png", "top_harlye_lutino.png", "top_harlyf_lutino.png",
+        "top_harly0_blue_lutino.png", "top_harly1_blue_lutino.png", "top_harly2_blue_lutino.png", "top_harly3_blue_lutino.png", "top_harly4_blue_lutino.png", "top_harly5_blue_lutino.png", "top_harly6_blue_lutino.png", "top_harly7_blue_lutino.png", "top_harly8_blue_lutino.png", "top_harly9_blue_lutino.png", "top_harlya_blue_lutino.png", "top_harlyb_blue_lutino.png", "top_harlyc_blue_lutino.png", "top_harlyd_blue_lutino.png", "top_harlye_blue_lutino.png", "top_harlyf_blue_lutino.png",
+        "top_harly0_choc_lutino.png", "top_harly1_choc_lutino.png", "top_harly2_choc_lutino.png", "top_harly3_choc_lutino.png", "top_harly4_choc_lutino.png", "top_harly5_choc_lutino.png", "top_harly6_choc_lutino.png", "top_harly7_choc_lutino.png", "top_harly8_choc_lutino.png", "top_harly9_choc_lutino.png", "top_harlya_choc_lutino.png", "top_harlyb_choc_lutino.png", "top_harlyc_choc_lutino.png", "top_harlyd_choc_lutino.png", "top_harlye_choc_lutino.png", "top_harlyf_choc_lutino.png",
+        "top_harly0_lilac_lutino.png", "top_harly1_lilac_lutino.png", "top_harly2_lilac_lutino.png", "top_harly3_lilac_lutino.png", "top_harly4_lilac_lutino.png", "top_harly5_lilac_lutino.png", "top_harly6_lilac_lutino.png", "top_harly7_lilac_lutino.png", "top_harly8_lilac_lutino.png", "top_harly9_lilac_lutino.png", "top_harlya_lilac_lutino.png", "top_harlyb_lilac_lutino.png", "top_harlyc_lilac_lutino.png", "top_harlyd_lilac_lutino.png", "top_harlye_lilac_lutino.png", "top_harlyf_lilac_lutino.png",
+        "top_japbrindle0_lutino.png", "top_japbrindle1_lutino.png", "top_japbrindle2_lutino.png", "top_japbrindle3_lutino.png", "top_japbrindle4_lutino.png", "top_japbrindle5_lutino.png", "top_japbrindle6_lutino.png", "top_japbrindle7_lutino.png", "top_japbrindle8_lutino.png", "top_japbrindle9_lutino.png", "top_japbrindlea_lutino.png", "top_japbrindleb_lutino.png", "top_japbrindlec_lutino.png", "top_japbrindled_lutino.png", "top_japbrindlee_lutino.png", "top_japbrindlef_lutino.png",
+        "top_japbrindle0_blue_lutino.png", "top_japbrindle1_blue_lutino.png", "top_japbrindle2_blue_lutino.png", "top_japbrindle3_blue_lutino.png", "top_japbrindle4_blue_lutino.png", "top_japbrindle5_blue_lutino.png", "top_japbrindle6_blue_lutino.png", "top_japbrindle7_blue_lutino.png", "top_japbrindle8_blue_lutino.png", "top_japbrindle9_blue_lutino.png", "top_japbrindlea_blue_lutino.png", "top_japbrindleb_blue_lutino.png", "top_japbrindlec_blue_lutino.png", "top_japbrindled_blue_lutino.png", "top_japbrindlee_blue_lutino.png", "top_japbrindlef_blue_lutino.png",
+        "top_japbrindle0_choc_lutino.png", "top_japbrindle1_choc_lutino.png", "top_japbrindle2_choc_lutino.png", "top_japbrindle3_choc_lutino.png", "top_japbrindle4_choc_lutino.png", "top_japbrindle5_choc_lutino.png", "top_japbrindle6_choc_lutino.png", "top_japbrindle7_choc_lutino.png", "top_japbrindle8_choc_lutino.png", "top_japbrindle9_choc_lutino.png", "top_japbrindlea_choc_lutino.png", "top_japbrindleb_choc_lutino.png", "top_japbrindlec_choc_lutino.png", "top_japbrindled_choc_lutino.png", "top_japbrindlee_choc_lutino.png", "top_japbrindlef_choc_lutino.png",
+        "top_japbrindle0_lilac_lutino.png", "top_japbrindle1_lilac_lutino.png", "top_japbrindle2_lilac_lutino.png", "top_japbrindle3_lilac_lutino.png", "top_japbrindle4_lilac_lutino.png", "top_japbrindle5_lilac_lutino.png", "top_japbrindle6_lilac_lutino.png", "top_japbrindle7_lilac_lutino.png", "top_japbrindle8_lilac_lutino.png", "top_japbrindle9_lilac_lutino.png", "top_japbrindlea_lilac_lutino.png", "top_japbrindleb_lilac_lutino.png", "top_japbrindlec_lilac_lutino.png", "top_japbrindled_lilac_lutino.png", "top_japbrindlee_lilac_lutino.png", "top_japbrindlef_lilac_lutino.png"
     };
 
     private static final String[] RABBIT_TEXTURES_DUTCH = new String[] {
@@ -959,7 +967,13 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                     }
                 }else if (genesForText[8] != 2 && genesForText[9] != 2 && (genesForText[8] == 3 || genesForText[9] == 3)){
                     //harlequin
-                    top = 33 + ( 16 * shade);
+                    if (genesForText[10] == 1 && genesForText[11] == 1){
+                        //stripy harlequin
+                        top = 33 + ( 16 * shade);
+                    }else{
+                        //spotty harlequin
+                        top = 97 + ( 16 * shade);
+                    }
                     //TODO add harlequin variations here
                     if (genesForText[4] == 1 || genesForText[5] == 1){
                         middle = 1;
@@ -1133,13 +1147,14 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                     if (higher != 0){
                         higher = higher + 48;
                     }
+
                     if (top != 0){
                         if (top <= 16){
                             //sets standard variation layers to their lutino version
                             top = top + 16;
                         }else{
                             //sets random variation layers to their lutino version
-                            top = top + 64;
+                            top = top + 128;
                         }
                     }
 
@@ -1201,6 +1216,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                         //charlie patterned
                         broken = broken +16;
                     }
+
                 }
                 if (genesForText[12] == 2 && genesForText[13] == 2) {
                     //dutch patterned

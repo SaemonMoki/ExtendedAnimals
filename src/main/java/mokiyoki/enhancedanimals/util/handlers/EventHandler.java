@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityLlama;
 import net.minecraft.entity.passive.EntityRabbit;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -28,6 +29,11 @@ public class EventHandler {
             }
         }
         if (entity instanceof EntityLlama) {
+            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
+                event.setCanceled(true);
+            }
+        }
+        if (entity instanceof EntitySheep) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
             }

@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.model.ModelEnhancedSheep;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -28,12 +27,12 @@ public class RenderEnhancedSheep extends RenderLiving<EnhancedSheep> {
      */
     protected ResourceLocation getEntityTexture(EnhancedSheep entity)
     {
-        String s = entity.getFleeceColour().getName() + entity.getSheepTexture();
+        String s = entity.getFleeceDyeColour().getName() + entity.getSheepTexture();
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
         if (resourcelocation == null)
         {
-            float[] dyeRGB = EnhancedSheep.getDyeRgb(entity.getFleeceColour());
+            float[] dyeRGB = EnhancedSheep.getDyeRgb(entity.getFleeceDyeColour());
 //            if (dyeRGB != null) {
 //                GlStateManager.color3f(dyeRGB[0], dyeRGB[1], dyeRGB[2]);
 //            }

@@ -22,15 +22,11 @@ public class EnhancedEgg extends Item {
 
     private int[] arrayOfDifferences;
 
-    public EnhancedEgg(Properties properties) {
-        super(properties);
-    }
+    public EnhancedEgg(Properties properties) { super(properties); }
 
     public void setDifference(int[] arrayOfDifferences){
         this.arrayOfDifferences = arrayOfDifferences;
     }
-
-
 
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn){
         ItemStack itemstack = playerIn.getHeldItem(handIn);

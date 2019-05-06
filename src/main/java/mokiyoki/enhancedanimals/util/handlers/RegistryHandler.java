@@ -1,36 +1,21 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 
-import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
-//import mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider;
-import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
-import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
-import mokiyoki.enhancedanimals.entity.EnhancedSheep;
-import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.entity.*;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDispenser;
-//import net.minecraft.client.renderer.color.BlockColors;
-//import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.dispenser.BehaviorProjectileDispense;
-import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.init.Biomes;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.*;
-import net.minecraft.world.GrassColors;
-import net.minecraft.world.World;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemSpawnEgg;
 import net.minecraft.world.biome.Biome;
-//import net.minecraft.world.biome.BiomeColors;
 import net.minecraft.world.gen.Heightmap;
-//import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,8 +23,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Set;
-
-//import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
 /**
  * Created by moki on 24/08/2018.
@@ -52,6 +35,7 @@ public class RegistryHandler {
     public static final EntityType<EnhancedRabbit> ENHANCED_RABBIT = EntityType.Builder.create(EnhancedRabbit.class, EnhancedRabbit::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_rabbit");
     public static final EntityType<EnhancedSheep> ENHANCED_SHEEP = EntityType.Builder.create(EnhancedSheep.class, EnhancedSheep::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_sheep");
     public static final EntityType<EnhancedLlama> ENHANCED_LLAMA = EntityType.Builder.create(EnhancedLlama.class, EnhancedLlama::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_llama");
+    public static final EntityType<EnhancedCow> ENHANCED_COW = EntityType.Builder.create(EnhancedCow.class, EnhancedCow::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_cow");
 
 
     @SubscribeEvent
@@ -83,167 +67,16 @@ public class RegistryHandler {
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_chicken_spawn_egg"));
         event.getRegistry().register(new ItemSpawnEgg(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_llama_spawn_egg"));
-        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_SHEEP, 0x000000,0x000000, new Item.Properties()
+        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_SHEEP, 0xFFFFFF,0xFF8C8C, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_sheep_spawn_egg"));
         event.getRegistry().register(new ItemSpawnEgg(ENHANCED_RABBIT, 0xCA8349,0x553C36, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_rabbit_spawn_egg"));
-
+        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_COW, 0x000000,0x000000, new Item.Properties()
+                .group(ItemGroup.MISC)).setRegistryName("enhanced_cow_spawn_egg"));
+        
+        
         event.getRegistry().registerAll(items);
         event.getRegistry().registerAll(itemBlocks);
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_White,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Cream,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_CreamDark,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Pink,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_PinkDark,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Brown,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_BrownDark,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Blue,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_GreenLight,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Green,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Grey,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_GreyGreen,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Olive,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
-
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_GreenDark,  new BehaviorProjectileDispense() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
-            }
-        });
 
 //        OreDictionary.registerOre("egg", ModItems.Egg_White);
 //        OreDictionary.registerOre("egg", ModItems.Egg_Cream);
@@ -262,46 +95,21 @@ public class RegistryHandler {
 
     }
 
-//    @SubscribeEvent
-//    public static void registerBlockColors(final ColorHandlerEvent.Block event)
-//    {
-//        final BlockColors blockColors = event.getBlockColors();
-
-
-//        blockColors.register((p_210239_0_, p_210239_1_) -> {
-//            return p_210239_1_ > 0 ? -1 : ((ItemArmorDyeable)p_210239_0_.getItem()).getColor(p_210239_0_);
-//        }, Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS);
-
-//        blockColors.register((p_210225_0_, p_210225_1_, p_210225_2_, p_210225_3_) ->
-//        {
-//            return p_210225_1_ != null && p_210225_2_ != null ? BiomeColors.getGrassColor(p_210225_1_, p_210225_2_) : GrassColors.get(0.5D, 1.0D);
-//        }, MubbleBlocks.GREEN_HILL_GRASS_BLOCK);
-//    }
-
-//    @SubscribeEvent
-//    public static void registerItemColors(final ColorHandlerEvent.Item event)
-//    {
-//        final ItemColors itemColors = event.getItemColors();
-//
-//        itemColors.register((itemStack, integer) -> {
-//            int colour = itemStack.getCapability(WOOL_COLOUR_CAP).orElse(new WoolColourCapabilityProvider()).getColour();
-//            return colour;
-//        }, Blocks.WHITE_WOOL);
-//    }
-
-
     @SubscribeEvent
     public static void onEntitiesRegistry(final RegistryEvent.Register<EntityType<?>> event) {
         event.getRegistry().register(ENHANCED_CHICKEN.setRegistryName("enhanced_chicken"));
         event.getRegistry().register(ENHANCED_RABBIT.setRegistryName("enhanced_rabbit"));
         event.getRegistry().register(ENHANCED_SHEEP.setRegistryName("enhanced_sheep"));
         event.getRegistry().register(ENHANCED_LLAMA.setRegistryName("enhanced_llama"));
+        event.getRegistry().register(ENHANCED_COW.setRegistryName("enhanced_cow"));
         event.getRegistry().register(ENHANCED_ENTITY_EGG_ENTITY_TYPE.setRegistryName("enhanced_entity_egg"));
 
         EntitySpawnPlacementRegistry.register(ENHANCED_CHICKEN, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
         EntitySpawnPlacementRegistry.register(ENHANCED_RABBIT, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
+        EntitySpawnPlacementRegistry.register(ENHANCED_SHEEP, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
         EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
-//
+//        EntitySpawnPlacementRegistry.register(ENHANCED_COW, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
+
         for (Biome biome : ForgeRegistries.BIOMES) {
 
             Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biome);
@@ -325,6 +133,14 @@ public class RegistryHandler {
                     biome.getRegistryName().equals(Biomes.SAVANNA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SHATTERED_SAVANNA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SAVANNA_PLATEAU.getRegistryName()) || biome.getRegistryName().equals(Biomes.SHATTERED_SAVANNA_PLATEAU.getRegistryName()) ) {
                 biome.getSpawns(EnumCreatureType.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_LLAMA, 5, 4, 6));
             }
+
+            //Enhanced Sheep Spawning
+            if (!biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
+                    !biome.getRegistryName().equals(Biomes.DESERT.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_HILLS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_LAKES.getRegistryName()) &&
+                    !biome.getRegistryName().equals(Biomes.THE_END.getRegistryName()) && !biome.getRegistryName().equals(Biomes.NETHER.getRegistryName())){
+                biome.getSpawns(EnumCreatureType.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_SHEEP, 5, 4, 6));
+            }
+
         }
     }
 

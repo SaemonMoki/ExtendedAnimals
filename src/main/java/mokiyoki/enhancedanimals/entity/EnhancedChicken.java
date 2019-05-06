@@ -399,9 +399,9 @@ public class EnhancedChicken extends EntityAnimal {
         ((EnhancedChicken)ageable).mixMateMitosisGenes();
         ((EnhancedChicken)ageable).mixMitosisGenes();
 
-        this.setGrowingAge(6000);
+        this.setGrowingAge(10);
         this.resetInLove();
-        ageable.setGrowingAge(6000);
+        ageable.setGrowingAge(10);
         ((EnhancedChicken)ageable).resetInLove();
 
         return null;
@@ -2544,7 +2544,7 @@ public class EnhancedChicken extends EntityAnimal {
     }
 
     public void setMateGenes(int[] mateGenes){
-        this.mateGenes = genes;
+        this.mateGenes = mateGenes;
     }
 
     public static class GroupData implements IEntityLivingData

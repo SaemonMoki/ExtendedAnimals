@@ -306,7 +306,7 @@ public class EnhancedChicken extends EntityAnimal {
             mixMateMitosisGenes();
             mixMitosisGenes();
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
-            eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).setGenes(getEggGenes());
+            eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setGenes(getEggGenes());
             NBTTagCompound nbtTagCompound = eggItem.serializeNBT();
             eggItem.deserializeNBT(nbtTagCompound);
             this.entityDropItem(eggItem, 1);

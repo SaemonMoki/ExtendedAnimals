@@ -17,6 +17,7 @@ public class ConfigHandler {
     public static class CommonConfig {
         public final ForgeConfigSpec.BooleanValue spawnVanillaMobs;
         public final ForgeConfigSpec.IntValue wildTypeChance;
+        public final ForgeConfigSpec.IntValue gestationDays;
 
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
@@ -27,6 +28,10 @@ public class ConfigHandler {
             wildTypeChance = builder
                     .comment(" 100 will make all animals spawn as wildtype for their biome, some mutations may be impossible to get. 0 makes animals spawn with almost completely random genes. higher numbers are best since you only need a few mutations to make a big difference")
                     .defineInRange("wildType.chance", 90, 1, Integer.MAX_VALUE);
+
+            gestationDays = builder
+                    .comment("Number of ticks for animal gestation. 24000 = 1 Minecraft Day")
+                    .defineInRange("wildType.chance", 24000, 1, Integer.MAX_VALUE);
             builder.pop();
         }
     }

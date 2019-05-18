@@ -436,6 +436,21 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[11] = (2);
         }
 
+        //Horns [normal, polled, scured, africanhorn]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[12] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[12] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[13] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[13] = (2);
+        }
+
+
         return initialGenes;
     }
 

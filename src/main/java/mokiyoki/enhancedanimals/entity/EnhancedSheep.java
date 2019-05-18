@@ -129,6 +129,9 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     private int currentCoatLength;
     private int timeForGrowth = 0;
 
+    private int gestationTimer = 0;
+    private boolean pregnant = false;
+
     public EnhancedSheep(World worldIn) {
         super(ENHANCED_SHEEP, worldIn);
         this.setSize(0.4F, 1F);
@@ -277,11 +280,32 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
         if (!this.world.isRemote) {
             timeForGrowth++;
-            if (timeForGrowth >= (24000 / maxCoatLength)) {
+            if (maxCoatLength > 0 && (timeForGrowth >= (24000 / maxCoatLength))) {
                 timeForGrowth = 0;
                 if (maxCoatLength > currentCoatLength) {
                     currentCoatLength++;
                     setCoatLength(currentCoatLength);
+                }
+            }
+
+            if(pregnant) {
+                gestationTimer++;
+                if (gestationTimer >= 24000) {
+                    pregnant = false;
+                    gestationTimer = 0;
+
+                    EnhancedSheep enhancedsheep = new EnhancedSheep(this.world);
+                    enhancedsheep.setGrowingAge(0);
+                    int[] babyGenes = getLambGenes();
+                    enhancedsheep.setGenes(babyGenes);
+                    enhancedsheep.setSharedGenes(babyGenes);
+                    enhancedsheep.setMaxCoatLength();
+                    enhancedsheep.currentCoatLength = enhancedsheep.maxCoatLength;
+                    enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
+                    enhancedsheep.setGrowingAge(-24000);
+                    enhancedsheep.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+                    this.world.spawnEntity(enhancedsheep);
+
                 }
             }
         }
@@ -494,15 +518,10 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         this.mateGenes = ((EnhancedSheep) ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
-        EnhancedSheep enhancedsheep = new EnhancedSheep(this.world);
-        enhancedsheep.setGrowingAge(0);
-        int[] babyGenes = getLambGenes();
-        enhancedsheep.setGenes(babyGenes);
-        enhancedsheep.setSharedGenes(babyGenes);
-        enhancedsheep.setMaxCoatLength();
-        enhancedsheep.currentCoatLength = enhancedsheep.maxCoatLength;
-        enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
-        return enhancedsheep;
+
+        pregnant = true;
+
+        return null;
     }
 
     public boolean getSheared()
@@ -728,6 +747,9 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         compound.setTag("FatherGenes", mateGeneList);
         compound.setFloat("CoatLength", this.getCoatLength());
 
+        compound.setBoolean("Pregnant", this.pregnant);
+        compound.setInt("Gestation", this.gestationTimer);
+
     }
 
     /**
@@ -755,6 +777,9 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
             int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
+
+        this.pregnant = compound.getBoolean("Pregnant");
+        this.gestationTimer = compound.getInt("Gestation");
 
         setSharedGenes(genes);
 

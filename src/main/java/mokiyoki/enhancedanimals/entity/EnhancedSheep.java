@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
+import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
@@ -290,7 +291,8 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
             if(pregnant) {
                 gestationTimer++;
-                if (gestationTimer >= 24000) {
+                int days = ConfigHandler.COMMON.gestationDays.get();
+                if (gestationTimer >= days) {
                     pregnant = false;
                     gestationTimer = 0;
 
@@ -520,6 +522,11 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         mixMitosisGenes();
 
         pregnant = true;
+
+        this.setGrowingAge(10);
+        this.resetInLove();
+        ageable.setGrowingAge(10);
+        ((EnhancedSheep)ageable).resetInLove();
 
         return null;
     }

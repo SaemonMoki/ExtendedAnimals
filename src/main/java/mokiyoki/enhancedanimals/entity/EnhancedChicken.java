@@ -812,12 +812,12 @@ public class EnhancedChicken extends EntityAnimal {
                                         if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //extended patterned incomplete quail
                                             pattern = 24;
-                                            ground = 10;
+                                            ground = 5;
                                             moorhead = 1;
                                         } else {
                                             // incomplete quail
                                             pattern = 29;
-                                            ground = 10;
+                                            ground = 5;
                                         }
                                     }
                                 }
@@ -1709,6 +1709,7 @@ public class EnhancedChicken extends EntityAnimal {
                 mitosis[i + 1] = parentGenes[i + 1];
             }
         }
+        int testInt = 0;
     }
 
 
@@ -2528,6 +2529,57 @@ public class EnhancedChicken extends EntityAnimal {
             initialGenes[101] = (ThreadLocalRandom.current().nextInt(3) + 1);
         }else{
             initialGenes[101] = (1);
+        }
+
+        // Vulture Hocks [ wildtype, vulture hocks ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[102] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[102] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[103] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[103] = (1);
+        }
+
+        // Frizzle [ wildtype, frizzle ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[104] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[104] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[105] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[105] = (1);
+        }
+
+        // Silkie [ wildtype, silkie ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[106] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[106] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[107] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        }else{
+            initialGenes[107] = (1);
+        }
+
+        // Scaless [ wildtype, scaleless ]
+        if (ThreadLocalRandom.current().nextInt(200)>199) {
+            initialGenes[108] = (ThreadLocalRandom.current().nextInt(10) + 1);
+            if (initialGenes[108] != 2){
+                initialGenes[108] = 1;
+            }
+            initialGenes[109] = (1);
+        }else{
+            initialGenes[108] = (1);
+            initialGenes[109] = (1);
         }
 
     // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken ai modifiers

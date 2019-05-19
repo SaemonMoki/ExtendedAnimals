@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
+import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -66,6 +67,9 @@ public class EnhancedCow extends EntityAnimal {
     private int cowTimer;
     private EntityAIEatGrass entityAIEatGrass;
 
+    private int gestationTimer = 0;
+    private boolean pregnant = false;
+
     protected void initEntityAI() {
         this.entityAIEatGrass = new EntityAIEatGrass(this);
         this.tasks.addTask(0, new EntityAISwimming(this));
@@ -106,6 +110,27 @@ public class EnhancedCow extends EntityAnimal {
             this.cowTimer = Math.max(0, this.cowTimer - 1);
         }
 
+        if (!this.world.isRemote) {
+            if(pregnant) {
+                gestationTimer++;
+                int days = ConfigHandler.COMMON.gestationDays.get();
+                if (gestationTimer >= days) {
+                    pregnant = false;
+                    gestationTimer = 0;
+
+                    EnhancedCow enhancedcow = new EnhancedCow(this.world);
+                    enhancedcow.setGrowingAge(0);
+                    int[] babyGenes = getCalfGenes();
+                    enhancedcow.setGenes(babyGenes);
+                    enhancedcow.setSharedGenes(babyGenes);
+                    enhancedcow.setGrowingAge(-24000);
+                    enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+                    this.world.spawnEntity(enhancedcow);
+
+                }
+            }
+        }
+
     }
 
     public void eatGrassBonus() {
@@ -144,12 +169,15 @@ public class EnhancedCow extends EntityAnimal {
         this.mateGenes = ((EnhancedCow) ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
-        EnhancedCow enhancedcow = new EnhancedCow(this.world);
-        enhancedcow.setGrowingAge(0);
-        int[] babyGenes = getCalfGenes();
-        enhancedcow.setGenes(babyGenes);
-        enhancedcow.setSharedGenes(babyGenes);
-        return enhancedcow;
+
+        pregnant = true;
+
+        this.setGrowingAge(10);
+        this.resetInLove();
+        ageable.setGrowingAge(10);
+        ((EnhancedCow)ageable).resetInLove();
+
+        return null;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -249,6 +277,9 @@ public class EnhancedCow extends EntityAnimal {
         }
         compound.setTag("FatherGenes", mateGeneList);
 
+        compound.setBoolean("Pregnant", this.pregnant);
+        compound.setInt("Gestation", this.gestationTimer);
+
     }
 
     /**
@@ -271,6 +302,9 @@ public class EnhancedCow extends EntityAnimal {
             int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
+
+        this.pregnant = compound.getBoolean("Pregnant");
+        this.gestationTimer = compound.getInt("Gestation");
 
         setSharedGenes(genes);
 

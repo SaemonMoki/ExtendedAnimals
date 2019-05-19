@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
+import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCarrot;
 import net.minecraft.block.state.IBlockState;
@@ -179,6 +180,9 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
     private int maxCoatLength;
     private int currentCoatLength;
     private int timeForGrowth = 0;
+
+    private int gestationTimer = 0;
+    private boolean pregnant = false;
 
     private static final int WTC = 90;
     private static final int GENES_LENGTH = 56;
@@ -460,6 +464,34 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                         currentCoatLength++;
                         setCoatLength(currentCoatLength);
                     }
+                }
+            }
+
+            if(pregnant) {
+                gestationTimer++;
+                int days = ConfigHandler.COMMON.gestationDays.get();
+                if (gestationTimer >= days) {
+                    pregnant = false;
+                    gestationTimer = 0;
+
+                    int numberOfKits = ThreadLocalRandom.current().nextInt(4)+1;
+
+                    for (int i = 0; i <= numberOfKits; i++) {
+                        mixMateMitosisGenes();
+                        mixMitosisGenes();
+                        EnhancedRabbit enhancedrabbit = new EnhancedRabbit(this.world);
+                        enhancedrabbit.setGrowingAge(0);
+                        int[] babyGenes = getBunnyGenes();
+                        enhancedrabbit.setGenes(babyGenes);
+                        enhancedrabbit.setSharedGenes(babyGenes);
+                        enhancedrabbit.setMaxCoatLength();
+                        enhancedrabbit.currentCoatLength = enhancedrabbit.maxCoatLength;
+                        enhancedrabbit.setCoatLength(enhancedrabbit.currentCoatLength);
+                        enhancedrabbit.setGrowingAge(-24000);
+                        enhancedrabbit.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+                        this.world.spawnEntity(enhancedrabbit);
+                    }
+
                 }
             }
         }
@@ -801,15 +833,15 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         this.mateGenes = ((EnhancedRabbit) ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
-        EnhancedRabbit enhancedrabbit = new EnhancedRabbit(this.world);
-        enhancedrabbit.setGrowingAge(0);
-        int[] babyGenes = getBunnyGenes();
-        enhancedrabbit.setGenes(babyGenes);
-        enhancedrabbit.setSharedGenes(babyGenes);
-        enhancedrabbit.setMaxCoatLength();
-        enhancedrabbit.currentCoatLength = enhancedrabbit.maxCoatLength;
-        enhancedrabbit.setCoatLength(enhancedrabbit.currentCoatLength);
-        return enhancedrabbit;
+
+        pregnant = true;
+
+        this.setGrowingAge(10);
+        this.resetInLove();
+        ageable.setGrowingAge(10);
+        ((EnhancedRabbit)ageable).resetInLove();
+
+        return null;
     }
 
     public void writeAdditional(NBTTagCompound compound) {
@@ -834,6 +866,9 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         compound.setTag("FatherGenes", mateGeneList);
 
         compound.setFloat("CoatLength", this.getCoatLength());
+
+        compound.setBoolean("Pregnant", this.pregnant);
+        compound.setInt("Gestation", this.gestationTimer);
     }
 
     /**
@@ -872,6 +907,9 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                 }
             }
         }
+
+        this.pregnant = compound.getBoolean("Pregnant");
+        this.gestationTimer = compound.getInt("Gestation");
 
         setSharedGenes(genes);
 

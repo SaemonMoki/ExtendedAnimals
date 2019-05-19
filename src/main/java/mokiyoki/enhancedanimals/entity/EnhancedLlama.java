@@ -4,6 +4,7 @@ import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
+import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCarpet;
 import net.minecraft.block.SoundType;
@@ -117,6 +118,9 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     private int maxCoatLength;
     private int currentCoatLength;
     private int timeForGrowth = 0;
+
+    private int gestationTimer = 0;
+    private boolean pregnant = false;
 
     private boolean didSpit;
     @Nullable
@@ -337,6 +341,32 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
                     setCoatLength(currentCoatLength);
                 }
             }
+
+            if(pregnant) {
+                gestationTimer++;
+                int days = ConfigHandler.COMMON.gestationDays.get();
+                if (gestationTimer >= days) {
+                    pregnant = false;
+                    gestationTimer = 0;
+
+                    int[] babyGenes = getCriaGenes();
+                    EnhancedLlama enhancedllama = new EnhancedLlama(this.world);
+                    enhancedllama.setGrowingAge(0);
+                    enhancedllama.setGenes(babyGenes);
+                    enhancedllama.setSharedGenes(babyGenes);
+                    enhancedllama.setStrengthAndInventory();
+                    enhancedllama.setMaxCoatLength();
+                    enhancedllama.currentCoatLength = enhancedllama.maxCoatLength;
+                    enhancedllama.setCoatLength(enhancedllama.currentCoatLength);
+                    enhancedllama.setGrowingAge(-24000);
+                    enhancedllama.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+                    this.world.spawnEntity(enhancedllama);
+
+                }
+            }
+
+
+
         }
 
 
@@ -445,16 +475,15 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         this.mateGenes = ((EnhancedLlama) ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
-        int[] babyGenes = getCriaGenes();
-        EnhancedLlama enhancedllama = new EnhancedLlama(this.world);
-        enhancedllama.setGrowingAge(0);
-        enhancedllama.setGenes(babyGenes);
-        enhancedllama.setSharedGenes(babyGenes);
-        enhancedllama.setStrengthAndInventory();
-        enhancedllama.setMaxCoatLength();
-        enhancedllama.currentCoatLength = enhancedllama.maxCoatLength;
-        enhancedllama.setCoatLength(enhancedllama.currentCoatLength);
-        return enhancedllama;
+
+        pregnant = true;
+
+        this.setGrowingAge(10);
+        this.resetInLove();
+        ageable.setGrowingAge(10);
+        ((EnhancedLlama)ageable).resetInLove();
+
+        return null;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -723,6 +752,10 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         if (!this.horseChest.getStackInSlot(1).isEmpty()) {
             compound.setTag("DecorItem", this.horseChest.getStackInSlot(1).write(new NBTTagCompound()));
         }
+
+        compound.setBoolean("Pregnant", this.pregnant);
+        compound.setInt("Gestation", this.gestationTimer);
+
     }
 
     public void readAdditional(NBTTagCompound compound) {
@@ -759,6 +792,9 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
                 }
             }
         }
+
+        this.pregnant = compound.getBoolean("Pregnant");
+        this.gestationTimer = compound.getInt("Gestation");
 
         setSharedGenes(genes);
 

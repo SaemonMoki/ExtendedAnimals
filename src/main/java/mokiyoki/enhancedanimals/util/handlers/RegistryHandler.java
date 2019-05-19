@@ -101,9 +101,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -112,9 +112,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -123,9 +123,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -134,9 +134,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -145,9 +145,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -156,9 +156,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -167,9 +167,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -178,9 +178,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -189,9 +189,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -200,9 +200,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -211,9 +211,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -222,9 +222,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -233,9 +233,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -244,9 +244,9 @@ public class RegistryHandler {
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg eeg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                eeg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return eeg;
+                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                return egg;
             }
         });
 
@@ -308,7 +308,7 @@ public class RegistryHandler {
         EntitySpawnPlacementRegistry.register(ENHANCED_RABBIT, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
         EntitySpawnPlacementRegistry.register(ENHANCED_SHEEP, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
         EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_COW, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
+        EntitySpawnPlacementRegistry.register(ENHANCED_COW, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
 
         for (Biome biome : ForgeRegistries.BIOMES) {
 

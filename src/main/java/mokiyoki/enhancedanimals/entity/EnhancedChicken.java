@@ -343,6 +343,8 @@ public class EnhancedChicken extends EntityAnimal {
                 this.remove();
         } else if(genes[72] == 2 && genes[73] == 2){
                 this.remove();
+        } else if(genes[104] == 2 && genes[105] == 2){
+                this.remove();
         }
     }
 
@@ -1804,8 +1806,9 @@ public class EnhancedChicken extends EntityAnimal {
 
 
 if (false){
-                    //0,1,2,3,4,5,6,7,8,9, 10,11,12,13,14,15,16,17,18,19,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9
-    return new int[] {1,1,1,1,1,1,1,1,1,10,10,10,10,10,10,10,10,10,10,10,1,2,1,1,2,4,1,2,3,3,3,3,3,3,2,2,1,1,2,2,1,2,2,2,2,2,3,3,2,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,2,3,2,2,2,2,1,1,1,1,1,2,2,2,1,1,2,2,2,2,2,2,1,2,1,1,1,1,1,1,1,2,1,1,2,2,1,1,1,1,1,1,1,1,1,1};
+    //THE DNA TESTER-5069 !!!!!
+                    //0,1,2,3,4,5,6,7,8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109
+    return new int[] {1,1,1,1,1,1,1,1,1,10,10,10,10,10,10,10,10,10,10,10, 1, 2, 1, 1, 2, 4, 1, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 3, 3, 2, 2, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1};
 
 }else {
     //Gold [ gold, silver ]
@@ -2554,13 +2557,9 @@ if (false){
     // Frizzle [ wildtype, frizzle ]
     if (ThreadLocalRandom.current().nextInt(100) > WTC) {
         initialGenes[104] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        initialGenes[105] = (1);
     } else {
         initialGenes[104] = (1);
-    }
-
-    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-        initialGenes[105] = (ThreadLocalRandom.current().nextInt(2) + 1);
-    } else {
         initialGenes[105] = (1);
     }
 
@@ -2578,16 +2577,17 @@ if (false){
     }
 
     // Scaless [ wildtype, scaleless ]
-    if (ThreadLocalRandom.current().nextInt(200) > 199) {
-        initialGenes[108] = (ThreadLocalRandom.current().nextInt(10) + 1);
-        if (initialGenes[108] != 2) {
-            initialGenes[108] = 1;
-        }
-        initialGenes[109] = (1);
-    } else {
+//    if (ThreadLocalRandom.current().nextInt(200) > 199) {
+//        initialGenes[108] = (ThreadLocalRandom.current().nextInt(10) + 1);
+//        if (initialGenes[108] != 2) {
+//            initialGenes[108] = 1;
+//        }
+//        initialGenes[109] = (1);
+//    } else {
         initialGenes[108] = (1);
         initialGenes[109] = (1);
-    }
+//    }
+
 }
 
     // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken ai modifiers

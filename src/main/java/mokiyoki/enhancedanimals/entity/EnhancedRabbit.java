@@ -473,8 +473,11 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                 if (gestationTimer >= days) {
                     pregnant = false;
                     gestationTimer = 0;
-
-                    int numberOfKits = ThreadLocalRandom.current().nextInt(4)+1;
+                    int kitLimit = 4;
+                    if (genes[34] == 2 || genes[35] == 2){
+                        kitLimit = 2;
+                    }
+                    int numberOfKits = ThreadLocalRandom.current().nextInt(kitLimit)+1;
 
                     for (int i = 0; i <= numberOfKits; i++) {
                         mixMateMitosisGenes();

@@ -125,7 +125,7 @@ public class ModelEnhancedCow extends ModelBase {
     public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime)
     {
         super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
-        this.head.rotationPointY = 9.0F + ((EnhancedCow)entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
+        this.head.rotationPointY = ((EnhancedCow)entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
         this.headRotationAngleX = ((EnhancedCow)entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
 
 

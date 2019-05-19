@@ -82,39 +82,6 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
             "eyes_black.png"
     };
 
-    /**
-     * Internal crafting inventory used to check the result of mixing dyes corresponding to the fleece color when
-     * breeding sheep.
-     */
-    private final InventoryCrafting inventoryCrafting = new InventoryCrafting(new Container() {
-        /**
-         * Determines whether supplied player can use this container
-         */
-        public boolean canInteractWith(EntityPlayer playerIn) {
-            return false;
-        }
-    }, 2, 1);
-    private static final Map<EnumDyeColor, IItemProvider> WOOL_BY_COLOR = Util.make(Maps.newEnumMap(EnumDyeColor.class), (woolMap) -> {
-        woolMap.put(EnumDyeColor.WHITE, Blocks.WHITE_WOOL);
-        woolMap.put(EnumDyeColor.ORANGE, Blocks.ORANGE_WOOL);
-        woolMap.put(EnumDyeColor.MAGENTA, Blocks.MAGENTA_WOOL);
-        woolMap.put(EnumDyeColor.LIGHT_BLUE, Blocks.LIGHT_BLUE_WOOL);
-        woolMap.put(EnumDyeColor.YELLOW, Blocks.YELLOW_WOOL);
-        woolMap.put(EnumDyeColor.LIME, Blocks.LIME_WOOL);
-        woolMap.put(EnumDyeColor.PINK, Blocks.PINK_WOOL);
-        woolMap.put(EnumDyeColor.GRAY, Blocks.GRAY_WOOL);
-        woolMap.put(EnumDyeColor.LIGHT_GRAY, Blocks.LIGHT_GRAY_WOOL);
-        woolMap.put(EnumDyeColor.CYAN, Blocks.CYAN_WOOL);
-        woolMap.put(EnumDyeColor.PURPLE, Blocks.PURPLE_WOOL);
-        woolMap.put(EnumDyeColor.BLUE, Blocks.BLUE_WOOL);
-        woolMap.put(EnumDyeColor.BROWN, Blocks.BROWN_WOOL);
-        woolMap.put(EnumDyeColor.GREEN, Blocks.GREEN_WOOL);
-        woolMap.put(EnumDyeColor.RED, Blocks.RED_WOOL);
-        woolMap.put(EnumDyeColor.BLACK, Blocks.BLACK_WOOL);
-    });
-
-
-
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT);
 
     private static final int WTC = 90;
@@ -216,8 +183,12 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         if (this.getSheared()) {
             return LootTableList.ENTITIES_SHEEP;
         } else {
-            if (genes[4] == 1 || genes[5] ==1 || (genes[0] == 6 && genes[1] == 6)){
-                return LootTableList.ENTITIES_SHEEP_BLACK;
+            if (genes[4] == 1 || genes[5] == 1 || ((genes[0] >= 4 && genes[1] >= 4) && (genes[0] != 5 && genes[1] != 5))){
+                if (genes[2] == 2 && genes[3] == 2){
+                    return LootTableList.ENTITIES_SHEEP_BROWN;
+                }else{
+                    return LootTableList.ENTITIES_SHEEP_BLACK;
+                }
             }else {
                 switch (this.getFleeceDyeColour()) {
                     case WHITE:
@@ -427,8 +398,18 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
             for (int c = 0-woolCount; c < 0; c++){
 
-                if (genes[4] == 1 || genes[5] ==1 || (genes[0] == 6 && genes[1] == 6)){
-                    ret.add(new ItemStack(Blocks.BLACK_WOOL));
+                int spots = 0;
+
+                if (genes[8] == 2 && genes[9] == 2){
+                    spots = this.rand.nextInt(3);
+                }
+
+                if (genes[4] == 1 || genes[5] == 1 || ((genes[0] >= 4 && genes[1] >= 4) && (genes[0] != 5 && genes[1] != 5)) && spots != 2) {
+                    if (genes[2] == 2 && genes[3] == 2) {
+                        ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                    } else {
+                        ret.add(new ItemStack(Blocks.BLACK_WOOL));
+                    }
                 }else {
                     switch (this.getFleeceDyeColour()) {
                         case WHITE:
@@ -563,10 +544,13 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
             int under = 0;
             int pattern = 0;
             int grey = 0;
+            int spots = 0;
             int skin = 0;
             int hooves = 0;
             int fur = 0;
             int eyes = 0;
+
+            char[] uuidArry = getCachedUniqueIdString().toCharArray();
 
             if (genesForText[4] == 1 || genesForText[5] ==1){
                 //black sheep
@@ -606,11 +590,19 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
                 }
             }
 
+            //chocolate variant
             if (genesForText[2] == 2 && genesForText[3] == 2){
                 pattern = pattern + 1;
             }
 
-
+            //basic spots
+            if (genesForText[8] == 2 && genesForText[9] == 2){
+                if (Character.isDigit(uuidArry[1])){
+                    spots = 2;
+                }else {
+                    spots = 1;
+                }
+            }
 
 
          this.sheepTextures.add(SHEEP_TEXTURES_UNDER[under]);
@@ -620,6 +612,9 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
          if (grey != 0) {
              this.sheepTextures.add(SHEEP_TEXTURES_GREY[grey]);
          }
+            if (spots != 0) {
+                this.sheepTextures.add(SHEEP_TEXTURES_SPOTS[spots]);
+            }
          this.sheepTextures.add(SHEEP_TEXTURES_SKIN[skin]);
          this.sheepTextures.add(SHEEP_TEXTURES_HOOVES[hooves]);
          this.sheepTextures.add(SHEEP_TEXTURES_FUR[fur]);
@@ -945,13 +940,13 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
             initialGenes[0] = (ThreadLocalRandom.current().nextInt(6) + 1);
 
         } else {
-            initialGenes[0] = (5);
+            initialGenes[0] = (4);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[1] = (ThreadLocalRandom.current().nextInt(6) + 1);
 
         } else {
-            initialGenes[1] = (5);
+            initialGenes[1] = (4);
         }
 
         //Chocolate [ Wildtype+, chocolate ]

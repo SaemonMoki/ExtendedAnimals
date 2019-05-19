@@ -183,12 +183,14 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         if (this.getSheared()) {
             return LootTableList.ENTITIES_SHEEP;
         } else {
-            if (genes[4] == 1 || genes[5] == 1 || ((genes[0] >= 4 && genes[1] >= 4) && (genes[0] != 5 && genes[1] != 5))){
-                if (genes[2] == 2 && genes[3] == 2){
-                    return LootTableList.ENTITIES_SHEEP_BROWN;
-                }else{
+            if (genes[4] == 1 || genes[5] == 1 || ((genes[0] >= 3 && genes[1] >= 3) && (genes[0] != 5 && genes[1] != 5))){
+                if ((genes[2] == 1 || genes[3] == 1) && (genes[0] != 3 && genes[1] != 3)){
                     return LootTableList.ENTITIES_SHEEP_BLACK;
+                }else{
+                    return LootTableList.ENTITIES_SHEEP_BROWN;
                 }
+            }else if ((genes[0] == 2 || genes[1] == 2) && getFleeceDyeColour() == EnumDyeColor.WHITE) {
+                return LootTableList.ENTITIES_SHEEP_LIGHT_GRAY;
             }else {
                 switch (this.getFleeceDyeColour()) {
                     case WHITE:
@@ -405,11 +407,13 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
                 }
 
                 if (genes[4] == 1 || genes[5] == 1 || ((genes[0] >= 4 && genes[1] >= 4) && (genes[0] != 5 && genes[1] != 5)) && spots != 2) {
-                    if (genes[2] == 2 && genes[3] == 2) {
-                        ret.add(new ItemStack(Blocks.BROWN_WOOL));
-                    } else {
+                    if ((genes[2] == 1 || genes[3] == 1) && (genes[0] != 3 && genes[1] != 3)) {
                         ret.add(new ItemStack(Blocks.BLACK_WOOL));
+                    } else {
+                        ret.add(new ItemStack(Blocks.BROWN_WOOL));
                     }
+                }else if ((genes[0] == 2 || genes[1] == 2) && getFleeceDyeColour() == EnumDyeColor.WHITE) {
+                        ret.add(new ItemStack(Blocks.LIGHT_GRAY_WOOL));
                 }else {
                     switch (this.getFleeceDyeColour()) {
                         case WHITE:

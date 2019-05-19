@@ -31,7 +31,7 @@ public class ConfigHandler {
 
             gestationDays = builder
                     .comment("Number of ticks for animal gestation. 24000 = 1 Minecraft Day")
-                    .defineInRange("wildType.chance", 24000, 1, Integer.MAX_VALUE);
+                    .defineInRange("gestation.days", 24000, 1, Integer.MAX_VALUE);
             builder.pop();
         }
     }

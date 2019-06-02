@@ -508,10 +508,11 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
         pregnant = true;
 
-        this.setGrowingAge(10);
-        this.resetInLove();
-        ageable.setGrowingAge(10);
-        ((EnhancedSheep)ageable).resetInLove();
+        //TODO figure out whats wrong with pregnancy
+            this.setGrowingAge(10);
+            this.resetInLove();
+            ageable.setGrowingAge(10);
+            ((EnhancedSheep) ageable).resetInLove();
 
         return null;
     }

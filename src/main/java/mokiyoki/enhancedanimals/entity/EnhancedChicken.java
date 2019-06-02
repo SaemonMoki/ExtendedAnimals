@@ -333,6 +333,43 @@ public class EnhancedChicken extends EntityAnimal {
 
     }
 
+    public float Size(){
+
+        float size = 1.0F;
+
+        if(genes[74] == 1){
+            size = size - 0.05F;
+        }else if(genes[74] == 2){
+            size = size - 0.025F;
+        }
+        if(genes[75] == 1){
+            size = size - 0.05F;
+        }else if(genes[75] == 2){
+            size = size - 0.025F;
+        }
+
+        if(genes[76] == 1 || genes[77] == 1){
+            size = size - 0.05F;
+        }else if(genes[76] == 3 && genes[77] == 3){
+            size = size - 0.1F;
+        }
+
+        if(genes[78] == 1 || genes[79] == 1){
+            size = size * 0.94F;
+        }
+
+        if(genes[7] == 2){
+            size = size * 0.9F;
+        }
+
+        if(genes[8] == 2){
+            size = size * 0.75F;
+        }
+
+        return size;
+
+    }
+
     public void fall(float distance, float damageMultiplier)
     {
     }
@@ -1541,42 +1578,11 @@ public class EnhancedChicken extends EntityAnimal {
 
         if (!this.world.isRemote) {
 
-            float size = 1;
-
             if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
-                //chicken size
-                if(genes[74] == 1){
-                    size = size - 0.05F;
-                }else if(genes[74] == 2){
-                    size = size - 0.025F;
-                }
-                if(genes[75] == 1){
-                    size = size - 0.05F;
-                }else if(genes[75] == 2){
-                    size = size - 0.025F;
-                }
 
-                if(genes[76] == 1 || genes[77] == 1){
-                    size = size - 0.05F;
-                }else if(genes[76] == 3 && genes[77] == 3){
-                    size = size - 0.1F;
-                }
-
-                if(genes[78] == 1 || genes[79] == 1){
-                    size = size * 0.94F;
-                }
-
-                if(genes[7] == 2){
-                    size = size * 0.9F;
-                }
-
-                if(genes[8] == 2){
-                    size = size * 0.75F;
-                }
-
-                if (size <= 0.7F) {
+                if (Size() <= 0.7F) {
                     dropMeatType = "rawchicken_darksmall";
-                } else if (size >= 0.9F) {
+                } else if (Size() >= 0.9F) {
                     dropMeatType = "rawchicken_darkbig";
                 } else {
                     dropMeatType = "rawchicken_dark";
@@ -1584,39 +1590,9 @@ public class EnhancedChicken extends EntityAnimal {
 
             } else {
 
-                //chicken size
-                if(genes[74] == 1){
-                    size = size - 0.05F;
-                }else if(genes[74] == 2){
-                    size = size - 0.025F;
-                }
-                if(genes[75] == 1){
-                    size = size - 0.05F;
-                }else if(genes[75] == 2){
-                    size = size - 0.025F;
-                }
-
-                if(genes[76] == 1 || genes[77] == 1){
-                    size = size - 0.05F;
-                }else if(genes[76] == 3 && genes[77] == 3){
-                    size = size - 0.1F;
-                }
-
-                if(genes[78] == 1 || genes[79] == 1){
-                    size = size * 0.94F;
-                }
-
-                if(genes[7] == 2){
-                    size = size * 0.9F;
-                }
-
-                if(genes[8] == 2){
-                    size = size * 0.75F;
-                }
-
-                if (size <= 0.7F) {
+                if (Size() <= 0.7F) {
                     dropMeatType = "rawchicken_palesmall";
-                } else if (size >= 0.9F) {
+                } else if (Size() >= 0.9F) {
                     dropMeatType = "rawchicken";
                 } else {
                     dropMeatType = "rawchicken_pale";

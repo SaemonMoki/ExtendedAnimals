@@ -20,6 +20,10 @@ public class ModelEnhancedCow extends ModelBase {
     private final ModelRenderer head; //this is the neck not the head
     private final ModelRenderer body;
     private final ModelRenderer hump;
+    private final ModelRenderer tail0;
+    private final ModelRenderer tail1;
+    private final ModelRenderer tail2;
+    private final ModelRenderer tailBrush;
     private final ModelRenderer leg1;
     private final ModelRenderer leg2;
     private final ModelRenderer leg3;
@@ -48,12 +52,12 @@ public class ModelEnhancedCow extends ModelBase {
         this.mouth.setRotationPoint(0.0F, 4.0F, -2.6F + xMove);
 
         this.earL = new ModelRenderer(this, 8, 46);
-        this.earL.addBox(0.0F, 0.0F, 0.0F, 3, 5, 1);
-        this.earL.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
+        this.earL.addBox(0.0F, -5.0F, -0.5F, 3, 5, 1);
+        this.earL.setRotationPoint(3.0F, 2.0F, -2.5F + xMove);
 
         this.earR = new ModelRenderer(this, 0, 46);
-        this.earR.addBox(0.0F, 0.0F, 0.0F, 3, 5, 1);
-        this.earR.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
+        this.earR.addBox(-3.0F, -5.0F, -0.5F, 3, 5, 1);
+        this.earR.setRotationPoint(-3.0F, 2.0F, -2.5F + xMove);
 
         this.hornNub = new ModelRenderer(this, 16, 46);
         this.hornNub.addBox(-2.0F, 0.0F, 0.0F, 4, 2, 2);
@@ -72,26 +76,45 @@ public class ModelEnhancedCow extends ModelBase {
         this.hump.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 0.0F);
         this.hump.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
+        this.tail0 = new ModelRenderer(this, 0,0);
+        this.tail0.addBox(-1.0F, 0.0F, 0.0F, 2, 4, 1);
+        this.tail0.setRotationPoint(0.0F, 0.0F, 22.0F);
+
+        this.tail1 = new ModelRenderer(this, 0,0);
+        this.tail1.addBox(-0.5F, 0.0F, 0.0F, 1, 4, 1);
+        this.tail1.setRotationPoint(0.0F, 4.0F, 0.0F);
+
+        this.tail2 = new ModelRenderer(this, 0,0);
+        this.tail2.addBox(-0.5F, 0.0F, 0.0F, 1, 3, 1);
+        this.tail2.setRotationPoint(0.0F, 3.0F, 0.0F);
+
+        this.tailBrush = new ModelRenderer(this, 0,0);
+        this.tailBrush.addBox(-1.0F, 0.0F, -1.0F, 2, 3, 2);
+        this.tailBrush.setRotationPoint(0.0F, 3.0F, 0.0F);
+
         this.leg1 = new ModelRenderer(this, 0, 54);
         this.leg1.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
-        this.leg1.setRotationPoint(-6.0F, 11.0F, 0.0F + xMove);
+        this.leg1.setRotationPoint(-6.0F, 12.0F, 0.0F + xMove);
 
         this.leg2 = new ModelRenderer(this, 12, 54);
         this.leg2.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
-        this.leg2.setRotationPoint(3.0F, 11.0F, 0.0F + xMove);
+        this.leg2.setRotationPoint(3.0F, 12.0F, 0.0F + xMove);
 
         this.leg3 = new ModelRenderer(this, 0, 67);
         this.leg3.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
-        this.leg3.setRotationPoint(-6.0F, 11.0F, 19.0F + xMove);
+        this.leg3.setRotationPoint(-6.0F, 12.0F, 19.0F + xMove);
 
         this.leg4 = new ModelRenderer(this, 12, 67);
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
-        this.leg4.setRotationPoint(3.0F, 11.0F, 19.0F + xMove);
+        this.leg4.setRotationPoint(3.0F, 12.0F, 19.0F + xMove);
 
         this.head.addChild(this.actualHead);
         this.actualHead.addChild(this.earL);
         this.actualHead.addChild(this.earR);
         this.actualHead.addChild(this.mouth);
+        this.tail0.addChild(this.tail1);
+        this.tail1.addChild(this.tail2);
+        this.tail2.addChild(this.tailBrush);
 
     }
 
@@ -126,6 +149,7 @@ public class ModelEnhancedCow extends ModelBase {
             GlStateManager.translatef(0.0F, 20.0F * scale, 0.0F);
 
             this.body.render(scale);
+            this.tail0.render(scale);
 
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
@@ -147,6 +171,7 @@ public class ModelEnhancedCow extends ModelBase {
             this.leg2.render(scale);
             this.leg3.render(scale);
             this.leg4.render(scale);
+            this.tail0.render(scale);
             
         }
     }
@@ -167,6 +192,9 @@ public class ModelEnhancedCow extends ModelBase {
         this.head.rotateAngleX = this.headRotationAngleX;   //might need to merge this with another line
         this.actualHead.rotateAngleX = 0.5F;   //might need to merge this with another line
         this.mouth.rotateAngleX = -0.3F;   //might need to merge this with another line
+
+        this.earL.rotateAngleZ = 0.9F;
+        this.earR.rotateAngleZ = -0.9F;
 //        this.actualHead.rotateAngleX = 0.05F + this.actualHead.rotateAngleX;   //might need to merge this with another line
 
 

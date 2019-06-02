@@ -473,11 +473,43 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                 if (gestationTimer >= days) {
                     pregnant = false;
                     gestationTimer = 0;
-                    int kitLimit = 4;
-                    if (genes[34] == 2 || genes[35] == 2){
-                        kitLimit = 2;
+                    int kitAverage = 1;
+                    int kitRange = 2;
+
+                    if ( Size() <= 0.4 ){
+//                        kitAverage = 1;
+                        kitRange = 1;
+                    }else if ( Size() <= 0.5 ){
+                        kitAverage = 2;
+                        kitRange = 1;
+                    }else if ( Size() <= 0.6 ){
+                        kitAverage = 4;
+//                        kitRange = 2;
+                    }else if ( Size() <= 0.7 ){
+                        kitAverage = 5;
+//                        kitRange = 2;
+                    }else if ( Size() <= 0.8 ){
+                        kitAverage = 6;
+                        kitRange = 3;
+                    }else if ( Size() <= 0.9 ){
+                        kitAverage = 7;
+                        kitRange = 3;
+                    }else{
+                        kitAverage = 8;
+                        kitRange = 4;
                     }
-                    int numberOfKits = ThreadLocalRandom.current().nextInt(kitLimit)+1;
+
+                    if (genes[56] == 2 && genes[57] == 2){
+                        if (genes[58] == 1 && genes[59] == 1){
+                            kitRange++;
+                        }
+                    }else{
+                        if (genes[58] == 2 && genes[59] == 2){
+                            kitRange--;
+                        }
+                    }
+
+                    int numberOfKits = ThreadLocalRandom.current().nextInt(kitRange)+1+kitAverage;
 
                     for (int i = 0; i <= numberOfKits; i++) {
                         mixMateMitosisGenes();
@@ -704,50 +736,55 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         }
     }
 
+    public float Size(){
+        float size = 1F; // [minimum size = 0.3 maximum size = 1]
+
+        if (genes[46] < 5){
+            size = size - 0.07F;
+            if (genes[46] < 4){
+                size = size - 0.07F;
+                if (genes[46] < 3){
+                    size = size - 0.07F;
+                    if (genes[46] < 2){
+                        size = size - 0.03F;
+                    }
+                }
+            }
+        }
+        if (genes[46] < 5){
+            size = size - 0.07F;
+            if (genes[46] < 4){
+                size = size - 0.07F;
+                if (genes[46] < 3){
+                    size = size - 0.07F;
+                    if (genes[46] < 2){
+                        size = size - 0.03F;
+                    }
+                }
+            }
+        }
+        if (genes[48] == 3 && genes[49] == 3){
+            size = size - 0.075F;
+        }else if (genes[48] == 2 && genes[49] == 2){
+            size = size - 0.05F;
+        }else if (genes[48] == 2 || genes[49] == 2){
+            size = size - 0.025F;
+        }
+
+        if (genes[34] == 2 || genes[35] == 2){
+            size = 0.3F + ((size - 0.3F)/2F);
+        }
+
+        return size;
+    }
+
     @Override
     @Nullable
     protected ResourceLocation getLootTable() {
 
         if (!this.world.isRemote) {
 
-            float size = 1F; // [minimum size = 0.3 maximum size = 1]
-
-            if (genes[46] < 5){
-                size = size - 0.07F;
-                if (genes[46] < 4){
-                    size = size - 0.07F;
-                    if (genes[46] < 3){
-                        size = size - 0.07F;
-                        if (genes[46] < 2){
-                            size = size - 0.03F;
-                        }
-                    }
-                }
-            }
-            if (genes[46] < 5){
-                size = size - 0.07F;
-                if (genes[46] < 4){
-                    size = size - 0.07F;
-                    if (genes[46] < 3){
-                        size = size - 0.07F;
-                        if (genes[46] < 2){
-                            size = size - 0.03F;
-                        }
-                    }
-                }
-            }
-            if (genes[48] == 3 && genes[49] == 3){
-                size = size - 0.075F;
-            }else if (genes[48] == 2 && genes[49] == 2){
-                size = size - 0.05F;
-            }else if (genes[48] == 2 || genes[49] == 2){
-                size = size - 0.025F;
-            }
-
-            if (genes[34] == 2 || genes[35] == 2){
-                size = 0.3F + ((size - 0.3F)/2F);
-            }
-                if (size <= 0.8F) {
+                if (Size() <= 0.8F) {
                     dropMeatType = "rawrabbit_small";
                 } else {
                     dropMeatType = "rawrabbit";
@@ -1954,6 +1991,35 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                 initialGenes[55] = (1);
             }
         }
+
+        //Fertility++
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[56] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[56] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[57] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[57] = (1);
+        }
+
+        //Fertility--
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[58] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[58] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[59] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[59] = (1);
+        }
+
 
         return initialGenes;
     }

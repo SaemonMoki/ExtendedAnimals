@@ -45,7 +45,7 @@ public class EnhancedCow extends EntityAnimal {
     
     //TODO put texture variations here
     private static final String[] COW_TEXTURES_TEST = new String[] {
-            "testtexture.png"
+            "cowbase.png"
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT);
@@ -429,7 +429,7 @@ public class EnhancedCow extends EntityAnimal {
         }
 
         //Brindle [ Brindle, wildtype+ ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC || true) {
             initialGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {

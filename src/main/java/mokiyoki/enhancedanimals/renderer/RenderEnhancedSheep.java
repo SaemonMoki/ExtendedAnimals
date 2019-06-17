@@ -19,7 +19,7 @@ public class RenderEnhancedSheep extends RenderLiving<EnhancedSheep> {
     private static final String ENHANCED_SHEEP_TEXTURE_LOCATION = "eanimod:textures/entities/sheep/";
 
     public RenderEnhancedSheep(RenderManager render) {
-        super(render, new ModelEnhancedSheep(), 0.75F);
+        super(render, new ModelEnhancedSheep(), 0.6F);
     }
 
     /**

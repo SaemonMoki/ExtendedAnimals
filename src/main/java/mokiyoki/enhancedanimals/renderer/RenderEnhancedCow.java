@@ -17,7 +17,7 @@ public class RenderEnhancedCow extends RenderLiving<EnhancedCow>
 
     public RenderEnhancedCow(RenderManager render)
     {
-        super(render, new ModelEnhancedCow(), 0.75F);
+        super(render, new ModelEnhancedCow(), 0.8F);
     }
 
     /**

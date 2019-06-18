@@ -1,0 +1,10 @@
+modLoader="javafml" #mandatory
+loaderVersion="[25,)" #mandatory (24 is current forge version)
+
+[[mods]] #mandatory
+modId="eanimod" #mandatory
+version="${file.jarVersion}" #mandatory
+displayName="Enhanced Animals" #mandatory
+description='''
+Improved animal behaviour and content adding mod.
+'''

@@ -1,10 +1,10 @@
 {
   "variants": {
-    "facing=down": { "model": "eanimod:post_acacia" },
-    "facing=up": { "model": "eanimod:post_acacia" },
-    "facing=north": { "model": "eanimod:post_acacia", "x": 90 },
-    "facing=south": { "model": "eanimod:post_acacia", "x": 90 },
-    "facing=west": { "model": "eanimod:post_acacia", "x": 90, "y": 90 },
-    "facing=east": { "model": "eanimod:post_acacia", "x": 90, "y": 90 }
+    "facing=down": { "model": "eanimod:block/post_acacia" },
+    "facing=up": { "model": "eanimod:block/post_acacia" },
+    "facing=north": { "model": "eanimod:block/post_acacia", "x": 90 },
+    "facing=south": { "model": "eanimod:block/post_acacia", "x": 90 },
+    "facing=west": { "model": "eanimod:block/post_acacia", "x": 90, "y": 90 },
+    "facing=east": { "model": "eanimod:block/post_acacia", "x": 90, "y": 90 }
   }
 }

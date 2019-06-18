@@ -23,7 +23,7 @@ public class ECRoost extends EntityAIBase {
     public boolean shouldExecute() {
         if (!this.enhancedChicken.world.isDaytime()) {
             if (!this.enhancedChicken.isRoosting()) {
-                List<BlockPos> allPostPos = this.enhancedChicken.world.getCapability(PostCapabilityProvider.POST_CAP, null).getAllPostPos();
+                List<BlockPos> allPostPos = this.enhancedChicken.world.getCapability(PostCapabilityProvider.POST_CAP, null).orElseGet(null).getAllPostPos();
                 if (allPostPos != null && !allPostPos.isEmpty()) {
                     BlockPos blockPosToGoTo = calculateClosestPost(allPostPos);
                     postPos = blockPosToGoTo;

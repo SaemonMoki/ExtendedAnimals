@@ -1,23 +1,23 @@
 package mokiyoki.enhancedanimals.model;
 
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by saemon on 8/09/2018.
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ModelEnhancedChicken extends ModelBase {
 
-    private boolean nesting = false;
-    private boolean roosting = true;
+    private boolean nesting = false; //TODO actually make some nesting ai
+    private boolean roosting = true; //TODO actually make some roosting ai
     private int pose = 0;
     private int mutation = 0;
     private float wingAngle = 0; //[between 0 - -1.5]
@@ -60,6 +60,8 @@ public class ModelEnhancedChicken extends ModelBase {
     private final ModelRenderer leftFeather1;
     private final ModelRenderer leftFeather2;
     private final ModelRenderer leftFeather3;
+    private final ModelRenderer leftVultureHock;
+    private final ModelRenderer rightVultureHock;
     private final ModelRenderer rightWing;
     private final ModelRenderer rightWingSmall;
     private final ModelRenderer leftWing;
@@ -277,11 +279,18 @@ public class ModelEnhancedChicken extends ModelBase {
         this.leftFeather2.addBox(-3.5F, 7F, -2.5F, 2, 2, 5);
 
         this.rightFeather3 = new ModelRenderer(this,28,36);
+        this.rightFeather3.mirror = true;
         this.rightFeather3.addBox(3.5F, 8.9F, -2.5F, 4, 1, 5);
 
         this.leftFeather3 = new ModelRenderer(this,28,36);
-        this.leftFeather3.mirror = true;
-        this.leftFeather3.addBox(-7.5F, 8.9F, -2.5F, 4, 0, 5);
+        this.leftFeather3.addBox(-7.5F, 8.9F, -2.5F, 4, 1, 5);
+
+        this.rightVultureHock = new ModelRenderer(this,33,32);
+        this.rightVultureHock.mirror = true;
+        this.rightVultureHock.addBox(2.5F, 3.0F, 2.5F, 1, 3, 4, -0.2F);
+
+        this.leftVultureHock = new ModelRenderer(this,33,32);
+        this.leftVultureHock.addBox(-3.5F, 3.0F, 2.5F, 1, 3, 4, -0.2F);
 
         this.leftLeg = new ModelRenderer(this, 8, 18);
         this.leftLeg.addBox(-2F, 3.5F, 1F, 1, 5, 1);
@@ -348,6 +357,12 @@ public class ModelEnhancedChicken extends ModelBase {
         this.beardNN.setTextureOffset(2,29);
         this.beardNN.addBox(2F, -4F, -2F, 1, 2, 2);
         this.beardNN.addBox(0F, -3F, -2.75F, 2, 2, 2);
+    }
+
+    private void setRotationOffset(ModelRenderer renderer, float x, float y, float z) {
+        renderer.rotateAngleX = x;
+        renderer.rotateAngleY = y;
+        renderer.rotateAngleZ = z;
     }
 
 
@@ -542,8 +557,8 @@ public class ModelEnhancedChicken extends ModelBase {
 
         if (this.isChild && size >= 0.65) {
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.6F, 0.6F, 0.6F);
-            GlStateManager.translate(0.0F, -1.8F + 1.8F/0.6F, 0.1F);
+            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
+            GlStateManager.translatef(0.0F, -1.8F + 1.8F/0.6F, 0.1F);
             if (nakedNeck) {
                 this.headNakedNeck.render(scale);
             } else {
@@ -562,8 +577,8 @@ public class ModelEnhancedChicken extends ModelBase {
 
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.4F, 0.4F, 0.4F);
-            GlStateManager.translate(0.0F, -1.5F + 1.5F/0.4F, 0.0F);
+            GlStateManager.scalef(0.4F, 0.4F, 0.4F);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.4F, 0.0F);
 
             this.body.render(scale);
             this.rightLeg.render(scale);
@@ -590,8 +605,8 @@ public class ModelEnhancedChicken extends ModelBase {
 
 
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.3F, 0.3F, 0.3F);
-            GlStateManager.translate(0.0F, -1.6F + 1.6F/0.3F, 0.1F);
+            GlStateManager.scalef(0.3F, 0.3F, 0.3F);
+            GlStateManager.translatef(0.0F, -1.6F + 1.6F/0.3F, 0.1F);
             if (nakedNeck) {
                 this.headNakedNeck.render(scale);
             } else {
@@ -610,8 +625,8 @@ public class ModelEnhancedChicken extends ModelBase {
 
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
-            GlStateManager.scale(0.2F, 0.2F, 0.2F);
-            GlStateManager.translate(0.0F, -1.5F + 1.5F/0.2F, 0.0F);
+            GlStateManager.scalef(0.2F, 0.2F, 0.2F);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.2F, 0.0F);
 
             this.body.render(scale);
             this.rightLeg.render(scale);
@@ -637,8 +652,8 @@ public class ModelEnhancedChicken extends ModelBase {
 
         } else {
             GlStateManager.pushMatrix();
-            GlStateManager.scale(size, size, size);
-            GlStateManager.translate(0.0F, -1.5F + 1.5F/size, 0.0F);
+            GlStateManager.scalef(size, size, size);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/size, 0.0F);
             if (nakedNeck) {
                 this.headNakedNeck.render(scale);
             } else {
@@ -679,6 +694,7 @@ public class ModelEnhancedChicken extends ModelBase {
                 } else if (cSize == 1) {
                     this.combSmallSingle.render(scale);
                 } else if (cSize == 2) {
+                    //TODO change this back to combSingle
                     this.combSingle.render(scale);
                 } else if (cSize == 3) {
                     this.combLargeSingle.render(scale);
@@ -746,6 +762,10 @@ public class ModelEnhancedChicken extends ModelBase {
             if (fFeet >= 1) {
                 this.leftFeather1.render(scale);
                 this.rightFeather1.render(scale);
+                if (genes[102] == 2 && genes[103] == 2){
+                    this.leftVultureHock.render(scale);
+                    this.rightVultureHock.render(scale);
+                }
                 if (fFeet >= 2) {
                     this.leftFeather2.render(scale);
                     this.rightFeather2.render(scale);
@@ -772,17 +792,17 @@ public class ModelEnhancedChicken extends ModelBase {
     {
         //head stuff
 
-        float bodyangle = 0.5F;
+//        float bodyangle = 0.5F;
 
         if(this.pose == 1){
-            this.head.rotationPointY = 22F - bodyangle;
+            this.head.rotationPointY = 22F;
         } else if (this.pose == 2){
-            this.head.rotationPointY = 21F - bodyangle;
+            this.head.rotationPointY = 21F;
         } else{
             if(this.mutation == 1){
-                this.head.rotationPointY = 18F - bodyangle;
+                this.head.rotationPointY = 18F;
             }else{
-                this.head.rotationPointY = 15F - bodyangle;
+                this.head.rotationPointY = 15F;
             }
         }
         this.head.rotationPointZ = -3F;
@@ -833,12 +853,13 @@ public class ModelEnhancedChicken extends ModelBase {
         copyModelAngles(rightLeg, rightFeather1);
         copyModelAngles(rightLeg, rightFeather2);
         copyModelAngles(rightLeg, rightFeather3);
+        copyModelAngles(rightLeg, rightVultureHock);
         copyModelAngles(leftLeg, leftFeather1);
         copyModelAngles(leftLeg, leftFeather2);
         copyModelAngles(leftLeg, leftFeather3);
+        copyModelAngles(leftLeg, leftVultureHock);
 
         //body angle
-        //TODO make wing angles and body angles work
 //        this.body.rotateAngleX = -bodyangle;
 
         //tail stuff
@@ -850,7 +871,7 @@ public class ModelEnhancedChicken extends ModelBase {
 
         //wing stuff
 
-//        this.rightWing.rotationPointZ = -(1 - 1*5);
+//        this.rightWing.rotationPointZ = -1;
 //        this.leftWing.rotationPointZ = -1;
 //        this.rightWing.rotationPointY = 13;
 //        this.leftWing.rotationPointY = 13;

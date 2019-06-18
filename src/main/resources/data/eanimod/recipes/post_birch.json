@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+  [
+    "   ",
+    "SSS",
+    "   "
+  ],
+
+  "key":
+  {
+    "S":
+    {
+      "item": "minecraft:birch_slab"
+    }
+  },
+  "result":
+  {
+    "item": "eanimod:post_birch",
+    "count": 3
+  }
+}

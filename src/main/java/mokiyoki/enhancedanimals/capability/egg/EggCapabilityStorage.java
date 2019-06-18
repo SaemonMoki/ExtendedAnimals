@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.capability.egg;
 
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
@@ -16,7 +16,7 @@ public class EggCapabilityStorage implements Capability.IStorage<IEggCapability>
 
     @Nullable
     @Override
-    public NBTBase writeNBT(Capability<IEggCapability> capability, IEggCapability instance, EnumFacing side) {
+    public INBTBase writeNBT(Capability<IEggCapability> capability, IEggCapability instance, EnumFacing side) {
         NBTTagCompound compound = new NBTTagCompound();
 
         int[] genes = instance.getGenes();
@@ -25,8 +25,8 @@ public class EggCapabilityStorage implements Capability.IStorage<IEggCapability>
         if (genes != null) {
             for (int gene : genes) {
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
-                nbttagcompound.setInteger("Gene", gene);
-                geneList.appendTag(nbttagcompound);
+                nbttagcompound.setInt("Gene", gene);
+                geneList.add(nbttagcompound);
             }
         }
         compound.setTag("Genes", geneList);
@@ -36,16 +36,18 @@ public class EggCapabilityStorage implements Capability.IStorage<IEggCapability>
     }
 
     @Override
-    public void readNBT(Capability<IEggCapability> capability, IEggCapability instance, EnumFacing side, NBTBase nbt) {
+    public void readNBT(Capability<IEggCapability> capability, IEggCapability instance, EnumFacing side, INBTBase nbt) {
         NBTTagCompound compound = (NBTTagCompound) nbt;
-        int[] genes = new int[Reference.CHICKEN_GENES_LENGTH];
 
-        NBTTagList geneList = compound.getTagList("Genes", 10);
-        for (int i = 0; i < geneList.tagCount(); ++i) {
-            NBTTagCompound nbttagcompound = geneList.getCompoundTagAt(i);
-            int gene = nbttagcompound.getInteger("Gene");
-            genes[i] = gene;
+        NBTTagList geneList = compound.getList("Genes", 10);
+        if (geneList.size()>0) {
+            int[] genes = new int[Reference.CHICKEN_GENES_LENGTH];
+            for (int i = 0; i < geneList.size(); ++i) {
+                NBTTagCompound nbttagcompound = geneList.getCompound(i);
+                int gene = nbttagcompound.getInt("Gene");
+                genes[i] = gene;
+            }
+            instance.setGenes(genes);
         }
-        instance.setGenes(genes);
     }
 }

@@ -1,7 +1,6 @@
 package mokiyoki.enhancedanimals.model;
 
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
-import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.model.ModelBase;
 import net.minecraft.client.renderer.entity.model.ModelRenderer;
@@ -27,7 +26,11 @@ public class ModelEnhancedCow extends ModelBase {
     private final ModelRenderer earLongestR;
     private final ModelRenderer hornNub;
     private final ModelRenderer head; //this is the neck not the head
-    private final ModelRenderer body;
+    private final ModelRenderer bodyChonk;
+    private final ModelRenderer bodyBig;
+    private final ModelRenderer bodyMedium;
+    private final ModelRenderer bodySlim;
+    private final ModelRenderer bodyThin;
     private final ModelRenderer udder;
     private final ModelRenderer humpXSmall;
     private final ModelRenderer humpSmall;
@@ -44,6 +47,10 @@ public class ModelEnhancedCow extends ModelBase {
     private final ModelRenderer leg2;
     private final ModelRenderer leg3;
     private final ModelRenderer leg4;
+    private final ModelRenderer chonkLeg1;
+    private final ModelRenderer chonkLeg2;
+    private final ModelRenderer chonkLeg3;
+    private final ModelRenderer chonkLeg4;
     private final ModelRenderer shortLeg1;
     private final ModelRenderer shortLeg2;
     private final ModelRenderer shortLeg3;
@@ -112,9 +119,25 @@ public class ModelEnhancedCow extends ModelBase {
         this.head.addBox(-3.0F, 0.0F, -8.0F, 6, 8, 11, 0.0F);
         this.head.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
-        this.body = new ModelRenderer(this, 0, 0);
-        this.body.addBox(-6.0F, 0.0F, 0.0F, 12, 11, 22, 0.0F);
-        this.body.setRotationPoint(0.0F, 2.5F, 0.0F + xMove);
+        this.bodyChonk = new ModelRenderer(this, 0, 0);
+        this.bodyChonk.addBox(-6.0F, 0.0F, 0.0F, 12, 11, 22, 1.0F);
+        this.bodyChonk.setRotationPoint(0.0F, 2.5F, 0.0F + xMove);
+
+        this.bodyBig = new ModelRenderer(this, 0, 0);
+        this.bodyBig.addBox(-6.0F, 0.0F, 0.0F, 12, 11, 22, 0.5F);
+        this.bodyBig.setRotationPoint(0.0F, 2.5F, 0.0F + xMove);
+
+        this.bodyMedium = new ModelRenderer(this, 0, 0);
+        this.bodyMedium.addBox(-6.0F, 0.0F, 0.0F, 12, 11, 22, 0.0F);
+        this.bodyMedium.setRotationPoint(0.0F, 2.5F, 0.0F + xMove);
+
+        this.bodySlim = new ModelRenderer(this, 0, 0);
+        this.bodySlim.addBox(-6.0F, 0.0F, 0.0F, 12, 11, 22, 0.5F);
+        this.bodySlim.setRotationPoint(0.0F, 2.5F, 0.0F + xMove);
+
+        this.bodyThin = new ModelRenderer(this, 0, 0);
+        this.bodyThin.addBox(-5.0F, 0.0F, 0.0F, 10, 11, 22, 0.0F);
+        this.bodyThin.setRotationPoint(0.0F, 2.5F, 0.0F + xMove);
 
         this.udder = new ModelRenderer(this, 0, 0);
         this.udder.addBox(-6.0F, 0.0F, 0.0F, 12, 11, 22, 0.0F);
@@ -180,6 +203,22 @@ public class ModelEnhancedCow extends ModelBase {
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
         this.leg4.setRotationPoint(3.0F, 13.5F, 19.0F + xMove);
 
+        this.chonkLeg1 = new ModelRenderer(this, 0, 54);
+        this.chonkLeg1.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.5F);
+        this.chonkLeg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
+
+        this.chonkLeg2 = new ModelRenderer(this, 12, 54);
+        this.chonkLeg2.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.5F);
+        this.chonkLeg2.setRotationPoint(3.0F, 13.5F, -10.0F);
+
+        this.chonkLeg3 = new ModelRenderer(this, 0, 67);
+        this.chonkLeg3.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.5F);
+        this.chonkLeg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
+
+        this.chonkLeg4 = new ModelRenderer(this, 12, 67);
+        this.chonkLeg4.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.5F);
+        this.chonkLeg4.setRotationPoint(3.0F, 13.5F, 9.0F);
+
         this.shortLeg1 = new ModelRenderer(this, 0, 54);
         this.shortLeg1.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
         this.shortLeg1.setRotationPoint(-6.0F, 13.5F, 0.0F + xMove);
@@ -233,24 +272,8 @@ public class ModelEnhancedCow extends ModelBase {
 //        }
         float dwarf = 0.0F;
         float size = 1.0F;
+        int bodyShape = 0;
         int hump = 0;
-        int earSize = 0;
-
-        for (int i = 1; i < genes[42]; i++){
-            earSize++;
-        }
-
-        for (int i = 1; i < genes[43]; i++){
-            earSize++;
-        }
-
-        if (genes[45] == 1 || genes[46] == 1){
-            if (earSize >= 5){
-                earSize = earSize - 2;
-            }else if (earSize == 4){
-                earSize = 3;
-            }
-        }
 
         for (int i = 1; i < genes[30]; i++){
             size = size - 0.01F;
@@ -290,6 +313,13 @@ public class ModelEnhancedCow extends ModelBase {
             size = size/1.1F;
         }
 
+        for (int i = 1; i < genes[54]; i++){
+            bodyShape++;
+        }
+        for (int i = 1; i < genes[55]; i++){
+            bodyShape++;
+        }
+
         for (int i = 1; i < genes[38]; i++){
             hump++;
         }
@@ -310,8 +340,23 @@ public class ModelEnhancedCow extends ModelBase {
             GlStateManager.pushMatrix();
             GlStateManager.scalef(0.5F, 0.5F, 0.5F);
             GlStateManager.translatef(0.0F, 20.0F * scale, 0.0F);
+            if (bodyShape >= 3) {
+                this.bodySlim.render(scale);
+            }else{
+                this.bodyThin.render(scale);
+            }
 
-            this.body.render(scale);
+            if (hump >= 12){
+                this.humpLargeish.render(scale);
+            }else if (hump >= 10){
+                this.humpMedium.render(scale);
+            }else if (hump >= 8){
+                this.humpSmallish.render(scale);
+            }else if (hump >= 6){
+                this.humpSmall.render(scale);
+            }else if (hump >= 4){
+                this.humpXSmall.render(scale);
+            }
             this.tail0.render(scale);
 
             GlStateManager.popMatrix();
@@ -319,10 +364,17 @@ public class ModelEnhancedCow extends ModelBase {
             GlStateManager.scalef(0.5F, 0.7F, 0.5F);
             GlStateManager.translatef(0.0F, 10.0F * scale, 0.0F);
 
-            this.leg1.render(scale);
-            this.leg2.render(scale);
-            this.leg3.render(scale);
-            this.leg4.render(scale);
+            if (dwarf != 0.0F){
+                this.shortLeg1.render(scale);
+                this.shortLeg2.render(scale);
+                this.shortLeg3.render(scale);
+                this.shortLeg4.render(scale);
+            }else {
+                this.leg1.render(scale);
+                this.leg2.render(scale);
+                this.leg3.render(scale);
+                this.leg4.render(scale);
+            }
 
             GlStateManager.popMatrix();
 
@@ -333,7 +385,19 @@ public class ModelEnhancedCow extends ModelBase {
             GlStateManager.translatef(0.0F, (-1.5F+dwarf) + 1.5F / size, 0.0F);
 
             this.head.render(scale);
-            this.body.render(scale);
+
+            if (bodyShape == 4){
+                this.bodyChonk.render(scale);
+            }else if (bodyShape == 3){
+                this.bodyBig.render(scale);
+            }else if (bodyShape == 2){
+                this.bodyMedium.render(scale);
+            }else if (bodyShape == 1){
+                this.bodySlim.render(scale);
+            }else{
+                this.bodyThin.render(scale);
+            }
+
             if(hump == 12){
                 this.humpXLarge.render(scale);
             }else if (hump >= 10){
@@ -355,10 +419,17 @@ public class ModelEnhancedCow extends ModelBase {
                 this.shortLeg3.render(scale);
                 this.shortLeg4.render(scale);
             }else {
-                this.leg1.render(scale);
-                this.leg2.render(scale);
-                this.leg3.render(scale);
-                this.leg4.render(scale);
+                if (bodyShape >= 3){
+                    this.chonkLeg1.render(scale);
+                    this.chonkLeg2.render(scale);
+                    this.chonkLeg3.render(scale);
+                    this.chonkLeg4.render(scale);
+                }else {
+                    this.leg1.render(scale);
+                    this.leg2.render(scale);
+                    this.leg3.render(scale);
+                    this.leg4.render(scale);
+                }
             }
             this.tail0.render(scale);
 
@@ -418,6 +489,10 @@ public class ModelEnhancedCow extends ModelBase {
         int[] sharedGenes = ((EnhancedCow) entitylivingbaseIn).getSharedGenes();
 
         if (sharedGenes[40] != 1 && sharedGenes[41] != 1) {
+            int child = 1;
+            if (this.isChild){
+                child = 2;
+            }
             float hump = 2.0F;
             for (int i = 1; i < sharedGenes[40]; i++) {
                 hump = hump - 0.5F;
@@ -426,23 +501,79 @@ public class ModelEnhancedCow extends ModelBase {
                 hump = hump - 0.5F;
             }
 
-            this.humpXLarge.rotationPointY = hump;
-            this.humpLarge.rotationPointY = hump;
-            this.humpLargeish.rotationPointY = hump;
-            this.humpMedium.rotationPointY = hump;
-            this.humpSmallish.rotationPointY = hump;
-            this.humpSmall.rotationPointY = hump;
-            this.humpXSmall.rotationPointY = hump;
+            this.humpXLarge.rotationPointY = hump/child;
+            this.humpLarge.rotationPointY = hump/child;
+            this.humpLargeish.rotationPointY = hump/child;
+            this.humpMedium.rotationPointY = hump/child;
+            this.humpSmallish.rotationPointY = hump/child;
+            this.humpSmall.rotationPointY = hump/child;
+            this.humpXSmall.rotationPointY = hump/child;
 
         }else{
+            int child = 1;
+            if (this.isChild){
+                child = 2;
+            }
 
-            this.humpXLarge.rotationPointY = 2.0F;
-            this.humpLarge.rotationPointY = 2.0F;
-            this.humpLargeish.rotationPointY = 2.0F;
-            this.humpMedium.rotationPointY = 2.0F;
-            this.humpSmallish.rotationPointY = 2.0F;
-            this.humpSmall.rotationPointY = 2.0F;
-            this.humpXSmall.rotationPointY = 2.0F;
+            this.humpXLarge.rotationPointY = 2.0F/child;
+            this.humpLarge.rotationPointY = 2.0F/child;
+            this.humpLargeish.rotationPointY = 2.0F/child;
+            this.humpMedium.rotationPointY = 2.0F/child;
+            this.humpSmallish.rotationPointY = 2.0F/child;
+            this.humpSmall.rotationPointY = 2.0F/child;
+            this.humpXSmall.rotationPointY = 2.0F/child;
+        }
+
+        int bodyShape = 0;
+        for (int i = 1; i < sharedGenes[54]; i++){
+            bodyShape++;
+        }
+        for (int i = 1; i < sharedGenes[55]; i++){
+            bodyShape++;
+        }
+
+        if (isChild && bodyShape != 0){
+            bodyShape = 1;
+        }
+
+        if (bodyShape == 4){
+            this.leg1.rotationPointX = -7.0F;
+            this.leg3.rotationPointX = -7.0F;
+            this.leg2.rotationPointX = 4.0F;
+            this.leg4.rotationPointX = 4.0F;
+            this.chonkLeg1.rotationPointX = -7.0F;
+            this.chonkLeg3.rotationPointX = -7.0F;
+            this.chonkLeg2.rotationPointX = 4.0F;
+            this.chonkLeg4.rotationPointX = 4.0F;
+            this.chonkLeg1.rotationPointZ = -7.0F;
+            this.chonkLeg2.rotationPointZ = -7.0F;
+            this.chonkLeg3.rotationPointZ = 4.0F;
+            this.chonkLeg4.rotationPointZ = 4.0F;
+
+        }else if (bodyShape == 3){
+            this.leg1.rotationPointX = -6.5F;
+            this.leg3.rotationPointX = -6.5F;
+            this.leg2.rotationPointX = 3.5F;
+            this.leg4.rotationPointX = 3.5F;
+            this.chonkLeg1.rotationPointX = -6.5F;
+            this.chonkLeg3.rotationPointX = -6.5F;
+            this.chonkLeg2.rotationPointX = 3.5F;
+            this.chonkLeg4.rotationPointX = 3.5F;
+        }else if (bodyShape == 1){
+            this.leg1.rotationPointX = -5.5F;
+            this.leg3.rotationPointX = -5.5F;
+            this.leg2.rotationPointX = 2.5F;
+            this.leg4.rotationPointX = 2.5F;
+        }else if (bodyShape == 0){
+            this.leg1.rotationPointX = -5.0F;
+            this.leg3.rotationPointX = -5.0F;
+            this.leg2.rotationPointX = 2.0F;
+            this.leg4.rotationPointX = 2.0F;
+        }else{
+            this.leg1.rotationPointX = -6.0F;
+            this.leg3.rotationPointX = -6.0F;
+            this.leg2.rotationPointX = 3.0F;
+            this.leg4.rotationPointX = 3.0F;
         }
 
         this.earSmallestL.setRotationPoint(-3.9F, 4.0F, -2.5F);

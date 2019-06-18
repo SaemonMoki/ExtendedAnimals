@@ -185,7 +185,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
     private boolean pregnant = false;
 
     private static final int WTC = 90;
-    private static final int GENES_LENGTH = 56;
+    private static final int GENES_LENGTH = 60;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];

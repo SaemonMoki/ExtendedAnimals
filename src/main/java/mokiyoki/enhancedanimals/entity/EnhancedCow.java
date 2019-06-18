@@ -55,6 +55,10 @@ public class EnhancedCow extends EntityAnimal {
             "", "black_wildtype.png", "black_wildtype_darker1.png", "black_wildtype_dark.png", "black_solid.png", "black_brindle.png"
     };
 
+    private static final String[] COW_TEXTURES_SKIN = new String[] {
+            "skin_black.png", "skin_brown.png", "skin_pink.png"
+    };
+
     private static final String[] COW_TEXTURES_ROAN = new String[] {
             "", "spot_roan0.png",
                 "solid_white.png"
@@ -82,10 +86,6 @@ public class EnhancedCow extends EntityAnimal {
             "", "spot_coloursided0.png"
     };
 
-    private static final String[] COW_TEXTURES_SKIN = new String[] {
-            "skin_black.png", "skin_brown.png", "skin_pink.png"
-    };
-
     private static final String[] COW_TEXTURES_HOOVES = new String[] {
             "hooves_black.png", "hooves_black_dwarf.png"
     };
@@ -103,7 +103,7 @@ public class EnhancedCow extends EntityAnimal {
 
     private static final int WTC = 90;
     private final List<String> cowTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 44;
+    private static final int GENES_LENGTH = 54;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -307,7 +307,7 @@ public class EnhancedCow extends EntityAnimal {
                         //white bellied fawn (i believe this is like silver)
                         black = 1;
                         red = 0;
-                        base = 1;
+                        base = 2;
                         //TODO set up something here to dilute the colour of red to a cream or white
                     } else {
                         //brindle (there might be a recessive black but no one seems to know lol)
@@ -440,6 +440,7 @@ public class EnhancedCow extends EntityAnimal {
             if (black != 0){
                 this.cowTextures.add(COW_TEXTURES_BLACK[black]);
             }
+            this.cowTextures.add(COW_TEXTURES_SKIN[skin]);
             if (roan != 0){
                 this.cowTextures.add(COW_TEXTURES_ROAN[roan]);
             }
@@ -455,7 +456,6 @@ public class EnhancedCow extends EntityAnimal {
             if (coloursided != 0){
                 this.cowTextures.add(COW_TEXTURES_COLOURSIDED[coloursided]);
             }
-            this.cowTextures.add(COW_TEXTURES_SKIN[skin]);
             //TODO add hoof colour genetics
             this.cowTextures.add(COW_TEXTURES_HOOVES[hooves]);
             //TODO add eye colour genetics
@@ -930,18 +930,88 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[41] = (4);
         }
 
-        //ear size [biggest, big, medium, small, smallest]
+        //ear size [smallest, smaller, normal, long, longest]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[42] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
-            initialGenes[42] = (3);
+            initialGenes[42] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[43] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
-            initialGenes[43] = (3);
+            initialGenes[43] = (2);
+        }
+
+        //ear size suppressor [smaller ears, longer ears]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[44] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[44] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[45] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[45] = (1);
+        }
+
+        //ear floppiness [stiffer, normal, floppier, floppiest]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[46] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[46] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[47] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[47] = (2);
+        }
+
+        //coat smoothness [smooth, normal] (this gives a slick coat like brahma and suppresses furry coat genes)
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[48] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[48] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[49] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[49] = (2);
+        }
+
+        //Furry coat 1 [normal, furry]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[50] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[50] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[51] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[51] = (2);
+        }
+
+        //furry coat 2 [normal, furry]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[52] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[52] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[53] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[53] = (2);
         }
 
         return initialGenes;

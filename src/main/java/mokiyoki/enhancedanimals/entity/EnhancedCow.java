@@ -49,10 +49,12 @@ public class EnhancedCow extends EntityAnimal {
 
     private static final String[] COW_TEXTURES_RED = new String[] {
             "", "red_solid.png", "red_shaded.png"
+              , "red_solid.png", "red_shaded_thin.png"
     };
 
     private static final String[] COW_TEXTURES_BLACK = new String[] {
             "", "black_wildtype.png", "black_wildtype_darker1.png", "black_wildtype_dark.png", "black_solid.png", "black_brindle.png"
+              , "black_wildtype_thin.png", "black_wildtype_darker1_thin.png", "black_wildtype_dark_thin.png", "black_solid.png", "black_brindle.png"
     };
 
     private static final String[] COW_TEXTURES_SKIN = new String[] {
@@ -103,7 +105,7 @@ public class EnhancedCow extends EntityAnimal {
 
     private static final int WTC = 90;
     private final List<String> cowTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 54;
+    private static final int GENES_LENGTH = 56;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -426,9 +428,19 @@ public class EnhancedCow extends EntityAnimal {
 //                }
 //            }
 
+            //these alter texture to fit model changes
             if(genesForText[26] == 1 || genesForText[27] == 1) {
                 hooves = 1;
             }
+            if(genesForText[54] == 1 && genesForText[55] == 1){
+                if (red != 0){
+                    red = red*2;
+                }
+                if (black != 0){
+                    black = black*2;
+                }
+            }
+
             
             //TODO change white spots to add whitening together
             //TODO add shading under correct conditions
@@ -1012,6 +1024,20 @@ public class EnhancedCow extends EntityAnimal {
 
         } else {
             initialGenes[53] = (2);
+        }
+
+        //body type [smallest to largest]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[54] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[54] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[55] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[55] = (1);
         }
 
         return initialGenes;

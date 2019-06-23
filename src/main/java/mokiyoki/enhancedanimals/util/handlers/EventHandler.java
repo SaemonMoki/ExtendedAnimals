@@ -1,10 +1,7 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityLlama;
-import net.minecraft.entity.passive.EntityRabbit;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.*;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,6 +31,11 @@ public class EventHandler {
             }
         }
         if (entity instanceof EntitySheep) {
+            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
+                event.setCanceled(true);
+            }
+        }
+        if (entity instanceof EntityCow) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
             }

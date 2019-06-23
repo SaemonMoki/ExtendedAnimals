@@ -8,6 +8,7 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
@@ -15,6 +16,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -26,6 +28,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -442,6 +445,16 @@ public class EnhancedChicken extends EntityAnimal {
         this.resetInLove();
         ageable.setGrowingAge(10);
         ((EnhancedChicken)ageable).resetInLove();
+
+        EntityPlayerMP entityplayermp = this.getLoveCause();
+        if (entityplayermp == null && ((EnhancedChicken)ageable).getLoveCause() != null) {
+            entityplayermp = ((EnhancedChicken)ageable).getLoveCause();
+        }
+
+        if (entityplayermp != null) {
+            entityplayermp.addStat(StatList.ANIMALS_BRED);
+            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedChicken)ageable), (EntityAgeable)null);
+        }
 
         return null;
     }

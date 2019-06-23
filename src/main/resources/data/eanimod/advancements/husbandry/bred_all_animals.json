@@ -1,0 +1,80 @@
+{
+  "parent": "minecraft:husbandry/breed_an_animal",
+  "display": {
+    "icon": {
+      "item": "minecraft:golden_carrot"
+    },
+    "title": {
+      "translate": "advancements.husbandry.breed_all_animals.title"
+    },
+    "description": {
+      "translate": "advancements.husbandry.breed_all_animals.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 100
+  },
+  "criteria": {
+    "eanimod:enhanced_chicken": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "eanimod:enhanced_chicken"
+        }
+      }
+    },
+    "eanimod:enhanced_sheep": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "eanimod:enhanced_sheep"
+        }
+      }
+    },
+    "eanimod:enhanced_cow": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "eanimod:enhanced_cow"
+        }
+      }
+    },
+    "eanimod:enhanced_rabbit": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "eanimod:enhanced_rabbit"
+        }
+      }
+    },
+    "eanimod:enhanced_llama": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "eanimod:enhanced_llama"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "eanimod:enhanced_chicken"
+    ],
+    [
+      "eanimod:enhanced_sheep"
+    ],
+    [
+      "eanimod:enhanced_cow"
+    ],
+    [
+      "eanimod:enhanced_rabbit"
+    ],
+    [
+      "eanimod:enhanced_llama"
+    ]
+  ]
+}

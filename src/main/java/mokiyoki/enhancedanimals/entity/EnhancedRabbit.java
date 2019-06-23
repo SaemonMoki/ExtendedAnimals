@@ -4,6 +4,7 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCarrot;
 import net.minecraft.block.state.IBlockState;
@@ -13,6 +14,7 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -25,6 +27,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -880,6 +883,16 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         this.resetInLove();
         ageable.setGrowingAge(10);
         ((EnhancedRabbit)ageable).resetInLove();
+
+        EntityPlayerMP entityplayermp = this.getLoveCause();
+        if (entityplayermp == null && ((EnhancedRabbit)ageable).getLoveCause() != null) {
+            entityplayermp = ((EnhancedRabbit)ageable).getLoveCause();
+        }
+
+        if (entityplayermp != null) {
+            entityplayermp.addStat(StatList.ANIMALS_BRED);
+            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedRabbit)ageable), (EntityAgeable)null);
+        }
 
         return null;
     }

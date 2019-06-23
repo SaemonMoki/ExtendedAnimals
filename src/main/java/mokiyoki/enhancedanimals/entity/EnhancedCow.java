@@ -2,12 +2,14 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -19,6 +21,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -240,6 +243,16 @@ public class EnhancedCow extends EntityAnimal {
         this.resetInLove();
         ageable.setGrowingAge(10);
         ((EnhancedCow)ageable).resetInLove();
+
+        EntityPlayerMP entityplayermp = this.getLoveCause();
+        if (entityplayermp == null && ((EnhancedCow)ageable).getLoveCause() != null) {
+            entityplayermp = ((EnhancedCow)ageable).getLoveCause();
+        }
+
+        if (entityplayermp != null) {
+            entityplayermp.addStat(StatList.ANIMALS_BRED);
+            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedCow)ageable), (EntityAgeable)null);
+        }
 
         return null;
     }

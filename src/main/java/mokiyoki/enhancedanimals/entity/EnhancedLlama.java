@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCarpet;
 import net.minecraft.block.SoundType;
@@ -15,6 +16,7 @@ import net.minecraft.entity.passive.AbstractChestHorse;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.Particles;
@@ -30,6 +32,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -482,6 +485,16 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         this.resetInLove();
         ageable.setGrowingAge(10);
         ((EnhancedLlama)ageable).resetInLove();
+
+        EntityPlayerMP entityplayermp = this.getLoveCause();
+        if (entityplayermp == null && ((EnhancedLlama)ageable).getLoveCause() != null) {
+            entityplayermp = ((EnhancedLlama)ageable).getLoveCause();
+        }
+
+        if (entityplayermp != null) {
+            entityplayermp.addStat(StatList.ANIMALS_BRED);
+            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedLlama)ageable), (EntityAgeable)null);
+        }
 
         return null;
     }

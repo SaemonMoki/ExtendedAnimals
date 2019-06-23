@@ -58,6 +58,54 @@
           "type": "eanimod:enhanced_llama"
         }
       }
+    },
+    "minecraft:turtle": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:turtle"
+        }
+      }
+    },
+    "minecraft:ocelot": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:ocelot"
+        }
+      }
+    },
+    "minecraft:wolf": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:wolf"
+        }
+      }
+    },
+    "minecraft:pig": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:pig"
+        }
+      }
+    },
+    "minecraft:mooshroom": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:mooshroom"
+        }
+      }
+    },
+    "minecraft:horse": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:horse"
+        }
+      }
     }
   },
   "requirements": [
@@ -75,6 +123,24 @@
     ],
     [
       "eanimod:enhanced_llama"
+    ],
+    [
+      "minecraft:turtle"
+    ],
+    [
+      "minecraft:ocelot"
+    ],
+    [
+      "minecraft:wolf"
+    ],
+    [
+      "minecraft:mooshroom"
+    ],
+    [
+      "minecraft:pig"
+    ],
+    [
+      "minecraft:horse"
     ]
   ]
 }

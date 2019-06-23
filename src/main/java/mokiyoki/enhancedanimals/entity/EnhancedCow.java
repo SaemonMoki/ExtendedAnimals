@@ -1,8 +1,10 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
+import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -21,9 +23,11 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.DamageSource;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
@@ -45,7 +49,9 @@ import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_CO
 public class EnhancedCow extends EntityAnimal {
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
-    
+    private static final DataParameter<Float> COW_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
+
     private static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
     };
@@ -108,16 +114,20 @@ public class EnhancedCow extends EntityAnimal {
 
     private static final int WTC = 90;
     private final List<String> cowTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 56;
+    private static final int GENES_LENGTH = 80;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
+    private float maxBagSize;
+    private float cowSize;
+
+    //TODO add achievements for breeding and slaying
+
     public EnhancedCow(World worldIn) {
         super(ENHANCED_COW, worldIn);
-        this.setSize(0.4F, 1F);
-
+        this.setSize(0.9F, 1.4F);
     }
 
     private int cowTimer;
@@ -148,6 +158,47 @@ public class EnhancedCow extends EntityAnimal {
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
+        this.dataManager.register(COW_SIZE, 0.0F);
+        this.dataManager.register(BAG_SIZE, 0.0F);
+    }
+
+    private void setCowSize(float size) {
+        this.dataManager.set(COW_SIZE, size);
+    }
+
+    public float getSize() {
+        return this.dataManager.get(COW_SIZE);
+    }
+
+    private void setBagSize(float size) {
+        this.dataManager.set(BAG_SIZE, size);
+    }
+
+    public float getBagSize() {
+        return this.dataManager.get(BAG_SIZE);
+    }
+
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.ENTITY_COW_AMBIENT;
+    }
+
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+        return SoundEvents.ENTITY_COW_HURT;
+    }
+
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.ENTITY_COW_DEATH;
+    }
+
+    protected void playStepSound(BlockPos pos, IBlockState blockIn) {
+        this.playSound(SoundEvents.ENTITY_COW_STEP, 0.15F, 1.0F);
+    }
+
+    /**
+     * Returns the volume for the sounds this mob makes.
+     */
+    protected float getSoundVolume() {
+        return 0.4F;
     }
 
     @Nullable
@@ -179,6 +230,7 @@ public class EnhancedCow extends EntityAnimal {
                     int[] babyGenes = getCalfGenes();
                     enhancedcow.setGenes(babyGenes);
                     enhancedcow.setSharedGenes(babyGenes);
+                    enhancedcow.setCowSize();
                     enhancedcow.setGrowingAge(-24000);
                     enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
                     this.world.spawnEntity(enhancedcow);
@@ -191,6 +243,50 @@ public class EnhancedCow extends EntityAnimal {
             lethalGenes();
         }
 
+    }
+
+    private void setCowSize(){
+        float size = 1.0F;
+
+        for (int i = 1; i < genes[30]; i++){
+            size = size - 0.01F;
+        }
+        for (int i = 1; i < genes[31]; i++){
+            //this variation is here on purpose
+            size = size - 0.012F;
+        }
+        for (int i = 1; i < genes[32]; i++){
+            size = size + 0.01F;
+        }
+        for (int i = 1; i < genes[33]; i++){
+            size = size + 0.01F;
+        }
+
+        if (genes[34] >= 2 || genes[35] >= 2){
+            if (genes[34] == 3 && genes[35] == 3){
+                size = size - 0.02F;
+            }else{
+                size = size - 0.01F;
+            }
+        }
+
+        if (genes[34] == 1 || genes[35] == 1){
+            size = size - 0.02F;
+        }else if (genes[34] == 2 || genes[35] == 2){
+            size = size - 0.01F;
+        }
+
+        if (genes[26] == 1 || genes[27] == 1){
+            //dwarf
+            size = size/1.05F;
+        }
+        if (genes[28] == 2 && genes[29] == 2){
+            //miniature
+            size = size/1.1F;
+        }
+
+        this.cowSize = size;
+        this.setCowSize(size);
     }
 
     public void lethalGenes(){
@@ -521,6 +617,98 @@ public class EnhancedCow extends EntityAnimal {
         }
     }
 
+    //TODO finish milk calculations and such
+    private void setMaxBagSize(){
+        float maxBagSize = 0;
+        //TODO isMilkable should be set so that a cow must be currently pregnant in late stages || was pregnant
+        boolean isMilkable = true;
+
+        if (!this.isChild() && isMilkable){
+            for (int i = 1; i < genes[62]; i++){
+                maxBagSize = maxBagSize + 0.1F;
+            }
+            for (int i = 1; i < genes[63]; i++){
+                maxBagSize = maxBagSize + 0.1F;
+            }
+            for (int i = 1; i < genes[64]; i++){
+                maxBagSize = maxBagSize + 0.1F;
+            }
+            for (int i = 1; i < genes[65]; i++){
+                maxBagSize = maxBagSize + 0.1F;
+            }
+
+            if (genes[38] >= 5){
+                maxBagSize = maxBagSize - 0.1F;
+                if (genes[38] == 6){
+                    maxBagSize = maxBagSize - 0.1F;
+                }
+            }
+            if (genes[39] >= 5){
+                maxBagSize = maxBagSize - 0.1F;
+                if (genes[39] == 6){
+                    maxBagSize = maxBagSize - 0.1F;
+                }
+            }
+
+            if (genes[40] <= 2){
+                maxBagSize = maxBagSize - 0.1F;
+                if (genes[40] == 1){
+                    maxBagSize = maxBagSize - 0.1F;
+                }
+            }
+            if (genes[41] <= 2){
+                maxBagSize = maxBagSize - 0.1F;
+                if (genes[41] == 1){
+                    maxBagSize = maxBagSize - 0.1F;
+                }
+            }
+
+            if (genes[50] == 2){
+                maxBagSize = maxBagSize - 0.1F;
+            }
+            if (genes[51] == 2){
+                maxBagSize = maxBagSize - 0.1F;
+            }
+
+            if (genes[52] == 2 && genes[53] == 2){
+                maxBagSize = maxBagSize - 0.2F;
+            }
+
+            //TODO check that I did this right
+            for (int i = 5; i > genes[66]; i--){
+                maxBagSize = maxBagSize + 0.1F;
+            }
+            for (int i = 5; i > genes[67]; i--){
+                maxBagSize = maxBagSize + 0.1F;
+            }
+
+            if (genes[54] == 3 && genes[55] == 3){
+                maxBagSize = maxBagSize/3.0F;
+            }else if (genes[54] == 3 || genes[55] == 3){
+                if (genes[54] == 2 || genes[55] == 2){
+                    maxBagSize = maxBagSize/2.5F;
+                }else{
+                    maxBagSize = maxBagSize/2.0F;
+                }
+            } else if (genes[54] == 2 || genes[55] == 2) {
+                if (genes[54] == 2 && genes[55] == 2){
+                    maxBagSize = maxBagSize/2.0F;
+                }else{
+                    maxBagSize = maxBagSize/1.5F;
+                }
+            }
+        }
+
+        maxBagSize = maxBagSize - 3.0F;
+
+        this.maxBagSize = maxBagSize;
+        this.setBagSize(maxBagSize);
+
+    }
+
+
+
+
 
     @Override
     public boolean processInteract(EntityPlayer entityPlayer, EnumHand hand) {
@@ -593,6 +781,8 @@ public class EnhancedCow extends EntityAnimal {
         this.gestationTimer = compound.getInt("Gestation");
 
         setSharedGenes(genes);
+        setCowSize();
+        setMaxBagSize();
 
     }
 
@@ -653,6 +843,8 @@ public class EnhancedCow extends EntityAnimal {
 
         this.genes = spawnGenes;
         setSharedGenes(genes);
+        setCowSize();
+        setMaxBagSize();
 
         return livingdata;
     }
@@ -749,18 +941,18 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[11] = (1);
         }
 
-        //Horns [normal, polled, scured, africanhorn]
+        //Horns [polled, horned]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[12] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[12] = (1);
+            initialGenes[12] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[13] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[13] = (1);
+            initialGenes[13] = (2);
         }
 
         //Speckled Spots
@@ -871,7 +1063,7 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[29] = (1);
         }
 
-        //size genes reducer [wildtype, smaller smaller smallest...]
+        //size genes reducer [wildtype, smaller smaller smallest...] adds milk fat [none to most]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[30] = (ThreadLocalRandom.current().nextInt(15) + 1);
 
@@ -887,19 +1079,19 @@ public class EnhancedCow extends EntityAnimal {
 
         //size genes adder [wildtype, bigger bigger biggest...]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[32] = (ThreadLocalRandom.current().nextInt(10) + 1);
+            initialGenes[32] = (ThreadLocalRandom.current().nextInt(15) + 1);
 
         } else {
             initialGenes[32] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[33] = (ThreadLocalRandom.current().nextInt(10) + 1);
+            initialGenes[33] = (ThreadLocalRandom.current().nextInt(15) + 1);
 
         } else {
             initialGenes[33] = (1);
         }
 
-        //size genes varient1 [wildtype, smaller, smallest]
+        //size genes varient1 [wildtype, smaller, smallest] suppresses milk fat [none to most]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[34] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
@@ -913,7 +1105,7 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[35] = (1);
         }
 
-        //size genes varient2 [smallest, smaller, wildtype]
+        //size genes varient2 [smallest, smaller, wildtype] suppresses milk fat [none to most]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[36] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
@@ -927,7 +1119,7 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[37] = (3);
         }
 
-        //hump size [none, smallest, smaller, medium, bigger, biggest]
+        //hump size [none, smallest, smaller, medium, bigger, biggest]  reduces milk production [ biggest sizes only]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[38] = (ThreadLocalRandom.current().nextInt(6) + 1);
 
@@ -941,7 +1133,7 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[39] = (1);
         }
 
-        //hump size [tallest, tall, medium, short]
+        //hump size [tallest, tall, medium, short] reduces milk production [tall sizes only]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[40] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -1011,46 +1203,204 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[49] = (2);
         }
 
-        //Furry coat 1 [normal, furry]
+        //Furry coat 1 [normal, furry] reduces milk production [least to most]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[50] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[50] = (2);
+            initialGenes[50] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[51] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[51] = (2);
+            initialGenes[51] = (1);
         }
 
-        //furry coat 2 [normal, furry]
+        //furry coat 2 [normal, furry] reduces milk production [least to most]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[52] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[52] = (2);
+            initialGenes[52] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[53] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[53] = (2);
+            initialGenes[53] = (1);
         }
 
-        //body type [smallest to largest]
+        //body type [smallest to largest] reduces milk production and fat harshly [least to most] increases meat drops proportionally
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[54] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[54] = (1);
+            initialGenes[54] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[55] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[55] = (1);
+            initialGenes[55] = (2);
+        }
+
+        //A1 vs A2 milk cause why not
+            initialGenes[56] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[57] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        //Golden Milk 1[white, white, gold]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[58] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[58] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[59] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[59] = (2);
+        }
+
+        //Golden Milk 2[white, cream, gold]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[60] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[60] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[61] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[61] = (2);
+        }
+
+        //Milk Production Base 1[smallest to largest]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[62] = (ThreadLocalRandom.current().nextInt(10) + 1);
+
+        } else {
+            initialGenes[62] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[63] = (ThreadLocalRandom.current().nextInt(10) + 1);
+
+        } else {
+            initialGenes[63] = (2);
+        }
+
+        //Milk Production Base 2[smallest to largest] reduces milk fat [least to most]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[64] = (ThreadLocalRandom.current().nextInt(10) + 1);
+
+        } else {
+            initialGenes[64] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[65] = (ThreadLocalRandom.current().nextInt(10) + 1);
+
+        } else {
+            initialGenes[65] = (2);
+        }
+
+        //Milk Fat Base 1 [low fat to high fat] increases production inversely [high production to low production]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[66] = (ThreadLocalRandom.current().nextInt(5) + 1);
+
+        } else {
+            initialGenes[66] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[67] = (ThreadLocalRandom.current().nextInt(5) + 1);
+
+        } else {
+            initialGenes[67] = (2);
+        }
+
+        //Milk Fat Base 2
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[68] = (ThreadLocalRandom.current().nextInt(5) + 1);
+
+        } else {
+            initialGenes[68] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[69] = (ThreadLocalRandom.current().nextInt(5) + 1);
+
+        } else {
+            initialGenes[69] = (2);
+        }
+
+        //horn nub controller 1
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[70] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[70] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[71] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[71] = (1);
+        }
+
+        //horn nub controller 2
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[72] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[72] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[73] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[73] = (1);
+        }
+
+        //horn nub controller 3
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[74] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[74] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[75] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[75] = (1);
+        }
+
+        //african horn gene [african horned, wildtype]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[76] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[76] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[77] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[77] = (2);
+        }
+
+        //scur gene [scurs, wildtype]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[78] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[78] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[79] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[79] = (1);
         }
 
         return initialGenes;

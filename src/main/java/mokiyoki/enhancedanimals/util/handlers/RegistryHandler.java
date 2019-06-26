@@ -89,7 +89,7 @@ public class RegistryHandler {
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_sheep_spawn_egg"));
         event.getRegistry().register(new ItemSpawnEgg(ENHANCED_RABBIT, 0xCA8349,0x553C36, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_rabbit_spawn_egg"));
-        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_COW, 0x000000,0x000000, new Item.Properties()
+        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_COW, 0x070303,0xf9f9f7, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_cow_spawn_egg"));
 
 

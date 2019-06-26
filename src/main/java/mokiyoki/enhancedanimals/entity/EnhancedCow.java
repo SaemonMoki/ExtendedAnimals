@@ -105,6 +105,14 @@ public class EnhancedCow extends EntityAnimal {
             "eyes_black.png"
     };
 
+    private static final String[] COW_TEXTURES_HORNS = new String[] {
+            "", "horns_black.png"
+    };
+
+    private static final String[] COW_TEXTURES_COAT = new String[] {
+            "coat_normal.png", "coat_smooth.png", "coat_furry.png"
+    };
+
     private static final String[] COW_TEXTURES_TEST = new String[] {
             "cowbase.png", "cowtest.png"
     };
@@ -123,11 +131,11 @@ public class EnhancedCow extends EntityAnimal {
     private float maxBagSize;
     private float cowSize;
 
-    //TODO add achievements for breeding and slaying
-
     public EnhancedCow(World worldIn) {
         super(ENHANCED_COW, worldIn);
-        this.setSize(0.9F, 1.4F);
+        //TODO why doesnt this change from cow to cow
+        this.setCowSize();
+        this.setSize(0.9F, cowSize*1.4F);
     }
 
     private int cowTimer;
@@ -248,20 +256,26 @@ public class EnhancedCow extends EntityAnimal {
     private void setCowSize(){
         float size = 1.0F;
 
+        //[ 1 to 15 ] max - is 0.3F
         for (int i = 1; i < genes[30]; i++){
             size = size - 0.01F;
         }
+        //[ 1 to 15 ]
         for (int i = 1; i < genes[31]; i++){
             //this variation is here on purpose
             size = size - 0.012F;
         }
+
+        //[ 1 to 15 ]  max + is 0.3F
         for (int i = 1; i < genes[32]; i++){
-            size = size + 0.01F;
+            size = size + 0.016F;
         }
+        //[ 1 to 15 ]
         for (int i = 1; i < genes[33]; i++){
-            size = size + 0.01F;
+            size = size + 0.016F;
         }
 
+        //[ 1 to 3 ] max - is 0.04F
         if (genes[34] >= 2 || genes[35] >= 2){
             if (genes[34] == 3 && genes[35] == 3){
                 size = size - 0.02F;
@@ -269,7 +283,7 @@ public class EnhancedCow extends EntityAnimal {
                 size = size - 0.01F;
             }
         }
-
+        //[ 1 to 3 ]
         if (genes[34] == 1 || genes[35] == 1){
             size = size - 0.02F;
         }else if (genes[34] == 2 || genes[35] == 2){
@@ -285,6 +299,11 @@ public class EnhancedCow extends EntityAnimal {
             size = size/1.1F;
         }
 
+        if (size < 0.6F){
+            size = 0.6F;
+        }
+
+        //        0.6F <= size <= 1.5F
         this.cowSize = size;
         this.setCowSize(size);
     }
@@ -387,6 +406,8 @@ public class EnhancedCow extends EntityAnimal {
             int coloursided = 0;
             int skin = 0;
             int hooves = 0;
+            int horn = 0;
+            int coat = 0;
 
             char[] uuidArry = getCachedUniqueIdString().toCharArray();
 
@@ -550,7 +571,58 @@ public class EnhancedCow extends EntityAnimal {
                 }
             }
 
-            
+
+            if (genesForText[13] == 1 || genesForText[14] == 1){
+                if (genesForText[76] == 1 && genesForText[77] == 1){
+                    //horned
+                    horn = 1;
+                }else if (genesForText[76] == 1 || genesForText[77] == 1){
+                    //sex determined horned
+                    if ( Character.isLetter(uuidArry[0]) || uuidArry[0]-48 >= 8 ){
+                        //horned
+                        horn = 1;
+                    }else{
+                        if (genesForText[78] == 1 && genesForText[79] == 1){
+                            //scured
+                            horn = 1;
+                        }else{
+                            //polled
+                        }
+                    }
+                }else{
+                    //polled
+                    if (genesForText[78] == 1 && genesForText[79] == 1){
+                        //scured
+                        horn = 1;
+                    }else if (genesForText[78] == 1 || genesForText[79] == 1){
+                        //sex determined scured
+                        if ( Character.isLetter(uuidArry[0]) || uuidArry[0]-48 >= 8 ){
+                            //scurred
+                            horn = 1;
+                        }
+                    }else{
+                        //polled
+                    }
+                }
+            }else{
+                //horned
+                horn = 1;
+            }
+
+            if (genesForText[48] == 1 || genesForText[49] == 1){
+                coat = 1;
+            }else{
+                if (genesForText[50] == 2 && genesForText[51] == 2) {
+                    coat = 2;
+                } else if (genesForText[52] == 2 && genesForText[53] == 2) {
+                    coat = 2;
+                }else if ((genesForText[50] == 2 || genesForText[51] == 2) && (genesForText[52] == 2 || genesForText[53] == 2)){
+                    coat = 2;
+                }
+            }
+
+
+
             //TODO change white spots to add whitening together
             //TODO add shading under correct conditions
 
@@ -581,6 +653,11 @@ public class EnhancedCow extends EntityAnimal {
             this.cowTextures.add(COW_TEXTURES_HOOVES[hooves]);
             //TODO add eye colour genetics
             this.cowTextures.add(COW_TEXTURES_EYES[0]);
+            //TODO add hoof colour genetics
+            if (horn != 0) {
+                this.cowTextures.add(COW_TEXTURES_HORNS[horn]);
+            }
+            this.cowTextures.add(COW_TEXTURES_COAT[coat]);
 
 //              testing textures
 //              this.cowTextures.add(COW_TEXTURES_TEST[1]);
@@ -852,10 +929,10 @@ public class EnhancedCow extends EntityAnimal {
     private int[] createInitialGenes() {
         int[] initialGenes = new int[GENES_LENGTH];
         //TODO create biome WTC variable [hot and dry biomes, hot and wet biomes, cold biomes] WTC is all others
-        int wildType = 0;
+        int wildType = 2;
         Biome biome = this.world.getBiome(new BlockPos(this));
 
-        if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
+        if (biome.getDefaultTemperature() >= 0.9F) // hot and wet (jungle)
         {
             wildType = 1;
         }
@@ -894,13 +971,21 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[4] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[4] = (2);
+            if (wildType == 1){
+                initialGenes[4] = (2);
+            }else {
+                initialGenes[4] = (2);
+            }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[5] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[5] = (2);
+            if (wildType == 1){
+                initialGenes[5] = (3);
+            }else {
+                initialGenes[5] = (2);
+            }
         }
 
         //Dominant Red *rare gene [ Dom.red, wildtype ]
@@ -943,13 +1028,13 @@ public class EnhancedCow extends EntityAnimal {
 
         //Horns [polled, horned]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[12] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            initialGenes[12] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[12] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[13] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            initialGenes[13] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[13] = (2);
@@ -1050,16 +1135,21 @@ public class EnhancedCow extends EntityAnimal {
         }
 
         //proportionate dwarfism [wildtype, dwarf]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        if (wildType == 1){
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        } else {
+            } else {
+                initialGenes[28] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[29] = (1);
+            }
+        }else {
             initialGenes[28] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
             initialGenes[29] = (1);
         }
 
@@ -1121,44 +1211,88 @@ public class EnhancedCow extends EntityAnimal {
 
         //hump size [none, smallest, smaller, medium, bigger, biggest]  reduces milk production [ biggest sizes only]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[38] = (ThreadLocalRandom.current().nextInt(6) + 1);
-
+            if (wildType == 1){
+                initialGenes[38] = (ThreadLocalRandom.current().nextInt(3) + 4);
+            }else{
+                initialGenes[38] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            }
         } else {
-            initialGenes[38] = (1);
+            if (wildType == 1){
+                initialGenes[38] = (4);
+            }else {
+                initialGenes[38] = (1);
+            }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[39] = (ThreadLocalRandom.current().nextInt(6) + 1);
-
+            if (wildType == 1){
+                initialGenes[39] = (ThreadLocalRandom.current().nextInt(4) + 3);
+            }else{
+                initialGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            }
         } else {
-            initialGenes[39] = (1);
+            if (wildType == 1){
+                initialGenes[39] = (5);
+            }else{
+                initialGenes[39] = (1);
+            }
         }
 
         //hump size [tallest, tall, medium, short] reduces milk production [tall sizes only]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[40] = (ThreadLocalRandom.current().nextInt(4) + 1);
+        if (wildType == 1) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[40] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
-        } else {
-            initialGenes[40] = (4);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[41] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            } else {
+                initialGenes[40] = (3);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[41] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
-        } else {
-            initialGenes[41] = (4);
+            } else {
+                initialGenes[41] = (3);
+            }
+        }else{
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 3);
+
+            } else {
+                initialGenes[40] = (4);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[41] = (ThreadLocalRandom.current().nextInt(2) + 3);
+
+            } else {
+                initialGenes[41] = (4);
+            }
         }
 
         //ear size [smallest, smaller, normal, long, longest]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[42] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        if (wildType == 1){
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[42] = (ThreadLocalRandom.current().nextInt(3) + 3);
 
-        } else {
-            initialGenes[42] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[43] = (ThreadLocalRandom.current().nextInt(5) + 1);
+            } else {
+                initialGenes[42] = (5);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[43] = (ThreadLocalRandom.current().nextInt(3) + 3);
 
-        } else {
-            initialGenes[43] = (2);
+            } else {
+                initialGenes[43] = (5);
+            }
+        }else{
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[42] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[42] = (2);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[43] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[43] = (2);
+            }
         }
 
         //ear size suppressor [smaller ears, longer ears]
@@ -1166,13 +1300,21 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[44] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[44] = (1);
+            if (wildType == 1){
+                initialGenes[44] = (2);
+            }else{
+                initialGenes[44] = (1);
+            }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[45] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[45] = (1);
+            if (wildType == 1){
+                initialGenes[45] = (2);
+            }else{
+                initialGenes[45] = (1);
+            }
         }
 
         //ear floppiness [stiffer, normal, floppier, floppiest]
@@ -1180,13 +1322,21 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[46] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[46] = (2);
+            if (wildType == 1){
+                initialGenes[46] = (3);
+            }else{
+                initialGenes[46] = (2);
+            }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[47] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[47] = (2);
+            if (wildType == 1){
+                initialGenes[47] = (3);
+            }else{
+                initialGenes[47] = (2);
+            }
         }
 
         //coat smoothness [smooth, normal] (this gives a slick coat like brahma and suppresses furry coat genes)
@@ -1194,41 +1344,57 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[48] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[48] = (2);
+            if (wildType == 1){
+                initialGenes[48] = (1);
+            }else{
+                initialGenes[48] = (2);
+            }
+
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[49] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[49] = (2);
+            if (wildType == 1){
+                initialGenes[49] = (1);
+            }else{
+                initialGenes[49] = (2);
+            }
         }
 
         //Furry coat 1 [normal, furry] reduces milk production [least to most]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[50] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
+        if (wildType == 1){
             initialGenes[50] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[51] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
             initialGenes[51] = (1);
-        }
-
-        //furry coat 2 [normal, furry] reduces milk production [least to most]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[52] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
             initialGenes[52] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[53] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
             initialGenes[53] = (1);
+        }else {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[50] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[50] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[51] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[51] = (1);
+            }
+
+            //furry coat 2 [normal, furry] reduces milk production [least to most]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[52] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[52] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[53] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[53] = (1);
+            }
         }
 
         //body type [smallest to largest] reduces milk production and fat harshly [least to most] increases meat drops proportionally
@@ -1333,18 +1499,27 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[69] = (2);
         }
 
+
         //horn nub controller 1
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[70] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[70] = (1);
+            if (wildType == 1){
+                initialGenes[70] = (2);
+            }else{
+                initialGenes[70] = (1);
+            }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[71] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[71] = (1);
+            if (wildType == 1){
+                initialGenes[71] = (2);
+            }else{
+                initialGenes[71] = (1);
+            }
         }
 
         //horn nub controller 2
@@ -1352,13 +1527,21 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[72] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[72] = (1);
+            if (wildType == 1){
+                initialGenes[72] = (3);
+            }else{
+                initialGenes[72] = (1);
+            }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[73] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[73] = (1);
+            if (wildType == 1){
+                initialGenes[73] = (3);
+            }else{
+                initialGenes[73] = (1);
+            }
         }
 
         //horn nub controller 3
@@ -1366,13 +1549,21 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[74] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[74] = (1);
+            if (wildType == 1){
+                initialGenes[74] = (1);
+            }else{
+                initialGenes[74] = (2);
+            }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[75] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[75] = (1);
+            if (wildType == 1){
+                initialGenes[75] = (1);
+            }else{
+                initialGenes[75] = (2);
+            }
         }
 
         //african horn gene [african horned, wildtype]
@@ -1380,13 +1571,21 @@ public class EnhancedCow extends EntityAnimal {
             initialGenes[76] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[76] = (2);
+            if (wildType == 1){
+                initialGenes[76] = (1);
+            }else {
+                initialGenes[76] = (2);
+            }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[77] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[77] = (2);
+            if (wildType == 1){
+                initialGenes[77] = (1);
+            }else {
+                initialGenes[77] = (2);
+            }
         }
 
         //scur gene [scurs, wildtype]

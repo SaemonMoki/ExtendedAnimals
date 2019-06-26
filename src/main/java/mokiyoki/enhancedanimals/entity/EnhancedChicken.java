@@ -55,6 +55,7 @@ public class EnhancedChicken extends EntityAnimal {
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedChicken.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> ROOSTING = EntityDataManager.<Boolean>createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Float> CHICKEN_SIZE = EntityDataManager.createKey(EnhancedChicken.class, DataSerializers.FLOAT);
     /** [4] duckwing, partridge, wheaten, solid
      [5] silver, salmon, lemon, gold, mahogany */
     private static final String[] CHICKEN_TEXTURES_GROUND = new String[] {
@@ -182,10 +183,13 @@ public class EnhancedChicken extends EntityAnimal {
     private int[] mateGenes = new int[Reference.CHICKEN_GENES_LENGTH];
     private int[] mitosisGenes = new int[Reference.CHICKEN_GENES_LENGTH];
     private int[] mateMitosisGenes = new int[Reference.CHICKEN_GENES_LENGTH];
+    
+    private float chickenSize = 0.0F;
 
     public EnhancedChicken(World worldIn) {
         super(ENHANCED_CHICKEN, worldIn);
-        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
+        this.setChickenSize();
+        this.setSize(0.4F, chickenSize * 0.7F);
         this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
         this.setPathPriority(PathNodeType.WATER, 0.0F);
     }
@@ -218,6 +222,15 @@ public class EnhancedChicken extends EntityAnimal {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(ROOSTING, new Boolean(false));
+        this.dataManager.register(CHICKEN_SIZE, 0.0F);
+    }
+
+    private void setChickenSize(float size) {
+        this.dataManager.set(CHICKEN_SIZE, size);
+    }
+
+    public float getSize() {
+        return this.dataManager.get(CHICKEN_SIZE);
     }
 
     @Override
@@ -336,7 +349,7 @@ public class EnhancedChicken extends EntityAnimal {
 
     }
 
-    public float Size(){
+    private void setChickenSize(){
 
         float size = 1.0F;
 
@@ -369,7 +382,8 @@ public class EnhancedChicken extends EntityAnimal {
             size = size * 0.75F;
         }
 
-        return size;
+        this.chickenSize = size;
+        this.setChickenSize(size);
 
     }
 
@@ -1588,14 +1602,14 @@ public class EnhancedChicken extends EntityAnimal {
     @Override
     @Nullable
     protected ResourceLocation getLootTable() {
-
+        
         if (!this.world.isRemote) {
 
             if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
 
-                if (Size() <= 0.7F) {
+                if (chickenSize <= 0.7F) {
                     dropMeatType = "rawchicken_darksmall";
-                } else if (Size() >= 0.9F) {
+                } else if (chickenSize >= 0.9F) {
                     dropMeatType = "rawchicken_darkbig";
                 } else {
                     dropMeatType = "rawchicken_dark";
@@ -1603,9 +1617,9 @@ public class EnhancedChicken extends EntityAnimal {
 
             } else {
 
-                if (Size() <= 0.7F) {
+                if (chickenSize <= 0.7F) {
                     dropMeatType = "rawchicken_palesmall";
-                } else if (Size() >= 0.9F) {
+                } else if (chickenSize >= 0.9F) {
                     dropMeatType = "rawchicken";
                 } else {
                     dropMeatType = "rawchicken_pale";
@@ -1677,6 +1691,7 @@ public class EnhancedChicken extends EntityAnimal {
         }
 
         setSharedGenes(genes);
+        setChickenSize();
 
     }
 
@@ -1762,6 +1777,7 @@ public class EnhancedChicken extends EntityAnimal {
 
         this.genes = spawnGenes;
         setSharedGenes(genes);
+        setChickenSize();
         return entityLivingData;
     }
 

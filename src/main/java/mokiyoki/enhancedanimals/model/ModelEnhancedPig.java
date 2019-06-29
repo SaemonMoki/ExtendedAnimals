@@ -147,7 +147,7 @@ public class ModelEnhancedPig extends ModelBase {
         this.size = enhancedPig.getSize();
         float childSize = size/4.0F;
 
-        if (isChild){
+        if (isChild) {
 
             GlStateManager.pushMatrix();
             GlStateManager.scalef(childSize, childSize, childSize);

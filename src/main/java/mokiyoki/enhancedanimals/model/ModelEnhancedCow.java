@@ -32,7 +32,25 @@ public class ModelEnhancedCow extends ModelBase {
     private final ModelRenderer hornNub4;
     private final ModelRenderer hornNub5;
     private final ModelRenderer hornL0;
+    private final ModelRenderer hornL1;
+    private final ModelRenderer hornL2;
+    private final ModelRenderer hornL3;
+    private final ModelRenderer hornL4;
+    private final ModelRenderer hornL5;
+    private final ModelRenderer hornL6;
+    private final ModelRenderer hornL7;
+    private final ModelRenderer hornL8;
+    private final ModelRenderer hornL9;
     private final ModelRenderer hornR0;
+    private final ModelRenderer hornR1;
+    private final ModelRenderer hornR2;
+    private final ModelRenderer hornR3;
+    private final ModelRenderer hornR4;
+    private final ModelRenderer hornR5;
+    private final ModelRenderer hornR6;
+    private final ModelRenderer hornR7;
+    private final ModelRenderer hornR8;
+    private final ModelRenderer hornR9;
     private final ModelRenderer head; //this is the neck not the head
     private final ModelRenderer bodyChonk;
     private final ModelRenderer bodyBig;
@@ -142,12 +160,64 @@ public class ModelEnhancedCow extends ModelBase {
         this.hornNub5.setRotationPoint(0.0F, 1.0F, -1.0F);
 
         this.hornL0 = new ModelRenderer(this, 64, 34);
-        this.hornL0.addBox(0.0F, 0.0F, 0.0F, 4, 4, 4);
-        this.hornL0.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.hornL0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
+
+        this.hornL1 = new ModelRenderer(this, 64, 42);
+        this.hornL1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
+
+        this.hornL2 = new ModelRenderer(this, 64, 50);
+        this.hornL2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
+
+        this.hornL3 = new ModelRenderer(this, 64, 58);
+        this.hornL3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
+
+        this.hornL4 = new ModelRenderer(this, 64, 66);
+        this.hornL4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
+
+        this.hornL5 = new ModelRenderer(this, 64, 66);
+        this.hornL5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
+
+        this.hornL6 = new ModelRenderer(this, 64, 66);
+        this.hornL6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
+
+        this.hornL7 = new ModelRenderer(this, 64, 66);
+        this.hornL7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
+
+        this.hornL8 = new ModelRenderer(this, 64, 66);
+        this.hornL8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
+
+        this.hornL9 = new ModelRenderer(this, 64, 66);
+        this.hornL9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
 
         this.hornR0 = new ModelRenderer(this, 64, 34);
-        this.hornR0.addBox(0.0F, 0.0F, 0.0F, 4, 4, 4);
-        this.hornR0.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.hornR0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
+
+        this.hornR1 = new ModelRenderer(this, 64, 42);
+        this.hornR1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
+
+        this.hornR2 = new ModelRenderer(this, 64, 50);
+        this.hornR2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
+
+        this.hornR3 = new ModelRenderer(this, 64, 58);
+        this.hornR3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
+
+        this.hornR4 = new ModelRenderer(this, 64, 66);
+        this.hornR4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
+
+        this.hornR5 = new ModelRenderer(this, 64, 66);
+        this.hornR5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
+
+        this.hornR6 = new ModelRenderer(this, 64, 66);
+        this.hornR6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
+
+        this.hornR7 = new ModelRenderer(this, 64, 66);
+        this.hornR7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
+
+        this.hornR8 = new ModelRenderer(this, 64, 66);
+        this.hornR8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
+
+        this.hornR9 = new ModelRenderer(this, 64, 66);
+        this.hornR9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
 
         // head is the neck cause thats how this works
         this.head = new ModelRenderer(this, 46, 0);
@@ -305,7 +375,25 @@ public class ModelEnhancedCow extends ModelBase {
         this.actualHead.addChild(this.hornNub4);
         this.actualHead.addChild(this.hornNub5);
         this.actualHead.addChild(this.hornL0);
+        this.hornL0.addChild(this.hornL1);
+        this.hornL1.addChild(this.hornL2);
+        this.hornL2.addChild(this.hornL3);
+        this.hornL3.addChild(this.hornL4);
+        this.hornL4.addChild(this.hornL5);
+        this.hornL5.addChild(this.hornL6);
+        this.hornL6.addChild(this.hornL7);
+        this.hornL7.addChild(this.hornL8);
+        this.hornL8.addChild(this.hornL9);
         this.actualHead.addChild(this.hornR0);
+        this.hornR0.addChild(this.hornR1);
+        this.hornR1.addChild(this.hornR2);
+        this.hornR2.addChild(this.hornR3);
+        this.hornR3.addChild(this.hornR4);
+        this.hornR4.addChild(this.hornR5);
+        this.hornR5.addChild(this.hornR6);
+        this.hornR6.addChild(this.hornR7);
+        this.hornR7.addChild(this.hornR8);
+        this.hornR8.addChild(this.hornR9);
         this.actualHead.addChild(this.mouth);
         this.tail0.addChild(this.tail1);
         this.tail1.addChild(this.tail2);
@@ -346,18 +434,23 @@ public class ModelEnhancedCow extends ModelBase {
         for (int i = 1; i < genes[39]; i++){
             hump++;
         }
+
+//        0.6F <= size <= 1.5F
         
         if (this.isChild) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
-            GlStateManager.translatef(0.0F, 15.0F * scale, 0.0F);
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
+//            GlStateManager.translatef(0.0F, 15.0F * scale, 0.0F);
+//
 
-            this.head.render(scale);
-
-            GlStateManager.popMatrix();
+//
+//            GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
             GlStateManager.scalef(0.5F, 0.5F, 0.5F);
             GlStateManager.translatef(0.0F, 20.0F * scale, 0.0F);
+
+            this.head.render(scale);
+
             if (bodyShape >= 3) {
                 this.bodySlim.render(scale);
             }else{
@@ -381,6 +474,7 @@ public class ModelEnhancedCow extends ModelBase {
             GlStateManager.pushMatrix();
             GlStateManager.scalef(0.5F, 0.7F, 0.5F);
             GlStateManager.translatef(0.0F, 10.0F * scale, 0.0F);
+            //TODO change y translation when calf is dwarf
 
             if (dwarf != 0.0F){
                 this.shortLeg1.render(scale);
@@ -396,7 +490,7 @@ public class ModelEnhancedCow extends ModelBase {
 
             GlStateManager.popMatrix();
 
-        }else {
+        } else {
 
             GlStateManager.pushMatrix();
             GlStateManager.scalef(size, size, size);
@@ -493,7 +587,6 @@ public class ModelEnhancedCow extends ModelBase {
         copyModelAngles(humpXLarge, humpSmall);
         copyModelAngles(humpXLarge, humpXSmall);
 
-        //        this.body.rotateAngleX = ((float)Math.PI / 2F);
         this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
         this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
@@ -769,6 +862,108 @@ public class ModelEnhancedCow extends ModelBase {
 
         }
 
+        hornL0.setRotationPoint(0.0F, 0.0F, -2.25F);
+        hornR0.setRotationPoint(0.0F, 0.0F, -2.25F);
+
+        float X = 1.0F;
+        float Y = -2.0F;
+        float horns = -1.0F;
+
+        if (!this.isChild) {
+            if (sharedGenes[13] == 1 || sharedGenes[14] == 1) {
+                //should be polled unless...
+                //african horn gene
+                if (sharedGenes[76] == 1 && sharedGenes[77] == 1) {
+                    //horned
+                } else if (sharedGenes[76] == 1 || sharedGenes[77] == 1) {
+                    //sex determined horned
+                    if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
+                        //horned if male
+                    } else {
+                        //polled if female unless
+                        if (sharedGenes[78] == 1 && sharedGenes[79] == 1) {
+                            //she is scured
+                        } else {
+                            //polled
+                            horns = 0.0F;
+                        }
+                    }
+                } else {
+                    //polled
+                    if (sharedGenes[78] == 1 && sharedGenes[79] == 1) {
+                        //scured
+                    } else if (sharedGenes[78] == 1 || sharedGenes[79] == 1) {
+                        //sex determined scured
+                        if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
+                            //scurred
+                        } else {
+                            //polled
+                            horns = 0.0F;
+                        }
+                    } else {
+                        //polled
+                        horns = 0.0F;
+                    }
+                }
+            } else {
+                //horned
+            }
+        }else{
+            horns = 0.0F;
+        }
+
+        if (horns != 0.0F){
+            this.hornL0.rotationPointX = X;
+            this.hornR0.rotationPointX = -X;
+
+            this.hornL0.rotationPointY = Y + 1.0F;
+            this.hornR0.rotationPointY = Y + 1.0F;
+
+            this.hornL1.rotationPointY = Y;
+            this.hornR1.rotationPointY = Y;
+            this.hornL2.rotationPointY = Y;
+            this.hornR2.rotationPointY = Y;
+            this.hornL3.rotationPointY = Y;
+            this.hornR3.rotationPointY = Y;
+            this.hornL4.rotationPointY = Y;
+            this.hornR4.rotationPointY = Y;
+            this.hornL5.rotationPointY = Y + 0.2F;
+            this.hornR5.rotationPointY = Y + 0.2F;
+            this.hornL6.rotationPointY = Y + 0.4F;
+            this.hornR6.rotationPointY = Y + 0.4F;
+            this.hornL7.rotationPointY = Y + 0.6F;
+            this.hornR7.rotationPointY = Y + 0.6F;
+            this.hornL8.rotationPointY = Y + 0.8F;
+            this.hornR8.rotationPointY = Y + 0.8F;
+            this.hornL9.rotationPointY = Y + 1.0F;
+            this.hornR9.rotationPointY = Y + 1.0F;
+
+        }else{
+            this.hornL0.rotationPointX = 0.0F;
+            this.hornR0.rotationPointX = 0.0F;
+            this.hornL0.rotationPointY = 0.0F;
+            this.hornR0.rotationPointY = 0.0F;
+            this.hornL1.rotationPointY = 0.0F;
+            this.hornR1.rotationPointY = 0.0F;
+            this.hornL2.rotationPointY = 0.0F;
+            this.hornR2.rotationPointY = 0.0F;
+            this.hornL3.rotationPointY = 0.0F;
+            this.hornR3.rotationPointY = 0.0F;
+            this.hornL4.rotationPointY = 0.0F;
+            this.hornR4.rotationPointY = 0.0F;
+            this.hornL5.rotationPointY = 0.0F;
+            this.hornR5.rotationPointY = 0.0F;
+            this.hornL6.rotationPointY = 0.0F;
+            this.hornR6.rotationPointY = 0.0F;
+            this.hornL7.rotationPointY = 0.0F;
+            this.hornR7.rotationPointY = 0.0F;
+            this.hornL8.rotationPointY = 0.0F;
+            this.hornR8.rotationPointY = 0.0F;
+            this.hornL9.rotationPointY = 0.0F;
+            this.hornR9.rotationPointY = 0.0F;
+
+        }
+
         int hornNubLength = 4;
         if (sharedGenes[70] == 1 || sharedGenes[71] == 1){
             hornNubLength--;
@@ -790,51 +985,86 @@ public class ModelEnhancedCow extends ModelBase {
         this.hornNub4.rotationPointY = 1.0F;
         this.hornNub5.rotationPointY = 1.0F;
 
+        float hornTest = 1.4F;
+
         if (hornNubLength == 1){
-            this.hornNub1.rotationPointY = -1.0F;
+            this.hornNub1.rotationPointY = -1.0F + horns;
+            this.hornL0.rotateAngleZ = hornTest;
+            this.hornL0.rotateAngleX = 0.25F;
+            this.hornR0.rotateAngleZ = -hornTest;
+            this.hornR0.rotateAngleX = 0.25F;
         }else if (hornNubLength == 2){
-            this.hornNub2.rotationPointY = -1.0F;
+            this.hornNub2.rotationPointY = -1.0F + horns;
+            this.hornL0.rotateAngleZ = hornTest;
+            this.hornL0.rotateAngleX = 0.15F;
+            this.hornR0.rotateAngleZ = -hornTest;
+            this.hornR0.rotateAngleX = 0.15F;
         }else if (hornNubLength == 3){
-            this.hornNub3.rotationPointY = -1.0F;
+            this.hornNub3.rotationPointY = -1.0F + horns;
+            this.hornL0.rotateAngleZ = hornTest;
+            this.hornL0.rotateAngleX = 0.05F;
+            this.hornR0.rotateAngleZ = -hornTest;
+            this.hornR0.rotateAngleX = 0.05F;
         }else if (hornNubLength == 4){
-            this.hornNub4.rotationPointY = -1.0F;
+            this.hornNub4.rotationPointY = -1.0F + horns;
+            this.hornL0.rotateAngleZ = hornTest;
+            this.hornL0.rotateAngleX = -0.15F;
+            this.hornR0.rotateAngleZ = -hornTest;
+            this.hornR0.rotateAngleX = -0.15F;
         }else if (hornNubLength == 5){
-            this.hornNub5.rotationPointY = -1.0F;
+            this.hornNub5.rotationPointY = -1.0F + horns;
+            this.hornL0.rotateAngleZ = hornTest;
+            this.hornL0.rotateAngleX = -0.25F;
+            this.hornR0.rotateAngleZ = -hornTest;
+            this.hornR0.rotateAngleX = -0.25F;
         }
 
-        if (sharedGenes[13] == 1 || sharedGenes[14] == 1){
-            if (sharedGenes[76] == 1 && sharedGenes[77] == 1){
-                //horned
-                this.hornL0.rotationPointX = 8.0F;
-            }else if (sharedGenes[76] == 1 || sharedGenes[77] == 1){
-                //sex determined horned
-                if ( Character.isLetter(uuidArry[0]) || uuidArry[0]-48 >= 8 ){
-                    //horned
-                    this.hornL0.rotationPointX = 8.0F;
-                }else{
-                    if (sharedGenes[78] == 1 && sharedGenes[79] == 1){
-                        //scured
-                    }else{
-                        //polled
-                    }
-                }
-            }else{
-                //polled
-                if (sharedGenes[78] == 1 && sharedGenes[79] == 1){
-                    //scured
-                }else if (sharedGenes[78] == 1 || sharedGenes[79] == 1){
-                    //sex determined scured
-                    if ( Character.isLetter(uuidArry[0]) || uuidArry[0]-48 >= 8 ){
-                        //scurred
-                    }
-                }else{
-                    //polled
-                }
-            }
-        }else{
-            //horned
-            this.hornL0.rotationPointX = 8.0F;
+
+        //horn shape controller
+        if (horns != 0) {
+            this.hornL9.rotateAngleZ = -0.14F;
+            this.hornL8.rotateAngleZ = -0.27F;
+            this.hornL7.rotateAngleZ = -0.57F;
+            this.hornL6.rotateAngleZ = -0.37F;
+            this.hornL5.rotateAngleZ = -0.2F;
+            this.hornL4.rotateAngleZ = 0.0F;
+            this.hornL3.rotateAngleZ = 0.2F;
+            this.hornL2.rotateAngleZ = 0.1F;
+            this.hornL1.rotateAngleZ = -0.17F;
+
+            this.hornL9.rotateAngleX = 0.1F;
+            this.hornL8.rotateAngleX = 0.1F;
+            this.hornL7.rotateAngleX = 0.1F;
+            this.hornL6.rotateAngleX = 0.1F;
+            this.hornL5.rotateAngleX = 0.1F;
+            this.hornL4.rotateAngleX = 0.1F;
+            this.hornL3.rotateAngleX = 0.1F;
+            this.hornL2.rotateAngleX = 0.1F;
+            this.hornL1.rotateAngleX = 0.1F;
+
+            this.hornR9.rotateAngleZ = 0.14F;
+            this.hornR8.rotateAngleZ = 0.27F;
+            this.hornR7.rotateAngleZ = 0.57F;
+            this.hornR6.rotateAngleZ = 0.37F;
+            this.hornR5.rotateAngleZ = 0.2F;
+            this.hornR4.rotateAngleZ = -0.0F;
+            this.hornR3.rotateAngleZ = -0.2F;
+            this.hornR2.rotateAngleZ = -0.1F;
+            this.hornR1.rotateAngleZ = 0.17F;
+
+            this.hornR9.rotateAngleX = 0.1F;
+            this.hornR8.rotateAngleX = 0.1F;
+            this.hornR7.rotateAngleX = 0.1F;
+            this.hornR6.rotateAngleX = 0.1F;
+            this.hornR5.rotateAngleX = 0.1F;
+            this.hornR4.rotateAngleX = 0.1F;
+            this.hornR3.rotateAngleX = 0.1F;
+            this.hornR2.rotateAngleX = 0.1F;
+            this.hornR1.rotateAngleX = 0.1F;
+
+
         }
+
 
 
     }

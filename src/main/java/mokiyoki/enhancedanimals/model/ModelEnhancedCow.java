@@ -12,78 +12,78 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private float size;
     private float bagSize;
 
-    private final ModelRenderer actualHead;
-    private final ModelRenderer mouth;
-    private final ModelRenderer earSmallestL;
-    private final ModelRenderer earSmallL;
-    private final ModelRenderer earMediumL;
-    private final ModelRenderer earLongL;
-    private final ModelRenderer earLongestL;
-    private final ModelRenderer earSmallestR;
-    private final ModelRenderer earSmallR;
-    private final ModelRenderer earMediumR;
-    private final ModelRenderer earLongR;
-    private final ModelRenderer earLongestR;
-    private final ModelRenderer hornNub1;
-    private final ModelRenderer hornNub2;
-    private final ModelRenderer hornNub3;
-    private final ModelRenderer hornNub4;
-    private final ModelRenderer hornNub5;
-    private final ModelRenderer hornL0;
-    private final ModelRenderer hornL1;
-    private final ModelRenderer hornL2;
-    private final ModelRenderer hornL3;
-    private final ModelRenderer hornL4;
-    private final ModelRenderer hornL5;
-    private final ModelRenderer hornL6;
-    private final ModelRenderer hornL7;
-    private final ModelRenderer hornL8;
-    private final ModelRenderer hornL9;
-    private final ModelRenderer hornR0;
-    private final ModelRenderer hornR1;
-    private final ModelRenderer hornR2;
-    private final ModelRenderer hornR3;
-    private final ModelRenderer hornR4;
-    private final ModelRenderer hornR5;
-    private final ModelRenderer hornR6;
-    private final ModelRenderer hornR7;
-    private final ModelRenderer hornR8;
-    private final ModelRenderer hornR9;
-    private final ModelRenderer head; //this is the neck not the head
-    private final ModelRenderer bodyChonk;
-    private final ModelRenderer bodyBig;
-    private final ModelRenderer bodyMedium;
-    private final ModelRenderer bodySlim;
-    private final ModelRenderer bodyThin;
-    private final ModelRenderer udder;
-    private final ModelRenderer nipples;
-    private final ModelRenderer humpXSmall;
-    private final ModelRenderer humpSmall;
-    private final ModelRenderer humpSmallish;
-    private final ModelRenderer humpMedium;
-    private final ModelRenderer humpLargeish;
-    private final ModelRenderer humpLarge;
-    private final ModelRenderer humpXLarge;
-    private final ModelRenderer tail0;
-    private final ModelRenderer tail1;
-    private final ModelRenderer tail2;
-    private final ModelRenderer tailBrush;
-    private final ModelRenderer leg1;
-    private final ModelRenderer leg2;
-    private final ModelRenderer leg3;
-    private final ModelRenderer leg4;
-    private final ModelRenderer chonkLeg1;
-    private final ModelRenderer chonkLeg2;
-    private final ModelRenderer chonkLeg3;
-    private final ModelRenderer chonkLeg4;
-    private final ModelRenderer shortLeg1;
-    private final ModelRenderer shortLeg2;
-    private final ModelRenderer shortLeg3;
-    private final ModelRenderer shortLeg4;
-    private final ModelRenderer miniChonkLeg1;
-    private final ModelRenderer miniChonkLeg2;
-    private final ModelRenderer miniChonkLeg3;
-    private final ModelRenderer miniChonkLeg4;
+    private final RendererModel actualHead;
+    private final RendererModel mouth;
+    private final RendererModel earSmallestL;
+    private final RendererModel earSmallL;
+    private final RendererModel earMediumL;
+    private final RendererModel earLongL;
+    private final RendererModel earLongestL;
+    private final RendererModel earSmallestR;
+    private final RendererModel earSmallR;
+    private final RendererModel earMediumR;
+    private final RendererModel earLongR;
+    private final RendererModel earLongestR;
+    private final RendererModel hornNub1;
+    private final RendererModel hornNub2;
+    private final RendererModel hornNub3;
+    private final RendererModel hornNub4;
+    private final RendererModel hornNub5;
+    private final RendererModel hornL0;
+    private final RendererModel hornL1;
+    private final RendererModel hornL2;
+    private final RendererModel hornL3;
+    private final RendererModel hornL4;
+    private final RendererModel hornL5;
+    private final RendererModel hornL6;
+    private final RendererModel hornL7;
+    private final RendererModel hornL8;
+    private final RendererModel hornL9;
+    private final RendererModel hornR0;
+    private final RendererModel hornR1;
+    private final RendererModel hornR2;
+    private final RendererModel hornR3;
+    private final RendererModel hornR4;
+    private final RendererModel hornR5;
+    private final RendererModel hornR6;
+    private final RendererModel hornR7;
+    private final RendererModel hornR8;
+    private final RendererModel hornR9;
+    private final RendererModel head; //this is the neck not the head
+    private final RendererModel bodyChonk;
+    private final RendererModel bodyBig;
+    private final RendererModel bodyMedium;
+    private final RendererModel bodySlim;
+    private final RendererModel bodyThin;
+    private final RendererModel udder;
+    private final RendererModel nipples;
+    private final RendererModel humpXSmall;
+    private final RendererModel humpSmall;
+    private final RendererModel humpSmallish;
+    private final RendererModel humpMedium;
+    private final RendererModel humpLargeish;
+    private final RendererModel humpLarge;
+    private final RendererModel humpXLarge;
+    private final RendererModel tail0;
+    private final RendererModel tail1;
+    private final RendererModel tail2;
+    private final RendererModel tailBrush;
+    private final RendererModel leg1;
+    private final RendererModel leg2;
+    private final RendererModel leg3;
+    private final RendererModel leg4;
+    private final RendererModel chonkLeg1;
+    private final RendererModel chonkLeg2;
+    private final RendererModel chonkLeg3;
+    private final RendererModel chonkLeg4;
+    private final RendererModel shortLeg1;
+    private final RendererModel shortLeg2;
+    private final RendererModel shortLeg3;
+    private final RendererModel shortLeg4;
+    private final RendererModel miniChonkLeg1;
+    private final RendererModel miniChonkLeg2;
+    private final RendererModel miniChonkLeg3;
+    private final RendererModel miniChonkLeg4;
 
 
     public ModelEnhancedCow() {
@@ -157,64 +157,64 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.hornNub5.addBox(-2.0F, 0.0F, 0.0F, 4, 6, 2);
         this.hornNub5.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornL0 = new ModelRenderer(this, 64, 34);
+        this.hornL0 = new RendererModel(this, 64, 34);
         this.hornL0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornL1 = new ModelRenderer(this, 64, 42);
+        this.hornL1 = new RendererModel(this, 64, 42);
         this.hornL1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornL2 = new ModelRenderer(this, 64, 50);
+        this.hornL2 = new RendererModel(this, 64, 50);
         this.hornL2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornL3 = new ModelRenderer(this, 64, 58);
+        this.hornL3 = new RendererModel(this, 64, 58);
         this.hornL3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornL4 = new ModelRenderer(this, 64, 66);
+        this.hornL4 = new RendererModel(this, 64, 66);
         this.hornL4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornL5 = new ModelRenderer(this, 64, 66);
+        this.hornL5 = new RendererModel(this, 64, 66);
         this.hornL5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
 
-        this.hornL6 = new ModelRenderer(this, 64, 66);
+        this.hornL6 = new RendererModel(this, 64, 66);
         this.hornL6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
 
-        this.hornL7 = new ModelRenderer(this, 64, 66);
+        this.hornL7 = new RendererModel(this, 64, 66);
         this.hornL7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
 
-        this.hornL8 = new ModelRenderer(this, 64, 66);
+        this.hornL8 = new RendererModel(this, 64, 66);
         this.hornL8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
 
-        this.hornL9 = new ModelRenderer(this, 64, 66);
+        this.hornL9 = new RendererModel(this, 64, 66);
         this.hornL9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
 
-        this.hornR0 = new ModelRenderer(this, 64, 34);
+        this.hornR0 = new RendererModel(this, 64, 34);
         this.hornR0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornR1 = new ModelRenderer(this, 64, 42);
+        this.hornR1 = new RendererModel(this, 64, 42);
         this.hornR1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornR2 = new ModelRenderer(this, 64, 50);
+        this.hornR2 = new RendererModel(this, 64, 50);
         this.hornR2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornR3 = new ModelRenderer(this, 64, 58);
+        this.hornR3 = new RendererModel(this, 64, 58);
         this.hornR3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornR4 = new ModelRenderer(this, 64, 66);
+        this.hornR4 = new RendererModel(this, 64, 66);
         this.hornR4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornR5 = new ModelRenderer(this, 64, 66);
+        this.hornR5 = new RendererModel(this, 64, 66);
         this.hornR5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
 
-        this.hornR6 = new ModelRenderer(this, 64, 66);
+        this.hornR6 = new RendererModel(this, 64, 66);
         this.hornR6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
 
-        this.hornR7 = new ModelRenderer(this, 64, 66);
+        this.hornR7 = new RendererModel(this, 64, 66);
         this.hornR7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
 
-        this.hornR8 = new ModelRenderer(this, 64, 66);
+        this.hornR8 = new RendererModel(this, 64, 66);
         this.hornR8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
 
-        this.hornR9 = new ModelRenderer(this, 64, 66);
+        this.hornR9 = new RendererModel(this, 64, 66);
         this.hornR9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
 
         // head is the neck cause thats how this works

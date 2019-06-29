@@ -4,21 +4,21 @@ import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.model.ModelEnhancedPig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
 
-public class RenderEnhancedPig extends RenderLiving<EnhancedPig> 
+public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig<EnhancedPig>>
 {
 
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_PIG_TEXTURE_LOCATION = "eanimod:textures/entities/pig/";
 
-    public RenderEnhancedPig(RenderManager render)
+    public RenderEnhancedPig(EntityRendererManager render)
     {
-        super(render, new ModelEnhancedPig(), 0.8F);
+        super(render, new ModelEnhancedPig<>(), 0.8F);
     }
 
     /**

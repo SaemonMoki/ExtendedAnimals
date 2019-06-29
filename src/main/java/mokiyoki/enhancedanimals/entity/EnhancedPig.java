@@ -1,34 +1,43 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.goal.EatGrassGoal;
+import net.minecraft.entity.ai.goal.FollowParentGoal;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.entity.ai.goal.PanicGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.TemptGoal;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.stats.StatList;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -41,7 +50,7 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_PIG;
 
-public class EnhancedPig  extends EntityAnimal {
+public class EnhancedPig extends AnimalEntity {
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedPig.class, DataSerializers.STRING);
     private static final DataParameter<Float> PIG_SIZE = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.FLOAT);
 
@@ -96,31 +105,31 @@ public class EnhancedPig  extends EntityAnimal {
 
     private float pigSize;
 
-    public EnhancedPig(World worldIn) {
-        super(ENHANCED_PIG, worldIn);
+    public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
+        super(entityType, worldIn);
         //TODO why doesnt this change from pig to pig
         this.setPigSize();
-        this.setSize(0.9F, pigSize*0.9F);
+//        this.setSize(0.9F, pigSize*0.9F);
     }
 
     private int pigTimer;
-    private EntityAIEatGrass entityAIEatGrass;
+    private EatGrassGoal entityAIEatGrass;
 
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
     protected void initEntityAI() {
-        this.entityAIEatGrass = new EntityAIEatGrass(this);
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIPanic(this, 1.25D));
-        this.tasks.addTask(3, new EntityAIMate(this, 1.0D));
-        this.tasks.addTask(4, new EntityAITempt(this, 1.2D, Ingredient.fromItems(Items.CARROT_ON_A_STICK), false));
-        this.tasks.addTask(4, new EntityAITempt(this, 1.2D, false, TEMPTATION_ITEMS));
-        this.tasks.addTask(5, new EntityAIFollowParent(this, 1.1D));
-        this.tasks.addTask(5, this.entityAIEatGrass);
-        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 1.0D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
-        this.tasks.addTask(8, new EntityAILookIdle(this));
+        this.entityAIEatGrass = new EatGrassGoal(this);
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
+        this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.fromItems(Items.CARROT_ON_A_STICK), false));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(5, this.entityAIEatGrass);
+        this.goalSelector.addGoal(6, new ECWanderAvoidWater(this, 1.0D));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
     }
 
     protected void updateAITasks()
@@ -156,17 +165,12 @@ public class EnhancedPig  extends EntityAnimal {
         return SoundEvents.ENTITY_PIG_DEATH;
     }
 
-    protected void playStepSound(BlockPos pos, IBlockState blockIn) {
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.ENTITY_PIG_STEP, 0.15F, 1.0F);
     }
 
     protected float getSoundVolume() {
         return 0.4F;
-    }
-
-    @Nullable
-    protected ResourceLocation getLootTable() {
-        return LootTableList.ENTITIES_PIG;
     }
 
     protected void registerAttributes() {
@@ -196,7 +200,7 @@ public class EnhancedPig  extends EntityAnimal {
                     int numberOfPiglets = ThreadLocalRandom.current().nextInt(pigletRange)+1+pigletAverage;
                     
                     for (int i = 0; i <= numberOfPiglets; i++) {
-                        EnhancedPig enhancedpig = new EnhancedPig(this.world);
+                        EnhancedPig enhancedpig = ENHANCED_PIG.create(this.world);
                         enhancedpig.setGrowingAge(0);
                         int[] babyGenes = getPigletGenes();
                         enhancedpig.setGenes(babyGenes);
@@ -204,7 +208,7 @@ public class EnhancedPig  extends EntityAnimal {
                         enhancedpig.setPigSize();
                         enhancedpig.setGrowingAge(-24000);
                         enhancedpig.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-                        this.world.spawnEntity(enhancedpig);
+                        this.world.addEntity(enhancedpig);
                     }
 
                 }
@@ -272,7 +276,7 @@ public class EnhancedPig  extends EntityAnimal {
         return TEMPTATION_ITEMS.test(stack);
     }
 
-    public EntityAgeable createChild(EntityAgeable ageable) {
+    public AgeableEntity createChild(AgeableEntity ageable) {
         this.mateGenes = ((EnhancedPig) ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
@@ -284,14 +288,14 @@ public class EnhancedPig  extends EntityAnimal {
         ageable.setGrowingAge(10);
         ((EnhancedPig)ageable).resetInLove();
 
-        EntityPlayerMP entityplayermp = this.getLoveCause();
+        ServerPlayerEntity entityplayermp = this.getLoveCause();
         if (entityplayermp == null && ((EnhancedPig)ageable).getLoveCause() != null) {
             entityplayermp = ((EnhancedPig)ageable).getLoveCause();
         }
 
         if (entityplayermp != null) {
-            entityplayermp.addStat(StatList.ANIMALS_BRED);
-            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedPig)ageable), (EntityAgeable)null);
+            entityplayermp.addStat(Stats.ANIMALS_BRED);
+            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedPig)ageable), (AgeableEntity)null);
         }
 
         return null;
@@ -399,49 +403,49 @@ public class EnhancedPig  extends EntityAnimal {
     //TODO put item interactable stuff here like saddling pigs
 
 
-    public void writeAdditional(NBTTagCompound compound) {
+    public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
         //store this pigs's genes
-        NBTTagList geneList = new NBTTagList();
+        ListNBT geneList = new ListNBT();
         for (int i = 0; i < genes.length; i++) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("Gene", genes[i]);
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Gene", genes[i]);
             geneList.add(nbttagcompound);
         }
-        compound.setTag("Genes", geneList);
+        compound.put("Genes", geneList);
 
         //store this pigs's mate's genes
-        NBTTagList mateGeneList = new NBTTagList();
+        ListNBT mateGeneList = new ListNBT();
         for (int i = 0; i < mateGenes.length; i++) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("Gene", mateGenes[i]);
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Gene", mateGenes[i]);
             mateGeneList.add(nbttagcompound);
         }
-        compound.setTag("FatherGenes", mateGeneList);
+        compound.put("FatherGenes", mateGeneList);
 
-        compound.setBoolean("Pregnant", this.pregnant);
-        compound.setInt("Gestation", this.gestationTimer);
+        compound.putBoolean("Pregnant", this.pregnant);
+        compound.putInt("Gestation", this.gestationTimer);
 
     }
 
     /**
      * (abstract) Protected helper method to read subclass entity assets from NBT.
      */
-    public void readAdditional(NBTTagCompound compound) {
+    public void readAdditional(CompoundNBT compound) {
 
         super.readAdditional(compound);
 
-        NBTTagList geneList = compound.getList("Genes", 10);
+        ListNBT geneList = compound.getList("Genes", 10);
         for (int i = 0; i < geneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = geneList.getCompound(i);
+            CompoundNBT nbttagcompound = geneList.getCompound(i);
             int gene = nbttagcompound.getInt("Gene");
             genes[i] = gene;
         }
 
-        NBTTagList mateGeneList = compound.getList("FatherGenes", 10);
+        ListNBT mateGeneList = compound.getList("FatherGenes", 10);
         for (int i = 0; i < mateGeneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = mateGeneList.getCompound(i);
+            CompoundNBT nbttagcompound = mateGeneList.getCompound(i);
             int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
@@ -498,8 +502,8 @@ public class EnhancedPig  extends EntityAnimal {
 
     @Nullable
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata, @Nullable NBTTagCompound itemNbt) {
-        livingdata = super.onInitialSpawn(difficulty, livingdata, itemNbt);
+    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+        livingdata = super.onInitialSpawn(world, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
@@ -733,7 +737,7 @@ public class EnhancedPig  extends EntityAnimal {
         return this.genes;
     }
 
-    public static class GroupData implements IEntityLivingData {
+    public static class GroupData implements ILivingEntityData {
 
         public int[] groupGenes;
 

@@ -13,7 +13,6 @@ import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 //import net.minecraft.client.renderer.color.BlockColors;
@@ -22,16 +21,13 @@ import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.item.*;
-import net.minecraft.world.GrassColors;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 //import net.minecraft.world.biome.BiomeColors;
 import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.gen.Heightmap;
 //import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.RegistryEvent;
@@ -56,7 +52,7 @@ public class RegistryHandler {
     public static final EntityType<EnhancedSheep> ENHANCED_SHEEP = EntityType.Builder.create(EnhancedSheep::new, EntityClassification.CREATURE).size(0.4F, 1F).build(Reference.MODID + ":enhanced_sheep");
     public static final EntityType<EnhancedLlama> ENHANCED_LLAMA = EntityType.Builder.create(EnhancedLlama::new, EntityClassification.CREATURE).size(0.9F, 1.87F).build(Reference.MODID + ":enhanced_llama");
     public static final EntityType<EnhancedCow> ENHANCED_COW = EntityType.Builder.create(EnhancedCow::new, EntityClassification.CREATURE).size(0.4F, 1F).build(Reference.MODID + ":enhanced_cow");
-    public static final EntityType<EnhancedPig> ENHANCED_PIG = EntityType.Builder.create(EnhancedPig.class, EnhancedPig::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_pig");
+    public static final EntityType<EnhancedPig> ENHANCED_PIG = EntityType.Builder.create(EnhancedPig::new, EntityClassification.CREATURE).size(0.9F, 0.9F).build(Reference.MODID + ":enhanced_pig");
 
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {

@@ -1,121 +1,118 @@
 package mokiyoki.enhancedanimals.model;
 
-import mokiyoki.enhancedanimals.entity.EnhancedCow;
+import com.mojang.blaze3d.platform.GlStateManager;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.model.ModelBase;
-import net.minecraft.client.renderer.entity.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.util.math.MathHelper;
 
-public class ModelEnhancedPig extends ModelBase {
+public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
     private float size;
 
-    private final ModelRenderer head;
-    private final ModelRenderer cheeks;
-    private final ModelRenderer snout;
-    private final ModelRenderer mouth;
-    private final ModelRenderer earL;
-    private final ModelRenderer earR;
-    private final ModelRenderer neck;
-    private final ModelRenderer neckBigger;
-    private final ModelRenderer body;
-    private final ModelRenderer butt;
-    private final ModelRenderer tail0;
-    private final ModelRenderer tail1;
-    private final ModelRenderer tail2;
-    private final ModelRenderer tail3;
-    private final ModelRenderer tail4;
-    private final ModelRenderer tail5;
-    private final ModelRenderer leg1;
-    private final ModelRenderer leg2;
-    private final ModelRenderer leg3;
-    private final ModelRenderer leg4;
+    private final RendererModel head;
+    private final RendererModel cheeks;
+    private final RendererModel snout;
+    private final RendererModel mouth;
+    private final RendererModel earL;
+    private final RendererModel earR;
+    private final RendererModel neck;
+    private final RendererModel neckBigger;
+    private final RendererModel body;
+    private final RendererModel butt;
+    private final RendererModel tail0;
+    private final RendererModel tail1;
+    private final RendererModel tail2;
+    private final RendererModel tail3;
+    private final RendererModel tail4;
+    private final RendererModel tail5;
+    private final RendererModel leg1;
+    private final RendererModel leg2;
+    private final RendererModel leg3;
+    private final RendererModel leg4;
 
     public ModelEnhancedPig() {
 
         this.textureWidth = 80;
         this.textureHeight = 80;
 
-        this.head = new ModelRenderer(this, 49, 0);
+        this.head = new RendererModel(this, 49, 0);
         this.head.addBox(-3.5F, -5.0F, -4.0F, 7, 6, 7);
         this.head.setRotationPoint(0.0F, -5.0F, -4.0F);
 
-        this.cheeks = new ModelRenderer(this, 49, 13);
+        this.cheeks = new RendererModel(this, 49, 13);
         this.cheeks.addBox(-4.0F, 0.0F, 0.0F, 8, 5, 4, 0.25F);
         this.cheeks.setRotationPoint(0.0F, -5.5F, -4.0F);
 
-        this.snout = new ModelRenderer(this, 49, 22);
+        this.snout = new RendererModel(this, 49, 22);
         this.snout.addBox(-2.0F, -5.0F, -3.0F, 4, 7, 3);
         this.snout.setRotationPoint(0.0F, -5.0F, 0.0F);
 
-        this.mouth = new ModelRenderer(this, 63, 22);
+        this.mouth = new RendererModel(this, 63, 22);
         this.mouth.addBox(-1.0F, -5.0F, 0.0F, 2, 6, 1);
         this.mouth.setRotationPoint(0.0F, 1.0F, -4.0F);
 
-        this.earL = new ModelRenderer(this, 46, 0);
+        this.earL = new RendererModel(this, 46, 0);
         this.earL.addBox(0.0F, -3.0F, 0.0F, 4, 3, 1);
         this.earL.setRotationPoint(3.5F, -3.0F, 0.0F);
 
-        this.earR = new ModelRenderer(this, 70, 0);
+        this.earR = new RendererModel(this, 70, 0);
         this.earR.addBox(-4.0F, -3.0F, 0.0F, 4, 3, 1);
         this.earR.setRotationPoint(-3.5F, -3.0F, 0.0F);
 
-        this.neck = new ModelRenderer(this, 0, 0);
+        this.neck = new RendererModel(this, 0, 0);
         this.neck.addBox(-4.5F, -6.75F, -9.0F, 9, 7, 9);
         this.neck.setRotationPoint(0.0F, 9.0F, -2.0F);
 
-        this.neckBigger = new ModelRenderer(this, 0, 0);
+        this.neckBigger = new RendererModel(this, 0, 0);
         this.neckBigger.addBox(-4.5F, -5.75F, -9.0F, 9, 7, 9, 1.0F);
         this.neckBigger.setRotationPoint(0.0F, 9.0F, -2.0F);
 
-        this.body = new ModelRenderer(this, 0, 23);
+        this.body = new RendererModel(this, 0, 23);
         this.body.addBox(-5.0F, 0.0F, 0.0F, 10, 11, 10);
         this.body.setRotationPoint(0.0F, 18.1F, -4.0F);
 
-        this.butt = new ModelRenderer(this, 0, 53);
+        this.butt = new RendererModel(this, 0, 53);
         this.butt.addBox(-4.5F, 0.0F, 0.0F, 9, 5, 9);
         this.butt.setRotationPoint(0.0F, 18.0F, 5.5F);
 
-        this.tail0 = new ModelRenderer(this, 36, 0);
+        this.tail0 = new RendererModel(this, 36, 0);
         this.tail0.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1, -0.05F);
         this.tail0.setRotationPoint(0.0F, 10.0F, 11.0F);
 
-        this.tail1 = new ModelRenderer(this, 36, 0);
+        this.tail1 = new RendererModel(this, 36, 0);
         this.tail1.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1, -0.1F);
         this.tail1.setRotationPoint(0.0F, 1.9F, 0.0F);
 
-        this.tail2 = new ModelRenderer(this, 36, 3);
+        this.tail2 = new RendererModel(this, 36, 3);
         this.tail2.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1, -0.15F);
         this.tail2.setRotationPoint(0.0F, 1.8F, 0.0F);
 
-        this.tail3 = new ModelRenderer(this, 36, 6);
+        this.tail3 = new RendererModel(this, 36, 6);
         this.tail3.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1, -0.2F);
         this.tail3.setRotationPoint(0.0F, 1.7F, 0.0F);
 
-        this.tail4 = new ModelRenderer(this, 36, 9);
+        this.tail4 = new RendererModel(this, 36, 9);
         this.tail4.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1, -0.25F);
         this.tail4.setRotationPoint(0.0F, 1.6F, 0.0F);
 
-        this.tail5 = new ModelRenderer(this, 36, 12);
+        this.tail5 = new RendererModel(this, 36, 12);
         this.tail5.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1, -0.3F);
         this.tail5.setRotationPoint(0.0F, 1.5F, 0.0F);
 
-        this.leg1 = new ModelRenderer(this, 49, 32);
+        this.leg1 = new RendererModel(this, 49, 32);
         this.leg1.addBox(0.0F, 0.0F, 0.0F, 3, 8, 3);
         this.leg1.setRotationPoint(-5.0F, 16.0F, -7.0F);
 
-        this.leg2 = new ModelRenderer(this, 61, 32);
+        this.leg2 = new RendererModel(this, 61, 32);
         this.leg2.addBox(0.0F, 0.0F, 0.0F, 3, 8, 3);
         this.leg2.setRotationPoint(2.0F, 16.0F, -7.0F);
 
-        this.leg3 = new ModelRenderer(this, 49, 44);
+        this.leg3 = new RendererModel(this, 49, 44);
         this.leg3.addBox(0.0F, 0.0F, 0.0F, 3, 8, 3);
         this.leg3.setRotationPoint(-5.0F, 16.0F, 7.0F);
 
-        this.leg4 = new ModelRenderer(this, 61, 44);
+        this.leg4 = new RendererModel(this, 61, 44);
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 8, 3);
         this.leg4.setRotationPoint(2.0F, 16.0F, 7.0F);
 
@@ -133,14 +130,15 @@ public class ModelEnhancedPig extends ModelBase {
 
     }
 
-    private void setRotationOffset(ModelRenderer renderer, float x, float y, float z) {
+    private void setRotationOffset(RendererModel renderer, float x, float y, float z) {
         renderer.rotateAngleX = x;
         renderer.rotateAngleY = y;
         renderer.rotateAngleZ = z;
     }
 
-    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
+    @Override
+    public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
         EnhancedPig enhancedPig = (EnhancedPig) entityIn;
         int[] genes = enhancedPig.getSharedGenes();
@@ -198,9 +196,10 @@ public class ModelEnhancedPig extends ModelBase {
         }
     }
 
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
+    @Override
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
 
-        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
 
         this.neck.rotateAngleX = ((float)Math.PI / 2F);
         this.neckBigger.rotateAngleX = ((float)Math.PI / 2F);
@@ -234,7 +233,8 @@ public class ModelEnhancedPig extends ModelBase {
 
     }
 
-    public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
+    @Override
+    public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
         super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
 
         EnhancedPig enhancedPig = (EnhancedPig) entitylivingbaseIn;
@@ -323,6 +323,15 @@ public class ModelEnhancedPig extends ModelBase {
 
 
 
+    }
+
+    public static void copyModelAngles(RendererModel source, RendererModel dest) {
+        dest.rotateAngleX = source.rotateAngleX;
+        dest.rotateAngleY = source.rotateAngleY;
+        dest.rotateAngleZ = source.rotateAngleZ;
+        dest.rotationPointX = source.rotationPointX;
+        dest.rotationPointY = source.rotationPointY;
+        dest.rotationPointZ = source.rotationPointZ;
     }
 
 }

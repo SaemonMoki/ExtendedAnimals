@@ -471,8 +471,7 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
      * "far" arms and legs can swing at most.
      */
     @Override
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor)
-    {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
@@ -560,8 +559,7 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
      * and third as in the setRotationAngles method.
      */
     @Override
-    public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime)
-    {
+    public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
         int[] sharedGenes = ((EnhancedLlama)entitylivingbaseIn).getSharedGenes();
 
         this.body.rotationPointY = 2.0F;

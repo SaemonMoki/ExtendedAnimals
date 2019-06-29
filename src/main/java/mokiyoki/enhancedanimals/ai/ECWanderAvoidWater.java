@@ -32,14 +32,14 @@ public class ECWanderAvoidWater extends RandomWalkingGoal {
 
     @Nullable
     protected Vec3d getPosition() {
-        if (this.entity.isInWater())
+        if (this.creature.isInWater())
         {
-            Vec3d vec3d = RandomPositionGenerator.getLandPos(this.entity, 15, 7);
+            Vec3d vec3d = RandomPositionGenerator.getLandPos(this.creature, 15, 7);
             return vec3d == null ? super.getPosition() : vec3d;
         }
         else
         {
-            return this.entity.getRNG().nextFloat() >= this.probability ? RandomPositionGenerator.getLandPos(this.entity, 10, 7) : super.getPosition();
+            return this.creature.getRNG().nextFloat() >= this.probability ? RandomPositionGenerator.getLandPos(this.creature, 10, 7) : super.getPosition();
         }
     }
 }

@@ -70,14 +70,14 @@ public class EnhancedAnimals {
         CapabilityManager.INSTANCE.register(IPostCapability.class, new PostCapabilityStorage(), PostCapabilityProvider::new);
         CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapabilityProvider::new);
 
-        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
-        LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());
-
-        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_rabbit"));
-        LootConditionManager.registerCondition(new EnhancedRabbitLootCondition.Serializer());
-
-        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_llama"));
-        LootConditionManager.registerCondition(new EnhancedLlamaLootCondition.Serializer());
+//        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
+//        LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());
+//
+//        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_rabbit"));
+//        LootConditionManager.registerCondition(new EnhancedRabbitLootCondition.Serializer());
+//
+//        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_llama"));
+//        LootConditionManager.registerCondition(new EnhancedLlamaLootCondition.Serializer());
 
     }
 

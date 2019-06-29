@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.IEntityLivingData;
@@ -10,6 +11,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -25,6 +27,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -513,6 +516,16 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
             this.resetInLove();
             ageable.setGrowingAge(10);
             ((EnhancedSheep) ageable).resetInLove();
+
+        EntityPlayerMP entityplayermp = this.getLoveCause();
+        if (entityplayermp == null && ((EnhancedSheep)ageable).getLoveCause() != null) {
+            entityplayermp = ((EnhancedSheep)ageable).getLoveCause();
+        }
+
+        if (entityplayermp != null) {
+            entityplayermp.addStat(StatList.ANIMALS_BRED);
+            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedSheep)ageable), (EntityAgeable)null);
+        }
 
         return null;
     }

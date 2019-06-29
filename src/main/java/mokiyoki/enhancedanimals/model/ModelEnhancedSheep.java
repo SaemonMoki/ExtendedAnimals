@@ -404,7 +404,7 @@ public class ModelEnhancedSheep extends ModelBase {
             }
         }else if (genes[6] != 1 && genes[7] != 1){
             // genderfied horns
-            if ( Character.isLetter(uuidArry[0]) || uuidArry[0]-48 >= 8){
+            if ( Character.isLetter(uuidArry[0]) || uuidArry[0]-48 >= 8 ){
                 //horns if "male"
                 horns = true;
             }

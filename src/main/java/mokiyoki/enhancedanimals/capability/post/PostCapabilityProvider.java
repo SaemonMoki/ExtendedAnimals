@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.capability.post;
 
-import net.minecraft.nbt.INBTBase;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by saemon on 29/09/2018.
  */
-public class PostCapabilityProvider implements IPostCapability, ICapabilitySerializable<INBTBase> {
+public class PostCapabilityProvider implements IPostCapability, ICapabilitySerializable<INBT> {
 
     @CapabilityInject(IPostCapability.class)
     public static final Capability<IPostCapability> POST_CAP = null;
@@ -47,18 +47,18 @@ public class PostCapabilityProvider implements IPostCapability, ICapabilitySeria
 
     @Nullable
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
         return POST_CAP.orEmpty(capability, holder);
     }
 
 
     @Override
-    public INBTBase serializeNBT() {
+    public INBT serializeNBT() {
         return POST_CAP.getStorage().writeNBT(POST_CAP, this, null);
     }
 
     @Override
-    public void deserializeNBT(INBTBase nbt) {
+    public void deserializeNBT(INBT nbt) {
         POST_CAP.getStorage().readNBT(POST_CAP, this, null, nbt);
     }
 }

@@ -4,8 +4,8 @@ import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,14 +17,14 @@ import java.util.Map;
  * Created by saemon on 2/09/2018.
  */
 @OnlyIn(Dist.CLIENT)
-public class RenderEnhancedChicken extends RenderLiving<EnhancedChicken>
+public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnhancedChicken<EnhancedChicken>>
 {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_CHICKEN_TEXTURE_LOCATION = "eanimod:textures/entities/chicken/";
 
-    public RenderEnhancedChicken(RenderManager render)
+    public RenderEnhancedChicken(EntityRendererManager render)
     {
-        super(render, new ModelEnhancedChicken(), 0.5F);
+        super(render, new ModelEnhancedChicken<>(), 0.5F);
     }
 
     /**

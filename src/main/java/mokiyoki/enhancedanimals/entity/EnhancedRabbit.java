@@ -1,43 +1,55 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockCarrot;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.CarrotBlock;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.controller.JumpController;
+import net.minecraft.entity.ai.controller.MovementController;
+import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.MoveToBlockGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.TemptGoal;
+import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IWorldReaderBase;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -50,7 +62,7 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_RABBIT;
 
-public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.common.IShearable {
+public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.common.IShearable {
 
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedRabbit.class, DataSerializers.STRING);
@@ -166,7 +178,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
 
     //TODO find broken texture spawns in desert
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION_YELLOW, Items.CARROT, Items.GOLDEN_CARROT);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.CARROT, Items.GOLDEN_CARROT);
 
     private final List<String> rabbitTextures = new ArrayList<>();
 
@@ -191,32 +203,32 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
-    public EnhancedRabbit(World worldIn) {
+    public EnhancedRabbit(EntityType<? extends EnhancedRabbit> entityType, World worldIn) {
         super(ENHANCED_RABBIT, worldIn);
-        this.setSize(0.4F, 0.5F);
-        this.jumpHelper = new EnhancedRabbit.RabbitJumpHelper(this);
-        this.moveHelper = new EnhancedRabbit.RabbitMoveHelper(this);
+//        this.setSize(0.4F, 0.5F);
+        this.jumpController = new EnhancedRabbit.JumpHelperController(this);
+        this.moveController = new EnhancedRabbit.MoveHelperController(this);
         this.setMovementSpeed(0.0D);
     }
 
     protected void initEntityAI() {
-        this.tasks.addTask(1, new EntityAISwimming(this));
-        this.tasks.addTask(2, new EntityAIMate(this, 0.8D));
-        this.tasks.addTask(3, new EntityAITempt(this, 1.0D, TEMPTATION_ITEMS, false));
-        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 0.6D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 10.0F));
-        this.tasks.addTask(8, new EntityAILookIdle(this));
+        this.goalSelector.addGoal(1, new SwimGoal(this));
+        this.goalSelector.addGoal(1, new EnhancedRabbit.AIPanic(this, 2.2D));
+        this.goalSelector.addGoal(2, new BreedGoal(this, 0.8D));
+        this.goalSelector.addGoal(3, new TemptGoal(this, 1.0D, TEMPTATION_ITEMS, false));
+        this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D));
+        this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, WolfEntity.class, 10.0F, 2.2D, 2.2D));
+        this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, MobEntity.class, 4.0F, 2.2D, 2.2D));
+        this.goalSelector.addGoal(5, new EnhancedRabbit.AIRaidFarm(this));
+        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.6D));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 10.0F));
+        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
 
-        this.tasks.addTask(1, new EnhancedRabbit.AIPanic(this, 2.2D));
-        this.tasks.addTask(4, new EnhancedRabbit.AIAvoidEntity<>(this, EntityPlayer.class, 8.0F, 2.2D, 2.2D));
-        this.tasks.addTask(4, new EnhancedRabbit.AIAvoidEntity<>(this, EntityWolf.class, 10.0F, 2.2D, 2.2D));
-        this.tasks.addTask(4, new EnhancedRabbit.AIAvoidEntity<>(this, EntityMob.class, 4.0F, 2.2D, 2.2D));
-        this.tasks.addTask(5, new EnhancedRabbit.AIRaidFarm(this));
 
     }
 
     protected float getJumpUpwardsMotion() {
-        if (!this.collidedHorizontally && (!this.moveHelper.isUpdating() || !(this.moveHelper.getY() > this.posY + 0.5D))) {
+        if (!this.collidedHorizontally && (!this.moveController.isUpdating() || !(this.moveController.getY() > this.posY + 0.5D))) {
             Path path = this.navigator.getPath();
             if (path != null && path.getCurrentPathIndex() < path.getCurrentPathLength()) {
                 Vec3d vec3d = path.getPosition(this);
@@ -225,7 +237,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                 }
             }
 
-            return this.moveHelper.getSpeed() <= 0.6D ? 0.2F : 0.3F;
+            return this.moveController.getSpeed() <= 0.6D ? 0.2F : 0.3F;
         } else {
             return 0.5F;
         }
@@ -236,11 +248,11 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
      */
     protected void jump() {
         super.jump();
-        double d0 = this.moveHelper.getSpeed();
+        double d0 = this.moveController.getSpeed();
         if (d0 > 0.0D) {
-            double d1 = this.motionX * this.motionX + this.motionZ * this.motionZ;
-            if (d1 < 0.010000000000000002D) {
-                this.moveRelative(0.0F, 0.0F, 1.0F, 0.1F);
+            double d1 = func_213296_b(this.getMotion());
+            if (d1 < 0.01D) {
+                this.moveRelative(0.1F, new Vec3d(0.0D, 0.0D, 1.0D));
             }
         }
 
@@ -257,7 +269,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
 
     public void setMovementSpeed(double newSpeed) {
         this.getNavigator().setSpeed(newSpeed);
-        this.moveHelper.setMoveTo(this.moveHelper.getX(), this.moveHelper.getY(), this.moveHelper.getZ(), newSpeed);
+        this.moveController.setMoveTo(this.moveController.getX(), this.moveController.getY(), this.moveController.getZ(), newSpeed);
     }
 
     public void setJumping(boolean jumping) {
@@ -309,11 +321,11 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                 this.checkLandingDelay();
             }
 
-            EnhancedRabbit.RabbitJumpHelper enhancedRabbit$rabbitjumphelper = (EnhancedRabbit.RabbitJumpHelper)this.jumpHelper;
+            EnhancedRabbit.JumpHelperController enhancedRabbit$rabbitjumphelper = (EnhancedRabbit.JumpHelperController)this.jumpController;
             if (!enhancedRabbit$rabbitjumphelper.getIsJumping()) {
-                if (this.moveHelper.isUpdating() && this.currentMoveTypeDuration == 0) {
+                if (this.moveController.isUpdating() && this.currentMoveTypeDuration == 0) {
                     Path path = this.navigator.getPath();
-                    Vec3d vec3d = new Vec3d(this.moveHelper.getX(), this.moveHelper.getY(), this.moveHelper.getZ());
+                    Vec3d vec3d = new Vec3d(this.moveController.getX(), this.moveController.getY(), this.moveController.getZ());
                     if (path != null && path.getCurrentPathIndex() < path.getCurrentPathLength()) {
                         vec3d = path.getPosition(this);
                     }
@@ -340,15 +352,15 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
     }
 
     private void enableJumpControl() {
-        ((EnhancedRabbit.RabbitJumpHelper)this.jumpHelper).setCanJump(true);
+        ((EnhancedRabbit.JumpHelperController)this.jumpController).setCanJump(true);
     }
 
     private void disableJumpControl() {
-        ((EnhancedRabbit.RabbitJumpHelper)this.jumpHelper).setCanJump(false);
+        ((EnhancedRabbit.JumpHelperController)this.jumpController).setCanJump(false);
     }
 
     private void updateMoveTypeDuration() {
-        if (this.moveHelper.getSpeed() < 2.2D) {
+        if (this.moveController.getSpeed() < 2.2D) {
             this.currentMoveTypeDuration = 10;
         } else {
             this.currentMoveTypeDuration = 1;
@@ -375,7 +387,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
     }
 
     @Override
-    public boolean processInteract(EntityPlayer entityPlayer, EnumHand hand) {
+    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
         if (item instanceof DebugGenesBook) {
@@ -410,10 +422,10 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         return sharedGenesArray;
     }
 
-    public float getEyeHeight()
-    {
-        return this.height;
-    }
+//    public float getEyeHeight()
+//    {
+//        return this.height;
+//    }
 
     protected void registerAttributes() {
         super.registerAttributes();
@@ -514,7 +526,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                     for (int i = 0; i <= numberOfKits; i++) {
                         mixMateMitosisGenes();
                         mixMitosisGenes();
-                        EnhancedRabbit enhancedrabbit = new EnhancedRabbit(this.world);
+                        EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.create(this.world);
                         enhancedrabbit.setGrowingAge(0);
                         int[] babyGenes = getBunnyGenes();
                         enhancedrabbit.setGenes(babyGenes);
@@ -524,7 +536,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
                         enhancedrabbit.setCoatLength(enhancedrabbit.currentCoatLength);
                         enhancedrabbit.setGrowingAge(-24000);
                         enhancedrabbit.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-                        this.world.spawnEntity(enhancedrabbit);
+                        this.world.addEntity(enhancedrabbit);
                     }
 
                 }
@@ -537,11 +549,11 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
 
     }
 
-    public class RabbitJumpHelper extends EntityJumpHelper {
+    public class JumpHelperController extends JumpController {
         private final EnhancedRabbit rabbit;
         private boolean canJump;
 
-        public RabbitJumpHelper(EnhancedRabbit rabbit) {
+        public JumpHelperController(EnhancedRabbit rabbit) {
             super(rabbit);
             this.rabbit = rabbit;
         }
@@ -574,17 +586,17 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         return this.carrotTicks == 0;
     }
 
-    static class RabbitMoveHelper extends EntityMoveHelper {
+    static class MoveHelperController extends MovementController {
         private final EnhancedRabbit rabbit;
         private double nextJumpSpeed;
 
-        public RabbitMoveHelper(EnhancedRabbit rabbit) {
+        public MoveHelperController(EnhancedRabbit rabbit) {
             super(rabbit);
             this.rabbit = rabbit;
         }
 
         public void tick() {
-            if (this.rabbit.onGround && !this.rabbit.isJumping && !((EnhancedRabbit.RabbitJumpHelper)this.rabbit.jumpHelper).getIsJumping()) {
+            if (this.rabbit.onGround && !this.rabbit.isJumping && !((EnhancedRabbit.JumpHelperController)this.rabbit.jumpController).getIsJumping()) {
                 this.rabbit.setMovementSpeed(0.0D);
             } else if (this.isUpdating()) {
                 this.rabbit.setMovementSpeed(this.nextJumpSpeed);
@@ -610,7 +622,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
     }
 
 
-    static class AIAvoidEntity<T extends Entity> extends EntityAIAvoidEntity<T> {
+    static class AIAvoidEntity<T extends LivingEntity> extends net.minecraft.entity.ai.goal.AvoidEntityGoal<T> {
         private final EnhancedRabbit rabbit;
 
         public AIAvoidEntity(EnhancedRabbit rabbit, Class<T> p_i46403_2_, float p_i46403_3_, double p_i46403_4_, double p_i46403_6_) {
@@ -626,17 +638,17 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         }
     }
 
-    static class AIEvilAttack extends EntityAIAttackMelee {
-        public AIEvilAttack(EnhancedRabbit rabbit) {
+    static class EvilAttackGoal extends MeleeAttackGoal {
+        public EvilAttackGoal(EnhancedRabbit rabbit) {
             super(rabbit, 1.4D, true);
         }
 
-        protected double getAttackReachSqr(EntityLivingBase attackTarget) {
-            return (double)(4.0F + attackTarget.width);
+        protected double getAttackReachSqr(LivingEntity attackTarget) {
+            return (double)(4.0F + attackTarget.getWidth());
         }
     }
 
-    static class AIPanic extends EntityAIPanic {
+    static class AIPanic extends net.minecraft.entity.ai.goal.PanicGoal {
         private final EnhancedRabbit rabbit;
 
         public AIPanic(EnhancedRabbit rabbit, double speedIn) {
@@ -653,7 +665,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         }
     }
 
-    static class AIRaidFarm extends EntityAIMoveToBlock {
+    static class AIRaidFarm extends MoveToBlockGoal {
         private final EnhancedRabbit rabbit;
         private boolean wantsToRaid;
         private boolean canRaid;
@@ -692,19 +704,19 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
          */
         public void tick() {
             super.tick();
-            this.rabbit.getLookHelper().setLookPosition((double)this.destinationBlock.getX() + 0.5D, (double)(this.destinationBlock.getY() + 1), (double)this.destinationBlock.getZ() + 0.5D, 10.0F, (float)this.rabbit.getVerticalFaceSpeed());
+            this.rabbit.getLookController().setLookPosition((double)this.destinationBlock.getX() + 0.5D, (double)(this.destinationBlock.getY() + 1), (double)this.destinationBlock.getZ() + 0.5D, 10.0F, (float)this.rabbit.getVerticalFaceSpeed());
             if (this.getIsAboveDestination()) {
                 World world = this.rabbit.world;
                 BlockPos blockpos = this.destinationBlock.up();
-                IBlockState iblockstate = world.getBlockState(blockpos);
+                BlockState iblockstate = world.getBlockState(blockpos);
                 Block block = iblockstate.getBlock();
-                if (this.canRaid && block instanceof BlockCarrot) {
-                    Integer integer = iblockstate.get(BlockCarrot.AGE);
+                if (this.canRaid && block instanceof CarrotBlock) {
+                    Integer integer = iblockstate.get(CarrotBlock.AGE);
                     if (integer == 0) {
                         world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 2);
                         world.destroyBlock(blockpos, true);
                     } else {
-                        world.setBlockState(blockpos, iblockstate.with(BlockCarrot.AGE, Integer.valueOf(integer - 1)), 2);
+                        world.setBlockState(blockpos, iblockstate.with(CarrotBlock.AGE, Integer.valueOf(integer - 1)), 2);
                         world.playEvent(2001, blockpos, Block.getStateId(iblockstate));
                     }
 
@@ -720,13 +732,13 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         /**
          * Return true to set given position as destination
          */
-        protected boolean shouldMoveTo(IWorldReaderBase worldIn, BlockPos pos) {
+        protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
             Block block = worldIn.getBlockState(pos).getBlock();
             if (block == Blocks.FARMLAND && this.wantsToRaid && !this.canRaid) {
                 pos = pos.up();
-                IBlockState iblockstate = worldIn.getBlockState(pos);
+                BlockState iblockstate = worldIn.getBlockState(pos);
                 block = iblockstate.getBlock();
-                if (block instanceof BlockCarrot && ((BlockCarrot)block).isMaxAge(iblockstate)) {
+                if (block instanceof CarrotBlock && ((CarrotBlock)block).isMaxAge(iblockstate)) {
                     this.canRaid = true;
                     return true;
                 }
@@ -869,7 +881,8 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         return ret;
     }
 
-    public EntityAgeable createChild(EntityAgeable ageable) {
+    @Override
+    public AgeableEntity createChild(AgeableEntity ageable) {
         this.mateGenes = ((EnhancedRabbit) ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
@@ -884,52 +897,52 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         return null;
     }
 
-    public void writeAdditional(NBTTagCompound compound) {
+    public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
         //store this rabbits's genes
-        NBTTagList geneList = new NBTTagList();
+        ListNBT geneList = new ListNBT();
         for (int i = 0; i < genes.length; i++) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("Gene", genes[i]);
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Gene", genes[i]);
             geneList.add(nbttagcompound);
         }
-        compound.setTag("Genes", geneList);
+        compound.put("Genes", geneList);
 
         //store this rabbits's mate's genes
-        NBTTagList mateGeneList = new NBTTagList();
+        ListNBT mateGeneList = new ListNBT();
         for (int i = 0; i < mateGenes.length; i++) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("Gene", mateGenes[i]);
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Gene", mateGenes[i]);
             mateGeneList.add(nbttagcompound);
         }
-        compound.setTag("FatherGenes", mateGeneList);
+        compound.put("FatherGenes", mateGeneList);
 
-        compound.setFloat("CoatLength", this.getCoatLength());
+        compound.putFloat("CoatLength", this.getCoatLength());
 
-        compound.setBoolean("Pregnant", this.pregnant);
-        compound.setInt("Gestation", this.gestationTimer);
+        compound.putBoolean("Pregnant", this.pregnant);
+        compound.putInt("Gestation", this.gestationTimer);
     }
 
     /**
      * (abstract) Protected helper method to read subclass entity assets from NBT.
      */
-    public void readAdditional(NBTTagCompound compound) {
+    public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
 
         currentCoatLength = compound.getInt("CoatLength");
         this.setCoatLength(currentCoatLength);
 
-        NBTTagList geneList = compound.getList("Genes", 10);
+        ListNBT geneList = compound.getList("Genes", 10);
         for (int i = 0; i < geneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = geneList.getCompound(i);
+            CompoundNBT nbttagcompound = geneList.getCompound(i);
             int gene = nbttagcompound.getInt("Gene");
             genes[i] = gene;
         }
 
-        NBTTagList mateGeneList = compound.getList("FatherGenes", 10);
+        ListNBT mateGeneList = compound.getList("FatherGenes", 10);
         for (int i = 0; i < mateGeneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = mateGeneList.getCompound(i);
+            CompoundNBT nbttagcompound = mateGeneList.getCompound(i);
             int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
@@ -1448,8 +1461,8 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
 
     @Nullable
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata, @Nullable NBTTagCompound itemNbt) {
-        livingdata = super.onInitialSpawn(difficulty, livingdata, itemNbt);
+    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+        livingdata = super.onInitialSpawn(world, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
@@ -2032,7 +2045,7 @@ public class EnhancedRabbit extends EntityAnimal implements net.minecraftforge.c
         return this.genes;
     }
 
-    public static class GroupData implements IEntityLivingData {
+    public static class GroupData implements ILivingEntityData {
 
         public int[] groupGenes;
 

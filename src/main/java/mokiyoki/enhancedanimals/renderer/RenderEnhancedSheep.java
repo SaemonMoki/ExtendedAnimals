@@ -4,8 +4,8 @@ import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.model.ModelEnhancedSheep;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -13,13 +13,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderEnhancedSheep extends RenderLiving<EnhancedSheep> {
+public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhancedSheep<EnhancedSheep>> {
 
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_SHEEP_TEXTURE_LOCATION = "eanimod:textures/entities/sheep/";
 
-    public RenderEnhancedSheep(RenderManager render) {
-        super(render, new ModelEnhancedSheep(), 0.6F);
+    public RenderEnhancedSheep(EntityRendererManager render) {
+        super(render, new ModelEnhancedSheep<>(), 0.6F);
     }
 
     /**

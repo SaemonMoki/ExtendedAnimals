@@ -1,11 +1,12 @@
 package mokiyoki.enhancedanimals.items;
 
-import net.minecraft.item.ItemFood;
 
-public class CookedRabbit extends ItemFood {
+import net.minecraft.item.Item;
 
-    public CookedRabbit(Properties props, int amount, float saturation, boolean isMeat) {
-        super(amount, saturation, isMeat, props);
+public class CookedRabbit extends Item {
+
+    public CookedRabbit(Properties props) {
+        super(props);
     }
 
 }

@@ -17,7 +17,7 @@ import mokiyoki.enhancedanimals.util.handlers.CapabilityHandler;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import mokiyoki.enhancedanimals.util.handlers.EventHandler;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.LootTables;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -70,13 +70,13 @@ public class EnhancedAnimals {
         CapabilityManager.INSTANCE.register(IPostCapability.class, new PostCapabilityStorage(), PostCapabilityProvider::new);
         CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapabilityProvider::new);
 
-        LootTableList.register(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
+        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
         LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());
 
-        LootTableList.register(new ResourceLocation(Reference.MODID, "enhanced_rabbit"));
+        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_rabbit"));
         LootConditionManager.registerCondition(new EnhancedRabbitLootCondition.Serializer());
 
-        LootTableList.register(new ResourceLocation(Reference.MODID, "enhanced_llama"));
+        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_llama"));
         LootConditionManager.registerCondition(new EnhancedLlamaLootCondition.Serializer());
 
     }

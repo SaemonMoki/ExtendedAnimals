@@ -1,23 +1,23 @@
 package mokiyoki.enhancedanimals.ai;
 
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
 
-public class ECWanderAvoidWater extends EntityAIWander {
+public class ECWanderAvoidWater extends RandomWalkingGoal {
 
     protected final float probability;
     private final EnhancedChicken enhancedChicken;
 
-    public ECWanderAvoidWater(EntityCreature entity, double speedIn) {
+    public ECWanderAvoidWater(CreatureEntity entity, double speedIn) {
         this(entity, speedIn, 0.001F);
     }
 
-    public ECWanderAvoidWater(EntityCreature entity, double speedIn, float probability) {
+    public ECWanderAvoidWater(CreatureEntity entity, double speedIn, float probability) {
         super(entity, speedIn);
         this.probability = probability;
         this.enhancedChicken = (EnhancedChicken) entity;

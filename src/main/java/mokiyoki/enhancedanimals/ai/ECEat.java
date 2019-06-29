@@ -1,28 +1,30 @@
 package mokiyoki.enhancedanimals.ai;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.block.state.pattern.BlockStateMatcher;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.pattern.BlockStateMatcher;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 
+import java.util.EnumSet;
 import java.util.function.Predicate;
 
-public class ECEat extends EntityAIBase {
-    private static final Predicate<IBlockState> IS_TALL_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
+public class ECEat extends Goal {
+    private static final Predicate<BlockState> IS_TALL_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
 
-    private final EntityLiving eatingEntity;
+    private final MobEntity eatingEntity;
     private final World entityWorld;
     int eatingTimer;
 
-    public ECEat(EntityLiving chickenEntity) {
+    public ECEat(MobEntity chickenEntity) {
         this.eatingEntity = chickenEntity;
         this.entityWorld = chickenEntity.world;
-        this.setMutexBits(7);
+        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
     }
 
     /**

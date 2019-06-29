@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.capability.egg;
 
-import net.minecraft.nbt.INBTBase;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 /**
  * Created by saemon on 30/09/2018.
  */
-public class EggCapabilityProvider implements IEggCapability, ICapabilitySerializable<INBTBase> {
+public class EggCapabilityProvider implements IEggCapability, ICapabilitySerializable<INBT> {
 
     @CapabilityInject(IEggCapability.class)
     public static final Capability<IEggCapability> EGG_CAP = null;
@@ -35,17 +35,17 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
 
     @Nullable
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
         return EGG_CAP.orEmpty(capability, holder);
     }
 
     @Override
-    public INBTBase serializeNBT() {
+    public INBT serializeNBT() {
         return EGG_CAP.getStorage().writeNBT(EGG_CAP, this, null);
     }
 
     @Override
-    public void deserializeNBT(INBTBase nbt) {
+    public void deserializeNBT(INBT nbt) {
         EGG_CAP.getStorage().readNBT(EGG_CAP, this, null, nbt);
     }
 }

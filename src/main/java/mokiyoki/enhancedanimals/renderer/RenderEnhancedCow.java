@@ -4,20 +4,21 @@ import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Map;
 
-public class RenderEnhancedCow extends RenderLiving<EnhancedCow>
+public class RenderEnhancedCow extends MobRenderer<EnhancedCow, ModelEnhancedCow<EnhancedCow>>
 {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_COW_TEXTURE_LOCATION = "eanimod:textures/entities/cow/";
 
-    public RenderEnhancedCow(RenderManager render)
+    public RenderEnhancedCow(EntityRendererManager render)
     {
-        super(render, new ModelEnhancedCow(), 0.8F);
+        super(render, new ModelEnhancedCow<>(), 0.8F);
     }
 
     /**

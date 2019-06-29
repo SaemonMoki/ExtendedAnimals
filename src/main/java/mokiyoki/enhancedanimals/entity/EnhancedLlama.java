@@ -6,37 +6,53 @@ import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockCarpet;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.CarpetBlock;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.passive.AbstractChestHorse;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityWolf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.Particles;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.IRangedAttackMob;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.goal.FollowParentGoal;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.PanicGoal;
+import net.minecraft.entity.ai.goal.RangedAttackGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.WolfEntity;
+import net.minecraft.entity.passive.horse.AbstractChestedHorseEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.ShearsItem;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -44,12 +60,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_LLAMA;
 
-public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMob, net.minecraftforge.common.IShearable {
+public class EnhancedLlama extends AbstractChestedHorseEntity implements IRangedAttackMob, net.minecraftforge.common.IShearable {
 
     private static final DataParameter<Integer> DATA_STRENGTH_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DATA_INVENTORY_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
@@ -128,25 +143,25 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     @Nullable
     private EnhancedLlama caravanTail;
 
-    public EnhancedLlama(World worldIn) {
-        super(ENHANCED_LLAMA, worldIn);
-        this.setSize(0.9F, 1.87F);
+    public EnhancedLlama(EntityType<? extends EnhancedLlama> entityType, World worldIn) {
+        super(entityType, worldIn);
+//        this.setSize(0.9F, 1.87F);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
     }
 
-    protected void initEntityAI() {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new ECRunAroundLikeCrazy(this, 1.2D));
-        this.tasks.addTask(2, new ECLlamaFollowCaravan(this, (double)2.1F));
-        this.tasks.addTask(3, new EntityAIAttackRanged(this, 1.25D, 40, 20.0F));
-        this.tasks.addTask(3, new EntityAIPanic(this, 1.2D));
-        this.tasks.addTask(4, new EntityAIMate(this, 1.0D));
-        this.tasks.addTask(5, new EntityAIFollowParent(this, 1.0D));
-        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 0.7D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
-        this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.targetTasks.addTask(1, new EnhancedLlama.AIHurtByTarget(this));
-        this.targetTasks.addTask(2, new EnhancedLlama.AIDefendTarget(this));
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(1, new ECRunAroundLikeCrazy(this, 1.2D));
+        this.goalSelector.addGoal(2, new ECLlamaFollowCaravan(this, (double)2.1F));
+        this.goalSelector.addGoal(3, new RangedAttackGoal(this, 1.25D, 40, 20.0F));
+        this.goalSelector.addGoal(3, new PanicGoal(this, 1.2D));
+        this.goalSelector.addGoal(4, new BreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.0D));
+        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.7D));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.targetSelector.addGoal(1, new EnhancedLlama.HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new EnhancedLlama.DefendTargetGoal(this));
     }
 
 
@@ -205,7 +220,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
      * Returns the Y offset from the entity's position for any entity riding this one.
      */
     public double getMountedYOffset() {
-        return (double)this.height * 0.67D;
+        return (double)this.getHeight() * 0.67D;
     }
 
     /**
@@ -216,7 +231,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         return false;
     }
 
-    protected boolean handleEating(EntityPlayer player, ItemStack stack) {
+    protected boolean handleEating(PlayerEntity player, ItemStack stack) {
         int i = 0;
         int j = 0;
         float f = 0.0F;
@@ -242,7 +257,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         }
 
         if (this.isChild() && i > 0) {
-            this.world.spawnParticle(Particles.HAPPY_VILLAGER, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + 0.5D + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, 0.0D, 0.0D, 0.0D);
+            this.world.addParticle(ParticleTypes.HAPPY_VILLAGER, this.posX + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.posY + 0.5D + (double)(this.rand.nextFloat() * this.getWidth()), this.posZ + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), 0.0D, 0.0D, 0.0D);
             if (!this.world.isRemote) {
                 this.addGrowth(i);
             }
@@ -258,7 +273,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         }
 
         if (flag && !this.isSilent()) {
-            this.world.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_LLAMA_EAT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+            this.world.playSound((PlayerEntity)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_LLAMA_EAT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
         }
 
         return flag;
@@ -272,20 +287,18 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     }
 
     @Override
-    public boolean processInteract(EntityPlayer entityPlayer, EnumHand hand) {
+    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
         if (item instanceof DebugGenesBook) {
             ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
-        } else if (item instanceof ItemShears) {
+        } else if (item instanceof ShearsItem) {
             List<ItemStack> woolToDrop = onSheared(itemStack, null, null, 0);
             java.util.Random rand = new java.util.Random();
-            for (ItemStack stack : woolToDrop) {
-                net.minecraft.entity.item.EntityItem ent = this.entityDropItem(stack, 1.0F);
-                ent.motionY += rand.nextFloat() * 0.05F;
-                ent.motionX += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
-                ent.motionZ += (rand.nextFloat() - rand.nextFloat()) * 0.1F;
-            }
+            woolToDrop.forEach(d -> {
+                net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
+                ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
+            });
         }
         return super.processInteract(entityPlayer, hand);
     }
@@ -317,11 +330,6 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         return sharedGenesArray;
     }
 
-    public float getEyeHeight()
-    {
-        return this.height;
-    }
-
     protected void registerAttributes() {
         super.registerAttributes();
         this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
@@ -350,17 +358,17 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
                     gestationTimer = 0;
 
                     int[] babyGenes = getCriaGenes();
-                    EnhancedLlama enhancedllama = new EnhancedLlama(this.world);
-                    enhancedllama.setGrowingAge(0);
-                    enhancedllama.setGenes(babyGenes);
-                    enhancedllama.setSharedGenes(babyGenes);
-                    enhancedllama.setStrengthAndInventory();
-                    enhancedllama.setMaxCoatLength();
-                    enhancedllama.currentCoatLength = enhancedllama.maxCoatLength;
-                    enhancedllama.setCoatLength(enhancedllama.currentCoatLength);
-                    enhancedllama.setGrowingAge(-24000);
-                    enhancedllama.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-                    this.world.spawnEntity(enhancedllama);
+                    EnhancedLlama enhancedLlama = ENHANCED_LLAMA.create(this.world);
+                    enhancedLlama.setGrowingAge(0);
+                    enhancedLlama.setGenes(babyGenes);
+                    enhancedLlama.setSharedGenes(babyGenes);
+                    enhancedLlama.setStrengthAndInventory();
+                    enhancedLlama.setMaxCoatLength();
+                    enhancedLlama.currentCoatLength = enhancedLlama.maxCoatLength;
+                    enhancedLlama.setCoatLength(enhancedLlama.currentCoatLength);
+                    enhancedLlama.setGrowingAge(-24000);
+                    enhancedLlama.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+                    this.world.addEntity(enhancedLlama);
 
                 }
             }
@@ -411,7 +419,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         return SoundEvents.ENTITY_LLAMA_DEATH;
     }
 
-    protected void playStepSound(BlockPos pos, IBlockState blockIn) {
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.ENTITY_LLAMA_STEP, 0.15F, 1.0F);
     }
 
@@ -471,7 +479,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         }
     }
 
-    public EntityAgeable createChild(EntityAgeable ageable) {
+    public AgeableEntity createChild(AgeableEntity ageable) {
         this.mateGenes = ((EnhancedLlama) ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
@@ -725,56 +733,56 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
 
     } // setTexturePaths end bracket
 
-    public void writeAdditional(NBTTagCompound compound) {
+    public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
         //store this llamas's genes
-        NBTTagList geneList = new NBTTagList();
+        ListNBT geneList = new ListNBT();
         for (int i = 0; i < genes.length; i++) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("Gene", genes[i]);
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Gene", genes[i]);
             geneList.add(nbttagcompound);
         }
-        compound.setTag("Genes", geneList);
+        compound.put("Genes", geneList);
 
         //store this llamas's mate's genes
-        NBTTagList mateGeneList = new NBTTagList();
+        ListNBT mateGeneList = new ListNBT();
         for (int i = 0; i < mateGenes.length; i++) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("Gene", mateGenes[i]);
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Gene", mateGenes[i]);
             mateGeneList.add(nbttagcompound);
         }
-        compound.setTag("FatherGenes", mateGeneList);
+        compound.put("FatherGenes", mateGeneList);
 
-        compound.setInt("Strength", this.getStrength());
-        compound.setInt("Inventory", this.getInventory());
-        compound.setFloat("CoatLength", this.getCoatLength());
+        compound.putInt("Strength", this.getStrength());
+        compound.putInt("Inventory", this.getInventory());
+        compound.putFloat("CoatLength", this.getCoatLength());
         if (!this.horseChest.getStackInSlot(1).isEmpty()) {
-            compound.setTag("DecorItem", this.horseChest.getStackInSlot(1).write(new NBTTagCompound()));
+            compound.put("DecorItem", this.horseChest.getStackInSlot(1).write(new CompoundNBT()));
         }
 
-        compound.setBoolean("Pregnant", this.pregnant);
-        compound.setInt("Gestation", this.gestationTimer);
+        compound.putBoolean("Pregnant", this.pregnant);
+        compound.putInt("Gestation", this.gestationTimer);
 
     }
 
-    public void readAdditional(NBTTagCompound compound) {
+    public void readAdditional(CompoundNBT compound) {
         this.setStrength(compound.getInt("Strength"));
         this.setInventory(compound.getInt("Inventory"));
         currentCoatLength = compound.getInt("CoatLength");
         this.setCoatLength(currentCoatLength);
         super.readAdditional(compound);
 
-        NBTTagList geneList = compound.getList("Genes", 10);
+        ListNBT geneList = compound.getList("Genes", 10);
         for (int i = 0; i < geneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = geneList.getCompound(i);
+            CompoundNBT nbttagcompound = geneList.getCompound(i);
             int gene = nbttagcompound.getInt("Gene");
             genes[i] = gene;
         }
 
-        NBTTagList mateGeneList = compound.getList("FatherGenes", 10);
+        ListNBT mateGeneList = compound.getList("FatherGenes", 10);
         for (int i = 0; i < mateGeneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = mateGeneList.getCompound(i);
+            CompoundNBT nbttagcompound = mateGeneList.getCompound(i);
             int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
@@ -801,6 +809,8 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         if (compound.contains("DecorItem", 10)) {
             this.horseChest.setInventorySlotContents(1, ItemStack.read(compound.getCompound("DecorItem")));
         }
+
+        this.updateHorseSlots();
 
         //resets the max so we don't have to store it
         setMaxCoatLength();
@@ -849,8 +859,8 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
 
     @Nullable
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata, @Nullable NBTTagCompound itemNbt) {
-        livingdata = super.onInitialSpawn(difficulty, livingdata, itemNbt);
+    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+        livingdata = super.onInitialSpawn(world, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
@@ -1186,15 +1196,15 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     }
 
 
-    private void spit(EntityLivingBase target) {
+    private void spit(LivingEntity target) {
         EnhancedEntityLlamaSpit entityllamaspit = new EnhancedEntityLlamaSpit(this.world, this);
         double d0 = target.posX - this.posX;
-        double d1 = target.getBoundingBox().minY + (double)(target.height / 3.0F) - entityllamaspit.posY;
+        double d1 = target.getBoundingBox().minY + (double)(target.getHeight() / 3.0F) - entityllamaspit.posY;
         double d2 = target.posZ - this.posZ;
         float f = MathHelper.sqrt(d0 * d0 + d2 * d2) * 0.2F;
         entityllamaspit.shoot(d0, d1 + (double)f, d2, 1.5F, 10.0F);
-        this.world.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_LLAMA_SPIT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-        this.world.spawnEntity(entityllamaspit);
+        this.world.playSound((PlayerEntity)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_LLAMA_SPIT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+        this.world.addEntity(entityllamaspit);
         this.didSpit = true;
     }
 
@@ -1214,11 +1224,10 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
                 }
             }
 
-            IBlockState iblockstate = this.world.getBlockState(new BlockPos(this.posX, this.posY - 0.2D - (double)this.prevRotationYaw, this.posZ));
-            Block block = iblockstate.getBlock();
-            if (!iblockstate.isAir() && !this.isSilent()) {
-                SoundType soundtype = block.getSoundType();
-                this.world.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
+            BlockState blockstate = this.world.getBlockState(new BlockPos(this.posX, this.posY - 0.2D - (double)this.prevRotationYaw, this.posZ));
+            if (!blockstate.isAir() && !this.isSilent()) {
+                SoundType soundtype = blockstate.getSoundType();
+                this.world.playSound((PlayerEntity)null, this.posX, this.posY, this.posZ, soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
             }
 
         }
@@ -1285,27 +1294,27 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
     protected void updateHorseSlots() {
         if (!this.world.isRemote) {
             super.updateHorseSlots();
-            this.setColor(func_195403_g(this.horseChest.getStackInSlot(1)));
+            this.setColor(getCarpetColor(this.horseChest.getStackInSlot(1)));
         }
     }
 
-    private void setColor(@Nullable EnumDyeColor color) {
+    private void setColor(@Nullable DyeColor color) {
         this.dataManager.set(DATA_COLOR_ID, color == null ? -1 : color.getId());
     }
 
     @Nullable
-    private static EnumDyeColor func_195403_g(ItemStack p_195403_0_) {
+    private static DyeColor getCarpetColor(ItemStack p_195403_0_) {
         Block block = Block.getBlockFromItem(p_195403_0_.getItem());
-        return block instanceof BlockCarpet ? ((BlockCarpet)block).getColor() : null;
+        return block instanceof CarpetBlock ? ((CarpetBlock)block).getColor() : null;
     }
 
     @Nullable
-    public EnumDyeColor getColor() {
+    public DyeColor getColor() {
         int i = this.dataManager.get(DATA_COLOR_ID);
-        return i == -1 ? null : EnumDyeColor.byId(i);
+        return i == -1 ? null : DyeColor.byId(i);
     }
 
-    public boolean canMateWith(EntityAnimal otherAnimal) {
+    public boolean canMateWith(AnimalEntity otherAnimal) {
         return otherAnimal != this && otherAnimal instanceof EnhancedLlama && this.canMate() && ((EnhancedLlama)otherAnimal).canMate();
     }
 
@@ -1325,31 +1334,22 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         return false;
     }
 
-    /**
-     * Attack the specified entity using a ranged attack.
-     */
-    public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) {
-        this.spit(target);
-    }
-
     public void setSwingingArms(boolean swingingArms) {
     }
 
-    static class AIDefendTarget extends EntityAINearestAttackableTarget<EntityWolf> {
-        public AIDefendTarget(EnhancedLlama llama) {
-            super(llama, EntityWolf.class, 16, false, true, (Predicate<EntityWolf>)null);
-        }
+    /**
+     * Attack the specified entity using a ranged attack.
+     */
 
-        /**
-         * Returns whether the EntityAIBase should begin execution.
-         */
-        public boolean shouldExecute() {
-            if (super.shouldExecute() && this.targetEntity != null && !this.targetEntity.isTamed()) {
-                return true;
-            } else {
-                this.taskOwner.setAttackTarget((EntityLivingBase)null);
-                return false;
-            }
+    public void attackEntityWithRangedAttack(LivingEntity target, float distanceFactor) {
+        this.spit(target);
+    }
+
+    static class DefendTargetGoal extends NearestAttackableTargetGoal<WolfEntity> {
+        public DefendTargetGoal(EnhancedLlama llama) {
+            super(llama, WolfEntity.class, 16, false, true, (p_220789_0_) -> {
+                return !((WolfEntity)p_220789_0_).isTamed();
+            });
         }
 
         protected double getTargetDistance() {
@@ -1357,19 +1357,19 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         }
     }
 
-    static class AIHurtByTarget extends EntityAIHurtByTarget {
-        public AIHurtByTarget(EnhancedLlama llama) {
-            super(llama, false);
+    static class HurtByTargetGoal extends net.minecraft.entity.ai.goal.HurtByTargetGoal {
+        public HurtByTargetGoal(EnhancedLlama llama) {
+            super(llama);
         }
 
         /**
          * Returns whether an in-progress EntityAIBase should continue executing
          */
         public boolean shouldContinueExecuting() {
-            if (this.taskOwner instanceof EnhancedLlama) {
-                EnhancedLlama entityllama = (EnhancedLlama)this.taskOwner;
-                if (entityllama.didSpit) {
-                    entityllama.setDidSpit(false);
+            if (this.goalOwner instanceof EnhancedLlama) {
+                EnhancedLlama llamaentity = (EnhancedLlama)this.goalOwner;
+                if (llamaentity.didSpit) {
+                    llamaentity.setDidSpit(false);
                     return false;
                 }
             }
@@ -1378,7 +1378,7 @@ public class EnhancedLlama extends AbstractChestHorse implements IRangedAttackMo
         }
     }
 
-    public static class GroupData implements IEntityLivingData {
+    public static class GroupData implements ILivingEntityData {
 
         public int[] groupGenes;
 

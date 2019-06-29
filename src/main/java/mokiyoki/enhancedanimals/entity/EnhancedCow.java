@@ -118,7 +118,7 @@ public class EnhancedCow extends EntityAnimal {
     };
 
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT);
 
     private static final int WTC = 90;
     private final List<String> cowTextures = new ArrayList<>();
@@ -345,6 +345,11 @@ public class EnhancedCow extends EntityAnimal {
             sharedGenesArray[i] = Integer.parseInt(genesToSplit[i]);
         }
         return sharedGenesArray;
+    }
+
+    public boolean isBreedingItem(ItemStack stack)
+    {
+        return TEMPTATION_ITEMS.test(stack);
     }
 
     public EntityAgeable createChild(EntityAgeable ageable) {

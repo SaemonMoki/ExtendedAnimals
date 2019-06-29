@@ -587,7 +587,6 @@ public class ModelEnhancedCow extends ModelBase {
         copyModelAngles(humpXLarge, humpSmall);
         copyModelAngles(humpXLarge, humpXSmall);
 
-        //        this.body.rotateAngleX = ((float)Math.PI / 2F);
         this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
         this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
@@ -865,7 +864,7 @@ public class ModelEnhancedCow extends ModelBase {
 
         hornL0.setRotationPoint(0.0F, 0.0F, -2.25F);
         hornR0.setRotationPoint(0.0F, 0.0F, -2.25F);
-        
+
         float X = 1.0F;
         float Y = -2.0F;
         float horns = -1.0F;
@@ -1062,7 +1061,7 @@ public class ModelEnhancedCow extends ModelBase {
             this.hornR3.rotateAngleX = 0.1F;
             this.hornR2.rotateAngleX = 0.1F;
             this.hornR1.rotateAngleX = 0.1F;
-            
+
 
         }
 

@@ -9,6 +9,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
+import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
@@ -54,6 +55,7 @@ public class RegistryHandler {
     public static final EntityType<EnhancedSheep> ENHANCED_SHEEP = EntityType.Builder.create(EnhancedSheep.class, EnhancedSheep::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_sheep");
     public static final EntityType<EnhancedLlama> ENHANCED_LLAMA = EntityType.Builder.create(EnhancedLlama.class, EnhancedLlama::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_llama");
     public static final EntityType<EnhancedCow> ENHANCED_COW = EntityType.Builder.create(EnhancedCow.class, EnhancedCow::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_cow");
+    public static final EntityType<EnhancedPig> ENHANCED_PIG = EntityType.Builder.create(EnhancedPig.class, EnhancedPig::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_pig");
 
 
     @SubscribeEvent
@@ -89,8 +91,10 @@ public class RegistryHandler {
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_sheep_spawn_egg"));
         event.getRegistry().register(new ItemSpawnEgg(ENHANCED_RABBIT, 0xCA8349,0x553C36, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_rabbit_spawn_egg"));
-        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_COW, 0x070303,0xf9f9f7, new Item.Properties()
+        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_COW, 0x260800,0xf9f9f7, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_cow_spawn_egg"));
+        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_PIG, 0x000000,0x000000, new Item.Properties()
+                .group(ItemGroup.MISC)).setRegistryName("enhanced_pig_spawn_egg"));
 
 
         event.getRegistry().registerAll(items);
@@ -302,6 +306,7 @@ public class RegistryHandler {
         event.getRegistry().register(ENHANCED_SHEEP.setRegistryName("enhanced_sheep"));
         event.getRegistry().register(ENHANCED_LLAMA.setRegistryName("enhanced_llama"));
         event.getRegistry().register(ENHANCED_COW.setRegistryName("enhanced_cow"));
+        event.getRegistry().register(ENHANCED_PIG.setRegistryName("enhanced_pig"));
         event.getRegistry().register(ENHANCED_ENTITY_EGG_ENTITY_TYPE.setRegistryName("enhanced_entity_egg"));
 
         EntitySpawnPlacementRegistry.register(ENHANCED_CHICKEN, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
@@ -309,6 +314,7 @@ public class RegistryHandler {
         EntitySpawnPlacementRegistry.register(ENHANCED_SHEEP, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
         EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
         EntitySpawnPlacementRegistry.register(ENHANCED_COW, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
+        EntitySpawnPlacementRegistry.register(ENHANCED_PIG, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
 
         for (Biome biome : ForgeRegistries.BIOMES) {
 

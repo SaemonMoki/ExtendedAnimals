@@ -15,22 +15,21 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDispenser;
 //import net.minecraft.client.renderer.color.BlockColors;
 //import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.dispenser.BehaviorProjectileDispense;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IPosition;
+import net.minecraft.dispenser.ProjectileDispenseBehavior;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.init.Biomes;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.*;
 import net.minecraft.world.GrassColors;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 //import net.minecraft.world.biome.BiomeColors;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.Heightmap;
 //import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.BiomeDictionary;
@@ -49,12 +48,12 @@ import java.util.Set;
 @Mod.EventBusSubscriber(bus= Mod.EventBusSubscriber.Bus.MOD)
 public class RegistryHandler {
 
-    public static final EntityType<EnhancedEntityEgg> ENHANCED_ENTITY_EGG_ENTITY_TYPE = EntityType.Builder.create(EnhancedEntityEgg.class, EnhancedEntityEgg::new).tracker(54,1,true).build(Reference.MODID + ":enhanced_entity_egg");
-    public static final EntityType<EnhancedChicken> ENHANCED_CHICKEN = EntityType.Builder.create(EnhancedChicken.class, EnhancedChicken::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_chicken");
-    public static final EntityType<EnhancedRabbit> ENHANCED_RABBIT = EntityType.Builder.create(EnhancedRabbit.class, EnhancedRabbit::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_rabbit");
-    public static final EntityType<EnhancedSheep> ENHANCED_SHEEP = EntityType.Builder.create(EnhancedSheep.class, EnhancedSheep::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_sheep");
-    public static final EntityType<EnhancedLlama> ENHANCED_LLAMA = EntityType.Builder.create(EnhancedLlama.class, EnhancedLlama::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_llama");
-    public static final EntityType<EnhancedCow> ENHANCED_COW = EntityType.Builder.create(EnhancedCow.class, EnhancedCow::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_cow");
+    public static final EntityType<EnhancedEntityEgg> ENHANCED_ENTITY_EGG_ENTITY_TYPE = EntityType.Builder.<EnhancedEntityEgg>create(EnhancedEntityEgg::new, EntityClassification.MISC).size(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_egg");
+    public static final EntityType<EnhancedChicken> ENHANCED_CHICKEN = EntityType.Builder.create(EnhancedChicken::new, EntityClassification.CREATURE).size(0.4F, 0.7F).build(Reference.MODID + ":enhanced_chicken");
+    public static final EntityType<EnhancedRabbit> ENHANCED_RABBIT = EntityType.Builder.create(EnhancedRabbit::new, EntityClassification.CREATURE).size(0.4F, 0.5F).build(Reference.MODID + ":enhanced_rabbit");
+    public static final EntityType<EnhancedSheep> ENHANCED_SHEEP = EntityType.Builder.create(EnhancedSheep::new, EntityClassification.CREATURE).size(0.4F, 1F).build(Reference.MODID + ":enhanced_sheep");
+    public static final EntityType<EnhancedLlama> ENHANCED_LLAMA = EntityType.Builder.create(EnhancedLlama::new, EntityClassification.CREATURE).size(0.9F, 1.87F).build(Reference.MODID + ":enhanced_llama");
+    public static final EntityType<EnhancedCow> ENHANCED_COW = EntityType.Builder.create(EnhancedCow::new, EntityClassification.CREATURE).size(0.4F, 1F).build(Reference.MODID + ":enhanced_cow");
     public static final EntityType<EnhancedPig> ENHANCED_PIG = EntityType.Builder.create(EnhancedPig.class, EnhancedPig::new).tracker(64, 1, true).build(Reference.MODID + ":enhanced_pig");
 
 
@@ -74,33 +73,33 @@ public class RegistryHandler {
                 ModItems.RawRabbit_Small, ModItems.CookedRabbit_Small, ModItems.RabbitStew_Weak, ModItems.Debug_Gene_Book};
 
         final Item[] itemBlocks = {
-                new ItemBlock(ModBlocks.Post_Acacia, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Acacia.getRegistryName()),
-                new ItemBlock(ModBlocks.Post_Birch, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Birch.getRegistryName()),
-                new ItemBlock(ModBlocks.Post_Dark_Oak, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Dark_Oak.getRegistryName()),
-                new ItemBlock(ModBlocks.Post_Jungle, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Jungle.getRegistryName()),
-                new ItemBlock(ModBlocks.Post_Oak, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Oak.getRegistryName()),
-                new ItemBlock(ModBlocks.Post_Spruce, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Spruce.getRegistryName()),
+                new BlockItem(ModBlocks.Post_Acacia, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Acacia.getRegistryName()),
+                new BlockItem(ModBlocks.Post_Birch, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Birch.getRegistryName()),
+                new BlockItem(ModBlocks.Post_Dark_Oak, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Dark_Oak.getRegistryName()),
+                new BlockItem(ModBlocks.Post_Jungle, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Jungle.getRegistryName()),
+                new BlockItem(ModBlocks.Post_Oak, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Oak.getRegistryName()),
+                new BlockItem(ModBlocks.Post_Spruce, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Spruce.getRegistryName()),
         };
 
 
-        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000, new Item.Properties()
+        event.getRegistry().register(new SpawnEggItem(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_chicken_spawn_egg"));
-        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34, new Item.Properties()
+        event.getRegistry().register(new SpawnEggItem(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_llama_spawn_egg"));
-        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_SHEEP, 0xFFFFFF,0xFF8C8C, new Item.Properties()
+        event.getRegistry().register(new SpawnEggItem(ENHANCED_SHEEP, 0xFFFFFF,0xFF8C8C, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_sheep_spawn_egg"));
-        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_RABBIT, 0xCA8349,0x553C36, new Item.Properties()
+        event.getRegistry().register(new SpawnEggItem(ENHANCED_RABBIT, 0xCA8349,0x553C36, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_rabbit_spawn_egg"));
-        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_COW, 0x260800,0xf9f9f7, new Item.Properties()
+        event.getRegistry().register(new SpawnEggItem(ENHANCED_COW, 0x260800,0xf9f9f7, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_cow_spawn_egg"));
-        event.getRegistry().register(new ItemSpawnEgg(ENHANCED_PIG, 0x000000,0x000000, new Item.Properties()
+        event.getRegistry().register(new SpawnEggItem(ENHANCED_PIG, 0x000000,0x000000, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_pig_spawn_egg"));
 
 
         event.getRegistry().registerAll(items);
         event.getRegistry().registerAll(itemBlocks);
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_White,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_White,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -111,7 +110,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Cream,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Cream,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -122,7 +121,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_CreamDark,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_CreamDark,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -133,7 +132,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Pink,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Pink,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -144,7 +143,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_PinkDark,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_PinkDark,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -155,7 +154,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Brown,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Brown,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -166,7 +165,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_BrownDark,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_BrownDark,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -177,7 +176,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Blue,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Blue,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -188,7 +187,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_GreenLight,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_GreenLight,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -199,7 +198,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Green,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Green,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -210,7 +209,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Grey,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Grey,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -221,7 +220,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_GreyGreen,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_GreyGreen,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -232,7 +231,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_Olive,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Olive,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -243,7 +242,7 @@ public class RegistryHandler {
             }
         });
 
-        BlockDispenser.registerDispenseBehavior(ModItems.Egg_GreenDark,  new BehaviorProjectileDispense() {
+        DispenserBlock.registerDispenseBehavior(ModItems.Egg_GreenDark,  new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
@@ -309,12 +308,12 @@ public class RegistryHandler {
         event.getRegistry().register(ENHANCED_PIG.setRegistryName("enhanced_pig"));
         event.getRegistry().register(ENHANCED_ENTITY_EGG_ENTITY_TYPE.setRegistryName("enhanced_entity_egg"));
 
-        EntitySpawnPlacementRegistry.register(ENHANCED_CHICKEN, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
-        EntitySpawnPlacementRegistry.register(ENHANCED_RABBIT, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
-        EntitySpawnPlacementRegistry.register(ENHANCED_SHEEP, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
-        EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
-        EntitySpawnPlacementRegistry.register(ENHANCED_COW, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
-        EntitySpawnPlacementRegistry.register(ENHANCED_PIG, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
+//        EntitySpawnPlacementRegistry.register(ENHANCED_CHICKEN, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
+//        EntitySpawnPlacementRegistry.register(ENHANCED_RABBIT, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
+//        EntitySpawnPlacementRegistry.register(ENHANCED_SHEEP, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
+//        EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
+//        EntitySpawnPlacementRegistry.register(ENHANCED_COW, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
+//        EntitySpawnPlacementRegistry.register(ENHANCED_PIG, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
 
         for (Biome biome : ForgeRegistries.BIOMES) {
 
@@ -324,34 +323,34 @@ public class RegistryHandler {
             if (!biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.DESERT.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_HILLS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_LAKES.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.THE_END.getRegistryName()) && !biome.getRegistryName().equals(Biomes.NETHER.getRegistryName())) {
-                biome.getSpawns(EnumCreatureType.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
+                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
             }
 
             //Enhanced Rabbit Spawning
             if (biome.getRegistryName().equals(Biomes.SNOWY_TUNDRA.getRegistryName()) || biome.getRegistryName().equals(Biomes.ICE_SPIKES.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()) ||
                     biome.getRegistryName().equals(Biomes.FLOWER_FOREST.getRegistryName()) ||
                     biome.getRegistryName().equals(Biomes.DESERT.getRegistryName()) || biome.getRegistryName().equals(Biomes.DESERT_LAKES.getRegistryName()) || biome.getRegistryName().equals(Biomes.DESERT_HILLS.getRegistryName()) ) {
-                biome.getSpawns(EnumCreatureType.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 10, 2, 3));
+                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 10, 2, 3));
             }
 
             //Enhanced Llama Spawning
             if (biome.getRegistryName().equals(Biomes.MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) ||
                     biome.getRegistryName().equals(Biomes.SAVANNA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SHATTERED_SAVANNA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SAVANNA_PLATEAU.getRegistryName()) || biome.getRegistryName().equals(Biomes.SHATTERED_SAVANNA_PLATEAU.getRegistryName()) ) {
-                biome.getSpawns(EnumCreatureType.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_LLAMA, 5, 4, 6));
+                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_LLAMA, 5, 4, 6));
             }
 
             //Enhanced Sheep Spawning
             if (!biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.DESERT.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_HILLS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_LAKES.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.THE_END.getRegistryName()) && !biome.getRegistryName().equals(Biomes.NETHER.getRegistryName())){
-                biome.getSpawns(EnumCreatureType.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_SHEEP, 5, 4, 6));
+                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_SHEEP, 5, 4, 6));
             }
 
             //Enhanced Sheep Spawning
             if (!biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.DESERT.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_HILLS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_LAKES.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.THE_END.getRegistryName()) && !biome.getRegistryName().equals(Biomes.NETHER.getRegistryName())){
-                biome.getSpawns(EnumCreatureType.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_COW, 5, 4, 6));
+                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_COW, 5, 4, 6));
             }
 
         }

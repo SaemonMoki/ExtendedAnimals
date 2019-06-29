@@ -3,27 +3,34 @@ package mokiyoki.enhancedanimals.entity;
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.goal.EatGrassGoal;
+import net.minecraft.entity.ai.goal.FollowParentGoal;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.entity.ai.goal.PanicGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.TemptGoal;
+import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -32,9 +39,10 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -45,7 +53,7 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_SHEEP;
 
-public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.common.IShearable{
+public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.common.IShearable{
 
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedSheep.class, DataSerializers.STRING);
@@ -103,19 +111,19 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
-    public EnhancedSheep(World worldIn) {
-        super(ENHANCED_SHEEP, worldIn);
-        this.setSize(0.4F, 1F);
+    public EnhancedSheep(EntityType<? extends EnhancedSheep> entityType, World worldIn) {
+        super(entityType, worldIn);
+//        this.setSize(0.4F, 1F);
 
     }
 
     /** Map from EnumDyeColor to RGB values for passage to GlStateManager.color() */
-    private static final Map<EnumDyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(Arrays.stream(EnumDyeColor.values()).collect(Collectors.toMap((EnumDyeColor p_200204_0_) -> {
+    private static final Map<DyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(Arrays.stream(DyeColor.values()).collect(Collectors.toMap((DyeColor p_200204_0_) -> {
         return p_200204_0_;
     }, EnhancedSheep::createSheepDyeColor)));
 
-    private static float[] createSheepDyeColor(EnumDyeColor enumDyeColour) {
-        if (enumDyeColour == EnumDyeColor.WHITE) {
+    private static float[] createSheepDyeColor(DyeColor enumDyeColour) {
+        if (enumDyeColour == DyeColor.WHITE) {
 //            return new float[]{0.9019608F, 0.9019608F, 0.9019608F};
             return new float[]{1.0F, 1.0F, 1.0F};
         } else {
@@ -126,51 +134,50 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static float[] getDyeRgb(EnumDyeColor dyeColour) {
+    public static float[] getDyeRgb(DyeColor dyeColour) {
         return DYE_TO_RGB.get(dyeColour);
     }
 
     /**
      * Gets the wool color of this sheep.
      */
-    public EnumDyeColor getFleeceDyeColour() {
-        return EnumDyeColor.byId(this.dataManager.get(DYE_COLOUR) & 15);
+    public DyeColor getFleeceDyeColour() {
+        return DyeColor.byId(this.dataManager.get(DYE_COLOUR) & 15);
     }
 
     /**
      * Sets the wool color of this sheep
      */
-    public void setFleeceDyeColour(EnumDyeColor colour) {
+    public void setFleeceDyeColour(DyeColor colour) {
         byte b0 = this.dataManager.get(DYE_COLOUR);
         this.dataManager.set(DYE_COLOUR, (byte)(b0 & 240 | colour.getId() & 15));
     }
 
-    public float getEyeHeight()
-    {
-        return this.height;
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return 0.95F * sizeIn.height;
     }
 
     private int sheepTimer;
-    private EntityAIEatGrass entityAIEatGrass;
+    private EatGrassGoal eatGrassGoal;
 
     protected void initEntityAI() {
-        this.entityAIEatGrass = new EntityAIEatGrass(this);
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIPanic(this, 1.25D));
-        this.tasks.addTask(2, new EntityAIMate(this, 1.0D));
-        this.tasks.addTask(3, new EntityAITempt(this, 1.1D, TEMPTATION_ITEMS, false));
-        this.tasks.addTask(4, new EntityAIFollowParent(this, 1.1D));
-        this.tasks.addTask(5, this.entityAIEatGrass);
-        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 1.0D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
-        this.tasks.addTask(8, new EntityAILookIdle(this));
+        this.eatGrassGoal = new EatGrassGoal(this);
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
+        this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(3, new TemptGoal(this, 1.1D, TEMPTATION_ITEMS, false));
+        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(5, this.eatGrassGoal);
+        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
     }
 
     //TODO put new sheep behaviour here
 
     protected void updateAITasks()
     {
-        this.sheepTimer = this.entityAIEatGrass.getEatingGrassTimer();
+        this.sheepTimer = this.eatGrassGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
 
@@ -184,51 +191,51 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     @Nullable
     protected ResourceLocation getLootTable() {
         if (this.getSheared()) {
-            return LootTableList.ENTITIES_SHEEP;
+            return this.getType().getLootTable();
         } else {
             if (genes[4] == 1 || genes[5] == 1 || ((genes[0] >= 3 && genes[1] >= 3) && (genes[0] != 5 && genes[1] != 5))){
                 if ((genes[2] == 1 || genes[3] == 1) && (genes[0] != 3 && genes[1] != 3)){
-                    return LootTableList.ENTITIES_SHEEP_BLACK;
+                    return LootTables.ENTITIES_SHEEP_BLACK;
                 }else{
-                    return LootTableList.ENTITIES_SHEEP_BROWN;
+                    return LootTables.ENTITIES_SHEEP_BROWN;
                 }
-            }else if ((genes[0] == 2 || genes[1] == 2) && getFleeceDyeColour() == EnumDyeColor.WHITE) {
-                return LootTableList.ENTITIES_SHEEP_LIGHT_GRAY;
+            }else if ((genes[0] == 2 || genes[1] == 2) && getFleeceDyeColour() == DyeColor.WHITE) {
+                return LootTables.ENTITIES_SHEEP_LIGHT_GRAY;
             }else {
                 switch (this.getFleeceDyeColour()) {
                     case WHITE:
                     default:
-                        return LootTableList.ENTITIES_SHEEP_WHITE;
+                        return LootTables.ENTITIES_SHEEP_WHITE;
                     case ORANGE:
-                        return LootTableList.ENTITIES_SHEEP_ORANGE;
+                        return LootTables.ENTITIES_SHEEP_ORANGE;
                     case MAGENTA:
-                        return LootTableList.ENTITIES_SHEEP_MAGENTA;
+                        return LootTables.ENTITIES_SHEEP_MAGENTA;
                     case LIGHT_BLUE:
-                        return LootTableList.ENTITIES_SHEEP_LIGHT_BLUE;
+                        return LootTables.ENTITIES_SHEEP_LIGHT_BLUE;
                     case YELLOW:
-                        return LootTableList.ENTITIES_SHEEP_YELLOW;
+                        return LootTables.ENTITIES_SHEEP_YELLOW;
                     case LIME:
-                        return LootTableList.ENTITIES_SHEEP_LIME;
+                        return LootTables.ENTITIES_SHEEP_LIME;
                     case PINK:
-                        return LootTableList.ENTITIES_SHEEP_PINK;
+                        return LootTables.ENTITIES_SHEEP_PINK;
                     case GRAY:
-                        return LootTableList.ENTITIES_SHEEP_GRAY;
+                        return LootTables.ENTITIES_SHEEP_GRAY;
                     case LIGHT_GRAY:
-                        return LootTableList.ENTITIES_SHEEP_LIGHT_GRAY;
+                        return LootTables.ENTITIES_SHEEP_LIGHT_GRAY;
                     case CYAN:
-                        return LootTableList.ENTITIES_SHEEP_CYAN;
+                        return LootTables.ENTITIES_SHEEP_CYAN;
                     case PURPLE:
-                        return LootTableList.ENTITIES_SHEEP_PURPLE;
+                        return LootTables.ENTITIES_SHEEP_PURPLE;
                     case BLUE:
-                        return LootTableList.ENTITIES_SHEEP_BLUE;
+                        return LootTables.ENTITIES_SHEEP_BLUE;
                     case BROWN:
-                        return LootTableList.ENTITIES_SHEEP_BROWN;
+                        return LootTables.ENTITIES_SHEEP_BROWN;
                     case GREEN:
-                        return LootTableList.ENTITIES_SHEEP_GREEN;
+                        return LootTables.ENTITIES_SHEEP_GREEN;
                     case RED:
-                        return LootTableList.ENTITIES_SHEEP_RED;
+                        return LootTables.ENTITIES_SHEEP_RED;
                     case BLACK:
-                        return LootTableList.ENTITIES_SHEEP_BLACK;
+                        return LootTables.ENTITIES_SHEEP_BLACK;
                 }
             }
         }
@@ -272,7 +279,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
                     pregnant = false;
                     gestationTimer = 0;
 
-                    EnhancedSheep enhancedsheep = new EnhancedSheep(this.world);
+                    EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
                     enhancedsheep.setGrowingAge(0);
                     int[] babyGenes = getLambGenes();
                     enhancedsheep.setGenes(babyGenes);
@@ -282,7 +289,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
                     enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
                     enhancedsheep.setGrowingAge(-24000);
                     enhancedsheep.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-                    this.world.spawnEntity(enhancedsheep);
+                    this.world.addEntity(enhancedsheep);
 
                 }
             }
@@ -302,7 +309,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         return SoundEvents.ENTITY_SHEEP_DEATH;
     }
 
-    protected void playStepSound(BlockPos pos, IBlockState blockIn) {
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.ENTITY_SHEEP_STEP, 0.15F, 1.0F);
     }
 
@@ -415,7 +422,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
                     } else {
                         ret.add(new ItemStack(Blocks.BROWN_WOOL));
                     }
-                }else if ((genes[0] == 2 || genes[1] == 2) && getFleeceDyeColour() == EnumDyeColor.WHITE) {
+                }else if ((genes[0] == 2 || genes[1] == 2) && getFleeceDyeColour() == DyeColor.WHITE) {
                         ret.add(new ItemStack(Blocks.LIGHT_GRAY_WOOL));
                 }else {
                     switch (this.getFleeceDyeColour()) {
@@ -504,7 +511,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         return sharedGenesArray;
     }
 
-    public EntityAgeable createChild(EntityAgeable ageable) {
+    public AgeableEntity createChild(AgeableEntity ageable) {
         this.mateGenes = ((EnhancedSheep) ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
@@ -710,14 +717,14 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
 
     @Override
-    public boolean processInteract(EntityPlayer entityPlayer, EnumHand hand) {
+    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
         if (!this.world.isRemote) {
             if (item == Items.WATER_BUCKET) {
-                this.setFleeceDyeColour(EnumDyeColor.WHITE);
-            } else if (item instanceof ItemDye) {
-                EnumDyeColor enumdyecolor = ((ItemDye)item).getDyeColor();
+                this.setFleeceDyeColour(DyeColor.WHITE);
+            } else if (item instanceof DyeItem) {
+                DyeColor enumdyecolor = ((DyeItem)item).getDyeColor();
                 if (enumdyecolor != this.getFleeceDyeColour()) {
                     this.setFleeceDyeColour(enumdyecolor);
                     if (!entityPlayer.abilities.isCreativeMode) {
@@ -743,57 +750,57 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         }
     }
 
-    public void writeAdditional(NBTTagCompound compound) {
+    public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
-        compound.setByte("Colour", (byte)this.getFleeceDyeColour().getId());
+        compound.putByte("Colour", (byte)this.getFleeceDyeColour().getId());
 
         //store this sheeps's genes
-        NBTTagList geneList = new NBTTagList();
+        ListNBT geneList = new ListNBT();
         for (int i = 0; i < genes.length; i++) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("Gene", genes[i]);
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Gene", genes[i]);
             geneList.add(nbttagcompound);
         }
-        compound.setTag("Genes", geneList);
+        compound.put("Genes", geneList);
 
         //store this sheeps's mate's genes
-        NBTTagList mateGeneList = new NBTTagList();
+        ListNBT mateGeneList = new ListNBT();
         for (int i = 0; i < mateGenes.length; i++) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("Gene", mateGenes[i]);
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Gene", mateGenes[i]);
             mateGeneList.add(nbttagcompound);
         }
-        compound.setTag("FatherGenes", mateGeneList);
-        compound.setFloat("CoatLength", this.getCoatLength());
+        compound.put("FatherGenes", mateGeneList);
+        compound.putFloat("CoatLength", this.getCoatLength());
 
-        compound.setBoolean("Pregnant", this.pregnant);
-        compound.setInt("Gestation", this.gestationTimer);
+        compound.putBoolean("Pregnant", this.pregnant);
+        compound.putInt("Gestation", this.gestationTimer);
 
     }
 
     /**
      * (abstract) Protected helper method to read subclass entity assets from NBT.
      */
-    public void readAdditional(NBTTagCompound compound) {
+    public void readAdditional(CompoundNBT compound) {
 
         currentCoatLength = compound.getInt("CoatLength");
         this.setCoatLength(currentCoatLength);
 
         super.readAdditional(compound);
 
-        this.setFleeceDyeColour(EnumDyeColor.byId(compound.getByte("Colour")));
+        this.setFleeceDyeColour(DyeColor.byId(compound.getByte("Colour")));
 
-        NBTTagList geneList = compound.getList("Genes", 10);
+        ListNBT geneList = compound.getList("Genes", 10);
         for (int i = 0; i < geneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = geneList.getCompound(i);
+            CompoundNBT nbttagcompound = geneList.getCompound(i);
             int gene = nbttagcompound.getInt("Gene");
             genes[i] = gene;
         }
 
-        NBTTagList mateGeneList = compound.getList("FatherGenes", 10);
+        ListNBT mateGeneList = compound.getList("FatherGenes", 10);
         for (int i = 0; i < mateGeneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = mateGeneList.getCompound(i);
+            CompoundNBT nbttagcompound = mateGeneList.getCompound(i);
             int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
@@ -851,8 +858,8 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
     @Nullable
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata, @Nullable NBTTagCompound itemNbt) {
-        livingdata = super.onInitialSpawn(difficulty, livingdata, itemNbt);
+    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+        livingdata = super.onInitialSpawn(world, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
@@ -869,7 +876,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         setCoatLength(this.currentCoatLength);
 
         //"White" is considered no dye
-        this.setFleeceDyeColour(EnumDyeColor.WHITE);
+        this.setFleeceDyeColour(DyeColor.WHITE);
 
         return livingdata;
     }
@@ -1225,7 +1232,7 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         return this.genes;
     }
 
-    public static class GroupData implements IEntityLivingData {
+    public static class GroupData implements ILivingEntityData {
 
         public int[] groupGenes;
 

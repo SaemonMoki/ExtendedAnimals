@@ -1,23 +1,11 @@
 package mokiyoki.enhancedanimals.items;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
-import net.minecraft.item.ItemFood;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.world.World;
+import net.minecraft.item.Item;
 
-public class RawChicken extends ItemFood {
+public class RawChicken extends Item {
 
-    public RawChicken(Properties props, int amount, float saturation, boolean isMeat) {
-        super(amount, saturation, isMeat, props);
-    }
-
-    @Override
-    protected void onFoodEaten(ItemStack stack, World worldIn, EntityPlayer player) {
-        if(!worldIn.isRemote) {
-            player.addPotionEffect(new PotionEffect(MobEffects.HUNGER, 30*20, 5, false, true));
-        }
+    public RawChicken(Item.Properties props) {
+        super(props);
     }
 
 }

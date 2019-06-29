@@ -1,24 +1,18 @@
 package mokiyoki.enhancedanimals.renderer;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.LayeredTexture;
+import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraft.client.renderer.texture.NativeImage;
-import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,7 +20,7 @@ import java.util.List;
  * Created by saemon on 8/09/2018.
  */
 @OnlyIn(Dist.CLIENT)
-public class EnhancedLayeredTexture extends AbstractTexture {
+public class EnhancedLayeredTexture extends Texture {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final List<String> layeredTextureNames;
@@ -71,7 +65,7 @@ public class EnhancedLayeredTexture extends AbstractTexture {
                 }
             while(true) {
                 if (!iterator.hasNext()) {
-                    TextureUtil.allocateTexture(this.getGlTextureId(), nativeimage.getWidth(), nativeimage.getHeight());
+                    TextureUtil.prepareImage(this.getGlTextureId(), nativeimage.getWidth(), nativeimage.getHeight());
                     nativeimage.uploadTextureSub(0, 0, 0, false);
                     break;
                 }

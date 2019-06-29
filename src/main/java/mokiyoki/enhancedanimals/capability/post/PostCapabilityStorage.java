@@ -1,9 +1,9 @@
 package mokiyoki.enhancedanimals.capability.post;
 
-import net.minecraft.nbt.INBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
@@ -19,34 +19,34 @@ public class PostCapabilityStorage implements IStorage<IPostCapability> {
 
     @Nullable
     @Override
-    public INBTBase writeNBT(Capability<IPostCapability> capability, IPostCapability instance, EnumFacing side) {
-        NBTTagCompound compound = new NBTTagCompound();
+    public INBT writeNBT(Capability<IPostCapability> capability, IPostCapability instance, Direction side) {
+        CompoundNBT compound = new CompoundNBT();
         List<BlockPos> allPostBlockPos = instance.getAllPostPos();
 
-        NBTTagList nbttaglist = new NBTTagList();
+        ListNBT nbttaglist = new ListNBT();
 
         for (BlockPos blockPos : allPostBlockPos)
         {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("X", blockPos.getX());
-            nbttagcompound.setInt("Y", blockPos.getY());
-            nbttagcompound.setInt("Z", blockPos.getZ());
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("X", blockPos.getX());
+            nbttagcompound.putInt("Y", blockPos.getY());
+            nbttagcompound.putInt("Z", blockPos.getZ());
             nbttaglist.add(nbttagcompound);
         }
 
-        compound.setTag("PostsPos", nbttaglist);
+        compound.put("PostsPos", nbttaglist);
 
         return compound;
     }
 
     @Override
-    public void readNBT(Capability<IPostCapability> capability, IPostCapability instance, EnumFacing side, INBTBase nbt) {
-        NBTTagCompound compound = (NBTTagCompound) nbt;
+    public void readNBT(Capability<IPostCapability> capability, IPostCapability instance, Direction side, INBT nbt) {
+        CompoundNBT compound = (CompoundNBT) nbt;
         List<BlockPos> allPostBlockPos = new ArrayList<BlockPos>();
-        NBTTagList nbttaglist = compound.getList("PostsPos", 10);
+        ListNBT nbttaglist = compound.getList("PostsPos", 10);
 
         for (int i = 0; i < nbttaglist.size(); ++i) {
-            NBTTagCompound nbttagcompound = nbttaglist.getCompound(i);
+            CompoundNBT nbttagcompound = nbttaglist.getCompound(i);
             BlockPos blockPosOfPost = new BlockPos(nbttagcompound.getInt("X"), nbttagcompound.getInt("Y"), nbttagcompound.getInt("Z"));
             allPostBlockPos.add(blockPosOfPost);
         }

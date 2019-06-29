@@ -1,32 +1,33 @@
 package mokiyoki.enhancedanimals.ai;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ECSandBath  extends EntityAIBase
+import java.util.EnumSet;
+
+public class ECSandBath  extends Goal
 {
     /** The entity owner of this AITask */
-    private final EntityLiving sandBatherEntity;
+    private final MobEntity sandBatherEntity;
     /** The world the sand bather entity is bathing from */
     private final World entityWorld;
     /** Number of ticks since the entity started to bathe */
     int sandBathTimer;
     //TODO needs to tell what kind of sand they are bathing on
 
-    public void getSandType()
-    {
+    public void getSandType() {
 
     }
 
-    public ECSandBath(EntityLiving sandBatherEntityIn)
-    {
+    public ECSandBath(MobEntity sandBatherEntityIn) {
         this.sandBatherEntity = sandBatherEntityIn;
         this.entityWorld = sandBatherEntityIn.world;
-        this.setMutexBits(7);
+        this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.JUMP));
     }
 
     /**

@@ -1,7 +1,11 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.*;
+import net.minecraft.entity.passive.ChickenEntity;
+import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.passive.RabbitEntity;
+import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -15,27 +19,27 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void replaceVanillaMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
-        if (entity instanceof EntityChicken) {
+        if (entity instanceof ChickenEntity) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
             }
         }
-        if (entity instanceof EntityRabbit) {
+        if (entity instanceof RabbitEntity) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
             }
         }
-        if (entity instanceof EntityLlama) {
+        if (entity instanceof LlamaEntity) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
             }
         }
-        if (entity instanceof EntitySheep) {
+        if (entity instanceof SheepEntity) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
             }
         }
-        if (entity instanceof EntityCow) {
+        if (entity instanceof CowEntity) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
             }

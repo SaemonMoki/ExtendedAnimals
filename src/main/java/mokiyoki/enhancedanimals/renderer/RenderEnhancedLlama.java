@@ -4,8 +4,8 @@ import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.model.ModelEnhancedLlama;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -16,14 +16,14 @@ import java.util.Map;
  * Created by saemon on 2/09/2018.
  */
 @OnlyIn(Dist.CLIENT)
-public class RenderEnhancedLlama extends RenderLiving<EnhancedLlama>
+public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhancedLlama<EnhancedLlama>>
 {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_LLAMA_TEXTURE_LOCATION = "eanimod:textures/entities/llama/";
 
-    public RenderEnhancedLlama(RenderManager render)
+    public RenderEnhancedLlama(EntityRendererManager render)
     {
-        super(render, new ModelEnhancedLlama(), 0.75F);
+        super(render, new ModelEnhancedLlama<>(), 0.75F);
     }
 
     /**

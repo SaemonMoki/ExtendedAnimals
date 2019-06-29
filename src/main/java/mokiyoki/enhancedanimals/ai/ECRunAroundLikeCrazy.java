@@ -2,12 +2,14 @@ package mokiyoki.enhancedanimals.ai;
 
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
-public class ECRunAroundLikeCrazy extends EntityAIBase {
+import java.util.EnumSet;
+
+public class ECRunAroundLikeCrazy extends Goal {
     private final EnhancedLlama llama;
     private final double speed;
     private double targetX;
@@ -17,7 +19,7 @@ public class ECRunAroundLikeCrazy extends EntityAIBase {
     public ECRunAroundLikeCrazy(EnhancedLlama horse, double speedIn) {
         this.llama = horse;
         this.speed = speedIn;
-        this.setMutexBits(1);
+        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
     }
 
     /**
@@ -63,11 +65,11 @@ public class ECRunAroundLikeCrazy extends EntityAIBase {
                 return;
             }
 
-            if (entity instanceof EntityPlayer) {
+            if (entity instanceof PlayerEntity) {
                 int i = this.llama.getTemper();
                 int j = this.llama.getMaxTemper();
-                if (j > 0 && this.llama.getRNG().nextInt(j) < i && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(llama, (EntityPlayer)entity)) {
-                    this.llama.setTamedBy((EntityPlayer)entity);
+                if (j > 0 && this.llama.getRNG().nextInt(j) < i && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(llama, (PlayerEntity)entity)) {
+                    this.llama.setTamedBy((PlayerEntity)entity);
                     return;
                 }
 

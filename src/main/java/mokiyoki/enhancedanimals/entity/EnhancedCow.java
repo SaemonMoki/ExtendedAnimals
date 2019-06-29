@@ -135,6 +135,8 @@ public class EnhancedCow extends AnimalEntity {
     private float maxBagSize;
     private float cowSize;
 
+    //TODO add achievements for breeding and slaying
+
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn);
 //        this.setSize(0.4F, 1F);

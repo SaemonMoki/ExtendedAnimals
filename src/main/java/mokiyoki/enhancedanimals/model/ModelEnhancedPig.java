@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.model;
 
-import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.model.ModelBase;
@@ -17,11 +16,19 @@ public class ModelEnhancedPig extends ModelBase {
     private final ModelRenderer cheeks;
     private final ModelRenderer snout;
     private final ModelRenderer mouth;
+    private final ModelRenderer tuskUL;
+    private final ModelRenderer tuskUR;
+    private final ModelRenderer tuskLL;
+    private final ModelRenderer tuskLR;
     private final ModelRenderer earL;
     private final ModelRenderer earR;
     private final ModelRenderer neck;
     private final ModelRenderer neckBigger;
     private final ModelRenderer body;
+    private final ModelRenderer bodyFat;
+    private final ModelRenderer maneBody;
+    private final ModelRenderer maneNeck;
+    private final ModelRenderer maneHead;
     private final ModelRenderer butt;
     private final ModelRenderer tail0;
     private final ModelRenderer tail1;
@@ -55,6 +62,26 @@ public class ModelEnhancedPig extends ModelBase {
         this.mouth.addBox(-1.0F, -5.0F, 0.0F, 2, 6, 1);
         this.mouth.setRotationPoint(0.0F, 1.0F, -4.0F);
 
+        this.tuskUL = new ModelRenderer(this, 69, 22);
+        this.tuskUL.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1);
+        this.tuskUL.setRotationPoint(1.0F, -3.75F, -2.5F);
+
+        this.tuskUR = new ModelRenderer(this, 69, 22);
+        this.tuskUR.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1);
+        this.tuskUR.setRotationPoint(-1.0F, -3.75F, -2.5F);
+
+        this.tuskLL = new ModelRenderer(this, 69, 22);
+        this.tuskLL.addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1);
+        this.tuskLL.addBox(-1.5F, 0.0F, -0.5F, 1, 1, 1);
+        this.tuskLL.addBox(-0.5F, 0.0F, -0.5F, 1, 1, 1);
+        this.tuskLL.setRotationPoint(2.0F, -6.5F, 0.5F);
+
+        this.tuskLR = new ModelRenderer(this, 69, 22);
+        this.tuskLR.addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1);
+        this.tuskLR.addBox(0.5F, 0.0F, -0.5F, 1, 1, 1);
+        this.tuskLR.addBox(-0.5F, 0.0F, -0.5F, 1, 1, 1);
+        this.tuskLR.setRotationPoint(-2.0F, -6.5F, 0.5F);
+
         this.earL = new ModelRenderer(this, 46, 0);
         this.earL.addBox(0.0F, -3.0F, 0.0F, 4, 3, 1);
         this.earL.setRotationPoint(3.5F, -3.0F, 0.0F);
@@ -74,6 +101,25 @@ public class ModelEnhancedPig extends ModelBase {
         this.body = new ModelRenderer(this, 0, 23);
         this.body.addBox(-5.0F, 0.0F, 0.0F, 10, 11, 10);
         this.body.setRotationPoint(0.0F, 18.1F, -4.0F);
+
+        this.bodyFat = new ModelRenderer(this, 0, 23);
+        this.bodyFat.addBox(-5.0F, 0.0F, 0.0F, 10, 11, 10, 1.0F);
+        this.bodyFat.setRotationPoint(0.0F, 18.1F, -4.0F);
+
+        this.maneBody = new ModelRenderer(this, 49, 56);
+        this.maneBody.addBox(-2.5F, 0.0F, 0.0F, 3, 15, 4);
+        this.maneBody.addBox(-0.5F, 0.0F, 0.0F, 3, 15, 4);
+        this.maneBody.setRotationPoint(0.0F, 9.5F, -11.0F);
+
+        this.maneNeck = new ModelRenderer(this, 49, 56);
+        this.maneNeck.addBox(-2.5F, 0.0F, 0.0F, 3, 7, 4);
+        this.maneNeck.addBox(-0.5F, 0.0F, 0.0F, 3, 7, 4);
+        this.maneNeck.setRotationPoint(0.0F, 9.5F, -11.0F);
+
+        this.maneHead = new ModelRenderer(this, 49, 56);
+        this.maneHead.addBox(-2.5F, 0.0F, 0.0F, 3, 6, 4);
+        this.maneHead.addBox(-0.5F, 0.0F, 0.0F, 3, 6, 4);
+        this.maneHead.setRotationPoint(0.0F, 9.5F, -11.0F);
 
         this.butt = new ModelRenderer(this, 0, 53);
         this.butt.addBox(-4.5F, 0.0F, 0.0F, 9, 5, 9);
@@ -131,6 +177,12 @@ public class ModelEnhancedPig extends ModelBase {
         this.tail3.addChild(this.tail4);
         this.tail4.addChild(this.tail5);
 
+        //TODO find a better system then child/parent
+        this.snout.addChild(this.tuskUL);
+        this.snout.addChild(this.tuskUR);
+        this.mouth.addChild(this.tuskLL);
+        this.mouth.addChild(this.tuskLR);
+
     }
 
     private void setRotationOffset(ModelRenderer renderer, float x, float y, float z) {
@@ -185,7 +237,7 @@ public class ModelEnhancedPig extends ModelBase {
             GlStateManager.translatef(0.0F, -1.5F + 1.5F/size, 0.0F);
 
             this.neck.render(scale);
-            this.neckBigger.render(scale);
+//            this.neckBigger.render(scale);
             this.body.render(scale);
             this.butt.render(scale);
             this.tail0.render(scale);
@@ -193,6 +245,8 @@ public class ModelEnhancedPig extends ModelBase {
             this.leg2.render(scale);
             this.leg3.render(scale);
             this.leg4.render(scale);
+
+//            this.maneBody.render(scale);
 
             GlStateManager.popMatrix();
         }
@@ -206,6 +260,7 @@ public class ModelEnhancedPig extends ModelBase {
         this.neckBigger.rotateAngleX = ((float)Math.PI / 2F);
         this.body.rotateAngleX = ((float)Math.PI / 2F);
         this.butt.rotateAngleX = ((float)Math.PI / 2F);
+        this.maneBody.rotateAngleX = ((float)Math.PI / 2F);
 
         this.earL.rotateAngleX = -((float)Math.PI / 2F);
         this.earR.rotateAngleX = -((float)Math.PI / 2F);
@@ -229,6 +284,16 @@ public class ModelEnhancedPig extends ModelBase {
         this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
 
         this.mouth.rotateAngleX = -0.12F;
+
+        this.tuskUL.rotateAngleX = -((float)Math.PI / 1.5F);
+        this.tuskUR.rotateAngleX = -((float)Math.PI / 1.5F);
+        this.tuskUL.rotateAngleY = -((float)Math.PI / 2.5F);
+        this.tuskUR.rotateAngleY = ((float)Math.PI / 2.5F);
+
+        this.tuskLL.rotateAngleX = -((float)Math.PI / 1.5F);
+        this.tuskLR.rotateAngleX = -((float)Math.PI / 1.5F);
+        this.tuskLL.rotateAngleY = ((float)Math.PI / 4F);
+        this.tuskLR.rotateAngleY = -((float)Math.PI / 4F);
 
         copyModelAngles(neck, neckBigger);
 
@@ -262,12 +327,12 @@ public class ModelEnhancedPig extends ModelBase {
             snoutLength = snoutLength1 + snoutLength2;
         }
 
-        if (sharedGenes[20] == 1 || sharedGenes[21] == 1){
+        if (sharedGenes[42] == 1 || sharedGenes[43] == 1){
             if (snoutLength >= -0.12F){
                 snoutLength = snoutLength - 0.01F;
             }
-        }else if (sharedGenes[20] != 2 && sharedGenes[21] != 2){
-            if (sharedGenes[20] == 3 || sharedGenes[21] == 3){
+        }else if (sharedGenes[42] != 2 && sharedGenes[43] != 2){
+            if (sharedGenes[42] == 3 || sharedGenes[43] == 3){
                 snoutLength = snoutLength + 0.01F;
             }else{
                 snoutLength = snoutLength + 0.02F;
@@ -278,8 +343,15 @@ public class ModelEnhancedPig extends ModelBase {
             snoutLength = (snoutLength + 0.11F) / 2.0F;
         }
 
+//        snoutLength = 0.19F;
+
         this.snout.offsetY = snoutLength;
         this.snout.rotateAngleX = -snoutLength;
+
+        this.tuskUL.offsetY = (0.32F - snoutLength)/2.0F;
+        this.tuskUR.offsetY = (0.32F - snoutLength)/2.0F;
+        this.tuskLL.offsetY = (0.32F - snoutLength)/2.0F;
+        this.tuskLR.offsetY = (0.32F - snoutLength)/2.0F;
 
         float inbreedingFactor = 0.0F;
 

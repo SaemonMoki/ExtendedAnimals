@@ -504,14 +504,14 @@ public class EnhancedPig extends AnimalEntity {
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata = super.onInitialSpawn(world, difficulty, spawnReason, livingdata, itemNbt);
+    public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
             spawnGenes = ((GroupData) livingdata).groupGenes;
         } else {
-            spawnGenes = createInitialGenes();
+            spawnGenes = createInitialGenes(inWorld);
             livingdata = new GroupData(spawnGenes);
         }
 
@@ -522,11 +522,11 @@ public class EnhancedPig extends AnimalEntity {
         return livingdata;
     }
 
-    private int[] createInitialGenes() {
+    private int[] createInitialGenes(IWorld inWorld) {
         int[] initialGenes = new int[GENES_LENGTH];
         //TODO create biome WTC variable [hot and dry biomes, hot and wet biomes, cold biomes] WTC is all others
         int wildType = 2;
-        Biome biome = this.world.getBiome(new BlockPos(this));
+        Biome biome = inWorld.getBiome(new BlockPos(this));
 
         if (biome.getDefaultTemperature() >= 0.9F) // hot and wet (jungle)
         {

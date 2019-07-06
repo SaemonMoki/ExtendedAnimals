@@ -221,6 +221,7 @@ public class EnhancedChicken extends AnimalEntity {
         super.updateAITasks();
     }
 
+    @Override
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
@@ -295,8 +296,8 @@ public class EnhancedChicken extends AnimalEntity {
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 
-    public void livingTick()
-    {
+    @Override
+    public void livingTick() {
         super.livingTick();
         this.oFlap = this.wingRotation;
         this.oFlapSpeed = this.destPos;
@@ -1635,6 +1636,7 @@ public class EnhancedChicken extends AnimalEntity {
     }
 
 
+    @Override
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
@@ -1660,6 +1662,7 @@ public class EnhancedChicken extends AnimalEntity {
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
+    @Override
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
 
@@ -1764,14 +1767,14 @@ public class EnhancedChicken extends AnimalEntity {
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata = super.onInitialSpawn(world, difficulty, spawnReason, livingdata, itemNbt);
+    public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof EnhancedChicken.GroupData) {
             spawnGenes = ((GroupData)livingdata).groupGenes;
         } else {
-            spawnGenes = createInitialGenes();
+            spawnGenes = createInitialGenes(inWorld);
             livingdata = new GroupData(spawnGenes);
         }
 
@@ -1781,12 +1784,12 @@ public class EnhancedChicken extends AnimalEntity {
         return livingdata;
     }
 
-    private int[] createInitialGenes() {
+    private int[] createInitialGenes(IWorld inWorld) {
         int[] initialGenes = new int[Reference.CHICKEN_GENES_LENGTH];
 
             //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
             int wildType = 0;
-            Biome biome = this.world.getBiome(new BlockPos(this));
+            Biome biome = inWorld.getBiome(new BlockPos(this));
 
             if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
             {

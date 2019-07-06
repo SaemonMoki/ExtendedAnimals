@@ -1,4 +1,4 @@
-package mokiyoki.enhancedanimals.renderer;
+package mokiyoki.enhancedanimals.renderer.texture;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.TextureUtil;
@@ -23,9 +23,11 @@ import java.util.List;
 public class EnhancedLayeredTexture extends Texture {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final List<String> layeredTextureNames;
-    private  int dyeRGB = 0;
-    private String modLocation = "";
+    protected final List<String> layeredTextureNames;
+    protected  int dyeRGB = 0;
+    protected  int cowBlackRGB = 0;
+    protected  int cowRedRGB = 0;
+    protected String modLocation = "";
 
     public EnhancedLayeredTexture(String modLocation, float[] dyeRGB, String... textureNames) {
         this.layeredTextureNames = Lists.newArrayList(textureNames);
@@ -42,6 +44,17 @@ public class EnhancedLayeredTexture extends Texture {
             int i1 = (int)(dyeRGB[0] * 255.0F);
 
             this.dyeRGB = j << 24 | k << 16 | l << 8 | i1 << 0;
+            this.cowBlackRGB = this.dyeRGB;
+
+            if(dyeRGB.length>3) {
+                int j2 = (int)(0.4 * 255.0F);
+                int k2 = (int)(dyeRGB[5] * 255.0F);
+                int l2 = (int)(dyeRGB[4] * 255.0F);
+                int i2 = (int)(dyeRGB[3] * 255.0F);
+
+                this.cowRedRGB = j2 << 24 | k2 << 16 | l2 << 8 | i2 << 0;
+            }
+
         }
 
     }
@@ -57,12 +70,24 @@ public class EnhancedLayeredTexture extends Texture {
 
         ) {
             if(s.startsWith("c_") && dyeRGB!=0) {
-                    for(int i = 0; i < nativeimage.getHeight(); ++i) {
-                        for (int j = 0; j < nativeimage.getWidth(); ++j) {
-                            blendDye(j, i, dyeRGB, nativeimage);
-                        }
+                for(int i = 0; i < nativeimage.getHeight(); ++i) {
+                    for (int j = 0; j < nativeimage.getWidth(); ++j) {
+                        blendDye(j, i, dyeRGB, nativeimage);
                     }
                 }
+            } else if(s.startsWith("r_") && cowRedRGB!=0) {
+                for(int i = 0; i < nativeimage.getHeight(); ++i) {
+                    for (int j = 0; j < nativeimage.getWidth(); ++j) {
+                        blendDye(j, i, cowRedRGB, nativeimage);
+                    }
+                }
+            } else if(s.startsWith("b_") && cowBlackRGB!=0) {
+                for(int i = 0; i < nativeimage.getHeight(); ++i) {
+                    for (int j = 0; j < nativeimage.getWidth(); ++j) {
+                        blendDye(j, i, cowBlackRGB, nativeimage);
+                    }
+                }
+            }
             while(true) {
                 if (!iterator.hasNext()) {
                     TextureUtil.prepareImage(this.getGlTextureId(), nativeimage.getWidth(), nativeimage.getHeight());
@@ -81,6 +106,18 @@ public class EnhancedLayeredTexture extends Texture {
                             for(int i = 0; i < nativeimage1.getHeight(); ++i) {
                                 for (int j = 0; j < nativeimage1.getWidth(); ++j) {
                                     blendDye(j, i, dyeRGB, nativeimage1);
+                                }
+                            }
+                        } else if(s.startsWith("r_") && cowRedRGB!=0) {
+                            for(int i = 0; i < nativeimage.getHeight(); ++i) {
+                                for (int j = 0; j < nativeimage.getWidth(); ++j) {
+                                    blendDye(j, i, cowRedRGB, nativeimage);
+                                }
+                            }
+                        } else if(s.startsWith("b_") && cowBlackRGB!=0) {
+                            for(int i = 0; i < nativeimage.getHeight(); ++i) {
+                                for (int j = 0; j < nativeimage.getWidth(); ++j) {
+                                    blendDye(j, i, cowBlackRGB, nativeimage);
                                 }
                             }
                         }
@@ -115,18 +152,6 @@ public class EnhancedLayeredTexture extends Texture {
             float f10 = (f1 * 255 ) * f5;
             float f11 = (f2 * 255 ) * f6;
             float f12 = (f3 * 255 ) * f7;
-
-//            if (f10 > 1.0F) {
-//                f10 = 1.0F;
-//            }
-//
-//            if (f11 > 1.0F) {
-//                f11 = 1.0F;
-//            }
-//
-//            if (f12 > 1.0F) {
-//                f12 = 1.0F;
-//            }
 
             int j = (int)(originalAlpha * 255.0F);
             int k = (int)(f10);

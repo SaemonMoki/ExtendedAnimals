@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.renderer;
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.model.ModelEnhancedSheep;
+import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;

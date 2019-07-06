@@ -141,6 +141,10 @@ public class EnhancedCow extends AnimalEntity {
     private float maxBagSize;
     private float cowSize;
 
+    private boolean aiConfigured = false;
+
+    private float[] cowColouration = null;
+
     //TODO add achievements for breeding and slaying
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
@@ -159,12 +163,7 @@ public class EnhancedCow extends AnimalEntity {
     protected void registerGoals() {
         this.eatGrassGoal = new EatGrassGoal(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new PanicGoal(this, 2.0D));
-        this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new TemptGoal(this, 1.25D, TEMPTATION_ITEMS, false));
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25D));
         this.goalSelector.addGoal(5, this.eatGrassGoal);
-        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
     }
@@ -220,9 +219,13 @@ public class EnhancedCow extends AnimalEntity {
     protected float getSoundVolume() {
         return 0.4F;
     }
-//
+
+
 //    @Nullable
-//    protected ResourceLocation getLootTable() { return LootTableList.ENTITIES_COW; }
+//    @Override
+//    protected ResourceLocation getLootTable() {
+//        return LootTableList.ENTITIES_COW;
+//    }
 
     protected void registerAttributes() {
         super.registerAttributes();
@@ -709,6 +712,41 @@ public class EnhancedCow extends AnimalEntity {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public float[] getRgb() {
+        if (cowColouration == null) {
+            cowColouration = new float[6];
+            int[] genesForText = getSharedGenes();
+
+            //standard dilution
+            if (genesForText[2] == 2 || genesForText[3] == 2){
+                if (genesForText[2] == 2 && genesForText[3] == 2){
+                    //full dilute is add 20
+                }else{
+                    //semi dilute is add 10 to everything
+                }
+            } //not dilute
+
+            //chocolate
+            if (genesForText[10] == 2 && genesForText[11] == 2){
+                //make chocolate version possibly add variations to exact colour add 10 to R, 7 to G, and 7 to B
+
+            }
+
+            //TODO TEMP AF
+            //black
+            cowColouration[0] = 1.0F;
+            cowColouration[1] = 1.0F;
+            cowColouration[2] = 1.0F;
+
+            //red
+            cowColouration[3] = 1.0F;
+            cowColouration[4] = 1.0F;
+            cowColouration[5] = 1.0F;
+        }
+        return cowColouration;
+    }
+
     //TODO finish milk calculations and such
     private void setMaxBagSize(){
         float maxBagSize = 0;
@@ -875,6 +913,7 @@ public class EnhancedCow extends AnimalEntity {
         setSharedGenes(genes);
         setCowSize();
         setMaxBagSize();
+        configureAI();
 
     }
 
@@ -938,6 +977,7 @@ public class EnhancedCow extends AnimalEntity {
         setCowSize();
         setMaxBagSize();
 
+        configureAI();
         return livingdata;
     }
 
@@ -1618,6 +1658,45 @@ public class EnhancedCow extends AnimalEntity {
         }
 
         return initialGenes;
+    }
+
+    private void configureAI() {
+        if (!aiConfigured) {
+            Double speed = 1.0D;
+
+            if (this.cowSize > 1.2F) {
+                speed++;
+                speed = speed + 0.1;
+            }
+
+            if (this.cowSize < 0.8F) {
+                speed = speed - 0.1;
+            }
+
+            int bodyShape = 0;
+
+            for (int i = 1; i < genes[54]; i++){
+                bodyShape++;
+            }
+            for (int i = 1; i < genes[55]; i++){
+                bodyShape++;
+            }
+
+            if (genes[26] == 1 || genes[27] == 1) {
+                speed = speed *0.75;
+            }
+
+            if (bodyShape == 4) {
+                speed = speed - 0.1;
+            }
+
+            this.goalSelector.addGoal(1, new PanicGoal(this, speed*1.5D));
+            this.goalSelector.addGoal(2, new BreedGoal(this, speed));
+            this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.25D, TEMPTATION_ITEMS, false));
+            this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
+            this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, speed));
+        }
+        aiConfigured = true;
     }
 
     public void setGenes(int[] genes) {

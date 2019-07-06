@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.renderer;
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
+import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -30,8 +31,14 @@ public class RenderEnhancedCow extends MobRenderer<EnhancedCow, ModelEnhancedCow
 
         if (resourcelocation == null)
         {
+
+            float[] colourRGB = entity.getRgb();
+            if (colourRGB[0] == 1.0 && colourRGB[1] == 1.0 && colourRGB[2] == 1.0) {
+                colourRGB = null;
+            }
+
             resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, null, entity.getVariantTexturePaths()));
+            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, colourRGB, entity.getVariantTexturePaths()));
             LAYERED_LOCATION_CACHE.put(s, resourcelocation);
         }
 

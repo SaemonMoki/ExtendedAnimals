@@ -162,7 +162,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private int sheepTimer;
     private EatGrassGoal eatGrassGoal;
 
-    protected void initEntityAI() {
+    @Override
+    protected void registerGoals() {
         this.eatGrassGoal = new EatGrassGoal(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));

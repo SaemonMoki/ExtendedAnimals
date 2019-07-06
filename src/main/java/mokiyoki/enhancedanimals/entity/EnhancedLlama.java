@@ -152,6 +152,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.setPathPriority(PathNodeType.WATER, 0.0F);
     }
 
+    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new ECRunAroundLikeCrazy(this, 1.2D));

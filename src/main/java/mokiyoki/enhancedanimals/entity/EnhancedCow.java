@@ -155,6 +155,7 @@ public class EnhancedCow extends AnimalEntity {
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
+    @Override
     protected void registerGoals() {
         this.eatGrassGoal = new EatGrassGoal(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));

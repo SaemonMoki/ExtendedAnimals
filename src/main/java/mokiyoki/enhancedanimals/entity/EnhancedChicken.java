@@ -197,8 +197,8 @@ public class EnhancedChicken extends AnimalEntity {
         this.setPathPriority(PathNodeType.WATER, 0.0F);
     }
 
-    protected void initEntityAI()
-    {
+    @Override
+    protected void registerGoals() {
         this.entityAIEatGrass = new EatGrassGoal(this);
         this.ecSandBath = new ECSandBath(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));
@@ -207,8 +207,8 @@ public class EnhancedChicken extends AnimalEntity {
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.0D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(5, new ECWanderAvoidWater(this, 1.0D));
+        this.goalSelector.addGoal(5, this.entityAIEatGrass);
         this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(7, new EatGrassGoal(this));//TODO make an animation that suits chickens
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
         this.goalSelector.addGoal(9, new ECRoost(this));
 

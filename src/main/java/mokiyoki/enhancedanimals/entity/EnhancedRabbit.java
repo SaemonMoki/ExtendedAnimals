@@ -214,7 +214,8 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.setMovementSpeed(0.0D);
     }
 
-    protected void initEntityAI() {
+    @Override
+    protected void registerGoals() {
         this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedRabbit.AIPanic(this, 2.2D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 0.8D));

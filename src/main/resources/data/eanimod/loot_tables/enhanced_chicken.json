@@ -10,17 +10,18 @@
           "weight": 1,
           "functions": [
             {
-              "function": "set_count",
+              "function": "minecraft:set_count",
               "count": {
-                "min": 0,
-                "max": 2
+                "min": 0.0,
+                "max": 2.0,
+                "type": "minecraft:uniform"
               }
             },
             {
-              "function": "looting_enchant",
+              "function": "minecraft:looting_enchant",
               "count": {
-                "min": 0,
-                "max": 1
+                "min": 0.0,
+                "max": 1.0
               }
             }
           ]
@@ -38,22 +39,24 @@
           "weight": 1,
           "functions": [
             {
-              "function": "furnace_smelt",
+              "function": "minecraft:furnace_smelt",
               "conditions": [
                 {
-                  "condition": "entity_properties",
-                  "entity": "this",
-                  "properties": {
-                    "on_fire": true
-                  }
+                  "condition": "minecraft:entity_properties",
+                  "predicate": {
+                    "flags": {
+                      "is_on_fire": true
+                    }
+                  },
+                  "entity": "this"
                 }
               ]
             },
             {
-              "function": "looting_enchant",
+              "function": "minecraft:looting_enchant",
               "count": {
-                "min": 0,
-                "max": 1
+                "min": 0.0,
+                "max": 1.0
               }
             }
           ]
@@ -71,22 +74,24 @@
           "weight": 1,
           "functions": [
             {
-              "function": "furnace_smelt",
+              "function": "minecraft:furnace_smelt",
               "conditions": [
                 {
-                  "condition": "entity_properties",
-                  "entity": "this",
-                  "properties": {
-                    "on_fire": true
-                  }
+                  "condition": "minecraft:entity_properties",
+                  "predicate": {
+                    "flags": {
+                      "is_on_fire": true
+                    }
+                  },
+                  "entity": "this"
                 }
               ]
             },
             {
-              "function": "looting_enchant",
+              "function": "minecraft:looting_enchant",
               "count": {
-                "min": 0,
-                "max": 1
+                "min": 0.0,
+                "max": 1.0
               }
             }
           ]
@@ -104,22 +109,24 @@
           "weight": 1,
           "functions": [
             {
-              "function": "furnace_smelt",
+              "function": "minecraft:furnace_smelt",
               "conditions": [
                 {
-                  "condition": "entity_properties",
-                  "entity": "this",
-                  "properties": {
-                    "on_fire": true
-                  }
+                  "condition": "minecraft:entity_properties",
+                  "predicate": {
+                    "flags": {
+                      "is_on_fire": true
+                    }
+                  },
+                  "entity": "this"
                 }
               ]
             },
             {
-              "function": "looting_enchant",
+              "function": "minecraft:looting_enchant",
               "count": {
-                "min": 0,
-                "max": 1
+                "min": 0.0,
+                "max": 1.0
               }
             }
           ]
@@ -137,22 +144,24 @@
           "weight": 1,
           "functions": [
             {
-              "function": "furnace_smelt",
+              "function": "minecraft:furnace_smelt",
               "conditions": [
                 {
-                  "condition": "entity_properties",
-                  "entity": "this",
-                  "properties": {
-                    "on_fire": true
-                  }
+                  "condition": "minecraft:entity_properties",
+                  "predicate": {
+                    "flags": {
+                      "is_on_fire": true
+                    }
+                  },
+                  "entity": "this"
                 }
               ]
             },
             {
-              "function": "looting_enchant",
+              "function": "minecraft:looting_enchant",
               "count": {
-                "min": 0,
-                "max": 1
+                "min": 0.0,
+                "max": 1.0
               }
             }
           ]
@@ -170,22 +179,24 @@
           "weight": 1,
           "functions": [
             {
-              "function": "furnace_smelt",
+              "function": "minecraft:furnace_smelt",
               "conditions": [
                 {
-                  "condition": "entity_properties",
-                  "entity": "this",
-                  "properties": {
-                    "on_fire": true
-                  }
+                  "condition": "minecraft:entity_properties",
+                  "predicate": {
+                    "flags": {
+                      "is_on_fire": true
+                    }
+                  },
+                  "entity": "this"
                 }
               ]
             },
             {
-              "function": "looting_enchant",
+              "function": "minecraft:looting_enchant",
               "count": {
-                "min": 0,
-                "max": 1
+                "min": 0.0,
+                "max": 1.0
               }
             }
           ]
@@ -203,22 +214,24 @@
           "weight": 1,
           "functions": [
             {
-              "function": "furnace_smelt",
+              "function": "minecraft:furnace_smelt",
               "conditions": [
                 {
-                  "condition": "entity_properties",
-                  "entity": "this",
-                  "properties": {
-                    "on_fire": true
-                  }
+                  "condition": "minecraft:entity_properties",
+                  "predicate": {
+                    "flags": {
+                      "is_on_fire": true
+                    }
+                  },
+                  "entity": "this"
                 }
               ]
             },
             {
-              "function": "looting_enchant",
+              "function": "minecraft:looting_enchant",
               "count": {
-                "min": 0,
-                "max": 1
+                "min": 0.0,
+                "max": 1.0
               }
             }
           ]

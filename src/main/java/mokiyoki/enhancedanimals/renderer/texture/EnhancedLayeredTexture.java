@@ -108,13 +108,13 @@ public class EnhancedLayeredTexture extends Texture {
                                     blendDye(j, i, dyeRGB, nativeimage1);
                                 }
                             }
-                        } else if(s.startsWith("r_") && cowRedRGB!=0) {
+                        } else if(s1.startsWith("r_") && cowRedRGB!=0) {
                             for(int i = 0; i < nativeimage.getHeight(); ++i) {
                                 for (int j = 0; j < nativeimage.getWidth(); ++j) {
                                     blendDye(j, i, cowRedRGB, nativeimage);
                                 }
                             }
-                        } else if(s.startsWith("b_") && cowBlackRGB!=0) {
+                        } else if(s1.startsWith("b_") && cowBlackRGB!=0) {
                             for(int i = 0; i < nativeimage.getHeight(); ++i) {
                                 for (int j = 0; j < nativeimage.getWidth(); ++j) {
                                     blendDye(j, i, cowBlackRGB, nativeimage);

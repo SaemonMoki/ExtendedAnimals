@@ -67,13 +67,13 @@ public class EnhancedCow extends AnimalEntity {
     };
 
     private static final String[] COW_TEXTURES_RED = new String[] {
-            "", "red_solid.png", "red_shaded.png"
-              , "red_solid.png", "red_shaded_thin.png"
+            "", "r_solid.png", "r_shaded.png"
+              , "r_solid.png", "r_shaded_thin.png"
     };
 
     private static final String[] COW_TEXTURES_BLACK = new String[] {
-            "", "black_wildtype.png", "black_wildtype_darker1.png", "black_wildtype_dark.png", "black_solid.png", "black_brindle.png"
-              , "black_wildtype_thin.png", "black_wildtype_darker1_thin.png", "black_wildtype_dark_thin.png", "black_solid.png", "black_brindle.png"
+            "", "b_wildtype.png", "b_wildtype_darker1.png", "b_wildtype_dark.png", "b_solid.png", "b_brindle.png"
+              , "b_wildtype_thin.png", "b_wildtype_darker1_thin.png", "b_wildtype_dark_thin.png", "b_solid.png", "b_brindle.png"
     };
 
     private static final String[] COW_TEXTURES_SKIN = new String[] {
@@ -718,31 +718,84 @@ public class EnhancedCow extends AnimalEntity {
             cowColouration = new float[6];
             int[] genesForText = getSharedGenes();
 
+            float blackR = 0.0588F;
+            float blackG = 0.0275F;
+            float blackB = 0.0275F;
+
+            float redR = 0.5255F;
+            float redG = 0.3089F;
+            float redB = 0.1608F;
+
+
+            if (genesForText[4] == 3 || genesForText[5] == 3) {
+                redR = 0.8863F;
+                redG = 0.8588F;
+                redB = 0.8078F;
+            }
+
             //standard dilution
-            if (genesForText[2] == 2 || genesForText[3] == 2){
-                if (genesForText[2] == 2 && genesForText[3] == 2){
-                    //full dilute is add 20
+
+            if (genesForText[2] == 1 || genesForText[3] == 1) {
+                if (genesForText[2] == 1 && genesForText[3] == 1) {
+                    blackR = 0.0588F;
+                    blackG = 0.0275F;
+                    blackB = 0.0275F;
+
+                    redR = 0.5255F;
+                    redG = 0.3089F;
+                    redB = 0.1608F;
                 }else{
-                    //semi dilute is add 10 to everything
+                    blackR = 0.4313F;
+                    blackG = 0.4039F;
+                    blackB = 0.3764F;
+
+                    redR = 0.7647F;
+                    redG = 0.6353F;
+                    redB = 0.4039F;
                 }
-            } //not dilute
+            }
 
             //chocolate
             if (genesForText[10] == 2 && genesForText[11] == 2){
-                //make chocolate version possibly add variations to exact colour add 10 to R, 7 to G, and 7 to B
+                blackR = blackR + 0.1F;
+                blackG = blackG + 0.06F;
+                blackB = blackB + 0.06F;
 
+                redR = redR + 0.09F;
+                redG = redG + 0.08F;
+                redB = redB + 0.08F;
+            }
+
+            if (blackR > 1.0F) {
+                blackR = 1.0F;
+            }
+            if (blackG > 1.0F) {
+                blackG = 1.0F;
+            }
+            if (blackB > 1.0F) {
+                blackB = 1.0F;
+            }
+
+            if (redR > 1.0F) {
+                redR = 1.0F;
+            }
+            if (redG > 1.0F) {
+                redG = 1.0F;
+            }
+            if (redB > 1.0F) {
+                redB = 1.0F;
             }
 
             //TODO TEMP AF
             //black
-            cowColouration[0] = 1.0F;
-            cowColouration[1] = 1.0F;
-            cowColouration[2] = 1.0F;
+            cowColouration[0] = blackB;
+            cowColouration[1] = blackG;
+            cowColouration[2] = blackR;
 
             //red
-            cowColouration[3] = 1.0F;
-            cowColouration[4] = 1.0F;
-            cowColouration[5] = 1.0F;
+            cowColouration[3] = redB;
+            cowColouration[4] = redG;
+            cowColouration[5] = redR;
         }
         return cowColouration;
     }

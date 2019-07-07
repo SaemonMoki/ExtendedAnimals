@@ -59,7 +59,9 @@ public class EnhancedPig extends AnimalEntity {
             "pigbase.png", "solid_white.png", "solid_milk.png", "solid_cream.png", "solid_carmel.png", "solid_orange.png", "solid_ginger.png", "solid_red.png", "solid_brown.png"
     };
     private static final String[] PIG_TEXTURES_COATBLACK = new String[] {
-            "red", "black_solid.png", "black_wildtype.png", "black_brindle.png", "choc_wildtype.png"
+            "red", "black_solid.png", "black_wildtype.png", "black_brindle.png", "black_brindlesmall.png",
+                   "choc_solid.png", "choc_wildtype.png", "choc_brindle.png", "choc_brindlesmall.png",
+                   "lightchoc_wildtype.png"
     };
 
     private static final String[] PIG_TEXTURES_SPOT_SPOTS = new String[] {
@@ -72,6 +74,10 @@ public class EnhancedPig extends AnimalEntity {
 
     private static final String[] PIG_TEXTURES_SPOT_BERKSHIRE = new String[] {
             "", "spot_tux.png", "spot_berkshire.png"
+    };
+
+    private static final String[] PIG_TEXTURES_COAT = new String[] {
+            "coat_normal.png", "coat_wooly.png"
     };
 
     private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
@@ -94,11 +100,15 @@ public class EnhancedPig extends AnimalEntity {
             "hooves_black.png", "hooves_brown.png", "hooves_pink.png"
     };
 
+    private static final String[] PIG_TEXTURES_TUSKS = new String[] {
+            "", "tusks.png"
+    };
+
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD);
 
     private static final int WTC = 90;
     private final List<String> pigTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 80;
+    private static final int GENES_LENGTH = 44;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -328,76 +338,164 @@ public class EnhancedPig extends AnimalEntity {
         if (genesForText != null) {
             boolean agouti = false;
             int spotMod = 0;
-            
+            int red = 5;
+            int black = 0;
+            int spot = 0;
+            int belt = 0;
+            int berk = 0;
+            int coat = 0;
+            int skin = 0;
+            boolean tusks = false;
+
+            char[] uuidArry = getCachedUniqueIdString().toCharArray();
+
             if (genesForText[0] == 1 || genesForText[1] == 1){
                 //solid black
+                black = 1;
             }else if (genesForText[0] == 2 || genesForText[1] == 2){
                 agouti = true;
+                black = 2;
             }else if (genesForText[0] == 3 || genesForText[1] == 3){
                 //red with spots
                 if (genesForText[0] == 3 && genesForText[1] == 3){
                     //big spots
+                    black = 3;
                 }else{
                     //small spots
+                    black = 4;
                 }
-            }else{
-                //red
             }
 
             if (agouti){
                 if (genesForText[2] == 1 || genesForText[3] == 1){
                     //shaded black
+                    red = 8;
                 }else if (genesForText[2] == 2 || genesForText[3] == 2){
                     //shaded brown
-                }else if (genesForText[2] == 3 || genesForText[3] == 3){
-                    //agouti wild type
-                }else{
+                    black = 6;
+                }else if (genesForText[2] == 4 && genesForText[3] == 4) {
                     //recessive black
+                    black = 1;
                 }
             }
 
             if (genesForText[4] == 1 || genesForText[5] == 1){
                 // reduce red in coat colour
+                red = red - 2;
             }
 
             if (genesForText[6] == 2 && genesForText[7] == 2){
                 //black turns to dark chocolate
                 //reduce red in coat slightly
+                if (black != 6) {
+                    black = black + 4;
+                }else{
+                    black = 9;
+                }
+                red = red - 1;
+
             }
 
-            if (genesForText[8] == 1 || genesForText[9] == 1){
-                //turns black to blue/roan blue
+//TODO change this one
+
+//            if (genesForText[8] == 1 || genesForText[9] == 1){
+//                //turns black to blue/roan blue
+//
+//            }
+
+            if (genesForText[10] != 1 && genesForText[11] != 1) {
+                if (genesForText[10] == 2 || genesForText[11] == 2){
+                    //spotted
+                    spot = 1;
+                } else {
+                    //roan spotted
+                    spot = 2;
+                }
             }
 
-            if (genesForText[10] == 2 && genesForText[11] == 2){
-                //white spotted
-            }
 
             if (genesForText[12] == 1 || genesForText[13] == 1){
                 //dominant white
+                belt = 1;
             }else if (genesForText[12] == 2 || genesForText[13] == 2){
                 //belted
+                belt = 2;
             }
 
             if (genesForText[14] <= 2 || genesForText[15] <= 2){
                 if (genesForText[14] == 2 || genesForText[15] == 2){
                     //tuxedo
+                    berk = 1;
                 }else{
                     //berkshire
+                    berk = 2;
                 }
             }
 
-            if (genesForText[16] == 1 || genesForText[17] == 1){
-                spotMod = 2;
-            }else if (genesForText[16] == 2 || genesForText[17] == 2){
-                spotMod = 1;
+            //TODO make textures for this
+//            if (genesForText[16] == 1 || genesForText[17] == 1){
+//                spotMod = 2;
+//            }else if (genesForText[16] == 2 || genesForText[17] == 2){
+//                spotMod = 1;
+//            }
+
+            if (black == 1 || black == 2) {
+                skin = 3;
+            } else if (belt == 1) {
+                skin = 1;
+            }else{
+                skin = 2;
             }
 
+            if (genesForText[36] != 1 && genesForText[37] != 1) {
+                if ((genesForText[34] == 1 || genesForText[35] == 1) && (genesForText[34] != 3 && genesForText[35] != 3)) {
+                    //furry
+                    skin = skin + 9;
+                }else if (genesForText[34] == 2 || genesForText[35] == 2) {
+                    //normal
+                    skin = skin + 6;
+                }else{
+                    //sparce
+                    skin = skin + 3;
+                }
+            }
 
-            
-        this.pigTextures.add(PIG_TEXTURES_COATRED[0]);
-        this.pigTextures.add(PIG_TEXTURES_COATBLACK[0]);
-        this.pigTextures.add(PIG_TEXTURES_SKINBASE[0]);
+            if (genesForText[38] == 1 || genesForText[39] == 1) {
+                skin = skin + 3;
+            }
+
+            if ((genesForText[38] == 1 || genesForText[39] == 1) && skin >= 10) {
+                //wooly
+                coat = 1;
+            }
+
+            if (!isChild()) {
+                if ((Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8)) {
+                    //tusks if "male"
+                    tusks = true;
+                }
+            }
+
+            this.pigTextures.add(PIG_TEXTURES_COATRED[red]);
+            if (black != 0) {
+                this.pigTextures.add(PIG_TEXTURES_COATBLACK[black]);
+            }
+            if (spot != 0) {
+                this.pigTextures.add(PIG_TEXTURES_SPOT_SPOTS[spot]);
+            }
+            if (belt != 0) {
+                this.pigTextures.add(PIG_TEXTURES_SPOT_BELTED[belt]);
+            }
+            if (berk != 0) {
+                this.pigTextures.add(PIG_TEXTURES_SPOT_BERKSHIRE[berk]);
+            }
+            this.pigTextures.add(PIG_TEXTURES_COAT[coat]);
+            this.pigTextures.add(PIG_TEXTURES_SKINBASE[skin]);
+            this.pigTextures.add(PIG_TEXTURES_EYES[0]);
+            this.pigTextures.add(PIG_TEXTURES_HOOVES[0]);
+            if (tusks){
+                this.pigTextures.add(PIG_TEXTURES_TUSKS[1]);
+            }
 
         }
     }
@@ -674,20 +772,6 @@ public class EnhancedPig extends AnimalEntity {
             initialGenes[19] = (5);
         }
 
-        //face squash gene 2 [ shorter, normal, larger, largest ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[18] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            initialGenes[18] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[19] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            initialGenes[19] = (2);
-        }
-
         //inbreeding detector A
             initialGenes[20] = (ThreadLocalRandom.current().nextInt(20) + 1);
             initialGenes[21] = (ThreadLocalRandom.current().nextInt(20) + 20);
@@ -726,6 +810,78 @@ public class EnhancedPig extends AnimalEntity {
         } else {
             initialGenes[33] = (2);
         }
+
+        //hair density [ furry, wildtype, sparce ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[34] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[34] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[35] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[35] = (2);
+        }
+
+        //baldness [ Bald, wildtype ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[36] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[37] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[37] = (2);
+        }
+
+        //wooly [ wooly, wildtype ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[38] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[39] = (2);
+        }
+
+        //thick hair [ thick hair+, less hair ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[40] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[41] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[41] = (1);
+        }
+
+        //face squash gene 2 [ longest, normal, short, shortest]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[42] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[42] = (4);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[43] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[43] = (4);
+        }
+
+
 
         return initialGenes;
     }

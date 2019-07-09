@@ -72,8 +72,8 @@ public class EnhancedCow extends AnimalEntity {
     };
 
     private static final String[] COW_TEXTURES_BLACK = new String[] {
-            "", "b_wildtype.png", "b_wildtype_darker1.png", "b_wildtype_dark.png", "b_solid.png", "b_brindle.png"
-              , "b_wildtype_thin.png", "b_wildtype_darker1_thin.png", "b_wildtype_dark_thin.png", "b_solid.png", "b_brindle.png"
+            "", "b_shoulders.png", "b_wildtype.png", "b_wildtype_darker1.png", "b_wildtype_dark.png", "b_solid.png", "b_brindle.png"
+              , "b_shoulders_thin.png", "b_wildtype_thin.png", "b_wildtype_darker1_thin.png", "b_wildtype_dark_thin.png", "b_solid.png", "b_brindle.png"
     };
 
     private static final String[] COW_TEXTURES_SKIN = new String[] {
@@ -436,7 +436,7 @@ public class EnhancedCow extends AnimalEntity {
                 skin = 1;
             }else {
                 if (genesForText[0] == 1 || genesForText[1] == 1) {
-                    black = 4;
+                    black = 5;
                 } else if (genesForText[0] == 2 || genesForText[1] == 2) {
                     red = 2;
 
@@ -445,23 +445,23 @@ public class EnhancedCow extends AnimalEntity {
                         if (genesForText[4] == 2 || genesForText[5] == 2) {
                             //darker wildtype
                             //or other incomplete dominance
-                            black = 2;
+                            black = 3;
                         } else {
                             //complete dominance of black enhancer
-                            black = 3;
+                            black = 4;
                         }
                     } else if (genesForText[4] == 2 || genesForText[5] == 2) {
                         //wildtype
-                        black = 1;
+                        black = 2;
                     } else if (genesForText[4] == 3 || genesForText[5] == 3) {
                         //white bellied fawn (i believe this is like silver)
-                        black = 1;
+                        black = 2;
                         red = 0;
                         base = 2;
                         //TODO set up something here to dilute the colour of red to a cream or white
                     } else {
                         //brindle (there might be a recessive black but no one seems to know lol)
-                        black = 5;
+                        black = 6;
                     }
 
                 } else {
@@ -477,13 +477,11 @@ public class EnhancedCow extends AnimalEntity {
                     skin = 2;
                 }else{
                     //semi dilute
+                    if (black != 0 && black <= 3) {
+                        black--;
+                    }
                 }
             } //not dilute
-
-            //chocolate
-            if (genesForText[10] == 2 && genesForText[11] == 2){
-                //make chocolate version possibly add variations to exact colour
-            }
 
             //roan
             if (genesForText[8] == 2 || genesForText[9] == 2){
@@ -582,10 +580,10 @@ public class EnhancedCow extends AnimalEntity {
             }
             if(genesForText[54] == 1 && genesForText[55] == 1){
                 if (red != 0){
-                    red = red*2;
+                    red = red + 2;
                 }
                 if (black != 0){
-                    black = black*2;
+                    black = black + 6;
                 }
             }
 
@@ -718,84 +716,114 @@ public class EnhancedCow extends AnimalEntity {
             cowColouration = new float[6];
             int[] genesForText = getSharedGenes();
 
-            float blackR = 0.0588F;
-            float blackG = 0.0275F;
-            float blackB = 0.0275F;
+            float blackR = 15.0F;
+            float blackG = 7.0F;
+            float blackB = 7.0F;
 
-            float redR = 0.5255F;
-            float redG = 0.3089F;
-            float redB = 0.1608F;
+            float redR = 134.0F;
+            float redG = 79.0F;
+            float redB = 41.0F;
 
+            int tint;
 
-            if (genesForText[4] == 3 || genesForText[5] == 3) {
-                redR = 0.8863F;
-                redG = 0.8588F;
-                redB = 0.8078F;
+            if ((genesForText[6] == 1 || genesForText[7] == 1) || (genesForText[0] == 3 && genesForText[1] == 3)){
+                //red
+                tint = 4;
+            }else {
+                if (genesForText[0] == 1 || genesForText[1] == 1) {
+                    //black
+                    tint = 2;
+                } else {
+                    //wildtype
+                    tint = 3;
+                }
             }
 
             //standard dilution
+            if (genesForText[2] == 2 || genesForText[3] == 2) {
+//            if (true) {
+                if (genesForText[2] == 2 && genesForText[3] == 2) {
+//                if (false) {
 
-            if (genesForText[2] == 1 || genesForText[3] == 1) {
-                if (genesForText[2] == 1 && genesForText[3] == 1) {
-                    blackR = 0.0588F;
-                    blackG = 0.0275F;
-                    blackB = 0.0275F;
+                    blackR = (blackR + (255F * tint)) / (tint+1);
+                    blackG = (blackG + (245F * tint)) / (tint+1);
+                    blackB = (blackB + (235F * tint)) / (tint+1);
 
-                    redR = 0.5255F;
-                    redG = 0.3089F;
-                    redB = 0.1608F;
+                    if (tint != 2) {
+                        redR = (redR + (255F * tint)) / (tint + 1);
+                        redG = (redG + (255F * tint)) / (tint + 1);
+                        redB = (redB + (255F * tint)) / (tint + 1);
+                    }
                 }else{
-                    blackR = 0.4313F;
-                    blackG = 0.4039F;
-                    blackB = 0.3764F;
+                    if (tint == 3) {
+                        //wildtype
+                        if (genesForText[4] == 1 || genesForText[5] == 1) {
+                            if (genesForText[4] == 1 && genesForText[5] == 1) {
+                                blackR = 81.0F;
+                                blackG = 71.0F;
+                                blackB = 65.0F;
+                            }else{
+                                blackR = 40.0F;
+                                blackG = 35.0F;
+                                blackB = 32.0F;
+                            }
+                        }else if (genesForText[4] == 4 && genesForText[5] == 4){
+                            blackR = 81.0F;
+                            blackG = 71.0F;
+                            blackB = 65.0F;
+                        }
 
-                    redR = 0.7647F;
-                    redG = 0.6353F;
-                    redB = 0.4039F;
+                        redR = (redR*0.75F) + (240.0F*0.25F);
+                        redG = (redG*0.75F) + (238.0F*0.25F);
+                        redB = (redB*0.75F) + (144.0F*0.25F);
+                    } else if (tint == 4){
+                        //red
+                        redR = (redR*0.5F) + (187.0F*0.5F);
+                        redG = (redG*0.5F) + (180.0F*0.5F);
+                        redB = (redB*0.5F) + (166.0F*0.5F);
+                    }else {
+                        blackR = 81.0F;
+                        blackG = 71.0F;
+                        blackB = 65.0F;
+                    }
                 }
+            }
+
+            if (genesForText[4] == 3 || genesForText[5] == 3) {
+                redR = (redR + 245F) / 2;
+                redG = (redG + 237F) / 2;
+                redB = (redB + 222F) / 2;
             }
 
             //chocolate
             if (genesForText[10] == 2 && genesForText[11] == 2){
-                blackR = blackR + 0.1F;
-                blackG = blackG + 0.06F;
-                blackB = blackB + 0.06F;
+                blackR = blackR + 25F;
+                blackG = blackG + 15F;
+                blackB = blackB + 9F;
 
-                redR = redR + 0.09F;
-                redG = redG + 0.08F;
-                redB = redB + 0.08F;
-            }
-
-            if (blackR > 1.0F) {
-                blackR = 1.0F;
-            }
-            if (blackG > 1.0F) {
-                blackG = 1.0F;
-            }
-            if (blackB > 1.0F) {
-                blackB = 1.0F;
-            }
-
-            if (redR > 1.0F) {
-                redR = 1.0F;
-            }
-            if (redG > 1.0F) {
-                redG = 1.0F;
-            }
-            if (redB > 1.0F) {
-                redB = 1.0F;
+                redR = redR + 25F;
+                redG = redG + 15F;
+                redB = redB + 9F;
             }
 
             //TODO TEMP AF
             //black
-            cowColouration[0] = blackB;
+            cowColouration[0] = blackR;
             cowColouration[1] = blackG;
-            cowColouration[2] = blackR;
+            cowColouration[2] = blackB;
 
             //red
-            cowColouration[3] = redB;
+            cowColouration[3] = redR;
             cowColouration[4] = redG;
-            cowColouration[5] = redR;
+            cowColouration[5] = redB;
+
+            for (int i = 0; i <= 5; i++) {
+                if (cowColouration[i] > 255.0F) {
+                    cowColouration[i] = 255.0F;
+                }
+                cowColouration[i] = cowColouration[i] / 255.0F;
+            }
+
         }
         return cowColouration;
     }
@@ -1736,7 +1764,7 @@ public class EnhancedCow extends AnimalEntity {
             }
 
             if (genes[26] == 1 || genes[27] == 1) {
-                speed = speed *0.75;
+                speed = speed *0.9;
             }
 
             if (bodyShape == 4) {

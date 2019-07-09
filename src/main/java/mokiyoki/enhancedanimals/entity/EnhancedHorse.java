@@ -117,44 +117,72 @@ public class EnhancedHorse {
 
         //Extension [ black, wildtype ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[12] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[10] = (2);
+            initialGenes[12] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[13] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[11] = (2);
+            initialGenes[13] = (2);
         }
 
         //Agouti [ Wildtype/light bay, bay, brown/tan, solid/black ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[14] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[10] = (1);
+            initialGenes[14] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[15] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[11] = (1);
+            initialGenes[15] = (1);
         }
 
         //Dun [ Dun+, saturated dun, saturated coat ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[16] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[10] = (1);
+            initialGenes[16] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[17] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[11] = (1);
+            initialGenes[17] = (1);
+        }
+
+        //Dominant White Spotting [ W1-, W2-, W3-, W4-, W5, W6, W7, W8, W9-, W10-, W11-, W12, W13-, W14-, W15, W16, W17-, W18, W19, W20, W21, W22, W23-, W24-, W25-, W26, W27, wildtype ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            if (ThreadLocalRandom.current().nextInt(100) > 99) {
+                initialGenes[18] = (ThreadLocalRandom.current().nextInt(28) + 1);
+            }else{
+                initialGenes[18] = (ThreadLocalRandom.current().nextInt(10) + 18);
+            }
+            initialGenes[19] = (28);
+
+        } else {
+            initialGenes[18] = (28);
+            initialGenes[19] = (28);
+        }
+
+        //Roan [ Roan, wildtype ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[20] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[21] = (2);
         }
 
         //Cream [ Wildtype, Cream, pearl ]
@@ -242,34 +270,6 @@ public class EnhancedHorse {
         }
 
         //Tobiano [ Tobiano, wildtype ] pinto spots
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[10] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[11] = (2);
-        }
-
-        //Dominant White Spotting [ W1-, W2-, W3-, W4-, W5, W6, W7, W8, W9-, W10-, W11-, W12, W13-, W14-, W15, W16, W17-, W18, W19, W20, W21, W22, W23-, W24-, W25-, W26, W27, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            if (ThreadLocalRandom.current().nextInt(100) > 99) {
-                initialGenes[10] = (ThreadLocalRandom.current().nextInt(28) + 1);
-            }else{
-                initialGenes[10] = (ThreadLocalRandom.current().nextInt(10) + 18);
-            }
-            initialGenes[11] = (28);
-
-        } else {
-            initialGenes[10] = (28);
-            initialGenes[11] = (28);
-        }
-
-        //Roan [ Roan, wildtype ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
 

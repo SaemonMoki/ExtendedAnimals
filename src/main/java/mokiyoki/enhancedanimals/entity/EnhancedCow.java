@@ -369,6 +369,23 @@ public class EnhancedCow extends AnimalEntity {
         return TEMPTATION_ITEMS.test(stack);
     }
 
+
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
+        super.dropSpecialItems(source, looting, recentlyHitIn);
+
+        this.isBurning();
+
+        float cowSize = this.getSize();
+        float cowThickness = (float)(genes[54] + genes[55])/2;
+//
+//        int meatDropCount =
+//
+//
+        ItemStack itemstack = new ItemStack(Items.ZOMBIE_HEAD, 1);
+        this.entityDropItem(itemstack);
+    }
+
+
     public AgeableEntity createChild(AgeableEntity ageable) {
         this.mateGenes = ((EnhancedCow) ageable).getGenes();
         mixMateMitosisGenes();

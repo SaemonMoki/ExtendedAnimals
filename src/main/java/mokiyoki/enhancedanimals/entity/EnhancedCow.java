@@ -785,6 +785,7 @@ public class EnhancedCow extends AnimalEntity {
                         redG = (redG*0.5F) + (180.0F*0.5F);
                         redB = (redB*0.5F) + (166.0F*0.5F);
                     }else {
+                        //black
                         blackR = 81.0F;
                         blackG = 71.0F;
                         blackB = 65.0F;

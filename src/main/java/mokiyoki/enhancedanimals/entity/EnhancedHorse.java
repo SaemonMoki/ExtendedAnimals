@@ -12,7 +12,7 @@ public class EnhancedHorse {
     //TODO add texture layers
 
     private static final int WTC = 90;
-    private static final int GENES_LENGTH = 20;
+    private static final int GENES_LENGTH = 46;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -187,170 +187,170 @@ public class EnhancedHorse {
 
         //Cream [ Wildtype, Cream, pearl ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[22] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[10] = (1);
+            initialGenes[22] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[23] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[11] = (1);
+            initialGenes[23] = (1);
         }
 
         //Champagne [ Champagne, wildtype ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[24] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[10] = (2);
+            initialGenes[24] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[25] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[11] = (2);
+            initialGenes[25] = (2);
         }
 
         //Silver [ Silver, wildtype ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[10] = (2);
+            initialGenes[26] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[11] = (2);
+            initialGenes[27] = (2);
         }
 
         //Mushroom [ Champagne, wildtype ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[10] = (2);
+            initialGenes[28] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[11] = (2);
+            initialGenes[29] = (2);
         }
 
         //Grey [ Grey , wildtype ]  this one turns the coat white over a few years
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[30] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[10] = (2);
+            initialGenes[30] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[31] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[11] = (2);
+            initialGenes[31] = (2);
         }
 
         //White Frame Overo [ white spots- , wildtype ]  this is lethal in double dose
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[10] = (2);
+            initialGenes[32] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[11] = (2);
+            initialGenes[33] = (2);
         }
 
         //Tobiano [ Tobiano, wildtype ] pinto spots
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[34] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[10] = (2);
+            initialGenes[34] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[35] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[11] = (2);
+            initialGenes[35] = (2);
         }
 
         //Leopard Spotting [ Leopard, wildtype ] appaloosa
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[10] = (2);
+            initialGenes[36] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[37] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[11] = (2);
+            initialGenes[37] = (2);
         }
 
         //Leopard Spot Modifier [ Modified, wildtype ] wildtype makes varnish appaloosa
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[10] = (2);
+            initialGenes[38] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[11] = (2);
+            initialGenes[39] = (2);
         }
 
         //Splash White Locus 1 [ classic splash white1, splash white3-, macchiato, wildtype ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            initialGenes[40] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[10] = (4);
+            initialGenes[40] = (4);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            initialGenes[41] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[11] = (4);
+            initialGenes[41] = (4);
         }
 
         //Splash White Locus 2 [ splash white2, splash white4-, wildtype ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[42] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[10] = (3);
+            initialGenes[42] = (3);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[43] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[11] = (3);
+            initialGenes[43] = (3);
         }
 
         //Tiger Eye [ Wildtype, te1, te2 ] te1 = lightens eyes to yellow/amber/orange, te2 = lightens eyes to blue in cream horses
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[44] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[10] = (3);
+            initialGenes[44] = (3);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[45] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[11] = (3);
+            initialGenes[45] = (3);
         }
 
 

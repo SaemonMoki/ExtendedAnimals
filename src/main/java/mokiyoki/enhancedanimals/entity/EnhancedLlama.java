@@ -361,6 +361,9 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                     pregnant = false;
                     gestationTimer = 0;
 
+                    mixMateMitosisGenes();
+                    mixMitosisGenes();
+
                     int[] babyGenes = getCriaGenes();
                     EnhancedLlama enhancedLlama = ENHANCED_LLAMA.create(this.world);
                     enhancedLlama.setGrowingAge(0);

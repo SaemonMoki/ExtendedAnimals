@@ -248,6 +248,9 @@ public class EnhancedCow extends AnimalEntity {
                     pregnant = false;
                     gestationTimer = 0;
 
+                    mixMateMitosisGenes();
+                    mixMitosisGenes();
+
                     EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
                     enhancedcow.setGrowingAge(0);
                     int[] babyGenes = getCalfGenes();

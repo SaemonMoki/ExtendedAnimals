@@ -212,6 +212,8 @@ public class EnhancedPig extends AnimalEntity {
                     int numberOfPiglets = ThreadLocalRandom.current().nextInt(pigletRange)+1+pigletAverage;
                     
                     for (int i = 0; i <= numberOfPiglets; i++) {
+                        mixMateMitosisGenes();
+                        mixMitosisGenes();
                         EnhancedPig enhancedpig = ENHANCED_PIG.create(this.world);
                         enhancedpig.setGrowingAge(0);
                         int[] babyGenes = getPigletGenes();

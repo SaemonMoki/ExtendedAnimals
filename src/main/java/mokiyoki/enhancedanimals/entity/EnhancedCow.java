@@ -1081,6 +1081,8 @@ public class EnhancedCow extends AnimalEntity {
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
 
+        compound.putString("Status", getCowStatus());
+
     }
 
     /**
@@ -1106,6 +1108,8 @@ public class EnhancedCow extends AnimalEntity {
 
         this.pregnant = compound.getBoolean("Pregnant");
         this.gestationTimer = compound.getInt("Gestation");
+
+        setCowStatus(compound.getString("Status"));
 
         setSharedGenes(genes);
         setCowSize();

@@ -154,6 +154,23 @@ public class EnhancedChicken extends AnimalEntity {
     private static final String[] CHICKEN_TEXTURES_WHITE = new String[] {
         "","white_barred.png","white_mottles.png","white_crested.png"
     };
+
+    private static final String[] CHICKEN_TEXTURES_CHICKBASE = new String[] {
+            "baby_white.png","baby_yellow.png"
+    };
+
+    private static final String[] CHICKEN_TEXTURES_CHICKRED = new String[] {
+            "","baby_red.png", "baby_redstripes.png", "baby_redwash.png"
+    };
+
+    private static final String[] CHICKEN_TEXTURES_CHICKBLACK = new String[] {
+            "","pattern_solid.png"
+    };
+
+    private static final String[] CHICKEN_TEXTURES_CHICKWHITE = new String[] {
+            "","baby_mottles.png", "baby_barred.png"
+    };
+
     private static final String[] CHICKEN_TEXTURES_SHANKS = new String[] {
         "shanks_horn.png","shanks_yellow.png","shanks_willow.png","shanks_black.png",
         "shanks_verywhite.png","shanks_white.png", "shanks_slate.png", "shanks_black.png",
@@ -589,254 +606,255 @@ public class EnhancedChicken extends AnimalEntity {
     @OnlyIn(Dist.CLIENT)
     private void setTexturePaths() {
         int[] genesForText = getSharedGenes();
-        if(genesForText!=null){
-            int ground = 0;
-            int pattern = 0;
-            int moorhead = 0;
-            int white = 0;
-            int shanks = 2;
-            int comb = 2;
-            int eyes = 1;
-            int ptrncolours = 10; //number of pattern colours
+        if(genesForText!=null) {
+            if (!isChild()) {
+                int ground = 0;
+                int pattern = 0;
+                int moorhead = 0;
+                int white = 0;
+                int shanks = 2;
+                int comb = 2;
+                int eyes = 1;
+                int ptrncolours = 10; //number of pattern colours
 
-            int moorheadtoggle = 0;
-            int Melanin= 0;
+                int moorheadtoggle = 0;
+                int Melanin = 0;
 
-            //TODO fix up columbian type patterns to look more varried
-            //TODO add in heterozygous pattern variations
-            //TODO redo ground colours to use autosomal red and more fleshed out
+                //TODO fix up columbian type patterns to look more varried
+                //TODO add in heterozygous pattern variations
+                //TODO redo ground colours to use autosomal red and more fleshed out
 
-            boolean isAlbino = false;
+                boolean isAlbino = false;
 
-            if (genesForText[20] != 1 && genesForText[21] != 1) {                                                                       //checks if not wildtype
-                if (genesForText[20] == 2 || genesForText[21] == 2) {                                                                   //sets recessive white or albino
-                    //recessive white
-                    ground = 15;
-                    pattern = 401;
-                } else {
-                    //albino
-                    ground = 15;
-                    pattern = 401;
-                    white = 0;
-                    shanks = 4;
-                    comb = 2;
-                    eyes = 0;
-                    isAlbino = true;
-                }
-            }else{
-                if (genesForText[24] == 5 || genesForText[25] == 5){
-                    //extended black tree
-                    if (genesForText[24] == 5 && genesForText[25] == 5){
-                        if(genesForText[28] == 1 && genesForText[29] == 1 && genesForText[98] == 1 && genesForText[99] == 1){
-                            //xtradark birchen
-                            pattern = 17;
-                            ground = 0;
-                        }else{
-                            //solid black
-                            pattern = 0;
-                            ground = 15;
-                        }
-                    } else if (genesForText[24] == 1 || genesForText[25] == 1){
-                            //xtradark birchen
-                            pattern = 17;
-                            ground = 0;
+                if (genesForText[20] != 1 && genesForText[21] != 1) {                                                                       //checks if not wildtype
+                    if (genesForText[20] == 2 || genesForText[21] == 2) {                                                                   //sets recessive white or albino
+                        //recessive white
+                        ground = 15;
+                        pattern = 401;
                     } else {
-                        if(genesForText[28] == 1 && genesForText[29] == 1 && genesForText[98] == 1 && genesForText[99] == 1){
-                            //leaky black
-                            pattern = 18;
-                            ground = 0;
-                        }else{
+                        //albino
+                        ground = 15;
+                        pattern = 401;
+                        white = 0;
+                        shanks = 4;
+                        comb = 2;
+                        eyes = 0;
+                        isAlbino = true;
+                    }
+                } else {
+                    if (genesForText[24] == 5 || genesForText[25] == 5) {
+                        //extended black tree
+                        if (genesForText[24] == 5 && genesForText[25] == 5) {
+                            if (genesForText[28] == 1 && genesForText[29] == 1 && genesForText[98] == 1 && genesForText[99] == 1) {
+                                //xtradark birchen
+                                pattern = 17;
+                                ground = 0;
+                            } else {
+                                //solid black
+                                pattern = 0;
+                                ground = 15;
+                            }
+                        } else if (genesForText[24] == 1 || genesForText[25] == 1) {
                             //xtradark birchen
                             pattern = 17;
                             ground = 0;
+                        } else {
+                            if (genesForText[28] == 1 && genesForText[29] == 1 && genesForText[98] == 1 && genesForText[99] == 1) {
+                                //leaky black
+                                pattern = 18;
+                                ground = 0;
+                            } else {
+                                //xtradark birchen
+                                pattern = 17;
+                                ground = 0;
+                            }
                         }
-                    }
-                } else if (genesForText[24] == 1 || genesForText[25] == 1){
-                    //birchen tree
-                        if (genesForText[28] == 1 && genesForText[29] == 1){
-                            if (genesForText[98] == 1 && genesForText[99] == 1){
-                                if (genesForText[30] == 1 && genesForText[31] == 1){
-                                    if(genesForText[26] == 1 || genesForText[27] == 1){
-                                        if(genesForText[100] == 2 && genesForText[101] == 2){
+                    } else if (genesForText[24] == 1 || genesForText[25] == 1) {
+                        //birchen tree
+                        if (genesForText[28] == 1 && genesForText[29] == 1) {
+                            if (genesForText[98] == 1 && genesForText[99] == 1) {
+                                if (genesForText[30] == 1 && genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //xtra dark birchen single lace
                                             pattern = 19;
                                             ground = 15;
-                                        }else{
+                                        } else {
                                             //birchen single laced
                                             pattern = 11;
                                             ground = 15;
                                         }
-                                    }else{
+                                    } else {
                                         //extended patterned columbian
                                         pattern = 5;
                                         ground = 15;
                                     }
-                                } else if (genesForText[30] == 1 || genesForText[31] == 1){
-                                    if(genesForText[26] == 1 || genesForText[27] == 1){
-                                        if(genesForText[100] == 2 && genesForText[101] == 2){
+                                } else if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //moorhead doublehalfspangled
                                             pattern = 20;
                                             ground = 15;
                                             moorhead = 1;
-                                        }else{
+                                        } else {
                                             //doublehalfspangle
                                             pattern = 20;
                                             ground = 15;
                                         }
 
-                                    }else{
-                                        if(genesForText[100] == 2 && genesForText[101] == 2){
+                                    } else {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //overly dark columbian
                                             pattern = 5;
                                             ground = 15;
-                                        }else{
+                                        } else {
                                             //moorheaded columbian
                                             pattern = 5;
                                             ground = 15;
                                             moorhead = 1;
                                         }
                                     }
-                                }else{
-                                    if(genesForText[26] == 1 || genesForText[27] == 1){
-                                        if(genesForText[100] == 2 && genesForText[101] == 2){
+                                } else {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //moorhead doublehalfspangled
                                             pattern = 20;
                                             ground = 15;
                                             moorhead = 1;
-                                        }else{
+                                        } else {
                                             //doublehalfspangle
-                                                pattern = 20;
-                                                ground = 15;
+                                            pattern = 20;
+                                            ground = 15;
                                         }
 
-                                    }else{
-                                        if(genesForText[100] == 2 && genesForText[101] == 2){
+                                    } else {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //moorhead transverse penciled
-                                                pattern = 34;
-                                                ground = 15;
-                                                moorhead = 1;
-                                        }else{
+                                            pattern = 34;
+                                            ground = 15;
+                                            moorhead = 1;
+                                        } else {
                                             //transverse penciled
-                                                pattern = 10;
-                                                ground = 15;
+                                            pattern = 10;
+                                            ground = 15;
                                         }
                                     }
                                 }
-                            } else if (genesForText[98] == 1 || genesForText[99] == 1){
-                                if (genesForText[30] == 1 || genesForText[31] == 1){
+                            } else if (genesForText[98] == 1 || genesForText[99] == 1) {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
                                     if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                            //dark doublehalfspangle
-                                                pattern = 21;
-                                                ground = 15;
-                                    }else{
-                                            //dark messy quail
-                                                pattern = 22;
-                                                ground = 15;
+                                        //dark doublehalfspangle
+                                        pattern = 21;
+                                        ground = 15;
+                                    } else {
+                                        //dark messy quail
+                                        pattern = 22;
+                                        ground = 15;
                                     }
-                                }else{
-                                    if (genesForText[26] == 1 || genesForText[27] == 1){
-                                        if (genesForText[100] == 2 && genesForText[101] == 2){
+                                } else {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //dark transverse penciled
                                             //TODO what are the different qualities of transverse penciled
-                                                pattern = 34;
-                                                ground = 5;
-                                                moorhead = 1;
-                                        }else{
+                                            pattern = 34;
+                                            ground = 5;
+                                            moorhead = 1;
+                                        } else {
                                             //incomplete penciled
-                                                //TODO make incomplete transverse penciled
-                                                pattern = 10;
-                                                ground = 5;
+                                            //TODO make incomplete transverse penciled
+                                            pattern = 10;
+                                            ground = 5;
                                         }
-                                    }else{
-                                            //dark quail mealy
-                                                pattern = 23;
-                                                ground = 5;
+                                    } else {
+                                        //dark quail mealy
+                                        pattern = 23;
+                                        ground = 5;
                                     }
 
                                 }
-                            }else{
-                                if (genesForText[30] == 1 || genesForText[31] == 1){
-                                    if (genesForText[100] == 2 || genesForText[101] == 2){
+                            } else {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[100] == 2 || genesForText[101] == 2) {
                                         //solid black
-                                            pattern = 0;
-                                            ground = 15;
-                                    }else {
+                                        pattern = 0;
+                                        ground = 15;
+                                    } else {
                                         // leaky black
-                                            pattern = 18;
-                                            ground = 0;
+                                        pattern = 18;
+                                        ground = 0;
                                     }
-                                }else{
-                                    if (genesForText[100] == 1 && genesForText[101] == 1){
+                                } else {
+                                    if (genesForText[100] == 1 && genesForText[101] == 1) {
                                         //leaky black
-                                            pattern = 18;
-                                            ground = 5;
-                                    }else{
+                                        pattern = 18;
+                                        ground = 5;
+                                    } else {
                                         //birchen
-                                            pattern = 1;
-                                            ground = 5;
+                                        pattern = 1;
+                                        ground = 5;
                                     }
                                 }
                             }
-                        }else if (genesForText[28] == 1 || genesForText[29] == 1){
-                            if (genesForText[98] == 1 || genesForText[99] == 1){
-                                if (genesForText[30] == 1 || genesForText[31] == 1){
-                                    if (genesForText[26] == 1 || genesForText[27] == 1){
-                                        if(genesForText[100] == 2 && genesForText[101] == 2){
+                        } else if (genesForText[28] == 1 || genesForText[29] == 1) {
+                            if (genesForText[98] == 1 || genesForText[99] == 1) {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             //extended patterned halfspangle
                                             //TODO what is this pattern really?
-                                                pattern = 16;
-                                                ground = 15;
-                                                moorhead = 1;
-                                        }else{
-                                            //halfspangle
-                                                pattern = 16;
-                                                ground = 15;
-                                        }
-                                    }else{
-                                           //incomplete columbian
-                                                pattern = 6;
-                                                ground = 15;
-                                    }
-                                }else{
-                                    if (genesForText[26] == 1 || genesForText[27] == 1){
-                                        if (genesForText[100] == 2 && genesForText[101] == 2){
-                                            //extended patterned transverse penciled
-                                                pattern = 34;
-                                                ground = 15;
-                                                moorhead = 1;
-                                        }else{
-                                            // transverse penciled
-                                                pattern = 10;
-                                                ground = 5;
-                                        }
-                                    }else{
-                                        // columbian
-                                            pattern = 5;
+                                            pattern = 16;
                                             ground = 15;
+                                            moorhead = 1;
+                                        } else {
+                                            //halfspangle
+                                            pattern = 16;
+                                            ground = 15;
+                                        }
+                                    } else {
+                                        //incomplete columbian
+                                        pattern = 6;
+                                        ground = 15;
+                                    }
+                                } else {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            //extended patterned transverse penciled
+                                            pattern = 34;
+                                            ground = 15;
+                                            moorhead = 1;
+                                        } else {
+                                            // transverse penciled
+                                            pattern = 10;
+                                            ground = 5;
+                                        }
+                                    } else {
+                                        // columbian
+                                        pattern = 5;
+                                        ground = 15;
 
                                     }
                                 }
-                            }else{
+                            } else {
                                 if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                            //solid black
-                                            pattern = 0;
-                                            ground = 15;
-                                        }else{
-                                            //leaky black
-                                            pattern = 18;
-                                            ground = 15;
-                                        }
-                                }else{
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                            //leaky black
-                                            pattern = 18;
-                                            ground = 15;
-                                        }else{
-                                            //birchen
-                                            pattern = 1;
-                                            ground = 0;
-                                        }
+                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        //solid black
+                                        pattern = 0;
+                                        ground = 15;
+                                    } else {
+                                        //leaky black
+                                        pattern = 18;
+                                        ground = 15;
+                                    }
+                                } else {
+                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        //leaky black
+                                        pattern = 18;
+                                        ground = 15;
+                                    } else {
+                                        //birchen
+                                        pattern = 1;
+                                        ground = 0;
+                                    }
                                 }
                             }
                         } else {
@@ -907,277 +925,276 @@ public class EnhancedChicken extends AnimalEntity {
                             }
                         }
 
-                }else if (genesForText[24] == 2 || genesForText[25] == 2){
-                    //duckwing tree
-                    if (genesForText[28] == 1 || genesForText[29] == 1){
-                        if (genesForText[98] == 1 || genesForText[99] == 1){
-                            if (genesForText[30] == 1 || genesForText[31] == 1){
-                                if (genesForText[26] == 1 || genesForText[27] == 1){
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
-                                        // extended patterned halfspangled
+                    } else if (genesForText[24] == 2 || genesForText[25] == 2) {
+                        //duckwing tree
+                        if (genesForText[28] == 1 || genesForText[29] == 1) {
+                            if (genesForText[98] == 1 || genesForText[99] == 1) {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned halfspangled
                                             pattern = 16;
                                             ground = 0;
-                                    }else{
-                                        //  halfspangled
+                                        } else {
+                                            //  halfspangled
                                             pattern = 25;
                                             ground = 0;
-                                    }
-                                }else{
+                                        }
+                                    } else {
                                         //  incomplete quail
-                                            pattern = 29;
-                                            ground = 10;
+                                        pattern = 29;
+                                        ground = 10;
 
-                                }
-                            }else{
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
+                                    }
+                                } else {
+                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         //  moorhead columbian w/ less hackle markings
-                                            pattern = 6;
-                                            ground = 0;
-                                            moorhead = 1;
-                                    }else{
+                                        pattern = 6;
+                                        ground = 0;
+                                        moorhead = 1;
+                                    } else {
                                         //  columbian w/ less hackle markings
-                                            pattern = 6;
-                                            ground = 0;
-                                    }
-                            }
-                        }else{
-                            if (genesForText[30] == 1 || genesForText[31] == 1){
-                                if (genesForText[26] == 1 || genesForText[27] == 1){
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
-                                        // extended patterned incomplete laced
-                                        pattern = 27;
-                                        ground = 5;
-                                        moorhead = 1;
-                                    }else{
-                                        //  incomplete laced
-                                        pattern = 27;
-                                        ground = 5;
-                                    }
-                                }else{
-                                        //  quail
-                                        pattern = 4;
-                                        ground = 5;
-                                }
-                            }else{
-                                if (genesForText[26] == 1 || genesForText[27] == 1){
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
-                                        // extended patterned incomplete laced?
-                                        pattern = 27;
-                                        ground = 15;
-                                        moorhead = 1;
-                                    }else{
-                                        //  columbian
-                                        pattern = 5;
-                                        ground = 15;
-                                    }
-                                }else{
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
-                                        //  incomplete quail
-                                            pattern = 29;
-                                            ground = 15;
-                                    }else{
-                                        //  columbian
-                                            pattern = 5;
-                                            ground = 15;
-                                    }
-                                }
-                            }
-                        }
-                    }else{
-                        if (genesForText[98] == 1 || genesForText[99] == 1){
-                            if (genesForText[30] == 1 || genesForText[31] == 1){
-                                if (genesForText[26] == 1 || genesForText[27] == 1){
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
-                                        // extended patterned spangled
-                                        pattern = 14;
-                                        ground = 15;
-                                    }else{
-                                        //  spangled
-                                        pattern = 160;
-                                        ground = 15;
-                                    }
-                                }else{
-                                        //  incomplete quail
-                                        pattern = 29;
-                                        ground = 15;
-                                }
-                            }else{
-                                if (genesForText[26] == 1 || genesForText[27] == 1){
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
-                                        // extended patterned transverse pencilled
-                                            pattern = 34;
-                                            ground = 5;
-                                    }else{
-                                        //  transverse pencilled
-                                            pattern = 10;
-                                            ground = 5;
-                                    }
-                                }else{
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
-                                        //  incomplete quail
-                                            pattern = 29;
-                                            ground = 15;
-                                    }else{
-                                        //  incomplete columbian w/ less hackle markings
-                                            pattern = 30;
-                                            ground = 15;
-
-                                    }
-                                }
-                            }
-                        }else{
-                            if (genesForText[30] == 1 || genesForText[31] == 1){
-                                if (genesForText[26] == 1 || genesForText[27] == 1){
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
-                                        // extended patterned incomplete doublelaced
-                                            pattern = 21;
-                                            ground = 5;
-                                            moorhead = 1;
-                                    }else{
-                                        //  incomplete doublelaced
-                                            pattern = 21;
-                                            ground = 5;
-                                    }
-                                }else{
-                                        //  incomplete quail
-                                            pattern = 29;
-                                            ground = 5;
-
-                                }
-                            }else{
-                                if (genesForText[26] == 1 || genesForText[27] == 1){
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
-                                        // extended patterned multiple laced duckwing
-                                        pattern = 26;
-                                        ground = 0;
-                                        moorhead = 1;
-                                    }else{
-                                        //  multiple laced duckwing
-                                        pattern = 26;
-                                        ground = 0;
-                                    }
-                                }else{
-                                    if (genesForText[100] == 2 && genesForText[101] == 2){
-                                        //  incomplete quail
-                                        pattern = 29;
-                                        ground = 0;
-                                    }else{
-                                        // duckwing
-                                        pattern = 2;
+                                        pattern = 6;
                                         ground = 0;
                                     }
                                 }
-                            }
-                        }
-                    }
-
-
-
-                }else if (genesForText[24] == 3 || genesForText[25] == 3){
-                    //wheaten tree
-                    if (genesForText[28] == 1 || genesForText[29] == 1) {
-                        if (genesForText[98] == 1 || genesForText[99] == 1) {
-                            if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned halfspangled
-                                            pattern = 25;
-                                            ground = 5;
-                                    } else {
-                                        //  halfspangled
-                                            pattern = 25;
-                                            ground = 5;
-                                    }
-                                }else{
-                                        // extended patterened incomplete columbian w/ less hackle markings
-                                            pattern = 30;
-                                            ground = 15;
-                                }
-                            }else{
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // moorhead incomplete columbian w/ less hackle markings
-                                        pattern = 401;
-                                        ground = 15;
-                                        moorhead = 1;
-                                    } else {
-                                        // nearly buff
-                                        pattern = 9;
-                                        ground = 15;
-                                    }
-                                }else{
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // moorhead incomplete columbian w/ less hackle markings
-                                        pattern = 8;
-                                        ground = 15;
-                                    } else {
-                                        // buff
-                                        pattern = 401;
-                                        ground = 15;
-                                    }
-                                }
-                            }
-                        }else{
-                            if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned incomplete laced
-                                            pattern = 20;
-                                            ground = 5;
-                                    } else {
-                                        //  incomplete laced
+                            } else {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned incomplete laced
                                             pattern = 27;
                                             ground = 5;
-                                    }
-                                }else{
+                                            moorhead = 1;
+                                        } else {
+                                            //  incomplete laced
+                                            pattern = 27;
+                                            ground = 5;
+                                        }
+                                    } else {
                                         //  quail
                                         pattern = 4;
                                         ground = 5;
-                                }
-                            }else{
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned incomplete laced
-                                            pattern = 20;
-                                            ground = 5;
-                                    } else {
-                                        //  columbian
-                                            pattern = 5;
-                                            ground = 15;
                                     }
-                                }else{
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned columbian
-                                            pattern = 5;
+                                } else {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned incomplete laced?
+                                            pattern = 27;
                                             ground = 15;
                                             moorhead = 1;
-                                    } else {
-                                        // columbian
+                                        } else {
+                                            //  columbian
                                             pattern = 5;
                                             ground = 15;
+                                        }
+                                    } else {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            //  incomplete quail
+                                            pattern = 29;
+                                            ground = 15;
+                                        } else {
+                                            //  columbian
+                                            pattern = 5;
+                                            ground = 15;
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            if (genesForText[98] == 1 || genesForText[99] == 1) {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned spangled
+                                            pattern = 14;
+                                            ground = 15;
+                                        } else {
+                                            //  spangled
+                                            pattern = 160;
+                                            ground = 15;
+                                        }
+                                    } else {
+                                        //  incomplete quail
+                                        pattern = 29;
+                                        ground = 15;
+                                    }
+                                } else {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned transverse pencilled
+                                            pattern = 34;
+                                            ground = 5;
+                                        } else {
+                                            //  transverse pencilled
+                                            pattern = 10;
+                                            ground = 5;
+                                        }
+                                    } else {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            //  incomplete quail
+                                            pattern = 29;
+                                            ground = 15;
+                                        } else {
+                                            //  incomplete columbian w/ less hackle markings
+                                            pattern = 30;
+                                            ground = 15;
+
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned incomplete doublelaced
+                                            pattern = 21;
+                                            ground = 5;
+                                            moorhead = 1;
+                                        } else {
+                                            //  incomplete doublelaced
+                                            pattern = 21;
+                                            ground = 5;
+                                        }
+                                    } else {
+                                        //  incomplete quail
+                                        pattern = 29;
+                                        ground = 5;
+
+                                    }
+                                } else {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned multiple laced duckwing
+                                            pattern = 26;
+                                            ground = 0;
+                                            moorhead = 1;
+                                        } else {
+                                            //  multiple laced duckwing
+                                            pattern = 26;
+                                            ground = 0;
+                                        }
+                                    } else {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            //  incomplete quail
+                                            pattern = 29;
+                                            ground = 0;
+                                        } else {
+                                            // duckwing
+                                            pattern = 2;
+                                            ground = 0;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }else{
-                        if (genesForText[98] == 1 || genesForText[99] == 1) {
-                            if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned spangled
-                                         pattern = 14;
-                                         ground = 15;
+
+
+                    } else if (genesForText[24] == 3 || genesForText[25] == 3) {
+                        //wheaten tree
+                        if (genesForText[28] == 1 || genesForText[29] == 1) {
+                            if (genesForText[98] == 1 || genesForText[99] == 1) {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned halfspangled
+                                            pattern = 25;
+                                            ground = 5;
+                                        } else {
+                                            //  halfspangled
+                                            pattern = 25;
+                                            ground = 5;
+                                        }
                                     } else {
-                                        // spangled
+                                        // extended patterened incomplete columbian w/ less hackle markings
+                                        pattern = 30;
+                                        ground = 15;
+                                    }
+                                } else {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // moorhead incomplete columbian w/ less hackle markings
+                                            pattern = 401;
+                                            ground = 15;
+                                            moorhead = 1;
+                                        } else {
+                                            // nearly buff
+                                            pattern = 9;
+                                            ground = 15;
+                                        }
+                                    } else {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // moorhead incomplete columbian w/ less hackle markings
+                                            pattern = 8;
+                                            ground = 15;
+                                        } else {
+                                            // buff
+                                            pattern = 401;
+                                            ground = 15;
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned incomplete laced
+                                            pattern = 20;
+                                            ground = 5;
+                                        } else {
+                                            //  incomplete laced
+                                            pattern = 27;
+                                            ground = 5;
+                                        }
+                                    } else {
+                                        //  quail
+                                        pattern = 4;
+                                        ground = 5;
+                                    }
+                                } else {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned incomplete laced
+                                            pattern = 20;
+                                            ground = 5;
+                                        } else {
+                                            //  columbian
+                                            pattern = 5;
+                                            ground = 15;
+                                        }
+                                    } else {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned columbian
+                                            pattern = 5;
+                                            ground = 15;
+                                            moorhead = 1;
+                                        } else {
+                                            // columbian
+                                            pattern = 5;
+                                            ground = 15;
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            if (genesForText[98] == 1 || genesForText[99] == 1) {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned spangled
+                                            pattern = 14;
+                                            ground = 15;
+                                        } else {
+                                            // spangled
                                             pattern = 16;
                                             ground = 15;
-                                    }
-                                }else{
+                                        }
+                                    } else {
                                         // extended patterned incomplete columbian w/ less hackle markings
                                         pattern = 31;
                                         ground = 15;
-                                }
-                            }else{
+                                    }
+                                } else {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned incomplete columbian w/ less hackle markings
                                         pattern = 31;
@@ -1187,26 +1204,26 @@ public class EnhancedChicken extends AnimalEntity {
                                         pattern = 30;
                                         ground = 15;
                                     }
-                            }
-                        }else{
-                            if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned doublelaced
-                                        pattern = 13;
-                                        ground = 15;
-                                        moorhead = 1;
+                                }
+                            } else {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned doublelaced
+                                            pattern = 13;
+                                            ground = 15;
+                                            moorhead = 1;
+                                        } else {
+                                            // double laced
+                                            pattern = 13;
+                                            ground = 15;
+                                        }
                                     } else {
-                                        // double laced
-                                        pattern = 13;
-                                        ground = 15;
-                                    }
-                                }else{
                                         // extended patterned wheaten
                                         pattern = 28;
                                         ground = 10;
-                                }
-                            }else{
+                                    }
+                                } else {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned wheaten
                                         pattern = 28;
@@ -1216,32 +1233,32 @@ public class EnhancedChicken extends AnimalEntity {
                                         pattern = 3;
                                         ground = 10;
                                     }
+                                }
                             }
                         }
-                    }
 
-                }else if (genesForText[24] == 4 || genesForText[25] == 4){
-                    //partidge tree
-                    if (genesForText[28] == 1 || genesForText[29] == 1) {
-                        if (genesForText[98] == 1 || genesForText[99] == 1) {
-                            if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterened halfspangled
+                    } else if (genesForText[24] == 4 || genesForText[25] == 4) {
+                        //partidge tree
+                        if (genesForText[28] == 1 || genesForText[29] == 1) {
+                            if (genesForText[98] == 1 || genesForText[99] == 1) {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterened halfspangled
                                             pattern = 16;
                                             ground = 15;
                                             moorhead = 1;
-                                    } else {
-                                        // halfspangled
+                                        } else {
+                                            // halfspangled
                                             pattern = 16;
                                             ground = 15;
-                                    }
-                                }else{
+                                        }
+                                    } else {
                                         // extended patterened incomplete quail
-                                            pattern = 24;
-                                            ground = 5;
-                                }
-                            }else{
+                                        pattern = 24;
+                                        ground = 5;
+                                    }
+                                } else {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // moorhead
                                         pattern = 8;
@@ -1251,252 +1268,252 @@ public class EnhancedChicken extends AnimalEntity {
                                         pattern = 30;
                                         ground = 15;
                                     }
-                            }
-                        }else{
-                            if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned single laced
-                                        pattern = 33;
-                                        ground = 15;
-                                        moorhead = 1;
+                                }
+                            } else {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned single laced
+                                            pattern = 33;
+                                            ground = 15;
+                                            moorhead = 1;
+                                        } else {
+                                            // single laced
+                                            pattern = 12;
+                                            ground = 15;
+                                        }
                                     } else {
-                                        // single laced
-                                        pattern = 12;
-                                        ground = 15;
-                                    }
-                                }else{
                                         // quail
                                         pattern = 4;
                                         ground = 5;
-                                }
-                            }else{
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned incomplete single laced
-                                        pattern = 32;
-                                        ground = 15;
-                                    } else {
-                                        // columbian
-                                        pattern = 5;
-                                        ground = 15;
                                     }
-                                }else{
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // lakenvelder
-                                        pattern = 7;
-                                        ground = 15;
-                                    } else {
-                                        // columbian
-                                        pattern = 5;
-                                        ground = 15;
-                                    }
-                                }
-                            }
-                        }
-                    }else{
-                        if (genesForText[98] == 1 || genesForText[99] == 1) {
-                            if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned spangled
-                                        pattern = 14;
-                                        ground = 15;
-                                    } else {
-                                        // spangled
-                                        pattern = 16;
-                                        ground = 15;
-                                    }
-                                }else{
-                                        // incomplete quail
-                                        pattern = 29;
-                                        ground = 15;
-                                }
-                            }else{
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned transverse penciled
-                                        pattern = 34;
-                                        ground = 5;
-                                    } else {
-                                        // transverse penciled
-                                        pattern = 10;
-                                        ground = 5;
-                                    }
-                                }else{
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // incomplete quail
-                                        pattern = 29;
-                                        ground = 15;
-
-                                    } else {
-                                        // incomplete columbian w/ less hackle markings
-                                        pattern = 30;
-                                        ground = 15;
-                                    }
-                                }
-                            }
-                        }else{
-                            if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned doublelaced
-                                        pattern = 13;
-                                        ground = 15;
-                                        moorhead = 1;
-                                    } else {
-                                        // doublelaced
-                                        pattern = 13;
-                                        ground = 15;
-                                    }
-                                }else{
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned partridge/brown halfspangled/laced? but darker head?
-                                        pattern = 20;
-                                        ground = 5;
-                                        moorhead = 1;
-                                    } else {
-                                        // extended patterned partridge/brown halfspangled/laced?
-                                        pattern = 20;
-                                        ground = 5;
-                                    }
-                                }
-                            }else{
-                                if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned multiple laced partridge
-                                        pattern = 26;
-                                        ground = 5;
-                                        moorhead = 1;
-                                    } else {
-                                        // multiple laced partridge
-                                        pattern = 15;
-                                        ground = 5;
-                                    }
-                                }else{
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                        // extended patterned partridge
-                                        pattern = 2;
-                                        ground = 5;
-                                        moorhead = 1;
-                                    } else {
-                                        // partridge
-                                        pattern = 2;
-                                        ground = 5;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                }else{
-                    eyes = 0;
-                }
-
-
-                //ground colour tint
-                if (genesForText[0] == 1) {
-                    //gold
-                    ground = ground + 2;
-                }
-                if (genesForText[0] == 1 && ((genesForText[32] == 3 && genesForText[33] == 3) || (genesForText[36] == 2 && genesForText[37] == 2))) {
-                    //lemon or cream but backwards
-                    ground = ground + 1;
-                }
-                if (genesForText[34] == 1 || genesForText[35] == 1) {
-                    //mahogany or lemon cream counter
-                    ground = ground + 1;
-                }
-
-                if (pattern < 400) {
-                    if (moorhead == 1){
-                        moorheadtoggle = 1;
-                    }
-                    //black pattern shade genes
-                    //sets pattern to correct positioning pre:variation
-                    pattern = (pattern * ptrncolours);
-                    if (genesForText[38] == 1 && genesForText[39] == 1) {
-                        //domwhite
-                        pattern = pattern + 7;
-                        moorhead = moorhead + 7;
-                    } else if (genesForText[38] == 1 || genesForText[39] == 1) {
-                        // spotted domwhite
-                        pattern = pattern + 7;
-                        moorhead = moorhead + 7;
-                    } else {
-                        //if chocolate
-                        if (genesForText[1] == 2) {
-                            //if lavender
-                            if (genesForText[36] == 2 && genesForText[37] == 2) {
-                                //is a dun variety
-                                //if it is splash
-                                if (genesForText[40] == 2 && genesForText[41] == 2) {
-                                    //splash dun
-                                    pattern = pattern + 4;
-                                    moorhead = moorhead + 4;
                                 } else {
-                                    //dun
-                                    pattern = pattern + 8;
-                                    moorhead = moorhead + 8;
-                                }
-                            } else {
-                                //is a chocolate variety
-                                if (genesForText[40] == 2 && genesForText[41] == 2) {
-                                    //splash choc
-                                    pattern = pattern + 5;
-                                    moorhead = moorhead + 5;
-                                } else if (genesForText[40] != 1 || genesForText[41] != 1) {
-                                    //dun
-                                    pattern = pattern + 8;
-                                    moorhead = moorhead + 8;
-                                } else {
-                                    //chocolate
-                                    pattern = pattern + 9;
-                                    moorhead = moorhead + 9;
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned incomplete single laced
+                                            pattern = 32;
+                                            ground = 15;
+                                        } else {
+                                            // columbian
+                                            pattern = 5;
+                                            ground = 15;
+                                        }
+                                    } else {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // lakenvelder
+                                            pattern = 7;
+                                            ground = 15;
+                                        } else {
+                                            // columbian
+                                            pattern = 5;
+                                            ground = 15;
+                                        }
+                                    }
                                 }
                             }
                         } else {
-                            //if lavender
-                            if (genesForText[36] == 2 && genesForText[37] == 2) {
-                                //is a lavender variety
-                                //if it is splash
-                                if (genesForText[40] == 2 && genesForText[41] == 2) {
-                                    //splash lavender
-                                    pattern = pattern + 3;
-                                    moorhead = moorhead + 3;
+                            if (genesForText[98] == 1 || genesForText[99] == 1) {
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned spangled
+                                            pattern = 14;
+                                            ground = 15;
+                                        } else {
+                                            // spangled
+                                            pattern = 16;
+                                            ground = 15;
+                                        }
+                                    } else {
+                                        // incomplete quail
+                                        pattern = 29;
+                                        ground = 15;
+                                    }
                                 } else {
-                                    //lavender
-                                    pattern = pattern + 6;
-                                    moorhead = moorhead + 6;
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned transverse penciled
+                                            pattern = 34;
+                                            ground = 5;
+                                        } else {
+                                            // transverse penciled
+                                            pattern = 10;
+                                            ground = 5;
+                                        }
+                                    } else {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // incomplete quail
+                                            pattern = 29;
+                                            ground = 15;
+
+                                        } else {
+                                            // incomplete columbian w/ less hackle markings
+                                            pattern = 30;
+                                            ground = 15;
+                                        }
+                                    }
                                 }
                             } else {
-                                //is a black variety
-                                if (genesForText[40] == 2 && genesForText[41] == 2) {
-                                    //splash
-                                    pattern = pattern + 2;
-                                    moorhead = moorhead + 2;
-                                } else if (genesForText[40] == 2 || genesForText[41] == 2) {
-                                    //blue
-                                    if (genesForText[15] == 4 && genesForText[16] == 4 && (genesForText[30] == 1 && genesForText[31] == 1)) {
-                                        //blue laced ... super special gene combo for blue andalusian type pattern
-                                        pattern = 11;
-                                        ground = 20;
-                                        moorhead = moorhead + 0;
+                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned doublelaced
+                                            pattern = 13;
+                                            ground = 15;
+                                            moorhead = 1;
+                                        } else {
+                                            // doublelaced
+                                            pattern = 13;
+                                            ground = 15;
+                                        }
                                     } else {
-                                        //blue
-                                        pattern = pattern + 1;
-                                        moorhead = moorhead + 1;
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned partridge/brown halfspangled/laced? but darker head?
+                                            pattern = 20;
+                                            ground = 5;
+                                            moorhead = 1;
+                                        } else {
+                                            // extended patterned partridge/brown halfspangled/laced?
+                                            pattern = 20;
+                                            ground = 5;
+                                        }
                                     }
+                                } else {
+                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned multiple laced partridge
+                                            pattern = 26;
+                                            ground = 5;
+                                            moorhead = 1;
+                                        } else {
+                                            // multiple laced partridge
+                                            pattern = 15;
+                                            ground = 5;
+                                        }
+                                    } else {
+                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                            // extended patterned partridge
+                                            pattern = 2;
+                                            ground = 5;
+                                            moorhead = 1;
+                                        } else {
+                                            // partridge
+                                            pattern = 2;
+                                            ground = 5;
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
+                    } else {
+                        eyes = 0;
+                    }
+
+
+                    //ground colour tint
+                    if (genesForText[0] == 1) {
+                        //gold
+                        ground = ground + 2;
+                    }
+                    if (genesForText[0] == 1 && ((genesForText[32] == 3 && genesForText[33] == 3) || (genesForText[36] == 2 && genesForText[37] == 2))) {
+                        //lemon or cream but backwards
+                        ground = ground + 1;
+                    }
+                    if (genesForText[34] == 1 || genesForText[35] == 1) {
+                        //mahogany or lemon cream counter
+                        ground = ground + 1;
+                    }
+
+                    if (pattern < 400) {
+                        if (moorhead == 1) {
+                            moorheadtoggle = 1;
+                        }
+                        //black pattern shade genes
+                        //sets pattern to correct positioning pre:variation
+                        pattern = (pattern * ptrncolours);
+                        if (genesForText[38] == 1 && genesForText[39] == 1) {
+                            //domwhite
+                            pattern = pattern + 7;
+                            moorhead = moorhead + 7;
+                        } else if (genesForText[38] == 1 || genesForText[39] == 1) {
+                            // spotted domwhite
+                            pattern = pattern + 7;
+                            moorhead = moorhead + 7;
+                        } else {
+                            //if chocolate
+                            if (genesForText[1] == 2) {
+                                //if lavender
+                                if (genesForText[36] == 2 && genesForText[37] == 2) {
+                                    //is a dun variety
+                                    //if it is splash
+                                    if (genesForText[40] == 2 && genesForText[41] == 2) {
+                                        //splash dun
+                                        pattern = pattern + 4;
+                                        moorhead = moorhead + 4;
+                                    } else {
+                                        //dun
+                                        pattern = pattern + 8;
+                                        moorhead = moorhead + 8;
+                                    }
+                                } else {
+                                    //is a chocolate variety
+                                    if (genesForText[40] == 2 && genesForText[41] == 2) {
+                                        //splash choc
+                                        pattern = pattern + 5;
+                                        moorhead = moorhead + 5;
+                                    } else if (genesForText[40] != 1 || genesForText[41] != 1) {
+                                        //dun
+                                        pattern = pattern + 8;
+                                        moorhead = moorhead + 8;
+                                    } else {
+                                        //chocolate
+                                        pattern = pattern + 9;
+                                        moorhead = moorhead + 9;
+                                    }
+                                }
+                            } else {
+                                //if lavender
+                                if (genesForText[36] == 2 && genesForText[37] == 2) {
+                                    //is a lavender variety
+                                    //if it is splash
+                                    if (genesForText[40] == 2 && genesForText[41] == 2) {
+                                        //splash lavender
+                                        pattern = pattern + 3;
+                                        moorhead = moorhead + 3;
+                                    } else {
+                                        //lavender
+                                        pattern = pattern + 6;
+                                        moorhead = moorhead + 6;
+                                    }
+                                } else {
+                                    //is a black variety
+                                    if (genesForText[40] == 2 && genesForText[41] == 2) {
+                                        //splash
+                                        pattern = pattern + 2;
+                                        moorhead = moorhead + 2;
+                                    } else if (genesForText[40] == 2 || genesForText[41] == 2) {
+                                        //blue
+                                        if (genesForText[15] == 4 && genesForText[16] == 4 && (genesForText[30] == 1 && genesForText[31] == 1)) {
+                                            //blue laced ... super special gene combo for blue andalusian type pattern
+                                            pattern = 11;
+                                            ground = 20;
+                                            moorhead = 1;
+                                        } else {
+                                            //blue
+                                            pattern = pattern + 1;
+                                            moorhead = moorhead + 1;
+                                        }
+
+                                    }
                                 }
                             }
                         }
                     }
+                    if (moorheadtoggle == 0) {
+                        moorhead = 0;
+                    }
                 }
-                if (moorheadtoggle == 0){
-                    moorhead = 0;
-                }
-            }
 
                 //white marking genesForText
                 if (genesForText[3] == 2) {
@@ -1536,7 +1553,7 @@ public class EnhancedChicken extends AnimalEntity {
                     }
 
                     //if barred or mottled lighten by 1 shade
-                    if(genesForText[3] == 2 || (genesForText[22] == 2 && genesForText[23] == 2)){
+                    if (genesForText[3] == 2 || (genesForText[22] == 2 && genesForText[23] == 2)) {
                         shanks--;
                     }
 
@@ -1578,24 +1595,114 @@ public class EnhancedChicken extends AnimalEntity {
                         shanks = shanks + 4;
                     }
 
-        }
-
+                }
 
 
 //            after finished genesForText
-            this.chickenTextures.add(CHICKEN_TEXTURES_GROUND[ground]);
-            if (pattern != 401){
-                this.chickenTextures.add(CHICKEN_TEXTURES_PATTERN[pattern]);
+                this.chickenTextures.add(CHICKEN_TEXTURES_GROUND[ground]);
+                if (pattern != 401) {
+                    this.chickenTextures.add(CHICKEN_TEXTURES_PATTERN[pattern]);
+                }
+                if (moorhead != 0) {
+                    this.chickenTextures.add(CHICKEN_TEXTURES_MOORHEAD[moorhead]);
+                }
+                if (white != 0) {
+                    this.chickenTextures.add(CHICKEN_TEXTURES_WHITE[white]);
+                }
+                this.chickenTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
+                this.chickenTextures.add(CHICKEN_TEXTURES_COMB[comb]);
+                this.chickenTextures.add(CHICKEN_TEXTURES_EYES[eyes]);
+            }else{
+                int shanks = 2;
+                int comb = 2;
+                int eyes = 1;
+                int downBase = 1;
+
+
+                boolean isAlbino = false;
+
+                if (genesForText[20] != 1 && genesForText[21] != 1) {
+                    downBase = 0;
+                    if (genesForText[20] == 3 && genesForText[21] == 3) {
+                        //albino
+                        shanks = 4;
+                        comb = 2;
+                        eyes = 0;
+                        isAlbino = true;
+                    }
+                }
+
+                // figures out the shank, comb, and skin colour if its not albino
+                if (!isAlbino) {
+                    //gets comb colour
+                    if (genesForText[4] == 1 && (genesForText[42] == 1 || genesForText[43] == 1)) {
+                        //comb and shanks are black
+                        comb = 0;
+                        shanks = 3;
+                    }
+                    if (genesForText[24] == 1 && genesForText[25] == 1) {
+                        shanks = 3;
+                        // makes mulbery comb
+                        if (genesForText[30] == 2) {
+                            comb = 1;
+                        }
+                    }
+                    //shanks starts at 3 btw
+                    // if Dilute is Dilute and the shanks arnt darkened by extened black lighten by 1 shade
+                    if ((genesForText[24] != 1 && genesForText[25] != 1) && (genesForText[32] == 1 || genesForText[33] == 1)) {
+                        shanks--;
+                    }
+
+                    //if barred or mottled lighten by 1 shade
+                    if (genesForText[3] == 2 || (genesForText[22] == 2 && genesForText[23] == 2)) {
+                        shanks--;
+                    }
+
+                    // if dominant white or lavender lighten by 1 shade
+                    if ((genesForText[38] == 1 && genesForText[39] == 1) || (genesForText[36] == 1 && genesForText[37] == 1)) {
+                        shanks--;
+                    }
+
+                    // if splash or blue lighten by 1 shade
+                    if (genesForText[40] == 2 || genesForText[41] == 2) {
+                        shanks--;
+                    }
+
+                    //if its melanized
+//                    if (Melanin == 2) {
+//                        shanks++;
+//                    }
+
+                    //TODO replace this with a new r.black shank gene
+                    // if columbian toggle doesnt matter darken by 1
+                    if ((genesForText[2] == 1 && genesForText[28] == 2 && genesForText[29] == 2) || (genesForText[2] == 2 && genesForText[28] == 1 && genesForText[29] == 1)) {
+                        shanks++;
+                    }
+
+                    //makes sure its not off the chart
+                    if (shanks < 0) {
+                        shanks = 0;
+                    } else if (shanks > 3) {
+                        shanks = 3;
+                    }
+
+                    //lightens comb to mulberry if lightness is extreme enough
+                    if (shanks < 2 && comb == 0) {
+                        comb = 1;
+                    }
+
+                    //makes the shanks and beak their white or yellow varient
+                    if (genesForText[44] == 1 || genesForText[45] == 1) {
+                        shanks = shanks + 4;
+                    }
+
+                }
+
+                this.chickenTextures.add(CHICKEN_TEXTURES_CHICKBASE[downBase]);
+                this.chickenTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
+                this.chickenTextures.add(CHICKEN_TEXTURES_COMB[comb]);
+                this.chickenTextures.add(CHICKEN_TEXTURES_EYES[eyes]);
             }
-            if (moorhead != 0){
-                this.chickenTextures.add(CHICKEN_TEXTURES_MOORHEAD[moorhead]);
-            }
-            if (white!= 0){
-                this.chickenTextures.add(CHICKEN_TEXTURES_WHITE[white]);
-            }
-            this.chickenTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
-            this.chickenTextures.add(CHICKEN_TEXTURES_COMB[comb]);
-            this.chickenTextures.add(CHICKEN_TEXTURES_EYES[eyes]);
         }
     }
 

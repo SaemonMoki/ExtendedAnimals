@@ -376,13 +376,96 @@ public class EnhancedCow extends AnimalEntity {
         this.isBurning();
 
         float cowSize = this.getSize();
-        float cowThickness = (float)(genes[54] + genes[55])/2;
-//
-//        int meatDropCount =
-//
-//
-        ItemStack itemstack = new ItemStack(Items.ZOMBIE_HEAD, 1);
-        this.entityDropItem(itemstack);
+        int cowThickness = (genes[54] + genes[55]);
+
+        int meatDrop;
+        float meatChanceMod;
+        int leatherDrop;
+
+        //cowsize from .6 to 1.5
+        meatChanceMod = ((cowSize - 0.6F) * 4.445F) + 1;
+        meatDrop = Math.round(meatChanceMod);
+        if (meatDrop >= 5) {
+            meatChanceMod = 0;
+        } else {
+            meatChanceMod = (meatChanceMod - meatDrop) * 100;
+        }
+
+        leatherDrop = meatDrop - 2;
+
+        if (meatChanceMod  != 0) {
+            int i = this.rand.nextInt(100);
+            if (meatChanceMod > i) {
+                meatDrop++;
+            }
+            i = this.rand.nextInt(100);
+            if (meatChanceMod > i) {
+                leatherDrop++;
+            }
+        }
+
+        if (cowThickness == 6){
+
+            //100% chance meat
+            //0% chance leather
+            meatDrop++;
+
+        } else if (cowThickness == 5){
+
+            //75% chance meat
+            int i = this.rand.nextInt(4);
+            if (i>=1) {
+                meatDrop++;
+            }
+            //25% chance leather
+            i = this.rand.nextInt(4);
+            if (i==0) {
+                meatDrop++;
+            }
+
+        } else if (cowThickness == 4){
+
+            //50% chance meat
+            int i = this.rand.nextInt(2);
+            if (i==1) {
+                meatDrop++;
+            }
+            //50% chance leather
+            i = this.rand.nextInt(2);
+            if (i==1) {
+                leatherDrop++;
+            }
+
+        } else if (cowThickness == 3){
+
+            //25% chance meat
+            int i = this.rand.nextInt(4);
+            if (i==0) {
+                meatDrop++;
+            }
+            //75% chance leather
+            i = this.rand.nextInt(4);
+            if (i>=1) {
+                leatherDrop++;
+            }
+
+        } else {
+            leatherDrop++;
+        }
+
+        if (leatherDrop < 0) {
+            leatherDrop = 0;
+        }
+
+        if (this.isBurning()){
+            ItemStack cookedBeefStack = new ItemStack(Items.COOKED_BEEF, meatDrop);
+            this.entityDropItem(cookedBeefStack);
+        }else {
+            ItemStack beefStack = new ItemStack(Items.BEEF, meatDrop);
+            ItemStack leatherStack = new ItemStack(Items.LEATHER, leatherDrop);
+            this.entityDropItem(beefStack);
+            this.entityDropItem(leatherStack);
+        }
     }
 
 

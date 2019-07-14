@@ -342,22 +342,22 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             int woolCount = 0;
             if (currentCoatLength == 1) {
                 int i = this.rand.nextInt(5);
-                if (i>4){
+                if (i>3){
                     woolCount++;
                 }
             } else if (currentCoatLength == 2) {
                 int i = this.rand.nextInt(5);
-                if (i>3){
+                if (i>2){
                     woolCount++;
                 }
             } else if (currentCoatLength == 3) {
                 int i = this.rand.nextInt(5);
-                if (i>2){
+                if (i>1){
                     woolCount++;
                 }
             } else if (currentCoatLength == 4) {
                 int i = this.rand.nextInt(5);
-                if (i>1) {
+                if (i>0) {
                     woolCount++;
                 }
             } else if (currentCoatLength >= 5) {
@@ -365,44 +365,44 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
                 if (currentCoatLength == 6) {
                     int i = this.rand.nextInt(5);
-                    if (i>4){
+                    if (i>3){
                         woolCount++;
                     }
                 } else if (currentCoatLength == 7) {
                     int i = this.rand.nextInt(5);
-                    if (i>3){
+                    if (i>2){
                         woolCount++;
                     }
                 } else if (currentCoatLength == 8) {
                     int i = this.rand.nextInt(5);
-                    if (i>2){
+                    if (i>1){
                         woolCount++;
                     }
                 } else if (currentCoatLength == 9) {
                     int i = this.rand.nextInt(5);
-                    if (i>1) {
+                    if (i>0) {
                         woolCount++;
                     }
                 } else if (currentCoatLength >= 10) {
                     woolCount++;
                     if (currentCoatLength == 11) {
                         int i = this.rand.nextInt(5);
-                        if (i>4){
+                        if (i>3){
                             woolCount++;
                         }
                     } else if (currentCoatLength == 12) {
                         int i = this.rand.nextInt(5);
-                        if (i>3){
+                        if (i>2){
                             woolCount++;
                         }
                     } else if (currentCoatLength == 13) {
                         int i = this.rand.nextInt(5);
-                        if (i>2){
+                        if (i>1){
                             woolCount++;
                         }
                     } else if (currentCoatLength == 14) {
                         int i = this.rand.nextInt(5);
-                        if (i>1) {
+                        if (i>0) {
                             woolCount++;
                         }
                     } else if (currentCoatLength >= 15) {

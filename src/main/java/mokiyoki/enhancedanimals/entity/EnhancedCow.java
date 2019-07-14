@@ -61,6 +61,7 @@ public class EnhancedCow extends AnimalEntity {
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
     private static final DataParameter<Float> COW_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
+    private static final DataParameter<String> COW_STATUS = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
 
     private static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
@@ -179,6 +180,7 @@ public class EnhancedCow extends AnimalEntity {
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(COW_SIZE, 0.0F);
         this.dataManager.register(BAG_SIZE, 0.0F);
+        this.dataManager.register(COW_STATUS, new String());
     }
 
     private void setCowSize(float size) {
@@ -195,6 +197,14 @@ public class EnhancedCow extends AnimalEntity {
 
     public float getBagSize() {
         return this.dataManager.get(BAG_SIZE);
+    }
+
+    private void setCowStatus(String status) {
+        this.dataManager.set(COW_STATUS, status);
+    }
+
+    public String getCowStatus(){
+        return this.dataManager.get(COW_STATUS);
     }
 
     protected SoundEvent getAmbientSound() {
@@ -490,6 +500,8 @@ public class EnhancedCow extends AnimalEntity {
             entityplayermp.addStat(Stats.ANIMALS_BRED);
             CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedCow)ageable), (AgeableEntity)null);
         }
+
+        setCowStatus("PREGNANT");
 
         return null;
     }

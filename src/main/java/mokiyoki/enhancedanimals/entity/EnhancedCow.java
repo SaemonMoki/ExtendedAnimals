@@ -480,11 +480,20 @@ public class EnhancedCow extends AnimalEntity {
 
 
     public AgeableEntity createChild(AgeableEntity ageable) {
-        this.mateGenes = ((EnhancedCow) ageable).getGenes();
-        mixMateMitosisGenes();
-        mixMitosisGenes();
+        if(pregnant) {
+            ((EnhancedCow)ageable).pregnant = true;
+            ((EnhancedCow)ageable).setMateGenes(this.genes);
+            ((EnhancedCow)ageable).mixMateMitosisGenes();
+            ((EnhancedCow)ageable).mixMitosisGenes();
+            ((EnhancedCow)ageable).setCowStatus("PREGNANT");
+        } else {
+            pregnant = true;
+            this.mateGenes = ((EnhancedCow) ageable).getGenes();
+            mixMateMitosisGenes();
+            mixMitosisGenes();
+            setCowStatus("PREGNANT");
+        }
 
-        pregnant = true;
 
         this.setGrowingAge(10);
         this.resetInLove();
@@ -500,8 +509,6 @@ public class EnhancedCow extends AnimalEntity {
             entityplayermp.addStat(Stats.ANIMALS_BRED);
             CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedCow)ageable), (AgeableEntity)null);
         }
-
-        setCowStatus("PREGNANT");
 
         return null;
     }
@@ -1906,6 +1913,10 @@ public class EnhancedCow extends AnimalEntity {
 
     public int[] getGenes() {
         return this.genes;
+    }
+
+    public void setMateGenes(int[] mateGenes){
+        this.mateGenes = mateGenes;
     }
 
     public static class GroupData implements ILivingEntityData {

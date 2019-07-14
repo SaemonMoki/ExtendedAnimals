@@ -101,7 +101,8 @@ public class EnhancedCow extends AnimalEntity {
     private static final String[] COW_TEXTURES_BELTED = new String[] {
             "", "spot_belted0.png",
                 "spot_blaze0.png",
-                "spot_brockling0.png"
+                "b_spot_brockling0.png",
+                "r_spot_brockling0.png"
     };
 
     private static final String[] COW_TEXTURES_COLOURSIDED = new String[] {
@@ -660,8 +661,16 @@ public class EnhancedCow extends AnimalEntity {
                 //blaze
                 belted = 2;
             }else if (genesForText[18] == 3 || genesForText[19] == 3){
-                //brockling
-                belted = 3;
+                if (whiteface != 0 || coloursided != 0) {
+                    if (black == 4 || black == 5 || black == 6 || black == 10 || black == 11 || black == 12){
+                        //brockling
+                        belted = 3;
+                    } else {
+                        belted = 4;
+                    }
+
+                }
+
             }
 
             //TODO make randomizers for the textures
@@ -772,20 +781,20 @@ public class EnhancedCow extends AnimalEntity {
                 this.cowTextures.add(COW_TEXTURES_BLACK[black]);
             }
             this.cowTextures.add(COW_TEXTURES_SKIN[skin]);
+            if (whiteface != 0){
+                this.cowTextures.add(COW_TEXTURES_WHITEFACE[whiteface]);
+            }
+            if (coloursided != 0){
+                this.cowTextures.add(COW_TEXTURES_COLOURSIDED[coloursided]);
+            }
+            if (belted != 0){
+                this.cowTextures.add(COW_TEXTURES_BELTED[belted]);
+            }
             if (roan != 0){
                 this.cowTextures.add(COW_TEXTURES_ROAN[roan]);
             }
             if (speckled != 0){
                 this.cowTextures.add(COW_TEXTURES_SPECKLED[speckled]);
-            }
-            if (whiteface != 0){
-                this.cowTextures.add(COW_TEXTURES_WHITEFACE[whiteface]);
-            }
-            if (belted != 0){
-                this.cowTextures.add(COW_TEXTURES_BELTED[belted]);
-            }
-            if (coloursided != 0){
-                this.cowTextures.add(COW_TEXTURES_COLOURSIDED[coloursided]);
             }
             //TODO add hoof colour genetics
             this.cowTextures.add(COW_TEXTURES_HOOVES[hooves]);

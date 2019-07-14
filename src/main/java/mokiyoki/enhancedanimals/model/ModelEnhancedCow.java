@@ -244,7 +244,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.udder = new RendererModel(this, 24, 67);
         this.udder.addBox(-2.5F, 0.0F, 0.0F, 5, 5, 5, 0.0F);
-        this.udder.setRotationPoint(0.0F, 9.5F, 17.25F + xMove);
+        this.udder.setRotationPoint(0.0F, 9.5F, 16.75F + xMove);
 
         this.nipples = new RendererModel(this, 24, 77);
         this.nipples.addBox(-2.0F, 0.0F, 0.0F, 1, 2, 1, 0.0F);
@@ -408,6 +408,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         int[] genes = enhancedCow.getSharedGenes();
         this.size = enhancedCow.getSize();
         this.bagSize = enhancedCow.getBagSize();
+        String cowStatus = enhancedCow.getCowStatus();
         float dwarf = 0.0F;
         int bodyShape = 0;
         int hump = 0;
@@ -552,7 +553,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             this.tail0.render(scale);
 
-//            this.nipples.render(scale);
+            if (cowStatus.contains("PREGNANT")) {
+                this.udder.render(scale);
+                this.nipples.render(scale);
+            }
+
 
             GlStateManager.popMatrix();
 
@@ -643,7 +648,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         if (sharedGenes[40] != 1 && sharedGenes[41] != 1) {
             int child = 1;
-            if (this.isChild){
+            if (this.isChild) {
                 child = 2;
             }
             float hump = 2.0F;
@@ -654,42 +659,42 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 hump = hump - 0.5F;
             }
 
-            this.humpXLarge.rotationPointY = hump/child;
-            this.humpLarge.rotationPointY = hump/child;
-            this.humpLargeish.rotationPointY = hump/child;
-            this.humpMedium.rotationPointY = hump/child;
-            this.humpSmallish.rotationPointY = hump/child;
-            this.humpSmall.rotationPointY = hump/child;
-            this.humpXSmall.rotationPointY = hump/child;
+            this.humpXLarge.rotationPointY = hump / child;
+            this.humpLarge.rotationPointY = hump / child;
+            this.humpLargeish.rotationPointY = hump / child;
+            this.humpMedium.rotationPointY = hump / child;
+            this.humpSmallish.rotationPointY = hump / child;
+            this.humpSmall.rotationPointY = hump / child;
+            this.humpXSmall.rotationPointY = hump / child;
 
-        }else{
+        } else {
             int child = 1;
-            if (this.isChild){
+            if (this.isChild) {
                 child = 2;
             }
 
-            this.humpXLarge.rotationPointY = 2.0F/child;
-            this.humpLarge.rotationPointY = 2.0F/child;
-            this.humpLargeish.rotationPointY = 2.0F/child;
-            this.humpMedium.rotationPointY = 2.0F/child;
-            this.humpSmallish.rotationPointY = 2.0F/child;
-            this.humpSmall.rotationPointY = 2.0F/child;
-            this.humpXSmall.rotationPointY = 2.0F/child;
+            this.humpXLarge.rotationPointY = 2.0F / child;
+            this.humpLarge.rotationPointY = 2.0F / child;
+            this.humpLargeish.rotationPointY = 2.0F / child;
+            this.humpMedium.rotationPointY = 2.0F / child;
+            this.humpSmallish.rotationPointY = 2.0F / child;
+            this.humpSmall.rotationPointY = 2.0F / child;
+            this.humpXSmall.rotationPointY = 2.0F / child;
         }
 
         int bodyShape = 0;
-        for (int i = 1; i < sharedGenes[54]; i++){
+        for (int i = 1; i < sharedGenes[54]; i++) {
             bodyShape++;
         }
-        for (int i = 1; i < sharedGenes[55]; i++){
+        for (int i = 1; i < sharedGenes[55]; i++) {
             bodyShape++;
         }
 
-        if (isChild && bodyShape != 0){
+        if (isChild && bodyShape != 0) {
             bodyShape = 1;
         }
 
-        if (bodyShape == 4){
+        if (bodyShape == 4) {
             this.leg1.rotationPointX = -7.0F;
             this.leg3.rotationPointX = -7.0F;
             this.leg2.rotationPointX = 4.0F;
@@ -704,7 +709,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.miniChonkLeg4.setRotationPoint(3.7F, 13.5F, 9.7F);
             this.tail0.rotationPointZ = 13.0F;
 
-        }else if (bodyShape == 3){
+        } else if (bodyShape == 3) {
             this.leg1.rotationPointX = -6.5F;
             this.leg3.rotationPointX = -6.5F;
             this.leg2.rotationPointX = 3.5F;
@@ -718,19 +723,19 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.miniChonkLeg2.setRotationPoint(3.1F, 13.5F, -10.1F);
             this.miniChonkLeg3.setRotationPoint(-6.1F, 13.5F, 9.1F);
             this.miniChonkLeg4.setRotationPoint(3.1F, 13.5F, 9.1F);
-        }else if (bodyShape == 1){
+        } else if (bodyShape == 1) {
             this.leg1.rotationPointX = -5.5F;
             this.leg3.rotationPointX = -5.5F;
             this.leg2.rotationPointX = 2.5F;
             this.leg4.rotationPointX = 2.5F;
             this.tail0.rotationPointZ = 11.5F;
-        }else if (bodyShape == 0){
+        } else if (bodyShape == 0) {
             this.leg1.rotationPointX = -5.0F;
             this.leg3.rotationPointX = -5.0F;
             this.leg2.rotationPointX = 2.0F;
             this.leg4.rotationPointX = 2.0F;
             this.tail0.rotationPointZ = 12.0F;
-        }else{
+        } else {
             this.leg1.rotationPointX = -6.0F;
             this.leg3.rotationPointX = -6.0F;
             this.leg2.rotationPointX = 3.0F;
@@ -749,25 +754,25 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.earLongR.setRotationPoint(-3.5F, 4.0F, -2.5F);
         this.earLongestR.setRotationPoint(-3.5F, 4.0F, -2.5F);
 
-        this.earSmallestL.rotateAngleZ = ((float)Math.PI / 2F);
-        this.earSmallL.rotateAngleZ = ((float)Math.PI / 2F);
-        this.earMediumL.rotateAngleZ = ((float)Math.PI / 2F);
-        this.earLongL.rotateAngleZ = ((float)Math.PI / 2F);
-        this.earLongestL.rotateAngleZ = ((float)Math.PI / 2F);
-        this.earSmallestR.rotateAngleZ = ((float)Math.PI / 2F);
-        this.earSmallR.rotateAngleZ = ((float)Math.PI / 2F);
-        this.earMediumR.rotateAngleZ = ((float)Math.PI / 2F);
-        this.earLongR.rotateAngleZ = ((float)Math.PI / 2F);
-        this.earLongestR.rotateAngleZ = ((float)Math.PI / 2F);
+        this.earSmallestL.rotateAngleZ = ((float) Math.PI / 2F);
+        this.earSmallL.rotateAngleZ = ((float) Math.PI / 2F);
+        this.earMediumL.rotateAngleZ = ((float) Math.PI / 2F);
+        this.earLongL.rotateAngleZ = ((float) Math.PI / 2F);
+        this.earLongestL.rotateAngleZ = ((float) Math.PI / 2F);
+        this.earSmallestR.rotateAngleZ = ((float) Math.PI / 2F);
+        this.earSmallR.rotateAngleZ = ((float) Math.PI / 2F);
+        this.earMediumR.rotateAngleZ = ((float) Math.PI / 2F);
+        this.earLongR.rotateAngleZ = ((float) Math.PI / 2F);
+        this.earLongestR.rotateAngleZ = ((float) Math.PI / 2F);
 
-        if (sharedGenes[46] == 2 && sharedGenes[47] == 2){
+        if (sharedGenes[46] == 2 && sharedGenes[47] == 2) {
 //        if (true){
             float earSize = 0;
-            for (int i = 1; i < sharedGenes[42]; i++){
+            for (int i = 1; i < sharedGenes[42]; i++) {
                 earSize = earSize + 1.0F;
             }
 
-            for (int i = 1; i < sharedGenes[43]; i++){
+            for (int i = 1; i < sharedGenes[43]; i++) {
                 earSize = earSize + 1.0F;
             }
 
@@ -775,46 +780,46 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 earSize = earSize - earSize / 3.0F;
             }
 
-            float floppiness = (earSize/6.25F) + 0.2F;
+            float floppiness = (earSize / 6.25F) + 0.2F;
 
-            if (earSize <= 1){
+            if (earSize <= 1) {
 //            if (true){
                 this.earSmallestL.setRotationPoint(3.0F, 0.5F, -2.5F);
                 this.earSmallestL.rotateAngleZ = 1.1F;
                 this.earSmallestR.setRotationPoint(-3.0F, 0.5F, -2.5F);
                 this.earSmallestR.rotateAngleZ = -1.1F;
-            }else if (earSize <= 3){
+            } else if (earSize <= 3) {
                 this.earSmallL.setRotationPoint(3.0F, 0.75F, -2.5F);
-                this.earSmallL.rotateAngleZ = 1.1F + (earSize/6.25F);
+                this.earSmallL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                 this.earSmallR.setRotationPoint(-3.0F, 0.75F, -2.5F);
-                this.earSmallR.rotateAngleZ = -(1.1F + (earSize/6.25F));
-            }else if (earSize <= 5){
-                this.earMediumL.setRotationPoint(3.0F + (floppiness/3), 1.0F, -2.5F);
-                this.earMediumL.rotateAngleZ = 1.1F + (earSize/6.25F);
-                this.earMediumR.setRotationPoint(-(3.0F + (floppiness/3)), 1.0F, -2.5F);
-                this.earMediumR.rotateAngleZ = -(1.1F + (earSize/6.25F));
-            }else if (earSize <= 7){
-                this.earLongL.setRotationPoint(3.0F + (floppiness/2), 1.0F, -2.5F);
-                this.earLongL.rotateAngleZ = 1.1F + (earSize/6.25F);
-                this.earLongR.setRotationPoint(-(3.0F + (floppiness/2)), 1.0F, -2.5F);
-                this.earLongR.rotateAngleZ = -(1.1F + (earSize/6.25F));
-            }else{
+                this.earSmallR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
+            } else if (earSize <= 5) {
+                this.earMediumL.setRotationPoint(3.0F + (floppiness / 3), 1.0F, -2.5F);
+                this.earMediumL.rotateAngleZ = 1.1F + (earSize / 6.25F);
+                this.earMediumR.setRotationPoint(-(3.0F + (floppiness / 3)), 1.0F, -2.5F);
+                this.earMediumR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
+            } else if (earSize <= 7) {
+                this.earLongL.setRotationPoint(3.0F + (floppiness / 2), 1.0F, -2.5F);
+                this.earLongL.rotateAngleZ = 1.1F + (earSize / 6.25F);
+                this.earLongR.setRotationPoint(-(3.0F + (floppiness / 2)), 1.0F, -2.5F);
+                this.earLongR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
+            } else {
                 this.earLongestL.setRotationPoint(3.0F + floppiness, 1.0F, -2.5F);
-                this.earLongestL.rotateAngleZ = 1.1F + (earSize/6.25F);
+                this.earLongestL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                 this.earLongestR.setRotationPoint(-(3.0F + floppiness), 1.0F, -2.5F);
-                this.earLongestR.rotateAngleZ = -(1.1F + (earSize/6.25F));
+                this.earLongestR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
             }
 
-        }else{
+        } else {
             float floppiness = 0.9F;
             float earSize = 0;
 
-            for (int i = 1; i < sharedGenes[42]; i++){
+            for (int i = 1; i < sharedGenes[42]; i++) {
                 floppiness = floppiness + 0.16F;
                 earSize = earSize + 1.0F;
             }
 
-            for (int i = 1; i < sharedGenes[43]; i++){
+            for (int i = 1; i < sharedGenes[43]; i++) {
                 floppiness = floppiness + 0.16F;
                 earSize = earSize + 1.0F;
             }
@@ -824,35 +829,35 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 earSize = earSize - earSize / 3.0F;
             }
 
-            for (int i = 1; i < sharedGenes[46]; i++){
+            for (int i = 1; i < sharedGenes[46]; i++) {
                 floppiness = floppiness + 0.1F;
             }
-            for (int i = 1; i < sharedGenes[47]; i++){
+            for (int i = 1; i < sharedGenes[47]; i++) {
                 floppiness = floppiness + 0.1F;
             }
 
 
-            if (earSize <= 1){
+            if (earSize <= 1) {
                 this.earSmallestL.setRotationPoint(3.0F, 0.5F, -2.5F);
                 this.earSmallestL.rotateAngleZ = floppiness;
                 this.earSmallestR.setRotationPoint(-3.0F, 0.5F, -2.5F);
                 this.earSmallestR.rotateAngleZ = -floppiness;
-            }else if (earSize <= 3){
+            } else if (earSize <= 3) {
                 this.earSmallL.setRotationPoint(3.0F, 0.75F, -2.5F);
                 this.earSmallL.rotateAngleZ = floppiness;
                 this.earSmallR.setRotationPoint(-3.0F, 0.75F, -2.5F);
                 this.earSmallR.rotateAngleZ = -floppiness;
-            }else if (earSize <= 5){
-                this.earMediumL.setRotationPoint(3.0F + (floppiness/3), 1.0F, -2.5F);
+            } else if (earSize <= 5) {
+                this.earMediumL.setRotationPoint(3.0F + (floppiness / 3), 1.0F, -2.5F);
                 this.earMediumL.rotateAngleZ = floppiness;
-                this.earMediumR.setRotationPoint(-(3.0F + (floppiness/3)), 1.0F, -2.5F);
+                this.earMediumR.setRotationPoint(-(3.0F + (floppiness / 3)), 1.0F, -2.5F);
                 this.earMediumR.rotateAngleZ = -floppiness;
-            }else if (earSize <= 7){
-                this.earLongL.setRotationPoint(3.0F + (floppiness/2), 1.0F, -2.5F);
+            } else if (earSize <= 7) {
+                this.earLongL.setRotationPoint(3.0F + (floppiness / 2), 1.0F, -2.5F);
                 this.earLongL.rotateAngleZ = floppiness;
-                this.earLongR.setRotationPoint(-(3.0F + (floppiness/2)), 1.0F, -2.5F);
+                this.earLongR.setRotationPoint(-(3.0F + (floppiness / 2)), 1.0F, -2.5F);
                 this.earLongR.rotateAngleZ = -floppiness;
-            }else{
+            } else {
                 this.earLongestL.setRotationPoint(3.0F + floppiness, 1.0F, -2.5F);
                 this.earLongestL.rotateAngleZ = floppiness;
                 this.earLongestR.setRotationPoint(-(3.0F + floppiness), 1.0F, -2.5F);
@@ -861,8 +866,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         }
 
-        hornL0.setRotationPoint(0.0F, 0.0F, -2.25F);
-        hornR0.setRotationPoint(0.0F, 0.0F, -2.25F);
+        if (this.isChild) {
+            hornL0.setRotationPoint(0.0F, 2.75F, -2.25F);
+            hornR0.setRotationPoint(0.0F, 2.75F, -2.25F);
+        } else {
+            hornL0.setRotationPoint(0.0F, 0.0F, -2.25F);
+            hornR0.setRotationPoint(0.0F, 0.0F, -2.25F);
+        }
 
         float X = 1.0F;
         float Y = -2.0F;
@@ -907,11 +917,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             } else {
                 //horned
             }
-        }else{
+        } else {
             horns = 0.0F;
         }
 
-        if (horns != 0.0F){
+        if (horns != 0.0F && !this.isChild) {
             this.hornL0.rotationPointX = X;
             this.hornR0.rotationPointX = -X;
 
@@ -937,7 +947,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.hornL9.rotationPointY = Y + 1.0F;
             this.hornR9.rotationPointY = Y + 1.0F;
 
-        }else{
+        } else if (!this.isChild) {
             this.hornL0.rotationPointX = 0.0F;
             this.hornR0.rotationPointX = 0.0F;
             this.hornL0.rotationPointY = 0.0F;
@@ -960,7 +970,27 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.hornR8.rotationPointY = 0.0F;
             this.hornL9.rotationPointY = 0.0F;
             this.hornR9.rotationPointY = 0.0F;
-
+        } else {
+            this.hornL0.rotationPointX = 0.0F;
+            this.hornR0.rotationPointX = 0.0F;
+            this.hornL1.rotationPointY = 0.0F;
+            this.hornR1.rotationPointY = 0.0F;
+            this.hornL2.rotationPointY = 0.0F;
+            this.hornR2.rotationPointY = 0.0F;
+            this.hornL3.rotationPointY = 0.0F;
+            this.hornR3.rotationPointY = 0.0F;
+            this.hornL4.rotationPointY = 0.0F;
+            this.hornR4.rotationPointY = 0.0F;
+            this.hornL5.rotationPointY = 0.0F;
+            this.hornR5.rotationPointY = 0.0F;
+            this.hornL6.rotationPointY = 0.0F;
+            this.hornR6.rotationPointY = 0.0F;
+            this.hornL7.rotationPointY = 0.0F;
+            this.hornR7.rotationPointY = 0.0F;
+            this.hornL8.rotationPointY = 0.0F;
+            this.hornR8.rotationPointY = 0.0F;
+            this.hornL9.rotationPointY = 0.0F;
+            this.hornR9.rotationPointY = 0.0F;
         }
 
         int hornNubLength = 4;
@@ -984,40 +1014,52 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.hornNub4.rotationPointY = 1.0F;
         this.hornNub5.rotationPointY = 1.0F;
 
-        float hornTest = 1.4F;
-
-        if (hornNubLength == 1){
-            this.hornNub1.rotationPointY = -1.0F + horns;
-            this.hornL0.rotateAngleZ = hornTest;
-            this.hornL0.rotateAngleX = 0.25F;
-            this.hornR0.rotateAngleZ = -hornTest;
-            this.hornR0.rotateAngleX = 0.25F;
-        }else if (hornNubLength == 2){
-            this.hornNub2.rotationPointY = -1.0F + horns;
-            this.hornL0.rotateAngleZ = hornTest;
-            this.hornL0.rotateAngleX = 0.15F;
-            this.hornR0.rotateAngleZ = -hornTest;
-            this.hornR0.rotateAngleX = 0.15F;
-        }else if (hornNubLength == 3){
-            this.hornNub3.rotationPointY = -1.0F + horns;
-            this.hornL0.rotateAngleZ = hornTest;
-            this.hornL0.rotateAngleX = 0.05F;
-            this.hornR0.rotateAngleZ = -hornTest;
-            this.hornR0.rotateAngleX = 0.05F;
-        }else if (hornNubLength == 4){
-            this.hornNub4.rotationPointY = -1.0F + horns;
-            this.hornL0.rotateAngleZ = hornTest;
-            this.hornL0.rotateAngleX = -0.15F;
-            this.hornR0.rotateAngleZ = -hornTest;
-            this.hornR0.rotateAngleX = -0.15F;
-        }else if (hornNubLength == 5){
-            this.hornNub5.rotationPointY = -1.0F + horns;
-            this.hornL0.rotateAngleZ = hornTest;
-            this.hornL0.rotateAngleX = -0.25F;
-            this.hornR0.rotateAngleZ = -hornTest;
-            this.hornR0.rotateAngleX = -0.25F;
-        }
-
+        if (this.isChild) {
+            if (hornNubLength == 1){
+                this.hornNub1.rotationPointY = -1.0F;
+            }else if (hornNubLength == 2){
+                this.hornNub2.rotationPointY = -1.0F;
+            }else if (hornNubLength == 3){
+                this.hornNub3.rotationPointY = -1.0F;
+            }else if (hornNubLength == 4){
+                this.hornNub4.rotationPointY = -1.0F;
+            }else if (hornNubLength == 5){
+                this.hornNub5.rotationPointY = -1.0F;
+            }
+        } else {
+            float hornTest = 1.4F;
+            if (hornNubLength == 1){
+                this.hornNub1.rotationPointY = -1.0F + horns;
+                this.hornL0.rotateAngleZ = hornTest;
+                this.hornL0.rotateAngleX = 0.25F;
+                this.hornR0.rotateAngleZ = -hornTest;
+                this.hornR0.rotateAngleX = 0.25F;
+            }else if (hornNubLength == 2){
+                this.hornNub2.rotationPointY = -1.0F + horns;
+                this.hornL0.rotateAngleZ = hornTest;
+                this.hornL0.rotateAngleX = 0.15F;
+                this.hornR0.rotateAngleZ = -hornTest;
+                this.hornR0.rotateAngleX = 0.15F;
+            }else if (hornNubLength == 3){
+                this.hornNub3.rotationPointY = -1.0F + horns;
+                this.hornL0.rotateAngleZ = hornTest;
+                this.hornL0.rotateAngleX = 0.05F;
+                this.hornR0.rotateAngleZ = -hornTest;
+                this.hornR0.rotateAngleX = 0.05F;
+            }else if (hornNubLength == 4){
+                this.hornNub4.rotationPointY = -1.0F + horns;
+                this.hornL0.rotateAngleZ = hornTest;
+                this.hornL0.rotateAngleX = -0.15F;
+                this.hornR0.rotateAngleZ = -hornTest;
+                this.hornR0.rotateAngleX = -0.15F;
+            }else if (hornNubLength == 5){
+                this.hornNub5.rotationPointY = -1.0F + horns;
+                this.hornL0.rotateAngleZ = hornTest;
+                this.hornL0.rotateAngleX = -0.25F;
+                this.hornR0.rotateAngleZ = -hornTest;
+                this.hornR0.rotateAngleX = -0.25F;
+            }
+}
 
         //horn shape controller
         if (horns != 0) {
@@ -1061,10 +1103,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.hornR2.rotateAngleX = 0.1F;
             this.hornR1.rotateAngleX = 0.1F;
 
-
         }
-
-
 
     }
 

@@ -24,19 +24,19 @@ public class RenderEnhancedCow extends MobRenderer<EnhancedCow, ModelEnhancedCow
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    protected ResourceLocation getEntityTexture(EnhancedCow entity)
-    {
+    protected ResourceLocation getEntityTexture(EnhancedCow entity) {
         String s = entity.getCowTexture();
+
+        float[] colourRGB = entity.getRgb();
+        if (colourRGB[0] == 1.0 && colourRGB[1] == 1.0 && colourRGB[2] == 1.0) {
+            colourRGB = null;
+        } else {
+            s = s + colourRGB[0] + colourRGB[1] + colourRGB[2] + colourRGB[3] + colourRGB[4] + colourRGB[5];
+        }
+
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
-        if (resourcelocation == null)
-        {
-
-            float[] colourRGB = entity.getRgb();
-            if (colourRGB[0] == 1.0 && colourRGB[1] == 1.0 && colourRGB[2] == 1.0) {
-                colourRGB = null;
-            }
-
+        if (resourcelocation == null) {
             resourcelocation = new ResourceLocation(s);
             Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, colourRGB, entity.getVariantTexturePaths()));
             LAYERED_LOCATION_CACHE.put(s, resourcelocation);

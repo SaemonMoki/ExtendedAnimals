@@ -195,6 +195,8 @@ public class EnhancedChicken extends AnimalEntity {
     private ECSandBath ecSandBath;
     private String dropMeatType;
 
+    private boolean resetTexture = true;
+
     private static final int WTC = 90;
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
@@ -332,7 +334,6 @@ public class EnhancedChicken extends AnimalEntity {
         }
 
         this.wingRotation += this.wingRotDelta * 2.0F;
-
 
         if (!this.world.isRemote && !this.isChild() && --this.timeUntilNextEgg <= 0)
         {
@@ -589,7 +590,11 @@ public class EnhancedChicken extends AnimalEntity {
     public String getChickenTexture() {
         if (this.chickenTextures.isEmpty()) {
             this.setTexturePaths();
+        } else if (!this.isChild() && resetTexture) {
+            resetTexture = false;
+            this.setTexturePaths();
         }
+
         return this.chickenTextures.stream().collect(Collectors.joining("/","enhanced_chicken/",""));
 
     }

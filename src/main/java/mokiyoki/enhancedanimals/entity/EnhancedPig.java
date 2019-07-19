@@ -424,7 +424,7 @@ public class EnhancedPig extends AnimalEntity {
                 belt = 2;
             }
 
-            if (genesForText[14] <= 2 || genesForText[15] <= 2){
+            if (genesForText[14] != 1 && genesForText[15] != 1){
                 if (genesForText[14] == 2 || genesForText[15] == 2){
                     //tuxedo
                     berk = 1;
@@ -721,28 +721,20 @@ public class EnhancedPig extends AnimalEntity {
         //Dom.White and Belted [ Dom.White, Belted, Wildtype+ ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[12] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[13] = (3);
 
         } else {
             initialGenes[12] = (3);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[13] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
             initialGenes[13] = (3);
         }
 
         //Berkshire spots [ Wildtype+, tuxedo, berkshire ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[14] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[15] = (1);
 
         } else {
             initialGenes[14] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[15] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
             initialGenes[15] = (1);
         }
 
@@ -765,13 +757,13 @@ public class EnhancedPig extends AnimalEntity {
             initialGenes[18] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
-            initialGenes[18] = (5);
+            initialGenes[18] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[19] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
-            initialGenes[19] = (5);
+            initialGenes[19] = (1);
         }
 
         //inbreeding detector A
@@ -874,13 +866,13 @@ public class EnhancedPig extends AnimalEntity {
             initialGenes[42] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[42] = (4);
+            initialGenes[42] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[43] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[43] = (4);
+            initialGenes[43] = (1);
         }
 
 

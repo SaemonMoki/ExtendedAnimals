@@ -160,11 +160,13 @@ public class EnhancedChicken extends AnimalEntity {
     };
 
     private static final String[] CHICKEN_TEXTURES_CHICKRED = new String[] {
-            "","baby_red.png", "baby_redstripes.png", "baby_redwash.png"
+            "","baby_red.png", "baby_redwash.png", "baby_redstripes.png"
     };
 
     private static final String[] CHICKEN_TEXTURES_CHICKBLACK = new String[] {
-            "","pattern_solid.png"
+            "", "baby_blackstripes.png", "baby_whitestripes.png", "baby_lavstripes.png", "baby_bluestripes.png", "baby_chocstripes.png", "baby_dunstripes.png",
+                "baby_blackshaded.png", "baby_whiteshaded.png", "baby_lavshaded.png", "baby_blueshaded.png", "baby_chocshaded.png", "baby_dunshaded.png",
+                "baby_black.png", "baby_white.png", "pattern_solid_lav.png", "pattern_solid_blue.png", "pattern_solid_choc.png", "pattern_solid_dun.png"
     };
 
     private static final String[] CHICKEN_TEXTURES_CHICKWHITE = new String[] {
@@ -1499,11 +1501,16 @@ public class EnhancedChicken extends AnimalEntity {
                                         moorhead = moorhead + 2;
                                     } else if (genesForText[40] == 2 || genesForText[41] == 2) {
                                         //blue
-                                        if (genesForText[15] == 4 && genesForText[16] == 4 && (genesForText[30] == 1 && genesForText[31] == 1)) {
+                                        if ((genesForText[26] == 1 || genesForText[27] == 1) && (genesForText[24] == 5 || genesForText[25] == 5)) {
                                             //blue laced ... super special gene combo for blue andalusian type pattern
-                                            pattern = 11;
-                                            ground = 20;
-                                            moorhead = 1;
+                                            pattern = 400;
+                                            if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                                    moorhead = 1;
+                                                }
+                                            } else {
+                                                moorhead = 2;
+                                            }
                                         } else {
                                             //blue
                                             pattern = pattern + 1;
@@ -1622,6 +1629,9 @@ public class EnhancedChicken extends AnimalEntity {
                 int comb = 2;
                 int eyes = 1;
                 int downBase = 1;
+                int red = 0;
+                int black = 0;
+                int white = 0;
 
 
                 boolean isAlbino = false;
@@ -1701,9 +1711,94 @@ public class EnhancedChicken extends AnimalEntity {
                         shanks = shanks + 4;
                     }
 
+                    if (downBase != 0) {
+
+                        if (genesForText[0] == 2) {
+                            downBase = 0;
+                        }
+
+                        if (genesForText[24] == 5 || genesForText[25] == 5) {
+                            // is black
+                            if ((genesForText[30] == 1 || genesForText[31] == 1) && (genesForText[100] == 2 && genesForText[101] == 2) && (genesForText[28] != 1 && genesForText[28] != 1)) {
+                                black = 13;
+                            } else {
+                                black = 7;
+                            }
+
+                        } else if (genesForText[24] == 1 || genesForText[25] == 1) {
+                            //is birchen
+                            if (((genesForText[30] == 1 || genesForText[31] == 1) || (genesForText[100] == 2 && genesForText[101] == 2)) && (genesForText[28] != 1 && genesForText[28] != 1)) {
+                                black = 13;
+                            } else {
+                                black = 7;
+                            }
+                        } else if (genesForText[24] == 2 || genesForText[25] == 2) {
+                            //is duckwing
+                            red = 3;
+                            black = 1;
+                        } else if (genesForText[24] == 3 || genesForText[25] == 3) {
+                            //is wheaten
+                            if (genesForText[34] == 1 && genesForText[35] == 1) {
+                                red = 1;
+                            } else if (genesForText[34] == 1 || genesForText[35] == 1) {
+                                red = 2;
+                            }
+                        } else {
+                            //is partridge
+                            red = 2;
+                            black = 1;
+                        }
+
+                        //white marking genesForText
+                        if (genesForText[3] == 2) {
+                            //Barred
+                            white = 2;
+                        } else {
+                            if (genesForText[22] == 2 && genesForText[23] == 2) {
+                                //mottled
+                                white = 1;
+                            }
+                        }
+
+                        if (black != 0) {
+                            if ((genesForText[38] == 1 || genesForText[39] == 1) || (genesForText[40] == 2 && genesForText[41] == 2)) {
+                                //white or splash
+                                black = black + 1;
+                            } else if (genesForText[36] == 2 && genesForText[37] == 2) {
+                                if (genesForText[1] == 2) {
+                                    //dun
+                                    black = black + 5;
+                                } else {
+                                    //lav
+                                    black = black + 2;
+                                }
+                            } else if (genesForText[40] == 2 || genesForText[41] == 2) {
+                                if (genesForText[1] == 2) {
+                                    //dun
+                                    black = black + 5;
+                                } else {
+                                    //blue
+                                    black = black + 3;
+                                }
+                            } else if (genesForText[1] == 2) {
+                                //choc
+                                black = black + 4;
+                            }
+
+                        }
+                    }
                 }
 
                 this.chickenTextures.add(CHICKEN_TEXTURES_CHICKBASE[downBase]);
+                if (red != 0) {
+                    this.chickenTextures.add(CHICKEN_TEXTURES_CHICKRED[red]);
+                }
+                if (black != 0) {
+                    this.chickenTextures.add(CHICKEN_TEXTURES_CHICKBLACK[black]);
+                }
+                if (white != 0) {
+                    this.chickenTextures.add(CHICKEN_TEXTURES_CHICKWHITE[white]);
+                }
                 this.chickenTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
                 this.chickenTextures.add(CHICKEN_TEXTURES_COMB[comb]);
                 this.chickenTextures.add(CHICKEN_TEXTURES_EYES[eyes]);

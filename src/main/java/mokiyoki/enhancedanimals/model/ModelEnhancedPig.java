@@ -15,9 +15,9 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
     private final RendererModel snout;
     private final RendererModel mouth;
     private final RendererModel tuskTL;
-//    private final RendererModel tuskTR;
-//    private final RendererModel tuskBL;
-//    private final RendererModel tuskBR;
+    private final RendererModel tuskTR;
+    private final RendererModel tuskBL;
+    private final RendererModel tuskBR;
     private final RendererModel earL;
     private final RendererModel earR;
     private final RendererModel neck;
@@ -57,8 +57,22 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.mouth.setRotationPoint(0.0F, 1.0F, -4.0F);
 
         this.tuskTL = new RendererModel(this, 69, 22);
-        this.tuskTL.addBox(0.0F, 0.0F, 0.0F, 1, 2, 1);
-        this.tuskTL.setRotationPoint(0.0F, -5.0F, 0.0F);
+        this.tuskTL.addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, -0.1F);
+        this.tuskTL.setRotationPoint(0.5F, 0.0F, -2.0F);
+
+        this.tuskTR = new RendererModel(this, 69, 22);
+        this.tuskTR.addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, -0.1F);
+        this.tuskTR.setRotationPoint(-0.5F, 0.0F, -2.0F);
+
+        this.tuskBL = new RendererModel(this, 69, 22);
+        this.tuskBL.addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, -0.1F);
+        this.tuskBL.addBox(-0.5F, -2.8F, -0.5F, 1, 1, 2, -0.1F);
+        this.tuskBL.setRotationPoint(0.5F, 0.0F, 1F);
+
+        this.tuskBR = new RendererModel(this, 69, 22);
+        this.tuskBR.addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, -0.1F);
+        this.tuskBR.addBox(-0.5F, -2.8F, -0.5F, 1, 1, 2, -0.1F);
+        this.tuskBR.setRotationPoint(-0.5F, 0.0F, 1F);
 
         this.earL = new RendererModel(this, 46, 0);
         this.earL.addBox(0.0F, -3.0F, 0.0F, 4, 3, 1);
@@ -128,7 +142,10 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.head.addChild(this.cheeks);
         this.head.addChild(this.snout);
         this.snout.addChild(this.tuskTL);
+        this.snout.addChild(this.tuskTR);
         this.snout.addChild(this.mouth);
+        this.mouth.addChild(this.tuskBL);
+        this.mouth.addChild(this.tuskBR);
         this.head.addChild(this.earL);
         this.head.addChild(this.earR);
         this.tail0.addChild(this.tail1);
@@ -238,8 +255,11 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         this.mouth.rotateAngleX = -0.12F;
 
-//        this.tuskTL.rotateAngleY = -1.5F;
-        this.tuskTL.rotateAngleZ = -1.5F;
+        this.tuskTL.rotateAngleZ = 1.3F;
+        this.tuskTR.rotateAngleZ = -1.3F;
+
+        this.tuskBL.rotateAngleZ = 1.5F;
+        this.tuskBR.rotateAngleZ = -1.5F;
 
         copyModelAngles(neck, neckBigger);
 
@@ -295,6 +315,10 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.snout.rotateAngleX = -snoutLength;
 
         this.tuskTL.rotationPointY = -3.5F + ((snoutLength - 0.11F)*-10F);
+        this.tuskTR.rotationPointY = -3.5F + ((snoutLength - 0.11F)*-10F);
+        this.tuskBL.rotationPointY = -4.0F + ((snoutLength - 0.11F)*-10F);
+        this.tuskBR.rotationPointY = -4.0F + ((snoutLength - 0.11F)*-10F);
+//        this.tuskBL.rotateAngleY = snoutLength;
 
         float inbreedingFactor = 0.0F;
 

@@ -254,6 +254,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         int[] sharedGenes = ((EnhancedPig) entitylivingbaseIn).getSharedGenes();
         char[] uuidArry = enhancedPig.getCachedUniqueIdString().toCharArray();
 
+        //snoutLength
           float snoutLength1 = -0.065F;
           float snoutLength2 = -0.065F;
         float snoutLength;
@@ -293,7 +294,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.snout.offsetY = snoutLength;
         this.snout.rotateAngleX = -snoutLength;
 
-//        this.tuskTL.rotationPointY = -snoutLength;
+        this.tuskTL.rotationPointY = -3.5F + ((snoutLength - 0.11F)*-10F);
 
         float inbreedingFactor = 0.0F;
 

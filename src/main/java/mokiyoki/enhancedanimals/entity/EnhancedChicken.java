@@ -2023,7 +2023,7 @@ public class EnhancedChicken extends AnimalEntity {
 if (false){
     //THE DNA TESTER-5069 !!!!!
                     //0,1,2,3,4,5,6,7,8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109
-    return new int[] {1,1,1,1,1,1,1,1,1,10,10,10,10,10,10,10,10,10,10,10, 1, 2, 1, 1, 2, 4, 1, 2, 3, 3, 3, 3, 3, 3, 2, 2, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 3, 3, 2, 2, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1};
+    return new int[] {1,1,2,1,1,2,1,1,1,10,10,10,10,10,10,10,10,10,10,10, 1, 1, 1, 1, 1, 4, 2, 1, 3, 3, 3, 3, 3, 3, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 3, 3, 1, 2, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3, 2, 2, 2, 2, 3, 2, 3, 2, 2, 2, 1, 1, 1, 1, 3, 3, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1};
 
 }else {
     //Gold [ gold, silver ]
@@ -2802,6 +2802,271 @@ if (false){
         initialGenes[108] = (1);
         initialGenes[109] = (1);
 //    }
+
+    // Adrenaline A [ more alert, moderate alertness ,less alert ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[110] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[110] = (2);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[111] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[111] = (2);
+    }
+
+    // Adrenaline B [ more alert, moderate alertness ,less alert ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[112] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[112] = (2);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[113] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[113] = (2);
+    }
+
+    // Adrenaline C [ more alert, moderate alertness ,less alert ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[114] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[114] = (2);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[115] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[115] = (2);
+    }
+
+    // The Dumb [ Dom.Dumb, dumb, normal ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[116] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[116] = (3);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[117] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[117] = (3);
+    }
+
+    // The Clever [ normal, clever, rec. clever ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[118] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[118] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[119] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[119] = (1);
+    }
+
+    // Anger A [ neutral, grouchy, aggressive ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[120] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[120] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[121] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[121] = (1);
+    }
+
+    // Anger B [ flighty, neutral, aggressive ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[122] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[122] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[123] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[123] = (1);
+    }
+
+    // Flightiness A [ flighty, neutral, shit scared(erratic booster) ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[124] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[124] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[125] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[125] = (1);
+    }
+
+    // Flightiness B [ very flighty, nervous, neutral ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[126] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[126] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[127] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[127] = (1);
+    }
+
+    // Wildness [ chaotic, wild, moderate, semi-predictable, predictable ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[128] = (ThreadLocalRandom.current().nextInt(5) + 1);
+    } else {
+        initialGenes[128] = (2);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[129] = (ThreadLocalRandom.current().nextInt(5) + 1);
+    } else {
+        initialGenes[129] = (2);
+    }
+
+    // selfishness [ selfish, selfless, normal ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[130] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[130] = (3);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[131] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[131] = (3);
+    }
+
+    // protectiveness [ protective - neutral ] //ups the fear/aggression if self,herd or baby is attacked
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[132] = (ThreadLocalRandom.current().nextInt(7) + 1);
+    } else {
+        initialGenes[132] = (3);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[133] = (ThreadLocalRandom.current().nextInt(7) + 1);
+    } else {
+        initialGenes[133] = (3);
+    }
+
+    // curiosity [ curious - neutral ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[132] = (ThreadLocalRandom.current().nextInt(7) + 1);
+    } else {
+        initialGenes[132] = (3);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[133] = (ThreadLocalRandom.current().nextInt(7) + 1);
+    } else {
+        initialGenes[133] = (3);
+    }
+
+    // sociable [ sociable - neutral ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[132] = (ThreadLocalRandom.current().nextInt(7) + 1);
+    } else {
+        initialGenes[132] = (3);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[133] = (ThreadLocalRandom.current().nextInt(7) + 1);
+    } else {
+        initialGenes[133] = (3);
+    }
+
+    // empathetic/mothering [ mothering - neutral ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[134] = (ThreadLocalRandom.current().nextInt(7) + 1);
+    } else {
+        initialGenes[134] = (3);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[135] = (ThreadLocalRandom.current().nextInt(7) + 1);
+    } else {
+        initialGenes[135] = (3);
+    }
+
+    // confidence [ neutral - confidence] (in the logic it should be partially negated by fearful attributes for some behaviours)
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[136] = (ThreadLocalRandom.current().nextInt(7) + 1);
+    } else {
+        initialGenes[136] = (3);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[137] = (ThreadLocalRandom.current().nextInt(7) + 1);
+    } else {
+        initialGenes[137] = (3);
+    }
+
+    // playfulness [ playful - neutral ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[138] = (ThreadLocalRandom.current().nextInt(7) + 1);
+    } else {
+        initialGenes[138] = (3);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[139] = (ThreadLocalRandom.current().nextInt(7) + 1);
+    } else {
+        initialGenes[139] = (3);
+    }
+
+    // food drive A [ loves food - neutral ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[140] = (ThreadLocalRandom.current().nextInt(6) + 1);
+    } else {
+        initialGenes[140] = (3);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[141] = (ThreadLocalRandom.current().nextInt(6) + 1);
+    } else {
+        initialGenes[141] = (3);
+    }
+
+    // food drive B [ eats to live - neutral ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[142] = (ThreadLocalRandom.current().nextInt(6) + 1);
+    } else {
+        initialGenes[142] = (3);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[143] = (ThreadLocalRandom.current().nextInt(6) + 1);
+    } else {
+        initialGenes[143] = (3);
+    }
+
+    // food drive C [ Always hungry, neutral, under eats ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[144] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[144] = (2);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[145] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    } else {
+        initialGenes[145] = (2);
+    }
+
+    //Quirk ideas:
+    //favourite flavours/foods
+    //phobias: heights, certain mobs, swords/sticks/axes in hand, fire/lava, things bigger than them running
+    //loves: heights, warm places, food,
 
 }
 

@@ -45,6 +45,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     private final RendererModel combLargeWalnut;
     private final RendererModel combV;
     private final RendererModel body;
+    private final RendererModel bodyBig;
+    private final RendererModel bodySmall;
     private final RendererModel xtraShortTail;
     private final RendererModel shortTail;
     private final RendererModel tail;
@@ -220,6 +222,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.body.addBox(-3F, -6F, -4F, 6, 6, 8);
         this.body.setRotationPoint(0F, 0F, 1F);
 
+        this.bodyBig = new RendererModel(this, 22, 10);
+        this.bodyBig.addBox(-3F, -6F, -4F, 6, 6, 8, 0.5F);
+        this.bodyBig.setRotationPoint(0F, 0F, 1F);
+
+        this.bodySmall = new RendererModel(this, 22, 10);
+        this.bodySmall.addBox(-3F, -6F, -4F, 6, 6, 8, -0.5F);
+        this.bodySmall.setRotationPoint(0F, 0F, 1F);
+
         this.xtraShortTail = new RendererModel(this,36,10);
         this.xtraShortTail.addBox(-0.5F, 12F, 3F, 1, 4, 3);
         this.xtraShortTail.setTextureOffset(37, 11);
@@ -380,6 +390,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         int cSize = 0; // [0, 1, 2, 3, 4]
         int wSize = 0; // [0, 1, 2, 3, 4]
         int wingSize = 0; // [0, 1, 2]
+        int bodyType; //[-1, 0, 1]  [small, normal, big]
 
         if (genes[52] == 1 || genes[53] == 1) {
             nakedNeck = true;
@@ -550,6 +561,22 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 //        beard = 1;
 
 //        wingAngle = 1.5F;   // used for debugging wingAngle  [ 0 to 1.5 ]
+
+        if (genes[146] == 2 && genes[147] == 2) {
+            if (genes[148] == 2 && genes[149] == 2) {
+                //normal body
+                bodyType = 0;
+            } else {
+                //big body
+                bodyType = 1;
+            }
+        } else if (genes[148] == 2 && genes[149] == 2) {
+            //small body
+            bodyType = -1;
+        } else {
+            //normal body
+            bodyType = 0;
+        }
 
         this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
@@ -753,7 +780,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                 this.leftWingSmall.render(scale);
             }
 
-            this.body.render(scale);
+
+            if (bodyType == -1) {
+                this.bodySmall.render(scale);
+            } else if (bodyType == 0) {
+                this.body.render(scale);
+            } else {
+                this.bodyBig.render(scale);
+            }
             this.rightLeg.render(scale);
             this.leftLeg.render(scale);
 
@@ -860,6 +894,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 //        this.body.rotateAngleX = -bodyangle;
 
         //tail stuff
+        copyModelAngles(body, bodyBig);
+        copyModelAngles(body, bodySmall);
         copyModelAngles(body, tail);
         copyModelAngles(body, longTail);
         copyModelAngles(body, shortTail);
@@ -974,6 +1010,18 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 //            this.leftWing.rotationPointY = this.leftWing.rotationPointY + wingAngle * 2.2F;
 //            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + wingAngle * 2.2F;
 //            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + wingAngle * 2.2F;
+
+        if (sharedGenes[148] == 2 && sharedGenes[149] == 2 && !(sharedGenes[146] == 2 && sharedGenes[147] == 2)) {
+            this.rightWing.rotationPointX = -3.5F;
+            this.leftWing.rotationPointX = 3.5F;
+        } else if (sharedGenes[146] == 2 && sharedGenes[147] == 2 && !(sharedGenes[148] == 2 && sharedGenes[149] == 2)) {
+            this.rightWing.rotationPointX = -4.5F;
+            this.leftWing.rotationPointX = 4.5F;
+        } else {
+            this.rightWing.rotationPointX = -4.0F;
+            this.leftWing.rotationPointX = 4.0F;
+        }
+
     }
 
     public static void copyModelAngles(RendererModel source, RendererModel dest) {

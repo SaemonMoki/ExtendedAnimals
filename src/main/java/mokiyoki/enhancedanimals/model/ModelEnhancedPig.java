@@ -18,8 +18,10 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
     private final RendererModel tuskTR;
     private final RendererModel tuskBL;
     private final RendererModel tuskBR;
-    private final RendererModel earL;
-    private final RendererModel earR;
+    private final RendererModel earSmallL;
+    private final RendererModel earSmallR;
+    private final RendererModel earMediumL;
+    private final RendererModel earMediumR;
     private final RendererModel neck;
     private final RendererModel neckBigger;
     private final RendererModel body;
@@ -74,13 +76,21 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.tuskBR.addBox(-0.5F, -2.8F, -0.5F, 1, 1, 2, -0.1F);
         this.tuskBR.setRotationPoint(-0.5F, 0.0F, 1F);
 
-        this.earL = new RendererModel(this, 46, 0);
-        this.earL.addBox(0.0F, -3.0F, 0.0F, 4, 3, 1);
-        this.earL.setRotationPoint(3.5F, -3.0F, 0.0F);
+        this.earSmallL = new RendererModel(this, 46, 0);
+        this.earSmallL.addBox(0.0F, -3.0F, 0.0F, 4, 3, 1);
+        this.earSmallL.setRotationPoint(3.5F, -3.0F, 0.0F);
 
-        this.earR = new RendererModel(this, 70, 0);
-        this.earR.addBox(-4.0F, -3.0F, 0.0F, 4, 3, 1);
-        this.earR.setRotationPoint(-3.5F, -3.0F, 0.0F);
+        this.earSmallR = new RendererModel(this, 70, 0);
+        this.earSmallR.addBox(-4.0F, -3.0F, 0.0F, 4, 3, 1);
+        this.earSmallR.setRotationPoint(-3.5F, -3.0F, 0.0F);
+
+        this.earMediumL = new RendererModel(this, 46, 0);
+        this.earMediumL.addBox(0.0F, -3.0F, 0.0F, 4, 3, 1);
+        this.earMediumL.setRotationPoint(3.5F, -3.0F, 0.0F);
+
+        this.earMediumR = new RendererModel(this, 70, 0);
+        this.earMediumR.addBox(-4.0F, -3.0F, 0.0F, 4, 3, 1);
+        this.earMediumR.setRotationPoint(-3.5F, -3.0F, 0.0F);
 
         this.neck = new RendererModel(this, 0, 0);
         this.neck.addBox(-4.5F, -6.75F, -9.0F, 9, 7, 9);
@@ -146,8 +156,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.snout.addChild(this.mouth);
         this.mouth.addChild(this.tuskBL);
         this.mouth.addChild(this.tuskBR);
-        this.head.addChild(this.earL);
-        this.head.addChild(this.earR);
+        this.head.addChild(this.earSmallL);
+        this.head.addChild(this.earSmallR);
         this.tail0.addChild(this.tail1);
         this.tail1.addChild(this.tail2);
         this.tail2.addChild(this.tail3);
@@ -232,14 +242,14 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.body.rotateAngleX = ((float)Math.PI / 2F);
         this.butt.rotateAngleX = ((float)Math.PI / 2F);
 
-        this.earL.rotateAngleX = -((float)Math.PI / 2F);
-        this.earR.rotateAngleX = -((float)Math.PI / 2F);
+        this.earSmallL.rotateAngleX = -((float)Math.PI / 2F);
+        this.earSmallR.rotateAngleX = -((float)Math.PI / 2F);
 
-        this.earL.rotateAngleY = -((float)Math.PI / 4F);
-        this.earR.rotateAngleY = ((float)Math.PI / 4F);
+        this.earSmallL.rotateAngleY = -((float)Math.PI / 4F);
+        this.earSmallR.rotateAngleY = ((float)Math.PI / 4F);
 
-        this.earL.rotateAngleZ = -((float)Math.PI / 16F);
-        this.earR.rotateAngleZ = ((float)Math.PI / 16F);
+        this.earSmallL.rotateAngleZ = -((float)Math.PI / 16F);
+        this.earSmallR.rotateAngleZ = ((float)Math.PI / 16F);
 
         this.neck.rotateAngleX = this.neck.rotateAngleX + ((headPitch * 0.017453292F)/2.0F);
         this.head.rotateAngleX = (headPitch * 0.017453292F)/2.0F;

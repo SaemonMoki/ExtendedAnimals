@@ -3063,6 +3063,32 @@ if (false){
         initialGenes[145] = (2);
     }
 
+    //BodyBig [normal, big]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[146] = (ThreadLocalRandom.current().nextInt(2) + 1);
+    } else {
+        initialGenes[146] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[147] = (ThreadLocalRandom.current().nextInt(2) + 1);
+    } else {
+        initialGenes[147] = (1);
+    }
+
+    //BodySmall [normal, small]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[148] = (ThreadLocalRandom.current().nextInt(2) + 1);
+    } else {
+        initialGenes[148] = (2);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[149] = (ThreadLocalRandom.current().nextInt(2) + 1);
+    } else {
+        initialGenes[149] = (2);
+    }
+
     //Quirk ideas:
     //favourite flavours/foods
     //phobias: heights, certain mobs, swords/sticks/axes in hand, fire/lava, things bigger than them running

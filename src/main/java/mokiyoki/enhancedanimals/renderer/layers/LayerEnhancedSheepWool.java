@@ -46,7 +46,7 @@ public class LayerEnhancedSheepWool implements LayerRenderer<EnhancedSheep> {
             }
             else
             {
-                float[] afloat = EnhancedSheep.getDyeRgb(entitylivingbaseIn.getFleeceColor());
+                float[] afloat = EnhancedSheep.getDyeRgb(entitylivingbaseIn.getFleeceDyeColour());
                 GlStateManager.color(afloat[0], afloat[1], afloat[2]);
             }
 
@@ -63,8 +63,15 @@ public class LayerEnhancedSheepWool implements LayerRenderer<EnhancedSheep> {
 
         if (resourcelocation == null)
         {
+            float[] dyeRGB = EnhancedSheep.getDyeRgb(entity.getFleeceDyeColour());
+//            if (dyeRGB != null) {
+//                GlStateManager.color3f(dyeRGB[0], dyeRGB[1], dyeRGB[2]);
+//            }
+            if (dyeRGB[0] == 1.0 && dyeRGB[1] == 1.0 && dyeRGB[2] == 1.0) {
+                dyeRGB = null;
+            }
             resourcelocation = new ResourceLocation(s);
-            Minecraft.getMinecraft().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_SHEEP_TEXTURE_LOCATION, entity.getVariantFleeceTexturePaths()));
+            Minecraft.getMinecraft().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_SHEEP_TEXTURE_LOCATION, dyeRGB, entity.getVariantFleeceTexturePaths()));
             LAYERED_LOCATION_CACHE.put(s, resourcelocation);
         }
 

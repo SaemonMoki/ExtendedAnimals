@@ -36,9 +36,44 @@ import java.util.stream.Collectors;
 
 public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.common.IShearable{
 
+    private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedSheep.class, DataSerializers.STRING);
     private static final DataParameter<Byte> DYE_COLOR = EntityDataManager.<Byte>createKey(EnhancedSheep.class, DataSerializers.BYTE);
 
+
+    private static final String[] SHEEP_TEXTURES_UNDER = new String[] {
+            "c_solid_tan.png", "c_solid_black.png", "c_solid_choc", "c_solid_lighttan.png",
+            "c_solid_tan_red.png", "c_solid_choc.png", "c_solid_tan", "c_solid_lighttan_red.png"
+    };
+
+    private static final String[] SHEEP_TEXTURES_PATTERN = new String[] {
+            "", "c_solid_white.png", "c_badger_black.png", "c_badger_choc.png", "c_mouflonbadger_black.png", "c_mouflonbadger_choc.png", "c_mouflon_black.png", "c_mouflon_choc.png", "c_blue_black.png", "c_blue_choc.png", "c_solid_black.png", "c_solid_choc.png",
+            "c_solid_white.png", "c_badger_black_red.png", "c_badger_choc_red.png", "c_mouflonbadger_black_red.png", "c_mouflonbadger_choc_red.png", "c_mouflon_black_red.png", "c_mouflon_choc_red.png", "c_blue_black_red.png", "c_blue_choc_red.png", "c_solid_black_red.png", "c_solid_choc_red.png"
+    };
+
+    private static final String[] SHEEP_TEXTURES_GREY = new String[] {
+            "", "c_grey.png"
+    };
+
+    private static final String[] SHEEP_TEXTURES_SPOTS = new String[] {
+            "", "c_spot0.png",  "c_spot1.png",  "c_spot2.png", "c_spot3.png",  "c_spot4.png",  "c_spot5.png", "c_spot6.png",  "c_spot7.png",  "c_spot8.png", "c_spot9.png",  "c_spota.png",  "c_spotb.png", "c_spotc.png",  "c_spotd.png",  "c_spote.png",  "c_spotf.png"
+    };
+
+    private static final String[] SHEEP_TEXTURES_SKIN = new String[] {
+            "skin_pink.png"
+    };
+
+    private static final String[] SHEEP_TEXTURES_HOOVES = new String[] {
+            "hooves_black.png"
+    };
+
+    private static final String[] SHEEP_TEXTURES_FUR = new String[] {
+            "c_fur_wooly.png"
+    };
+
+    private static final String[] SHEEP_TEXTURES_EYES = new String[] {
+            "eyes_black.png"
+    };
 
     private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(Item.getItemFromBlock(Blocks.MELON_BLOCK), Item.getItemFromBlock(Blocks.PUMPKIN), Item.getItemFromBlock(Blocks.TALLGRASS), Item.getItemFromBlock(Blocks.HAY_BLOCK), Items.CARROT, Items.WHEAT);
 
@@ -54,11 +89,61 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
+    private int maxCoatLength;
+    private int currentCoatLength;
+    private int timeForGrowth = 0;
+
+//    private int gestationTimer = 0;
+//    private boolean pregnant = false;
+
     public EnhancedSheep(World worldIn) {
         super(worldIn);
         this.setSize(0.4F, 1F);
 
     }
+
+
+    /** Map from EnumDyeColor to RGB values for passage to GlStateManager.color() */
+    /*
+    private static final Map<DyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(Arrays.stream(DyeColor.values()).collect(Collectors.toMap((DyeColor p_200204_0_) -> {
+        return p_200204_0_;
+    }, EnhancedSheep::createSheepDyeColor)));
+
+    private static float[] createSheepDyeColor(DyeColor enumDyeColour) {
+        if (enumDyeColour == DyeColor.WHITE) {
+//            return new float[]{0.9019608F, 0.9019608F, 0.9019608F};
+            return new float[]{1.0F, 1.0F, 1.0F};
+        } else {
+            float[] afloat = enumDyeColour.getColorComponentValues();
+            float f = 0.75F;
+            return new float[]{afloat[0] * f, afloat[1] * f, afloat[2] * f};
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static float[] getDyeRgb(DyeColor dyeColour) {
+        return DYE_TO_RGB.get(dyeColour);
+    }
+
+    /**
+     * Gets the wool color of this sheep.
+     */
+    /*
+    public DyeColor getFleeceDyeColour() {
+        return DyeColor.byId(this.dataManager.get(DYE_COLOUR) & 15);
+    }
+    */
+
+    /**
+     * Sets the wool color of this sheep
+     */
+    /*
+    public void setFleeceDyeColour(DyeColor colour) {
+        byte b0 = this.dataManager.get(DYE_COLOUR);
+        this.dataManager.set(DYE_COLOUR, (byte)(b0 & 240 | colour.getId() & 15));
+    }
+    */
+
 
     public float getEyeHeight()
     {
@@ -92,8 +177,73 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     protected void entityInit() {
         super.entityInit();
         this.dataManager.register(SHARED_GENES, new String());
+        this.dataManager.register(COAT_LENGTH, 0);
         this.dataManager.register(DYE_COLOR, Byte.valueOf((byte)0));
     }
+
+    /*
+    @Nullable
+    protected ResourceLocation getLootTable() {
+        if (this.getSheared()) {
+            return this.getType().getLootTable();
+        } else {
+            if (genes[4] == 1 || genes[5] == 1 || ((genes[0] >= 3 && genes[1] >= 3) && (genes[0] != 5 && genes[1] != 5))){
+                if ((genes[2] == 1 || genes[3] == 1) && (genes[0] != 3 && genes[1] != 3)){
+                    return LootTables.ENTITIES_SHEEP_BLACK;
+                }else{
+                    return LootTables.ENTITIES_SHEEP_BROWN;
+                }
+            }else if ((genes[0] == 2 || genes[1] == 2) && getFleeceDyeColour() == DyeColor.WHITE) {
+                return LootTables.ENTITIES_SHEEP_LIGHT_GRAY;
+            }else {
+                switch (this.getFleeceDyeColour()) {
+                    case WHITE:
+                    default:
+                        return LootTables.ENTITIES_SHEEP_WHITE;
+                    case ORANGE:
+                        return LootTables.ENTITIES_SHEEP_ORANGE;
+                    case MAGENTA:
+                        return LootTables.ENTITIES_SHEEP_MAGENTA;
+                    case LIGHT_BLUE:
+                        return LootTables.ENTITIES_SHEEP_LIGHT_BLUE;
+                    case YELLOW:
+                        return LootTables.ENTITIES_SHEEP_YELLOW;
+                    case LIME:
+                        return LootTables.ENTITIES_SHEEP_LIME;
+                    case PINK:
+                        return LootTables.ENTITIES_SHEEP_PINK;
+                    case GRAY:
+                        return LootTables.ENTITIES_SHEEP_GRAY;
+                    case LIGHT_GRAY:
+                        return LootTables.ENTITIES_SHEEP_LIGHT_GRAY;
+                    case CYAN:
+                        return LootTables.ENTITIES_SHEEP_CYAN;
+                    case PURPLE:
+                        return LootTables.ENTITIES_SHEEP_PURPLE;
+                    case BLUE:
+                        return LootTables.ENTITIES_SHEEP_BLUE;
+                    case BROWN:
+                        return LootTables.ENTITIES_SHEEP_BROWN;
+                    case GREEN:
+                        return LootTables.ENTITIES_SHEEP_GREEN;
+                    case RED:
+                        return LootTables.ENTITIES_SHEEP_RED;
+                    case BLACK:
+                        return LootTables.ENTITIES_SHEEP_BLACK;
+                }
+            }
+        }
+    }
+    */
+
+    private void setCoatLength(int coatLength) {
+        this.dataManager.set(COAT_LENGTH, coatLength);
+    }
+
+    public int getCoatLength() {
+        return this.dataManager.get(COAT_LENGTH);
+    }
+
 
     protected void applyEntityAttributes()
     {
@@ -107,6 +257,17 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         if (this.world.isRemote)
         {
             this.sheepTimer = Math.max(0, this.sheepTimer - 1);
+        }
+
+        if (!this.world.isRemote) {
+            timeForGrowth++;
+            if (maxCoatLength > 0 && (timeForGrowth >= (24000 / maxCoatLength))) {
+                timeForGrowth = 0;
+                if (maxCoatLength > currentCoatLength) {
+                    currentCoatLength++;
+                    setCoatLength(currentCoatLength);
+                }
+            }
         }
 
         super.onLivingUpdate();
@@ -205,7 +366,90 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
     @SideOnly(Side.CLIENT)
     private void setTexturePaths() {
-        this.sheepTextures.add("sheep.png");
+
+        int[] genesForText = getSharedGenes();
+        if (genesForText != null) {
+            int under = 0;
+            int pattern = 0;
+            int grey = 0;
+            int spots = 0;
+            int skin = 0;
+            int hooves = 0;
+            int fur = 0;
+            int eyes = 0;
+
+            char[] uuidArry = getCachedUniqueIdString().toCharArray();
+
+            if (genesForText[4] == 1 || genesForText[5] ==1){
+                //black sheep
+                under = 1;
+            }else {
+                if (genesForText[0] == 1 || genesForText[1] == 1) {
+                    //white sheep
+                    pattern = 1;
+                }else if (genesForText[0] == 2 || genesForText[1] == 2){
+                    grey = 1;
+                    if (genesForText[0] == 3 || genesForText[1] == 3){
+                        pattern = 2;
+                    }else if (genesForText[0] == 4 || genesForText[1] == 4){
+                        pattern = 6;
+                    }else{
+                        pattern = 10;
+                    }
+                }else if(genesForText[0] == 3 || genesForText[1] == 3){
+                    if(genesForText[0] == 4 || genesForText[1] == 4){
+                        pattern = 4;
+                    }else{
+                        pattern = 2;
+                    }
+                }else if (genesForText[0] == 4 || genesForText[1] == 4){
+                    pattern = 6;
+                }else if (genesForText[0] == 5 || genesForText[1] == 5){
+                    pattern = 8;
+                    under = 3;
+                }else{
+                    pattern = 10;
+                }
+
+                //red variant
+                if (genesForText[4] == 3 && genesForText[5] == 3){
+                    under = under + 4;
+                    pattern = pattern + 11;
+                }
+            }
+
+            //chocolate variant
+            if (genesForText[2] == 2 && genesForText[3] == 2){
+                pattern = pattern + 1;
+            }
+
+            //basic spots
+            if (genesForText[8] == 2 && genesForText[9] == 2){
+                if (Character.isDigit(uuidArry[1])){
+                    spots = 2;
+                }else {
+                    spots = 1;
+                }
+            }
+
+
+            this.sheepTextures.add(SHEEP_TEXTURES_UNDER[under]);
+            if (pattern != 0) {
+                this.sheepTextures.add(SHEEP_TEXTURES_PATTERN[pattern]);
+            }
+            if (grey != 0) {
+                this.sheepTextures.add(SHEEP_TEXTURES_GREY[grey]);
+            }
+            if (spots != 0) {
+                this.sheepTextures.add(SHEEP_TEXTURES_SPOTS[spots]);
+            }
+            this.sheepTextures.add(SHEEP_TEXTURES_SKIN[skin]);
+            this.sheepTextures.add(SHEEP_TEXTURES_HOOVES[hooves]);
+            this.sheepTextures.add(SHEEP_TEXTURES_FUR[fur]);
+            this.sheepTextures.add(SHEEP_TEXTURES_EYES[eyes]);
+
+
+        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -430,20 +674,13 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
         Random rand = new Random();
         int[] lambGenes = new int[GENES_LENGTH];
 
-        for (int i = 0; i < 20; i++) {
-            boolean thisOrMate = rand.nextBoolean();
-            if (thisOrMate) {
-                lambGenes[i] = genes[i];
-            } else {
-                lambGenes[i] = mateGenes[i];
-            }
-        }
-
-        for (int i = 20; i < genes.length; i++) {
+        for (int i = 0; i < genes.length; i = i + 2){
             boolean thisOrMate = rand.nextBoolean();
             if (thisOrMate) {
                 lambGenes[i] = mitosisGenes[i];
+                lambGenes[i+1] = mateMitosisGenes[i+1];
             } else {
+                lambGenes[i+1] = mitosisGenes[i+1];
                 lambGenes[i] = mateMitosisGenes[i];
             }
         }
@@ -492,18 +729,46 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
          * Colour Genes
          */
 
-        //Agouti [ Agouti, Tan, Self ]
+        //Agouti? [ Dom.White, Grey, Badgerface, Mouflon+, EnglishBlue, Rec.Black ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[0] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[0] = (ThreadLocalRandom.current().nextInt(6) + 1);
 
         } else {
-            initialGenes[0] = (1);
+            initialGenes[0] = (4);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[1] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[1] = (ThreadLocalRandom.current().nextInt(6) + 1);
 
         } else {
-            initialGenes[1] = (1);
+            initialGenes[1] = (4);
+        }
+
+        //Chocolate [ Wildtype+, chocolate ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[2] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[2] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[3] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[3] = (1);
+        }
+
+        //Extention [ Dom.Black, wildtype+, Rec.Red ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[4] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[4] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[5] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[5] = (2);
         }
 
         /**
@@ -511,90 +776,218 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
          */
 
 
-        //Waved [ wildtype, dutch]
+        //Polled [ no horns, horns, 1/2 chance horns ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[6] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[6] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[7] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[7] = (2);
+        }
+
+        /**
+         * Spot Genes
+         */
+
+        //spots1 [ wildtype, spots1 ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[8] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[8] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[9] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[9] = (1);
+        }
+
+        //appaloosa spots [ wildtype, appaloosa ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[10] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[11] = (1);
+        }
+
+        //irregular spots [ wildtype, irregular ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[12] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[12] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[13] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[13] = (1);
+        }
+
+        //blaze [ wildtype, blaze ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[14] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[14] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[15] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[15] = (1);
+        }
+
+        //white nose [ wildtype, whitenose ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[16] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[16] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[17] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[17] = (1);
+        }
+
+        //face white extension [ wildtype, white extension ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[18] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[18] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[19] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[19] = (1);
+        }
+
+        //added wool length 1 [ wildtype, wool1 ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+            initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[20] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+            initialGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[21] = (1);
+        }
+
+        //added wool length 2 [ wildtype, wool2 ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+            initialGenes[22] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[22] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+            initialGenes[23] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[23] = (1);
+        }
+
+        //added wool length 3 [ wildtype, wool3 ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+            initialGenes[24] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[24] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+            initialGenes[25] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[25] = (1);
+        }
+
+        //added wool length 4 [ wildtype, wool3 ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+            initialGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[26] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+            initialGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[27] = (1);
+        }
+
+        //added wool length 5 [ wildtype, wool3 ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+            initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[28] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+            initialGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[29] = (1);
+        }
+
+        //added wool length 6 [ wildtype, wool3 ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[30] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[30] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[31] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[31] = (1);
         }
 
-        /**
-         * Shape Genes
-         */
-
-        //Dwarf [ wildtype, dwarf]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        //added wool length 7 [ wildtype, wool3 ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[32] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
             initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[33] = (1);
         }
 
-        /**
-         * Size Genes
-         */
-
-        //Dwarf [ wildtype, dwarf]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        //added wool length 8 [ wildtype, wool3 ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+            initialGenes[34] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[32] = (1);
+            initialGenes[34] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+            initialGenes[35] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[33] = (1);
-        }
-
-        /**
-         * Production Type Genes
-         */
-
-        //Dwarf [ wildtype, dwarf]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[32] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[33] = (1);
-        }
-
-        /**
-         * Behaviour Type Genes
-         */
-
-        //Dwarf [ wildtype, dwarf]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[32] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[33] = (1);
+            initialGenes[35] = (1);
         }
 
         return initialGenes;

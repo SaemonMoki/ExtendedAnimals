@@ -23,6 +23,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,20 +32,92 @@ import java.util.concurrent.ThreadLocalRandom;
 public class EnhancedCow extends EntityAnimal {
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
+    private static final DataParameter<Float> COW_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
+    private static final DataParameter<String> COW_STATUS = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
+
+    private static final String[] COW_TEXTURES_BASE = new String[] {
+            "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
+    };
+
+    private static final String[] COW_TEXTURES_RED = new String[] {
+            "", "r_solid.png", "r_shaded.png"
+            , "r_solid.png", "r_shaded_thin.png"
+    };
+
+    private static final String[] COW_TEXTURES_BLACK = new String[] {
+            "", "b_shoulders.png", "b_wildtype.png", "b_wildtype_darker1.png", "b_wildtype_dark.png", "b_solid.png", "b_brindle.png"
+            , "b_shoulders_thin.png", "b_wildtype_thin.png", "b_wildtype_darker1_thin.png", "b_wildtype_dark_thin.png", "b_solid.png", "b_brindle.png"
+    };
+
+    private static final String[] COW_TEXTURES_SKIN = new String[] {
+            "skin_black.png", "skin_brown.png", "skin_pink.png"
+    };
+
+    private static final String[] COW_TEXTURES_ROAN = new String[] {
+            "", "spot_roan0.png",
+            "solid_white.png"
+    };
+
+    private static final String[] COW_TEXTURES_SPECKLED = new String[] {
+            "", "spot_speckled0.png",
+            "spot_whitespeckled0.png"
+    };
+
+    private static final String[] COW_TEXTURES_WHITEFACE = new String[] {
+            "", "spot_whiteface0.png",
+            "spot_wfcoloursided0.png",
+            "spot_coloursided0.png",
+            "spot_pibald0.png"
+    };
+
+    private static final String[] COW_TEXTURES_BELTED = new String[] {
+            "", "spot_belted0.png",
+            "spot_blaze0.png",
+            "b_spot_brockling0.png",
+            "r_spot_brockling0.png"
+    };
+
+    private static final String[] COW_TEXTURES_COLOURSIDED = new String[] {
+            "", "spot_coloursided0.png"
+    };
+
+    private static final String[] COW_TEXTURES_HOOVES = new String[] {
+            "hooves_black.png", "hooves_black_dwarf.png"
+    };
+
+    private static final String[] COW_TEXTURES_EYES = new String[] {
+            "eyes_black.png"
+    };
+
+    private static final String[] COW_TEXTURES_HORNS = new String[] {
+            "", "horns_black.png"
+    };
+
+    private static final String[] COW_TEXTURES_COAT = new String[] {
+            "coat_normal.png", "coat_smooth.png", "coat_furry.png"
+    };
+
+    private static final String[] COW_TEXTURES_TEST = new String[] {
+            "cowbase.png", "cowtest.png"
+    };
 
     private static final Set<Item> TEMPTATION_ITEMS = Sets.newHashSet(Item.getItemFromBlock(Blocks.MELON_BLOCK), Item.getItemFromBlock(Blocks.PUMPKIN), Item.getItemFromBlock(Blocks.TALLGRASS), Item.getItemFromBlock(Blocks.HAY_BLOCK), Items.CARROT, Items.WHEAT);
 
     private static final int WTC = 90;
+    private final List<String> cowTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 50;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
+    private float maxBagSize;
+    private float cowSize;
+
     public EnhancedCow(World worldIn) {
         super(worldIn);
         this.setSize(0.4F, 0.5F);
-        //TODO Add the jumping stuff
     }
 
     protected void initEntityAI() {

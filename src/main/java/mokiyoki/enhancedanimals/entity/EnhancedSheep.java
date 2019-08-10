@@ -560,11 +560,161 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
     public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IBlockAccess world, BlockPos pos, int fortune)
     {
         this.setSheared(true);
-        int i = 1 + this.rand.nextInt(3);
+//        int i = 1 + this.rand.nextInt(3);
 
         java.util.List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
-        for (int j = 0; j < i; ++j)
+//        for (int j = 0; j < i; ++j)
             ret.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, this.getFleeceDyeColour().getMetadata()));
+
+        if (!this.world.isRemote) {
+            int woolCount = 0;
+            if (currentCoatLength == 1) {
+                int i = this.rand.nextInt(5);
+                if (i>3){
+                    woolCount++;
+                }
+            } else if (currentCoatLength == 2) {
+                int i = this.rand.nextInt(5);
+                if (i>2){
+                    woolCount++;
+                }
+            } else if (currentCoatLength == 3) {
+                int i = this.rand.nextInt(5);
+                if (i>1){
+                    woolCount++;
+                }
+            } else if (currentCoatLength == 4) {
+                int i = this.rand.nextInt(5);
+                if (i>0) {
+                    woolCount++;
+                }
+            } else if (currentCoatLength >= 5) {
+                woolCount++;
+
+                if (currentCoatLength == 6) {
+                    int i = this.rand.nextInt(5);
+                    if (i>3){
+                        woolCount++;
+                    }
+                } else if (currentCoatLength == 7) {
+                    int i = this.rand.nextInt(5);
+                    if (i>2){
+                        woolCount++;
+                    }
+                } else if (currentCoatLength == 8) {
+                    int i = this.rand.nextInt(5);
+                    if (i>1){
+                        woolCount++;
+                    }
+                } else if (currentCoatLength == 9) {
+                    int i = this.rand.nextInt(5);
+                    if (i>0) {
+                        woolCount++;
+                    }
+                } else if (currentCoatLength >= 10) {
+                    woolCount++;
+                    if (currentCoatLength == 11) {
+                        int i = this.rand.nextInt(5);
+                        if (i>3){
+                            woolCount++;
+                        }
+                    } else if (currentCoatLength == 12) {
+                        int i = this.rand.nextInt(5);
+                        if (i>2){
+                            woolCount++;
+                        }
+                    } else if (currentCoatLength == 13) {
+                        int i = this.rand.nextInt(5);
+                        if (i>1){
+                            woolCount++;
+                        }
+                    } else if (currentCoatLength == 14) {
+                        int i = this.rand.nextInt(5);
+                        if (i>0) {
+                            woolCount++;
+                        }
+                    } else if (currentCoatLength >= 15) {
+                        woolCount++;
+                    }
+                }
+            }
+
+//            for (int c = 0-woolCount; c < 0; c++){
+
+                int spots = 0;
+
+                if (genes[8] == 2 && genes[9] == 2){
+                    spots = this.rand.nextInt(3);
+                }
+
+                if (genes[4] == 1 || genes[5] == 1 || ((genes[0] >= 4 && genes[1] >= 4) && (genes[0] != 5 && genes[1] != 5)) && spots != 2) {
+                    if ((genes[2] == 1 || genes[3] == 1) && (genes[0] != 3 && genes[1] != 3)) {
+                        ret.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, EnumDyeColor.BLACK.getMetadata()));
+                    } else {
+                        ret.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, EnumDyeColor.BROWN.getMetadata()));
+                    }
+                }else if ((genes[0] == 2 || genes[1] == 2) && this.getFleeceDyeColour().getMetadata() == EnumDyeColor.WHITE.getMetadata()) {
+                    ret.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), 1, EnumDyeColor.SILVER.getMetadata()));
+                }else {
+
+                    ret.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), woolCount, this.getFleeceDyeColour().getMetadata()));
+
+//                    switch (this.getFleeceColor().getMetadata()) {
+//                        case WHITE:
+//                        default:
+//                            ret.add(new ItemStack(Item.getItemFromBlock(Blocks.WOOL), woolCount, this.getFleeceDyeColour().getMetadata()));
+//                            break;
+//                        case ORANGE:
+//                            ret.add(new ItemStack(Blocks.ORANGE_WOOL));
+//                            break;
+//                        case MAGENTA:
+//                            ret.add(new ItemStack(Blocks.MAGENTA_WOOL));
+//                            break;
+//                        case LIGHT_BLUE:
+//                            ret.add(new ItemStack(Blocks.LIGHT_BLUE_WOOL));
+//                            break;
+//                        case YELLOW:
+//                            ret.add(new ItemStack(Blocks.YELLOW_WOOL));
+//                            break;
+//                        case LIME:
+//                            ret.add(new ItemStack(Blocks.LIME_WOOL));
+//                            break;
+//                        case PINK:
+//                            ret.add(new ItemStack(Blocks.PINK_WOOL));
+//                            break;
+//                        case GRAY:
+//                            ret.add(new ItemStack(Blocks.GRAY_WOOL));
+//                            break;
+//                        case LIGHT_GRAY:
+//                            ret.add(new ItemStack(Blocks.LIGHT_GRAY_WOOL));
+//                            break;
+//                        case CYAN:
+//                            ret.add(new ItemStack(Blocks.CYAN_WOOL));
+//                            break;
+//                        case PURPLE:
+//                            ret.add(new ItemStack(Blocks.PURPLE_WOOL));
+//                            break;
+//                        case BLUE:
+//                            ret.add(new ItemStack(Blocks.BLUE_WOOL));
+//                            break;
+//                        case BROWN:
+//                            ret.add(new ItemStack(Blocks.BROWN_WOOL));
+//                            break;
+//                        case GREEN:
+//                            ret.add(new ItemStack(Blocks.GREEN_WOOL));
+//                            break;
+//                        case RED:
+//                            ret.add(new ItemStack(Blocks.RED_WOOL));
+//                            break;
+//                        case BLACK:
+//                            ret.add(new ItemStack(Blocks.BLACK_WOOL));
+//                            break;
+//                    }
+                }
+//            }
+        }
+        currentCoatLength = 0;
+        setCoatLength(currentCoatLength);
 
         this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, 1.0F);
         return ret;
@@ -679,7 +829,66 @@ public class EnhancedSheep extends EntityAnimal implements net.minecraftforge.co
 
         this.genes = spawnGenes;
         setSharedGenes(genes);
+        setMaxCoatLength();
+        this.currentCoatLength = this.maxCoatLength;
+        setCoatLength(this.currentCoatLength);
         return livingdata;
+    }
+
+    private void setMaxCoatLength() {
+        float maxCoatLength = 0.0F;
+
+        if ( !this.isChild() ) {
+            if (genes[20] == 2){
+                maxCoatLength = 1;
+            }
+            if (genes[21] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[22] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[23] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[24] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[25] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[26] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[27] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[28] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[29] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[30] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[31] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[32] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[33] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+            if (genes[34] == 2 && genes[35] == 2){
+                maxCoatLength = maxCoatLength + 1;
+            }
+
+        }
+
+        this.maxCoatLength = (int)maxCoatLength;
+
     }
 
     private int[] createInitialGenes() {

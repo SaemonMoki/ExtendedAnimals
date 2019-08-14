@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -84,6 +85,8 @@ public class RegistryHandler {
                 EntityEntryBuilder.create().entity(EnhancedRabbit.class).name("enhanced_rabbit").id(Reference.MODID + ":enhanced_rabbit", Reference.ENHANCED_RABBIT).tracker(64, 1, true).egg(111111,1).build());
         event.getRegistry().register(
                 EntityEntryBuilder.create().entity(EnhancedSheep.class).name("enhanced_sheep").id(Reference.MODID + ":enhanced_sheep", Reference.ENHANCED_SHEEP).tracker(64, 1, true).egg(1,0).build());
+        event.getRegistry().register(
+                EntityEntryBuilder.create().entity(EnhancedCow.class).name("enhanced_cow").id(Reference.MODID + ":enhanced_cow", Reference.ENHANCED_COW).tracker(64, 1, true).egg(1,0).build());
     }
 
 }

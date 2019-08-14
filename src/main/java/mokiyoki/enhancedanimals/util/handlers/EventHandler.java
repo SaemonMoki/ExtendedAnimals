@@ -1,11 +1,13 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityChicken;
+import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityRabbit;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.math.BlockPos;
@@ -30,6 +32,7 @@ public class EventHandler {
             enhancedChicken.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
             enhancedChicken.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(enhancedChicken)), (IEntityLivingData)null);
             world.spawnEntity(enhancedChicken);
+            entity.setDead();
             event.setCanceled(true);
         }
         if (entity instanceof EntityRabbit) {
@@ -37,6 +40,7 @@ public class EventHandler {
             enhancedRabbit.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
             enhancedRabbit.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(enhancedRabbit)), (IEntityLivingData)null);
             world.spawnEntity(enhancedRabbit);
+            entity.setDead();
             event.setCanceled(true);
         }
         if (entity instanceof EntitySheep) {
@@ -44,6 +48,15 @@ public class EventHandler {
             enhancedSheep.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
             enhancedSheep.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(enhancedSheep)), (IEntityLivingData)null);
             world.spawnEntity(enhancedSheep);
+            entity.setDead();
+            event.setCanceled(true);
+        }
+        if (entity instanceof EntityCow) {
+            EnhancedCow enhancedCow = new EnhancedCow(world);
+            enhancedCow.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, 0, 0);
+            enhancedCow.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(enhancedCow)), (IEntityLivingData)null);
+            world.spawnEntity(enhancedCow);
+            entity.setDead();
             event.setCanceled(true);
         }
 

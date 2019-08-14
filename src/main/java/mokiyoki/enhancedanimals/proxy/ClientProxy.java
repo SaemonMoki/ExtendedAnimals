@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedChicken;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedCow;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedRabbit;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedSheep;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -30,7 +31,7 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(EnhancedChicken.class, renderManager -> new RenderEnhancedChicken(renderManager));
         RenderingRegistry.registerEntityRenderingHandler(EnhancedRabbit.class, renderManager -> new RenderEnhancedRabbit(renderManager));
         RenderingRegistry.registerEntityRenderingHandler(EnhancedSheep.class, renderManager -> new RenderEnhancedSheep(renderManager));
-//        RenderingRegistry.registerEntityRenderingHandler(EnhancedCow.class, renderManager -> new RenderEnhancedCow(renderManager));
+        RenderingRegistry.registerEntityRenderingHandler(EnhancedCow.class, renderManager -> new RenderEnhancedCow(renderManager));
     }
 
     @Override

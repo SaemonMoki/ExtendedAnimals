@@ -1813,11 +1813,29 @@ public class EnhancedChicken extends AnimalEntity {
 
         if (!this.world.isRemote) {
 
+            float bodyType;
+
+            if (genes[146] == 2 && genes[147] == 2) {
+                if (genes[148] == 2 && genes[149] == 2) {
+                    //normal body
+                    bodyType = 0;
+                } else {
+                    //big body
+                    bodyType = 0.18F;
+                }
+            } else if (genes[148] == 2 && genes[149] == 2) {
+                //small body
+                bodyType = -0.18F;
+            } else {
+                //normal body
+                bodyType = 0;
+            }
+
             if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
 
-                if (chickenSize <= 0.7F) {
+                if (chickenSize + bodyType <= 0.7F) {
                     dropMeatType = "rawchicken_darksmall";
-                } else if (chickenSize >= 0.9F) {
+                } else if (chickenSize + bodyType >= 0.9F) {
                     dropMeatType = "rawchicken_darkbig";
                 } else {
                     dropMeatType = "rawchicken_dark";
@@ -1825,9 +1843,9 @@ public class EnhancedChicken extends AnimalEntity {
 
             } else {
 
-                if (chickenSize <= 0.7F) {
+                if (chickenSize + bodyType <= 0.7F) {
                     dropMeatType = "rawchicken_palesmall";
-                } else if (chickenSize >= 0.9F) {
+                } else if (chickenSize + bodyType >= 0.9F) {
                     dropMeatType = "rawchicken";
                 } else {
                     dropMeatType = "rawchicken_pale";

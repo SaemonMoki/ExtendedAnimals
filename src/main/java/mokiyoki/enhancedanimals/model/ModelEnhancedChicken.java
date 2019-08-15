@@ -54,10 +54,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     private final RendererModel xtraLongTail;
     private final RendererModel rightLeg;
     private final RendererModel rightFeather1;
+    private final RendererModel rightFeatherTall1;
     private final RendererModel rightFeather2;
     private final RendererModel rightFeather3;
     private final RendererModel leftLeg;
     private final RendererModel leftFeather1;
+    private final RendererModel leftFeatherTall1;
     private final RendererModel leftFeather2;
     private final RendererModel leftFeather3;
     private final RendererModel leftVultureHock;
@@ -279,6 +281,15 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.leftFeather1.mirror = true;
         this.leftFeather1.addBox(-3.1F, 4F, 0F, 2, 3, 3);
 
+        this.rightFeatherTall1 = new RendererModel(this,1,35);
+        this.rightFeatherTall1.addBox(1.1F, 3F, 0F, 2, 1, 3);
+        this.rightFeatherTall1.addBox(1.1F, 4F, 0F, 2, 3, 3);
+
+        this.leftFeatherTall1 = new RendererModel(this,1,35);
+        this.leftFeatherTall1.mirror = true;
+        this.leftFeatherTall1.addBox(-3.1F, 3F, 0F, 2, 1, 3);
+        this.leftFeatherTall1.addBox(-3.1F, 4F, 0F, 2, 3, 3);
+
         this.rightFeather2 = new RendererModel(this,12,34);
         this.rightFeather2.addBox(1.5F, 7F, -2.5F, 2, 2, 5);
 
@@ -331,7 +342,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.billChild.addBox(-1.0F, -4.0F, -3F, 2, 2, 2, 0.0F);
         this.billChild.setRotationPoint(0.0F, 15.0F, -4.0F);
 
-
         this.smallChin = new RendererModel(this, 14, 10);
         this.smallChin.addBox(-1.0F, -2.0F, -3.0F, 2, 1, 2, 0.0F);
 
@@ -381,6 +391,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
         int[] genes = enhancedChicken.getSharedGenes();
         boolean nakedNeck = false;
+        boolean longHockFeathers = false;
         int crest = 0; // [0, 1, 2, 3]          [none, small, forward, big]
         int fFeet = 0; // [0, 1, 2, 3]          [none, 1, 1&2, 1&2&3]
         int comb = 0;  // [0, 1, 2, 3, 4, 5, 6] [none, single, rose, rose2, pea, walnut, v]
@@ -561,7 +572,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 //        beard = 1;
 
 //        wingAngle = 1.5F;   // used for debugging wingAngle  [ 0 to 1.5 ]
-
         if (genes[146] == 2 && genes[147] == 2) {
             if (genes[148] == 2 && genes[149] == 2) {
                 //normal body
@@ -572,6 +582,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }
         } else if (genes[148] == 2 && genes[149] == 2) {
             //small body
+            longHockFeathers = true;
             bodyType = -1;
         } else {
             //normal body
@@ -609,8 +620,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             this.rightLeg.render(scale);
             this.leftLeg.render(scale);
             if (fFeet >= 1) {
-                this.leftFeather1.render(scale);
-                this.rightFeather1.render(scale);
+                    this.leftFeather1.render(scale);
+                    this.rightFeather1.render(scale);
                 if (fFeet >= 2) {
                     this.leftFeather2.render(scale);
                     this.rightFeather2.render(scale);
@@ -657,8 +668,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             this.rightLeg.render(scale);
             this.leftLeg.render(scale);
             if (fFeet >= 1) {
-                this.leftFeather1.render(scale);
-                this.rightFeather1.render(scale);
+                    this.leftFeather1.render(scale);
+                    this.rightFeather1.render(scale);
                 if (fFeet >= 2) {
                     this.leftFeather2.render(scale);
                     this.rightFeather2.render(scale);
@@ -792,8 +803,15 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             this.leftLeg.render(scale);
 
             if (fFeet >= 1) {
-                this.leftFeather1.render(scale);
-                this.rightFeather1.render(scale);
+                if (!roosting && !nesting) {
+                    if (longHockFeathers) {
+                        this.leftFeatherTall1.render(scale);
+                        this.rightFeatherTall1.render(scale);
+                    } else {
+                        this.leftFeather1.render(scale);
+                        this.rightFeather1.render(scale);
+                    }
+                }
                 if (genes[102] == 2 && genes[103] == 2){
                     this.leftVultureHock.render(scale);
                     this.rightVultureHock.render(scale);
@@ -882,10 +900,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
         copyModelAngles(rightLeg, rightFeather1);
+        copyModelAngles(rightLeg, rightFeatherTall1);
         copyModelAngles(rightLeg, rightFeather2);
         copyModelAngles(rightLeg, rightFeather3);
         copyModelAngles(rightLeg, rightVultureHock);
         copyModelAngles(leftLeg, leftFeather1);
+        copyModelAngles(leftLeg, leftFeatherTall1);
         copyModelAngles(leftLeg, leftFeather2);
         copyModelAngles(leftLeg, leftFeather3);
         copyModelAngles(leftLeg, leftVultureHock);
@@ -931,55 +951,63 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
             float point = 19F;
 
+            int wingMod;
+
+        if (sharedGenes[148] == 2 && sharedGenes[149] == 2 && sharedGenes[146] != 2 && sharedGenes[147] != 2) {
+            wingMod = 1;
+        } else {
+            wingMod = 0;
+        }
+
         //gene variations
         if ((sharedGenes[70] == 2 || sharedGenes [71] == 2) && (!nesting && !roosting)) {
             this.body.rotationPointY = 3F + point;
 //            this.tail.rotationPointY = 3F;
 
-            this.rightWing.rotationPointY = 16;
-            this.leftWing.rotationPointY = 16;
-            this.rightWingSmall.rotationPointY = 16;
-            this.leftWingSmall.rotationPointY = 16;
+            this.rightWing.rotationPointY = 16 + wingMod;
+            this.leftWing.rotationPointY = 16 + wingMod;
+            this.rightWingSmall.rotationPointY = 16 + wingMod;
+            this.leftWingSmall.rotationPointY = 16 + wingMod;
 
             this.mutation = 1;
         } else {
             this.body.rotationPointY = 0F + point;
 //            this.tail.rotationPointY = 0F;
 
-            this.rightWing.rotationPointY = 13;
-            this.leftWing.rotationPointY = 13;
-            this.rightWingSmall.rotationPointY = 13;
-            this.leftWingSmall.rotationPointY = 13;
+            this.rightWing.rotationPointY = 13 + wingMod;
+            this.leftWing.rotationPointY = 13 + wingMod;
+            this.rightWingSmall.rotationPointY = 13 + wingMod;
+            this.leftWingSmall.rotationPointY = 13 + wingMod;
 
             this.mutation = 0;
         }
         //behaviour animations
         //nesting "moves legs together to remove clipping"
         if(nesting){
-            this.body.rotationPointY = 5F + point;
+            this.body.rotationPointY = 4.9F + point;
 //            this.tail.rotationPointY = 5F;
             this.rightLeg.rotationPointX = this.rightLeg.rotationPointX - 0.1F;
             this.leftLeg.rotationPointX = this.leftLeg.rotationPointX + 0.1F;
 
-            this.rightWing.rotationPointY = 19F;
-            this.leftWing.rotationPointY = 19F;
-            this.rightWingSmall.rotationPointY = 19F;
-            this.leftWingSmall.rotationPointY = 19F;
+            this.rightWing.rotationPointY = 19F + wingMod;
+            this.leftWing.rotationPointY = 19F + wingMod;
+            this.rightWingSmall.rotationPointY = 19F + wingMod;
+            this.leftWingSmall.rotationPointY = 19F + wingMod;
 
             this.pose = 1;
         } else {
             if(roosting){
-                this.body.rotationPointY = 5F + point;
+                this.body.rotationPointY = 4.9F + point;
 //                this.tail.rotationPointY = 5F;
                 this.rightLeg.rotationPointY = 1F;
                 this.leftLeg.rotationPointY = 1F;
                 this.rightLeg.rotationPointX = this.rightLeg.rotationPointX - 0.1F;
                 this.leftLeg.rotationPointX = this.leftLeg.rotationPointX + 0.1F;
 
-                this.rightWing.rotationPointY = 18F;
-                this.leftWing.rotationPointY = 18F;
-                this.rightWingSmall.rotationPointY = 18F;
-                this.leftWingSmall.rotationPointY = 18F;
+                this.rightWing.rotationPointY = 18F + wingMod;
+                this.leftWing.rotationPointY = 18F + wingMod;
+                this.rightWingSmall.rotationPointY = 18F + wingMod;
+                this.leftWingSmall.rotationPointY = 18F + wingMod;
 
                 this.pose = 2;
             } else {

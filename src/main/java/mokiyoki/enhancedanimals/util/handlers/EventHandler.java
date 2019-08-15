@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.util.handlers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.passive.horse.LlamaEntity;
@@ -40,6 +41,11 @@ public class EventHandler {
             }
         }
         if (entity instanceof CowEntity) {
+            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
+                event.setCanceled(true);
+            }
+        }
+        if (entity instanceof PigEntity) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
             }

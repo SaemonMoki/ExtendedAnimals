@@ -1,20 +1,24 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.ai.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.EatGrassGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
+import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
@@ -46,6 +50,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -114,6 +119,8 @@ public class EnhancedPig extends AnimalEntity {
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
+    private UUID angerTargetUUID;
+    private int angerLevel;
     private float pigSize;
 
     public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
@@ -133,7 +140,7 @@ public class EnhancedPig extends AnimalEntity {
     protected void registerGoals() {
         this.entityAIEatGrass = new EatGrassGoal(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
+//        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
         this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.fromItems(Items.CARROT_ON_A_STICK), false));
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, TEMPTATION_ITEMS));
@@ -142,11 +149,36 @@ public class EnhancedPig extends AnimalEntity {
         this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.targetSelector.addGoal(1, new EnhancedPig.HurtByAggressorGoal(this));
+        this.targetSelector.addGoal(2, new EnhancedPig.TargetAggressorGoal(this));
     }
 
-    protected void updateAITasks()
-    {
+    @Override
+    protected void updateAITasks() {
         this.pigTimer = this.entityAIEatGrass.getEatingGrassTimer();
+
+        LivingEntity livingentity = this.getRevengeTarget();
+        if (this.isAngry()) {
+
+            --this.angerLevel;
+            LivingEntity livingentity1 = livingentity != null ? livingentity : this.getAttackTarget();
+            if (!this.isAngry() && livingentity1 != null) {
+                if (!this.canEntityBeSeen(livingentity1)) {
+                    this.setRevengeTarget((LivingEntity)null);
+                    this.setAttackTarget((LivingEntity)null);
+                } else {
+                    this.angerLevel = this.angerAmount();
+                }
+            }
+        }
+
+        if (this.isAngry() && this.angerTargetUUID != null && livingentity == null) {
+            PlayerEntity playerentity = this.world.getPlayerByUuid(this.angerTargetUUID);
+            this.setRevengeTarget(playerentity);
+            this.attackingPlayer = playerentity;
+            this.recentlyHit = this.getRevengeTimer();
+        }
+
         super.updateAITasks();
     }
 
@@ -234,6 +266,85 @@ public class EnhancedPig extends AnimalEntity {
             lethalGenes();
         }
 
+    }
+
+
+    static class HurtByAggressorGoal extends HurtByTargetGoal {
+        public HurtByAggressorGoal(EnhancedPig entity) {
+            super(entity);
+            this.setCallsForHelp(new Class[]{EnhancedPig.class});
+        }
+
+        protected void setAttackTarget(MobEntity mobIn, LivingEntity targetIn) {
+            if (mobIn instanceof EnhancedPig && this.goalOwner.canEntityBeSeen(targetIn) && ((EnhancedPig)mobIn).becomeAngryAt(targetIn)) {
+                mobIn.setAttackTarget(targetIn);
+            }
+
+        }
+    }
+
+    static class TargetAggressorGoal extends NearestAttackableTargetGoal<PlayerEntity> {
+        public TargetAggressorGoal(EnhancedPig entity) {
+            super(entity, PlayerEntity.class, true);
+        }
+
+        /**
+         * Returns whether the EntityAIBase should begin execution.
+         */
+        public boolean shouldExecute() {
+            return ((EnhancedPig)this.goalOwner).isAngry() && super.shouldExecute();
+        }
+    }
+
+    @Override
+    public boolean attackEntityAsMob(Entity entityIn) {
+        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), (float)((int)this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue()));
+        if (flag) {
+            this.applyEnchantments(this, entityIn);
+        }
+
+        return flag;
+    }
+
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        if (this.isInvulnerableTo(source)) {
+            return false;
+        } else {
+            Entity entity = source.getTrueSource();
+            if (entity instanceof PlayerEntity && !((PlayerEntity)entity).isCreative() && this.canEntityBeSeen(entity)) {
+                this.becomeAngryAt(entity);
+            }
+
+            return super.attackEntityFrom(source, amount);
+        }
+    }
+
+    private boolean becomeAngryAt(Entity entity) {
+        this.angerLevel = this.angerAmount();
+//        this.randomSoundDelay = this.rand.nextInt(40);
+        if (entity instanceof LivingEntity) {
+            this.setRevengeTarget((LivingEntity)entity);
+        }
+
+        return true;
+    }
+
+    @Override
+    public void setRevengeTarget(@Nullable LivingEntity livingBase) {
+        super.setRevengeTarget(livingBase);
+        if (livingBase != null) {
+            this.angerTargetUUID = livingBase.getUniqueID();
+        }
+
+    }
+
+    private int angerAmount() {
+        return 400 + this.rand.nextInt(400);
+    }
+
+    private boolean isAngry() {
+        return this.angerLevel > 0;
     }
 
     private void setPigSize(){
@@ -529,6 +640,14 @@ public class EnhancedPig extends AnimalEntity {
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
 
+        compound.putShort("Anger", (short)this.angerLevel);
+        if (this.angerTargetUUID != null) {
+            compound.putString("HurtBy", this.angerTargetUUID.toString());
+        } else {
+            compound.putString("HurtBy", "");
+        }
+
+
     }
 
     /**
@@ -557,6 +676,18 @@ public class EnhancedPig extends AnimalEntity {
 
         setSharedGenes(genes);
         setPigSize();
+
+        this.angerLevel = compound.getShort("Anger");
+        String s = compound.getString("HurtBy");
+        if (!s.isEmpty()) {
+            this.angerTargetUUID = UUID.fromString(s);
+            PlayerEntity playerentity = this.world.getPlayerByUuid(this.angerTargetUUID);
+            this.setRevengeTarget(playerentity);
+            if (playerentity != null) {
+                this.attackingPlayer = playerentity;
+                this.recentlyHit = this.getRevengeTimer();
+            }
+        }
 
     }
 

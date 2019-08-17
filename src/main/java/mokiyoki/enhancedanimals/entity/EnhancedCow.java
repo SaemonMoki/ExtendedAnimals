@@ -1096,7 +1096,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
         if (!this.world.isRemote) {
-            if (item == Items.BUCKET && !entityPlayer.abilities.isCreativeMode && !this.isChild()) {
+            if (item == Items.BUCKET && !entityPlayer.abilities.isCreativeMode && !this.isChild() && (getCowStatus().equals(EntityState.PREGNANT) || getCowStatus().equals(EntityState.MOTHER))) {
                 entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
                 itemStack.shrink(1);
                 if (itemStack.isEmpty()) {
@@ -1106,6 +1106,9 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 }
             } else if (item instanceof DebugGenesBook) {
                 ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
+            } else if (TEMPTATION_ITEMS.test(itemStack)) {
+                decreaseHunger();
+                itemStack.shrink(1);
             }
         }
         return super.processInteract(entityPlayer, hand);

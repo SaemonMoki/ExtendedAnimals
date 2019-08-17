@@ -785,6 +785,9 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                 }
             } else if (item instanceof DebugGenesBook) {
                 ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
+            } else if (TEMPTATION_ITEMS.test(itemStack)) {
+                decreaseHunger();
+                itemStack.shrink(1);
             }
         }
         return super.processInteract(entityPlayer, hand);

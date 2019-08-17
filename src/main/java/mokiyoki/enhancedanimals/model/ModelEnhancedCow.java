@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
+import mokiyoki.enhancedanimals.entity.EntityState;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.util.math.MathHelper;
@@ -444,9 +445,17 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
 //
 //            GlStateManager.popMatrix();
+            float childSize;
+            if (cowStatus.equals(EntityState.CHILD_STAGE_ONE.toString())) {
+                childSize = 0.5F;
+            }else if (cowStatus.equals(EntityState.CHILD_STAGE_TWO.toString())) {
+                childSize = 0.6F;
+            }else{
+                childSize = 0.7F;
+            }
             GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.5F, 0.5F, 0.5F);
-            GlStateManager.translatef(0.0F, 20.0F * scale, 0.0F);
+            GlStateManager.scalef(childSize, childSize, childSize);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/childSize, 0.0F);
 
             this.head.render(scale);
 
@@ -471,8 +480,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.5F, 0.7F, 0.5F);
-            GlStateManager.translatef(0.0F, 10.0F * scale, 0.0F);
+            GlStateManager.scalef(childSize, childSize*(1.0F+(2*(0.7F-childSize))), childSize);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/childSize, 0.0F);
             //TODO change y translation when calf is dwarf
 
             if (dwarf != 0.0F){
@@ -553,7 +562,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             this.tail0.render(scale);
 
-            if (cowStatus.contains("PREGNANT")) {
+            if (cowStatus.contains("PREGNANT") || cowStatus.contains("MOTHER")) {
                 this.udder.render(scale);
                 this.nipples.render(scale);
             }

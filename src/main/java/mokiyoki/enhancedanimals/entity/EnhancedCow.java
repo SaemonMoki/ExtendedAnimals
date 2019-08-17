@@ -273,9 +273,11 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 int days = ConfigHandler.COMMON.gestationDays.get();
                 if (hunger > days*(0.75) && days !=0) {
                     pregnant = false;
+                    setCowStatus(EntityState.ADULT.toString());
                 }
                 if (gestationTimer >= days) {
                     pregnant = false;
+                    setCowStatus(EntityState.MOTHER.toString());
                     gestationTimer = 0;
 
                     mixMateMitosisGenes();
@@ -380,11 +382,11 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         }
     }
 
-    public void eatGrassBonus() {
-        if (this.isChild()) {
-            this.addGrowth(60);
-        }
-    }
+//    public void eatGrassBonus() {
+//        if (this.isChild()) {
+//            this.addGrowth(60);
+//        }
+//    }
 
     public void setSharedGenes(int[] genes) {
         StringBuilder sb = new StringBuilder();

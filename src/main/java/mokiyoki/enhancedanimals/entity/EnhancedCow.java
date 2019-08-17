@@ -1,7 +1,8 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedGrassGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
@@ -12,14 +13,12 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
-import net.minecraft.entity.ai.goal.EatGrassGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -35,7 +34,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -56,7 +54,7 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_COW;
 
-public class EnhancedCow extends AnimalEntity {
+public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
     private static final DataParameter<Float> COW_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
@@ -143,6 +141,8 @@ public class EnhancedCow extends AnimalEntity {
     private float maxBagSize;
     private float cowSize;
 
+    private int hunger = 0;
+
     private boolean aiConfigured = false;
 
     private float[] cowColouration = null;
@@ -156,14 +156,15 @@ public class EnhancedCow extends AnimalEntity {
     }
 
     private int cowTimer;
-    private EatGrassGoal eatGrassGoal;
+    private EnhancedGrassGoal eatGrassGoal;
 
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
     @Override
     protected void registerGoals() {
-        this.eatGrassGoal = new EatGrassGoal(this);
+        //Todo add the temperamants
+        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(5, this.eatGrassGoal);
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
@@ -204,8 +205,20 @@ public class EnhancedCow extends AnimalEntity {
         this.dataManager.set(COW_STATUS, status);
     }
 
-    public String getCowStatus(){
+    public String getCowStatus() {
         return this.dataManager.get(COW_STATUS);
+    }
+
+    public int getHunger(){
+        return hunger;
+    }
+
+    public void decreaseHunger() {
+        if (this.hunger - 500 < 0) {
+            this.hunger = 0;
+        } else {
+            this.hunger = this.hunger - 500;
+        }
     }
 
     protected SoundEvent getAmbientSound() {
@@ -252,9 +265,15 @@ public class EnhancedCow extends AnimalEntity {
         }
 
         if (!this.world.isRemote) {
+
+            hunger++;
             if(pregnant) {
+                hunger++;
                 gestationTimer++;
                 int days = ConfigHandler.COMMON.gestationDays.get();
+                if (hunger > days/3 && days !=0) {
+                    pregnant = false;
+                }
                 if (gestationTimer >= days) {
                     pregnant = false;
                     gestationTimer = 0;
@@ -269,11 +288,28 @@ public class EnhancedCow extends AnimalEntity {
                     enhancedcow.setSharedGenes(babyGenes);
                     enhancedcow.setCowSize();
                     enhancedcow.setGrowingAge(-24000);
+                    enhancedcow.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
                     enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
                     this.world.addEntity(enhancedcow);
 
                 }
             }
+            if (this.isChild()) {
+                if (getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
+                    if(hunger < 1000) {
+                        setCowStatus(EntityState.CHILD_STAGE_TWO.toString());
+                    } else {
+                        this.setGrowingAge(-16500);
+                    }
+                } else if (getCowStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
+                    if(hunger < 1000) {
+                        setCowStatus(EntityState.CHILD_STAGE_THREE.toString());
+                    } else {
+                        this.setGrowingAge(-8500);
+                    }
+                }
+            }
+
         }
 
         if (!this.world.isRemote){
@@ -1098,6 +1134,7 @@ public class EnhancedCow extends AnimalEntity {
         compound.putInt("Gestation", this.gestationTimer);
 
         compound.putString("Status", getCowStatus());
+        compound.putInt("Hunger", hunger);
 
     }
 
@@ -1126,6 +1163,7 @@ public class EnhancedCow extends AnimalEntity {
         this.gestationTimer = compound.getInt("Gestation");
 
         setCowStatus(compound.getString("Status"));
+        hunger = compound.getInt("Hunger");
 
         setSharedGenes(genes);
         setCowSize();
@@ -1911,7 +1949,7 @@ public class EnhancedCow extends AnimalEntity {
             this.goalSelector.addGoal(2, new BreedGoal(this, speed));
             this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.25D, TEMPTATION_ITEMS, false));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
-            this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, speed));
+            this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, speed));
         }
         aiConfigured = true;
     }

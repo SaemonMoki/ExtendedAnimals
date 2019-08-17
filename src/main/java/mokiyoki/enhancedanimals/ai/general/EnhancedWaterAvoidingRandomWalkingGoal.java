@@ -1,11 +1,19 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.pattern.BlockStateMatcher;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.function.Predicate;
+
 public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomWalkingGoal {
+
+    private static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
 
     public EnhancedWaterAvoidingRandomWalkingGoal(CreatureEntity p_i47301_1_, double p_i47301_2_) {
         super(p_i47301_1_, p_i47301_2_);
@@ -22,7 +30,11 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomW
         } else {
             if (!this.mustUpdate) {
                 //Todo make this use Temperaments\
-                int hungerModifier = ((EnhancedAnimal)this.creature).getHunger()/50;
+                if(((EnhancedAnimal)this.creature).getHunger() > 12000 && checkForFood()) {
+                    return false;
+                }
+
+                int hungerModifier = ((EnhancedAnimal)this.creature).getHunger()/100;
                 if (hungerModifier >= this.executionChance) {
                     hungerModifier = this.executionChance - 1;
                 }
@@ -49,6 +61,18 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomW
             }
         }
     }
+
+    private boolean checkForFood() {
+        BlockPos blockpos = new BlockPos(this.creature);
+
+        //TODO add the predicate for different blocks to eat based on temperaments and animal type.
+        if (IS_GRASS.test(this.creature.world.getBlockState(blockpos))) {
+            return true;
+        } else {
+            return this.creature.world.getBlockState(blockpos.down()).getBlock() == Blocks.GRASS_BLOCK;
+        }
+    }
+
 
 
 

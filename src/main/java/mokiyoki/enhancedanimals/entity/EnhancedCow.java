@@ -214,10 +214,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     }
 
     public void decreaseHunger() {
-        if (this.hunger - 500 < 0) {
+        if (this.hunger - 6000 < 0) {
             this.hunger = 0;
         } else {
-            this.hunger = this.hunger - 500;
+            this.hunger = this.hunger - 6000;
         }
     }
 
@@ -271,7 +271,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 hunger++;
                 gestationTimer++;
                 int days = ConfigHandler.COMMON.gestationDays.get();
-                if (hunger > days/3 && days !=0) {
+                if (hunger > days*(0.75) && days !=0) {
                     pregnant = false;
                 }
                 if (gestationTimer >= days) {
@@ -296,13 +296,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             }
             if (this.isChild()) {
                 if (getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
-                    if(hunger < 1000) {
+                    if(hunger < 5000) {
                         setCowStatus(EntityState.CHILD_STAGE_TWO.toString());
                     } else {
                         this.setGrowingAge(-16500);
                     }
                 } else if (getCowStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
-                    if(hunger < 1000) {
+                    if(hunger < 5000) {
                         setCowStatus(EntityState.CHILD_STAGE_THREE.toString());
                     } else {
                         this.setGrowingAge(-8500);

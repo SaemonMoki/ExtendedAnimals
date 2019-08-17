@@ -35,9 +35,20 @@ public class EnhancedGrassGoal extends Goal {
      */
     public boolean shouldExecute() {
         //TODO make the amount needed before 'hungry' using temperaments
-        int eatingModifier = ((EnhancedAnimal)grassEaterEntity).getHunger()/50;
+        int eatingModifier = ((EnhancedAnimal)grassEaterEntity).getHunger()/25;
 
-        if (this.grassEaterEntity.getRNG().nextInt((this.grassEaterEntity.isChild() ? 50 : 1000) - eatingModifier) != 0) {
+        if (((EnhancedAnimal)grassEaterEntity).getHunger() > 12000) {
+            eatingModifier = 999;
+        }
+
+        int chanceToEat = (this.grassEaterEntity.isChild() ? 50 : 1000) - eatingModifier;
+
+        if (chanceToEat < 1) {
+            chanceToEat = 1;
+        }
+
+
+        if (this.grassEaterEntity.getRNG().nextInt(chanceToEat) != 0) {
             return false;
         } else {
             BlockPos blockpos = new BlockPos(this.grassEaterEntity);

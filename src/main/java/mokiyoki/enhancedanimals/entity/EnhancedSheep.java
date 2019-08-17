@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Maps;
+import mokiyoki.enhancedanimals.ai.general.EnhancedGrassGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -55,11 +57,12 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_SHEEP;
 
-public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.common.IShearable{
+public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.common.IShearable, EnhancedAnimal{
 
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedSheep.class, DataSerializers.STRING);
     private static final DataParameter<Byte> DYE_COLOUR = EntityDataManager.<Byte>createKey(EnhancedSheep.class, DataSerializers.BYTE);
+    private static final DataParameter<String> SHEEP_STATUS = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
 
     private static final String[] SHEEP_TEXTURES_UNDER = new String[] {
             "c_solid_tan.png", "c_solid_black.png", "c_solid_choc", "c_solid_lighttan.png",
@@ -109,6 +112,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private int maxCoatLength;
     private int currentCoatLength;
     private int timeForGrowth = 0;
+
+    private int hunger = 0;
 
     private int gestationTimer = 0;
     private boolean pregnant = false;
@@ -160,18 +165,19 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     }
 
     private int sheepTimer;
-    private EatGrassGoal eatGrassGoal;
+    private EnhancedGrassGoal eatGrassGoal;
 
     @Override
     protected void registerGoals() {
-        this.eatGrassGoal = new EatGrassGoal(this);
+        //Todo add the temperamants
+        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.1D, TEMPTATION_ITEMS, false));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(5, this.eatGrassGoal);
-        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+        this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
     }
@@ -189,6 +195,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(COAT_LENGTH, 0);
         this.dataManager.register(DYE_COLOUR, Byte.valueOf((byte)0));
+        this.dataManager.register(SHEEP_STATUS, new String());
     }
 
     @Nullable
@@ -258,6 +265,26 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
     }
 
+    private void setEntityStatus(String status) {
+        this.dataManager.set(SHEEP_STATUS, status);
+    }
+
+    public String getEntityStatus() {
+        return this.dataManager.get(SHEEP_STATUS);
+    }
+
+    public int getHunger(){
+        return hunger;
+    }
+
+    public void decreaseHunger() {
+        if (this.hunger - 6000 < 0) {
+            this.hunger = 0;
+        } else {
+            this.hunger = this.hunger - 6000;
+        }
+    }
+
     public void livingTick() {
         super.livingTick();
 
@@ -266,6 +293,9 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         }
 
         if (!this.world.isRemote) {
+
+            hunger++;
+
             timeForGrowth++;
             if (maxCoatLength > 0 && (timeForGrowth >= (24000 / maxCoatLength))) {
                 timeForGrowth = 0;
@@ -278,6 +308,9 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             if(pregnant) {
                 gestationTimer++;
                 int days = ConfigHandler.COMMON.gestationDays.get();
+                if (hunger > days*(0.75) && days !=0) {
+                    pregnant = false;
+                }
                 if (gestationTimer >= days) {
                     pregnant = false;
                     gestationTimer = 0;
@@ -294,6 +327,22 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                     enhancedsheep.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
                     this.world.addEntity(enhancedsheep);
 
+                }
+            }
+
+            if (this.isChild()) {
+                if (getEntityStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
+                    if(hunger < 5000) {
+                        setEntityStatus(EntityState.CHILD_STAGE_TWO.toString());
+                    } else {
+                        this.setGrowingAge(-16500);
+                    }
+                } else if (getEntityStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
+                    if(hunger < 5000) {
+                        setEntityStatus(EntityState.CHILD_STAGE_THREE.toString());
+                    } else {
+                        this.setGrowingAge(-8500);
+                    }
                 }
             }
         }
@@ -780,6 +829,9 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
 
+        compound.putString("Status", getEntityStatus());
+        compound.putInt("Hunger", hunger);
+
     }
 
     /**
@@ -810,6 +862,9 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
         this.pregnant = compound.getBoolean("Pregnant");
         this.gestationTimer = compound.getInt("Gestation");
+
+        setEntityStatus(compound.getString("Status"));
+        hunger = compound.getInt("Hunger");
 
         setSharedGenes(genes);
 

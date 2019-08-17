@@ -6,9 +6,9 @@ package mokiyoki.enhancedanimals.util;
 public class Reference {
 
     public static final String MODID = "eanimod";
-    public static final String NAME = "Enhanced Animals Mod";
-    public static final String VERSION = "0.2.0";
-    public static final String ACCEPTED_VERSIONS = "[1.13.2]";
+    public static final String NAME = "Genetic Animals Mod";
+    public static final String VERSION = "0.3.0";
+    public static final String ACCEPTED_VERSIONS = "[1.14.4]";
     public static final int ENHANCED_CHICKEN = 1;
     public static final int ENHANCED_RABBIT = 2;
     public static final int ENHANCED_SHEEP = 3;

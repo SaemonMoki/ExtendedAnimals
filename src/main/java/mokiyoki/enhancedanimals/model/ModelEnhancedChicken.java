@@ -581,9 +581,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                 bodyType = 1;
             }
         } else if (genes[148] == 2 && genes[149] == 2) {
-            //small body
-            longHockFeathers = true;
-            bodyType = -1;
+            if (genes[146] == 2 || genes[147] == 2) {
+                //normal body
+                bodyType = 0;
+            } else {
+                //small body
+                longHockFeathers = true;
+                bodyType = -1;
+            }
         } else {
             //normal body
             bodyType = 0;

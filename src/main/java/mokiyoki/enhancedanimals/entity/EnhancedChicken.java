@@ -1824,8 +1824,13 @@ public class EnhancedChicken extends AnimalEntity {
                     bodyType = 0.18F;
                 }
             } else if (genes[148] == 2 && genes[149] == 2) {
-                //small body
-                bodyType = -0.18F;
+                if (genes[146] == 2 || genes[147] == 2) {
+                    //normal body
+                    bodyType = 0;
+                } else {
+                    //small body
+                    bodyType = -0.18F;
+                }
             } else {
                 //normal body
                 bodyType = 0;

@@ -2,7 +2,8 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECRoost;
 import mokiyoki.enhancedanimals.ai.ECSandBath;
-import mokiyoki.enhancedanimals.ai.ECWanderAvoidWater;
+import mokiyoki.enhancedanimals.ai.general.EnhancedGrassGoal;
+import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
@@ -54,7 +55,7 @@ import java.util.stream.Collectors;
 /**
  * Created by saemon and moki on 30/08/2018.
  */
-public class EnhancedChicken extends AnimalEntity {
+public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedChicken.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> ROOSTING = EntityDataManager.<Boolean>createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
@@ -193,9 +194,11 @@ public class EnhancedChicken extends AnimalEntity {
     public int timeUntilNextEgg;
     private int grassTimer;
     private int sandBathTimer;
-    private EatGrassGoal entityAIEatGrass;
+    private EnhancedGrassGoal entityAIEatGrass;
     private ECSandBath ecSandBath;
     private String dropMeatType;
+
+    private int hunger = 0;
 
     private boolean resetTexture = true;
 
@@ -220,7 +223,8 @@ public class EnhancedChicken extends AnimalEntity {
 
     @Override
     protected void registerGoals() {
-        this.entityAIEatGrass = new EatGrassGoal(this);
+        //TODO add temperaments
+        this.entityAIEatGrass = new EnhancedGrassGoal(this, null);
         this.ecSandBath = new ECSandBath(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.4D));
@@ -258,12 +262,27 @@ public class EnhancedChicken extends AnimalEntity {
         return this.dataManager.get(CHICKEN_SIZE);
     }
 
+    public int getHunger(){
+        return hunger;
+    }
+
+    public void decreaseHunger() {
+        if (this.hunger - 6000 < 0) {
+            this.hunger = 0;
+        } else {
+            this.hunger = this.hunger - 6000;
+        }
+    }
+
     @Override
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
         if (item instanceof DebugGenesBook) {
             ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
+        } else if (TEMPTATION_ITEMS.test(itemStack)) {
+            decreaseHunger();
+            itemStack.shrink(1);
         }
         return super.processInteract(entityPlayer, hand);
     }
@@ -337,8 +356,11 @@ public class EnhancedChicken extends AnimalEntity {
 
         this.wingRotation += this.wingRotDelta * 2.0F;
 
-        if (!this.world.isRemote && !this.isChild() && --this.timeUntilNextEgg <= 0)
-        {
+        if (!this.world.isRemote) {
+            hunger++;
+        }
+
+        if (!this.world.isRemote && !this.isChild() && --this.timeUntilNextEgg <= 0) {
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
             mixMateMitosisGenes();
             mixMitosisGenes();
@@ -1887,6 +1909,8 @@ public class EnhancedChicken extends AnimalEntity {
             mateGeneList.add(nbttagcompound);
         }
         compound.put("FatherGenes", mateGeneList);
+
+        compound.putInt("Hunger", hunger);
     }
 
     /**
@@ -1909,6 +1933,8 @@ public class EnhancedChicken extends AnimalEntity {
             int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
+
+        hunger = compound.getInt("Hunger");
 
         for (int i = 0; i < genes.length; i++) {
             if (genes[i] == 0) {

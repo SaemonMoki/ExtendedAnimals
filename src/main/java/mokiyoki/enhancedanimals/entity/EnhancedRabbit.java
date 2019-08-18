@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedGrassGoal;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
@@ -65,7 +66,7 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_RABBIT;
 
-public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.common.IShearable {
+public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.common.IShearable, EnhancedAnimal {
 
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedRabbit.class, DataSerializers.STRING);
@@ -199,12 +200,16 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
+    private int hunger = 0;
+
     private static final int WTC = 90;
     private static final int GENES_LENGTH = 60;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
+
+    private EnhancedGrassGoal eatGrassGoal;
 
     public EnhancedRabbit(EntityType<? extends EnhancedRabbit> entityType, World worldIn) {
         super(ENHANCED_RABBIT, worldIn);
@@ -216,6 +221,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
     @Override
     protected void registerGoals() {
+        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
         this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedRabbit.AIPanic(this, 2.2D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 0.8D));
@@ -223,6 +229,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, WolfEntity.class, 10.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, MobEntity.class, 4.0F, 2.2D, 2.2D));
+        this.goalSelector.addGoal(5, this.eatGrassGoal);
         this.goalSelector.addGoal(5, new EnhancedRabbit.AIRaidFarm(this));
         this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.6D));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 10.0F));
@@ -244,6 +251,18 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             return this.moveController.getSpeed() <= 0.6D ? 0.2F : 0.3F;
         } else {
             return 0.5F;
+        }
+    }
+
+    public int getHunger(){
+        return hunger;
+    }
+
+    public void decreaseHunger() {
+        if (this.hunger - 6000 < 0) {
+            this.hunger = 0;
+        } else {
+            this.hunger = this.hunger - 6000;
         }
     }
 
@@ -396,6 +415,9 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         Item item = itemStack.getItem();
         if (item instanceof DebugGenesBook) {
             ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
+        } else if (TEMPTATION_ITEMS.test(itemStack)) {
+            decreaseHunger();
+            itemStack.shrink(1);
         }
         return super.processInteract(entityPlayer, hand);
     }
@@ -437,8 +459,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 
-    public void livingTick()
-    {
+    public void livingTick() {
         super.livingTick();
         if (this.jumpTicks != this.jumpDuration) {
             ++this.jumpTicks;
@@ -448,6 +469,8 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             this.setJumping(false);
         }
         if (!this.world.isRemote) {
+            hunger++;
+
             timeForGrowth++;
             if (maxCoatLength == 1){
                 if (timeForGrowth >= 48000) {
@@ -484,8 +507,12 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             }
 
             if(pregnant) {
+                hunger++;
                 gestationTimer++;
                 int days = ConfigHandler.COMMON.gestationDays.get();
+                if (hunger > days*(0.75) && days !=0) {
+                    pregnant = false;
+                }
                 if (gestationTimer >= days) {
                     pregnant = false;
                     gestationTimer = 0;
@@ -936,6 +963,8 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
+
+        compound.putInt("Hunger", hunger);
     }
 
     /**
@@ -960,6 +989,8 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
+
+        hunger = compound.getInt("Hunger");
 
         //TODO add a proper calculation for this
         for (int i = 0; i < genes.length; i++) {

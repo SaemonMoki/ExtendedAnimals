@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
+import mokiyoki.enhancedanimals.ai.general.EnhancedGrassGoal;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
@@ -67,7 +68,7 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_LLAMA;
 
-public class EnhancedLlama extends AbstractChestedHorseEntity implements IRangedAttackMob, net.minecraftforge.common.IShearable {
+public class EnhancedLlama extends AbstractChestedHorseEntity implements IRangedAttackMob, net.minecraftforge.common.IShearable, EnhancedAnimal {
 
     private static final DataParameter<Integer> DATA_STRENGTH_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DATA_INVENTORY_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
@@ -140,7 +141,12 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
+    private int hunger = 0;
+
     private boolean didSpit;
+
+    private EnhancedGrassGoal eatGrassGoal;
+
     @Nullable
     private EnhancedLlama caravanHead;
     @Nullable
@@ -154,12 +160,15 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     @Override
     protected void registerGoals() {
+        //Todo add the temperamants
+        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new ECRunAroundLikeCrazy(this, 1.2D));
         this.goalSelector.addGoal(2, new ECLlamaFollowCaravan(this, (double)2.1F));
         this.goalSelector.addGoal(3, new RangedAttackGoal(this, 1.25D, 40, 20.0F));
         this.goalSelector.addGoal(3, new PanicGoal(this, 1.2D));
         this.goalSelector.addGoal(4, new BreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, this.eatGrassGoal);
         this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.7D));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
@@ -209,6 +218,18 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     public int getInventoryColumns() {
         return this.getInventory();
+    }
+
+    public int getHunger(){
+        return hunger;
+    }
+
+    public void decreaseHunger() {
+        if (this.hunger - 6000 < 0) {
+            this.hunger = 0;
+        } else {
+            this.hunger = this.hunger - 6000;
+        }
     }
 
     public void updatePassenger(Entity passenger) {
@@ -303,6 +324,9 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                 net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
                 ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
             });
+        } else if (TEMPTATION_ITEMS.test(itemStack)) {
+            decreaseHunger();
+            itemStack.shrink(1);
         }
         return super.processInteract(entityPlayer, hand);
     }
@@ -354,9 +378,15 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                 }
             }
 
+            hunger++;
+
             if(pregnant) {
+                hunger++;
                 gestationTimer++;
                 int days = ConfigHandler.COMMON.gestationDays.get();
+                if (hunger > days*(0.75) && days !=0) {
+                    pregnant = false;
+                }
                 if (gestationTimer >= days) {
                     pregnant = false;
                     gestationTimer = 0;
@@ -781,6 +811,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
 
+        compound.putInt("Hunger", hunger);
+
     }
 
     public void readAdditional(CompoundNBT compound) {
@@ -820,6 +852,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
         this.pregnant = compound.getBoolean("Pregnant");
         this.gestationTimer = compound.getInt("Gestation");
+
+        hunger = compound.getInt("Hunger");
 
         setSharedGenes(genes);
 

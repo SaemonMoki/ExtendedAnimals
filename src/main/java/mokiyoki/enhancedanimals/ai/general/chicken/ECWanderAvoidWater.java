@@ -1,4 +1,4 @@
-package mokiyoki.enhancedanimals.ai;
+package mokiyoki.enhancedanimals.ai.general.chicken;
 
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import net.minecraft.entity.CreatureEntity;

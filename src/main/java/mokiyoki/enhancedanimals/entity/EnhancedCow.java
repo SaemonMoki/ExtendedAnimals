@@ -271,6 +271,9 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 hunger++;
                 gestationTimer++;
                 int days = ConfigHandler.COMMON.gestationDays.get();
+                if (days/2 < gestationTimer) {
+                    setCowStatus(EntityState.PREGNANT.toString());
+                }
                 if (hunger > days*(0.75) && days !=0) {
                     pregnant = false;
                     setCowStatus(EntityState.ADULT.toString());
@@ -278,7 +281,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 if (gestationTimer >= days) {
                     pregnant = false;
                     setCowStatus(EntityState.MOTHER.toString());
-                    gestationTimer = 0;
+                    //TODO make a timer for how long they can be milked that interacts with hunger and how often they are milked
+                    gestationTimer = -48000;
 
                     mixMateMitosisGenes();
                     mixMitosisGenes();
@@ -294,6 +298,11 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                     enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
                     this.world.addEntity(enhancedcow);
 
+                }
+            } else if (getCowStatus().equals(EntityState.MOTHER.toString())) {
+                gestationTimer++;
+                if (gestationTimer == 0) {
+                    setCowStatus(EntityState.ADULT.toString());
                 }
             }
             if (this.isChild()) {
@@ -382,12 +391,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         }
     }
 
-//    public void eatGrassBonus() {
-//        if (this.isChild()) {
-//            this.addGrowth(60);
-//        }
-//    }
-
     public void setSharedGenes(int[] genes) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < genes.length; i++) {
@@ -415,6 +418,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     }
 
     public boolean isBreedingItem(ItemStack stack) {
+        //TODO set this to a separate item or type of item for force breeding
         return TEMPTATION_ITEMS.test(stack);
     }
 
@@ -524,13 +528,11 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             ((EnhancedCow)ageable).setMateGenes(this.genes);
             ((EnhancedCow)ageable).mixMateMitosisGenes();
             ((EnhancedCow)ageable).mixMitosisGenes();
-            ((EnhancedCow)ageable).setCowStatus("PREGNANT");
         } else {
             pregnant = true;
             this.mateGenes = ((EnhancedCow) ageable).getGenes();
             mixMateMitosisGenes();
             mixMitosisGenes();
-            setCowStatus("PREGNANT");
         }
 
 
@@ -926,25 +928,29 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 }else{
                     if (tint == 3) {
                         //wildtype
+                        redR = 160.5F;
+                        // 160.5
+                        redG = 119.0F;
+                         // 119
+                        redB = 67.0F;
+                        // 67
+
                         if (genesForText[4] == 1 || genesForText[5] == 1) {
                             if (genesForText[4] == 1 && genesForText[5] == 1) {
                                 blackR = 81.0F;
                                 blackG = 71.0F;
                                 blackB = 65.0F;
-                            }else{
+                            } else {
                                 blackR = 40.0F;
                                 blackG = 35.0F;
                                 blackB = 32.0F;
                             }
-                        }else if (genesForText[4] == 4 && genesForText[5] == 4){
+                        } else if (genesForText[4] == 4 && genesForText[5] == 4) {
                             blackR = 81.0F;
                             blackG = 71.0F;
                             blackB = 65.0F;
                         }
 
-                        redR = (redR*0.75F) + (240.0F*0.25F);
-                        redG = (redG*0.75F) + (238.0F*0.25F);
-                        redB = (redB*0.75F) + (144.0F*0.25F);
                     } else if (tint == 4){
                         //red
                         redR = (redR*0.5F) + (187.0F*0.5F);
@@ -976,6 +982,22 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 redB = redB + 9F;
             }
 
+            if (this.isChild()) {
+                if (getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString())) {
+                    blackR = redR;
+                    blackG = redG;
+                    blackB = redB;
+                }else if (getCowStatus().equals(EntityState.CHILD_STAGE_TWO.toString())) {
+                    blackR = (blackR + redR)/2F;
+                    blackG = (blackG + redG)/2F;
+                    blackB = (blackB + redB)/2F;
+                } else {
+                    blackR = blackR*0.75F + redR*0.25F;
+                    blackG = blackG*0.75F + redG*0.25F;
+                    blackB = blackB*0.75F + redB*0.25F;
+                }
+            }
+
             //TODO TEMP AF
             //black
             cowColouration[0] = blackR;
@@ -1001,10 +1023,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     //TODO finish milk calculations and such
     private void setMaxBagSize(){
         float maxBagSize = 0;
-        //TODO isMilkable should be set so that a cow must be currently pregnant in late stages || was pregnant
-        boolean isMilkable = true;
 
-        if (!this.isChild() && isMilkable){
+        if (!this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())){
             for (int i = 1; i < genes[62]; i++){
                 maxBagSize = maxBagSize + 0.1F;
             }
@@ -1096,7 +1116,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
         if (!this.world.isRemote) {
-            if (item == Items.BUCKET && !entityPlayer.abilities.isCreativeMode && !this.isChild() && (getCowStatus().equals(EntityState.PREGNANT) || getCowStatus().equals(EntityState.MOTHER))) {
+            if (item == Items.BUCKET && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER)) {
                 entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
                 itemStack.shrink(1);
                 if (itemStack.isEmpty()) {

@@ -317,18 +317,24 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                     pregnant = false;
                     gestationTimer = 0;
 
-                    EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
-                    enhancedsheep.setGrowingAge(0);
-                    int[] babyGenes = getLambGenes();
-                    enhancedsheep.setGenes(babyGenes);
-                    enhancedsheep.setSharedGenes(babyGenes);
-                    enhancedsheep.setMaxCoatLength();
-                    enhancedsheep.currentCoatLength = enhancedsheep.maxCoatLength;
-                    enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
-                    enhancedsheep.setGrowingAge(-24000);
-                    enhancedsheep.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-                    this.world.addEntity(enhancedsheep);
+                    int lambRange = 2;
+                    int lambAverage = 1;
 
+                    int numberOfLambs = ThreadLocalRandom.current().nextInt(lambRange)+lambAverage;
+
+                    for (int i = 0; i <= numberOfLambs; i++) {
+                        EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
+                        enhancedsheep.setGrowingAge(0);
+                        int[] babyGenes = getLambGenes();
+                        enhancedsheep.setGenes(babyGenes);
+                        enhancedsheep.setSharedGenes(babyGenes);
+                        enhancedsheep.setMaxCoatLength();
+                        enhancedsheep.currentCoatLength = enhancedsheep.maxCoatLength;
+                        enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
+                        enhancedsheep.setGrowingAge(-24000);
+                        enhancedsheep.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+                        this.world.addEntity(enhancedsheep);
+                    }
                 }
             }
 

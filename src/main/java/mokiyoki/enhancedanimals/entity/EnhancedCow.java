@@ -95,14 +95,14 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             "", "spot_whiteface0.png",
                 "spot_wfcoloursided0.png",
                 "spot_coloursided0.png",
-                "spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png", "spot_pibald3.png", "spot_pibald4.png", "spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png", "spot_pibald3.png", "spot_pibald4.png","spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png", "spot_pibald3.png", "spot_pibald4.png", "spot_pibald4.png",
+                "spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png", "spot_pibald3.png", "spot_pibald4.png", "spot_pibald5.png", "spot_pibald6.png", "spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png","spot_pibald3.png", "spot_pibald4.png", "spot_pibald5.png", "spot_pibald6.png", "spot_pibald0.png", "spot_pibald1.png",
     };
 
     private static final String[] COW_TEXTURES_WHITEFACEHEAD = new String[] {
             "", "",
                 "",
                 "",
-                "", "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png", "spot_pibald_head3.png", "spot_pibald_head4.png","spot_pibald_head5.png", "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png", "spot_pibald_head3.png","spot_pibald_head4.png", "spot_pibald_head5.png", "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png", "spot_pibald_head3.png",
+                "", "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png", "spot_pibald_head3.png", "spot_pibald_head4.png","spot_pibald_head5.png", "spot_pibald_head6.png", "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png","spot_pibald_head3.png", "spot_pibald_head4.png", "spot_pibald_head5.png", "spot_pibald_head6.png", "spot_pibald_head0.png", "spot_pibald_head1.png",
     };
 
     private static final String[] COW_TEXTURES_BELTED = new String[] {

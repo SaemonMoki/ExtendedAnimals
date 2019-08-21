@@ -555,7 +555,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
                         }
                     }
 
-                    int numberOfKits = ThreadLocalRandom.current().nextInt(kitRange)+1+kitAverage;
+                    int numberOfKits = ThreadLocalRandom.current().nextInt(kitRange)+kitAverage;
 
                     for (int i = 0; i <= numberOfKits; i++) {
                         mixMateMitosisGenes();

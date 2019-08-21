@@ -85,7 +85,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
     private final RendererModel neckWool5;
     private final RendererModel neckWool6;
     private final RendererModel neckWool7;
-//    private final RendererModel headWool1;
+    private final RendererModel headWool1;
+    private final RendererModel headWool1Child;
 //    private final RendererModel headWool2;
 //    private final RendererModel headWool3;
 //    private final RendererModel headWool4;
@@ -374,6 +375,12 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.neckWool7.addBox(-2.0F, -3.0F, -4.0F, 4, 5, 4, 3.0F);
         this.neckWool7.setRotationPoint(0.0F, 0.0F, -6.0F);
 
+        this.headWool1 = new RendererModel(this,0,0);
+        this.headWool1.setRotationPoint(0.0F, 0.0F, -6.0F);
+        this.headWool1Child = new RendererModel(this, 0, 55);
+        this.headWool1Child.addBox(-2.5F, 0.0F, 0.0F, 5, 3, 4, 0.4F); //head fluff
+        this.headWool1Child.setRotationPoint(0.0F, -4.0F, -3.0F);
+
         this.tailBase = new RendererModel(this, 50, 6);
         this.tailBase.addBox(-1.0F, 0.0F, 0.0F, 2, 3, 1);
         this.tailBase.setRotationPoint(0.0F, 9.0F, 14.0F + xMove);
@@ -446,6 +453,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.polyHornL0.addChild(hornL2);
         this.polyHornBase.addChild(polyHornR0);
         this.polyHornR0.addChild(hornR2);
+
+        this.headWool1.addChild(headWool1Child);
 
     }
 
@@ -608,6 +617,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                      this.neckWool7.render(scale);
                  }
             }
+
+//             this.headWool1.render(scale);
+
             this.tailBase.render(scale);
             this.leg1.render(scale);
             this.leg2.render(scale);
@@ -682,6 +694,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         copyModelAngles(head, neckWool5);
         copyModelAngles(head, neckWool6);
         copyModelAngles(head, neckWool7);
+
+        copyModelAngles(head, headWool1);
+        this.headWool1Child.rotateAngleX = 1.6F;
 
         copyModelAngles(head, hornBase);
         copyModelAngles(head, polyHornBase);

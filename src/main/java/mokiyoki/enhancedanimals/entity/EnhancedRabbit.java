@@ -68,6 +68,8 @@ import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_RA
 
 public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.common.IShearable, EnhancedAnimal {
 
+    //avalible UUID spaces : [ S X X X X X 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedRabbit.class, DataSerializers.STRING);
     private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
@@ -471,6 +473,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         if (!this.world.isRemote) {
             hunger++;
 
+            //TODO add a limiter to time for growth if the animal is extremely hungry
             timeForGrowth++;
             if (maxCoatLength == 1){
                 if (timeForGrowth >= 48000) {
@@ -1319,10 +1322,10 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
                 if (genesForText[10] == 2 || genesForText[11] == 2) {
                     //broken patterned
-                    if ( Character.isDigit(uuidArry[5]) ){
-                        broken = 1 + (uuidArry[5]-48);
+                    if ( Character.isDigit(uuidArry[4]) ){
+                        broken = 1 + (uuidArry[4]-48);
                     } else {
-                        char d = uuidArry[5];
+                        char d = uuidArry[4];
 
                         switch (d) {
                             case 'a':

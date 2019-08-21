@@ -57,6 +57,8 @@ import java.util.stream.Collectors;
  */
 public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
+    //avalible UUID spaces : [ S 1 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedChicken.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> ROOSTING = EntityDataManager.<Boolean>createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Float> CHICKEN_SIZE = EntityDataManager.createKey(EnhancedChicken.class, DataSerializers.FLOAT);
@@ -140,13 +142,13 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         "pattern_xtradarkincompletecolumbian_splashchoc.png",  "pattern_xtradarkincompletecolumbian_lav.png", "pattern_xtradarkincompletecolumbian_white.png", "pattern_xtradarkincompletecolumbian_dun.png", "pattern_xtradarkincompletecolumbian_choc.png",     //315
         "pattern_incompletesinglelace.png", "pattern_incompletesinglelace_blue.png", "pattern_incompletesinglelace_splash.png", "pattern_incompletesinglelace_splashlav.png", "pattern_incompletesinglelace_splashdun.png",    //320
         "pattern_incompletesinglelace_splashchoc.png",  "pattern_incompletesinglelace_lav.png", "pattern_incompletesinglelace_white.png", "pattern_incompletesinglelace_dun.png", "pattern_incompletesinglelace_choc.png",     //325
-            "pattern_xtradarksinglelace.png", "pattern_xtradarksinglelace_blue.png", "pattern_xtradarksinglelace_splash.png", "pattern_xtradarksinglelace_splashlav.png", "pattern_xtradarksinglelace_splashdun.png",    //330
-            "pattern_xtradarksinglelace_splashchoc.png",  "pattern_xtradarksinglelace_lav.png", "pattern_xtradarksinglelace_white.png", "pattern_xtradarksinglelace_dun.png", "pattern_xtradarksinglelace_choc.png",     //335
-            "pattern_darkpenciled.png", "pattern_darkpenciled_blue.png", "pattern_darkpenciled_splash.png", "pattern_darkpenciled_splashlav.png", "pattern_darkpenciled_splashdun.png",    //340
-            "pattern_darkpenciled_splashchoc.png",  "pattern_darkpenciled_lav.png", "pattern_darkpenciled_white.png", "pattern_darkpenciled_dun.png", "pattern_darkpenciled_choc.png",     //345
-            "pattern_bluelaced",    //special case number 400
-        "",                     //special case patternless 401
-        "48.png"                //test a texture 402
+        "pattern_xtradarksinglelace.png", "pattern_xtradarksinglelace_blue.png", "pattern_xtradarksinglelace_splash.png", "pattern_xtradarksinglelace_splashlav.png", "pattern_xtradarksinglelace_splashdun.png",    //330
+        "pattern_xtradarksinglelace_splashchoc.png",  "pattern_xtradarksinglelace_lav.png", "pattern_xtradarksinglelace_white.png", "pattern_xtradarksinglelace_dun.png", "pattern_xtradarksinglelace_choc.png",     //335
+        "pattern_darkpenciled.png", "pattern_darkpenciled_blue.png", "pattern_darkpenciled_splash.png", "pattern_darkpenciled_splashlav.png", "pattern_darkpenciled_splashdun.png",    //340
+        "pattern_darkpenciled_splashchoc.png",  "pattern_darkpenciled_lav.png", "pattern_darkpenciled_white.png", "pattern_darkpenciled_dun.png", "pattern_darkpenciled_choc.png",     //345
+        "pattern_bluelaced.png",    //special case number 350
+        "",                     //special case patternless 351
+        "48.png"                //test a texture 352
     };
     private static final String[] CHICKEN_TEXTURES_MOORHEAD = new String[] {
         "", "moorhead_black.png", "moorhead_blue.png", "moorhead_splash.png", "moorhead_splashlav.png", "moorhead_splash.png", "moorhead_splashdun.png",
@@ -659,11 +661,11 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                     if (genesForText[20] == 2 || genesForText[21] == 2) {                                                                   //sets recessive white or albino
                         //recessive white
                         ground = 15;
-                        pattern = 401;
+                        pattern = 351;
                     } else {
                         //albino
                         ground = 15;
-                        pattern = 401;
+                        pattern = 351;
                         white = 0;
                         shanks = 4;
                         comb = 2;
@@ -1143,7 +1145,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                                     if (genesForText[26] == 1 || genesForText[27] == 1) {
                                         if (genesForText[100] == 2 && genesForText[101] == 2) {
                                             // moorhead incomplete columbian w/ less hackle markings
-                                            pattern = 401;
+                                            pattern = 351;
                                             ground = 15;
                                             moorhead = 1;
                                         } else {
@@ -1158,7 +1160,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                                             ground = 15;
                                         } else {
                                             // buff
-                                            pattern = 401;
+                                            pattern = 351;
                                             ground = 15;
                                         }
                                     }
@@ -1454,7 +1456,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                         ground = ground + 1;
                     }
 
-                    if (pattern < 400) {
+                    if (pattern < 350) {
                         if (moorhead == 1) {
                             moorheadtoggle = 1;
                         }
@@ -1525,7 +1527,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                                         //blue
                                         if ((genesForText[26] == 1 || genesForText[27] == 1) && (genesForText[24] == 5 || genesForText[25] == 5)) {
                                             //blue laced ... super special gene combo for blue andalusian type pattern
-                                            pattern = 400;
+                                            pattern = 350;
                                             if (genesForText[100] == 2 && genesForText[101] == 2) {
                                                 if (genesForText[30] == 1 || genesForText[31] == 1) {
                                                     moorhead = 1;
@@ -1634,7 +1636,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
 //            after finished genesForText
                 this.chickenTextures.add(CHICKEN_TEXTURES_GROUND[ground]);
-                if (pattern != 401) {
+                if (pattern != 351) {
                     this.chickenTextures.add(CHICKEN_TEXTURES_PATTERN[pattern]);
                 }
                 if (moorhead != 0) {

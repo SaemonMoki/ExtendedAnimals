@@ -56,6 +56,8 @@ import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_CO
 
 public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
+    //avalible UUID spaces : [ S X X 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
     private static final DataParameter<Float> COW_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
@@ -93,7 +95,14 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             "", "spot_whiteface0.png",
                 "spot_wfcoloursided0.png",
                 "spot_coloursided0.png",
-                "spot_pibald0.png"
+                "spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png", "spot_pibald3.png", "spot_pibald4.png", "spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png", "spot_pibald3.png", "spot_pibald4.png","spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png", "spot_pibald3.png", "spot_pibald4.png", "spot_pibald4.png",
+    };
+
+    private static final String[] COW_TEXTURES_WHITEFACEHEAD = new String[] {
+            "", "",
+                "",
+                "",
+                "", "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png", "spot_pibald_head3.png", "spot_pibald_head4.png","spot_pibald_head5.png", "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png", "spot_pibald_head3.png","spot_pibald_head4.png", "spot_pibald_head5.png", "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png", "spot_pibald_head3.png",
     };
 
     private static final String[] COW_TEXTURES_BELTED = new String[] {
@@ -243,13 +252,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected float getSoundVolume() {
         return 0.4F;
     }
-
-
-//    @Nullable
-//    @Override
-//    protected ResourceLocation getLootTable() {
-//        return LootTableList.ENTITIES_COW;
-//    }
 
     protected void registerAttributes() {
         super.registerAttributes();
@@ -583,6 +585,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             int roan = 0;
             int speckled = 0;
             int whiteface = 0;
+            int whitefacehead = 0;
             int belted = 0;
             int coloursided = 0;
             int skin = 0;
@@ -691,6 +694,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             }else if (genesForText[16] == 4 && genesForText[17] == 4){
                 //piebald
                     whiteface = 4;
+
             }
 
             //TODO figure out how these work when heterozygous
@@ -714,36 +718,69 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             }
 
             //TODO make randomizers for the textures
-//            if (spots != 0){
-//                if (Character.isDigit(uuidArry[1])) {
-//                    spots = 1 + (uuidArry[1] - 48);
-//                } else {
-//                    char d = uuidArry[1];
-//
-//                    switch (d) {
-//                        case 'a':
-//                            spots = 11;
-//                            break;
-//                        case 'b':
-//                            spots = 12;
-//                            break;
-//                        case 'c':
-//                            spots = 13;
-//                            break;
-//                        case 'd':
-//                            spots = 14;
-//                            break;
-//                        case 'e':
-//                            spots = 15;
-//                            break;
-//                        case 'f':
-//                            spots = 16;
-//                            break;
-//                        default:
-//                            spots = 0;
-//                    }
-//                }
-//            }
+            if (whiteface == 4){
+                //selects body piebalding texture
+                if (Character.isDigit(uuidArry[1])) {
+                    whiteface = whiteface + (1 + (uuidArry[1] - 48));
+                } else {
+                    char d = uuidArry[1];
+
+                    switch (d) {
+                        case 'a':
+                            whiteface = whiteface + 11;
+                            break;
+                        case 'b':
+                            whiteface = whiteface + 12;
+                            break;
+                        case 'c':
+                            whiteface = whiteface + 13;
+                            break;
+                        case 'd':
+                            whiteface = whiteface + 14;
+                            break;
+                        case 'e':
+                            whiteface = whiteface + 15;
+                            break;
+                        case 'f':
+                            whiteface = whiteface + 16;
+                            break;
+                        default:
+                            whiteface = 0;
+                    }
+                }
+                //selects face piebalding texture
+                whitefacehead = 4;
+                if (Character.isDigit(uuidArry[2])) {
+                    whitefacehead = whitefacehead + (1 + (uuidArry[2] - 48));
+                } else {
+                    char d = uuidArry[2];
+
+                    switch (d) {
+                        case 'a':
+                            whitefacehead = whitefacehead + 11;
+                            break;
+                        case 'b':
+                            whitefacehead = whitefacehead + 12;
+                            break;
+                        case 'c':
+                            whitefacehead = whitefacehead + 13;
+                            break;
+                        case 'd':
+                            whitefacehead = whitefacehead + 14;
+                            break;
+                        case 'e':
+                            whitefacehead = whitefacehead + 15;
+                            break;
+                        case 'f':
+                            whitefacehead = whitefacehead + 16;
+                            break;
+                        default:
+                            whitefacehead = 0;
+                    }
+                }
+                
+                
+            }
 
             //these alter texture to fit model changes
             if(genesForText[26] == 1 || genesForText[27] == 1) {
@@ -823,6 +860,9 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             this.cowTextures.add(COW_TEXTURES_SKIN[skin]);
             if (whiteface != 0){
                 this.cowTextures.add(COW_TEXTURES_WHITEFACE[whiteface]);
+                if (whitefacehead >= 5) {
+                    this.cowTextures.add(COW_TEXTURES_WHITEFACEHEAD[whitefacehead]);
+                }
             }
             if (coloursided != 0){
                 this.cowTextures.add(COW_TEXTURES_COLOURSIDED[coloursided]);
@@ -1270,6 +1310,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         if (biome.getDefaultTemperature() >= 0.9F) // hot and wet (jungle)
         {
             wildType = 1;
+        }else if (biome.getCategory().equals(Biome.Category.PLAINS)) {
+            wildType = 3;
         }
 
 
@@ -1290,14 +1332,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         //Dilution [ wildtype, dilute]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[2] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[3] = (1);
 
         } else {
             initialGenes[2] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[3] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
             initialGenes[3] = (1);
         }
 
@@ -1389,18 +1427,26 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[15] = (2);
         }
 
-        //White face and other spots [whiteface1, border spotted, wildtype, piebald]
+        //White face and other spots [whiteface1, border spotted, wildtype+, piebald]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[16] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[16] = (3);
+            if (wildType == 3) {
+                initialGenes[16] = (4);
+            } else {
+                initialGenes[16] = (3);
+            }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[17] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[17] = (3);
+            if (wildType == 3) {
+                initialGenes[17] = (4);
+            } else {
+                initialGenes[17] = (3);
+            }
         }
 
         //belted [belted, blaze, brockling, wildtype]

@@ -85,6 +85,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final RendererModel miniChonkLeg2;
     private final RendererModel miniChonkLeg3;
     private final RendererModel miniChonkLeg4;
+    private final RendererModel legExtender1;
+    private final RendererModel legExtender2;
+    private final RendererModel legExtender3;
+    private final RendererModel legExtender4;
 
 
     public ModelEnhancedCow() {
@@ -244,18 +248,18 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.bodyThin.setRotationPoint(0.0F, 2.5F, 0.0F + xMove);
 
         this.udder = new RendererModel(this, 24, 67);
-        this.udder.addBox(-2.5F, 0.0F, 0.0F, 5, 5, 5, 0.0F);
-        this.udder.setRotationPoint(0.0F, 9.5F, 16.75F + xMove);
+        this.udder.addBox(-2.0F, 0.0F, 0.0F, 4, 4, 6, 0.0F);
+        this.udder.setRotationPoint(0.0F, 10.5F, 15.75F + xMove);
 
         this.nipples = new RendererModel(this, 24, 77);
-        this.nipples.addBox(-2.0F, 0.0F, 0.0F, 1, 2, 1, 0.0F);
+        this.nipples.addBox(-2.0F, 0.0F, 0.0F, 1, 2, 1, -0.15F);
         this.nipples.setTextureOffset(29, 77);
-        this.nipples.addBox(1.0F, 0.0F, 0.0F, 1, 2, 1, 0.0F);
+        this.nipples.addBox(1.0F, 0.0F, 0.0F, 1, 2, 1, -0.15F);
         this.nipples.setTextureOffset(35, 77);
-        this.nipples.addBox(-2.0F, 0.0F, 2.0F, 1, 2, 1, 0.0F);
+        this.nipples.addBox(-2.0F, 0.0F, 2.0F, 1, 2, 1, -0.15F);
         this.nipples.setTextureOffset(40, 77);
-        this.nipples.addBox(1.0F, 0.0F, 2.0F, 1, 2, 1, 0.0F);
-        this.nipples.setRotationPoint(0.0F, 13.5F, 18.0F + xMove);
+        this.nipples.addBox(1.0F, 0.0F, 2.0F, 1, 2, 1, -0.15F);
+        this.nipples.setRotationPoint(0.0F, 13.5F, 17.0F + xMove);
 
         this.humpXSmall = new RendererModel(this, 0, 8);
         this.humpXSmall.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -1.0F);
@@ -303,19 +307,19 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.leg1 = new RendererModel(this, 0, 54);
         this.leg1.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
-        this.leg1.setRotationPoint(-6.0F, 13.5F, 0.0F + xMove);
+        this.leg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
 
         this.leg2 = new RendererModel(this, 12, 54);
         this.leg2.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
-        this.leg2.setRotationPoint(3.0F, 13.5F, 0.0F + xMove);
+        this.leg2.setRotationPoint(3.0F, 13.5F, -10.0F);
 
         this.leg3 = new RendererModel(this, 0, 67);
         this.leg3.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
-        this.leg3.setRotationPoint(-6.0F, 13.5F, 19.0F + xMove);
+        this.leg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
 
         this.leg4 = new RendererModel(this, 12, 67);
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
-        this.leg4.setRotationPoint(3.0F, 13.5F, 19.0F + xMove);
+        this.leg4.setRotationPoint(3.0F, 13.5F, 9.0F);
 
         this.chonkLeg1 = new RendererModel(this, 0, 54);
         this.chonkLeg1.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.5F);
@@ -356,6 +360,22 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.miniChonkLeg4 = new RendererModel(this, 12, 67);
         this.miniChonkLeg4.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.5F);
+
+        this.legExtender1 = new RendererModel(this, 0, 54);
+        this.legExtender1.addBox(0.0F, -0.5F, 0.0F, 3, 1, 3, 0.0F);
+        this.legExtender1.setRotationPoint(-6.0F, 13.5F, 0.0F + xMove);
+
+        this.legExtender2 = new RendererModel(this, 12, 54);
+        this.legExtender2.addBox(0.0F, -0.5F, 0.0F, 3, 1, 3, 0.0F);
+        this.legExtender2.setRotationPoint(3.0F, 13.5F, 0.0F + xMove);
+
+        this.legExtender3 = new RendererModel(this, 0, 67);
+        this.legExtender3.addBox(0.0F, -0.5F, 0.0F, 3, 1, 3, 0.0F);
+        this.legExtender3.setRotationPoint(-6.0F, 13.5F, 19.0F + xMove);
+
+        this.legExtender4 = new RendererModel(this, 12, 67);
+        this.legExtender4.addBox(0.0F, -0.5F, 0.0F, 3, 1, 3, 0.0F);
+        this.legExtender4.setRotationPoint(3.0F, 13.5F, 19.0F + xMove);
 
         this.head.addChild(this.actualHead);
         this.actualHead.addChild(this.earLongestL);
@@ -438,10 +458,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 //        0.6F <= size <= 1.5F
 
         if (this.isChild) {
-            if (cowStatus.equals("CHILD_STAGE_ONE")) {
+            if (cowStatus.contains(EntityState.CHILD_STAGE_ONE.toString())) {
                 GlStateManager.pushMatrix();
-                GlStateManager.scalef(0.5F, 0.5F, 0.5F);
-                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.6F, 0.0F);
+                GlStateManager.scalef(0.4F, 0.4F, 0.4F);
+                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.5F, 0.0F);
 
                 this.head.render(scale);
 
@@ -484,7 +504,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
                 GlStateManager.popMatrix();
 
-            }else if (cowStatus.equals("CHILD_STAGE_TWO")) {
+            }else if (cowStatus.contains(EntityState.CHILD_STAGE_TWO.toString())) {
                 GlStateManager.pushMatrix();
                 GlStateManager.scalef(0.6F, 0.6F, 0.6F);
                 GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.675F, 0.0F);
@@ -529,7 +549,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 }
 
                 GlStateManager.popMatrix();
-            }else if (cowStatus.equals("CHILD_STAGE_THREE")) {
+            }else if (cowStatus.contains(EntityState.CHILD_STAGE_THREE.toString())) {
                 GlStateManager.pushMatrix();
                 GlStateManager.scalef(0.7F, 0.7F, 0.7F);
                 GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.732F, 0.0F);
@@ -612,6 +632,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.bodyMedium.render(scale);
             }else if (bodyShape == 1){
                 this.bodySlim.render(scale);
+                this.legExtender1.render(scale);
+                this.legExtender2.render(scale);
+                this.legExtender3.render(scale);
+                this.legExtender4.render(scale);
             }else{
                 this.bodyThin.render(scale);
             }
@@ -660,7 +684,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             this.tail0.render(scale);
 
-            if (cowStatus.contains("PREGNANT") || cowStatus.contains("MOTHER")) {
+            if (cowStatus.contains(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString())) {
                 this.udder.render(scale);
                 this.nipples.render(scale);
             }
@@ -716,6 +740,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         copyModelAngles(leg2, shortLeg2);
         copyModelAngles(leg3, shortLeg3);
         copyModelAngles(leg4, shortLeg4);
+
+        copyModelAngles(leg1, legExtender1);
+        copyModelAngles(leg2, legExtender2);
+        copyModelAngles(leg3, legExtender3);
+        copyModelAngles(leg4, legExtender4);
 
         this.head.rotateAngleX = this.headRotationAngleX;   //might need to merge this with another line
         this.actualHead.rotateAngleX = 0.5F;   //might need to merge this with another line
@@ -801,6 +830,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             bodyShape = 1;
         }
 
+
+        //default leg position
+        this.leg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
+        this.leg2.setRotationPoint(3.0F, 13.5F, -10.0F);
+        this.leg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
+        this.leg4.setRotationPoint(3.0F, 13.5F, 9.0F);
+
+
         if (bodyShape == 4) {
             this.leg1.rotationPointX = -7.0F;
             this.leg3.rotationPointX = -7.0F;
@@ -835,6 +872,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.leg3.rotationPointX = -5.5F;
             this.leg2.rotationPointX = 2.5F;
             this.leg4.rotationPointX = 2.5F;
+            this.leg1.rotationPointZ = -9.6F;
+            this.leg3.rotationPointZ = 8.5F;
+            this.leg2.rotationPointZ = -9.5F;
+            this.leg4.rotationPointZ = 8.5F;
             this.tail0.rotationPointZ = 11.5F;
         } else if (bodyShape == 0) {
             this.leg1.rotationPointX = -5.0F;

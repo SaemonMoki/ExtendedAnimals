@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.items.DebugGenesBook;
+import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
@@ -27,6 +29,7 @@ import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -37,6 +40,8 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -44,6 +49,9 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootPool;
+import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -58,6 +66,9 @@ import java.util.stream.Collectors;
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_PIG;
 
 public class EnhancedPig extends AnimalEntity {
+
+    //avalible UUID spaces : [ S X 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedPig.class, DataSerializers.STRING);
     private static final DataParameter<Float> PIG_SIZE = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.FLOAT);
 
@@ -198,6 +209,19 @@ public class EnhancedPig extends AnimalEntity {
         return this.dataManager.get(PIG_SIZE);
     }
 
+    @Override
+    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+        Item item = itemStack.getItem();
+        if (item instanceof DebugGenesBook) {
+            ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
+        }
+//        else if (TEMPTATION_ITEMS.test(itemStack)) {
+//            decreaseHunger();
+//            itemStack.shrink(1);
+//        }
+        return super.processInteract(entityPlayer, hand);
+    }
 
     protected SoundEvent getAmbientSound() {
         return SoundEvents.ENTITY_PIG_AMBIENT;
@@ -358,6 +382,46 @@ public class EnhancedPig extends AnimalEntity {
         //        0.6F <= size <= 1.5F
         this.pigSize = size;
         this.setPigSize(size);
+    }
+
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
+        super.dropSpecialItems(source, looting, recentlyHitIn);
+
+        this.isBurning();
+
+//        float pigSize = this.getSize();
+
+//        int meatDrop;
+//        float meatChanceMod;
+
+        //pig size
+//        meatChanceMod = ((pigSize - 0.6F) * 4.445F) + 1;
+//        meatDrop = Math.round(meatChanceMod);
+//        if (meatDrop >= 5) {
+//            meatChanceMod = 0;
+//        } else {
+//            meatChanceMod = (meatChanceMod - meatDrop) * 100;
+//        }
+//
+//
+//        if (meatChanceMod  != 0) {
+//            int i = this.rand.nextInt(100);
+//            if (meatChanceMod > i) {
+//                meatDrop++;
+//            }
+//        }
+
+        //TODO add pig sizes and qualities here and remove the vanilla mimic
+
+        int meatDrop = ThreadLocalRandom.current().nextInt(3) + 1;
+
+        if (this.isBurning()){
+            ItemStack cookedBeefStack = new ItemStack(Items.COOKED_PORKCHOP, meatDrop);
+            this.entityDropItem(cookedBeefStack);
+        }else {
+            ItemStack beefStack = new ItemStack(Items.PORKCHOP, meatDrop);
+            this.entityDropItem(beefStack);
+        }
     }
 
     public void lethalGenes(){
@@ -571,7 +635,7 @@ public class EnhancedPig extends AnimalEntity {
                     //normal
                     skin = skin + 6;
                 }else{
-                    //sparce
+                    //sparse
                     skin = skin + 3;
                 }
             }
@@ -939,7 +1003,7 @@ public class EnhancedPig extends AnimalEntity {
             initialGenes[33] = (2);
         }
 
-        //hair density [ furry, wildtype, sparce ]
+        //hair density [ furry, wildtype, sparse ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[34] = (ThreadLocalRandom.current().nextInt(3) + 1);
 

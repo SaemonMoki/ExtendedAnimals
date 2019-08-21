@@ -59,10 +59,12 @@ import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_SH
 
 public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.common.IShearable, EnhancedAnimal{
 
+    //avalible UUID spaces : [ S X X 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedSheep.class, DataSerializers.STRING);
     private static final DataParameter<Byte> DYE_COLOUR = EntityDataManager.<Byte>createKey(EnhancedSheep.class, DataSerializers.BYTE);
-    private static final DataParameter<String> SHEEP_STATUS = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
+    private static final DataParameter<String> SHEEP_STATUS = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.STRING);
 
     private static final String[] SHEEP_TEXTURES_UNDER = new String[] {
             "c_solid_tan.png", "c_solid_black.png", "c_solid_choc", "c_solid_lighttan.png",
@@ -103,7 +105,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private static final int WTC = 90;
     private final List<String> sheepTextures = new ArrayList<>();
     private final List<String> sheepFleeceTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 36;
+    private static final int GENES_LENGTH = 38;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -1227,13 +1229,13 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         }
 
         //added wool length 5 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/2) {
             initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[28] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/2) {
             initialGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
@@ -1241,13 +1243,13 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         }
 
         //added wool length 6 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/2) {
             initialGenes[30] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[30] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC/2) {
             initialGenes[31] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
@@ -1255,13 +1257,13 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         }
 
         //added wool length 7 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[32] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
@@ -1269,18 +1271,33 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         }
 
         //added wool length 8 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[34] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[34] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC/4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[35] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[35] = (1);
         }
+
+        //multi-horned gene [multi-horn, wildtype+]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[36] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[37] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[37] = (2);
+        }
+
 
         return initialGenes;
     }

@@ -1,6 +1,5 @@
 {
-  "credit": "Made with Blockbench",
-  "parent": "egg_carton",
+  "parent": "block/cube_all",
   "textures": {
     "0": "eanimod:block/egg_carton",
     "particle": "eanimod:block/egg_carton"

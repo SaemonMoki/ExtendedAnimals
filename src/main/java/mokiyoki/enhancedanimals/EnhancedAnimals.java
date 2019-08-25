@@ -1,11 +1,13 @@
 package mokiyoki.enhancedanimals;
 
+import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityStorage;
 import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
 import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
+import mokiyoki.enhancedanimals.gui.EggCartonScreen;
 import mokiyoki.enhancedanimals.loot.EnhancedChickenLootCondition;
 import mokiyoki.enhancedanimals.loot.EnhancedLlamaLootCondition;
 import mokiyoki.enhancedanimals.loot.EnhancedRabbitLootCondition;
@@ -16,6 +18,9 @@ import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityHandler;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import mokiyoki.enhancedanimals.util.handlers.EventHandler;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.gui.screen.inventory.ShulkerBoxScreen;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTables;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
@@ -30,6 +35,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.EGG_CARTON_CONTAINER;
 
 /**
  * Created by moki on 24/08/2018.
@@ -82,9 +89,7 @@ public class EnhancedAnimals {
     }
 
     private void doClientSetup(final FMLClientSetupEvent event) {
-//        RenderingRegistry.registerEntityRenderingHandler(EnhancedChicken.class, manager -> new RenderEnhancedChicken(manager));
-//        RenderEntities.entityRender();
-
+        ScreenManager.registerFactory(EGG_CARTON_CONTAINER, EggCartonScreen::new);
     }
 }
 

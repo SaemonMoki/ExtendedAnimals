@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 
+import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
+import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 //import mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
@@ -14,10 +16,13 @@ import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModTileEntities;
+import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 //import net.minecraft.client.renderer.color.BlockColors;
 //import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
@@ -25,7 +30,12 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
+import net.minecraft.tileentity.ShulkerBoxTileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 //import net.minecraft.world.biome.BiomeColors;
@@ -33,6 +43,7 @@ import net.minecraft.world.biome.Biomes;
 //import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -40,6 +51,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Set;
+
+import static mokiyoki.enhancedanimals.init.ModBlocks.Egg_Carton;
 
 //import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
@@ -59,9 +72,12 @@ public class RegistryHandler {
     public static final EntityType<EnhancedMooshroom> ENHANCED_MOOSHROOM = EntityType.Builder.create(EnhancedMooshroom::new, EntityClassification.CREATURE).size(0.4F, 1F).build(Reference.MODID + ":enhanced_mooshroom");
     public static final EntityType<EnhancedPig> ENHANCED_PIG = EntityType.Builder.create(EnhancedPig::new, EntityClassification.CREATURE).size(0.9F, 0.9F).build(Reference.MODID + ":enhanced_pig");
 
+    public static final ContainerType<EggCartonContainer> EGG_CARTON_CONTAINER = IForgeContainerType.create(EggCartonContainer::new);
+
+
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-        final Block[] blocks = {ModBlocks.Post_Acacia, ModBlocks.Post_Birch, ModBlocks.Post_Dark_Oak, ModBlocks.Post_Jungle, ModBlocks.Post_Oak, ModBlocks.Post_Spruce
+        final Block[] blocks = {ModBlocks.Post_Acacia, ModBlocks.Post_Birch, ModBlocks.Post_Dark_Oak, ModBlocks.Post_Jungle, ModBlocks.Post_Oak, ModBlocks.Post_Spruce, ModBlocks.Egg_Carton
         };
             event.getRegistry().registerAll(blocks);
     }
@@ -81,6 +97,7 @@ public class RegistryHandler {
                 new BlockItem(ModBlocks.Post_Jungle, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Jungle.getRegistryName()),
                 new BlockItem(ModBlocks.Post_Oak, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Oak.getRegistryName()),
                 new BlockItem(ModBlocks.Post_Spruce, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Spruce.getRegistryName()),
+                new BlockItem(ModBlocks.Egg_Carton, new Item.Properties().group(ItemGroup.INVENTORY)).setRegistryName(ModBlocks.Egg_Carton.getRegistryName()),
         };
 
 
@@ -272,6 +289,16 @@ public class RegistryHandler {
 //        OreDictionary.registerOre("egg", ModItems.Egg_Olive);
 //        OreDictionary.registerOre("egg", ModItems.Egg_GreenDark);
 
+    }
+
+    @SubscribeEvent
+    public static void onTileEntitiesRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {
+        event.getRegistry().register(ModTileEntities.EGG_CARTON_TILE_ENTITY.setRegistryName("egg_carton_tile_entity"));
+    }
+
+    @SubscribeEvent
+    public static void onContainerTypeRegistry(final RegistryEvent.Register<ContainerType<?>> event) {
+        event.getRegistry().register(EGG_CARTON_CONTAINER.setRegistryName("egg_carton_container_box"));
     }
 
 //    @SubscribeEvent

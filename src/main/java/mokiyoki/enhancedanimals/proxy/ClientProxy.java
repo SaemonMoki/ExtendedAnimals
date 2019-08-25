@@ -19,5 +19,6 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(EnhancedLlama.class, manager -> new RenderEnhancedLlama(manager));
         RenderingRegistry.registerEntityRenderingHandler(EnhancedCow.class, manager -> new RenderEnhancedCow(manager));
         RenderingRegistry.registerEntityRenderingHandler(EnhancedPig.class, manager -> new RenderEnhancedPig(manager));
+        RenderingRegistry.registerEntityRenderingHandler(EnhancedMooshroom.class, manager -> new RenderEnhancedMooshroom(manager));
     }
 }

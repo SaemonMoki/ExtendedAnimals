@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -215,7 +216,7 @@ public class EnhancedPig extends AnimalEntity {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
         if (item instanceof DebugGenesBook) {
-            ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
+            Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
         }
 //        else if (TEMPTATION_ITEMS.test(itemStack)) {
 //            decreaseHunger();

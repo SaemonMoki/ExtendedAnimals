@@ -10,6 +10,7 @@ import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -48,9 +49,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -325,11 +323,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
         if (item instanceof DebugGenesBook) {
-            ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
-//            String myString = this.dataManager.get(SHARED_GENES);
-//            StringSelection stringSelection = new StringSelection(myString);
-//            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-//            clipboard.setContents(stringSelection, null);
+            Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
         } else if (TEMPTATION_ITEMS.test(itemStack)) {
             decreaseHunger();
             itemStack.shrink(1);

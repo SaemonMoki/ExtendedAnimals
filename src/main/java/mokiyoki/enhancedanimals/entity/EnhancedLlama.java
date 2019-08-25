@@ -12,6 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CarpetBlock;
 import net.minecraft.block.SoundType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -319,7 +320,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
         if (item instanceof DebugGenesBook) {
-            ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
+            Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
         } else if (item instanceof ShearsItem) {
             List<ItemStack> woolToDrop = onSheared(itemStack, null, null, 0);
             java.util.Random rand = new java.util.Random();

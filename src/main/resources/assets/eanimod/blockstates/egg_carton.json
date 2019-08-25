@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=down": { "model": "eanimod:block/egg_carton" },
+    "facing=up": { "model": "eanimod:block/egg_carton" },
+    "facing=north": { "model": "eanimod:block/egg_carton", "x": 90 },
+    "facing=south": { "model": "eanimod:block/egg_carton", "x": 90 },
+    "facing=west": { "model": "eanimod:block/egg_carton", "x": 90, "y": 90 },
+    "facing=east": { "model": "eanimod:block/egg_carton", "x": 90, "y": 90 }
+  }
+}

@@ -101,7 +101,7 @@ public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends
             GlStateManager.scalef(1.0F, -1.0F, 1.0F);
             GlStateManager.translatef(0.0F, 0.7F, -0.2F);
             GlStateManager.rotatef(12.0F, 0.0F, 1.0F, 0.0F);
-            GlStateManager.translatef(-0.5F, size - 1.75F + horns, (size-0.6F) * -0.1F);
+            GlStateManager.translatef(-0.5F, size - 1.75F + horns, (size-0.6F) * 0.05F);
             blockrendererdispatcher.renderBlockBrightness(blockstate, 1.0F);
             GlStateManager.popMatrix();
             GlStateManager.cullFace(GlStateManager.CullFace.BACK);

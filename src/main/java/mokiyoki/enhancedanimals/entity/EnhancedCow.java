@@ -63,6 +63,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     private static final DataParameter<Float> COW_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
     protected static final DataParameter<String> COW_STATUS = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
+    private static final DataParameter<String> MOOSHROOM_UUID = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
 
     private static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
@@ -156,6 +157,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     protected boolean aiConfigured = false;
 
+    protected String mooshroomUUID = "";
+
     private float[] cowColouration = null;
 
     //TODO add achievements for breeding and slaying
@@ -193,6 +196,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.dataManager.register(COW_SIZE, 0.0F);
         this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(COW_STATUS, new String());
+        this.dataManager.register(MOOSHROOM_UUID, new String());
     }
 
     protected void setCowSize(float size) {
@@ -217,6 +221,15 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     public String getCowStatus() {
         return this.dataManager.get(COW_STATUS);
+    }
+
+    protected void setMooshroomUUID(String status) {
+        this.dataManager.set(MOOSHROOM_UUID, status);
+        this.mooshroomUUID = status;
+    }
+
+    public String getMooshroomUUID() {
+        return mooshroomUUID;
     }
 
     public int getHunger(){
@@ -591,8 +604,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             int hooves = 0;
             int horn = 0;
             int coat = 0;
+            char[] uuidArry;
 
-            char[] uuidArry = getCachedUniqueIdString().toCharArray();
+            if (mooshroomUUID.isEmpty()) {
+                uuidArry = getCachedUniqueIdString().toCharArray();
+            } else {
+                uuidArry = mooshroomUUID.toCharArray();
+            }
 
             //dominant red
             if (genesForText[6] == 1 || genesForText[7] == 1){
@@ -1198,6 +1216,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         compound.putString("Status", getCowStatus());
         compound.putInt("Hunger", hunger);
 
+        compound.putString("MooshroomID", getMooshroomUUID());
+
     }
 
     /**
@@ -1227,10 +1247,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         setCowStatus(compound.getString("Status"));
         hunger = compound.getInt("Hunger");
 
+        setMooshroomUUID(compound.getString("MooshroomID"));
+
         setSharedGenes(genes);
         setCowSize();
         setMaxBagSize();
         configureAI();
+        setMooshroomUUID(mooshroomUUID);
 
     }
 

@@ -425,10 +425,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     }
 
     @Override
-    public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-
-        EnhancedCow enhancedCow = (EnhancedCow) entityIn;
+    public void render(T enhancedCow, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        this.setRotationAngles(enhancedCow, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
         int[] genes = enhancedCow.getSharedGenes();
         this.size = enhancedCow.getSize();
@@ -783,7 +781,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         EnhancedCow enhancedCow = entitylivingbaseIn;
 
         int[] sharedGenes = (entitylivingbaseIn).getSharedGenes();
-        char[] uuidArry = enhancedCow.getCachedUniqueIdString().toCharArray();
+        char[] uuidArry;
+
+        if (enhancedCow.getMooshroomUUID().isEmpty()) {
+            uuidArry = enhancedCow.getCachedUniqueIdString().toCharArray();
+        } else {
+            uuidArry = enhancedCow.getMooshroomUUID().toCharArray();
+        }
+
 
         if (sharedGenes[40] != 1 && sharedGenes[41] != 1) {
             int child = 1;

@@ -1,0 +1,57 @@
+{
+  "credit": "Made with Blockbench",
+  "parent": "egg_carton",
+  "textures": {
+    "0": "eanimod:block/egg_carton",
+    "particle": "eanimod:block/egg_carton"
+  },
+  "elements": [
+    {
+      "name": "bottom",
+      "from": [1, 0, 1],
+      "to": [15, 5, 15],
+      "faces": {
+        "north": {"uv": [3.5, 3.5, 7, 4.75], "texture": "#0"},
+        "east": {"uv": [0, 3.5, 3.5, 4.75], "texture": "#0"},
+        "south": {"uv": [10.5, 3.5, 14, 4.75], "texture": "#0"},
+        "west": {"uv": [7, 3.5, 10.5, 4.75], "texture": "#0"},
+        "up": {"uv": [7, 3.5, 3.5, 0], "texture": "#0"},
+        "down": {"uv": [10.5, 0, 7, 3.5], "texture": "#0"}
+      }
+    },
+    {
+      "name": "holes",
+      "from": [2.1, 1.1, 2.1],
+      "to": [13.9, 4.9, 13.9],
+      "faces": {
+        "north": {"uv": [3.25, 8, 6.5, 9.25], "texture": "#0"},
+        "east": {"uv": [0, 8, 3.25, 9.25], "texture": "#0"},
+        "south": {"uv": [9.75, 8, 13, 9.25], "texture": "#0"},
+        "west": {"uv": [6.5, 8, 9.75, 9.25], "texture": "#0"},
+        "up": {"uv": [3.25, 3.25, 0, 0], "texture": "#0"},
+        "down": {"uv": [9.75, 4.75, 6.5, 8], "texture": "#0"}
+      }
+    },
+    {
+      "name": "top",
+      "from": [1, 4, 1],
+      "to": [15, 8, 15],
+      "rotation": {"angle": 0, "axis": "x", "origin": [8, 4, 15]},
+      "faces": {
+        "north": {"uv": [4.5, 5.75, 1, 4.75], "rotation": 180, "texture": "#0"},
+        "east": {"uv": [0, 5.75, 1, 9.25], "rotation": 90, "texture": "#0"},
+        "south": {"uv": [8, 4.75, 4.5, 5.75], "texture": "#0"},
+        "west": {"uv": [4.5, 5.75, 5.5, 9.25], "rotation": 270, "texture": "#0"},
+        "up": {"uv": [5.5, 5.75, 9, 9.25], "texture": "#0"},
+        "down": {"uv": [1, 5.75, 4.5, 9.25], "rotation": 180, "texture": "#0"}
+      }
+    }
+  ],
+  "groups": [
+    {
+      "name": "group",
+      "origin": [8, 4, 15],
+      "children": [0, 1, 2]
+    }
+  ]
+}

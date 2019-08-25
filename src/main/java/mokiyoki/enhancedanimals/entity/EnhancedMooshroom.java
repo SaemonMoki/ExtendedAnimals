@@ -27,7 +27,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.commons.compress.archivers.dump.DumpArchiveEntry;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.UUID;
@@ -298,6 +297,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             enhancedcow.setCowSize();
             enhancedcow.setGrowingAge(this.growingAge);
             enhancedcow.setCowStatus(this.getCowStatus());
+            enhancedcow.setMooshroomUUID(this.getCachedUniqueIdString());
 
             if (this.hasCustomName()) {
                 enhancedcow.setCustomName(this.getCustomName());

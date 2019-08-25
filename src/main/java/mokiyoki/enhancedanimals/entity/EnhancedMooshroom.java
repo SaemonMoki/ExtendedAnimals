@@ -27,6 +27,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.commons.compress.archivers.dump.DumpArchiveEntry;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.UUID;
@@ -288,7 +289,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         if (!this.world.isRemote) {
             this.remove();
             EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
-            enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
+            enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, (this.rotationYaw) + 3.2F, this.rotationPitch);
             enhancedcow.setHealth(this.getHealth());
             enhancedcow.renderYawOffset = this.renderYawOffset;
 
@@ -356,74 +357,158 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             float redG = 96.0F;
             float redB = 96.0F;
 
-            int tint;
+            if (getMooshroomType().name.equals("red")) {
 
-            if ((genesForText[6] == 1 || genesForText[7] == 1) || (genesForText[0] == 3 && genesForText[1] == 3)){
-                //red
-                tint = 4;
-            }else {
-                if (genesForText[0] == 1 || genesForText[1] == 1) {
-                    //black
-                    tint = 2;
-                } else {
-                    //wildtype
-                    tint = 3;
+                int tint;
+
+                if ((genesForText[6] == 1 || genesForText[7] == 1) || (genesForText[0] == 3 && genesForText[1] == 3)){
+                    //red
+                    tint = 4;
+                }else {
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //black
+                        tint = 2;
+                    } else {
+                        //wildtype
+                        tint = 3;
+                    }
                 }
-            }
 
-            //standard dilution
-            if (genesForText[2] == 2 || genesForText[3] == 2) {
+                //standard dilution
+                if (genesForText[2] == 2 || genesForText[3] == 2) {
 //            if (true) {
-                if (genesForText[2] == 2 && genesForText[3] == 2) {
+                    if (genesForText[2] == 2 && genesForText[3] == 2) {
 //                if (false) {
 
-                    blackR = (blackR + (255F * tint)) / (tint+1);
-                    blackG = (blackG + (245F * tint)) / (tint+1);
-                    blackB = (blackB + (235F * tint)) / (tint+1);
+                        blackR = (blackR + (255F * tint)) / (tint+1);
+                        blackG = (blackG + (245F * tint)) / (tint+1);
+                        blackB = (blackB + (235F * tint)) / (tint+1);
 
-                    if (tint != 2) {
-                        redR = (redR + (255F * tint)) / (tint + 1);
-                        redG = (redG + (255F * tint)) / (tint + 1);
-                        redB = (redB + (255F * tint)) / (tint + 1);
-                    }
-                }else{
-                    if (tint == 3) {
-                        //wildtype
-                        redR = 170.5F;
-                        // 160.5
-                        redG = 140.0F;
-                        // 119
-                        redB = 132.0F;
-                        // 67
-
-                        if (genesForText[4] == 1 || genesForText[5] == 1) {
-                            if (genesForText[4] == 1 && genesForText[5] == 1) {
-                                blackR = 236.0F;
-                                blackG = 6.0F;
-                                blackB = 6.0F;
-                            } else {
-                                blackR = 236.0F;
-                                blackG = 6.0F;
-                                blackB = 6.0F;
-                            }
-                        } else if (genesForText[4] == 4 && genesForText[5] == 4) {
-                            blackR = 185.0F;
-                            blackG = 40.0F;
-                            blackB = 40.0F;
+                        if (tint != 2) {
+                            redR = (redR + (255F * tint)) / (tint + 1);
+                            redG = (redG + (255F * tint)) / (tint + 1);
+                            redB = (redB + (255F * tint)) / (tint + 1);
                         }
+                    }else{
+                        if (tint == 3) {
+                            //wildtype
+                            redR = 170.5F;
+                            // 160.5
+                            redG = 140.0F;
+                            // 119
+                            redB = 132.0F;
+                            // 67
 
-                    } else if (tint == 4){
-                        //red
-                        redR = (redR*0.5F) + (187.0F*0.5F);
-                        redG = (redG*0.5F) + (180.0F*0.5F);
-                        redB = (redB*0.5F) + (166.0F*0.5F);
-                    }else {
-                        //black
-                        blackR = 236.0F;
-                        blackG = 6.0F;
-                        blackB = 6.0F;
+                            if (genesForText[4] == 1 || genesForText[5] == 1) {
+                                if (genesForText[4] == 1 && genesForText[5] == 1) {
+                                    blackR = 236.0F;
+                                    blackG = 6.0F;
+                                    blackB = 6.0F;
+                                } else {
+                                    blackR = 236.0F;
+                                    blackG = 6.0F;
+                                    blackB = 6.0F;
+                                }
+                            } else if (genesForText[4] == 4 && genesForText[5] == 4) {
+                                blackR = 185.0F;
+                                blackG = 40.0F;
+                                blackB = 40.0F;
+                            }
+
+                        } else if (tint == 4){
+                            //red
+                            redR = (redR*0.5F) + (187.0F*0.5F);
+                            redG = (redG*0.5F) + (180.0F*0.5F);
+                            redB = (redB*0.5F) + (166.0F*0.5F);
+                        }else {
+                            //black
+                            blackR = 236.0F;
+                            blackG = 6.0F;
+                            blackB = 6.0F;
+                        }
                     }
                 }
+
+            } else {
+
+                blackR = 96.0F;
+                blackG = 89.0F;
+                blackB = 95.0F;
+
+                redR = 154.0F;
+                redG = 123.0F;
+                redB = 129.0F;
+
+                int tint;
+
+                if ((genesForText[6] == 1 || genesForText[7] == 1) || (genesForText[0] == 3 && genesForText[1] == 3)){
+                    //red
+                    tint = 4;
+                }else {
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //black
+                        tint = 2;
+                    } else {
+                        //wildtype
+                        tint = 3;
+                    }
+                }
+
+                //standard dilution
+                if (genesForText[2] == 2 || genesForText[3] == 2) {
+//            if (true) {
+                    if (genesForText[2] == 2 && genesForText[3] == 2) {
+//                if (false) {
+
+                        blackR = (blackR + (255F * tint)) / (tint+1);
+                        blackG = (blackG + (245F * tint)) / (tint+1);
+                        blackB = (blackB + (235F * tint)) / (tint+1);
+
+                        if (tint != 2) {
+                            redR = (redR + (255F * tint)) / (tint + 1);
+                            redG = (redG + (255F * tint)) / (tint + 1);
+                            redB = (redB + (255F * tint)) / (tint + 1);
+                        }
+                    }else{
+                        if (tint == 3) {
+                            //wildtype
+                            redR = 170.5F;
+                            // 160.5
+                            redG = 140.0F;
+                            // 119
+                            redB = 132.0F;
+                            // 67
+
+                            if (genesForText[4] == 1 || genesForText[5] == 1) {
+                                if (genesForText[4] == 1 && genesForText[5] == 1) {
+                                    blackR = 236.0F;
+                                    blackG = 6.0F;
+                                    blackB = 6.0F;
+                                } else {
+                                    blackR = 236.0F;
+                                    blackG = 6.0F;
+                                    blackB = 6.0F;
+                                }
+                            } else if (genesForText[4] == 4 && genesForText[5] == 4) {
+                                blackR = 185.0F;
+                                blackG = 40.0F;
+                                blackB = 40.0F;
+                            }
+
+                        } else if (tint == 4){
+                            //red
+                            redR = (redR*0.5F) + (187.0F*0.5F);
+                            redG = (redG*0.5F) + (180.0F*0.5F);
+                            redB = (redB*0.5F) + (166.0F*0.5F);
+                        }else {
+                            //black
+                            blackR = 236.0F;
+                            blackG = 6.0F;
+                            blackB = 6.0F;
+                        }
+                    }
+                }
+
             }
 
             if (genesForText[4] == 3 || genesForText[5] == 3) {

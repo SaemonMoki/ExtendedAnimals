@@ -692,39 +692,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.udder.render(scale);
                 this.nipples.render(scale);
             }
-//
-//            if (!enhancedCow.isChild() && !enhancedCow.isInvisible()) {
-//                BlockState lvt_9_1_ = enhancedCow.getMooshroomType().getRenderState();
-//                this.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-//                GlStateManager.enableCull();
-//                GlStateManager.cullFace(GlStateManager.CullFace.FRONT);
-//                GlStateManager.pushMatrix();
-//                GlStateManager.scalef(1.0F, -1.0F, 1.0F);
-//                GlStateManager.translatef(0.2F, 0.35F, 0.5F);
-//                GlStateManager.rotatef(42.0F, 0.0F, 1.0F, 0.0F);
-//                BlockRendererDispatcher lvt_10_1_ = Minecraft.getInstance().getBlockRendererDispatcher();
-//                GlStateManager.pushMatrix();
-//                GlStateManager.translatef(-0.5F, -0.5F, 0.5F);
-//                lvt_10_1_.renderBlockBrightness(lvt_9_1_, 1.0F);
-//                GlStateManager.popMatrix();
-//                GlStateManager.pushMatrix();
-//                GlStateManager.translatef(0.1F, 0.0F, -0.6F);
-//                GlStateManager.rotatef(42.0F, 0.0F, 1.0F, 0.0F);
-//                GlStateManager.translatef(-0.5F, -0.5F, 0.5F);
-//                lvt_10_1_.renderBlockBrightness(lvt_9_1_, 1.0F);
-//                GlStateManager.popMatrix();
-//                GlStateManager.popMatrix();
-//                GlStateManager.pushMatrix();
-//                ((ModelEnhancedCow)this.getEntityModel()).getHead().postRender(0.0625F);
-//                GlStateManager.scalef(1.0F, -1.0F, 1.0F);
-//                GlStateManager.translatef(0.0F, 0.7F, -0.2F);
-//                GlStateManager.rotatef(12.0F, 0.0F, 1.0F, 0.0F);
-//                GlStateManager.translatef(-0.5F, -0.5F, 0.5F);
-//                lvt_10_1_.renderBlockBrightness(lvt_9_1_, 1.0F);
-//                GlStateManager.popMatrix();
-//                GlStateManager.cullFace(GlStateManager.CullFace.BACK);
-//                GlStateManager.disableCull();
-//            }
 
             GlStateManager.popMatrix();
 

@@ -3,8 +3,12 @@ package mokiyoki.enhancedanimals.model;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EntityState;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.math.MathHelper;
 
 public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
@@ -50,7 +54,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final RendererModel hornR7;
     private final RendererModel hornR8;
     private final RendererModel hornR9;
-    private final RendererModel head; //this is the neck not the head
+    private final RendererModel headModel; //this is the neck not the head
     private final RendererModel bodyChonk;
     private final RendererModel bodyBig;
     private final RendererModel bodyMedium;
@@ -223,9 +227,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.hornR9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
 
         // head is the neck cause thats how this works
-        this.head = new RendererModel(this, 46, 0);
-        this.head.addBox(-3.0F, 0.0F, -8.0F, 6, 8, 11, 0.0F);
-        this.head.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
+        this.headModel = new RendererModel(this, 46, 0);
+        this.headModel.addBox(-3.0F, 0.0F, -8.0F, 6, 8, 11, 0.0F);
+        this.headModel.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
         this.bodyChonk = new RendererModel(this, 0, 0);
         this.bodyChonk.addBox(-6.0F, 0.0F, 0.0F, 12, 11, 22, 1.0F);
@@ -377,7 +381,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.legExtender4.addBox(0.0F, -0.5F, 0.0F, 3, 1, 3, 0.0F);
         this.legExtender4.setRotationPoint(3.0F, 13.5F, 19.0F + xMove);
 
-        this.head.addChild(this.actualHead);
+        this.headModel.addChild(this.actualHead);
         this.actualHead.addChild(this.earLongestL);
         this.actualHead.addChild(this.earLongL);
         this.actualHead.addChild(this.earMediumL);
@@ -463,7 +467,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 GlStateManager.scalef(0.4F, 0.4F, 0.4F);
                 GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.5F, 0.0F);
 
-                this.head.render(scale);
+                this.headModel.render(scale);
 
                 if (bodyShape >= 3) {
                     this.bodySlim.render(scale);
@@ -509,7 +513,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 GlStateManager.scalef(0.6F, 0.6F, 0.6F);
                 GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.675F, 0.0F);
 
-                this.head.render(scale);
+                this.headModel.render(scale);
 
                 if (bodyShape >= 3) {
                     this.bodySlim.render(scale);
@@ -554,7 +558,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 GlStateManager.scalef(0.7F, 0.7F, 0.7F);
                 GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.732F, 0.0F);
 
-                this.head.render(scale);
+                this.headModel.render(scale);
 
                 if (bodyShape >= 3) {
                     this.bodySlim.render(scale);
@@ -622,7 +626,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             GlStateManager.scalef(size, size, size);
             GlStateManager.translatef(0.0F, (-1.5F+dwarf) + 1.5F / size, 0.0F);
 
-            this.head.render(scale);
+            this.headModel.render(scale);
 
             if (bodyShape == 4){
                 this.bodyChonk.render(scale);
@@ -689,6 +693,38 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.nipples.render(scale);
             }
 
+            if (!p_212842_1_.isChild() && !p_212842_1_.isInvisible()) {
+                BlockState lvt_9_1_ = p_212842_1_.getMooshroomType().getRenderState();
+                this.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                GlStateManager.enableCull();
+                GlStateManager.cullFace(GlStateManager.CullFace.FRONT);
+                GlStateManager.pushMatrix();
+                GlStateManager.scalef(1.0F, -1.0F, 1.0F);
+                GlStateManager.translatef(0.2F, 0.35F, 0.5F);
+                GlStateManager.rotatef(42.0F, 0.0F, 1.0F, 0.0F);
+                BlockRendererDispatcher lvt_10_1_ = Minecraft.getInstance().getBlockRendererDispatcher();
+                GlStateManager.pushMatrix();
+                GlStateManager.translatef(-0.5F, -0.5F, 0.5F);
+                lvt_10_1_.renderBlockBrightness(lvt_9_1_, 1.0F);
+                GlStateManager.popMatrix();
+                GlStateManager.pushMatrix();
+                GlStateManager.translatef(0.1F, 0.0F, -0.6F);
+                GlStateManager.rotatef(42.0F, 0.0F, 1.0F, 0.0F);
+                GlStateManager.translatef(-0.5F, -0.5F, 0.5F);
+                lvt_10_1_.renderBlockBrightness(lvt_9_1_, 1.0F);
+                GlStateManager.popMatrix();
+                GlStateManager.popMatrix();
+                GlStateManager.pushMatrix();
+                ((ModelEnhancedCow)this.getEntityModel()).getHead().postRender(0.0625F);
+                GlStateManager.scalef(1.0F, -1.0F, 1.0F);
+                GlStateManager.translatef(0.0F, 0.7F, -0.2F);
+                GlStateManager.rotatef(12.0F, 0.0F, 1.0F, 0.0F);
+                GlStateManager.translatef(-0.5F, -0.5F, 0.5F);
+                lvt_10_1_.renderBlockBrightness(lvt_9_1_, 1.0F);
+                GlStateManager.popMatrix();
+                GlStateManager.cullFace(GlStateManager.CullFace.BACK);
+                GlStateManager.disableCull();
+            }
 
             GlStateManager.popMatrix();
 
@@ -708,8 +744,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
 
-        this.head.rotateAngleX = (headPitch * 0.017453292F);
-        this.head.rotateAngleY = netHeadYaw * 0.017453292F;
+        this.headModel.rotateAngleX = (headPitch * 0.017453292F);
+        this.headModel.rotateAngleY = netHeadYaw * 0.017453292F;
 
         this.humpXLarge.rotateAngleX = ((headPitch * 0.017453292F)/2.5F) - 0.2F;
         this.humpXLarge.rotateAngleY = (netHeadYaw * 0.017453292F)/2.5F;
@@ -746,7 +782,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         copyModelAngles(leg3, legExtender3);
         copyModelAngles(leg4, legExtender4);
 
-        this.head.rotateAngleX = this.headRotationAngleX;   //might need to merge this with another line
+        this.headModel.rotateAngleX = this.headRotationAngleX;   //might need to merge this with another line
         this.actualHead.rotateAngleX = 0.5F;   //might need to merge this with another line
         this.mouth.rotateAngleX = -0.3F;   //might need to merge this with another line
 
@@ -774,12 +810,12 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
         super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
 
-        this.head.rotationPointY = 2.75F + ((EnhancedCow) entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
-        this.headRotationAngleX = ((EnhancedCow) entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
+        this.headModel.rotationPointY = 2.75F + (entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
+        this.headRotationAngleX = (entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
 
-        EnhancedCow enhancedCow = (EnhancedCow) entitylivingbaseIn;
+        EnhancedCow enhancedCow = entitylivingbaseIn;
 
-        int[] sharedGenes = ((EnhancedCow) entitylivingbaseIn).getSharedGenes();
+        int[] sharedGenes = (entitylivingbaseIn).getSharedGenes();
         char[] uuidArry = enhancedCow.getCachedUniqueIdString().toCharArray();
 
         if (sharedGenes[40] != 1 && sharedGenes[41] != 1) {
@@ -1263,5 +1299,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         dest.rotationPointY = source.rotationPointY;
         dest.rotationPointZ = source.rotationPointZ;
     }
+
+    public RendererModel getHead() {
+        return this.headModel;
+    }
+
+
 
 }

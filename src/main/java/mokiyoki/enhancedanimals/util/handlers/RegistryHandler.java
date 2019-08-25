@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityLlamaSpit;
+import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
@@ -55,6 +56,7 @@ public class RegistryHandler {
     public static final EntityType<EnhancedSheep> ENHANCED_SHEEP = EntityType.Builder.create(EnhancedSheep::new, EntityClassification.CREATURE).size(0.4F, 1F).build(Reference.MODID + ":enhanced_sheep");
     public static final EntityType<EnhancedLlama> ENHANCED_LLAMA = EntityType.Builder.create(EnhancedLlama::new, EntityClassification.CREATURE).size(0.9F, 1.87F).build(Reference.MODID + ":enhanced_llama");
     public static final EntityType<EnhancedCow> ENHANCED_COW = EntityType.Builder.create(EnhancedCow::new, EntityClassification.CREATURE).size(0.4F, 1F).build(Reference.MODID + ":enhanced_cow");
+    public static final EntityType<EnhancedMooshroom> ENHANCED_MOOSHROOM = EntityType.Builder.create(EnhancedMooshroom::new, EntityClassification.CREATURE).size(0.4F, 1F).build(Reference.MODID + ":enhanced_mooshroom");
     public static final EntityType<EnhancedPig> ENHANCED_PIG = EntityType.Builder.create(EnhancedPig::new, EntityClassification.CREATURE).size(0.9F, 0.9F).build(Reference.MODID + ":enhanced_pig");
 
     @SubscribeEvent
@@ -92,6 +94,8 @@ public class RegistryHandler {
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_rabbit_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_COW, 0x260800,0xf9f9f7, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_cow_spawn_egg"));
+        event.getRegistry().register(new SpawnEggItem(ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC, new Item.Properties()
+                .group(ItemGroup.MISC)).setRegistryName("enhanced_mooshroom_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_PIG, 0x000000,0x000000, new Item.Properties()
                 .group(ItemGroup.MISC)).setRegistryName("enhanced_pig_spawn_egg"));
 
@@ -305,6 +309,7 @@ public class RegistryHandler {
         event.getRegistry().register(ENHANCED_SHEEP.setRegistryName("enhanced_sheep"));
         event.getRegistry().register(ENHANCED_LLAMA.setRegistryName("enhanced_llama"));
         event.getRegistry().register(ENHANCED_COW.setRegistryName("enhanced_cow"));
+        event.getRegistry().register(ENHANCED_MOOSHROOM.setRegistryName("enhanced_mooshroom"));
         event.getRegistry().register(ENHANCED_PIG.setRegistryName("enhanced_pig"));
         event.getRegistry().register(ENHANCED_ENTITY_EGG_ENTITY_TYPE.setRegistryName("enhanced_entity_egg"));
         event.getRegistry().register(ENHANCED_LLAMA_SPIT.setRegistryName("enhanced_entity_llama_spit"));

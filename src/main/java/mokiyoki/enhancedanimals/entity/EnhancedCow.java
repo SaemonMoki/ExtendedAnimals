@@ -61,7 +61,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
     private static final DataParameter<Float> COW_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
-    private static final DataParameter<String> COW_STATUS = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
+    protected static final DataParameter<String> COW_STATUS = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
 
     private static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
@@ -95,14 +95,14 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             "", "spot_whiteface0.png",
                 "spot_wfcoloursided0.png",
                 "spot_coloursided0.png",
-                "spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png", "spot_pibald3.png", "spot_pibald4.png", "spot_pibald5.png", "spot_pibald6.png", "spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png","spot_pibald3.png", "spot_pibald4.png", "spot_pibald5.png", "spot_pibald6.png", "spot_pibald0.png", "spot_pibald1.png",
+                "spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png", "spot_pibald3.png", "spot_pibald4.png", "spot_pibald5.png", "spot_pibald6.png", "spot_pibald7.png", "spot_pibald8.png", "spot_pibald9.png","spot_pibalda.png", "spot_pibaldb.png", "spot_pibaldc.png", "spot_pibaldd.png", "spot_pibalde.png", "spot_pibaldf.png",
     };
 
     private static final String[] COW_TEXTURES_WHITEFACEHEAD = new String[] {
             "", "",
                 "",
                 "",
-                "", "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png", "spot_pibald_head3.png", "spot_pibald_head4.png","spot_pibald_head5.png", "spot_pibald_head6.png", "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png","spot_pibald_head3.png", "spot_pibald_head4.png", "spot_pibald_head5.png", "spot_pibald_head6.png", "spot_pibald_head0.png", "spot_pibald_head1.png",
+                "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png", "spot_pibald_head3.png", "spot_pibald_head4.png","spot_pibald_head5.png", "spot_pibald_head6.png", "spot_pibald_head7.png", "spot_pibald_head8.png", "spot_pibald_head9.png","spot_pibald_heada.png", "spot_pibald_headb.png", "spot_pibald_headc.png", "spot_pibald_headd.png", "spot_pibald_heade.png", "spot_pibald_headf.png",
     };
 
     private static final String[] COW_TEXTURES_BELTED = new String[] {
@@ -138,6 +138,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT);
+    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     private static final int WTC = 90;
     private final List<String> cowTextures = new ArrayList<>();
@@ -147,12 +148,12 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
-    private float maxBagSize;
-    private float cowSize;
+    protected float maxBagSize;
+    protected float cowSize;
 
-    private int hunger = 0;
+    protected int hunger = 0;
 
-    private boolean aiConfigured = false;
+    protected boolean aiConfigured = false;
 
     private float[] cowColouration = null;
 
@@ -164,11 +165,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     }
 
-    private int cowTimer;
+    protected int cowTimer;
     private EnhancedGrassGoal eatGrassGoal;
-
-    private int gestationTimer = 0;
-    private boolean pregnant = false;
+    protected int gestationTimer = 0;
+    protected boolean pregnant = false;
 
     @Override
     protected void registerGoals() {
@@ -194,7 +194,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.dataManager.register(COW_STATUS, new String());
     }
 
-    private void setCowSize(float size) {
+    protected void setCowSize(float size) {
         this.dataManager.set(COW_SIZE, size);
     }
 
@@ -210,7 +210,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         return this.dataManager.get(BAG_SIZE);
     }
 
-    private void setCowStatus(String status) {
+    protected void setCowStatus(String status) {
         this.dataManager.set(COW_STATUS, status);
     }
 
@@ -331,7 +331,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     }
 
-    private void setCowSize(){
+    protected void setCowSize(){
         float size = 1.0F;
 
         //[ 1 to 15 ] max - is 0.3F
@@ -418,12 +418,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         }
         return sharedGenesArray;
     }
-
-    public boolean isBreedingItem(ItemStack stack) {
-        //TODO set this to a separate item or type of item for force breeding
-        return TEMPTATION_ITEMS.test(stack);
-    }
-
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
@@ -523,6 +517,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         }
     }
 
+    public boolean isBreedingItem(ItemStack stack) {
+        //TODO set this to a separate item or type of item for force breeding
+        return BREED_ITEMS.test(stack);
+    }
 
     public AgeableEntity createChild(AgeableEntity ageable) {
         if(pregnant) {
@@ -727,58 +725,59 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
                     switch (d) {
                         case 'a':
-                            whiteface = whiteface + 11;
+                            whiteface = whiteface + 10;
                             break;
                         case 'b':
-                            whiteface = whiteface + 12;
+                            whiteface = whiteface + 11;
                             break;
                         case 'c':
-                            whiteface = whiteface + 13;
+                            whiteface = whiteface + 12;
                             break;
                         case 'd':
-                            whiteface = whiteface + 14;
+                            whiteface = whiteface + 13;
                             break;
                         case 'e':
-                            whiteface = whiteface + 15;
+                            whiteface = whiteface + 14;
                             break;
                         case 'f':
-                            whiteface = whiteface + 16;
+                            whiteface = whiteface + 15;
                             break;
                         default:
                             whiteface = 0;
                     }
                 }
                 //selects face piebalding texture
-                whitefacehead = 4;
-                if (Character.isDigit(uuidArry[2])) {
-                    whitefacehead = whitefacehead + (1 + (uuidArry[2] - 48));
-                } else {
-                    char d = uuidArry[2];
+                if (uuidArry[0] != uuidArry[1]) {
+                    whitefacehead = 4;
+                    if (Character.isDigit(uuidArry[2])) {
+                        whitefacehead = whitefacehead + (1 + uuidArry[2] - 48);
+                    } else {
+                        char d = uuidArry[2];
 
-                    switch (d) {
-                        case 'a':
-                            whitefacehead = whitefacehead + 11;
-                            break;
-                        case 'b':
-                            whitefacehead = whitefacehead + 12;
-                            break;
-                        case 'c':
-                            whitefacehead = whitefacehead + 13;
-                            break;
-                        case 'd':
-                            whitefacehead = whitefacehead + 14;
-                            break;
-                        case 'e':
-                            whitefacehead = whitefacehead + 15;
-                            break;
-                        case 'f':
-                            whitefacehead = whitefacehead + 16;
-                            break;
-                        default:
-                            whitefacehead = 0;
+                        switch (d) {
+                            case 'a':
+                                whitefacehead = whitefacehead + 10;
+                                break;
+                            case 'b':
+                                whitefacehead = whitefacehead + 11;
+                                break;
+                            case 'c':
+                                whitefacehead = whitefacehead + 12;
+                                break;
+                            case 'd':
+                                whitefacehead = whitefacehead + 13;
+                                break;
+                            case 'e':
+                                whitefacehead = whitefacehead + 14;
+                                break;
+                            case 'f':
+                                whitefacehead = whitefacehead + 15;
+                                break;
+                            default:
+                                whitefacehead = 0;
+                        }
                     }
                 }
-                
                 
             }
 
@@ -860,7 +859,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             this.cowTextures.add(COW_TEXTURES_SKIN[skin]);
             if (whiteface != 0){
                 this.cowTextures.add(COW_TEXTURES_WHITEFACE[whiteface]);
-                if (whitefacehead >= 5) {
+                if (whitefacehead >= 4) {
                     this.cowTextures.add(COW_TEXTURES_WHITEFACEHEAD[whitefacehead]);
                 }
             }
@@ -969,11 +968,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                     if (tint == 3) {
                         //wildtype
                         redR = 160.5F;
-                        // 160.5
                         redG = 119.0F;
-                         // 119
                         redB = 67.0F;
-                        // 67
 
                         if (genesForText[4] == 1 || genesForText[5] == 1) {
                             if (genesForText[4] == 1 && genesForText[5] == 1) {

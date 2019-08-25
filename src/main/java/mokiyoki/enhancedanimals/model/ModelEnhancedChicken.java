@@ -14,6 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel<T> {
 
+    private float headRotationAngleX;
     private boolean nesting = false; //TODO actually make some nesting ai
     private boolean roosting = true; //TODO actually make some roosting ai
     private int pose = 0;
@@ -847,7 +848,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         //head stuff
 
 //        float bodyangle = 0.5F;
-
+        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         if(this.pose == 1){
             this.head.rotationPointY = 22F;
         } else if (this.pose == 2){
@@ -1054,6 +1055,13 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             this.rightWing.rotationPointX = -4.0F;
             this.leftWing.rotationPointX = 4.0F;
         }
+
+
+        super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
+        this.head.rotationPointY = 9.0F + ((EnhancedChicken)entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
+        this.headRotationAngleX = ((EnhancedChicken)entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
+
+
 
     }
 

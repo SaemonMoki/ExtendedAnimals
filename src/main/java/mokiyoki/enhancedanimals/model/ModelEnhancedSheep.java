@@ -8,8 +8,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T> {
 
@@ -670,22 +668,36 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         copyModelAngles(head, earsR);
         this.earsL.rotateAngleY = this.earsL.rotateAngleY + 0.15F;
         this.earsR.rotateAngleY = this.earsR.rotateAngleY - 0.15F;
-
         copyModelAngles(body, wool1);
+            this.wool1.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0133F * limbSwingAmount;
         copyModelAngles(body, wool2);
+            this.wool2.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0266F * limbSwingAmount;
         copyModelAngles(body, wool3);
+            this.wool3.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0399F * limbSwingAmount;
         copyModelAngles(body, wool4);
+            this.wool4.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0533F * limbSwingAmount;
         copyModelAngles(body, wool5);
+            this.wool5.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0666F * limbSwingAmount;
         copyModelAngles(body, wool6);
+            this.wool6.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0799F * limbSwingAmount;
         copyModelAngles(body, wool7);
+            this.wool7.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0933F * limbSwingAmount;
         copyModelAngles(body, wool8);
+            this.wool8.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1066F * limbSwingAmount;
         copyModelAngles(body, wool9);
+            this.wool9.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1199F * limbSwingAmount;
         copyModelAngles(body, wool10);
+            this.wool10.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1333F * limbSwingAmount;
         copyModelAngles(body, wool11);
+            this.wool11.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1466F * limbSwingAmount;
         copyModelAngles(body, wool12);
+            this.wool12.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1599F * limbSwingAmount;
         copyModelAngles(body, wool13);
+         this.wool13.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1733F * limbSwingAmount;
         copyModelAngles(body, wool14);
+            this.wool14.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1866F * limbSwingAmount;
         copyModelAngles(body, wool15);
+            this.wool15.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.2F * limbSwingAmount;
 
         copyModelAngles(head, neckWool1);
         copyModelAngles(head, neckWool2);

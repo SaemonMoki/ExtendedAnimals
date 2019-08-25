@@ -20,6 +20,7 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
     private int coatlength = 0;
 
     private final RendererModel head;
+    private final RendererModel nose;
     private final RendererModel headShaved;
     private final RendererModel neckWool1;
     private final RendererModel neckWool2;
@@ -80,14 +81,18 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
 
         this.head = new RendererModel(this, 0, 0);
         this.head.addBox(-4.0F, -14.0F, 0.0F, 8, 18, 6, 0.0F); //head and neck
-        this.head.setTextureOffset(28, 0);
-        this.head.addBox(-2.0F, -12.0F, -4.0F, 4, 4, 4, 0.0F); //nose
+//        this.head.setTextureOffset(28, 0);
+//        this.head.addBox(-2.0F, -12.0F, -4.0F, 4, 4, 4, 0.0F); //nose
         this.head.setRotationPoint(0, 5, -6 + xMove);
+
+        this.nose = new RendererModel(this,28, 0);
+        this.nose.addBox(-2.0F, 0.0F, 0.0F, 4, 4, 4, 0.0F); //nose
+        this.nose.setRotationPoint(0, 0, 0);
 
         this.headShaved = new RendererModel(this, 0, 0);
         this.headShaved.addBox(-4.0F, -14.0F, 0.0F, 8, 6, 6, 0.0F); //head and neck
-        this.headShaved.setTextureOffset(28, 0);
-        this.headShaved.addBox(-2.0F, -12.0F, -4.0F, 4, 4, 4, 0.0F); //nose
+//        this.headShaved.setTextureOffset(28, 0);
+//        this.headShaved.addBox(-2.0F, -12.0F, -4.0F, 4, 4, 4, 0.0F); //nose
         this.headShaved.setRotationPoint(0, 5, -6);
         this.headShaved.setTextureOffset(0, 5);
         this.headShaved.addBox(-4.0F, -9.0F, 1.0F, 8, 8, 6, -1.0F); //head and neck
@@ -289,6 +294,8 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
 //        leg4.addChild(toeOuterBackL);
 //        leg4.addChild(toeInnerBackL);
 
+        head.addChild(nose);
+        headShaved.addChild(nose);
     }
 
     private void setRotationOffset(RendererModel renderer, float x, float y, float z) {
@@ -308,29 +315,40 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
 
         float size = 1;
 
-        if (genes[0] < 3){
+        if (genes[0] < 3) {
             size = size - 0.025F;
-            if (genes[0] < 2){
+            if (genes[0] < 2) {
                 size = size - 0.025F;
             }
         }
-        if (genes[1] < 3){
+        if (genes[1] < 3) {
             size = size - 0.025F;
-            if (genes[1] < 2){
+            if (genes[1] < 2) {
                 size = size - 0.025F;
             }
         }
-        if (genes[2] < 3){
+        if (genes[2] < 3) {
             size = size - 0.025F;
-            if (genes[2] < 2){
+            if (genes[2] < 2) {
                 size = size - 0.025F;
             }
         }
-        if (genes[3] < 3){
+        if (genes[3] < 3) {
             size = size - 0.025F;
-            if (genes[3] < 2){
+            if (genes[3] < 2) {
                 size = size - 0.025F;
             }
+        }
+
+        // banana ears
+        if (genes[18] != 1 && genes[19] != 1) {
+            if (genes[18] == 2 || genes[19] == 2) {
+                banana = true;
+            }
+        }
+
+        if (genes[20] == 2 && genes[21] == 2) {
+            suri = true;
         }
 
         if (this.isChild) {
@@ -380,7 +398,7 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
 
             GlStateManager.popMatrix();
 
-        }else {
+        } else {
 
             GlStateManager.pushMatrix();
             GlStateManager.scalef(size, size, size);
@@ -564,18 +582,80 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
 
         this.body.rotationPointY = 2.0F;
 
-        // banana ears
-        if ( sharedGenes[18] != 1 && sharedGenes[19] != 1){
-            if (sharedGenes[18] == 2 || sharedGenes[19] == 2){
-                banana = true;
-            }
+        if (this.isChild) {
+            this.nose.rotationPointZ = -2.5F;
+        }
+        else {
+            this.nose.rotationPointZ = -4F;
         }
 
-        //TODO make coatlength calculations less dumb
-
-        if (sharedGenes[20] == 2 && sharedGenes[21] == 2){
-            suri = true;
+        //range from -12.1 to 10.5
+        float noseHight;
+        if (sharedGenes[28] == 1) {
+            noseHight = 0.1F;
+        } else if (sharedGenes[28] == 2) {
+            noseHight = 0.15F;
+        } else if (sharedGenes[28] == 3) {
+            noseHight = 0.0F;
+        } else {
+            noseHight = -0.1F;
         }
+
+        if (sharedGenes[29] == 1) {
+            noseHight = noseHight + 0.1F;
+        } else if (sharedGenes[28] == 2) {
+            noseHight = noseHight + 0.05F;
+        } else if (sharedGenes[28] == 3) {
+            noseHight = noseHight + 0.0F;
+        } else {
+            noseHight = noseHight - 0.1F;
+        }
+
+        if (sharedGenes[30] == 1) {
+            noseHight = noseHight + 0.1F;
+        } else if (sharedGenes[30] == 2) {
+            noseHight = noseHight + 0.15F;
+        } else if (sharedGenes[30] == 3) {
+            noseHight = noseHight + 0.0F;
+        } else {
+            noseHight = noseHight - 0.1F;
+        }
+
+        if (sharedGenes[31] == 1) {
+            noseHight = noseHight + 0.1F;
+        } else if (sharedGenes[31] == 2) {
+            noseHight = noseHight + 0.05F;
+        } else if (sharedGenes[31] == 3) {
+            noseHight = noseHight + 0.0F;
+        } else {
+            noseHight = noseHight - 0.1F;
+        }
+
+        if (sharedGenes[32] == 1) {
+            noseHight = noseHight + 0.2F;
+        } else if (sharedGenes[32] == 2) {
+            noseHight = noseHight + 0.15F;
+        } else if (sharedGenes[32] == 3) {
+            noseHight = noseHight + 0.0F;
+        } else if (sharedGenes[32] == 4) {
+            noseHight = noseHight - 0.15F;
+        } else {
+            noseHight = noseHight - 0.2F;
+        }
+
+        if (sharedGenes[33] == 1) {
+            noseHight = noseHight + 0.2F;
+        } else if (sharedGenes[33] == 2) {
+            noseHight = noseHight + 0.15F;
+        } else if (sharedGenes[33] == 3) {
+            noseHight = noseHight + 0.0F;
+        } else if (sharedGenes[33] == 4) {
+            noseHight = noseHight - 0.15F;
+        } else {
+            noseHight = noseHight - 0.2F;
+        }
+
+        this.nose.rotationPointY = -11.3F - noseHight;
 
     }
 

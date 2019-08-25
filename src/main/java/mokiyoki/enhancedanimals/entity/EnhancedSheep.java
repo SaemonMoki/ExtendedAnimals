@@ -100,7 +100,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             "eyes_black.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.ROSE_BUSH, Items.DANDELION);
+    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     private static final int WTC = 90;
     private final List<String> sheepTextures = new ArrayList<>();
@@ -375,9 +376,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     public void eatGrassBonus() {
         this.setSheared(false);
-        if (this.isChild()) {
-            this.addGrowth(60);
-        }else if (maxCoatLength > currentCoatLength){
+        if (!this.isChild() && (maxCoatLength > currentCoatLength)){
             this.currentCoatLength ++ ;
             setCoatLength(currentCoatLength);
         }
@@ -571,6 +570,11 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         return sharedGenesArray;
     }
 
+    public boolean isBreedingItem(ItemStack stack) {
+        //TODO set this to a separate item or type of item for force breeding
+        return BREED_ITEMS.test(stack);
+    }
+
     public AgeableEntity createChild(AgeableEntity ageable) {
         this.mateGenes = ((EnhancedSheep) ageable).getGenes();
         mixMateMitosisGenes();
@@ -744,8 +748,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     }
 
 
-    //EATING???
-
+    //Eating Animation
     @OnlyIn(Dist.CLIENT)
     public float getHeadRotationPointY(float partialTickTime) {
         if (this.sheepTimer <= 0)
@@ -754,14 +757,14 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         }
         else if (this.sheepTimer >= 4 && this.sheepTimer <= 36)
         {
-            return 1.0F;
+            return 0.2F;
         }
         else
         {
             return this.sheepTimer < 4 ? ((float)this.sheepTimer - partialTickTime) / 4.0F : -((float)(this.sheepTimer - 40) - partialTickTime) / 4.0F;
         }
     }
-    //EATING???
+    //Eating Animation
     @OnlyIn(Dist.CLIENT)
     public float getHeadRotationAngleX(float partialTickTime) {
         if (this.sheepTimer > 4 && this.sheepTimer <= 36)
@@ -1304,6 +1307,47 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             initialGenes[37] = (2);
         }
 
+        //wool growth area extension [extended, wildtype+, limiter]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[36] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[36] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[37] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[37] = (2);
+        }
+
+        //wool growth area extension [extended, wildtype+]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[36] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[36] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[37] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[37] = (2);
+        }
+
+        //allows wool surrounding face [face wool, wildtype+]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[36] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[36] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[37] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[37] = (2);
+        }
 
         return initialGenes;
     }

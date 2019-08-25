@@ -48,7 +48,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -147,7 +151,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         "pattern_darkpenciled.png", "pattern_darkpenciled_blue.png", "pattern_darkpenciled_splash.png", "pattern_darkpenciled_splashlav.png", "pattern_darkpenciled_splashdun.png",    //340
         "pattern_darkpenciled_splashchoc.png",  "pattern_darkpenciled_lav.png", "pattern_darkpenciled_white.png", "pattern_darkpenciled_dun.png", "pattern_darkpenciled_choc.png",     //345
         "pattern_bluelaced.png",    //special case number 350
-        "",                     //special case patternless 351
+        "patternless",                     //special case patternless 351
         "48.png"                //test a texture 352
     };
     private static final String[] CHICKEN_TEXTURES_MOORHEAD = new String[] {
@@ -187,7 +191,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         "eyes_albino.png","eyes_black.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.TALL_GRASS, Items.GRASS, Items.BREAD, Items.SWEET_BERRIES);
+    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
     public float wingRotation;
     public float destPos;
     public float oFlapSpeed;
@@ -276,12 +281,55 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void handleStatusUpdate(byte id) {
+        if (id == 10) {
+            this.grassTimer = 40;
+        } else {
+            super.handleStatusUpdate(id);
+        }
+    }
+
+    //Eating Animation
+    @OnlyIn(Dist.CLIENT)
+    public float getHeadRotationPointY(float partialTickTime) {
+        if (this.grassTimer <= 0)
+        {
+            return 0.0F;
+        }
+        else if (this.grassTimer >= 4 && this.grassTimer <= 36)
+        {
+            return 0.2F;
+        }
+        else
+        {
+            return this.grassTimer < 4 ? ((float)this.grassTimer - partialTickTime) / 4.0F : -((float)(this.grassTimer - 40) - partialTickTime) / 4.0F;
+        }
+    }
+    //Eating Animation
+    @OnlyIn(Dist.CLIENT)
+    public float getHeadRotationAngleX(float partialTickTime) {
+        if (this.grassTimer > 4 && this.grassTimer <= 36)
+        {
+            float f = ((float)(this.grassTimer - 4) - partialTickTime) / 32.0F;
+            return ((float)Math.PI / 5F) + ((float)Math.PI * 7F / 100F) * MathHelper.sin(f * 28.7F);
+        }
+        else
+        {
+            return this.grassTimer > 0 ? ((float)Math.PI / 5F) : this.rotationPitch * 0.017453292F;
+        }
+    }
+
     @Override
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
         if (item instanceof DebugGenesBook) {
             ((DebugGenesBook)item).displayGenes(this.dataManager.get(SHARED_GENES));
+//            String myString = this.dataManager.get(SHARED_GENES);
+//            StringSelection stringSelection = new StringSelection(myString);
+//            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+//            clipboard.setContents(stringSelection, null);
         } else if (TEMPTATION_ITEMS.test(itemStack)) {
             decreaseHunger();
             itemStack.shrink(1);
@@ -382,9 +430,9 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             this.grassTimer = Math.max(0, this.grassTimer - 1);
         }
 
-        if(this.grassTimer == 4){
-            this.wingRotDelta = 1.0F;
-        }
+//        if(this.grassTimer == 4){
+//            this.wingRotDelta = 1.0F;
+//        }
 
        //TODO if "is child" and parent is sitting go under parent, possibly turn off ability to collide.
 
@@ -479,15 +527,15 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     //also provides sand bath bonus
     public void eatGrassBonus()
     {
-        if (this.isChild())
-        {
-            this.addGrowth(60);
-        }
+//        if (this.isChild())
+//        {
+//            this.addGrowth(60);
+//        }
     }
 
-    public boolean isBreedingItem(ItemStack stack)
-    {
-        return TEMPTATION_ITEMS.test(stack);
+    public boolean isBreedingItem(ItemStack stack) {
+        //TODO set this to a separate item or type of item for force breeding
+        return BREED_ITEMS.test(stack);
     }
 
     @Nullable
@@ -1042,7 +1090,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                                             ground = 15;
                                         } else {
                                             //  spangled
-                                            pattern = 160;
+                                            pattern = 16;
                                             ground = 15;
                                         }
                                     } else {
@@ -1456,7 +1504,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                         ground = ground + 1;
                     }
 
-                    if (pattern < 350) {
+                    if (pattern <= 340) {
                         if (moorhead == 1) {
                             moorheadtoggle = 1;
                         }
@@ -1636,7 +1684,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
 //            after finished genesForText
                 this.chickenTextures.add(CHICKEN_TEXTURES_GROUND[ground]);
-                if (pattern != 351) {
+                if (pattern <= 350) {
                     this.chickenTextures.add(CHICKEN_TEXTURES_PATTERN[pattern]);
                 }
                 if (moorhead != 0) {
@@ -1976,6 +2024,21 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 mitosis[i + 1] = parentGenes[i + 1];
             }
         }
+        //part one of attaching pea comb and blue eggs
+        if (this.rand.nextInt(100) <= 97) {
+            boolean mateOddOrEven = rand.nextBoolean();
+            if (mateOddOrEven) {
+                mitosis[48] = parentGenes[49];
+                mitosis[49] = parentGenes[48];
+                mitosis[62] = parentGenes[63];
+                mitosis[63] = parentGenes[62];
+            } else {
+                mitosis[48] = parentGenes[48];
+                mitosis[49] = parentGenes[49];
+                mitosis[62] = parentGenes[62];
+                mitosis[63] = parentGenes[63];
+            }
+        }
         int testInt = 0;
     }
 
@@ -2002,6 +2065,22 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 } else {
                     eggGenes[i] = mateMitosisGenes[i];
                     eggGenes[i+1] = mitosisGenes[i+1];
+                }
+            }
+
+            //part two of attaching pea comb and blue eggs
+            if (this.rand.nextInt(100) <= 97) {
+                boolean thisOrMate = rand.nextBoolean();
+                if (thisOrMate){
+                    eggGenes[48] = mitosisGenes[48];
+                    eggGenes[62] = mitosisGenes[48];
+                    eggGenes[49] = mateMitosisGenes[49];
+                    eggGenes[63] = mateMitosisGenes[49];
+                } else {
+                    eggGenes[48] = mateMitosisGenes[48];
+                    eggGenes[62] = mateMitosisGenes[62];
+                    eggGenes[49] = mitosisGenes[49];
+                    eggGenes[63] = mitosisGenes[63];
                 }
             }
 
@@ -2074,7 +2153,10 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 if (false){
     //THE DNA TESTER-5069 !!!!!
                     //0,1,2,3,4,5,6,7,8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109
-    return new int[] {1,1,2,1,1,2,1,1,1,10,10,10,10,10,10,10,10,10,10,10, 1, 1, 1, 1, 1, 4, 2, 1, 3, 3, 3, 3, 3, 3, 2, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 3, 3, 1, 2, 1, 1, 2, 2, 3, 3, 2, 2, 3, 3, 2, 2, 2, 2, 3, 2, 3, 2, 2, 2, 1, 1, 1, 1, 3, 3, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1};
+    return new int[] {1,1,2,1,1,1,1,1,1,10, 10,10, 10,10, 10,10, 10,10, 10,10,2,2,1,1,4,2,2,2,3,3,3,2
+                     ,3,3,2,2,1,1,2,2,1,1,2,2,2,2,3,3,1,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,3,3,2,2,2,2,1,1
+                     ,1,1,1,2,2,2,2,1,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,2,2
+                     ,2,2,2,2,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};   //149
 
 }else {
     //Gold [ gold, silver ]

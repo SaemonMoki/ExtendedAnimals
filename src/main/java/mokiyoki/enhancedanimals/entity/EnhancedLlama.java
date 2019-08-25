@@ -122,13 +122,14 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     private final List<String> llamaTextures = new ArrayList<>();
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.CARROT);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT, Items.CARROT, Items.SUGAR_CANE, Items.BEETROOT, Items.GRASS, Items.TALL_GRASS);
+    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK);
 
     public float destPos;
     private String dropMeatType;
 
     private static final int WTC = 90;
-    private static final int GENES_LENGTH = 28;
+    private static final int GENES_LENGTH = 34;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -466,11 +467,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.playSound(SoundEvents.ENTITY_LLAMA_CHEST, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
     }
 
-    public boolean isBreedingItem(ItemStack stack)
-    {
-        return TEMPTATION_ITEMS.test(stack);
-    }
-
     @Override
     public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, BlockPos pos) {
         if (!this.world.isRemote && currentCoatLength >=0 && !isChild()) {
@@ -516,6 +512,11 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         } else if (!chested && this.llamaTextures.contains(LLAMA_CHEST_TEXTURE)) {
             this.llamaTextures.remove(LLAMA_CHEST_TEXTURE);
         }
+    }
+
+    public boolean isBreedingItem(ItemStack stack) {
+        //TODO set this to a separate item or type of item for force breeding
+        return BREED_ITEMS.test(stack);
     }
 
     public AgeableEntity createChild(AgeableEntity ageable) {
@@ -1233,6 +1234,49 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         } else {
             initialGenes[27] = (1);
         }
+
+        //nose placement genes [ +0.1, +0.15/+0.05, 0, -0.1 ]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[28] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            initialGenes[28] = (2);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[29] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            initialGenes[29] = (2);
+        }
+
+        //nose placement genes [ +0.1, +0.15/0.05, 0, -0.1 ]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[30] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            initialGenes[30] = (1);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[31] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            initialGenes[31] = (1);
+        }
+
+        //nose placement genes [ +0.2, +0.15, 0, -0.15, -0.2 ]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[32] = (ThreadLocalRandom.current().nextInt(5)+1);
+
+        } else {
+            initialGenes[32] = (1);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            initialGenes[33] = (ThreadLocalRandom.current().nextInt(5)+1);
+
+        } else {
+            initialGenes[33] = (1);
+        }
+
 
 
         return initialGenes;

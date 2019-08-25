@@ -184,7 +184,8 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
     //TODO find broken texture spawns in desert
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.CARROT, Items.GOLDEN_CARROT);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.CARROT, Items.GOLDEN_CARROT, Items.GRASS, Items.TALL_GRASS, Items.ROSE_BUSH, Items.SWEET_BERRIES);
+    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.CARROT, Items.GOLDEN_CARROT);
 
     private final List<String> rabbitTextures = new ArrayList<>();
 
@@ -874,10 +875,6 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.playSound(SoundEvents.ENTITY_RABBIT_JUMP, 0.15F, 1.0F);
     }
 
-    public boolean isBreedingItem(ItemStack stack) {
-        return TEMPTATION_ITEMS.test(stack);
-    }
-
     @Override
     public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, BlockPos pos) {
         if (!this.world.isRemote && currentCoatLength >=1) {
@@ -913,6 +910,11 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         currentCoatLength = 0;
         setCoatLength(currentCoatLength);
         return ret;
+    }
+
+    public boolean isBreedingItem(ItemStack stack) {
+        //TODO set this to a separate item or type of item for force breeding
+        return BREED_ITEMS.test(stack);
     }
 
     @Override

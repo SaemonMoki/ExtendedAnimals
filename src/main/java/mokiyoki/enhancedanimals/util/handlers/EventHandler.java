@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.util.handlers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.passive.MooshroomEntity;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.passive.SheepEntity;
@@ -40,7 +41,7 @@ public class EventHandler {
                 event.setCanceled(true);
             }
         }
-        if (entity instanceof CowEntity) {
+        if (entity instanceof CowEntity && !(entity instanceof MooshroomEntity)) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
             }

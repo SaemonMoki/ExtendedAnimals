@@ -16,24 +16,24 @@ public class EggCartonContainer extends Container {
     private final IInventory inventory;
 
     public EggCartonContainer(int p_i50065_1_, PlayerInventory p_i50065_2_) {
-        this(p_i50065_1_, p_i50065_2_, new Inventory(27));
+        this(p_i50065_1_, p_i50065_2_, new Inventory(16));
     }
 
     public EggCartonContainer(int i, PlayerInventory playerInventory, PacketBuffer packetBuffer) {
-        this(i, playerInventory, new Inventory(27));
+        this(i, playerInventory, new Inventory(16));
     }
 
     public EggCartonContainer(int p_i50066_1_, PlayerInventory playerInventoryIn, IInventory p_i50066_3_) {
         super(EGG_CARTON_CONTAINER, p_i50066_1_);
-        assertInventorySize(p_i50066_3_, 27);
+        assertInventorySize(p_i50066_3_, 16);
         this.inventory = p_i50066_3_;
         p_i50066_3_.openInventory(playerInventoryIn.player);
-        int i = 3;
-        int j = 9;
+        int i = 2;
+        int j = 8;
 
-        for(int k = 0; k < 3; ++k) {
-            for(int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(p_i50066_3_, l + k * 9, 8 + l * 18, 18 + k * 18){
+        for(int k = 0; k < 2; ++k) {
+            for(int l = 0; l < 8; ++l) {
+                this.addSlot(new Slot(p_i50066_3_, l + k * 8, 17 + l * 18, 18 + k * 18){
                     /**
                      * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
                      */
@@ -50,12 +50,12 @@ public class EggCartonContainer extends Container {
 
         for(int i1 = 0; i1 < 3; ++i1) {
             for(int k1 = 0; k1 < 9; ++k1) {
-                this.addSlot(new Slot(playerInventoryIn, k1 + i1 * 9 + 9, 8 + k1 * 18, 84 + i1 * 18));
+                this.addSlot(new Slot(playerInventoryIn, k1 + i1 * 9 + 9, 8 + k1 * 18, 66 + i1 * 18));
             }
         }
 
         for(int j1 = 0; j1 < 9; ++j1) {
-            this.addSlot(new Slot(playerInventoryIn, j1, 8 + j1 * 18, 142));
+            this.addSlot(new Slot(playerInventoryIn, j1, 8 + j1 * 18, 124));
         }
     }
 

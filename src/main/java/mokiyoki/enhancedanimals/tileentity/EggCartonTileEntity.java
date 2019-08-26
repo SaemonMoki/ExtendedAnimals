@@ -16,30 +16,43 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableLootTileEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.IntStream;
 
 public class EggCartonTileEntity extends LockableLootTileEntity implements ISidedInventory/*, ITickableTileEntity*/ {
-    private static final int[] SLOTS = IntStream.range(0, 27).toArray();
-    private NonNullList<ItemStack> items = NonNullList.withSize(27, ItemStack.EMPTY);
+    private static final int[] SLOTS = IntStream.range(0, 16).toArray();
+    private NonNullList<ItemStack> items = NonNullList.withSize(16, ItemStack.EMPTY);
     private int openCount;
 //    private ShulkerBoxTileEntity.AnimationStatus animationStatus = ShulkerBoxTileEntity.AnimationStatus.CLOSED;
     private float progress;
     private float progressOld;
+
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    protected static final VoxelShape SHAPE_DEFAULT = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 14.0D, 8.0D, 12.0D);
+    protected static final VoxelShape SHAPE_EASTWEST = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 12.0D, 8.0D, 14.0D);
+    protected static final VoxelShape SHAPE_NORTHSOUTH = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 14.0D, 8.0D, 12.0D);
+
 
     public EggCartonTileEntity() {
         super(ModTileEntities.EGG_CARTON_TILE_ENTITY);
@@ -180,7 +193,7 @@ public class EggCartonTileEntity extends LockableLootTileEntity implements ISide
     }
 
     protected ITextComponent getDefaultName() {
-        return new TranslationTextComponent("container.egg_carton");
+        return new TranslationTextComponent("Egg Carton");
     }
 
     public void read(CompoundNBT compound) {

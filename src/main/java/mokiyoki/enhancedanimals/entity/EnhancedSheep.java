@@ -326,7 +326,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
                     for (int i = 0; i <= numberOfLambs; i++) {
                         EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
-                        enhancedsheep.setGrowingAge(0);
+//                        enhancedsheep.setGrowingAge(0);
                         int[] babyGenes = getLambGenes();
                         enhancedsheep.setGenes(babyGenes);
                         enhancedsheep.setSharedGenes(babyGenes);

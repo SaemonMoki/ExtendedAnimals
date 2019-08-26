@@ -11,11 +11,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class EggCartonScreen extends ContainerScreen<EggCartonContainer> {
-    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("textures/gui/container/shulker_box.png");
+    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("eanimod:textures/gui/egg_carton.png");
 
     public EggCartonScreen(EggCartonContainer container, PlayerInventory playerInventory, ITextComponent textComponent) {
         super(container, playerInventory, textComponent);
-        ++this.ySize;
+//        ++this.ySize;
     }
 
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
@@ -29,7 +29,7 @@ public class EggCartonScreen extends ContainerScreen<EggCartonContainer> {
      */
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         this.font.drawString(this.title.getFormattedText(), 8.0F, 6.0F, 4210752);
-        this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+        this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 113 + 2), 4210752);
     }
 
     /**

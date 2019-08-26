@@ -36,6 +36,7 @@ public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends
             char[] uuidArry = enhancedMooshroom.getCachedUniqueIdString().toCharArray();
             this.size = enhancedMooshroom.getSize();
             float horns = 0.05F;
+            float dwarf;
 
             if (sharedGenes[13] == 1 || sharedGenes[14] == 1) {
                 //should be polled unless...
@@ -76,13 +77,20 @@ public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends
                 //horned
             }
 
+            if (sharedGenes[26] == 1 || sharedGenes[27] == 1){
+                //dwarf
+                dwarf = 0.2F;
+            } else {
+                dwarf = 0.0F;
+            }
+
             BlockState blockstate = entityIn.getMooshroomType().getRenderState();
             this.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.enableCull();
             GlStateManager.cullFace(GlStateManager.CullFace.FRONT);
             GlStateManager.pushMatrix();
             GlStateManager.scalef(1.0F, -1.0F, 1.0F);
-            GlStateManager.translatef(0.2F, 0.35F, 0.5F);
+            GlStateManager.translatef(0.2F, size - 0.7F - dwarf, 0.5F);
             GlStateManager.rotatef(42.0F, 0.0F, 1.0F, 0.0F);
             BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
             GlStateManager.pushMatrix();
@@ -101,7 +109,7 @@ public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends
             GlStateManager.scalef(1.0F, -1.0F, 1.0F);
             GlStateManager.translatef(0.0F, 0.7F, -0.2F);
             GlStateManager.rotatef(12.0F, 0.0F, 1.0F, 0.0F);
-            GlStateManager.translatef(-0.5F, size - 1.75F + horns, (size-0.6F) * 0.05F);
+            GlStateManager.translatef(-0.5F, size - 1.75F + horns - dwarf, size - 0.72F);
             blockrendererdispatcher.renderBlockBrightness(blockstate, 1.0F);
             GlStateManager.popMatrix();
             GlStateManager.cullFace(GlStateManager.CullFace.BACK);

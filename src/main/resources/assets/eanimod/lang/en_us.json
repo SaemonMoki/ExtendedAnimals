@@ -32,9 +32,11 @@
 "block.eanimod.post_birch": "Birch Post",
 "block.eanimod.post_jungle": "Jungle Post",
 "block.eanimod.post_spruce": "Spruce Post",
+"block.eanimod.egg_carton": "Egg Carton",
 "item.eanimod.enhanced_chicken_spawn_egg": "Enhanced Chicken",
 "item.eanimod.enhanced_sheep_spawn_egg": "Enhanced Sheep",
 "item.eanimod.enhanced_llama_spawn_egg": "Enhanced Llama",
 "item.eanimod.enhanced_rabbit_spawn_egg": "Enhanced Rabbit",
-"item.eanimod.enhanced_cow_spawn_egg": "Enhanced Cow"
+"item.eanimod.enhanced_cow_spawn_egg": "Enhanced Cow",
+"eanimod.container.egg_carton" : "Egg Carton"
 }

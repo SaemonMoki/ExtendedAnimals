@@ -97,7 +97,7 @@ public class RegistryHandler {
                 new BlockItem(ModBlocks.Post_Jungle, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Jungle.getRegistryName()),
                 new BlockItem(ModBlocks.Post_Oak, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Oak.getRegistryName()),
                 new BlockItem(ModBlocks.Post_Spruce, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Spruce.getRegistryName()),
-                new BlockItem(ModBlocks.Egg_Carton, new Item.Properties().group(ItemGroup.INVENTORY)).setRegistryName(ModBlocks.Egg_Carton.getRegistryName()),
+                new BlockItem(ModBlocks.Egg_Carton, new Item.Properties().maxStackSize(1).group(ItemGroup.INVENTORY)).setRegistryName(ModBlocks.Egg_Carton.getRegistryName()),
         };
 
 
@@ -393,6 +393,12 @@ public class RegistryHandler {
                     !biome.getRegistryName().equals(Biomes.THE_END.getRegistryName()) && !biome.getRegistryName().equals(Biomes.NETHER.getRegistryName())) {
                 biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
             }
+
+            //Enhanced Mooshroom Spawning
+            if (biome.getRegistryName().equals(Biomes.MUSHROOM_FIELDS.getRegistryName()) || biome.getRegistryName().equals(Biomes.MUSHROOM_FIELD_SHORE.getRegistryName())){
+                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_MOOSHROOM, 8, 4, 4));
+            }
+
         }
     }
 

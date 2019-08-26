@@ -493,7 +493,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 //TODO change y translation when calf is dwarf
 
                 if (dwarf != 0.0F){
-                    this.shortLeg1.render(scale);
+//                    this.shortLeg1.render(scale);
                     this.shortLeg2.render(scale);
                     this.shortLeg3.render(scale);
                     this.shortLeg4.render(scale);
@@ -686,7 +686,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             this.tail0.render(scale);
 
-            if (cowStatus.contains(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString())) {
+            if (cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString())) {
                 this.udder.render(scale);
                 this.nipples.render(scale);
             }

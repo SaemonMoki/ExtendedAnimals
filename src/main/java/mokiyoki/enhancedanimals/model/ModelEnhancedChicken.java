@@ -78,7 +78,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     private final RendererModel peaChin;
     private final RendererModel beard;
     private final RendererModel beardNN;
-//    private final RendererModel ears;
+    private final RendererModel earL;
+    private final RendererModel earR;
+    private final RendererModel earTuftL;
+    private final RendererModel earTuftR;
 
     public ModelEnhancedChicken(){
         this.textureWidth = 64;
@@ -103,6 +106,20 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
         this.forwardCrest = new RendererModel(this,1,43);
         this.forwardCrest.addBox(-1.5F, (7F+combRy), (-6F+combRz), 3, 3, 3, 0.2F);
+
+        this.earL = new RendererModel(this, 5, 240);
+        this.earL.addBox(-2.2F, 0.0F, 0.0F, 1, 6, 3);
+
+        this.earR = new RendererModel(this, 5, 240);
+        this.earR.addBox(1.2F, 0.0F, 0.0F, 1, 6, 3);
+        this.earR.mirror = true;
+
+        this.earTuftL = new RendererModel(this,75, 235);
+        this.earTuftL.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3);
+
+        this.earTuftR = new RendererModel(this,75, 235);
+        this.earTuftR.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3);
+        this.earR.mirror = true;
 
         int combSy = -3;
         int combSz = 3;
@@ -403,6 +420,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         int wSize = 0; // [0, 1, 2, 3, 4]
         int wingSize = 0; // [0, 1, 2]
         int bodyType; //[-1, 0, 1]  [small, normal, big]
+        boolean earTuft;
 
         if (genes[52] == 1 || genes[53] == 1) {
             nakedNeck = true;
@@ -595,6 +613,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             bodyType = 0;
         }
 
+        if (genes[150] == 2 || genes[151] == 2) {
+            earTuft = true;
+        } else {
+            earTuft = false;
+        }
+
         this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
         if (this.isChild && size >= 0.65) {
@@ -616,6 +640,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }
 
             this.billChild.render(scale);
+            if (earTuft) {
+                this.earTuftL.render(scale);
+                this.earTuftR.render(scale);
+            }
 
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
@@ -664,6 +692,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }
 
             this.billChild.render(scale);
+            if (earTuft) {
+                this.earTuftL.render(scale);
+                this.earTuftR.render(scale);
+            }
 
             GlStateManager.popMatrix();
             GlStateManager.pushMatrix();
@@ -831,6 +863,13 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                     }}}
 
             this.bill.render(scale);
+//            if (earTuft) {
+//                this.earTuftL.render(scale);
+//                this.earTuftR.render(scale);
+//            }
+
+            this.earL.render(scale);
+            this.earR.render(scale);
 
             GlStateManager.popMatrix();
         }
@@ -899,6 +938,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
         copyModelAngles(head, beard);
         copyModelAngles(head, beardNN);
+
+        copyModelAngles(head, earL);
+        copyModelAngles(head, earR);
+
+        copyModelAngles(head, earTuftL);
+        copyModelAngles(head, earTuftR);
 
         //leg stuff
         this.rightLeg.rotationPointY = 15F;

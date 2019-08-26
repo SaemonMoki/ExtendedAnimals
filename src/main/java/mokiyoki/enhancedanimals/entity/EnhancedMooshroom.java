@@ -93,7 +93,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
                     mixMitosisGenes();
 
                     EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
-                    enhancedmooshroom.setGrowingAge(0);
+//                    enhancedmooshroom.setGrowingAge(0);
                     int[] babyGenes = getCalfGenes();
                     enhancedmooshroom.setGenes(babyGenes);
                     enhancedmooshroom.setSharedGenes(babyGenes);
@@ -136,7 +136,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     public boolean processInteract(PlayerEntity player, Hand hand) {
         ItemStack itemstack = player.getHeldItem(hand);
-        if (itemstack.getItem() == Items.BOWL && this.getGrowingAge() >= 0 && !player.abilities.isCreativeMode) {
+        if (itemstack.getItem() == Items.BOWL && this.getGrowingAge() >= 0 && !player.abilities.isCreativeMode && getCowStatus().equals(EntityState.MOTHER.toString())) {
             itemstack.shrink(1);
             boolean flag = false;
             ItemStack itemstack1;
@@ -258,6 +258,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     public EnhancedMooshroom createChild(AgeableEntity ageable) {
+        super.createChild(ageable);
 //        EnhancedMooshroom EnhancedMooshroom = ENHANCED_MOOSHROOM.create(this.world);
 //        EnhancedMooshroom.setMooshroomType(this.func_213445_a((EnhancedMooshroom)ageable));
         return null;

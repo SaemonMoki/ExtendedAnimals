@@ -1,11 +1,14 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ContainerBlock;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -22,11 +25,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -46,6 +49,10 @@ public class EggCartonBlock extends ContainerBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final ResourceLocation field_220169_b = new ResourceLocation("contents");
+    protected static final VoxelShape SHAPE_DEFAULT = Block.makeCuboidShape(1.0D, 0.0D, 2.0D, 15.0D, 8.0D, 14.0D);
+    protected static final VoxelShape SHAPE_EASTWEST = Block.makeCuboidShape(2.0D, 0.0D, 1.0D, 14.0D, 8.0D, 15.0D);
+    protected static final VoxelShape SHAPE_NORTHSOUTH = Block.makeCuboidShape(1.0D, 0.0D, 2.0D, 15.0D, 8.0D, 14.0D);
+
 
     public EggCartonBlock(Properties properties) {
         super(properties);
@@ -106,19 +113,38 @@ public class EggCartonBlock extends ContainerBlock {
         if (tileentity instanceof EggCartonTileEntity) {
             EggCartonTileEntity eggCartonTileEntity = (EggCartonTileEntity)tileentity;
             if (!worldIn.isRemote && player.isCreative() && !eggCartonTileEntity.isEmpty()) {
-//                ItemStack itemstack = getColoredItemStack(this.getColor());
+                ItemStack itemstack = new ItemStack(ModBlocks.Egg_Carton);
                 CompoundNBT compoundnbt = eggCartonTileEntity.saveToNbt(new CompoundNBT());
                 if (!compoundnbt.isEmpty()) {
-//                    itemstack.setTagInfo("BlockEntityTag", compoundnbt);
+                    itemstack.setTagInfo("BlockEntityTag", compoundnbt);
                 }
 
                 if (eggCartonTileEntity.hasCustomName()) {
-//                    itemstack.setDisplayName(shulkerboxtileentity.getCustomName());
+                    itemstack.setDisplayName(eggCartonTileEntity.getCustomName());
                 }
 
-//                ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), itemstack);
-//                itementity.setDefaultPickupDelay();
-//                worldIn.addEntity(itementity);
+                ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), itemstack);
+                itementity.setDefaultPickupDelay();
+                worldIn.addEntity(itementity);
+            }else if (!worldIn.isRemote && !player.isCreative() && !eggCartonTileEntity.isEmpty()) {
+                ItemStack itemstack = new ItemStack(ModBlocks.Egg_Carton);
+                CompoundNBT compoundnbt = eggCartonTileEntity.saveToNbt(new CompoundNBT());
+                if (!compoundnbt.isEmpty()) {
+                    itemstack.setTagInfo("BlockEntityTag", compoundnbt);
+                }
+
+                if (eggCartonTileEntity.hasCustomName()) {
+                    itemstack.setDisplayName(eggCartonTileEntity.getCustomName());
+                }
+
+                ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), itemstack);
+                itementity.setDefaultPickupDelay();
+                worldIn.addEntity(itementity);
+            } else if (!worldIn.isRemote && !player.isCreative()) {
+                ItemStack itemstack = new ItemStack(ModBlocks.Egg_Carton);
+                ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), itemstack);
+                itementity.setDefaultPickupDelay();
+                worldIn.addEntity(itementity);
             } else {
                 eggCartonTileEntity.fillWithLoot(player);
             }
@@ -148,12 +174,12 @@ public class EggCartonBlock extends ContainerBlock {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         CompoundNBT compoundnbt = stack.getChildTag("BlockEntityTag");
         if (compoundnbt != null) {
-            if (compoundnbt.contains("LootTable", 8)) {
+            if (compoundnbt.contains("LootTable", 17)) {
                 tooltip.add(new StringTextComponent("???????"));
             }
 
-            if (compoundnbt.contains("Items", 9)) {
-                NonNullList<ItemStack> nonnulllist = NonNullList.withSize(27, ItemStack.EMPTY);
+            if (compoundnbt.contains("Items", 17)) {
+                NonNullList<ItemStack> nonnulllist = NonNullList.withSize(17, ItemStack.EMPTY);
                 ItemStackHelper.loadAllItems(compoundnbt, nonnulllist);
                 int i = 0;
                 int j = 0;
@@ -180,7 +206,22 @@ public class EggCartonBlock extends ContainerBlock {
 
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         TileEntity tileentity = worldIn.getTileEntity(pos);
-        return tileentity instanceof EggCartonTileEntity ? VoxelShapes.create(((EggCartonTileEntity)tileentity).getBoundingBox(state)) : VoxelShapes.fullCube();
+        Direction enumfacing = state.get(FACING);
+        switch(enumfacing) {
+            case UP:
+            default:
+                return SHAPE_DEFAULT;
+            case DOWN:
+                return SHAPE_DEFAULT;
+            case NORTH:
+                return SHAPE_NORTHSOUTH;
+            case SOUTH:
+                return SHAPE_NORTHSOUTH;
+            case EAST:
+                return SHAPE_EASTWEST;
+            case WEST:
+                return SHAPE_EASTWEST;
+        }
     }
 
     public ItemStack getItem(IBlockReader worldIn, BlockPos pos, BlockState state) {
@@ -190,14 +231,22 @@ public class EggCartonBlock extends ContainerBlock {
         if (!compoundnbt.isEmpty()) {
             itemstack.setTagInfo("BlockEntityTag", compoundnbt);
         }
-
         return itemstack;
     }
-
 
     @Override
     public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
         return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, Rotation rot) {
+        return state.with(FACING, rot.rotate(state.get(FACING)));
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        return getShape(state, worldIn, pos, context);
     }
 
     @Override
@@ -215,4 +264,9 @@ public class EggCartonBlock extends ContainerBlock {
         return Container.calcRedstoneFromInventory((IInventory)worldIn.getTileEntity(pos));
     }
 
+    //TODO make it so it will break when moved by piston
+//    @Override
+//    public PushReaction getPushReaction(BlockState state) {
+//        return PushReaction.DESTROY;
+//    }
 }

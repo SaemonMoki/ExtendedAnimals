@@ -181,9 +181,32 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     private static final String[] CHICKEN_TEXTURES_SHANKS = new String[] {
         "shanks_horn.png","shanks_yellow.png","shanks_willow.png","shanks_black.png",
         "shanks_verywhite.png","shanks_white.png", "shanks_slate.png", "shanks_black.png",
+        "shanks_superyellow.png"
     };
     private static final String[] CHICKEN_TEXTURES_COMB = new String[] {
         "comb_black.png","comb_mulberry.png","comb_red.png"
+    };
+    private static final String[] CHICKEN_TEXTURES_FACE = new String[] {
+            "", "face_faint_red.png", "face_normal_red.png", "face_extensive_red.png",
+                "face_faint_mulberry.png", "face_normal_mulberry.png", "face_extensive_mulberry.png",
+                "face_faint_black.png", "face_normal_black.png", "face_extensive_black.png",
+                "face_faint_mottledred.png", "face_normal_mottledred.png", "face_extensive_mottledred.png",
+                "face_faint_mottledmulberry.png", "face_normal_mottledmulberry.png", "face_extensive_mottledmulberry.png",
+                "face_faint_mottledblack.png", "face_normal_mottledblack.png", "face_extensive_mottledblack.png",
+                "face_faint_white.png", "face_normal_white.png", "face_extensive_white.png",
+                "face_faint_lightblue.png", "face_lightblue_purple.png", "face_lightblue_purple.png",
+                "face_faint_blue.png", "face_normal_blue.png", "face_extensive_blue.png"
+    };
+    private static final String[] CHICKEN_TEXTURES_EARS = new String[] {
+            "", "ear_red1.png", "ear_red2.png", "ear_red3.png", "ear_red4.png", "ear_red5.png", "ear_red6.png", "ear_red7.png", "ear_red8.png", "ear_red9.png", "ear_red10.png",
+                "ear_mulberry1.png", "ear_mulberry2.png", "ear_mulberry3.png", "ear_mulberry4.png", "ear_mulberry5.png", "ear_mulberry6.png", "ear_mulberry7.png", "ear_mulberry8.png", "ear_mulberry9.png", "ear_mulberry10.png",
+                "ear_black1.png", "ear_black2.png", "ear_black3.png", "ear_black4.png", "ear_black5.png", "ear_black6.png", "ear_black7.png", "ear_black8.png", "ear_black9.png", "ear_black10.png",
+                "ear_mottledred1.png", "ear_mottledred2.png", "ear_mottledred3.png", "ear_mottledred4.png", "ear_mottledred5.png", "ear_mottledred6.png", "ear_mottledred7.png", "ear_mottledred8.png", "ear_mottledred9.png", "ear_mottledred10.png",
+                "ear_mottledmulberry1.png", "ear_mottledmulberry2.png", "ear_mottledmulberry3.png", "ear_mottledmulberry4.png", "ear_mottledmulberry5.png", "ear_mottledmulberry6.png", "ear_mottledmulberry7.png", "ear_mottledmulberry8.png", "ear_mottledmulberry9.png", "ear_mottledmulberry10.png",
+                "ear_mottledblack1.png", "ear_mottledblack2.png", "ear_mottledblack3.png", "ear_mottledblack4.png", "ear_mottledblack5.png", "ear_mottledblack6.png", "ear_mottledblack7.png", "ear_mottledblack8.png", "ear_mottledblack9.png", "ear_mottledblack10.png",
+                "ear_white1.png", "ear_white2.png", "ear_white3.png", "ear_white4.png", "ear_white5.png", "ear_white6.png", "ear_white7.png", "ear_white8.png", "ear_white9.png", "ear_white10.png",
+                "ear_lightblue1.png", "ear_lightblue2.png", "ear_lightblue3.png", "ear_lightblue4.png", "ear_lightblue5.png", "ear_lightblue6.png", "ear_lightblue7.png", "ear_lightblue8.png", "ear_lightblue9.png", "ear_lightblue10.png",
+                "ear_blue1.png", "ear_blue2.png", "ear_blue3.png", "ear_blue4.png", "ear_blue5.png", "ear_blue6.png", "ear_blue7.png", "ear_blue8.png", "ear_blue9.png", "ear_blue10.png",
     };
     private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
         "eyes_albino.png","eyes_black.png"
@@ -1688,6 +1711,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                     this.chickenTextures.add(CHICKEN_TEXTURES_WHITE[white]);
                 }
                 this.chickenTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
+                this.chickenTextures.add(CHICKEN_TEXTURES_FACE[1]);
+                this.chickenTextures.add(CHICKEN_TEXTURES_EARS[8]);
                 this.chickenTextures.add(CHICKEN_TEXTURES_COMB[comb]);
                 this.chickenTextures.add(CHICKEN_TEXTURES_EYES[eyes]);
             }else{
@@ -2067,9 +2092,9 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 boolean thisOrMate = rand.nextBoolean();
                 if (thisOrMate){
                     eggGenes[48] = mitosisGenes[48];
-                    eggGenes[62] = mitosisGenes[48];
+                    eggGenes[62] = mitosisGenes[62];
                     eggGenes[49] = mateMitosisGenes[49];
-                    eggGenes[63] = mateMitosisGenes[49];
+                    eggGenes[63] = mateMitosisGenes[63];
                 } else {
                     eggGenes[48] = mateMitosisGenes[48];
                     eggGenes[62] = mateMitosisGenes[62];
@@ -2485,9 +2510,9 @@ if (false){
         }
     }
 
-    //yellow shanks [ white, yellow ]
+    //yellow shanks [ white, yellow, superyellow ]
     if ((ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2)) && wildType != 0) || wildType == 4) {
-        initialGenes[44] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        initialGenes[44] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
     } else {
         if (wildType == 1) {
@@ -2497,7 +2522,7 @@ if (false){
         }
     }       //homozygous white legs only in jungle
     if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2)) && wildType == 1) {
-        initialGenes[45] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        initialGenes[45] = (ThreadLocalRandom.current().nextInt(3) + 1);
     } else {
         if (wildType == 1) {
             initialGenes[45] = (1);
@@ -3215,6 +3240,17 @@ if (false){
     } else {
         initialGenes[149] = (2);
     }
+
+    //EarTuft [normal, Eartuft]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[150] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        initialGenes[151] = (1);
+    } else {
+        initialGenes[150] = (1);
+        initialGenes[151] = (1);
+    }
+
+
 
     //Quirk ideas:
     //favourite flavours/foods

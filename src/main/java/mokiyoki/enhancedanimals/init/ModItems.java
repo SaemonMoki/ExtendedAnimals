@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.init;
 
+import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
 import mokiyoki.enhancedanimals.items.*;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.item.Food;
@@ -46,6 +47,5 @@ public class ModItems {
     public static final Item RabbitStew_Weak = new RabbitStew(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64).food((new Food.Builder()).hunger(8).saturation(10F).meat().build())).setRegistryName(Reference.MODID, "rabbitstew_weak");
 
     public static final Item Debug_Gene_Book = new DebugGenesBook(new Item.Properties().group(ItemGroup.MISC).maxStackSize(1)).setRegistryName(Reference.MODID, "debug_gene_book");
-
 }
 

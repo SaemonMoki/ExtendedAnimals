@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.ai.general.EnhancedGrassGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -107,7 +108,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private static final int WTC = 90;
     private final List<String> sheepTextures = new ArrayList<>();
     private final List<String> sheepFleeceTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 38;
+    private static final int GENES_LENGTH = 40;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -200,6 +201,14 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         this.dataManager.register(COAT_LENGTH, 0);
         this.dataManager.register(DYE_COLOUR, Byte.valueOf((byte)0));
         this.dataManager.register(SHEEP_STATUS, new String());
+    }
+
+    protected void setSheepStatus(String status) {
+        this.dataManager.set(SHEEP_STATUS, status);
+    }
+
+    public String getSheepStatus() {
+        return this.dataManager.get(SHEEP_STATUS);
     }
 
     @Nullable
@@ -310,23 +319,48 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             }
 
             if(pregnant) {
+
                 gestationTimer++;
                 int days = ConfigHandler.COMMON.gestationDays.get();
+                if (days/2 < gestationTimer) {
+                    setSheepStatus(EntityState.PREGNANT.toString());
+                }
                 if (hunger > days*(0.75) && days !=0) {
                     pregnant = false;
+                    setSheepStatus(EntityState.ADULT.toString());
                 }
                 if (gestationTimer >= days) {
                     pregnant = false;
                     gestationTimer = 0;
-
-                    int lambRange = 2;
+                    setSheepStatus(EntityState.MOTHER.toString());
+                    int lambRange;
                     int lambAverage = 1;
+                    int numberOfLambs;
 
-                    int numberOfLambs = ThreadLocalRandom.current().nextInt(lambRange)+lambAverage;
+                    if (genes[38] == 1 || genes[39] == 1) {
+                        //1 baby
+                        lambRange = 1;
+                    } else if (genes[38] == 3 && genes[39] == 3) {
+                        // 2-3 babies
+                        lambRange = 2;
+                        lambAverage = 2;
+                    } else if (genes[38] == 2 && genes[39] == 2) {
+                        //1 to 2 babies
+                        lambRange = 2;
+                    } else {
+                        // 1-3 babies
+                        lambRange = 3;
+                        lambAverage = 1;
+                    }
+
+                    if (lambRange != 1) {
+                        numberOfLambs = ThreadLocalRandom.current().nextInt(lambRange) + lambAverage;
+                    } else {
+                        numberOfLambs = 1;
+                    }
 
                     for (int i = 0; i <= numberOfLambs; i++) {
                         EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
-//                        enhancedsheep.setGrowingAge(0);
                         int[] babyGenes = getLambGenes();
                         enhancedsheep.setGenes(babyGenes);
                         enhancedsheep.setSharedGenes(babyGenes);
@@ -794,6 +828,14 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                     if (!entityPlayer.abilities.isCreativeMode) {
                         itemStack.shrink(1);
                     }
+                }
+            }else if (item == Items.GLASS_BOTTLE && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())) {
+                entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
+                itemStack.shrink(1);
+                if (itemStack.isEmpty()) {
+                    entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Milk_Bottle));
+                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Milk_Bottle))) {
+                    entityPlayer.dropItem(new ItemStack(ModItems.Milk_Bottle), false);
                 }
             } else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
@@ -1348,6 +1390,20 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
         } else {
             initialGenes[37] = (2);
+        }
+
+        //fertility modifier [ -1, 0, +1]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[38] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[38] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[39] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[39] = (2);
         }
 
         return initialGenes;

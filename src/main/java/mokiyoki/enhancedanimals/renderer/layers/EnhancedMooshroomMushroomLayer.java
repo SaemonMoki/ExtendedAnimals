@@ -107,9 +107,9 @@ public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends
             GlStateManager.pushMatrix();
             this.getEntityModel().getHead().postRender(0.0625F);
             GlStateManager.scalef(1.0F, -1.0F, 1.0F);
-            GlStateManager.translatef(0.0F, 0.7F, -0.2F);
+            GlStateManager.translatef(0.0F, 0.7F, 0.0F);
             GlStateManager.rotatef(12.0F, 0.0F, 1.0F, 0.0F);
-            GlStateManager.translatef(-0.5F, size - 1.75F + horns - dwarf, size - 0.72F);
+            GlStateManager.translatef(-0.5F, size - 1.75F + horns - dwarf, 0.45F - ((size-0.6F) * 1.2777F));
             blockrendererdispatcher.renderBlockBrightness(blockstate, 1.0F);
             GlStateManager.popMatrix();
             GlStateManager.cullFace(GlStateManager.CullFace.BACK);

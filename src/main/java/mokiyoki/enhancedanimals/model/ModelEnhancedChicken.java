@@ -107,18 +107,18 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.forwardCrest = new RendererModel(this,1,43);
         this.forwardCrest.addBox(-1.5F, (7F+combRy), (-6F+combRz), 3, 3, 3, 0.2F);
 
-        this.earL = new RendererModel(this, 5, 240);
-        this.earL.addBox(-2.2F, 0.0F, 0.0F, 1, 6, 3);
+        this.earL = new RendererModel(this, 1, 52);
+        this.earL.addBox(-2.2F, -6.0F, -2.2F, 1, 6, 3);
 
-        this.earR = new RendererModel(this, 5, 240);
-        this.earR.addBox(1.2F, 0.0F, 0.0F, 1, 6, 3);
+        this.earR = new RendererModel(this, 1, 52);
+        this.earR.addBox(2.2F, -6.0F, -2.4F, 1, 6, 3);
         this.earR.mirror = true;
 
-        this.earTuftL = new RendererModel(this,75, 235);
-        this.earTuftL.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3);
+        this.earTuftL = new RendererModel(this,15, 47);
+        this.earTuftL.addBox(0.0F, -5.0F, 0.0F, 2, 1, 3);
 
-        this.earTuftR = new RendererModel(this,75, 235);
-        this.earTuftR.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3);
+        this.earTuftR = new RendererModel(this,15, 47);
+        this.earTuftR.addBox(0.0F, -5.0F, 0.0F, 2, 1, 3);
         this.earR.mirror = true;
 
         int combSy = -3;

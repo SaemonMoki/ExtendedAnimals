@@ -304,7 +304,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                     mixMitosisGenes();
 
                     EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
-                    enhancedcow.setGrowingAge(0);
                     int[] babyGenes = getCalfGenes();
                     enhancedcow.setGenes(babyGenes);
                     enhancedcow.setSharedGenes(babyGenes);
@@ -2010,31 +2009,31 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         if (!aiConfigured) {
             Double speed = 1.0D;
 
-            if (this.cowSize > 1.2F) {
-                speed++;
-                speed = speed + 0.1;
-            }
-
-            if (this.cowSize < 0.8F) {
-                speed = speed - 0.1;
-            }
-
-            int bodyShape = 0;
-
-            for (int i = 1; i < genes[54]; i++){
-                bodyShape++;
-            }
-            for (int i = 1; i < genes[55]; i++){
-                bodyShape++;
-            }
-
-            if (genes[26] == 1 || genes[27] == 1) {
-                speed = speed *0.9;
-            }
-
-            if (bodyShape == 4) {
-                speed = speed - 0.1;
-            }
+//            if (this.cowSize > 1.2F) {
+//                speed++;
+//                speed = speed + 0.1;
+//            }
+//
+//            if (this.cowSize < 0.8F) {
+//                speed = speed - 0.1;
+//            }
+//
+//            int bodyShape = 0;
+//
+//            for (int i = 1; i < genes[54]; i++){
+//                bodyShape++;
+//            }
+//            for (int i = 1; i < genes[55]; i++){
+//                bodyShape++;
+//            }
+//
+//            if (genes[26] == 1 || genes[27] == 1) {
+//                speed = speed *0.9;
+//            }
+//
+//            if (bodyShape == 4) {
+//                speed = speed - 0.1;
+//            }
 
             this.goalSelector.addGoal(1, new PanicGoal(this, speed*1.5D));
             this.goalSelector.addGoal(2, new BreedGoal(this, speed));

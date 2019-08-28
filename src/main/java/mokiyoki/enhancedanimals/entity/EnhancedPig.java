@@ -150,6 +150,8 @@ public class EnhancedPig extends AnimalEntity {
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
+    private int hunger = 0;
+
     @Override
     protected void registerGoals() {
         this.entityAIEatGrass = new EatGrassGoal(this);
@@ -211,6 +213,18 @@ public class EnhancedPig extends AnimalEntity {
         return this.dataManager.get(PIG_SIZE);
     }
 
+    public int getHunger(){
+        return hunger;
+    }
+
+    public void decreaseHunger() {
+        if (this.hunger - 6000 < 0) {
+            this.hunger = 0;
+        } else {
+            this.hunger = this.hunger - 6000;
+        }
+    }
+
     @Override
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
@@ -218,10 +232,10 @@ public class EnhancedPig extends AnimalEntity {
         if (item instanceof DebugGenesBook) {
             Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
         }
-//        else if (TEMPTATION_ITEMS.test(itemStack)) {
-//            decreaseHunger();
-//            itemStack.shrink(1);
-//        }
+        else if (TEMPTATION_ITEMS.test(itemStack)) {
+            decreaseHunger();
+            itemStack.shrink(1);
+        }
         return super.processInteract(entityPlayer, hand);
     }
 

@@ -21,6 +21,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void replaceVanillaMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
+        //TODO figure out how to not delete named entities and maybe convert them instead.
         if (entity instanceof ChickenEntity) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
@@ -42,6 +43,11 @@ public class EventHandler {
             }
         }
         if (entity instanceof CowEntity && !(entity instanceof MooshroomEntity)) {
+            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
+                event.setCanceled(true);
+            }
+        }
+        if (entity instanceof MooshroomEntity && !entity.hasCustomName()) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
             }

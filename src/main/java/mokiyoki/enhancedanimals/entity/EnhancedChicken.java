@@ -184,7 +184,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         "shanks_superyellow.png"
     };
     private static final String[] CHICKEN_TEXTURES_COMB = new String[] {
-        "comb_black.png","comb_mulberry.png","comb_red.png"
+        "comb_black.png","comb_blackleaking.png","comb_red.png",
+        "comb_moorish.png", "comb_mulberry.png", "comb_red.png"
     };
     private static final String[] CHICKEN_TEXTURES_FACE = new String[] {
             "", "face_faint_red.png", "face_normal_red.png", "face_extensive_red.png",
@@ -207,6 +208,11 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 "ear_white1.png", "ear_white2.png", "ear_white3.png", "ear_white4.png", "ear_white5.png", "ear_white6.png", "ear_white7.png", "ear_white8.png", "ear_white9.png", "ear_white10.png",
                 "ear_lightblue1.png", "ear_lightblue2.png", "ear_lightblue3.png", "ear_lightblue4.png", "ear_lightblue5.png", "ear_lightblue6.png", "ear_lightblue7.png", "ear_lightblue8.png", "ear_lightblue9.png", "ear_lightblue10.png",
                 "ear_blue1.png", "ear_blue2.png", "ear_blue3.png", "ear_blue4.png", "ear_blue5.png", "ear_blue6.png", "ear_blue7.png", "ear_blue8.png", "ear_blue9.png", "ear_blue10.png",
+                "ear_yellow1.png", "ear_yellow2.png", "ear_yellow3.png", "ear_yellow4.png", "ear_yellow5.png", "ear_yellow6.png", "ear_yellow7.png", "ear_yellow8.png", "ear_yellow9.png", "ear_yellow10.png",
+                "ear_lightgreen1.png", "ear_lightgreen2.png", "ear_lightgreen3.png", "ear_lightgreen4.png", "ear_lightgreen5.png", "ear_lightgreen6.png", "ear_lightgreen7.png", "ear_lightgreen8.png", "ear_lightgreen9.png", "ear_lightgreen10.png",
+                "ear_green1.png", "ear_green2.png", "ear_green3.png", "ear_green4.png", "ear_green5.png", "ear_green6.png", "ear_green7.png", "ear_green8.png", "ear_green9.png", "ear_green10.png",
+                "ear_mottledmoorish1.png", "ear_mottledmoorish2.png", "ear_mottledmoorish3.png", "ear_mottledmoorish4.png", "ear_mottledmoorish5.png", "ear_mottledmoorish6.png", "ear_mottledmoorish7.png", "ear_mottledmoorish8.png", "ear_mottledmoorish9.png", "ear_mottledmoorish10.png",
+
     };
     private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
         "eyes_albino.png","eyes_black.png"
@@ -715,6 +721,10 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
                 int moorheadtoggle = 0;
                 int Melanin = 0;
+
+                int face = 0;
+                int ears = 0;
+                int earsW = 0;
 
                 //TODO fix up columbian type patterns to look more varried
                 //TODO add in heterozygous pattern variations
@@ -1639,12 +1649,14 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                         //comb and shanks are black
                         comb = 0;
                         shanks = 3;
+                    } else {
+                        comb = 4;
                     }
                     if (genesForText[24] == 1 && genesForText[25] == 1) {
                         shanks = 3;
                         // makes mulbery comb
                         if (genesForText[30] == 2) {
-                            comb = 1;
+                            comb = comb + 1;
                         }
                     }
                     //shanks starts at 3 btw
@@ -1673,9 +1685,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                         shanks++;
                     }
 
-                    //TODO replace this with a new r.black shank gene
-                    // if columbian toggle doesnt matter darken by 1
-                    if ((genesForText[2] == 1 && genesForText[28] == 2 && genesForText[29] == 2) || (genesForText[2] == 2 && genesForText[28] == 1 && genesForText[29] == 1)) {
+                    if (genesForText[166] == 2 && genesForText[167] == 2) {
                         shanks++;
                     }
 
@@ -1687,17 +1697,307 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                     }
 
                     //lightens comb to mulberry if lightness is extreme enough
-                    if (shanks < 2 && comb == 0) {
-                        comb = 1;
+                    if (shanks < 2 && (comb == 0 || comb == 4)) {
+                        comb = comb + 1;
                     }
 
                     //makes the shanks and beak their white or yellow varient
                     if (genesForText[44] == 1 || genesForText[45] == 1) {
                         shanks = shanks + 4;
                     }
+                    if ((shanks == 1) && (genesForText[44] == 3 && genesForText[45] == 3)) {
+                        shanks = 8;
+                    }
 
                 }
 
+                //face and ear size stuff
+                if (genesForText[2] == genesForText[6]) {
+                    ears = 1;
+                } else {
+                    ears = -1;
+                }
+
+                if (genesForText[162] == 163){
+                    if (genesForText[162] >= 9 && genesForText[162] <=16) {
+                        ears = ears +1;
+                    } else if (genesForText[162] >= 17 && genesForText[162] <=24) {
+                        ears = ears + 2;
+                    }
+                    if ((genesForText[162] & 1) == 0) {
+                        earsW = earsW + 2;
+                    }
+                } else {
+                    ears = ears - 1;
+                    if ((genesForText[162] & 1) == 0) {
+                        if ((genesForText[163] & 1) == 0) {
+                            earsW = earsW + 1;
+                        }
+                    } else if ((genesForText[163] & 1) != 0) {
+                        earsW = earsW - 1;
+                    }
+                }
+
+                if (genesForText[152] <= 4 || genesForText[153] <= 4) {
+                    ears = ears - 1;
+                } else {
+                    if (genesForText[152] == genesForText[153]) {
+                        if (genesForText[152] >= 9 || genesForText[153] >= 9) {
+                            ears = ears + 1;
+                        }
+                    } else {
+                        ears = ears - 1;
+                    }
+
+                    if ((genesForText[152] & 1) == 0) {
+                        earsW = earsW + 1;
+                    }
+                }
+
+                if (genesForText[160] == genesForText[161]) {
+                    if (genesForText[160] >= 9) {
+                        if (genesForText[160] >= 17) {
+                            ears = ears + 2;
+                        } else {
+                            ears = ears + 1;
+                        }
+                        earsW = earsW + 1;
+                    }
+                } else {
+                    if (genesForText[160] <= 11|| genesForText[161] <= 12) {
+                        ears = ears - 2;
+                    } else if (genesForText[160] <= 19|| genesForText[161] <= 20) {
+                        ears = ears - 1;
+                    }
+                    earsW = earsW - 1;
+                }
+
+                if (genesForText[82] == 1) {
+                    ears = ears + 1;
+                }
+                if (genesForText[83] == 1) {
+                    ears = ears + 1;
+                }
+
+                if (genesForText[48] == 1) {
+                    ears = ears - 3;
+                }
+                if (genesForText[49] == 1) {
+                    ears = ears - 3;
+                }
+
+                if (genesForText[56] == 1 || genesForText[57] == 1) {
+                    ears = ears - 2;
+                }
+
+                if (genesForText[80] == 1 || genesForText[81] == 1) {
+                    ears = ears - 1;
+                }
+
+                if (genesForText[158] == 1 || genesForText[159] == 1) {
+                    ears = ears - 1;
+                    earsW = earsW - 1;
+                } else if (genesForText[158] == 2 || genesForText[159] == 2) {
+                    ears = ears - 1;
+                } else if (genesForText[158] == 3 || genesForText[159] == 3) {
+                    if (genesForText[158] == 4 || genesForText[159] == 4) {
+                        ears = ears + 1;
+                        earsW = earsW + 1;
+                    } else {
+                        ears = ears + 1;
+                    }
+                } else if (genesForText[158] == 4 || genesForText[159] == 4) {
+                    earsW = earsW + 1;
+                } else {
+                    ears = ears + 1;
+                    earsW = earsW + 1;
+                }
+
+
+                //at max adds 2 if less than 8
+                if (genesForText[154] <= 3 || genesForText[155] <= 3) {
+                    ears = ears - 1;
+                } else if (genesForText[154] == genesForText[155]) {
+                    if (genesForText[154] >= 7) {
+                        if (genesForText[154] >= 10) {
+                            if (ears <= 7) {
+                                ears = ears + 2;
+                            } else {
+                                ears = ears + 1;
+                            }
+                        } else {
+                            ears = ears + 1;
+                        }
+                    }
+                }
+
+                //at max adds 2 if less than 8
+                if (genesForText[156] <= 3 || genesForText[157] <= 3) {
+                    if (genesForText[156] == genesForText[157]) {
+                        ears = ears - 1;
+                    }
+                } else if (genesForText[156] == genesForText[157]) {
+                    if (genesForText[156] >= 6) {
+                        if (genesForText[156] >= 10) {
+                            if (ears <= 7) {
+                                ears = ears + 2;
+                            } else {
+                                ears = ears + 1;
+                            }
+                        } else {
+                            ears = ears + 1;
+                        }
+                    }
+                }
+
+                if (genesForText[84] == 1 || genesForText[85] == 1) {
+                    ears = ears/2;
+                }
+
+
+                if ((genesForText[154] & 1) == 0 && (genesForText[155]) == 0) {
+                    earsW = earsW + 1;
+                } else if ((genesForText[154] & 1) != 0 && (genesForText[155]) != 0) {
+                    earsW = earsW - 1;
+                }
+
+                if (genesForText[164] == 1 || genesForText[165] == 1) {
+                    earsW = earsW - 3;
+                } else if (genesForText[164] == 2 || genesForText[165] == 2) {
+                    if (genesForText[164] >= 4 || genesForText[165] >= 4) {
+                        earsW = earsW - 2;
+                    } else {
+                        earsW = earsW - 1;
+                    }
+                } else if (genesForText[164] == 4 || genesForText[165] == 4) {
+                    if (genesForText[164] >= 5 || genesForText[165] >= 5) {
+                        earsW = earsW + 1;
+                    }
+                } else if (genesForText[164] == genesForText[165]) {
+                    earsW = earsW + 2;
+                }
+
+                if (genesForText[9] == 2) {
+                    earsW = earsW/2;
+                }
+
+                if (genesForText[6] == 5) {
+                    if (earsW <= 3) {
+                        earsW = earsW + 1;
+                    } else if (earsW >=5) {
+                        earsW = earsW - 1;
+                    }
+                } else if (genesForText[6] == 6) {
+                    earsW = earsW + 1;
+                } else {
+                    ears = ears - 1;
+                }
+
+                // this sets ear whiteness to actual value
+                if (earsW <= 2) {
+                    earsW = 0;
+                    //red
+                } else if (earsW >= 6) {
+                    earsW = 2;
+                    //white
+                } else {
+                    earsW = 1;
+                    //mottled
+                }
+
+                //ear size fixer
+                if (ears < 0) {
+                    ears = 0;
+                } else if (ears > 10) {
+                    ears = 10;
+                }
+
+                //ear colour calculation
+                if (ears != 0) {
+                    if (comb == 0) {
+                        //face is fibro
+                        if (ears >= 3) {
+                            face = 7;
+                        }
+                        if (earsW == 2) {
+                            //blue
+                            if ((genesForText[44] != 1 && genesForText[45] != 1) && (genesForText[44] == 3 || genesForText[45] == 3)) {
+                                //green
+                                ears = ears + 110;
+                            } else {
+                                //blue
+                                ears = ears + 80;
+                            }
+                        } else if (earsW == 1) {
+                            //mottled black
+                            ears = ears + 50;
+                        } else {
+                            //black
+                            ears = ears + 20;
+                        }
+                    } else if (comb == 4) {
+                        //face is moorish
+                        face = 7;
+                        if (earsW == 2) {
+                            if ((genesForText[44] != 1 && genesForText[45] != 1) && (genesForText[44] == 3 || genesForText[45] == 3)) {
+                                //yellow
+                                ears = ears + 90;
+                            } else {
+                                //white ears
+                                ears = ears + 60;
+                            }
+                        } else if (earsW == 1) {
+                            //mottled moorish ears (black and white)
+                            ears = ears + 120;
+                        } else {
+                                //black
+                                ears = ears + 20;
+                            }
+                    } else if (comb == 1 || comb == 5) {
+                        //face is mulberry based
+                        face = 4;
+                        if (earsW == 2) {
+                            //ear is white
+                            if ((genesForText[4] == 1) && (genesForText[42] == 1 || genesForText[43] == 1)) {
+                                if ((genesForText[44] != 1 && genesForText[45] != 1) && (genesForText[44] == 3 || genesForText[45] == 3)) {
+                                    //light green
+                                    ears = ears + 100;
+                                } else {
+                                    //ear is light blue
+                                    ears = ears + 70;
+                                }
+                            } else {
+                                if ((genesForText[44] != 1 && genesForText[45] != 1) && (genesForText[44] == 3 || genesForText[45] == 3)) {
+                                    //yellow
+                                    ears = ears + 90;
+                                } else {
+                                    //white ears
+                                    ears = ears + 60;
+                                }
+                            }
+                        } else if (earsW == 1) {
+                            ears = ears + 40;
+                        } else {
+                            //ears mulberry
+                            ears = ears + 10;
+                        }
+                    } else {
+                        //face is red
+                        face = 1;
+                        if (earsW == 2) {
+                            if ((genesForText[44] != 1 && genesForText[45] != 1) && (genesForText[44] == 3 || genesForText[45] == 3)) {
+                                //yellow
+                                ears = ears + 90;
+                            } else {
+                                //white ears
+                                ears = ears + 60;
+                            }
+                        } else if (earsW == 1) {
+                            //mottled red ears
+                            ears = ears + 10;
+                        }
+                    }
+                }
 
 //            after finished genesForText
                 this.chickenTextures.add(CHICKEN_TEXTURES_GROUND[ground]);
@@ -1711,8 +2011,12 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                     this.chickenTextures.add(CHICKEN_TEXTURES_WHITE[white]);
                 }
                 this.chickenTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
-                this.chickenTextures.add(CHICKEN_TEXTURES_FACE[1]);
-                this.chickenTextures.add(CHICKEN_TEXTURES_EARS[8]);
+                if (face >= 1) {
+                    this.chickenTextures.add(CHICKEN_TEXTURES_FACE[face]);
+                }
+                if (ears >= 1) {
+                    this.chickenTextures.add(CHICKEN_TEXTURES_EARS[ears]);
+                }
                 this.chickenTextures.add(CHICKEN_TEXTURES_COMB[comb]);
                 this.chickenTextures.add(CHICKEN_TEXTURES_EYES[eyes]);
             }else{
@@ -1779,9 +2083,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 //                        shanks++;
 //                    }
 
-                    //TODO replace this with a new r.black shank gene
-                    // if columbian toggle doesnt matter darken by 1
-                    if ((genesForText[2] == 1 && genesForText[28] == 2 && genesForText[29] == 2) || (genesForText[2] == 2 && genesForText[28] == 1 && genesForText[29] == 1)) {
+                    if (genesForText[166] == 2 && genesForText[167] == 2) {
                         shanks++;
                     }
 
@@ -2199,15 +2501,11 @@ if (false){
         initialGenes[1] = (1);
     }
 
-    //TODO make this into ear whiteness gene [ large white, little white, no white ]
+    //ear size setting gene
     if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-        initialGenes[2] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        initialGenes[2] = (ThreadLocalRandom.current().nextInt(6) + 1);
     } else {
-        if (wildType == 1 || wildType == 2) {
-            initialGenes[2] = (1);
-        } else {
-            initialGenes[2] = (2);
-        }
+        initialGenes[2] = (1);
     }
 
     //Barred [ wildtype, barred ] //exclusive to savanna
@@ -2232,9 +2530,9 @@ if (false){
         initialGenes[5] = (1);
     }
 
-    //white head
+    //white face
     if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-        initialGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        initialGenes[6] = (ThreadLocalRandom.current().nextInt(6) + 1);
 
     } else {
         initialGenes[6] = (1);
@@ -2256,11 +2554,19 @@ if (false){
         initialGenes[8] = (1);
     }
 
+    //large ear inhibitor [ no inhibitor, halving inhibitor ]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[9] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+    } else {
+        initialGenes[9] = (1);
+    }
+
 /**
  * unused parent linked genes
  */
 
-    for (int i = 9; i < 20; i++) {
+    for (int i = 10; i < 20; i++) {
         initialGenes[i] = (10);
     }
 
@@ -3250,7 +3556,109 @@ if (false){
         initialGenes[151] = (1);
     }
 
+    //ear size 1 [1-4 = -1 , 5-8 = 0, 9-12 = +1]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[152] = (ThreadLocalRandom.current().nextInt(6) + 1);
+    } else {
+        initialGenes[152] = (1);
+    }
 
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[153] = (ThreadLocalRandom.current().nextInt(6) + 7);
+    } else {
+        initialGenes[153] = (7);
+    }
+
+    //ear size 2 [1-4 = -1 , 5-8 = 0, 9-12 = +1]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[154] = (ThreadLocalRandom.current().nextInt(6) + 1);
+    } else {
+        initialGenes[154] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[155] = (ThreadLocalRandom.current().nextInt(6) + 7);
+    } else {
+        initialGenes[155] = (7);
+    }
+
+    //ear size 3 [1-4 = -1 , 5 = 0, 6-10 = +1 , 10-12 = +1 || +2]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[156] = (ThreadLocalRandom.current().nextInt(6) + 1);
+    } else {
+        initialGenes[156] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[157] = (ThreadLocalRandom.current().nextInt(6) + 7);
+    } else {
+        initialGenes[157] = (7);
+    }
+
+    //ear size 4 and whitener [reducer, wildtype, adds size, adds white, adds white and size]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[158] = (ThreadLocalRandom.current().nextInt(5) + 1);
+    } else {
+        initialGenes[158] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[159] = (ThreadLocalRandom.current().nextInt(5) + 1);
+    } else {
+        initialGenes[159] = (1);
+    }
+
+    //ear size 5 [1-4 = -1 , 5 = 0, 6-10 = +1 , 10-12 = +1 || +2]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[160] = (ThreadLocalRandom.current().nextInt(12) + 1);
+    } else {
+        initialGenes[160] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[161] = (ThreadLocalRandom.current().nextInt(12) + 13);
+    } else {
+        initialGenes[161] = (7);
+    }
+
+    //ear size 6 [1-4 = -1 , 5 = 0, 6-10 = +1 , 10-12 = +1 || +2]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[162] = (ThreadLocalRandom.current().nextInt(12) + 1);
+    } else {
+        initialGenes[162] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[163] = (ThreadLocalRandom.current().nextInt(12) + 13);
+    } else {
+        initialGenes[163] = (7);
+    }
+
+    //ear redness
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[164] = (ThreadLocalRandom.current().nextInt(5) + 1);
+    } else {
+        initialGenes[164] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[165] = (ThreadLocalRandom.current().nextInt(5) + 1);
+    } else {
+        initialGenes[165] = (1);
+    }
+
+    //recessive black shanks [normal, blacker shanks]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[166] = (ThreadLocalRandom.current().nextInt(2) + 1);
+    } else {
+        initialGenes[166] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[167] = (ThreadLocalRandom.current().nextInt(2) + 1);
+    } else {
+        initialGenes[167] = (1);
+    }
 
     //Quirk ideas:
     //favourite flavours/foods

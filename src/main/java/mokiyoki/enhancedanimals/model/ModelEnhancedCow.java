@@ -493,7 +493,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 //TODO change y translation when calf is dwarf
 
                 if (dwarf != 0.0F){
-//                    this.shortLeg1.render(scale);
+                    this.shortLeg1.render(scale);
                     this.shortLeg2.render(scale);
                     this.shortLeg3.render(scale);
                     this.shortLeg4.render(scale);

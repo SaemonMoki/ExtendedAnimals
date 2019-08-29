@@ -3,12 +3,8 @@ package mokiyoki.enhancedanimals.model;
 import com.mojang.blaze3d.platform.GlStateManager;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EntityState;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.math.MathHelper;
 
 public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
@@ -16,6 +12,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private float headRotationAngleX;
     private float size;
     private float bagSize;
+
+    private float udderHeightTestHeight = 0.0F;
 
     private final RendererModel actualHead;
     private final RendererModel mouth;
@@ -256,14 +254,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.udder.setRotationPoint(0.0F, 10.5F, 15.75F + xMove);
 
         this.nipples = new RendererModel(this, 24, 77);
-        this.nipples.addBox(-2.0F, 0.0F, 0.0F, 1, 2, 1, -0.15F);
+        this.nipples.addBox(-2.0F, 0.0F, -1.0F, 1, 2, 1, -0.15F);
         this.nipples.setTextureOffset(29, 77);
-        this.nipples.addBox(1.0F, 0.0F, 0.0F, 1, 2, 1, -0.15F);
+        this.nipples.addBox(1.0F, 0.0F, -1.0F, 1, 2, 1, -0.15F);
         this.nipples.setTextureOffset(35, 77);
         this.nipples.addBox(-2.0F, 0.0F, 2.0F, 1, 2, 1, -0.15F);
         this.nipples.setTextureOffset(40, 77);
         this.nipples.addBox(1.0F, 0.0F, 2.0F, 1, 2, 1, -0.15F);
-        this.nipples.setRotationPoint(0.0F, 13.5F, 17.0F + xMove);
+        this.nipples.setRotationPoint(0.0F, 13.85F, 17.0F + xMove);
 
         this.humpXSmall = new RendererModel(this, 0, 8);
         this.humpXSmall.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -1.0F);
@@ -686,7 +684,22 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             this.tail0.render(scale);
 
-            if (cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString())) {
+            GlStateManager.popMatrix();
+
+            GlStateManager.pushMatrix();
+
+//            float udderHeight = ((-2.95F*(size-1.5F))*(-2.95F*(size-1.5F))*(-2.95F*(size-1.5F)))+((-2.1F*(size-1.5F))*(-2.1F*(size-1.5F)))+0.16F;
+//            float y = ((4.1631F*size)*(4.1631F*size)*(4.1631F*size))-((15.1139F*size)*(15.1139F*size))+(17.6612F*size)-6.6835F;
+//            float r = (0.9903F)*(0.9903F);
+
+//            GlStateManager.translatef(0.0F, (-1.5F+dwarf) + 1.5F / size, 0.0F);
+            GlStateManager.scalef(bagSize * size, bagSize * size, bagSize * size);
+            GlStateManager.translatef(0.0F, udderHeightTestHeight, 0.0F); // if biggest 0, -0.16, 0 : if smallest 0, -0.66, 0
+            GlStateManager.translatef(0.0F, 0.0F, 0.0F);
+//      biggestmovement - ((size-smallestsize) * (largestsize - smallestsize) / (movement4largest - movement4smallest)
+            //-0.16F + ((size-1.5F) * 0.55555F)
+//            if (cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString())) {
+            if (true) {
                 this.udder.render(scale);
                 this.nipples.render(scale);
             }

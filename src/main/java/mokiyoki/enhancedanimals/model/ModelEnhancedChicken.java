@@ -82,6 +82,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     private final RendererModel earR;
     private final RendererModel earTuftL;
     private final RendererModel earTuftR;
+    private final RendererModel earTuftHelper;
 
     public ModelEnhancedChicken(){
         this.textureWidth = 64;
@@ -114,11 +115,13 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.earR.addBox(2.2F, -6.0F, -2.4F, 1, 6, 3);
         this.earR.mirror = true;
 
-        this.earTuftL = new RendererModel(this,15, 47);
-        this.earTuftL.addBox(0.0F, -5.0F, 0.0F, 2, 1, 3);
+        this.earTuftL = new RendererModel(this,12, 47);
+        this.earTuftL.addBox(-2.0F, 0.0F, 0.0F, 2, 1, 3);
+        this.earTuftL.setRotationPoint(-1.5F, -4.5F, -1.0F);
 
-        this.earTuftR = new RendererModel(this,15, 47);
-        this.earTuftR.addBox(0.0F, -5.0F, 0.0F, 2, 1, 3);
+        this.earTuftR = new RendererModel(this,12, 47);
+        this.earTuftR.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3);
+        this.earTuftR.setRotationPoint(1.5F, -4.5F, -1.0F);
         this.earR.mirror = true;
 
         int combSy = -3;
@@ -393,6 +396,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.beardNN.setTextureOffset(2,29);
         this.beardNN.addBox(2F, -4F, -2F, 1, 2, 2);
         this.beardNN.addBox(0F, -3F, -2.75F, 2, 2, 2);
+
+        this.earTuftHelper = new RendererModel(this, 47, 44);
+
+        this.earTuftHelper.addChild(this.earTuftL);
+        this.earTuftHelper.addChild(this.earTuftR);
     }
 
     private void setRotationOffset(RendererModel renderer, float x, float y, float z) {
@@ -613,6 +621,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             bodyType = 0;
         }
 
+        //ear tufts
         if (genes[150] == 2 || genes[151] == 2) {
             earTuft = true;
         } else {
@@ -640,9 +649,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }
 
             this.billChild.render(scale);
+
             if (earTuft) {
-                this.earTuftL.render(scale);
-                this.earTuftR.render(scale);
+                this.earTuftHelper.render(scale);
             }
 
             GlStateManager.popMatrix();
@@ -692,9 +701,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }
 
             this.billChild.render(scale);
+
             if (earTuft) {
-                this.earTuftL.render(scale);
-                this.earTuftR.render(scale);
+                this.earTuftHelper.render(scale);
             }
 
             GlStateManager.popMatrix();
@@ -863,10 +872,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                     }}}
 
             this.bill.render(scale);
-//            if (earTuft) {
-//                this.earTuftL.render(scale);
-//                this.earTuftR.render(scale);
-//            }
+
+            if (earTuft) {
+                this.earTuftHelper.render(scale);
+            }
 
             this.earL.render(scale);
             this.earR.render(scale);
@@ -942,8 +951,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         copyModelAngles(head, earL);
         copyModelAngles(head, earR);
 
-        copyModelAngles(head, earTuftL);
-        copyModelAngles(head, earTuftR);
+        copyModelAngles(head, earTuftHelper);
+
+        this.earTuftL.rotateAngleX = 1.4F;
+        this.earTuftL.rotateAngleZ = -1.4F;
+        this.earTuftR.rotateAngleX = 1.4F;
+        this.earTuftR.rotateAngleZ = 1.4F;
 
         //leg stuff
         this.rightLeg.rotationPointY = 15F;

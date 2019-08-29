@@ -515,6 +515,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 this.remove();
         } else if(genes[104] == 2 && genes[105] == 2){
                 this.remove();
+        } else if (genes[150] == 2 && genes[151] == 2){
+                this.remove();
         }
     }
 
@@ -2535,7 +2537,7 @@ if (false){
         initialGenes[6] = (ThreadLocalRandom.current().nextInt(6) + 1);
 
     } else {
-        initialGenes[6] = (1);
+        initialGenes[6] = (6);
     }
 
     //dwarf [ normal, slight dwarf ]
@@ -3552,7 +3554,7 @@ if (false){
         initialGenes[150] = (ThreadLocalRandom.current().nextInt(2) + 1);
         initialGenes[151] = (1);
     } else {
-        initialGenes[150] = (1);
+        initialGenes[150] = (2);
         initialGenes[151] = (1);
     }
 

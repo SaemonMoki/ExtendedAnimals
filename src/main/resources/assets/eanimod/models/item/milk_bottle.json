@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "eanimod:items/milkbottle"
+    "layer0": "eanimod:items/milk_bottle"
   }
 }

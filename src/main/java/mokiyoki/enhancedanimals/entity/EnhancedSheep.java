@@ -18,14 +18,12 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
-import net.minecraft.entity.ai.goal.EatGrassGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -102,7 +100,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             "eyes_black.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.ROSE_BUSH, Items.DANDELION);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.TALL_GRASS, Items.VINE, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.ROSE_BUSH, Items.DANDELION, Items.SUGAR, Items.APPLE);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     private static final int WTC = 90;
@@ -611,11 +609,17 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     }
 
     public AgeableEntity createChild(AgeableEntity ageable) {
-        this.mateGenes = ((EnhancedSheep) ageable).getGenes();
-        mixMateMitosisGenes();
-        mixMitosisGenes();
-
-        pregnant = true;
+        if(pregnant) {
+            ((EnhancedSheep)ageable).pregnant = true;
+            ((EnhancedSheep)ageable).setMateGenes(this.genes);
+            ((EnhancedSheep)ageable).mixMateMitosisGenes();
+            ((EnhancedSheep)ageable).mixMitosisGenes();
+        } else {
+            pregnant = true;
+            this.mateGenes = ((EnhancedSheep) ageable).getGenes();
+            mixMateMitosisGenes();
+            mixMitosisGenes();
+        }
 
         //TODO figure out whats wrong with pregnancy
             this.setGrowingAge(10);
@@ -1415,6 +1419,10 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     public int[] getGenes() {
         return this.genes;
+    }
+
+    public void setMateGenes(int[] mateGenes){
+        this.mateGenes = mateGenes;
     }
 
     public static class GroupData implements ILivingEntityData {

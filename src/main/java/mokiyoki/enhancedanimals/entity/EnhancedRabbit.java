@@ -921,11 +921,17 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
     @Override
     public AgeableEntity createChild(AgeableEntity ageable) {
-        this.mateGenes = ((EnhancedRabbit) ageable).getGenes();
-        mixMateMitosisGenes();
-        mixMitosisGenes();
-
-        pregnant = true;
+        if(pregnant) {
+            ((EnhancedRabbit)ageable).pregnant = true;
+            ((EnhancedRabbit)ageable).setMateGenes(this.genes);
+            ((EnhancedRabbit)ageable).mixMateMitosisGenes();
+            ((EnhancedRabbit)ageable).mixMitosisGenes();
+        } else {
+            pregnant = true;
+            this.mateGenes = ((EnhancedRabbit) ageable).getGenes();
+            mixMateMitosisGenes();
+            mixMitosisGenes();
+        }
 
         this.setGrowingAge(10);
         this.resetInLove();
@@ -2096,6 +2102,8 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     public int[] getGenes() {
         return this.genes;
     }
+
+    public void setMateGenes(int[] mateGenes){ this.mateGenes = mateGenes; }
 
     public static class GroupData implements ILivingEntityData {
 

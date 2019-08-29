@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.entity;
 
-import afu.org.checkerframework.checker.oigj.qual.O;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -165,31 +164,31 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
             this.playSound(soundevent, 1.0F, 1.0F);
             return true;
-        } else if (false && itemstack.getItem() == Items.SHEARS && this.getGrowingAge() >= 0) { //Forge: Moved to onSheared
-            this.world.addParticle(ParticleTypes.EXPLOSION, this.posX, this.posY + (double)(this.getHeight() / 2.0F), this.posZ, 0.0D, 0.0D, 0.0D);
-            if (!this.world.isRemote) {
-                this.remove();
-                EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
-                enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
-                enhancedcow.setHealth(this.getHealth());
-                enhancedcow.renderYawOffset = this.renderYawOffset;
-                if (this.hasCustomName()) {
-                    enhancedcow.setCustomName(this.getCustomName());
-                }
-
-                this.world.addEntity(enhancedcow);
-
-                for(int k = 0; k < 5; ++k) {
-                    this.world.addEntity(new ItemEntity(this.world, this.posX, this.posY + (double)this.getHeight(), this.posZ, new ItemStack(this.getMooshroomType().renderState.getBlock())));
-                }
-
-                itemstack.damageItem(1, player, (p_213442_1_) -> {
-                    p_213442_1_.sendBreakAnimation(hand);
-                });
-                this.playSound(SoundEvents.ENTITY_MOOSHROOM_SHEAR, 1.0F, 1.0F);
-            }
-
-            return true;
+//        } else if (false && itemstack.getItem() == Items.SHEARS && this.getGrowingAge() >= 0) { //Forge: Moved to onSheared
+//            this.world.addParticle(ParticleTypes.EXPLOSION, this.posX, this.posY + (double)(this.getHeight() / 2.0F), this.posZ, 0.0D, 0.0D, 0.0D);
+//            if (!this.world.isRemote) {
+//                this.remove();
+//                EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
+//                enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
+//                enhancedcow.setHealth(this.getHealth());
+//                enhancedcow.renderYawOffset = this.renderYawOffset;
+//                if (this.hasCustomName()) {
+//                    enhancedcow.setCustomName(this.getCustomName());
+//                }
+//
+//                this.world.addEntity(enhancedcow);
+//
+//                for(int k = 0; k < 5; ++k) {
+//                    this.world.addEntity(new ItemEntity(this.world, this.posX, this.posY + (double)this.getHeight(), this.posZ, new ItemStack(this.getMooshroomType().renderState.getBlock())));
+//                }
+//
+//                itemstack.damageItem(1, player, (p_213442_1_) -> {
+//                    p_213442_1_.sendBreakAnimation(hand);
+//                });
+//                this.playSound(SoundEvents.ENTITY_MOOSHROOM_SHEAR, 1.0F, 1.0F);
+//            }
+//
+//            return true;
         } else {
             if (this.getMooshroomType() == EnhancedMooshroom.Type.BROWN && itemstack.getItem().isIn(ItemTags.SMALL_FLOWERS)) {
                 if (this.hasStewEffect != null) {

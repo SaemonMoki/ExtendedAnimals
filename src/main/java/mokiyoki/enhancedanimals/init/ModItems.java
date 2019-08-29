@@ -46,7 +46,7 @@ public class ModItems {
     public static final Item CookedRabbit_Small = new CookedRabbit(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64).food((new Food.Builder()).hunger(4).saturation(5F).meat().build())).setRegistryName(Reference.MODID, "cookedrabbit_small");
     public static final Item RabbitStew_Weak = new RabbitStew(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(64).food((new Food.Builder()).hunger(8).saturation(10F).meat().build())).setRegistryName(Reference.MODID, "rabbitstew_weak");
 
-    public static final Item Milk_Bottle = new MilkBottle(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(1).containerItem(Items.GLASS_BOTTLE).food((new Food.Builder()).setAlwaysEdible().hunger(0).saturation(0F).build())).setRegistryName(Reference.MODID, "milkbottle");
+    public static final Item Milk_Bottle = new MilkBottle(new Item.Properties().group(ItemGroup.FOOD).maxStackSize(1).containerItem(Items.GLASS_BOTTLE).food((new Food.Builder()).setAlwaysEdible().hunger(0).saturation(0F).build())).setRegistryName(Reference.MODID, "milk_bottle");
 
     public static final Item Debug_Gene_Book = new DebugGenesBook(new Item.Properties().group(ItemGroup.MISC).maxStackSize(1)).setRegistryName(Reference.MODID, "debug_gene_book");
 }

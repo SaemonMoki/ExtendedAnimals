@@ -493,11 +493,17 @@ public class EnhancedPig extends AnimalEntity {
     }
 
     public AgeableEntity createChild(AgeableEntity ageable) {
-        this.mateGenes = ((EnhancedPig) ageable).getGenes();
-        mixMateMitosisGenes();
-        mixMitosisGenes();
-
-        pregnant = true;
+        if(pregnant) {
+            ((EnhancedPig)ageable).pregnant = true;
+            ((EnhancedPig)ageable).setMateGenes(this.genes);
+            ((EnhancedPig)ageable).mixMateMitosisGenes();
+            ((EnhancedPig)ageable).mixMitosisGenes();
+        } else {
+            pregnant = true;
+            this.mateGenes = ((EnhancedPig) ageable).getGenes();
+            mixMateMitosisGenes();
+            mixMitosisGenes();
+        }
 
         this.setGrowingAge(10);
         this.resetInLove();
@@ -1114,6 +1120,10 @@ public class EnhancedPig extends AnimalEntity {
 
     public int[] getGenes() {
         return this.genes;
+    }
+
+    public void setMateGenes(int[] mateGenes){
+        this.mateGenes = mateGenes;
     }
 
     public static class GroupData implements ILivingEntityData {

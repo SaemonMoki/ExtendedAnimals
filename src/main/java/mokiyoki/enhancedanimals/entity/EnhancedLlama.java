@@ -521,11 +521,17 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     }
 
     public AgeableEntity createChild(AgeableEntity ageable) {
-        this.mateGenes = ((EnhancedLlama) ageable).getGenes();
-        mixMateMitosisGenes();
-        mixMitosisGenes();
-
-        pregnant = true;
+        if(pregnant) {
+            ((EnhancedLlama)ageable).pregnant = true;
+            ((EnhancedLlama)ageable).setMateGenes(this.genes);
+            ((EnhancedLlama)ageable).mixMateMitosisGenes();
+            ((EnhancedLlama)ageable).mixMitosisGenes();
+        } else {
+            pregnant = true;
+            this.mateGenes = ((EnhancedLlama) ageable).getGenes();
+            mixMateMitosisGenes();
+            mixMitosisGenes();
+        }
 
         this.setGrowingAge(10);
         this.resetInLove();
@@ -1291,6 +1297,10 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     public int[] getGenes() {
         return this.genes;
+    }
+
+    public void setMateGenes(int[] mateGenes){
+        this.mateGenes = mateGenes;
     }
 
 

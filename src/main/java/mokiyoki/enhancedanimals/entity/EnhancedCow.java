@@ -139,7 +139,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     };
 
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     private static final int WTC = 90;
@@ -157,7 +157,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     protected boolean aiConfigured = false;
 
-    protected String mooshroomUUID = "";
+    private String mooshroomUUID = "0";
 
     private float[] cowColouration = null;
 
@@ -215,26 +215,18 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         return this.dataManager.get(BAG_SIZE);
     }
 
-    protected void setCowStatus(String status) {
-        this.dataManager.set(COW_STATUS, status);
-    }
+    protected void setCowStatus(String status) { this.dataManager.set(COW_STATUS, status); }
 
-    public String getCowStatus() {
-        return this.dataManager.get(COW_STATUS);
-    }
+    public String getCowStatus() { return this.dataManager.get(COW_STATUS); }
 
     protected void setMooshroomUUID(String status) {
         this.dataManager.set(MOOSHROOM_UUID, status);
         this.mooshroomUUID = status;
     }
 
-    public String getMooshroomUUID() {
-        return mooshroomUUID;
-    }
+    public String getMooshroomUUID() { return mooshroomUUID; }
 
-    public int getHunger(){
-        return hunger;
-    }
+    public int getHunger(){ return hunger; }
 
     public void decreaseHunger() {
         if (this.hunger - 6000 < 0) {
@@ -244,21 +236,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         }
     }
 
-    protected SoundEvent getAmbientSound() {
-        return SoundEvents.ENTITY_COW_AMBIENT;
-    }
+    protected SoundEvent getAmbientSound() { return SoundEvents.ENTITY_COW_AMBIENT; }
 
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-        return SoundEvents.ENTITY_COW_HURT;
-    }
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) { return SoundEvents.ENTITY_COW_HURT; }
 
-    protected SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_COW_DEATH;
-    }
+    protected SoundEvent getDeathSound() { return SoundEvents.ENTITY_COW_DEATH; }
 
-    protected void playStepSound(BlockPos pos, BlockState blockIn) {
-        this.playSound(SoundEvents.ENTITY_COW_STEP, 0.15F, 1.0F);
-    }
+    protected void playStepSound(BlockPos pos, BlockState blockIn) { this.playSound(SoundEvents.ENTITY_COW_STEP, 0.15F, 1.0F); }
 
     /**
      * Returns the volume for the sounds this mob makes.
@@ -393,6 +377,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         if (size < 0.6F){
             size = 0.6F;
         }
+
+        size = 1.5F;
 
         //        0.6F <= size <= 1.5F
         this.cowSize = size;
@@ -605,7 +591,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             int coat = 0;
             char[] uuidArry;
 
-            if (mooshroomUUID.isEmpty()) {
+            if (mooshroomUUID.equals("0")) {
                 uuidArry = getCachedUniqueIdString().toCharArray();
             } else {
                 uuidArry = mooshroomUUID.toCharArray();
@@ -1154,7 +1140,9 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             }
         }
 
-        maxBagSize = maxBagSize - 3.0F;
+        maxBagSize = (maxBagSize - 3.0F)/2.0F;
+
+        maxBagSize = 1.0F;
 
         this.maxBagSize = maxBagSize;
         this.setBagSize(maxBagSize);

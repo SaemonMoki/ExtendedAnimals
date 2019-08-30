@@ -10,6 +10,7 @@ import net.minecraft.block.material.PushReaction;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
@@ -23,13 +24,16 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Mirror;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -64,7 +68,7 @@ public class EggCartonBlock extends ContainerBlock {
     }
 
     public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.MODEL;
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
 
@@ -79,12 +83,12 @@ public class EggCartonBlock extends ContainerBlock {
                 Direction direction = state.get(FACING);
                 EggCartonTileEntity eggCartonTileEntity = (EggCartonTileEntity)tileentity;
                 boolean flag;
-//                if (shulkerboxtileentity.getAnimationStatus() == EggCartonTileEntity.AnimationStatus.CLOSED) {
-//                    AxisAlignedBB axisalignedbb = VoxelShapes.fullCube().getBoundingBox().expand((double)(0.5F * (float)direction.getXOffset()), (double)(0.5F * (float)direction.getYOffset()), (double)(0.5F * (float)direction.getZOffset())).contract((double)direction.getXOffset(), (double)direction.getYOffset(), (double)direction.getZOffset());
-//                    flag = worldIn.areCollisionShapesEmpty(axisalignedbb.offset(pos.offset(direction)));
-//                } else {
+                if (eggCartonTileEntity.getAnimationStatus() == EggCartonTileEntity.AnimationStatus.CLOSED) {
+                    AxisAlignedBB axisalignedbb = VoxelShapes.fullCube().getBoundingBox().expand((double)(0.5F * (float)direction.getXOffset()), (double)(0.5F * (float)direction.getYOffset()), (double)(0.5F * (float)direction.getZOffset())).contract((double)direction.getXOffset(), (double)direction.getYOffset(), (double)direction.getZOffset());
+                    flag = worldIn.areCollisionShapesEmpty(axisalignedbb.offset(pos.offset(direction)));
+                } else {
                     flag = true;
-//                }
+                }
 
                 if (flag) {
                     player.openContainer(eggCartonTileEntity);
@@ -98,9 +102,14 @@ public class EggCartonBlock extends ContainerBlock {
         }
     }
 
-    @Nullable
+//    @Nullable
+//    public BlockState getStateForPlacement(BlockItemUseContext context) {
+//        return this.getDefaultState().with(FACING, context.getFace());
+//    }
+
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(FACING, context.getFace());
+        Direction direction = context.getPlacementHorizontalFacing().getOpposite();
+        return this.getDefaultState().with(FACING, direction);
     }
 
 
@@ -174,11 +183,11 @@ public class EggCartonBlock extends ContainerBlock {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         CompoundNBT compoundnbt = stack.getChildTag("BlockEntityTag");
         if (compoundnbt != null) {
-            if (compoundnbt.contains("LootTable", 17)) {
+            if (compoundnbt.contains("LootTable", 8)) {
                 tooltip.add(new StringTextComponent("???????"));
             }
 
-            if (compoundnbt.contains("Items", 17)) {
+            if (compoundnbt.contains("Items", 9)) {
                 NonNullList<ItemStack> nonnulllist = NonNullList.withSize(17, ItemStack.EMPTY);
                 ItemStackHelper.loadAllItems(compoundnbt, nonnulllist);
                 int i = 0;
@@ -203,6 +212,12 @@ public class EggCartonBlock extends ContainerBlock {
         }
 
     }
+
+    @Override
+    public PushReaction getPushReaction(BlockState state) {
+        return PushReaction.DESTROY;
+    }
+
 
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         TileEntity tileentity = worldIn.getTileEntity(pos);
@@ -247,6 +262,10 @@ public class EggCartonBlock extends ContainerBlock {
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return getShape(state, worldIn, pos, context);
+    }
+
+    public BlockState mirror(BlockState state, Mirror mirrorIn) {
+        return state.rotate(mirrorIn.toRotation(state.get(FACING)));
     }
 
     @Override

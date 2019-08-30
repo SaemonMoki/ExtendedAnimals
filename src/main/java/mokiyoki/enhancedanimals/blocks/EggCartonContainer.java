@@ -91,6 +91,10 @@ public class EggCartonContainer extends Container {
         return itemstack;
     }
 
+    public IInventory getEggCartonInventory() {
+        return this.inventory;
+    }
+
     /**
      * Called when the container is closed.
      */

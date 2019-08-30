@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.init;
 
-import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
 import mokiyoki.enhancedanimals.items.*;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.item.Food;

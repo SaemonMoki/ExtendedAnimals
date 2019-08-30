@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
@@ -18,12 +19,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.IChestLid;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableLootTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -35,18 +38,26 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class EggCartonTileEntity extends LockableLootTileEntity implements ISidedInventory/*, ITickableTileEntity*/ {
+public class EggCartonTileEntity extends LockableLootTileEntity implements ISidedInventory, IChestLid, ITickableTileEntity {
     private static final int[] SLOTS = IntStream.range(0, 16).toArray();
     private NonNullList<ItemStack> items = NonNullList.withSize(16, ItemStack.EMPTY);
     private int openCount;
-//    private ShulkerBoxTileEntity.AnimationStatus animationStatus = ShulkerBoxTileEntity.AnimationStatus.CLOSED;
+    private EggCartonTileEntity.AnimationStatus animationStatus = EggCartonTileEntity.AnimationStatus.CLOSED;
     private float progress;
     private float progressOld;
+
+    protected float lidAngle;
+    protected float prevLidAngle;
+    protected int numPlayersUsing;
+    private int ticksSinceSync;
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     protected static final VoxelShape SHAPE_DEFAULT = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 14.0D, 8.0D, 12.0D);
@@ -58,13 +69,45 @@ public class EggCartonTileEntity extends LockableLootTileEntity implements ISide
         super(ModTileEntities.EGG_CARTON_TILE_ENTITY);
     }
 
-//    public void tick() {
-//        this.updateAnimation();
-//        if (this.animationStatus == ShulkerBoxTileEntity.AnimationStatus.OPENING || this.animationStatus == ShulkerBoxTileEntity.AnimationStatus.CLOSING) {
-//            this.moveCollidedEntities();
-//        }
-//
-//    }
+    public void tick() {
+        int i = this.pos.getX();
+        int j = this.pos.getY();
+        int k = this.pos.getZ();
+        ++this.ticksSinceSync;
+        this.numPlayersUsing = func_213977_a(this.world, this, this.ticksSinceSync, i, j, k, this.numPlayersUsing);
+        this.prevLidAngle = this.lidAngle;
+        float f = 0.1F;
+        if (this.numPlayersUsing > 0 && this.lidAngle == 0.0F) {
+            this.playSound(SoundEvents.BLOCK_CHEST_OPEN);
+        }
+
+        if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F) {
+            float f1 = this.lidAngle;
+            if (this.numPlayersUsing > 0) {
+                this.lidAngle += 0.1F;
+            } else {
+                this.lidAngle -= 0.1F;
+            }
+
+            if (this.lidAngle > 1.0F) {
+                this.lidAngle = 1.0F;
+            }
+
+            float f2 = 0.5F;
+            if (this.lidAngle < 0.5F && f1 >= 0.5F) {
+                this.playSound(SoundEvents.BLOCK_CHEST_CLOSE);
+            }
+
+            if (this.lidAngle < 0.0F) {
+                this.lidAngle = 0.0F;
+            }
+        }
+
+    }
+
+    public EggCartonTileEntity.AnimationStatus getAnimationStatus() {
+        return this.animationStatus;
+    }
 
 
     public AxisAlignedBB getBoundingBox(BlockState p_190584_1_) {
@@ -79,6 +122,37 @@ public class EggCartonTileEntity extends LockableLootTileEntity implements ISide
     private AxisAlignedBB getTopBoundingBox(Direction p_190588_1_) {
         Direction direction = p_190588_1_.getOpposite();
         return this.getBoundingBox(p_190588_1_).contract((double)direction.getXOffset(), (double)direction.getYOffset(), (double)direction.getZOffset());
+    }
+
+    private void playSound(SoundEvent soundIn) {
+        double d0 = (double)this.pos.getX() + 0.5D;
+        double d1 = (double)this.pos.getY() + 0.5D;
+        double d2 = (double)this.pos.getZ() + 0.5D;
+
+        this.world.playSound((PlayerEntity)null, d0, d1, d2, soundIn, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
+    }
+
+    public static int func_213977_a(World p_213977_0_, LockableLootTileEntity p_213977_1_, int p_213977_2_, int p_213977_3_, int p_213977_4_, int p_213977_5_, int p_213977_6_) {
+        if (!p_213977_0_.isRemote && p_213977_6_ != 0 && (p_213977_2_ + p_213977_3_ + p_213977_4_ + p_213977_5_) % 200 == 0) {
+            p_213977_6_ = func_213976_a(p_213977_0_, p_213977_1_, p_213977_3_, p_213977_4_, p_213977_5_);
+        }
+
+        return p_213977_6_;
+    }
+
+    public static int func_213976_a(World p_213976_0_, LockableLootTileEntity p_213976_1_, int p_213976_2_, int p_213976_3_, int p_213976_4_) {
+        int i = 0;
+
+        for(PlayerEntity playerentity : p_213976_0_.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB((double)((float)p_213976_2_ - 5.0F), (double)((float)p_213976_3_ - 5.0F), (double)((float)p_213976_4_ - 5.0F), (double)((float)(p_213976_2_ + 1) + 5.0F), (double)((float)(p_213976_3_ + 1) + 5.0F), (double)((float)(p_213976_4_ + 1) + 5.0F)))) {
+            if (playerentity.openContainer instanceof EggCartonContainer) {
+                IInventory iinventory = ((EggCartonContainer)playerentity.openContainer).getEggCartonInventory();
+                if (iinventory == p_213976_1_) {
+                    ++i;
+                }
+            }
+        }
+
+        return i;
     }
 
     private void moveCollidedEntities() {
@@ -130,6 +204,11 @@ public class EggCartonTileEntity extends LockableLootTileEntity implements ISide
 
             }
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getLidAngle(float partialTicks) {
+        return MathHelper.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
     }
 
     /**
@@ -271,10 +350,10 @@ public class EggCartonTileEntity extends LockableLootTileEntity implements ISide
         return new net.minecraftforge.items.wrapper.SidedInvWrapper(this, Direction.UP);
     }
 
-//    public static enum AnimationStatus {
-//        CLOSED,
-//        OPENING,
-//        OPENED,
-//        CLOSING;
-//    }
+    public static enum AnimationStatus {
+        CLOSED,
+        OPENING,
+        OPENED,
+        CLOSING;
+    }
 }

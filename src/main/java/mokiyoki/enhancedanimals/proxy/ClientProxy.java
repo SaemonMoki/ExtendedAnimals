@@ -2,6 +2,8 @@ package mokiyoki.enhancedanimals.proxy;
 
 import mokiyoki.enhancedanimals.entity.*;
 import mokiyoki.enhancedanimals.renderer.*;
+import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
@@ -20,5 +22,7 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(EnhancedCow.class, manager -> new RenderEnhancedCow(manager));
         RenderingRegistry.registerEntityRenderingHandler(EnhancedPig.class, manager -> new RenderEnhancedPig(manager));
         RenderingRegistry.registerEntityRenderingHandler(EnhancedMooshroom.class, manager -> new RenderEnhancedMooshroom(manager));
+
+        ClientRegistry.bindTileEntitySpecialRenderer(EggCartonTileEntity.class, new EggCartonTileEntityRenderer<>());
     }
 }

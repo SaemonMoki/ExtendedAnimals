@@ -74,7 +74,7 @@ public class EggCartonTileEntity extends LockableLootTileEntity implements ISide
         int j = this.pos.getY();
         int k = this.pos.getZ();
         ++this.ticksSinceSync;
-        this.numPlayersUsing = func_213977_a(this.world, this, this.ticksSinceSync, i, j, k, this.numPlayersUsing);
+        this.numPlayersUsing = func_213977_a(this.world, this, this.ticksSinceSync, i, j, k, this.openCount);
         this.prevLidAngle = this.lidAngle;
         float f = 0.1F;
         if (this.numPlayersUsing > 0 && this.lidAngle == 0.0F) {
@@ -132,12 +132,12 @@ public class EggCartonTileEntity extends LockableLootTileEntity implements ISide
         this.world.playSound((PlayerEntity)null, d0, d1, d2, soundIn, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
     }
 
-    public static int func_213977_a(World p_213977_0_, LockableLootTileEntity p_213977_1_, int p_213977_2_, int p_213977_3_, int p_213977_4_, int p_213977_5_, int p_213977_6_) {
-        if (!p_213977_0_.isRemote && p_213977_6_ != 0 && (p_213977_2_ + p_213977_3_ + p_213977_4_ + p_213977_5_) % 200 == 0) {
-            p_213977_6_ = func_213976_a(p_213977_0_, p_213977_1_, p_213977_3_, p_213977_4_, p_213977_5_);
+    public static int func_213977_a(World p_213977_0_, LockableLootTileEntity thisEggCartonTileEntity, int ticksSinceSync, int cartonX, int cartonY, int cartonZ, int numPlayersUsing) {
+        if (!p_213977_0_.isRemote && numPlayersUsing != 0 && (ticksSinceSync + cartonX + cartonY + cartonZ) % 200 == 0) {
+            numPlayersUsing = func_213976_a(p_213977_0_, thisEggCartonTileEntity, cartonX, cartonY, cartonZ);
         }
 
-        return p_213977_6_;
+        return numPlayersUsing;
     }
 
     public static int func_213976_a(World p_213976_0_, LockableLootTileEntity p_213976_1_, int p_213976_2_, int p_213976_3_, int p_213976_4_) {

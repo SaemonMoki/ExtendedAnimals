@@ -17,7 +17,9 @@ import java.util.function.Predicate;
 
 public class EnhancedGrassGoal extends Goal {
 
-    private static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
+    private static final Predicate<BlockState> IS_GRASSBLOCK = BlockStateMatcher.forBlock(Blocks.GRASS);
+//    private static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
+//    private static final Predicate<BlockState> IS_TALLGRASS = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
     private final MobEntity grassEaterEntity;
     private final World entityWorld;
     private int eatingGrassTimer;
@@ -35,7 +37,7 @@ public class EnhancedGrassGoal extends Goal {
      */
     public boolean shouldExecute() {
         //TODO make the amount needed before 'hungry' using temperaments
-        int eatingModifier = ((EnhancedAnimal)grassEaterEntity).getHunger()/25;
+        int eatingModifier = ((EnhancedAnimal)grassEaterEntity).getHunger()/50;
 
         if (((EnhancedAnimal)grassEaterEntity).getHunger() > 12000) {
             eatingModifier = 999;
@@ -54,7 +56,7 @@ public class EnhancedGrassGoal extends Goal {
             BlockPos blockpos = new BlockPos(this.grassEaterEntity);
 
             //TODO add the predicate for different blocks to eat based on temperaments and animal type.
-            if (IS_GRASS.test(this.entityWorld.getBlockState(blockpos))) {
+            if (IS_GRASSBLOCK.test(this.entityWorld.getBlockState(blockpos))) {
                 return true;
             } else {
                 return this.entityWorld.getBlockState(blockpos.down()).getBlock() == Blocks.GRASS_BLOCK;
@@ -100,7 +102,7 @@ public class EnhancedGrassGoal extends Goal {
         this.eatingGrassTimer = Math.max(0, this.eatingGrassTimer - 1);
         if (this.eatingGrassTimer == 4) {
             BlockPos blockpos = new BlockPos(this.grassEaterEntity);
-            if (IS_GRASS.test(this.entityWorld.getBlockState(blockpos))) {
+            if (IS_GRASSBLOCK.test(this.entityWorld.getBlockState(blockpos))) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
                     this.entityWorld.destroyBlock(blockpos, false);
                 }

@@ -281,6 +281,10 @@ public class EnhancedPig extends AnimalEntity {
             this.pigTimer = Math.max(0, this.pigTimer - 1);
         }
 
+        if (hunger <= 72000) {
+            hunger++;
+        }
+
         if (!this.world.isRemote) {
             if(pregnant) {
                 gestationTimer++;

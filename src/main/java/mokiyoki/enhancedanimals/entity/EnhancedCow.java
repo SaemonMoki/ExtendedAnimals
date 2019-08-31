@@ -69,6 +69,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
     };
 
+    private static final String[] COW_TEXTURES_UDDER = new String[] {
+            "udder_black.png", "udder_brown.png", "udder_pink.png"
+    };
+
     private static final String[] COW_TEXTURES_RED = new String[] {
             "", "r_solid.png", "r_shaded.png"
               , "r_solid.png", "r_shaded_thin.png"
@@ -266,9 +270,11 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         if (!this.world.isRemote) {
 
-            hunger++;
-            if(pregnant) {
+            if (hunger <= 72000) {
                 hunger++;
+            }
+
+            if(pregnant) {
                 gestationTimer++;
                 int days = ConfigHandler.COMMON.gestationDays.get();
                 if (days/2 < gestationTimer) {
@@ -374,11 +380,11 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             size = size/1.1F;
         }
 
-        if (size < 0.6F){
-            size = 0.6F;
+        if (size < 0.7F){
+            size = 0.7F;
         }
 
-        size = 1.5F;
+//        size = 0.7F;
 
         //        0.6F <= size <= 1.5F
         this.cowSize = size;
@@ -854,6 +860,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             //TODO add shading under correct conditions
 
             this.cowTextures.add(COW_TEXTURES_BASE[0]);
+            this.cowTextures.add(COW_TEXTURES_UDDER[skin]);
             if (red != 0){
                 this.cowTextures.add(COW_TEXTURES_RED[red]);
             }
@@ -1062,87 +1069,93 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     //TODO finish milk calculations and such
     private void setMaxBagSize(){
-        float maxBagSize = 0;
+        float maxBagSize = 0.0F;
 
         if (!this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())){
             for (int i = 1; i < genes[62]; i++){
-                maxBagSize = maxBagSize + 0.1F;
+                maxBagSize = maxBagSize + 0.01F;
             }
             for (int i = 1; i < genes[63]; i++){
-                maxBagSize = maxBagSize + 0.1F;
+                maxBagSize = maxBagSize + 0.01F;
             }
             for (int i = 1; i < genes[64]; i++){
-                maxBagSize = maxBagSize + 0.1F;
+                maxBagSize = maxBagSize + 0.01F;
             }
             for (int i = 1; i < genes[65]; i++){
-                maxBagSize = maxBagSize + 0.1F;
+                maxBagSize = maxBagSize + 0.01F;
             }
 
             if (genes[38] >= 5){
-                maxBagSize = maxBagSize - 0.1F;
+                maxBagSize = maxBagSize - 0.01F;
                 if (genes[38] == 6){
-                    maxBagSize = maxBagSize - 0.1F;
+                    maxBagSize = maxBagSize - 0.01F;
                 }
             }
             if (genes[39] >= 5){
-                maxBagSize = maxBagSize - 0.1F;
+                maxBagSize = maxBagSize - 0.01F;
                 if (genes[39] == 6){
-                    maxBagSize = maxBagSize - 0.1F;
+                    maxBagSize = maxBagSize - 0.01F;
                 }
             }
 
             if (genes[40] <= 2){
-                maxBagSize = maxBagSize - 0.1F;
+                maxBagSize = maxBagSize - 0.01F;
                 if (genes[40] == 1){
-                    maxBagSize = maxBagSize - 0.1F;
+                    maxBagSize = maxBagSize - 0.01F;
                 }
             }
             if (genes[41] <= 2){
-                maxBagSize = maxBagSize - 0.1F;
+                maxBagSize = maxBagSize - 0.01F;
                 if (genes[41] == 1){
-                    maxBagSize = maxBagSize - 0.1F;
+                    maxBagSize = maxBagSize - 0.01F;
                 }
             }
 
             if (genes[50] == 2){
-                maxBagSize = maxBagSize - 0.1F;
+                maxBagSize = maxBagSize - 0.01F;
             }
             if (genes[51] == 2){
-                maxBagSize = maxBagSize - 0.1F;
+                maxBagSize = maxBagSize - 0.01F;
             }
 
             if (genes[52] == 2 && genes[53] == 2){
-                maxBagSize = maxBagSize - 0.2F;
+                maxBagSize = maxBagSize - 0.02F;
             }
 
             //TODO check that I did this right
             for (int i = 5; i > genes[66]; i--){
-                maxBagSize = maxBagSize + 0.1F;
+                maxBagSize = maxBagSize + 0.01F;
             }
             for (int i = 5; i > genes[67]; i--){
-                maxBagSize = maxBagSize + 0.1F;
+                maxBagSize = maxBagSize + 0.01F;
             }
 
             if (genes[54] == 3 && genes[55] == 3){
-                maxBagSize = maxBagSize/3.0F;
+                maxBagSize = maxBagSize/2.5F;
             }else if (genes[54] == 3 || genes[55] == 3){
                 if (genes[54] == 2 || genes[55] == 2){
-                    maxBagSize = maxBagSize/2.5F;
-                }else{
-                    maxBagSize = maxBagSize/2.0F;
-                }
-            } else if (genes[54] == 2 || genes[55] == 2) {
-                if (genes[54] == 2 && genes[55] == 2){
                     maxBagSize = maxBagSize/2.0F;
                 }else{
                     maxBagSize = maxBagSize/1.5F;
                 }
+            } else if (genes[54] == 2 || genes[55] == 2) {
+                if (genes[54] == 2 && genes[55] == 2){
+                    maxBagSize = maxBagSize/1.5F;
+                }
+            } else {
+                maxBagSize = maxBagSize * 1.5F;
             }
         }
 
-        maxBagSize = (maxBagSize - 3.0F)/2.0F;
+        // [ 1 to 1.5 ]
+        maxBagSize = maxBagSize + 1.0F;
+        if (maxBagSize > 1.5F) {
+            maxBagSize = 1.5F;
+        } else if (maxBagSize < 1.0F) {
+            maxBagSize = 1.0F;
+        }
 
-        maxBagSize = 1.0F;
+//        maxBagSize = 1.0F;
 
         this.maxBagSize = maxBagSize;
         this.setBagSize(maxBagSize);

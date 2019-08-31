@@ -8,6 +8,8 @@ import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.passive.horse.LlamaEntity;
+import net.minecraft.entity.passive.horse.TraderLlamaEntity;
+import net.minecraft.world.spawner.WanderingTraderSpawner;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,7 +34,7 @@ public class EventHandler {
                 event.setCanceled(true);
             }
         }
-        if (entity instanceof LlamaEntity) {
+        if (entity instanceof LlamaEntity && !(entity instanceof TraderLlamaEntity)) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
             }
@@ -47,7 +49,7 @@ public class EventHandler {
                 event.setCanceled(true);
             }
         }
-        if (entity instanceof MooshroomEntity && !entity.hasCustomName()) {
+        if (entity instanceof MooshroomEntity) {
             if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
                 event.setCanceled(true);
             }

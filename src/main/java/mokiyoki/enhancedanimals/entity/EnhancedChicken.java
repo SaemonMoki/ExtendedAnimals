@@ -430,7 +430,9 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         this.wingRotation += this.wingRotDelta * 2.0F;
 
         if (!this.world.isRemote) {
-            hunger++;
+            if (hunger <= 72000) {
+                hunger++;
+            }
         }
 
         if (!this.world.isRemote && !this.isChild() && --this.timeUntilNextEgg <= 0) {
@@ -1730,7 +1732,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                         earsW = earsW + 2;
                     }
                 } else {
-                    ears = ears - 1;
+//                    ears = ears - 1;
                     if ((genesForText[162] & 1) == 0) {
                         if ((genesForText[163] & 1) == 0) {
                             earsW = earsW + 1;
@@ -1741,14 +1743,14 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 }
 
                 if (genesForText[152] <= 4 || genesForText[153] <= 4) {
-                    ears = ears - 1;
+//                    ears = ears - 1;
                 } else {
                     if (genesForText[152] == genesForText[153]) {
                         if (genesForText[152] >= 9 || genesForText[153] >= 9) {
                             ears = ears + 1;
                         }
                     } else {
-                        ears = ears - 1;
+//                        ears = ears - 1;
                     }
 
                     if ((genesForText[152] & 1) == 0) {
@@ -1765,13 +1767,14 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                         }
                         earsW = earsW + 1;
                     }
-                } else {
-                    if (genesForText[160] <= 11|| genesForText[161] <= 12) {
-                        ears = ears - 2;
-                    } else if (genesForText[160] <= 19|| genesForText[161] <= 20) {
-                        ears = ears - 1;
+                }
+
+                if (((genesForText[160] & 1) == 0) && ((genesForText[161] & 1) == 0)) {
+                    if (genesForText[160] == genesForText[161]) {
+                        earsW = earsW + 2;
+                    } else {
+                        earsW = earsW + 1;
                     }
-                    earsW = earsW - 1;
                 }
 
                 if (genesForText[82] == 1) {
@@ -1797,10 +1800,10 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 }
 
                 if (genesForText[158] == 1 || genesForText[159] == 1) {
-                    ears = ears - 1;
+//                    ears = ears - 1;
                     earsW = earsW - 1;
                 } else if (genesForText[158] == 2 || genesForText[159] == 2) {
-                    ears = ears - 1;
+//                    ears = ears - 1;
                 } else if (genesForText[158] == 3 || genesForText[159] == 3) {
                     if (genesForText[158] == 4 || genesForText[159] == 4) {
                         ears = ears + 1;
@@ -1833,12 +1836,10 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                     }
                 }
 
+
+
                 //at max adds 2 if less than 8
-                if (genesForText[156] <= 3 || genesForText[157] <= 3) {
-                    if (genesForText[156] == genesForText[157]) {
-                        ears = ears - 1;
-                    }
-                } else if (genesForText[156] == genesForText[157]) {
+                if (!(genesForText[156] <= 3 || genesForText[157] <= 3) && (genesForText[156] == genesForText[157])) {
                     if (genesForText[156] >= 6) {
                         if (genesForText[156] >= 10) {
                             if (ears <= 7) {
@@ -1867,8 +1868,6 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                     earsW = earsW - 3;
                 } else if (genesForText[164] == 2 || genesForText[165] == 2) {
                     if (genesForText[164] >= 4 || genesForText[165] >= 4) {
-                        earsW = earsW - 2;
-                    } else {
                         earsW = earsW - 1;
                     }
                 } else if (genesForText[164] == 4 || genesForText[165] == 4) {
@@ -1891,8 +1890,6 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                     }
                 } else if (genesForText[6] == 6) {
                     earsW = earsW + 1;
-                } else {
-                    ears = ears - 1;
                 }
 
                 // this sets ear whiteness to actual value
@@ -1910,8 +1907,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 //ear size fixer
                 if (ears < 0) {
                     ears = 0;
-                } else if (ears > 10) {
-                    ears = 10;
+                } else if (ears > 9) {
+                    ears = 9;
                 }
 
                 //ear colour calculation
@@ -1937,7 +1934,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                             //black
                             ears = ears + 20;
                         }
-                    } else if (comb == 4) {
+                    } else if (comb == 3) {
                         //face is moorish
                         face = 7;
                         if (earsW == 2) {
@@ -1955,7 +1952,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                                 //black
                                 ears = ears + 20;
                             }
-                    } else if (comb == 1 || comb == 5) {
+                    } else if (comb == 1 || comb == 4) {
                         //face is mulberry based
                         face = 4;
                         if (earsW == 2) {
@@ -2473,10 +2470,10 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
  */
 
 
-if (false){
+if (true){
     //THE DNA TESTER-5069 !!!!!
                     //0,1,2,3,4,5,6,7,8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109
-    return new int[] {1,1,2,1,1,1,1,1,1,10, 10,10, 10,10, 10,10, 10,10, 10,10,2,2,1,1,4,2,2,2,3,3,3,2
+    return new int[] {1,1,6,2,2,2,1,1,1,10, 10,10, 10,10, 10,10, 10,10, 10,10,2,2,1,1,4,2,2,2,3,3,3,2
                      ,3,3,2,2,1,1,2,2,1,1,2,2,2,2,3,3,1,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,3,3,2,2,2,2,1,1
                      ,1,1,1,2,2,2,2,1,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,2,2
                      ,2,2,2,2,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};   //149
@@ -2829,8 +2826,12 @@ if (false){
             initialGenes[44] = (2);
         }
     }       //homozygous white legs only in jungle
-    if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2)) && wildType == 1) {
-        initialGenes[45] = (ThreadLocalRandom.current().nextInt(3) + 1);
+    if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2))) {
+        if (wildType == 1) {
+            initialGenes[45] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            initialGenes[45] = (ThreadLocalRandom.current().nextInt(2) + 2);
+        }
     } else {
         if (wildType == 1) {
             initialGenes[45] = (1);
@@ -3554,7 +3555,7 @@ if (false){
         initialGenes[150] = (ThreadLocalRandom.current().nextInt(2) + 1);
         initialGenes[151] = (1);
     } else {
-        initialGenes[150] = (2);
+        initialGenes[150] = (1);
         initialGenes[151] = (1);
     }
 

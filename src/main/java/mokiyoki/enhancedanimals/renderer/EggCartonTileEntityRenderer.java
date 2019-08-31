@@ -68,7 +68,7 @@ public class EggCartonTileEntityRenderer <T extends TileEntity & IChestLid> exte
     private void applyLidRotation(T p_199346_1_, float p_199346_2_, ModelEggCarton p_199346_3_) {
         float f = ((IChestLid)p_199346_1_).getLidAngle(p_199346_2_);
         f = 1.0F - f;
-        f = 1.0F - f * f * f;
-        p_199346_3_.getLid().rotateAngleX = -(f * ((float)Math.PI / 2F));
+        f = 2.0F - f * f * f;
+        p_199346_3_.getLid().rotateAngleX = (f * ((float)Math.PI / 2F));
     }
 }

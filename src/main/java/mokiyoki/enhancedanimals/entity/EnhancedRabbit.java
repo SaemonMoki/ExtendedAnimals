@@ -474,10 +474,13 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             this.setJumping(false);
         }
         if (!this.world.isRemote) {
-            hunger++;
-
+            if (hunger <= 72000) {
+                hunger++;
+            }
             //TODO add a limiter to time for growth if the animal is extremely hungry
-            timeForGrowth++;
+            if (hunger <= 36000) {
+                timeForGrowth++;
+            }
             if (maxCoatLength == 1){
                 if (timeForGrowth >= 48000) {
                     timeForGrowth = 0;
@@ -513,7 +516,6 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             }
 
             if(pregnant) {
-                hunger++;
                 gestationTimer++;
                 int days = ConfigHandler.COMMON.gestationDays.get();
                 if (hunger > days*(0.75) && days !=0) {

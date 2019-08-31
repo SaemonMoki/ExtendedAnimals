@@ -261,7 +261,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.nipples.addBox(-2.0F, 0.0F, 2.0F, 1, 2, 1, -0.15F);
         this.nipples.setTextureOffset(40, 77);
         this.nipples.addBox(1.0F, 0.0F, 2.0F, 1, 2, 1, -0.15F);
-        this.nipples.setRotationPoint(0.0F, 13.85F, 17.0F + xMove);
+        this.nipples.setRotationPoint(0.0F, 3.35F, 11.25F + xMove);
 
         this.humpXSmall = new RendererModel(this, 0, 8);
         this.humpXSmall.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -1.0F);
@@ -419,6 +419,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.tail0.addChild(this.tail1);
         this.tail1.addChild(this.tail2);
         this.tail2.addChild(this.tailBrush);
+        this.udder.addChild(this.nipples);
 
     }
 
@@ -437,7 +438,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         if (genes[26] == 1 || genes[27] == 1){
             //dwarf
-            dwarf = 0.2F;
+            dwarf = 1.0F;
         }
 
         for (int i = 1; i < genes[54]; i++){
@@ -462,6 +463,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 GlStateManager.pushMatrix();
                 GlStateManager.scalef(0.4F, 0.4F, 0.4F);
                 GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.5F, 0.0F);
+                GlStateManager.translatef(0.0F, dwarf*0.4F, 0.0F);
 
                 this.headModel.render(scale);
 
@@ -488,6 +490,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 GlStateManager.pushMatrix();
                 GlStateManager.scalef(0.5F, 0.7F, 0.5F);
                 GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.7F, 0.0F);
+                GlStateManager.translatef(0.0F, dwarf*0.7F, 0.0F);
                 //TODO change y translation when calf is dwarf
 
                 if (dwarf != 0.0F){
@@ -508,6 +511,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 GlStateManager.pushMatrix();
                 GlStateManager.scalef(0.6F, 0.6F, 0.6F);
                 GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.675F, 0.0F);
+                GlStateManager.translatef(0.0F, dwarf*0.6F, 0.0F);
 
                 this.headModel.render(scale);
 
@@ -534,6 +538,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 GlStateManager.pushMatrix();
                 GlStateManager.scalef(0.6F, 0.75F, 0.6F);
                 GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.75F, 0.0F);
+                GlStateManager.translatef(0.0F, dwarf*0.75F, 0.0F);
                 //TODO change y translation when calf is dwarf
 
                 if (dwarf != 0.0F){
@@ -553,6 +558,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 GlStateManager.pushMatrix();
                 GlStateManager.scalef(0.7F, 0.7F, 0.7F);
                 GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.732F, 0.0F);
+                GlStateManager.translatef(0.0F, dwarf*0.7F, 0.0F);
 
                 this.headModel.render(scale);
 
@@ -579,6 +585,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 GlStateManager.pushMatrix();
                 GlStateManager.scalef(0.7F, 0.8F, 0.7F);
                 GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.8F, 0.0F);
+                GlStateManager.translatef(0.0F, dwarf*size, 0.0F);
                 //TODO change y translation when calf is dwarf
 
                 if (dwarf != 0.0F){
@@ -599,6 +606,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 GlStateManager.pushMatrix();
                 GlStateManager.scalef(0.7F, 0.8F, 0.7F);
                 GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.8F, 0.0F);
+                GlStateManager.translatef(0.0F, dwarf*size, 0.0F);
                 //TODO change y translation when calf is dwarf
 
                 if (dwarf != 0.0F){
@@ -620,7 +628,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             GlStateManager.pushMatrix();
             GlStateManager.scalef(size, size, size);
-            GlStateManager.translatef(0.0F, (-1.5F+dwarf) + 1.5F / size, 0.0F);
+            GlStateManager.translatef(0.0F, (-1.45F + 1.45F / size) + ((0.23F - (size-0.7F)*0.0375F)*dwarf), 0.0F);
 
             this.headModel.render(scale);
 
@@ -692,28 +700,17 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 //            float y = ((4.1631F*size)*(4.1631F*size)*(4.1631F*size))-((15.1139F*size)*(15.1139F*size))+(17.6612F*size)-6.6835F;
 //            float r = (0.9903F)*(0.9903F);
 
-//            GlStateManager.translatef(0.0F, (-1.5F+dwarf) + 1.5F / size, 0.0F);
             GlStateManager.scalef(bagSize * size, bagSize * size, bagSize * size);
-            GlStateManager.translatef(0.0F, udderHeightTestHeight, 0.0F); // if biggest 0, -0.16, 0 : if smallest 0, -0.66, 0
+            GlStateManager.translatef(0.0F, (-1.45F + 1.45F / size) + ((-0.6F*((1.5F-size)*2.0F)) + (0.6F*((1.5F-size)*2.0F))/bagSize), ((1.0F-bagSize)*0.35F)); // if biggest 0, -0.16, 0 : if smallest 0, -0.66, 0
             GlStateManager.translatef(0.0F, 0.0F, 0.0F);
-//      biggestmovement - ((size-smallestsize) * (largestsize - smallestsize) / (movement4largest - movement4smallest)
-            //-0.16F + ((size-1.5F) * 0.55555F)
+            //(-1.45F + 1.45F / size) + (-0.6F + 0.6F/bagSize)
+//            (-1.45F + 1.45F / size) + ((-0.6F*((1.5F-size)*2.0F)) + (0.6F*((1.5F-size)*2.0F))/bagSize)
 //            if (cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString())) {
             if (true) {
                 this.udder.render(scale);
-                this.nipples.render(scale);
             }
 
             GlStateManager.popMatrix();
-
-//            GlStateManager.pushMatrix();
-//            GlStateManager.scalef(size + bagSize, size + bagSize, size + bagSize);
-////            GlStateManager.translatef(0.0F, (-1.5F + 1.5F / (size+bagSize)) + dwarf*5, 0.0F);
-////            GlStateManager.translatef(0.0F, ((-1.5F+dwarf) + 1.5F / (size+bagSize*5)), ((-1.5F+dwarf) + 1.5F / (size+bagSize*5)));
-//            GlStateManager.translatef(0.0F, -1.5F + 1.5F/bagSize, 0.0F);
-//            this.udder.render(scale);
-//            GlStateManager.popMatrix();
-            
         }
     }
 
@@ -1272,6 +1269,21 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.hornR2.rotateAngleX = 0.1F;
             this.hornR1.rotateAngleX = 0.1F;
 
+        }
+
+        if (sharedGenes[26] == 1 || sharedGenes[27] == 1){
+            //dwarf
+            this.udder.rotationPointY = 13.5F;
+        } else {
+            this.udder.rotationPointY = 10.5F;
+        }
+
+        if (size < 1) {
+            if (sharedGenes[26] == 1 || sharedGenes[27] == 1) {
+                this.udder.rotationPointY = this.udder.rotationPointY - (bagSize - 1.0F)*5.0F;
+            } else {
+                this.udder.rotationPointY = this.udder.rotationPointY - (bagSize - 1.0F)*3.0F;
+            }
         }
 
     }

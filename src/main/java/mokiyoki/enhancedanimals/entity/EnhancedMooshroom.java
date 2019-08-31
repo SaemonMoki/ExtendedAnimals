@@ -70,19 +70,18 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
         if (!this.world.isRemote) {
 
-            hunger++;
-            if(pregnant) {
+            if (hunger <= 72000) {
                 hunger++;
+            }
+            if(pregnant) {
                 gestationTimer++;
                 int days = ConfigHandler.COMMON.gestationDays.get();
                 if (days/2 < gestationTimer) {
                     setCowStatus(EntityState.PREGNANT.toString());
-                }
-                if (hunger > days*(0.75) && days !=0) {
+                } else if (hunger > days*(0.75) && days !=0) {
                     pregnant = false;
                     setCowStatus(EntityState.ADULT.toString());
-                }
-                if (gestationTimer >= days) {
+                } else if (gestationTimer >= days) {
                     pregnant = false;
                     setCowStatus(EntityState.MOTHER.toString());
                     //TODO make a timer for how long they can be milked that interacts with hunger and how often they are milked

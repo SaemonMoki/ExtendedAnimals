@@ -106,7 +106,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private static final int WTC = 90;
     private final List<String> sheepTextures = new ArrayList<>();
     private final List<String> sheepFleeceTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 40;
+    private static final int GENES_LENGTH = 42;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -304,10 +304,12 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         }
 
         if (!this.world.isRemote) {
-
-            hunger++;
-
-            timeForGrowth++;
+            if (hunger <= 72000) {
+                hunger++;
+            }
+            if (hunger <= 36000) {
+                timeForGrowth++;
+            }
             if (maxCoatLength > 0 && (timeForGrowth >= (24000 / maxCoatLength))) {
                 timeForGrowth = 0;
                 if (maxCoatLength > currentCoatLength) {
@@ -1408,6 +1410,20 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
         } else {
             initialGenes[39] = (2);
+        }
+
+        //Shedding/Rooing Sheep[ Shedding, non shedding]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[40] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[41] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[41] = (2);
         }
 
         return initialGenes;

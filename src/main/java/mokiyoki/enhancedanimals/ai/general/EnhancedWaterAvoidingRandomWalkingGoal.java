@@ -13,7 +13,9 @@ import java.util.function.Predicate;
 
 public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomWalkingGoal {
 
-    private static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
+    private static final Predicate<BlockState> IS_GRASSBLOCK = BlockStateMatcher.forBlock(Blocks.GRASS);
+//    private static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
+//    private static final Predicate<BlockState> IS_TALLGRASS = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
 
     public EnhancedWaterAvoidingRandomWalkingGoal(CreatureEntity p_i47301_1_, double p_i47301_2_) {
         super(p_i47301_1_, p_i47301_2_);
@@ -66,7 +68,12 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomW
         BlockPos blockpos = new BlockPos(this.creature);
 
         //TODO add the predicate for different blocks to eat based on temperaments and animal type.
-        if (IS_GRASS.test(this.creature.world.getBlockState(blockpos))) {
+//        if (IS_TALLGRASS.test(this.creature.world.getBlockState(blockpos))) {
+//            return true;
+//        } else if (IS_GRASS.test(this.creature.world.getBlockState(blockpos))) {
+//            return true;
+//        } else
+            if (IS_GRASSBLOCK.test(this.creature.world.getBlockState(blockpos))) {
             return true;
         } else {
             return this.creature.world.getBlockState(blockpos.down()).getBlock() == Blocks.GRASS_BLOCK;

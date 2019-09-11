@@ -515,8 +515,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 this.remove();
         } else if(genes[72] == 2 && genes[73] == 2){
                 this.remove();
-//        } else if(genes[104] == 2 && genes[105] == 2){
-//                this.remove();
+        } else if(genes[104] == 2 && genes[105] == 2){
+                this.remove();
         } else if (genes[150] == 2 && genes[151] == 2){
                 this.remove();
         }

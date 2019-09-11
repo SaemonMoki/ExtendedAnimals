@@ -348,9 +348,9 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             cowColouration = new float[6];
             int[] genesForText = getSharedGenes();
 
-            float blackR = 100.0F;
-            float blackG = 10.0F;
-            float blackB = 10.0F;
+            float blackR = 148.0F;
+            float blackG = 14.0F;
+            float blackB = 15.0F;
 
             float redR = 126.0F;
             float redG = 96.0F;
@@ -430,13 +430,13 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
             } else {
 
-                blackR = 96.0F;
-                blackG = 89.0F;
-                blackB = 95.0F;
+                blackR = 106.0F;
+                blackG = 78.0F;
+                blackB = 59.0F;
 
-                redR = 154.0F;
-                redG = 123.0F;
-                redB = 129.0F;
+                redR = 204.0F;
+                redG = 153.0F;
+                redB = 120.0F;
 
                 int tint;
 

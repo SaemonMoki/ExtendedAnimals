@@ -691,16 +691,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             GlStateManager.popMatrix();
 
+            if (cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString())) {
             GlStateManager.pushMatrix();
-
             GlStateManager.scalef(bagSize * size, bagSize * size, bagSize * size);
             GlStateManager.translatef(0.0F, (-1.45F + 1.45F / size) + ((-0.6F*((1.5F-size)*2.0F)) + (0.6F*((1.5F-size)*2.0F))/bagSize) + ((0.23F - (size-0.7F)*0.0375F)*dwarf), ((1.0F-bagSize)*0.35F)); // if biggest 0, -0.16, 0 : if smallest 0, -0.66, 0
             GlStateManager.translatef(0.0F, 0.0F, 0.0F);
-            if (cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString())) {
                 this.udder.render(scale);
+                GlStateManager.popMatrix();
             }
-
-            GlStateManager.popMatrix();
         }
     }
 
@@ -1035,6 +1033,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float horns = -1.0F;
 
         if (!this.isChild) {
+
             if (sharedGenes[13] == 1 || sharedGenes[14] == 1) {
                 //should be polled unless...
                 //african horn gene

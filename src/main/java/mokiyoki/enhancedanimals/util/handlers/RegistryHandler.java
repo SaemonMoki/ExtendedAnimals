@@ -64,7 +64,7 @@ public class RegistryHandler {
 
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-        final Block[] blocks = {ModBlocks.Post_Acacia, ModBlocks.Post_Birch, ModBlocks.Post_Dark_Oak, ModBlocks.Post_Jungle, ModBlocks.Post_Oak, ModBlocks.Post_Spruce, ModBlocks.Egg_Carton
+        final Block[] blocks = {ModBlocks.Post_Acacia, ModBlocks.Post_Birch, ModBlocks.Post_Dark_Oak, ModBlocks.Post_Jungle, ModBlocks.Post_Oak, ModBlocks.Post_Spruce, ModBlocks.UnboundHay_Block, ModBlocks.Egg_Carton
         };
             event.getRegistry().registerAll(blocks);
     }
@@ -75,7 +75,8 @@ public class RegistryHandler {
                 ModItems.Egg_Blue, ModItems.Egg_GreenLight, ModItems.Egg_Green, ModItems.Egg_Grey, ModItems.Egg_GreyGreen, ModItems.Egg_Olive, ModItems.Egg_GreenDark,
                 ModItems.RawChicken_DarkSmall, ModItems.RawChicken_Dark, ModItems.RawChicken_DarkBig, ModItems.CookedChicken_DarkSmall, ModItems.CookedChicken_Dark,
                 ModItems.CookedChicken_DarkBig, ModItems.RawChicken_PaleSmall, ModItems.RawChicken_Pale, ModItems.CookedChicken_PaleSmall, ModItems.CookedChicken_Pale,
-                ModItems.RawRabbit_Small, ModItems.CookedRabbit_Small, ModItems.RabbitStew_Weak, ModItems.Milk_Bottle, ModItems.Debug_Gene_Book};
+                ModItems.RawRabbit_Small, ModItems.CookedRabbit_Small, ModItems.RabbitStew_Weak, ModItems.Half_Milk_Bottle, ModItems.Milk_Bottle, ModItems.OneSixth_Milk_Bucket,
+                ModItems.OneThird_Milk_Bucket, ModItems.Half_Milk_Bucket, ModItems.TwoThirds_Milk_Bucket, ModItems.FiveSixths_Milk_Bucket, ModItems.Debug_Gene_Book};
 
         final Item[] itemBlocks = {
                 new BlockItem(ModBlocks.Post_Acacia, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Acacia.getRegistryName()),
@@ -84,6 +85,7 @@ public class RegistryHandler {
                 new BlockItem(ModBlocks.Post_Jungle, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Jungle.getRegistryName()),
                 new BlockItem(ModBlocks.Post_Oak, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Oak.getRegistryName()),
                 new BlockItem(ModBlocks.Post_Spruce, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Spruce.getRegistryName()),
+                new BlockItem(ModBlocks.UnboundHay_Block, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.UnboundHay_Block.getRegistryName()),
                 new BlockItem(ModBlocks.Egg_Carton, new Item.Properties().maxStackSize(1).group(ItemGroup.INVENTORY)).setRegistryName(ModBlocks.Egg_Carton.getRegistryName()),
         };
 
@@ -341,41 +343,41 @@ public class RegistryHandler {
         for (Biome biome : ForgeRegistries.BIOMES) {
 //
             //Enhanced Pig Spawning
-            if (!biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
+            if (!biome.getRegistryName().equals(Biomes.MUSHROOM_FIELDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.MUSHROOM_FIELD_SHORE.getRegistryName()) && !biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.DESERT.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_HILLS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_LAKES.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.THE_END.getRegistryName()) && !biome.getRegistryName().equals(Biomes.NETHER.getRegistryName())){
                 biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_PIG, 6, 2, 3));
             }
 
             //Enhanced Rabbit Spawning
-            if (biome.getRegistryName().equals(Biomes.SNOWY_TUNDRA.getRegistryName()) || biome.getRegistryName().equals(Biomes.ICE_SPIKES.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()) ||
+            if (!biome.getRegistryName().equals(Biomes.MUSHROOM_FIELDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.MUSHROOM_FIELD_SHORE.getRegistryName()) && biome.getRegistryName().equals(Biomes.SNOWY_TUNDRA.getRegistryName()) || biome.getRegistryName().equals(Biomes.ICE_SPIKES.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()) ||
                     biome.getRegistryName().equals(Biomes.FLOWER_FOREST.getRegistryName()) ||
                     biome.getRegistryName().equals(Biomes.DESERT.getRegistryName()) || biome.getRegistryName().equals(Biomes.DESERT_LAKES.getRegistryName()) || biome.getRegistryName().equals(Biomes.DESERT_HILLS.getRegistryName()) ) {
                 biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3));
             }
 
             //Enhanced Llama Spawning
-            if (biome.getRegistryName().equals(Biomes.MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) ||
+            if (!biome.getRegistryName().equals(Biomes.MUSHROOM_FIELDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.MUSHROOM_FIELD_SHORE.getRegistryName()) && biome.getRegistryName().equals(Biomes.MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) ||
                     biome.getRegistryName().equals(Biomes.SAVANNA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SHATTERED_SAVANNA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SAVANNA_PLATEAU.getRegistryName()) || biome.getRegistryName().equals(Biomes.SHATTERED_SAVANNA_PLATEAU.getRegistryName()) ) {
                 biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_LLAMA, 4, 2, 3));
             }
 
             //Enhanced Sheep Spawning
-            if (!biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
+            if (!biome.getRegistryName().equals(Biomes.MUSHROOM_FIELDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.MUSHROOM_FIELD_SHORE.getRegistryName()) && !biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.DESERT.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_HILLS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_LAKES.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.THE_END.getRegistryName()) && !biome.getRegistryName().equals(Biomes.NETHER.getRegistryName())){
                 biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_SHEEP, 12, 4, 4));
             }
 
             //Enhanced Cow Spawning
-            if (!biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
+            if (!biome.getRegistryName().equals(Biomes.MUSHROOM_FIELDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.MUSHROOM_FIELD_SHORE.getRegistryName()) && !biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.DESERT.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_HILLS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_LAKES.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.THE_END.getRegistryName()) && !biome.getRegistryName().equals(Biomes.NETHER.getRegistryName())){
                 biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_COW, 8, 4, 4));
             }
 
             //Enhanced Chicken Spawning
-            if (!biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
+            if (!biome.getRegistryName().equals(Biomes.MUSHROOM_FIELDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.MUSHROOM_FIELD_SHORE.getRegistryName()) && !biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.DESERT.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_HILLS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_LAKES.getRegistryName()) &&
                     !biome.getRegistryName().equals(Biomes.THE_END.getRegistryName()) && !biome.getRegistryName().equals(Biomes.NETHER.getRegistryName())) {
                 biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));

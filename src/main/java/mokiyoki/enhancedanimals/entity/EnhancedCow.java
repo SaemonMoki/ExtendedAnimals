@@ -1085,30 +1085,19 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 maxBagSize = maxBagSize + 0.01F;
             }
 
-            if (genes[38] >= 5){
+
+            if (genes[38] == 6){
                 maxBagSize = maxBagSize - 0.01F;
-                if (genes[38] == 6){
-                    maxBagSize = maxBagSize - 0.01F;
-                }
             }
-            if (genes[39] >= 5){
+            if (genes[39] == 6){
                 maxBagSize = maxBagSize - 0.01F;
-                if (genes[39] == 6){
-                    maxBagSize = maxBagSize - 0.01F;
-                }
             }
 
-            if (genes[40] <= 2){
+            if (genes[40] == 1){
                 maxBagSize = maxBagSize - 0.01F;
-                if (genes[40] == 1){
-                    maxBagSize = maxBagSize - 0.01F;
-                }
             }
-            if (genes[41] <= 2){
+            if (genes[41] == 1){
                 maxBagSize = maxBagSize - 0.01F;
-                if (genes[41] == 1){
-                    maxBagSize = maxBagSize - 0.01F;
-                }
             }
 
             if (genes[50] == 2){
@@ -1433,7 +1422,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[13] = (2);
         }
 
-        //Speckled Spots
+        //Speckled Spots [speckled, wildtype+]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[14] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1638,7 +1627,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             }
         }
 
-        //hump size [tallest, tall, medium, short] reduces milk production [tall sizes only]
+        //hump height [tallest, tall, medium, short] reduces milk production [tall sizes only]
         if (wildType == 1) {
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
                 initialGenes[40] = (ThreadLocalRandom.current().nextInt(4) + 1);
@@ -1812,7 +1801,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[55] = (2);
         }
 
-        //A1 vs A2 milk cause why not
+        //A1 vs A2 milk cause why not [A1, A2]
             initialGenes[56] = (ThreadLocalRandom.current().nextInt(2) + 1);
             initialGenes[57] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1900,8 +1889,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[69] = (2);
         }
 
-
-        //horn nub controller 1
+        //horn nub controller 1 [taurus, indus]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[70] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1923,7 +1911,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             }
         }
 
-        //horn nub controller 2
+        //horn nub controller 2 [taurus, medium, indus]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[72] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
@@ -1945,7 +1933,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             }
         }
 
-        //horn nub controller 3
+        //horn nub controller 3 [indus, taurus]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[74] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1969,7 +1957,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         //african horn gene [african horned, wildtype]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[76] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            initialGenes[76] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             if (wildType == 1){
@@ -1979,7 +1967,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[77] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            initialGenes[77] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             if (wildType == 1){
@@ -1991,13 +1979,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         //scur gene [scurs, wildtype]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[78] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            initialGenes[78] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[78] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[79] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            initialGenes[79] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[79] = (1);

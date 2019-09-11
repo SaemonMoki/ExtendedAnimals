@@ -73,7 +73,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         "ground_partridge_mahogany.png","ground_wheaten_silver.png",    "ground_wheaten_salmon.png",
         "ground_wheaten_lemon.png",     "ground_wheaten_gold.png",      "ground_wheaten_mahogany.png",
         "ground_solid_silver.png",      "ground_solid_silver.png",      "ground_solid_cream.png",
-        "ground_solid_buff.png",        "ground_solid_mahogany.png",    "pattern_solid_blue.png"
+        "ground_solid_buff.png",        "ground_solid_mahogany.png",    "pattern_solid_lavender.png"
     };
     /** [10]  black,blue,splash,splashLav,splashDun,splashChoc,lavender,white,dun,chocolate
         [18] solid,birchen,duckwing,wheaten,quail,columbian,darkbrown,lakenvelder,moorhead,blacktail,penciled,bsinglelace,singlelace,doublelace,spangled,partridge-penciled, halfmoon spangle, bluelace/none */
@@ -179,9 +179,9 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     };
 
     private static final String[] CHICKEN_TEXTURES_SHANKS = new String[] {
-        "shanks_horn.png","shanks_yellow.png","shanks_willow.png","shanks_black.png",
-        "shanks_verywhite.png","shanks_white.png", "shanks_slate.png", "shanks_black.png",
-        "shanks_superyellow.png"
+        "shanks_horn.png","shanks_lightyellow.png","shanks_yellow.png","shanks_darkyellow.png","shanks_willow.png","shanks_black.png",
+        "shanks_verywhite.png","shanks_lightwhite.png","shanks_white.png","shanks_grey.png", "shanks_slate.png", "shanks_black.png",
+        "shanks_superhorn.png", "shanks_lightsuperyellow.png", "shanks_superyellow.png", "shanks_darksuperyellow.png","shanks_superwillow.png","shanks_black.png"
     };
     private static final String[] CHICKEN_TEXTURES_COMB = new String[] {
         "comb_black.png","comb_blackleaking.png","comb_red.png",
@@ -515,8 +515,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 this.remove();
         } else if(genes[72] == 2 && genes[73] == 2){
                 this.remove();
-        } else if(genes[104] == 2 && genes[105] == 2){
-                this.remove();
+//        } else if(genes[104] == 2 && genes[105] == 2){
+//                this.remove();
         } else if (genes[150] == 2 && genes[151] == 2){
                 this.remove();
         }
@@ -718,7 +718,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 int pattern = 0;
                 int moorhead = 0;
                 int white = 0;
-                int shanks = 2;
+                int shanks = 3;
                 int comb = 2;
                 int eyes = 1;
                 int ptrncolours = 10; //number of pattern colours
@@ -746,7 +746,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                         ground = 15;
                         pattern = 351;
                         white = 0;
-                        shanks = 4;
+                        shanks = 6;
                         comb = 2;
                         eyes = 0;
                         isAlbino = true;
@@ -1181,7 +1181,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                                             moorhead = 1;
                                         } else {
                                             //  multiple laced duckwing
-                                            pattern = 26;
+                                            pattern = 15;
                                             ground = 0;
                                         }
                                     } else {
@@ -1307,11 +1307,11 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                                 } else {
                                     if (genesForText[100] == 2 && genesForText[101] == 2) {
                                         // extended patterned incomplete columbian w/ less hackle markings
-                                        pattern = 31;
+                                        pattern = 30;
                                         ground = 15;
                                     } else {
                                         // incomplete columbian w/ less hackle markings
-                                        pattern = 30;
+                                        pattern = 3;
                                         ground = 15;
                                     }
                                 }
@@ -1521,19 +1521,31 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                     }
 
 
+                    int groundMod = 0;
                     //ground colour tint
                     if (genesForText[0] == 1) {
                         //gold
-                        ground = ground + 2;
+                        groundMod = groundMod + 2;
                     }
-                    if (genesForText[0] == 1 && ((genesForText[32] == 3 && genesForText[33] == 3) || (genesForText[36] == 2 && genesForText[37] == 2))) {
+                    if (genesForText[0] == 1 && (genesForText[32] == 3 && genesForText[33] == 3)) {
                         //lemon or cream but backwards
-                        ground = ground + 1;
+                        groundMod = groundMod + 1;
                     }
                     if (genesForText[34] == 1 || genesForText[35] == 1) {
                         //mahogany or lemon cream counter
-                        ground = ground + 1;
+                        groundMod = groundMod + 1;
                     }
+                    if (genesForText[36] == 2 && genesForText[37] == 2) {
+                        groundMod = groundMod - 1;
+                    }
+
+                    if (groundMod < 0) {
+                        groundMod = 0;
+                    } else if (groundMod > 4) {
+                        groundMod = 4;
+                    }
+
+                    ground = ground + groundMod;
 
                     if (pattern <= 340) {
                         if (moorhead == 1) {
@@ -1639,7 +1651,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                         //mottled
                         white = 2;
                     } else {
-                        if (pattern > 8 && Melanin != 2 && (genesForText[54] != 3 && genesForText[55] != 3) && genesForText[6] == 2) {
+                        if (pattern < 10 && Melanin != 2 && (genesForText[54] != 3 && genesForText[55] != 3) && genesForText[6] == 2) {
                             //white crest
                             white = 3;
                         }
@@ -1650,67 +1662,103 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 if (!isAlbino) {
                     //gets comb colour
                     if (genesForText[4] == 1 && (genesForText[42] == 1 || genesForText[43] == 1)) {
-                        //comb and shanks are black
-                        comb = 0;
-                        shanks = 3;
+                        //comb and shanks are fibro black
+                        comb = -1;
+                        shanks = 6;
                     } else {
-                        comb = 4;
+                        comb = 5;
                     }
-                    if (genesForText[24] == 1 && genesForText[25] == 1) {
-                        shanks = 3;
-                        // makes mulbery comb
-                        if (genesForText[30] == 2) {
-                            comb = comb + 1;
-                        }
+                    if (genesForText[24] == 5 || genesForText[25] == 5) {
+                        shanks = 5;
+//                        if (comb != 0) {
+//                            comb = 5;
+//                        }
+//                        // makes mulbery comb
+//                        if (genesForText[30] == 2) {
+//                            comb = comb + 1;
+//                        }
+                    } else if (genesForText[24] == 1 && genesForText[25] == 1) {
+                        shanks = 5;
+//                        if (comb != 0) {
+//                            comb = 5;
+//                        }
+                    } else if (genesForText[24] == 1 || genesForText[25] == 1) {
+                        shanks = 5;
+//                        if (comb != 0) {
+//                            comb = 5;
+//                        }
                     }
                     //shanks starts at 3 btw
+
+                    if (shanks > 2) {
+                        // if splash or blue lighten by 1 shade
+                        if (genesForText[40] == 2 || genesForText[41] == 2) {
+                            shanks--;
+                        }
+                    }
+                    if (shanks > 2) {
+                        //if barred or mottled lighten by 1 shade
+                        if (genesForText[3] == 2 || (genesForText[22] == 2 && genesForText[23] == 2)) {
+                            shanks--;
+                        }
+                    }
+                    if (shanks > 2) {
+                        //if lavender lighten by 1 shade
+                        if ((genesForText[36] == 1 && genesForText[37] == 1)) {
+                            shanks--;
+                        }
+                    }
+
                     // if Dilute is Dilute and the shanks arnt darkened by extened black lighten by 1 shade
-                    if ((genesForText[24] != 1 && genesForText[25] != 1) && (genesForText[32] == 1 || genesForText[33] == 1)) {
+                    if ((genesForText[24] != 5 && genesForText[25] != 5) && (genesForText[32] == 1 || genesForText[33] == 1)) {
                         shanks--;
                     }
 
-                    //if barred or mottled lighten by 1 shade
-                    if (genesForText[3] == 2 || (genesForText[22] == 2 && genesForText[23] == 2)) {
+                    // if dominant white lighten by 1 shade
+                    if (genesForText[38] == 1 && genesForText[39] == 1) {
                         shanks--;
-                    }
-
-                    // if dominant white or lavender lighten by 1 shade
-                    if ((genesForText[38] == 1 && genesForText[39] == 1) || (genesForText[36] == 1 && genesForText[37] == 1)) {
-                        shanks--;
-                    }
-
-                    // if splash or blue lighten by 1 shade
-                    if (genesForText[40] == 2 || genesForText[41] == 2) {
-                        shanks--;
+                        if (comb != 2) {
+                            comb++;
+                        }
                     }
 
                     //if its melanized
-                    if (Melanin == 2) {
+                    if (genesForText[30] == 1 && genesForText[31] == 1) {
                         shanks++;
+                        if (comb != 3)
+                        comb--;
+                    }
+
+                    //lightens comb to mulberry if lightness is extreme enough
+                    if (shanks < 4 && comb != 2) {
+                        comb = comb + 1;
                     }
 
                     if (genesForText[166] == 2 && genesForText[167] == 2) {
-                        shanks++;
+                        //ressesive dark shanks
+                        shanks = shanks + 2;
                     }
 
                     //makes sure its not off the chart
                     if (shanks < 0) {
                         shanks = 0;
-                    } else if (shanks > 3) {
-                        shanks = 3;
+                    } else if (shanks > 6) {
+                        shanks = 6;
                     }
 
-                    //lightens comb to mulberry if lightness is extreme enough
-                    if (shanks < 2 && (comb == 0 || comb == 4)) {
-                        comb = comb + 1;
+
+
+                    if (comb > 5) {
+                        comb = 5;
+                    } else if (comb < 0) {
+                        comb = 0;
                     }
 
                     //makes the shanks and beak their white or yellow varient
                     if (genesForText[44] == 1 || genesForText[45] == 1) {
-                        shanks = shanks + 4;
-                    }
-                    if ((shanks == 1) && (genesForText[44] == 3 && genesForText[45] == 3)) {
-                        shanks = 8;
+                        shanks = shanks + 5;
+                    } else if (genesForText[44] == 3 && genesForText[45] == 3) {
+                        shanks = shanks + 11;
                     }
 
                 }
@@ -2019,7 +2067,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 this.chickenTextures.add(CHICKEN_TEXTURES_COMB[comb]);
                 this.chickenTextures.add(CHICKEN_TEXTURES_EYES[eyes]);
             }else{
-                int shanks = 2;
+                int shanks = 4;
                 int comb = 2;
                 int eyes = 1;
                 int downBase = 1;
@@ -2034,7 +2082,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                     downBase = 0;
                     if (genesForText[20] == 3 && genesForText[21] == 3) {
                         //albino
-                        shanks = 4;
+                        shanks = 6;
                         comb = 2;
                         eyes = 0;
                         isAlbino = true;
@@ -2473,10 +2521,9 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 if (true){
     //THE DNA TESTER-5069 !!!!!
                     //0,1,2,3,4,5,6,7,8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109
-    return new int[] {1,1,6,2,2,2,1,1,1,10, 10,10, 10,10, 10,10, 10,10, 10,10,2,2,1,1,4,2,2,2,3,3,3,2
-                     ,3,3,2,2,1,1,2,2,1,1,2,2,2,2,3,3,1,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,3,3,2,2,2,2,1,1
-                     ,1,1,1,2,2,2,2,1,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,2,2
-                     ,2,2,2,2,3,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};   //149
+    return new int[] {2,1,6,2,1,1,6,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,1,1,5,5,2,2,2,2,1,1,3,3,2,2,1,1,2,2,1,1,1,1,1,1,1,1,2,2,1,1,2,2,1,1,2,2,2,2,1,1,2,2,3,3,2,2,2,2,1,1,1,1,1,1,3,3,1,1,2,2,2,2,1,1,2,2,1,1,2,2,2,2,1,1,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,12,12,12,12,12,12,5,5,18,18,24,24,5,5,2,2,1,1
+
+    };
 
 }else {
     //Gold [ gold, silver ]
@@ -2875,7 +2922,7 @@ if (true){
         }
     }
 
-    //Duplex comb or v comb [ wildtype, duplex ]   // reversed dominance, cold biome exclusive
+    //Duplex comb or v comb [ wildtype, duplexV, duplexC ]   // reversed dominance, cold biome exclusive
     if ((ThreadLocalRandom.current().nextInt(100) > WTC) && wildType == 3) {
         initialGenes[50] = (ThreadLocalRandom.current().nextInt(2) + 1);
     } else {
@@ -3600,7 +3647,7 @@ if (true){
 
     //ear size 4 and whitener [reducer, wildtype, adds size, adds white, adds white and size]
     if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-        initialGenes[158] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        initialGenes[158] = (ThreadLocalRandom.current().nextInt(6) + 1);
     } else {
         initialGenes[158] = (1);
     }
@@ -3661,6 +3708,19 @@ if (true){
         initialGenes[167] = (ThreadLocalRandom.current().nextInt(2) + 1);
     } else {
         initialGenes[167] = (1);
+    }
+
+    //long legs [normal, long legs]
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[168] = (ThreadLocalRandom.current().nextInt(2) + 1);
+    } else {
+        initialGenes[168] = (1);
+    }
+
+    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        initialGenes[169] = (ThreadLocalRandom.current().nextInt(2) + 1);
+    } else {
+        initialGenes[169] = (1);
     }
 
     //Quirk ideas:

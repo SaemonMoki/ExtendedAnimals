@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "eanimod:milk_bottle"
+    },
+    {
+      "item": "minecraft:bucket"
+    }
+  ],
+  "result":
+  {
+    "item": "eanimod:onethird_milk_bucket",
+    "count": 1
+  }
+}

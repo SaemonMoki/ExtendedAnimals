@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
+import mokiyoki.enhancedanimals.entity.EntityState;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.util.math.MathHelper;
@@ -98,6 +99,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 //    private final RendererModel faceWool5;
 //    private final RendererModel faceWool6;
 //    private final RendererModel faceWool7;
+    private final RendererModel udder;
+    private final RendererModel nippleL;
+    private final RendererModel nippleR;
     private final RendererModel tailBase;
     private final RendererModel tailMiddle;
     private final RendererModel tailTip;
@@ -379,6 +383,16 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.headWool1Child.addBox(-2.5F, 0.0F, 0.0F, 5, 3, 4, 0.4F); //head fluff
         this.headWool1Child.setRotationPoint(0.0F, -4.0F, -3.0F);
 
+        this.udder = new RendererModel(this, 46, 55);
+        this.udder.addBox(-2.0F, 0.0F, 0.0F, 4, 4, 5);
+        this.nippleL = new RendererModel(this, 46, 55);
+        this.nippleL.addBox(-0.5F, 0.0F, -0.5F, 1, 3, 1);
+        this.nippleR = new RendererModel(this, 60, 55);
+        this.nippleR.addBox(-0.5F, 0.0F, -0.5F, 1, 3, 1);
+        this.udder.setRotationPoint(0.0F, 12.0F, 3.25F);
+        this.nippleL.setRotationPoint(-1.0F, 2.5F, 1.0F);
+        this.nippleR.setRotationPoint(1.0F, 2.5F, 1.0F);
+
         this.tailBase = new RendererModel(this, 50, 6);
         this.tailBase.addBox(-1.0F, 0.0F, 0.0F, 2, 3, 1);
         this.tailBase.setRotationPoint(0.0F, 9.0F, 14.0F + xMove);
@@ -454,6 +468,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         this.headWool1.addChild(headWool1Child);
 
+        this.udder.addChild(nippleL);
+        this.udder.addChild(nippleR);
+
     }
 
     @Override
@@ -461,11 +478,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
         EnhancedSheep enhancedSheep = (EnhancedSheep) entityIn;
-
+        String sheepStatus = enhancedSheep.getSheepStatus();
         this.coatlength = enhancedSheep.getCoatLength();
-
         int[] genes = enhancedSheep.getSharedGenes();
-
         char[] uuidArry = enhancedSheep.getCachedUniqueIdString().toCharArray();
 
         boolean horns = false;
@@ -629,6 +644,18 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                 if (polycerate) {
                     this.polyHornBase.render(scale);
                 }
+            }
+
+//            if (sheepStatus.equals(EntityState.PREGNANT.toString()) || sheepStatus.equals(EntityState.MOTHER.toString())) {
+            if (true) {
+
+//                GlStateManager.pushMatrix();
+//                GlStateManager.scalef(0.5F, 0.7F, 0.5F);
+//                GlStateManager.translatef(0.0F, 10.0F * scale, 0.0F);
+
+                this.udder.render(scale);
+
+//                GlStateManager.popMatrix();
             }
 
         }

@@ -646,8 +646,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                 }
             }
 
-//            if (sheepStatus.equals(EntityState.PREGNANT.toString()) || sheepStatus.equals(EntityState.MOTHER.toString())) {
-            if (true) {
+            if (sheepStatus.equals(EntityState.PREGNANT.toString()) || sheepStatus.equals(EntityState.MOTHER.toString())) {
+//            if (true) {
 
 //                GlStateManager.pushMatrix();
 //                GlStateManager.scalef(0.5F, 0.7F, 0.5F);

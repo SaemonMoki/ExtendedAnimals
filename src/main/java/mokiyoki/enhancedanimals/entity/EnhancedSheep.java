@@ -835,13 +835,37 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                         itemStack.shrink(1);
                     }
                 }
-            }else if (item == Items.GLASS_BOTTLE && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())) {
+            } else if (item == Items.GLASS_BOTTLE && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())) {
                 entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
                 itemStack.shrink(1);
                 if (itemStack.isEmpty()) {
                     entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Milk_Bottle));
                 } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Milk_Bottle))) {
                     entityPlayer.dropItem(new ItemStack(ModItems.Milk_Bottle), false);
+                }
+            } else if (item == Items.BUCKET && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())) {
+                entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
+                itemStack.shrink(1);
+                if (itemStack.isEmpty()) {
+                    entityPlayer.setHeldItem(hand, new ItemStack(ModItems.OneThird_Milk_Bucket));
+                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.OneThird_Milk_Bucket))) {
+                    entityPlayer.dropItem(new ItemStack(ModItems.OneThird_Milk_Bucket), false);
+                }
+            } else if (item == ModItems.OneThird_Milk_Bucket && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())) {
+                entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
+                itemStack.shrink(1);
+                if (itemStack.isEmpty()) {
+                    entityPlayer.setHeldItem(hand, new ItemStack(ModItems.TwoThirds_Milk_Bucket));
+                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.TwoThirds_Milk_Bucket))) {
+                    entityPlayer.dropItem(new ItemStack(ModItems.TwoThirds_Milk_Bucket), false);
+                }
+            } else if (item == ModItems.TwoThirds_Milk_Bucket && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())) {
+                entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
+                itemStack.shrink(1);
+                if (itemStack.isEmpty()) {
+                    entityPlayer.setHeldItem(hand, new ItemStack(Items.MILK_BUCKET));
+                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET))) {
+                    entityPlayer.dropItem(new ItemStack(Items.MILK_BUCKET), false);
                 }
             } else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));

@@ -86,13 +86,15 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
     private final RendererModel neckWool7;
     private final RendererModel headWool1;
     private final RendererModel headWool1Child;
-//    private final RendererModel headWool2;
 //    private final RendererModel headWool3;
 //    private final RendererModel headWool4;
 //    private final RendererModel headWool5;
 //    private final RendererModel headWool6;
 //    private final RendererModel headWool7;
-//    private final RendererModel faceWool1;
+    private final RendererModel cheekWool1;
+    private final RendererModel cheekWool1Child;
+    private final RendererModel noseWool1;
+    private final RendererModel noseWool1Child;
 //    private final RendererModel faceWool2;
 //    private final RendererModel faceWool3;
 //    private final RendererModel faceWool4;
@@ -383,6 +385,18 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.headWool1Child.addBox(-2.5F, 0.0F, 0.0F, 5, 3, 4, 0.4F); //head fluff
         this.headWool1Child.setRotationPoint(0.0F, -4.0F, -3.0F);
 
+        this.cheekWool1 = new RendererModel(this,0,0);
+        this.cheekWool1.setRotationPoint(0.0F, 0.0F, -6.0F);
+        this.cheekWool1Child = new RendererModel(this, 14, 47);
+        this.cheekWool1Child.addBox(-2.5F, 0.0F, 0.0F, 5, 2, 2, 0.5F); //cheek fluff
+        this.cheekWool1Child.setRotationPoint(0.0F, -3.5F, -6.0F);
+
+        this.noseWool1 = new RendererModel(this,0,0);
+        this.noseWool1.setRotationPoint(0.0F, 0.0F, -6.0F);
+        this.noseWool1Child = new RendererModel(this, 0, 47);
+        this.noseWool1Child.addBox(-2.0F, 0.0F, 0.0F, 4, 2, 3, 0.4F); //cheek fluff
+        this.noseWool1Child.setRotationPoint(0.0F, -5.0F, -7.0F);
+
         this.udder = new RendererModel(this, 46, 55);
         this.udder.addBox(-2.0F, 0.0F, 0.0F, 4, 4, 5);
         this.nippleL = new RendererModel(this, 46, 55);
@@ -467,6 +481,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.polyHornR0.addChild(hornR2);
 
         this.headWool1.addChild(headWool1Child);
+        this.cheekWool1.addChild(cheekWool1Child);
+        this.noseWool1.addChild(noseWool1Child);
 
         this.udder.addChild(nippleL);
         this.udder.addChild(nippleR);
@@ -486,6 +502,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         boolean horns = false;
         boolean scurs = false;
         boolean polycerate = false;
+        int facewool = 0;
 
         if (genes[6] == 2 || genes[7] == 2) {
             horns = true;
@@ -515,6 +532,20 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                         polycerate = true;
                     }
                 }
+            }
+        }
+
+        if (genes[42] == 1 || genes[43] == 1) {
+            if (genes[40] == 1) {
+                facewool++;
+            }
+            if (genes[41] == 1) {
+                facewool++;
+            }
+            if (genes[38] == 1 || genes[39] == 1) {
+                facewool++;
+            } else if (genes[38] == 3 && genes[39] == 3) {
+                facewool--;
             }
         }
 
@@ -631,7 +662,15 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                  }
             }
 
-//             this.headWool1.render(scale);
+             if (facewool >= 1) {
+                 this.headWool1.render(scale);
+                 if (facewool >= 2) {
+                     this.cheekWool1.render(scale);
+                     if (facewool == 3) {
+                         this.noseWool1.render(scale);
+                     }
+                 }
+             }
 
             this.tailBase.render(scale);
             this.leg1.render(scale);
@@ -735,7 +774,11 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         copyModelAngles(head, neckWool7);
 
         copyModelAngles(head, headWool1);
+        copyModelAngles(head, cheekWool1);
+        copyModelAngles(head, noseWool1);
         this.headWool1Child.rotateAngleX = 1.6F;
+        this.cheekWool1Child.rotateAngleX = 1.6F;
+        this.noseWool1Child.rotateAngleX = 1.6F;
 
         copyModelAngles(head, hornBase);
         copyModelAngles(head, polyHornBase);

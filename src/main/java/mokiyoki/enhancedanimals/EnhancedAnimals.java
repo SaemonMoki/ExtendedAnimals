@@ -4,6 +4,9 @@ import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityStorage;
 import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
+import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
+import mokiyoki.enhancedanimals.capability.hay.HayCapabilityStorage;
+import mokiyoki.enhancedanimals.capability.hay.IHayCapability;
 import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
@@ -75,6 +78,7 @@ public class EnhancedAnimals {
         // some preinit code
         proxy.init(event);
         CapabilityManager.INSTANCE.register(IPostCapability.class, new PostCapabilityStorage(), PostCapabilityProvider::new);
+        CapabilityManager.INSTANCE.register(IHayCapability.class, new HayCapabilityStorage(), HayCapabilityProvider::new);
         CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapabilityProvider::new);
 
 //        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_chicken"));

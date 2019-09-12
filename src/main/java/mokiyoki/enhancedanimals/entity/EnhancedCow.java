@@ -1,7 +1,9 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedGrassGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
+import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -20,6 +22,7 @@ import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
+import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -164,6 +167,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     private String mooshroomUUID = "0";
 
     private float[] cowColouration = null;
+    private String motherUUID = "";
 
     //TODO add achievements for breeding and slaying
 
@@ -174,23 +178,23 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     }
 
     protected int cowTimer;
-    private EnhancedGrassGoal eatGrassGoal;
+    private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
     protected int gestationTimer = 0;
     protected boolean pregnant = false;
 
     @Override
     protected void registerGoals() {
         //Todo add the temperamants
-        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
+//        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(5, this.eatGrassGoal);
+//        this.goalSelector.addGoal(5, this.eatGrassGoal);
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
     }
 
     protected void updateAITasks()
     {
-        this.cowTimer = this.eatGrassGoal.getEatingGrassTimer();
+        this.cowTimer = this.wanderEatingGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
 
@@ -301,6 +305,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                     enhancedcow.setGrowingAge(-24000);
                     enhancedcow.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
                     enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+                    enhancedcow.setMotherUUID(this.getUniqueID().toString());
                     this.world.addEntity(enhancedcow);
 
                 }
@@ -324,6 +329,11 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                         this.setGrowingAge(-8500);
                     }
                 }
+            } else if (getCowStatus().equals(EntityState.CHILD_STAGE_THREE.toString())) {
+                setCowStatus(EntityState.ADULT.toString());
+
+                //TODO remove the child follow mother ai
+
             }
 
         }
@@ -396,6 +406,14 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         if(genes[26] == 1 && genes[27] == 1) {
             this.remove();
         }
+    }
+
+    public void setMotherUUID(String motherUUID) {
+        this.motherUUID = motherUUID;
+    }
+
+    public String getMotherUUID() {
+        return this.motherUUID;
     }
 
     public void setSharedGenes(int[] genes) {
@@ -1207,6 +1225,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         compound.putString("MooshroomID", getMooshroomUUID());
 
+        compound.putString("MotherUUID", this.motherUUID);
+
     }
 
     /**
@@ -1237,6 +1257,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         hunger = compound.getInt("Hunger");
 
         setMooshroomUUID(compound.getString("MooshroomID"));
+
+        this.motherUUID = compound.getString("MotherUUID");
 
         setSharedGenes(genes);
         setCowSize();
@@ -2028,7 +2050,9 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             this.goalSelector.addGoal(2, new BreedGoal(this, speed));
             this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.25D, TEMPTATION_ITEMS, false));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
-            this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, speed));
+            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
+            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 12, 0.001F, 120, 2);
+            this.goalSelector.addGoal(6, wanderEatingGoal);
         }
         aiConfigured = true;
     }

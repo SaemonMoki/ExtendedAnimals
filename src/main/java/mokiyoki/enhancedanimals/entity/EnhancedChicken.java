@@ -700,6 +700,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
     }
 
+
+
     @OnlyIn(Dist.CLIENT)
     public String[] getVariantTexturePaths() {
         if (this.chickenTextures.isEmpty()) {
@@ -1722,8 +1724,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                         }
                     }
 
-                    //if its melanized
-                    if (genesForText[30] == 1 && genesForText[31] == 1) {
+                    //if its charcoal
+                    if (genesForText[100] == 2 && genesForText[101] == 2) {
                         shanks++;
                         if (comb != 3)
                         comb--;

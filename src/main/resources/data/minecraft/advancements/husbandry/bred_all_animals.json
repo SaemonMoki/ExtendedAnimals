@@ -83,7 +83,7 @@
         }
       }
     },
-    "minecraft:pig": {
+    "eanimod:enhanced_pig": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {
@@ -91,7 +91,7 @@
         }
       }
     },
-    "minecraft:mooshroom": {
+    "eanimod:enhanced_mooshroom": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {

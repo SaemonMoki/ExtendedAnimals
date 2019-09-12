@@ -111,7 +111,6 @@ public class UnboundHayBlock extends FallingBlock  implements IWaterLoggable {
     //TODO make usable by animals
     //TODO make react to getting wet
     //TODO add rotation? should adopt RotatedPillarBlock state from hayblock
-    //TODO replace hayblock with this block when shears, sword or axe is used on hayblock
     //TODO drop wheat items left in block when harvested
 
     public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos) {

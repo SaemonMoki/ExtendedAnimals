@@ -22,6 +22,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
 {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_CHICKEN_TEXTURE_LOCATION = "eanimod:textures/entities/chicken/";
+    private static final String ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION = "eanimod:textures/entities/chickensilkie/";
 
     public RenderEnhancedChicken(EntityRendererManager render)
     {
@@ -34,12 +35,19 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
     protected ResourceLocation getEntityTexture(EnhancedChicken entity)
     {
         String s = entity.getChickenTexture();
+        int[] genes = entity.getSharedGenes();
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
         if (resourcelocation == null)
         {
             resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, entity.getVariantTexturePaths()));
+
+            if (genes[106] == 1 || genes[107] == 1) {
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, entity.getVariantTexturePaths()));
+            } else {
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION, null, entity.getVariantTexturePaths()));
+            }
+
             LAYERED_LOCATION_CACHE.put(s, resourcelocation);
         }
 

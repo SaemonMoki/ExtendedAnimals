@@ -106,7 +106,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private static final int WTC = 90;
     private final List<String> sheepTextures = new ArrayList<>();
     private final List<String> sheepFleeceTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 42;
+    private static final int GENES_LENGTH = 48;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -1382,48 +1382,6 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
         //wool growth area extension [extended, wildtype+, limiter]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[36] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[36] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[37] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[37] = (2);
-        }
-
-        //wool growth area extension [extended, wildtype+]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[36] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[36] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[37] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[37] = (2);
-        }
-
-        //allows wool surrounding face [face wool, wildtype+]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[36] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[36] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[37] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[37] = (2);
-        }
-
-        //fertility modifier [ -1, 0, +1]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[38] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
@@ -1436,18 +1394,60 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             initialGenes[39] = (2);
         }
 
-        //Shedding/Rooing Sheep[ Shedding, non shedding]
+        //wool growth area extension [extended, wildtype+]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[40] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
             initialGenes[40] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[41] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[41] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
             initialGenes[41] = (2);
+        }
+
+        //allows wool surrounding face [face wool, wildtype+]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[42] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[42] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[43] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[43] = (2);
+        }
+
+        //fertility modifier [ -1, 0, +1]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[44] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[44] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[45] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[45] = (2);
+        }
+
+        //Shedding/Rooing Sheep[ Shedding, non shedding]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[46] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[46] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[47] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[47] = (2);
         }
 
         return initialGenes;

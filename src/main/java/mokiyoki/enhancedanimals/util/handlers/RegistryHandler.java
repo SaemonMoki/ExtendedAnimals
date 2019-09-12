@@ -18,8 +18,6 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
-//import net.minecraft.client.renderer.color.BlockColors;
-//import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
@@ -31,9 +29,7 @@ import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-//import net.minecraft.world.biome.BiomeColors;
 import net.minecraft.world.biome.Biomes;
-//import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -64,7 +60,7 @@ public class RegistryHandler {
 
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-        final Block[] blocks = {ModBlocks.Post_Acacia, ModBlocks.Post_Birch, ModBlocks.Post_Dark_Oak, ModBlocks.Post_Jungle, ModBlocks.Post_Oak, ModBlocks.Post_Spruce, ModBlocks.UnboundHay_Block, ModBlocks.Egg_Carton
+        final Block[] blocks = {ModBlocks.Post_Acacia, ModBlocks.Post_Birch, ModBlocks.Post_Dark_Oak, ModBlocks.Post_Jungle, ModBlocks.Post_Oak, ModBlocks.Post_Spruce, ModBlocks.UnboundHay_Block, ModBlocks.SparseGrass_Block, ModBlocks.Egg_Carton
         };
             event.getRegistry().registerAll(blocks);
     }
@@ -86,6 +82,7 @@ public class RegistryHandler {
                 new BlockItem(ModBlocks.Post_Oak, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Oak.getRegistryName()),
                 new BlockItem(ModBlocks.Post_Spruce, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Spruce.getRegistryName()),
                 new BlockItem(ModBlocks.UnboundHay_Block, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.UnboundHay_Block.getRegistryName()),
+                new BlockItem(ModBlocks.SparseGrass_Block, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.SparseGrass_Block.getRegistryName()),
                 new BlockItem(ModBlocks.Egg_Carton, new Item.Properties().maxStackSize(1).group(ItemGroup.INVENTORY)).setRegistryName(ModBlocks.Egg_Carton.getRegistryName()),
         };
 

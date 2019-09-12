@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": [
+      { "model": "eanimod:block/sparsegrass_block" }
+    ]
+  }
+}

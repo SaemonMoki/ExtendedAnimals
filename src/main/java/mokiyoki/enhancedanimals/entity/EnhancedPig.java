@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.pig.EnhancedGrassGoalPig;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
@@ -16,7 +17,6 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
-import net.minecraft.entity.ai.goal.EatGrassGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
@@ -66,7 +66,7 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_PIG;
 
-public class EnhancedPig extends AnimalEntity {
+public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
     //avalible UUID spaces : [ S X 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
@@ -144,8 +144,8 @@ public class EnhancedPig extends AnimalEntity {
 //        this.setSize(0.9F, pigSize*0.9F);
     }
 
-    private int pigTimer;
-    private EatGrassGoal entityAIEatGrass;
+    private int grassTimer;
+    private EnhancedGrassGoalPig eatGrassGoal;
 
     private int gestationTimer = 0;
     private boolean pregnant = false;
@@ -154,15 +154,15 @@ public class EnhancedPig extends AnimalEntity {
 
     @Override
     protected void registerGoals() {
-        this.entityAIEatGrass = new EatGrassGoal(this);
+        this.eatGrassGoal = new EnhancedGrassGoalPig(this, null);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
 //        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
         this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.fromItems(Items.CARROT_ON_A_STICK), false));
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, TEMPTATION_ITEMS));
-        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(5, this.entityAIEatGrass);
+        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(5, this.eatGrassGoal);
         this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
@@ -172,7 +172,6 @@ public class EnhancedPig extends AnimalEntity {
 
     @Override
     protected void updateAITasks() {
-        this.pigTimer = this.entityAIEatGrass.getEatingGrassTimer();
 
         LivingEntity livingentity = this.getRevengeTarget();
         if (this.isAngry()) {
@@ -195,7 +194,7 @@ public class EnhancedPig extends AnimalEntity {
             this.attackingPlayer = playerentity;
             this.recentlyHit = this.getRevengeTimer();
         }
-
+        this.grassTimer = this.eatGrassGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
 
@@ -222,6 +221,15 @@ public class EnhancedPig extends AnimalEntity {
             this.hunger = 0;
         } else {
             this.hunger = this.hunger - 6000;
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void handleStatusUpdate(byte id) {
+        if (id == 10) {
+            this.grassTimer = 40;
+        } else {
+            super.handleStatusUpdate(id);
         }
     }
 
@@ -278,7 +286,7 @@ public class EnhancedPig extends AnimalEntity {
         super.livingTick();
 
         if (this.world.isRemote) {
-            this.pigTimer = Math.max(0, this.pigTimer - 1);
+            this.grassTimer = Math.max(0, this.grassTimer - 1);
         }
 
         if (hunger <= 72000) {
@@ -317,9 +325,9 @@ public class EnhancedPig extends AnimalEntity {
         }
 
         //TODO what lethal genes do pigs have?
-        if (!this.world.isRemote){
-            lethalGenes();
-        }
+//        if (!this.world.isRemote){
+//            lethalGenes();
+//        }
 
     }
 
@@ -459,9 +467,9 @@ public class EnhancedPig extends AnimalEntity {
     }
 
     public void eatGrassBonus() {
-        if (this.isChild()) {
-            this.addGrowth(60);
-        }
+//        if (this.isChild()) {
+//            this.addGrowth(60);
+//        }
     }
 
 

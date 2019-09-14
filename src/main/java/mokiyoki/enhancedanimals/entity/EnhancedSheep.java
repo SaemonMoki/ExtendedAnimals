@@ -2,7 +2,10 @@ package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.ai.general.EnhancedGrassGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
+import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
@@ -100,7 +103,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             "eyes_black.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.TALL_GRASS, Items.VINE, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.ROSE_BUSH, Items.DANDELION, Items.SUGAR, Items.APPLE);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.TALL_GRASS, Items.VINE, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.ROSE_BUSH, Items.DANDELION, Items.SUGAR, Items.APPLE, ModBlocks.UnboundHay_Block);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     private static final int WTC = 90;
@@ -118,6 +121,9 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     private int hunger = 0;
 
+//    protected boolean aiConfigured = false;
+//    private String motherUUID = "";
+
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
@@ -126,6 +132,9 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 //        this.setSize(0.4F, 1F);
 
     }
+
+//    private int sheepTimer;
+//    private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
     /** Map from EnumDyeColor to RGB values for passage to GlStateManager.color() */
     private static final Map<DyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(Arrays.stream(DyeColor.values()).collect(Collectors.toMap((DyeColor p_200204_0_) -> {
@@ -189,6 +198,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     protected void updateAITasks()
     {
+//        this.sheepTimer = this.wanderEatingGoal.getEatingGrassTimer();
         this.sheepTimer = this.eatGrassGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
@@ -369,6 +379,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                         enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
                         enhancedsheep.setGrowingAge(-24000);
                         enhancedsheep.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+//                        enhancedsheep.setMotherUUID(this.getUniqueID().toString());
                         this.world.addEntity(enhancedsheep);
                     }
                 }
@@ -578,6 +589,14 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         setCoatLength(currentCoatLength);
         return ret;
     }
+
+//    public void setMotherUUID(String motherUUID) {
+//        this.motherUUID = motherUUID;
+//    }
+//
+//    public String getMotherUUID() {
+//        return this.motherUUID;
+//    }
 
     public void setSharedGenes(int[] genes) {
         StringBuilder sb = new StringBuilder();
@@ -919,6 +938,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         compound.putString("Status", getEntityStatus());
         compound.putInt("Hunger", hunger);
 
+//        compound.putString("MotherUUID", this.motherUUID);
+
     }
 
     /**
@@ -953,6 +974,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         setEntityStatus(compound.getString("Status"));
         hunger = compound.getInt("Hunger");
 
+//        this.motherUUID = compound.getString("MotherUUID");
+
         for (int i = 0; i < genes.length; i++) {
             if (genes[i] == 0) {
                 genes[i] = 1;
@@ -970,6 +993,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
         //resets the max so we don't have to store it
         setMaxCoatLength();
+//        configureAI();
 
     }
 
@@ -1036,6 +1060,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         //"White" is considered no dye
         this.setFleeceDyeColour(DyeColor.WHITE);
 
+//        configureAI();
         return livingdata;
     }
 
@@ -1465,6 +1490,21 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
         return initialGenes;
     }
+
+//    private void configureAI() {
+//        if (!aiConfigured) {
+//            Double speed = 1.0D;
+//
+//            this.goalSelector.addGoal(1, new PanicGoal(this, speed*1.25D));
+//            this.goalSelector.addGoal(2, new BreedGoal(this, speed));
+//            this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.1D, TEMPTATION_ITEMS, false));
+//            this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
+//            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.1D));
+//            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 12, 0.001F, 120, 2);
+//            this.goalSelector.addGoal(6, wanderEatingGoal);
+//        }
+//        aiConfigured = true;
+//    }
 
     public void setGenes(int[] genes) {
         this.genes = genes;

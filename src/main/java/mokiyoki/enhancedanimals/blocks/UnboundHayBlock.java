@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.blocks;
 
 import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -8,10 +9,13 @@ import net.minecraft.block.FallingBlock;
 import net.minecraft.block.IWaterLoggable;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IntegerProperty;
@@ -121,7 +125,6 @@ public class UnboundHayBlock extends FallingBlock  implements IWaterLoggable {
         return BlockRenderLayer.CUTOUT;
     }
 
-    //TODO make usable by animals
     //TODO make react to getting wet
     //TODO add rotation? should adopt RotatedPillarBlock state from hayblock
     //TODO drop wheat items left in block when harvested
@@ -156,6 +159,19 @@ public class UnboundHayBlock extends FallingBlock  implements IWaterLoggable {
     @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
         worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+
+        if (!worldIn.isRemote && !player.isCreative()) {
+            int bites = state.get(BITES);
+            ItemStack itemstack = new ItemStack(Items.WHEAT, (9-bites));
+            ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), itemstack);
+            itementity.setDefaultPickupDelay();
+            worldIn.addEntity(itementity);
+        }
     }
+
+//    @Override
+//    public ItemStack getItem(IBlockReader worldIn, BlockPos pos, BlockState state) {
+//
+//    }
 
 }

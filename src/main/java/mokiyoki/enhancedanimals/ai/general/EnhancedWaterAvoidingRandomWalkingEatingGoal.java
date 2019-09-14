@@ -299,6 +299,8 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                             this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
                             this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);
                         }
+
+                        this.creature.eatGrassBonus();
                     }
                 }
 

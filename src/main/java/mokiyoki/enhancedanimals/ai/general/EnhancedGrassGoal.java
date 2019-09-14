@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.entity.Temperament;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -17,12 +18,12 @@ import java.util.function.Predicate;
 
 public class EnhancedGrassGoal extends Goal {
 
-    private static final Predicate<BlockState> IS_GRASSBLOCK = BlockStateMatcher.forBlock(Blocks.GRASS);
+    protected static final Predicate<BlockState> IS_GRASSBLOCK = BlockStateMatcher.forBlock(Blocks.GRASS);
 //    private static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
-//    private static final Predicate<BlockState> IS_TALLGRASS = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
-    private final MobEntity grassEaterEntity;
-    private final World entityWorld;
-    private int eatingGrassTimer;
+    protected static final Predicate<BlockState> IS_TALLGRASS = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
+    protected final MobEntity grassEaterEntity;
+    protected final World entityWorld;
+    protected int eatingGrassTimer;
     Map<Temperament, Integer> temperaments;
 
     public EnhancedGrassGoal(MobEntity grassEaterEntityIn, Map<Temperament, Integer> temperaments) {
@@ -102,15 +103,32 @@ public class EnhancedGrassGoal extends Goal {
         this.eatingGrassTimer = Math.max(0, this.eatingGrassTimer - 1);
         if (this.eatingGrassTimer == 4) {
             BlockPos blockpos = new BlockPos(this.grassEaterEntity);
-            if (IS_GRASSBLOCK.test(this.entityWorld.getBlockState(blockpos))) {
+            if (IS_TALLGRASS.test(this.entityWorld.getBlockState(blockpos))) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
+                    this.entityWorld.destroyBlock(blockpos, false);
+                    this.entityWorld.setBlockState(blockpos, Blocks.GRASS.getDefaultState());
+                }
+
+                this.grassEaterEntity.eatGrassBonus();
+
+            } else if (IS_GRASSBLOCK.test(this.entityWorld.getBlockState(blockpos))) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
                     this.entityWorld.destroyBlock(blockpos, false);
                 }
 
                 this.grassEaterEntity.eatGrassBonus();
+
             } else {
                 BlockPos blockpos1 = blockpos.down();
                 if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.GRASS_BLOCK) {
+                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
+                        this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
+//                        this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);
+                        this.entityWorld.setBlockState(blockpos1, ModBlocks.SparseGrass_Block.getDefaultState(), 2);
+                    }
+
+                    this.grassEaterEntity.eatGrassBonus();
+                } else if (this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SparseGrass_Block) {
                     if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
                         this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
                         this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);

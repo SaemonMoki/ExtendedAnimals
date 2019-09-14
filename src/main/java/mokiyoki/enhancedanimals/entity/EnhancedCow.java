@@ -4,6 +4,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedGrassGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -146,7 +147,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     };
 
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UnboundHay_Block);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     private static final int WTC = 90;
@@ -1085,7 +1086,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         return cowColouration;
     }
 
-    //TODO finish milk calculations and such
     private void setMaxBagSize(){
         float maxBagSize = 0.0F;
 
@@ -1129,7 +1129,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 maxBagSize = maxBagSize - 0.02F;
             }
 
-            //TODO check that I did this right
             for (int i = 5; i > genes[66]; i--){
                 maxBagSize = maxBagSize + 0.01F;
             }
@@ -1168,10 +1167,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.setBagSize(maxBagSize);
 
     }
-
-
-
-
 
     @Override
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {

@@ -18,6 +18,7 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;

@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.entity.EnhancedCow;
+import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.entity.Temperament;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import net.minecraft.block.Block;
@@ -38,6 +40,10 @@ public class EnhancedGrassGoal extends Goal {
      */
     public boolean shouldExecute() {
         //TODO make the amount needed before 'hungry' using temperaments
+        if (grassEaterEntity instanceof EnhancedCow && ((EnhancedCow)grassEaterEntity).getCowStatus().equals(EntityState.CHILD_STAGE_ONE)) {
+            //first stage babies should NOT eat grass
+            return false;
+        }
         int eatingModifier = ((EnhancedAnimal)grassEaterEntity).getHunger()/50;
 
         if (((EnhancedAnimal)grassEaterEntity).getHunger() > 12000) {
@@ -69,7 +75,7 @@ public class EnhancedGrassGoal extends Goal {
      * Execute a one shot task or start executing a continuous task
      */
     public void startExecuting() {
-        ((EnhancedAnimal)this.grassEaterEntity).decreaseHunger();
+        ((EnhancedAnimal)this.grassEaterEntity).decreaseHunger(3000);
         this.eatingGrassTimer = 40;
         this.entityWorld.setEntityState(this.grassEaterEntity, (byte)10);
         this.grassEaterEntity.getNavigator().clearPath();

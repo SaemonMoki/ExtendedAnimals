@@ -109,7 +109,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private static final int WTC = 90;
     private final List<String> sheepTextures = new ArrayList<>();
     private final List<String> sheepFleeceTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 48;
+    private static final int GENES_LENGTH = 54;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -1486,6 +1486,48 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
         } else {
             initialGenes[47] = (2);
+        }
+
+        //White Shading 1 [ Shaded+, non shaded]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[48] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[48] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[49] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[49] = (2);
+        }
+
+        //White Shading 2 [ Shaded+, non shaded]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[50] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[50] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[51] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[51] = (2);
+        }
+
+        //White Shading Enhancer [ Shaded+, non shaded]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[52] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[52] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[53] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[53] = (2);
         }
 
         return initialGenes;

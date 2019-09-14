@@ -11,6 +11,9 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.LeadItem;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.pathfinding.PathType;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
@@ -18,10 +21,13 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -37,9 +43,24 @@ public class Post extends Block implements IWaterLoggable {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    protected static final VoxelShape PILLAR_AABB = Block.makeCuboidShape(6D, 0.0D, 6D, 10D, 16D, 10D);
-    protected static final VoxelShape EASTWEST_AABB = Block.makeCuboidShape(0.0D, 6D, 6D, 16D, 10D, 10D);
-    protected static final VoxelShape NORTHSOUTH_AABB = Block.makeCuboidShape(6D, 6D, 0.0D, 10D, 10D, 16D);
+    private static final VoxelShape PILLAR_AABB = Block.makeCuboidShape(6D, 0.0D, 6D, 10D, 16D, 10D);
+    private static final VoxelShape EASTWEST_AABB = Block.makeCuboidShape(0.0D, 6D, 6D, 16D, 10D, 10D);
+    private static final VoxelShape NORTHSOUTH_AABB = Block.makeCuboidShape(6D, 6D, 0.0D, 10D, 10D, 16D);
+
+    private static final VoxelShape FENCE_EAST = Block.makeCuboidShape(6D, 0.0D, 6D, 10D, 24D, 10D);
+    private static final VoxelShape FENCE_WEST = Block.makeCuboidShape(6D, 0.0D, 6D, 10D, 24D, 10D);
+    private static final VoxelShape FENCE_NORTH = Block.makeCuboidShape(6D, 0.0D, 6D, 10D, 24D, 10D);
+    private static final VoxelShape FENCE_SOUTH = Block.makeCuboidShape(6D, 0.0D, 6D, 10D, 24D, 10D);
+
+    private static final VoxelShape BELOW = Block.makeCuboidShape(6D, 0.0D, 6D, 10D, 16D, 10D);
+    private static final VoxelShape ABOVE = Block.makeCuboidShape(6D, 0.0D, 6D, 10D, 16D, 10D);
+    private static final VoxelShape EAST = Block.makeCuboidShape(0.0D, 6D, 6D, 16D, 10D, 10D);
+    private static final VoxelShape WEST = Block.makeCuboidShape(0.0D, 6D, 6D, 16D, 10D, 10D);
+    private static final VoxelShape NORTH = Block.makeCuboidShape(6D, 6D, 0.0D, 10D, 10D, 16D);
+    private static final VoxelShape SOUTH = Block.makeCuboidShape(6D, 6D, 0.0D, 10D, 10D, 16D);
+
+        //TODO should add voxel shapes together to make final shape
+//    protected static final VoxelShape SHAPE = VoxelShapes.combine();
 
 
     public Post(Properties properties) {
@@ -81,6 +102,14 @@ public class Post extends Block implements IWaterLoggable {
         return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
 
+    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+        if (!worldIn.isRemote && (state.get(FACING) == Direction.UP || state.get(FACING) == Direction.DOWN)) {
+            return LeadItem.attachToFence(player, worldIn, pos);
+        } else {
+            ItemStack itemstack = player.getHeldItem(handIn);
+            return itemstack.getItem() == Items.LEAD || itemstack.isEmpty();
+        }
+    }
 
     @Override
     public BlockState rotate(BlockState state, Rotation rot) {
@@ -115,6 +144,8 @@ public class Post extends Block implements IWaterLoggable {
         return false;
     }
 
+    //TODO when in pillar state check if it can connect to fences
+    //TODO needs to connect to other posts dynamically to make perches
 
     @Override
     public void onBlockPlacedBy(World worldIn, BlockPos blockPos, BlockState state, LivingEntity placer, ItemStack stack) {

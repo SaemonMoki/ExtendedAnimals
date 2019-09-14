@@ -9,6 +9,7 @@ import net.minecraft.block.FallingBlock;
 import net.minecraft.block.IWaterLoggable;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
@@ -59,7 +60,7 @@ public class UnboundHayBlock extends FallingBlock  implements IWaterLoggable {
 
     public void eatFromBlock(World worldIn, BlockState state, BlockPos pos) {
         int i = state.get(BITES);
-        if (i < 9) {
+        if (i < 8) {
             worldIn.setBlockState(pos, state.with(BITES, Integer.valueOf(i + 1)), 3);
         } else {
             worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
@@ -144,6 +145,16 @@ public class UnboundHayBlock extends FallingBlock  implements IWaterLoggable {
         BlockState state = worldIn.getBlockState(pos);
         float bites = state.get(BITES);
         entityIn.fall(fallDistance, 0.2F + (bites*0.1F));
+    }
+
+    @Override
+    protected void onStartFalling(FallingBlockEntity fallingEntity) {
+        fallingEntity.getWorldObj().getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(fallingEntity.getOrigin());
+    }
+
+    @Override
+    public void onEndFalling(World worldIn, BlockPos pos, BlockState fallingState, BlockState hitState) {
+        worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).addHayPos(pos);
     }
 
     @Override

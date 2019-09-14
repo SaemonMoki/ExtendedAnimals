@@ -65,7 +65,7 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
             double d0 = this.childEntity.getDistanceSq(this.motherEntity);
             boolean shouldContinue = !(d0 < 2.0D) && !(d0 > 256.0D);
             if (!shouldContinue) {
-                ((EnhancedAnimal)childEntity).decreaseHunger();
+                ((EnhancedAnimal)childEntity).decreaseHunger(6000);
             }
 
             return shouldContinue;

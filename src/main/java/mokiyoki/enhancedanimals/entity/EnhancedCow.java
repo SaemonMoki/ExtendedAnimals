@@ -237,11 +237,11 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     public int getHunger(){ return hunger; }
 
-    public void decreaseHunger() {
-        if (this.hunger - 6000 < 0) {
+    public void decreaseHunger(int decrease) {
+        if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {
-            this.hunger = this.hunger - 6000;
+            this.hunger = this.hunger - decrease;
         }
     }
 
@@ -1184,7 +1184,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             } else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             } else if (TEMPTATION_ITEMS.test(itemStack)) {
-                decreaseHunger();
+                decreaseHunger(6000);
                 itemStack.shrink(1);
             }
         }
@@ -2046,7 +2046,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.25D, TEMPTATION_ITEMS, false));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
             this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
-            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 12, 0.001F, 120, 2);
+            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2);
             this.goalSelector.addGoal(6, wanderEatingGoal);
         }
         aiConfigured = true;

@@ -216,11 +216,11 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         return hunger;
     }
 
-    public void decreaseHunger() {
-        if (this.hunger - 6000 < 0) {
+    public void decreaseHunger(int decrease) {
+        if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {
-            this.hunger = this.hunger - 6000;
+            this.hunger = this.hunger - decrease;
         }
     }
 
@@ -241,7 +241,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
         }
         else if (TEMPTATION_ITEMS.test(itemStack)) {
-            decreaseHunger();
+            decreaseHunger(6000);
             itemStack.shrink(1);
         }
         return super.processInteract(entityPlayer, hand);

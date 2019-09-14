@@ -228,11 +228,11 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         return hunger;
     }
 
-    public void decreaseHunger() {
-        if (this.hunger - 6000 < 0) {
+    public void decreaseHunger(int decrease) {
+        if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {
-            this.hunger = this.hunger - 6000;
+            this.hunger = this.hunger - decrease;
         }
     }
 
@@ -329,7 +329,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                 ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
             });
         } else if (TEMPTATION_ITEMS.test(itemStack)) {
-            decreaseHunger();
+            decreaseHunger(6000);
             itemStack.shrink(1);
         }
         return super.processInteract(entityPlayer, hand);

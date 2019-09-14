@@ -263,11 +263,11 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         return hunger;
     }
 
-    public void decreaseHunger() {
-        if (this.hunger - 6000 < 0) {
+    public void decreaseHunger(int decrease) {
+        if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {
-            this.hunger = this.hunger - 6000;
+            this.hunger = this.hunger - decrease;
         }
     }
 
@@ -421,7 +421,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         if (item instanceof DebugGenesBook) {
             Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
         } else if (TEMPTATION_ITEMS.test(itemStack)) {
-            decreaseHunger();
+            decreaseHunger(6000);
             itemStack.shrink(1);
         }
         return super.processInteract(entityPlayer, hand);

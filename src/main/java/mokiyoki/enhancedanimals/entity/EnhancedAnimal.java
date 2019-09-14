@@ -4,5 +4,5 @@ public interface EnhancedAnimal {
 
     int getHunger();
 
-    void decreaseHunger();
+    void decreaseHunger(int decreaseAmount);
 }

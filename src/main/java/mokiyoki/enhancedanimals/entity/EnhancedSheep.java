@@ -298,11 +298,11 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         return hunger;
     }
 
-    public void decreaseHunger() {
-        if (this.hunger - 6000 < 0) {
+    public void decreaseHunger(int decrease) {
+        if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {
-            this.hunger = this.hunger - 6000;
+            this.hunger = this.hunger - decrease;
         }
     }
 
@@ -889,7 +889,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             } else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             } else if (TEMPTATION_ITEMS.test(itemStack)) {
-                decreaseHunger();
+                decreaseHunger(6000);
                 itemStack.shrink(1);
             }
         }

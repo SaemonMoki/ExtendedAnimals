@@ -36,7 +36,10 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     private final int field_203113_j;
     protected int field_203112_e;
     protected final float probability;
-    private final World entityWorld;
+    protected final World entityWorld;
+
+    private int hayHungerRestore = 12000;
+    private int otherHungerRestore = 3000;
 
     private int eatingGrassTimer;
 
@@ -56,10 +59,10 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     private int expireCacheTimer = 12000;
 
 
-    private static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
-    private static final Predicate<BlockState> IS_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.GRASS_BLOCK);
-    private static final Predicate<BlockState> IS_SPARSE_GRASS_BLOCK = BlockStateMatcher.forBlock(ModBlocks.SparseGrass_Block);
-    private static final Predicate<BlockState> IS_TALL_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
+    protected static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
+    protected static final Predicate<BlockState> IS_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.GRASS_BLOCK);
+    protected static final Predicate<BlockState> IS_SPARSE_GRASS_BLOCK = BlockStateMatcher.forBlock(ModBlocks.SparseGrass_Block);
+    protected static final Predicate<BlockState> IS_TALL_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
 
     public EnhancedWaterAvoidingRandomWalkingEatingGoal(CreatureEntity creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth) {
         super(creature, speedIn);
@@ -175,11 +178,11 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
         if (eatingSearch) {
             if (searchHay) {
-                if (this.destinationBlock.withinDistance(this.creature.getPositionVec(), 2.0D)) {
+                if (this.destinationBlock.withinDistance(this.creature.getPositionVec(), getHayBlockTargetDistanceSq())) {
                     eatingHay = true;
                     searchHay = false;
                     eatingSearch = false;
-                    ((EnhancedAnimal)this.creature).decreaseHunger(12000);
+                    ((EnhancedAnimal)this.creature).decreaseHunger(hayHungerRestore);
                     this.eatingGrassTimer = 40;
                     this.entityWorld.setEntityState(this.creature, (byte)10);
                     this.creature.getNavigator().clearPath();
@@ -191,7 +194,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                 //stop looking for food and start eating
                 eating = true;
                 eatingSearch = false;
-                ((EnhancedAnimal)this.creature).decreaseHunger(3000);
+                ((EnhancedAnimal)this.creature).decreaseHunger(otherHungerRestore);
                 this.eatingGrassTimer = 40;
                 this.entityWorld.setEntityState(this.creature, (byte)10);
                 this.creature.getNavigator().clearPath();
@@ -261,8 +264,12 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         this.creature.getNavigator().tryMoveToXYZ((double)((float)this.destinationBlock.getX()), (double)(y), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
     }
 
-    public double getTargetDistanceSq() {
+    public double getGoundBlockTargetDistanceSq() {
         return 1.0D;
+    }
+
+    public double getHayBlockTargetDistanceSq() {
+        return 2.0D;
     }
 
     /**
@@ -272,14 +279,14 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         if (eatingSearch) {
             ++this.timeoutCounter;
             if(searchHay) {
-                if (!this.destinationBlock.withinDistance(this.creature.getPositionVec(), 2.0)) {
+                if (!this.destinationBlock.withinDistance(this.creature.getPositionVec(), getHayBlockTargetDistanceSq())) {
                     if (this.shouldMove()) {
                         this.creature.getNavigator().tryMoveToXYZ((double)((float)this.destinationBlock.getX()), (double)(this.destinationBlock.getY()), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
                     }
                 } else {
                     this.isAtDestination = true;
                 }
-            } else if (!this.destinationBlock.up().withinDistance(this.creature.getPositionVec(), this.getTargetDistanceSq())) {
+            } else if (!this.destinationBlock.up().withinDistance(this.creature.getPositionVec(), this.getGoundBlockTargetDistanceSq())) {
                 if (this.shouldMove()) {
                     this.creature.getNavigator().tryMoveToXYZ((double)((float)this.destinationBlock.getX()), (double)(this.destinationBlock.getY() + 1), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
                 }
@@ -289,32 +296,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         } else if (eating) {
             this.eatingGrassTimer = Math.max(0, this.eatingGrassTimer - 1);
             if (this.eatingGrassTimer == 4) {
-                BlockPos blockpos = new BlockPos(this.creature);
-                if (IS_GRASS.test(this.entityWorld.getBlockState(blockpos)) || IS_TALL_GRASS_BLOCK.test(this.entityWorld.getBlockState(blockpos))) {
-                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
-                        this.entityWorld.destroyBlock(blockpos, false);
-                    }
-
-                    this.creature.eatGrassBonus();
-                } else {
-                    BlockPos blockpos1 = blockpos.down();
-                    if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.GRASS_BLOCK) {
-                        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
-                            this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                            this.entityWorld.setBlockState(blockpos1, ModBlocks.SparseGrass_Block.getDefaultState(), 2);
-                        }
-
-                        this.creature.eatGrassBonus();
-                    } else if (this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SparseGrass_Block) {
-                        if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
-                            this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                            this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);
-                        }
-
-                        this.creature.eatGrassBonus();
-                    }
-                }
-
+                eatBlocks();
             }
         } else if (eatingHay) {
             this.eatingGrassTimer = Math.max(0, this.eatingGrassTimer - 1);
@@ -326,6 +308,34 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                     //clean up
                     entityWorld.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(this.destinationBlock);
                 }
+            }
+        }
+    }
+
+    protected void eatBlocks() {
+        BlockPos blockpos = new BlockPos(this.creature);
+        if (IS_GRASS.test(this.entityWorld.getBlockState(blockpos)) || IS_TALL_GRASS_BLOCK.test(this.entityWorld.getBlockState(blockpos))) {
+            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+                this.entityWorld.destroyBlock(blockpos, false);
+            }
+
+            this.creature.eatGrassBonus();
+        } else {
+            BlockPos blockpos1 = blockpos.down();
+            if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.GRASS_BLOCK) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+                    this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
+                    this.entityWorld.setBlockState(blockpos1, ModBlocks.SparseGrass_Block.getDefaultState(), 2);
+                }
+
+                this.creature.eatGrassBonus();
+            } else if (this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SparseGrass_Block) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+                    this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
+                    this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);
+                }
+
+                this.creature.eatGrassBonus();
             }
         }
     }

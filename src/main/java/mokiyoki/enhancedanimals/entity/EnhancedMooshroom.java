@@ -1,13 +1,18 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
+import mokiyoki.enhancedanimals.ai.general.mooshroom.EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.goal.FollowParentGoal;
+import net.minecraft.entity.ai.goal.PanicGoal;
+import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -241,6 +246,22 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         }
 
     }
+
+    @Override
+    protected void configureAI() {
+        if (!aiConfigured) {
+            Double speed = 1.0D;
+            this.goalSelector.addGoal(1, new PanicGoal(this, speed*1.5D));
+            this.goalSelector.addGoal(2, new BreedGoal(this, speed));
+            this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.25D, TEMPTATION_ITEMS, false));
+            this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
+            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
+            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom(this, speed, 7, 0.001F, 120, 2);
+            this.goalSelector.addGoal(6, wanderEatingGoal);
+        }
+        aiConfigured = true;
+    }
+
 
     private Pair<Effect, Integer> getStewEffect(ItemStack p_213443_1_) {
         FlowerBlock flowerblock = (FlowerBlock)((BlockItem)p_213443_1_.getItem()).getBlock();

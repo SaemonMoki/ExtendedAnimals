@@ -2,8 +2,8 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECRoost;
 import mokiyoki.enhancedanimals.ai.ECSandBath;
-import mokiyoki.enhancedanimals.ai.general.EnhancedGrassGoal;
 import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
+import mokiyoki.enhancedanimals.ai.general.chicken.EnhancedWaterAvoidingRandomWalkingEatingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
@@ -228,7 +228,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     public int timeUntilNextEgg;
     private int grassTimer;
     private int sandBathTimer;
-    private EnhancedGrassGoal entityAIEatGrass;
+    private EnhancedWaterAvoidingRandomWalkingEatingGoalChicken entityAIEatGrass;
     private ECSandBath ecSandBath;
     private String dropMeatType;
 
@@ -258,7 +258,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     @Override
     protected void registerGoals() {
         //TODO add temperaments
-        this.entityAIEatGrass = new EnhancedGrassGoal(this, null);
+        this.entityAIEatGrass = new EnhancedWaterAvoidingRandomWalkingEatingGoalChicken(this, 1.0D, 7, 0.001F, 120, 2);
         this.ecSandBath = new ECSandBath(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.4D));

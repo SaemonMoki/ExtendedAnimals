@@ -1,17 +1,35 @@
 {
-  "parent": "block/cube_all",
-  "textures": {"all": "eanimod:block/sparsegrass_side", "top": "eanimod:block/sparsegrass_top", "bottom": "block/dirt"},
+  "parent": "block/block",
+  "textures": {
+    "particle": "block/dirt",
+    "side": "eanimod:block/sparsegrass_side",
+    "top": "eanimod:block/sparsegrass_top",
+    "bottom": "block/dirt",
+    "top_overlay": "eanimod:block/sparsegrass_top_overlay",
+    "side_overlay": "eanimod:block/sparsegrass_side_overlay"
+  },
   "elements": [
     {
       "from": [ 0.00, 0.00, 0.00 ],
       "to": [16.00, 16.00, 16.00],
       "faces": {
-        "north": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "all"},
-        "east": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "all"},
-        "south": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "all"},
-        "west": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "all"},
-        "up": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "top"},
-        "down": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "bottom"}
+        "north": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "side", "cullface": "north"},
+        "east": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "side", "cullface": "east"},
+        "south": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "side", "cullface": "south"},
+        "west": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "side", "cullface": "west"},
+        "up": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "top", "cullface": "up"},
+        "down": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "bottom", "cullface": "down"}
+      }
+    },
+    {
+      "from": [ 0.00, 0.00, 0.00 ],
+      "to": [16.00, 16.00, 16.00],
+      "faces": {
+        "north": { "uv": [ 0, 0, 16, 16 ], "texture": "#side_overlay", "tintindex": 0, "cullface": "north" },
+        "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#side_overlay", "tintindex": 0, "cullface": "south" },
+        "west":  { "uv": [ 0, 0, 16, 16 ], "texture": "#side_overlay", "tintindex": 0, "cullface": "west" },
+        "east":  { "uv": [ 0, 0, 16, 16 ], "texture": "#side_overlay", "tintindex": 0, "cullface": "east" },
+        "up":  { "uv": [ 0, 0, 16, 16 ], "texture": "#top_overlay", "tintindex": 0, "cullface": "up" }
       }
     }
   ]

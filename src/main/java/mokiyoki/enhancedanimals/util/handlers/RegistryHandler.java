@@ -18,8 +18,13 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.entity.EntityClassification;
@@ -28,9 +33,12 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.GrassColors;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeColors;
 import net.minecraft.world.biome.Biomes;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -277,6 +285,38 @@ public class RegistryHandler {
 //        OreDictionary.registerOre("egg", ModItems.Egg_GreenDark);
 
     }
+
+
+    @SubscribeEvent
+    public static void registerBlockColourHandlers(final ColorHandlerEvent.Block event) {
+        final BlockColors blockColors = event.getBlockColors();
+
+        // Use the grass colour of the biome or the default grass colour
+        final IBlockColor grassColourHandler = (state, blockAccess, pos, tintIndex) -> {
+            if (blockAccess != null && pos != null) {
+                return BiomeColors.getGrassColor(blockAccess, pos);
+            }
+
+            return GrassColors.get(0.5d, 1.0d);
+        };
+
+        blockColors.register(grassColourHandler, ModBlocks.SparseGrass_Block);
+    }
+
+    @SubscribeEvent
+    public static void registerItemColourHandlers(final ColorHandlerEvent.Item event) {
+        final BlockColors blockColors = event.getBlockColors();
+        final ItemColors itemColors = event.getItemColors();
+
+        // Use the Block's colour handler for an ItemBlock
+        final IItemColor itemBlockColourHandler = (stack, tintIndex) -> {
+            final BlockState state = ((BlockItem) stack.getItem()).getBlock().getDefaultState();
+            return blockColors.getColor(state, null, null, tintIndex);
+        };
+
+        itemColors.register(itemBlockColourHandler, ModBlocks.SparseGrass_Block);
+    }
+
 
     @SubscribeEvent
     public static void onTileEntitiesRegistry(final RegistryEvent.Register<TileEntityType<?>> event) {

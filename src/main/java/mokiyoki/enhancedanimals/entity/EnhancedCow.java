@@ -147,7 +147,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     };
 
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UnboundHay_Block);
+    protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UnboundHay_Block);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     private static final int WTC = 90;
@@ -168,7 +168,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     private String mooshroomUUID = "0";
 
     private float[] cowColouration = null;
-    private String motherUUID = "";
+    protected String motherUUID = "";
 
     //TODO add achievements for breeding and slaying
 
@@ -179,7 +179,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     }
 
     protected int cowTimer;
-    private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
+    protected EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
     protected int gestationTimer = 0;
     protected boolean pregnant = false;
 
@@ -2011,7 +2011,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         return initialGenes;
     }
 
-    private void configureAI() {
+    protected void configureAI() {
         if (!aiConfigured) {
             Double speed = 1.0D;
 

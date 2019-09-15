@@ -1,8 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.ai.general.pig.EnhancedGrassGoalPig;
+import mokiyoki.enhancedanimals.ai.general.pig.EnhancedWaterAvoidingRandomWalkingEatingGoalPig;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
@@ -145,7 +144,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     }
 
     private int grassTimer;
-    private EnhancedGrassGoalPig eatGrassGoal;
+    private EnhancedWaterAvoidingRandomWalkingEatingGoalPig wanderEatingGoal;
 
     private int gestationTimer = 0;
     private boolean pregnant = false;
@@ -154,7 +153,8 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
     @Override
     protected void registerGoals() {
-        this.eatGrassGoal = new EnhancedGrassGoalPig(this, null);
+
+        wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalPig(this, 1.0D, 7, 0.001F, 120, 2);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
 //        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
@@ -162,7 +162,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.fromItems(Items.CARROT_ON_A_STICK), false));
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(5, this.eatGrassGoal);
+        this.goalSelector.addGoal(5, wanderEatingGoal);
         this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
@@ -194,7 +194,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             this.attackingPlayer = playerentity;
             this.recentlyHit = this.getRevengeTimer();
         }
-        this.grassTimer = this.eatGrassGoal.getEatingGrassTimer();
+        this.grassTimer = this.wanderEatingGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
 

@@ -2,7 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
-import mokiyoki.enhancedanimals.ai.general.EnhancedGrassGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
@@ -149,7 +149,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     private boolean didSpit;
 
-    private EnhancedGrassGoal eatGrassGoal;
+    private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
     @Nullable
     private EnhancedLlama caravanHead;
@@ -165,14 +165,14 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     @Override
     protected void registerGoals() {
         //Todo add the temperamants
-        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
+        this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new ECRunAroundLikeCrazy(this, 1.2D));
         this.goalSelector.addGoal(2, new ECLlamaFollowCaravan(this, (double)2.1F));
         this.goalSelector.addGoal(3, new RangedAttackGoal(this, 1.25D, 40, 20.0F));
         this.goalSelector.addGoal(3, new PanicGoal(this, 1.2D));
         this.goalSelector.addGoal(4, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, this.eatGrassGoal);
+        this.goalSelector.addGoal(5, this.wanderEatingGoal);
         this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.7D));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));

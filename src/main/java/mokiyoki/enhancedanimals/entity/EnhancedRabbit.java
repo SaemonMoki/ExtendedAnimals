@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.ai.general.EnhancedGrassGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -27,7 +27,6 @@ import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -214,7 +213,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
-    private EnhancedGrassGoal eatGrassGoal;
+    private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
     public EnhancedRabbit(EntityType<? extends EnhancedRabbit> entityType, World worldIn) {
         super(ENHANCED_RABBIT, worldIn);
@@ -226,7 +225,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
     @Override
     protected void registerGoals() {
-        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
+        this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2);
         this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedRabbit.AIPanic(this, 2.2D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 0.8D));
@@ -234,7 +233,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, WolfEntity.class, 10.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, MobEntity.class, 4.0F, 2.2D, 2.2D));
-        this.goalSelector.addGoal(5, this.eatGrassGoal);
+        this.goalSelector.addGoal(5, this.wanderEatingGoal);
         this.goalSelector.addGoal(5, new EnhancedRabbit.AIRaidFarm(this));
         this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 0.6D));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 10.0F));

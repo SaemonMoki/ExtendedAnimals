@@ -177,18 +177,18 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     }
 
     private int sheepTimer;
-    private EnhancedGrassGoal eatGrassGoal;
+    private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
     @Override
     protected void registerGoals() {
         //Todo add the temperamants
-        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
+        this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.1D, TEMPTATION_ITEMS, false));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(5, this.eatGrassGoal);
+        this.goalSelector.addGoal(5, this.wanderEatingGoal);
         this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
@@ -198,8 +198,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     protected void updateAITasks()
     {
-//        this.sheepTimer = this.wanderEatingGoal.getEatingGrassTimer();
-        this.sheepTimer = this.eatGrassGoal.getEatingGrassTimer();
+        this.sheepTimer = this.wanderEatingGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
 

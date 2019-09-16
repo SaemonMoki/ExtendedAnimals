@@ -1,10 +1,8 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "block/dirt",
-    "side": "eanimod:block/sparsegrass_side",
-    "top": "eanimod:block/sparsegrass_top",
-    "bottom": "block/dirt",
+    "particle": "block/grass_block_side",
+    "dirt": "block/dirt",
     "top_overlay": "eanimod:block/sparsegrass_top_overlay",
     "side_overlay": "eanimod:block/sparsegrass_side_overlay"
   },
@@ -13,12 +11,12 @@
       "from": [ 0.00, 0.00, 0.00 ],
       "to": [16.00, 16.00, 16.00],
       "faces": {
-        "north": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "side", "cullface": "north"},
-        "east": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "side", "cullface": "east"},
-        "south": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "side", "cullface": "south"},
-        "west": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "side", "cullface": "west"},
-        "up": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "top", "cullface": "up"},
-        "down": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "bottom", "cullface": "down"}
+        "north": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "dirt", "cullface": "north"},
+        "east": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "dirt", "cullface": "east"},
+        "south": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "dirt", "cullface": "south"},
+        "west": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "dirt", "cullface": "west"},
+        "up": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "dirt", "cullface": "up"},
+        "down": { "uv": [ 0.00, 0.00, 16.00, 16.00], "texture": "dirt", "cullface": "down"}
       }
     },
     {

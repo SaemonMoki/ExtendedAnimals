@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.ai.general.cow;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.entity.EnhancedCow;
+import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.passive.AnimalEntity;
 
@@ -65,7 +67,17 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
             double d0 = this.childEntity.getDistanceSq(this.motherEntity);
             boolean shouldContinue = !(d0 < 2.0D) && !(d0 > 256.0D);
             if (!shouldContinue) {
-                ((EnhancedAnimal)childEntity).decreaseHunger(6000);
+                if (motherEntity instanceof EnhancedCow) {
+                    if (((EnhancedCow)motherEntity).decreaseMilk(2)) {
+                        ((EnhancedAnimal)childEntity).decreaseHunger(6000);
+                    }
+                } else if (motherEntity instanceof EnhancedSheep) {
+                    if (((EnhancedSheep)motherEntity).decreaseMilk(1)) {
+                        ((EnhancedAnimal)childEntity).decreaseHunger(6000);
+                    }
+                } else {
+                    ((EnhancedAnimal)childEntity).decreaseHunger(6000);
+                }
             }
 
             return shouldContinue;

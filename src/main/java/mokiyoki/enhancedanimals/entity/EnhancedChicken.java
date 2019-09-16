@@ -224,8 +224,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     public float destPos;
     public float oFlapSpeed;
     public float oFlap;
-    public float wingRotDelta = 1.0F;
-    public int timeUntilNextEgg;
+    private float wingRotDelta = 1.0F;
+    private int timeUntilNextEgg;
     private int grassTimer;
     private int sandBathTimer;
     private EnhancedWaterAvoidingRandomWalkingEatingGoalChicken entityAIEatGrass;
@@ -430,34 +430,37 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         this.wingRotation += this.wingRotDelta * 2.0F;
 
         if (!this.world.isRemote) {
+
             if (hunger <= 72000) {
-                hunger++;
+                if (ticksExisted % 2 == 0){
+                    hunger++;
+                }
+                if (hunger <= 24000) {
+                    --this.timeUntilNextEgg;
+                } else if (hunger >= 48000) {
+                    this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
+                }
             }
-        }
 
-        if (!this.world.isRemote && !this.isChild() && --this.timeUntilNextEgg <= 0) {
-            this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
-            mixMateMitosisGenes();
-            mixMitosisGenes();
-            ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
-            eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setGenes(getEggGenes());
-            CompoundNBT nbtTagCompound = eggItem.serializeNBT();
-            eggItem.deserializeNBT(nbtTagCompound);
-            this.entityDropItem(eggItem, 1);
-            this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
-        }
+            if (!this.isChild() && this.timeUntilNextEgg <= 0) {
+                this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+                mixMateMitosisGenes();
+                mixMitosisGenes();
+                ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
+                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setGenes(getEggGenes());
+                CompoundNBT nbtTagCompound = eggItem.serializeNBT();
+                eggItem.deserializeNBT(nbtTagCompound);
+                this.entityDropItem(eggItem, 1);
+                this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
+            }
 
-        if (!this.world.isRemote){
             lethalGenes();
-        }
 
-        if (this.world.isRemote) {
+        } else {
+
             this.grassTimer = Math.max(0, this.grassTimer - 1);
-        }
 
-//        if(this.grassTimer == 4){
-//            this.wingRotDelta = 1.0F;
-//        }
+        }
 
        //TODO if "is child" and parent is sitting go under parent, possibly turn off ability to collide.
 

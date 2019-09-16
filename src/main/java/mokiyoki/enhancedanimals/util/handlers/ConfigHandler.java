@@ -17,7 +17,12 @@ public class ConfigHandler {
     public static class CommonConfig {
         public final ForgeConfigSpec.BooleanValue spawnVanillaMobs;
         public final ForgeConfigSpec.IntValue wildTypeChance;
-        public final ForgeConfigSpec.IntValue gestationDays;
+        public final ForgeConfigSpec.IntValue incubationDaysChicken;
+        public final ForgeConfigSpec.IntValue gestationDaysRabbit;
+        public final ForgeConfigSpec.IntValue gestationDaysCow;
+        public final ForgeConfigSpec.IntValue gestationDaysSheep;
+        public final ForgeConfigSpec.IntValue gestationDaysLlama;
+        public final ForgeConfigSpec.IntValue gestationDaysPig;
 
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
@@ -29,9 +34,30 @@ public class ConfigHandler {
                     .comment(" 100 will make all animals spawn as wildtype for their biome, some mutations may be impossible to get. 0 makes animals spawn with almost completely random genes. higher numbers are best since you only need a few mutations to make a big difference")
                     .defineInRange("wildType.chance", 90, 1, Integer.MAX_VALUE);
 
-            gestationDays = builder
-                    .comment("Number of ticks for animal gestation. 24000 = 1 Minecraft Day")
+            incubationDaysChicken = builder
+                    .comment("Number of ticks for chickens to hatch, does nothing yet. 24000 = 1 Minecraft Day")
                     .defineInRange("gestation.days", 24000, 1, Integer.MAX_VALUE);
+
+            gestationDaysRabbit = builder
+                    .comment("Number of ticks for rabbit gestation. 24000 = 1 Minecraft Day")
+                    .defineInRange("gestation.days", 24000, 1, Integer.MAX_VALUE);
+
+            gestationDaysCow = builder
+                    .comment("Number of ticks for cow and mooshroom gestation. 48000 = 2 Minecraft Days")
+                    .defineInRange("gestation.days", 48000, 1, Integer.MAX_VALUE);
+
+            gestationDaysSheep = builder
+                    .comment("Number of ticks for sheep gestation. 48000 = 2 Minecraft Daysy")
+                    .defineInRange("gestation.days", 48000, 1, Integer.MAX_VALUE);
+
+            gestationDaysLlama = builder
+                    .comment("Number of ticks for llama gestation. 48000 = 2 Minecraft Days")
+                    .defineInRange("gestation.days", 48000, 1, Integer.MAX_VALUE);
+
+            gestationDaysPig = builder
+                    .comment("Number of ticks for pig gestation. 48000 = 2 Minecraft Days")
+                    .defineInRange("gestation.days", 48000, 1, Integer.MAX_VALUE);
+
             builder.pop();
         }
     }

@@ -22,7 +22,6 @@ import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
@@ -41,7 +40,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -49,9 +47,6 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -290,13 +285,13 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         }
 
         if (hunger <= 72000) {
-            hunger++;
+            hunger = hunger + 2;
         }
 
         if (!this.world.isRemote) {
             if(pregnant) {
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDays.get();
+                int days = ConfigHandler.COMMON.gestationDaysPig.get();
                 if (gestationTimer >= days) {
                     pregnant = false;
                     gestationTimer = 0;
@@ -315,7 +310,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
                         enhancedpig.setGenes(babyGenes);
                         enhancedpig.setSharedGenes(babyGenes);
                         enhancedpig.setPigSize();
-                        enhancedpig.setGrowingAge(-24000);
+                        enhancedpig.setGrowingAge(-60000);
                         enhancedpig.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
                         this.world.addEntity(enhancedpig);
                     }

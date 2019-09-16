@@ -456,11 +456,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 //        0.6F <= size <= 1.5F
 
         if (this.isChild) {
-            if (cowStatus.contains(EntityState.CHILD_STAGE_ONE.toString())) {
+//            if (cowStatus.contains(EntityState.CHILD_STAGE_ONE.toString())) {
                 GlStateManager.pushMatrix();
                 GlStateManager.scalef(0.4F, 0.4F, 0.4F);
-                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.5F, 0.0F);
-                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.4F) + ((0.23F - (0.4F-0.7F)*0.0375F)*dwarf), 0.0F);
+                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.46F) + ((0.23F - (0.46F-0.7F)*0.0375F)*dwarf), 0.0F);
 
                 this.headModel.render(scale);
 
@@ -485,8 +484,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
                 GlStateManager.popMatrix();
                 GlStateManager.pushMatrix();
-                GlStateManager.scalef(0.5F, 0.7F, 0.5F);
-                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.7F, 0.0F);
+                GlStateManager.scalef(0.4F, 0.7F, 0.4F);
                 GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.7F) + ((0.23F - (0.7F-0.7F)*0.0375F)*dwarf), 0.0F);
                 //TODO change y translation when calf is dwarf
 
@@ -504,122 +502,122 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
                 GlStateManager.popMatrix();
 
-            }else if (cowStatus.contains(EntityState.CHILD_STAGE_TWO.toString())) {
-                GlStateManager.pushMatrix();
-                GlStateManager.scalef(0.6F, 0.6F, 0.6F);
-                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.675F, 0.0F);
-                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.6F) + ((0.23F - (0.6F-0.7F)*0.0375F)*dwarf), 0.0F);
-
-                this.headModel.render(scale);
-
-                if (bodyShape >= 3) {
-                    this.bodySlim.render(scale);
-                }else{
-                    this.bodyThin.render(scale);
-                }
-
-                if (hump >= 12){
-                    this.humpLargeish.render(scale);
-                }else if (hump >= 10){
-                    this.humpMedium.render(scale);
-                }else if (hump >= 8){
-                    this.humpSmallish.render(scale);
-                }else if (hump >= 6){
-                    this.humpSmall.render(scale);
-                }else if (hump >= 4){
-                    this.humpXSmall.render(scale);
-                }
-                this.tail0.render(scale);
-
-                GlStateManager.popMatrix();
-                GlStateManager.pushMatrix();
-                GlStateManager.scalef(0.6F, 0.75F, 0.6F);
-                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.75F, 0.0F);
-                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.75F) + ((0.23F - (0.75F-0.7F)*0.0375F)*dwarf), 0.0F);
-                //TODO change y translation when calf is dwarf
-
-                if (dwarf != 0.0F){
-                    this.shortLeg1.render(scale);
-                    this.shortLeg2.render(scale);
-                    this.shortLeg3.render(scale);
-                    this.shortLeg4.render(scale);
-                }else {
-                    this.leg1.render(scale);
-                    this.leg2.render(scale);
-                    this.leg3.render(scale);
-                    this.leg4.render(scale);
-                }
-
-                GlStateManager.popMatrix();
-            }else if (cowStatus.contains(EntityState.CHILD_STAGE_THREE.toString())) {
-                GlStateManager.pushMatrix();
-                GlStateManager.scalef(0.7F, 0.7F, 0.7F);
-                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.732F, 0.0F);
-                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.7F) + ((0.23F - (0.7F-0.7F)*0.0375F)*dwarf), 0.0F);
-
-                this.headModel.render(scale);
-
-                if (bodyShape >= 3) {
-                    this.bodySlim.render(scale);
-                }else{
-                    this.bodyThin.render(scale);
-                }
-
-                if (hump >= 12){
-                    this.humpLargeish.render(scale);
-                }else if (hump >= 10){
-                    this.humpMedium.render(scale);
-                }else if (hump >= 8){
-                    this.humpSmallish.render(scale);
-                }else if (hump >= 6){
-                    this.humpSmall.render(scale);
-                }else if (hump >= 4){
-                    this.humpXSmall.render(scale);
-                }
-                this.tail0.render(scale);
-
-                GlStateManager.popMatrix();
-                GlStateManager.pushMatrix();
-                GlStateManager.scalef(0.7F, 0.8F, 0.7F);
-                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.8F, 0.0F);
-                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.8F) + ((0.23F - (0.8F-0.7F)*0.0375F)*dwarf), 0.0F);
-                //TODO change y translation when calf is dwarf
-
-                if (dwarf != 0.0F){
-                    this.shortLeg1.render(scale);
-                    this.shortLeg2.render(scale);
-                    this.shortLeg3.render(scale);
-                    this.shortLeg4.render(scale);
-                }else {
-                    this.leg1.render(scale);
-                    this.leg2.render(scale);
-                    this.leg3.render(scale);
-                    this.leg4.render(scale);
-                }
-
-                GlStateManager.popMatrix();
-            } else {
-                GlStateManager.popMatrix();
-                GlStateManager.pushMatrix();
-                GlStateManager.scalef(0.7F, 0.8F, 0.7F);
-                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.8F, 0.0F);
-                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.8F) + ((0.23F - (0.8F-0.7F)*0.0375F)*dwarf), 0.0F);
-                //TODO change y translation when calf is dwarf
-
-                if (dwarf != 0.0F){
-                    this.shortLeg1.render(scale);
-                    this.shortLeg2.render(scale);
-                    this.shortLeg3.render(scale);
-                    this.shortLeg4.render(scale);
-                }else {
-                    this.leg1.render(scale);
-                    this.leg2.render(scale);
-                    this.leg3.render(scale);
-                    this.leg4.render(scale);
-                }
-
-                GlStateManager.popMatrix();
-            }
+//            }else if (cowStatus.contains(EntityState.CHILD_STAGE_TWO.toString())) {
+//                GlStateManager.pushMatrix();
+//                GlStateManager.scalef(0.6F, 0.6F, 0.6F);
+//                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.675F, 0.0F);
+//                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.6F) + ((0.23F - (0.6F-0.7F)*0.0375F)*dwarf), 0.0F);
+//
+//                this.headModel.render(scale);
+//
+//                if (bodyShape >= 3) {
+//                    this.bodySlim.render(scale);
+//                }else{
+//                    this.bodyThin.render(scale);
+//                }
+//
+//                if (hump >= 12){
+//                    this.humpLargeish.render(scale);
+//                }else if (hump >= 10){
+//                    this.humpMedium.render(scale);
+//                }else if (hump >= 8){
+//                    this.humpSmallish.render(scale);
+//                }else if (hump >= 6){
+//                    this.humpSmall.render(scale);
+//                }else if (hump >= 4){
+//                    this.humpXSmall.render(scale);
+//                }
+//                this.tail0.render(scale);
+//
+//                GlStateManager.popMatrix();
+//                GlStateManager.pushMatrix();
+//                GlStateManager.scalef(0.6F, 0.75F, 0.6F);
+//                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.75F, 0.0F);
+//                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.75F) + ((0.23F - (0.75F-0.7F)*0.0375F)*dwarf), 0.0F);
+//                //TODO change y translation when calf is dwarf
+//
+//                if (dwarf != 0.0F){
+//                    this.shortLeg1.render(scale);
+//                    this.shortLeg2.render(scale);
+//                    this.shortLeg3.render(scale);
+//                    this.shortLeg4.render(scale);
+//                }else {
+//                    this.leg1.render(scale);
+//                    this.leg2.render(scale);
+//                    this.leg3.render(scale);
+//                    this.leg4.render(scale);
+//                }
+//
+//                GlStateManager.popMatrix();
+//            }else if (cowStatus.contains(EntityState.CHILD_STAGE_THREE.toString())) {
+//                GlStateManager.pushMatrix();
+//                GlStateManager.scalef(0.7F, 0.7F, 0.7F);
+//                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.732F, 0.0F);
+//                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.7F) + ((0.23F - (0.7F-0.7F)*0.0375F)*dwarf), 0.0F);
+//
+//                this.headModel.render(scale);
+//
+//                if (bodyShape >= 3) {
+//                    this.bodySlim.render(scale);
+//                }else{
+//                    this.bodyThin.render(scale);
+//                }
+//
+//                if (hump >= 12){
+//                    this.humpLargeish.render(scale);
+//                }else if (hump >= 10){
+//                    this.humpMedium.render(scale);
+//                }else if (hump >= 8){
+//                    this.humpSmallish.render(scale);
+//                }else if (hump >= 6){
+//                    this.humpSmall.render(scale);
+//                }else if (hump >= 4){
+//                    this.humpXSmall.render(scale);
+//                }
+//                this.tail0.render(scale);
+//
+//                GlStateManager.popMatrix();
+//                GlStateManager.pushMatrix();
+//                GlStateManager.scalef(0.7F, 0.8F, 0.7F);
+//                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.8F, 0.0F);
+//                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.8F) + ((0.23F - (0.8F-0.7F)*0.0375F)*dwarf), 0.0F);
+//                //TODO change y translation when calf is dwarf
+//
+//                if (dwarf != 0.0F){
+//                    this.shortLeg1.render(scale);
+//                    this.shortLeg2.render(scale);
+//                    this.shortLeg3.render(scale);
+//                    this.shortLeg4.render(scale);
+//                }else {
+//                    this.leg1.render(scale);
+//                    this.leg2.render(scale);
+//                    this.leg3.render(scale);
+//                    this.leg4.render(scale);
+//                }
+//
+//                GlStateManager.popMatrix();
+//            } else {
+//                GlStateManager.popMatrix();
+//                GlStateManager.pushMatrix();
+//                GlStateManager.scalef(0.7F, 0.8F, 0.7F);
+//                GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.8F, 0.0F);
+//                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / 0.8F) + ((0.23F - (0.8F-0.7F)*0.0375F)*dwarf), 0.0F);
+//                //TODO change y translation when calf is dwarf
+//
+//                if (dwarf != 0.0F){
+//                    this.shortLeg1.render(scale);
+//                    this.shortLeg2.render(scale);
+//                    this.shortLeg3.render(scale);
+//                    this.shortLeg4.render(scale);
+//                }else {
+//                    this.leg1.render(scale);
+//                    this.leg2.render(scale);
+//                    this.leg3.render(scale);
+//                    this.leg4.render(scale);
+//                }
+//
+//                GlStateManager.popMatrix();
+//            }
 
         } else {
 

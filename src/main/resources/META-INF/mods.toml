@@ -6,5 +6,5 @@ modId="eanimod" #mandatory
 version="${file.jarVersion}" #mandatory
 displayName="Genetic Animals" #mandatory
 description='''
-Improved animal behaviour and content adding mod.
+Genetics with improved animal behaviour and content adding mod.
 '''

@@ -75,12 +75,13 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
         if (!this.world.isRemote) {
 
-            if (hunger <= 72000) {
+            if (ticksExisted % (1 + (1.5F - cowSize)*2.5F) == 0) {
                 hunger++;
             }
+
             if(pregnant) {
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDays.get();
+                int days = ConfigHandler.COMMON.gestationDaysCow.get();
                 if (days/2 < gestationTimer) {
                     setCowStatus(EntityState.PREGNANT.toString());
                 } else if (hunger > days*(0.75) && days !=0) {
@@ -89,26 +90,40 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
                 } else if (gestationTimer >= days) {
                     pregnant = false;
                     setCowStatus(EntityState.MOTHER.toString());
-                    //TODO make a timer for how long they can be milked that interacts with hunger and how often they are milked
+                    milk = Math.round((30*(cowSize/1.5F))) - 1;
                     gestationTimer = -48000;
 
                     mixMateMitosisGenes();
                     mixMitosisGenes();
 
                     EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
-//                    enhancedmooshroom.setGrowingAge(0);
                     int[] babyGenes = getCalfGenes();
                     enhancedmooshroom.setGenes(babyGenes);
                     enhancedmooshroom.setSharedGenes(babyGenes);
                     enhancedmooshroom.setCowSize();
-                    enhancedmooshroom.setGrowingAge(-24000);
+                    enhancedmooshroom.setGrowingAge(-84000);
                     enhancedmooshroom.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
                     enhancedmooshroom.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+                    enhancedmooshroom.configureAI();
                     this.world.addEntity(enhancedmooshroom);
 
                 }
             } else if (getCowStatus().equals(EntityState.MOTHER.toString())) {
-                gestationTimer++;
+                if (hunger <= 24000) {
+                    if (--this.timeUntilNextMilk <= 0) {
+                        if (milk <= (30*(cowSize/1.5F))) {
+                            milk = milk++;
+                            this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - maxBagSize)*1200)) * (cowSize/1.5F)) - 300;
+                        }
+                    }
+                }
+
+                if (timeUntilNextMilk == 0) {
+                    gestationTimer++;
+                } else if (milk <= 5 && gestationTimer >= -36000) {
+                    gestationTimer--;
+                }
+
                 if (gestationTimer == 0) {
                     setCowStatus(EntityState.ADULT.toString());
                 }
@@ -137,62 +152,42 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     }
 
-    public boolean processInteract(PlayerEntity player, Hand hand) {
-        ItemStack itemstack = player.getHeldItem(hand);
-        if (itemstack.getItem() == Items.BOWL && this.getGrowingAge() >= 0 && !player.abilities.isCreativeMode && getCowStatus().equals(EntityState.MOTHER.toString())) {
-            itemstack.shrink(1);
-            boolean flag = false;
-            ItemStack itemstack1;
-            if (this.hasStewEffect != null) {
-                flag = true;
-                itemstack1 = new ItemStack(Items.SUSPICIOUS_STEW);
-                SuspiciousStewItem.addEffect(itemstack1, this.hasStewEffect, this.effectDuration);
-                this.hasStewEffect = null;
-                this.effectDuration = 0;
+    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+        ItemStack itemstack = entityPlayer.getHeldItem(hand);
+        if (itemstack.getItem() == Items.BOWL && this.getGrowingAge() >= 0 && !entityPlayer.abilities.isCreativeMode && getCowStatus().equals(EntityState.MOTHER.toString())) {
+            if (milk <= 3) {
+                entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
             } else {
-                itemstack1 = new ItemStack(Items.MUSHROOM_STEW);
-            }
+                itemstack.shrink(1);
+                milk = milk - 3;
+                boolean flag = false;
+                ItemStack itemstack1;
+                if (this.hasStewEffect != null) {
+                    flag = true;
+                    itemstack1 = new ItemStack(Items.SUSPICIOUS_STEW);
+                    SuspiciousStewItem.addEffect(itemstack1, this.hasStewEffect, this.effectDuration);
+                    this.hasStewEffect = null;
+                    this.effectDuration = 0;
+                } else {
+                    itemstack1 = new ItemStack(Items.MUSHROOM_STEW);
+                }
 
-            if (itemstack.isEmpty()) {
-                player.setHeldItem(hand, itemstack1);
-            } else if (!player.inventory.addItemStackToInventory(itemstack1)) {
-                player.dropItem(itemstack1, false);
-            }
+                if (itemstack.isEmpty()) {
+                    entityPlayer.setHeldItem(hand, itemstack1);
+                } else if (!entityPlayer.inventory.addItemStackToInventory(itemstack1)) {
+                    entityPlayer.dropItem(itemstack1, false);
+                }
 
-            SoundEvent soundevent;
-            if (flag) {
-                soundevent = SoundEvents.ENTITY_MOOSHROOM_SUSPICIOUS_MILK;
-            } else {
-                soundevent = SoundEvents.ENTITY_MOOSHROOM_MILK;
+                SoundEvent soundevent;
+                if (flag) {
+                    soundevent = SoundEvents.ENTITY_MOOSHROOM_SUSPICIOUS_MILK;
+                } else {
+                    soundevent = SoundEvents.ENTITY_MOOSHROOM_MILK;
+                }
+                this.playSound(soundevent, 1.0F, 1.0F);
             }
+                return true;
 
-            this.playSound(soundevent, 1.0F, 1.0F);
-            return true;
-//        } else if (false && itemstack.getItem() == Items.SHEARS && this.getGrowingAge() >= 0) { //Forge: Moved to onSheared
-//            this.world.addParticle(ParticleTypes.EXPLOSION, this.posX, this.posY + (double)(this.getHeight() / 2.0F), this.posZ, 0.0D, 0.0D, 0.0D);
-//            if (!this.world.isRemote) {
-//                this.remove();
-//                EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
-//                enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
-//                enhancedcow.setHealth(this.getHealth());
-//                enhancedcow.renderYawOffset = this.renderYawOffset;
-//                if (this.hasCustomName()) {
-//                    enhancedcow.setCustomName(this.getCustomName());
-//                }
-//
-//                this.world.addEntity(enhancedcow);
-//
-//                for(int k = 0; k < 5; ++k) {
-//                    this.world.addEntity(new ItemEntity(this.world, this.posX, this.posY + (double)this.getHeight(), this.posZ, new ItemStack(this.getMooshroomType().renderState.getBlock())));
-//                }
-//
-//                itemstack.damageItem(1, player, (p_213442_1_) -> {
-//                    p_213442_1_.sendBreakAnimation(hand);
-//                });
-//                this.playSound(SoundEvents.ENTITY_MOOSHROOM_SHEAR, 1.0F, 1.0F);
-//            }
-//
-//            return true;
         } else {
             if (this.getMooshroomType() == EnhancedMooshroom.Type.BROWN && itemstack.getItem().isIn(ItemTags.SMALL_FLOWERS)) {
                 if (this.hasStewEffect != null) {
@@ -201,7 +196,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
                     }
                 } else {
                     Pair<Effect, Integer> pair = this.getStewEffect(itemstack);
-                    if (!player.abilities.isCreativeMode) {
+                    if (!entityPlayer.abilities.isCreativeMode) {
                         itemstack.shrink(1);
                     }
 
@@ -215,7 +210,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
                 }
             }
 
-            return super.processInteract(player, hand);
+            return super.processInteract(entityPlayer, hand);
         }
     }
 

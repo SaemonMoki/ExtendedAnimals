@@ -474,7 +474,9 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         }
         if (!this.world.isRemote) {
             if (hunger <= 72000) {
-                hunger++;
+                if (ticksExisted % 4 == 0){
+                    hunger++;
+                }
             }
             //TODO add a limiter to time for growth if the animal is extremely hungry
             if (hunger <= 36000) {
@@ -516,7 +518,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
             if(pregnant) {
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDays.get();
+                int days = ConfigHandler.COMMON.gestationDaysRabbit.get();
                 if (hunger > days*(0.75) && days !=0) {
                     pregnant = false;
                 }
@@ -572,7 +574,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
                         enhancedrabbit.setMaxCoatLength();
                         enhancedrabbit.currentCoatLength = enhancedrabbit.maxCoatLength;
                         enhancedrabbit.setCoatLength(enhancedrabbit.currentCoatLength);
-                        enhancedrabbit.setGrowingAge(-24000);
+                        enhancedrabbit.setGrowingAge(-48000);
                         enhancedrabbit.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
                         this.world.addEntity(enhancedrabbit);
                     }
@@ -757,7 +759,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
                         world.setBlockState(blockpos, iblockstate.with(CarrotBlock.AGE, Integer.valueOf(integer - 1)), 2);
                         world.playEvent(2001, blockpos, Block.getStateId(iblockstate));
                     }
-
+                    this.rabbit.decreaseHunger(750);
                     this.rabbit.carrotTicks = 40;
                 }
 

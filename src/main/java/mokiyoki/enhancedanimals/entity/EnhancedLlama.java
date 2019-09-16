@@ -383,14 +383,14 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                     setCoatLength(currentCoatLength);
                 }
             }
-
-            if (hunger <= 72000) {
+//           && ticksExisted % 2 == 0
+            if (hunger <= 72000){
                 hunger++;
             }
 
             if(pregnant) {
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDays.get();
+                int days = ConfigHandler.COMMON.gestationDaysLlama.get();
                 if (hunger > days*(0.75) && days !=0) {
                     pregnant = false;
                 }
@@ -410,7 +410,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                     enhancedLlama.setMaxCoatLength();
                     enhancedLlama.currentCoatLength = enhancedLlama.maxCoatLength;
                     enhancedLlama.setCoatLength(enhancedLlama.currentCoatLength);
-                    enhancedLlama.setGrowingAge(-24000);
+                    enhancedLlama.setGrowingAge(-120000);
                     enhancedLlama.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
                     this.world.addEntity(enhancedLlama);
 

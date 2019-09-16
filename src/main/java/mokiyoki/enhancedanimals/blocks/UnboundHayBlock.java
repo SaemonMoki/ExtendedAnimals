@@ -68,18 +68,17 @@ public class UnboundHayBlock extends FallingBlock  implements IWaterLoggable {
         }
     }
 
-//    public void fillWithRain(World worldIn, BlockPos pos) {
-//        if (worldIn.rand.nextInt(20) == 1) {
-//            float f = worldIn.getBiome(pos).getTemperature(pos);
-//            if (!(f < 0.15F)) {
-//                BlockState blockstate = worldIn.getBlockState(pos);
-//                if (blockstate.get(LEVEL) < 3) {
-//                    worldIn.setBlockState(pos, blockstate.cycle(LEVEL), 2);
-//                }
-//
-//            }
-//        }
-//    }
+    @Override
+    public void fillWithRain(World worldIn, BlockPos pos) {
+        BlockState state = worldIn.getBlockState(pos);
+        int i = state.get(BITES);
+            if (i < 8) {
+                worldIn.setBlockState(pos, state.with(BITES, Integer.valueOf(i + 1)), 3);
+            } else {
+                worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+                worldIn.removeBlock(pos, false);
+            }
+    }
 
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context) {
@@ -93,7 +92,8 @@ public class UnboundHayBlock extends FallingBlock  implements IWaterLoggable {
     @Override
     public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
         if (stateIn.get(WATERLOGGED)) {
-            worldIn.destroyBlock(currentPos, true);
+            worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(currentPos);
+            worldIn.removeBlock(currentPos, false);
             worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
         }
 
@@ -126,9 +126,7 @@ public class UnboundHayBlock extends FallingBlock  implements IWaterLoggable {
         return BlockRenderLayer.CUTOUT;
     }
 
-    //TODO make react to getting wet
     //TODO add rotation? should adopt RotatedPillarBlock state from hayblock
-    //TODO drop wheat items left in block when harvested
 
     public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos) {
         return false;

@@ -20,7 +20,9 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingRandomWalkingGoal {
@@ -55,7 +57,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     private boolean eatingHay;
 
     //cache to assist with valid pathing locations
-    private List<String> invalidBlockPosCache = new ArrayList<>();
+    private Set<String> invalidBlockPosCache = new HashSet<String>();
     private int expireCacheTimer = 12000;
 
 
@@ -253,7 +255,11 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
 
     protected int getEatDelay(CreatureEntity creatureIn) {
-        return 300 + creatureIn.getRNG().nextInt(300) - ((EnhancedAnimal)creatureIn).getHunger()/50;
+        int delayInt = 300 + creatureIn.getRNG().nextInt(300) - ((EnhancedAnimal)creatureIn).getHunger()/50;
+        if (delayInt < 0) {
+            delayInt = 0;
+        }
+        return delayInt;
     }
 
     protected void createNavigation() {
@@ -362,7 +368,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                 for(int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
                     for(int j1 = i1 < l && i1 > -l ? l : 0; j1 <= l; j1 = j1 > 0 ? -j1 : 1 - j1) {
                         blockpos$mutableblockpos.setPos(blockpos).move(i1, k - 1, j1);
-                        if (!invalidBlockPosCache.contains(blockpos.toString()) && this.creature.isWithinHomeDistanceFromPosition(blockpos$mutableblockpos) && this.shouldMoveTo(this.entityWorld, blockpos$mutableblockpos)) {
+                        if (!invalidBlockPosCache.contains(blockpos$mutableblockpos) && this.creature.isWithinHomeDistanceFromPosition(blockpos$mutableblockpos) && this.shouldMoveTo(this.entityWorld, blockpos$mutableblockpos)) {
                             this.destinationBlock = blockpos$mutableblockpos;
                             return true;
                         }

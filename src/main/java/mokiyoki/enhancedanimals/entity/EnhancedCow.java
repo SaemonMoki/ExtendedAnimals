@@ -1219,7 +1219,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         this.maxBagSize = maxBagSize;
 
-        this.setBagSize(maxBagSize - 0.5F);
+        this.setBagSize(maxBagSize);
 
     }
 

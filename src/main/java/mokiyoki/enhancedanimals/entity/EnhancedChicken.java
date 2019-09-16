@@ -353,9 +353,12 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         Item item = itemStack.getItem();
         if (item instanceof DebugGenesBook) {
             Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
-        } else if (TEMPTATION_ITEMS.test(itemStack)) {
+        }
+        else if (TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
             decreaseHunger(6000);
-            itemStack.shrink(1);
+            if (!entityPlayer.abilities.isCreativeMode) {
+                itemStack.shrink(1);
+            }
         }
         return super.processInteract(entityPlayer, hand);
     }

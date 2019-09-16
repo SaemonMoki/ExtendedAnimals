@@ -328,9 +328,12 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                 net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
                 ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
             });
-        } else if (TEMPTATION_ITEMS.test(itemStack)) {
+        }
+        else if (TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
             decreaseHunger(6000);
-            itemStack.shrink(1);
+            if (!entityPlayer.abilities.isCreativeMode) {
+                itemStack.shrink(1);
+            }
         }
         return super.processInteract(entityPlayer, hand);
     }

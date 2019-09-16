@@ -890,9 +890,11 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                 }
             }  else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
-            } else if (TEMPTATION_ITEMS.test(itemStack)) {
+            } else if (TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
                 decreaseHunger(6000);
-                itemStack.shrink(1);
+                if (!entityPlayer.abilities.isCreativeMode) {
+                    itemStack.shrink(1);
+                }
             } else if (item == Items.BUCKET && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())) {
                 if (milk == 0) {
                     entityPlayer.playSound(SoundEvents.ENTITY_SHEEP_HURT, 1.0F, 1.0F);

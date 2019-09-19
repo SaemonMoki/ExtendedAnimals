@@ -42,4 +42,5 @@ public class MilkBucketTwoThirds extends MilkBucketItem {
 
         return stack.isEmpty() ? new ItemStack(Items.BUCKET) : stack;
     }
+
 }

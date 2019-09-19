@@ -30,6 +30,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final RendererModel hornNub3;
     private final RendererModel hornNub4;
     private final RendererModel hornNub5;
+    private final RendererModel hornGranparent;
+    private final RendererModel hornParent;
     private final RendererModel hornL0;
     private final RendererModel hornL1;
     private final RendererModel hornL2;
@@ -161,6 +163,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.hornNub5 = new RendererModel(this, 44, 33);
         this.hornNub5.addBox(-2.0F, 0.0F, 0.0F, 4, 6, 2);
         this.hornNub5.setRotationPoint(0.0F, 1.0F, -1.0F);
+
+        this.hornGranparent = new RendererModel(this, 0, 0);
+        this.hornParent = new RendererModel(this, 0, 0);
+        this.hornGranparent.addChild(hornParent);
 
         this.hornL0 = new RendererModel(this, 64, 34);
         this.hornL0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
@@ -393,7 +399,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.actualHead.addChild(this.hornNub3);
         this.actualHead.addChild(this.hornNub4);
         this.actualHead.addChild(this.hornNub5);
-        this.actualHead.addChild(this.hornL0);
+        this.hornParent.addChild(this.hornL0);
         this.hornL0.addChild(this.hornL1);
         this.hornL1.addChild(this.hornL2);
         this.hornL2.addChild(this.hornL3);
@@ -403,7 +409,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.hornL6.addChild(this.hornL7);
         this.hornL7.addChild(this.hornL8);
         this.hornL8.addChild(this.hornL9);
-        this.actualHead.addChild(this.hornR0);
+        this.hornParent.addChild(this.hornR0);
         this.hornR0.addChild(this.hornR1);
         this.hornR1.addChild(this.hornR2);
         this.hornR2.addChild(this.hornR3);
@@ -626,6 +632,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             GlStateManager.translatef(0.0F, (-1.45F + 1.45F / size) + ((0.23F - (size-0.7F)*0.0375F)*dwarf), 0.0F);
 
             this.headModel.render(scale);
+            this.hornGranparent.render(scale);
 
             if (bodyShape == 4){
                 this.bodyChonk.render(scale);
@@ -690,6 +697,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             GlStateManager.popMatrix();
 
             if (cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString())) {
+//            if (true) {
             GlStateManager.pushMatrix();
             GlStateManager.scalef(bagSize * size, bagSize * size, bagSize * size);
             GlStateManager.translatef(0.0F, (-1.45F + 1.45F / size) + ((-0.6F*((1.5F-size)*2.0F)) + (0.6F*((1.5F-size)*2.0F))/bagSize) + ((0.23F - (size-0.7F)*0.0375F)*dwarf), ((1.0F-bagSize)*0.35F)); // if biggest 0, -0.16, 0 : if smallest 0, -0.66, 0
@@ -697,6 +705,17 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.udder.render(scale);
                 GlStateManager.popMatrix();
             }
+
+//            if (true) {
+//                GlStateManager.pushMatrix();
+//                GlStateManager.scalef(size/2F, size/2F, size/2F);
+//                GlStateManager.translatef(0.0F, (-1.45F + 1.45F / size) + ((0.23F - (size-0.7F)*0.0375F)*dwarf), 0.0F);
+
+//            this.hornGranparent.render(scale);
+
+//                GlStateManager.popMatrix();
+//            }
+
         }
     }
 
@@ -739,6 +758,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         copyModelAngles(leg4, shortLeg4);
 
         copyModelAngles(leg1, legExtender1);
+
         copyModelAngles(leg2, legExtender2);
         copyModelAngles(leg3, legExtender3);
         copyModelAngles(leg4, legExtender4);
@@ -765,6 +785,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.hornNub4.rotateAngleX = ((float)Math.PI / -2F);
         this.hornNub5.rotateAngleX = ((float)Math.PI / -2F);
 
+        copyModelAngles(headModel, hornGranparent);
+        copyModelAngles(actualHead, hornParent);
+
     }
 
     @Override
@@ -778,6 +801,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         int[] sharedGenes = (entitylivingbaseIn).getSharedGenes();
         char[] uuidArry;
+//        int age = enhancedCow.;
 
         if (enhancedCow.getMooshroomUUID().isEmpty()) {
             uuidArry = enhancedCow.getCachedUniqueIdString().toCharArray();

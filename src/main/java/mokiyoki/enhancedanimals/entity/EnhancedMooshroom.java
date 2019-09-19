@@ -66,90 +66,18 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
-    public void livingTick() {
-        super.livingTick();
-
-        if (this.world.isRemote) {
-            this.cowTimer = Math.max(0, this.cowTimer - 1);
-        }
-
-        if (!this.world.isRemote) {
-
-            if (ticksExisted % (1 + (1.5F - cowSize)*2.5F) == 0) {
-                hunger++;
-            }
-
-            if(pregnant) {
-                gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDaysCow.get();
-                if (days/2 < gestationTimer) {
-                    setCowStatus(EntityState.PREGNANT.toString());
-                } else if (hunger > days*(0.75) && days !=0) {
-                    pregnant = false;
-                    setCowStatus(EntityState.ADULT.toString());
-                } else if (gestationTimer >= days) {
-                    pregnant = false;
-                    setCowStatus(EntityState.MOTHER.toString());
-                    milk = Math.round((30*(cowSize/1.5F))) - 1;
-                    gestationTimer = -48000;
-
-                    mixMateMitosisGenes();
-                    mixMitosisGenes();
-
-                    EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
-                    int[] babyGenes = getCalfGenes();
-                    enhancedmooshroom.setGenes(babyGenes);
-                    enhancedmooshroom.setSharedGenes(babyGenes);
-                    enhancedmooshroom.setCowSize();
-                    enhancedmooshroom.setGrowingAge(-84000);
-                    enhancedmooshroom.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
-                    enhancedmooshroom.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-                    enhancedmooshroom.configureAI();
-                    this.world.addEntity(enhancedmooshroom);
-
-                }
-            } else if (getCowStatus().equals(EntityState.MOTHER.toString())) {
-                if (hunger <= 24000) {
-                    if (--this.timeUntilNextMilk <= 0) {
-                        if (milk <= (30*(cowSize/1.5F))) {
-                            milk = milk++;
-                            this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - maxBagSize)*1200)) * (cowSize/1.5F)) - 300;
-                        }
-                    }
-                }
-
-                if (timeUntilNextMilk == 0) {
-                    gestationTimer++;
-                } else if (milk <= 5 && gestationTimer >= -36000) {
-                    gestationTimer--;
-                }
-
-                if (gestationTimer == 0) {
-                    setCowStatus(EntityState.ADULT.toString());
-                }
-            }
-            if (this.isChild()) {
-                if (getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
-                    if(hunger < 5000) {
-                        setCowStatus(EntityState.CHILD_STAGE_TWO.toString());
-                    } else {
-                        this.setGrowingAge(-16500);
-                    }
-                } else if (getCowStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
-                    if(hunger < 5000) {
-                        setCowStatus(EntityState.CHILD_STAGE_THREE.toString());
-                    } else {
-                        this.setGrowingAge(-8500);
-                    }
-                }
-            }
-
-        }
-
-        if (!this.world.isRemote){
-            lethalGenes();
-        }
-
+    protected void createAndSpawnEnhancedChild() {
+        EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
+        int[] babyGenes = getCalfGenes();
+        enhancedmooshroom.setGenes(babyGenes);
+        enhancedmooshroom.setSharedGenes(babyGenes);
+        enhancedmooshroom.setCowSize();
+        enhancedmooshroom.setGrowingAge(-84000);
+        enhancedmooshroom.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedmooshroom.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedmooshroom.setMotherUUID(this.getUniqueID().toString());
+        enhancedmooshroom.configureAI();
+        this.world.addEntity(enhancedmooshroom);
     }
 
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
@@ -312,14 +240,21 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             enhancedcow.setCowSize();
             enhancedcow.setGrowingAge(this.growingAge);
             enhancedcow.setCowStatus(this.getCowStatus());
+            enhancedcow.configureAI();
             enhancedcow.setMooshroomUUID(this.getCachedUniqueIdString());
 
             if (this.hasCustomName()) {
                 enhancedcow.setCustomName(this.getCustomName());
             }
             this.world.addEntity(enhancedcow);
-            for(int i = 0; i < 5; ++i) {
-                ret.add(new ItemStack(Blocks.RED_MUSHROOM));
+            if (this.getMooshroomType() == Type.RED) {
+                for(int i = 0; i < 5; ++i) {
+                    ret.add(new ItemStack(Blocks.RED_MUSHROOM));
+                }
+            } else {
+                for(int i = 0; i < 5; ++i) {
+                    ret.add(new ItemStack(Blocks.BROWN_MUSHROOM));
+                }
             }
             this.playSound(SoundEvents.ENTITY_MOOSHROOM_SHEAR, 1.0F, 1.0F);
         }
@@ -407,11 +342,11 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
                     }else{
                         if (tint == 3) {
                             //wildtype
-                            redR = 170.5F;
+                            redR = 126.0F;
                             // 160.5
-                            redG = 140.0F;
+                            redG = 96.0F;
                             // 119
-                            redB = 132.0F;
+                            redB = 96.0F;
                             // 67
 
                             if (genesForText[4] == 1 || genesForText[5] == 1) {

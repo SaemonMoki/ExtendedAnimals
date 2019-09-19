@@ -23,6 +23,7 @@ import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.MooshroomEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
@@ -56,6 +57,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_COW;
+import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_MOOSHROOM;
 
 public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
@@ -171,6 +173,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected int timeUntilNextMilk;
     protected int milk;
     protected int cowTimer;
+    protected int ageTimer;
     protected EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
     protected int gestationTimer = 0;
     protected boolean pregnant = false;
@@ -336,17 +339,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                     mixMateMitosisGenes();
                     mixMitosisGenes();
 
-                    EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
-                    int[] babyGenes = getCalfGenes();
-                    enhancedcow.setGenes(babyGenes);
-                    enhancedcow.setSharedGenes(babyGenes);
-                    enhancedcow.setCowSize();
-                    enhancedcow.setGrowingAge(-84000);
-                    enhancedcow.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
-                    enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-                    enhancedcow.setMotherUUID(this.getUniqueID().toString());
-                    enhancedcow.configureAI();
-                    this.world.addEntity(enhancedcow);
+                    createAndSpawnEnhancedChild();
 
                 }
             }
@@ -397,6 +390,20 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             lethalGenes();
         }
 
+    }
+
+    protected void createAndSpawnEnhancedChild() {
+        EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
+        int[] babyGenes = getCalfGenes();
+        enhancedcow.setGenes(babyGenes);
+        enhancedcow.setSharedGenes(babyGenes);
+        enhancedcow.setCowSize();
+        enhancedcow.setGrowingAge(-84000);
+        enhancedcow.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedcow.setMotherUUID(this.getUniqueID().toString());
+        enhancedcow.configureAI();
+        this.world.addEntity(enhancedcow);
     }
 
     protected void setCowSize(){

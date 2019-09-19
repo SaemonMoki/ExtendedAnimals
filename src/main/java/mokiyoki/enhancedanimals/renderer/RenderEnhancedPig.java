@@ -25,8 +25,7 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    protected ResourceLocation getEntityTexture(EnhancedPig entity)
-    {
+    protected ResourceLocation getEntityTexture(EnhancedPig entity) {
         String s = entity.getPigTexture();
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
@@ -34,7 +33,7 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
         {
             resourcelocation = new ResourceLocation(s);
             Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_PIG_TEXTURE_LOCATION, null, entity.getVariantTexturePaths()));
-            LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+           LAYERED_LOCATION_CACHE.put(s, resourcelocation);
         }
 
         return resourcelocation;

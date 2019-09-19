@@ -218,7 +218,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         "eyes_albino.png","eyes_black.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.TALL_GRASS, Items.GRASS, Items.BREAD, Items.SWEET_BERRIES);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.TALL_GRASS, Items.GRASS, Items.BREAD);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
     public float wingRotation;
     public float destPos;
@@ -2528,7 +2528,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
 if (false){
     //THE DNA TESTER-5069 !!!!!
-    return new int[] {1,1,6,1,1,1,6,2,1,1,10,10,10,10,10,10,10,10,10,10,1,1,2,2,5,5,2,2,1,1,2,2,3,3,2,2,1,1,2,2,1,1,1,1,1,1,1,1,2,2,1,1,2,2,1,1,1,1,2,2,1,1,2,2,3,3,2,2,2,2,1,1,1,1,1,1,2,2,1,1,2,2,2,2,1,1,2,2,1,1,2,2,2,2,1,1,1,1,1,1,1,1,2,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,12,12,12,12,12,12,5,5,18,18,24,24,5,5,2,2,1,1
+    return new int[] {1,1,3,1,1,1,1,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,1,1,4,4,1,1,1,1,1,1,3,3,2,2,1,1,2,2,1,1,2,2,3,3,2,2,2,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,3,3,3,3,1,1,1,1,1,1,3,3,2,2,2,1,2,2,2,2,2,2,2,2,1,1,2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,5,5,5,5,11,11,3,3,5,5,21,21,2,2,1,1,1,1
+
     };
 
 }else {

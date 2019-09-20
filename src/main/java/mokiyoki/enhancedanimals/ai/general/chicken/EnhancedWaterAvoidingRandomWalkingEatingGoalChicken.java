@@ -13,8 +13,8 @@ import java.util.function.Predicate;
 
 public class EnhancedWaterAvoidingRandomWalkingEatingGoalChicken extends EnhancedWaterAvoidingRandomWalkingEatingGoal {
 
-    public EnhancedWaterAvoidingRandomWalkingEatingGoalChicken(CreatureEntity creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth) {
-        super(creature, speedIn, length, probabilityIn, wanderExecutionChance, depth);
+    public EnhancedWaterAvoidingRandomWalkingEatingGoalChicken(CreatureEntity creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth, int hungerModifier) {
+        super(creature, speedIn, length, probabilityIn, wanderExecutionChance, depth, hungerModifier);
     }
 
     @Override

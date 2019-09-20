@@ -179,7 +179,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.25D, TEMPTATION_ITEMS, false));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
             this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
-            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom(this, speed, 7, 0.001F, 120, 2);
+            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom(this, speed, 7, 0.001F, 120, 2, 20);
             this.goalSelector.addGoal(6, wanderEatingGoal);
         }
         aiConfigured = true;

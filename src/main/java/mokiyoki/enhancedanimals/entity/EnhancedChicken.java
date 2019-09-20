@@ -258,7 +258,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     @Override
     protected void registerGoals() {
         //TODO add temperaments
-        this.entityAIEatGrass = new EnhancedWaterAvoidingRandomWalkingEatingGoalChicken(this, 1.0D, 7, 0.001F, 120, 2);
+        this.entityAIEatGrass = new EnhancedWaterAvoidingRandomWalkingEatingGoalChicken(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.ecSandBath = new ECSandBath(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.4D));

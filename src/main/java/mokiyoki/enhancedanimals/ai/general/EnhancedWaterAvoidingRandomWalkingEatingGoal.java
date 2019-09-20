@@ -39,6 +39,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     protected int field_203112_e;
     protected final float probability;
     protected final World entityWorld;
+    private int hungerModifier;
 
     private int hayHungerRestore = 12000;
     private int otherHungerRestore = 3000;
@@ -66,7 +67,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     protected static final Predicate<BlockState> IS_SPARSE_GRASS_BLOCK = BlockStateMatcher.forBlock(ModBlocks.SparseGrass_Block);
     protected static final Predicate<BlockState> IS_TALL_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
 
-    public EnhancedWaterAvoidingRandomWalkingEatingGoal(CreatureEntity creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth) {
+    public EnhancedWaterAvoidingRandomWalkingEatingGoal(CreatureEntity creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth, int hungerModifier) {
         super(creature, speedIn);
         this.creature = creature; //the entity
         this.movementSpeed = speedIn; //speed to move
@@ -76,6 +77,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         this.entityWorld = creature.world;
         this.probability = probabilityIn; //probably to pick block???
         this.wanderExecutionChance = wanderExecutionChance; //chance to wander
+        this.hungerModifier = hungerModifier; //the amount to divide the hunger timer by to then take away from the 1/1000 chance to eat
         this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.JUMP));
     }
 
@@ -103,7 +105,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
                 int eatingModifier = createEatingModifier(((EnhancedAnimal)creature).getHunger());
 
-                int chanceToEat = (this.creature.isChild() ? 50 : 1000) - eatingModifier;
+                int chanceToEat = 1000 - eatingModifier;
 
                 if (chanceToEat < 1) {
                     chanceToEat = 1;
@@ -139,11 +141,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     }
 
     private int createEatingModifier(int hunger) {
-        int modifier = hunger / 50;
-        if (creature.isChild()) {
-            modifier =  modifier / 10;
-        }
-
+        int modifier = hunger / this.hungerModifier;
         return modifier;
     }
 

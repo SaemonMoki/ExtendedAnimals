@@ -169,7 +169,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     @Override
     protected void registerGoals() {
         //Todo add the temperamants
-        this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2);
+        this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new ECRunAroundLikeCrazy(this, 1.2D));
         this.goalSelector.addGoal(2, new ECLlamaFollowCaravan(this, (double)2.1F));
@@ -193,6 +193,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.dataManager.register(DATA_INVENTORY_ID, 0);
         this.dataManager.register(COAT_LENGTH, -1);
         this.dataManager.register(DATA_COLOR_ID, -1);
+        this.dataManager.register(LLAMA_STATUS, new String());
     }
 
     private void setLlamaStatus(String status) {

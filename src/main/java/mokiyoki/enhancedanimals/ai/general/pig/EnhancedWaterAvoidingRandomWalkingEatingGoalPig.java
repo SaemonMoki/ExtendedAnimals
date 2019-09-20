@@ -15,8 +15,8 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoalPig extends EnhancedWat
 
     protected static final Predicate<BlockState> IS_MUSHROOM = BlockStateMatcher.forBlock(Blocks.BROWN_MUSHROOM);
 
-    public EnhancedWaterAvoidingRandomWalkingEatingGoalPig(CreatureEntity creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth) {
-        super(creature, speedIn, length, probabilityIn, wanderExecutionChance, depth);
+    public EnhancedWaterAvoidingRandomWalkingEatingGoalPig(CreatureEntity creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth, int hungerModifier) {
+        super(creature, speedIn, length, probabilityIn, wanderExecutionChance, depth, hungerModifier);
     }
 
     @Override

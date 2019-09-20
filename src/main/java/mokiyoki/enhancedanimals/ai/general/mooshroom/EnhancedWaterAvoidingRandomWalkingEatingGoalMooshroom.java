@@ -18,8 +18,8 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom extends Enhan
     protected static final Predicate<BlockState> IS_BROWN_MUSHROOM = BlockStateMatcher.forBlock(Blocks.BROWN_MUSHROOM);
     protected static final Predicate<BlockState> IS_RED_MUSHROOM = BlockStateMatcher.forBlock(Blocks.RED_MUSHROOM);
 
-    public EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom(CreatureEntity creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth) {
-        super(creature, speedIn, length, probabilityIn, wanderExecutionChance, depth);
+    public EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom(CreatureEntity creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth, int hungerModifier) {
+        super(creature, speedIn, length, probabilityIn, wanderExecutionChance, depth, hungerModifier);
     }
 
     @Override

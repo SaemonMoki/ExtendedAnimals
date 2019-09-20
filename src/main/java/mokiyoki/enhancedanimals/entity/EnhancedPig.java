@@ -153,7 +153,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     @Override
     protected void registerGoals() {
 
-        wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalPig(this, 1.0D, 7, 0.001F, 120, 2);
+        wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalPig(this, 1.0D, 7, 0.001F, 120, 2, 20);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
 //        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
@@ -201,6 +201,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(PIG_SIZE, 0.0F);
+        this.dataManager.register(PIG_STATUS, new String());
     }
 
     private void setPigStatus(String status) {

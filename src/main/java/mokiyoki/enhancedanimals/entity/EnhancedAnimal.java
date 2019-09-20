@@ -6,5 +6,4 @@ public interface EnhancedAnimal {
 
     void decreaseHunger(int decreaseAmount);
 
-//    void decreaseMilk (int decreaseAmount);
 }

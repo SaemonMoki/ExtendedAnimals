@@ -1,0 +1,8 @@
+{
+  "type": "campfire_cooking",
+  "ingredient": {
+    "item": "eanimod:rawrabbit_small"
+  },
+  "result": "eanimod:cookedrabbit_small",
+  "cookingtime": 600
+}

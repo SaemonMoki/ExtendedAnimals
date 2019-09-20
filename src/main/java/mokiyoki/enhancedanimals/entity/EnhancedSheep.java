@@ -102,6 +102,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.TALL_GRASS, Items.VINE, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.ROSE_BUSH, Items.DANDELION, Items.SUGAR, Items.APPLE, ModBlocks.UnboundHay_Block);
+    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     private static final int WTC = 90;
@@ -120,7 +121,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private int hunger = 0;
 
 //    protected boolean aiConfigured = false;
-//    private String motherUUID = "";
+    private String motherUUID = "";
 
     private int gestationTimer = 0;
     private boolean pregnant = false;
@@ -210,7 +211,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         this.dataManager.register(SHEEP_STATUS, new String());
     }
 
-    protected void setSheepStatus(String status) {
+    private void setSheepStatus(String status) {
         this.dataManager.set(SHEEP_STATUS, status);
     }
 
@@ -320,9 +321,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
         if (this.world.isRemote) {
             this.sheepTimer = Math.max(0, this.sheepTimer - 1);
-        }
-
-        if (!this.world.isRemote) {
+        } else {
 //           && ticksExisted % 2 == 0
             if (hunger <= 72000){
                 hunger++;
@@ -330,12 +329,18 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             if (hunger <= 36000) {
                 timeForGrowth++;
             }
-            if (maxCoatLength > 0 && (timeForGrowth >= (24000 / maxCoatLength))) {
-                timeForGrowth = 0;
-                if (maxCoatLength > currentCoatLength) {
-                    currentCoatLength++;
-                    setCoatLength(currentCoatLength);
+            if (maxCoatLength > 0) {
+                if (currentCoatLength == maxCoatLength && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= (12000 / maxCoatLength)) {
+                    timeForGrowth = 0;
+                    onSheared(null, this.world, getPosition(), 0);
+                } else if (timeForGrowth >= (24000 / maxCoatLength)) {
+                    timeForGrowth = 0;
+                    if (maxCoatLength > currentCoatLength) {
+                        currentCoatLength++;
+                        setCoatLength(currentCoatLength);
+                    }
                 }
+
             }
 
             if(pregnant) {
@@ -391,6 +396,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                         enhancedsheep.currentCoatLength = enhancedsheep.maxCoatLength;
                         enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
                         enhancedsheep.setGrowingAge(-72000); // 3 days
+                        enhancedsheep.setSheepStatus(EntityState.CHILD_STAGE_ONE.toString());
                         enhancedsheep.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
 //                        enhancedsheep.setMotherUUID(this.getUniqueID().toString());
                         this.world.addEntity(enhancedsheep);
@@ -420,15 +426,15 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             }
 
             if (this.isChild()) {
-                if (getEntityStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
+                if (getSheepStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
                     if(hunger < 5000) {
-                        setEntityStatus(EntityState.CHILD_STAGE_TWO.toString());
+                        setSheepStatus(EntityState.CHILD_STAGE_TWO.toString());
                     } else {
                         this.setGrowingAge(-16500);
                     }
-                } else if (getEntityStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
+                } else if (getSheepStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
                     if(hunger < 5000) {
-                        setEntityStatus(EntityState.CHILD_STAGE_THREE.toString());
+                        setSheepStatus(EntityState.CHILD_STAGE_THREE.toString());
                     } else {
                         this.setGrowingAge(-8500);
                     }
@@ -890,10 +896,39 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                 }
             }  else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
-            } else if (TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
+            } else if (!getSheepStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
                 decreaseHunger(6000);
                 if (!entityPlayer.abilities.isCreativeMode) {
                     itemStack.shrink(1);
+                }
+            } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
+
+                if (!entityPlayer.abilities.isCreativeMode) {
+                    if (item == ModItems.Half_Milk_Bottle) {
+                        decreaseHunger(6000);
+                        if (itemStack.isEmpty()) {
+                            entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                            entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                        }
+                    } else if (item == ModItems.Milk_Bottle) {
+                        if (hunger >= 12000) {
+                            decreaseHunger(12000);
+                            if (itemStack.isEmpty()) {
+                                entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                                entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                            }
+                        } else {
+                            decreaseHunger(6000);
+                            if (itemStack.isEmpty()) {
+                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
+                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
+                                entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                            }
+                        }
+                    }
+
                 }
             } else if (item == Items.BUCKET && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())) {
                 if (milk == 0) {
@@ -1158,7 +1193,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
 
-        compound.putString("Status", getEntityStatus());
+        compound.putString("Status", getSheepStatus());
         compound.putInt("Hunger", hunger);
 
         compound.putInt("milk", milk);
@@ -1196,7 +1231,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         this.pregnant = compound.getBoolean("Pregnant");
         this.gestationTimer = compound.getInt("Gestation");
 
-        setEntityStatus(compound.getString("Status"));
+        setSheepStatus(compound.getString("Status"));
         hunger = compound.getInt("Hunger");
 
         milk = compound.getInt("milk");

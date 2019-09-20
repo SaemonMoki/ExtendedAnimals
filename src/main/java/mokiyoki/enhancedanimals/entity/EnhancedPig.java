@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.pig.EnhancedWaterAvoidingRandomWalkingEatingGoalPig;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -66,6 +67,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedPig.class, DataSerializers.STRING);
     private static final DataParameter<Float> PIG_SIZE = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.FLOAT);
+    private static final DataParameter<String> PIG_STATUS = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.STRING);
 
     private static final String[] PIG_TEXTURES_COATRED = new String[] {
             "pigbase.png", "solid_white.png", "solid_milk.png", "solid_cream.png", "solid_carmel.png", "solid_orange.png", "solid_ginger.png", "solid_red.png", "solid_brown.png"
@@ -117,6 +119,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD);
+    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.CARROT, Items.BEETROOT, Items.POTATO);
 
     private static final int WTC = 90;
@@ -145,6 +148,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     private boolean pregnant = false;
 
     private int hunger = 0;
+    protected String motherUUID = "";
 
     @Override
     protected void registerGoals() {
@@ -199,6 +203,14 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         this.dataManager.register(PIG_SIZE, 0.0F);
     }
 
+    private void setPigStatus(String status) {
+        this.dataManager.set(PIG_STATUS, status);
+    }
+
+    public String getPigStatus() {
+        return this.dataManager.get(PIG_STATUS);
+    }
+
     private void setPigSize(float size) {
         this.dataManager.set(PIG_SIZE, size);
     }
@@ -234,11 +246,39 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         Item item = itemStack.getItem();
         if (item instanceof DebugGenesBook) {
             Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
-        }
-        else if (TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
+        } else if (!getPigStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
             decreaseHunger(6000);
             if (!entityPlayer.abilities.isCreativeMode) {
                 itemStack.shrink(1);
+            }
+        } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
+
+            if (!entityPlayer.abilities.isCreativeMode) {
+                if (item == ModItems.Half_Milk_Bottle) {
+                    decreaseHunger(6000);
+                    if (itemStack.isEmpty()) {
+                        entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                        entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                    }
+                } else if (item == ModItems.Milk_Bottle) {
+                    if (hunger >= 12000) {
+                        decreaseHunger(12000);
+                        if (itemStack.isEmpty()) {
+                            entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                            entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                        }
+                    } else {
+                        decreaseHunger(6000);
+                        if (itemStack.isEmpty()) {
+                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
+                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
+                            entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                        }
+                    }
+                }
+
             }
         }
         return super.processInteract(entityPlayer, hand);
@@ -282,15 +322,13 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     public void livingTick() {
         super.livingTick();
 
-        if (this.world.isRemote) {
-            this.grassTimer = Math.max(0, this.grassTimer - 1);
-        }
-
         if (hunger <= 72000) {
             hunger = hunger + 2;
         }
 
-        if (!this.world.isRemote) {
+        if (this.world.isRemote) {
+            this.grassTimer = Math.max(0, this.grassTimer - 1);
+        } else {
             if(pregnant) {
                 gestationTimer++;
                 int days = ConfigHandler.COMMON.gestationDaysPig.get();
@@ -313,12 +351,35 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
                         enhancedpig.setSharedGenes(babyGenes);
                         enhancedpig.setPigSize();
                         enhancedpig.setGrowingAge(-60000);
+                        enhancedpig.setPigStatus(EntityState.CHILD_STAGE_ONE.toString());
                         enhancedpig.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+//                        enhancedpig.setMotherUUID(this.getUniqueID().toString());
                         this.world.addEntity(enhancedpig);
                     }
 
                 }
             }
+            if (this.isChild()) {
+                if (getPigStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
+                    if(hunger < 5000) {
+                        setPigStatus(EntityState.CHILD_STAGE_TWO.toString());
+                    } else {
+                        this.setGrowingAge(-16500);
+                    }
+                } else if (getPigStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
+                    if(hunger < 5000) {
+                        setPigStatus(EntityState.CHILD_STAGE_THREE.toString());
+                    } else {
+                        this.setGrowingAge(-8500);
+                    }
+                }
+            } else if (getPigStatus().equals(EntityState.CHILD_STAGE_THREE.toString())) {
+                setPigStatus(EntityState.ADULT.toString());
+
+                //TODO remove the child follow mother ai
+
+            }
+
         }
 
         //TODO what lethal genes do pigs have?
@@ -753,7 +814,8 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             compound.putString("HurtBy", "");
         }
 
-
+        compound.putString("Status", getPigStatus());
+        compound.putInt("Hunger", hunger);
     }
 
     /**
@@ -808,6 +870,8 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             }
         }
 
+        setPigStatus(compound.getString("Status"));
+        hunger = compound.getInt("Hunger");
     }
 
     public void mixMitosisGenes() {

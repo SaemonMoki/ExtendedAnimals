@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
@@ -78,6 +79,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
     private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
+    private static final DataParameter<String> LLAMA_STATUS = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.STRING);
 
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
             "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blacktan.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png", "fawn.png"
@@ -124,6 +126,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private final List<String> llamaTextures = new ArrayList<>();
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT, Items.CARROT, Items.SUGAR_CANE, Items.BEETROOT, Items.GRASS, Items.TALL_GRASS);
+    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK);
 
     public float destPos;
@@ -146,6 +149,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private boolean pregnant = false;
 
     private int hunger = 0;
+    protected String motherUUID = "";
 
     private boolean didSpit;
 
@@ -189,6 +193,14 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.dataManager.register(DATA_INVENTORY_ID, 0);
         this.dataManager.register(COAT_LENGTH, -1);
         this.dataManager.register(DATA_COLOR_ID, -1);
+    }
+
+    private void setLlamaStatus(String status) {
+        this.dataManager.set(LLAMA_STATUS, status);
+    }
+
+    public String getLlamaStatus() {
+        return this.dataManager.get(LLAMA_STATUS);
     }
 
     private void setStrength(int strengthIn) {
@@ -328,11 +340,39 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                 net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
                 ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
             });
-        }
-        else if (TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
+        } else if (!getLlamaStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
             decreaseHunger(6000);
             if (!entityPlayer.abilities.isCreativeMode) {
                 itemStack.shrink(1);
+            }
+        } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
+
+            if (!entityPlayer.abilities.isCreativeMode) {
+                if (item == ModItems.Half_Milk_Bottle) {
+                    decreaseHunger(6000);
+                    if (itemStack.isEmpty()) {
+                        entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                        entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                    }
+                } else if (item == ModItems.Milk_Bottle) {
+                    if (hunger >= 12000) {
+                        decreaseHunger(12000);
+                        if (itemStack.isEmpty()) {
+                            entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                            entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                        }
+                    } else {
+                        decreaseHunger(6000);
+                        if (itemStack.isEmpty()) {
+                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
+                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
+                            entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                        }
+                    }
+                }
+
             }
         }
         return super.processInteract(entityPlayer, hand);
@@ -405,22 +445,43 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                     mixMitosisGenes();
 
                     int[] babyGenes = getCriaGenes();
-                    EnhancedLlama enhancedLlama = ENHANCED_LLAMA.create(this.world);
-                    enhancedLlama.setGrowingAge(0);
-                    enhancedLlama.setGenes(babyGenes);
-                    enhancedLlama.setSharedGenes(babyGenes);
-                    enhancedLlama.setStrengthAndInventory();
-                    enhancedLlama.setMaxCoatLength();
-                    enhancedLlama.currentCoatLength = enhancedLlama.maxCoatLength;
-                    enhancedLlama.setCoatLength(enhancedLlama.currentCoatLength);
-                    enhancedLlama.setGrowingAge(-120000);
-                    enhancedLlama.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-                    this.world.addEntity(enhancedLlama);
+                    EnhancedLlama enhancedllama = ENHANCED_LLAMA.create(this.world);
+                    enhancedllama.setGrowingAge(0);
+                    enhancedllama.setGenes(babyGenes);
+                    enhancedllama.setSharedGenes(babyGenes);
+                    enhancedllama.setStrengthAndInventory();
+                    enhancedllama.setMaxCoatLength();
+                    enhancedllama.currentCoatLength = enhancedllama.maxCoatLength;
+                    enhancedllama.setCoatLength(enhancedllama.currentCoatLength);
+                    enhancedllama.setGrowingAge(-120000);
+                    enhancedllama.setLlamaStatus(EntityState.CHILD_STAGE_ONE.toString());
+                    enhancedllama.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+//                        enhancedllama.setMotherUUID(this.getUniqueID().toString());
+                    this.world.addEntity(enhancedllama);
 
                 }
             }
 
+            if (this.isChild()) {
+                if (getLlamaStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
+                    if(hunger < 5000) {
+                        setLlamaStatus(EntityState.CHILD_STAGE_TWO.toString());
+                    } else {
+                        this.setGrowingAge(-16500);
+                    }
+                } else if (getLlamaStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
+                    if(hunger < 5000) {
+                        setLlamaStatus(EntityState.CHILD_STAGE_THREE.toString());
+                    } else {
+                        this.setGrowingAge(-8500);
+                    }
+                }
+            } else if (getLlamaStatus().equals(EntityState.CHILD_STAGE_THREE.toString())) {
+                setLlamaStatus(EntityState.ADULT.toString());
 
+                //TODO remove the child follow mother ai
+
+            }
 
         }
 
@@ -827,6 +888,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
 
+        compound.putString("Status", getLlamaStatus());
         compound.putInt("Hunger", hunger);
 
     }
@@ -869,6 +931,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.pregnant = compound.getBoolean("Pregnant");
         this.gestationTimer = compound.getInt("Gestation");
 
+        setLlamaStatus(compound.getString("Status"));
         hunger = compound.getInt("Hunger");
 
         setSharedGenes(genes);

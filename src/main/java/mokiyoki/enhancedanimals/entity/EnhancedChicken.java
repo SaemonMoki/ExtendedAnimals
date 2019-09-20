@@ -432,7 +432,9 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
         this.wingRotation += this.wingRotDelta * 2.0F;
 
-        if (!this.world.isRemote) {
+        if (this.world.isRemote) {
+            this.grassTimer = Math.max(0, this.grassTimer - 1);
+        } else {
 
             if (hunger <= 72000) {
                 if (ticksExisted % 2 == 0){
@@ -458,10 +460,6 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             }
 
             lethalGenes();
-
-        } else {
-
-            this.grassTimer = Math.max(0, this.grassTimer - 1);
 
         }
 

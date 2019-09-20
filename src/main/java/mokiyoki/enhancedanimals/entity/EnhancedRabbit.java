@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
@@ -76,6 +77,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedRabbit.class, DataSerializers.STRING);
     private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> NOSE_WIGGLING = EntityDataManager.<Boolean>createKey(EnhancedRabbit.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<String> RABBIT_STATUS = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.STRING);
 
     private static final String[] RABBIT_TEXTURES_UNDER = new String[] {
         "under_cream.png", "under_grey.png", "under_white.png"
@@ -187,6 +189,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     //TODO find broken texture spawns in desert
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.CARROT, Items.GOLDEN_CARROT, Items.GRASS, Items.TALL_GRASS, Items.ROSE_BUSH, Items.SWEET_BERRIES);
+    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.CARROT, Items.GOLDEN_CARROT);
 
     private final List<String> rabbitTextures = new ArrayList<>();
@@ -206,6 +209,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     private boolean pregnant = false;
 
     private int hunger = 0;
+    protected String motherUUID = "";
 
     private static final int WTC = 90;
     private static final int GENES_LENGTH = 60;
@@ -322,6 +326,10 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.dataManager.register(NOSE_WIGGLING, false);
     }
 
+    protected void setRabbitStatus(String status) { this.dataManager.set(RABBIT_STATUS, status); }
+
+    public String getRabbitStatus() { return this.dataManager.get(RABBIT_STATUS); }
+
     private void setCoatLength(int coatLength) {
         this.dataManager.set(COAT_LENGTH, coatLength);
     }
@@ -420,11 +428,39 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         Item item = itemStack.getItem();
         if (item instanceof DebugGenesBook) {
             Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
-        }
-        else if (TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
+        } else if (!getRabbitStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
             decreaseHunger(6000);
             if (!entityPlayer.abilities.isCreativeMode) {
                 itemStack.shrink(1);
+            }
+        } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
+
+            if (!entityPlayer.abilities.isCreativeMode) {
+                if (item == ModItems.Half_Milk_Bottle) {
+                    decreaseHunger(6000);
+                    if (itemStack.isEmpty()) {
+                        entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                        entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                    }
+                } else if (item == ModItems.Milk_Bottle) {
+                    if (hunger >= 12000) {
+                        decreaseHunger(12000);
+                        if (itemStack.isEmpty()) {
+                            entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                            entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                        }
+                    } else {
+                        decreaseHunger(6000);
+                        if (itemStack.isEmpty()) {
+                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
+                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
+                            entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                        }
+                    }
+                }
+
             }
         }
         return super.processInteract(entityPlayer, hand);
@@ -579,15 +615,35 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
                         enhancedrabbit.currentCoatLength = enhancedrabbit.maxCoatLength;
                         enhancedrabbit.setCoatLength(enhancedrabbit.currentCoatLength);
                         enhancedrabbit.setGrowingAge(-48000);
+                        enhancedrabbit.setRabbitStatus(EntityState.CHILD_STAGE_ONE.toString());
                         enhancedrabbit.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+//                        enhancedrabbit.setMotherUUID(this.getUniqueID().toString());
                         this.world.addEntity(enhancedrabbit);
                     }
 
                 }
             }
-        }
 
-        if (!this.world.isRemote){
+            if (this.isChild()) {
+                if (getRabbitStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
+                    if(hunger < 5000) {
+                        setRabbitStatus(EntityState.CHILD_STAGE_TWO.toString());
+                    } else {
+                        this.setGrowingAge(-16500);
+                    }
+                } else if (getRabbitStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
+                    if(hunger < 5000) {
+                        setRabbitStatus(EntityState.CHILD_STAGE_THREE.toString());
+                    } else {
+                        this.setGrowingAge(-8500);
+                    }
+                }
+            } else if (getRabbitStatus().equals(EntityState.CHILD_STAGE_THREE.toString())) {
+                setRabbitStatus(EntityState.ADULT.toString());
+
+                //TODO remove the child follow mother ai
+
+            }
             lethalGenes();
         }
 
@@ -984,6 +1040,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
 
+        compound.putString("Status", getRabbitStatus());
         compound.putInt("Hunger", hunger);
     }
 
@@ -1010,6 +1067,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             mateGenes[i] = gene;
         }
 
+        setRabbitStatus(compound.getString("Status"));
         hunger = compound.getInt("Hunger");
 
         //TODO add a proper calculation for this

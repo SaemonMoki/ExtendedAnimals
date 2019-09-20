@@ -61,7 +61,7 @@ import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_MO
 
 public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
-    //avalible UUID spaces : [ S X X 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+    //avalible UUID spaces : [ S X X X 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
     private static final DataParameter<Float> COW_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
@@ -116,7 +116,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     };
 
     private static final String[] COW_TEXTURES_BELTED = new String[] {
-            "", "spot_belted0.png",
+            "", "spot_belt0.png", "spot_belt1.png", "spot_belt2.png", "spot_belt3.png", "spot_belt4.png", "spot_belt5.png", "spot_belt6.png", "spot_belt7.png", "spot_belt8.png", "spot_belt9.png", "spot_belta.png", "spot_beltb.png", "spot_beltc.png", "spot_beltd.png", "spot_belte.png", "spot_beltf.png",
                 "spot_blaze0.png",
                 "b_spot_brockling0.png",
                 "r_spot_brockling0.png"
@@ -148,6 +148,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
 
     protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UnboundHay_Block);
+    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     private static final int WTC = 90;
@@ -284,9 +285,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         if (this.world.isRemote) {
             this.cowTimer = Math.max(0, this.cowTimer - 1);
-        }
-
-        if (!this.world.isRemote) {
+        } else {
 
             if (hunger <= 72000) {
 
@@ -383,13 +382,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 //TODO remove the child follow mother ai
 
             }
-
-        }
-
-        if (!this.world.isRemote){
             lethalGenes();
         }
-
     }
 
     protected void createAndSpawnEnhancedChild() {
@@ -791,14 +785,14 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 belted = 1;
             }else if (genesForText[18] == 2 || genesForText[19] == 2){
                 //blaze
-                belted = 2;
+                belted = 17;
             }else if (genesForText[18] == 3 || genesForText[19] == 3){
                 if (whiteface != 0 || coloursided != 0) {
                     if (black == 4 || black == 5 || black == 6 || black == 10 || black == 11 || black == 12){
                         //brockling
-                        belted = 3;
+                        belted = 18;
                     } else {
-                        belted = 4;
+                        belted = 19;
                     }
 
                 }
@@ -833,7 +827,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                             whiteface = whiteface + 15;
                             break;
                         default:
-                            whiteface = 0;
+                            whiteface = 1;
                     }
                 }
                 //selects face piebalding texture
@@ -869,6 +863,37 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                     }
                 }
                 
+            }
+
+            if (belted == 1) {
+                if (Character.isDigit(uuidArry[3])) {
+                    belted = belted + (1 + (uuidArry[3] - 48));
+                } else {
+                    char d = uuidArry[3];
+
+                    switch (d) {
+                        case 'a':
+                            belted = belted + 10;
+                            break;
+                        case 'b':
+                            belted = belted + 11;
+                            break;
+                        case 'c':
+                            belted = belted + 12;
+                            break;
+                        case 'd':
+                            belted = belted + 13;
+                            break;
+                        case 'e':
+                            belted = belted + 14;
+                            break;
+                        case 'f':
+                            belted = belted + 15;
+                            break;
+                        default:
+                            belted = 0;
+                    }
+                }
             }
 
             //these alter texture to fit model changes
@@ -1238,10 +1263,39 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
             if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
-            } else if (TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
+            } else if (!getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
                 decreaseHunger(6000);
                 if (!entityPlayer.abilities.isCreativeMode) {
                     itemStack.shrink(1);
+                }
+            } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
+
+                if (!entityPlayer.abilities.isCreativeMode) {
+                    if (item == ModItems.Half_Milk_Bottle) {
+                        decreaseHunger(6000);
+                        if (itemStack.isEmpty()) {
+                            entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                            entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                        }
+                    } else if (item == ModItems.Milk_Bottle) {
+                        if (hunger >= 12000) {
+                            decreaseHunger(12000);
+                            if (itemStack.isEmpty()) {
+                                entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                                entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                            }
+                        } else {
+                            decreaseHunger(6000);
+                            if (itemStack.isEmpty()) {
+                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
+                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
+                                entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                            }
+                        }
+                    }
+
                 }
             } else if (item == Items.BUCKET && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
                 if (milk == 0) {
@@ -1760,13 +1814,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[18] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[18] = (4);
+            initialGenes[18] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[19] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[19] = (4);
+            initialGenes[19] = (1);
         }
 
         //colour sided [colour sided, wildtype]

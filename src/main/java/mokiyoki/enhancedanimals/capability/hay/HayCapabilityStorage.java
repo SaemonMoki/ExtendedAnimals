@@ -10,7 +10,9 @@ import net.minecraftforge.common.capabilities.Capability.IStorage;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by saemon on 29/09/2018.
@@ -21,7 +23,7 @@ public class HayCapabilityStorage implements IStorage<IHayCapability> {
     @Override
     public INBT writeNBT(Capability<IHayCapability> capability, IHayCapability instance, Direction side) {
         CompoundNBT compound = new CompoundNBT();
-        List<BlockPos> allHayBlockPos = instance.getAllHayPos();
+        Set<BlockPos> allHayBlockPos = instance.getAllHayPos();
 
         ListNBT nbttaglist = new ListNBT();
 
@@ -42,7 +44,7 @@ public class HayCapabilityStorage implements IStorage<IHayCapability> {
     @Override
     public void readNBT(Capability<IHayCapability> capability, IHayCapability instance, Direction side, INBT nbt) {
         CompoundNBT compound = (CompoundNBT) nbt;
-        List<BlockPos> allHayBlockPos = new ArrayList<BlockPos>();
+        Set<BlockPos> allHayBlockPos = new HashSet<>();
         ListNBT nbttaglist = compound.getList("HaysPos", 10);
 
         for (int i = 0; i < nbttaglist.size(); ++i) {

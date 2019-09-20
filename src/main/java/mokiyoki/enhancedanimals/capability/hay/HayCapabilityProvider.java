@@ -11,7 +11,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by saemon on 29/09/2018.
@@ -23,10 +25,10 @@ public class HayCapabilityProvider implements IHayCapability, ICapabilitySeriali
 
     private final LazyOptional<IHayCapability> holder = LazyOptional.of(() -> this);
 
-    List<BlockPos> hayBlockPositions = new ArrayList<>();
+    Set<BlockPos> hayBlockPositions = new HashSet<>();
 
     @Override
-    public List<BlockPos> getAllHayPos() {
+    public Set<BlockPos> getAllHayPos() {
         return hayBlockPositions;
     }
 
@@ -41,7 +43,7 @@ public class HayCapabilityProvider implements IHayCapability, ICapabilitySeriali
     }
 
     @Override
-    public void setAllHayPos(List<BlockPos> blockPosList) {
+    public void setAllHayPos(Set<BlockPos> blockPosList) {
         this.hayBlockPositions = blockPosList;
     }
 

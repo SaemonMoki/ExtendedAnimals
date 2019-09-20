@@ -379,7 +379,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     }
 
     private boolean findIfNearbyHay() {
-        List<BlockPos> hayList = entityWorld.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).getAllHayPos();
+        Set<BlockPos> hayList = entityWorld.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).getAllHayPos();
         double closestDistance = 128;
         boolean found = false;
         for (BlockPos pos : hayList) {

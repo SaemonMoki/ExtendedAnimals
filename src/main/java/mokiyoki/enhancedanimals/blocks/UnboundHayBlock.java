@@ -8,6 +8,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.FallingBlock;
 import net.minecraft.block.IWaterLoggable;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -36,8 +37,9 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 
-public class UnboundHayBlock extends FallingBlock  implements IWaterLoggable {
+public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -146,16 +148,6 @@ public class UnboundHayBlock extends FallingBlock  implements IWaterLoggable {
     }
 
     @Override
-    protected void onStartFalling(FallingBlockEntity fallingEntity) {
-        fallingEntity.getWorldObj().getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(fallingEntity.getOrigin());
-    }
-
-    @Override
-    public void onEndFalling(World worldIn, BlockPos pos, BlockState fallingState, BlockState hitState) {
-        worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).addHayPos(pos);
-    }
-
-    @Override
     public void onPlayerDestroy(IWorld worldIn, BlockPos pos, BlockState state) {
         worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
     }
@@ -178,9 +170,20 @@ public class UnboundHayBlock extends FallingBlock  implements IWaterLoggable {
         }
     }
 
+    @Override
+    public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+        worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).addHayPos(pos);
+        super.onBlockAdded(state, worldIn, pos, oldState, isMoving);
+    }
+
+    @Override
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+        super.onBlockAdded(state, worldIn, pos, newState, isMoving);
+    }
+
     //    @Override
 //    public ItemStack getItem(IBlockReader worldIn, BlockPos pos, BlockState state) {
 //
 //    }
-
 }

@@ -1606,8 +1606,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         setCowSize();
         setMaxBagSize();
         configureAI();
-        setMooshroomUUID(mooshroomUUID);
-
     }
 
     public void mixMitosisGenes() {

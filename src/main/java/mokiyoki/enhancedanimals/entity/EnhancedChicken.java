@@ -436,14 +436,16 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             this.grassTimer = Math.max(0, this.grassTimer - 1);
         } else {
 
-            if (hunger <= 72000) {
-                if (ticksExisted % 2 == 0){
-                    hunger++;
-                }
-                if (hunger <= 24000) {
-                    --this.timeUntilNextEgg;
-                } else if (hunger >= 48000) {
-                    this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
+            if (this.getIdleTime() < 100) {
+                if (hunger <= 72000) {
+                    if (ticksExisted % 2 == 0){
+                        hunger++;
+                    }
+                    if (hunger <= 24000) {
+                        --this.timeUntilNextEgg;
+                    } else if (hunger >= 48000) {
+                        this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
+                    }
                 }
             }
 

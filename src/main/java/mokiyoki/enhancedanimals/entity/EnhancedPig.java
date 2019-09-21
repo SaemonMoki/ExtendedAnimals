@@ -323,7 +323,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     public void livingTick() {
         super.livingTick();
 
-        if (hunger <= 72000) {
+        if (hunger <= 72000 && this.getIdleTime() < 100) {
             hunger = hunger + 2;
         }
 

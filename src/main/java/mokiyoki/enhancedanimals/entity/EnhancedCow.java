@@ -294,9 +294,33 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             this.cowTimer = Math.max(0, this.cowTimer - 1);
         } else {
 
-            if (hunger <= 72000) {
+            if(pregnant) {
+                gestationTimer++;
+                int days = ConfigHandler.COMMON.gestationDaysCow.get();
+                if (days/2 < gestationTimer) {
+                    setCowStatus(EntityState.PREGNANT.toString());
+                }
+                if (hunger > days*(0.75) && days !=0) {
+                    pregnant = false;
+                    setCowStatus(EntityState.ADULT.toString());
+                }
+                if (gestationTimer >= days) {
+                    pregnant = false;
+                    setCowStatus(EntityState.MOTHER.toString());
+                    milk = Math.round((30*(cowSize/1.5F))) - 1;
+                    gestationTimer = -48000;
 
-                hunger = hunger + 2;
+                    mixMateMitosisGenes();
+                    mixMitosisGenes();
+
+                    createAndSpawnEnhancedChild();
+
+                }
+            }
+            if (this.getIdleTime() < 100) {
+                if (hunger <= 72000) {
+
+                    hunger = hunger + 2;
 
 //                if (cowSize >= 1.3) {
 //                    hunger++;
@@ -324,70 +348,48 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 //                if (ticksExisted % Math.round(1 + (1.5F - cowSize)*2.5F) == 0) {
 //                    hunger++;
 //                }
-            }
-
-            if(pregnant) {
-                gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDaysCow.get();
-                if (days/2 < gestationTimer) {
-                    setCowStatus(EntityState.PREGNANT.toString());
                 }
-                if (hunger > days*(0.75) && days !=0) {
-                    pregnant = false;
-                    setCowStatus(EntityState.ADULT.toString());
-                }
-                if (gestationTimer >= days) {
-                    pregnant = false;
-                    setCowStatus(EntityState.MOTHER.toString());
-                    milk = Math.round((30*(cowSize/1.5F))) - 1;
-                    gestationTimer = -48000;
 
-                    mixMateMitosisGenes();
-                    mixMitosisGenes();
-
-                    createAndSpawnEnhancedChild();
-
-                }
-            }
-            if (getCowStatus().equals(EntityState.MOTHER.toString())) {
-                if (hunger <= 24000) {
-                    if (--this.timeUntilNextMilk <= 0) {
-                        if (milk < 30*(cowSize/1.5F)) {
-                            milk++;
-                            this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - maxBagSize)*1200)) * (cowSize/1.5F)) - 300;
+                if (getCowStatus().equals(EntityState.MOTHER.toString())) {
+                    if (hunger <= 24000) {
+                        if (--this.timeUntilNextMilk <= 0) {
+                            if (milk < 30*(cowSize/1.5F)) {
+                                milk++;
+                                this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - maxBagSize)*1200)) * (cowSize/1.5F)) - 300;
+                            }
                         }
                     }
-                }
 
-                if (timeUntilNextMilk == 0) {
-                    gestationTimer++;
-                } else if (milk <= 5 && gestationTimer >= -36000) {
-                    gestationTimer--;
-                }
+                    if (timeUntilNextMilk == 0) {
+                        gestationTimer++;
+                    } else if (milk <= 5 && gestationTimer >= -36000) {
+                        gestationTimer--;
+                    }
 
-                if (gestationTimer == 0) {
+                    if (gestationTimer == 0) {
+                        setCowStatus(EntityState.ADULT.toString());
+                    }
+                }
+                if (this.isChild()) {
+                    if (getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
+                        if(hunger < 5000) {
+                            setCowStatus(EntityState.CHILD_STAGE_TWO.toString());
+                        } else {
+                            this.setGrowingAge(-16500);
+                        }
+                    } else if (getCowStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
+                        if(hunger < 5000) {
+                            setCowStatus(EntityState.CHILD_STAGE_THREE.toString());
+                        } else {
+                            this.setGrowingAge(-8500);
+                        }
+                    }
+                } else if (getCowStatus().equals(EntityState.CHILD_STAGE_THREE.toString())) {
                     setCowStatus(EntityState.ADULT.toString());
-                }
-            }
-            if (this.isChild()) {
-                if (getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
-                    if(hunger < 5000) {
-                        setCowStatus(EntityState.CHILD_STAGE_TWO.toString());
-                    } else {
-                        this.setGrowingAge(-16500);
-                    }
-                } else if (getCowStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
-                    if(hunger < 5000) {
-                        setCowStatus(EntityState.CHILD_STAGE_THREE.toString());
-                    } else {
-                        this.setGrowingAge(-8500);
-                    }
-                }
-            } else if (getCowStatus().equals(EntityState.CHILD_STAGE_THREE.toString())) {
-                setCowStatus(EntityState.ADULT.toString());
 
-                //TODO remove the child follow mother ai
+                    //TODO remove the child follow mother ai
 
+                }
             }
             lethalGenes();
         }

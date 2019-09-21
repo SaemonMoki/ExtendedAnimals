@@ -25,7 +25,7 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
      * Returns whether the EntityAIBase should begin execution.
      */
     public boolean shouldExecute() {
-        if (this.childEntity.getGrowingAge() >= 0) {
+        if (this.childEntity.getGrowingAge() >= 0 || this.childEntity.getIdleTime() >= 100) {
             return false;
         } else if (((EnhancedAnimal)this.childEntity).getHunger() > 1000) {
             List<AnimalEntity> list = this.childEntity.world.getEntitiesWithinAABB(this.childEntity.getClass(), this.childEntity.getBoundingBox().grow(8.0D, 4.0D, 8.0D));

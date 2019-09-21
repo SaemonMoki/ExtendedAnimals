@@ -323,24 +323,26 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             this.sheepTimer = Math.max(0, this.sheepTimer - 1);
         } else {
 //           && ticksExisted % 2 == 0
-            if (hunger <= 72000){
-                hunger++;
-            }
-            if (hunger <= 36000) {
-                timeForGrowth++;
-            }
-            if (maxCoatLength > 0) {
-                if (currentCoatLength == maxCoatLength && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= (12000 / maxCoatLength)) {
-                    timeForGrowth = 0;
-                    onSheared(null, this.world, getPosition(), 0);
-                } else if (timeForGrowth >= (24000 / maxCoatLength)) {
-                    timeForGrowth = 0;
-                    if (maxCoatLength > currentCoatLength) {
-                        currentCoatLength++;
-                        setCoatLength(currentCoatLength);
-                    }
+            if (this.getIdleTime() < 100) {
+                if (hunger <= 72000){
+                    hunger++;
                 }
+                if (hunger <= 36000) {
+                    timeForGrowth++;
+                }
+                if (maxCoatLength > 0) {
+                    if (currentCoatLength == maxCoatLength && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= (12000 / maxCoatLength)) {
+                        timeForGrowth = 0;
+                        onSheared(null, this.world, getPosition(), 0);
+                    } else if (timeForGrowth >= (24000 / maxCoatLength)) {
+                        timeForGrowth = 0;
+                        if (maxCoatLength > currentCoatLength) {
+                            currentCoatLength++;
+                            setCoatLength(currentCoatLength);
+                        }
+                    }
 
+                }
             }
 
             if(pregnant) {

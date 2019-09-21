@@ -417,19 +417,21 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
         this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
         if (!this.world.isRemote) {
-            if (hunger <= 36000) {
-                timeForGrowth++;
-            }
-            if (timeForGrowth >= 24000) {
-                timeForGrowth = 0;
-                if (maxCoatLength > currentCoatLength) {
-                    currentCoatLength++;
-                    setCoatLength(currentCoatLength);
+            if (this.getIdleTime() < 100) {
+                if (hunger <= 36000) {
+                    timeForGrowth++;
                 }
-            }
+                if (timeForGrowth >= 24000) {
+                    timeForGrowth = 0;
+                    if (maxCoatLength > currentCoatLength) {
+                        currentCoatLength++;
+                        setCoatLength(currentCoatLength);
+                    }
+                }
 //           && ticksExisted % 2 == 0
-            if (hunger <= 72000){
-                hunger++;
+                if (hunger <= 72000){
+                    hunger++;
+                }
             }
 
             if(pregnant) {

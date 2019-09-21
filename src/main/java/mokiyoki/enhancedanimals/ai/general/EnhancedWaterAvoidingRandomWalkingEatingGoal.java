@@ -87,6 +87,10 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
             return false;
         } else {
 
+            if (this.creature.getIdleTime() >= 100) {
+                return false;
+            }
+
             expireCacheTimer--;
             if (expireCacheTimer <= 0) {
                 // refresh the cache every half day
@@ -118,9 +122,6 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
 
                 //wander checks
-                if (this.creature.getIdleTime() >= 100) {
-                    return false;
-                }
                 if (this.creature.getRNG().nextInt(this.wanderExecutionChance) != 0) {
                     return false;
                 }

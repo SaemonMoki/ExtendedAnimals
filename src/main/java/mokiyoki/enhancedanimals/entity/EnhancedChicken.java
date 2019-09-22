@@ -454,7 +454,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 mixMateMitosisGenes();
                 mixMitosisGenes();
                 ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
-                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setGenes(getEggGenes());
+                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setGenes(getEggGenes(this.genes, this.mateGenes, this.mitosisGenes, this.mateMitosisGenes, false));
                 CompoundNBT nbtTagCompound = eggItem.serializeNBT();
                 eggItem.deserializeNBT(nbtTagCompound);
                 this.entityDropItem(eggItem, 1);
@@ -2419,28 +2419,28 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     }
 
 
-    public int[] getEggGenes() {
-        if (!infertile()) {
+    public int[] getEggGenes(int[] parentGenes, int[] mateParentGenes, int[] mitosis, int[] mateMitosis, boolean ignoreInfertility){
+        if (!infertile() || ignoreInfertility) {
             Random rand = new Random();
             int[] eggGenes = new int[Reference.CHICKEN_GENES_LENGTH];
 
             for(int i =0; i< 20; i++) {
                 boolean thisOrMate = rand.nextBoolean();
                 if (thisOrMate){
-                    eggGenes[i] = genes[i];
+                    eggGenes[i] = parentGenes[i];
                 } else {
-                    eggGenes[i] = mateGenes[i];
+                    eggGenes[i] = mateParentGenes[i];
                 }
             }
 
             for(int i =20; i< genes.length; i = (i+2)) {
                 boolean thisOrMate = rand.nextBoolean();
                 if (thisOrMate){
-                    eggGenes[i] = mitosisGenes[i];
-                    eggGenes[i+1] = mateMitosisGenes[i+1];
+                    eggGenes[i] = mitosis[i];
+                    eggGenes[i+1] = mateMitosis[i+1];
                 } else {
-                    eggGenes[i] = mateMitosisGenes[i];
-                    eggGenes[i+1] = mitosisGenes[i+1];
+                    eggGenes[i] = mateMitosis[i];
+                    eggGenes[i+1] = mitosis[i+1];
                 }
             }
 
@@ -2448,15 +2448,15 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             if (this.rand.nextInt(100) <= 97) {
                 boolean thisOrMate = rand.nextBoolean();
                 if (thisOrMate){
-                    eggGenes[48] = mitosisGenes[48];
-                    eggGenes[62] = mitosisGenes[62];
-                    eggGenes[49] = mateMitosisGenes[49];
-                    eggGenes[63] = mateMitosisGenes[63];
+                    eggGenes[48] = mitosis[48];
+                    eggGenes[62] = mitosis[62];
+                    eggGenes[49] = mateMitosis[49];
+                    eggGenes[63] = mateMitosis[63];
                 } else {
-                    eggGenes[48] = mateMitosisGenes[48];
-                    eggGenes[62] = mateMitosisGenes[62];
-                    eggGenes[49] = mitosisGenes[49];
-                    eggGenes[63] = mitosisGenes[63];
+                    eggGenes[48] = mateMitosis[48];
+                    eggGenes[62] = mateMitosis[62];
+                    eggGenes[49] = mitosis[49];
+                    eggGenes[63] = mitosis[63];
                 }
             }
 
@@ -2485,7 +2485,14 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         int[] spawnGenes;
 
         if (livingdata instanceof EnhancedChicken.GroupData) {
-            spawnGenes = ((GroupData)livingdata).groupGenes;
+            int[] spawnGenes1 = ((GroupData) livingdata).groupGenes;
+            int[] mitosis = new int[Reference.CHICKEN_GENES_LENGTH];
+            punnetSquare(mitosis, spawnGenes1);
+
+            int[] spawnGenes2 = ((GroupData) livingdata).groupGenes;
+            int[] mateMitosis = new int[Reference.CHICKEN_GENES_LENGTH];
+            punnetSquare(mateMitosis, spawnGenes2);
+            spawnGenes = getEggGenes(spawnGenes1, spawnGenes2, mitosis, mateMitosis, true);
         } else {
             spawnGenes = createInitialGenes(inWorld);
             livingdata = new GroupData(spawnGenes);

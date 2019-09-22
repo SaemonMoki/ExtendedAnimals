@@ -347,7 +347,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
                         mixMitosisGenes();
                         EnhancedPig enhancedpig = ENHANCED_PIG.create(this.world);
                         enhancedpig.setGrowingAge(0);
-                        int[] babyGenes = getPigletGenes();
+                        int[] babyGenes = getPigletGenes(this.mitosisGenes, this.mateMitosisGenes);
                         enhancedpig.setGenes(babyGenes);
                         enhancedpig.setSharedGenes(babyGenes);
                         enhancedpig.setPigSize();
@@ -898,18 +898,18 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     }
 
 
-    public int[] getPigletGenes() {
+    public int[] getPigletGenes(int[] mitosis, int[] mateMitosis) {
         Random rand = new Random();
         int[] pigletGenes = new int[GENES_LENGTH];
 
         for (int i = 0; i < genes.length; i = (i + 2)) {
             boolean thisOrMate = rand.nextBoolean();
             if (thisOrMate) {
-                pigletGenes[i] = mitosisGenes[i];
-                pigletGenes[i+1] = mateMitosisGenes[i+1];
+                pigletGenes[i] = mitosis[i];
+                pigletGenes[i+1] = mateMitosis[i+1];
             } else {
-                pigletGenes[i] = mateMitosisGenes[i];
-                pigletGenes[i+1] = mitosisGenes[i+1];
+                pigletGenes[i] = mateMitosis[i];
+                pigletGenes[i+1] = mitosis[i+1];
             }
         }
 
@@ -924,7 +924,14 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
-            spawnGenes = ((GroupData) livingdata).groupGenes;
+            int[] spawnGenes1 = ((GroupData) livingdata).groupGenes;
+            int[] mitosis = new int[GENES_LENGTH];
+            punnetSquare(mitosis, spawnGenes1);
+
+            int[] spawnGenes2 = ((GroupData) livingdata).groupGenes;
+            int[] mateMitosis = new int[GENES_LENGTH];
+            punnetSquare(mateMitosis, spawnGenes2);
+            spawnGenes = replaceGenes(getPigletGenes(mitosis, mateMitosis), spawnGenes1);
         } else {
             spawnGenes = createInitialGenes(inWorld);
             livingdata = new GroupData(spawnGenes);
@@ -935,6 +942,23 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         setPigSize();
 
         return livingdata;
+    }
+
+    private int[] replaceGenes(int[] resultGenes, int[] groupGenes) {
+        resultGenes[20] = groupGenes[20];
+        resultGenes[21] = groupGenes[21];
+        resultGenes[22] = groupGenes[22];
+        resultGenes[23] = groupGenes[23];
+        resultGenes[24] = groupGenes[24];
+        resultGenes[25] = groupGenes[25];
+        resultGenes[26] = groupGenes[26];
+        resultGenes[27] = groupGenes[27];
+        resultGenes[28] = groupGenes[28];
+        resultGenes[29] = groupGenes[29];
+        resultGenes[30] = groupGenes[30];
+        resultGenes[31] = groupGenes[31];
+
+        return resultGenes;
     }
 
     private int[] createInitialGenes(IWorld inWorld) {

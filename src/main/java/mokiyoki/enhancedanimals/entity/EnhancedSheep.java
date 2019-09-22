@@ -333,7 +333,11 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                 if (maxCoatLength > 0) {
                     if (currentCoatLength == maxCoatLength && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= (12000 / maxCoatLength)) {
                         timeForGrowth = 0;
-                        onSheared(null, this.world, getPosition(), 0);
+                        List<ItemStack> woolToDrop = onSheared(null, this.world, getPosition(), 0);
+                        woolToDrop.forEach(d -> {
+                            net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
+                            ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
+                        });
                     } else if (timeForGrowth >= (24000 / maxCoatLength)) {
                         timeForGrowth = 0;
                         if (maxCoatLength > currentCoatLength) {
@@ -391,7 +395,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                         mixMateMitosisGenes();
                         mixMitosisGenes();
                         EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
-                        int[] babyGenes = getLambGenes();
+                        int[] babyGenes = getLambGenes(this.mitosisGenes, this.mateMitosisGenes);
                         enhancedsheep.setGenes(babyGenes);
                         enhancedsheep.setSharedGenes(babyGenes);
                         enhancedsheep.setMaxCoatLength();
@@ -1284,18 +1288,18 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     }
 
 
-    public int[] getLambGenes() {
+    public int[] getLambGenes(int[] mitosis, int[] mateMitosis) {
         Random rand = new Random();
         int[] lambGenes = new int[GENES_LENGTH];
 
         for (int i = 0; i < genes.length; i = (i + 2)) {
             boolean thisOrMate = rand.nextBoolean();
             if (thisOrMate) {
-                lambGenes[i] = mitosisGenes[i];
-                lambGenes[i+1] = mateMitosisGenes[i+1];
+                lambGenes[i] = mitosis[i];
+                lambGenes[i+1] = mateMitosis[i+1];
             } else {
-                lambGenes[i] = mateMitosisGenes[i];
-                lambGenes[i+1] = mitosisGenes[i+1];
+                lambGenes[i] = mateMitosis[i];
+                lambGenes[i+1] = mitosis[i+1];
             }
         }
 
@@ -1309,7 +1313,14 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
-            spawnGenes = ((GroupData) livingdata).groupGenes;
+            int[] spawnGenes1 = ((GroupData) livingdata).groupGenes;
+            int[] mitosis = new int[GENES_LENGTH];
+            punnetSquare(mitosis, spawnGenes1);
+
+            int[] spawnGenes2 = ((GroupData) livingdata).groupGenes;
+            int[] mateMitosis = new int[GENES_LENGTH];
+            punnetSquare(mateMitosis, spawnGenes2);
+            spawnGenes = getLambGenes(mitosis, mateMitosis);
         } else {
             spawnGenes = createInitialGenes(inWorld);
             livingdata = new GroupData(spawnGenes);

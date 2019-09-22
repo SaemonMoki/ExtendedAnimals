@@ -447,7 +447,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                     mixMateMitosisGenes();
                     mixMitosisGenes();
 
-                    int[] babyGenes = getCriaGenes();
+                    int[] babyGenes = getCriaGenes(this.mitosisGenes, this.mateMitosisGenes);
                     EnhancedLlama enhancedllama = ENHANCED_LLAMA.create(this.world);
                     enhancedllama.setGrowingAge(0);
                     enhancedllama.setGenes(babyGenes);
@@ -972,18 +972,18 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         }
     }
 
-    public int[] getCriaGenes() {
+    public int[] getCriaGenes(int[] mitosis, int[] mateMitosis) {
         Random rand = new Random();
         int[] criaGenes = new int[GENES_LENGTH];
 
         for (int i = 0; i < genes.length; i = (i + 2)) {
             boolean thisOrMate = rand.nextBoolean();
             if (thisOrMate) {
-                criaGenes[i] = mitosisGenes[i];
-                criaGenes[i+1] = mateMitosisGenes[i+1];
+                criaGenes[i] = mitosis[i];
+                criaGenes[i+1] = mateMitosis[i+1];
             } else {
-                criaGenes[i] = mateMitosisGenes[i];
-                criaGenes[i+1] = mitosisGenes[i+1];
+                criaGenes[i] = mateMitosis[i];
+                criaGenes[i+1] = mitosis[i+1];
             }
         }
 
@@ -997,7 +997,14 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
-            spawnGenes = ((GroupData) livingdata).groupGenes;
+            int[] spawnGenes1 = ((GroupData) livingdata).groupGenes;
+            int[] mitosis = new int[GENES_LENGTH];
+            punnetSquare(mitosis, spawnGenes1);
+
+            int[] spawnGenes2 = ((GroupData) livingdata).groupGenes;
+            int[] mateMitosis = new int[GENES_LENGTH];
+            punnetSquare(mateMitosis, spawnGenes2);
+            spawnGenes = getCriaGenes(mitosis, mateMitosis);
         } else {
             spawnGenes = createInitialGenes(inWorld);
             livingdata = new GroupData(spawnGenes);

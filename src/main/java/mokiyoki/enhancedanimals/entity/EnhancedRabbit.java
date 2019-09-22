@@ -611,7 +611,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
                         mixMitosisGenes();
                         EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.create(this.world);
                         enhancedrabbit.setGrowingAge(0);
-                        int[] babyGenes = getBunnyGenes();
+                        int[] babyGenes = getBunnyGenes(this.mitosisGenes, this.mateMitosisGenes);
                         enhancedrabbit.setGenes(babyGenes);
                         enhancedrabbit.setSharedGenes(babyGenes);
                         enhancedrabbit.setMaxCoatLength();
@@ -1567,18 +1567,18 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         }
     }
 
-    public int[] getBunnyGenes() {
+    public int[] getBunnyGenes(int[] mitosis, int[] mateMitosis) {
         Random rand = new Random();
         int[] bunnyGenes = new int[GENES_LENGTH];
 
         for (int i = 0; i < genes.length; i = (i + 2)) {
             boolean thisOrMate = rand.nextBoolean();
             if (thisOrMate) {
-                bunnyGenes[i] = mitosisGenes[i];
-                bunnyGenes[i+1] = mateMitosisGenes[i+1];
+                bunnyGenes[i] = mitosis[i];
+                bunnyGenes[i+1] = mateMitosis[i+1];
             } else {
-                bunnyGenes[i] = mateMitosisGenes[i];
-                bunnyGenes[i+1] = mitosisGenes[i+1];
+                bunnyGenes[i] = mateMitosis[i];
+                bunnyGenes[i+1] = mitosis[i+1];
             }
         }
 
@@ -1592,7 +1592,14 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
-            spawnGenes = ((GroupData) livingdata).groupGenes;
+            int[] spawnGenes1 = ((GroupData) livingdata).groupGenes;
+            int[] mitosis = new int[GENES_LENGTH];
+            punnetSquare(mitosis, spawnGenes1);
+
+            int[] spawnGenes2 = ((GroupData) livingdata).groupGenes;
+            int[] mateMitosis = new int[GENES_LENGTH];
+            punnetSquare(mateMitosis, spawnGenes2);
+            spawnGenes = getBunnyGenes(mitosis, mateMitosis);
         } else {
             spawnGenes = createInitialGenes(inWorld);
             livingdata = new GroupData(spawnGenes);

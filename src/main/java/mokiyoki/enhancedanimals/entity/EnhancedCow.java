@@ -163,8 +163,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     private static final int GENES_LENGTH = 80;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
-    private int[] mitosisGenes = new int[GENES_LENGTH];
-    private int[] mateMitosisGenes = new int[GENES_LENGTH];
+    protected int[] mitosisGenes = new int[GENES_LENGTH];
+    protected int[] mateMitosisGenes = new int[GENES_LENGTH];
 
     protected float maxBagSize;
     protected float cowSize;
@@ -397,7 +397,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     protected void createAndSpawnEnhancedChild() {
         EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
-        int[] babyGenes = getCalfGenes();
+        int[] babyGenes = getCalfGenes(this.mitosisGenes, this.mateMitosisGenes);
         enhancedcow.setGenes(babyGenes);
         enhancedcow.setSharedGenes(babyGenes);
         enhancedcow.setCowSize();
@@ -1633,18 +1633,18 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     }
 
 
-    public int[] getCalfGenes() {
+    public int[] getCalfGenes(int[] mitosis, int[] mateMitosis) {
         Random rand = new Random();
         int[] calfGenes = new int[GENES_LENGTH];
 
         for (int i = 0; i < genes.length; i = (i + 2)) {
             boolean thisOrMate = rand.nextBoolean();
             if (thisOrMate) {
-                calfGenes[i] = mitosisGenes[i];
-                calfGenes[i+1] = mateMitosisGenes[i+1];
+                calfGenes[i] = mitosis[i];
+                calfGenes[i+1] = mateMitosis[i+1];
             } else {
-                calfGenes[i] = mateMitosisGenes[i];
-                calfGenes[i+1] = mitosisGenes[i+1];
+                calfGenes[i] = mateMitosis[i];
+                calfGenes[i+1] = mitosis[i+1];
             }
         }
 
@@ -1659,7 +1659,14 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
-            spawnGenes = ((GroupData) livingdata).groupGenes;
+            int[] spawnGenes1 = ((GroupData) livingdata).groupGenes;
+            int[] mitosis = new int[GENES_LENGTH];
+            punnetSquare(mitosis, spawnGenes1);
+
+            int[] spawnGenes2 = ((GroupData) livingdata).groupGenes;
+            int[] mateMitosis = new int[GENES_LENGTH];
+            punnetSquare(mateMitosis, spawnGenes2);
+            spawnGenes = getCalfGenes(mitosis, mateMitosis);
         } else {
             spawnGenes = createInitialGenes(inWorld);
             livingdata = new GroupData(spawnGenes);

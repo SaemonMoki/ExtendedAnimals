@@ -216,7 +216,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.dataManager.register(COW_SIZE, 0.0F);
         this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(COW_STATUS, new String());
-        this.dataManager.register(MOOSHROOM_UUID, new String());
+        this.dataManager.register(MOOSHROOM_UUID, "0");
     }
 
     protected void setCowSize(float size) {
@@ -680,10 +680,12 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             int coat = 0;
             char[] uuidArry;
 
-            if (mooshroomUUID.equals("0")) {
+            String mooshroomUUIDForTexture = this.dataManager.get(MOOSHROOM_UUID);
+
+            if (mooshroomUUIDForTexture.equals("0")) {
                 uuidArry = getCachedUniqueIdString().toCharArray();
             } else {
-                uuidArry = mooshroomUUID.toCharArray();
+                uuidArry = mooshroomUUIDForTexture.toCharArray();
             }
 
             //dominant red

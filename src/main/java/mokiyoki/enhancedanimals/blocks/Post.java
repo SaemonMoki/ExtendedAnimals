@@ -164,6 +164,7 @@ public class Post extends Block implements IWaterLoggable {
     @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
         worldIn.getWorld().getCapability(PostCapabilityProvider.POST_CAP, null).orElse(new PostCapabilityProvider()).removePostPos(pos);
+        super.onBlockHarvested(worldIn, pos, state, player);
     }
 
 }

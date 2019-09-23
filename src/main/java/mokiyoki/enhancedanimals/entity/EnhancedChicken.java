@@ -5,11 +5,13 @@ import mokiyoki.enhancedanimals.ai.ECSandBath;
 import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.ai.general.chicken.EnhancedWaterAvoidingRandomWalkingEatingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntitySize;
@@ -220,6 +222,21 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.TALL_GRASS, Items.GRASS, Items.BREAD);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
+
+    Map<Item, Integer> foodWeightMap = new HashMap() {{
+        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
+        put(new ItemStack(Items.GRASS).getItem(), 3000);
+        put(new ItemStack(Items.WHEAT).getItem(), 6000);
+        put(new ItemStack(Items.BREAD).getItem(), 18000);
+        put(new ItemStack(Items.WHEAT_SEEDS).getItem(), 4000);
+        put(new ItemStack(Items.MELON_SEEDS).getItem(), 4000);
+        put(new ItemStack(Items.PUMPKIN_SEEDS).getItem(), 4000);
+        put(new ItemStack(Items.BEETROOT_SEEDS).getItem(), 4000);
+        put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
+        put(new ItemStack(Items.DANDELION).getItem(), 1500);
+        put(new ItemStack(Items.SPIDER_EYE).getItem(), 1500);
+    }};
+
     public float wingRotation;
     public float destPos;
     public float oFlapSpeed;
@@ -355,7 +372,11 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
         }
         else if (TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
-            decreaseHunger(6000);
+            if (this.foodWeightMap.containsKey(item)) {
+                decreaseHunger(this.foodWeightMap.get(item));
+            } else {
+                decreaseHunger(6000);
+            }
             if (!entityPlayer.abilities.isCreativeMode) {
                 itemStack.shrink(1);
             }

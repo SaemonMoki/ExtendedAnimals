@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.pig.EnhancedWaterAvoidingRandomWalkingEatingGoalPig;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
@@ -53,7 +54,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -118,9 +121,50 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             "", "tusks.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD, ModItems.CookedChicken_Dark, ModItems.CookedChicken_DarkBig, ModItems.CookedChicken_DarkSmall, ModItems.CookedChicken_Pale, ModItems.CookedChicken_PaleSmall, ModItems.CookedRabbit_Small);
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.CARROT, Items.BEETROOT, Items.POTATO);
+
+    Map<Item, Integer> foodWeightMap = new HashMap() {{
+        put(new ItemStack(Blocks.MELON).getItem(), 10000);
+        put(new ItemStack(Blocks.PUMPKIN).getItem(), 10000);
+        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
+        put(new ItemStack(Items.GRASS).getItem(), 3000);
+        put(new ItemStack(Items.VINE).getItem(), 3000);
+        put(new ItemStack(Items.COOKED_BEEF).getItem(), 3000);
+        put(new ItemStack(Items.COOKED_CHICKEN).getItem(), 3000);
+        put(new ItemStack(ModItems.CookedChicken_Dark).getItem(), 2000);
+        put(new ItemStack(ModItems.CookedChicken_DarkBig).getItem(), 3000);
+        put(new ItemStack(ModItems.CookedChicken_DarkSmall).getItem(), 1000);
+        put(new ItemStack(ModItems.CookedChicken_Pale).getItem(), 2000);
+        put(new ItemStack(ModItems.CookedChicken_PaleSmall).getItem(), 1000);
+        put(new ItemStack(Items.COOKED_COD).getItem(), 1500);
+        put(new ItemStack(Items.COOKED_MUTTON).getItem(), 3000);
+        put(new ItemStack(Items.COOKED_RABBIT).getItem(), 1500);
+        put(new ItemStack(ModItems.CookedRabbit_Small).getItem(), 750);
+        put(new ItemStack(Items.COOKED_SALMON).getItem(), 3000);
+        put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
+        put(new ItemStack(Blocks.OAK_LEAVES).getItem(), 1000);
+        put(new ItemStack(Blocks.DARK_OAK_LEAVES).getItem(), 1000);
+        put(new ItemStack(Items.CARROT).getItem(), 3000);
+        put(new ItemStack(Items.POTATO).getItem(), 3000);
+        put(new ItemStack(Items.BEETROOT).getItem(), 3000);
+        put(new ItemStack(Items.WHEAT).getItem(), 6000);
+        put(new ItemStack(Items.SUGAR).getItem(), 1500);
+        put(new ItemStack(Items.APPLE).getItem(), 1500);
+        put(new ItemStack(Items.BREAD).getItem(), 18000);
+        put(new ItemStack(Items.WHEAT_SEEDS).getItem(), 100);
+        put(new ItemStack(Items.MELON_SEEDS).getItem(), 100);
+        put(new ItemStack(Items.PUMPKIN_SEEDS).getItem(), 100);
+        put(new ItemStack(Items.BEETROOT_SEEDS).getItem(), 100);
+        put(new ItemStack(Items.SWEET_BERRIES).getItem(), 100);
+        put(new ItemStack(Items.ROTTEN_FLESH).getItem(), 500);
+        put(new ItemStack(Items.BROWN_MUSHROOM).getItem(), 1000);
+        put(new ItemStack(Items.OAK_SAPLING).getItem(), 1000);
+        put(new ItemStack(Items.DARK_OAK_SAPLING).getItem(), 1000);
+        put(new ItemStack(Items.MILK_BUCKET).getItem(), 1500);
+        put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
+    }};
 
     private static final int WTC = 90;
     private final List<String> pigTextures = new ArrayList<>();
@@ -248,9 +292,22 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         if (item instanceof DebugGenesBook) {
             Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
         } else if (!getPigStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
-            decreaseHunger(6000);
+            if (this.foodWeightMap.containsKey(item)) {
+                decreaseHunger(this.foodWeightMap.get(item));
+            } else {
+                decreaseHunger(6000);
+            }
             if (!entityPlayer.abilities.isCreativeMode) {
-                itemStack.shrink(1);
+                if (item == Items.MILK_BUCKET) {
+                    if (itemStack.isEmpty()) {
+                        entityPlayer.setHeldItem(hand, new ItemStack(Items.MILK_BUCKET));
+                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET))) {
+                        entityPlayer.dropItem(new ItemStack(Items.MILK_BUCKET), false);
+                    }
+                } else {
+                    itemStack.shrink(1);
+                }
+
             }
         } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
 

@@ -41,7 +41,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     protected final World entityWorld;
     private int hungerModifier;
 
-    private int hayHungerRestore = 12000;
+    private int hayHungerRestore = 6000;
     private int otherHungerRestore = 3000;
 
     private int eatingGrassTimer;

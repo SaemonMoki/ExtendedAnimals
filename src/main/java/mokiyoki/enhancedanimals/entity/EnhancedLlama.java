@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -128,6 +129,17 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT, Items.CARROT, Items.SUGAR_CANE, Items.BEETROOT, Items.GRASS, Items.TALL_GRASS);
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK);
+
+    Map<Item, Integer> foodWeightMap = new HashMap() {{
+        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
+        put(new ItemStack(Items.GRASS).getItem(), 3000);
+        put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
+        put(new ItemStack(Items.CARROT).getItem(), 1500);
+        put(new ItemStack(Items.WHEAT).getItem(), 6000);
+        put(new ItemStack(Items.SUGAR).getItem(), 1500);
+        put(new ItemStack(Items.APPLE).getItem(), 1500);
+        put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
+    }};
 
     public float destPos;
     private String dropMeatType;
@@ -342,7 +354,11 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                 ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
             });
         } else if (!getLlamaStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
-            decreaseHunger(6000);
+            if (this.foodWeightMap.containsKey(item)) {
+                decreaseHunger(this.foodWeightMap.get(item));
+            } else {
+                decreaseHunger(6000);
+            }
             if (!entityPlayer.abilities.isCreativeMode) {
                 itemStack.shrink(1);
             }

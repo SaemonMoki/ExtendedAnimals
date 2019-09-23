@@ -62,7 +62,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -192,10 +194,21 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.CARROT, Items.GOLDEN_CARROT);
 
+    Map<Item, Integer> foodWeightMap = new HashMap() {{
+        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
+        put(new ItemStack(Items.GRASS).getItem(), 3000);
+        put(new ItemStack(Items.CARROT).getItem(), 3000);
+        put(new ItemStack(Items.GOLDEN_CARROT).getItem(), 12000);
+        put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
+        put(new ItemStack(Items.DANDELION).getItem(), 1500);
+        put(new ItemStack(Items.ROSE_BUSH).getItem(), 1500);
+    }};
+
     private final List<String> rabbitTextures = new ArrayList<>();
 
     private int jumpTicks;
     private int jumpDuration;
+    public int noseTwitch;
     private boolean wasOnGround;
     private int currentMoveTypeDuration;
     private int carrotTicks;
@@ -318,6 +331,10 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.jumpTicks = 0;
     }
 
+    public void noseTwitch() {
+
+    }
+
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
@@ -417,6 +434,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             this.createRunningParticles();
             this.jumpDuration = 10;
             this.jumpTicks = 0;
+            this.noseTwitch = 0;
         } else {
             super.handleStatusUpdate(id);
         }
@@ -430,7 +448,11 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         if (item instanceof DebugGenesBook) {
             Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
         } else if (!getRabbitStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
-            decreaseHunger(6000);
+            if (this.foodWeightMap.containsKey(item)) {
+                decreaseHunger(this.foodWeightMap.get(item));
+            } else {
+                decreaseHunger(6000);
+            }
             if (!entityPlayer.abilities.isCreativeMode) {
                 itemStack.shrink(1);
             }

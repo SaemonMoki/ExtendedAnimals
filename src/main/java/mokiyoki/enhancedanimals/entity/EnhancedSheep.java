@@ -105,6 +105,24 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
+    Map<Item, Integer> foodWeightMap = new HashMap() {{
+        put(new ItemStack(Blocks.MELON).getItem(), 10000);
+        put(new ItemStack(Blocks.PUMPKIN).getItem(), 10000);
+        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
+        put(new ItemStack(Items.GRASS).getItem(), 3000);
+        put(new ItemStack(Items.VINE).getItem(), 3000);
+        put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
+        put(new ItemStack(Items.WHEAT).getItem(), 6000);
+        put(new ItemStack(Items.CARROT).getItem(), 3000);
+        put(new ItemStack(Items.GOLDEN_CARROT).getItem(), 12000);
+        put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
+        put(new ItemStack(Items.DANDELION).getItem(), 1500);
+        put(new ItemStack(Items.ROSE_BUSH).getItem(), 1500);
+        put(new ItemStack(Items.SUGAR).getItem(), 1500);
+        put(new ItemStack(Items.APPLE).getItem(), 1500);
+        put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
+    }};
+
     private static final int WTC = 90;
     private final List<String> sheepTextures = new ArrayList<>();
     private final List<String> sheepFleeceTextures = new ArrayList<>();
@@ -338,6 +356,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                             net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
                             ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
                         });
+                        //TODO How to make the sheep act as if sheared
+                        onSheared(ItemStack.EMPTY, this.world, getPosition(), 0);
                     } else if (timeForGrowth >= (24000 / maxCoatLength)) {
                         timeForGrowth = 0;
                         if (maxCoatLength > currentCoatLength) {
@@ -903,7 +923,11 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             }  else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             } else if (!getSheepStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
-                decreaseHunger(6000);
+                if (this.foodWeightMap.containsKey(item)) {
+                    decreaseHunger(this.foodWeightMap.get(item));
+                } else {
+                    decreaseHunger(6000);
+                }
                 if (!entityPlayer.abilities.isCreativeMode) {
                     itemStack.shrink(1);
                 }

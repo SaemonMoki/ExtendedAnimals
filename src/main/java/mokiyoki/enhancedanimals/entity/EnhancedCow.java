@@ -155,6 +155,18 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     Map<Item, Integer> foodWeightMap = new HashMap() {{
         put(new ItemStack(Blocks.MELON).getItem(), 10000);
+        put(new ItemStack(Blocks.PUMPKIN).getItem(), 10000);
+        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
+        put(new ItemStack(Items.GRASS).getItem(), 3000);
+        put(new ItemStack(Items.VINE).getItem(), 3000);
+        put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
+        put(new ItemStack(Blocks.OAK_LEAVES).getItem(), 1000);
+        put(new ItemStack(Blocks.DARK_OAK_LEAVES).getItem(), 1000);
+        put(new ItemStack(Items.CARROT).getItem(), 1500);
+        put(new ItemStack(Items.WHEAT).getItem(), 6000);
+        put(new ItemStack(Items.SUGAR).getItem(), 1500);
+        put(new ItemStack(Items.APPLE).getItem(), 1500);
+        put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
     }};
 
 
@@ -1834,13 +1846,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[18] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[18] = (1);
+            initialGenes[18] = (4);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[19] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
-            initialGenes[19] = (1);
+            initialGenes[19] = (4);
         }
 
         //colour sided [colour sided, wildtype]

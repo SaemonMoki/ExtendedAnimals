@@ -17,6 +17,7 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
 import mokiyoki.enhancedanimals.renderer.colour.SparseGrassBlockColour;
+import mokiyoki.enhancedanimals.renderer.colour.SparseGrassItemColour;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -298,20 +299,12 @@ public class RegistryHandler {
     }
 
 
-    //Todo fix this later
-//    @SubscribeEvent
-//    public static void registerItemColourHandlers(final ColorHandlerEvent.Item event) {
-//        final BlockColors blockColors = event.getBlockColors();
-//        final ItemColors itemColors = event.getItemColors();
-//
-//        // Use the Block's colour handler for an ItemBlock
-//        final IItemColor itemBlockColourHandler = (stack, tintIndex) -> {
-//            final BlockState state = ((BlockItem) stack.getItem()).getBlock().getDefaultState();
-//            return blockColors.getColor(state, null, null, tintIndex);
-//        };
-//
-//        itemColors.register(itemBlockColourHandler, ModBlocks.SparseGrass_Block);
-//    }
+    @SubscribeEvent
+    public static void registerItemColourHandlers(final ColorHandlerEvent.Item event) {
+        final ItemColors itemColors = event.getItemColors();
+
+        itemColors.register(new SparseGrassItemColour(), ModBlocks.SparseGrass_Block);
+    }
 
 
     @SubscribeEvent

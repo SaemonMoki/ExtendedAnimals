@@ -54,7 +54,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  * Created by moki on 24/08/2018.
  */
 @Mod.EventBusSubscriber(bus= Mod.EventBusSubscriber.Bus.MOD)
-public class RegistryHandler {
+public class EventRegistry {
 
     public static final EntityType<EnhancedEntityLlamaSpit> ENHANCED_LLAMA_SPIT = EntityType.Builder.<EnhancedEntityLlamaSpit>create(EnhancedEntityLlamaSpit::new, EntityClassification.MISC).size(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_llama_spit");
     public static final EntityType<EnhancedEntityEgg> ENHANCED_ENTITY_EGG_ENTITY_TYPE = EntityType.Builder.<EnhancedEntityEgg>create(EnhancedEntityEgg::new, EntityClassification.MISC).size(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_egg");

@@ -13,7 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  * Created by saemon on 29/09/2018.
  */
 //@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-public class CapabilityHandler {
+public class CapabilityEvents {
 
     public static final ResourceLocation POST_CAP = new ResourceLocation(Reference.MODID, "postcap");
     public static final ResourceLocation HAY_CAP = new ResourceLocation(Reference.MODID, "haycap");

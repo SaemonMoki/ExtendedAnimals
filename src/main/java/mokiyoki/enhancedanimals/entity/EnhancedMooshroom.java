@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.ai.general.mooshroom.EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom;
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerBlock;
@@ -35,8 +34,8 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.UUID;
 
-import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_COW;
-import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_MOOSHROOM;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOSHROOM;
 
 public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge.common.IShearable {
     private static final DataParameter<String> MOOSHROOM_TYPE = EntityDataManager.createKey(EnhancedMooshroom.class, DataSerializers.STRING);

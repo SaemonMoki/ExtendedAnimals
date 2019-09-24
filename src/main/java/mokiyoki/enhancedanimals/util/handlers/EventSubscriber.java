@@ -1,7 +1,6 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
-import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -20,7 +19,6 @@ import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.item.SwordItem;
-import net.minecraft.world.spawner.WanderingTraderSpawner;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -30,7 +28,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  * Created by saemon on 8/09/2018.
  */
 //@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-public class EventHandler {
+public class EventSubscriber {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void replaceVanillaMobs(EntityJoinWorldEvent event) {

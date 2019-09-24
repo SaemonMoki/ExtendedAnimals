@@ -1,12 +1,9 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.init.ModItems;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileItemEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -23,8 +20,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_CHICKEN;
-import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_ENTITY_EGG_ENTITY_TYPE;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ENTITY_EGG_ENTITY_TYPE;
 
 public class EnhancedEntityEgg extends ProjectileItemEntity {
 

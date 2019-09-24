@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.UUID;
 
-import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_LLAMA_SPIT;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA_SPIT;
 
 public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
     public EnhancedLlama owner;

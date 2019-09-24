@@ -10,7 +10,7 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 
-import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.EGG_CARTON_CONTAINER;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
 
 public class EggCartonContainer extends Container {
     private final IInventory inventory;

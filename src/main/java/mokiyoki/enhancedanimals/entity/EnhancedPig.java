@@ -62,7 +62,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_PIG;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 
 public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 

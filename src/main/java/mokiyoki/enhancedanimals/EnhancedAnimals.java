@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals;
 
-import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityStorage;
 import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
@@ -12,20 +11,14 @@ import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
 import mokiyoki.enhancedanimals.gui.EggCartonScreen;
 import mokiyoki.enhancedanimals.loot.EnhancedChickenLootCondition;
-import mokiyoki.enhancedanimals.loot.EnhancedLlamaLootCondition;
 import mokiyoki.enhancedanimals.loot.EnhancedRabbitLootCondition;
 import mokiyoki.enhancedanimals.proxy.ClientProxy;
 import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.proxy.ServerProxy;
-import mokiyoki.enhancedanimals.util.Reference;
-import mokiyoki.enhancedanimals.util.handlers.CapabilityHandler;
+import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
-import mokiyoki.enhancedanimals.util.handlers.EventHandler;
+import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.inventory.ShulkerBoxScreen;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootTables;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -39,7 +32,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.EGG_CARTON_CONTAINER;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
 
 /**
  * Created by moki on 24/08/2018.
@@ -64,9 +57,9 @@ public class EnhancedAnimals {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(new EventHandler());
-//        MinecraftForge.EVENT_BUS.register(new RegistryHandler());
-        MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
+        MinecraftForge.EVENT_BUS.register(new EventSubscriber());
+//        MinecraftForge.EVENT_BUS.register(new EventRegistry());
+        MinecraftForge.EVENT_BUS.register(new CapabilityEvents());
         MinecraftForge.EVENT_BUS.register(instance);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);

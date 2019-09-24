@@ -16,6 +16,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
+import mokiyoki.enhancedanimals.renderer.colour.SparseGrassBlockColour;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -293,31 +294,24 @@ public class RegistryHandler {
     public static void registerBlockColourHandlers(final ColorHandlerEvent.Block event) {
         final BlockColors blockColors = event.getBlockColors();
 
-        // Use the grass colour of the biome or the default grass colour
-        final IBlockColor grassColourHandler = (state, blockAccess, pos, tintIndex) -> {
-            if (blockAccess != null && pos != null) {
-                return BiomeColors.getGrassColor(blockAccess, pos);
-            }
-
-            return GrassColors.get(0.5d, 1.0d);
-        };
-
-        blockColors.register(grassColourHandler, ModBlocks.SparseGrass_Block);
+        blockColors.register(new SparseGrassBlockColour(), ModBlocks.SparseGrass_Block);
     }
 
-    @SubscribeEvent
-    public static void registerItemColourHandlers(final ColorHandlerEvent.Item event) {
-        final BlockColors blockColors = event.getBlockColors();
-        final ItemColors itemColors = event.getItemColors();
 
-        // Use the Block's colour handler for an ItemBlock
-        final IItemColor itemBlockColourHandler = (stack, tintIndex) -> {
-            final BlockState state = ((BlockItem) stack.getItem()).getBlock().getDefaultState();
-            return blockColors.getColor(state, null, null, tintIndex);
-        };
-
-        itemColors.register(itemBlockColourHandler, ModBlocks.SparseGrass_Block);
-    }
+    //Todo fix this later
+//    @SubscribeEvent
+//    public static void registerItemColourHandlers(final ColorHandlerEvent.Item event) {
+//        final BlockColors blockColors = event.getBlockColors();
+//        final ItemColors itemColors = event.getItemColors();
+//
+//        // Use the Block's colour handler for an ItemBlock
+//        final IItemColor itemBlockColourHandler = (stack, tintIndex) -> {
+//            final BlockState state = ((BlockItem) stack.getItem()).getBlock().getDefaultState();
+//            return blockColors.getColor(state, null, null, tintIndex);
+//        };
+//
+//        itemColors.register(itemBlockColourHandler, ModBlocks.SparseGrass_Block);
+//    }
 
 
     @SubscribeEvent

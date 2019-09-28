@@ -584,7 +584,6 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             this.earsR.render(scale);
             this.earsL.render(scale);
                 this.body.render(scale);
-//                coatlength = 12;
              if (coatlength == 1){
                 this.wool1.render(scale);
                 if (true) {
@@ -672,7 +671,6 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                  }
              }
 
-            this.tailBase.render(scale);
             this.leg1.render(scale);
             this.leg2.render(scale);
             this.leg3.render(scale);
@@ -684,6 +682,20 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                     this.polyHornBase.render(scale);
                 }
             }
+
+            float woolLength = ((15-1)*0.025F) + 1.0F;
+
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scalef(woolLength, woolLength, woolLength);
+//            GlStateManager.translatef(0.0F, -1.5F + 1.5F/(woolLength/1.5F), 0.0F);
+//            this.body.render(scale);
+//            GlStateManager.popMatrix();
+
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(woolLength, 1.0F, woolLength*0.8F);
+            GlStateManager.translatef(0.0F, 0.0F, 0.0F);
+            this.tailBase.render(scale);
+            GlStateManager.popMatrix();
 
             if (sheepStatus.equals(EntityState.PREGNANT.toString()) || sheepStatus.equals(EntityState.MOTHER.toString())) {
 //            if (true) {
@@ -712,7 +724,6 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
-        //        this.body.rotateAngleX = ((float)Math.PI / 2F);
         this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
         this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;

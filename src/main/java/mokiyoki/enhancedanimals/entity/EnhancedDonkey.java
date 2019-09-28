@@ -1,8 +1,11 @@
 package mokiyoki.enhancedanimals.entity;
 
+import net.minecraft.entity.EntityType;
+import net.minecraft.world.World;
+
 import java.util.concurrent.ThreadLocalRandom;
 
-public class EnhancedDonkey {
+public class EnhancedDonkey extends EnhancedHorse{
 
     //TODO add texture layers
 
@@ -13,6 +16,10 @@ public class EnhancedDonkey {
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
+
+    public EnhancedDonkey(EntityType<? extends EnhancedHorse> entityType, World worldIn) {
+        super(entityType, worldIn);
+    }
     //Health 15-30
 
     //Speed 0.1125–0.3375

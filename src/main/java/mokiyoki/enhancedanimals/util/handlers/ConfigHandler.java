@@ -23,6 +23,7 @@ public class ConfigHandler {
         public final ForgeConfigSpec.IntValue gestationDaysSheep;
         public final ForgeConfigSpec.IntValue gestationDaysLlama;
         public final ForgeConfigSpec.IntValue gestationDaysPig;
+        public final ForgeConfigSpec.IntValue gestationDaysHorse;
 
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
@@ -55,6 +56,10 @@ public class ConfigHandler {
                     .defineInRange("gestation.days", 48000, 1, Integer.MAX_VALUE);
 
             gestationDaysPig = builder
+                    .comment("Number of ticks for pig gestation. 48000 = 2 Minecraft Days")
+                    .defineInRange("gestation.days", 48000, 1, Integer.MAX_VALUE);
+
+            gestationDaysHorse = builder
                     .comment("Number of ticks for pig gestation. 48000 = 2 Minecraft Days")
                     .defineInRange("gestation.days", 48000, 1, Integer.MAX_VALUE);
 

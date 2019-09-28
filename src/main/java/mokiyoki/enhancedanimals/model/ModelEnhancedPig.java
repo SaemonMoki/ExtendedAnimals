@@ -190,13 +190,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             GlStateManager.translatef(0.0F, -1.5F + 1.5F/childSize, 0.0F);
 
             this.neck.render(scale);
-            this.body.render(scale);
-            this.butt.render(scale);
-            this.tail0.render(scale);
-            this.leg1.render(scale);
-            this.leg2.render(scale);
-            this.leg3.render(scale);
-            this.leg4.render(scale);
 
             GlStateManager.popMatrix();
 

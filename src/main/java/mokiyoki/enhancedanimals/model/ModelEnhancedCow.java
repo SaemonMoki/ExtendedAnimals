@@ -632,7 +632,19 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             GlStateManager.translatef(0.0F, (-1.45F + 1.45F / size) + ((0.23F - (size-0.7F)*0.0375F)*dwarf), 0.0F);
 
             this.headModel.render(scale);
-            this.hornGranparent.render(scale);
+
+            char[] uuidArry;
+//        int age = enhancedCow.;
+
+            if (enhancedCow.getMooshroomUUID().isEmpty()) {
+                uuidArry = enhancedCow.getCachedUniqueIdString().toCharArray();
+            } else {
+                uuidArry = enhancedCow.getMooshroomUUID().toCharArray();
+            }
+
+            if (calculateHorns(genes, uuidArry) != 0.0F) {
+                this.hornGranparent.render(scale);
+            }
 
             if (bodyShape == 4){
                 this.bodyChonk.render(scale);
@@ -1054,49 +1066,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float Y = -2.0F;
         float horns = -1.0F;
 
-        if (!this.isChild) {
-
-            if (sharedGenes[13] == 1 || sharedGenes[14] == 1) {
-                //should be polled unless...
-                //african horn gene
-                if (sharedGenes[76] == 1 && sharedGenes[77] == 1) {
-                    //horned
-                } else if (sharedGenes[76] == 1 || sharedGenes[77] == 1) {
-                    //sex determined horned
-                    if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
-                        //horned if male
-                    } else {
-                        //polled if female unless
-                        if (sharedGenes[78] == 1 && sharedGenes[79] == 1) {
-                            //she is scured
-                        } else {
-                            //polled
-                            horns = 0.0F;
-                        }
-                    }
-                } else {
-                    //polled
-                    if (sharedGenes[78] == 1 && sharedGenes[79] == 1) {
-                        //scured
-                    } else if (sharedGenes[78] == 1 || sharedGenes[79] == 1) {
-                        //sex determined scured
-                        if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
-                            //scurred
-                        } else {
-                            //polled
-                            horns = 0.0F;
-                        }
-                    } else {
-                        //polled
-                        horns = 0.0F;
-                    }
-                }
-            } else {
-                //horned
-            }
-        } else {
-            horns = 0.0F;
-        }
+        horns = calculateHorns(sharedGenes, uuidArry);
 
         if (horns != 0.0F && !this.isChild) {
             this.hornL0.rotationPointX = X;
@@ -1286,6 +1256,55 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.udder.rotationPointY = this.udder.rotationPointY - (bagSize - 1.0F)*3.0F;
         }
 
+    }
+
+    private float calculateHorns(int[] sharedGenes, char[] uuidArry) {
+        float horns = -1.0F;
+        if (!this.isChild) {
+
+            if (sharedGenes[13] == 1 || sharedGenes[14] == 1) {
+                //should be polled unless...
+                //african horn gene
+                if (sharedGenes[76] == 1 && sharedGenes[77] == 1) {
+                    //horned
+                } else if (sharedGenes[76] == 1 || sharedGenes[77] == 1) {
+                    //sex determined horned
+                    if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
+                        //horned if male
+                    } else {
+                        //polled if female unless
+                        if (sharedGenes[78] == 1 && sharedGenes[79] == 1) {
+                            //she is scured
+                        } else {
+                            //polled
+                            horns = 0.0F;
+                        }
+                    }
+                } else {
+                    //polled
+                    if (sharedGenes[78] == 1 && sharedGenes[79] == 1) {
+                        //scured
+                    } else if (sharedGenes[78] == 1 || sharedGenes[79] == 1) {
+                        //sex determined scured
+                        if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
+                            //scurred
+                        } else {
+                            //polled
+                            horns = 0.0F;
+                        }
+                    } else {
+                        //polled
+                        horns = 0.0F;
+                    }
+                }
+            } else {
+                //horned
+            }
+        } else {
+            horns = 0.0F;
+        }
+
+        return horns;
     }
 
     public static void copyModelAngles(RendererModel source, RendererModel dest) {

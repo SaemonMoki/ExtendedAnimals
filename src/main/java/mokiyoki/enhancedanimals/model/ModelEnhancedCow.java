@@ -1094,50 +1094,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.hornL9.rotationPointY = Y + 1.0F;
             this.hornR9.rotationPointY = Y + 1.0F;
 
-        } else if (!this.isChild) {
-            this.hornL0.rotationPointX = 0.0F;
-            this.hornR0.rotationPointX = 0.0F;
-            this.hornL0.rotationPointY = 0.0F;
-            this.hornR0.rotationPointY = 0.0F;
-            this.hornL1.rotationPointY = 0.0F;
-            this.hornR1.rotationPointY = 0.0F;
-            this.hornL2.rotationPointY = 0.0F;
-            this.hornR2.rotationPointY = 0.0F;
-            this.hornL3.rotationPointY = 0.0F;
-            this.hornR3.rotationPointY = 0.0F;
-            this.hornL4.rotationPointY = 0.0F;
-            this.hornR4.rotationPointY = 0.0F;
-            this.hornL5.rotationPointY = 0.0F;
-            this.hornR5.rotationPointY = 0.0F;
-            this.hornL6.rotationPointY = 0.0F;
-            this.hornR6.rotationPointY = 0.0F;
-            this.hornL7.rotationPointY = 0.0F;
-            this.hornR7.rotationPointY = 0.0F;
-            this.hornL8.rotationPointY = 0.0F;
-            this.hornR8.rotationPointY = 0.0F;
-            this.hornL9.rotationPointY = 0.0F;
-            this.hornR9.rotationPointY = 0.0F;
-        } else {
-            this.hornL0.rotationPointX = 0.0F;
-            this.hornR0.rotationPointX = 0.0F;
-            this.hornL1.rotationPointY = 0.0F;
-            this.hornR1.rotationPointY = 0.0F;
-            this.hornL2.rotationPointY = 0.0F;
-            this.hornR2.rotationPointY = 0.0F;
-            this.hornL3.rotationPointY = 0.0F;
-            this.hornR3.rotationPointY = 0.0F;
-            this.hornL4.rotationPointY = 0.0F;
-            this.hornR4.rotationPointY = 0.0F;
-            this.hornL5.rotationPointY = 0.0F;
-            this.hornR5.rotationPointY = 0.0F;
-            this.hornL6.rotationPointY = 0.0F;
-            this.hornR6.rotationPointY = 0.0F;
-            this.hornL7.rotationPointY = 0.0F;
-            this.hornR7.rotationPointY = 0.0F;
-            this.hornL8.rotationPointY = 0.0F;
-            this.hornR8.rotationPointY = 0.0F;
-            this.hornL9.rotationPointY = 0.0F;
-            this.hornR9.rotationPointY = 0.0F;
         }
 
         int hornNubLength = 4;

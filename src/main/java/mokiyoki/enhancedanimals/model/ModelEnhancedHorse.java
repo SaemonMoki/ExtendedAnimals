@@ -11,6 +11,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T> {
 
     private final RendererModel head;
+    private final RendererModel earL;
+    private final RendererModel earR;
+    private final RendererModel jaw;
+    private final RendererModel maneJoiner;
     private final RendererModel neck;
     private final RendererModel body;
     private final RendererModel leg1;
@@ -27,12 +31,32 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.textureHeight = 124;
 
         this.head = new RendererModel(this, 0, 0);
-        this.head.addBox(-3.0F, -14.0F, -11.0F, 6, 6, 6, 0.0F);
-        this.head.addBox(-2.0F, -14.0F, -8.0F, 4, 3, 3, 0.0F);
-        this.head.addBox(-2.0F, -13.9F, -5.0F, 4, 3, 3, 0.1F);
+        this.head.addBox(-3.0F, 0.0F, -6.0F, 6, 6, 6, 0.0F);
+        this.head.addBox(-2.0F, 0.0F, -9.0F, 4, 3, 3, 0.0F);
+        this.head.addBox(-2.0F, 0.1F, -12.0F, 4, 3, 3, 0.1F);
+        this.head.addBox(-1.5F, -1.5F, -5.0F, 3, 3, 6, -0.5F);
+        this.head.setRotationPoint(0.0F, -14.0F, -1.0F);
+
+        this.earL = new RendererModel(this, 0, 0);
+        this.earL.addBox(-2.0F, -3.0F, -0.5F, 2, 3, 1);
+        this.earL.setRotationPoint(-1.0F, 0.0F, -1.0F);
+
+        this.earR = new RendererModel(this, 0, 0);
+        this.earR.addBox(0.0F, -3.0F, -0.5F, 2, 3, 1);
+        this.earR.setRotationPoint(1.0F, 0.0F, -1.0F);
+
+        this.jaw = new RendererModel(this, 0,0);
+        this.jaw.addBox(-2.0F, 0.0F, -9.0F, 4, 4, 10, -0.1F);
+        this.jaw.addBox(-2.0F, 2.25F, -9.0F, 4, 1, 10, -0.1F);
+        this.jaw.setRotationPoint(0.0F, 2.5F, -2.0F);
+
+        this.maneJoiner = new RendererModel(this, 0, 0);
+        this.maneJoiner.addBox(-1.5F, -0.5F, 0.0F, 3, 3, 3, -0.505F);
+        this.maneJoiner.setRotationPoint(0.0F, -14.0F, -1.0F);
 
         this.neck = new RendererModel(this, 0, 0);
         this.neck.addBox(-2.0F, -13.0F, -7.0F, 4, 16, 7, 0.0F);
+        this.neck.addBox(-1.5F, -13.5F, -0.5F, 3, 18, 3, -0.5F);
         this.neck.setRotationPoint(0.0F, 0.0F, -4.0F);
 
         this.body = new RendererModel(this, 0, 0);
@@ -47,12 +71,14 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.leg2.setRotationPoint(1.0F, 9.0F, -9.0F);
 
         this.leg3 = new RendererModel(this, 0, 0);
+        this.leg3.addBox(0.75F, -4.0F, -0.75F, 4, 7, 5, 0.0F);
         this.leg3.addBox(0.0F, 0.0F, 0.0F, 5, 13, 5, -1.0F);
-        this.leg1.setRotationPoint(-6.0F, 9.0F, 8.0F);
+        this.leg3.setRotationPoint(-6.0F, 9.0F, 8.0F);
 
         this.leg4 = new RendererModel(this, 0, 0);
+        this.leg4.addBox(0.25F, -4.0F, -0.75F, 4, 7, 5, 0.0F);
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 5, 13, 5, -1.0F);
-        this.leg1.setRotationPoint(1.0F, 9.0F, 8.0F);
+        this.leg4.setRotationPoint(1.0F, 9.0F, 8.0F);
 
         this.hoof1 = new RendererModel(this, 0, 0);
         this.hoof1.addBox(0.0F, 11.0F, 0.1F, 5, 3, 4, -0.5F);
@@ -67,6 +93,10 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.hoof4.addBox(0.0F, 11.0F, 0.1F, 5, 3, 4, -0.5F);
 
         this.neck.addChild(head);
+        this.neck.addChild(maneJoiner);
+        this.head.addChild(earL);
+        this.head.addChild(earR);
+        this.head.addChild(jaw);
 
     }
 
@@ -92,8 +122,10 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
-        this.neck.rotateAngleX = headPitch * 0.017453292F;
-        this.neck.rotateAngleY = netHeadYaw * 0.017453292F;
+        this.neck.rotateAngleX = headPitch * 0.017453292F + 0.8F;
+        this.neck.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.75F);
+        this.head.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.25F);
+        this.maneJoiner.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.5F);
 
         this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
@@ -104,6 +136,10 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         copyModelAngles(leg2, hoof2);
         copyModelAngles(leg3, hoof3);
         copyModelAngles(leg4, hoof4);
+
+        this.earL.rotateAngleZ = -0.15F;
+        this.earR.rotateAngleZ = 0.15F;
+        this.jaw.rotateAngleX = -0.15F;
     }
 
     /**

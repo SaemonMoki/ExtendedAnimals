@@ -17,17 +17,9 @@ import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
-import mokiyoki.enhancedanimals.renderer.colour.SparseGrassBlockColour;
-import mokiyoki.enhancedanimals.renderer.colour.SparseGrassItemColour;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.entity.EntityClassification;
@@ -36,12 +28,9 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.world.GrassColors;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeColors;
 import net.minecraft.world.biome.Biomes;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -295,20 +284,20 @@ public class EventRegistry {
     }
 
 
-    @SubscribeEvent
-    public static void registerBlockColourHandlers(final ColorHandlerEvent.Block event) {
-        final BlockColors blockColors = event.getBlockColors();
+//    @SubscribeEvent
+//    public static void registerBlockColourHandlers(final ColorHandlerEvent.Block event) {
+//        final BlockColors blockColors = event.getBlockColors();
+//
+//        blockColors.register(new SparseGrassBlockColour(), ModBlocks.SparseGrass_Block);
+//    }
 
-        blockColors.register(new SparseGrassBlockColour(), ModBlocks.SparseGrass_Block);
-    }
 
-
-    @SubscribeEvent
-    public static void registerItemColourHandlers(final ColorHandlerEvent.Item event) {
-        final ItemColors itemColors = event.getItemColors();
-
-        itemColors.register(new SparseGrassItemColour(), ModBlocks.SparseGrass_Block);
-    }
+//    @SubscribeEvent
+//    public static void registerItemColourHandlers(final ColorHandlerEvent.Item event) {
+//        final ItemColors itemColors = event.getItemColors();
+//
+//        itemColors.register(new SparseGrassItemColour(), ModBlocks.SparseGrass_Block);
+//    }
 
 
     @SubscribeEvent

@@ -184,20 +184,11 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         float childSize = size/4.0F;
 
         if (isChild) {
-
             GlStateManager.pushMatrix();
             GlStateManager.scalef(childSize, childSize, childSize);
             GlStateManager.translatef(0.0F, -1.5F + 1.5F/childSize, 0.0F);
 
             this.neck.render(scale);
-
-            GlStateManager.popMatrix();
-
-
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(childSize, childSize, childSize);
-            GlStateManager.translatef(0.0F, -1.5F + 1.5F/childSize, 0.0F);
-
             this.body.render(scale);
             this.butt.render(scale);
             this.tail0.render(scale);

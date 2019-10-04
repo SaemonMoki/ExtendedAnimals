@@ -144,7 +144,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     public float destPos;
     private String dropMeatType;
 
-    private static final int WTC = 90;
+    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 34;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];

@@ -166,7 +166,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
     }};
 
-    private static final int WTC = 90;
+    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private final List<String> pigTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 44;
     private int[] genes = new int[GENES_LENGTH];
@@ -777,10 +777,10 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 //                spotMod = 1;
 //            }
 
-            if (black == 1 || black == 2) {
-                skin = 3;
-            } else if (belt == 1) {
+            if (belt == 1) {
                 skin = 1;
+            } else if (black == 1 || black == 2) {
+                skin = 3;
             }else{
                 skin = 2;
             }
@@ -788,17 +788,17 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             if (genesForText[36] != 1 && genesForText[37] != 1) {
                 if ((genesForText[34] == 1 || genesForText[35] == 1) && (genesForText[34] != 3 && genesForText[35] != 3)) {
                     //furry
-                    skin = skin + 9;
+                    skin = skin * 4;
                 }else if (genesForText[34] == 2 || genesForText[35] == 2) {
                     //normal
-                    skin = skin + 6;
+                    skin = skin * 3;
                 }else{
                     //sparse
-                    skin = skin + 3;
+                    skin = skin * 2;
                 }
             }
 
-            if (genesForText[38] == 1 || genesForText[39] == 1) {
+            if ((genesForText[38] == 1 || genesForText[39] == 1) && skin <= 12) {
                 skin = skin + 3;
             }
 
@@ -1024,7 +1024,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         int wildType = 2;
         Biome biome = inWorld.getBiome(new BlockPos(this));
 
-        if (biome.getDefaultTemperature() >= 0.9F) // hot and wet (jungle)
+        if (biome.getCategory().equals(Biome.Category.PLAINS))
         {
             wildType = 1;
         }
@@ -1121,11 +1121,20 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             //Dom.White and Belted [ Dom.White, Belted, Wildtype+ ]
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
                 initialGenes[12] = (ThreadLocalRandom.current().nextInt(3) + 1);
-                initialGenes[13] = (3);
+                if (wildType == 1) {
+                    initialGenes[13] = (1);
+                } else {
+                    initialGenes[13] = (3);
+                }
 
             } else {
-                initialGenes[12] = (3);
-                initialGenes[13] = (3);
+                if (wildType == 1) {
+                    initialGenes[12] = (1);
+                    initialGenes[13] = (1);
+                } else {
+                    initialGenes[12] = (3);
+                    initialGenes[13] = (3);
+                }
             }
 
             //Berkshire spots [ Wildtype+, tuxedo, berkshire ]
@@ -1153,13 +1162,13 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             }
 
             //face squash gene 1 [ Wildtype+, long, medium, short, squashed ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
                 initialGenes[18] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
             } else {
                 initialGenes[18] = (1);
             }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
                 initialGenes[19] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
             } else {
@@ -1224,7 +1233,11 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
                 initialGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
             } else {
-                initialGenes[36] = (2);
+                if (wildType == 1) {
+                    initialGenes[36] = (1);
+                } else {
+                    initialGenes[36] = (2);
+                }
             }
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
                 initialGenes[37] = (ThreadLocalRandom.current().nextInt(2) + 1);
@@ -1262,13 +1275,13 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             }
 
             //face squash gene 2 [ longest, normal, short, shortest]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
                 initialGenes[42] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
             } else {
                 initialGenes[42] = (1);
             }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
                 initialGenes[43] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
             } else {

@@ -223,7 +223,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     private int hunger = 0;
     protected String motherUUID = "";
 
-    private static final int WTC = 90;
+    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 60;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
@@ -1675,13 +1675,17 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
         if (biome.getDefaultTemperature() < 0.5F) // cold
         {
-            wildType  = 1;
-        }else if (biome.getDefaultTemperature() > 0.8F) // desert
+            if (biome.getDefaultTemperature() <= 0.05F) // cold
+            {
+                wildType  = 3;
+            } else {
+                wildType  = 1;
+            }
+
+        }
+        else if (biome.getDefaultTemperature() > 0.8F) // desert
         {
             wildType = 2;
-        }else if (biome.getDefaultTemperature() < 0.5F) // cold
-        {
-            wildType  = 3;
         }
 
 
@@ -1925,17 +1929,13 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 //        }
 
         //Lion Mane [ wildtype, lion mane]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (wildType == 1 || wildType == 3 || ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[24] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            if (wildType == 1){
-                initialGenes[24] = (2);
-            }else {
-                initialGenes[24] = (1);
-            }
+            initialGenes[24] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (wildType == 3 || ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[25] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
@@ -1943,13 +1943,13 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         }
 
         //Angora [ wildtype, angora]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 1) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 3) {
             initialGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
                 initialGenes[26] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 1) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 3) {
             initialGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
@@ -2142,7 +2142,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             initialGenes[54] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            if (wildType == 1){
+            if (wildType == 1 || wildType == 3){
                 initialGenes[54] = (2);
             }else {
                 initialGenes[54] = (1);
@@ -2152,7 +2152,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             initialGenes[55] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            if (wildType == 1){
+            if (wildType == 3){
                 initialGenes[55] = (2);
             }else {
                 initialGenes[55] = (1);

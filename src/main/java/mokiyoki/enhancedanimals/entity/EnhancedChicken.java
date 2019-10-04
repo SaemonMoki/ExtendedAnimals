@@ -9,6 +9,7 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
+import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -253,7 +254,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
     private boolean resetTexture = true;
 
-    private static final int WTC = 90;
+    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
     //'father' gene variables list
@@ -3633,7 +3634,7 @@ if (false){
     }
 
     //EarTuft [normal, Eartuft]
-    if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+    if (ThreadLocalRandom.current().nextInt(100) > WTC + ((100-WTC)/2)) {
         initialGenes[150] = (ThreadLocalRandom.current().nextInt(2) + 1);
         initialGenes[151] = (1);
     } else {

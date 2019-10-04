@@ -167,7 +167,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
     }};
 
-    private static final int WTC = 10;
+    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private final List<String> cowTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 80;
     private int[] genes = new int[GENES_LENGTH];

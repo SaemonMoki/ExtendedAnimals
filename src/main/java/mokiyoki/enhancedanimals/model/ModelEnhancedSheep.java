@@ -683,7 +683,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                 }
             }
 
-            float woolLength = ((15-1)*0.025F) + 1.0F;
+            float woolLength = ((coatlength-1)*0.025F) + 1.0F;
 
 //            GlStateManager.pushMatrix();
 //            GlStateManager.scalef(woolLength, woolLength, woolLength);
@@ -692,7 +692,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 //            GlStateManager.popMatrix();
 
             GlStateManager.pushMatrix();
-            GlStateManager.scalef(woolLength, 1.0F, woolLength*0.8F);
+            GlStateManager.scalef(woolLength, 1.0F, woolLength);
             GlStateManager.translatef(0.0F, 0.0F, 0.0F);
             this.tailBase.render(scale);
             GlStateManager.popMatrix();

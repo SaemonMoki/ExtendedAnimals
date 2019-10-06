@@ -107,7 +107,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
     }};
 
-    private static final int WTC = 90;
+    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 46;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];

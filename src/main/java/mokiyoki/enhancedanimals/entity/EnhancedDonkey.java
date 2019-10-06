@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
 
@@ -9,7 +10,7 @@ public class EnhancedDonkey extends EnhancedHorse{
 
     //TODO add texture layers
 
-    private static final int WTC = 90;
+    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 32;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];

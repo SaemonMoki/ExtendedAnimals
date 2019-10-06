@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.proxy;
 
 import mokiyoki.enhancedanimals.entity.*;
+import mokiyoki.enhancedanimals.gui.EncyclopediaScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.renderer.*;
 import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
@@ -9,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.GrassColors;
 import net.minecraft.world.biome.BiomeColors;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -51,5 +53,10 @@ public class ClientProxy implements IProxy {
                     BlockState BlockState = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
                     return blockColours.getColor(BlockState, null, null, tintIndex); },
                 ModBlocks.SparseGrass_Block);
+    }
+
+    @Override
+    public void setEncylopediaInfo(ItemStack itemStack) {
+        EncyclopediaScreen.encyclopedia = itemStack;
     }
 }

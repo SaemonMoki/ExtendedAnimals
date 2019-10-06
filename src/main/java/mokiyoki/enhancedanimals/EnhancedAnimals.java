@@ -10,15 +10,19 @@ import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
 import mokiyoki.enhancedanimals.gui.EggCartonScreen;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.loot.EnhancedChickenLootCondition;
 import mokiyoki.enhancedanimals.loot.EnhancedRabbitLootCondition;
 import mokiyoki.enhancedanimals.proxy.ClientProxy;
 import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.proxy.ServerProxy;
+import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -43,6 +47,15 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CO
 public class EnhancedAnimals {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    public static final ItemGroup GENETICS_ANIMALS_GROUP = new ItemGroup(Reference.MODID) {
+        @Override
+        public ItemStack createIcon() {
+            return new ItemStack(ModItems.Egg_Blue);
+        }
+    };
+
+
 
     public static EnhancedAnimals instance;
 

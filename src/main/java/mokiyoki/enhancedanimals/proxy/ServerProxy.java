@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.proxy;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
@@ -14,5 +15,10 @@ public class ServerProxy implements IProxy {
 
     @Override
     public void initLoadComplete(FMLLoadCompleteEvent event) {
+    }
+
+    @Override
+    public void setEncylopediaInfo(ItemStack itemStack) {
+
     }
 }

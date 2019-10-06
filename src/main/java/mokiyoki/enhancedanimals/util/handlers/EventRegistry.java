@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 
+import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 //import mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider;
@@ -69,200 +70,61 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onRegisterItems(final RegistryEvent.Register<Item> event) {
-        final Item[] items = {ModItems.Egg_White, ModItems.Egg_Cream, ModItems.Egg_CreamDark, ModItems.Egg_Pink, ModItems.Egg_PinkDark, ModItems.Egg_Brown, ModItems.Egg_BrownDark,
-                ModItems.Egg_Blue, ModItems.Egg_GreenLight, ModItems.Egg_Green, ModItems.Egg_Grey, ModItems.Egg_GreyGreen, ModItems.Egg_Olive, ModItems.Egg_GreenDark,
-                ModItems.RawChicken_DarkSmall, ModItems.RawChicken_Dark, ModItems.RawChicken_DarkBig, ModItems.CookedChicken_DarkSmall, ModItems.CookedChicken_Dark,
+        final Item[] itemEggs = {ModItems.Egg_White, ModItems.Egg_Cream, ModItems.Egg_CreamDark, ModItems.Egg_Pink, ModItems.Egg_PinkDark, ModItems.Egg_Brown, ModItems.Egg_BrownDark,
+                ModItems.Egg_Blue, ModItems.Egg_GreenLight, ModItems.Egg_Green, ModItems.Egg_Grey, ModItems.Egg_GreyGreen, ModItems.Egg_Olive, ModItems.Egg_GreenDark};
+
+        final Item[] items = {ModItems.RawChicken_DarkSmall, ModItems.RawChicken_Dark, ModItems.RawChicken_DarkBig, ModItems.CookedChicken_DarkSmall, ModItems.CookedChicken_Dark,
                 ModItems.CookedChicken_DarkBig, ModItems.RawChicken_PaleSmall, ModItems.RawChicken_Pale, ModItems.CookedChicken_PaleSmall, ModItems.CookedChicken_Pale,
                 ModItems.RawRabbit_Small, ModItems.CookedRabbit_Small, ModItems.RabbitStew_Weak, ModItems.Half_Milk_Bottle, ModItems.Milk_Bottle, ModItems.OneSixth_Milk_Bucket,
-                ModItems.OneThird_Milk_Bucket, ModItems.Half_Milk_Bucket, ModItems.TwoThirds_Milk_Bucket, ModItems.FiveSixths_Milk_Bucket, ModItems.Debug_Gene_Book};
+                ModItems.OneThird_Milk_Bucket, ModItems.Half_Milk_Bucket, ModItems.TwoThirds_Milk_Bucket, ModItems.FiveSixths_Milk_Bucket, ModItems.Debug_Gene_Book, ModItems.Genetics_Encyclopedia};
 
         final Item[] itemBlocks = {
-                new BlockItem(ModBlocks.Post_Acacia, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Acacia.getRegistryName()),
-                new BlockItem(ModBlocks.Post_Birch, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Birch.getRegistryName()),
-                new BlockItem(ModBlocks.Post_Dark_Oak, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Dark_Oak.getRegistryName()),
-                new BlockItem(ModBlocks.Post_Jungle, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Jungle.getRegistryName()),
-                new BlockItem(ModBlocks.Post_Oak, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Oak.getRegistryName()),
-                new BlockItem(ModBlocks.Post_Spruce, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.Post_Spruce.getRegistryName()),
-                new BlockItem(ModBlocks.UnboundHay_Block, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.UnboundHay_Block.getRegistryName()),
-                new BlockItem(ModBlocks.SparseGrass_Block, new Item.Properties().group(ItemGroup.BUILDING_BLOCKS)).setRegistryName(ModBlocks.SparseGrass_Block.getRegistryName()),
-                new BlockItem(ModBlocks.Egg_Carton, new Item.Properties().maxStackSize(1).group(ItemGroup.INVENTORY)).setRegistryName(ModBlocks.Egg_Carton.getRegistryName()),
+                new BlockItem(ModBlocks.Post_Acacia, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Acacia.getRegistryName()),
+                new BlockItem(ModBlocks.Post_Birch, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Birch.getRegistryName()),
+                new BlockItem(ModBlocks.Post_Dark_Oak, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Dark_Oak.getRegistryName()),
+                new BlockItem(ModBlocks.Post_Jungle, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Jungle.getRegistryName()),
+                new BlockItem(ModBlocks.Post_Oak, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Oak.getRegistryName()),
+                new BlockItem(ModBlocks.Post_Spruce, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Spruce.getRegistryName()),
+                new BlockItem(ModBlocks.UnboundHay_Block, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.UnboundHay_Block.getRegistryName()),
+                new BlockItem(ModBlocks.SparseGrass_Block, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.SparseGrass_Block.getRegistryName()),
+                new BlockItem(ModBlocks.Egg_Carton, new Item.Properties().maxStackSize(1).group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Egg_Carton.getRegistryName()),
         };
 
 
         event.getRegistry().register(new SpawnEggItem(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000, new Item.Properties()
-                .group(ItemGroup.MISC)).setRegistryName("enhanced_chicken_spawn_egg"));
+                .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_chicken_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34, new Item.Properties()
-                .group(ItemGroup.MISC)).setRegistryName("enhanced_llama_spawn_egg"));
+                .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_llama_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_SHEEP, 0xFFFFFF,0xFF8C8C, new Item.Properties()
-                .group(ItemGroup.MISC)).setRegistryName("enhanced_sheep_spawn_egg"));
+                .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_sheep_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_RABBIT, 0xCA8349,0x553C36, new Item.Properties()
-                .group(ItemGroup.MISC)).setRegistryName("enhanced_rabbit_spawn_egg"));
+                .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_rabbit_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_COW, 0x260800,0xf9f9f7, new Item.Properties()
-                .group(ItemGroup.MISC)).setRegistryName("enhanced_cow_spawn_egg"));
+                .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_cow_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC, new Item.Properties()
-                .group(ItemGroup.MISC)).setRegistryName("enhanced_mooshroom_spawn_egg"));
+                .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_mooshroom_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_PIG, 0x000000,0x000000, new Item.Properties()
-                .group(ItemGroup.MISC)).setRegistryName("enhanced_pig_spawn_egg"));
+                .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_pig_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_HORSE, 0x000000,0x000000, new Item.Properties()
-                .group(ItemGroup.MISC)).setRegistryName("enhanced_horse_spawn_egg"));
+                .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_horse_spawn_egg"));
 
 
+        event.getRegistry().registerAll(itemEggs);
         event.getRegistry().registerAll(items);
         event.getRegistry().registerAll(itemBlocks);
 
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_White,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Cream,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_CreamDark,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Pink,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_PinkDark,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Brown,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_BrownDark,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Blue,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_GreenLight,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Green,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Grey,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_GreyGreen,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_Olive,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
-
-        DispenserBlock.registerDispenseBehavior(ModItems.Egg_GreenDark,  new ProjectileDispenseBehavior() {
-            /**
-             * Return the projectile entity spawned by this dispense behavior.
-             */
-            protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                return egg;
-            }
-        });
+        for (Item egg : itemEggs) {
+            DispenserBlock.registerDispenseBehavior(egg,  new ProjectileDispenseBehavior() {
+                /**
+                 * Return the projectile entity spawned by this dispense behavior.
+                 */
+                protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+                    EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
+                    egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                    return egg;
+                }
+            });
+        }
 
         //TODO dispensers should be able to turn hay to unbound hay if they contain a sharp tool and are facing a hay block
 

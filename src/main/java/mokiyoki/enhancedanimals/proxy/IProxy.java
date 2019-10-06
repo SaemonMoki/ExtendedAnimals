@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.proxy;
 
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
@@ -11,4 +12,6 @@ public interface IProxy {
     public void init(FMLCommonSetupEvent event);
 
     void initLoadComplete(FMLLoadCompleteEvent event);
+
+    void setEncylopediaInfo(ItemStack itemStack);
 }

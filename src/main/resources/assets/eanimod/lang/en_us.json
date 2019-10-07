@@ -56,5 +56,15 @@
 "entity.eanimod.enhanced_pig" : "Pig",
 "entity.eanimod.enhanced_rabbit" : "Rabbit",
 "entity.eanimod.enhanced_mooshroom" : "Mooshroom",
-"entity.eanimod.enhanced_horse" : "Horse"
+"entity.eanimod.enhanced_horse" : "Horse",
+"eanimod.hunger.not_hungry" : "It doesn't seem hungry.",
+"eanimod.hunger.hungry" : "It seems a little hungry.",
+"eanimod.hunger.very_hunger" : "It seems very hungry.",
+"eanimod.hunger.starving" : "It seems to be starving!",
+"eanimod.hunger.dying" : "It is on the verge of dying of starvation!",
+"eanimod.pregnancy.not_showing" : "It's pregnancy doesn't seem to be showing.",
+"eanimod.pregnancy.only_slightly_showing" : "The pregnancy is somewhat showing.",
+"eanimod.pregnancy.pregnant" : "The pregnancy is showing well.",
+"eanimod.pregnancy.obviously_pregnant" : "It is obviously very pregnant!",
+"eanimod.pregnancy.near_birth" : "It is showing signs birth is soon!"
 }

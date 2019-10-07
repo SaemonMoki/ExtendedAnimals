@@ -2,18 +2,30 @@
   "replace": false,
   "values": [
     "eanimod:egg_white",
+    "eanimod:egg_creamlight",
     "eanimod:egg_cream",
     "eanimod:egg_creamdark",
+    "eanimod:egg_creamdarkest",
+    "eanimod:egg_pinklight",
     "eanimod:egg_pink",
     "eanimod:egg_pinkdark",
+    "eanimod:egg_pinkdarkest",
+    "eanimod:egg_brownlight",
     "eanimod:egg_brown",
     "eanimod:egg_browndark",
+    "eanimod:egg_chocolate",
     "eanimod:egg_blue",
     "eanimod:egg_greenlight",
-    "eanimod:egg_green",
+    "eanimod:egg_greenyellow",
+    "eanimod:egg_olivelight",
+    "eanimod:egg_olive",
+    "eanimod:egg_bluegrey",
     "eanimod:egg_grey",
     "eanimod:egg_greygreen",
-    "eanimod:egg_olive",
-    "eanimod:egg_greendark"
+    "eanimod:egg_avocado",
+    "eanimod:egg_mint",
+    "eanimod:egg_green",
+    "eanimod:egg_greendark",
+    "eanimod:egg_pine"
   ]
 }

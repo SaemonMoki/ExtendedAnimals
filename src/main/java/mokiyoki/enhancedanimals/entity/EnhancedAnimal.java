@@ -6,4 +6,8 @@ public interface EnhancedAnimal {
 
     void decreaseHunger(int decreaseAmount);
 
+    Boolean isAnimalSleeping();
+
+    void awaken();
+
 }

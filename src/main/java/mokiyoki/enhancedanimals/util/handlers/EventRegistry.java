@@ -70,8 +70,8 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onRegisterItems(final RegistryEvent.Register<Item> event) {
-        final Item[] itemEggs = {ModItems.Egg_White, ModItems.Egg_Cream, ModItems.Egg_CreamDark, ModItems.Egg_Pink, ModItems.Egg_PinkDark, ModItems.Egg_Brown, ModItems.Egg_BrownDark,
-                ModItems.Egg_Blue, ModItems.Egg_GreenLight, ModItems.Egg_Green, ModItems.Egg_Grey, ModItems.Egg_GreyGreen, ModItems.Egg_Olive, ModItems.Egg_GreenDark};
+        final Item[] itemEggs = {ModItems.Egg_White, ModItems.Egg_CreamLight, ModItems.Egg_Cream, ModItems.Egg_CreamDark, ModItems.Egg_CreamDarkest, ModItems.Egg_PinkLight, ModItems.Egg_Pink, ModItems.Egg_PinkDark, ModItems.Egg_PinkDarkest, ModItems.Egg_BrownLight, ModItems.Egg_Brown, ModItems.Egg_BrownDark, ModItems.Egg_Chocolate,
+                                 ModItems.Egg_Blue, ModItems.Egg_GreenLight, ModItems.Egg_GreenYellow, ModItems.Egg_OliveLight, ModItems.Egg_Olive, ModItems.Egg_Mint, ModItems.Egg_Green, ModItems.Egg_GreenDark, ModItems.Egg_Pine, ModItems.Egg_BlueGrey, ModItems.Egg_Grey, ModItems.Egg_GreyGreen, ModItems.Egg_Avocado};
 
         final Item[] items = {ModItems.RawChicken_DarkSmall, ModItems.RawChicken_Dark, ModItems.RawChicken_DarkBig, ModItems.CookedChicken_DarkSmall, ModItems.CookedChicken_Dark,
                 ModItems.CookedChicken_DarkBig, ModItems.RawChicken_PaleSmall, ModItems.RawChicken_Pale, ModItems.CookedChicken_PaleSmall, ModItems.CookedChicken_Pale,

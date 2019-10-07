@@ -1199,15 +1199,28 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 //            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + wingAngle * 2.2F;
 //            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + wingAngle * 2.2F;
 
-        if (sharedGenes[148] == 2 && sharedGenes[149] == 2 && !(sharedGenes[146] == 2 && sharedGenes[147] == 2)) {
-            //small bodied
-            this.rightWing.rotationPointX = -3.5F;
-            this.leftWing.rotationPointX = 3.5F;
-        } else if (sharedGenes[146] == 2 && sharedGenes[147] == 2 && !(sharedGenes[148] == 2 && sharedGenes[149] == 2)) {
-            //large bodied
-            this.rightWing.rotationPointX = -4.5F;
-            this.leftWing.rotationPointX = 4.5F;
+        if (sharedGenes[146] == 2 && sharedGenes[147] == 2) {
+            if (sharedGenes[148] == 2 && sharedGenes[149] == 2) {
+                //normal body
+                this.rightWing.rotationPointX = -4.0F;
+                this.leftWing.rotationPointX = 4.0F;
+            } else {
+                //big body
+                this.rightWing.rotationPointX = -4.5F;
+                this.leftWing.rotationPointX = 4.5F;
+            }
+        } else if (sharedGenes[148] == 2 && sharedGenes[149] == 2) {
+            if (sharedGenes[146] == 2 || sharedGenes[147] == 2) {
+                //normal body
+                this.rightWing.rotationPointX = -4.0F;
+                this.leftWing.rotationPointX = 4.0F;
+            } else {
+                //small body
+                this.rightWing.rotationPointX = -3.5F;
+                this.leftWing.rotationPointX = 3.5F;
+            }
         } else {
+            //normal body
             this.rightWing.rotationPointX = -4.0F;
             this.leftWing.rotationPointX = 4.0F;
         }

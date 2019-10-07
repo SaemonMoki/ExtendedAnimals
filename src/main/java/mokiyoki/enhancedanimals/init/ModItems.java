@@ -18,19 +18,31 @@ import net.minecraftforge.registries.ObjectHolder;
 public class ModItems {
 
     public static final Item Egg_White = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_white"));
+    public static final Item Egg_CreamLight = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_creamlight"));
     public static final Item Egg_Cream = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_cream"));
     public static final Item Egg_CreamDark = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_creamdark"));
+    public static final Item Egg_CreamDarkest = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_creamdarkest"));
+    public static final Item Egg_PinkLight = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_pinklight"));
     public static final Item Egg_Pink = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_pink"));
     public static final Item Egg_PinkDark = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_pinkdark"));
+    public static final Item Egg_PinkDarkest = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_pinkdarkest"));
+    public static final Item Egg_BrownLight = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_brownlight"));
     public static final Item Egg_Brown = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_brown"));
     public static final Item Egg_BrownDark = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_browndark"));
+    public static final Item Egg_Chocolate = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_chocolate"));
     public static final Item Egg_Blue = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_blue"));
     public static final Item Egg_GreenLight = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(Reference.MODID, "egg_greenlight");
-    public static final Item Egg_Green = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_green"));
+    public static final Item Egg_GreenYellow = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(Reference.MODID, "egg_greenyellow");
+    public static final Item Egg_OliveLight = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_olivelight"));
+    public static final Item Egg_Olive = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_olive"));
+    public static final Item Egg_BlueGrey = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_bluegrey"));
     public static final Item Egg_Grey = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_grey"));
     public static final Item Egg_GreyGreen = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_greygreen"));
-    public static final Item Egg_Olive = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_olive"));
+    public static final Item Egg_Avocado = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_avocado"));
+    public static final Item Egg_Mint = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_mint"));
+    public static final Item Egg_Green = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_green"));
     public static final Item Egg_GreenDark = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_greendark"));
+    public static final Item Egg_Pine = new EnhancedEgg(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(new ResourceLocation(Reference.MODID, "egg_pine"));
 
     public static final Item RawChicken_DarkSmall = new RawChicken(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(64).food((new Food.Builder()).hunger(1).saturation(0.5F).effect(new EffectInstance(Effects.HUNGER, 600, 0), 0.3F).meat().build())).setRegistryName(Reference.MODID, "rawchicken_darksmall");
     public static final Item RawChicken_Dark = new RawChicken(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(64).food((new Food.Builder()).hunger(2).saturation(1.2F).effect(new EffectInstance(Effects.HUNGER, 600, 0), 0.3F).meat().build())).setRegistryName(Reference.MODID, "rawchicken_dark");

@@ -1,6 +1,9 @@
 package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Maps;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -68,6 +71,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedSheep.class, DataSerializers.STRING);
     private static final DataParameter<Byte> DYE_COLOUR = EntityDataManager.<Byte>createKey(EnhancedSheep.class, DataSerializers.BYTE);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> SHEEP_STATUS = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.STRING);
 
     private static final String[] SHEEP_TEXTURES_UNDER = new String[] {
@@ -140,6 +144,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private int timeForGrowth = 0;
 
     private int hunger = 0;
+    protected Boolean sleeping;
+    protected int awokenTimer = 0;
 
 //    protected boolean aiConfigured = false;
     private String motherUUID = "";
@@ -206,14 +212,14 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         //Todo add the temperamants
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
+        this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.25D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.1D, TEMPTATION_ITEMS, false));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(5, this.wanderEatingGoal);
         this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 1.0D));
-        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
     }
 
     //TODO put new sheep behaviour here
@@ -230,6 +236,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         this.dataManager.register(COAT_LENGTH, 0);
         this.dataManager.register(DYE_COLOUR, Byte.valueOf((byte)0));
         this.dataManager.register(SHEEP_STATUS, new String());
+        this.dataManager.register(SLEEPING, false);
     }
 
     private void setSheepStatus(String status) {
@@ -315,6 +322,26 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         return this.dataManager.get(SHEEP_STATUS);
     }
 
+    public void setSleeping(Boolean sleeping) {
+        this.sleeping = sleeping;
+        this.dataManager.set(SLEEPING, sleeping); }
+
+    @Override
+    public Boolean isAnimalSleeping() {
+        if (this.sleeping == null) {
+            return sleeping;
+        } else {
+            sleeping = this.dataManager.get(SLEEPING);
+            return sleeping;
+        }
+    }
+
+    @Override
+    public void awaken() {
+        this.awokenTimer = 200;
+        setSleeping(false);
+    }
+
     public int getHunger(){
         return hunger;
     }
@@ -343,6 +370,13 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         if (this.world.isRemote) {
             this.sheepTimer = Math.max(0, this.sheepTimer - 1);
         } else {
+
+//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
+//                setSleeping(true);
+//            } else if (awokenTimer > 0) {
+//                awokenTimer--;
+//            }
+
 //           && ticksExisted % 2 == 0
             if (this.getIdleTime() < 100) {
                 if (hunger <= 72000){

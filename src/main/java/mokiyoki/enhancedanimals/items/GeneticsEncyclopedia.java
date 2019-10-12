@@ -1,28 +1,20 @@
 package mokiyoki.enhancedanimals.items;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
-import mokiyoki.enhancedanimals.gui.EncyclopediaScreen;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LecternBlock;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.WritableBookItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
-import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.StringUtils;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponentUtils;
@@ -31,7 +23,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.DistExecutor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -91,7 +82,7 @@ public class GeneticsEncyclopedia extends Item {
         EnhancedAnimals.proxy.setEncylopediaInfo(itemstack);
 
         if(worldIn.isRemote) {
-            DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> Minecraft.getInstance().displayGuiScreen(EncyclopediaScreen.currentEncyclopedia));
+            EnhancedAnimals.proxy.openEncyclodepia();
         }
 
         return new ActionResult<>(ActionResultType.SUCCESS, itemstack);

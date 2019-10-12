@@ -1,5 +1,8 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -71,6 +74,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     private static final DataParameter<Float> COW_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
     protected static final DataParameter<String> COW_STATUS = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> MOOSHROOM_UUID = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
 
     private static final String[] COW_TEXTURES_BASE = new String[] {
@@ -196,6 +200,9 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
     protected int gestationTimer = 0;
     protected boolean pregnant = false;
+    protected Boolean sleeping;
+    protected int awokenTimer = 0;
+
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn);
@@ -211,8 +218,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 //        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
         this.goalSelector.addGoal(0, new SwimGoal(this));
 //        this.goalSelector.addGoal(5, this.eatGrassGoal);
-        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
     }
 
     protected void updateAITasks()
@@ -227,6 +234,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.dataManager.register(COW_SIZE, 0.0F);
         this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(COW_STATUS, new String());
+        this.dataManager.register(SLEEPING, false);
         this.dataManager.register(MOOSHROOM_UUID, "0");
     }
 
@@ -256,6 +264,26 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     }
 
     public String getMooshroomUUID() { return mooshroomUUID; }
+
+    public void setSleeping(Boolean sleeping) {
+        this.sleeping = sleeping;
+        this.dataManager.set(SLEEPING, sleeping); }
+
+    @Override
+    public Boolean isAnimalSleeping() {
+        if (this.sleeping == null) {
+            return sleeping;
+        } else {
+            sleeping = this.dataManager.get(SLEEPING);
+            return sleeping;
+        }
+    }
+
+    @Override
+    public void awaken() {
+        this.awokenTimer = 200;
+        setSleeping(false);
+    }
 
     public int getHunger(){ return hunger; }
 
@@ -304,6 +332,12 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         if (this.world.isRemote) {
             this.cowTimer = Math.max(0, this.cowTimer - 1);
         } else {
+
+//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
+//                setSleeping(true);
+//            } else if (awokenTimer > 0) {
+//                awokenTimer--;
+//            }
 
             if(pregnant) {
                 gestationTimer++;
@@ -2445,7 +2479,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 //                speed = speed - 0.1;
 //            }
 
-            this.goalSelector.addGoal(1, new PanicGoal(this, speed*1.5D));
+            this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
             this.goalSelector.addGoal(2, new BreedGoal(this, speed));
             this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.25D, TEMPTATION_ITEMS, false));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));

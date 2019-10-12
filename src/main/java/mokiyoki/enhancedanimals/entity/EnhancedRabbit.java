@@ -1,5 +1,8 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
 import mokiyoki.enhancedanimals.init.ModItems;
@@ -81,6 +84,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedRabbit.class, DataSerializers.STRING);
     private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> NOSE_WIGGLING = EntityDataManager.<Boolean>createKey(EnhancedRabbit.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<String> RABBIT_STATUS = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.STRING);
 
     private static final String[] RABBIT_TEXTURES_UNDER = new String[] {
@@ -225,6 +229,8 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
     private int hunger = 0;
     protected String motherUUID = "";
+    protected Boolean sleeping;
+    protected int awokenTimer = 0;
 
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 60;
@@ -256,8 +262,8 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.goalSelector.addGoal(5, this.wanderEatingGoal);
         this.goalSelector.addGoal(5, new EnhancedRabbit.AIRaidFarm(this));
         this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 0.6D));
-        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 10.0F));
-        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 10.0F));
+        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
 
 
     }
@@ -276,6 +282,26 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         } else {
             return 0.5F;
         }
+    }
+
+    public void setSleeping(Boolean sleeping) {
+        this.sleeping = sleeping;
+        this.dataManager.set(SLEEPING, sleeping); }
+
+    @Override
+    public Boolean isAnimalSleeping() {
+        if (this.sleeping == null) {
+            return sleeping;
+        } else {
+            sleeping = this.dataManager.get(SLEEPING);
+            return sleeping;
+        }
+    }
+
+    @Override
+    public void awaken() {
+        this.awokenTimer = 200;
+        setSleeping(false);
     }
 
     public int getHunger(){
@@ -343,6 +369,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.dataManager.register(COAT_LENGTH, 0);
         this.dataManager.register(DATA_COLOR_ID, -1);
         this.dataManager.register(NOSE_WIGGLING, false);
+        this.dataManager.register(SLEEPING, false);
         this.dataManager.register(RABBIT_STATUS, new String());
     }
 
@@ -581,6 +608,13 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             this.setJumping(false);
         }
         if (!this.world.isRemote) {
+
+//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
+//                setSleeping(true);
+//            } else if (awokenTimer > 0) {
+//                awokenTimer--;
+//            }
+
             if (this.getIdleTime() < 100) {
                 if (hunger <= 72000) {
                     if (ticksExisted % 4 == 0){
@@ -818,7 +852,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         }
     }
 
-    static class AIPanic extends net.minecraft.entity.ai.goal.PanicGoal {
+    static class AIPanic extends EnhancedPanicGoal {
         private final EnhancedRabbit rabbit;
 
         public AIPanic(EnhancedRabbit rabbit, double speedIn) {

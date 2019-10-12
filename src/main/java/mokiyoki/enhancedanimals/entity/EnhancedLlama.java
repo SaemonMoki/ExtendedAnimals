@@ -2,6 +2,9 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
@@ -82,6 +85,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private static final DataParameter<Integer> DATA_INVENTORY_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<String> LLAMA_STATUS = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.STRING);
 
@@ -165,6 +169,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     private int hunger = 0;
     protected String motherUUID = "";
+    protected Boolean sleeping;
+    protected int awokenTimer = 0;
 
     private boolean didSpit;
 
@@ -189,13 +195,13 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.goalSelector.addGoal(1, new ECRunAroundLikeCrazy(this, 1.2D));
         this.goalSelector.addGoal(2, new ECLlamaFollowCaravan(this, (double)2.1F));
         this.goalSelector.addGoal(3, new RangedAttackGoal(this, 1.25D, 40, 20.0F));
-        this.goalSelector.addGoal(3, new PanicGoal(this, 1.2D));
+        this.goalSelector.addGoal(3, new EnhancedPanicGoal(this, 1.2D));
         this.goalSelector.addGoal(4, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(5, this.wanderEatingGoal);
         this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.7D));
-        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new EnhancedLlama.HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new EnhancedLlama.DefendTargetGoal(this));
     }
@@ -208,6 +214,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.dataManager.register(DATA_INVENTORY_ID, 0);
         this.dataManager.register(COAT_LENGTH, -1);
         this.dataManager.register(DATA_COLOR_ID, -1);
+        this.dataManager.register(SLEEPING, false);
         this.dataManager.register(LLAMA_STATUS, new String());
     }
 
@@ -250,6 +257,26 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     public int getInventoryColumns() {
         return this.getInventory();
+    }
+
+    public void setSleeping(Boolean sleeping) {
+        this.sleeping = sleeping;
+        this.dataManager.set(SLEEPING, sleeping); }
+
+    @Override
+    public Boolean isAnimalSleeping() {
+        if (this.sleeping == null) {
+            return sleeping;
+        } else {
+            sleeping = this.dataManager.get(SLEEPING);
+            return sleeping;
+        }
+    }
+
+    @Override
+    public void awaken() {
+        this.awokenTimer = 200;
+        setSleeping(false);
     }
 
     public int getHunger(){
@@ -478,6 +505,13 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
         this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
         if (!this.world.isRemote) {
+
+//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
+//                setSleeping(true);
+//            } else if (awokenTimer > 0) {
+//                awokenTimer--;
+//            }
+
             if (this.getIdleTime() < 100) {
                 if (hunger <= 36000) {
                     timeForGrowth++;

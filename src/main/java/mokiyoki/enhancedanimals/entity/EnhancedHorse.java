@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -64,6 +66,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedHorse.class, DataSerializers.STRING);
     private static final DataParameter<Float> HORSE_SIZE = EntityDataManager.createKey(EnhancedHorse.class, DataSerializers.FLOAT);
     protected static final DataParameter<String> HORSE_STATUS = EntityDataManager.createKey(EnhancedHorse.class, DataSerializers.STRING);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
 
     //TODO add texture layers
     private static final String[] HORSE_TEXTURES_BASE = new String[] {
@@ -123,6 +126,9 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     protected int gestationTimer = 0;
     protected boolean pregnant = false;
 
+    protected Boolean sleeping;
+    protected int awokenTimer = 0;
+
     public EnhancedHorse(EntityType<? extends EnhancedHorse> entityType, World worldIn) {
         super(entityType, worldIn);
     }
@@ -131,8 +137,8 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     protected void registerGoals() {
         //Todo add the temperamants
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
     }
 
     protected void updateAITasks()
@@ -146,6 +152,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(HORSE_SIZE, 0.0F);
         this.dataManager.register(HORSE_STATUS, new String());
+        this.dataManager.register(SLEEPING, false);
     }
 
     protected void setHorseSize(float size) {
@@ -159,6 +166,26 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     protected void setHorseStatus(String status) { this.dataManager.set(HORSE_STATUS, status); }
 
     public String getHorseStatus() { return this.dataManager.get(HORSE_STATUS); }
+
+    public void setSleeping(Boolean sleeping) {
+        this.sleeping = sleeping;
+        this.dataManager.set(SLEEPING, sleeping); }
+
+    @Override
+    public Boolean isAnimalSleeping() {
+        if (this.sleeping == null) {
+            return sleeping;
+        } else {
+            sleeping = this.dataManager.get(SLEEPING);
+            return sleeping;
+        }
+    }
+
+    @Override
+    public void awaken() {
+        this.awokenTimer = 200;
+        setSleeping(false);
+    }
 
     public int getHunger(){ return hunger; }
 
@@ -222,6 +249,12 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         if (this.world.isRemote) {
             this.horseTimer = Math.max(0, this.horseTimer - 1);
         } else {
+
+//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
+//                setSleeping(true);
+//            } else if (awokenTimer > 0) {
+//                awokenTimer--;
+//            }
 
             if(pregnant) {
                 gestationTimer++;

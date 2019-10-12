@@ -83,7 +83,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
     @Override
     public boolean shouldExecute() {
-        if (this.creature.isBeingRidden()) {
+        if (this.creature.isBeingRidden() || ((EnhancedAnimal)this.creature).isAnimalSleeping()) {
             return false;
         } else {
 

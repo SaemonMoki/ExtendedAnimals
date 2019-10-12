@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.proxy;
 
 import mokiyoki.enhancedanimals.entity.*;
+//import mokiyoki.enhancedanimals.gui.EncyclopediaScreen;
 import mokiyoki.enhancedanimals.gui.EncyclopediaScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.renderer.*;
@@ -13,6 +14,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.GrassColors;
 import net.minecraft.world.biome.BiomeColors;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -57,6 +60,11 @@ public class ClientProxy implements IProxy {
 
     @Override
     public void setEncylopediaInfo(ItemStack itemStack) {
-        EncyclopediaScreen.encyclopedia = itemStack;
+//        EncyclopediaScreen.encyclopedia = itemStack;
+    }
+
+    @Override
+    public void openEncyclodepia() {
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> Minecraft.getInstance().displayGuiScreen(EncyclopediaScreen.currentEncyclopedia));
     }
 }

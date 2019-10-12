@@ -21,4 +21,9 @@ public class ServerProxy implements IProxy {
     public void setEncylopediaInfo(ItemStack itemStack) {
 
     }
+
+    @Override
+    public void openEncyclodepia() {
+
+    }
 }

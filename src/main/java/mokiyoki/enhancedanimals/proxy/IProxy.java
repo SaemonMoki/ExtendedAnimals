@@ -14,4 +14,6 @@ public interface IProxy {
     void initLoadComplete(FMLLoadCompleteEvent event);
 
     void setEncylopediaInfo(ItemStack itemStack);
+
+    void openEncyclodepia();
 }

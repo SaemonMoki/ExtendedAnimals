@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.pig.EnhancedWaterAvoidingRandomWalkingEatingGoalPig;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
@@ -74,6 +76,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedPig.class, DataSerializers.STRING);
     private static final DataParameter<Float> PIG_SIZE = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.FLOAT);
     private static final DataParameter<String> PIG_STATUS = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.STRING);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
 
     private static final String[] PIG_TEXTURES_COATRED = new String[] {
             "pigbase.png", "solid_white.png", "solid_milk.png", "solid_cream.png", "solid_carmel.png", "solid_orange.png", "solid_ginger.png", "solid_red.png", "solid_brown.png"
@@ -197,6 +200,9 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     private int hunger = 0;
     protected String motherUUID = "";
 
+    protected Boolean sleeping;
+    protected int awokenTimer = 0;
+
     @Override
     protected void registerGoals() {
 
@@ -210,8 +216,8 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(5, wanderEatingGoal);
         this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
-        this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new EnhancedPig.HurtByAggressorGoal(this));
         this.targetSelector.addGoal(2, new EnhancedPig.TargetAggressorGoal(this));
     }
@@ -249,6 +255,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(PIG_SIZE, 0.0F);
         this.dataManager.register(PIG_STATUS, new String());
+        this.dataManager.register(SLEEPING, false);
     }
 
     private void setPigStatus(String status) {
@@ -265,6 +272,26 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
     public float getSize() {
         return this.dataManager.get(PIG_SIZE);
+    }
+
+    public void setSleeping(Boolean sleeping) {
+        this.sleeping = sleeping;
+        this.dataManager.set(SLEEPING, sleeping); }
+
+    @Override
+    public Boolean isAnimalSleeping() {
+        if (this.sleeping == null) {
+            return sleeping;
+        } else {
+            sleeping = this.dataManager.get(SLEEPING);
+            return sleeping;
+        }
+    }
+
+    @Override
+    public void awaken() {
+        this.awokenTimer = 200;
+        setSleeping(false);
     }
 
     public int getHunger(){
@@ -432,6 +459,13 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         if (this.world.isRemote) {
             this.grassTimer = Math.max(0, this.grassTimer - 1);
         } else {
+
+//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
+//                setSleeping(true);
+//            } else if (awokenTimer > 0) {
+//                awokenTimer--;
+//            }
+
             if(pregnant) {
                 gestationTimer++;
                 int days = ConfigHandler.COMMON.gestationDaysPig.get();

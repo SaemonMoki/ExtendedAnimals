@@ -2,6 +2,9 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECRoost;
 import mokiyoki.enhancedanimals.ai.ECSandBath;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.ai.general.chicken.EnhancedWaterAvoidingRandomWalkingEatingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
@@ -70,6 +73,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedChicken.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> ROOSTING = EntityDataManager.<Boolean>createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Float> CHICKEN_SIZE = EntityDataManager.createKey(EnhancedChicken.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
+
     /** [4] duckwing, partridge, wheaten, solid
      [5] silver, salmon, lemon, gold, mahogany */
     private static final String[] CHICKEN_TEXTURES_GROUND = new String[] {
@@ -256,6 +261,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     private String dropMeatType;
 
     private int hunger = 0;
+    protected Boolean sleeping;
+    protected int awokenTimer = 0;
 
     private boolean resetTexture = true;
 
@@ -284,14 +291,14 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         this.entityAIEatGrass = new EnhancedWaterAvoidingRandomWalkingEatingGoalChicken(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.ecSandBath = new ECSandBath(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new PanicGoal(this, 1.4D));
+        this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.0D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(5, new ECWanderAvoidWater(this, 1.0D));
         this.goalSelector.addGoal(5, this.entityAIEatGrass);
-        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(6, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
         this.goalSelector.addGoal(9, new ECRoost(this));
 
     }
@@ -308,6 +315,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(ROOSTING, new Boolean(false));
+        this.dataManager.register(SLEEPING, false);
         this.dataManager.register(CHICKEN_SIZE, 0.0F);
     }
 
@@ -317,6 +325,26 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
     public float getSize() {
         return this.dataManager.get(CHICKEN_SIZE);
+    }
+
+    public void setSleeping(Boolean sleeping) {
+        this.sleeping = sleeping;
+        this.dataManager.set(SLEEPING, sleeping); }
+
+    @Override
+    public Boolean isAnimalSleeping() {
+        if (this.sleeping == null) {
+            return sleeping;
+        } else {
+            sleeping = this.dataManager.get(SLEEPING);
+            return sleeping;
+        }
+    }
+
+    @Override
+    public void awaken() {
+        this.awokenTimer = 200;
+        setSleeping(false);
     }
 
     public int getHunger(){
@@ -485,6 +513,12 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         if (this.world.isRemote) {
             this.grassTimer = Math.max(0, this.grassTimer - 1);
         } else {
+
+//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
+//                setSleeping(true);
+//            } else if (awokenTimer > 0) {
+//                awokenTimer--;
+//            }
 
             if (this.getIdleTime() < 100) {
                 if (hunger <= 72000) {

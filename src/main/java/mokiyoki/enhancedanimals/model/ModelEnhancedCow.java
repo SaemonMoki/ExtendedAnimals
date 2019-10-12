@@ -749,10 +749,31 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         copyModelAngles(humpXLarge, humpSmall);
         copyModelAngles(humpXLarge, humpXSmall);
 
-        this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        if (false) {
+            float onGround = 3.5F;
+            this.leg1.rotationPointY = this.leg1.rotationPointY + 1.55F + onGround;
+            this.leg2.rotationPointY = this.leg2.rotationPointY + 1.55F + onGround;
+            this.leg3.rotationPointY = this.leg3.rotationPointY + onGround;
+            this.leg4.rotationPointY = this.leg4.rotationPointY + onGround;
+            this.leg1.rotationPointZ = this.leg1.rotationPointZ - 0.25F;
+            this.leg2.rotationPointZ = this.leg2.rotationPointZ - 0.25F;
+            this.leg3.rotationPointZ = this.leg3.rotationPointZ + 1.0F;
+            this.leg4.rotationPointZ = this.leg4.rotationPointZ + 1.0F;
+            this.leg1.rotationPointX = this.leg1.rotationPointX + 0.1F;
+            this.leg2.rotationPointX = this.leg2.rotationPointX - 0.1F;
+            this.leg3.rotationPointX = this.leg3.rotationPointX + 0.1F;
+            this.leg4.rotationPointX = this.leg4.rotationPointX - 0.1F;
+
+            this.leg1.rotateAngleX = 1.6F;
+            this.leg2.rotateAngleX = 1.6F;
+            this.leg3.rotateAngleX = -1.6F;
+            this.leg4.rotateAngleX = -1.6F;
+        } else {
+            this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+            this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+            this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+            this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        }
 
         this.chonkLeg1.rotateAngleX = this.leg1.rotateAngleX;
         this.chonkLeg2.rotateAngleX = this.leg2.rotateAngleX;
@@ -805,15 +826,43 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     @Override
     public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
         super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
-
-        this.headModel.rotationPointY = 2.75F + (entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
-        this.headRotationAngleX = (entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
-
         EnhancedCow enhancedCow = entitylivingbaseIn;
-
         int[] sharedGenes = (entitylivingbaseIn).getSharedGenes();
         char[] uuidArry;
 //        int age = enhancedCow.;
+        float onGround;
+
+        if (false) {
+            if (this.isChild) {
+                onGround = 13.75F;
+                this.bodyChonk.rotationPointY = 13.5F;
+                this.bodyBig.rotationPointY = 13.5F;
+                this.bodyMedium.rotationPointY = 13.5F;
+                this.bodySlim.rotationPointY = 13.5F;
+                this.bodyThin.rotationPointY = 13.5F;
+                this.tail0.rotationPointY = 13.5F;
+            } else {
+                onGround = 9.75F;
+                this.bodyChonk.rotationPointY = 9.5F;
+                this.bodyBig.rotationPointY = 9.5F;
+                this.bodyMedium.rotationPointY = 9.5F;
+                this.bodySlim.rotationPointY = 9.5F;
+                this.bodyThin.rotationPointY = 9.5F;
+                this.tail0.rotationPointY = 9.5F;
+            }
+        } else {
+            onGround = 2.75F;
+            this.bodyChonk.rotationPointY = 2.5F;
+            this.bodyBig.rotationPointY = 2.5F;
+            this.bodyMedium.rotationPointY = 2.5F;
+            this.bodySlim.rotationPointY = 2.5F;
+            this.bodyThin.rotationPointY = 2.5F;
+            this.tail0.rotationPointY = 2.5F;
+        }
+
+
+        this.headModel.rotationPointY = onGround + (entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
+        this.headRotationAngleX = (entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
 
         if (enhancedCow.getMooshroomUUID().isEmpty()) {
             uuidArry = enhancedCow.getCachedUniqueIdString().toCharArray();
@@ -835,13 +884,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 hump = hump - 0.5F;
             }
 
-            this.humpXLarge.rotationPointY = hump / child;
-            this.humpLarge.rotationPointY = hump / child;
-            this.humpLargeish.rotationPointY = hump / child;
-            this.humpMedium.rotationPointY = hump / child;
-            this.humpSmallish.rotationPointY = hump / child;
-            this.humpSmall.rotationPointY = hump / child;
-            this.humpXSmall.rotationPointY = hump / child;
+            this.humpXLarge.rotationPointY = (hump / child) + onGround;
+            this.humpLarge.rotationPointY = (hump / child) + onGround;
+            this.humpLargeish.rotationPointY = (hump / child) + onGround;
+            this.humpMedium.rotationPointY = (hump / child) + onGround;
+            this.humpSmallish.rotationPointY = (hump / child) + onGround;
+            this.humpSmall.rotationPointY = (hump / child) + onGround;
+            this.humpXSmall.rotationPointY = (hump / child) + onGround;
 
         } else {
             int child = 1;
@@ -849,13 +898,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 child = 2;
             }
 
-            this.humpXLarge.rotationPointY = 2.0F / child;
-            this.humpLarge.rotationPointY = 2.0F / child;
-            this.humpLargeish.rotationPointY = 2.0F / child;
-            this.humpMedium.rotationPointY = 2.0F / child;
-            this.humpSmallish.rotationPointY = 2.0F / child;
-            this.humpSmall.rotationPointY = 2.0F / child;
-            this.humpXSmall.rotationPointY = 2.0F / child;
+            this.humpXLarge.rotationPointY = (2.0F / child) + onGround;
+            this.humpLarge.rotationPointY = (2.0F / child) + onGround;
+            this.humpLargeish.rotationPointY = (2.0F / child) + onGround;
+            this.humpMedium.rotationPointY = (2.0F / child) + onGround;
+            this.humpSmallish.rotationPointY = (2.0F / child) + onGround;
+            this.humpSmall.rotationPointY = (2.0F / child) + onGround;
+            this.humpXSmall.rotationPointY = (2.0F / child) + onGround;
         }
 
         int bodyShape = 0;
@@ -866,7 +915,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             bodyShape++;
         }
 
-        if (isChild && bodyShape != 0) {
+        if (this.isChild && bodyShape != 0) {
             bodyShape = 1;
         }
 

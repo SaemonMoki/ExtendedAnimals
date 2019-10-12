@@ -71,7 +71,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedSheep.class, DataSerializers.STRING);
     private static final DataParameter<Byte> DYE_COLOUR = EntityDataManager.<Byte>createKey(EnhancedSheep.class, DataSerializers.BYTE);
-    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> SHEEP_STATUS = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.STRING);
 
     private static final String[] SHEEP_TEXTURES_UNDER = new String[] {
@@ -329,7 +329,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     @Override
     public Boolean isAnimalSleeping() {
         if (this.sleeping == null) {
-            return sleeping;
+            return false;
         } else {
             sleeping = this.dataManager.get(SLEEPING);
             return sleeping;

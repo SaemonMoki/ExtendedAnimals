@@ -76,7 +76,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedPig.class, DataSerializers.STRING);
     private static final DataParameter<Float> PIG_SIZE = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.FLOAT);
     private static final DataParameter<String> PIG_STATUS = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.STRING);
-    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.BOOLEAN);
 
     private static final String[] PIG_TEXTURES_COATRED = new String[] {
             "pigbase.png", "solid_white.png", "solid_milk.png", "solid_cream.png", "solid_carmel.png", "solid_orange.png", "solid_ginger.png", "solid_red.png", "solid_brown.png"
@@ -281,7 +281,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     @Override
     public Boolean isAnimalSleeping() {
         if (this.sleeping == null) {
-            return sleeping;
+            return false;
         } else {
             sleeping = this.dataManager.get(SLEEPING);
             return sleeping;

@@ -84,7 +84,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedRabbit.class, DataSerializers.STRING);
     private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> NOSE_WIGGLING = EntityDataManager.<Boolean>createKey(EnhancedRabbit.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<String> RABBIT_STATUS = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.STRING);
 
     private static final String[] RABBIT_TEXTURES_UNDER = new String[] {
@@ -291,7 +291,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     @Override
     public Boolean isAnimalSleeping() {
         if (this.sleeping == null) {
-            return sleeping;
+            return false;
         } else {
             sleeping = this.dataManager.get(SLEEPING);
             return sleeping;
@@ -1778,7 +1778,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
          * Colour Genes
          */
 
-        //Agouti [ Agouti, Tan, Self ]
+        //Agouti [ Agouti+, Tan, Self ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[0] = (ThreadLocalRandom.current().nextInt(3) + 1);
 

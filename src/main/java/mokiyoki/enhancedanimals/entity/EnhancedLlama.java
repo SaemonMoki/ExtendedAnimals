@@ -85,7 +85,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private static final DataParameter<Integer> DATA_INVENTORY_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
-    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<String> LLAMA_STATUS = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.STRING);
 
@@ -266,7 +266,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     @Override
     public Boolean isAnimalSleeping() {
         if (this.sleeping == null) {
-            return sleeping;
+            return false;
         } else {
             sleeping = this.dataManager.get(SLEEPING);
             return sleeping;

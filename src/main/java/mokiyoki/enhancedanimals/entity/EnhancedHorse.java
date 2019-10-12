@@ -174,7 +174,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     @Override
     public Boolean isAnimalSleeping() {
         if (this.sleeping == null) {
-            return sleeping;
+            return false;
         } else {
             sleeping = this.dataManager.get(SLEEPING);
             return sleeping;

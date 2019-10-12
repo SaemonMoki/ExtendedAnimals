@@ -1,7 +1,7 @@
 {
   "parent": "block/block",
   "textures": {
-    "particle": "block/grass_block_side",
+    "particle": "block/dirt",
     "dirt": "block/dirt",
     "top_overlay": "eanimod:block/sparsegrass_top_overlay",
     "side_overlay": "eanimod:block/sparsegrass_side_overlay"

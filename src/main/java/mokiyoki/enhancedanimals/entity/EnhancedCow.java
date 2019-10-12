@@ -272,7 +272,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     @Override
     public Boolean isAnimalSleeping() {
         if (this.sleeping == null) {
-            return sleeping;
+            return false;
         } else {
             sleeping = this.dataManager.get(SLEEPING);
             return sleeping;

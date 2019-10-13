@@ -1227,8 +1227,6 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
         //Wide band
 
-
-
         return initialGenes;
 
     }

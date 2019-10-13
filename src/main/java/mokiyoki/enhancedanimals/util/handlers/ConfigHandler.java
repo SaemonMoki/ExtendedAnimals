@@ -15,7 +15,22 @@ public class ConfigHandler {
     }
 
     public static class CommonConfig {
-        public final ForgeConfigSpec.BooleanValue spawnVanillaMobs;
+        public final ForgeConfigSpec.BooleanValue spawnVanillaChickens;
+        public final ForgeConfigSpec.BooleanValue spawnVanillaRabbits;
+        public final ForgeConfigSpec.BooleanValue spawnVanillaSheep;
+        public final ForgeConfigSpec.BooleanValue spawnVanillaLlamas;
+        public final ForgeConfigSpec.BooleanValue spawnVanillaCows;
+        public final ForgeConfigSpec.BooleanValue spawnVanillaMooshroom;
+        public final ForgeConfigSpec.BooleanValue spawnVanillaPigs;
+        public final ForgeConfigSpec.BooleanValue spawnVanillaHorses;
+        public final ForgeConfigSpec.BooleanValue spawnVanillaCats;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticChickens;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticRabbits;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticSheep;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticLlamas;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticCows;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticMooshroom;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticPigs;
         public final ForgeConfigSpec.IntValue wildTypeChance;
 //        public final ForgeConfigSpec.IntValue incubationDaysChicken;
         public final ForgeConfigSpec.IntValue gestationDaysRabbit;
@@ -28,9 +43,77 @@ public class ConfigHandler {
 
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
-            spawnVanillaMobs = builder
-                    .comment("Set this to true to allow vanilla minecraft mobs to continue to spawn. False will prevent their spawning and only spawn Genetic Animals versions")
-                    .define("spawnVanillaMobs.enabled", false);
+            spawnVanillaChickens = builder
+                    .comment("Set this to true to allow vanilla minecraft chickens to continue to spawn/exist. False will prevent vanilla chicken spawning and delete existing ones from the world.")
+                    .define("spawnVanillaChickens.enabled", false);
+
+            spawnVanillaRabbits = builder
+                    .comment("Set this to true to allow vanilla minecraft rabbits to continue to spawn/exist. False will prevent vanilla rabbit spawning and delete existing ones from the world.")
+                    .define("spawnVanillaRabbits.enabled", false);
+
+            spawnVanillaSheep = builder
+                    .comment("Set this to true to allow vanilla minecraft sheep to continue to spawn/exist. False will prevent vanilla sheep spawning and delete existing ones from the world.")
+                    .define("spawnVanillaSheep.enabled", false);
+
+            spawnVanillaLlamas = builder
+                    .comment("Set this to true to allow vanilla minecraft llamas to continue to spawn/exist. False will prevent vanilla llama spawning and delete existing ones from the world, except for trader llamas")
+                    .define("spawnVanillaLlamas.enabled", false);
+
+            spawnVanillaCows = builder
+                    .comment("Set this to true to allow vanilla minecraft cows to continue to spawn/exist. False will prevent vanilla cow spawning and delete existing ones from the world.")
+                    .define("spawnVanillaCows.enabled", false);
+
+            spawnVanillaMooshroom = builder
+                    .comment("Set this to true to allow vanilla minecraft mooshroom to continue to spawn/exist. False will prevent vanilla mooshroom spawning and delete existing ones from the world.")
+                    .define("spawnVanillaMooshroom.enabled", false);
+
+            spawnVanillaPigs = builder
+                    .comment("Set this to true to allow vanilla minecraft pigs to continue to spawn/exist. False will prevent vanilla pig spawning and delete existing ones from the world.")
+                    .define("spawnVanillaPigs.enabled", false);
+
+            spawnVanillaHorses = builder
+                    .comment("Set this to true to allow vanilla minecraft horse to continue to spawn/exist. False will prevent vanilla horse spawning and delete existing ones from the world.")
+                    .define("spawnVanillaHorse.enabled", true);
+
+            spawnVanillaCats = builder
+                    .comment("Set this to true to allow vanilla minecraft cats to continue to spawn/exist. False will prevent vanilla cat spawning and delete existing ones from the world.")
+                    .define("spawnVanillaCats.enabled", true);
+
+            spawnGeneticChickens = builder
+                    .comment("Set this to true to allow genetic minecraft chickens to continue to spawn/exist. False will prevent genetic chicken spawning and delete existing ones from the world.")
+                    .define("spawnGeneticChickens.enabled", true);
+
+            spawnGeneticRabbits = builder
+                    .comment("Set this to true to allow genetic minecraft rabbits to continue to spawn/exist. False will prevent genetic rabbit spawning and delete existing ones from the world.")
+                    .define("spawnGeneticRabbits.enabled", true);
+
+            spawnGeneticSheep = builder
+                    .comment("Set this to true to allow genetic minecraft sheep to continue to spawn/exist. False will prevent genetic sheep spawning and delete existing ones from the world.")
+                    .define("spawnGeneticSheep.enabled", true);
+
+            spawnGeneticLlamas = builder
+                    .comment("Set this to true to allow genetic minecraft llamas to continue to spawn/exist. False will prevent genetic llama spawning and delete existing ones from the world.")
+                    .define("spawnGeneticLlamas.enabled", true);
+
+            spawnGeneticCows = builder
+                    .comment("Set this to true to allow genetic minecraft cows to continue to spawn/exist. False will prevent genetic cow spawning and delete existing ones from the world, if this is false genetic mooshroom will disappear when sheared")
+                    .define("spawnGeneticCows.enabled", true);
+
+            spawnGeneticMooshroom = builder
+                    .comment("Set this to true to allow genetic minecraft mooshroom to continue to spawn/exist. False will prevent genetic mooshroom spawning and delete existing ones from the world.")
+                    .define("spawnGeneticMooshroom.enabled", true);
+
+            spawnGeneticPigs = builder
+                    .comment("Set this to true to allow genetic minecraft pigs to continue to spawn/exist. False will prevent genetic pig spawning and delete existing ones from the world.")
+                    .define("spawnGeneticPigs.enabled", true);
+
+//            spawnGeneticHorses = builder
+//                    .comment("Set this to true to allow genetic minecraft horse to continue to spawn/exist. False will prevent genetic horse spawning and delete existing ones from the world.")
+//                    .define("spawnGeneticHorses.enabled", false);
+//
+//            spawnGeneticCats = builder
+//                    .comment("Set this to true to allow genetic minecraft cats to continue to spawn/exist. False will prevent genetic cat spawning and delete existing ones from the world.")
+//                    .define("spawnGeneticCats.enabled", false);
 
             wildTypeChance = builder
                     .comment(" 100 will make all animals spawn as wildtype for their biome, some mutations may be impossible to get. 0 makes animals spawn with almost completely random genes. higher numbers are best since you only need a few mutations to make a big difference")

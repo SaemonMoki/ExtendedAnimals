@@ -111,7 +111,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     }};
 
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
-    private static final int GENES_LENGTH = 46;
+    private static final int GENES_LENGTH = 56;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -449,6 +449,8 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     private void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
+
+
 
             this.horseTextures.add(HORSE_TEXTURES_BASE[0]);
         }
@@ -791,7 +793,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     private int[] createInitialGenes(IWorld inWorld) {
         int[] initialGenes = new int[GENES_LENGTH];
 
-        //Health Base gene [ weaker, stronger1, wildtype, stronger2 ]
+        //Health Base gene [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[0] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -805,7 +807,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[1] = (3);
         }
 
-        //Health Modifier gene [ weaker, stronger1, wildtype, stronger2 ]
+        //Health Modifier gene [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[2] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -819,7 +821,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[3] = (3);
         }
 
-        //Speed Base gene [ weaker, stronger1, wildtype, stronger2 ]
+        //Speed Base gene [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[4] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -833,7 +835,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[5] = (3);
         }
 
-        //Speed Modifier gene [ weaker, stronger1, wildtype, stronger2 ]
+        //Speed Modifier gene [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[6] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -847,7 +849,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[7] = (3);
         }
 
-        //Jump Base gene [ weaker, stronger1, wildtype, stronger2 ]
+        //Jump Base gene [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[8] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -861,7 +863,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[9] = (3);
         }
 
-        //Jump Modifier gene [ weaker, stronger1, wildtype, stronger2 ]
+        //Jump Modifier gene [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[10] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -875,21 +877,21 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[11] = (3);
         }
 
-        //Extension [ black, wildtype ]
+        //Extension [ wildtype+, Black ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[12] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[12] = (2);
+            initialGenes[12] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[13] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[13] = (2);
+            initialGenes[13] = (1);
         }
 
-        //Agouti [ Wildtype/light bay, bay, brown/tan, solid/black ]
+        //Agouti [ Wildtype/light bay+, bay, brown/tan, solid/black ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[14] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
@@ -917,7 +919,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[17] = (1);
         }
 
-        //Dominant White Spotting [ W1-, W2-, W3-, W4-, W5, W6, W7, W8, W9-, W10-, W11-, W12, W13-, W14-, W15, W16, W17-, W18, W19, W20, W21, W22, W23-, W24-, W25-, W26, W27, Sabino, wildtype ]
+        //Dominant White Spotting [ W1-, W2-, W3-, W4-, W5, W6, W7, W8, W9-, W10-, W11-, W12, W13-, W14-, W15, W16, W17-, W18, W19, W20(Sabino2), W21, W22, W23-, W24-, W25-, W26, W27, Sabino1, wildtype+ ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             if (ThreadLocalRandom.current().nextInt(100) > 99) {
                 initialGenes[18] = (ThreadLocalRandom.current().nextInt(29) + 1);
@@ -931,21 +933,21 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[19] = (29);
         }
 
-        //Roan [ Roan, wildtype ]
+        //Roan [ wildtype+, Roan ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[20] = (2);
+            initialGenes[20] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[21] = (2);
+            initialGenes[21] = (1);
         }
 
-        //Cream [ Wildtype, Cream, pearl ]
+        //Cream [ Wildtype+, Cream, pearl ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[22] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
@@ -959,159 +961,217 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[23] = (1);
         }
 
-        //Champagne [ Champagne, wildtype ]
+        //Champagne [ wildtype+, Champagne ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[24] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[24] = (2);
+            initialGenes[24] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[25] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[25] = (2);
+            initialGenes[25] = (1);
         }
 
-        //Silver [ Silver, wildtype ]
+        //Silver [ wildtype+, Silver ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[26] = (2);
+            initialGenes[26] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[27] = (2);
+            initialGenes[27] = (1);
         }
 
-        //Mushroom [ Champagne, wildtype ]
+        //Mushroom [ wildtype+, Champagne ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[28] = (2);
+            initialGenes[28] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[29] = (2);
+            initialGenes[29] = (1);
         }
 
-        //Grey [ Grey , wildtype ]  this one turns the coat white over a few years
+        //Grey [ wildtype+, Grey ]  this one turns the coat white over a few years
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[30] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[30] = (2);
+            initialGenes[30] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[31] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[31] = (2);
+            initialGenes[31] = (1);
         }
 
-        //White Frame Overo [ white frame overo- , wildtype ]  this is lethal in double dose
+        //White Frame Overo [ wildtype+, white frame overo- ]  this is lethal in double dose
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[32] = (2);
+            initialGenes[32] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[33] = (2);
+            initialGenes[33] = (1);
         }
 
-        //Tobiano [ Tobiano, wildtype ] pinto paint like spots
+        //Tobiano [ wildtype+, Tobiano ] pinto paint like spots
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[34] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[34] = (2);
+            initialGenes[34] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[35] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[35] = (2);
+            initialGenes[35] = (1);
         }
 
-        //Leopard Spotting [ Leopard, wildtype ] appaloosa
+        //Leopard Spotting [ wildtype+, Leopard] appaloosa
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[36] = (2);
+            initialGenes[36] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[37] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[37] = (2);
+            initialGenes[37] = (1);
         }
 
-        //Leopard Spot Modifier [ Modified, wildtype+ ] wildtype makes varnish appaloosa
+        //Pattern 1 [ wildtype+, Modified ] modifier increases coverage to 6 or 10 incomplete dominant
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[38] = (2);
+            initialGenes[38] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[39] = (2);
+            initialGenes[39] = (1);
         }
 
-        //Splash White Locus 1 [ classic splash white1, splash white2, splash white3-, wildtype+ ]
+        //Pattern 2 [ wildtype+, Modified ] modifier increases by approximately 1
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[40] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            initialGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[40] = (4);
+            initialGenes[40] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[41] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            initialGenes[41] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[41] = (4);
+            initialGenes[41] = (1);
         }
 
-        //Splash White Locus 2 [ splash white2, splash white4-, wildtype ]
+        //Pattern 3 [ wildtype+, Modified ] modifier increases by approximately 1
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[42] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[42] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[42] = (3);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[43] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[43] = (3);
-        }
-
-        //Tiger Eye [ Wildtype, te1, te2 ] te1 = lightens eyes to yellow/amber/orange, te2 = lightens eyes to blue in cream horses
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[44] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[44] = (3);
+            initialGenes[42] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[45] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[43] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[45] = (3);
+            initialGenes[43] = (1);
         }
+
+
+        //Pattern 4 [ wildtype+, Modified ] modifier increases by approximately 1
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[44] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[44] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[45] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[45] = (1);
+        }
+
+        //Pattern 5 [ wildtype+, Modified ] modifier increases by approximately 1
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[46] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[46] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[47] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[47] = (1);
+        }
+
+        //Varnish Roan [ wildtype+, Varnished ] modifier adds varnishing to appoloosa spots
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[48] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[48] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[49] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[49] = (1);
+        }
+
+        //Splash White [ wildtype+, Classic splash white1, splash white2, splash white3-  ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[50] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[50] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[51] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[51] = (1);
+        }
+
+        //Tiger Eye [ Wildtype+, te1, te2 ] te1 = lightens eyes to yellow/amber/orange, te2 = lightens eyes to blue in cream horses
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[52] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[52] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[53] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[53] = (1);
+        }
+
 
 
 

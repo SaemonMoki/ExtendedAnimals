@@ -35,37 +35,37 @@ public class EventSubscriber {
         Entity entity = event.getEntity();
         //TODO figure out how to not delete named entities and maybe convert them instead.
         if (entity instanceof ChickenEntity) {
-            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
+            if(!ConfigHandler.COMMON.spawnVanillaChickens.get()) {
                 event.setCanceled(true);
             }
         }
         if (entity instanceof RabbitEntity) {
-            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
+            if(!ConfigHandler.COMMON.spawnVanillaRabbits.get()) {
                 event.setCanceled(true);
             }
         }
         if (entity instanceof LlamaEntity && !(entity instanceof TraderLlamaEntity)) {
-            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
+            if(!ConfigHandler.COMMON.spawnVanillaLlamas.get()) {
                 event.setCanceled(true);
             }
         }
         if (entity instanceof SheepEntity) {
-            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
+            if(!ConfigHandler.COMMON.spawnVanillaSheep.get()) {
                 event.setCanceled(true);
             }
         }
         if (entity instanceof CowEntity && !(entity instanceof MooshroomEntity)) {
-            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
+            if(!ConfigHandler.COMMON.spawnVanillaCows.get()) {
                 event.setCanceled(true);
             }
         }
         if (entity instanceof MooshroomEntity) {
-            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
+            if(!ConfigHandler.COMMON.spawnVanillaMooshroom.get()) {
                 event.setCanceled(true);
             }
         }
         if (entity instanceof PigEntity) {
-            if(!ConfigHandler.COMMON.spawnVanillaMobs.get()) {
+            if(!ConfigHandler.COMMON.spawnVanillaPigs.get()) {
                 event.setCanceled(true);
             }
         }

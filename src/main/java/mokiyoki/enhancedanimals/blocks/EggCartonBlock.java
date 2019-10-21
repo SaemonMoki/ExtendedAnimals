@@ -135,25 +135,6 @@ public class EggCartonBlock extends ContainerBlock {
                 ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), itemstack);
                 itementity.setDefaultPickupDelay();
                 worldIn.addEntity(itementity);
-            }else if (!worldIn.isRemote && !player.isCreative() && !eggCartonTileEntity.isEmpty()) {
-                ItemStack itemstack = new ItemStack(ModBlocks.Egg_Carton);
-                CompoundNBT compoundnbt = eggCartonTileEntity.saveToNbt(new CompoundNBT());
-                if (!compoundnbt.isEmpty()) {
-                    itemstack.setTagInfo("BlockEntityTag", compoundnbt);
-                }
-
-                if (eggCartonTileEntity.hasCustomName()) {
-                    itemstack.setDisplayName(eggCartonTileEntity.getCustomName());
-                }
-
-                ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), itemstack);
-                itementity.setDefaultPickupDelay();
-                worldIn.addEntity(itementity);
-            } else if (!worldIn.isRemote && !player.isCreative()) {
-                ItemStack itemstack = new ItemStack(ModBlocks.Egg_Carton);
-                ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX(), (double)pos.getY(), (double)pos.getZ(), itemstack);
-                itementity.setDefaultPickupDelay();
-                worldIn.addEntity(itementity);
             } else {
                 eggCartonTileEntity.fillWithLoot(player);
             }

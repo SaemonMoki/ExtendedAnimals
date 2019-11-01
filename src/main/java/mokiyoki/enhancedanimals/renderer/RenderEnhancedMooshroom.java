@@ -39,7 +39,7 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
 
         if (resourcelocation == null) {
             resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, colourRGB, entity.getVariantTexturePaths()));
+            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, colourRGB, entity.getVariantTexturePaths(), null));
             LAYERED_LOCATION_CACHE.put(s, resourcelocation);
         }
 

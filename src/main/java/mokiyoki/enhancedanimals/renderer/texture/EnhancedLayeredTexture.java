@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,13 +25,17 @@ public class EnhancedLayeredTexture extends Texture {
 
     private static final Logger LOGGER = LogManager.getLogger();
     protected final List<String> layeredTextureNames;
+    protected final List<String> maskingTextureNames = new ArrayList<>();
     protected  int dyeRGB = 0;
     protected  int cowBlackRGB = 0;
     protected  int cowRedRGB = 0;
     protected String modLocation = "";
 
-    public EnhancedLayeredTexture(String modLocation, float[] dyeRGB, String... textureNames) {
+    public EnhancedLayeredTexture(String modLocation, float[] dyeRGB, String[] textureNames, String[] maskingTextureNames) {
         this.layeredTextureNames = Lists.newArrayList(textureNames);
+        if (maskingTextureNames != null) {
+            this.maskingTextureNames.addAll(Lists.newArrayList(maskingTextureNames));
+        }
 
         if (this.layeredTextureNames.isEmpty()) {
             throw new IllegalStateException("Layered texture with no layers.");
@@ -61,6 +66,15 @@ public class EnhancedLayeredTexture extends Texture {
 
     @Override
     public void loadTexture(IResourceManager manager) throws IOException {
+        NativeImage maskingImage = null;
+        if (!this.maskingTextureNames.isEmpty()) {
+            try {
+                maskingImage = generateMaskingImage(manager);
+            } catch (IOException ioexception) {
+                LOGGER.error("Couldn't load masking image", (Throwable)ioexception);
+            }
+        }
+
         Iterator<String> iterator = this.layeredTextureNames.iterator();
         String s = iterator.next();
 
@@ -85,6 +99,12 @@ public class EnhancedLayeredTexture extends Texture {
                 for(int i = 0; i < nativeimage.getHeight(); ++i) {
                     for (int j = 0; j < nativeimage.getWidth(); ++j) {
                         blendDye(j, i, cowBlackRGB, nativeimage);
+                    }
+                }
+            }else if(s.endsWith("_A") && maskingImage!=null) {
+                for(int i = 0; i < nativeimage.getHeight(); ++i) {
+                    for (int j = 0; j < nativeimage.getWidth(); ++j) {
+                        blendAlpha(j, i, maskingImage, nativeimage);
                     }
                 }
             }
@@ -120,6 +140,12 @@ public class EnhancedLayeredTexture extends Texture {
                                     blendDye(j, i, cowBlackRGB, nativeimage1);
                                 }
                             }
+                        } else if(s1.endsWith("_A") && maskingImage!=null) {
+                            for(int i = 0; i < nativeimage1.getHeight(); ++i) {
+                                for (int j = 0; j < nativeimage1.getWidth(); ++j) {
+                                    blendAlpha(j, i, maskingImage, nativeimage1);
+                                }
+                            }
                         }
 
                         for(int i = 0; i < nativeimage1.getHeight(); ++i) {
@@ -136,6 +162,34 @@ public class EnhancedLayeredTexture extends Texture {
 
     }
 
+    private NativeImage generateMaskingImage(IResourceManager manager) throws IOException {
+        Iterator<String> iterator = this.layeredTextureNames.iterator();
+        String s = iterator.next();
+
+                IResource iresource = manager.getResource(new ResourceLocation(modLocation+s));
+                NativeImage nativeimage = NativeImage.read(iresource.getInputStream());
+
+            while(true) {
+                if (!iterator.hasNext()) {
+                    TextureUtil.prepareImage(this.getGlTextureId(), nativeimage.getWidth(), nativeimage.getHeight());
+                    return nativeimage;
+                }
+
+                String s1 = iterator.next();
+                if (s1 != null) {
+                    try (
+                            IResource iresource1 = manager.getResource(new ResourceLocation(modLocation+s1));
+                            NativeImage nativeimage1 = NativeImage.read(iresource1.getInputStream());
+                    ) {
+                        for(int i = 0; i < nativeimage1.getHeight(); ++i) {
+                            for(int j = 0; j < nativeimage1.getWidth(); ++j) {
+                                nativeimage.blendPixel(j, i, nativeimage1.getPixelRGBA(j, i));
+                            }
+                        }
+                    }
+                }
+            }
+    }
 
     public void blendDye(int xIn, int yIn, int rgbDye, NativeImage nativeimage) {
         int i = nativeimage.getPixelRGBA(xIn, yIn);
@@ -159,6 +213,27 @@ public class EnhancedLayeredTexture extends Texture {
             int i1 = (int)(f12);
 
             nativeimage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
+        }
+    }
+
+    public void blendAlpha(int xIn, int yIn, NativeImage maskingImage, NativeImage nativeImage) {
+        int i = nativeImage.getPixelRGBA(xIn, yIn);
+        int iAlpha = maskingImage.getPixelRGBA(xIn, yIn);
+
+        float originalAlpha = (float)(i >> 24 & 255) / 255.0F;
+        float maskingAlpha = (float)(iAlpha >> 24 & 255) / 255.0F;
+        float f5 = (float)(i >> 16 & 255) / 255.0F;
+        float f6 = (float)(i >> 8 & 255) / 255.0F;
+        float f7 = (float)(i >> 0 & 255) / 255.0F;
+
+        if(originalAlpha != 0.0) {
+
+            int j = (int)(maskingAlpha * 255.0F);
+            int k = (int)(f5);
+            int l = (int)(f6);
+            int i1 = (int)(f7);
+
+            nativeImage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
         }
     }
 

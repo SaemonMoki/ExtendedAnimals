@@ -32,7 +32,7 @@ public class RenderEnhancedHorse extends MobRenderer<EnhancedHorse, ModelEnhance
         if (resourcelocation == null)
         {
             resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_HORSE_TEXTURE_LOCATION, null, entity.getVariantTexturePaths()));
+            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_HORSE_TEXTURE_LOCATION, null, entity.getVariantTexturePaths(), null));
             LAYERED_LOCATION_CACHE.put(s, resourcelocation);
         }
 

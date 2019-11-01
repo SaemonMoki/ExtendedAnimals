@@ -150,11 +150,13 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
     @Override
     public void onPlayerDestroy(IWorld worldIn, BlockPos pos, BlockState state) {
         worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+        super.onPlayerDestroy(worldIn, pos, state);
     }
 
     @Override
     public void onExplosionDestroy(World worldIn, BlockPos pos, Explosion explosionIn) {
         worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+        super.onExplosionDestroy(worldIn, pos, explosionIn);
     }
 
     @Override
@@ -168,6 +170,7 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
             itementity.setDefaultPickupDelay();
             worldIn.addEntity(itementity);
         }
+        super.onBlockHarvested(worldIn, pos, state, player);
     }
 
     @Override
@@ -179,7 +182,7 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
     @Override
     public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
         worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
-        super.onBlockAdded(state, worldIn, pos, newState, isMoving);
+        super.onReplaced(state, worldIn, pos, newState, isMoving);
     }
 
     //    @Override

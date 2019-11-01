@@ -174,6 +174,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private final List<String> pigTextures = new ArrayList<>();
+    private final List<String> pigAlphaTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 44;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
@@ -750,6 +751,22 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     }
 
     @OnlyIn(Dist.CLIENT)
+    public String[] getVariantAlphaTexturePaths()
+    {
+        if (this.pigAlphaTextures.isEmpty()) {
+            this.setAlphaTexturePaths();
+        }
+
+
+        //todo this is only temporarity until we have alpha textures
+        if (this.pigAlphaTextures.isEmpty()) {
+            return null;
+        }
+
+        return this.pigAlphaTextures.stream().toArray(String[]::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
     private void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
@@ -913,6 +930,17 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             if (tusks){
                 this.pigTextures.add(PIG_TEXTURES_TUSKS[1]);
             }
+
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void setAlphaTexturePaths() {
+        int[] genesForText = getSharedGenes();
+        if (genesForText != null) {
+
+            //todo do the alpha textures
+//            this.pigAlphaTextures.add(PIG_ALPHA_TEXTURES_COATRED[]);
 
         }
     }

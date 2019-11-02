@@ -229,9 +229,9 @@ public class EnhancedLayeredTexture extends Texture {
         if(originalAlpha != 0.0) {
 
             int j = (int)(maskingAlpha * 255.0F);
-            int k = (int)(f5);
-            int l = (int)(f6);
-            int i1 = (int)(f7);
+            int k = (int)(f5*255);
+            int l = (int)(f6*255);
+            int i1 = (int)(f7*255);
 
             nativeImage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
         }

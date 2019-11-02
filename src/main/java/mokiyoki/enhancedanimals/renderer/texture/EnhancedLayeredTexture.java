@@ -111,8 +111,10 @@ public class EnhancedLayeredTexture extends Texture {
 
                 String s1 = iterator.next();
                 if (s1 != null) {
-                    if (s1.equals("ALPHA_GROUP_START")) {
-                       combineAlphaGroup(maskingImage, nativeimage, iterator, manager);
+                    if (s1.equals("ALPHA_GROUP_START") || s1.equals("ALPHA_GROUP_END")) {
+                        if (maskingImage != null) {
+                            combineAlphaGroup(maskingImage, nativeimage, iterator, manager);
+                        }
                     } else {
                         try (
                                 IResource iresource1 = manager.getResource(new ResourceLocation(modLocation+s1));

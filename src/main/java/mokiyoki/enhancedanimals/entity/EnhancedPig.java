@@ -914,6 +914,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             if (black != 0) {
                 this.pigTextures.add(PIG_TEXTURES_COATBLACK[black]);
             }
+            this.pigTextures.add("ALPHA_GROUP_START");
             if (spot != 0) {
                 this.pigTextures.add(PIG_TEXTURES_SPOT_SPOTS[spot]);
             }
@@ -923,6 +924,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             if (berk != 0) {
                 this.pigTextures.add(PIG_TEXTURES_SPOT_BERKSHIRE[berk]);
             }
+            this.pigTextures.add("ALPHA_GROUP_END");
             this.pigTextures.add(PIG_TEXTURES_COAT[coat]);
             this.pigTextures.add(PIG_TEXTURES_SKINBASE[skin]);
             this.pigTextures.add(PIG_TEXTURES_EYES[0]);

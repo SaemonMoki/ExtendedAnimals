@@ -17,6 +17,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     private final RendererModel maneJoiner;
     private final RendererModel neck;
     private final RendererModel body;
+    private final RendererModel tail;
     private final RendererModel leg1;
     private final RendererModel leg2;
     private final RendererModel leg3;
@@ -64,6 +65,10 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.body = new RendererModel(this, 0, 0);
         this.body.addBox(-5.0F, 0.0F, -10.0F, 10, 10, 22, 0.0F);
 
+        this.tail = new RendererModel(this, 0, 0);
+        this.tail.addBox(-2.0F, 0.0F, -4.0F, 4, 15, 4, 0.0F);
+        this.tail.setRotationPoint(0.0F, 0.0F, 12.0F);
+
         this.leg1 = new RendererModel(this, 0, 0);
         this.leg1.addBox(0.0F, 0.0F, 0.0F, 5, 13, 5, -1.0F);
         this.leg1.setRotationPoint(-6.0F, 9.0F, -9.0F);
@@ -94,6 +99,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.hoof4 = new RendererModel(this, 106, 117);
         this.hoof4.addBox(0.0F, 11.0F, 0.1F, 5, 3, 4, -0.5F);
 
+
         this.neck.addChild(head);
         this.neck.addChild(maneJoiner);
         this.head.addChild(earL);
@@ -110,6 +116,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 //        this.head.render(scale);
         this.neck.render(scale);
         this.body.render(scale);
+        this.tail.render(scale);
         this.leg1.render(scale);
         this.leg2.render(scale);
         this.leg3.render(scale);
@@ -130,6 +137,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.neck.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.40F);
         this.head.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.14F);
         this.maneJoiner.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.07F);
+
+        this.tail.rotateAngleX = 0.6F;
 
         this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
         this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;

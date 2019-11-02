@@ -144,7 +144,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private int timeForGrowth = 0;
 
     private int hunger = 0;
-    protected Boolean sleeping;
+    protected Boolean sleeping = false;
     protected int awokenTimer = 0;
 
 //    protected boolean aiConfigured = false;
@@ -371,11 +371,13 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             this.sheepTimer = Math.max(0, this.sheepTimer - 1);
         } else {
 
-//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
-//                setSleeping(true);
-//            } else if (awokenTimer > 0) {
-//                awokenTimer--;
-//            }
+            if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
+                setSleeping(true);
+            } else if (awokenTimer > 0) {
+                awokenTimer--;
+            } else if (this.world.isDaytime() && sleeping) {
+                setSleeping(false);
+            }
 
 //           && ticksExisted % 2 == 0
             if (this.getIdleTime() < 100) {

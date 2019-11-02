@@ -229,7 +229,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
     private int hunger = 0;
     protected String motherUUID = "";
-    protected Boolean sleeping;
+    protected Boolean sleeping = false;
     protected int awokenTimer = 0;
 
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
@@ -609,11 +609,13 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         }
         if (!this.world.isRemote) {
 
-//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
-//                setSleeping(true);
-//            } else if (awokenTimer > 0) {
-//                awokenTimer--;
-//            }
+            if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
+                setSleeping(true);
+            } else if (awokenTimer > 0) {
+                awokenTimer--;
+            } else if (this.world.isDaytime() && sleeping) {
+                setSleeping(false);
+            }
 
             if (this.getIdleTime() < 100) {
                 if (hunger <= 72000) {

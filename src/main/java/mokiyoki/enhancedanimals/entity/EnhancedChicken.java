@@ -261,7 +261,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     private String dropMeatType;
 
     private int hunger = 0;
-    protected Boolean sleeping;
+    protected Boolean sleeping = false;
     protected int awokenTimer = 0;
 
     private boolean resetTexture = true;
@@ -514,11 +514,13 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             this.grassTimer = Math.max(0, this.grassTimer - 1);
         } else {
 
-//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
-//                setSleeping(true);
-//            } else if (awokenTimer > 0) {
-//                awokenTimer--;
-//            }
+            if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
+                setSleeping(true);
+            } else if (awokenTimer > 0) {
+                awokenTimer--;
+            } else if (this.world.isDaytime() && sleeping) {
+                setSleeping(false);
+            }
 
             if (this.getIdleTime() < 100) {
                 if (hunger <= 72000) {

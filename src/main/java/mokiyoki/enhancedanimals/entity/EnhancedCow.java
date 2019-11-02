@@ -200,7 +200,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
     protected int gestationTimer = 0;
     protected boolean pregnant = false;
-    protected Boolean sleeping;
+    protected Boolean sleeping = false;
     protected int awokenTimer = 0;
 
 
@@ -333,11 +333,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             this.cowTimer = Math.max(0, this.cowTimer - 1);
         } else {
 
-//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
-//                setSleeping(true);
-//            } else if (awokenTimer > 0) {
-//                awokenTimer--;
-//            }
+            if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
+                setSleeping(true);
+            } else if (awokenTimer > 0) {
+                awokenTimer--;
+            } else if (this.world.isDaytime() && sleeping) {
+                setSleeping(false);
+            }
 
             if(pregnant) {
                 gestationTimer++;

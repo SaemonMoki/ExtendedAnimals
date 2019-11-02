@@ -111,7 +111,7 @@ public class EnhancedLayeredTexture extends Texture {
 
                 String s1 = iterator.next();
                 if (s1 != null) {
-                    if (s1.equals("ALPHA_GROUP_START") || s1.equals("ALPHA_GROUP_END")) {
+                    if (s1.equals("alpha_group_start") || s1.equals("alpha_group_end")) {
                         if (maskingImage != null) {
                             combineAlphaGroup(maskingImage, nativeimage, iterator, manager);
                         }
@@ -184,7 +184,7 @@ public class EnhancedLayeredTexture extends Texture {
             }
             while(true) {
                 String s1 = iterator.next();
-                if (s1.equals("ALPHA_GROUP_END")) {
+                if (s1.equals("alpha_group_end")) {
                     for(int i = 0; i < firstGroupImage.getHeight(); ++i) {
                         for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
                             blendAlpha(j, i, maskingImage, firstGroupImage);
@@ -239,7 +239,7 @@ public class EnhancedLayeredTexture extends Texture {
     }
 
     private NativeImage generateMaskingImage(IResourceManager manager) throws IOException {
-        Iterator<String> iterator = this.layeredTextureNames.iterator();
+        Iterator<String> iterator = this.maskingTextureNames.iterator();
         String s = iterator.next();
 
                 IResource iresource = manager.getResource(new ResourceLocation(modLocation+s));

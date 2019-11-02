@@ -22,8 +22,6 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
@@ -78,6 +76,23 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     private static final DataParameter<String> PIG_STATUS = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.BOOLEAN);
 
+    private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
+            "", "skin_pink_bald.png", "skin_grey_bald.png", "skin_black_bald.png"
+//            ,
+//            "a_skin_pink_sparse.png", "a_skin_grey_sparse.png", "a_skin_black_sparse.png",
+//            "a_skin_pink_medium.png", "a_skin_grey_medium.png", "a_skin_black_medium.png",
+//            "a_skin_pink_furry.png", "a_skin_grey_furry.png", "a_skin_black_furry.png",
+//            "a_skin_pink_wooly.png", "a_skin_grey_wooly.png", "a_skin_black_wooly.png"
+    };
+
+    private static final String[] PIG_TEXTURES_SKINMARKINGS_BELTED = new String[] {
+            "", "skin_pink_bald.png", "skin_belt.png"
+    };
+
+    private static final String[] PIG_TEXTURES_SKINMARKINGS_BERKSHIRE = new String[] {
+            "", "skin_tux.png", "skin_berkshire.png"
+    };
+
     private static final String[] PIG_TEXTURES_COATRED = new String[] {
             "pigbase.png", "solid_white.png", "solid_milk.png", "solid_cream.png", "solid_carmel.png", "solid_orange.png", "solid_ginger.png", "solid_red.png", "solid_brown.png"
     };
@@ -103,18 +118,6 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             "coat_normal.png", "coat_wooly.png"
     };
 
-    private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
-            "", "skin_pink_bald.png", "skin_grey_bald.png", "skin_black_bald.png",
-                "skin_pink_sparse.png", "skin_grey_sparse.png", "skin_black_sparse.png",
-                "skin_pink_medium.png", "skin_grey_medium.png", "skin_black_medium.png",
-                "skin_pink_furry.png", "skin_grey_furry.png", "skin_black_furry.png",
-                "skin_pink_wooly.png", "skin_grey_wooly.png", "skin_black_wooly.png"
-    };
-
-    private static final String[] PIG_TEXTURES_SKINMARKINGS = new String[] {
-            "", "spots"
-    };
-
     private static final String[] PIG_TEXTURES_EYES = new String[] {
             "eyes_black.png", "eyes_brown.png", "eyes_blue.png"
     };
@@ -125,6 +128,10 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
     private static final String[] PIG_TEXTURES_TUSKS = new String[] {
             "", "tusks.png"
+    };
+
+    private static final String[] PIG_TEXTURES_ALPHA = new String[] {
+            "bald", "sparce.png", "medium.png", "furry.png", "wooly.png"
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD, ModItems.CookedChicken_Dark, ModItems.CookedChicken_DarkBig, ModItems.CookedChicken_DarkSmall, ModItems.CookedChicken_Pale, ModItems.CookedChicken_PaleSmall, ModItems.CookedRabbit_Small);
@@ -201,7 +208,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     private int hunger = 0;
     protected String motherUUID = "";
 
-    protected Boolean sleeping;
+    protected Boolean sleeping = false;
     protected int awokenTimer = 0;
 
     @Override
@@ -461,11 +468,13 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             this.grassTimer = Math.max(0, this.grassTimer - 1);
         } else {
 
-//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
-//                setSleeping(true);
-//            } else if (awokenTimer > 0) {
-//                awokenTimer--;
-//            }
+            if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
+                setSleeping(true);
+            } else if (awokenTimer > 0) {
+                awokenTimer--;
+            } else if (this.world.isDaytime() && sleeping) {
+                setSleeping(false);
+            }
 
             if(pregnant) {
                 gestationTimer++;
@@ -881,26 +890,28 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
                 skin = 2;
             }
 
+//            if (genesForText[36] != 1 && genesForText[37] != 1) {
+//                if ((genesForText[34] == 1 || genesForText[35] == 1) && (genesForText[34] != 3 && genesForText[35] != 3)) {
+//                    //furry
+//                    skin = skin * 4;
+//                }else if (genesForText[34] == 2 || genesForText[35] == 2) {
+//                    //normal
+//                    skin = skin * 3;
+//                }else{
+//                    //sparse
+//                    skin = skin * 2;
+//                }
+//            }
+//
+//            if ((genesForText[38] == 1 || genesForText[39] == 1) && skin <= 12) {
+//                skin = skin + 3;
+//            }
+
             if (genesForText[36] != 1 && genesForText[37] != 1) {
-                if ((genesForText[34] == 1 || genesForText[35] == 1) && (genesForText[34] != 3 && genesForText[35] != 3)) {
-                    //furry
-                    skin = skin * 4;
-                }else if (genesForText[34] == 2 || genesForText[35] == 2) {
-                    //normal
-                    skin = skin * 3;
-                }else{
-                    //sparse
-                    skin = skin * 2;
+                if (genesForText[38] == 1 || genesForText[39] == 1) {
+                    //wooly
+                    coat = 1;
                 }
-            }
-
-            if ((genesForText[38] == 1 || genesForText[39] == 1) && skin <= 12) {
-                skin = skin + 3;
-            }
-
-            if ((genesForText[38] == 1 || genesForText[39] == 1) && skin >= 10) {
-                //wooly
-                coat = 1;
             }
 
             if (!isChild()) {
@@ -910,23 +921,31 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
                 }
             }
 
-            this.pigTextures.add(PIG_TEXTURES_COATRED[red]);
-            if (black != 0) {
-                this.pigTextures.add(PIG_TEXTURES_COATBLACK[black]);
-            }
-            this.pigTextures.add("ALPHA_GROUP_START");
-            if (spot != 0) {
-                this.pigTextures.add(PIG_TEXTURES_SPOT_SPOTS[spot]);
-            }
+            this.pigTextures.add(PIG_TEXTURES_SKINBASE[skin]);
             if (belt != 0) {
-                this.pigTextures.add(PIG_TEXTURES_SPOT_BELTED[belt]);
+                this.pigTextures.add(PIG_TEXTURES_SKINMARKINGS_BELTED[belt]);
             }
             if (berk != 0) {
-                this.pigTextures.add(PIG_TEXTURES_SPOT_BERKSHIRE[berk]);
+                this.pigTextures.add(PIG_TEXTURES_SKINMARKINGS_BERKSHIRE[berk]);
             }
-            this.pigTextures.add("ALPHA_GROUP_END");
-            this.pigTextures.add(PIG_TEXTURES_COAT[coat]);
-            this.pigTextures.add(PIG_TEXTURES_SKINBASE[skin]);
+            if (genesForText[36] != 1 && genesForText[37] != 1) {
+            this.pigTextures.add("alpha_group_start");
+                this.pigTextures.add(PIG_TEXTURES_COATRED[red]);
+                if (black != 0) {
+                    this.pigTextures.add(PIG_TEXTURES_COATBLACK[black]);
+                }
+                if (spot != 0) {
+                    this.pigTextures.add(PIG_TEXTURES_SPOT_SPOTS[spot]);
+                }
+                if (belt != 0) {
+                    this.pigTextures.add(PIG_TEXTURES_SPOT_BELTED[belt]);
+                }
+                if (berk != 0) {
+                    this.pigTextures.add(PIG_TEXTURES_SPOT_BERKSHIRE[berk]);
+                }
+                this.pigTextures.add(PIG_TEXTURES_COAT[coat]);
+            this.pigTextures.add("alpha_group_end");
+            }
             this.pigTextures.add(PIG_TEXTURES_EYES[0]);
             this.pigTextures.add(PIG_TEXTURES_HOOVES[0]);
             if (tusks){
@@ -940,9 +959,30 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     private void setAlphaTexturePaths() {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
+            int coat = 0;
+
+            if (genesForText[36] != 1 && genesForText[37] != 1) {
+                if ((genesForText[34] == 1 || genesForText[35] == 1) && (genesForText[34] != 3 && genesForText[35] != 3)) {
+                    //furry
+                    coat = 3;
+                }else if (genesForText[34] == 2 || genesForText[35] == 2) {
+                    //normal
+                    coat = 2;
+                }else{
+                    //sparse
+                    coat = 1;
+                }
+
+                if (genesForText[38] == 1 || genesForText[39] == 1) {
+                    coat = coat + 1;
+                }
+            }
 
             //todo do the alpha textures
-//            this.pigAlphaTextures.add(PIG_ALPHA_TEXTURES_COATRED[]);
+
+            if (coat != 0) {
+                this.pigAlphaTextures.add(PIG_TEXTURES_ALPHA[coat]);
+            }
 
         }
     }

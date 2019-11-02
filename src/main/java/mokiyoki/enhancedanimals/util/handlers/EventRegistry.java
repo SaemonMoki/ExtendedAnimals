@@ -230,7 +230,7 @@ public class EventRegistry {
             for (Biome biome : ForgeRegistries.BIOMES) {
 //
                 if (!biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
-                        !biome.getRegistryName().equals(Biomes.THE_END.getRegistryName()) && !biome.getRegistryName().equals(Biomes.SMALL_END_ISLANDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.END_BARRENS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.END_HIGHLANDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.END_MIDLANDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.NETHER.getRegistryName()))
+                        !biome.getRegistryName().equals(Biomes.THE_END.getRegistryName()) && !biome.getRegistryName().equals(Biomes.SMALL_END_ISLANDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.END_BARRENS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.END_HIGHLANDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.END_MIDLANDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.NETHER.getRegistryName()) && !biome.getRegistryName().equals(Biomes.BEACH.getRegistryName()))
                 {
 
                     if (!biome.getRegistryName().equals(Biomes.MUSHROOM_FIELDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.MUSHROOM_FIELD_SHORE.getRegistryName())){
@@ -264,14 +264,12 @@ public class EventRegistry {
                                     biome.getRegistryName().equals(Biomes.FLOWER_FOREST.getRegistryName())
                             )) { biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3)); }
                         } else {
-                            biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3));
+                            //Enhanced Mooshroom Spawning
+                            if (ConfigHandler.COMMON.spawnGeneticMooshroom.get()) {
+                                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_MOOSHROOM, 8, 4, 4));
+                            }
                         }
-                    }else {
-                        //Enhanced Mooshroom Spawning
-                        if (ConfigHandler.COMMON.spawnGeneticMooshroom.get()) {
-                            biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_MOOSHROOM, 8, 4, 4));
-                        }
-                }
+                    }
 
             }
 //        }

@@ -66,7 +66,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedHorse.class, DataSerializers.STRING);
     private static final DataParameter<Float> HORSE_SIZE = EntityDataManager.createKey(EnhancedHorse.class, DataSerializers.FLOAT);
     protected static final DataParameter<String> HORSE_STATUS = EntityDataManager.createKey(EnhancedHorse.class, DataSerializers.STRING);
-    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedHorse.class, DataSerializers.BOOLEAN);
 
     //TODO add texture layers
     private static final String[] HORSE_TEXTURES_BASE = new String[] {
@@ -111,12 +111,13 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     }};
 
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
-    private static final int GENES_LENGTH = 56;
+    private static final int GENES_LENGTH = 72;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
+    private float[] horseColouration = null;
     private float horseSize;
     protected int hunger = 0;
     protected int horseTimer;
@@ -126,7 +127,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     protected int gestationTimer = 0;
     protected boolean pregnant = false;
 
-    protected Boolean sleeping;
+    protected Boolean sleeping = false;
     protected int awokenTimer = 0;
 
     public EnhancedHorse(EntityType<? extends EnhancedHorse> entityType, World worldIn) {
@@ -250,11 +251,13 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             this.horseTimer = Math.max(0, this.horseTimer - 1);
         } else {
 
-//            if (!this.world.isDaytime() && awokenTimer == 0 && (sleeping == null || !sleeping)) {
-//                setSleeping(true);
-//            } else if (awokenTimer > 0) {
-//                awokenTimer--;
-//            }
+            if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
+                setSleeping(true);
+            } else if (awokenTimer > 0) {
+                awokenTimer--;
+            } else if (this.world.isDaytime() && sleeping) {
+                setSleeping(false);
+            }
 
             if(pregnant) {
                 gestationTimer++;
@@ -340,7 +343,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         //put in the lethal combinations of dominant white
         if((genes[18] != 20 && genes[19] != 20 && genes[18] != 28 && genes[19] != 28 && genes[18] != 29 && genes[19] != 29) || (genes[18] == 12 || genes[19] == 12)) {
             this.remove();
-        } else if (genes[32] == 1 && genes[33] == 1) {
+        } else if (genes[32] == 2 && genes[33] == 2) {
             //TODO change the foal to a skeleton horse that attacks
             this.remove();
         }
@@ -450,148 +453,136 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
 
+            if (genesForText[12] == 2 && genesForText[13] == 2) {
+                //horse is red based
+            } else {
+                if (genesForText[14] == 2 && genesForText[15] == 2) {
+                    //horse is black based
+                } else {
+                    //horse is wildtype based
+                }
+            }
 
+            //TODO mushroom
+
+            if (genesForText[16] != 3 && genesForText[17] != 3) {
+                //primitive markings
+            }
+
+            if (genesForText[60] == 1 || genesForText[61] == 1) {
+                //mealy markings
+            }
+
+            //TODO sooty
+
+            //TODO liver
 
             this.horseTextures.add(HORSE_TEXTURES_BASE[0]);
         }
     }
 
-//
-//    @OnlyIn(Dist.CLIENT)
-//    public float[] getRgb() {
-//        if (horseColouration == null) {
-//            horseColouration = new float[6];
-//            int[] genesForText = getSharedGenes();
-//
-//            float blackR = 15.0F;
-//            float blackG = 7.0F;
-//            float blackB = 7.0F;
-//
-//            float redR = 134.0F;
-//            float redG = 79.0F;
-//            float redB = 41.0F;
-//
-//            int tint;
-//
-//            if ((genesForText[6] == 1 || genesForText[7] == 1) || (genesForText[0] == 3 && genesForText[1] == 3)){
-//                //red
-//                tint = 4;
-//            }else {
-//                if (genesForText[0] == 1 || genesForText[1] == 1) {
-//                    //black
-//                    tint = 2;
-//                } else {
-//                    //wildtype
-//                    tint = 3;
-//                }
-//            }
-//
-//            //standard dilution
-//            if (genesForText[2] == 2 || genesForText[3] == 2) {
-////            if (true) {
-//                if (genesForText[2] == 2 && genesForText[3] == 2) {
-////                if (false) {
-//
-//                    blackR = (blackR + (255F * tint)) / (tint+1);
-//                    blackG = (blackG + (245F * tint)) / (tint+1);
-//                    blackB = (blackB + (235F * tint)) / (tint+1);
-//
-//                    if (tint != 2) {
-//                        redR = (redR + (255F * tint)) / (tint + 1);
-//                        redG = (redG + (255F * tint)) / (tint + 1);
-//                        redB = (redB + (255F * tint)) / (tint + 1);
-//                    }
-//                }else{
-//                    if (tint == 3) {
-//                        //wildtype
-//                        redR = 160.5F;
-//                        redG = 119.0F;
-//                        redB = 67.0F;
-//
-//                        if (genesForText[4] == 1 || genesForText[5] == 1) {
-//                            if (genesForText[4] == 1 && genesForText[5] == 1) {
-//                                blackR = 81.0F;
-//                                blackG = 71.0F;
-//                                blackB = 65.0F;
-//                            } else {
-//                                blackR = 40.0F;
-//                                blackG = 35.0F;
-//                                blackB = 32.0F;
-//                            }
-//                        } else if (genesForText[4] == 4 && genesForText[5] == 4) {
-//                            blackR = 81.0F;
-//                            blackG = 71.0F;
-//                            blackB = 65.0F;
-//                        }
-//
-//                    } else if (tint == 4){
-//                        //red
-//                        redR = (redR*0.5F) + (187.0F*0.5F);
-//                        redG = (redG*0.5F) + (180.0F*0.5F);
-//                        redB = (redB*0.5F) + (166.0F*0.5F);
-//                    }else {
-//                        //black
-//                        blackR = 81.0F;
-//                        blackG = 71.0F;
-//                        blackB = 65.0F;
-//                    }
-//                }
-//            }
-//
-//            if (genesForText[4] == 3 || genesForText[5] == 3) {
-//                redR = (redR + 245F) / 2;
-//                redG = (redG + 237F) / 2;
-//                redB = (redB + 222F) / 2;
-//            }
-//
-//            //chocolate
-//            if (genesForText[10] == 2 && genesForText[11] == 2){
-//                blackR = blackR + 25F;
-//                blackG = blackG + 15F;
-//                blackB = blackB + 9F;
-//
-//                redR = redR + 25F;
-//                redG = redG + 15F;
-//                redB = redB + 9F;
-//            }
-//
-//            if (this.isChild()) {
-//                if (getHorseStatus().equals(EntityState.CHILD_STAGE_ONE.toString())) {
-//                    blackR = redR;
-//                    blackG = redG;
-//                    blackB = redB;
-//                }else if (getHorseStatus().equals(EntityState.CHILD_STAGE_TWO.toString())) {
-//                    blackR = (blackR + redR)/2F;
-//                    blackG = (blackG + redG)/2F;
-//                    blackB = (blackB + redB)/2F;
-//                } else {
-//                    blackR = blackR*0.75F + redR*0.25F;
-//                    blackG = blackG*0.75F + redG*0.25F;
-//                    blackB = blackB*0.75F + redB*0.25F;
-//                }
-//            }
-//
-//            //TODO TEMP AF
-//            //black
-//            horseColouration[0] = blackR;
-//            horseColouration[1] = blackG;
-//            horseColouration[2] = blackB;
-//
-//            //red
-//            horseColouration[3] = redR;
-//            horseColouration[4] = redG;
-//            horseColouration[5] = redB;
-//
-//            for (int i = 0; i <= 5; i++) {
-//                if (horseColouration[i] > 255.0F) {
-//                    horseColouration[i] = 255.0F;
-//                }
-//                horseColouration[i] = horseColouration[i] / 255.0F;
-//            }
-//
-//        }
-//        return horseColouration;
-//    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float[] getRgb() {
+        if (horseColouration == null) {
+            horseColouration = new float[6];
+            int[] genesForText = getSharedGenes();
+
+            float blackR = 15.0F;
+            float blackG = 7.0F;
+            float blackB = 7.0F;
+
+            float redR = 134.0F;
+            float redG = 79.0F;
+            float redB = 41.0F;
+
+            if (genesForText[16] == 1 || genesForText[17] == 1) {
+                //dun
+                if (genesForText[22] == 3 && genesForText[23] == 3) {
+                    //pearl
+                } else if (genesForText[22] == 2 || genesForText[23] == 2) {
+                    //cream
+                    if (genesForText[22] == 1 || genesForText[23] == 1) {
+                        //heterozygous cream
+                    } else if (genesForText[22] == 2 && genesForText[23] == 2) {
+                        //homozygous cream
+                    } else {
+                        //pseudo-double dilute
+                    }
+                }
+            } else {
+                //full colour
+
+            }
+
+
+
+            if (genesForText[12] == 2 && genesForText[13] == 2) {
+                //horse is red based
+                if (genesForText[16] == 1 || genesForText[17] == 1) {
+                    //red dun
+
+                    if (genesForText[22] == 1 || genesForText[23] == 1) {
+                        if (genesForText[22] != 2 && genesForText[23] != 2) {
+                            //red dun
+                        } else {
+                            //heterozygous cream
+                        }
+                    } else if (genesForText[22] == 2 && genesForText[23] == 2) {
+                        //homozygous cream
+                    } else if (genesForText[22] == 2 || genesForText[23] == 2) {
+                        //cream / pearl heterozygote
+                    } else {
+                        //pearl
+                    }
+
+                } else {
+                    //red
+
+                }
+            } else {
+                if (genesForText[14] == 2 && genesForText[15] == 2) {
+                    //horse is black based
+                    if (genesForText[16] == 1 || genesForText[17] == 1) {
+                        //grullo
+
+                    } else {
+                        //black
+
+                    }
+                } else {
+                    //horse is wildtype based
+                    if (genesForText[16] == 1 || genesForText[17] == 1) {
+                        //bay dun
+
+                    } else {
+                        //bay
+
+                    }
+                }
+            }
+
+            //TODO TEMP AF
+            //black
+            horseColouration[0] = blackR;
+            horseColouration[1] = blackG;
+            horseColouration[2] = blackB;
+
+            //red
+            horseColouration[3] = redR;
+            horseColouration[4] = redG;
+            horseColouration[5] = redB;
+
+            for (int i = 0; i <= 5; i++) {
+                if (horseColouration[i] > 255.0F) {
+                    horseColouration[i] = 255.0F;
+                }
+                horseColouration[i] = horseColouration[i] / 255.0F;
+            }
+
+        }
+        return horseColouration;
+    }
 
     @Override
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
@@ -877,7 +868,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[11] = (3);
         }
 
-        //Extension [ wildtype+, Black ]
+        //Extension [ wildtype+, red ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[12] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -891,21 +882,21 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[13] = (1);
         }
 
-        //Agouti [ Wildtype/light bay+, bay, brown/tan, solid/black ]
+        //Agouti [ Wildtype+, solid/black ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[14] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[14] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[14] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[15] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[15] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[15] = (1);
         }
 
-        //Dun [ Dun+, saturated dun, saturated coat ]
+        //Dun [ Dun+, primitive saturated, saturated ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[16] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
@@ -989,7 +980,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[27] = (1);
         }
 
-        //Mushroom [ wildtype+, Champagne ]
+        //Mushroom [ wildtype+, Mushroom ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1059,7 +1050,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[37] = (1);
         }
 
-        //Pattern 1 [ wildtype+, Modified ] modifier increases coverage to 6 or 10 incomplete dominant
+        //Appaloosa Pattern 1 [ wildtype+, Modified ] modifier increases coverage to 6 or 10 incomplete dominant
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1073,7 +1064,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[39] = (1);
         }
 
-        //Pattern 2 [ wildtype+, Modified ] modifier increases by approximately 1
+        //Appaloosa Pattern 2 [ wildtype+, Modified ] modifier increases by approximately 1
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1087,7 +1078,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[41] = (1);
         }
 
-        //Pattern 3 [ wildtype+, Modified ] modifier increases by approximately 1
+        //Appaloosa Pattern 3 [ wildtype+, Modified ] modifier increases by approximately 1
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[42] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1102,7 +1093,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         }
 
 
-        //Pattern 4 [ wildtype+, Modified ] modifier increases by approximately 1
+        //Appaloosa Pattern 4 [ wildtype+, Modified ] modifier increases by approximately 1
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[44] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1116,7 +1107,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[45] = (1);
         }
 
-        //Pattern 5 [ wildtype+, Modified ] modifier increases by approximately 1
+        //Appaloosa Pattern 5 [ wildtype+, Modified ] modifier increases by approximately 1
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[46] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1130,7 +1121,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[47] = (1);
         }
 
-        //Varnish Roan [ wildtype+, Varnished ] modifier adds varnishing to appoloosa spots
+        //Appaloosa Varnish Roan [ wildtype+, Varnished ] modifier adds varnishing to appoloosa spots
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[48] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1144,36 +1135,159 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[49] = (1);
         }
 
-        //Splash White [ wildtype+, Classic splash white1, splash white2, splash white3-  ]
+        //Splash White 1 [ wildtype+, Classic splash white1, splash white3-  ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[50] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            initialGenes[50] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[50] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[51] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            initialGenes[51] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             initialGenes[51] = (1);
         }
 
-        //Tiger Eye [ Wildtype+, te1, te2 ] te1 = lightens eyes to yellow/amber/orange, te2 = lightens eyes to blue in cream horses
+        //Splash White 2 [ wildtype+, splash white2, splash white4  ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[52] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[52] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
             initialGenes[52] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[53] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            initialGenes[53] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
             initialGenes[53] = (1);
         }
 
+        //Tiger Eye [ Wildtype+, te1, te2 ] te1 = lightens eyes to yellow/amber/orange, te2 = lightens eyes to blue in cream horses
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[54] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
+        } else {
+            initialGenes[54] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[55] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
+        } else {
+            initialGenes[55] = (1);
+        }
+
+        //Flaxen [ Wildtype+, flaxen ] causes flaxen mane and tail in chestnut horses
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[56] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[56] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[57] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[57] = (1);
+        }
+
+        //Flaxen Inhibitor [ darker mane and tail+, Non Inhibitor ] non inhibitor causes slightly lighter mane and tail in chestnut horses
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[58] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[58] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[59] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[59] = (1);
+        }
+
+        //Mealy or Pangaré [ Mealy+, non mealy ] near dominant
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[60] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[60] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[61] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[61] = (1);
+        }
+
+        //Sooty 1 [ wildtype+, Sooty ] incomplete dominant
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[62] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[62] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[63] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[63] = (1);
+        }
+
+        //Sooty 2 [ wildtype+, Sooty2 ] incomplete dominant
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[64] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[64] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[65] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[65] = (1);
+        }
+
+        //Sooty 3 [ wildtype+, sooty3 ] recessive
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[66] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[66] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[67] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[67] = (1);
+        }
+
+        //Sooty 4 [ wildtype+, sooty4 ] recessive
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[68] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[68] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[69] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[69] = (1);
+        }
+
+        //Liver or Dark Chestnut [ wildtype+, dark ] recessive
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[70] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[70] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[71] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[71] = (1);
+        }
 
         return initialGenes;
     }

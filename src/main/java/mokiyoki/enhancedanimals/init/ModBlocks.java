@@ -26,6 +26,6 @@ public class ModBlocks {
 
     public static final Block Egg_Carton = new EggCartonBlock(Block.Properties.create(Material.WOOL, MaterialColor.LIGHT_GRAY).hardnessAndResistance(0.0F).sound(SoundType.CLOTH)).setRegistryName("eanimod:egg_carton");
     public static final Block UnboundHay_Block = new UnboundHayBlock(Block.Properties.create(Material.ORGANIC, MaterialColor.YELLOW).hardnessAndResistance(0.5F).sound(SoundType.PLANT)).setRegistryName("eanimod:unboundhay_block");
-    public static final Block SparseGrass_Block = new SparseGrassBlock(Block.Properties.create(Material.ORGANIC, MaterialColor.FOLIAGE).tickRandomly().hardnessAndResistance(0.5F).sound(SoundType.PLANT)).setRegistryName("eanimod:sparsegrass_block");
+    public static final Block SparseGrass_Block = new SparseGrassBlock(Block.Properties.create(Material.ORGANIC, MaterialColor.DIRT).tickRandomly().hardnessAndResistance(0.5F).sound(SoundType.PLANT)).setRegistryName("eanimod:sparsegrass_block");
 
 }

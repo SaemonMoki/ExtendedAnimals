@@ -20,6 +20,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.IRangedAttackMob;
@@ -28,13 +29,13 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.entity.merchant.villager.WanderingTraderEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.passive.horse.AbstractChestedHorseEntity;
@@ -173,6 +174,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     protected int awokenTimer = 0;
 
     private boolean didSpit;
+
+    private int despawnDelay = -1;
 
     private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
@@ -506,6 +509,10 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
         if (!this.world.isRemote) {
 
+            if (this.despawnDelay != -1) {
+                this.tryDespawn();
+            }
+
             if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
                 setSleeping(true);
             } else if (awokenTimer > 0) {
@@ -681,6 +688,29 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             this.llamaTextures.remove(LLAMA_CHEST_TEXTURE);
         }
     }
+
+    private void tryDespawn() {
+        if (this.canDespawn()) {
+            this.despawnDelay = this.isLeashedToTrader() ? ((WanderingTraderEntity)this.getLeashHolder()).func_213735_eg() - 1 : this.despawnDelay - 1;
+            if (this.despawnDelay <= 0) {
+                this.clearLeashed(true, false);
+                this.remove();
+            }
+
+        }
+    }
+    private boolean canDespawn() {
+        return !this.isTame() && !this.isLeashedToStranger() && !this.isOnePlayerRiding();
+    }
+
+    private boolean isLeashedToTrader() {
+        return this.getLeashHolder() instanceof WanderingTraderEntity;
+    }
+
+    private boolean isLeashedToStranger() {
+        return this.getLeashed() && !this.isLeashedToTrader();
+    }
+
 
     public boolean isBreedingItem(ItemStack stack) {
         //TODO set this to a separate item or type of item for force breeding
@@ -991,6 +1021,10 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         compound.putString("Status", getLlamaStatus());
         compound.putInt("Hunger", hunger);
 
+        if (this.despawnDelay != -1) {
+            compound.putInt("DespawnDelay", this.despawnDelay);
+        }
+
     }
 
     public void readAdditional(CompoundNBT compound) {
@@ -1033,6 +1067,10 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
         setLlamaStatus(compound.getString("Status"));
         hunger = compound.getInt("Hunger");
+
+        if (compound.contains("DespawnDelay", 99)) {
+            this.despawnDelay = compound.getInt("DespawnDelay");
+        }
 
         setSharedGenes(genes);
 
@@ -1092,6 +1130,11 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
         livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
+
+        if (spawnReason == SpawnReason.EVENT) {
+            this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
+            this.despawnDelay = 49999;
+        }
 
         if (livingdata instanceof GroupData) {
             int[] spawnGenes1 = ((GroupData) livingdata).groupGenes;
@@ -1659,6 +1702,47 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             }
 
             return super.shouldContinueExecuting();
+        }
+    }
+
+    public class FollowTraderGoal extends TargetGoal {
+        private final EnhancedLlama enhancedllama;
+        private LivingEntity targetEntity;
+        private int revengeTimer;
+
+        public FollowTraderGoal(EnhancedLlama enhancedLlama) {
+            super(enhancedLlama, false);
+            this.enhancedllama = enhancedLlama;
+            this.setMutexFlags(EnumSet.of(Goal.Flag.TARGET));
+        }
+
+        /**
+         * Returns whether the EntityAIBase should begin execution.
+         */
+        public boolean shouldExecute() {
+            if (!this.enhancedllama.getLeashed()) {
+                return false;
+            } else {
+                Entity entity = this.enhancedllama.getLeashHolder();
+                if (!(entity instanceof WanderingTraderEntity)) {
+                    return false;
+                } else {
+                    WanderingTraderEntity wanderingtraderentity = (WanderingTraderEntity)entity;
+                    this.targetEntity = wanderingtraderentity.getRevengeTarget();
+                    int i = wanderingtraderentity.getRevengeTimer();
+                    return i != this.revengeTimer && this.isSuitableTarget(this.targetEntity, EntityPredicate.DEFAULT);
+                }
+            }
+        }
+
+        public void startExecuting() {
+            this.goalOwner.setAttackTarget(this.targetEntity);
+            Entity entity = this.enhancedllama.getLeashHolder();
+            if (entity instanceof WanderingTraderEntity) {
+                this.revengeTimer = ((WanderingTraderEntity)entity).getRevengeTimer();
+            }
+
+            super.startExecuting();
         }
     }
 

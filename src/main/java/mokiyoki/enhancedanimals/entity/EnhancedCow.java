@@ -1316,7 +1316,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
-
             if (item instanceof AirItem) {
                 ITextComponent message = getHungerText();
                 entityPlayer.sendMessage(message);

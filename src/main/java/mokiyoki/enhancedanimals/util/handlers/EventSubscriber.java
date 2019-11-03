@@ -9,7 +9,6 @@ import net.minecraft.block.HayBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.merchant.villager.WanderingTraderEntity;
 import net.minecraft.entity.passive.ChickenEntity;
@@ -30,6 +29,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -54,23 +54,6 @@ public class EventSubscriber {
         if (entity instanceof RabbitEntity) {
             if(!ConfigHandler.COMMON.spawnVanillaRabbits.get()) {
                 event.setCanceled(true);
-            }
-        } else if (entity instanceof WanderingTraderEntity) {
-            if(!ConfigHandler.COMMON.spawnVanillaLlamas.get()) {
-
-                World world = event.getWorld();
-
-                for (int i = 0; i < 2; i++) {
-                    BlockPos blockPos = nearbySpawn(world, new BlockPos(entity));
-                    EnhancedLlama enhancedLlama = ENHANCED_LLAMA.create(world);
-                    enhancedLlama.setLocationAndAngles(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 0, 0);
-                    enhancedLlama.onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(enhancedLlama)), SpawnReason.EVENT, (ILivingEntityData)null, null);
-
-                    world.addEntity(enhancedLlama);
-                    enhancedLlama.setLeashHolder(entity, true);
-                }
-
-//            event.setCanceled(true);
             }
         }
         if (entity instanceof LlamaEntity && !(entity instanceof TraderLlamaEntity)) {
@@ -99,6 +82,23 @@ public class EventSubscriber {
             }
         }
 
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+        public void livingspawnEvent(LivingSpawnEvent.SpecialSpawn event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof WanderingTraderEntity) {
+            if(!ConfigHandler.COMMON.spawnVanillaLlamas.get()) {
+                ((WanderingTraderEntity)entity).func_213728_s(48000);
+                World world = event.getWorld().getWorld();
+
+                for (int i = 0; i < 2; i++) {
+                    BlockPos blockPos = nearbySpawn(world, new BlockPos(entity));
+                    EnhancedLlama enhancedLlama = ENHANCED_LLAMA.spawn(world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
+                    enhancedLlama.setLeashHolder(entity, true);
+                }
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

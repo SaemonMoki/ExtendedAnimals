@@ -1088,6 +1088,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
          * Pattern Genes <-- this is a label just to give you an idea of what sort of things that gene does, obviously some genes blur the lines
          */
 
+        //this is just a test change
+
         //Agouti [ Agouti+, self/non agouti, Savanna, Asian Leopard Cat, (and other wild cats) ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[0] = (ThreadLocalRandom.current().nextInt(2) + 1);

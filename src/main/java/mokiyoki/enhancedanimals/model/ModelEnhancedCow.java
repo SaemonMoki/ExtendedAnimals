@@ -651,15 +651,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             if (calculateHorns(genes, uuidArry) != 0.0F) {
                 Map<String, List<Float>> mapOfScale = new HashMap<>();
-                List<Float> scalingsForHornL4 = new ArrayList<>();
-                //scaling
-                scalingsForHornL4.add(2.0F);
 
-                //translations
-                scalingsForHornL4.add(0.0F);
-                scalingsForHornL4.add(0.0F);
-                scalingsForHornL4.add(0.0F);
-                mapOfScale.put("HornL4", scalingsForHornL4);
+                List<Float> scalingsForHorn = createScalings(2.0F, 0.0F, 0.0F, 0.0F);
+                mapOfScale.put("HornL4", scalingsForHorn);
+                mapOfScale.put("HornR4", reverseNegative(scalingsForHorn));
 
                 this.hornGranparent.render(scale, mapOfScale);
             }
@@ -760,7 +755,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.humpXLarge.rotateAngleX = ((headPitch * 0.017453292F)/2.5F) - 0.2F;
         this.humpXLarge.rotateAngleY = (netHeadYaw * 0.017453292F)/2.5F;
-        
+
         copyModelAngles(humpXLarge, humpLarge);
         copyModelAngles(humpXLarge, humpLargeish);
         copyModelAngles(humpXLarge, humpMedium);
@@ -1285,6 +1280,28 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         }
 
+    }
+
+    private List<Float> createScalings(Float scaling, Float translateX, Float translateY, Float translateZ) {
+        List<Float> scalings = new ArrayList<>();
+        //scaling
+        scalings.add(scaling);
+
+        //translations
+        scalings.add(translateX);
+        scalings.add(translateY);
+        scalings.add(translateZ);
+        return scalings;
+    }
+
+    private List<Float> reverseNegative(List<Float> scalings) {
+        List<Float> reversedNegative = new ArrayList<>();
+
+        reversedNegative.add(scalings.get(0)*-1.0F);
+        reversedNegative.add(scalings.get(1));
+        reversedNegative.add(scalings.get(2));
+
+        return reversedNegative;
     }
 
     private float calculateHorns(int[] sharedGenes, char[] uuidArry) {

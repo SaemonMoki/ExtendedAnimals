@@ -654,7 +654,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
                 List<Float> scalingsForHorn = createScalings(2.0F, 0.0F, 0.0F, 0.0F);
                 mapOfScale.put("HornL4", scalingsForHorn);
-                mapOfScale.put("HornR4", reverseNegative(scalingsForHorn));
+                mapOfScale.put("HornR4", mirrorX(scalingsForHorn));
 
                 this.hornGranparent.render(scale, mapOfScale);
             }
@@ -1294,7 +1294,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         return scalings;
     }
 
-    private List<Float> reverseNegative(List<Float> scalings) {
+    private List<Float> mirrorX(List<Float> scalings) {
         List<Float> reversedNegative = new ArrayList<>();
 
         reversedNegative.add(scalings.get(0)*-1.0F);

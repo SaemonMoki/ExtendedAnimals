@@ -815,6 +815,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
             char[] uuidArry = getCachedUniqueIdString().toCharArray();
 
             if (genesForText[0] >= 2 && genesForText[1] >= 2) {
+                if (genesForText[20] == 1 && genesForText[21] == 1) {
+                }
                 //self colored cat
             } else {
 
@@ -852,6 +854,12 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
                 }
             }
 
+            if (genesForText[20] == 1 && genesForText[21] == 1) {
+                //red
+            } else if (genesForText[20] == 1 || genesForText[21] == 1) {
+                //tortie
+            }
+
             if (genesForText[12] != 1 && genesForText[13] != 1) {
                 if (genesForText[12] == 2 || genesForText[13] == 2) {
                     if (genesForText[12] == 3 || genesForText[13] == 3) {
@@ -875,6 +883,40 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
                     //pink-eyed albino
                 }
             }
+
+            if (genesForText[14] == 1 || genesForText[15] == 1) {
+                //black
+            } else if (genesForText[14] == 2 || genesForText[15] == 2) {
+                //chocolate
+            } else {
+                //cinammon
+            }
+
+            if (genesForText[16] == 2 && genesForText[17] == 2) {
+                if (genesForText[18] == 1 || genesForText[19] == 1) {
+                    //caramel/apricot
+                } else {
+                    //dilute
+                }
+            }
+
+            if (genesForText[22] == 1 || genesForText[23] == 1) {
+                //dominant white
+            } else if (genesForText[22] == 2 && genesForText[23] == 2) {
+                //over 50% white spotting
+            } else if (genesForText[22] == 2 || genesForText(23) == 2) {
+                //less than 50% white spotting
+            } else if (genesForText[22] == 4 && genesForText(23) == 4) {
+                //white gloves (birman)
+            } else {
+                //no white
+            }
+
+            if (genesForText[24] == 1 || genesForText[25] == 1) {
+                //silver/smoke
+            }
+
+
 
 //            if
 
@@ -1103,7 +1145,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         }
 
         //TODO research Tabby Spotted gene
-        //Tabby Type [ Mackerel, Classic ]
+        //Tabby Type [ Mackerel, classic ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[2] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1131,7 +1173,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
             initialGenes[5] = (1);
         }
 
-        // Tabby Size Mod [ Large Pattern+, Small Patterm ]
+        // Tabby Size Mod [ Large Pattern+, small Patterm ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1187,7 +1229,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
             initialGenes[13] = (1);
         }
 
-        //Brown [ Black+, chocolate, cinnamon ]
+        //Eumelanin [ Black+, chocolate, cinnamon ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[14] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
@@ -1201,18 +1243,130 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
             initialGenes[15] = (1);
         }
 
-        //Orange [ wildtype+, orange ]
+        //Dilute [ Wildtype+, dilute ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[0] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[16] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[0] = (2);
+            initialGenes[16] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[1] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[17] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[1] = (2);
+            initialGenes[17] = (1);
+        }
+
+        //Dilute Modifier [ Caramel/Apricot, wildtype+ ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[18] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[18] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[19] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[19] = (1);
+        }
+
+        //Sex-linked Red [ Red, black+ ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[20] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[21] = (1);
+        }
+
+        //White [ Dominant White, white Spotting, non-white+, gloving ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[22] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[22] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[23] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[23] = (1);
+        }
+
+        //Silver [ Silver, wildtype+ ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[24] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[24] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[25] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[25] = (1);
+        }
+
+        //Extension [ Wildtype+, amber, russet ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[26] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[26] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[27] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        } else {
+            initialGenes[27] = (1);
+        }
+
+        //Sunshine [Wildtype, sunshine ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[28] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[29] = (1);
+        }
+
+        //Thai White Spotting [  ] not really sure if resecessive or dominant yet
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[30] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[30] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[31] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[31] = (1);
+        }
+
+        //Karpati [ Karpati, wildtype ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[32] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[33] = (1);
         }
 
         //Dilute
@@ -1226,6 +1380,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         //Sunshine
 
         //Wide band
+
+
 
         return initialGenes;
 

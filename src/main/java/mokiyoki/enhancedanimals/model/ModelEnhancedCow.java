@@ -4,9 +4,15 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EntityState;
+import mokiyoki.enhancedanimals.renderer.EnhancedRendererModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
@@ -26,33 +32,33 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final RendererModel earMediumR;
     private final RendererModel earLongR;
     private final RendererModel earLongestR;
-    private final RendererModel hornNub1;
-    private final RendererModel hornNub2;
-    private final RendererModel hornNub3;
-    private final RendererModel hornNub4;
-    private final RendererModel hornNub5;
-    private final RendererModel hornGranparent;
-    private final RendererModel hornParent;
-    private final RendererModel hornL0;
-    private final RendererModel hornL1;
-    private final RendererModel hornL2;
-    private final RendererModel hornL3;
-    private final RendererModel hornL4;
-    private final RendererModel hornL5;
-    private final RendererModel hornL6;
-    private final RendererModel hornL7;
-    private final RendererModel hornL8;
-    private final RendererModel hornL9;
-    private final RendererModel hornR0;
-    private final RendererModel hornR1;
-    private final RendererModel hornR2;
-    private final RendererModel hornR3;
-    private final RendererModel hornR4;
-    private final RendererModel hornR5;
-    private final RendererModel hornR6;
-    private final RendererModel hornR7;
-    private final RendererModel hornR8;
-    private final RendererModel hornR9;
+    private final EnhancedRendererModel hornNub1;
+    private final EnhancedRendererModel hornNub2;
+    private final EnhancedRendererModel hornNub3;
+    private final EnhancedRendererModel hornNub4;
+    private final EnhancedRendererModel hornNub5;
+    private final EnhancedRendererModel hornGranparent;
+    private final EnhancedRendererModel hornParent;
+    private final EnhancedRendererModel hornL0;
+    private final EnhancedRendererModel hornL1;
+    private final EnhancedRendererModel hornL2;
+    private final EnhancedRendererModel hornL3;
+    private final EnhancedRendererModel hornL4;
+    private final EnhancedRendererModel hornL5;
+    private final EnhancedRendererModel hornL6;
+    private final EnhancedRendererModel hornL7;
+    private final EnhancedRendererModel hornL8;
+    private final EnhancedRendererModel hornL9;
+    private final EnhancedRendererModel hornR0;
+    private final EnhancedRendererModel hornR1;
+    private final EnhancedRendererModel hornR2;
+    private final EnhancedRendererModel hornR3;
+    private final EnhancedRendererModel hornR4;
+    private final EnhancedRendererModel hornR5;
+    private final EnhancedRendererModel hornR6;
+    private final EnhancedRendererModel hornR7;
+    private final EnhancedRendererModel hornR8;
+    private final EnhancedRendererModel hornR9;
     private final RendererModel headModel; //this is the neck not the head
     private final RendererModel bodyChonk;
     private final RendererModel bodyBig;
@@ -101,7 +107,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         float xMove = -10.0F;
 
-        this.actualHead = new RendererModel(this, 0, 33);
+        this.actualHead = new  RendererModel(this, 0, 33);
         this.actualHead.addBox(-4.0F, 0.0F, -7.0F, 8, 7, 6, 0.0F);
         this.actualHead.setTextureOffset(28, 33);
         this.actualHead.addBox(-2.0F, 0.1F, -11.0F, 4, 5, 4, 0.0F);
@@ -109,124 +115,124 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.actualHead.addBox(-2.5F, 0.2F, -13.0F, 5, 4, 3, 0.0F);
         this.actualHead.setRotationPoint(0.0F, 0.0F, -7.0F);
 
-        this.mouth = new RendererModel(this, 25, 46);
+        this.mouth = new  RendererModel(this, 25, 46);
         this.mouth.addBox(-1.5F, 1.0F, -10.0F, 3, 3, 7, 0.1F);
         this.mouth.setTextureOffset(37, 46);
         this.mouth.addBox(-1.5F, 3.0F, -10.0F, 3, 1, 6, -0.1F);
         this.mouth.setRotationPoint(0.0F, 4.0F, -2.0F);
 
-        this.earSmallestL = new RendererModel(this, 8, 46);
+        this.earSmallestL = new  RendererModel(this, 8, 46);
         this.earSmallestL.addBox(0.0F, -3.0F, -0.5F, 3, 3, 1);
         
-        this.earSmallL = new RendererModel(this, 8, 46);
+        this.earSmallL = new  RendererModel(this, 8, 46);
         this.earSmallL.addBox(0.0F, -4.0F, -0.5F, 3, 4, 1);
 
-        this.earMediumL = new RendererModel(this, 8, 46);
+        this.earMediumL = new  RendererModel(this, 8, 46);
         this.earMediumL.addBox(0.0F, -5.0F, -0.5F, 3, 5, 1);
 
-        this.earLongL = new RendererModel(this, 8, 46);
+        this.earLongL = new  RendererModel(this, 8, 46);
         this.earLongL.addBox(0.0F, -6.0F, -0.5F, 3, 6, 1, 0.15F);
 
-        this.earLongestL = new RendererModel(this, 8, 46);
+        this.earLongestL = new  RendererModel(this, 8, 46);
         this.earLongestL.addBox(0.0F, -7.0F, -0.5F, 3, 7, 1, 0.3F);
 
-        this.earSmallestR = new RendererModel(this, 0, 46);
+        this.earSmallestR = new  RendererModel(this, 0, 46);
         this.earSmallestR.addBox(-3.0F, -3.0F, -0.5F, 3, 3, 1);
 
-        this.earSmallR = new RendererModel(this, 0, 46);
+        this.earSmallR = new  RendererModel(this, 0, 46);
         this.earSmallR.addBox(-3.0F, -4.0F, -0.5F, 3, 4, 1);
 
-        this.earMediumR = new RendererModel(this, 0, 46);
+        this.earMediumR = new  RendererModel(this, 0, 46);
         this.earMediumR.addBox(-3.0F, -5.0F, -0.5F, 3, 5, 1);
 
-        this.earLongR = new RendererModel(this, 0, 46);
+        this.earLongR = new  RendererModel(this, 0, 46);
         this.earLongR.addBox(-3.0F, -6.0F, -0.5F, 3, 6, 1, 0.15F);
 
-        this.earLongestR = new RendererModel(this, 0, 46);
+        this.earLongestR = new  RendererModel(this, 0, 46);
         this.earLongestR.addBox(-3.0F, -7.0F, -0.5F, 3, 7, 1, 0.3F);
 
-        this.hornNub1 = new RendererModel(this, 44, 33);
+        this.hornNub1 = new EnhancedRendererModel(this, 44, 33);
         this.hornNub1.addBox(-2.0F, 0.0F, 0.0F, 4, 2, 2);
         this.hornNub1.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornNub2 = new RendererModel(this, 44, 33);
+        this.hornNub2 = new EnhancedRendererModel(this, 44, 33);
         this.hornNub2.addBox(-2.0F, 0.0F, 0.0F, 4, 3, 2);
         this.hornNub2.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornNub3 = new RendererModel(this, 44, 33);
+        this.hornNub3 = new EnhancedRendererModel(this, 44, 33);
         this.hornNub3.addBox(-2.0F, 0.0F, 0.0F, 4, 4, 2);
         this.hornNub3.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornNub4 = new RendererModel(this, 44, 33);
+        this.hornNub4 = new EnhancedRendererModel(this, 44, 33);
         this.hornNub4.addBox(-2.0F, 0.0F, 0.0F, 4, 5, 2);
         this.hornNub4.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornNub5 = new RendererModel(this, 44, 33);
+        this.hornNub5 = new EnhancedRendererModel(this, 44, 33);
         this.hornNub5.addBox(-2.0F, 0.0F, 0.0F, 4, 6, 2);
         this.hornNub5.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornGranparent = new RendererModel(this, 0, 0);
-        this.hornParent = new RendererModel(this, 0, 0);
+        this.hornGranparent = new EnhancedRendererModel(this, 0, 0);
+        this.hornParent = new EnhancedRendererModel(this, 0, 0);
         this.hornGranparent.addChild(hornParent);
 
-        this.hornL0 = new RendererModel(this, 64, 34);
+        this.hornL0 = new EnhancedRendererModel(this, 64, 34);
         this.hornL0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornL1 = new RendererModel(this, 64, 42);
+        this.hornL1 = new EnhancedRendererModel(this, 64, 42);
         this.hornL1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornL2 = new RendererModel(this, 64, 50);
+        this.hornL2 = new EnhancedRendererModel(this, 64, 50);
         this.hornL2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornL3 = new RendererModel(this, 64, 58);
+        this.hornL3 = new EnhancedRendererModel(this, 64, 58);
         this.hornL3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornL4 = new RendererModel(this, 64, 66);
+        this.hornL4 = new EnhancedRendererModel(this, 64, 66, "HornL4");
         this.hornL4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornL5 = new RendererModel(this, 64, 66);
+        this.hornL5 = new EnhancedRendererModel(this, 64, 66);
         this.hornL5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
 
-        this.hornL6 = new RendererModel(this, 64, 66);
+        this.hornL6 = new EnhancedRendererModel(this, 64, 66);
         this.hornL6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
 
-        this.hornL7 = new RendererModel(this, 64, 66);
+        this.hornL7 = new EnhancedRendererModel(this, 64, 66);
         this.hornL7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
 
-        this.hornL8 = new RendererModel(this, 64, 66);
+        this.hornL8 = new EnhancedRendererModel(this, 64, 66);
         this.hornL8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
 
-        this.hornL9 = new RendererModel(this, 64, 66);
+        this.hornL9 = new EnhancedRendererModel(this, 64, 66);
         this.hornL9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
 
-        this.hornR0 = new RendererModel(this, 64, 34);
+        this.hornR0 = new EnhancedRendererModel(this, 64, 34);
         this.hornR0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornR1 = new RendererModel(this, 64, 42);
+        this.hornR1 = new EnhancedRendererModel(this, 64, 42);
         this.hornR1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornR2 = new RendererModel(this, 64, 50);
+        this.hornR2 = new EnhancedRendererModel(this, 64, 50);
         this.hornR2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornR3 = new RendererModel(this, 64, 58);
+        this.hornR3 = new EnhancedRendererModel(this, 64, 58);
         this.hornR3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornR4 = new RendererModel(this, 64, 66);
+        this.hornR4 = new EnhancedRendererModel(this, 64, 66);
         this.hornR4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornR5 = new RendererModel(this, 64, 66);
+        this.hornR5 = new EnhancedRendererModel(this, 64, 66);
         this.hornR5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
 
-        this.hornR6 = new RendererModel(this, 64, 66);
+        this.hornR6 = new EnhancedRendererModel(this, 64, 66);
         this.hornR6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
 
-        this.hornR7 = new RendererModel(this, 64, 66);
+        this.hornR7 = new EnhancedRendererModel(this, 64, 66);
         this.hornR7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
 
-        this.hornR8 = new RendererModel(this, 64, 66);
+        this.hornR8 = new EnhancedRendererModel(this, 64, 66);
         this.hornR8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
 
-        this.hornR9 = new RendererModel(this, 64, 66);
+        this.hornR9 = new EnhancedRendererModel(this, 64, 66);
         this.hornR9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
 
         // head is the neck cause thats how this works
@@ -644,7 +650,18 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             }
 
             if (calculateHorns(genes, uuidArry) != 0.0F) {
-                this.hornGranparent.render(scale);
+                Map<String, List<Float>> mapOfScale = new HashMap<>();
+                List<Float> scalingsForHornL4 = new ArrayList<>();
+                //scaling
+                scalingsForHornL4.add(2.0F);
+
+                //translations
+                scalingsForHornL4.add(0.0F);
+                scalingsForHornL4.add(0.0F);
+                scalingsForHornL4.add(0.0F);
+                mapOfScale.put("HornL4", scalingsForHornL4);
+
+                this.hornGranparent.render(scale, mapOfScale);
             }
 
             if (bodyShape == 4){

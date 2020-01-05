@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "eanimod:cookedrabbit_small"
+    },
+    {
+      "item": "eanimod:cookedrabbit_small"
+    },
+    {
+      "item": "eanimod:cookedrabbit_small"
+    },
+    {
+      "item": "eanimod:cookedrabbit_small"
+    },
+    {
+      "item": "eanimod:cookedrabbit_small"
+    }
+  ],
+  "result":
+  {
+    "item": "minecraft:cooked_rabbit",
+    "count": 3
+  }
+}

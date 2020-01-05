@@ -85,6 +85,10 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 //            "a_skin_pink_wooly.png", "a_skin_grey_wooly.png", "a_skin_black_wooly.png"
     };
 
+    private static final String[] PIG_TEXTURES_SKINMARKINGS_SPOTS = new String[] {
+            "", "skin_spots.png", ""
+    };
+
     private static final String[] PIG_TEXTURES_SKINMARKINGS_BELTED = new String[] {
             "", "skin_pink_bald.png", "skin_belt.png"
     };
@@ -922,6 +926,9 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             }
 
             this.pigTextures.add(PIG_TEXTURES_SKINBASE[skin]);
+            if (spot == 1) {
+                this.pigTextures.add(PIG_TEXTURES_SKINMARKINGS_SPOTS[spot]);
+            }
             if (belt != 0) {
                 this.pigTextures.add(PIG_TEXTURES_SKINMARKINGS_BELTED[belt]);
             }

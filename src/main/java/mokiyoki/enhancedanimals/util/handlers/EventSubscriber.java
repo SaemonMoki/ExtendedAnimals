@@ -56,10 +56,14 @@ public class EventSubscriber {
                 event.setCanceled(true);
             }
         }
-        if (entity instanceof LlamaEntity && !(entity instanceof TraderLlamaEntity)) {
-            if(!ConfigHandler.COMMON.spawnVanillaLlamas.get()) {
-                event.setCanceled(true);
-            }
+        if (entity instanceof LlamaEntity) {
+            if (!(entity instanceof TraderLlamaEntity)) {
+                    if(!ConfigHandler.COMMON.spawnVanillaLlamas.get()) {
+                        event.setCanceled(true);
+                    }
+                } else if (ConfigHandler.COMMON.spawnGeneticLlamas.get()) {
+                    event.setCanceled(true);
+                }
         }
         if (entity instanceof SheepEntity) {
             if(!ConfigHandler.COMMON.spawnVanillaSheep.get()) {

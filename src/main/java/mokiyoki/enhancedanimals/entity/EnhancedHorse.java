@@ -68,6 +68,14 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     protected static final DataParameter<String> HORSE_STATUS = EntityDataManager.createKey(EnhancedHorse.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedHorse.class, DataSerializers.BOOLEAN);
 
+    private static final String[] HORSE_TEXTURES_TESTNUMBER = new String[] {
+            "0.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png"
+    };
+
+    private static final String[] HORSE_TEXTURES_TESTLETTER = new String[] {
+            "a.png", "b.png", "c.png", "d.png", "e.png", "f.png", "g.png", "h.png", "i.png"
+    };
+
     //TODO add texture layers
     private static final String[] HORSE_TEXTURES_BASE = new String[] {
             "solid_white.png"
@@ -452,6 +460,9 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     private void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
+            int number = 0;
+            int letter = 0;
+            char[] uuidArry = getCachedUniqueIdString().toCharArray();
 
             if (genesForText[12] == 2 && genesForText[13] == 2) {
                 //horse is red based
@@ -477,7 +488,67 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
 
             //TODO liver
 
+            if (Character.isDigit(uuidArry[16])){
+                number = uuidArry[16] - 48;
+                if (number >= 8) {
+                    number = number - 8;
+                }
+            } else {
+                char test = uuidArry[16];
+                switch (test){
+                    case 'a':
+                        number = 3;
+                        break;
+                    case 'b':
+                        number = 4;
+                        break;
+                    case 'c':
+                        number = 5;
+                        break;
+                    case 'd':
+                        number = 6;
+                        break;
+                    case 'e':
+                        number = 7;
+                        break;
+                    case 'f':
+                        number = 8;
+                        break;
+                }
+            }
+
+            if (Character.isDigit(uuidArry[17])){
+                letter = uuidArry[17] - 48;
+                if (letter >= 8) {
+                    letter = letter - 8;
+                }
+            } else {
+                char test = uuidArry[17];
+                switch (test){
+                    case 'a':
+                        letter = 3;
+                        break;
+                    case 'b':
+                        letter = 4;
+                        break;
+                    case 'c':
+                        letter = 5;
+                        break;
+                    case 'd':
+                        letter = 6;
+                        break;
+                    case 'e':
+                        letter = 7;
+                        break;
+                    case 'f':
+                        letter = 8;
+                        break;
+                }
+            }
+
             this.horseTextures.add(HORSE_TEXTURES_BASE[0]);
+            this.horseTextures.add(HORSE_TEXTURES_TESTNUMBER[number]);
+            this.horseTextures.add(HORSE_TEXTURES_TESTLETTER[letter]);
         }
     }
 

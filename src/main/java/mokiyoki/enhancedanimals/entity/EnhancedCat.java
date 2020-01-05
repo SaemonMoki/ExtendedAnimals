@@ -4,13 +4,8 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEat
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CarrotBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
@@ -18,13 +13,10 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.controller.JumpController;
-import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.monster.MonsterEntity;
@@ -46,19 +38,14 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -76,11 +63,81 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CAT;
 public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedCat.class, DataSerializers.STRING);
-    protected static final DataParameter<String> CAT_STATUS = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.STRING);
-    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
-    
+    protected static final DataParameter<String> CAT_STATUS = EntityDataManager.createKey(EnhancedCat.class, DataSerializers.STRING);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCat.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> HEMIZYGOTE = EntityDataManager.createKey(EnhancedCat.class, DataSerializers.BOOLEAN);
+
+    private static final String[] CAT_SKIN = new String[] {
+            "" //this is for the base skin colour it should be solid, also make darker versions here for colourpoint
+    };
+
+    private static final String[] CAT_SKINPATTERN = new String[] {
+            "" //this is for anything that causes darker markings on the skin
+    };
+
+    private static final String[] CAT_SKINCOLOURPOINT = new String[] {
+            "" //this is for the area that skin is lightened by colourpoint
+    };
+
+    private static final String[] CAT_SKINSPOTS = new String[] {
+            "" //this is for the pink spots you might see on a cat's skin, you'll need one for each gene that causes pink spots on the skin (white spots on the fur)
+    };
+
+    private static final String[] CAT_TOESPOTS = new String[] {
+            "" //this is for the pink spots you see on toes to help diversify the possible spots (optional)
+    };
+
+    private static final String[] CAT_NOSESPOTS = new String[] {
+            "" //this is for the pink spots you see on nose to help diversify the possible spots (optional)
+    };
+
+    private static final String[] CAT_UNDERCOAT = new String[] {
+            "" //this is for the undercoat to help give the colouring more depth
+    };
+
+    private static final String[] CAT_BACKGROUND = new String[] {
+            "" //this is for the body colour under the stripes, spots and ticking
+    };
+
     private static final String[] CAT_PATTERN = new String[] {
-            ""
+            "" //cat stripes, leopard spots, ticking and other patterns that come in black, this will need a second copy for orange pattern
+    };
+
+    private static final String[] CAT_COLOURPOINT = new String[] {
+            "" //this is for the area that coat is lightened by colourpoint
+    };
+
+    private static final String[] CAT_SPOTS = new String[] {
+            //this is for the white spots you might see on a cat's fur, you'll need one for each gene that causes white spots, tux and locket markings go here
+            "" //dominant white, white spots, and birman belong here, we can break these up into different body regions
+    };
+
+    private static final String[] CAT_SPOT_ROAN = new String[] {
+            "" //for various levels and randomizers for roan cats
+    };
+
+    private static final String[] CAT_SPOT_KARPATI = new String[] {
+            "" //for various levels and randomizers for karpati "reverse colour-point" cats
+    };
+
+    private static final String[] CAT_SPOT_SMALL = new String[] {
+            "" //for small markings and toe markings that are thought to be unrelated to the white spotting gene
+    };
+
+    private static final String[] CAT_EYEL = new String[] {
+            "" //this is for a cat's eye shape
+    };
+
+    private static final String[] CAT_EYER = new String[] {
+            "" //this is for a cat's eye shape
+    };
+
+    private static final String[] CAT_TORTIE = new String[] {
+            //lots of calico and tortieshell spot distributions
+    };
+
+    private static final String[] CAT_COATTYPE = new String[] {
+            //fur coverage patterns go here like sphynx, lykoi, and minskin. great place to detail having thinner fur in the ears
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.CHICKEN, Items.BEEF, Items.MUTTON, Items.RABBIT, Items.TROPICAL_FISH, Items.SALMON, Items.COD);
@@ -98,6 +155,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     }};
 
     private final List<String> catTextures = new ArrayList<>();
+    private final List<String> catAlphaTextures = new ArrayList<>();
 
     private int maxCoatLength;
     private int currentCoatLength;
@@ -106,9 +164,11 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
+    private float[] catColouration = null;
     private int hunger = 0;
     protected String motherUUID = "";
     protected Boolean sleeping;
+    protected Boolean hemizygote = false;
     protected int awokenTimer = 0;
 
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
@@ -156,6 +216,17 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         } else {
             return 0.5F;
         }
+    }
+
+    public void setZygosity() {
+        Random rand = new Random();
+        boolean hemizygote = rand.nextBoolean();
+        this.dataManager.set(HEMIZYGOTE, hemizygote);
+    }
+
+    public boolean getZygosity() {
+        hemizygote = this.dataManager.get(HEMIZYGOTE);
+        return hemizygote;
     }
 
     public void setSleeping(Boolean sleeping) {
@@ -449,14 +520,15 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
                         }
                     }
 
-                    int numberOfKits = ThreadLocalRandom.current().nextInt(kitRange)+kitAverage;
+                    int numberOfKittens = ThreadLocalRandom.current().nextInt(kitRange)+kitAverage;
 
-                    for (int i = 0; i <= numberOfKits; i++) {
+                    for (int i = 0; i <= numberOfKittens; i++) {
                         mixMateMitosisGenes();
                         mixMitosisGenes();
                         EnhancedCat enhancedcat = ENHANCED_CAT.create(this.world);
+                        enhancedcat.setZygosity();
                         enhancedcat.setGrowingAge(0);
-                        int[] babyGenes = getBunnyGenes(this.mitosisGenes, this.mateMitosisGenes);
+                        int[] babyGenes = getKittenGenes(this.mitosisGenes, this.mateMitosisGenes);
                         enhancedcat.setGenes(babyGenes);
                         enhancedcat.setSharedGenes(babyGenes);
 //                        enhancedcat.setMaxCoatLength();
@@ -736,6 +808,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
         compound.putString("Status", getCatStatus());
         compound.putInt("Hunger", hunger);
+
+        compound.putBoolean("Zygosity", this.getZygosity());
     }
 
     /**
@@ -763,6 +837,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
         setCatStatus(compound.getString("Status"));
         hunger = compound.getInt("Hunger");
+
+        hemizygote = compound.getBoolean("Zygosity");
 
         //TODO add a proper calculation for this
         for (int i = 0; i < genes.length; i++) {
@@ -807,19 +883,34 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     }
 
     @OnlyIn(Dist.CLIENT)
+    public String[] getVariantAlphaTexturePaths()
+    {
+        if (this.catAlphaTextures.isEmpty()) {
+            this.setAlphaTexturePaths();
+        }
+
+
+        //todo this is only temporarity until we have alpha textures
+        if (this.catAlphaTextures.isEmpty()) {
+            return null;
+        }
+
+        return this.catAlphaTextures.stream().toArray(String[]::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
     private void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
             int pattern = 0;
             int tabbyMod = 0;
+            int eyeType = 0;
+            boolean tortie = false;
             char[] uuidArry = getCachedUniqueIdString().toCharArray();
 
-            if (genesForText[0] >= 2 && genesForText[1] >= 2) {
-                if (genesForText[20] == 1 && genesForText[21] == 1) {
-                }
+            if ((genesForText[0] >= 2 && genesForText[1] >= 2) && (genesForText[20] == 1 && genesForText[21] == 1)) {
                 //self colored cat
             } else {
-
                 if (genesForText[4] == 2 && genesForText[5] == 2) {
                     //homozygous ticked tabby
                 } else if (genesForText[4] == 2 || genesForText[5] == 2) {
@@ -854,10 +945,11 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
                 }
             }
 
-            if (genesForText[20] == 1 && genesForText[21] == 1) {
+            if (genesForText[20] == 2 && genesForText[21] == 2) {
                 //red
-            } else if (genesForText[20] == 1 || genesForText[21] == 1) {
+            } else if (genesForText[20] == 2 || genesForText[21] == 2) {
                 //tortie
+                tortie = true;
             }
 
             if (genesForText[12] != 1 && genesForText[13] != 1) {
@@ -884,32 +976,14 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
                 }
             }
 
-            if (genesForText[14] == 1 || genesForText[15] == 1) {
-                //black
-            } else if (genesForText[14] == 2 || genesForText[15] == 2) {
-                //chocolate
-            } else {
-                //cinammon
-            }
-
-            if (genesForText[16] == 2 && genesForText[17] == 2) {
-                if (genesForText[18] == 1 || genesForText[19] == 1) {
-                    //caramel/apricot
-                } else {
-                    //dilute
-                }
-            }
-
             if (genesForText[22] == 1 || genesForText[23] == 1) {
                 //dominant white
             } else if (genesForText[22] == 2 && genesForText[23] == 2) {
                 //over 50% white spotting
-            } else if (genesForText[22] == 2 || genesForText(23) == 2) {
+            } else if (genesForText[22] == 2 || genesForText[23] == 2) {
                 //less than 50% white spotting
-            } else if (genesForText[22] == 4 && genesForText(23) == 4) {
+            } else if (genesForText[22] == 4 && genesForText[23] == 4) {
                 //white gloves (birman)
-            } else {
-                //no white
             }
 
             if (genesForText[24] == 1 || genesForText[25] == 1) {
@@ -961,12 +1035,123 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 //                }
 
 
+            this.catTextures.add(CAT_UNDERCOAT[pattern]);
+            this.catTextures.add(CAT_BACKGROUND[pattern]);
             this.catTextures.add(CAT_PATTERN[pattern]);
+            this.catTextures.add(CAT_COLOURPOINT[pattern]);
+            this.catTextures.add(CAT_SPOTS[pattern]);
+            if (tortie) {
+                this.catTextures.add("alpha_group_start");
+                this.catTextures.add(CAT_SKIN[pattern]);
+                this.catTextures.add(CAT_SKINPATTERN[pattern]);
+                this.catTextures.add(CAT_SKINCOLOURPOINT[pattern]);
+                this.catTextures.add(CAT_SKINSPOTS[pattern]);
+                this.catTextures.add("alpha_group_end");
+            }
+            this.catTextures.add("alpha_group_start");
+            this.catTextures.add(CAT_SKIN[pattern]);
+            this.catTextures.add(CAT_SKINPATTERN[pattern]);
+            this.catTextures.add(CAT_SKINCOLOURPOINT[pattern]);
+            this.catTextures.add(CAT_SKINSPOTS[pattern]);
+            this.catTextures.add("alpha_group_end");
+            this.catTextures.add(CAT_EYEL[eyeType]);
+            this.catTextures.add(CAT_EYER[eyeType]);
 
 
         } //if genes are not null end bracket
 
     } // setTexturePaths end bracket
+
+    @OnlyIn(Dist.CLIENT)
+    private void setAlphaTexturePaths() {
+        int[] genesForText = getSharedGenes();
+        if (genesForText != null) {
+            int coat = 0;
+            int tortie = 0;
+
+            //TODO genes for sphynx, Lykoi, and other fur distribution genes go here including stuff that just makes the fur thin
+
+            //TODO put the logic for figuring out what the tortie/calico spots should look like
+
+            if (coat != 0) {
+                this.catAlphaTextures.add(CAT_COATTYPE[coat]);
+            }
+            if (tortie !=0) {
+                this.catAlphaTextures.add(CAT_COATTYPE[coat]);
+            }
+
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float[] getRgb() {
+        if (catColouration == null) {
+            catColouration = new float[6];
+            int[] genesForText = getSharedGenes();
+
+            float blackR = 15.0F;
+            float blackG = 7.0F;
+            float blackB = 7.0F;
+
+            float redR = 134.0F;
+            float redG = 79.0F;
+            float redB = 41.0F;
+
+            float eyelR = 134.0F;
+            float eyelG = 79.0F;
+            float eyelB = 41.0F;
+
+            float eyerR = 134.0F;
+            float eyerG = 79.0F;
+            float eyerB = 41.0F;
+
+
+
+            if (genesForText[14] == 1 || genesForText[15] == 1) {
+                //black
+            } else if (genesForText[14] == 2 || genesForText[15] == 2) {
+                //chocolate
+            } else {
+                //cinammon
+            }
+
+            if (genesForText[16] == 2 && genesForText[17] == 2) {
+                if (genesForText[18] == 1 || genesForText[19] == 1) {
+                    //caramel/apricot
+                } else {
+                    //dilute
+                }
+            }
+
+            //TODO TEMP AF
+            //black
+            catColouration[0] = blackR;
+            catColouration[1] = blackG;
+            catColouration[2] = blackB;
+
+            //red
+            catColouration[3] = redR;
+            catColouration[4] = redG;
+            catColouration[5] = redB;
+
+            catColouration[6] = eyelR;
+            catColouration[7] = eyelG;
+            catColouration[8] = eyelB;
+
+            catColouration[9] = eyerR;
+            catColouration[10] = eyerG;
+            catColouration[11] = eyerB;
+
+            for (int i = 0; i <= 11; i++) {
+                if (catColouration[i] > 255.0F) {
+                    catColouration[i] = 255.0F;
+                }
+                catColouration[i] = catColouration[i] / 255.0F;
+            }
+
+        }
+        return catColouration;
+    }
 
     public void mixMitosisGenes() {
         punnetSquare(mitosisGenes, genes);
@@ -990,7 +1175,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         }
     }
 
-    public int[] getBunnyGenes(int[] mitosis, int[] mateMitosis) {
+    public int[] getKittenGenes(int[] mitosis, int[] mateMitosis) {
         Random rand = new Random();
         int[] kittenGenes = new int[GENES_LENGTH];
 
@@ -1004,6 +1189,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
                 kittenGenes[i+1] = mitosis[i+1];
             }
         }
+
+
 
         return kittenGenes;
     }
@@ -1022,7 +1209,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
             int[] spawnGenes2 = ((GroupData) livingdata).groupGenes;
             int[] mateMitosis = new int[GENES_LENGTH];
             punnetSquare(mateMitosis, spawnGenes2);
-            spawnGenes = getBunnyGenes(mitosis, mateMitosis);
+            spawnGenes = getKittenGenes(mitosis, mateMitosis);
         } else {
             spawnGenes = createInitialGenes(inWorld);
             livingdata = new GroupData(spawnGenes);
@@ -1030,6 +1217,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
         this.genes = spawnGenes;
         setSharedGenes(genes);
+        setZygosity();
 //        setMaxCoatLength();
 //        this.currentCoatLength = this.maxCoatLength;
 //        setCoatLength(this.currentCoatLength);
@@ -1271,7 +1459,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
             initialGenes[19] = (1);
         }
 
-        //Sex-linked Red [ Red, black+ ]
+        //Sex-linked Red [ Red, black+ ] sexlinked
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -1355,7 +1543,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
             initialGenes[31] = (1);
         }
 
-        //Karpati [ Karpati, wildtype ]
+        //Karpati [ wildtype, Karpati ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
 

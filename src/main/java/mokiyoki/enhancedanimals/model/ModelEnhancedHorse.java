@@ -22,6 +22,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     private final RendererModel leg2;
     private final RendererModel leg3;
     private final RendererModel leg4;
+    private final RendererModel hock3;
+    private final RendererModel hock4;
     private final RendererModel hoof1;
     private final RendererModel hoof2;
     private final RendererModel hoof3;
@@ -77,15 +79,21 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.leg2.addBox(0.0F, 0.0F, 0.0F, 5, 13, 5, -1.0F);
         this.leg2.setRotationPoint(1.0F, 9.0F, -9.0F);
 
+        this.hock3 = new RendererModel(this, 0, 0);
+        this.hock3.addBox(0.75F, -4.0F, -0.75F, 4, 7, 5, 0.0F);
+        this.hock3.setRotationPoint(-6.0F, 9.0F, 8.0F);
+
         this.leg3 = new RendererModel(this, 0, 0);
-        this.leg3.addBox(0.75F, -4.0F, -0.75F, 4, 7, 5, 0.0F);
-        this.leg3.addBox(0.0F, 0.0F, 0.0F, 5, 13, 5, -1.0F);
-        this.leg3.setRotationPoint(-6.0F, 9.0F, 8.0F);
+        this.leg3.addBox(0.0F, 0.0F, 0.0F, 5, 12, 5, -1.0F);
+        this.leg3.setRotationPoint(-6.0F, 10.0F, 8.0F);
+
+        this.hock4 = new RendererModel(this, 0, 0);
+        this.hock4.addBox(0.25F, -4.0F, -0.75F, 4, 7, 5, 0.0F);
+        this.hock4.setRotationPoint(1.0F, 9.0F, 8.0F);
 
         this.leg4 = new RendererModel(this, 0, 0);
-        this.leg4.addBox(0.25F, -4.0F, -0.75F, 4, 7, 5, 0.0F);
-        this.leg4.addBox(0.0F, 0.0F, 0.0F, 5, 13, 5, -1.0F);
-        this.leg4.setRotationPoint(1.0F, 9.0F, 8.0F);
+        this.leg4.addBox(0.0F, 0.0F, 0.0F, 5, 12, 5, -1.0F);
+        this.leg4.setRotationPoint(1.0F, 10.0F, 8.0F);
 
         this.hoof1 = new RendererModel(this, 106, 117);
         this.hoof1.addBox(0.0F, 11.0F, 0.1F, 5, 3, 4, -0.5F);
@@ -121,6 +129,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.leg2.render(scale);
         this.leg3.render(scale);
         this.leg4.render(scale);
+        this.hock3.render(scale);
+        this.hock4.render(scale);
         this.hoof1.render(scale);
         this.hoof2.render(scale);
         this.hoof3.render(scale);
@@ -142,7 +152,9 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
         this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
         this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        this.hock3.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
         this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        this.hock4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
         this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
 
         copyModelAngles(leg1, hoof1);
@@ -153,6 +165,137 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.earL.rotateAngleZ = -0.15F;
         this.earR.rotateAngleZ = 0.15F;
         this.jaw.rotateAngleX = -0.15F;
+
+    }
+
+    @Override
+    public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
+//        int[] sharedGenes = ((EnhancedHorse) entitylivingbaseIn).getSharedGenes();
+        char[] uuidArry = ((EnhancedHorse) entitylivingbaseIn).getCachedUniqueIdString().toCharArray();
+
+        if (Character.isDigit(uuidArry[16])){
+            if (uuidArry[16] - 48 == 0) {
+                this.hock3.rotationPointZ = 8.5F;
+                this.hock4.rotationPointZ = 8.5F;
+            } else if (uuidArry[16] - 48 == 1) {
+                this.hock3.rotationPointZ = 8.0F;
+                this.hock4.rotationPointZ = 8.0F;
+            } else if (uuidArry[16] - 48 == 2) {
+                this.hock3.rotationPointZ = 7.5F;
+                this.hock4.rotationPointZ = 7.5F;
+            } else if (uuidArry[16] - 48 == 3) {
+                this.hock3.rotationPointZ = 7.0F;
+                this.hock4.rotationPointZ = 7.0F;
+            } else if (uuidArry[16] - 48 == 4) {
+                this.hock3.rotationPointZ = 6.5F;
+                this.hock4.rotationPointZ = 6.5F;
+            } else if (uuidArry[16] - 48 == 5) {
+                this.hock3.rotationPointZ = 6.0F;
+                this.hock4.rotationPointZ = 6.0F;
+            } else if (uuidArry[16] - 48 == 6) {
+                this.hock3.rotationPointZ = 5.5F;
+                this.hock4.rotationPointZ = 5.5F;
+            } else if (uuidArry[16] - 48 == 7) {
+                this.hock3.rotationPointZ = 5.0F;
+                this.hock4.rotationPointZ = 5.0F;
+            } else if (uuidArry[16] - 48 == 8) {
+                this.hock3.rotationPointZ = 8.5F;
+                this.hock4.rotationPointZ = 8.5F;
+            } else {
+                this.hock3.rotationPointZ = 8.0F;
+                this.hock4.rotationPointZ = 8.0F;
+            }
+        } else {
+            char test = uuidArry[16];
+            switch (test){
+                case 'a':
+                    this.hock3.rotationPointZ = 7.5F;
+                    this.hock4.rotationPointZ = 7.5F;
+                    break;
+                case 'b':
+                    this.hock3.rotationPointZ = 7.0F;
+                    this.hock4.rotationPointZ = 7.0F;
+                    break;
+                case 'c':
+                    this.hock3.rotationPointZ = 6.5F;
+                    this.hock4.rotationPointZ = 6.5F;
+                    break;
+                case 'd':
+                    this.hock3.rotationPointZ = 6.0F;
+                    this.hock4.rotationPointZ = 6.0F;
+                    break;
+                case 'e':
+                    this.hock3.rotationPointZ = 6.5F;
+                    this.hock4.rotationPointZ = 6.5F;
+                    break;
+                case 'f':
+                    this.hock3.rotationPointZ = 5.0F;
+                    this.hock4.rotationPointZ = 5.0F;
+                    break;
+            }
+        }
+
+        if (Character.isDigit(uuidArry[17])){
+            if (uuidArry[17] - 48 == 0) {
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.5F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.5F;
+            } else if (uuidArry[17] - 48 == 1) {
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.25F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.25F;
+            } else if (uuidArry[17] - 48 == 2) {
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.0F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.0F;
+            } else if (uuidArry[17] - 48 == 3) {
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.75F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.75F;
+            } else if (uuidArry[17] - 48 == 4) {
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.5F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.5F;
+            } else if (uuidArry[17] - 48 == 5) {
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.25F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.25F;
+            } else if (uuidArry[17] - 48 == 6) {
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ;
+            } else if (uuidArry[17] - 48 == 7) {
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ - 0.25F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ - 0.25F;
+            } else if (uuidArry[17] - 48 == 8) {
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.5F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.5F;
+            } else {
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.25F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.25F;
+            }
+        } else {
+            char test = uuidArry[17];
+            switch (test){
+                case 'a':
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.0F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.0F;
+                    break;
+                case 'b':
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.75F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.75F;
+                    break;
+                case 'c':
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.5F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.5F;
+                    break;
+                case 'd':
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.25F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.25F;
+                    break;
+                case 'e':
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ;
+                    break;
+                case 'f':
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ - 0.25F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ - 0.25F;
+                    break;
+            }
+        }
 
     }
 

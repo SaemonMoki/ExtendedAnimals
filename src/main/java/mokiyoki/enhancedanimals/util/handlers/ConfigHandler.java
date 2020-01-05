@@ -125,31 +125,31 @@ public class ConfigHandler {
 
             gestationDaysRabbit = builder
                     .comment("Number of ticks for rabbit gestation. 24000 = 1 Minecraft Day")
-                    .defineInRange("rabbitGestation.days", 24000, 1, Integer.MAX_VALUE);
+                    .defineInRange("rabbitGestation.days", 24000, 100, Integer.MAX_VALUE);
 
             gestationDaysCow = builder
                     .comment("Number of ticks for cow and mooshroom gestation. 48000 = 2 Minecraft Days")
-                    .defineInRange("cowGestation.days", 48000, 1, Integer.MAX_VALUE);
+                    .defineInRange("cowGestation.days", 100, 100, Integer.MAX_VALUE);
 
             gestationDaysSheep = builder
                     .comment("Number of ticks for sheep gestation. 48000 = 2 Minecraft Daysy")
-                    .defineInRange("sheepGestation.days", 48000, 1, Integer.MAX_VALUE);
+                    .defineInRange("sheepGestation.days", 48000, 100, Integer.MAX_VALUE);
 
             gestationDaysLlama = builder
                     .comment("Number of ticks for llama gestation. 48000 = 2 Minecraft Days")
-                    .defineInRange("llamaGestation.days", 48000, 1, Integer.MAX_VALUE);
+                    .defineInRange("llamaGestation.days", 48000, 100, Integer.MAX_VALUE);
 
             gestationDaysPig = builder
                     .comment("Number of ticks for pig gestation. 48000 = 2 Minecraft Days")
-                    .defineInRange("pigGestation.days", 48000, 1, Integer.MAX_VALUE);
+                    .defineInRange("pigGestation.days", 48000, 100, Integer.MAX_VALUE);
 
             gestationDaysHorse = builder
                     .comment("Number of ticks for pig gestation. 48000 = 2 Minecraft Days")
-                    .defineInRange("horseGestation.days", 48000, 1, Integer.MAX_VALUE);
+                    .defineInRange("horseGestation.days", 48000, 100, Integer.MAX_VALUE);
 
             gestationDaysCat = builder
                     .comment("Number of ticks for pig gestation. 48000 = 2 Minecraft Days")
-                    .defineInRange("catGestation.days", 48000, 1, Integer.MAX_VALUE);
+                    .defineInRange("catGestation.days", 48000, 100, Integer.MAX_VALUE);
 
             builder.pop();
         }

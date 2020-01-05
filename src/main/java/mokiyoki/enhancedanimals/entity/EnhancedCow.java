@@ -199,6 +199,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected int ageTimer;
     protected EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
     protected int gestationTimer = 0;
+    protected int lactationTimer = 0;
     protected boolean pregnant = false;
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
@@ -355,7 +356,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                     pregnant = false;
                     setCowStatus(EntityState.MOTHER.toString());
                     milk = Math.round((30*(cowSize/1.5F))) - 1;
-                    gestationTimer = -48000;
+                    lactationTimer = -48000;
 
                     mixMateMitosisGenes();
                     mixMitosisGenes();
@@ -408,12 +409,12 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                     }
 
                     if (timeUntilNextMilk == 0) {
-                        gestationTimer++;
-                    } else if (milk <= 5 && gestationTimer >= -36000) {
-                        gestationTimer--;
+                        lactationTimer++;
+                    } else if (milk <= 5 && lactationTimer >= -36000) {
+                        lactationTimer--;
                     }
 
-                    if (gestationTimer == 0) {
+                    if (lactationTimer == 0) {
                         setCowStatus(EntityState.ADULT.toString());
                     }
                 }
@@ -1644,6 +1645,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
+        compound.putInt("Lactation", this.lactationTimer);
 
         compound.putString("Status", getCowStatus());
         compound.putInt("Hunger", hunger);
@@ -1679,6 +1681,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         this.pregnant = compound.getBoolean("Pregnant");
         this.gestationTimer = compound.getInt("Gestation");
+        this.lactationTimer = compound.getInt("Lactation");
 
         setCowStatus(compound.getString("Status"));
         hunger = compound.getInt("Hunger");

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "eanimod:rawrabbit_small"
+    },
+    {
+      "item": "eanimod:rawrabbit_small"
+    },
+    {
+      "item": "eanimod:rawrabbit_small"
+    }
+  ],
+  "result":
+  {
+    "item": "minecraft:rabbit",
+    "count": 2
+  }
+}

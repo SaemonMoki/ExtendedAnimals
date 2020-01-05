@@ -166,8 +166,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         "48.png"                //test a texture 352
     };
     private static final String[] CHICKEN_TEXTURES_MOORHEAD = new String[] {
-        "", "moorhead_black.png", "moorhead_blue.png", "moorhead_splash.png", "moorhead_splashlav.png", "moorhead_splash.png", "moorhead_splashdun.png",
-            "moorhead_splashchoc.png", "moorhead_lav.png", "moorhead_white.png", "moorhead_dun.png", "moorhead_choc.png",
+        "", "moorhead_black.png", "moorhead_blue.png", "moorhead_splash.png", "moorhead_splashlav.png", "moorhead_splashdun.png",
+            "moorhead_splashchoc.png", "moorhead_lav.png", "moorhead_white.png", "moorhead_dun.png",    "moorhead_choc.png",
     };
     private static final String[] CHICKEN_TEXTURES_WHITE = new String[] {
         "","white_barred.png","white_mottles.png","white_crested.png"
@@ -188,7 +188,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     };
 
     private static final String[] CHICKEN_TEXTURES_CHICKWHITE = new String[] {
-            "","baby_mottles.png", "baby_barred.png"
+            "","baby_mottled.png", "baby_barred.png"
     };
 
     private static final String[] CHICKEN_TEXTURES_SHANKS = new String[] {
@@ -1675,11 +1675,11 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                         if (genesForText[38] == 1 && genesForText[39] == 1) {
                             //domwhite
                             pattern = pattern + 7;
-                            moorhead = moorhead + 7;
+                            moorhead = 8;
                         } else if (genesForText[38] == 1 || genesForText[39] == 1) {
                             // spotted domwhite
                             pattern = pattern + 7;
-                            moorhead = moorhead + 7;
+                            moorhead = 8;
                         } else {
                             //if chocolate
                             if (genesForText[1] == 2) {
@@ -1690,26 +1690,26 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                                     if (genesForText[40] == 2 && genesForText[41] == 2) {
                                         //splash dun
                                         pattern = pattern + 4;
-                                        moorhead = moorhead + 4;
+                                        moorhead = 5;
                                     } else {
                                         //dun
                                         pattern = pattern + 8;
-                                        moorhead = moorhead + 8;
+                                        moorhead = 9;
                                     }
                                 } else {
                                     //is a chocolate variety
                                     if (genesForText[40] == 2 && genesForText[41] == 2) {
                                         //splash choc
                                         pattern = pattern + 5;
-                                        moorhead = moorhead + 5;
+                                        moorhead = 6;
                                     } else if (genesForText[40] != 1 || genesForText[41] != 1) {
                                         //dun
                                         pattern = pattern + 8;
-                                        moorhead = moorhead + 8;
+                                        moorhead = 9;
                                     } else {
                                         //chocolate
                                         pattern = pattern + 9;
-                                        moorhead = moorhead + 9;
+                                        moorhead = 10;
                                     }
                                 }
                             } else {
@@ -1720,18 +1720,18 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                                     if (genesForText[40] == 2 && genesForText[41] == 2) {
                                         //splash lavender
                                         pattern = pattern + 3;
-                                        moorhead = moorhead + 3;
+                                        moorhead = 4;
                                     } else {
                                         //lavender
                                         pattern = pattern + 6;
-                                        moorhead = moorhead + 6;
+                                        moorhead = 7;
                                     }
                                 } else {
                                     //is a black variety
                                     if (genesForText[40] == 2 && genesForText[41] == 2) {
                                         //splash
                                         pattern = pattern + 2;
-                                        moorhead = moorhead + 2;
+                                        moorhead = 3;
                                     } else if (genesForText[40] == 2 || genesForText[41] == 2) {
                                         //blue
                                         if ((genesForText[26] == 1 || genesForText[27] == 1) && (genesForText[24] == 5 || genesForText[25] == 5)) {
@@ -1747,7 +1747,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                                         } else {
                                             //blue
                                             pattern = pattern + 1;
-                                            moorhead = moorhead + 1;
+                                            moorhead = 2;
                                         }
 
                                     }
@@ -2210,17 +2210,17 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 // figures out the shank, comb, and skin colour if its not albino
                 if (!isAlbino) {
                     //gets comb colour
-                    if (genesForText[4] == 1 && (genesForText[42] == 1 || genesForText[43] == 1)) {
-                        //comb and shanks are black
-                        comb = 0;
-                        shanks = 3;
-                    }
                     if (genesForText[24] == 1 && genesForText[25] == 1) {
                         shanks = 3;
                         // makes mulbery comb
                         if (genesForText[30] == 2) {
                             comb = 1;
                         }
+                    }
+                    if (genesForText[4] == 1 && (genesForText[42] == 1 || genesForText[43] == 1)) {
+                        //comb and shanks are black
+                        comb = 0;
+                        shanks = 3;
                     }
                     //shanks starts at 3 btw
                     // if Dilute is Dilute and the shanks arnt darkened by extened black lighten by 1 shade
@@ -2656,8 +2656,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
 
     if (false){
-        //THE DNA TESTER-5069 !!!!!
-        return new int[] {1,1,6,1,1,1,1,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,1,1,2,2,2,2,2,2,2,2,3,3,2,2,1,1,2,2,1,1,2,2,1,1,3,3,2,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,3,3,3,3,2,2,1,1,1,1,2,2,2,2,1,1,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,10,1,7,5,5,3,3,7,7,3,7,2,2,2,2,1,1
+        //THE DNA PRINTER-5069 !!!!!
+        return new int[] {2,1,6,1,1,2,6,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,2,2,5,5,2,2,2,2,1,1,3,3,2,2,2,2,2,2,1,1,1,1,1,1,3,3,2,2,1,1,2,2,3,3,1,1,2,2,1,1,1,1,3,3,3,3,2,2,1,1,1,1,2,2,2,2,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,12,12,12,12,12,12,6,6,20,20,20,20,5,5,2,2,1,1,2,2,1,1,1,1,1,1
         };
 
     }else {

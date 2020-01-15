@@ -76,6 +76,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected static final DataParameter<String> COW_STATUS = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> MOOSHROOM_UUID = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
+    private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
 
     private static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
@@ -186,6 +187,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected float maxBagSize;
     protected float cowSize;
     protected int hunger = 0;
+    protected int healTicks = 0;
     protected boolean aiConfigured = false;
 
     private String mooshroomUUID = "0";
@@ -194,7 +196,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected String motherUUID = "";
 
     protected int timeUntilNextMilk;
-    protected int milk;
     protected int cowTimer;
     protected int ageTimer;
     protected EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
@@ -237,6 +238,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.dataManager.register(COW_STATUS, new String());
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(MOOSHROOM_UUID, "0");
+        this.dataManager.register(MILK_AMOUNT, 0);
     }
 
     protected void setCowSize(float size) {
@@ -265,6 +267,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     }
 
     public String getMooshroomUUID() { return mooshroomUUID; }
+
+    protected void setMilkAmount(Integer milkAmount) {
+        this.dataManager.set(MILK_AMOUNT, milkAmount);
+    }
+
+    public Integer getMilkAmount() { return this.dataManager.get(MILK_AMOUNT); }
+
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
@@ -297,8 +306,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     }
 
     public boolean decreaseMilk(int decrease) {
+        int milk = getMilkAmount();
         if (milk >= decrease) {
-            this.milk = this.milk - decrease;
+            milk = milk - decrease;
+            setMilkAmount(milk);
             return true;
         } else {
 //            entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
@@ -336,6 +347,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
             if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
                 setSleeping(true);
+                healTicks = 0;
             } else if (awokenTimer > 0) {
                 awokenTimer--;
             } else if (this.world.isDaytime() && sleeping) {
@@ -355,7 +367,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 if (gestationTimer >= days) {
                     pregnant = false;
                     setCowStatus(EntityState.MOTHER.toString());
-                    milk = Math.round((30*(cowSize/1.5F))) - 1;
+                    setMilkAmount(Math.round((30*(cowSize/1.5F))) - 1);
                     lactationTimer = -48000;
 
                     mixMateMitosisGenes();
@@ -368,8 +380,20 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             if (this.getIdleTime() < 100) {
                 if (hunger <= 72000) {
 
-                    hunger = hunger + 2;
-
+                    if (sleeping) {
+                        int days = ConfigHandler.COMMON.gestationDaysCow.get();
+                        if (hunger <= days*(0.50)) {
+                            hunger = hunger++;
+                        }
+                        healTicks++;
+                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
+                            this.heal(2.0F);
+                            hunger = hunger + 1000;
+                            healTicks = 0;
+                        }
+                    } else {
+                        hunger = hunger + 2;
+                    }
 //                if (cowSize >= 1.3) {
 //                    hunger++;
 //                    if (ticksExisted % 2 == 0) {
@@ -401,8 +425,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 if (getCowStatus().equals(EntityState.MOTHER.toString())) {
                     if (hunger <= 24000) {
                         if (--this.timeUntilNextMilk <= 0) {
+                            int milk = getMilkAmount();
                             if (milk < 30*(cowSize/1.5F)) {
                                 milk++;
+                                setMilkAmount(milk);
                                 this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - maxBagSize)*1200)) * (cowSize/1.5F)) - 300;
                             }
                         }
@@ -410,7 +436,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
                     if (timeUntilNextMilk == 0) {
                         lactationTimer++;
-                    } else if (milk <= 5 && lactationTimer >= -36000) {
+                    } else if (getMilkAmount() <= 5 && lactationTimer >= -36000) {
                         lactationTimer--;
                     }
 
@@ -1316,6 +1342,91 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
+
+        if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
+            int maxRefill = 0;
+            int bucketSize = 6;
+            int currentMilk = getMilkAmount();
+            int refillAmount = 0;
+            boolean isBottle = false;
+            if (item == Items.BUCKET) {
+                maxRefill = 6;
+            } else if (item == ModItems.OneSixth_Milk_Bucket) {
+                maxRefill = 5;
+            } else if (item == ModItems.OneThird_Milk_Bucket) {
+                maxRefill = 4;
+            } else if (item == ModItems.Half_Milk_Bucket) {
+                maxRefill = 3;
+            } else if (item == ModItems.TwoThirds_Milk_Bucket) {
+                maxRefill = 2;
+            } else if (item == ModItems.FiveSixths_Milk_Bucket) {
+                maxRefill = 1;
+            } else if (item == ModItems.Half_Milk_Bottle) {
+                maxRefill = 1;
+                isBottle = true;
+                bucketSize = 2;
+            } else if (item == Items.GLASS_BOTTLE) {
+                maxRefill = 2;
+                isBottle = true;
+                bucketSize = 2;
+            }
+
+            if ( currentMilk >= maxRefill) {
+                    refillAmount = maxRefill;
+            } else if (currentMilk < maxRefill) {
+                   refillAmount = currentMilk;
+            }
+
+            if (!this.world.isRemote) {
+                this.setMilkAmount(currentMilk - refillAmount);
+            }
+
+            int resultAmount = bucketSize - maxRefill + refillAmount;
+
+            ItemStack resultItem = new ItemStack(Items.BUCKET);
+
+            switch (resultAmount) {
+                case 0:
+                    resultItem = new ItemStack(Items.BUCKET);
+                    break;
+                case 1:
+                    if (isBottle) {
+                        resultItem = new ItemStack(ModItems.Half_Milk_Bottle);
+                    } else {
+                        resultItem = new ItemStack(ModItems.OneSixth_Milk_Bucket);
+                    }
+                    break;
+                case 2:
+                    if (isBottle) {
+                        resultItem = new ItemStack(ModItems.Milk_Bottle);
+                    } else {
+                        resultItem = new ItemStack(ModItems.OneThird_Milk_Bucket);
+                    }
+                    break;
+                case 3:
+                    resultItem = new ItemStack(ModItems.Half_Milk_Bucket);
+                    break;
+                case 4:
+                    resultItem = new ItemStack(ModItems.TwoThirds_Milk_Bucket);
+                    break;
+                case 5:
+                    resultItem = new ItemStack(ModItems.FiveSixths_Milk_Bucket);
+                    break;
+                case 6:
+                    resultItem = new ItemStack(Items.MILK_BUCKET);
+                    break;
+            }
+
+            entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
+            itemStack.shrink(1);
+            if (itemStack.isEmpty()) {
+                entityPlayer.setHeldItem(hand, resultItem);
+            } else if (!entityPlayer.inventory.addItemStackToInventory(resultItem)) {
+                entityPlayer.dropItem(resultItem, false);
+            }
+
+        }
+
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
                 ITextComponent message = getHungerText();
@@ -1335,6 +1446,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 if (!entityPlayer.abilities.isCreativeMode) {
                     itemStack.shrink(1);
                 }
+                return true;
             } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
 
                 if (!entityPlayer.abilities.isCreativeMode) {
@@ -1364,213 +1476,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                     }
 
                 }
-            } else if (item == Items.BUCKET && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
-                if (milk == 0) {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
-                } else {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
-                    itemStack.shrink(1);
-                    if (milk >= 6) {
-                        milk = milk - 6;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(Items.MILK_BUCKET));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET))) {
-                            entityPlayer.dropItem(new ItemStack(Items.MILK_BUCKET), false);
-                        }
-                    } else if (milk == 5) {
-                        milk = milk - 5;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.FiveSixths_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.FiveSixths_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.FiveSixths_Milk_Bucket), false);
-                        }
-                    } else if (milk >= 4) {
-                        milk = milk - 4;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.TwoThirds_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.TwoThirds_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.TwoThirds_Milk_Bucket), false);
-                        }
-                    } else if (milk == 3) {
-                        milk = milk - 3;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bucket), false);
-                        }
-                    } else if (milk >= 2) {
-                        milk = milk - 2;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.OneThird_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.OneThird_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.OneThird_Milk_Bucket), false);
-                        }
-                    } else if (milk == 1) {
-                        milk = milk - 1;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.OneSixth_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.OneSixth_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.OneSixth_Milk_Bucket), false);
-                        }
-                    }
-                }
-            } else if (item == ModItems.OneSixth_Milk_Bucket && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
-                if (milk == 0) {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
-                } else {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
-                    itemStack.shrink(1);
-                    if (milk >= 5) {
-                        milk = milk - 5;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(Items.MILK_BUCKET));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET))) {
-                            entityPlayer.dropItem(new ItemStack(Items.MILK_BUCKET), false);
-                        }
-                    } else if (milk == 4) {
-                        milk = milk - 4;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.FiveSixths_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.FiveSixths_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.FiveSixths_Milk_Bucket), false);
-                        }
-                    } else if (milk >= 3) {
-                        milk = milk - 3;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.TwoThirds_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.TwoThirds_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.TwoThirds_Milk_Bucket), false);
-                        }
-                    } else if (milk == 2) {
-                        milk = milk - 2;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bucket), false);
-                        }
-                    } else if (milk >= 1) {
-                        milk = milk - 1;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.OneThird_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.OneThird_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.OneThird_Milk_Bucket), false);
-                        }
-                    }
-                }
-            } else if (item == ModItems.OneThird_Milk_Bucket && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
-                if (milk == 0) {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
-                } else {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
-                    itemStack.shrink(1);
-                    if (milk >= 4) {
-                        milk = milk - 4;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(Items.MILK_BUCKET));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET))) {
-                            entityPlayer.dropItem(new ItemStack(Items.MILK_BUCKET), false);
-                        }
-                    } else if (milk == 3) {
-                        milk = milk - 3;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.FiveSixths_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.FiveSixths_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.FiveSixths_Milk_Bucket), false);
-                        }
-                    } else if (milk >= 2) {
-                        milk = milk - 2;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.TwoThirds_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.TwoThirds_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.TwoThirds_Milk_Bucket), false);
-                        }
-                    } else if (milk == 1) {
-                        milk = milk - 1;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bucket), false);
-                        }
-                    }
-                }
-            } else if (item == ModItems.Half_Milk_Bucket && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
-                if (milk == 0) {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
-                } else {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
-                    itemStack.shrink(1);
-                    if (milk >= 3) {
-                        milk = milk - 3;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(Items.MILK_BUCKET));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET))) {
-                            entityPlayer.dropItem(new ItemStack(Items.MILK_BUCKET), false);
-                        }
-                    } else if (milk == 2) {
-                        milk = milk - 2;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.FiveSixths_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.FiveSixths_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.FiveSixths_Milk_Bucket), false);
-                        }
-                    } else if (milk >= 1) {
-                        milk = milk - 1;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.TwoThirds_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.TwoThirds_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.TwoThirds_Milk_Bucket), false);
-                        }
-                    }
-                }
-            } else if (item == ModItems.TwoThirds_Milk_Bucket && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
-                if (milk == 0) {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
-                } else {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
-                    itemStack.shrink(1);
-                    if (milk >= 2) {
-                        milk = milk - 2;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(Items.MILK_BUCKET));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET))) {
-                            entityPlayer.dropItem(new ItemStack(Items.MILK_BUCKET), false);
-                        }
-                    } else if (milk == 1) {
-                        milk = milk - 1;
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.FiveSixths_Milk_Bucket));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.FiveSixths_Milk_Bucket))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.FiveSixths_Milk_Bucket), false);
-                        }
-                    }
-                }
-            } else if (item == ModItems.FiveSixths_Milk_Bucket && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
-                if (milk == 0) {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
-                } else {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
-                    itemStack.shrink(1);
-                    milk = milk - 1;
-                    if (itemStack.isEmpty()) {
-                        entityPlayer.setHeldItem(hand, new ItemStack(Items.MILK_BUCKET));
-                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET))) {
-                        entityPlayer.dropItem(new ItemStack(Items.MILK_BUCKET), false);
-                    }
-                }
-            } else if (item == ModItems.Half_Milk_Bottle && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
-                if (milk == 0) {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
-                } else {
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
-                    itemStack.shrink(1);
-                    milk = milk - 1;
-                    if (itemStack.isEmpty()) {
-                        entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Milk_Bottle));
-                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Milk_Bottle))) {
-                        entityPlayer.dropItem(new ItemStack(ModItems.Milk_Bottle), false);
-                    }
-                }
-            } else if (item == Items.GLASS_BOTTLE && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
+            }
+        } /* else if (item == Items.GLASS_BOTTLE && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
                 if (milk == 0) {
                     entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
                 } else {
@@ -1583,8 +1490,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                         entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
                     }
                 }
-            }
-        }
+            }*/
+//        }
 
         return super.processInteract(entityPlayer, hand);
     }
@@ -1654,7 +1561,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         compound.putString("MotherUUID", this.motherUUID);
 
-        compound.putInt("milk", milk);
+        compound.putInt("milk", getMilkAmount());
 
     }
 
@@ -1690,7 +1597,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         this.motherUUID = compound.getString("MotherUUID");
 
-        milk = compound.getInt("milk");
+        setMilkAmount(compound.getInt("milk"));
 
         setSharedGenes(genes);
         setCowSize();

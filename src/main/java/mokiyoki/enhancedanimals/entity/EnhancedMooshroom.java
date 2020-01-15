@@ -82,11 +82,12 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemstack = entityPlayer.getHeldItem(hand);
         if (itemstack.getItem() == Items.BOWL && this.getGrowingAge() >= 0 && !entityPlayer.abilities.isCreativeMode && getCowStatus().equals(EntityState.MOTHER.toString())) {
+            int milk = getMilkAmount();
             if (milk <= 3) {
                 entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
             } else {
                 itemstack.shrink(1);
-                milk = milk - 3;
+                setMilkAmount(milk - 3);
                 boolean flag = false;
                 ItemStack itemstack1;
                 if (this.hasStewEffect != null) {

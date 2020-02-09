@@ -33,78 +33,87 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.textureWidth = 124;
         this.textureHeight = 124;
 
-        this.head = new RendererModel(this, 82, 111);
+        this.head = new RendererModel(this, 0, 32);
         this.head.addBox(-3.0F, 0.0F, -6.0F, 6, 6, 6, 0.0F);
-        this.head.setTextureOffset(0, 0);
+        this.head.setTextureOffset(24, 32);
         this.head.addBox(-2.0F, 0.0F, -9.0F, 4, 3, 3, 0.0F);
-        this.head.addBox(-1.5F, -1.5F, -4.5F, 3, 3, 6, -0.5F);
-        this.head.setTextureOffset(0, 118);
+        this.head.setTextureOffset(24, 38);
         this.head.addBox(-2.0F, 0.1F, -12.0F, 4, 3, 3, 0.1F);
+        this.head.setTextureOffset(0, 0);
+        this.head.addBox(-4.0F, 0.0F, -6.0F, 3, 4, 4, -1.0F);
+        this.head.addBox(1.0F, 0.0F, -6.0F, 3, 4, 4, -1.0F);
+
+        this.head.setTextureOffset(94, 0);
+        this.head.addBox(-1.5F, -1.5F, -4.5F, 3, 3, 6, -0.5F); //mane piece 1
+
         this.head.setRotationPoint(0.0F, -14.0F, -1.0F);
 
-        this.earL = new RendererModel(this, 19, 120);
+        this.earL = new RendererModel(this, 6, 0);
         this.earL.addBox(-2.0F, -3.0F, -0.5F, 2, 3, 1);
         this.earL.setRotationPoint(-1.0F, 0.0F, -1.0F);
 
-        this.earR = new RendererModel(this, 25, 120);
+        this.earR = new RendererModel(this, 0, 0);
         this.earR.addBox(0.0F, -3.0F, -0.5F, 2, 3, 1);
         this.earR.setRotationPoint(1.0F, 0.0F, -1.0F);
 
-        this.jaw = new RendererModel(this, 0,0);
+        this.jaw = new RendererModel(this, 42,0);
         this.jaw.addBox(-2.0F, 0.0F, -9.0F, 4, 4, 7, -0.1F);
-        this.jaw.addBox(-2.0F, 2.25F, -9.0F, 4, 1, 7, -0.1F);
+        this.jaw.setTextureOffset(0, 14);
+        this.jaw.addBox(-2.0F, 2.25F, -9.0F, 4, 1, 7, -0.11F);
         this.jaw.setRotationPoint(0.0F, 2.5F, -2.0F);
 
-        this.maneJoiner = new RendererModel(this, 0, 0);
-        this.maneJoiner.addBox(-1.5F, -1.5F, -0.5F, 3, 2, 2, -0.505F);
+        this.maneJoiner = new RendererModel(this, 98, 9);
+        this.maneJoiner.addBox(-1.5F, -1.5F, -0.5F, 3, 2, 2, -0.505F); //mane piece 2
         this.maneJoiner.setRotationPoint(0.0F, -13.0F, 0.0F);
 
-        this.neck = new RendererModel(this, 0, 0);
+        this.neck = new RendererModel(this, 68, 0);
         this.neck.addBox(-2.0F, -13.0F, -7.0F, 4, 16, 7, 0.0F);
-        this.neck.addBox(-1.5F, -13.5F, -0.5F, 3, 18, 3, -0.5F);
-        this.neck.setRotationPoint(0.0F, 0.0F, -5.0F);
+        this.neck.setTextureOffset(97, 13);
+        this.neck.addBox(-1.5F, -13.5F, -0.5F, 3, 18, 3, -0.5F); // mane piece 3
+        this.neck.setRotationPoint(0.0F, 1.0F, -5.0F);
 
         this.body = new RendererModel(this, 0, 0);
         this.body.addBox(-5.0F, 0.0F, -10.0F, 10, 10, 22, 0.0F);
+        this.body.setRotationPoint(0.0F, 1.0F, 0.0F);
 
-        this.tail = new RendererModel(this, 0, 0);
+        this.tail = new RendererModel(this, 97, 34);
         this.tail.addBox(-2.0F, 0.0F, -4.0F, 4, 15, 4, 0.0F);
         this.tail.setRotationPoint(0.0F, 0.0F, 12.0F);
 
-        this.leg1 = new RendererModel(this, 0, 0);
-        this.leg1.addBox(0.0F, 0.0F, 0.0F, 5, 13, 5, -1.0F);
+        this.leg1 = new RendererModel(this, 0, 44);
+        this.leg1.addBox(0.0F, 0.5F, 0.0F, 5, 13, 5, -1.0F);
         this.leg1.setRotationPoint(-6.0F, 9.0F, -9.0F);
 
-        this.leg2 = new RendererModel(this, 0, 0);
-        this.leg2.addBox(0.0F, 0.0F, 0.0F, 5, 13, 5, -1.0F);
+        this.leg2 = new RendererModel(this, 20, 44);
+        this.leg2.addBox(0.0F, 0.5F, 0.0F, 5, 13, 5, -1.0F);
         this.leg2.setRotationPoint(1.0F, 9.0F, -9.0F);
 
-        this.hock3 = new RendererModel(this, 0, 0);
+        this.hock3 = new RendererModel(this, 40, 32);
         this.hock3.addBox(0.75F, -4.0F, -0.75F, 4, 7, 5, 0.0F);
         this.hock3.setRotationPoint(-6.0F, 9.0F, 8.0F);
 
-        this.leg3 = new RendererModel(this, 0, 0);
-        this.leg3.addBox(0.0F, 0.0F, 0.0F, 5, 12, 5, -1.0F);
-        this.leg3.setRotationPoint(-6.0F, 10.0F, 8.0F);
+        this.leg3 = new RendererModel(this, 40, 44);
+        this.leg3.addBox(0.0F, 2.0F, 0.0F, 5, 12, 5, -1.0F);
+        this.leg3.setRotationPoint(-6.0F, 9.0F, 8.0F);
 
-        this.hock4 = new RendererModel(this, 0, 0);
+        this.hock4 = new RendererModel(this, 60, 32);
         this.hock4.addBox(0.25F, -4.0F, -0.75F, 4, 7, 5, 0.0F);
         this.hock4.setRotationPoint(1.0F, 9.0F, 8.0F);
 
-        this.leg4 = new RendererModel(this, 0, 0);
-        this.leg4.addBox(0.0F, 0.0F, 0.0F, 5, 12, 5, -1.0F);
-        this.leg4.setRotationPoint(1.0F, 10.0F, 8.0F);
+        this.leg4 = new RendererModel(this, 60, 44);
+        this.leg4.addBox(0.0F, 2.0F, 0.0F, 5, 12, 5, -1.0F);
+        this.leg4.setRotationPoint(1.0F, 9.0F, 8.0F);
 
-        this.hoof1 = new RendererModel(this, 106, 117);
+        this.hoof1 = new RendererModel(this, 0, 62);
         this.hoof1.addBox(0.0F, 11.0F, 0.1F, 5, 3, 4, -0.5F);
 
-        this.hoof2 = new RendererModel(this, 106, 117);
+        this.hoof2 = new RendererModel(this, 20, 62);
         this.hoof2.addBox(0.0F, 11.0F, 0.1F, 5, 3, 4, -0.5F);
 
-        this.hoof3 = new RendererModel(this, 106, 117);
+        this.hoof3 = new RendererModel(this, 40, 62);
         this.hoof3.addBox(0.0F, 11.0F, 0.1F, 5, 3, 4, -0.5F);
 
-        this.hoof4 = new RendererModel(this, 106, 117);
+        this.hoof4 = new RendererModel(this, 60, 62);
         this.hoof4.addBox(0.0F, 11.0F, 0.1F, 5, 3, 4, -0.5F);
 
 

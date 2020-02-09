@@ -20,12 +20,9 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.horse.AbstractChestedHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -52,6 +49,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,24 +74,65 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             "a.png", "b.png", "c.png", "d.png", "e.png", "f.png", "g.png", "h.png", "i.png"
     };
 
-    //TODO add texture layers
+    private static final String[] HORSE_TEXTURES_SKIN = new String[] {
+            "skin_black.png", "skin_freckled.png", "skin_rosy.png", "skin_pink.png"
+    };
+
+    private static final String[] HORSE_TEXTURES_SKINSPOT_TOBIANO = new String[] {
+            "", 
+            "skinspot_tobiano_0.png", "skinspot_tobiano_1.png", "skinspot_tobiano_2.png", "skinspot_tobiano_3.png", "skinspot_tobiano_4.png", "skinspot_tobiano_5.png", "skinspot_tobiano_6.png", "skinspot_tobiano_7.png", "skinspot_tobiano_8.png", "skinspot_tobiano_9.png", "skinspot_tobiano_a.png", "skinspot_tobiano_b.png", "skinspot_tobiano_c.png", "skinspot_tobiano_d.png", "skinspot_tobiano_e.png", "skinspot_tobiano_f.png"
+    };
+    private static final String[] HORSE_TEXTURES_SKINSPOT_DOMINANTWHITE1 = new String[] {
+            "",
+            "skinspot_domwhite1_0.png", "skinspot_domwhite1_1.png", "skinspot_domwhite1_2.png", "skinspot_domwhite1_3.png", "skinspot_domwhite1_4.png", "skinspot_domwhite1_5.png", "skinspot_domwhite1_6.png", "skinspot_domwhite1_7.png", "skinspot_domwhite1_8.png", "skinspot_domwhite1_9.png", "skinspot_domwhite1_a.png", "skinspot_domwhite1_b.png", "skinspot_domwhite1_c.png", "skinspot_domwhite1_d.png", "skinspot_domwhite1_e.png", "skinspot_domwhite1_f.png"
+    };
+    private static final String[] HORSE_TEXTURES_SKINSPOT_DOMINANTWHITE2 = new String[] {
+            "",
+            "skinspot_domwhite2_0.png", "skinspot_domwhite2_1.png", "skinspot_domwhite2_2.png", "skinspot_domwhite2_3.png", "skinspot_domwhite2_4.png", "skinspot_domwhite2_5.png", "skinspot_domwhite2_6.png", "skinspot_domwhite2_7.png", "skinspot_domwhite2_8.png", "skinspot_domwhite2_9.png", "skinspot_domwhite2_a.png", "skinspot_domwhite2_b.png", "skinspot_domwhite2_c.png", "skinspot_domwhite2_d.png", "skinspot_domwhite2_e.png", "skinspot_domwhite2_f.png"
+    };
+
+    private static final String[] HORSE_TEXTURES_SKINSPOT_APPALOOSA = new String[] {
+            "",
+            "skinspot_appaloosa_0.png", "skinspot_appaloosa_1.png", "skinspot_appaloosa_2.png", "skinspot_appaloosa_3.png", "skinspot_appaloosa_4.png", "skinspot_appaloosa_5.png", "skinspot_appaloosa_6.png", "skinspot_appaloosa_7.png", "skinspot_appaloosa_8.png", "skinspot_appaloosa_9.png", "skinspot_appaloosa_a.png", "skinspot_appaloosa_b.png", "skinspot_appaloosa_c.png", "skinspot_appaloosa_d.png", "skinspot_appaloosa_e.png", "skinspot_appaloosa_f.png"
+    };
+
     private static final String[] HORSE_TEXTURES_BASE = new String[] {
-            "solid_white.png"
+            "r_solid_white.png"
     };
     private static final String[] HORSE_TEXTURES_RED = new String[] {
             "", "solid_red.png"
     };
     private static final String[] HORSE_TEXTURES_BLACK = new String[] {
-            "", "solid_black.png"
+            "sooty_dappled.png", "solid_black.png"
     };
     private static final String[] HORSE_TEXTURES_SPOT_TOBIANO = new String[] {
-            "", "solid_black.png"
+            "",
+            "spot_tobiano_0.png", "spot_tobiano_1.png", "spot_tobiano_2.png", "spot_tobiano_3.png", "spot_tobiano_4.png", "spot_tobiano_5.png", "spot_tobiano_6.png", "spot_tobiano_7.png", "spot_tobiano_8.png", "spot_tobiano_9.png", "spot_tobiano_a.png", "spot_tobiano_b.png", "spot_tobiano_c.png", "spot_tobiano_d.png", "spot_tobiano_e.png", "spot_tobiano_f.png"
     };
     private static final String[] HORSE_TEXTURES_SPOT_DOMINANTWHITE1 = new String[] {
-            "", "solid_black.png"
+            "",
+            "spot_domwhite1_0.png", "spot_domwhite1_1.png", "spot_domwhite1_2.png", "spot_domwhite1_3.png", "spot_domwhite1_4.png", "spot_domwhite1_5.png", "spot_domwhite1_6.png", "spot_domwhite1_7.png", "spot_domwhite1_8.png", "spot_domwhite1_9.png", "spot_domwhite1_a.png", "spot_domwhite1_b.png", "spot_domwhite1_c.png", "spot_domwhite1_d.png", "spot_domwhite1_e.png", "spot_domwhite1_f.png"
     };
     private static final String[] HORSE_TEXTURES_SPOT_DOMINANTWHITE2 = new String[] {
-            "", "solid_black.png"
+            "",
+            "spot_domwhite2_0.png", "spot_domwhite2_1.png", "spot_domwhite2_2.png", "spot_domwhite2_3.png", "spot_domwhite2_4.png", "spot_domwhite2_5.png", "spot_domwhite2_6.png", "spot_domwhite2_7.png", "spot_domwhite2_8.png", "spot_domwhite2_9.png", "spot_domwhite2_a.png", "spot_domwhite2_b.png", "spot_domwhite2_c.png", "spot_domwhite2_d.png", "spot_domwhite2_e.png", "spot_domwhite2_f.png"
+    };
+
+    private static final String[] HORSE_TEXTURES_SPOT_APPALOOSA = new String[] {
+            "",
+            "spot_appaloosa_0.png", "spot_appaloosa_1.png", "spot_appaloosa_2.png", "spot_appaloosa_3.png", "spot_appaloosa_4.png", "spot_appaloosa_5.png", "spot_appaloosa_6.png", "spot_appaloosa_7.png", "spot_appaloosa_8.png", "spot_appaloosa_9.png", "spot_appaloosa_a.png", "spot_appaloosa_b.png", "spot_appaloosa_c.png", "spot_appaloosa_d.png", "spot_appaloosa_e.png", "spot_appaloosa_f.png"
+    };
+
+    private static final String[] HORSE_TEXTURES_SCLERA = new String[]  {
+            "sclera_black.png", "sclera_white.png"
+    };
+
+    private static final String[] HORSE_TEXTURES_EYES = new String[]  {
+            "eyel_black.png", "eyel_brown.png", "eyel_hazel.png", "eyel_yellow.png", "eyel_blue.png", "eyel_white.png"
+    };
+
+    private static final String[] HORSE_TEXTURES_HOOVES = new String[]  {
+            "hooves_black.png", "hooves_brown.png"
     };
 
     private final List<String> horseTextures = new ArrayList<>();
@@ -462,15 +501,20 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         if (genesForText != null) {
             int number = 0;
             int letter = 0;
+            int sclera = 0;
             char[] uuidArry = getCachedUniqueIdString().toCharArray();
 
             if (genesForText[12] == 2 && genesForText[13] == 2) {
                 //horse is red based
             } else {
-                if (genesForText[14] == 2 && genesForText[15] == 2) {
+                if (genesForText[14] == 4 && genesForText[15] == 4) {
                     //horse is black based
+                } else if (genesForText[14] == 1 || genesForText[15] == 1) {
+                    //wildtype bay
+                } else if (genesForText[14] == 2 || genesForText[15] == 2) {
+                    //heavy marked bay
                 } else {
-                    //horse is wildtype based
+                    //seal brown
                 }
             }
 
@@ -546,9 +590,20 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
                 }
             }
 
+            
+
+            if (genesForText[36] == 2 || genesForText[37] == 2) {
+                sclera = 1;
+            }
+
+            this.horseTextures.add(HORSE_TEXTURES_SKIN[0]);
             this.horseTextures.add(HORSE_TEXTURES_BASE[0]);
+            this.horseTextures.add(HORSE_TEXTURES_BLACK[0]);
             this.horseTextures.add(HORSE_TEXTURES_TESTNUMBER[number]);
             this.horseTextures.add(HORSE_TEXTURES_TESTLETTER[letter]);
+            this.horseTextures.add(HORSE_TEXTURES_SCLERA[sclera]);
+            this.horseTextures.add(HORSE_TEXTURES_EYES[1]);
+            this.horseTextures.add(HORSE_TEXTURES_HOOVES[0]);
         }
     }
 
@@ -558,100 +613,93 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         if (horseColouration == null) {
             horseColouration = new float[6];
             int[] genesForText = getSharedGenes();
+            //Dominant White Spotting [ W1-, W2-, W3-, W4-, W5, W6, W7, W8, W9-, W10-, W11-, W12, W13-, W14-, W15, W16, W17-, W18, W19, W20(Sabino2), W21, W22, W23-, W24-, W25-, W26, W27, Sabino1, wildtype+ ]
+            if ((genesForText[18] == 20 || genesForText[18] == 28 || genesForText[18] == 29) && (genesForText[19] == 20 || genesForText[19] == 28 || genesForText[19] == 29)) {
 
-            float blackR = 15.0F;
-            float blackG = 7.0F;
-            float blackB = 7.0F;
+                horseColouration[0] = 0.047F;
+                horseColouration[1] = 0.20F;
+                horseColouration[2] = 0.07F;
 
-            float redR = 134.0F;
-            float redG = 79.0F;
-            float redB = 41.0F;
+                horseColouration[3] = 0.047F;
+                horseColouration[4] = 0.75F;
+                horseColouration[5] = 0.5F;
 
-            if (genesForText[16] == 1 || genesForText[17] == 1) {
-                //dun
-                if (genesForText[22] == 3 && genesForText[23] == 3) {
-                    //pearl
-                } else if (genesForText[22] == 2 || genesForText[23] == 2) {
-                    //cream
-                    if (genesForText[22] == 1 || genesForText[23] == 1) {
-                        //heterozygous cream
-                    } else if (genesForText[22] == 2 && genesForText[23] == 2) {
-                        //homozygous cream
-                    } else {
-                        //pseudo-double dilute
-                    }
+                if (genesForText[12] == 2 && genesForText[13] == 2) {
+                    //red
+                    horseColouration[0] = horseColouration[3];
+                    horseColouration[1] = horseColouration[4];
+                    horseColouration[2] = horseColouration[5];
+                } else if (genesForText[14] == 4 && genesForText[15] == 4) {
+                    //black
+                    horseColouration[3] = horseColouration[0];
+                    horseColouration[4] = horseColouration[1];
+                    horseColouration[5] = horseColouration[2];
                 }
-            } else {
-                //full colour
-
-            }
 
 
-
-            if (genesForText[12] == 2 && genesForText[13] == 2) {
-                //horse is red based
-                if (genesForText[16] == 1 || genesForText[17] == 1) {
-                    //red dun
-
-                    if (genesForText[22] == 1 || genesForText[23] == 1) {
-                        if (genesForText[22] != 2 && genesForText[23] != 2) {
-                            //red dun
+                if (genesForText[22] != 1 || genesForText[23] != 1) {
+                    if (genesForText[22] == 2 || genesForText[23] == 2) {
+                        if (genesForText[22] == 1 || genesForText[23] == 1) {
+                            //cream
+                            horseColouration[1] = horseColouration[1] * 0.75F;
+                            horseColouration[2] = horseColouration[2] * 1.2F;
+                            horseColouration[3] = horseColouration[3] * 2.0F;
+                            horseColouration[4] = horseColouration[4] * 0.75F;
+                            horseColouration[5] = horseColouration[5] * 1.45F;
                         } else {
-                            //heterozygous cream
+                            //double dilute
+                            horseColouration[1] = horseColouration[1] * 0.75F;
+                            horseColouration[2] = horseColouration[2] * 1.2F;
+                            horseColouration[3] = horseColouration[3] * 2.0F;
+                            horseColouration[4] = (horseColouration[4] + 0.4F) / 4.0F;
+                            horseColouration[5] = (horseColouration[5] + 4.0F) / 5.0F;
+
+                            if (genesForText[22] == 3 || genesForText[23] == 3) {
+                                //pseudo double dilute
+
+                            }
                         }
-                    } else if (genesForText[22] == 2 && genesForText[23] == 2) {
-                        //homozygous cream
-                    } else if (genesForText[22] == 2 || genesForText[23] == 2) {
-                        //cream / pearl heterozygote
                     } else {
                         //pearl
+                        horseColouration[3] = horseColouration[3] * 1.55F;
+                        horseColouration[4] = horseColouration[4] * 0.75F;
+                        horseColouration[5] = horseColouration[5] * 1.5F;
                     }
-
-                } else {
-                    //red
-
                 }
+
+
+                //checks that numbers are within the valid range
+                for (int i = 0; i <= 5; i++) {
+                    if (horseColouration[i] > 1.0F) {
+                        horseColouration[i] = 1.0F;
+                    } else if (horseColouration[i] < 0.0F) {
+                        horseColouration[i] = 0.0F;
+                    }
+                }
+
+                //changes horse melanin from HSB to RGB
+                int rgb = Color.HSBtoRGB(horseColouration[0], horseColouration[1], horseColouration[2]);
+                horseColouration[0] = (rgb >> 16) & 0xFF;
+                horseColouration[1] = (rgb >> 8) & 0xFF;
+                horseColouration[2] = rgb & 0xFF;
+
+                //changes horse pheomelanin from HSB to RGB
+                rgb = Color.HSBtoRGB(horseColouration[3], horseColouration[4], horseColouration[5]);
+                horseColouration[3] = (rgb >> 16) & 0xFF;
+                horseColouration[4] = (rgb >> 8) & 0xFF;
+                horseColouration[5] = rgb & 0xFF;
+
+                for (int i = 0; i <= 5; i++) {
+                    horseColouration[i] = horseColouration[i] / 255.0F;
+                }
+
             } else {
-                if (genesForText[14] == 2 && genesForText[15] == 2) {
-                    //horse is black based
-                    if (genesForText[16] == 1 || genesForText[17] == 1) {
-                        //grullo
-
-                    } else {
-                        //black
-
-                    }
-                } else {
-                    //horse is wildtype based
-                    if (genesForText[16] == 1 || genesForText[17] == 1) {
-                        //bay dun
-
-                    } else {
-                        //bay
-
-                    }
+                for (int i = 0; i <= 5; i++) {
+                    horseColouration[i] = 1.0F;
                 }
             }
-
-            //TODO TEMP AF
-            //black
-            horseColouration[0] = blackR;
-            horseColouration[1] = blackG;
-            horseColouration[2] = blackB;
-
-            //red
-            horseColouration[3] = redR;
-            horseColouration[4] = redG;
-            horseColouration[5] = redB;
-
-            for (int i = 0; i <= 5; i++) {
-                if (horseColouration[i] > 255.0F) {
-                    horseColouration[i] = 255.0F;
-                }
-                horseColouration[i] = horseColouration[i] / 255.0F;
-            }
-
         }
+
         return horseColouration;
     }
 
@@ -953,7 +1001,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[13] = (1);
         }
 
-        //Agouti [ Wildtype+, solid/black ]
+        //Agouti [ Wildtype+, Bay2, sealbrown, solid/black ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[14] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -972,13 +1020,13 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[16] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[16] = (1);
+            initialGenes[16] = (3);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[17] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[17] = (1);
+            initialGenes[17] = (3);
         }
 
         //Dominant White Spotting [ W1-, W2-, W3-, W4-, W5, W6, W7, W8, W9-, W10-, W11-, W12, W13-, W14-, W15, W16, W17-, W18, W19, W20(Sabino2), W21, W22, W23-, W24-, W25-, W26, W27, Sabino1, wildtype+ ]

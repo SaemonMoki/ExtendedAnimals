@@ -261,6 +261,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     private String dropMeatType;
 
     private int hunger = 0;
+    protected int healTicks = 0;
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
 
@@ -516,6 +517,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
             if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
                 setSleeping(true);
+                healTicks = 0;
             } else if (awokenTimer > 0) {
                 awokenTimer--;
             } else if (this.world.isDaytime() && sleeping) {
@@ -523,15 +525,29 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             }
 
             if (this.getIdleTime() < 100) {
+
                 if (hunger <= 72000) {
-                    if (ticksExisted % 2 == 0){
-                        hunger++;
+                    if (sleeping) {
+                        if ((hunger <= 12000) && ((ticksExisted % 4 == 0))) {
+                            hunger = hunger++;
+                        }
+                        healTicks++;
+                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
+                            this.heal(2.0F);
+                            hunger = hunger + 1000;
+                            healTicks = 0;
+                        }
+                    } else {
+                        if (ticksExisted % 2 == 0){
+                            hunger++;
+                        }
                     }
-                    if (hunger <= 24000) {
-                        --this.timeUntilNextEgg;
-                    } else if (hunger >= 48000) {
-                        this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
-                    }
+                }
+
+                if (hunger <= 24000) {
+                    --this.timeUntilNextEgg;
+                } else if (hunger >= 48000) {
+                    this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
                 }
             }
 

@@ -167,6 +167,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     private float[] horseColouration = null;
     private float horseSize;
     protected int hunger = 0;
+    private int healTicks = 0;
     protected int horseTimer;
     protected boolean aiConfigured = false;
     protected String motherUUID = "";
@@ -300,6 +301,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
 
             if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
                 setSleeping(true);
+                healTicks = 0;
             } else if (awokenTimer > 0) {
                 awokenTimer--;
             } else if (this.world.isDaytime() && sleeping) {
@@ -330,9 +332,20 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             }
             if (this.getIdleTime() < 100) {
                 if (hunger <= 72000) {
-
-                    hunger = hunger + 2;
-
+                    if (sleeping) {
+                        int days = ConfigHandler.COMMON.gestationDaysHorse.get();
+                        if (hunger <= days*(0.50)) {
+                            hunger = hunger++;
+                        }
+                        healTicks++;
+                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
+                            this.heal(2.0F);
+                            hunger = hunger + 1000;
+                            healTicks = 0;
+                        }
+                    } else {
+                        hunger = hunger + 2;
+                    }
                 }
 
                 if (getHorseStatus().equals(EntityState.MOTHER.toString())) {

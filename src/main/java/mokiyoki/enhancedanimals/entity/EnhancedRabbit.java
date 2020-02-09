@@ -228,6 +228,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     private boolean pregnant = false;
 
     private int hunger = 0;
+    protected int healTicks = 0;
     protected String motherUUID = "";
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
@@ -611,6 +612,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
             if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
                 setSleeping(true);
+                healTicks = 0;
             } else if (awokenTimer > 0) {
                 awokenTimer--;
             } else if (this.world.isDaytime() && sleeping) {
@@ -618,9 +620,23 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             }
 
             if (this.getIdleTime() < 100) {
+
                 if (hunger <= 72000) {
-                    if (ticksExisted % 4 == 0){
-                        hunger++;
+                    if (sleeping) {
+                        int days = ConfigHandler.COMMON.gestationDaysRabbit.get();
+                        if ((hunger <= days*(0.50)) && (ticksExisted % 8 == 0)) {
+                            hunger = hunger++;
+                        }
+                        healTicks++;
+                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
+                            this.heal(2.0F);
+                            hunger = hunger + 1000;
+                            healTicks = 0;
+                        }
+                    } else {
+                        if (ticksExisted % 4 == 0){
+                            hunger++;
+                        }
                     }
                 }
                 //TODO add a limiter to time for growth if the animal is extremely hungry

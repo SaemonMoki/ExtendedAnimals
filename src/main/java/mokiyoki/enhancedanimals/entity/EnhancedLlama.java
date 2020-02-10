@@ -169,6 +169,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private boolean pregnant = false;
 
     private int hunger = 0;
+    private int healTicks = 0;
     protected String motherUUID = "";
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
@@ -515,6 +516,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
             if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
                 setSleeping(true);
+                healTicks = 0;
             } else if (awokenTimer > 0) {
                 awokenTimer--;
             } else if (this.world.isDaytime() && sleeping) {
@@ -522,6 +524,25 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             }
 
             if (this.getIdleTime() < 100) {
+
+                if (hunger <= 72000) {
+                    if (sleeping) {
+                        int days = ConfigHandler.COMMON.gestationDaysLlama.get();
+                        if ((hunger <= days*(0.50)) && (ticksExisted % 2 == 0)) {
+                            hunger = hunger++;
+                        }
+                        healTicks++;
+                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
+                            this.heal(2.0F);
+                            hunger = hunger + 1000;
+                            healTicks = 0;
+                        }
+                    } else {
+                        hunger++;
+                    }
+                }
+
+
                 if (hunger <= 36000) {
                     timeForGrowth++;
                 }
@@ -531,10 +552,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                         currentCoatLength++;
                         setCoatLength(currentCoatLength);
                     }
-                }
-//           && ticksExisted % 2 == 0
-                if (hunger <= 72000){
-                    hunger++;
                 }
             }
 

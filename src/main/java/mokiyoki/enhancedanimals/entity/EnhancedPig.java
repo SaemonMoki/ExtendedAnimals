@@ -210,6 +210,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     private boolean pregnant = false;
 
     private int hunger = 0;
+    protected int healTicks = 0;
     protected String motherUUID = "";
 
     protected Boolean sleeping = false;
@@ -464,20 +465,36 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     public void livingTick() {
         super.livingTick();
 
-        if (hunger <= 72000 && this.getIdleTime() < 100) {
-            hunger = hunger + 2;
-        }
-
         if (this.world.isRemote) {
             this.grassTimer = Math.max(0, this.grassTimer - 1);
         } else {
 
             if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
                 setSleeping(true);
+                healTicks = 0;
             } else if (awokenTimer > 0) {
                 awokenTimer--;
             } else if (this.world.isDaytime() && sleeping) {
                 setSleeping(false);
+            }
+
+            if (this.getIdleTime() < 100) {
+                if (hunger <= 72000) {
+                    if (sleeping) {
+                        int days = ConfigHandler.COMMON.gestationDaysPig.get();
+                        if (hunger <= days * (0.50)) {
+                            hunger = hunger++;
+                        }
+                        healTicks++;
+                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
+                            this.heal(2.0F);
+                            hunger = hunger + 1000;
+                            healTicks = 0;
+                        }
+                    } else {
+                        hunger = hunger + 2;
+                    }
+                }
             }
 
             if(pregnant) {

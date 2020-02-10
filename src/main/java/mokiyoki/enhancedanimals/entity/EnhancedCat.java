@@ -166,6 +166,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
     private float[] catColouration = null;
     private int hunger = 0;
+    private int healTicks = 0;
     protected String motherUUID = "";
     protected Boolean sleeping;
     protected Boolean hemizygote = false;
@@ -430,12 +431,37 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     public void livingTick() {
         super.livingTick();
         if (!this.world.isRemote) {
+
+            if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
+                setSleeping(true);
+                healTicks = 0;
+            } else if (awokenTimer > 0) {
+                awokenTimer--;
+            } else if (this.world.isDaytime() && sleeping) {
+                setSleeping(false);
+            }
+
             if (this.getIdleTime() < 100) {
+
                 if (hunger <= 72000) {
-                    if (ticksExisted % 4 == 0){
-                        hunger++;
+                    if (sleeping) {
+                        int days = ConfigHandler.COMMON.gestationDaysCat.get();
+                        if (hunger <= days * (0.50) && (ticksExisted % 8 == 0)) {
+                            hunger = hunger++;
+                        }
+                        healTicks++;
+                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
+                            this.heal(2.0F);
+                            hunger = hunger + 1000;
+                            healTicks = 0;
+                        }
+                    } else {
+                        if (ticksExisted % 4 == 0) {
+                            hunger++;
+                        }
                     }
                 }
+
                 //TODO add a limiter to time for growth if the animal is extremely hungry
                 if (hunger <= 36000) {
                     timeForGrowth++;

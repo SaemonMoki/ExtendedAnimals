@@ -162,7 +162,6 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
     @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
         worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
-
         if (!worldIn.isRemote && !player.isCreative()) {
             int bites = state.get(BITES);
             ItemStack itemstack = new ItemStack(Items.WHEAT, (9-bites));

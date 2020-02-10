@@ -76,29 +76,29 @@ public class EggCartonTileEntity extends LockableLootTileEntity implements ISide
         ++this.ticksSinceSync;
         this.numPlayersUsing = func_213977_a(this.world, this, this.ticksSinceSync, i, j, k, this.openCount);
         this.prevLidAngle = this.lidAngle;
-        float f = 0.1F;
+        float f = 0.05F; // speed the lid opens/closes
         if (this.numPlayersUsing > 0 && this.lidAngle == 0.0F) {
             this.playSound(SoundEvents.BLOCK_CHEST_OPEN);
         }
 
-        if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F) {
+        if (this.numPlayersUsing == 0 && this.lidAngle < 0.0F || this.numPlayersUsing > 0 && this.lidAngle > -0.25F) {
             float f1 = this.lidAngle;
             if (this.numPlayersUsing > 0) {
-                this.lidAngle += 0.1F;
+                this.lidAngle -= f;
             } else {
-                this.lidAngle -= 0.1F;
+                this.lidAngle += f;
             }
 
-            if (this.lidAngle > 1.0F) {
-                this.lidAngle = 1.0F;
+            if (this.lidAngle < -0.25F) {
+                this.lidAngle = -0.25F;
             }
 
-            float f2 = 0.5F;
-            if (this.lidAngle < 0.5F && f1 >= 0.5F) {
+            float f2 = -0.125F; // when to play the sound
+            if (this.lidAngle > f2 && f1 <= f2) {
                 this.playSound(SoundEvents.BLOCK_CHEST_CLOSE);
             }
 
-            if (this.lidAngle < 0.0F) {
+            if (this.lidAngle > 0.0F) {
                 this.lidAngle = 0.0F;
             }
         }

@@ -117,7 +117,7 @@ public class ConfigHandler {
 
             wildTypeChance = builder
                     .comment(" 100 will make all animals spawn as wildtype for their biome, some mutations may be impossible to get. 0 makes animals spawn with almost completely random genes. higher numbers are best since you only need a few mutations to make a big difference")
-                    .defineInRange("wildType.chance", 90, 1, Integer.MAX_VALUE);
+                    .defineInRange("wildType.chance", 90, 100, Integer.MAX_VALUE);
 
 //            incubationDaysChicken = builder
 //                    .comment("Number of ticks for chickens to hatch, does nothing yet. 24000 = 1 Minecraft Day")

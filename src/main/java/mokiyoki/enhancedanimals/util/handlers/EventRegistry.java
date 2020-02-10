@@ -227,11 +227,11 @@ public class EventRegistry {
     @SubscribeEvent
     public static void onLoadComplete(FMLLoadCompleteEvent event) {
 //        if (Dimension.isSurfaceWorld()) {
+
             for (Biome biome : ForgeRegistries.BIOMES) {
 //
-                if (!biome.getRegistryName().equals(Biomes.OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_OCEAN.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DEEP_LUKEWARM_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_COLD_OCEAN.getRegistryName()) &&  !biome.getRegistryName().equals(Biomes.DEEP_FROZEN_OCEAN.getRegistryName()) &&
-                        !biome.getRegistryName().equals(Biomes.THE_END.getRegistryName()) && !biome.getRegistryName().equals(Biomes.SMALL_END_ISLANDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.END_BARRENS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.END_HIGHLANDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.END_MIDLANDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.NETHER.getRegistryName()) && !biome.getRegistryName().equals(Biomes.BEACH.getRegistryName()))
-                {
+                if ( !biome.getRegistryName().toString().contains("ocean") && !(biome.getRegistryName().toString().contains("_end") || biome.getRegistryName().toString().contains("end_")) && biome.getRegistryName().toString().contains("nether")
+                ){
 
                     if (!biome.getRegistryName().equals(Biomes.MUSHROOM_FIELDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.MUSHROOM_FIELD_SHORE.getRegistryName())){
 

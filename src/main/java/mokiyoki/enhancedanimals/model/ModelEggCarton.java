@@ -18,9 +18,9 @@ public class ModelEggCarton extends Model {
         base.cubeList.add(new ModelBox(base, 0, 35, 0.5F, 10.0F, 2.0F, 15, 3, 12, -2.0F, false));
 
         lid = new RendererModel(this);
-        lid.setRotationPoint(0.0F, 12.0F, 2.0F);
-        lid.cubeList.add(new ModelBox(lid, 0, 19, 1.0F, 0.0F, 0.0F, 14, 12, 4, 0.0F, false));
-        this.setRotationAngle(this.lid, 3.2F, 0.0F, 0.0F);
+        lid.setRotationPoint(0.0F, 12.0F, 14.0F);
+        lid.cubeList.add(new ModelBox(lid, 0, 19, 1.0F, -12.0F, 0.0F, 14, 12, 4, 0.0F, false));
+        this.setRotationAngle(this.lid, 0.0F, 0.0F, 0.0F);
     }
 
     public void renderAll() {

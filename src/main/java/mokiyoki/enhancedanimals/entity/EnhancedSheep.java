@@ -252,50 +252,42 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         if (this.getSheared()) {
             return this.getType().getLootTable();
         } else {
-            if (genes[4] == 1 || genes[5] == 1 || ((genes[0] >= 3 && genes[1] >= 3) && (genes[0] != 5 && genes[1] != 5))){
-                if ((genes[2] == 1 || genes[3] == 1) && (genes[0] != 3 && genes[1] != 3)){
-                    return LootTables.ENTITIES_SHEEP_BLACK;
-                }else{
+            DyeColor woolColour = getWoolColour();
+
+            switch (woolColour) {
+                case WHITE:
+                default:
+                    return LootTables.ENTITIES_SHEEP_WHITE;
+                case ORANGE:
+                    return LootTables.ENTITIES_SHEEP_ORANGE;
+                case MAGENTA:
+                    return LootTables.ENTITIES_SHEEP_MAGENTA;
+                case LIGHT_BLUE:
+                    return LootTables.ENTITIES_SHEEP_LIGHT_BLUE;
+                case YELLOW:
+                    return LootTables.ENTITIES_SHEEP_YELLOW;
+                case LIME:
+                    return LootTables.ENTITIES_SHEEP_LIME;
+                case PINK:
+                    return LootTables.ENTITIES_SHEEP_PINK;
+                case GRAY:
+                    return LootTables.ENTITIES_SHEEP_GRAY;
+                case LIGHT_GRAY:
+                    return LootTables.ENTITIES_SHEEP_LIGHT_GRAY;
+                case CYAN:
+                    return LootTables.ENTITIES_SHEEP_CYAN;
+                case PURPLE:
+                    return LootTables.ENTITIES_SHEEP_PURPLE;
+                case BLUE:
+                    return LootTables.ENTITIES_SHEEP_BLUE;
+                case BROWN:
                     return LootTables.ENTITIES_SHEEP_BROWN;
-                }
-            }else if ((genes[0] == 2 || genes[1] == 2) && getFleeceDyeColour() == DyeColor.WHITE) {
-                return LootTables.ENTITIES_SHEEP_LIGHT_GRAY;
-            }else {
-                switch (this.getFleeceDyeColour()) {
-                    case WHITE:
-                    default:
-                        return LootTables.ENTITIES_SHEEP_WHITE;
-                    case ORANGE:
-                        return LootTables.ENTITIES_SHEEP_ORANGE;
-                    case MAGENTA:
-                        return LootTables.ENTITIES_SHEEP_MAGENTA;
-                    case LIGHT_BLUE:
-                        return LootTables.ENTITIES_SHEEP_LIGHT_BLUE;
-                    case YELLOW:
-                        return LootTables.ENTITIES_SHEEP_YELLOW;
-                    case LIME:
-                        return LootTables.ENTITIES_SHEEP_LIME;
-                    case PINK:
-                        return LootTables.ENTITIES_SHEEP_PINK;
-                    case GRAY:
-                        return LootTables.ENTITIES_SHEEP_GRAY;
-                    case LIGHT_GRAY:
-                        return LootTables.ENTITIES_SHEEP_LIGHT_GRAY;
-                    case CYAN:
-                        return LootTables.ENTITIES_SHEEP_CYAN;
-                    case PURPLE:
-                        return LootTables.ENTITIES_SHEEP_PURPLE;
-                    case BLUE:
-                        return LootTables.ENTITIES_SHEEP_BLUE;
-                    case BROWN:
-                        return LootTables.ENTITIES_SHEEP_BROWN;
-                    case GREEN:
-                        return LootTables.ENTITIES_SHEEP_GREEN;
-                    case RED:
-                        return LootTables.ENTITIES_SHEEP_RED;
-                    case BLACK:
-                        return LootTables.ENTITIES_SHEEP_BLACK;
-                }
+                case GREEN:
+                    return LootTables.ENTITIES_SHEEP_GREEN;
+                case RED:
+                    return LootTables.ENTITIES_SHEEP_RED;
+                case BLACK:
+                    return LootTables.ENTITIES_SHEEP_BLACK;
             }
         }
     }
@@ -620,79 +612,159 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
             for (int c = 0-woolCount; c < 0; c++){
 
-                int spots = 0;
+                DyeColor woolColour = getWoolColour();
 
-                if (genes[8] == 2 && genes[9] == 2){
-                    spots = this.rand.nextInt(3);
-                }
-
-                if (genes[4] == 1 || genes[5] == 1 || ((genes[0] >= 4 && genes[1] >= 4) && (genes[0] != 5 && genes[1] != 5)) && spots != 2) {
-                    if ((genes[2] == 1 || genes[3] == 1) && (genes[0] != 3 && genes[1] != 3)) {
-                        ret.add(new ItemStack(Blocks.BLACK_WOOL));
-                    } else {
-                        ret.add(new ItemStack(Blocks.BROWN_WOOL));
-                    }
-                }else if ((genes[0] == 2 || genes[1] == 2) && getFleeceDyeColour() == DyeColor.WHITE) {
+                switch (woolColour) {
+                    case WHITE:
+                    default:
+                        ret.add(new ItemStack(Blocks.WHITE_WOOL));
+                        break;
+                    case ORANGE:
+                        ret.add(new ItemStack(Blocks.ORANGE_WOOL));
+                        break;
+                    case MAGENTA:
+                        ret.add(new ItemStack(Blocks.MAGENTA_WOOL));
+                        break;
+                    case LIGHT_BLUE:
+                        ret.add(new ItemStack(Blocks.LIGHT_BLUE_WOOL));
+                        break;
+                    case YELLOW:
+                        ret.add(new ItemStack(Blocks.YELLOW_WOOL));
+                        break;
+                    case LIME:
+                        ret.add(new ItemStack(Blocks.LIME_WOOL));
+                        break;
+                    case PINK:
+                        ret.add(new ItemStack(Blocks.PINK_WOOL));
+                        break;
+                    case GRAY:
+                        ret.add(new ItemStack(Blocks.GRAY_WOOL));
+                        break;
+                    case LIGHT_GRAY:
                         ret.add(new ItemStack(Blocks.LIGHT_GRAY_WOOL));
-                }else {
-                    switch (this.getFleeceDyeColour()) {
-                        case WHITE:
-                        default:
-                            ret.add(new ItemStack(Blocks.WHITE_WOOL));
-                            break;
-                        case ORANGE:
-                            ret.add(new ItemStack(Blocks.ORANGE_WOOL));
-                            break;
-                        case MAGENTA:
-                            ret.add(new ItemStack(Blocks.MAGENTA_WOOL));
-                            break;
-                        case LIGHT_BLUE:
-                            ret.add(new ItemStack(Blocks.LIGHT_BLUE_WOOL));
-                            break;
-                        case YELLOW:
-                            ret.add(new ItemStack(Blocks.YELLOW_WOOL));
-                            break;
-                        case LIME:
-                            ret.add(new ItemStack(Blocks.LIME_WOOL));
-                            break;
-                        case PINK:
-                            ret.add(new ItemStack(Blocks.PINK_WOOL));
-                            break;
-                        case GRAY:
-                            ret.add(new ItemStack(Blocks.GRAY_WOOL));
-                            break;
-                        case LIGHT_GRAY:
-                            ret.add(new ItemStack(Blocks.LIGHT_GRAY_WOOL));
-                            break;
-                        case CYAN:
-                            ret.add(new ItemStack(Blocks.CYAN_WOOL));
-                            break;
-                        case PURPLE:
-                            ret.add(new ItemStack(Blocks.PURPLE_WOOL));
-                            break;
-                        case BLUE:
-                            ret.add(new ItemStack(Blocks.BLUE_WOOL));
-                            break;
-                        case BROWN:
-                            ret.add(new ItemStack(Blocks.BROWN_WOOL));
-                            break;
-                        case GREEN:
-                            ret.add(new ItemStack(Blocks.GREEN_WOOL));
-                            break;
-                        case RED:
-                            ret.add(new ItemStack(Blocks.RED_WOOL));
-                            break;
-                        case BLACK:
-                            ret.add(new ItemStack(Blocks.BLACK_WOOL));
-                            break;
-                    }
+                        break;
+                    case CYAN:
+                        ret.add(new ItemStack(Blocks.CYAN_WOOL));
+                        break;
+                    case PURPLE:
+                        ret.add(new ItemStack(Blocks.PURPLE_WOOL));
+                        break;
+                    case BLUE:
+                        ret.add(new ItemStack(Blocks.BLUE_WOOL));
+                        break;
+                    case BROWN:
+                        ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                        break;
+                    case GREEN:
+                        ret.add(new ItemStack(Blocks.GREEN_WOOL));
+                        break;
+                    case RED:
+                        ret.add(new ItemStack(Blocks.RED_WOOL));
+                        break;
+                    case BLACK:
+                        ret.add(new ItemStack(Blocks.BLACK_WOOL));
+                        break;
                 }
             }
-
         }
         currentCoatLength = 0;
         setCoatLength(currentCoatLength);
         return ret;
+    }
+
+    private DyeColor getWoolColour() {
+        int spots = 0;
+        DyeColor returnDye;
+
+
+        if (genes[8] == 2 && genes[9] == 2){
+            spots = this.rand.nextInt(3);
+        }
+
+        if (spots != 2) {
+            if (genes[4] == 1 || genes[5] == 1) {
+                if (genes[2] == 1 || genes[3] == 1){
+                    returnDye = DyeColor.BLACK;
+                }else{
+                    returnDye = DyeColor.BROWN;
+                }
+            } else if ((genes[0] >= 3 && genes[1] >= 3) && (genes[0] != 5 && genes[1] != 5)){
+                if ((genes[2] == 1 || genes[3] == 1) && (genes[0] != 3 && genes[1] != 3)){
+                    returnDye = DyeColor.BLACK;
+                }else{
+                    returnDye = DyeColor.BROWN;
+                }
+            }else if ((genes[0] == 2 || genes[1] == 2) && getFleeceDyeColour() == DyeColor.WHITE) {
+                returnDye = DyeColor.LIGHT_GRAY;
+            } else {
+                spots = 2;
+                returnDye = DyeColor.WHITE;
+            }
+        } else {
+            returnDye = DyeColor.WHITE;
+        }
+
+        if (returnDye == DyeColor.WHITE || returnDye == DyeColor.LIGHT_GRAY){
+            switch (this.getFleeceDyeColour()) {
+                case WHITE:
+                default:
+                    if (returnDye == DyeColor.LIGHT_GRAY) {
+                        returnDye = DyeColor.LIGHT_GRAY;
+                    }
+                    break;
+                case ORANGE:
+                    returnDye = DyeColor.ORANGE;
+                    break;
+                case MAGENTA:
+                    returnDye = DyeColor.MAGENTA;
+                    break;
+                case LIGHT_BLUE:
+                    returnDye = DyeColor.LIGHT_BLUE;
+                    break;
+                case YELLOW:
+                    returnDye = DyeColor.YELLOW;
+                    break;
+                case LIME:
+                    returnDye = DyeColor.LIME;
+                    break;
+                case PINK:
+                    returnDye = DyeColor.PINK;
+                    break;
+                case GRAY:
+                    returnDye = DyeColor.GRAY;
+                    break;
+                case LIGHT_GRAY:
+                    returnDye = DyeColor.LIGHT_GRAY;
+                    break;
+                case CYAN:
+                    returnDye = DyeColor.CYAN;
+                    break;
+                case PURPLE:
+                    returnDye = DyeColor.PURPLE;
+                    break;
+                case BLUE:
+                    returnDye = DyeColor.BLUE;
+                    break;
+                case BROWN:
+                    returnDye = DyeColor.BROWN;
+                    break;
+                case GREEN:
+                    returnDye = DyeColor.GREEN;
+                    break;
+                case RED:
+                    returnDye = DyeColor.RED;
+                    break;
+                case BLACK:
+                    returnDye = DyeColor.BLACK;
+                    break;
+            }
+        }
+
+        if(this.getFleeceDyeColour() == DyeColor.BLACK) {
+            returnDye = DyeColor.BLACK;
+        }
+
+        return returnDye;
     }
 
 //    public void setMotherUUID(String motherUUID) {
@@ -1525,8 +1597,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
          * Colour Genes
          */
 
-        if (true) {
-            return new int[] {4,4,2,2,1,2,1,2,1,1,1,1,1,1,1,1,2,1,1,1,2,2,2,1,2,2,2,2,2,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+        if (false) {
+            return new int[] {3,3,2,2,2,1,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,2,2,2,2,2,1,2,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1,2,2,2,2,2
             };
 
         } else {

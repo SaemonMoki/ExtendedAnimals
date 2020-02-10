@@ -2354,7 +2354,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[79] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[79] = (1);
+            initialGenes[79] = (2);
         }
 
         return initialGenes;

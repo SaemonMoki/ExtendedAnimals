@@ -2,9 +2,9 @@
   "variants": {
     "facing=down": { "model": "eanimod:block/egg_carton" },
     "facing=up": { "model": "eanimod:block/egg_carton" },
-    "facing=north": { "model": "eanimod:block/egg_carton" },
-    "facing=south": { "model": "eanimod:block/egg_carton", "x": 180 },
-    "facing=west": { "model": "eanimod:block/egg_carton", "x": 270},
-    "facing=east": { "model": "eanimod:block/egg_carton", "x": 90}
+    "facing=north": { "model": "eanimod:block/egg_carton", "x": 180 },
+    "facing=south": { "model": "eanimod:block/egg_carton", "x": 0 },
+    "facing=west": { "model": "eanimod:block/egg_carton", "x": 90},
+    "facing=east": { "model": "eanimod:block/egg_carton", "x": 270}
   }
 }

@@ -68,7 +68,7 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 
 public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
-    //avalible UUID spaces : [ S X X X 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+    //avalible UUID spaces : [ S X X X X 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
     private static final DataParameter<Float> COW_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
@@ -178,7 +178,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private final List<String> cowTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 80;
+    private static final int GENES_LENGTH = 84;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     protected int[] mitosisGenes = new int[GENES_LENGTH];
@@ -2356,6 +2356,40 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         } else {
             initialGenes[79] = (2);
         }
+
+        //cow horn length modifier [wildtype, longer horns 1, shorter horns 2, shorter horns 3]
+            initialGenes[80] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+            initialGenes[81] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        //horn shortener [wildtype, shorter horns]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[82] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[82] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[83] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[83] = (2);
+        }
+
+        //cow horn curvature [wildtype (1, .75, .5, .25, )
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[82] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[82] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[83] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[83] = (2);
+        }
+
 
         return initialGenes;
     }

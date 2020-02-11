@@ -384,15 +384,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float bodyWidth = -0.165F;
         float bodyLength = 0.0F;
         int hump = 0;
-        char[] uuidArry;
+        char[] uuidArray;
 
         if (enhancedCow.getMooshroomUUID().isEmpty()) {
-            uuidArry = enhancedCow.getCachedUniqueIdString().toCharArray();
+            uuidArray = enhancedCow.getCachedUniqueIdString().toCharArray();
         } else {
-            uuidArry = enhancedCow.getMooshroomUUID().toCharArray();
+            uuidArray = enhancedCow.getMooshroomUUID().toCharArray();
         }
 
-        float horns = calculateHorns(genes, uuidArry);
+        float horns = calculateHorns(genes, uuidArray);
         //size [0.75 to 2.5]
         float hornScale = 1.0F;
         float hornShift = 0.0F;
@@ -565,12 +565,12 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int[] sharedGenes) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         boolean sleeping = ((EnhancedAnimal)entityIn).isAnimalSleeping();
-        char[] uuidArry;
+        char[] uuidArray;
 
-        if (entityIn.getMooshroomUUID().isEmpty()) {
-            uuidArry = entityIn.getCachedUniqueIdString().toCharArray();
+        if (entityIn.getMooshroomUUID().equals("0")) {
+            uuidArray = entityIn.getCachedUniqueIdString().toCharArray();
         } else {
-            uuidArry = entityIn.getMooshroomUUID().toCharArray();
+            uuidArray = entityIn.getMooshroomUUID().toCharArray();
         }
 
         this.headModel.rotateAngleX = (headPitch * 0.017453292F);
@@ -621,7 +621,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         setEarRotations(sharedGenes);
 
-        setHornRotations(sharedGenes, uuidArry);
+        setHornRotations(sharedGenes, uuidArray);
 
     }
 
@@ -671,7 +671,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
     }
 
-    private void setHornRotations(int[] sharedGenes, char[] uuidArry) {
+    private void setHornRotations(int[] sharedGenes, char[] uuidArray) {
+
         this.hornNub1.rotateAngleX = ((float)Math.PI / -2F);
         this.hornNub2.rotateAngleX = ((float)Math.PI / -2F);
         this.hornNub3.rotateAngleX = ((float)Math.PI / -2F);
@@ -685,7 +686,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         hornR0.setRotationPoint(0.0F, 0.0F, -2.25F);
 
         float Y = -2.0F;
-        float horns = calculateHorns(sharedGenes, uuidArry);
+        float horns = calculateHorns(sharedGenes, uuidArray);
 
         if (horns != 0.0F && !this.isChild) {
 
@@ -693,23 +694,67 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             Float[] hornGrowthR = {Y + 1.0F, Y, Y, Y, Y, Y + 0.2F, Y + 0.4F, Y + 0.6F, Y + 0.8F, Y + 1.0F};
             Float[] hornHide = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
 
-            if (horns != -1.0F) {
-                int f = 6;
-                for (int i=0; i<=9;i++) {
-                    if (i <= f) {
-                        hornGrowthL[i] = 0.0F;
-                        hornGrowthR[i] = 0.0F;
+
+            int f = -1;
+
+            if (sharedGenes[80] != 2 || sharedGenes[81] != 2 ) {
+                if (sharedGenes[80] >= 3 || sharedGenes[81] >= 3 ) {
+                    if (sharedGenes[80] == 4 && sharedGenes[81] == 4) {
+                        f = 2;
+                    } else {
+                        f = 1;
                     }
-                    if (i == f) {
-                        hornHide[i] = -5.5F;
+                } else {
+                    f = 0;
+                }
+            }
+
+            if (sharedGenes[82] == 2) {
+                f = f + 1;
+            }
+            if (sharedGenes[83] == 2 ){
+                f = f + 1 ;
+            }
+
+            int a = 0;
+            if (horns != -1.0){
+                f = (10-f)/2;
+                if (Character.isDigit(uuidArray[4])) {
+                    a = ((uuidArray[4] - 48) - 4);
+                    if (a == 5) {
+                        a = 0;
+                    } else if ( 3 < a || -3 > a) {
+                        a = a / 2;
                     }
                 }
             }
 
-            if (hornGrowthL[0] != 0) {
-                hornHide[0] = 0.0F;
-            } else {
-                hornHide[0] = 5.0F;
+            if (f+a >= 9) {
+                a = (8 - (f+a));
+            } else if (f-a >= 9) {
+                a = -(8 - (f-a));
+            }
+
+            for (int i = 0; i <= 9; i++) {
+                if (i <= f) {
+                    hornGrowthL[i] = 0.0F;
+                    hornGrowthR[i] = 0.0F;
+                }
+                if (i != 0) {
+                    if (a > 0) {
+                        if (i <= f + a) {
+                            hornGrowthL[i] = 0.0F;
+                        }
+                    } else if (a < 0) {
+                        if (i <= f - a) {
+                            hornGrowthR[i] = 0.0F;
+                        }
+                    }
+                }
+                if (i == f && f != 0) {
+                    hornHide[i] = -5.5F;
+                    hornHide[0] = 5.0F;
+                }
             }
 
             this.hornL0.rotationPointY = hornGrowthL[0] + hornHide[0];
@@ -794,54 +839,55 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.hornNub5.rotationPointY = -1.0F;
             }
         } else {
-            float hornTest = 1.4F;
             if (hornNubLength == 1){
                 this.hornNub1.rotationPointY = -1.0F + horns;
-                this.hornL0.rotateAngleZ = hornTest;
                 this.hornL0.rotateAngleX = 0.25F;
-                this.hornR0.rotateAngleZ = -hornTest;
                 this.hornR0.rotateAngleX = 0.25F;
             }else if (hornNubLength == 2){
                 this.hornNub2.rotationPointY = -1.0F + horns;
-                this.hornL0.rotateAngleZ = hornTest;
                 this.hornL0.rotateAngleX = 0.15F;
-                this.hornR0.rotateAngleZ = -hornTest;
                 this.hornR0.rotateAngleX = 0.15F;
             }else if (hornNubLength == 3){
                 this.hornNub3.rotationPointY = -1.0F + horns;
-                this.hornL0.rotateAngleZ = hornTest;
                 this.hornL0.rotateAngleX = 0.05F;
-                this.hornR0.rotateAngleZ = -hornTest;
                 this.hornR0.rotateAngleX = 0.05F;
             }else if (hornNubLength == 4){
                 this.hornNub4.rotationPointY = -1.0F + horns;
-                this.hornL0.rotateAngleZ = hornTest;
                 this.hornL0.rotateAngleX = -0.15F;
-                this.hornR0.rotateAngleZ = -hornTest;
                 this.hornR0.rotateAngleX = -0.15F;
             }else if (hornNubLength == 5){
                 this.hornNub5.rotationPointY = -1.0F + horns;
-                this.hornL0.rotateAngleZ = hornTest;
                 this.hornL0.rotateAngleX = -0.25F;
-                this.hornR0.rotateAngleZ = -hornTest;
                 this.hornR0.rotateAngleX = -0.25F;
             }
         }
 
         //horn shape controllers
         if (horns != 0) {
-            float angleX = 0.05F; //default is 0.1F [ -0.15 - 0.25F ]
-            float curvature = -0.1F; //default is 1.0F
+            float angleX = 0.1F; //default is 0.1F [ -0.15 - 0.25F ]
+            float curvature = 0.25F; //default is 1.0F
+            float a = 1.0F;
+            float b = 1.8F; //horn root rotation 1.4 default
+            float c = 0.0F;
+            float d = 0.0F;
 
-            this.hornL9.rotateAngleZ = (-0.14F * curvature) + (angleX * (1.0F - curvature));
-            this.hornL8.rotateAngleZ = (-0.27F * curvature) + (angleX * (1.0F - curvature));
-            this.hornL7.rotateAngleZ = (-0.57F * curvature) + (angleX * (1.0F - curvature));
-            this.hornL6.rotateAngleZ = (-0.37F * curvature) + (angleX * (1.0F - curvature));
-            this.hornL5.rotateAngleZ = (-0.2F * curvature) + (angleX * (1.0F - curvature));
-            this.hornL4.rotateAngleZ = (0.01F * curvature) + (angleX * (1.0F - curvature));
-            this.hornL3.rotateAngleZ = (0.2F * curvature) + (angleX * (1.0F - curvature));
-            this.hornL2.rotateAngleZ = (0.1F * curvature) + (angleX * (1.0F - curvature));
-            this.hornL1.rotateAngleZ = (-0.17F * curvature) + (angleX * (1.0F - curvature));
+            if (horns != -1.0F) {
+                angleX = 0.02F;
+                curvature = -0.4F;
+            }
+
+            this.hornL0.rotateAngleZ = b;
+            this.hornR0.rotateAngleZ = -b;
+
+            this.hornL9.rotateAngleZ = ((-0.14F * curvature) + (angleX * (1.0F - curvature))) * a;
+            this.hornL8.rotateAngleZ = ((-0.27F * curvature) + (angleX * (1.0F - curvature))) * a;
+            this.hornL7.rotateAngleZ = ((-0.57F * curvature) + (angleX * (1.0F - curvature))) * a;
+            this.hornL6.rotateAngleZ = ((-0.37F * curvature) + (angleX * (1.0F - curvature))) * a;
+            this.hornL5.rotateAngleZ = ((-0.2F * curvature) + (angleX * (1.0F - curvature))) * a;
+            this.hornL4.rotateAngleZ = ((0.01F * curvature) + (angleX * (1.0F - curvature))) * a;
+            this.hornL3.rotateAngleZ = ((0.2F * curvature) + (angleX * (1.0F - curvature))) * a;
+            this.hornL2.rotateAngleZ = ((0.1F * curvature) + (angleX * (1.0F - curvature))) * a;
+            this.hornL1.rotateAngleZ = ((-0.17F * curvature) + (angleX * (1.0F - curvature))) * a;
 
             this.hornL9.rotateAngleX = angleX;
             this.hornL8.rotateAngleX = angleX;
@@ -853,36 +899,28 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.hornL2.rotateAngleX = angleX;
             this.hornL1.rotateAngleX = angleX;
 
+//            angleX = -angleX;
+//            curvature = -curvature;
 
-            this.hornR9.rotateAngleZ = (-0.14F * curvature) + (angleX * (1.0F - curvature));
-            this.hornR8.rotateAngleZ = (-0.27F * curvature) + (angleX * (1.0F - curvature));
-            this.hornR7.rotateAngleZ = (-0.57F * curvature) + (angleX * (1.0F - curvature));
-            this.hornR6.rotateAngleZ = (-0.37F * curvature) + (angleX * (1.0F - curvature));
-            this.hornR5.rotateAngleZ = (-0.2F * curvature) + (angleX * (1.0F - curvature));
-            this.hornR4.rotateAngleZ = (0.01F * curvature) + (angleX * (1.0F - curvature));
-            this.hornR3.rotateAngleZ = (0.2F * curvature) + (angleX * (1.0F - curvature));
-            this.hornR2.rotateAngleZ = (0.1F * curvature) + (angleX * (1.0F - curvature));
-            this.hornR1.rotateAngleZ = (-0.17F * curvature) + (angleX * (1.0F - curvature));
+            this.hornR9.rotateAngleZ = -((-0.14F * curvature) + (angleX * (1.0F - curvature)));
+            this.hornR8.rotateAngleZ = -((-0.27F * curvature) + (angleX * (1.0F - curvature)));
+            this.hornR7.rotateAngleZ = -((-0.57F * curvature) + (angleX * (1.0F - curvature)));
+            this.hornR6.rotateAngleZ = -((-0.37F * curvature) + (angleX * (1.0F - curvature)));
+            this.hornR5.rotateAngleZ = -((-0.2F * curvature) + (angleX * (1.0F - curvature)));
+            this.hornR4.rotateAngleZ = -((0.01F * curvature) + (angleX * (1.0F - curvature)));
+            this.hornR3.rotateAngleZ = -((0.2F * curvature) + (angleX * (1.0F - curvature)));
+            this.hornR2.rotateAngleZ = -((0.1F * curvature) + (angleX * (1.0F - curvature)));
+            this.hornR1.rotateAngleZ = -((-0.17F * curvature) + (angleX * (1.0F - curvature)));
 
-//            this.hornR9.rotateAngleZ = 0.14F;
-//            this.hornR8.rotateAngleZ = 0.27F;
-//            this.hornR7.rotateAngleZ = 0.57F;
-//            this.hornR6.rotateAngleZ = 0.37F;
-//            this.hornR5.rotateAngleZ = 0.2F;
-//            this.hornR4.rotateAngleZ = -0.01F;
-//            this.hornR3.rotateAngleZ = -0.2F;
-//            this.hornR2.rotateAngleZ = -0.1F;
-//            this.hornR1.rotateAngleZ = 0.17F;
-
-            this.hornR9.rotateAngleX = 0.1F;
-            this.hornR8.rotateAngleX = 0.1F;
-            this.hornR7.rotateAngleX = 0.1F;
-            this.hornR6.rotateAngleX = 0.1F;
-            this.hornR5.rotateAngleX = 0.1F;
-            this.hornR4.rotateAngleX = 0.1F;
-            this.hornR3.rotateAngleX = 0.1F;
-            this.hornR2.rotateAngleX = 0.1F;
-            this.hornR1.rotateAngleX = 0.1F;
+            this.hornR9.rotateAngleX = angleX;
+            this.hornR8.rotateAngleX = angleX;
+            this.hornR7.rotateAngleX = angleX;
+            this.hornR6.rotateAngleX = angleX;
+            this.hornR5.rotateAngleX = angleX;
+            this.hornR4.rotateAngleX = angleX;
+            this.hornR3.rotateAngleX = angleX;
+            this.hornR2.rotateAngleX = angleX;
+            this.hornR1.rotateAngleX = angleX;
 
         }
     }
@@ -1122,7 +1160,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         return reversedNegative;
     }
 
-    private float calculateHorns(int[] sharedGenes, char[] uuidArry) {
+    private float calculateHorns(int[] sharedGenes, char[] uuidArray) {
         float horns = -1.0F;
         if (!this.isChild) {
 
@@ -1133,7 +1171,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                     //horned
                 } else if (sharedGenes[76] == 1 || sharedGenes[77] == 1) {
                     //sex determined horned
-                    if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
+                    if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
                         //horned if male
                     } else {
                         //polled if female unless
@@ -1152,7 +1190,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                         horns = -0.75F;
                     } else if (sharedGenes[78] == 1 || sharedGenes[79] == 1) {
                         //sex determined scured
-                        if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
+                        if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
                             //scurred
                             horns = -0.75F;
                         } else {

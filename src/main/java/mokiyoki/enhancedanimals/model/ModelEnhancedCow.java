@@ -8,7 +8,6 @@ import mokiyoki.enhancedanimals.renderer.EnhancedRendererModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.util.math.MathHelper;
-import sun.security.util.Length;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -819,25 +818,23 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 lengthR = 9;
             }
 
-            for (int i = 0; i <= 9; i++) {
-                if (i <= lengthL) {
-                    hornGrowthL[i] = 0.0F;
-                    unrenderedModels.add(this.leftHorns.get(i).boxName);
-                }
-                if (i <= lengthR) {
-                    hornGrowthR[i] = 0.0F;
-                    unrenderedModels.add(this.rightHorns.get(i).boxName);
-                }
 
-                if (i == lengthL && lengthL != 0) {
-                    hornHideL[i] = -2.5F;
-                    hornHideL[0] = 2.0F;
-                    unrenderedModels.remove(this.leftHorns.get(i).boxName);
-                }
-                if (i == lengthR && lengthR != 0) {
-                    hornHideR[i] = -2.5F;
-                    hornHideR[0] = 2.0F;
-                    unrenderedModels.remove(this.rightHorns.get(i).boxName);
+            if (lengthL != 0) {
+                for (int i = 0; i <= 9; i++) {
+                    if (i <= lengthL) {
+                        hornGrowthL[i] = 0.0F;
+                        unrenderedModels.add(this.leftHorns.get(i).boxName);
+                    }
+                    if (i <= lengthR) {
+                        hornGrowthR[i] = 0.0F;
+                        unrenderedModels.add(this.rightHorns.get(i).boxName);
+                    }
+                    if (i == lengthL) {
+                        unrenderedModels.remove(this.leftHorns.get(i).boxName);
+                    }
+                    if (i == lengthR) {
+                        unrenderedModels.remove(this.rightHorns.get(i).boxName);
+                    }
                 }
             }
 

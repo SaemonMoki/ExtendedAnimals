@@ -165,61 +165,61 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.hornL0 = new EnhancedRendererModel(this, 64, 34, "HornL0");
         this.hornL0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornL1 = new EnhancedRendererModel(this, 64, 42);
+        this.hornL1 = new EnhancedRendererModel(this, 64, 42, "HornL1");
         this.hornL1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.001F);
 
-        this.hornL2 = new EnhancedRendererModel(this, 64, 50);
+        this.hornL2 = new EnhancedRendererModel(this, 64, 50, "HornL2");
         this.hornL2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.002F);
 
-        this.hornL3 = new EnhancedRendererModel(this, 64, 58);
+        this.hornL3 = new EnhancedRendererModel(this, 64, 58, "HornL3");
         this.hornL3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.003F);
 
-        this.hornL4 = new EnhancedRendererModel(this, 64, 66);
+        this.hornL4 = new EnhancedRendererModel(this, 64, 66, "HornL4");
         this.hornL4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.004F);
 
-        this.hornL5 = new EnhancedRendererModel(this, 64, 66);
+        this.hornL5 = new EnhancedRendererModel(this, 64, 66, "HornL5");
         this.hornL5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
 
-        this.hornL6 = new EnhancedRendererModel(this, 64, 66);
+        this.hornL6 = new EnhancedRendererModel(this, 64, 66, "HornL6");
         this.hornL6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
 
-        this.hornL7 = new EnhancedRendererModel(this, 64, 66);
+        this.hornL7 = new EnhancedRendererModel(this, 64, 66, "HornL7");
         this.hornL7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
 
-        this.hornL8 = new EnhancedRendererModel(this, 64, 66);
+        this.hornL8 = new EnhancedRendererModel(this, 64, 66, "HornL8");
         this.hornL8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
 
-        this.hornL9 = new EnhancedRendererModel(this, 64, 66);
+        this.hornL9 = new EnhancedRendererModel(this, 64, 66, "HornL9");
         this.hornL9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
 
         this.hornR0 = new EnhancedRendererModel(this, 64, 34, "HornR0");
         this.hornR0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
 
-        this.hornR1 = new EnhancedRendererModel(this, 64, 42);
+        this.hornR1 = new EnhancedRendererModel(this, 64, 42, "HornR1");
         this.hornR1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.001F);
 
-        this.hornR2 = new EnhancedRendererModel(this, 64, 50);
+        this.hornR2 = new EnhancedRendererModel(this, 64, 50, "HornR2");
         this.hornR2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.002F);
 
-        this.hornR3 = new EnhancedRendererModel(this, 64, 58);
+        this.hornR3 = new EnhancedRendererModel(this, 64, 58, "HornR3");
         this.hornR3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.003F);
 
-        this.hornR4 = new EnhancedRendererModel(this, 64, 66);
+        this.hornR4 = new EnhancedRendererModel(this, 64, 66, "HornR4");
         this.hornR4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.004F);
 
-        this.hornR5 = new EnhancedRendererModel(this, 64, 66);
+        this.hornR5 = new EnhancedRendererModel(this, 64, 66, "HornR5");
         this.hornR5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
 
-        this.hornR6 = new EnhancedRendererModel(this, 64, 66);
+        this.hornR6 = new EnhancedRendererModel(this, 64, 66, "HornR6");
         this.hornR6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
 
-        this.hornR7 = new EnhancedRendererModel(this, 64, 66);
+        this.hornR7 = new EnhancedRendererModel(this, 64, 66, "HornR7");
         this.hornR7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
 
-        this.hornR8 = new EnhancedRendererModel(this, 64, 66);
+        this.hornR8 = new EnhancedRendererModel(this, 64, 66, "HornR8");
         this.hornR8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
 
-        this.hornR9 = new EnhancedRendererModel(this, 64, 66);
+        this.hornR9 = new EnhancedRendererModel(this, 64, 66, "HornR9");
         this.hornR9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
 
         // head is the neck cause thats how this works
@@ -521,8 +521,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
             List<Float> scalingsForHorn = createScalings(hornScale, -hornShift, hornShift, hornShift+0.025F);
-            mapOfScale.put("HornL0", scalingsForHorn);
-            mapOfScale.put("HornR0", mirrorX(scalingsForHorn));
+            mapOfScale.put("HornL4", scalingsForHorn);
+            mapOfScale.put("HornR4", mirrorX(scalingsForHorn));
             this.hornGranparent.render(scale, mapOfScale);
         }
     }

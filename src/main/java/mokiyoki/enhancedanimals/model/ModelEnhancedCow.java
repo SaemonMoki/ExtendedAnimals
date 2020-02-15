@@ -86,6 +86,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final RendererModel shortLeg3;
     private final RendererModel shortLeg4;
 
+    private final List<RendererModel> leftHorns = new ArrayList<>();
+    private final List<RendererModel> rightHorns = new ArrayList<>();
+
 
     public ModelEnhancedCow() {
 
@@ -164,63 +167,83 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.hornL0 = new EnhancedRendererModel(this, 64, 34, "HornL0");
         this.hornL0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
+        leftHorns.add(hornL0);
 
         this.hornL1 = new EnhancedRendererModel(this, 64, 42, "HornL1");
         this.hornL1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.001F);
+        leftHorns.add(hornL1);
 
         this.hornL2 = new EnhancedRendererModel(this, 64, 50, "HornL2");
         this.hornL2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.002F);
+        leftHorns.add(hornL2);
 
         this.hornL3 = new EnhancedRendererModel(this, 64, 58, "HornL3");
         this.hornL3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.003F);
+        leftHorns.add(hornL3);
 
         this.hornL4 = new EnhancedRendererModel(this, 64, 66, "HornL4");
         this.hornL4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.004F);
+        leftHorns.add(hornL4);
 
         this.hornL5 = new EnhancedRendererModel(this, 64, 66, "HornL5");
         this.hornL5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
+        leftHorns.add(hornL5);
 
         this.hornL6 = new EnhancedRendererModel(this, 64, 66, "HornL6");
         this.hornL6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
+        leftHorns.add(hornL6);
 
         this.hornL7 = new EnhancedRendererModel(this, 64, 66, "HornL7");
         this.hornL7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
+        leftHorns.add(hornL7);
 
         this.hornL8 = new EnhancedRendererModel(this, 64, 66, "HornL8");
         this.hornL8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
+        leftHorns.add(hornL8);
 
         this.hornL9 = new EnhancedRendererModel(this, 64, 66, "HornL9");
         this.hornL9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
+        leftHorns.add(hornL9);
 
         this.hornR0 = new EnhancedRendererModel(this, 64, 34, "HornR0");
         this.hornR0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
+        rightHorns.add(hornR0);
 
         this.hornR1 = new EnhancedRendererModel(this, 64, 42, "HornR1");
         this.hornR1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.001F);
+        rightHorns.add(hornR1);
 
         this.hornR2 = new EnhancedRendererModel(this, 64, 50, "HornR2");
         this.hornR2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.002F);
+        rightHorns.add(hornR2);
 
         this.hornR3 = new EnhancedRendererModel(this, 64, 58, "HornR3");
         this.hornR3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.003F);
+        rightHorns.add(hornR3);
 
         this.hornR4 = new EnhancedRendererModel(this, 64, 66, "HornR4");
         this.hornR4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.004F);
+        rightHorns.add(hornR4);
 
         this.hornR5 = new EnhancedRendererModel(this, 64, 66, "HornR5");
         this.hornR5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
+        rightHorns.add(hornR5);
 
         this.hornR6 = new EnhancedRendererModel(this, 64, 66, "HornR6");
         this.hornR6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
+        rightHorns.add(hornR6);
 
         this.hornR7 = new EnhancedRendererModel(this, 64, 66, "HornR7");
         this.hornR7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
+        rightHorns.add(hornR7);
 
         this.hornR8 = new EnhancedRendererModel(this, 64, 66, "HornR8");
         this.hornR8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
+        rightHorns.add(hornR8);
 
         this.hornR9 = new EnhancedRendererModel(this, 64, 66, "HornR9");
         this.hornR9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
+        rightHorns.add(hornR9);
 
         // head is the neck cause thats how this works
         this.headModel = new RendererModel(this, 46, 0);
@@ -376,7 +399,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     @Override
     public void render(T enhancedCow, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         int[] genes = enhancedCow.getSharedGenes();
-        this.setRotationAngles(enhancedCow, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, genes);
+        List<String> unrenderedModels = this.setRotationAngles(enhancedCow, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, genes);
 
         this.size = enhancedCow.getSize();
         this.bagSize = enhancedCow.getBagSize();
@@ -449,16 +472,16 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         if (this.isChild) {
             renderChild(scale, dwarf, bodyWidth, bodyLength, hump);
         } else {
-            renderAdult(scale, cowStatus, dwarf, bodyWidth, bodyLength, hump, horns, hornScale, hornShift);
+            renderAdult(scale, cowStatus, dwarf, bodyWidth, bodyLength, hump, horns, hornScale, hornShift, unrenderedModels);
         }
     }
 
-    private void renderAdult(float scale, String cowStatus, float dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornScale, float hornShift) {
+    private void renderAdult(float scale, String cowStatus, float dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornScale, float hornShift, List<String> unrenderedModels) {
         GlStateManager.pushMatrix();
         GlStateManager.scalef(size + (size * bodyWidth), size, size + (size * bodyLength));
         GlStateManager.translatef(0.0F, (-1.45F + 1.45F / size) + ((0.23F - (size-0.7F)*0.0375F)*dwarf), 0.0F);
 
-        renderHorns(scale, horns, hornScale, hornShift);
+        renderHorns(scale, horns, hornScale, hornShift, unrenderedModels);
 
         this.bodyMedium.render(scale);
 
@@ -516,14 +539,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         GlStateManager.popMatrix();
     }
 
-    private void renderHorns(float scale, float horns, float hornScale, float hornShift) {
+    private void renderHorns(float scale, float horns, float hornScale, float hornShift, List<String> unrenderedModels) {
         if (horns != 0.0F) {
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
             List<Float> scalingsForHorn = createScalings(hornScale, -hornShift, hornShift, hornShift+0.025F);
-            mapOfScale.put("HornL4", scalingsForHorn);
-            mapOfScale.put("HornR4", mirrorX(scalingsForHorn));
-            this.hornGranparent.render(scale, mapOfScale);
+            mapOfScale.put("HornL0", scalingsForHorn);
+            mapOfScale.put("HornR0", mirrorX(scalingsForHorn));
+            this.hornGranparent.render(scale, mapOfScale, unrenderedModels);
         }
     }
 
@@ -573,8 +596,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
     }
 
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int[] sharedGenes) {
+    public List<String> setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int[] sharedGenes) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
+        List<String> unrenderedModels = new ArrayList<>();
+
         boolean sleeping = ((EnhancedAnimal)entityIn).isAnimalSleeping();
         char[] uuidArray;
 
@@ -632,8 +657,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         setEarRotations(sharedGenes);
 
-        setHornRotations(sharedGenes, uuidArray);
+        setHornRotations(sharedGenes, uuidArray, unrenderedModels);
 
+        return unrenderedModels;
     }
 
     @Override
@@ -682,7 +708,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
     }
 
-    private void setHornRotations(int[] sharedGenes, char[] uuidArray) {
+    private void setHornRotations(int[] sharedGenes, char[] uuidArray, List<String> unrenderedModels) {
 
         this.hornNub1.rotateAngleX = ((float)Math.PI / -2F);
         this.hornNub2.rotateAngleX = ((float)Math.PI / -2F);
@@ -796,67 +822,38 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             for (int i = 0; i <= 9; i++) {
                 if (i <= lengthL) {
                     hornGrowthL[i] = 0.0F;
+                    unrenderedModels.add(this.leftHorns.get(i).boxName);
                 }
                 if (i <= lengthR) {
                     hornGrowthR[i] = 0.0F;
+                    unrenderedModels.add(this.rightHorns.get(i).boxName);
                 }
 
                 if (i == lengthL && lengthL != 0) {
                     hornHideL[i] = -2.5F;
                     hornHideL[0] = 2.0F;
+                    unrenderedModels.remove(this.leftHorns.get(i).boxName);
                 }
                 if (i == lengthR && lengthR != 0) {
                     hornHideR[i] = -2.5F;
                     hornHideR[0] = 2.0F;
+                    unrenderedModels.remove(this.rightHorns.get(i).boxName);
                 }
             }
 
             this.hornL0.rotationPointY = hornGrowthL[0] + hornHideL[0];
-            this.hornR0.rotationPointY = hornGrowthR[0] + hornHideL[0];
-
-            this.hornL1.rotationPointY = hornGrowthL[1];
-            this.hornR1.rotationPointY = hornGrowthR[1];
-            this.hornL2.rotationPointY = hornGrowthL[2];
-            this.hornR2.rotationPointY = hornGrowthR[2];
-            this.hornL3.rotationPointY = hornGrowthL[3];
-            this.hornR3.rotationPointY = hornGrowthR[3];
-            this.hornL4.rotationPointY = hornGrowthL[4];
-            this.hornR4.rotationPointY = hornGrowthR[4];
-
-            this.hornL5.rotationPointY = hornGrowthL[5];
-            this.hornR5.rotationPointY = hornGrowthR[5];
-            this.hornL6.rotationPointY = hornGrowthL[6];
-            this.hornR6.rotationPointY = hornGrowthR[6];
-            this.hornL7.rotationPointY = hornGrowthL[7];
-            this.hornR7.rotationPointY = hornGrowthR[7];
-            this.hornL8.rotationPointY = hornGrowthL[8];
-            this.hornR8.rotationPointY = hornGrowthR[8];
-            this.hornL9.rotationPointY = hornGrowthL[9];
-            this.hornR9.rotationPointY = hornGrowthR[9];
+            this.hornR0.rotationPointY = hornGrowthR[0] + hornHideR[0];
 
             this.hornL0.rotationPointX = 1.0F;
             this.hornR0.rotationPointX = -1.0F;
 
-            this.hornL1.rotationPointX = hornHideL[1];
-            this.hornR1.rotationPointX = -hornHideR[1];
-            this.hornL2.rotationPointX = hornHideL[2];
-            this.hornR2.rotationPointX = -hornHideR[2];
-            this.hornL3.rotationPointX = hornHideL[3];
-            this.hornR3.rotationPointX = -hornHideR[3];
-            this.hornL4.rotationPointX = hornHideL[4];
-            this.hornR4.rotationPointX = -hornHideR[4];
+            for (int i = 1; i <= 9; i++) {
+                this.leftHorns.get(i).rotationPointY = hornGrowthL[i];
+                this.rightHorns.get(i).rotationPointY = hornGrowthR[i];
 
-            this.hornL5.rotationPointX = hornHideL[5];
-            this.hornR5.rotationPointX = -hornHideR[5];
-            this.hornL6.rotationPointX = hornHideL[6];
-            this.hornR6.rotationPointX = -hornHideR[6];
-            this.hornL7.rotationPointX = hornHideL[7];
-            this.hornR7.rotationPointX = -hornHideR[7];
-            this.hornL8.rotationPointX = hornHideL[8];
-            this.hornR8.rotationPointX = -hornHideR[8];
-            this.hornL9.rotationPointX = hornHideL[9];
-            this.hornR9.rotationPointX = -hornHideR[9];
-
+                this.leftHorns.get(i).rotationPointX = hornHideL[i];
+                this.rightHorns.get(i).rotationPointX = -hornHideR[i];
+            }
         }
 
         int hornNubLength = 4;

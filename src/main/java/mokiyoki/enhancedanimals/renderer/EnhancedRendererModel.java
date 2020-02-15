@@ -35,11 +35,11 @@ public class EnhancedRendererModel extends RendererModel {
         this.setTextureOffset(texOffX, texOffY);
     }
 
-    public void render(float scale, Map<String, List<Float>> mapOfScale) {
+    public void render(float scale, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender) {
         if (!this.isHidden) {
             if (this.showModel) {
                 if (!this.compiled) {
-                    this.compileDisplayList(scale);
+                    this.compileDisplayList(scale, boxesToNotRender);
                 }
 
                 GlStateManager.pushMatrix();
@@ -61,7 +61,7 @@ public class EnhancedRendererModel extends RendererModel {
                         GlStateManager.callList(this.displayList);
                         if (this.childModels != null) {
                             for(int k = 0; k < this.childModels.size(); ++k) {
-                                ((EnhancedRendererModel)this.childModels.get(k)).render(scale, mapOfScale);
+                                ((EnhancedRendererModel)this.childModels.get(k)).render(scale, mapOfScale, boxesToNotRender);
                             }
                         }
                     } else {
@@ -70,7 +70,7 @@ public class EnhancedRendererModel extends RendererModel {
                         GlStateManager.callList(this.displayList);
                         if (this.childModels != null) {
                             for(int j = 0; j < this.childModels.size(); ++j) {
-                                ((EnhancedRendererModel)this.childModels.get(j)).render(scale, mapOfScale);
+                                ((EnhancedRendererModel)this.childModels.get(j)).render(scale, mapOfScale, boxesToNotRender);
                             }
                         }
 
@@ -94,7 +94,7 @@ public class EnhancedRendererModel extends RendererModel {
                     GlStateManager.callList(this.displayList);
                     if (this.childModels != null) {
                         for(int i = 0; i < this.childModels.size(); ++i) {
-                            ((EnhancedRendererModel)this.childModels.get(i)).render(scale, mapOfScale);
+                            ((EnhancedRendererModel)this.childModels.get(i)).render(scale, mapOfScale, boxesToNotRender);
                         }
                     }
 
@@ -109,13 +109,15 @@ public class EnhancedRendererModel extends RendererModel {
     /**
      * Compiles a GL display list for this model
      */
-    private void compileDisplayList(float scale) {
+    private void compileDisplayList(float scale, List<String> boxesToNotRender) {
         this.displayList = GLAllocation.generateDisplayLists(1);
         GlStateManager.newList(this.displayList, 4864);
         BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
 
-        for(int i = 0; i < this.cubeList.size(); ++i) {
-            this.cubeList.get(i).render(bufferbuilder, scale);
+        if (this.boxName == null || !(boxesToNotRender.contains(this.boxName))) {
+            for(int i = 0; i < this.cubeList.size(); ++i) {
+                this.cubeList.get(i).render(bufferbuilder, scale);
+            }
         }
 
         GlStateManager.endList();

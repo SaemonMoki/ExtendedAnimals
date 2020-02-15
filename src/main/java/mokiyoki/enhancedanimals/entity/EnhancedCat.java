@@ -196,7 +196,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         this.goalSelector.addGoal(4, new EnhancedCat.AIAvoidEntity<>(this, WolfEntity.class, 10.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(4, new EnhancedCat.AIAvoidEntity<>(this, MonsterEntity.class, 4.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(5, this.wanderEatingGoal);
-        this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 0.6D));
+//        this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 0.6D));
         this.goalSelector.addGoal(7, new LookAtGoal(this, PlayerEntity.class, 10.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
 

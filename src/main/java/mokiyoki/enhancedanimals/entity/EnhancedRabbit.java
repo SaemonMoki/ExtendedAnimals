@@ -262,7 +262,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, MonsterEntity.class, 4.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(5, this.wanderEatingGoal);
         this.goalSelector.addGoal(5, new EnhancedRabbit.AIRaidFarm(this));
-        this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 0.6D));
+//        this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 0.6D));
         this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 10.0F));
         this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
 

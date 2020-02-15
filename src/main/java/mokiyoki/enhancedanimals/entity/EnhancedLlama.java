@@ -203,7 +203,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.goalSelector.addGoal(4, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(5, this.wanderEatingGoal);
         this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.0D));
-        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.7D));
+//        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.7D));
         this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new EnhancedLlama.HurtByTargetGoal(this));

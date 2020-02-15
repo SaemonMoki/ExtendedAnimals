@@ -228,7 +228,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(5, wanderEatingGoal);
-        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+//        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new EnhancedPig.HurtByAggressorGoal(this));

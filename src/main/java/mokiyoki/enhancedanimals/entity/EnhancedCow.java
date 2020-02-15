@@ -178,7 +178,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private final List<String> cowTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 84;
+    private static final int GENES_LENGTH = 92;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     protected int[] mitosisGenes = new int[GENES_LENGTH];
@@ -2354,7 +2354,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[79] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[79] = (2);
+            initialGenes[79] = (1);
         }
 
         //cow horn length modifier [wildtype, longer horns 1, shorter horns 2, shorter horns 3]
@@ -2376,18 +2376,46 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[83] = (2);
         }
 
-        //cow horn curvature [wildtype (1, .75, .5, .25, )
+        //cow horn curvature [wildtype (1.0, 0.75, 0.5, 0.25, 0.0)
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[82] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[84] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[82] = (1);
+            initialGenes[84] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[83] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[85] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[83] = (2);
+            initialGenes[85] = (2);
+        }
+
+        //cow horn scale 1 [wildtype, 1.25]
+            initialGenes[86] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[87] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        //cow horn scale 2 [wildtype, 1.25]
+            initialGenes[88] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[89] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+//            initialGenes[80] = 2;
+//            initialGenes[81] = 2;
+//            initialGenes[86] = 2;
+//            initialGenes[87] = 2;
+//            initialGenes[88] = 2;
+//            initialGenes[89] = 2;
+
+        // horn scale 3 [wildtype, 2.0]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[90] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[90] = (2);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[91] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            initialGenes[91] = (2);
         }
 
 

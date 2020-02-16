@@ -656,7 +656,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         setEarRotations(sharedGenes);
 
-        setHornRotations(sharedGenes, uuidArray, unrenderedModels);
+        setHornRotations(sharedGenes, uuidArray, unrenderedModels, entityIn);
 
         return unrenderedModels;
     }
@@ -707,7 +707,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
     }
 
-    private void setHornRotations(int[] sharedGenes, char[] uuidArray, List<String> unrenderedModels) {
+    private void setHornRotations(int[] sharedGenes, char[] uuidArray, List<String> unrenderedModels, T entityIn) {
 
         this.hornNub1.rotateAngleX = ((float)Math.PI / -2F);
         this.hornNub2.rotateAngleX = ((float)Math.PI / -2F);
@@ -917,15 +917,18 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             Float[] hornCalculationsZ = {0.0F, -0.17F, 0.1F, 0.2F, 0.01F, -0.2F, -0.37F, -0.57F, -0.27F, -0.14F};
             Float[] hornCalculationsX = {0.0F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F};
 
-                float a = 1.0F;    // period length       0.79
-                float b = 1.5F;   // period shift      -0.8
-                float c = -2.5F;     //wave height from d   2.3
-                float d = 1.0F;     // != 0, [
+            EnhancedCow enhancedCow = (EnhancedCow) entityIn;
+            float[] hornAlterations = enhancedCow.getHornAlteration();
 
-                float e = 1.0F;         //makes turns in horn sharper
-                float f = 1.5F;
-                float g = 10.0F;
-                float h = 1.0F;     // != 0, [
+                float a = 0.0F + hornAlterations[0];    // period length       0.79
+                float b = 0.0F + hornAlterations[1];   // period shift      -0.8
+                float c = -0.0F + hornAlterations[2];     //wave height from d   2.3
+                float d = 0.0F + hornAlterations[3];     // != 0, [
+
+                float e = 0.0F + hornAlterations[4];         //makes turns in horn sharper
+                float f = 0.0F + hornAlterations[5];
+                float g = 0.0F + hornAlterations[6];
+                float h = 0.0F + hornAlterations[7];     // != 0, [
 
 //                a = (float)((sharedGenes[84] >> 2) / 16);
 //                e = ((float)(((sharedGenes[84] << 2) >> 2) / 16));

@@ -77,6 +77,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> MOOSHROOM_UUID = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
     private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
+    private static final DataParameter<String> HORN_ALTERATION = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
 
     private static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
@@ -218,21 +219,22 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected void registerGoals() {
         //Todo add the temperamants
 //        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
-        this.goalSelector.addGoal(0, new SwimGoal(this));
+//        this.goalSelector.addGoal(0, new SwimGoal(this));
 //        this.goalSelector.addGoal(5, this.eatGrassGoal);
-        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
+//        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+//        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
     }
 
     protected void updateAITasks()
     {
-        this.cowTimer = this.wanderEatingGoal.getEatingGrassTimer();
+//        this.cowTimer = this.wanderEatingGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
 
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
+        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0");
         this.dataManager.register(COW_SIZE, 0.0F);
         this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(COW_STATUS, new String());
@@ -580,6 +582,39 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         }
         return sharedGenesArray;
     }
+
+    public void setHornAlteration(int index, String value) {
+        String hornsAlterationsString = ((String) this.dataManager.get(HORN_ALTERATION)).toString();
+
+        String[] hornAlterations = hornsAlterationsString.split(",");
+        hornAlterations[index]= Float.toString(Float.valueOf(hornAlterations[index])+Float.valueOf(value));
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < hornAlterations.length; i++) {
+            sb.append(hornAlterations[i]);
+            if (i != hornAlterations.length - 1) {
+                sb.append(",");
+            }
+        }
+
+        this.dataManager.set(HORN_ALTERATION, sb.toString());
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float[] getHornAlteration() {
+        String hornsAlterations = ((String) this.dataManager.get(HORN_ALTERATION)).toString();
+
+        String[] hornAlterations = hornsAlterations.split(",");
+
+        float[] hornsArray = new float[hornAlterations.length];
+
+        for (int i = 0; i < hornsArray.length; i++) {
+            //parse and store each value into int[] to be returned
+            hornsArray[i] = Float.valueOf(hornAlterations[i]);
+        }
+        return hornsArray;
+    }
+
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
@@ -1343,6 +1378,40 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
+        if (item == Items.BLACK_WOOL) {
+            setHornAlteration(0, "0.1");
+        } else if (item == Items.GRAY_WOOL) {
+            setHornAlteration(0, "-0.1");
+        } else if (item == Items.LIGHT_GRAY_WOOL) {
+            setHornAlteration(1, "0.1");
+        } else if (item == Items.WHITE_WOOL) {
+            setHornAlteration(1, "-0.1");
+        } else if (item == Items.PINK_WOOL) {
+            setHornAlteration(2, "0.1");
+        } else if (item == Items.RED_WOOL) {
+            setHornAlteration(2, "-0.1");
+        } else if (item == Items.ORANGE_WOOL) {
+            setHornAlteration(3, "0.1");
+        } else if (item == Items.YELLOW_WOOL) {
+            setHornAlteration(3, "-0.1");
+        } else if (item == Items.LIME_WOOL) {
+            setHornAlteration(4, "0.1");
+        } else if (item == Items.GREEN_WOOL) {
+            setHornAlteration(4, "-0.1");
+        } else if (item == Items.CYAN_WOOL) {
+            setHornAlteration(5, "0.1");
+        } else if (item == Items.LIGHT_BLUE_WOOL) {
+            setHornAlteration(5, "-0.1");
+        } else if (item == Items.BLUE_WOOL) {
+            setHornAlteration(6, "0.1");
+        } else if (item == Items.PURPLE_WOOL) {
+            setHornAlteration(6, "-0.1");
+        } else if (item == Items.MAGENTA_WOOL) {
+            setHornAlteration(7, "0.1");
+        } else if (item == Items.BROWN_WOOL) {
+            setHornAlteration(7, "-0.1");
+        }
+
         if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;
             int bucketSize = 6;
@@ -1458,12 +1527,16 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
-                ITextComponent message = getHungerText();
+                float[] hornAlterations = getHornAlteration();
+                String hornAltString = "A: " + hornAlterations[0] + ", B: " + hornAlterations[1] + ", C: " + hornAlterations[2] + ", D: " + hornAlterations[3] + ", E: " + hornAlterations[4] + ", F: " + hornAlterations[5] + ", G: " + hornAlterations[6] + ", H: " + hornAlterations[7];
+                ITextComponent message = new TranslationTextComponent(hornAltString);
+                Minecraft.getInstance().keyboardListener.setClipboardString(hornAltString);
+//                ITextComponent message = getHungerText();
                 entityPlayer.sendMessage(message);
-                if (pregnant) {
-                    message = getPregnantText();
-                    entityPlayer.sendMessage(message);
-                }
+//                if (pregnant) {
+//                    message = getPregnantText();
+//                    entityPlayer.sendMessage(message);
+//                }
             } else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             } else if (!getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
@@ -2485,13 +2558,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 //                speed = speed - 0.1;
 //            }
 
-            this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
-            this.goalSelector.addGoal(2, new BreedGoal(this, speed));
-            this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.25D, TEMPTATION_ITEMS, false));
-            this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
-            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
-            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);
-            this.goalSelector.addGoal(6, wanderEatingGoal);
+//            this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
+//            this.goalSelector.addGoal(2, new BreedGoal(this, speed));
+//            this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.25D, TEMPTATION_ITEMS, false));
+//            this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
+//            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
+//            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);
+//            this.goalSelector.addGoal(6, wanderEatingGoal);
         }
         aiConfigured = true;
     }

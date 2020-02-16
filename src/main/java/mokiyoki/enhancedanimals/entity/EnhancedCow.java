@@ -1379,37 +1379,37 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         Item item = itemStack.getItem();
 
         if (item == Items.BLACK_WOOL) {
-            setHornAlteration(0, "0.1");
+            setHornAlteration(0, "0.025");
         } else if (item == Items.GRAY_WOOL) {
-            setHornAlteration(0, "-0.1");
+            setHornAlteration(0, "-0.025");
         } else if (item == Items.LIGHT_GRAY_WOOL) {
-            setHornAlteration(1, "0.1");
+            setHornAlteration(1, "0.025");
         } else if (item == Items.WHITE_WOOL) {
-            setHornAlteration(1, "-0.1");
+            setHornAlteration(1, "-0.025");
         } else if (item == Items.PINK_WOOL) {
-            setHornAlteration(2, "0.1");
+            setHornAlteration(2, "0.025");
         } else if (item == Items.RED_WOOL) {
-            setHornAlteration(2, "-0.1");
+            setHornAlteration(2, "-0.025");
         } else if (item == Items.ORANGE_WOOL) {
-            setHornAlteration(3, "0.1");
+            setHornAlteration(3, "0.025");
         } else if (item == Items.YELLOW_WOOL) {
-            setHornAlteration(3, "-0.1");
+            setHornAlteration(3, "-0.025");
         } else if (item == Items.LIME_WOOL) {
-            setHornAlteration(4, "0.1");
+            setHornAlteration(4, "0.025");
         } else if (item == Items.GREEN_WOOL) {
-            setHornAlteration(4, "-0.1");
+            setHornAlteration(4, "-0.025");
         } else if (item == Items.CYAN_WOOL) {
-            setHornAlteration(5, "0.1");
+            setHornAlteration(5, "0.025");
         } else if (item == Items.LIGHT_BLUE_WOOL) {
-            setHornAlteration(5, "-0.1");
+            setHornAlteration(5, "-0.025");
         } else if (item == Items.BLUE_WOOL) {
-            setHornAlteration(6, "0.1");
+            setHornAlteration(6, "0.025");
         } else if (item == Items.PURPLE_WOOL) {
-            setHornAlteration(6, "-0.1");
+            setHornAlteration(6, "-0.025");
         } else if (item == Items.MAGENTA_WOOL) {
-            setHornAlteration(7, "0.1");
+            setHornAlteration(7, "0.025");
         } else if (item == Items.BROWN_WOOL) {
-            setHornAlteration(7, "-0.1");
+            setHornAlteration(7, "-0.025");
         }
 
         if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {

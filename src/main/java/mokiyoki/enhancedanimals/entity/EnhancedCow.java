@@ -234,7 +234,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
-        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0");
+        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0,0,0");
         this.dataManager.register(COW_SIZE, 0.0F);
         this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(COW_STATUS, new String());
@@ -1410,7 +1410,16 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             setHornAlteration(7, "0.025");
         } else if (item == Items.BROWN_WOOL) {
             setHornAlteration(7, "-0.025");
+        } else if (item == Items.BLACK_STAINED_GLASS) {
+            setHornAlteration(8, "0.0125");
+        } else if (item == Items.WHITE_STAINED_GLASS) {
+            setHornAlteration(8, "-0.0125");
+        } else if (item == Items.BLACK_CONCRETE) {
+            setHornAlteration(9, "0.0125");
+        } else if (item == Items.WHITE_CONCRETE) {
+            setHornAlteration(9, "-0.0125");
         }
+
 
         if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;

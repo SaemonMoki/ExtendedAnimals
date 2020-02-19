@@ -234,7 +234,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
-        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0,0,0");
+        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0,0,0,0,0,0");
         this.dataManager.register(COW_SIZE, 0.0F);
         this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(COW_STATUS, new String());
@@ -1418,6 +1418,18 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             setHornAlteration(9, "0.0125");
         } else if (item == Items.WHITE_CONCRETE) {
             setHornAlteration(9, "-0.0125");
+        } else if (item == Items.RED_STAINED_GLASS) {
+            setHornAlteration(10, "0.0125");
+        } else if (item == Items.CYAN_STAINED_GLASS) {
+            setHornAlteration(10, "-0.0125");
+        } else if (item == Items.LIME_STAINED_GLASS) {
+            setHornAlteration(11, "0.0125");
+        } else if (item == Items.MAGENTA_STAINED_GLASS) {
+            setHornAlteration(11, "-0.0125");
+        } else if (item == Items.BLUE_STAINED_GLASS) {
+            setHornAlteration(12, "0.05");
+        } else if (item == Items.YELLOW_STAINED_GLASS) {
+            setHornAlteration(12, "-0.05");
         }
 
 

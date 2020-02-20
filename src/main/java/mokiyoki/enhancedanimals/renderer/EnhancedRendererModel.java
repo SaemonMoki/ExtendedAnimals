@@ -42,14 +42,16 @@ public class EnhancedRendererModel extends RendererModel {
                     this.compileDisplayList(scale, boxesToNotRender);
                 }
 
-                GlStateManager.pushMatrix();
+//                GlStateManager.pushMatrix();
                 GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
 
                 if (mapOfScale != null) {
                     if (mapOfScale.containsKey(this.boxName)) {
                         List<Float> scaleAmounts = mapOfScale.get(this.boxName);
                         Float scaling = scaleAmounts.get(0);
-                        GlStateManager.scalef(scaling, scaling, scaling);
+                        if (scaling != null) {
+                            GlStateManager.scalef(scaling, scaling, scaling);
+                        }
                         if (scaleAmounts.get(1) != null && scaleAmounts.get(2) != null && scaleAmounts.get(3) != null) {
                             GlStateManager.translatef(scaleAmounts.get(1), scaleAmounts.get(2), scaleAmounts.get(3));
                         }
@@ -107,7 +109,7 @@ public class EnhancedRendererModel extends RendererModel {
                     GlStateManager.popMatrix();
                 }
 
-                GlStateManager.popMatrix();
+//                GlStateManager.popMatrix();
             }
         }
     }

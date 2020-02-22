@@ -817,6 +817,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 lengthR = 9;
             }
 
+            lengthL = 0;
+            lengthR = 0;
+
+
 
             if (lengthL != 0) {
                 for (int i = 0; i <= 9; i++) {

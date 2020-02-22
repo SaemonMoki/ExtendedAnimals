@@ -1549,7 +1549,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
                 float[] hornAlterations = getHornAlteration();
-                String hornAltString = "A: " + hornAlterations[0] + ", B: " + hornAlterations[1] + ", C: " + hornAlterations[2] + ", D: " + hornAlterations[3] + ", E: " + hornAlterations[4] + ", F: " + hornAlterations[5] + ", G: " + hornAlterations[6] + ", H: " + hornAlterations[7];
+                String hornAltString = "A: " + hornAlterations[0] + ", B: " + hornAlterations[1] + ", C: " + hornAlterations[2] + ", D: " + hornAlterations[3] + ", E: " + hornAlterations[4] + ", F: " + hornAlterations[5] + ", G: " + hornAlterations[6] + ", H: " + hornAlterations[7] + ", I: " + hornAlterations[8] + ", J: " + hornAlterations[9] + ", RootZ: " + hornAlterations[10] + ", RootX: " + hornAlterations[11] + ", RootY: " + hornAlterations[12];
                 ITextComponent message = new TranslationTextComponent(hornAltString);
                 Minecraft.getInstance().keyboardListener.setClipboardString(hornAltString);
 //                ITextComponent message = getHungerText();
@@ -1767,6 +1767,19 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         setMaxBagSize();
 
         configureAI();
+        setHornAlteration(0 , String.valueOf((this.rand.nextDouble() * (5 - 1.5) + 1.5)/10) ); //A
+        setHornAlteration(1 , String.valueOf((this.rand.nextDouble() * (4 - 1) + 1)/10) ); //B
+        setHornAlteration(2 , String.valueOf((this.rand.nextDouble() * (4 - 1) + 1)/10) ); //C
+        setHornAlteration(3 , String.valueOf((this.rand.nextDouble() * (4))/10) ); //D
+        setHornAlteration(4 , String.valueOf((this.rand.nextDouble() * (3 - 1) + 1)/10) ); //E
+        setHornAlteration(5 , String.valueOf((this.rand.nextDouble() * (4 - 2) + 2)/10) ); //F
+        setHornAlteration(6 , String.valueOf((this.rand.nextDouble() * (6 - 1) + 1)/10) ); //G
+        setHornAlteration(7 , String.valueOf((this.rand.nextDouble() * (4))/10) ); //H
+        setHornAlteration(8 , String.valueOf((this.rand.nextDouble() * (2))/10) ); //I
+        setHornAlteration(9 , String.valueOf((this.rand. nextDouble() * (2))/10) ); //J
+        setHornAlteration(10 , String.valueOf((this.rand.nextDouble() * (3))/10) ); //root z
+        setHornAlteration(11 , String.valueOf((this.rand.nextDouble() * (4))/10) ); //root x
+        setHornAlteration(12 , String.valueOf((this.rand.nextDouble() * (4))/10) ); //root y
         return livingdata;
     }
 

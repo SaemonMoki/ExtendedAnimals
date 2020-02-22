@@ -968,8 +968,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                     }
                 }
 
-            this.hornL0.rotateAngleZ = 1.4F + rootRotationZ;
-            this.hornR0.rotateAngleZ = -1.4F - rootRotationZ;
+            this.hornL0.rotateAngleZ = rootRotationZ;
+            this.hornR0.rotateAngleZ = -rootRotationZ;
             this.hornL0.rotateAngleX = rootRotationX;
             this.hornR0.rotateAngleX = rootRotationX;
             this.hornL0.rotateAngleY = -rootRotationY;

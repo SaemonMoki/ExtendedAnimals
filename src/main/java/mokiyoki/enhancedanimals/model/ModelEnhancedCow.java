@@ -935,9 +935,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 float i = 0.0F + hornAlterations[8];
                 float j = 0.0F + hornAlterations[9];
 
-                float rootRotationZ = hornAlterations[10]; //root rotation seems to go odd easily.
-                float rootRotationX = hornAlterations[11];
-                float rootRotationY = hornAlterations[12];
+                float rootRotationZ = hornAlterations[10] + 1.0F; //root rotation seems to go odd easily.
+                float rootRotationX = hornAlterations[11] - 1.0F;
+                float rootRotationY = hornAlterations[12] - 1.5F;
 
 //                a = (float)((sharedGenes[84] >> 2) / 16);
 //                e = ((float)(((sharedGenes[84] << 2) >> 2) / 16));
@@ -955,8 +955,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 }
 
                 for (int z = 1; z <= 9; z++) {
-                    hornCalculationsZ[z] = (float)((Math.cos((z * a) + b) + d) / c);
-                    hornCalculationsX[z] = -(float)((Math.cos((z * e) + f) + h) / g);
+                    hornCalculationsZ[z] = (float)((Math.cos((z * (a)) + (b)) + d) / c);
+                    hornCalculationsX[z] = -(float)((Math.cos((z * (e)) + (f)) + h) / g);
                     hornCalculationsY[z] = i + (j * hornCalculationsY[z-1]);
                 }
                 for (int z = 1; z <= 9; z++) {
@@ -985,15 +985,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.hornL2.rotateAngleZ = hornCalculationsZ[2] * hornGrowthL[2];
             this.hornL1.rotateAngleZ = (hornCalculationsZ[1] * hornGrowthL[1]);
 
-            this.hornL9.rotateAngleX = hornCalculationsX[9] * hornGrowthL[9];
-            this.hornL8.rotateAngleX = hornCalculationsX[8] * hornGrowthL[8];
-            this.hornL7.rotateAngleX = hornCalculationsX[7] * hornGrowthL[7];
-            this.hornL6.rotateAngleX = hornCalculationsX[6] * hornGrowthL[6];
-            this.hornL5.rotateAngleX = hornCalculationsX[5] * hornGrowthL[5];
-            this.hornL4.rotateAngleX = hornCalculationsX[4] * hornGrowthL[4];
-            this.hornL3.rotateAngleX = hornCalculationsX[3] * hornGrowthL[3];
-            this.hornL2.rotateAngleX = hornCalculationsX[2] * hornGrowthL[2];
-            this.hornL1.rotateAngleX = (hornCalculationsX[1] * hornGrowthL[1]);
+            this.hornL9.rotateAngleX = -hornCalculationsX[9] * hornGrowthL[9];
+            this.hornL8.rotateAngleX = -hornCalculationsX[8] * hornGrowthL[8];
+            this.hornL7.rotateAngleX = -hornCalculationsX[7] * hornGrowthL[7];
+            this.hornL6.rotateAngleX = -hornCalculationsX[6] * hornGrowthL[6];
+            this.hornL5.rotateAngleX = -hornCalculationsX[5] * hornGrowthL[5];
+            this.hornL4.rotateAngleX = -hornCalculationsX[4] * hornGrowthL[4];
+            this.hornL3.rotateAngleX = -hornCalculationsX[3] * hornGrowthL[3];
+            this.hornL2.rotateAngleX = -hornCalculationsX[2] * hornGrowthL[2];
+            this.hornL1.rotateAngleX = (-hornCalculationsX[1] * hornGrowthL[1]);
 
             this.hornL9.rotateAngleY = -hornCalculationsY[9] * hornGrowthL[9];
             this.hornL8.rotateAngleY = -hornCalculationsY[8] * hornGrowthL[8];
@@ -1015,15 +1015,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.hornR2.rotateAngleZ = -hornCalculationsZ[2] * hornGrowthR[2];
             this.hornR1.rotateAngleZ = (-hornCalculationsZ[1] * hornGrowthR[1]);
 
-            this.hornR9.rotateAngleX = hornCalculationsX[9] * hornGrowthR[9];
-            this.hornR8.rotateAngleX = hornCalculationsX[8] * hornGrowthR[8];
-            this.hornR7.rotateAngleX = hornCalculationsX[7] * hornGrowthR[7];
-            this.hornR6.rotateAngleX = hornCalculationsX[6] * hornGrowthR[6];
-            this.hornR5.rotateAngleX = hornCalculationsX[5] * hornGrowthR[5];
-            this.hornR4.rotateAngleX = hornCalculationsX[4] * hornGrowthR[4];
-            this.hornR3.rotateAngleX = hornCalculationsX[3] * hornGrowthR[3];
-            this.hornR2.rotateAngleX = hornCalculationsX[2] * hornGrowthR[2];
-            this.hornR1.rotateAngleX = (hornCalculationsX[1] * hornGrowthR[1]);
+            this.hornR9.rotateAngleX = -hornCalculationsX[9] * hornGrowthR[9];
+            this.hornR8.rotateAngleX = -hornCalculationsX[8] * hornGrowthR[8];
+            this.hornR7.rotateAngleX = -hornCalculationsX[7] * hornGrowthR[7];
+            this.hornR6.rotateAngleX = -hornCalculationsX[6] * hornGrowthR[6];
+            this.hornR5.rotateAngleX = -hornCalculationsX[5] * hornGrowthR[5];
+            this.hornR4.rotateAngleX = -hornCalculationsX[4] * hornGrowthR[4];
+            this.hornR3.rotateAngleX = -hornCalculationsX[3] * hornGrowthR[3];
+            this.hornR2.rotateAngleX = -hornCalculationsX[2] * hornGrowthR[2];
+            this.hornR1.rotateAngleX = (-hornCalculationsX[1] * hornGrowthR[1]);
 
             this.hornR9.rotateAngleY = hornCalculationsY[9] * hornGrowthR[9];
             this.hornR8.rotateAngleY = hornCalculationsY[8] * hornGrowthR[8];

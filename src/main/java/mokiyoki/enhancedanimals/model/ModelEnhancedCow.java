@@ -726,6 +726,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         Float[] hornGrowthL = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
         Float[] hornGrowthR = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
 
+        EnhancedCow enhancedCow = (EnhancedCow) entityIn;
+        float[] hornAlterations = enhancedCow.getHornAlteration();
+
         if (horns != 0.0F && !this.isChild) {
 
             Float[] hornHideL = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
@@ -817,8 +820,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 lengthR = 9;
             }
 
-            lengthL = 0;
-            lengthR = 0;
+            lengthL = lengthL + Math.round(hornAlterations[13]);
+            lengthR = lengthR + Math.round(hornAlterations[13]);
 
 
 
@@ -919,15 +922,17 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             Float[] hornCalculationsX = {0.0F, -0.17F, 0.1F, 0.2F, 0.01F, -0.2F, -0.37F, -0.57F, -0.27F, -0.14F};
             Float[] hornCalculationsY = {0.0F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F};
 
-            EnhancedCow enhancedCow = (EnhancedCow) entityIn;
-            float[] hornAlterations = enhancedCow.getHornAlteration();
-
                 float a = 0.0F + hornAlterations[0];    // period length       0.79
                 float b = 0.0F + hornAlterations[1];   // period shift      -0.8
                 float c = 1.0F / hornAlterations[2];     //wave height from d   2.3
                 float d = 0.0F + hornAlterations[3];     // != 0, [
 
                 float e = 0.0F + hornAlterations[4];         //makes turns in horn sharper
+
+                while (d - e > 0.05F) {
+                    e = e + 0.05F;
+                }
+
                 float f = 0.0F + hornAlterations[5];
                 float g = 1.0F / hornAlterations[6];
                 float h = 0.0F + hornAlterations[7];     // != 0, [
@@ -995,15 +1000,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.hornL2.rotateAngleX = -hornCalculationsX[2] * hornGrowthL[2];
             this.hornL1.rotateAngleX = (-hornCalculationsX[1] * hornGrowthL[1]);
 
-            this.hornL9.rotateAngleY = -hornCalculationsY[9] * hornGrowthL[9];
-            this.hornL8.rotateAngleY = -hornCalculationsY[8] * hornGrowthL[8];
-            this.hornL7.rotateAngleY = -hornCalculationsY[7] * hornGrowthL[7];
-            this.hornL6.rotateAngleY = -hornCalculationsY[6] * hornGrowthL[6];
-            this.hornL5.rotateAngleY = -hornCalculationsY[5] * hornGrowthL[5];
-            this.hornL4.rotateAngleY = -hornCalculationsY[4] * hornGrowthL[4];
-            this.hornL3.rotateAngleY = -hornCalculationsY[3] * hornGrowthL[3];
-            this.hornL2.rotateAngleY = -hornCalculationsY[2] * hornGrowthL[2];
-            this.hornL1.rotateAngleY = -(hornCalculationsY[1] * hornGrowthL[1]);
+            this.hornL9.rotateAngleY = hornCalculationsY[9] * hornGrowthL[9];
+            this.hornL8.rotateAngleY = hornCalculationsY[8] * hornGrowthL[8];
+            this.hornL7.rotateAngleY = hornCalculationsY[7] * hornGrowthL[7];
+            this.hornL6.rotateAngleY = hornCalculationsY[6] * hornGrowthL[6];
+            this.hornL5.rotateAngleY = hornCalculationsY[5] * hornGrowthL[5];
+            this.hornL4.rotateAngleY = hornCalculationsY[4] * hornGrowthL[4];
+            this.hornL3.rotateAngleY = hornCalculationsY[3] * hornGrowthL[3];
+            this.hornL2.rotateAngleY = hornCalculationsY[2] * hornGrowthL[2];
+            this.hornL1.rotateAngleY = (hornCalculationsY[1] * hornGrowthL[1]);
 
             this.hornR9.rotateAngleZ = -hornCalculationsZ[9] * hornGrowthR[9];
             this.hornR8.rotateAngleZ = -hornCalculationsZ[8] * hornGrowthR[8];
@@ -1025,15 +1030,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.hornR2.rotateAngleX = -hornCalculationsX[2] * hornGrowthR[2];
             this.hornR1.rotateAngleX = (-hornCalculationsX[1] * hornGrowthR[1]);
 
-            this.hornR9.rotateAngleY = hornCalculationsY[9] * hornGrowthR[9];
-            this.hornR8.rotateAngleY = hornCalculationsY[8] * hornGrowthR[8];
-            this.hornR7.rotateAngleY = hornCalculationsY[7] * hornGrowthR[7];
-            this.hornR6.rotateAngleY = hornCalculationsY[6] * hornGrowthR[6];
-            this.hornR5.rotateAngleY = hornCalculationsY[5] * hornGrowthR[5];
-            this.hornR4.rotateAngleY = hornCalculationsY[4] * hornGrowthR[4];
-            this.hornR3.rotateAngleY = hornCalculationsY[3] * hornGrowthR[3];
-            this.hornR2.rotateAngleY = hornCalculationsY[2] * hornGrowthR[2];
-            this.hornR1.rotateAngleY = (hornCalculationsY[1] * hornGrowthR[1]);
+            this.hornR9.rotateAngleY = -hornCalculationsY[9] * hornGrowthR[9];
+            this.hornR8.rotateAngleY = -hornCalculationsY[8] * hornGrowthR[8];
+            this.hornR7.rotateAngleY = -hornCalculationsY[7] * hornGrowthR[7];
+            this.hornR6.rotateAngleY = -hornCalculationsY[6] * hornGrowthR[6];
+            this.hornR5.rotateAngleY = -hornCalculationsY[5] * hornGrowthR[5];
+            this.hornR4.rotateAngleY = -hornCalculationsY[4] * hornGrowthR[4];
+            this.hornR3.rotateAngleY = -hornCalculationsY[3] * hornGrowthR[3];
+            this.hornR2.rotateAngleY = -hornCalculationsY[2] * hornGrowthR[2];
+            this.hornR1.rotateAngleY = (-hornCalculationsY[1] * hornGrowthR[1]);
             
             
 

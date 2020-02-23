@@ -234,7 +234,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
-        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0,0,0,0,0,0");
+        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0,0,0,0,0,0,0");
         this.dataManager.register(COW_SIZE, 0.0F);
         this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(COW_STATUS, new String());
@@ -1430,6 +1430,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             setHornAlteration(12, "0.05");
         } else if (item == Items.YELLOW_STAINED_GLASS) {
             setHornAlteration(12, "-0.05");
+        }else if (item == Items.BLACK_CARPET) {
+            setHornAlteration(13, "1");
+        }else if (item == Items.WHITE_CARPET) {
+            setHornAlteration(13, "-1");
         }
 
 
@@ -1767,19 +1771,19 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         setMaxBagSize();
 
         configureAI();
-        setHornAlteration(0 , String.valueOf((this.rand.nextDouble() * (5 - 1.5) + 1.5)/10) ); //A
-        setHornAlteration(1 , String.valueOf((this.rand.nextDouble() * (4 - 1) + 1)/10) ); //B
-        setHornAlteration(2 , String.valueOf((this.rand.nextDouble() * (4 - 1) + 1)/10) ); //C
+        setHornAlteration(0 , String.valueOf((this.rand.nextDouble() * (7 - 2.5) + 2.5)/10) ); //A
+        setHornAlteration(1 , String.valueOf((this.rand.nextDouble() * (5 - 1) + 1)/10) ); //B
+        setHornAlteration(2 , String.valueOf((this.rand.nextDouble() * (5 - 1) + 1)/10) ); //C
         setHornAlteration(3 , String.valueOf((this.rand.nextDouble() * (4))/10) ); //D
-        setHornAlteration(4 , String.valueOf((this.rand.nextDouble() * (3 - 1) + 1)/10) ); //E
-        setHornAlteration(5 , String.valueOf((this.rand.nextDouble() * (4 - 2) + 2)/10) ); //F
+        setHornAlteration(4 , String.valueOf((this.rand.nextDouble() * (5 - 1) + 1)/10) ); //E
+        setHornAlteration(5 , String.valueOf((this.rand.nextDouble() * (5 - 1) + 1)/10) ); //F
         setHornAlteration(6 , String.valueOf((this.rand.nextDouble() * (6 - 1) + 1)/10) ); //G
-        setHornAlteration(7 , String.valueOf((this.rand.nextDouble() * (4))/10) ); //H
-        setHornAlteration(8 , String.valueOf((this.rand.nextDouble() * (2))/10) ); //I
+        setHornAlteration(7 , String.valueOf((this.rand.nextDouble() * (6))/10) ); //H
+        setHornAlteration(8 , String.valueOf((this.rand.nextDouble() * (5))/10) ); //I
         setHornAlteration(9 , String.valueOf((this.rand. nextDouble() * (2))/10) ); //J
         setHornAlteration(10 , String.valueOf((this.rand.nextDouble() * (3))/10) ); //root z
-        setHornAlteration(11 , String.valueOf((this.rand.nextDouble() * (4))/10) ); //root x
-        setHornAlteration(12 , String.valueOf((this.rand.nextDouble() * (4))/10) ); //root y
+        setHornAlteration(11 , String.valueOf((this.rand.nextDouble() * (4 - 1) + 1)/10) ); //root x
+        setHornAlteration(12 , String.valueOf(-(this.rand.nextDouble() * (4 - 1) + 1)/-10) ); //root y
         return livingdata;
     }
 

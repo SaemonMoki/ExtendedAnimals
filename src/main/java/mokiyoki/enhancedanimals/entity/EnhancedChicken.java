@@ -704,7 +704,6 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
         switch (eggColourGene) {
             case 0:
-//                Item item = Item.REGISTRY.getObject(new ResourceLocation("eanimod:egg_white"));
                 return ModItems.Egg_White;
             case 1:
                 return ModItems.Egg_CreamLight;
@@ -715,47 +714,605 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             case 4:
                 return ModItems.Egg_CreamDarkest;
             case 5:
-                return ModItems.Egg_PinkLight;
+                return ModItems.Egg_CarmelDark;
             case 6:
-                return ModItems.Egg_Pink;
+                return ModItems.Egg_Garnet;
             case 7:
-                return ModItems.Egg_PinkDark;
+                return ModItems.Egg_PinkLight;
             case 8:
-                return ModItems.Egg_PinkDarkest;
+                return ModItems.Egg_Pink;
             case 9:
-                return ModItems.Egg_BrownLight;
+                return ModItems.Egg_PinkDark;
             case 10:
-                return ModItems.Egg_Brown;
+                return ModItems.Egg_PinkDarkest;
             case 11:
-                return ModItems.Egg_BrownDark;
+                return ModItems.Egg_CherryDark;
             case 12:
-                return ModItems.Egg_Chocolate;
+                return ModItems.Egg_Plum;
             case 13:
-                return ModItems.Egg_Blue;
+                return ModItems.Egg_BrownLight;
             case 14:
-                return ModItems.Egg_GreenLight;
+                return ModItems.Egg_Brown;
             case 15:
-                return ModItems.Egg_GreenYellow;
+                return ModItems.Egg_BrownDark;
             case 16:
-                return ModItems.Egg_OliveLight;
+                return ModItems.Egg_Chocolate;
             case 17:
-                return ModItems.Egg_Olive;
+                return ModItems.Egg_ChocolateDark;
             case 18:
-                return ModItems.Egg_BlueGrey;
+                return ModItems.Egg_ChocolateCosmos;
             case 19:
-                return ModItems.Egg_Grey;
+                return ModItems.Egg_Blue;
             case 20:
-                return ModItems.Egg_GreyGreen;
+                return ModItems.Egg_GreenLight;
             case 21:
-                return ModItems.Egg_Avocado;
+                return ModItems.Egg_GreenYellow;
             case 22:
-                return ModItems.Egg_Mint;
+                return ModItems.Egg_OliveLight;
             case 23:
-                return ModItems.Egg_Green;
+                return ModItems.Egg_Olive;
             case 24:
-                return ModItems.Egg_GreenDark;
+                return ModItems.Egg_OliveDark;
             case 25:
+                return ModItems.Egg_Army;
+            case 26:
+                return ModItems.Egg_BlueGrey;
+            case 27:
+                return ModItems.Egg_Grey;
+            case 28:
+                return ModItems.Egg_GreyGreen;
+            case 29:
+                return ModItems.Egg_Avocado;
+            case 30:
+                return ModItems.Egg_AvocadoDark;
+            case 31:
+                return ModItems.Egg_Feldgrau;
+            case 32:
+                return ModItems.Egg_Mint;
+            case 33:
+                return ModItems.Egg_Green;
+            case 34:
+                return ModItems.Egg_GreenDark;
+            case 35:
                 return ModItems.Egg_Pine;
+            case 36:
+                return ModItems.Egg_PineDark;
+            case 37:
+                return ModItems.Egg_PineBlack;
+            case 38:
+                return ModItems.Egg_PowderBlue;
+            case 39:
+                return ModItems.Egg_Tea;
+            case 40:
+                return ModItems.Egg_Matcha;
+            case 41:
+                return ModItems.Egg_MatchaDark;
+            case 42:
+                return ModItems.Egg_Moss;
+            case 43:
+                return ModItems.Egg_MossDark;
+            case 44:
+                return ModItems.Egg_GreenUmber;
+            case 45:
+                return ModItems.Egg_GreyBlue;
+            case 46:
+                return ModItems.Egg_GreyNeutral;
+            case 47:
+                return ModItems.Egg_Laurel;
+            case 48:
+                return ModItems.Egg_Reseda;
+            case 49:
+                return ModItems.Egg_GreenPewter;
+            case 50:
+                return ModItems.Egg_GreyDark;
+            case 51:
+                return ModItems.Egg_Celadon;
+            case 52:
+                return ModItems.Egg_Fern;
+            case 53:
+                return ModItems.Egg_Asparagus;
+            case 54:
+                return ModItems.Egg_Hunter;
+            case 55:
+                return ModItems.Egg_HunterDark;
+            case 56:
+                return ModItems.Egg_TreeDark;
+            case 57:
+                return ModItems.Egg_PaleBlue;
+            case 58:
+                return ModItems.Egg_HoneyDew;
+            case 59:
+                return ModItems.Egg_Earth;
+            case 60:
+                return ModItems.Egg_Khaki;
+            case 61:
+                return ModItems.Egg_Grullo;
+            case 62:
+                return ModItems.Egg_KhakiDark;
+            case 63:
+                return ModItems.Egg_Carob;
+            case 64:
+                return ModItems.Egg_CoolGrey;
+            case 65:
+                return ModItems.Egg_PinkGrey;
+            case 66:
+                return ModItems.Egg_WarmGrey;
+            case 67:
+                return ModItems.Egg_Artichoke;
+            case 68:
+                return ModItems.Egg_MyrtleGrey;
+            case 69:
+                return ModItems.Egg_Rifle;
+            case 70:
+                return ModItems.Egg_Jade;
+            case 71:
+                return ModItems.Egg_Pistachio;
+            case 72:
+                return ModItems.Egg_Sage;
+            case 73:
+                return ModItems.Egg_Rosemary;
+            case 74:
+                return ModItems.Egg_GreenBrown;
+            case 75:
+                return ModItems.Egg_Umber;
+
+
+            case 76:
+                return ModItems.Egg_White;
+            case 77:
+                return ModItems.Egg_CreamLight;
+            case 78:
+                return ModItems.Egg_Cream_Speckle;
+            case 79:
+                return ModItems.Egg_CreamDark_Speckle;
+            case 80:
+                return ModItems.Egg_Carmel_Speckle;
+            case 81:
+                return ModItems.Egg_CarmelDark_Speckle;
+            case 82:
+                return ModItems.Egg_Garnet_Speckle;
+            case 83:
+                return ModItems.Egg_PinkLight;
+            case 84:
+                return ModItems.Egg_Pink_Speckle;
+            case 85:
+                return ModItems.Egg_PinkDark_Speckle;
+            case 86:
+                return ModItems.Egg_Cherry_Speckle;
+            case 87:
+                return ModItems.Egg_CherryDark_Speckle;
+            case 88:
+                return ModItems.Egg_Plum_Speckle;
+            case 89:
+                return ModItems.Egg_BrownLight_Speckle;
+            case 90:
+                return ModItems.Egg_Brown_Speckle;
+            case 91:
+                return ModItems.Egg_BrownDark_Speckle;
+            case 92:
+                return ModItems.Egg_Chocolate_Speckle;
+            case 93:
+                return ModItems.Egg_ChocolateDark_Speckle;
+            case 94:
+                return ModItems.Egg_ChocolateCosmos;
+            case 95:
+                return ModItems.Egg_Blue;
+            case 96:
+                return ModItems.Egg_GreenLight;
+            case 97:
+                return ModItems.Egg_GreenYellow_Speckle;
+            case 98:
+                return ModItems.Egg_OliveLight_Speckle;
+            case 99:
+                return ModItems.Egg_Olive_Speckle;
+            case 100:
+                return ModItems.Egg_OliveDark_Speckle;
+            case 101:
+                return ModItems.Egg_Army_Speckle;
+            case 102:
+                return ModItems.Egg_BlueGrey;
+            case 103:
+                return ModItems.Egg_Grey_Speckle;
+            case 104:
+                return ModItems.Egg_GreyGreen_Speckle;
+            case 105:
+                return ModItems.Egg_Avocado_Speckle;
+            case 106:
+                return ModItems.Egg_AvocadoDark_Speckle;
+            case 107:
+                return ModItems.Egg_Feldgrau_Speckle;
+            case 108:
+                return ModItems.Egg_Mint_Speckle;
+            case 109:
+                return ModItems.Egg_Green_Speckle;
+            case 110:
+                return ModItems.Egg_GreenDark_Speckle;
+            case 111:
+                return ModItems.Egg_Pine_Speckle;
+            case 112:
+                return ModItems.Egg_PineDark_Speckle;
+            case 113:
+                return ModItems.Egg_PineBlack_Speckle;
+            case 114:
+                return ModItems.Egg_PowderBlue;
+            case 115:
+                return ModItems.Egg_Tea;
+            case 116:
+                return ModItems.Egg_Matcha_Speckle;
+            case 117:
+                return ModItems.Egg_MatchaDark_Speckle;
+            case 118:
+                return ModItems.Egg_Moss_Speckle;
+            case 119:
+                return ModItems.Egg_MossDark_Speckle;
+            case 120:
+                return ModItems.Egg_GreenUmber_Speckle;
+            case 121:
+                return ModItems.Egg_GreyBlue;
+            case 122:
+                return ModItems.Egg_GreyNeutral_Speckle;
+            case 123:
+                return ModItems.Egg_Laurel_Speckle;
+            case 124:
+                return ModItems.Egg_Reseda_Speckle;
+            case 125:
+                return ModItems.Egg_GreenPewter_Speckle;
+            case 126:
+                return ModItems.Egg_GreyDark_Speckle;
+            case 127:
+                return ModItems.Egg_Celadon_Speckle;
+            case 128:
+                return ModItems.Egg_Fern_Speckle;
+            case 129:
+                return ModItems.Egg_Asparagus_Speckle;
+            case 130:
+                return ModItems.Egg_Hunter_Speckle;
+            case 131:
+                return ModItems.Egg_HunterDark_Speckle;
+            case 132:
+                return ModItems.Egg_TreeDark_Speckle;
+            case 133:
+                return ModItems.Egg_PaleBlue;
+            case 134:
+                return ModItems.Egg_HoneyDew;
+            case 135:
+                return ModItems.Egg_Earth_Speckle;
+            case 136:
+                return ModItems.Egg_Khaki_Speckle;
+            case 137:
+                return ModItems.Egg_Grullo_Speckle;
+            case 138:
+                return ModItems.Egg_KhakiDark_Speckle;
+            case 139:
+                return ModItems.Egg_Carob_Speckle;
+            case 140:
+                return ModItems.Egg_CoolGrey;
+            case 141:
+                return ModItems.Egg_PinkGrey_Speckle;
+            case 142:
+                return ModItems.Egg_WarmGrey_Speckle;
+            case 143:
+                return ModItems.Egg_Artichoke_Speckle;
+            case 144:
+                return ModItems.Egg_MyrtleGrey_Speckle;
+            case 145:
+                return ModItems.Egg_Rifle_Speckle;
+            case 146:
+                return ModItems.Egg_Jade_Speckle;
+            case 147:
+                return ModItems.Egg_Pistachio_Speckle;
+            case 148:
+                return ModItems.Egg_Sage_Speckle;
+            case 149:
+                return ModItems.Egg_Rosemary_Speckle;
+            case 150:
+                return ModItems.Egg_GreenBrown_Speckle;
+            case 151:
+                return ModItems.Egg_Umber_Speckle;
+            case 152:
+                return ModItems.Egg_White;
+            case 153:
+                return ModItems.Egg_CreamLight;
+            case 154:
+                return ModItems.Egg_Cream_Spatter;
+            case 155:
+                return ModItems.Egg_CreamDark_Spatter;
+            case 156:
+                return ModItems.Egg_Carmel_Spatter;
+            case 157:
+                return ModItems.Egg_CarmelDark_Spatter;
+            case 158:
+                return ModItems.Egg_Garnet_Spatter;
+            case 159:
+                return ModItems.Egg_PinkLight;
+            case 160:
+                return ModItems.Egg_Pink_Spatter;
+            case 161:
+                return ModItems.Egg_PinkDark_Spatter;
+            case 162:
+                return ModItems.Egg_Cherry_Spatter;
+            case 163:
+                return ModItems.Egg_CherryDark_Spatter;
+            case 164:
+                return ModItems.Egg_Plum_Spatter;
+            case 165:
+                return ModItems.Egg_BrownLight_Spatter;
+            case 166:
+                return ModItems.Egg_Brown_Spatter;
+            case 167:
+                return ModItems.Egg_BrownDark_Spatter;
+            case 168:
+                return ModItems.Egg_Chocolate_Spatter;
+            case 169:
+                return ModItems.Egg_ChocolateDark_Spatter;
+            case 170:
+                return ModItems.Egg_ChocolateCosmos;
+            case 171:
+                return ModItems.Egg_Blue;
+            case 172:
+                return ModItems.Egg_GreenLight;
+            case 173:
+                return ModItems.Egg_GreenYellow_Spatter;
+            case 174:
+                return ModItems.Egg_OliveLight_Spatter;
+            case 175:
+                return ModItems.Egg_Olive_Spatter;
+            case 176:
+                return ModItems.Egg_OliveDark_Spatter;
+            case 177:
+                return ModItems.Egg_Army_Spatter;
+            case 178:
+                return ModItems.Egg_BlueGrey;
+            case 179:
+                return ModItems.Egg_Grey_Spatter;
+            case 180:
+                return ModItems.Egg_GreyGreen_Spatter;
+            case 181:
+                return ModItems.Egg_Avocado_Spatter;
+            case 182:
+                return ModItems.Egg_AvocadoDark_Spatter;
+            case 183:
+                return ModItems.Egg_Feldgrau_Spatter;
+            case 184:
+                return ModItems.Egg_Mint_Spatter;
+            case 185:
+                return ModItems.Egg_Green_Spatter;
+            case 186:
+                return ModItems.Egg_GreenDark_Spatter;
+            case 187:
+                return ModItems.Egg_Pine_Spatter;
+            case 188:
+                return ModItems.Egg_PineDark_Spatter;
+            case 189:
+                return ModItems.Egg_PineBlack_Spatter;
+            case 190:
+                return ModItems.Egg_PowderBlue;
+            case 191:
+                return ModItems.Egg_Tea;
+            case 192:
+                return ModItems.Egg_Matcha_Spatter;
+            case 193:
+                return ModItems.Egg_MatchaDark_Spatter;
+            case 194:
+                return ModItems.Egg_Moss_Spatter;
+            case 195:
+                return ModItems.Egg_MossDark_Spatter;
+            case 196:
+                return ModItems.Egg_GreenUmber_Spatter;
+            case 197:
+                return ModItems.Egg_GreyBlue;
+            case 198:
+                return ModItems.Egg_GreyNeutral_Spatter;
+            case 199:
+                return ModItems.Egg_Laurel_Spatter;
+            case 200:
+                return ModItems.Egg_Reseda_Spatter;
+            case 201:
+                return ModItems.Egg_GreenPewter_Spatter;
+            case 202:
+                return ModItems.Egg_GreyDark_Spatter;
+            case 203:
+                return ModItems.Egg_Celadon_Spatter;
+            case 204:
+                return ModItems.Egg_Fern_Spatter;
+            case 205:
+                return ModItems.Egg_Asparagus_Spatter;
+            case 206:
+                return ModItems.Egg_Hunter_Spatter;
+            case 207:
+                return ModItems.Egg_HunterDark_Spatter;
+            case 208:
+                return ModItems.Egg_TreeDark_Spatter;
+            case 209:
+                return ModItems.Egg_PaleBlue;
+            case 210:
+                return ModItems.Egg_HoneyDew;
+            case 211:
+                return ModItems.Egg_Earth_Spatter;
+            case 212:
+                return ModItems.Egg_Khaki_Spatter;
+            case 213:
+                return ModItems.Egg_Grullo_Spatter;
+            case 214:
+                return ModItems.Egg_KhakiDark_Spatter;
+            case 215:
+                return ModItems.Egg_Carob_Spatter;
+            case 216:
+                return ModItems.Egg_CoolGrey;
+            case 217:
+                return ModItems.Egg_PinkGrey_Spatter;
+            case 218:
+                return ModItems.Egg_WarmGrey_Spatter;
+            case 219:
+                return ModItems.Egg_Artichoke_Spatter;
+            case 220:
+                return ModItems.Egg_MyrtleGrey_Spatter;
+            case 221:
+                return ModItems.Egg_Rifle_Spatter;
+            case 222:
+                return ModItems.Egg_Jade_Spatter;
+            case 223:
+                return ModItems.Egg_Pistachio_Spatter;
+            case 224:
+                return ModItems.Egg_Sage_Spatter;
+            case 225:
+                return ModItems.Egg_Rosemary_Spatter;
+            case 226:
+                return ModItems.Egg_GreenBrown_Spatter;
+            case 227:
+                return ModItems.Egg_Umber_Spatter;
+            case 228:
+                return ModItems.Egg_White;
+            case 229:
+                return ModItems.Egg_CreamLight;
+            case 230:
+                return ModItems.Egg_Cream_Spot;
+            case 231:
+                return ModItems.Egg_CreamDark_Spot;
+            case 232:
+                return ModItems.Egg_Carmel_Spot;
+            case 233:
+                return ModItems.Egg_CarmelDark_Spot;
+            case 234:
+                return ModItems.Egg_Garnet_Spot;
+            case 235:
+                return ModItems.Egg_PinkLight;
+            case 236:
+                return ModItems.Egg_Pink_Spot;
+            case 237:
+                return ModItems.Egg_PinkDark_Spot;
+            case 238:
+                return ModItems.Egg_Cherry_Spot;
+            case 239:
+                return ModItems.Egg_CherryDark_Spot;
+            case 240:
+                return ModItems.Egg_Plum_Spot;
+            case 241:
+                return ModItems.Egg_BrownLight_Spot;
+            case 242:
+                return ModItems.Egg_Brown_Spot;
+            case 243:
+                return ModItems.Egg_BrownDark_Spot;
+            case 244:
+                return ModItems.Egg_Chocolate_Spot;
+            case 245:
+                return ModItems.Egg_ChocolateDark_Spot;
+            case 246:
+                return ModItems.Egg_ChocolateCosmos;
+            case 247:
+                return ModItems.Egg_Blue;
+            case 248:
+                return ModItems.Egg_GreenLight;
+            case 249:
+                return ModItems.Egg_GreenYellow_Spot;
+            case 250:
+                return ModItems.Egg_OliveLight_Spot;
+            case 251:
+                return ModItems.Egg_Olive_Spot;
+            case 252:
+                return ModItems.Egg_OliveDark_Spot;
+            case 253:
+                return ModItems.Egg_Army_Spot;
+            case 254:
+                return ModItems.Egg_BlueGrey;
+            case 255:
+                return ModItems.Egg_Grey_Spot;
+            case 256:
+                return ModItems.Egg_GreyGreen_Spot;
+            case 257:
+                return ModItems.Egg_Avocado_Spot;
+            case 258:
+                return ModItems.Egg_AvocadoDark_Spot;
+            case 259:
+                return ModItems.Egg_Feldgrau_Spot;
+            case 260:
+                return ModItems.Egg_Mint_Spot;
+            case 261:
+                return ModItems.Egg_Green_Spot;
+            case 262:
+                return ModItems.Egg_GreenDark_Spot;
+            case 263:
+                return ModItems.Egg_Pine_Spot;
+            case 264:
+                return ModItems.Egg_PineDark_Spot;
+            case 265:
+                return ModItems.Egg_PineBlack_Spot;
+            case 266:
+                return ModItems.Egg_PowderBlue;
+            case 267:
+                return ModItems.Egg_Tea;
+            case 268:
+                return ModItems.Egg_Matcha_Spot;
+            case 269:
+                return ModItems.Egg_MatchaDark_Spot;
+            case 270:
+                return ModItems.Egg_Moss_Spot;
+            case 271:
+                return ModItems.Egg_MossDark_Spot;
+            case 272:
+                return ModItems.Egg_GreenUmber_Spot;
+            case 273:
+                return ModItems.Egg_GreyBlue;
+            case 274:
+                return ModItems.Egg_GreyNeutral_Spot;
+            case 275:
+                return ModItems.Egg_Laurel_Spot;
+            case 276:
+                return ModItems.Egg_Reseda_Spot;
+            case 277:
+                return ModItems.Egg_GreenPewter_Spot;
+            case 278:
+                return ModItems.Egg_GreyDark_Spot;
+            case 279:
+                return ModItems.Egg_Celadon_Spot;
+            case 280:
+                return ModItems.Egg_Fern_Spot;
+            case 281:
+                return ModItems.Egg_Asparagus_Spot;
+            case 282:
+                return ModItems.Egg_Hunter_Spot;
+            case 283:
+                return ModItems.Egg_HunterDark_Spot;
+            case 284:
+                return ModItems.Egg_TreeDark_Spot;
+            case 285:
+                return ModItems.Egg_PaleBlue;
+            case 286:
+                return ModItems.Egg_HoneyDew;
+            case 287:
+                return ModItems.Egg_Earth_Spot;
+            case 288:
+                return ModItems.Egg_Khaki_Spot;
+            case 289:
+                return ModItems.Egg_Grullo_Spot;
+            case 290:
+                return ModItems.Egg_KhakiDark_Spot;
+            case 291:
+                return ModItems.Egg_Carob_Spot;
+            case 292:
+                return ModItems.Egg_CoolGrey;
+            case 293:
+                return ModItems.Egg_PinkGrey_Spot;
+            case 294:
+                return ModItems.Egg_WarmGrey_Spot;
+            case 295:
+                return ModItems.Egg_Artichoke_Spot;
+            case 296:
+                return ModItems.Egg_MyrtleGrey_Spot;
+            case 297:
+                return ModItems.Egg_Rifle_Spot;
+            case 298:
+                return ModItems.Egg_Jade_Spot;
+            case 299:
+                return ModItems.Egg_Pistachio_Spot;
+            case 300:
+                return ModItems.Egg_Sage_Spot;
+            case 301:
+                return ModItems.Egg_Rosemary_Spot;
+            case 302:
+                return ModItems.Egg_GreenBrown_Spot;
+            case 303:
+                return ModItems.Egg_Umber_Spot;
         }
 
         //TODO set up exception handling and put an exception here we should NEVER get here.
@@ -769,16 +1326,16 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
             if(genes[64] == 1 || genes[65] == 1 || genes[66] == 1 || genes[67] == 1){
                 //egg is brown
-                eggColour = 9;
+                eggColour = 13;
             }else if((genes[64] == 2 || genes[65] == 2) && (genes[66] == 2 || genes[67] == 2)){
                 //egg is brown
-                eggColour = 9;
+                eggColour = 13;
             }else if(genes[66] == 2 || genes[67] == 2){
                 //egg is cream
                 eggColour = 1;
             }else if(genes[64] == 2 || genes[65] == 2){
                 //egg is pink
-                eggColour = 5;
+                eggColour = 7;
             }else if(genes[64] == 3 || genes[65] == 3 || genes[66] == 3 || genes[67] == 3){
                 //egg is white
                 eggColour = 0;
@@ -786,32 +1343,89 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
         }
 
+        int shade = 0;
+        int markings = 0;
+
         //darkens egg if already brown shade
         if(genes[68] == 1 || genes[69] == 1){
-            if(eggColour == 0){
-                eggColour = 9;
-            }else {
-                eggColour = eggColour + 1;
+            if (eggColour != 0) {
+                shade =+ 1;
             }
         }
 
         if (genes[172] == 2 || genes[173] == 2) {
-            eggColour = eggColour + 1;
+            //darkens egg by 1
+            shade =+ 1;
         }
 
         if ((eggColour != 3 && eggColour != 7 && eggColour != 11) && genes[174] == 2 || genes[175] == 2) {
-            eggColour = eggColour + 1;
+            //darkens egg by 1
+            shade =+ 1;
         }
 
         if (genes[176] == 3 || genes[177] == 3) {
-            eggColour = eggColour + 1;
+            //darkens egg by 1
+            shade =+ 1;
         } else if ((eggColour != 3 && eggColour != 7 && eggColour != 11) && genes[176] == 2 || genes[177] == 2) {
-            eggColour = eggColour + 1;
+            //darkens egg by 1
+            shade =+ 1;
+        }
+
+        if (genes[178] == 2 || genes[179] == 2) {
+            //has speckles
+            shade =- 1;
+            markings = 1;
+        } else if (genes[178] == 3 || genes[179] == 3) {
+            markings = 1;
+        }
+
+        if (genes[180] == 2 && genes[181] == 2) {
+            if (markings == 1) {
+                markings = 2;
+            } else {
+                shade =+ 1;
+            }
+        }
+
+        if (genes[182] == 2 || genes[183] == 2) {
+            if (markings == 1) {
+                markings = 3;
+            } else if (markings == 2) {
+                shade =+ 1;
+            }
+        }
+        
+        if (shade > 6) {
+            shade = 6;
+        } else if (shade < 0) {
+            shade = 0;
+        }
+
+        if (eggColour == 0 && shade != 0) {
+            //gives egg a brown tint if its white
+            eggColour = shade + 13 - 1;
+        } else {
+            eggColour = eggColour + shade;
         }
 
         //toggles blue egg version
-        if(genes[62] == 1 || genes[63] == 1){
-            eggColour = eggColour + 13;
+        if(genes[62] == 4 || genes[63] == 4){
+            //paleblue range
+            eggColour = eggColour + 57;
+        } else if (genes[62] == 3 || genes[63] == 3) {
+            //powderblue range
+            eggColour = eggColour + 38;
+        } else if(genes[62] == 1 || genes[63] == 1){
+            //blue range
+            eggColour = eggColour + 19;
+        }
+        
+        if (markings == 1) {
+            eggColour = eggColour + 76;
+        } else if (markings == 2) {
+            eggColour = eggColour + 152;
+        } else if (markings == 3) {
+            eggColour = eggColour + 228;
         }
 
         return eggColour;
@@ -3152,15 +3766,31 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             initialGenes[61] = (2);
         }
 
-        //Blue eggs [ blue, wildtype ] // swamp exclusive
+        //Blue eggs [ blueSaturated, wildtype, blueMedium, blueLight ] // swamp exclusive
         if (wildType == 4) {
-            initialGenes[62] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            if (ThreadLocalRandom.current().nextBoolean()) {
+                initialGenes[62] = (2);
+            } else if (ThreadLocalRandom.current().nextBoolean()) {
+                initialGenes[62] = (4);
+            } else  if (ThreadLocalRandom.current().nextBoolean()) {
+                initialGenes[62] = (3);
+            } else {
+                initialGenes[62] = (1);
+            }
 
         } else {
             initialGenes[62] = (2);
         }
         if (wildType == 4) {
-            initialGenes[63] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            if (ThreadLocalRandom.current().nextBoolean()) {
+                initialGenes[63] = (2);
+            } else if (ThreadLocalRandom.current().nextBoolean()) {
+                initialGenes[63] = (4);
+            } else  if (ThreadLocalRandom.current().nextBoolean()) {
+                initialGenes[63] = (3);
+            } else {
+                initialGenes[63] = (1);
+            }
 
         } else {
             initialGenes[63] = (2);
@@ -3976,15 +4606,54 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
         //Egg Tinter 3 [wildtype, browner egg, brownest egg]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[176] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[176] = (ThreadLocalRandom.current().nextInt(3) + 1);
         } else {
             initialGenes[176] = (1);
         }
 
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[177] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[177] = (ThreadLocalRandom.current().nextInt(3) + 1);
         } else {
             initialGenes[177] = (1);
+        }
+
+        //Egg Speckle [wildtype, speckle lighter, speckle ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[178] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            initialGenes[178] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[179] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        } else {
+            initialGenes[179] = (1);
+        }
+
+        //Egg marking darkener [wildtype, darker spots ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[180] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            initialGenes[180] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[181] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            initialGenes[181] = (1);
+        }
+
+        //Egg marking smudger [wildtype, smudger ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[182] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            initialGenes[182] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            initialGenes[183] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            initialGenes[183] = (1);
         }
 
         //Quirk ideas:

@@ -18,5 +18,5 @@ public class Reference {
     public static final int ENHANCED_HORSE = 7;
     public static final String CLIENT_PROXY_CLASS = "mokiyoki.enhancedanimals.proxy.ClientProxy";
     public static final String SERVER_PROXY_CLASS = "mokiyoki.enhancedanimals.proxy.ServerProxy";
-    public static final int CHICKEN_GENES_LENGTH = 178;
+    public static final int CHICKEN_GENES_LENGTH = 184;
 }

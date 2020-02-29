@@ -135,7 +135,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     };
 
     private static final String[] PIG_TEXTURES_ALPHA = new String[] {
-            "bald", "sparce.png", "medium.png", "furry.png", "wooly.png"
+            "bald", "sparse.png", "medium.png", "furry.png", "wooly.png"
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD, ModItems.CookedChicken_Dark, ModItems.CookedChicken_DarkBig, ModItems.CookedChicken_DarkSmall, ModItems.CookedChicken_Pale, ModItems.CookedChicken_PaleSmall, ModItems.CookedRabbit_Small);

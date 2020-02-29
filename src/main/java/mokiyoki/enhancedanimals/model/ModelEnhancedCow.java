@@ -922,6 +922,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             Float[] hornCalculationsX = {0.0F, -0.17F, 0.1F, 0.2F, 0.01F, -0.2F, -0.37F, -0.57F, -0.27F, -0.14F};
             Float[] hornCalculationsY = {0.0F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F};
 
+//            EnhancedCow enhancedCow = (EnhancedCow) entityIn;
+//            float[] hornAlterations = enhancedCow.getHornAlteration();
+
                 float a = 0.0F + hornAlterations[0];    // period length       0.79
                 float b = 0.0F + hornAlterations[1];   // period shift      -0.8
                 float c = 1.0F / hornAlterations[2];     //wave height from d   2.3
@@ -960,8 +963,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 }
 
                 for (int z = 1; z <= 9; z++) {
-                    hornCalculationsZ[z] = (float)((Math.cos((z * (a)) + (b)) + d) / c);
-                    hornCalculationsX[z] = -(float)((Math.cos((z * (e)) + (f)) + h) / g);
+                    hornCalculationsZ[z] = (float)((Math.cos((z * (a)) + (b)) + (d)) / (c));
+                    hornCalculationsX[z] = -(float)((Math.cos((z * (e)) + (f)) + (h)) / (g));
                     hornCalculationsY[z] = i + (j * hornCalculationsY[z-1]);
                 }
                 for (int z = 1; z <= 9; z++) {

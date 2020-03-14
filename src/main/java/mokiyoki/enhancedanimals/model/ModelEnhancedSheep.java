@@ -118,8 +118,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
     public final RendererModel leg3;
     public final RendererModel leg4;
 
-//    private final List<RendererModel> SheepleftHorns = new ArrayList<>();
-    private final List<RendererModel> SheeprightHorns = new ArrayList<>();
+    private final List<RendererModel> sheepLeftHorns = new ArrayList<>();
+    private final List<RendererModel> sheepRightHorns = new ArrayList<>();
 
     public ModelEnhancedSheep()
     {
@@ -157,166 +157,192 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.hornL0 = new EnhancedRendererModel(this, 0, 36, "HornL0");
         this.hornL0.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornL0.setRotationPoint(0.0F, -7.4F, -3.0F);
-//        SheepleftHorns.add(hornL0);
+        sheepLeftHorns.add(hornL0);
 
         this.hornL01 = new EnhancedRendererModel(this, 0, 36, "HornL01");
         this.hornL01.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornL01.setRotationPoint(0.0F, 0.0F, 0.0F);
-
+        sheepLeftHorns.add(hornL01);
 
         this.hornL02 = new EnhancedRendererModel(this, 0, 36, "HornL02");
         this.hornL02.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornL02.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepLeftHorns.add(hornL02);
 
         this.hornL03 = new EnhancedRendererModel(this, 0, 36, "HornL03");
         this.hornL03.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornL03.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepLeftHorns.add(hornL03);
 
         this.hornL04 = new EnhancedRendererModel(this, 0, 36, "HornL04");
         this.hornL04.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornL04.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepLeftHorns.add(hornL04);
 
         this.hornL05 = new EnhancedRendererModel(this, 0, 36, "HornL05");
         this.hornL05.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornL05.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepLeftHorns.add(hornL05);
 
         this.hornL06 = new EnhancedRendererModel(this, 0, 36, "HornL06");
         this.hornL06.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornL06.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepLeftHorns.add(hornL06);
 
         this.hornL07 = new EnhancedRendererModel(this, 0, 36, "HornL07");
         this.hornL07.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornL07.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepLeftHorns.add(hornL07);
 
         this.hornL08 = new EnhancedRendererModel(this, 0, 36, "HornL08");
         this.hornL08.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornL08.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepLeftHorns.add(hornL08);
 
         this.hornL09 = new EnhancedRendererModel(this, 0, 36, "HornL09");
         this.hornL09.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornL09.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        SheepleftHorns.add(hornL09);
+        sheepLeftHorns.add(hornL09);
 
         this.hornL1 = new EnhancedRendererModel(this, 0, 36, "HornL1");
         this.hornL1.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.6F);
         this.hornL1.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        SheepleftHorns.add(hornL1);
+        sheepLeftHorns.add(hornL1);
 
         this.hornL2 = new EnhancedRendererModel(this, 0, 36, "HornL2");
         this.hornL2.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.7F);
         this.hornL2.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        SheepleftHorns.add(hornL2);
+        sheepLeftHorns.add(hornL2);
 
         this.hornL3 = new EnhancedRendererModel(this, 0, 36, "HornL3");
         this.hornL3.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.8F);
         this.hornL3.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        SheepleftHorns.add(hornL3);
+        sheepLeftHorns.add(hornL3);
 
         this.hornL4 = new EnhancedRendererModel(this, 0, 36, "HornL4");
         this.hornL4.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.9F);
         this.hornL4.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        SheepleftHorns.add(hornL4);
+        sheepLeftHorns.add(hornL4);
 
         this.hornL5 = new EnhancedRendererModel(this, 0, 36, "HornL5");
         this.hornL5.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -1.0F);
         this.hornL5.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        SheepleftHorns.add(hornL5);
+        sheepLeftHorns.add(hornL5);
 
         this.hornL6 = new EnhancedRendererModel(this, 0, 36, "HornL6");
         this.hornL6.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -1.0562F);
         this.hornL6.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        SheepleftHorns.add(hornL6);
+        sheepLeftHorns.add(hornL6);
 
         this.hornL7 = new EnhancedRendererModel(this, 0, 36, "HornL7");
         this.hornL7.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -1.1125F);
         this.hornL7.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        SheepleftHorns.add(hornL7);
+        sheepLeftHorns.add(hornL7);
 
         this.hornL8 = new EnhancedRendererModel(this, 0, 36, "HornL8");
         this.hornL8.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -1.1812F);
         this.hornL8.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        SheepleftHorns.add(hornL8);
+        sheepLeftHorns.add(hornL8);
 
         this.hornL9 = new EnhancedRendererModel(this, 0, 36, "HornL9");
         this.hornL9.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -1.25F);
         this.hornL9.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        SheepleftHorns.add(hornL9);
+        sheepLeftHorns.add(hornL9);
 
         this.hornR0 = new EnhancedRendererModel(this, 0, 36);
         this.hornR0.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornR0.setRotationPoint(0.0F, -7.4F, -3.0F);
+        sheepRightHorns.add(hornR0);
 
         this.hornR01 = new EnhancedRendererModel(this, 0, 36);
         this.hornR01.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornR01.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR01);
 
         this.hornR02 = new EnhancedRendererModel(this, 0, 36);
         this.hornR02.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornR02.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR02);
 
         this.hornR03 = new EnhancedRendererModel(this, 0, 36);
         this.hornR03.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornR03.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR03);
 
         this.hornR04 = new EnhancedRendererModel(this, 0, 36);
         this.hornR04.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornR04.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR04);
 
         this.hornR05 = new EnhancedRendererModel(this, 0, 36);
         this.hornR05.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornR05.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR05);
 
         this.hornR06 = new EnhancedRendererModel(this, 0, 36);
         this.hornR06.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornR06.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR06);
 
         this.hornR07 = new EnhancedRendererModel(this, 0, 36);
         this.hornR07.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornR07.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR07);
 
         this.hornR08 = new EnhancedRendererModel(this, 0, 36);
         this.hornR08.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornR08.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR08);
 
         this.hornR09 = new EnhancedRendererModel(this, 0, 36);
         this.hornR09.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.5F);
         this.hornR09.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR09);
 
         this.hornR1 = new EnhancedRendererModel(this, 0, 36);
         this.hornR1.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.6F);
         this.hornR1.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR1);
 
         this.hornR2 = new EnhancedRendererModel(this, 0, 36);
         this.hornR2.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.7F);
         this.hornR2.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR2);
 
         this.hornR3 = new EnhancedRendererModel(this, 0, 36);
         this.hornR3.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.8F);
         this.hornR3.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR3);
 
         this.hornR4 = new EnhancedRendererModel(this, 0, 36);
         this.hornR4.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.9F);
         this.hornR4.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR4);
 
         this.hornR5 = new EnhancedRendererModel(this, 0, 36);
         this.hornR5.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -1.0F);
         this.hornR5.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR5);
 
         this.hornR6 = new EnhancedRendererModel(this, 0, 36);
         this.hornR6.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -1.0562F);
         this.hornR6.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR6);
 
         this.hornR7 = new EnhancedRendererModel(this, 0, 36);
         this.hornR7.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -1.1125F);
         this.hornR7.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR7);
 
         this.hornR8 = new EnhancedRendererModel(this, 0, 36);
         this.hornR8.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -1.1812F);
         this.hornR8.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR8);
 
         this.hornR9 = new EnhancedRendererModel(this, 0, 36);
         this.hornR9.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -1.25F);
         this.hornR9.setRotationPoint(0.0F, 0.0F, 0.0F);
+        sheepRightHorns.add(hornR9);
 
         this.earsR = new RendererModel(this, 50, 0);
         this.earsR.addBox(-5.0F, -8.5F, -2.0F, 3, 2, 1, 0.0F); //ear right
@@ -571,14 +597,18 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             }
         }
 
+        float hornScale = 1.0F;
+
+        //TODO horn scale logic
+
         if (this.isChild) {
             renderChild(scale);
         }else {
-            renderAdult(scale, sheepStatus, horns, facewool, polycerate, unrenderedModels);
+            renderAdult(scale, sheepStatus, horns, hornScale, facewool, polycerate, unrenderedModels);
         }
     }
 
-    private void renderAdult(float scale, String sheepStatus, boolean horns, int facewool, boolean polycerate, List<String> unrenderedModels) {
+    private void renderAdult(float scale, String sheepStatus, boolean horns, float hornScale, int facewool, boolean polycerate, List<String> unrenderedModels) {
         this.head.render(scale);
         this.earsR.render(scale);
         this.earsL.render(scale);
@@ -592,7 +622,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.leg4.render(scale);
 
         if (horns){
-            renderHorns(scale, polycerate, 0F, 0F, null);
+            renderHorns(scale, polycerate, hornScale, 1F, unrenderedModels);
         }
 
         float woolLength = ((coatlength-1)*0.025F) + 1.0F;
@@ -655,19 +685,32 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
     private void renderHorns(float scale, boolean polycerate, float hornScale, float hornShift, List<String> unrenderedModels) {
 
-        this.hornBase.render(scale, null, new ArrayList<>());
+//        this.hornBase.render(scale, null, unrenderedModels, false);
         if (polycerate) {
-            this.polyHornBase.render(scale,null, new ArrayList<>());
+            this.polyHornBase.render(scale,null, unrenderedModels, false);
         }
 
-//        if (horns) {
-//            Map<String, List<Float>> mapOfScale = new HashMap<>();
+        Map<String, List<Float>> mapOfScale = new HashMap<>();
 
-//            List<Float> scalingsForHorn = createScalings(hornScale, -hornShift, hornShift, hornShift+0.025F);
-//            mapOfScale.put("HornL0", scalingsForHorn);
-//            mapOfScale.put("HornR0", mirrorX(scalingsForHorn));
-//            this.hornBase.render(scale, mapOfScale, unrenderedModels);
-//        }
+        List<Float> scalingsForHorn = createScalings(hornScale, -hornShift, hornShift, hornShift+0.025F);
+        mapOfScale.put("HornL0", scalingsForHorn);
+        mapOfScale.put("HornR0", mirrorX(scalingsForHorn, false));
+        this.hornBase.render(scale, mapOfScale, unrenderedModels, false);
+    }
+
+    private List<Float> mirrorX(List<Float> scalings, boolean includeScaling) {
+        List<Float> reversedNegative = new ArrayList<>();
+
+        if (includeScaling) {
+            reversedNegative.add(scalings.get(0));
+        } else {
+            reversedNegative.add(null);
+        }
+        reversedNegative.add(scalings.get(1) * -2.0F);
+        reversedNegative.add(0F);
+        reversedNegative.add(0F);
+
+        return reversedNegative;
     }
 
     private void renderWool(float scale, int facewool)  {
@@ -846,49 +889,100 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         int[] genes = enhancedSheep.getSharedGenes();
         char[] uuidArry = enhancedSheep.getCachedUniqueIdString().toCharArray();
 
+        setHornRotations(sharedGenes, uuidArry, unrenderedModels, entityIn);
+
+        return unrenderedModels;
+
+    }
+
+    private void setHornRotations(int[] sharedGenes, char[] uuidArray, List<String> unrenderedModels, T entityIn) {
         // values from: [ 0.1F to 0.4F]
         float hornSpacing = 0.4F;
 //        float hornGrowth = (entityIn.ticksExisted/24000.0F);
+        int lengthL = 2;
+        int lengthR = 2;
 
-            this.hornL9.rotationPointY = -0.4F;
-            this.hornR9.rotationPointY = -0.4F;
-            this.hornL8.rotationPointY = -0.5376F;
-            this.hornR8.rotationPointY = -0.5376F;
-            this.hornL7.rotationPointY = -0.675F;
-            this.hornR7.rotationPointY = -0.675F;
-            this.hornL6.rotationPointY = -0.7876F;
-            this.hornR6.rotationPointY = -0.7876F;
-            this.hornL5.rotationPointY = -0.9F;
-            this.hornR5.rotationPointY = -0.9F;
-            this.hornL4.rotationPointY = -1.1F;
-            this.hornR4.rotationPointY = -1.1F;
-            this.hornL3.rotationPointY = -1.4F;
-            this.hornR3.rotationPointY = -1.4F;
-            this.hornL2.rotationPointY = -1.7F;
-            this.hornR2.rotationPointY = -1.7F;
-            this.hornL1.rotationPointY = -1.9F;
-            this.hornR1.rotationPointY = -1.9F;
-            this.hornL09.rotationPointY = -2.0F;
-            this.hornR09.rotationPointY = -2.0F;
-            this.hornL08.rotationPointY = -2.0F;
-            this.hornR08.rotationPointY = -2.0F;
-            this.hornL07.rotationPointY = -2.0F;
-            this.hornR07.rotationPointY = -2.0F;
-            this.hornL06.rotationPointY = -2.0F;
-            this.hornR06.rotationPointY = -2.0F;
-            this.hornL05.rotationPointY = -2.0F;
-            this.hornR05.rotationPointY = -2.0F;
-            this.hornL04.rotationPointY = -2.0F;
-            this.hornR04.rotationPointY = -2.0F;
-            this.hornL03.rotationPointY = -2.0F;
-            this.hornR03.rotationPointY = -2.0F;
-            this.hornL02.rotationPointY = -2.0F;
-            this.hornR02.rotationPointY = -2.0F;
-            this.hornL01.rotationPointY = -2.0F;
-            this.hornR01.rotationPointY = -2.0F;
+        Float[] hornGrowthL = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F, -1.0F};
+        Float[] hornGrowthR = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F, -1.0F};
 
-            this.hornL0.rotationPointX = -hornSpacing;
-            this.hornR0.rotationPointX = hornSpacing;
+        Float[] hornHideL = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
+        Float[] hornHideR = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
+
+        if (lengthL != 0) {
+            for (int i = 0; i <= 18; i++) {
+                if (i <= lengthL) {
+                    hornGrowthL[i] = 0.0F;
+                    unrenderedModels.add(this.sheepLeftHorns.get(i).boxName);
+                }
+                if (i <= lengthR) {
+                    hornGrowthR[i] = 0.0F;
+                    unrenderedModels.add(this.sheepRightHorns.get(i).boxName);
+                }
+                if (i == lengthL) {
+                    unrenderedModels.remove(this.sheepLeftHorns.get(i).boxName);
+                }
+                if (i == lengthR) {
+                    unrenderedModels.remove(this.sheepRightHorns.get(i).boxName);
+                }
+            }
+        }
+
+        this.hornL0.setRotationPoint(0.0F, 0.0F, -2.25F);
+        this.hornR0.setRotationPoint(0.0F, 0.0F, -2.25F);
+
+        this.hornL0.rotationPointY = hornGrowthL[0] + hornHideL[0];
+        this.hornR0.rotationPointY = hornGrowthR[0] + hornHideR[0];
+
+        this.hornL0.rotationPointX = 1.0F;
+        this.hornR0.rotationPointX = -1.0F;
+
+        for (int i = 1; i <= 18; i++) {
+            this.sheepLeftHorns.get(i).rotationPointY = hornGrowthL[i];
+            this.sheepRightHorns.get(i).rotationPointY = hornGrowthR[i];
+
+            this.sheepLeftHorns.get(i).rotationPointX = hornHideL[i];
+            this.sheepRightHorns.get(i).rotationPointX = -hornHideR[i];
+        }
+
+//        this.hornL9.rotationPointY = -0.4F;
+//        this.hornR9.rotationPointY = -0.4F;
+//        this.hornL8.rotationPointY = -0.5376F;
+//        this.hornR8.rotationPointY = -0.5376F;
+//        this.hornL7.rotationPointY = -0.675F;
+//        this.hornR7.rotationPointY = -0.675F;
+//        this.hornL6.rotationPointY = -0.7876F;
+//        this.hornR6.rotationPointY = -0.7876F;
+//        this.hornL5.rotationPointY = -0.9F;
+//        this.hornR5.rotationPointY = -0.9F;
+//        this.hornL4.rotationPointY = -1.1F;
+//        this.hornR4.rotationPointY = -1.1F;
+//        this.hornL3.rotationPointY = -1.4F;
+//        this.hornR3.rotationPointY = -1.4F;
+//        this.hornL2.rotationPointY = -1.7F;
+//        this.hornR2.rotationPointY = -1.7F;
+//        this.hornL1.rotationPointY = -1.9F;
+//        this.hornR1.rotationPointY = -1.9F;
+//        this.hornL09.rotationPointY = -2.0F;
+//        this.hornR09.rotationPointY = -2.0F;
+//        this.hornL08.rotationPointY = -2.0F;
+//        this.hornR08.rotationPointY = -2.0F;
+//        this.hornL07.rotationPointY = -2.0F;
+//        this.hornR07.rotationPointY = -2.0F;
+//        this.hornL06.rotationPointY = -2.0F;
+//        this.hornR06.rotationPointY = -2.0F;
+//        this.hornL05.rotationPointY = -2.0F;
+//        this.hornR05.rotationPointY = -2.0F;
+//        this.hornL04.rotationPointY = -2.0F;
+//        this.hornR04.rotationPointY = -2.0F;
+//        this.hornL03.rotationPointY = -2.0F;
+//        this.hornR03.rotationPointY = -2.0F;
+//        this.hornL02.rotationPointY = -2.0F;
+//        this.hornR02.rotationPointY = -2.0F;
+//        this.hornL01.rotationPointY = -2.0F;
+//        this.hornR01.rotationPointY = -2.0F;
+
+        this.hornL0.rotationPointX = -hornSpacing;
+        this.hornR0.rotationPointX = hornSpacing;
 
         //the curve overback
         // [ -0.degreesF * goldenRatio ];
@@ -896,14 +990,14 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         float polycerate = 1F;
 
-        if (genes[36] == 1 || genes[37] == 1) {
-            if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
+        if (sharedGenes[36] == 1 || sharedGenes[37] == 1) {
+            if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
                 //horns if "male"
-                if (Character.isLetter(uuidArry[2]) || uuidArry[2] - 48 >= 3) {
+                if (Character.isLetter(uuidArray[2]) || uuidArray[2] - 48 >= 3) {
                     polycerate = 0.5F;
                 }
             } else {
-                if (uuidArry[2] - 48 <= 3) {
+                if (uuidArray[2] - 48 <= 3) {
                     polycerate = 0.5F;
                 }
             }
@@ -921,137 +1015,213 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
 //        this.polyHornL0.rotateAngleX = this.polyHornL0.rotateAngleX + 0.001F;
 //        this.polyHornR0.rotateAngleX = this.polyHornR0.rotateAngleX - 0.001F;
-        this.polyHornL0.rotateAngleX = -1.0F;
-        this.polyHornR0.rotateAngleX = -1.0F;
-        this.polyHornL0.rotateAngleY = 2.6F;
-        this.polyHornR0.rotateAngleY = -2.6F;
-        this.polyHornL0.rotateAngleZ = 1.6F;
-        this.polyHornR0.rotateAngleZ = -1.6F;
 
-        this.hornL0.rotateAngleX = (-hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F))) - hornRootAngleX;
-        this.hornL01.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL02.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL03.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL04.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL05.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL06.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL07.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL08.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL09.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornL1.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.4F));
-        this.hornL2.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.3F));
-        this.hornL3.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.2F));
-        this.hornL4.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.1F));
-        this.hornL5.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.0F));
-        this.hornL6.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.9F));
-        this.hornL7.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.8F));
-        this.hornL8.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.7F));
-        this.hornL9.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.6F));
+//        this.polyHornL0.rotateAngleX = -1.0F;
+//        this.polyHornR0.rotateAngleX = -1.0F;
+//        this.polyHornL0.rotateAngleY = 2.6F;
+//        this.polyHornR0.rotateAngleY = -2.6F;
+//        this.polyHornL0.rotateAngleZ = 1.6F;
+//        this.polyHornR0.rotateAngleZ = -1.6F;
+//
+//        this.hornL0.rotateAngleX = (-hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F))) - hornRootAngleX;
+//        this.hornL01.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL02.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL03.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL04.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL05.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL06.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL07.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL08.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL09.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornL1.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.4F));
+//        this.hornL2.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.3F));
+//        this.hornL3.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.2F));
+//        this.hornL4.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.1F));
+//        this.hornL5.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.0F));
+//        this.hornL6.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.9F));
+//        this.hornL7.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.8F));
+//        this.hornL8.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.7F));
+//        this.hornL9.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.6F));
+//
+//        this.hornR0.rotateAngleX = (-hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F))) - hornRootAngleX;
+//        this.hornR01.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR02.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR03.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR04.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR05.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR06.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR07.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR08.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR09.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
+//        this.hornR1.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.4F));
+//        this.hornR2.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.3F));
+//        this.hornR3.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.2F));
+//        this.hornR4.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.1F));
+//        this.hornR5.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.0F));
+//        this.hornR6.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.9F));
+//        this.hornR7.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.8F));
+//        this.hornR8.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.7F));
+//        this.hornR9.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.6F));
+//
+//
+//        this.hornL0.rotateAngleY = hornCurve + hornRootAngleY;
+//        this.hornL01.rotateAngleY = hornCurve;
+//        this.hornL02.rotateAngleY = hornCurve;
+//        this.hornL03.rotateAngleY = hornCurve;
+//        this.hornL04.rotateAngleY = hornCurve;
+//        this.hornL05.rotateAngleY = hornCurve;
+//        this.hornL06.rotateAngleY = hornCurve;
+//        this.hornL07.rotateAngleY = hornCurve;
+//        this.hornL08.rotateAngleY = hornCurve;
+//        this.hornL09.rotateAngleY = hornCurve;
+//        this.hornL1.rotateAngleY = hornCurve;
+//        this.hornL2.rotateAngleY = hornCurve;
+//        this.hornL3.rotateAngleY = hornCurve;
+//        this.hornL4.rotateAngleY = hornCurve;
+//        this.hornL5.rotateAngleY = hornCurve;
+//        this.hornL6.rotateAngleY = hornCurve;
+//        this.hornL7.rotateAngleY = hornCurve;
+//        this.hornL8.rotateAngleY = hornCurve;
+//        this.hornL9.rotateAngleY = hornCurve;
+//
+//        this.hornR0.rotateAngleY = -hornCurve - hornRootAngleY;
+//        this.hornR01.rotateAngleY = -hornCurve;
+//        this.hornR02.rotateAngleY = -hornCurve;
+//        this.hornR03.rotateAngleY = -hornCurve;
+//        this.hornR04.rotateAngleY = -hornCurve;
+//        this.hornR05.rotateAngleY = -hornCurve;
+//        this.hornR06.rotateAngleY = -hornCurve;
+//        this.hornR07.rotateAngleY = -hornCurve;
+//        this.hornR08.rotateAngleY = -hornCurve;
+//        this.hornR09.rotateAngleY = -hornCurve;
+//        this.hornR1.rotateAngleY = -hornCurve;
+//        this.hornR2.rotateAngleY = -hornCurve;
+//        this.hornR3.rotateAngleY = -hornCurve;
+//        this.hornR4.rotateAngleY = -hornCurve;
+//        this.hornR5.rotateAngleY = -hornCurve;
+//        this.hornR6.rotateAngleY = -hornCurve;
+//        this.hornR7.rotateAngleY = -hornCurve;
+//        this.hornR8.rotateAngleY = -hornCurve;
+//        this.hornR9.rotateAngleY = -hornCurve;
+//
+//
+//        this.hornL0.rotateAngleZ = hornCurve + hornRootAngleZ;
+//        this.hornL01.rotateAngleZ = hornCurve;
+//        this.hornL02.rotateAngleZ = hornCurve;
+//        this.hornL03.rotateAngleZ = hornCurve;
+//        this.hornL04.rotateAngleZ = hornCurve;
+//        this.hornL05.rotateAngleZ = hornCurve;
+//        this.hornL06.rotateAngleZ = hornCurve;
+//        this.hornL07.rotateAngleZ = hornCurve;
+//        this.hornL08.rotateAngleZ = hornCurve;
+//        this.hornL09.rotateAngleZ = hornCurve;
+//        this.hornL1.rotateAngleZ = hornCurve;
+//        this.hornL2.rotateAngleZ = hornCurve;
+//        this.hornL3.rotateAngleZ = hornCurve;
+//        this.hornL4.rotateAngleZ = hornCurve;
+//        this.hornL5.rotateAngleZ = hornCurve;
+//        this.hornL6.rotateAngleZ = hornCurve;
+//        this.hornL7.rotateAngleZ = hornCurve;
+//        this.hornL8.rotateAngleZ = hornCurve;
+//        this.hornL9.rotateAngleZ = hornCurve;
+//
+//        this.hornR0.rotateAngleZ = -hornCurve - hornRootAngleZ;
+//        this.hornR01.rotateAngleZ = -hornCurve;
+//        this.hornR02.rotateAngleZ = -hornCurve;
+//        this.hornR03.rotateAngleZ = -hornCurve;
+//        this.hornR04.rotateAngleZ = -hornCurve;
+//        this.hornR05.rotateAngleZ = -hornCurve;
+//        this.hornR06.rotateAngleZ = -hornCurve;
+//        this.hornR07.rotateAngleZ = -hornCurve;
+//        this.hornR08.rotateAngleZ = -hornCurve;
+//        this.hornR09.rotateAngleZ = -hornCurve;
+//        this.hornR1.rotateAngleZ = -hornCurve;
+//        this.hornR2.rotateAngleZ = -hornCurve;
+//        this.hornR3.rotateAngleZ = -hornCurve;
+//        this.hornR4.rotateAngleZ = -hornCurve;
+//        this.hornR5.rotateAngleZ = -hornCurve;
+//        this.hornR6.rotateAngleZ = -hornCurve;
+//        this.hornR7.rotateAngleZ = -hornCurve;
+//        this.hornR8.rotateAngleZ = -hornCurve;
+//        this.hornR9.rotateAngleZ = -hornCurve;
 
-        this.hornR0.rotateAngleX = (-hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F))) - hornRootAngleX;
-        this.hornR01.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR02.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR03.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR04.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR05.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR06.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR07.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR08.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR09.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.5F));
-        this.hornR1.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.4F));
-        this.hornR2.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.3F));
-        this.hornR3.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.2F));
-        this.hornR4.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.1F));
-        this.hornR5.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 1.0F));
-        this.hornR6.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.9F));
-        this.hornR7.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.8F));
-        this.hornR8.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.7F));
-        this.hornR9.rotateAngleX = -hornCurve * ( 1.0F + (hornCurveGradientX * 0.6F));
 
+        //horn shape controllers
+//        if (horns != 0) {
+            Float[] hornCalculationsZ = {0.0F, -0.17F, 0.1F, 0.2F, 0.01F, -0.2F, -0.37F, -0.57F, -0.27F, -0.14F, -0.14F, -0.14F, -0.14F, -0.14F, -0.14F, -0.14F, -0.14F, -0.14F, -0.14F};
+            Float[] hornCalculationsX = {0.0F, -0.17F, 0.1F, 0.2F, 0.01F, -0.2F, -0.37F, -0.57F, -0.27F, -0.14F, -0.14F, -0.14F, -0.14F, -0.14F, -0.14F, -0.14F, -0.14F, -0.14F, -0.14F};
+            Float[] hornCalculationsY = {0.0F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F};
 
-        this.hornL0.rotateAngleY = hornCurve + hornRootAngleY;
-        this.hornL01.rotateAngleY = hornCurve;
-        this.hornL02.rotateAngleY = hornCurve;
-        this.hornL03.rotateAngleY = hornCurve;
-        this.hornL04.rotateAngleY = hornCurve;
-        this.hornL05.rotateAngleY = hornCurve;
-        this.hornL06.rotateAngleY = hornCurve;
-        this.hornL07.rotateAngleY = hornCurve;
-        this.hornL08.rotateAngleY = hornCurve;
-        this.hornL09.rotateAngleY = hornCurve;
-        this.hornL1.rotateAngleY = hornCurve;
-        this.hornL2.rotateAngleY = hornCurve;
-        this.hornL3.rotateAngleY = hornCurve;
-        this.hornL4.rotateAngleY = hornCurve;
-        this.hornL5.rotateAngleY = hornCurve;
-        this.hornL6.rotateAngleY = hornCurve;
-        this.hornL7.rotateAngleY = hornCurve;
-        this.hornL8.rotateAngleY = hornCurve;
-        this.hornL9.rotateAngleY = hornCurve;
+//            EnhancedCow enhancedCow = (EnhancedCow) entityIn;
+//            float[] hornAlterations = enhancedCow.getHornAlteration();
 
-        this.hornR0.rotateAngleY = -hornCurve - hornRootAngleY;
-        this.hornR01.rotateAngleY = -hornCurve;
-        this.hornR02.rotateAngleY = -hornCurve;
-        this.hornR03.rotateAngleY = -hornCurve;
-        this.hornR04.rotateAngleY = -hornCurve;
-        this.hornR05.rotateAngleY = -hornCurve;
-        this.hornR06.rotateAngleY = -hornCurve;
-        this.hornR07.rotateAngleY = -hornCurve;
-        this.hornR08.rotateAngleY = -hornCurve;
-        this.hornR09.rotateAngleY = -hornCurve;
-        this.hornR1.rotateAngleY = -hornCurve;
-        this.hornR2.rotateAngleY = -hornCurve;
-        this.hornR3.rotateAngleY = -hornCurve;
-        this.hornR4.rotateAngleY = -hornCurve;
-        this.hornR5.rotateAngleY = -hornCurve;
-        this.hornR6.rotateAngleY = -hornCurve;
-        this.hornR7.rotateAngleY = -hornCurve;
-        this.hornR8.rotateAngleY = -hornCurve;
-        this.hornR9.rotateAngleY = -hornCurve;
+            float a = 0.0F;    // period length       0.79
+            float b = 0.0F;   // period shift      -0.8
+            float c = 1.0F;     //wave height from d   2.3
+            float d = 0.0F;     // != 0, [
 
+            float e = 0.0F;         //makes turns in horn sharper
 
-        this.hornL0.rotateAngleZ = hornCurve + hornRootAngleZ;
-        this.hornL01.rotateAngleZ = hornCurve;
-        this.hornL02.rotateAngleZ = hornCurve;
-        this.hornL03.rotateAngleZ = hornCurve;
-        this.hornL04.rotateAngleZ = hornCurve;
-        this.hornL05.rotateAngleZ = hornCurve;
-        this.hornL06.rotateAngleZ = hornCurve;
-        this.hornL07.rotateAngleZ = hornCurve;
-        this.hornL08.rotateAngleZ = hornCurve;
-        this.hornL09.rotateAngleZ = hornCurve;
-        this.hornL1.rotateAngleZ = hornCurve;
-        this.hornL2.rotateAngleZ = hornCurve;
-        this.hornL3.rotateAngleZ = hornCurve;
-        this.hornL4.rotateAngleZ = hornCurve;
-        this.hornL5.rotateAngleZ = hornCurve;
-        this.hornL6.rotateAngleZ = hornCurve;
-        this.hornL7.rotateAngleZ = hornCurve;
-        this.hornL8.rotateAngleZ = hornCurve;
-        this.hornL9.rotateAngleZ = hornCurve;
+            while (d - e > 0.05F) {
+                e = e + 0.05F;
+            }
 
-        this.hornR0.rotateAngleZ = -hornCurve - hornRootAngleZ;
-        this.hornR01.rotateAngleZ = -hornCurve;
-        this.hornR02.rotateAngleZ = -hornCurve;
-        this.hornR03.rotateAngleZ = -hornCurve;
-        this.hornR04.rotateAngleZ = -hornCurve;
-        this.hornR05.rotateAngleZ = -hornCurve;
-        this.hornR06.rotateAngleZ = -hornCurve;
-        this.hornR07.rotateAngleZ = -hornCurve;
-        this.hornR08.rotateAngleZ = -hornCurve;
-        this.hornR09.rotateAngleZ = -hornCurve;
-        this.hornR1.rotateAngleZ = -hornCurve;
-        this.hornR2.rotateAngleZ = -hornCurve;
-        this.hornR3.rotateAngleZ = -hornCurve;
-        this.hornR4.rotateAngleZ = -hornCurve;
-        this.hornR5.rotateAngleZ = -hornCurve;
-        this.hornR6.rotateAngleZ = -hornCurve;
-        this.hornR7.rotateAngleZ = -hornCurve;
-        this.hornR8.rotateAngleZ = -hornCurve;
-        this.hornR9.rotateAngleZ = -hornCurve;
+            float f = 0.0F;
+            float g = 1.0F;
+            float h = 0.0F;     // != 0, [
 
-        return unrenderedModels;
+            float i = 0.0F;
+            float j = 0.0F;
 
+            float rootRotationZ =  1.0F; //root rotation seems to go odd easily.
+            float rootRotationX =  1.0F;
+            float rootRotationY =  1.5F;
+
+//                a = (float)((sharedGenes[84] >> 2) / 16);
+//                e = ((float)(((sharedGenes[84] << 2) >> 2) / 16));
+
+//                d = (float)((sharedGenes[96] + sharedGenes[97]) / 20);
+//                h = (float)((sharedGenes[96] + sharedGenes[97]) / 20) - 1.0F;
+//
+//                d = d+((float)((sharedGenes[94] + sharedGenes[95])/40));
+
+//            if (horns != -1.0F) {
+                a = a/2;
+                e = e/3;
+                c = c*2;
+                g = g*3;
+//            }
+
+            for (int z = 1; z <= 18; z++) {
+                hornCalculationsZ[z] = (float)((Math.cos((z * (a)) + (b)) + (d)) / (c));
+                hornCalculationsX[z] = -(float)((Math.cos((z * (e)) + (f)) + (h)) / (g));
+                hornCalculationsY[z] = i + (j * hornCalculationsY[z-1]);
+            }
+            for (int z = 1; z <= 18; z++) {
+                if (hornGrowthL[z] != 0.0F) {
+                    hornGrowthL[z] = 1.0F;
+                }
+                if (hornGrowthR[z] != 0.0F) {
+                    hornGrowthR[z] = 1.0F;
+                }
+            }
+
+            this.hornL0.rotateAngleZ = rootRotationZ;
+            this.hornR0.rotateAngleZ = -rootRotationZ;
+            this.hornL0.rotateAngleX = rootRotationX;
+            this.hornR0.rotateAngleX = rootRotationX;
+            this.hornL0.rotateAngleY = -rootRotationY;
+            this.hornR0.rotateAngleY = rootRotationY;
+
+            for (int r = 1; r <= 18; r++) {
+                this.sheepRightHorns.get(r).rotateAngleZ = hornCalculationsZ[r] * hornGrowthR[r];
+                this.sheepRightHorns.get(r).rotateAngleX = -hornCalculationsX[r] * hornGrowthR[r];
+                this.sheepRightHorns.get(r).rotateAngleY = hornCalculationsY[r] * hornGrowthR[r];
+                this.sheepLeftHorns.get(r).rotateAngleZ = -hornCalculationsZ[r] * hornGrowthL[r];
+                this.sheepLeftHorns.get(r).rotateAngleX = -hornCalculationsX[r] * hornGrowthL[r];
+                this.sheepLeftHorns.get(r).rotateAngleY= hornCalculationsZ[r] * hornGrowthL[r];
+            }
+//        }
     }
 
     /**
@@ -1087,16 +1257,5 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         scalings.add(translateY);
         scalings.add(translateZ);
         return scalings;
-    }
-
-    private List<Float> mirrorX(List<Float> scalings) {
-        List<Float> reversedNegative = new ArrayList<>();
-
-        reversedNegative.add(scalings.get(0));
-        reversedNegative.add(scalings.get(1)*-1.0F);
-        reversedNegative.add(scalings.get(2));
-        reversedNegative.add(scalings.get(3));
-
-        return reversedNegative;
     }
 }

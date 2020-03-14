@@ -35,14 +35,15 @@ public class EnhancedRendererModel extends RendererModel {
         this.setTextureOffset(texOffX, texOffY);
     }
 
-    public void render(float scale, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender) {
+    public void render(float scale, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender, Boolean pushPopEntireChain) {
         if (!this.isHidden) {
             if (this.showModel) {
                 if (!this.compiled) {
                     this.compileDisplayList(scale, boxesToNotRender);
                 }
-
-//                GlStateManager.pushMatrix();
+                if (pushPopEntireChain) {
+                GlStateManager.pushMatrix();
+                }
                 GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
 
                 if (mapOfScale != null) {
@@ -65,7 +66,7 @@ public class EnhancedRendererModel extends RendererModel {
                         }
                         if (this.childModels != null) {
                             for(int k = 0; k < this.childModels.size(); ++k) {
-                                ((EnhancedRendererModel)this.childModels.get(k)).render(scale, mapOfScale, boxesToNotRender);
+                                ((EnhancedRendererModel)this.childModels.get(k)).render(scale, mapOfScale, boxesToNotRender, pushPopEntireChain);
                             }
                         }
                     } else {
@@ -76,7 +77,7 @@ public class EnhancedRendererModel extends RendererModel {
                         }
                         if (this.childModels != null) {
                             for(int j = 0; j < this.childModels.size(); ++j) {
-                                ((EnhancedRendererModel)this.childModels.get(j)).render(scale, mapOfScale, boxesToNotRender);
+                                ((EnhancedRendererModel)this.childModels.get(j)).render(scale, mapOfScale, boxesToNotRender, pushPopEntireChain);
                             }
                         }
 
@@ -102,14 +103,15 @@ public class EnhancedRendererModel extends RendererModel {
                     }
                     if (this.childModels != null) {
                         for(int i = 0; i < this.childModels.size(); ++i) {
-                            ((EnhancedRendererModel)this.childModels.get(i)).render(scale, mapOfScale, boxesToNotRender);
+                            ((EnhancedRendererModel)this.childModels.get(i)).render(scale, mapOfScale, boxesToNotRender, pushPopEntireChain);
                         }
                     }
 
                     GlStateManager.popMatrix();
                 }
-
-//                GlStateManager.popMatrix();
+                if (pushPopEntireChain) {
+                GlStateManager.popMatrix();
+                }
             }
         }
     }

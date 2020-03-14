@@ -3512,13 +3512,13 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[28] = (3);
+            initialGenes[28] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[29] = (3);
+            initialGenes[29] = (2);
         }
 
         //Melanized [melanized, wildtype ]
@@ -3526,13 +3526,13 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             initialGenes[30] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[30] = (3);
+            initialGenes[30] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[31] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[31] = (3);
+            initialGenes[31] = (2);
         }
 
         //Dilute [ dilute, cream, wildtype ] // more common in swamps

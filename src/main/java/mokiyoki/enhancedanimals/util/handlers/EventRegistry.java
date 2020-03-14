@@ -244,7 +244,7 @@ public class EventRegistry {
 
             for (Biome biome : ForgeRegistries.BIOMES) {
 //
-                if ( !biome.getRegistryName().toString().contains("ocean") && !(biome.getRegistryName().toString().contains("_end") || biome.getRegistryName().toString().contains("end_")) && biome.getRegistryName().toString().contains("nether")
+                if ( !biome.getRegistryName().toString().contains("ocean") && !(biome.getRegistryName().toString().contains("_end") || biome.getRegistryName().toString().contains("end_")) && !biome.getRegistryName().toString().contains("nether")
                 ){
 
                     if (!biome.getRegistryName().equals(Biomes.MUSHROOM_FIELDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.MUSHROOM_FIELD_SHORE.getRegistryName())){

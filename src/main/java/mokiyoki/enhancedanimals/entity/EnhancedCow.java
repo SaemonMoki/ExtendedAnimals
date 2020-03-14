@@ -179,7 +179,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private final List<String> cowTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 102;
+    private static final int GENES_LENGTH = 118;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     protected int[] mitosisGenes = new int[GENES_LENGTH];
@@ -234,7 +234,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
-        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0,0,0,0,0,0,0");
+        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
         this.dataManager.register(COW_SIZE, 0.0F);
         this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(COW_STATUS, new String());
@@ -587,7 +587,22 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         String hornsAlterationsString = ((String) this.dataManager.get(HORN_ALTERATION)).toString();
 
         String[] hornAlterations = hornsAlterationsString.split(",");
-        hornAlterations[index]= Float.toString(Float.valueOf(hornAlterations[index])+Float.valueOf(value));
+        if (value.equals("reset")) {
+            hornAlterations[index] = "0";
+
+        } else {
+            if (index >= 30) {
+                hornAlterations[index]= Float.toString(Float.valueOf(hornAlterations[index])+Float.valueOf(value));
+                if (hornAlterations[index].startsWith("-") || hornAlterations[index].startsWith("10")) {
+                    hornAlterations[index] = "9";
+                }
+            } else {
+                hornAlterations[index]= Float.toString(Float.valueOf(hornAlterations[index])+Float.valueOf(value));
+                if (hornAlterations[index].startsWith("1.6")) {
+                    hornAlterations[index] = "-1.6";
+                }
+            }
+        }
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < hornAlterations.length; i++) {
@@ -1028,7 +1043,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 }
             }
 
-            if (genesForText[13] == 1 || genesForText[14] == 1) {
+            if (genesForText[12] == 1 || genesForText[13] == 1) {
                 //should be polled unless...
                 //african horn gene
                 if (genesForText[76] == 1 && genesForText[77] == 1) {
@@ -1379,61 +1394,109 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         Item item = itemStack.getItem();
 
         if (item == Items.BLACK_WOOL) {
-            setHornAlteration(0, "0.025");
+            setHornAlteration(0, "0.1");
         } else if (item == Items.GRAY_WOOL) {
-            setHornAlteration(0, "-0.025");
-        } else if (item == Items.LIGHT_GRAY_WOOL) {
-            setHornAlteration(1, "0.025");
+            setHornAlteration(1, "0.01");
         } else if (item == Items.WHITE_WOOL) {
-            setHornAlteration(1, "-0.025");
+            setHornAlteration(2, "0.01");
         } else if (item == Items.PINK_WOOL) {
-            setHornAlteration(2, "0.025");
+            setHornAlteration(3, "0.01");
         } else if (item == Items.RED_WOOL) {
-            setHornAlteration(2, "-0.025");
+            setHornAlteration(4, "0.01");
         } else if (item == Items.ORANGE_WOOL) {
-            setHornAlteration(3, "0.025");
+            setHornAlteration(5, "0.01");
         } else if (item == Items.YELLOW_WOOL) {
-            setHornAlteration(3, "-0.025");
+            setHornAlteration(6, "0.01");
         } else if (item == Items.LIME_WOOL) {
-            setHornAlteration(4, "0.025");
-        } else if (item == Items.GREEN_WOOL) {
-            setHornAlteration(4, "-0.025");
+            setHornAlteration(7, "0.01");
         } else if (item == Items.CYAN_WOOL) {
-            setHornAlteration(5, "0.025");
-        } else if (item == Items.LIGHT_BLUE_WOOL) {
-            setHornAlteration(5, "-0.025");
+            setHornAlteration(8, "0.01");
         } else if (item == Items.BLUE_WOOL) {
-            setHornAlteration(6, "0.025");
-        } else if (item == Items.PURPLE_WOOL) {
-            setHornAlteration(6, "-0.025");
-        } else if (item == Items.MAGENTA_WOOL) {
-            setHornAlteration(7, "0.025");
-        } else if (item == Items.BROWN_WOOL) {
-            setHornAlteration(7, "-0.025");
-        } else if (item == Items.BLACK_STAINED_GLASS) {
-            setHornAlteration(8, "0.0125");
-        } else if (item == Items.WHITE_STAINED_GLASS) {
-            setHornAlteration(8, "-0.0125");
+            setHornAlteration(9, "0.01");
         } else if (item == Items.BLACK_CONCRETE) {
-            setHornAlteration(9, "0.0125");
+            setHornAlteration(10, "0.01");
+        } else if (item == Items.GRAY_CONCRETE) {
+            setHornAlteration(11, "0.01");
         } else if (item == Items.WHITE_CONCRETE) {
-            setHornAlteration(9, "-0.0125");
+            setHornAlteration(12, "0.01");
+        } else if (item == Items.PINK_CONCRETE) {
+            setHornAlteration(13, "0.01");
+        } else if (item == Items.RED_CONCRETE) {
+            setHornAlteration(14, "0.01");
+        } else if (item == Items.ORANGE_CONCRETE) {
+            setHornAlteration(15, "0.01");
+        } else if (item == Items.YELLOW_CONCRETE) {
+            setHornAlteration(16, "0.01");
+        } else if (item == Items.LIME_CONCRETE) {
+            setHornAlteration(17, "0.01");
+        } else if (item == Items.CYAN_CONCRETE) {
+            setHornAlteration(18, "0.01");
+        } else if (item == Items.BLUE_CONCRETE) {
+            setHornAlteration(19, "0.01");
+        } else if (item == Items.BLACK_TERRACOTTA) {
+            setHornAlteration(20, "0.01");
+        } else if (item == Items.WHITE_TERRACOTTA) {
+            setHornAlteration(21, "0.01");
+        } else if (item == Items.GRAY_TERRACOTTA) {
+            setHornAlteration(22, "0.01");
+        } else if (item == Items.PINK_TERRACOTTA) {
+            setHornAlteration(23, "0.01");
+        } else if (item == Items.RED_TERRACOTTA) {
+            setHornAlteration(24, "0.01");
+        } else if (item == Items.ORANGE_TERRACOTTA) {
+            setHornAlteration(25, "0.01");
+        }else if (item == Items.YELLOW_TERRACOTTA) {
+            setHornAlteration(26, "0.01");
+        }else if (item == Items.LIME_TERRACOTTA) {
+            setHornAlteration(27, "0.01");
+        }else if (item == Items.CYAN_TERRACOTTA) {
+            setHornAlteration(28, "0.01");
+        }else if (item == Items.BLUE_TERRACOTTA) {
+            setHornAlteration(29, "0.01");
+        } else if (item == Items.BLACK_STAINED_GLASS) {
+            setHornAlteration(0, "reset");
+            setHornAlteration(10, "reset");
+            setHornAlteration(20, "reset");
+        } else if (item == Items.WHITE_STAINED_GLASS) {
+            setHornAlteration(1, "reset");
+            setHornAlteration(11, "reset");
+            setHornAlteration(21, "reset");
+        } else if (item == Items.GRAY_STAINED_GLASS) {
+            setHornAlteration(2, "reset");
+            setHornAlteration(12, "reset");
+            setHornAlteration(22, "reset");
+        } else if (item == Items.PINK_STAINED_GLASS) {
+            setHornAlteration(3, "reset");
+            setHornAlteration(13, "reset");
+            setHornAlteration(23, "reset");
         } else if (item == Items.RED_STAINED_GLASS) {
-            setHornAlteration(10, "0.0125");
-        } else if (item == Items.CYAN_STAINED_GLASS) {
-            setHornAlteration(10, "-0.0125");
-        } else if (item == Items.LIME_STAINED_GLASS) {
-            setHornAlteration(11, "0.0125");
-        } else if (item == Items.MAGENTA_STAINED_GLASS) {
-            setHornAlteration(11, "-0.0125");
-        } else if (item == Items.BLUE_STAINED_GLASS) {
-            setHornAlteration(12, "0.05");
-        } else if (item == Items.YELLOW_STAINED_GLASS) {
-            setHornAlteration(12, "-0.05");
-        }else if (item == Items.BLACK_CARPET) {
-            setHornAlteration(13, "1");
-        }else if (item == Items.WHITE_CARPET) {
-            setHornAlteration(13, "-1");
+            setHornAlteration(4, "reset");
+            setHornAlteration(14, "reset");
+            setHornAlteration(24, "reset");
+        } else if (item == Items.ORANGE_STAINED_GLASS) {
+            setHornAlteration(5, "reset");
+            setHornAlteration(15, "reset");
+            setHornAlteration(25, "reset");
+        }else if (item == Items.YELLOW_STAINED_GLASS) {
+            setHornAlteration(6, "reset");
+            setHornAlteration(16, "reset");
+            setHornAlteration(26, "reset");
+        }else if (item == Items.LIME_STAINED_GLASS) {
+            setHornAlteration(7, "reset");
+            setHornAlteration(17, "reset");
+            setHornAlteration(27, "reset");
+        }else if (item == Items.CYAN_STAINED_GLASS) {
+            setHornAlteration(8, "reset");
+            setHornAlteration(18, "reset");
+            setHornAlteration(28, "reset");
+        }else if (item == Items.BLUE_STAINED_GLASS) {
+            setHornAlteration(9, "reset");
+            setHornAlteration(19, "reset");
+            setHornAlteration(29, "reset");
+        }else if (item == Items.BONE_MEAL) {
+            setHornAlteration(30, "-1");
+        }else if (item == Items.STICK) {
+            setHornAlteration(30, "1");
         }
 
 
@@ -1553,7 +1616,11 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
                 float[] hornAlterations = getHornAlteration();
-                String hornAltString = "A: " + hornAlterations[0] + ", B: " + hornAlterations[1] + ", C: " + hornAlterations[2] + ", D: " + hornAlterations[3] + ", E: " + hornAlterations[4] + ", F: " + hornAlterations[5] + ", G: " + hornAlterations[6] + ", H: " + hornAlterations[7] + ", I: " + hornAlterations[8] + ", J: " + hornAlterations[9] + ", RootZ: " + hornAlterations[10] + ", RootX: " + hornAlterations[11] + ", RootY: " + hornAlterations[12];
+                String hornAltString = hornAlterations[0] + ",";
+                for (int a = 1; a < 29; a++) {
+                    hornAltString = hornAltString + hornAlterations[a] + ",";
+                }
+                hornAltString = hornAltString + hornAlterations[29];
                 ITextComponent message = new TranslationTextComponent(hornAltString);
                 Minecraft.getInstance().keyboardListener.setClipboardString(hornAltString);
 //                ITextComponent message = getHungerText();
@@ -1771,19 +1838,9 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         setMaxBagSize();
 
         configureAI();
-        setHornAlteration(0 , String.valueOf((this.rand.nextDouble() * (7 - 2.5) + 2.5)/10) ); //A
-        setHornAlteration(1 , String.valueOf((this.rand.nextDouble() * (5 - 1) + 1)/10) ); //B
-        setHornAlteration(2 , String.valueOf((this.rand.nextDouble() * (5 - 1) + 1)/10) ); //C
-        setHornAlteration(3 , String.valueOf((this.rand.nextDouble() * (4))/10) ); //D
-        setHornAlteration(4 , String.valueOf((this.rand.nextDouble() * (5 - 1) + 1)/10) ); //E
-        setHornAlteration(5 , String.valueOf((this.rand.nextDouble() * (5 - 1) + 1)/10) ); //F
-        setHornAlteration(6 , String.valueOf((this.rand.nextDouble() * (6 - 1) + 1)/10) ); //G
-        setHornAlteration(7 , String.valueOf((this.rand.nextDouble() * (6))/10) ); //H
-        setHornAlteration(8 , String.valueOf((this.rand.nextDouble() * (5))/10) ); //I
-        setHornAlteration(9 , String.valueOf((this.rand. nextDouble() * (2))/10) ); //J
-        setHornAlteration(10 , String.valueOf((this.rand.nextDouble() * (3))/10) ); //root z
-        setHornAlteration(11 , String.valueOf((this.rand.nextDouble() * (4 - 1) + 1)/10) ); //root x
-        setHornAlteration(12 , String.valueOf(-(this.rand.nextDouble() * (4 - 1) + 1)/-10) ); //root y
+        for (int i = 0; i <= 30; i++) {
+            setHornAlteration(i , String.valueOf(0));
+        }
         return livingdata;
     }
 
@@ -1898,6 +1955,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         } else {
             initialGenes[13] = (2);
         }
+
 
         //Speckled Spots [speckled, wildtype+]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -2487,9 +2545,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[83] = (2);
         }
 
-        //cow horn period a and e
-            initialGenes[84] = ((ThreadLocalRandom.current().nextInt(20) + 1) << 2) + (ThreadLocalRandom.current().nextInt(20) + 1);
-            initialGenes[85] = ((ThreadLocalRandom.current().nextInt(20) + 1) << 2) + (ThreadLocalRandom.current().nextInt(20) + 1);
+        //indus modifier [wildtype, antelope, buffalo]
+        initialGenes[84] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+        initialGenes[85] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         //cow horn scale 1 [wildtype, 1.25]
             initialGenes[86] = (ThreadLocalRandom.current().nextInt(2) + 1);
@@ -2512,56 +2571,57 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[91] = (2);
         }
 
-        //horn period length a
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[92] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        //cow horn smoother
+        initialGenes[92] = ThreadLocalRandom.current().nextInt(9999) + 1;
+        initialGenes[93] = ThreadLocalRandom.current().nextInt(9999) + 1;
 
-        } else {
-            initialGenes[92] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[93] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        //cow horn twist ... place matches following horn piece numbers { 4 5 6 7 8 9 }
+        initialGenes[94] = ThreadLocalRandom.current().nextInt(999999) + 1;
+        initialGenes[95] = ThreadLocalRandom.current().nextInt(999999) + 1;
 
-        } else {
-            initialGenes[93] = (2);
-        }
+        //cow horn base twist  ... place matches following horn piece numbers { *total twist mod* 1 2 3 }
+        initialGenes[96] = ThreadLocalRandom.current().nextInt(9999) + 1;
+        initialGenes[97] = ThreadLocalRandom.current().nextInt(9999) + 1;
 
-        //horn shift d
-        initialGenes[94] = (ThreadLocalRandom.current().nextInt(20) + 1);
-        initialGenes[95] = (ThreadLocalRandom.current().nextInt(20) + 1);
+        // cow horn root
+        initialGenes[98] = ThreadLocalRandom.current().nextInt(999) + 1;
+        initialGenes[99] = ThreadLocalRandom.current().nextInt(999) + 1;
 
-        //horn shift d and h
-            initialGenes[96] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            initialGenes[97] = (ThreadLocalRandom.current().nextInt(20) + 1);
+        //cow horn1 X and Z
+        initialGenes[100] = ThreadLocalRandom.current().nextInt(999) + 1;
+        initialGenes[101] = ThreadLocalRandom.current().nextInt(999) + 1;
 
-        //horn period length 1
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[98] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        //cow horn2 X and Z
+        initialGenes[102] = ThreadLocalRandom.current().nextInt(999) + 1;
+        initialGenes[103] = ThreadLocalRandom.current().nextInt(999) + 1;
 
-        } else {
-            initialGenes[98] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[99] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        //cow horn3 X and Z
+        initialGenes[104] = ThreadLocalRandom.current().nextInt(999) + 1;
+        initialGenes[105] = ThreadLocalRandom.current().nextInt(999) + 1;
 
-        } else {
-            initialGenes[99] = (2);
-        }
+        //cow horn4 X and Z
+        initialGenes[106] = ThreadLocalRandom.current().nextInt(999) + 1;
+        initialGenes[107] = ThreadLocalRandom.current().nextInt(999) + 1;
 
-        //horn period length 1
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[100] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        //cow horn5 X and Z
+        initialGenes[108] = ThreadLocalRandom.current().nextInt(999) + 1;
+        initialGenes[109] = ThreadLocalRandom.current().nextInt(999) + 1;
 
-        } else {
-            initialGenes[100] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[101] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        //cow horn6 X and Z
+        initialGenes[110] = ThreadLocalRandom.current().nextInt(999) + 1;
+        initialGenes[111] = ThreadLocalRandom.current().nextInt(999) + 1;
 
-        } else {
-            initialGenes[101] = (2);
-        }
+        //cow horn7 X and Z
+        initialGenes[112] = ThreadLocalRandom.current().nextInt(999) + 1;
+        initialGenes[113] = ThreadLocalRandom.current().nextInt(999) + 1;
 
+        //cow horn8 X and Z
+        initialGenes[114] = ThreadLocalRandom.current().nextInt(999) + 1;
+        initialGenes[115] = ThreadLocalRandom.current().nextInt(999) + 1;
+
+        //cow horn9 X and Z
+        initialGenes[116] = ThreadLocalRandom.current().nextInt(999) + 1;
+        initialGenes[117] = ThreadLocalRandom.current().nextInt(999) + 1;
 
         return initialGenes;
     }

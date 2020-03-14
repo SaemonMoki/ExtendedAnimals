@@ -1,42 +1,44 @@
 package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@OnlyIn(Dist.CLIENT)
 public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
+    private Map<Integer, CowModelData> cowModelDataCache = new HashMap<>();
+    private int clearCacheTimer = 0;
     private float headRotationAngleX;
-    private float size;
-    private float bagSize;
 
-    private final RendererModel actualHead;
-    private final RendererModel mouth;
-    private final RendererModel earSmallestL;
-    private final RendererModel earSmallL;
-    private final RendererModel earMediumL;
-    private final RendererModel earLongL;
-    private final RendererModel earLongestL;
-    private final RendererModel earSmallestR;
-    private final RendererModel earSmallR;
-    private final RendererModel earMediumR;
-    private final RendererModel earLongR;
-    private final RendererModel earLongestR;
-    private final RendererModel hornNub1;
-    private final RendererModel hornNub2;
-    private final RendererModel hornNub3;
-    private final RendererModel hornNub4;
-    private final RendererModel hornNub5;
+    private final EnhancedRendererModel actualHead;
+    private final EnhancedRendererModel mouth;
+    private final EnhancedRendererModel earSmallestL;
+    private final EnhancedRendererModel earSmallL;
+    private final EnhancedRendererModel earMediumL;
+    private final EnhancedRendererModel earLongL;
+    private final EnhancedRendererModel earLongestL;
+    private final EnhancedRendererModel earSmallestR;
+    private final EnhancedRendererModel earSmallR;
+    private final EnhancedRendererModel earMediumR;
+    private final EnhancedRendererModel earLongR;
+    private final EnhancedRendererModel earLongestR;
+    private final EnhancedRendererModel hornNub1;
+    private final EnhancedRendererModel hornNub2;
+    private final EnhancedRendererModel hornNub3;
+    private final EnhancedRendererModel hornNub4;
+    private final EnhancedRendererModel hornNub5;
     private final EnhancedRendererModel hornGranparent;
     private final EnhancedRendererModel hornParent;
     private final EnhancedRendererModel hornL0;
@@ -59,7 +61,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final EnhancedRendererModel hornR7;
     private final EnhancedRendererModel hornR8;
     private final EnhancedRendererModel hornR9;
-    private final RendererModel headModel; //this is the neck not the head
+    private final EnhancedRendererModel headModel; //this is the neck not the head
     private final RendererModel bodyMedium;
     private final RendererModel bodySlim;
     private final RendererModel bodyThin;
@@ -96,7 +98,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         float xMove = -10.0F;
 
-        this.actualHead = new  RendererModel(this, 0, 33);
+        this.actualHead = new  EnhancedRendererModel(this, 0, 33);
         this.actualHead.addBox(-4.0F, 0.0F, -7.0F, 8, 7, 6, 0.0F);
         this.actualHead.setTextureOffset(28, 33);
         this.actualHead.addBox(-2.0F, 0.1F, -11.0F, 4, 5, 4, 0.0F);
@@ -104,59 +106,59 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.actualHead.addBox(-2.5F, 0.2F, -13.0F, 5, 4, 3, 0.0F);
         this.actualHead.setRotationPoint(0.0F, 0.0F, -7.0F);
 
-        this.mouth = new  RendererModel(this, 25, 46);
+        this.mouth = new  EnhancedRendererModel(this, 25, 46);
         this.mouth.addBox(-1.5F, 1.0F, -10.0F, 3, 3, 7, 0.1F);
         this.mouth.setTextureOffset(37, 46);
         this.mouth.addBox(-1.5F, 3.0F, -10.0F, 3, 1, 6, -0.1F);
         this.mouth.setRotationPoint(0.0F, 4.0F, -2.0F);
 
-        this.earSmallestL = new  RendererModel(this, 8, 46);
+        this.earSmallestL = new EnhancedRendererModel(this, 8, 46, "SmallestL");
         this.earSmallestL.addBox(0.0F, -3.0F, -0.5F, 3, 3, 1);
-        
-        this.earSmallL = new  RendererModel(this, 8, 46);
+
+        this.earSmallL = new EnhancedRendererModel(this, 8, 46, "SmallL");
         this.earSmallL.addBox(0.0F, -4.0F, -0.5F, 3, 4, 1);
 
-        this.earMediumL = new  RendererModel(this, 8, 46);
+        this.earMediumL = new EnhancedRendererModel(this, 8, 46, "MediumL");
         this.earMediumL.addBox(0.0F, -5.0F, -0.5F, 3, 5, 1);
 
-        this.earLongL = new  RendererModel(this, 8, 46);
+        this.earLongL = new EnhancedRendererModel(this, 8, 46, "LongL");
         this.earLongL.addBox(0.0F, -6.0F, -0.5F, 3, 6, 1, 0.15F);
 
-        this.earLongestL = new  RendererModel(this, 8, 46);
+        this.earLongestL = new EnhancedRendererModel(this, 8, 46, "LongestL");
         this.earLongestL.addBox(0.0F, -7.0F, -0.5F, 3, 7, 1, 0.3F);
 
-        this.earSmallestR = new  RendererModel(this, 0, 46);
+        this.earSmallestR = new EnhancedRendererModel(this, 0, 46, "SmallestR");
         this.earSmallestR.addBox(-3.0F, -3.0F, -0.5F, 3, 3, 1);
 
-        this.earSmallR = new  RendererModel(this, 0, 46);
+        this.earSmallR = new EnhancedRendererModel(this, 0, 46, "SmallR");
         this.earSmallR.addBox(-3.0F, -4.0F, -0.5F, 3, 4, 1);
 
-        this.earMediumR = new  RendererModel(this, 0, 46);
+        this.earMediumR = new EnhancedRendererModel(this, 0, 46, "MediumR");
         this.earMediumR.addBox(-3.0F, -5.0F, -0.5F, 3, 5, 1);
 
-        this.earLongR = new  RendererModel(this, 0, 46);
+        this.earLongR = new EnhancedRendererModel(this, 0, 46, "LongR");
         this.earLongR.addBox(-3.0F, -6.0F, -0.5F, 3, 6, 1, 0.15F);
 
-        this.earLongestR = new  RendererModel(this, 0, 46);
+        this.earLongestR = new EnhancedRendererModel(this, 0, 46, "LongestR");
         this.earLongestR.addBox(-3.0F, -7.0F, -0.5F, 3, 7, 1, 0.3F);
 
-        this.hornNub1 = new RendererModel(this, 44, 33);
+        this.hornNub1 = new EnhancedRendererModel(this, 44, 33, "HornNub1");
         this.hornNub1.addBox(-2.0F, 0.0F, 0.0F, 4, 2, 2);
         this.hornNub1.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornNub2 = new RendererModel(this, 44, 33);
+        this.hornNub2 = new EnhancedRendererModel(this, 44, 33, "HornNub2");
         this.hornNub2.addBox(-2.0F, 0.0F, 0.0F, 4, 3, 2);
         this.hornNub2.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornNub3 = new RendererModel(this, 44, 33);
+        this.hornNub3 = new EnhancedRendererModel(this, 44, 33, "HornNub3");
         this.hornNub3.addBox(-2.0F, 0.0F, 0.0F, 4, 4, 2);
         this.hornNub3.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornNub4 = new RendererModel(this, 44, 33);
+        this.hornNub4 = new EnhancedRendererModel(this, 44, 33, "HornNub4");
         this.hornNub4.addBox(-2.0F, 0.0F, 0.0F, 4, 5, 2);
         this.hornNub4.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornNub5 = new RendererModel(this, 44, 33);
+        this.hornNub5 = new EnhancedRendererModel(this, 44, 33, "HornNub5");
         this.hornNub5.addBox(-2.0F, 0.0F, 0.0F, 4, 6, 2);
         this.hornNub5.setRotationPoint(0.0F, 1.0F, -1.0F);
 
@@ -245,7 +247,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         rightHorns.add(hornR9);
 
         // head is the neck cause thats how this works
-        this.headModel = new RendererModel(this, 46, 0);
+        this.headModel = new EnhancedRendererModel(this, 46, 0);
         this.headModel.addBox(-3.0F, 0.0F, -8.0F, 6, 8, 11, 0.0F);
         this.headModel.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
@@ -278,7 +280,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.humpXSmall = new RendererModel(this, 0, 8);
         this.humpXSmall.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -1.0F);
         this.humpXSmall.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
-        
+
         this.humpSmall = new RendererModel(this, 0, 8);
         this.humpSmall.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -0.5F);
         this.humpSmall.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
@@ -397,25 +399,20 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     @Override
     public void render(T enhancedCow, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        int[] genes = enhancedCow.getSharedGenes();
-        List<String> unrenderedModels = this.setRotationAngles(enhancedCow, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, genes);
+//        long renderTotalStartTime = System.nanoTime();
 
-        this.size = enhancedCow.getSize();
-        this.bagSize = enhancedCow.getBagSize();
-        String cowStatus = enhancedCow.getCowStatus();
+        CowModelData cowModelData = getCowModelData(enhancedCow);
+
+        int[] genes = cowModelData.cowGenes;
+        float horns = calculateHorns(genes, cowModelData.uuidArray);
+
         float dwarf = 0.0F;
         float bodyWidth = -0.165F;
         float bodyLength = 0.0F;
         int hump = 0;
-        char[] uuidArray;
 
-        if (enhancedCow.getMooshroomUUID().isEmpty()) {
-            uuidArray = enhancedCow.getCachedUniqueIdString().toCharArray();
-        } else {
-            uuidArray = enhancedCow.getMooshroomUUID().toCharArray();
-        }
+        List<String> unrenderedModels = this.setRotationAngles(enhancedCow, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, genes, cowModelData.uuidArray, cowModelData.sleeping);
 
-        float horns = calculateHorns(genes, uuidArray);
         //size [0.75 to 2.5]
         float hornScale = 1.0F;
         float hornShift = 0.0F;
@@ -469,16 +466,20 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 //        0.6F <= size <= 1.5F
 
         if (this.isChild) {
-            renderChild(scale, dwarf, bodyWidth, bodyLength, hump);
+            renderChild(scale, dwarf, bodyWidth, bodyLength, hump, cowModelData.cowSize);
         } else {
-            renderAdult(scale, cowStatus, dwarf, bodyWidth, bodyLength, hump, horns, hornScale, hornShift, unrenderedModels);
+            renderAdult(scale, cowModelData.cowStatus, dwarf, bodyWidth, bodyLength, hump, horns, hornScale, hornShift, unrenderedModels, cowModelData.cowSize, cowModelData.bagSize);
         }
+
+//        long renderTotalEndTime = System.nanoTime();
+//        System.out.println("CowRenderTotal: " + (renderTotalEndTime - renderTotalStartTime));
+
     }
 
-    private void renderAdult(float scale, String cowStatus, float dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornScale, float hornShift, List<String> unrenderedModels) {
+    private void renderAdult(float scale, String cowStatus, float dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornScale, float hornShift, List<String> unrenderedModels, float cowSize, float bagSize) {
         GlStateManager.pushMatrix();
-        GlStateManager.scalef(size + (size * bodyWidth), size, size + (size * bodyLength));
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / size) + ((0.23F - (size-0.7F)*0.0375F)*dwarf), 0.0F);
+        GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize, cowSize + (cowSize * bodyLength));
+        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / cowSize) + ((0.23F - (cowSize-0.7F)*0.0375F)*dwarf), 0.0F);
 
         renderHorns(scale, horns, hornScale, hornShift, unrenderedModels);
 
@@ -488,13 +489,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         renderHump(scale, hump, false);
 
-        this.headModel.render(scale);
+        this.headModel.render(scale, null , unrenderedModels, true);
 
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();
-        GlStateManager.scalef(size, size, size);
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / size) + ((0.23F - (size-0.7F)*0.0375F)*dwarf), 0.0F);
+        GlStateManager.scalef(cowSize, cowSize, cowSize);
+        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / cowSize) + ((0.23F - (cowSize-0.7F)*0.0375F)*dwarf), 0.0F);
 
         this.tail0.render(scale);
 
@@ -502,16 +503,16 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         if (cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString())) {
             GlStateManager.pushMatrix();
-            GlStateManager.scalef(bagSize * size, bagSize * size, bagSize * size);
-            GlStateManager.translatef(0.0F, (-1.45F + 1.45F / size) + ((-0.6F*((1.5F-size)*2.0F)) + (0.6F*((1.5F-size)*2.0F))/bagSize) + ((0.23F - (size-0.7F)*0.0375F)*dwarf), ((1.0F-bagSize)*0.35F)); // if biggest 0, -0.16, 0 : if smallest 0, -0.66, 0
+            GlStateManager.scalef(bagSize * cowSize, bagSize * cowSize, bagSize * cowSize);
+            GlStateManager.translatef(0.0F, (-1.45F + 1.45F / cowSize) + ((-0.6F*((1.5F-cowSize)*2.0F)) + (0.6F*((1.5F-cowSize)*2.0F))/bagSize) + ((0.23F - (cowSize-0.7F)*0.0375F)*dwarf), ((1.0F-bagSize)*0.35F)); // if biggest 0, -0.16, 0 : if smallest 0, -0.66, 0
             GlStateManager.translatef(0.0F, 0.0F, 0.0F);
-                this.udder.render(scale);
+            this.udder.render(scale);
             GlStateManager.popMatrix();
         }
     }
 
-    private void renderChild(float scale, float dwarf, float bodyWidth, float bodyLength, int hump) {
-        float childSize = size / 3;
+    private void renderChild(float scale, float dwarf, float bodyWidth, float bodyLength, int hump, float cowSize) {
+        float childSize = cowSize / 3;
         //            if (cowStatus.contains(EntityState.CHILD_STAGE_ONE.toString())) {
         GlStateManager.pushMatrix();
         GlStateManager.scalef(childSize + (childSize * bodyWidth), childSize, childSize + (childSize * bodyLength));
@@ -597,18 +598,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
     }
 
-    public List<String> setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int[] sharedGenes) {
+    public List<String> setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int[] sharedGenes, char[] uuidArray, boolean sleeping) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         List<String> unrenderedModels = new ArrayList<>();
-
-        boolean sleeping = ((EnhancedAnimal)entityIn).isAnimalSleeping();
-        char[] uuidArray;
-
-        if (entityIn.getMooshroomUUID().equals("0")) {
-            uuidArray = entityIn.getCachedUniqueIdString().toCharArray();
-        } else {
-            uuidArray = entityIn.getMooshroomUUID().toCharArray();
-        }
 
         this.headModel.rotateAngleX = (headPitch * 0.017453292F);
         this.headModel.rotateAngleY = netHeadYaw * 0.017453292F;
@@ -656,7 +648,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.tail2.rotateAngleX = -0.2F;
         this.tailBrush.rotateAngleX = 0F;
 
-        setEarRotations(sharedGenes);
+        setEarRotations(sharedGenes, unrenderedModels);
 
         setHornRotations(sharedGenes, uuidArray, unrenderedModels, entityIn);
 
@@ -666,16 +658,16 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     @Override
     public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
         super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
-        EnhancedCow enhancedCow = entitylivingbaseIn;
-        int[] sharedGenes = (entitylivingbaseIn).getSharedGenes();
-        boolean sleeping = enhancedCow.isAnimalSleeping();
-//        int age = enhancedCow.;
+        CowModelData cowModelData = getCowModelData(entitylivingbaseIn);
+
+        int[] sharedGenes = cowModelData.cowGenes;
+        boolean sleeping = cowModelData.sleeping;
         float onGround;
 
         if (sleeping) {
-            onGround = sleepingAnimation(sharedGenes);
+            onGround = sleepingAnimation(sharedGenes, cowModelData.cowSize, cowModelData.bagSize);
         } else {
-            onGround = standingAnimation();
+            onGround = standingAnimation(cowModelData.cowSize, cowModelData.bagSize);
         }
 
         this.bodyThin.rotationPointY = this.bodyMedium.rotationPointY;
@@ -728,6 +720,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         Float[] hornGrowthL = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
         Float[] hornGrowthR = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
 
+//        EnhancedCow enhancedCow = (EnhancedCow) entityIn;
+//        float[] hornAlterations = enhancedCow.getHornAlteration();
         EnhancedCow enhancedCow = (EnhancedCow) entityIn;
         float[] hornAlterations = enhancedCow.getHornAlteration();
 
@@ -822,6 +816,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 lengthR = 9;
             }
 
+//            lengthL = lengthL + Math.round(hornAlterations[13]);
+//            lengthR = lengthR + Math.round(hornAlterations[13]);
             lengthL = lengthL + Math.round(hornAlterations[30]);
             lengthR = lengthR + Math.round(hornAlterations[30]);
 
@@ -876,35 +872,45 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             hornNubLength++;
         }
 
-        this.hornNub1.rotationPointY = 1.0F;
-        this.hornNub2.rotationPointY = 1.0F;
-        this.hornNub3.rotationPointY = 1.0F;
-        this.hornNub4.rotationPointY = 1.0F;
-        this.hornNub5.rotationPointY = 1.0F;
+        this.hornNub1.rotationPointY = -1.0F;
+        this.hornNub2.rotationPointY = -1.0F;
+        this.hornNub3.rotationPointY = -1.0F;
+        this.hornNub4.rotationPointY = -1.0F;
+        this.hornNub5.rotationPointY = -1.0F;
+        unrenderedModels.add("HornNub1");
+        unrenderedModels.add("HornNub2");
+        unrenderedModels.add("HornNub3");
+        unrenderedModels.add("HornNub4");
+        unrenderedModels.add("HornNub5");
 
         if (this.isChild) {
             if (hornNubLength == 1){
-                this.hornNub1.rotationPointY = -1.0F;
+                unrenderedModels.remove("HornNub1");
             }else if (hornNubLength == 2){
-                this.hornNub2.rotationPointY = -1.0F;
+                unrenderedModels.remove("HornNub2");
             }else if (hornNubLength == 3){
-                this.hornNub3.rotationPointY = -1.0F;
+                unrenderedModels.remove("HornNub3");
             }else if (hornNubLength == 4){
-                this.hornNub4.rotationPointY = -1.0F;
+                unrenderedModels.remove("HornNub4");
             }else if (hornNubLength == 5){
-                this.hornNub5.rotationPointY = -1.0F;
+                unrenderedModels.remove("HornNub5");
             }
         } else {
             if (hornNubLength == 1){
                 this.hornNub1.rotationPointY = -1.0F + horns;
+                unrenderedModels.remove("HornNub1");
             }else if (hornNubLength == 2){
                 this.hornNub2.rotationPointY = -1.0F + horns;
+                unrenderedModels.remove("HornNub2");
             }else if (hornNubLength == 3){
                 this.hornNub3.rotationPointY = -1.0F + horns;
+                unrenderedModels.remove("HornNub3");
             }else if (hornNubLength == 4){
                 this.hornNub4.rotationPointY = -1.0F + horns;
+                unrenderedModels.remove("HornNub4");
             }else if (hornNubLength == 5){
                 this.hornNub5.rotationPointY = -1.0F + horns;
+                unrenderedModels.remove("HornNub5");
             }
         }
 
@@ -990,6 +996,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 //                float rootRotationZ = hornCalculationsZ[0]; //root rotation seems to go odd easily.
 //                float rootRotationX = hornCalculationsX[0];
 //                float rootRotationY = hornCalculationsY[0];
+
+
 
 //                a = (float)((sharedGenes[84] >> 2) / 16);
 //                e = ((float)(((sharedGenes[84] << 2) >> 2) / 16));
@@ -1086,13 +1094,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.hornR3.rotateAngleY = -hornCalculationsY[3] * hornGrowthR[3];
             this.hornR2.rotateAngleY = -hornCalculationsY[2] * hornGrowthR[2];
             this.hornR1.rotateAngleY = (-hornCalculationsY[1] * hornGrowthR[1]);
-            
-            
+
+
 
         }
     }
 
-    private void setEarRotations(int[] sharedGenes) {
+    private void setEarRotations(int[] sharedGenes, List<String> unrenderedModels) {
         this.earSmallestL.setRotationPoint(-3.9F, 4.0F, -2.5F);
         this.earSmallL.setRotationPoint(-3.9F, 4.0F, -2.5F);
         this.earMediumL.setRotationPoint(-3.9F, 4.0F, -2.5F);
@@ -1114,6 +1122,17 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.earMediumR.rotateAngleZ = ((float) Math.PI / 2F);
         this.earLongR.rotateAngleZ = ((float) Math.PI / 2F);
         this.earLongestR.rotateAngleZ = ((float) Math.PI / 2F);
+
+        unrenderedModels.add("SmallestL");
+        unrenderedModels.add("SmallL");
+        unrenderedModels.add("MediumL");
+        unrenderedModels.add("LongL");
+        unrenderedModels.add("LongestL");
+        unrenderedModels.add("SmallestR");
+        unrenderedModels.add("SmallR");
+        unrenderedModels.add("MediumR");
+        unrenderedModels.add("LongR");
+        unrenderedModels.add("LongestR");
 
         if (sharedGenes[46] == 2 && sharedGenes[47] == 2) {
 //        if (true){
@@ -1138,26 +1157,36 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.earSmallestL.rotateAngleZ = 1.1F;
                 this.earSmallestR.setRotationPoint(-3.0F, 0.5F, -2.5F);
                 this.earSmallestR.rotateAngleZ = -1.1F;
+                unrenderedModels.remove("SmallestL");
+                unrenderedModels.remove("SmallestR");
             } else if (earSize <= 3) {
                 this.earSmallL.setRotationPoint(3.0F, 0.75F, -2.5F);
                 this.earSmallL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                 this.earSmallR.setRotationPoint(-3.0F, 0.75F, -2.5F);
                 this.earSmallR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
+                unrenderedModels.remove("SmallL");
+                unrenderedModels.remove("SmallR");
             } else if (earSize <= 5) {
                 this.earMediumL.setRotationPoint(3.0F + (floppiness / 3), 1.0F, -2.5F);
                 this.earMediumL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                 this.earMediumR.setRotationPoint(-(3.0F + (floppiness / 3)), 1.0F, -2.5F);
                 this.earMediumR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
+                unrenderedModels.remove("MediumL");
+                unrenderedModels.remove("MediumR");
             } else if (earSize <= 7) {
                 this.earLongL.setRotationPoint(3.0F + (floppiness / 2), 1.0F, -2.5F);
                 this.earLongL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                 this.earLongR.setRotationPoint(-(3.0F + (floppiness / 2)), 1.0F, -2.5F);
                 this.earLongR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
+                unrenderedModels.remove("LongL");
+                unrenderedModels.remove("LongR");
             } else {
                 this.earLongestL.setRotationPoint(3.0F + floppiness, 1.0F, -2.5F);
                 this.earLongestL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                 this.earLongestR.setRotationPoint(-(3.0F + floppiness), 1.0F, -2.5F);
                 this.earLongestR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
+                unrenderedModels.remove("LongestL");
+                unrenderedModels.remove("LongestR");
             }
 
         } else {
@@ -1192,32 +1221,42 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.earSmallestL.rotateAngleZ = floppiness;
                 this.earSmallestR.setRotationPoint(-3.0F, 0.5F, -2.5F);
                 this.earSmallestR.rotateAngleZ = -floppiness;
+                unrenderedModels.remove("SmallestL");
+                unrenderedModels.remove("SmallestR");
             } else if (earSize <= 3) {
                 this.earSmallL.setRotationPoint(3.0F, 0.75F, -2.5F);
                 this.earSmallL.rotateAngleZ = floppiness;
                 this.earSmallR.setRotationPoint(-3.0F, 0.75F, -2.5F);
                 this.earSmallR.rotateAngleZ = -floppiness;
+                unrenderedModels.remove("SmallL");
+                unrenderedModels.remove("SmallR");
             } else if (earSize <= 5) {
                 this.earMediumL.setRotationPoint(3.0F + (floppiness / 3), 1.0F, -2.5F);
                 this.earMediumL.rotateAngleZ = floppiness;
                 this.earMediumR.setRotationPoint(-(3.0F + (floppiness / 3)), 1.0F, -2.5F);
                 this.earMediumR.rotateAngleZ = -floppiness;
+                unrenderedModels.remove("MediumL");
+                unrenderedModels.remove("MediumR");
             } else if (earSize <= 7) {
                 this.earLongL.setRotationPoint(3.0F + (floppiness / 2), 1.0F, -2.5F);
                 this.earLongL.rotateAngleZ = floppiness;
                 this.earLongR.setRotationPoint(-(3.0F + (floppiness / 2)), 1.0F, -2.5F);
                 this.earLongR.rotateAngleZ = -floppiness;
+                unrenderedModels.remove("LongL");
+                unrenderedModels.remove("LongR");
             } else {
                 this.earLongestL.setRotationPoint(3.0F + floppiness, 1.0F, -2.5F);
                 this.earLongestL.rotateAngleZ = floppiness;
                 this.earLongestR.setRotationPoint(-(3.0F + floppiness), 1.0F, -2.5F);
                 this.earLongestR.rotateAngleZ = -floppiness;
+                unrenderedModels.remove("LongestL");
+                unrenderedModels.remove("LongestR");
             }
 
         }
     }
 
-    private float sleepingAnimation(int[] sharedGenes) {
+    private float sleepingAnimation(int[] sharedGenes, float cowSize, float bagSize) {
         float onGround;
         if (this.isChild) {
             onGround = 13.85F;
@@ -1229,7 +1268,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.tail0.rotationPointY = 9.75F;
 
             this.udder.rotationPointY = 17.55F;
-            if (size < 1) {
+            if (cowSize < 1) {
                 this.udder.rotationPointY = this.udder.rotationPointY - (bagSize - 1.0F)*3.0F;
             }
         }
@@ -1248,14 +1287,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         return onGround;
     }
 
-    private float standingAnimation() {
+    private float standingAnimation(float cowSize, float bagSize) {
         float onGround;
         onGround = 2.75F;
         this.bodyMedium.rotationPointY = 2.5F;
         this.tail0.rotationPointY = 2.5F;
 
         this.udder.rotationPointY = 10.5F;
-        if (size < 1) {
+        if (cowSize < 1) {
             this.udder.rotationPointY = this.udder.rotationPointY - (bagSize - 1.0F)*3.0F;
         }
 
@@ -1396,6 +1435,57 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         return this.headModel;
     }
 
+    private class CowModelData {
+        int[] cowGenes;
+        float cowSize;
+        char[] uuidArray;
+        int lastAccessed = 0;
+        float bagSize;
+        String cowStatus;
+        boolean sleeping;
+        int dataReset = 0;
+    }
+
+    private CowModelData getCowModelData(T enhancedCow) {
+        clearCacheTimer++;
+        if(clearCacheTimer > 100000) {
+            cowModelDataCache.values().removeIf(value -> value.lastAccessed==1);
+            for (CowModelData cowModelData : cowModelDataCache.values()){
+                cowModelData.lastAccessed = 1;
+            }
+            clearCacheTimer = 0;
+        }
+
+        if (cowModelDataCache.containsKey(enhancedCow.getEntityId())) {
+            CowModelData cowModelData = cowModelDataCache.get(enhancedCow.getEntityId());
+            cowModelData.lastAccessed = 0;
+            cowModelData.dataReset++;
+            if (cowModelData.dataReset > 15000) {
+                cowModelData.bagSize = enhancedCow.getBagSize();
+                cowModelData.cowStatus = enhancedCow.getCowStatus();
+                cowModelData.sleeping = enhancedCow.isAnimalSleeping();
+                cowModelData.dataReset = 0;
+            }
+            return cowModelData;
+        } else {
+            CowModelData cowModelData = new CowModelData();
+            cowModelData.cowGenes = enhancedCow.getSharedGenes();
+            cowModelData.cowSize = enhancedCow.getSize();
+            cowModelData.bagSize = enhancedCow.getBagSize();
+            cowModelData.cowStatus = enhancedCow.getCowStatus();
+            cowModelData.sleeping = enhancedCow.isAnimalSleeping();
+
+            if (enhancedCow.getMooshroomUUID().isEmpty()) {
+                cowModelData.uuidArray = enhancedCow.getCachedUniqueIdString().toCharArray();
+            } else {
+                cowModelData.uuidArray = enhancedCow.getMooshroomUUID().toCharArray();
+            }
+
+            cowModelDataCache.put(enhancedCow.getEntityId(), cowModelData);
+
+            return cowModelData;
+        }
+    }
 
 
 }

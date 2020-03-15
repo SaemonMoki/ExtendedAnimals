@@ -8,10 +8,15 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
-    private float size;
+    private Map<Integer, PigModelData> pigModelDataCache = new HashMap<>();
+    private int clearCacheTimer = 0;
+
 
     private final RendererModel head;
     private final RendererModel cheeks;
@@ -179,11 +184,11 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
     @Override
     public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        PigModelData pigModelData = getPigModelData(entityIn);
+        float size = pigModelData.size;
+
         this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
-        EnhancedPig enhancedPig = (EnhancedPig) entityIn;
-        int[] genes = enhancedPig.getSharedGenes();
-        this.size = enhancedPig.getSize();
         float childSize = size/4.0F;
 
         if (isChild) {
@@ -271,10 +276,15 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
     public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
         super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
 
-        EnhancedPig enhancedPig = (EnhancedPig) entitylivingbaseIn;
+        PigModelData pigModelData = getPigModelData(entitylivingbaseIn);
+        int[] sharedGenes = pigModelData.pigGenes;
+        char[] uuidArry = pigModelData.uuidArray;
 
-        int[] sharedGenes = ((EnhancedPig) entitylivingbaseIn).getSharedGenes();
-        char[] uuidArry = enhancedPig.getCachedUniqueIdString().toCharArray();
+        if (limbSwing == pigModelData.previousSwing) {
+            pigModelData.sleepCounter++;
+        } else {
+            pigModelData.previousSwing = limbSwing;
+        }
 
         //snoutLength
           float snoutLength1 = -0.065F;
@@ -373,6 +383,54 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         dest.rotationPointX = source.rotationPointX;
         dest.rotationPointY = source.rotationPointY;
         dest.rotationPointZ = source.rotationPointZ;
+    }
+
+
+    private class PigModelData {
+        float previousSwing;
+        int[] pigGenes;
+        char[] uuidArray;
+        float size;
+        boolean sleeping;
+        int sleepCounter = 0;
+        int lastAccessed = 0;
+//        int dataReset = 0;
+    }
+
+    private PigModelData getPigModelData(T enhancedPig) {
+        clearCacheTimer++;
+        if(clearCacheTimer > 100000) {
+            pigModelDataCache.values().removeIf(value -> value.lastAccessed==1);
+            for (PigModelData pigModelData : pigModelDataCache.values()){
+                pigModelData.lastAccessed = 1;
+            }
+            clearCacheTimer = 0;
+        }
+
+        if (pigModelDataCache.containsKey(enhancedPig.getEntityId())) {
+            PigModelData pigModelData = pigModelDataCache.get(enhancedPig.getEntityId());
+            pigModelData.lastAccessed = 0;
+//            pigModelData.dataReset++;
+//            if (pigModelData.dataReset > 5000) {
+
+//                pigModelData.dataReset = 0;
+//            }
+            if (pigModelData.sleepCounter > 1000) {
+                pigModelData.sleeping = enhancedPig.isAnimalSleeping();
+                pigModelData.sleepCounter = 0;
+            }
+            return pigModelData;
+        } else {
+            PigModelData pigModelData = new PigModelData();
+            pigModelData.pigGenes = enhancedPig.getSharedGenes();
+            pigModelData.size = enhancedPig.getSize();
+            pigModelData.sleeping = enhancedPig.isAnimalSleeping();
+            pigModelData.uuidArray = enhancedPig.getCachedUniqueIdString().toCharArray();
+
+            pigModelDataCache.put(enhancedPig.getEntityId(), pigModelData);
+
+            return pigModelData;
+        }
     }
 
 }

@@ -7,8 +7,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T> {
+
+    private Map<Integer, HorseModelData> horseModelDataCache = new HashMap<>();
+    private int clearCacheTimer = 0;
 
     private final RendererModel head;
     private final RendererModel earL;
@@ -130,6 +136,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
+        HorseModelData horseModelData = getHorseModelData(entityIn);
+
 //        this.head.render(scale);
         this.neck.render(scale);
         this.body.render(scale);
@@ -180,7 +188,16 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     @Override
     public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
 //        int[] sharedGenes = ((EnhancedHorse) entitylivingbaseIn).getSharedGenes();
-        char[] uuidArry = ((EnhancedHorse) entitylivingbaseIn).getCachedUniqueIdString().toCharArray();
+
+        HorseModelData horseModelData = getHorseModelData(entitylivingbaseIn);
+
+        char[] uuidArry = horseModelData.uuidArray;
+
+        if (limbSwing == horseModelData.previousSwing) {
+            horseModelData.sleepCounter++;
+        } else {
+            horseModelData.previousSwing = limbSwing;
+        }
 
         if (Character.isDigit(uuidArry[16])){
             if (uuidArry[16] - 48 == 0) {
@@ -359,6 +376,53 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         dest.rotationPointX = source.rotationPointX;
         dest.rotationPointY = source.rotationPointY;
         dest.rotationPointZ = source.rotationPointZ;
+    }
+
+    private class HorseModelData {
+        float previousSwing;
+        int[] horseGenes;
+        char[] uuidArray;
+        float size;
+        boolean sleeping;
+        int sleepCounter = 0;
+        int lastAccessed = 0;
+//        int dataReset = 0;
+    }
+
+    private HorseModelData getHorseModelData(T enhancedHorse) {
+        clearCacheTimer++;
+        if(clearCacheTimer > 100000) {
+            horseModelDataCache.values().removeIf(value -> value.lastAccessed==1);
+            for (HorseModelData pigModelData : horseModelDataCache.values()){
+                pigModelData.lastAccessed = 1;
+            }
+            clearCacheTimer = 0;
+        }
+
+        if (horseModelDataCache.containsKey(enhancedHorse.getEntityId())) {
+            HorseModelData horseModelData = horseModelDataCache.get(enhancedHorse.getEntityId());
+            horseModelData.lastAccessed = 0;
+//            pigModelData.dataReset++;
+//            if (pigModelData.dataReset > 5000) {
+
+//                pigModelData.dataReset = 0;
+//            }
+            if (horseModelData.sleepCounter > 1000) {
+                horseModelData.sleeping = enhancedHorse.isAnimalSleeping();
+                horseModelData.sleepCounter = 0;
+            }
+            return horseModelData;
+        } else {
+            HorseModelData horseModelData = new HorseModelData();
+            horseModelData.horseGenes = enhancedHorse.getSharedGenes();
+            horseModelData.size = enhancedHorse.getSize();
+            horseModelData.sleeping = enhancedHorse.isAnimalSleeping();
+            horseModelData.uuidArray = enhancedHorse.getCachedUniqueIdString().toCharArray();
+
+            horseModelDataCache.put(enhancedHorse.getEntityId(), horseModelData);
+
+            return horseModelData;
+        }
     }
 
 }

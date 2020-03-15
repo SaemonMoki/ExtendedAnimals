@@ -18,9 +18,11 @@ import java.util.Map;
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T> {
 
+    private Map<Integer, SheepModelData> sheepModelDataCache = new HashMap<>();
+    private int clearCacheTimer = 0;
+
     private float headRotationAngleX;
     private float f12 = 0F;
-    private int coatlength = 0;
 
     private final RendererModel head;
     private final EnhancedRendererModel hornBase;
@@ -538,14 +540,15 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
     @Override
     public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        EnhancedSheep enhancedSheep = (EnhancedSheep) entityIn;
-        String sheepStatus = enhancedSheep.getSheepStatus();
-        this.coatlength = enhancedSheep.getCoatLength();
-        int[] genes = enhancedSheep.getSharedGenes();
+        SheepModelData sheepModelData = getSheepModelData(entityIn);
 
-        List<String> unrenderedModels = this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, genes);
+        int[] genes = sheepModelData.sheepGenes;
+        int coatLength = sheepModelData.coatlength;
+        String sheepStatus = sheepModelData.sheepStatus;
+        char[] uuidArry = sheepModelData.uuidArray;
 
-        char[] uuidArry = enhancedSheep.getCachedUniqueIdString().toCharArray();
+        List<String> unrenderedModels = this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, genes, uuidArry);
+
 
         boolean horns = false;
         boolean scurs = false;
@@ -604,17 +607,17 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         if (this.isChild) {
             renderChild(scale);
         }else {
-            renderAdult(scale, sheepStatus, horns, hornScale, facewool, polycerate, unrenderedModels);
+            renderAdult(scale, sheepStatus, horns, hornScale, facewool, polycerate, unrenderedModels, coatLength);
         }
     }
 
-    private void renderAdult(float scale, String sheepStatus, boolean horns, float hornScale, int facewool, boolean polycerate, List<String> unrenderedModels) {
+    private void renderAdult(float scale, String sheepStatus, boolean horns, float hornScale, int facewool, boolean polycerate, List<String> unrenderedModels, int coatLength) {
         this.head.render(scale);
         this.earsR.render(scale);
         this.earsL.render(scale);
         this.body.render(scale);
 
-        renderWool(scale, facewool);
+        renderWool(scale, facewool, coatLength);
 
         this.leg1.render(scale);
         this.leg2.render(scale);
@@ -625,7 +628,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             renderHorns(scale, polycerate, hornScale, 1F, unrenderedModels);
         }
 
-        float woolLength = ((coatlength-1)*0.025F) + 1.0F;
+        float woolLength = ((coatLength-1)*0.025F) + 1.0F;
 
 //            GlStateManager.pushMatrix();
 //            GlStateManager.scalef(woolLength, woolLength, woolLength);
@@ -713,78 +716,78 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         return reversedNegative;
     }
 
-    private void renderWool(float scale, int facewool)  {
-        if (coatlength == 1){
+    private void renderWool(float scale, int facewool, int coatLength)  {
+        if (coatLength == 1){
             this.wool1.render(scale);
             if (true) {
                 this.neckWool1.render(scale);
             }
-        }else if (coatlength == 2){
+        }else if (coatLength == 2){
             this.wool2.render(scale);
             if (true) {
                 this.neckWool1.render(scale);
             }
-        }else if (coatlength == 3){
+        }else if (coatLength == 3){
             this.wool3.render(scale);
             if (true) {
                 this.neckWool2.render(scale);
             }
-        }else if (coatlength == 4){
+        }else if (coatLength == 4){
             this.wool4.render(scale);
             if (true) {
                 this.neckWool2.render(scale);
             }
-        }else if (coatlength == 5){
+        }else if (coatLength == 5){
             this.wool5.render(scale);
             if (true) {
                 this.neckWool3.render(scale);
             }
-        }else if (coatlength == 6){
+        }else if (coatLength == 6){
             this.wool6.render(scale);
             if (true) {
                 this.neckWool3.render(scale);
             }
-        }else if (coatlength == 7){
+        }else if (coatLength == 7){
             this.wool7.render(scale);
             if (true) {
                 this.neckWool4.render(scale);
             }
-        }else if (coatlength == 8){
+        }else if (coatLength == 8){
             this.wool8.render(scale);
             if (true) {
                 this.neckWool4.render(scale);
             }
-        }else if (coatlength == 9){
+        }else if (coatLength == 9){
             this.wool9.render(scale);
             if (true) {
                 this.neckWool5.render(scale);
             }
-        }else if (coatlength == 10){
+        }else if (coatLength == 10){
             this.wool10.render(scale);
             if (true) {
                 this.neckWool5.render(scale);
             }
-        }else if (coatlength == 11){
+        }else if (coatLength == 11){
             this.wool11.render(scale);
             if (true) {
                 this.neckWool6.render(scale);
             }
-        }else if (coatlength == 12){
+        }else if (coatLength == 12){
             this.wool12.render(scale);
             if (true) {
                 this.neckWool6.render(scale);
             }
-        }else if (coatlength == 13){
+        }else if (coatLength == 13){
             this.wool13.render(scale);
             if (true) {
                 this.neckWool7.render(scale);
             }
-        }else if (coatlength == 14){
+        }else if (coatLength == 14){
             this.wool14.render(scale);
             if (true) {
                 this.neckWool7.render(scale);
             }
-        }else if (coatlength == 15){
+        }else if (coatLength == 15){
             this.wool15.render(scale);
             if (true) {
                 this.neckWool7.render(scale);
@@ -808,7 +811,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
      * "far" arms and legs can swing at most.
      */
 
-    public List<String> setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int[] sharedGenes) {
+    public List<String> setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int[] sharedGenes, char[] uuidArry) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         List<String> unrenderedModels = new ArrayList<>();
 
@@ -885,9 +888,6 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         copyModelAngles(head, hornBase);
         copyModelAngles(head, polyHornBase);
 
-        EnhancedSheep enhancedSheep = (EnhancedSheep) entityIn;
-        int[] genes = enhancedSheep.getSharedGenes();
-        char[] uuidArry = enhancedSheep.getCachedUniqueIdString().toCharArray();
 
         setHornRotations(sharedGenes, uuidArry, unrenderedModels, entityIn);
 
@@ -1235,6 +1235,13 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.head.rotationPointY = 9.0F + ((EnhancedSheep)entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
         this.headRotationAngleX = ((EnhancedSheep)entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
 
+        SheepModelData sheepModelData = getSheepModelData(entitylivingbaseIn);
+
+        if (limbSwing == sheepModelData.previousSwing) {
+            sheepModelData.sleepCounter++;
+        } else {
+            sheepModelData.previousSwing = limbSwing;
+        }
 
     }
 
@@ -1258,4 +1265,55 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         scalings.add(translateZ);
         return scalings;
     }
+
+    private class SheepModelData {
+        float previousSwing;
+        int[] sheepGenes;
+        String sheepStatus;
+        int coatlength;
+        char[] uuidArray;
+        boolean sleeping;
+        int sleepCounter = 0;
+        int lastAccessed = 0;
+        int dataReset = 0;
+    }
+
+    private SheepModelData getSheepModelData(T enhancedSheep) {
+        clearCacheTimer++;
+        if(clearCacheTimer > 100000) {
+            sheepModelDataCache.values().removeIf(value -> value.lastAccessed==1);
+            for (SheepModelData llamaModelData : sheepModelDataCache.values()){
+                llamaModelData.lastAccessed = 1;
+            }
+            clearCacheTimer = 0;
+        }
+
+        if (sheepModelDataCache.containsKey(enhancedSheep.getEntityId())) {
+            SheepModelData sheepModelData = sheepModelDataCache.get(enhancedSheep.getEntityId());
+            sheepModelData.lastAccessed = 0;
+            sheepModelData.dataReset++;
+            if (sheepModelData.dataReset > 5000) {
+                sheepModelData.coatlength = enhancedSheep.getCoatLength();
+                sheepModelData.sheepStatus = enhancedSheep.getSheepStatus();
+                sheepModelData.dataReset = 0;
+            }
+            if (sheepModelData.sleepCounter > 1000) {
+                sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
+                sheepModelData.sleepCounter = 0;
+            }
+            return sheepModelData;
+        } else {
+            SheepModelData sheepModelData = new SheepModelData();
+            sheepModelData.sheepGenes = enhancedSheep.getSharedGenes();
+            sheepModelData.coatlength = enhancedSheep.getCoatLength();
+            sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
+            sheepModelData.sheepStatus = enhancedSheep.getSheepStatus();
+            sheepModelData.uuidArray = enhancedSheep.getCachedUniqueIdString().toCharArray();
+
+            sheepModelDataCache.put(enhancedSheep.getEntityId(), sheepModelData);
+
+            return sheepModelData;
+        }
+    }
+
 }

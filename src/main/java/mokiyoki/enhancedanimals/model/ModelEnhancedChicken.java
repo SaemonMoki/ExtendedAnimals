@@ -8,15 +8,20 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by saemon on 8/09/2018.
  */
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel<T> {
 
+    private Map<Integer, ChickenModelData> chickenModelDataCache = new HashMap<>();
+    private int clearCacheTimer = 0;
+
     private float headRotationAngleX;
     private boolean nesting = false; //TODO actually make some nesting ai
-    private boolean roosting = true; //TODO actually make some roosting ai
     private int pose = 0;
     private int mutation = 0;
     private float wingAngle = 0; //[between 0 - -1.5]
@@ -428,11 +433,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
     @Override
     public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        EnhancedChicken enhancedChicken = (EnhancedChicken) entityIn;
 
-        this.roosting = enhancedChicken.isRoosting();
+        ChickenModelData chickenModelData = getChickenModelData(entityIn);
 
-        int[] genes = enhancedChicken.getSharedGenes();
+        Boolean roosting = chickenModelData.sleeping;
+
+        int[] genes = chickenModelData.chickenGenes;
         boolean nakedNeck = false;
         boolean longHockFeathers = false;
         int crest = 0; // [0, 1, 2, 3]          [none, small, forward, big]
@@ -1068,7 +1074,17 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
     @Override
     public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
-        int[] sharedGenes = ((EnhancedChicken)entitylivingbaseIn).getSharedGenes();
+        ChickenModelData chickenModelData = getChickenModelData(entitylivingbaseIn);
+
+        boolean roosting = chickenModelData.sleeping;
+
+        int[] sharedGenes = chickenModelData.chickenGenes;
+
+        if (limbSwing == chickenModelData.previousSwing) {
+            chickenModelData.sleepCounter++;
+        } else {
+            chickenModelData.previousSwing = limbSwing;
+        }
 
             this.rightLeg.rotationPointX = 0F;
             this.leftLeg.rotationPointX = 0F;
@@ -1240,6 +1256,50 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         dest.rotationPointX = source.rotationPointX;
         dest.rotationPointY = source.rotationPointY;
         dest.rotationPointZ = source.rotationPointZ;
+    }
+
+
+    private class ChickenModelData {
+        float previousSwing;
+        int[] chickenGenes;
+        boolean sleeping;
+        int sleepCounter = 0;
+        int lastAccessed = 0;
+//        int dataReset = 0;
+    }
+
+    private ChickenModelData getChickenModelData(T enhancedChicken) {
+        clearCacheTimer++;
+        if(clearCacheTimer > 100000) {
+            chickenModelDataCache.values().removeIf(value -> value.lastAccessed==1);
+            for (ChickenModelData cowModelData : chickenModelDataCache.values()){
+                cowModelData.lastAccessed = 1;
+            }
+            clearCacheTimer = 0;
+        }
+
+        if (chickenModelDataCache.containsKey(enhancedChicken.getEntityId())) {
+            ChickenModelData chickenModelData = chickenModelDataCache.get(enhancedChicken.getEntityId());
+            chickenModelData.lastAccessed = 0;
+//            chickenModelData.dataReset++;
+//            if (chickenModelData.dataReset > 5000) {
+////                chickenModelData.sleeping = enhancedChicken.isRoosting();
+//                chickenModelData.dataReset = 0;
+//            }
+            if (chickenModelData.sleepCounter > 1000) {
+                chickenModelData.sleeping = enhancedChicken.isRoosting();
+                chickenModelData.sleepCounter = 0;
+            }
+            return chickenModelData;
+        } else {
+            ChickenModelData chickenModelData = new ChickenModelData();
+            chickenModelData.chickenGenes = enhancedChicken.getSharedGenes();
+            chickenModelData.sleeping = enhancedChicken.isRoosting();
+
+            chickenModelDataCache.put(enhancedChicken.getEntityId(), chickenModelData);
+
+            return chickenModelData;
+        }
     }
 
 

@@ -2546,10 +2546,9 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[83] = (2);
         }
 
-        //indus modifier [wildtype, antelope, buffalo]
-        initialGenes[84] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        initialGenes[85] = (ThreadLocalRandom.current().nextInt(3) + 1);
+        //modifier [wildtype, ...]
+        initialGenes[84] = (ThreadLocalRandom.current().nextInt(4) + 1);
+        initialGenes[85] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         //cow horn scale 1 [wildtype, 1.25]
             initialGenes[86] = (ThreadLocalRandom.current().nextInt(2) + 1);

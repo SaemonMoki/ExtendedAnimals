@@ -712,6 +712,30 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         copyModelAngles(headModel, hornGranparent);
         copyModelAngles(actualHead, hornParent);
 
+        float hornBaseHight = -1.0F;
+        if (sharedGenes[70] == 2) {
+            hornBaseHight = hornBaseHight + 0.05F;
+        }
+        if (sharedGenes[71] == 2) {
+            hornBaseHight = hornBaseHight + 0.05F;
+        }
+        if (sharedGenes[72] != 1) {
+            hornBaseHight = hornBaseHight + 0.1F;
+        }
+        if (sharedGenes[73] != 1) {
+            hornBaseHight = hornBaseHight + 0.1F;
+        }
+        if (sharedGenes[72] == 3 && sharedGenes[73] == 3) {
+            hornBaseHight = hornBaseHight + 0.1F;
+        }
+        if (sharedGenes[74] == 1) {
+            hornBaseHight = hornBaseHight * 0.75F;
+        }
+        if (sharedGenes[75] == 1) {
+            hornBaseHight = hornBaseHight * 0.75F;
+        }
+        hornParent.rotationPointY = hornBaseHight;
+
         hornL0.setRotationPoint(0.0F, 0.0F, -2.25F);
         hornR0.setRotationPoint(0.0F, 0.0F, -2.25F);
 
@@ -720,8 +744,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         Float[] hornGrowthL = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
         Float[] hornGrowthR = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
 
-//        EnhancedCow enhancedCow = (EnhancedCow) entityIn;
-//        float[] hornAlterations = enhancedCow.getHornAlteration();
         EnhancedCow enhancedCow = (EnhancedCow) entityIn;
         float[] hornAlterations = enhancedCow.getHornAlteration();
 
@@ -816,8 +838,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 lengthR = 9;
             }
 
-//            lengthL = lengthL + Math.round(hornAlterations[13]);
-//            lengthR = lengthR + Math.round(hornAlterations[13]);
             lengthL = lengthL + Math.round(hornAlterations[30]);
             lengthR = lengthR + Math.round(hornAlterations[30]);
 
@@ -841,9 +861,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                     }
                 }
             }
-
-            this.hornL0.rotationPointY = hornGrowthL[0] + hornHideL[0];
-            this.hornR0.rotationPointY = hornGrowthR[0] + hornHideR[0];
 
             this.hornL0.rotationPointX = 1.0F;
             this.hornR0.rotationPointX = -1.0F;
@@ -916,59 +933,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         //horn shape controllers
         if (horns != 0) {
-//            Float[] hornCalculationsZ = {0.0F, -0.17F, 0.1F, 0.2F, 0.01F, -0.2F, -0.37F, -0.57F, -0.27F, -0.14F};
-//            Float[] hornCalculationsX = {0.0F, -0.17F, 0.1F, 0.2F, 0.01F, -0.2F, -0.37F, -0.57F, -0.27F, -0.14F};
-//            Float[] hornCalculationsY = {0.0F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F, 0.1F};
 
-            Float[] hornGenetics = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
-
-//            int tester = (int)hornAlterations[0];  // black
-//            int a = 100;
-//            for (int i = 1; i <= 9; i++) {
-//                hornGenetics[i] = (float)(((tester) + (tester)) - 3) / 30;
-//                a = a + 2;
-//            }
-//            a = 100;
-//            tester = (int)hornAlterations[1];   //gray
-//            for (int i = 1; i <= 9; i++) {
-//                hornGenetics[10 + i] = (float)(((tester) + (tester)) - 6) / 30;
-//                a = a + 2;
-//            }
-//
-//            tester = (int)hornAlterations[2];   //white
-//
-//            hornGenetics[29] = (float)(tester + tester) / 18.0F;
-//            hornGenetics[28] = (float)(tester + tester) / 18.0F;
-//            hornGenetics[27] = (float)(tester + tester) / 18.0F;
-//            hornGenetics[26] = (float)(tester + tester) / 18.0F;
-//            hornGenetics[25] = (float)(tester + tester) / 18.0F;
-//            hornGenetics[24] = (float)(tester + tester) / 18.0F;
-//            hornGenetics[23] = (float)(tester + tester) / 18.0F;
-//            hornGenetics[22] = (float)(tester + tester) / 18.0F;
-//            hornGenetics[21] = (float)(tester + tester) / 18.0F;
-//
-//            tester = (int)hornAlterations[3];   //pink
-//
-//            for (int i = 21; i <= 29; i++) {
-//                hornGenetics[i] = hornGenetics[i] * (((float)(((tester) + (tester) - 5))) / 8.0F);
-//            }
-//
-////             [straight] , [ 1 2 3 ] , [ 4 5 6 ], [ 7 8 9 ]
-//            for (int i = 1; i <= 29; i++) {
-//                if (i%10 <= 3) {
-//                    tester = (int)hornAlterations[4];
-//                    // horn 1, 2, 3 grab allele section [ O x x x ]
-//                    hornGenetics[i] = hornGenetics[i] * ((((float)((tester) + (tester)))/24.0F));
-//                } else if (i%10 <= 6) {
-//                    tester = (int)hornAlterations[5];
-//                    // horn 4, 5, 6 grab allele section [ x O x x ]
-//                    hornGenetics[i] = hornGenetics[i] * ((((float)((tester) + (tester)))/24.0F));
-//                } else {
-//                    tester = (int)hornAlterations[6];
-//                    // horn 7, 8, 9 grab allele section [ x x O x ]
-//                    hornGenetics[i] = hornGenetics[i] * ((((float)((tester) + (tester)))/24.0F));
-//                }
-//            }
+            Float[] hornGenetics = {1.5F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
 
             int a = 100;
             for (int i = 1; i <= 9; i++) {
@@ -991,30 +957,29 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 hornGenetics[i] = hornGenetics[i] * (((float)((sharedGenes[96]/1000) + (sharedGenes[97]/1000) - 5)) / 8.0F);
             }
 
+            // if b is lower horns curl more near ends
+            int b = ((sharedGenes[84]-1) + (sharedGenes[85]-1))/6;
+
 //             [straight] , [ 1 2 3 ] , [ 4 5 6 ], [ 7 8 9 ]
             for (int i = 1; i <= 29; i++) {
                 if (i%10 <= 3) {
                     // horn 1, 2, 3 grab allele section [ O x x x ]
-                    hornGenetics[i] = hornGenetics[i] * (((((sharedGenes[92]/1000) + (sharedGenes[93]/1000)) * ((1 + ((sharedGenes[92]%10) + (sharedGenes[92]%10)) / 60)) ))/24.0F);
+                    hornGenetics[i] = hornGenetics[i] * (((((sharedGenes[92]/1000) + (sharedGenes[93]/1000)) * ((1 + (Math.abs((sharedGenes[92]%10)-3) + Math.abs((sharedGenes[92]%10)-3)) / 36)) ))/24.0F);
                 } else if (i%10 <= 6) {
                     // horn 4, 5, 6 grab allele section [ x O x x ]
-                    hornGenetics[i] = hornGenetics[i] * ((( (((sharedGenes[92]/100)%10) + ((sharedGenes[93]/100)%10)) * ((1 + ((sharedGenes[92]%10) + (sharedGenes[92]%10)) / 60)) ))/24.0F);
+                    hornGenetics[i] = (1.3F - (b/3.0F)) * hornGenetics[i] * ((( (float)(((sharedGenes[92]/100)%10) + ((sharedGenes[93]/100)%10)) * ((1 + (float)(Math.abs((sharedGenes[92]%10)-3) + Math.abs((sharedGenes[92]%10)-3)) / 36)) ))/24.0F);
                 } else {
                     // horn 7, 8, 9 grab allele section [ x x O x ]
-                    hornGenetics[i] = hornGenetics[i] * (( (((sharedGenes[92]/10)%10) + ((sharedGenes[93]/10)%10)) * ((1 + ((sharedGenes[92]%10) + (sharedGenes[92]%10)) / 60)) )/24.0F);
+                    hornGenetics[i] = (1.5F - (b/2.0F)) * hornGenetics[i] * (( (float)(((sharedGenes[92]/10)%10) + ((sharedGenes[93]/10)%10)) * ((1 + (float)(Math.abs((sharedGenes[92]%10)-3) + Math.abs((sharedGenes[92]%10)-3)) / 36)) )/24.0F);
                 }
             }
 
-            hornGenetics[10] = (((sharedGenes[92]%10) - 3.0F) + ((sharedGenes[92]%10) - 3.0F))/-9.0F;
+            // if b is lower horns stick more out the side of the head
+            hornGenetics[10] = b * (((sharedGenes[92]%10) - 3.0F) + ((sharedGenes[92]%10) - 3.0F))/-9.0F;
 
-            Float[] hornCalculationsZ = {1.5F, hornGenetics[1], hornGenetics[2], hornGenetics[3], hornGenetics[4], hornGenetics[5], hornGenetics[6], hornGenetics[7], hornGenetics[8] + hornAlterations[8], hornGenetics[9] + hornAlterations[9]};
-            Float[] hornCalculationsX = {hornGenetics[10] + hornAlterations[10], hornGenetics[11] + hornAlterations[11], hornGenetics[12] + hornAlterations[12], hornGenetics[13] + hornAlterations[13], hornGenetics[14] + hornAlterations[14], hornGenetics[15] + hornAlterations[15], hornGenetics[16] + hornAlterations[16], hornGenetics[17] + hornAlterations[17], hornGenetics[18] + hornAlterations[18], hornGenetics[19] + hornAlterations[19]};
-            Float[] hornCalculationsY = {hornGenetics[20] + hornAlterations[20], hornGenetics[21] + hornAlterations[21], hornGenetics[22] + hornAlterations[22], hornGenetics[23] + hornAlterations[23], hornGenetics[24] + hornAlterations[24], hornGenetics[25] + hornAlterations[25], hornGenetics[26] + hornAlterations[26], hornGenetics[27] + hornAlterations[27], hornGenetics[28] + hornAlterations[28], hornGenetics[29] + hornAlterations[29]};
-
-
-//            Float[] hornCalculationsZ = {1.5F, hornGenetics[1] + hornAlterations[1], hornGenetics[2] + hornAlterations[2], hornGenetics[3] + hornAlterations[3], hornGenetics[4] + hornAlterations[4], hornGenetics[5] + hornAlterations[5], hornGenetics[6] + hornAlterations[6], hornGenetics[7] + hornAlterations[7], hornGenetics[8] + hornAlterations[8], hornGenetics[9] + hornAlterations[9]};
-//            Float[] hornCalculationsX = {hornGenetics[10] + hornAlterations[10], hornGenetics[11] + hornAlterations[11], hornGenetics[12] + hornAlterations[12], hornGenetics[13] + hornAlterations[13], hornGenetics[14] + hornAlterations[14], hornGenetics[15] + hornAlterations[15], hornGenetics[16] + hornAlterations[16], hornGenetics[17] + hornAlterations[17], hornGenetics[18] + hornAlterations[18], hornGenetics[19] + hornAlterations[19]};
-//            Float[] hornCalculationsY = {hornGenetics[20] + hornAlterations[20], hornGenetics[21] + hornAlterations[21], hornGenetics[22] + hornAlterations[22], hornGenetics[23] + hornAlterations[23], hornGenetics[24] + hornAlterations[24], hornGenetics[25] + hornAlterations[25], hornGenetics[26] + hornAlterations[26], hornGenetics[27] + hornAlterations[27], hornGenetics[28] + hornAlterations[28], hornGenetics[29] + hornAlterations[29]};
+            Float[] hornCalculationsZ = {hornGenetics[0], hornGenetics[1], hornGenetics[2], hornGenetics[3], hornGenetics[4], hornGenetics[5], hornGenetics[6], hornGenetics[7], hornGenetics[8], hornGenetics[9]};
+            Float[] hornCalculationsX = {hornGenetics[10], hornGenetics[11], hornGenetics[12], hornGenetics[13], hornGenetics[14], hornGenetics[15], hornGenetics[16], hornGenetics[17], hornGenetics[18], hornGenetics[19]};
+            Float[] hornCalculationsY = {hornGenetics[20], hornGenetics[21], hornGenetics[22], hornGenetics[23], hornGenetics[24], hornGenetics[25], hornGenetics[26], hornGenetics[27], hornGenetics[28], hornGenetics[29]};
 
                 for (int z = 1; z <= 9; z++) {
                     if (hornGrowthL[z] != 0.0F) {

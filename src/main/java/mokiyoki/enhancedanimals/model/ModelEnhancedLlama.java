@@ -9,15 +9,20 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @OnlyIn(Dist.CLIENT)
-public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
+public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T> {
+
+    private Map<Integer, LlamaModelData> llamaModelDataCache = new HashMap<>();
+    private int clearCacheTimer = 0;
 
     private final RendererModel chest1;
     private final RendererModel chest2;
 
     private boolean banana = false;
     private boolean suri = false;
-    private int coatlength = 0;
 
     private final RendererModel head;
     private final RendererModel nose;
@@ -306,12 +311,14 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
 
     @Override
     public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         EnhancedLlama enhancedLlama = (EnhancedLlama) entityIn;
 
-        this.coatlength = enhancedLlama.getCoatLength();
+        LlamaModelData llamaModelData = getLlamaModelData(entityIn);
 
-        int[] genes = enhancedLlama.getSharedGenes();
+        int[] genes = llamaModelData.llamaGenes;
+        int coatlength = llamaModelData.coatlength;
+
+        this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, coatlength);
 
         float size = 1;
 
@@ -488,8 +495,7 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
      * and legs, where par1 represents the time(so that arms and legs swing back and forth) and par2 represents how
      * "far" arms and legs can swing at most.
      */
-    @Override
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int coatLength) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
@@ -514,15 +520,15 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
         copyModelAngles(body, tail);
         copyModelAngles(body, tail1);
 
-        if ( suri && coatlength >= 0 ) {
-            if (coatlength >= 1) {
-                this.neckWool1.rotationPointY = this.head.rotationPointY + (coatlength/2.0F);
-                this.body1.rotationPointY = this.body.rotationPointY + (coatlength/2.0F);
-                this.tail1.rotationPointY = this.body.rotationPointY + (coatlength/3.0F);
-                this.leg1Wool1.rotationPointY = this.leg1.rotationPointY + (coatlength/2.0F);
-                this.leg2Wool1.rotationPointY = this.leg2.rotationPointY + (coatlength/2.0F);
-                this.leg3Wool1.rotationPointY = this.leg3.rotationPointY + (coatlength/2.0F);
-                this.leg4Wool1.rotationPointY = this.leg4.rotationPointY + (coatlength/2.0F);
+        if ( suri && coatLength >= 0 ) {
+            if (coatLength >= 1) {
+                this.neckWool1.rotationPointY = this.head.rotationPointY + (coatLength/2.0F);
+                this.body1.rotationPointY = this.body.rotationPointY + (coatLength/2.0F);
+                this.tail1.rotationPointY = this.body.rotationPointY + (coatLength/3.0F);
+                this.leg1Wool1.rotationPointY = this.leg1.rotationPointY + (coatLength/2.0F);
+                this.leg2Wool1.rotationPointY = this.leg2.rotationPointY + (coatLength/2.0F);
+                this.leg3Wool1.rotationPointY = this.leg3.rotationPointY + (coatLength/2.0F);
+                this.leg4Wool1.rotationPointY = this.leg4.rotationPointY + (coatLength/2.0F);
             }
         }
         copyModelAngles(neckWool1, neckWool2);
@@ -578,9 +584,17 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
      */
     @Override
     public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
-        int[] sharedGenes = ((EnhancedLlama)entitylivingbaseIn).getSharedGenes();
+        LlamaModelData llamaModelData = getLlamaModelData(entitylivingbaseIn);
+
+        int[] sharedGenes = llamaModelData.llamaGenes;
 
         this.body.rotationPointY = 2.0F;
+
+        if (limbSwing == llamaModelData.previousSwing) {
+            llamaModelData.sleepCounter++;
+        } else {
+            llamaModelData.previousSwing = limbSwing;
+        }
 
         if (this.isChild) {
             this.nose.rotationPointZ = -2.5F;
@@ -667,4 +681,50 @@ public class ModelEnhancedLlama <T extends Entity> extends EntityModel<T> {
         dest.rotationPointY = source.rotationPointY;
         dest.rotationPointZ = source.rotationPointZ;
     }
+
+    private class LlamaModelData {
+        float previousSwing;
+        int[] llamaGenes;
+        int coatlength;
+        boolean sleeping;
+        int sleepCounter = 0;
+        int lastAccessed = 0;
+        int dataReset = 0;
+    }
+
+    private LlamaModelData getLlamaModelData(T enhancedLlama) {
+        clearCacheTimer++;
+        if(clearCacheTimer > 100000) {
+            llamaModelDataCache.values().removeIf(value -> value.lastAccessed==1);
+            for (LlamaModelData llamaModelData : llamaModelDataCache.values()){
+                llamaModelData.lastAccessed = 1;
+            }
+            clearCacheTimer = 0;
+        }
+
+        if (llamaModelDataCache.containsKey(enhancedLlama.getEntityId())) {
+            LlamaModelData llamaModelData = llamaModelDataCache.get(enhancedLlama.getEntityId());
+            llamaModelData.lastAccessed = 0;
+            llamaModelData.dataReset++;
+            if (llamaModelData.dataReset > 5000) {
+                llamaModelData.coatlength = enhancedLlama.getCoatLength();
+                llamaModelData.dataReset = 0;
+            }
+            if (llamaModelData.sleepCounter > 1000) {
+                llamaModelData.sleeping = enhancedLlama.isSleeping();
+                llamaModelData.sleepCounter = 0;
+            }
+            return llamaModelData;
+        } else {
+            LlamaModelData llamaModelData = new LlamaModelData();
+            llamaModelData.llamaGenes = enhancedLlama.getSharedGenes();
+            llamaModelData.coatlength = enhancedLlama.getCoatLength();
+            llamaModelData.sleeping = enhancedLlama.isSleeping();
+
+            llamaModelDataCache.put(enhancedLlama.getEntityId(), llamaModelData);
+
+            return llamaModelData;
+        }
+    }
+
 }

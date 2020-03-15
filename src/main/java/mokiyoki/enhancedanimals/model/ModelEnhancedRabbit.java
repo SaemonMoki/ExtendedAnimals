@@ -9,11 +9,15 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<T> {
 
-    private int coatlength = 0;
-    private boolean dwarf = false;
+    private Map<Integer, RabbitModelData> rabbitModelDataCache = new HashMap<>();
+    private int clearCacheTimer = 0;
+
     private float earX = 0;
     private float earY = 0.2617994F;
     private float earZ = 0;
@@ -259,11 +263,10 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
      */
     @Override
     public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        EnhancedRabbit enhancedRabbit = (EnhancedRabbit) entityIn;
+        RabbitModelData rabbitModelData = getRabbitModelData(entityIn);
 
-        this.coatlength = enhancedRabbit.getCoatLength();
-
-        int[] genes = enhancedRabbit.getSharedGenes();
+        int[] genes = rabbitModelData.rabbitGenes;
+        int coatLength = rabbitModelData.coatlength;
 
         float size = 1F; // [minimum size = 0.3 maximum size = 1]
 
@@ -300,10 +303,10 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         }
 
         if ( genes[34] == 2 || genes[35] == 2){
-            dwarf = true;
+            rabbitModelData.dwarf = true;
             size = 0.3F + ((size - 0.3F)/2F);
         }else{
-            dwarf = false;
+            rabbitModelData.dwarf = false;
         }
 
         this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
@@ -315,7 +318,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             GlStateManager.translatef(0.0F, -1.45F + 1.45F/0.28F, 2.0F * scale);
             this.rabbitHeadLeft.render(scale);
             this.rabbitHeadRight.render(scale);
-            if (dwarf){
+            if (rabbitModelData.dwarf){
                 this.rabbitHeadMuzzleDwarf.render(scale);
                 this.rabbitNoseDwarf.render(scale);
                 this.DwarfParent.render(scale);
@@ -352,7 +355,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
                 this.rabbitLionHeadR.render(scale);
                 this.LionEarParent.render(scale);
             }
-            if (dwarf){
+            if (rabbitModelData.dwarf){
                 this.rabbitHeadMuzzleDwarf.render(scale);
                 this.rabbitNoseDwarf.render(scale);
                 this.DwarfParent.render(scale);
@@ -362,28 +365,28 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
                 this.EarParent.render(scale);
             }
 
-            if (coatlength == 0){
+            if (coatLength == 0){
                 this.rabbitBody.render(scale);
                 //this.rabbitButtRound.render(scale);
                 this.rabbitButt.render(scale);
                 //this.rabbitButtTube.render(scale);
             }else{
-                if(coatlength == 1){
+                if(coatLength == 1){
                     this.rabbitBodyAngora1.render(scale);
                     //this.rabbitButtRoundAngora1.render(scale);
                     this.rabbitButtAngora1.render(scale);
                     //this.rabbitButtTubeAngora1.render(scale);
-                }else if(coatlength == 2){
+                }else if(coatLength == 2){
                     this.rabbitBodyAngora2.render(scale);
                     //this.rabbitButtRoundAngora2.render(scale);
                     this.rabbitButtAngora2.render(scale);
                     //this.rabbitButtTubeAngora2.render(scale);
-                }else if(coatlength == 3){
+                }else if(coatLength == 3){
                     this.rabbitBodyAngora3.render(scale);
                     //this.rabbitButtRoundAngora3.render(scale);
                     this.rabbitButtAngora3.render(scale);
                     //this.rabbitButtTubeAngora3.render(scale);
-                }else if(coatlength == 4){
+                }else if(coatLength == 4){
                     this.rabbitBodyAngora4.render(scale);
                     //this.rabbitButtRoundAngora4.render(scale);
                     this.rabbitButtAngora4.render(scale);
@@ -406,8 +409,11 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
         float f = ageInTicks - (float)entityIn.ticksExisted;
-        EnhancedRabbit enhancedRabbit = (EnhancedRabbit) entityIn;
-        int[] genes = enhancedRabbit.getSharedGenes();
+
+        RabbitModelData rabbitModelData = getRabbitModelData(entityIn);
+
+        int[] genes = rabbitModelData.rabbitGenes;
+        boolean dwarf = rabbitModelData.dwarf;
 
         this.rabbitHeadLeft.rotateAngleX = headPitch * 0.017453292F;
         this.rabbitHeadLeft.rotateAngleY = netHeadYaw * 0.017453292F;
@@ -582,6 +588,14 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime){
         super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
         this.jumpRotation = MathHelper.sin(((EnhancedRabbit)entitylivingbaseIn).getJumpCompletion(partialTickTime) * (float)Math.PI);
+        RabbitModelData rabbitModelData = getRabbitModelData(entitylivingbaseIn);
+
+        if (limbSwing == rabbitModelData.previousSwing) {
+            rabbitModelData.sleepCounter++;
+        } else {
+            rabbitModelData.previousSwing = limbSwing;
+        }
+
     }
 
     public static void copyModelAngles(RendererModel source, RendererModel dest) {
@@ -592,4 +606,51 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         dest.rotationPointY = source.rotationPointY;
         dest.rotationPointZ = source.rotationPointZ;
     }
+
+    private class RabbitModelData {
+        float previousSwing;
+        int[] rabbitGenes;
+        int coatlength;
+        boolean dwarf;
+        boolean sleeping;
+        int sleepCounter = 0;
+        int lastAccessed = 0;
+        int dataReset = 0;
+    }
+
+    private RabbitModelData getRabbitModelData(T enhancedRabbit) {
+        clearCacheTimer++;
+        if(clearCacheTimer > 100000) {
+            rabbitModelDataCache.values().removeIf(value -> value.lastAccessed==1);
+            for (RabbitModelData rabbitModelData : rabbitModelDataCache.values()){
+                rabbitModelData.lastAccessed = 1;
+            }
+            clearCacheTimer = 0;
+        }
+
+        if (rabbitModelDataCache.containsKey(enhancedRabbit.getEntityId())) {
+            RabbitModelData rabbitModelData = rabbitModelDataCache.get(enhancedRabbit.getEntityId());
+            rabbitModelData.lastAccessed = 0;
+            rabbitModelData.dataReset++;
+            if (rabbitModelData.dataReset > 5000) {
+                rabbitModelData.coatlength = enhancedRabbit.getCoatLength();
+                rabbitModelData.dataReset = 0;
+            }
+            if (rabbitModelData.sleepCounter > 1000) {
+                rabbitModelData.sleeping = enhancedRabbit.isSleeping();
+                rabbitModelData.sleepCounter = 0;
+            }
+            return rabbitModelData;
+        } else {
+            RabbitModelData rabbitModelData = new RabbitModelData();
+            rabbitModelData.rabbitGenes = enhancedRabbit.getSharedGenes();
+            rabbitModelData.coatlength = enhancedRabbit.getCoatLength();
+            rabbitModelData.sleeping = enhancedRabbit.isSleeping();
+
+            rabbitModelDataCache.put(enhancedRabbit.getEntityId(), rabbitModelData);
+
+            return rabbitModelData;
+        }
+    }
+
 }

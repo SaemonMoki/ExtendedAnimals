@@ -399,7 +399,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     @Override
     public void render(T enhancedCow, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-//        long renderTotalStartTime = System.nanoTime();
 
         CowModelData cowModelData = getCowModelData(enhancedCow);
 
@@ -663,6 +662,12 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         int[] sharedGenes = cowModelData.cowGenes;
         boolean sleeping = cowModelData.sleeping;
         float onGround;
+
+        if (limbSwing == cowModelData.previousSwing) {
+            cowModelData.sleepCounter++;
+        } else {
+            cowModelData.previousSwing = limbSwing;
+        }
 
         if (sleeping) {
             onGround = sleepingAnimation(sharedGenes, cowModelData.cowSize, cowModelData.bagSize);
@@ -1441,6 +1446,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         String cowStatus;
         boolean sleeping;
         int dataReset = 0;
+        float previousSwing;
+        int sleepCounter = 0;
     }
 
     private CowModelData getCowModelData(T enhancedCow) {
@@ -1457,11 +1464,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             CowModelData cowModelData = cowModelDataCache.get(enhancedCow.getEntityId());
             cowModelData.lastAccessed = 0;
             cowModelData.dataReset++;
-            if (cowModelData.dataReset > 15000) {
+            if (cowModelData.dataReset > 5000) {
                 cowModelData.bagSize = enhancedCow.getBagSize();
                 cowModelData.cowStatus = enhancedCow.getCowStatus();
                 cowModelData.sleeping = enhancedCow.isAnimalSleeping();
                 cowModelData.dataReset = 0;
+            }
+            if (cowModelData.sleepCounter > 1000) {
+                cowModelData.sleeping = enhancedCow.isSleeping();
+                cowModelData.sleepCounter = 0;
             }
             return cowModelData;
         } else {

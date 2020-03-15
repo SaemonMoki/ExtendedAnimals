@@ -347,7 +347,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             this.cowTimer = Math.max(0, this.cowTimer - 1);
         } else {
 
-            if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
+            if (((this.world.getDayTime() >= 12500 && this.world.getDayTime() <= 22200) || this.world.isThundering()) && awokenTimer == 0 && !sleeping) {
                 setSleeping(true);
                 healTicks = 0;
             } else if (awokenTimer > 0) {
@@ -591,17 +591,18 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             hornAlterations[index] = "0";
 
         } else {
-            if (index >= 30) {
+//            if (index >= 30) {
                 hornAlterations[index]= Float.toString(Float.valueOf(hornAlterations[index])+Float.valueOf(value));
                 if (hornAlterations[index].startsWith("-") || hornAlterations[index].startsWith("10")) {
                     hornAlterations[index] = "9";
                 }
-            } else {
-                hornAlterations[index]= Float.toString(Float.valueOf(hornAlterations[index])+Float.valueOf(value));
-                if (hornAlterations[index].startsWith("1.6")) {
-                    hornAlterations[index] = "-1.6";
-                }
-            }
+//            }
+//            else {
+//                hornAlterations[index]= Float.toString(Float.valueOf(hornAlterations[index])+Float.valueOf(value));
+//                if (hornAlterations[index].startsWith("1.6")) {
+//                    hornAlterations[index] = "-1.6";
+//                }
+//            }
         }
 
         StringBuilder sb = new StringBuilder();
@@ -1394,21 +1395,21 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         Item item = itemStack.getItem();
 
         if (item == Items.BLACK_WOOL) {
-            setHornAlteration(0, "0.1");
+            setHornAlteration(0, "1.0");
         } else if (item == Items.GRAY_WOOL) {
-            setHornAlteration(1, "0.01");
+            setHornAlteration(1, "1.0");
         } else if (item == Items.WHITE_WOOL) {
-            setHornAlteration(2, "0.01");
+            setHornAlteration(2, "1.0");
         } else if (item == Items.PINK_WOOL) {
-            setHornAlteration(3, "0.01");
+            setHornAlteration(3, "1.0");
         } else if (item == Items.RED_WOOL) {
-            setHornAlteration(4, "0.01");
+            setHornAlteration(4, "1.0");
         } else if (item == Items.ORANGE_WOOL) {
-            setHornAlteration(5, "0.01");
+            setHornAlteration(5, "1.0");
         } else if (item == Items.YELLOW_WOOL) {
-            setHornAlteration(6, "0.01");
+            setHornAlteration(6, "1.0");
         } else if (item == Items.LIME_WOOL) {
-            setHornAlteration(7, "0.01");
+            setHornAlteration(7, "1.0");
         } else if (item == Items.CYAN_WOOL) {
             setHornAlteration(8, "0.01");
         } else if (item == Items.BLUE_WOOL) {
@@ -1457,11 +1458,11 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             setHornAlteration(0, "reset");
             setHornAlteration(10, "reset");
             setHornAlteration(20, "reset");
-        } else if (item == Items.WHITE_STAINED_GLASS) {
+        } else if (item == Items.GRAY_STAINED_GLASS) {
             setHornAlteration(1, "reset");
             setHornAlteration(11, "reset");
             setHornAlteration(21, "reset");
-        } else if (item == Items.GRAY_STAINED_GLASS) {
+        } else if (item == Items.WHITE_STAINED_GLASS) {
             setHornAlteration(2, "reset");
             setHornAlteration(12, "reset");
             setHornAlteration(22, "reset");

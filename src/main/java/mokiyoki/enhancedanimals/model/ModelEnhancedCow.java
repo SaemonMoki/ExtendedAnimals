@@ -6,7 +6,9 @@ import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -708,6 +710,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     private void setHornRotations(int[] sharedGenes, char[] uuidArray, List<String> unrenderedModels, T entityIn) {
 
+        CowModelData cowModelData = getCowModelData(entityIn);
+
         this.hornNub1.rotateAngleX = ((float)Math.PI / -2F);
         this.hornNub2.rotateAngleX = ((float)Math.PI / -2F);
         this.hornNub3.rotateAngleX = ((float)Math.PI / -2F);
@@ -843,8 +847,33 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 lengthR = 9;
             }
 
-            lengthL = lengthL + Math.round(hornAlterations[30]);
-            lengthR = lengthR + Math.round(hornAlterations[30]);
+
+            int hornGrowth = 9;
+            if (!(cowModelData.birthTime == null) && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
+                int ageTime = (int)(((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime() - Long.parseLong(cowModelData.birthTime));
+                if (ageTime > 1000) {
+                    hornGrowth = 0;
+                } else if (ageTime > 900) {
+                    hornGrowth = 1;
+                } else if (ageTime > 800) {
+                    hornGrowth = 2;
+                } else if (ageTime > 700) {
+                    hornGrowth = 3;
+                } else if (ageTime > 600) {
+                    hornGrowth = 4;
+                } else if (ageTime > 500) {
+                    hornGrowth = 5;
+                } else if (ageTime > 400) {
+                    hornGrowth = 6;
+                } else if (ageTime > 300) {
+                    hornGrowth = 7;
+                } else if (ageTime > 200) {
+                    hornGrowth = 8;
+                }
+            }
+
+            lengthL = lengthL + hornGrowth;
+            lengthR = lengthR + hornGrowth;
 
 
 
@@ -1404,6 +1433,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     private class CowModelData {
         int[] cowGenes;
+        String birthTime;
         float cowSize;
         char[] uuidArray;
         int lastAccessed = 0;
@@ -1447,6 +1477,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.bagSize = enhancedCow.getBagSize();
             cowModelData.cowStatus = enhancedCow.getCowStatus();
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
+            cowModelData.birthTime = enhancedCow.getBirthTime();
 
             if (enhancedCow.getMooshroomUUID().isEmpty() || enhancedCow.getMooshroomUUID().equals("0")) {
                 cowModelData.uuidArray = enhancedCow.getCachedUniqueIdString().toCharArray();

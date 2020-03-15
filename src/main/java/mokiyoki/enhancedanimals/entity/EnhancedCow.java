@@ -78,6 +78,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     private static final DataParameter<String> MOOSHROOM_UUID = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
     private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
     private static final DataParameter<String> HORN_ALTERATION = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
+    private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
 
     private static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
@@ -219,15 +220,15 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected void registerGoals() {
         //Todo add the temperamants
 //        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
-//        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(0, new SwimGoal(this));
 //        this.goalSelector.addGoal(5, this.eatGrassGoal);
-//        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-//        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
     }
 
     protected void updateAITasks()
     {
-//        this.cowTimer = this.wanderEatingGoal.getEatingGrassTimer();
+        this.cowTimer = this.wanderEatingGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
 
@@ -241,6 +242,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(MOOSHROOM_UUID, "0");
         this.dataManager.register(MILK_AMOUNT, 0);
+        this.dataManager.register(BIRTH_TIME, "0");
     }
 
     protected void setCowSize(float size) {
@@ -275,6 +277,12 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     }
 
     public Integer getMilkAmount() { return this.dataManager.get(MILK_AMOUNT); }
+
+    protected void setBirthTime(String birthTime) {
+        this.dataManager.set(BIRTH_TIME, birthTime);
+    }
+
+    public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
 
     public void setSleeping(Boolean sleeping) {
@@ -1729,6 +1737,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         compound.putInt("milk", getMilkAmount());
 
+        compound.putString("BirthTime", this.getBirthTime());
+
     }
 
     /**
@@ -1764,6 +1774,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.motherUUID = compound.getString("MotherUUID");
 
         setMilkAmount(compound.getInt("milk"));
+
+        this.setBirthTime(compound.getString("BirthTime"));
 
         setSharedGenes(genes);
         setCowSize();
@@ -1837,6 +1849,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         setSharedGenes(genes);
         setCowSize();
         setMaxBagSize();
+        setBirthTime(String.valueOf(inWorld.getWorld().getGameTime()));
 
         configureAI();
         for (int i = 0; i <= 30; i++) {
@@ -2656,13 +2669,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 //                speed = speed - 0.1;
 //            }
 
-//            this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
-//            this.goalSelector.addGoal(2, new BreedGoal(this, speed));
-//            this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.25D, TEMPTATION_ITEMS, false));
-//            this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
-//            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
-//            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);
-//            this.goalSelector.addGoal(6, wanderEatingGoal);
+            this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
+            this.goalSelector.addGoal(2, new BreedGoal(this, speed));
+            this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.25D, TEMPTATION_ITEMS, false));
+            this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
+            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
+            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);
+            this.goalSelector.addGoal(6, wanderEatingGoal);
         }
         aiConfigured = true;
     }

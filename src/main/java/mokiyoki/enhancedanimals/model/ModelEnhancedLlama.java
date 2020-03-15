@@ -711,7 +711,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                 llamaModelData.dataReset = 0;
             }
             if (llamaModelData.sleepCounter > 1000) {
-                llamaModelData.sleeping = enhancedLlama.isSleeping();
+                llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
                 llamaModelData.sleepCounter = 0;
             }
             return llamaModelData;
@@ -719,7 +719,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             LlamaModelData llamaModelData = new LlamaModelData();
             llamaModelData.llamaGenes = enhancedLlama.getSharedGenes();
             llamaModelData.coatlength = enhancedLlama.getCoatLength();
-            llamaModelData.sleeping = enhancedLlama.isSleeping();
+            llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
 
             llamaModelDataCache.put(enhancedLlama.getEntityId(), llamaModelData);
 

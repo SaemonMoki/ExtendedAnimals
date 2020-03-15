@@ -1471,7 +1471,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 cowModelData.dataReset = 0;
             }
             if (cowModelData.sleepCounter > 1000) {
-                cowModelData.sleeping = enhancedCow.isSleeping();
+                cowModelData.sleeping = enhancedCow.isAnimalSleeping();
                 cowModelData.sleepCounter = 0;
             }
             return cowModelData;

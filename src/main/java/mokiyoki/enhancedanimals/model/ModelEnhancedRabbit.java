@@ -637,7 +637,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
                 rabbitModelData.dataReset = 0;
             }
             if (rabbitModelData.sleepCounter > 1000) {
-                rabbitModelData.sleeping = enhancedRabbit.isSleeping();
+                rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
                 rabbitModelData.sleepCounter = 0;
             }
             return rabbitModelData;
@@ -645,7 +645,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             RabbitModelData rabbitModelData = new RabbitModelData();
             rabbitModelData.rabbitGenes = enhancedRabbit.getSharedGenes();
             rabbitModelData.coatlength = enhancedRabbit.getCoatLength();
-            rabbitModelData.sleeping = enhancedRabbit.isSleeping();
+            rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
 
             rabbitModelDataCache.put(enhancedRabbit.getEntityId(), rabbitModelData);
 

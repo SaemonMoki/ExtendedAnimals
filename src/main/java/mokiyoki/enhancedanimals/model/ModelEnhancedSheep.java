@@ -1298,7 +1298,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                 sheepModelData.dataReset = 0;
             }
             if (sheepModelData.sleepCounter > 1000) {
-                sheepModelData.sleeping = enhancedSheep.isSleeping();
+                sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
                 sheepModelData.sleepCounter = 0;
             }
             return sheepModelData;
@@ -1306,7 +1306,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             SheepModelData sheepModelData = new SheepModelData();
             sheepModelData.sheepGenes = enhancedSheep.getSharedGenes();
             sheepModelData.coatlength = enhancedSheep.getCoatLength();
-            sheepModelData.sleeping = enhancedSheep.isSleeping();
+            sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
             sheepModelData.sheepStatus = enhancedSheep.getSheepStatus();
             sheepModelData.uuidArray = enhancedSheep.getCachedUniqueIdString().toCharArray();
 

@@ -408,7 +408,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 //                pigModelData.dataReset = 0;
 //            }
             if (horseModelData.sleepCounter > 1000) {
-                horseModelData.sleeping = enhancedHorse.isSleeping();
+                horseModelData.sleeping = enhancedHorse.isAnimalSleeping();
                 horseModelData.sleepCounter = 0;
             }
             return horseModelData;
@@ -416,7 +416,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
             HorseModelData horseModelData = new HorseModelData();
             horseModelData.horseGenes = enhancedHorse.getSharedGenes();
             horseModelData.size = enhancedHorse.getSize();
-            horseModelData.sleeping = enhancedHorse.isSleeping();
+            horseModelData.sleeping = enhancedHorse.isAnimalSleeping();
             horseModelData.uuidArray = enhancedHorse.getCachedUniqueIdString().toCharArray();
 
             horseModelDataCache.put(enhancedHorse.getEntityId(), horseModelData);

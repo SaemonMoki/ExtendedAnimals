@@ -848,7 +848,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             }
 
 
-            int hornGrowth = 9;
+            int hornGrowth = 0;
             if (!(cowModelData.birthTime == null) && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
                 int ageTime = (int)(((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime() - Long.parseLong(cowModelData.birthTime));
                 if (ageTime > 1000) {

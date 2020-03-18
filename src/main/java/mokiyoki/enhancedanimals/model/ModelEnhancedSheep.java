@@ -927,11 +927,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             }
         }
 
-        this.hornL0.setRotationPoint(0.0F, 0.0F, -2.25F);
-        this.hornR0.setRotationPoint(0.0F, 0.0F, -2.25F);
-
-        this.hornL0.rotationPointY = hornGrowthL[0] + hornHideL[0];
-        this.hornR0.rotationPointY = hornGrowthR[0] + hornHideR[0];
+//        this.hornL0.setRotationPoint(0.0F, 0.0F, -2.25F);
+//        this.hornR0.setRotationPoint(0.0F, 0.0F, -2.25F);
 
         this.hornL0.rotationPointX = 1.0F;
         this.hornR0.rotationPointX = -1.0F;
@@ -980,9 +977,6 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 //        this.hornR02.rotationPointY = -2.0F;
 //        this.hornL01.rotationPointY = -2.0F;
 //        this.hornR01.rotationPointY = -2.0F;
-
-        this.hornL0.rotationPointX = -hornSpacing;
-        this.hornR0.rotationPointX = hornSpacing;
 
         //the curve overback
         // [ -0.degreesF * goldenRatio ];

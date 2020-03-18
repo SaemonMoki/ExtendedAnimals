@@ -460,33 +460,45 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 //scurs
                 hornScale = (hornScale + 0.75F) * 0.5F;
             }
-            //hornScale == [0.75 to 2.5]
-            hornShift = 0.0F;
         }
 
-//        0.6F <= size <= 1.5F
-
-        if (this.isChild) {
-            renderChild(scale, dwarf, bodyWidth, bodyLength, hump, cowModelData.cowSize);
-        } else {
-            renderAdult(scale, cowModelData.cowStatus, dwarf, bodyWidth, bodyLength, hump, horns, hornScale, hornShift, unrenderedModels, cowModelData.cowSize, cowModelData.bagSize);
+        float age = 1.0F;
+        float babyScale = 1.0F;
+        if (!(cowModelData.birthTime == null) && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
+            int ageTime = (int)(((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime() - Long.parseLong(cowModelData.birthTime));
+            if (ageTime > 108000) {
+                age = 1.0F;
+                babyScale = 1.0F;
+            } else {
+                age = ageTime/108000.0F;
+                //babyScale [ 1.0F - 1.5F ]
+                babyScale = (3.0F - age)/2;
+            }
         }
+
+
+
+//        if (false) {
+//            renderChild(scale, dwarf, bodyWidth, bodyLength, hump, cowModelData.cowSize);
+//        } else {
+            renderAdult(scale, age, babyScale, cowModelData.cowStatus, dwarf, bodyWidth, bodyLength, hump, horns, hornScale, unrenderedModels, cowModelData.cowSize, cowModelData.bagSize);
+//        }
 
 //        long renderTotalEndTime = System.nanoTime();
 //        System.out.println("CowRenderTotal: " + (renderTotalEndTime - renderTotalStartTime));
 
     }
 
-    private void renderAdult(float scale, String cowStatus, float dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornScale, float hornShift, List<String> unrenderedModels, float cowSize, float bagSize) {
+    private void renderAdult(float scale, float age, float babyScale, String cowStatus, float dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornShift, List<String> unrenderedModels, float cowSize, float bagSize) {
+        cowSize = (( 2.0F * cowSize * age) + cowSize) / 3.0F;
         GlStateManager.pushMatrix();
         GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize, cowSize + (cowSize * bodyLength));
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / cowSize) + ((0.23F - (cowSize-0.7F)*0.0375F)*dwarf), 0.0F);
+        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (cowSize)) + ((0.23F - ((cowSize)-0.7F)*0.0375F)*dwarf), 0.0F);
+        //TODO y value of translatef needs to scale with child sizes dynamically and cancel out as an adult. babyScale ranges from 1.0F (adult) to 1.5F (newborn).
 
-        renderHorns(scale, horns, hornScale, hornShift, unrenderedModels);
+        renderHorns(scale, horns, hornShift, unrenderedModels);
 
         this.bodyMedium.render(scale);
-
-        renderLegs(scale, dwarf);
 
         renderHump(scale, hump, false);
 
@@ -510,14 +522,22 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.udder.render(scale);
             GlStateManager.popMatrix();
         }
+
+        GlStateManager.pushMatrix();
+        GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize * babyScale, cowSize + (cowSize * bodyLength));
+        GlStateManager.translatef(0.0F, ((-1.45F + 1.45F / (cowSize * babyScale)) + ((0.23F - ((cowSize * babyScale)-0.7F)*0.0375F)*dwarf)), 0.0F);
+
+        renderLegs(scale, dwarf);
+
+        GlStateManager.popMatrix();
+
     }
 
     private void renderChild(float scale, float dwarf, float bodyWidth, float bodyLength, int hump, float cowSize) {
         float childSize = cowSize / 3;
-        //            if (cowStatus.contains(EntityState.CHILD_STAGE_ONE.toString())) {
         GlStateManager.pushMatrix();
         GlStateManager.scalef(childSize + (childSize * bodyWidth), childSize, childSize + (childSize * bodyLength));
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / childSize) + ((0.23F - ((childSize)-0.7F)*0.0375F)*dwarf)+0.05F, 0.0F);
+        GlStateManager.translatef(0.0F, ((-1.45F + 1.45F / childSize) + ((0.23F - ((childSize)-0.7F)*0.0375F)*dwarf)+0.05F) / 1.15F, 0.0F);
 
         this.headModel.render(scale);
 
@@ -531,22 +551,21 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.tail0.render(scale);
 
         GlStateManager.popMatrix();
+
         GlStateManager.pushMatrix();
         GlStateManager.scalef(childSize + (childSize * bodyWidth), (childSize*1.5F), childSize + (childSize * bodyLength));
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (childSize*1.5F)) + ((0.23F - ((childSize*1.5F)-0.7F)*0.0375F)*dwarf), 0.0F);
+        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (childSize*1.5F)) + ((0.23F - ((childSize*1.5F)-0.7F)*0.0375F)*dwarf),0.0F);
 
-        renderLegs(scale, dwarf);
+            renderLegs(scale,dwarf);
 
         GlStateManager.popMatrix();
     }
 
-    private void renderHorns(float scale, float horns, float hornScale, float hornShift, List<String> unrenderedModels) {
+    private void renderHorns(float scale, float horns, float hornScale, List<String> unrenderedModels) {
         if (horns != 0.0F) {
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
-            hornScale = 1.0F;
-
-            List<Float> scalingsForHorn = createScalings(hornScale, (hornScale*0.25F) - 0.25F, 0.0F, 0.0F);
+            List<Float> scalingsForHorn = createScalings(hornScale, -hornScale/29.0F, -hornScale*0.01F, (hornScale - 1.0F)*0.03F);
             mapOfScale.put("HornL0", scalingsForHorn);
             mapOfScale.put("HornR0", mirrorX(scalingsForHorn, false));
             this.hornGranparent.render(scale, mapOfScale, unrenderedModels, false);
@@ -828,14 +847,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 }
 
                 if (sharedGenes[88] == 2) {
-                    lengthL = lengthL + 2;
+                    lengthL = lengthL + 1;
                 }
                 if (sharedGenes[89] == 2) {
+                    lengthL = lengthL + 1;
+                }
+                if (sharedGenes[90] == 2 || sharedGenes[91] == 2) {
                     lengthL = lengthL + 2;
                 }
-//                if (sharedGenes[90] == 2 || sharedGenes[91] == 2) {
-//                    lengthL = lengthL + 2;
-//                }
 
                 lengthR = lengthL;
             }
@@ -848,27 +867,29 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             }
 
 
-            int hornGrowth = 9;
+            int hornGrowth = 0;
             if (!(cowModelData.birthTime == null) && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
                 int ageTime = (int)(((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime() - Long.parseLong(cowModelData.birthTime));
-                if (ageTime > 1000) {
+                if (ageTime > 108000) {
                     hornGrowth = 0;
-                } else if (ageTime > 900) {
+                } else if (ageTime > 97200) {
                     hornGrowth = 1;
-                } else if (ageTime > 800) {
+                } else if (ageTime > 86400) {
                     hornGrowth = 2;
-                } else if (ageTime > 700) {
+                } else if (ageTime > 75600) {
                     hornGrowth = 3;
-                } else if (ageTime > 600) {
+                } else if (ageTime > 64800) {
                     hornGrowth = 4;
-                } else if (ageTime > 500) {
+                } else if (ageTime > 54000) {
                     hornGrowth = 5;
-                } else if (ageTime > 400) {
+                } else if (ageTime > 43200) {
                     hornGrowth = 6;
-                } else if (ageTime > 300) {
+                } else if (ageTime > 32400) {
                     hornGrowth = 7;
-                } else if (ageTime > 200) {
+                } else if (ageTime > 21600) {
                     hornGrowth = 8;
+                } else {
+                    hornGrowth = 9;
                 }
             }
 

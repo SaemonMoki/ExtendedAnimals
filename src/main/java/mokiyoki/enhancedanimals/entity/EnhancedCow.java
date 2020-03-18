@@ -90,12 +90,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     private static final String[] COW_TEXTURES_RED = new String[] {
             "", "r_solid.png", "r_shaded.png"
-              , "r_solid.png", "r_shaded_thin.png"
     };
 
     private static final String[] COW_TEXTURES_BLACK = new String[] {
             "", "b_shoulders.png", "b_wildtype.png", "b_wildtype_darker1.png", "b_wildtype_dark.png", "b_solid.png", "b_brindle.png"
-              , "b_shoulders_thin.png", "b_wildtype_thin.png", "b_wildtype_darker1_thin.png", "b_wildtype_dark_thin.png", "b_solid.png", "b_brindle.png"
     };
 
     private static final String[] COW_TEXTURES_SKIN = new String[] {
@@ -355,7 +353,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             this.cowTimer = Math.max(0, this.cowTimer - 1);
         } else {
 
-            if (((this.world.getDayTime() >= 12500 && this.world.getDayTime() <= 22200) || this.world.isThundering()) && awokenTimer == 0 && !sleeping) {
+            if (((this.world.getDayTime() >= 12600 && this.world.getDayTime() <= 22000) || this.world.isThundering()) && awokenTimer == 0 && !sleeping) {
                 setSleeping(true);
                 healTicks = 0;
             } else if (awokenTimer > 0) {
@@ -370,7 +368,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 if (days/2 < gestationTimer) {
                     setCowStatus(EntityState.PREGNANT.toString());
                 }
-                if (hunger > days*(0.75) && days !=0) {
+                if (hunger > 12000 && days !=0) {
                     pregnant = false;
                     setCowStatus(EntityState.ADULT.toString());
                 }
@@ -1043,14 +1041,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             if(genesForText[26] == 1 || genesForText[27] == 1) {
                 hooves = 1;
             }
-            if(genesForText[54] == 1 && genesForText[55] == 1){
-                if (red != 0){
-                    red = red + 2;
-                }
-                if (black != 0){
-                    black = black + 6;
-                }
-            }
 
             if (genesForText[12] == 1 || genesForText[13] == 1) {
                 //should be polled unless...
@@ -1389,8 +1379,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             maxBagSize = 1.0F;
         }
 
-//        maxBagSize = 1.0F;
-
         this.maxBagSize = maxBagSize;
 
         this.setBagSize(maxBagSize);
@@ -1402,112 +1390,111 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
-        if (item == Items.BLACK_WOOL) {
-            setHornAlteration(0, "1.0");
-        } else if (item == Items.GRAY_WOOL) {
-            setHornAlteration(1, "1.0");
-        } else if (item == Items.WHITE_WOOL) {
-            setHornAlteration(2, "1.0");
-        } else if (item == Items.PINK_WOOL) {
-            setHornAlteration(3, "1.0");
-        } else if (item == Items.RED_WOOL) {
-            setHornAlteration(4, "1.0");
-        } else if (item == Items.ORANGE_WOOL) {
-            setHornAlteration(5, "1.0");
-        } else if (item == Items.YELLOW_WOOL) {
-            setHornAlteration(6, "1.0");
-        } else if (item == Items.LIME_WOOL) {
-            setHornAlteration(7, "1.0");
-        } else if (item == Items.CYAN_WOOL) {
-            setHornAlteration(8, "0.01");
-        } else if (item == Items.BLUE_WOOL) {
-            setHornAlteration(9, "0.01");
-        } else if (item == Items.BLACK_CONCRETE) {
-            setHornAlteration(10, "0.01");
-        } else if (item == Items.GRAY_CONCRETE) {
-            setHornAlteration(11, "0.01");
-        } else if (item == Items.WHITE_CONCRETE) {
-            setHornAlteration(12, "0.01");
-        } else if (item == Items.PINK_CONCRETE) {
-            setHornAlteration(13, "0.01");
-        } else if (item == Items.RED_CONCRETE) {
-            setHornAlteration(14, "0.01");
-        } else if (item == Items.ORANGE_CONCRETE) {
-            setHornAlteration(15, "0.01");
-        } else if (item == Items.YELLOW_CONCRETE) {
-            setHornAlteration(16, "0.01");
-        } else if (item == Items.LIME_CONCRETE) {
-            setHornAlteration(17, "0.01");
-        } else if (item == Items.CYAN_CONCRETE) {
-            setHornAlteration(18, "0.01");
-        } else if (item == Items.BLUE_CONCRETE) {
-            setHornAlteration(19, "0.01");
-        } else if (item == Items.BLACK_TERRACOTTA) {
-            setHornAlteration(20, "0.01");
-        } else if (item == Items.WHITE_TERRACOTTA) {
-            setHornAlteration(21, "0.01");
-        } else if (item == Items.GRAY_TERRACOTTA) {
-            setHornAlteration(22, "0.01");
-        } else if (item == Items.PINK_TERRACOTTA) {
-            setHornAlteration(23, "0.01");
-        } else if (item == Items.RED_TERRACOTTA) {
-            setHornAlteration(24, "0.01");
-        } else if (item == Items.ORANGE_TERRACOTTA) {
-            setHornAlteration(25, "0.01");
-        }else if (item == Items.YELLOW_TERRACOTTA) {
-            setHornAlteration(26, "0.01");
-        }else if (item == Items.LIME_TERRACOTTA) {
-            setHornAlteration(27, "0.01");
-        }else if (item == Items.CYAN_TERRACOTTA) {
-            setHornAlteration(28, "0.01");
-        }else if (item == Items.BLUE_TERRACOTTA) {
-            setHornAlteration(29, "0.01");
-        } else if (item == Items.BLACK_STAINED_GLASS) {
-            setHornAlteration(0, "reset");
-            setHornAlteration(10, "reset");
-            setHornAlteration(20, "reset");
-        } else if (item == Items.GRAY_STAINED_GLASS) {
-            setHornAlteration(1, "reset");
-            setHornAlteration(11, "reset");
-            setHornAlteration(21, "reset");
-        } else if (item == Items.WHITE_STAINED_GLASS) {
-            setHornAlteration(2, "reset");
-            setHornAlteration(12, "reset");
-            setHornAlteration(22, "reset");
-        } else if (item == Items.PINK_STAINED_GLASS) {
-            setHornAlteration(3, "reset");
-            setHornAlteration(13, "reset");
-            setHornAlteration(23, "reset");
-        } else if (item == Items.RED_STAINED_GLASS) {
-            setHornAlteration(4, "reset");
-            setHornAlteration(14, "reset");
-            setHornAlteration(24, "reset");
-        } else if (item == Items.ORANGE_STAINED_GLASS) {
-            setHornAlteration(5, "reset");
-            setHornAlteration(15, "reset");
-            setHornAlteration(25, "reset");
-        }else if (item == Items.YELLOW_STAINED_GLASS) {
-            setHornAlteration(6, "reset");
-            setHornAlteration(16, "reset");
-            setHornAlteration(26, "reset");
-        }else if (item == Items.LIME_STAINED_GLASS) {
-            setHornAlteration(7, "reset");
-            setHornAlteration(17, "reset");
-            setHornAlteration(27, "reset");
-        }else if (item == Items.CYAN_STAINED_GLASS) {
-            setHornAlteration(8, "reset");
-            setHornAlteration(18, "reset");
-            setHornAlteration(28, "reset");
-        }else if (item == Items.BLUE_STAINED_GLASS) {
-            setHornAlteration(9, "reset");
-            setHornAlteration(19, "reset");
-            setHornAlteration(29, "reset");
-        }else if (item == Items.BONE_MEAL) {
-            setHornAlteration(30, "-1");
-        }else if (item == Items.STICK) {
-            setHornAlteration(30, "1");
-        }
-
+//        if (item == Items.BLACK_WOOL) {
+//            setHornAlteration(0, "1.0");
+//        } else if (item == Items.GRAY_WOOL) {
+//            setHornAlteration(1, "1.0");
+//        } else if (item == Items.WHITE_WOOL) {
+//            setHornAlteration(2, "1.0");
+//        } else if (item == Items.PINK_WOOL) {
+//            setHornAlteration(3, "1.0");
+//        } else if (item == Items.RED_WOOL) {
+//            setHornAlteration(4, "1.0");
+//        } else if (item == Items.ORANGE_WOOL) {
+//            setHornAlteration(5, "1.0");
+//        } else if (item == Items.YELLOW_WOOL) {
+//            setHornAlteration(6, "1.0");
+//        } else if (item == Items.LIME_WOOL) {
+//            setHornAlteration(7, "1.0");
+//        } else if (item == Items.CYAN_WOOL) {
+//            setHornAlteration(8, "0.01");
+//        } else if (item == Items.BLUE_WOOL) {
+//            setHornAlteration(9, "0.01");
+//        } else if (item == Items.BLACK_CONCRETE) {
+//            setHornAlteration(10, "0.01");
+//        } else if (item == Items.GRAY_CONCRETE) {
+//            setHornAlteration(11, "0.01");
+//        } else if (item == Items.WHITE_CONCRETE) {
+//            setHornAlteration(12, "0.01");
+//        } else if (item == Items.PINK_CONCRETE) {
+//            setHornAlteration(13, "0.01");
+//        } else if (item == Items.RED_CONCRETE) {
+//            setHornAlteration(14, "0.01");
+//        } else if (item == Items.ORANGE_CONCRETE) {
+//            setHornAlteration(15, "0.01");
+//        } else if (item == Items.YELLOW_CONCRETE) {
+//            setHornAlteration(16, "0.01");
+//        } else if (item == Items.LIME_CONCRETE) {
+//            setHornAlteration(17, "0.01");
+//        } else if (item == Items.CYAN_CONCRETE) {
+//            setHornAlteration(18, "0.01");
+//        } else if (item == Items.BLUE_CONCRETE) {
+//            setHornAlteration(19, "0.01");
+//        } else if (item == Items.BLACK_TERRACOTTA) {
+//            setHornAlteration(20, "0.01");
+//        } else if (item == Items.WHITE_TERRACOTTA) {
+//            setHornAlteration(21, "0.01");
+//        } else if (item == Items.GRAY_TERRACOTTA) {
+//            setHornAlteration(22, "0.01");
+//        } else if (item == Items.PINK_TERRACOTTA) {
+//            setHornAlteration(23, "0.01");
+//        } else if (item == Items.RED_TERRACOTTA) {
+//            setHornAlteration(24, "0.01");
+//        } else if (item == Items.ORANGE_TERRACOTTA) {
+//            setHornAlteration(25, "0.01");
+//        }else if (item == Items.YELLOW_TERRACOTTA) {
+//            setHornAlteration(26, "0.01");
+//        }else if (item == Items.LIME_TERRACOTTA) {
+//            setHornAlteration(27, "0.01");
+//        }else if (item == Items.CYAN_TERRACOTTA) {
+//            setHornAlteration(28, "0.01");
+//        }else if (item == Items.BLUE_TERRACOTTA) {
+//            setHornAlteration(29, "0.01");
+//        } else if (item == Items.BLACK_STAINED_GLASS) {
+//            setHornAlteration(0, "reset");
+//            setHornAlteration(10, "reset");
+//            setHornAlteration(20, "reset");
+//        } else if (item == Items.GRAY_STAINED_GLASS) {
+//            setHornAlteration(1, "reset");
+//            setHornAlteration(11, "reset");
+//            setHornAlteration(21, "reset");
+//        } else if (item == Items.WHITE_STAINED_GLASS) {
+//            setHornAlteration(2, "reset");
+//            setHornAlteration(12, "reset");
+//            setHornAlteration(22, "reset");
+//        } else if (item == Items.PINK_STAINED_GLASS) {
+//            setHornAlteration(3, "reset");
+//            setHornAlteration(13, "reset");
+//            setHornAlteration(23, "reset");
+//        } else if (item == Items.RED_STAINED_GLASS) {
+//            setHornAlteration(4, "reset");
+//            setHornAlteration(14, "reset");
+//            setHornAlteration(24, "reset");
+//        } else if (item == Items.ORANGE_STAINED_GLASS) {
+//            setHornAlteration(5, "reset");
+//            setHornAlteration(15, "reset");
+//            setHornAlteration(25, "reset");
+//        }else if (item == Items.YELLOW_STAINED_GLASS) {
+//            setHornAlteration(6, "reset");
+//            setHornAlteration(16, "reset");
+//            setHornAlteration(26, "reset");
+//        }else if (item == Items.LIME_STAINED_GLASS) {
+//            setHornAlteration(7, "reset");
+//            setHornAlteration(17, "reset");
+//            setHornAlteration(27, "reset");
+//        }else if (item == Items.CYAN_STAINED_GLASS) {
+//            setHornAlteration(8, "reset");
+//            setHornAlteration(18, "reset");
+//            setHornAlteration(28, "reset");
+//        }else if (item == Items.BLUE_STAINED_GLASS) {
+//            setHornAlteration(9, "reset");
+//            setHornAlteration(19, "reset");
+//            setHornAlteration(29, "reset");
+//        }else if (item == Items.BONE_MEAL) {
+//            setHornAlteration(30, "-1");
+//        }else if (item == Items.STICK) {
+//            setHornAlteration(30, "1");
+//        }
 
         if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;
@@ -1624,20 +1611,20 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
-                float[] hornAlterations = getHornAlteration();
-                String hornAltString = hornAlterations[0] + ",";
-                for (int a = 1; a < 29; a++) {
-                    hornAltString = hornAltString + hornAlterations[a] + ",";
-                }
-                hornAltString = hornAltString + hornAlterations[29];
-                ITextComponent message = new TranslationTextComponent(hornAltString);
-                Minecraft.getInstance().keyboardListener.setClipboardString(hornAltString);
-//                ITextComponent message = getHungerText();
-                entityPlayer.sendMessage(message);
-//                if (pregnant) {
-//                    message = getPregnantText();
-//                    entityPlayer.sendMessage(message);
+//                float[] hornAlterations = getHornAlteration();
+//                String hornAltString = hornAlterations[0] + ",";
+//                for (int a = 1; a < 29; a++) {
+//                    hornAltString = hornAltString + hornAlterations[a] + ",";
 //                }
+//                hornAltString = hornAltString + hornAlterations[29];
+//                ITextComponent message = new TranslationTextComponent(hornAltString);
+//                Minecraft.getInstance().keyboardListener.setClipboardString(hornAltString);
+                ITextComponent message = getHungerText();
+                entityPlayer.sendMessage(message);
+                if (pregnant) {
+                    message = getPregnantText();
+                    entityPlayer.sendMessage(message);
+                }
             } else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             } else if (!getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {

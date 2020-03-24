@@ -407,7 +407,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         int[] genes = cowModelData.cowGenes;
         float horns = calculateHorns(genes, cowModelData.uuidArray);
 
-        float dwarf = 0.0F;
+        boolean dwarf = false;
         float bodyWidth = -0.165F;
         float bodyLength = 0.0F;
         int hump = 0;
@@ -420,7 +420,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         if (genes[26] == 1 || genes[27] == 1){
             //dwarf
-            dwarf = 1.0F;
+            dwarf = true;
         }
 
         for (int i = 1; i < genes[54]; i++){
@@ -489,18 +489,23 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     }
 
-    private void renderAdult(float scale, float age, float babyScale, String cowStatus, float dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornShift, List<String> unrenderedModels, float cowSize, float bagSize) {
+    private void renderAdult(float scale, float age, float babyScale, String cowStatus, boolean dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornShift, List<String> unrenderedModels, float cowSize, float bagSize) {
+//        cowSize = 1.0F;
+//        age = 0.0F;
+//        babyScale = 1.5F;
         cowSize = (( 2.0F * cowSize * age) + cowSize) / 3.0F;
+        //
         GlStateManager.pushMatrix();
         GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize, cowSize + (cowSize * bodyLength));
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (cowSize)) + ((0.23F - ((cowSize)-0.7F)*0.0375F)*dwarf), 0.0F);
+        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (cowSize*babyScale)), 0.0F);
+        // + ((0.23F - ((cowSize*babyScale)-0.7F)*0.0375F)*dwarf))
         //TODO y value of translatef needs to scale with child sizes dynamically and cancel out as an adult. babyScale ranges from 1.0F (adult) to 1.5F (newborn).
 
         renderHorns(scale, horns, hornShift, unrenderedModels);
 
         this.bodyMedium.render(scale);
 
-        renderHump(scale, hump, false);
+        renderHump(scale, hump, isChild);
 
         this.headModel.render(scale, null , unrenderedModels, true);
 
@@ -508,7 +513,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         GlStateManager.pushMatrix();
         GlStateManager.scalef(cowSize, cowSize, cowSize);
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / cowSize) + ((0.23F - (cowSize-0.7F)*0.0375F)*dwarf), 0.0F);
+        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (cowSize*babyScale)) * (1.791F*cowSize), 0.0F);
+        // + ((0.23F - ((cowSize*babyScale)-0.7F)*0.0375F)*dwarf)
 
         this.tail0.render(scale);
 
@@ -517,7 +523,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         if (cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString())) {
             GlStateManager.pushMatrix();
             GlStateManager.scalef(bagSize * cowSize, bagSize * cowSize, bagSize * cowSize);
-            GlStateManager.translatef(0.0F, (-1.45F + 1.45F / cowSize) + ((-0.6F*((1.5F-cowSize)*2.0F)) + (0.6F*((1.5F-cowSize)*2.0F))/bagSize) + ((0.23F - (cowSize-0.7F)*0.0375F)*dwarf), ((1.0F-bagSize)*0.35F)); // if biggest 0, -0.16, 0 : if smallest 0, -0.66, 0
+            GlStateManager.translatef(0.0F, (-1.45F + 1.45F / cowSize) + ((-0.6F*((1.5F-cowSize)*2.0F)) + (0.6F*((1.5F-cowSize)*2.0F))/bagSize), ((1.0F-bagSize)*0.35F)); // if biggest 0, -0.16, 0 : if smallest 0, -0.66, 0
+            // + ((0.23F - (cowSize-0.7F)*0.0375F)*dwarf)
             GlStateManager.translatef(0.0F, 0.0F, 0.0F);
             this.udder.render(scale);
             GlStateManager.popMatrix();
@@ -525,7 +532,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         GlStateManager.pushMatrix();
         GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize * babyScale, cowSize + (cowSize * bodyLength));
-        GlStateManager.translatef(0.0F, ((-1.45F + 1.45F / (cowSize * babyScale)) + ((0.23F - ((cowSize * babyScale)-0.7F)*0.0375F)*dwarf)), 0.0F);
+        GlStateManager.translatef(0.0F, ((-1.45F + 1.45F / (cowSize * babyScale))), 0.0F);
+        // + ((0.23F - ((cowSize * babyScale)-0.7F)*0.0375F)*dwarf)
 
         renderLegs(scale, dwarf);
 
@@ -533,33 +541,33 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     }
 
-    private void renderChild(float scale, float dwarf, float bodyWidth, float bodyLength, int hump, float cowSize) {
-        float childSize = cowSize / 3;
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(childSize + (childSize * bodyWidth), childSize, childSize + (childSize * bodyLength));
-        GlStateManager.translatef(0.0F, ((-1.45F + 1.45F / childSize) + ((0.23F - ((childSize)-0.7F)*0.0375F)*dwarf)+0.05F) / 1.15F, 0.0F);
-
-        this.headModel.render(scale);
-
-        if (bodyWidth >= 3) {
-            this.bodySlim.render(scale);
-        }else{
-            this.bodyThin.render(scale);
-        }
-
-        renderHump(scale, hump, true);
-        this.tail0.render(scale);
-
-        GlStateManager.popMatrix();
-
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(childSize + (childSize * bodyWidth), (childSize*1.5F), childSize + (childSize * bodyLength));
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (childSize*1.5F)) + ((0.23F - ((childSize*1.5F)-0.7F)*0.0375F)*dwarf),0.0F);
-
-            renderLegs(scale,dwarf);
-
-        GlStateManager.popMatrix();
-    }
+//    private void renderChild(float scale, float dwarf, float bodyWidth, float bodyLength, int hump, float cowSize) {
+//        float childSize = cowSize / 3;
+//        GlStateManager.pushMatrix();
+//        GlStateManager.scalef(childSize + (childSize * bodyWidth), childSize, childSize + (childSize * bodyLength));
+//        GlStateManager.translatef(0.0F, ((-1.45F + 1.45F / childSize) + ((0.23F - ((childSize)-0.7F)*0.0375F)*dwarf)+0.05F) / 1.15F, 0.0F);
+//
+//        this.headModel.render(scale);
+//
+//        if (bodyWidth >= 3) {
+//            this.bodySlim.render(scale);
+//        }else{
+//            this.bodyThin.render(scale);
+//        }
+//
+//        renderHump(scale, hump, true);
+//        this.tail0.render(scale);
+//
+//        GlStateManager.popMatrix();
+//
+//        GlStateManager.pushMatrix();
+//        GlStateManager.scalef(childSize + (childSize * bodyWidth), (childSize*1.5F), childSize + (childSize * bodyLength));
+//        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (childSize*1.5F)) + ((0.23F - ((childSize*1.5F)-0.7F)*0.0375F)*dwarf),0.0F);
+//
+//            renderLegs(scale,dwarf);
+//
+//        GlStateManager.popMatrix();
+//    }
 
     private void renderHorns(float scale, float horns, float hornScale, List<String> unrenderedModels) {
         if (horns != 0.0F) {
@@ -572,8 +580,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
     }
 
-    private void renderLegs(float scale, float dwarf) {
-        if (dwarf != 0.0F) {
+    private void renderLegs(float scale, boolean dwarf) {
+        if (dwarf) {
             this.shortLeg1.render(scale);
             this.shortLeg2.render(scale);
             this.shortLeg3.render(scale);
@@ -683,6 +691,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         int[] sharedGenes = cowModelData.cowGenes;
         boolean sleeping = cowModelData.sleeping;
         float onGround;
+        boolean dwarf = (sharedGenes[26] == 1 || sharedGenes[27] == 1);
 
         if (limbSwing == cowModelData.previousSwing) {
             cowModelData.sleepCounter++;
@@ -693,19 +702,19 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         if (sleeping) {
             onGround = sleepingAnimation(sharedGenes, cowModelData.cowSize, cowModelData.bagSize);
         } else {
-            onGround = standingAnimation(cowModelData.cowSize, cowModelData.bagSize);
+            onGround = standingAnimation(cowModelData.cowSize, cowModelData.bagSize, dwarf);
         }
 
-        this.bodyThin.rotationPointY = this.bodyMedium.rotationPointY;
-        this.bodySlim.rotationPointY = this.bodyMedium.rotationPointY;
+        if (dwarf) {
+            this.headModel.rotationPointY = (onGround + (entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F) + 3.0F;
+        } else {
+            this.headModel.rotationPointY = onGround + (entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
+        }
 
-
-        this.headModel.rotationPointY = onGround + (entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
         this.headRotationAngleX = (entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
 
-
         setHumpAnimation(sharedGenes, onGround);
-
+        //TODO update tail bodyshape link
         int bodyShape = 0;
         for (int i = 1; i < sharedGenes[54]; i++) {
             bodyShape++;
@@ -714,9 +723,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             bodyShape++;
         }
 
-        if (this.isChild && bodyShape != 0) {
-            bodyShape = 1;
-        }
+//        if (this.isChild && bodyShape != 0) {
+//            bodyShape = 1;
+//        }
 
         if (bodyShape == 4) {
             this.tail0.rotationPointZ = 14.0F;
@@ -775,7 +784,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         EnhancedCow enhancedCow = (EnhancedCow) entityIn;
         float[] hornAlterations = enhancedCow.getHornAlteration();
 
-        if (horns != 0.0F && !this.isChild) {
+        if (horns != 0.0F) {
 
             Float[] hornHideL = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
             Float[] hornHideR = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
@@ -955,19 +964,19 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         unrenderedModels.add("HornNub4");
         unrenderedModels.add("HornNub5");
 
-        if (this.isChild) {
-            if (hornNubLength == 1){
-                unrenderedModels.remove("HornNub1");
-            }else if (hornNubLength == 2){
-                unrenderedModels.remove("HornNub2");
-            }else if (hornNubLength == 3){
-                unrenderedModels.remove("HornNub3");
-            }else if (hornNubLength == 4){
-                unrenderedModels.remove("HornNub4");
-            }else if (hornNubLength == 5){
-                unrenderedModels.remove("HornNub5");
-            }
-        } else {
+//        if (this.isChild) {
+//            if (hornNubLength == 1){
+//                unrenderedModels.remove("HornNub1");
+//            }else if (hornNubLength == 2){
+//                unrenderedModels.remove("HornNub2");
+//            }else if (hornNubLength == 3){
+//                unrenderedModels.remove("HornNub3");
+//            }else if (hornNubLength == 4){
+//                unrenderedModels.remove("HornNub4");
+//            }else if (hornNubLength == 5){
+//                unrenderedModels.remove("HornNub5");
+//            }
+//        } else {
             if (hornNubLength == 1){
                 this.hornNub1.rotationPointY = -1.0F + horns;
                 unrenderedModels.remove("HornNub1");
@@ -984,7 +993,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.hornNub5.rotationPointY = -1.0F + horns;
                 unrenderedModels.remove("HornNub5");
             }
-        }
+//        }
 
         //horn shape controllers
         if (horns != 0) {
@@ -1275,11 +1284,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     private float sleepingAnimation(int[] sharedGenes, float cowSize, float bagSize) {
         float onGround;
-        if (this.isChild) {
-            onGround = 13.85F;
-            this.bodyMedium.rotationPointY = 13.65F;
-            this.tail0.rotationPointY = 13.65F;
-        } else {
+//        if (this.isChild) {
+//            onGround = 13.85F;
+//            this.bodyMedium.rotationPointY = 13.65F;
+//            this.tail0.rotationPointY = 13.65F;
+//        } else {
             onGround = 9.80F;
             this.bodyMedium.rotationPointY = 9.75F;
             this.tail0.rotationPointY = 9.75F;
@@ -1288,14 +1297,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             if (cowSize < 1) {
                 this.udder.rotationPointY = this.udder.rotationPointY - (bagSize - 1.0F)*3.0F;
             }
-        }
-        if (sharedGenes[26] == 1 || sharedGenes[27] == 1){
-            //dwarf
-            onGround = onGround - 3.75F;
-            this.bodyMedium.rotationPointY = this.bodyMedium.rotationPointY - 3.75F;
-            this.tail0.rotationPointY = this.bodyMedium.rotationPointY;
-            this.udder.rotationPointY = this.udder.rotationPointY - 3.75F;
-        }
+//        }
+//        if (sharedGenes[26] == 1 || sharedGenes[27] == 1){
+//            //dwarf
+//            onGround = onGround - 3.75F;
+//            this.bodyMedium.rotationPointY = this.bodyMedium.rotationPointY - 3.75F;
+//            this.tail0.rotationPointY = this.bodyMedium.rotationPointY;
+//            this.udder.rotationPointY = this.udder.rotationPointY - 3.75F;
+//        }
 
         this.leg1.setRotationPoint(-6.0F, 14.0F+onGround, -10.0F);
         this.leg2.setRotationPoint(3.0F, 14.0F+onGround, -10.0F);
@@ -1304,21 +1313,37 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         return onGround;
     }
 
-    private float standingAnimation(float cowSize, float bagSize) {
+    private float standingAnimation(float cowSize, float bagSize, boolean dwarf) {
         float onGround;
         onGround = 2.75F;
-        this.bodyMedium.rotationPointY = 2.5F;
-        this.tail0.rotationPointY = 2.5F;
+        if (dwarf){
+            //dwarf
+            this.bodyMedium.rotationPointY = 5.5F;
+//            this.headModel.rotationPointY = 5.5F;
+            this.tail0.rotationPointY = 5.5F;
+//            this.hornGranparent.rotationPointY = 5.5F;
+            this.udder.rotationPointY = 13.5F;
+            if (cowSize < 1) {
+                this.udder.rotationPointY = (this.udder.rotationPointY - (bagSize - 1.0F)*3.0F) + 3.0F;
+            }
+            this.leg1.setRotationPoint(-6.0F, 16.5F, -10.0F);
+            this.leg2.setRotationPoint(3.0F, 16.5F, -10.0F);
+            this.leg3.setRotationPoint(-6.0F, 16.5F, 9.0F);
+            this.leg4.setRotationPoint(3.0F, 16.5F, 9.0F);
 
-        this.udder.rotationPointY = 10.5F;
-        if (cowSize < 1) {
-            this.udder.rotationPointY = this.udder.rotationPointY - (bagSize - 1.0F)*3.0F;
+        } else {
+            this.bodyMedium.rotationPointY = 2.5F;
+            this.tail0.rotationPointY = 2.5F;
+            this.udder.rotationPointY = 10.5F;
+            if (cowSize < 1) {
+                this.udder.rotationPointY = this.udder.rotationPointY - (bagSize - 1.0F)*3.0F;
+            }
+            this.leg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
+            this.leg2.setRotationPoint(3.0F, 13.5F, -10.0F);
+            this.leg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
+            this.leg4.setRotationPoint(3.0F, 13.5F, 9.0F);
         }
 
-        this.leg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
-        this.leg2.setRotationPoint(3.0F, 13.5F, -10.0F);
-        this.leg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
-        this.leg4.setRotationPoint(3.0F, 13.5F, 9.0F);
         return onGround;
     }
 
@@ -1389,7 +1414,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     private float calculateHorns(int[] sharedGenes, char[] uuidArray) {
         float horns = -1.0F;
-        if (!this.isChild) {
 
             if (sharedGenes[12] == 1 || sharedGenes[13] == 1) {
                 //should be polled unless...
@@ -1429,12 +1453,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                         horns = 0.0F;
                     }
                 }
-            } else {
-                //horned
             }
-        } else {
-            horns = 0.0F;
-        }
 
         return horns;
     }

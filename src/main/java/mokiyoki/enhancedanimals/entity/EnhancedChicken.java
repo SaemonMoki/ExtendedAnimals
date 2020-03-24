@@ -254,6 +254,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     private int timeUntilNextEgg;
     private int grassTimer;
     private int sandBathTimer;
+    private int fertileTimer = 0;
     private EnhancedWaterAvoidingRandomWalkingEatingGoalChicken entityAIEatGrass;
     private ECSandBath ecSandBath;
     private String dropMeatType;
@@ -542,6 +543,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                     }
                 }
 
+                --this.fertileTimer;
+
                 if (hunger <= 24000) {
                     --this.timeUntilNextEgg;
                 } else if (hunger >= 48000) {
@@ -554,9 +557,11 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
                 mixMateMitosisGenes();
                 mixMitosisGenes();
                 ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
-                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setGenes(getEggGenes(this.genes, this.mateGenes, this.mitosisGenes, this.mateMitosisGenes, false));
-                CompoundNBT nbtTagCompound = eggItem.serializeNBT();
-                eggItem.deserializeNBT(nbtTagCompound);
+                if (fertileTimer > 0) {
+                    eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setGenes(getEggGenes(this.genes, this.mateGenes, this.mitosisGenes, this.mateMitosisGenes, false));
+                    CompoundNBT nbtTagCompound = eggItem.serializeNBT();
+                    eggItem.deserializeNBT(nbtTagCompound);
+                }
                 this.entityDropItem(eggItem, 1);
                 this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
             }
@@ -695,6 +700,9 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             entityplayermp.addStat(Stats.ANIMALS_BRED);
             CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedChicken)ageable), (AgeableEntity)null);
         }
+
+        this.setFertile();
+        ((EnhancedChicken)ageable).setFertile();
 
         return null;
     }
@@ -4678,6 +4686,10 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
     public void setMateGenes(int[] mateGenes){
         this.mateGenes = mateGenes;
+    }
+
+    public void setFertile(){
+        this.fertileTimer = 96000;
     }
 
     public static class GroupData implements ILivingEntityData

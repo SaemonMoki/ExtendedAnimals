@@ -494,7 +494,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         //
         GlStateManager.pushMatrix();
         GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize, cowSize + (cowSize * bodyLength));
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (cowSize + ((1.0F-age)*(babyScale-1.0F)))), 0.0F);
+        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (cowSize * ((((1.0F-age))+(33.0F*cowSize))/(33.0F*cowSize)))), 0.0F);
         // + ((0.23F - ((cowSize*babyScale)-0.7F)*0.0375F)*dwarf))
         //TODO y value of translatef needs to scale with child sizes dynamically and cancel out as an adult. babyScale ranges from 1.0F (adult) to 1.5F (newborn).
 

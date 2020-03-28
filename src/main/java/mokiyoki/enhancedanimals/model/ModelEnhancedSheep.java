@@ -1228,15 +1228,6 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
         this.head.rotationPointY = 9.0F + ((EnhancedSheep)entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
         this.headRotationAngleX = ((EnhancedSheep)entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
-
-        SheepModelData sheepModelData = getSheepModelData(entitylivingbaseIn);
-
-        if (limbSwing == sheepModelData.previousSwing) {
-            sheepModelData.sleepCounter++;
-        } else {
-            sheepModelData.previousSwing = limbSwing;
-        }
-
     }
 
     public static void copyModelAngles(RendererModel source, RendererModel dest) {
@@ -1267,7 +1258,6 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         int coatlength;
         char[] uuidArray;
         boolean sleeping;
-        int sleepCounter = 0;
         int lastAccessed = 0;
         int dataReset = 0;
     }
@@ -1291,10 +1281,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                 sheepModelData.sheepStatus = enhancedSheep.getSheepStatus();
                 sheepModelData.dataReset = 0;
             }
-            if (sheepModelData.sleepCounter > 1000) {
-                sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
-                sheepModelData.sleepCounter = 0;
-            }
+            sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
+
             return sheepModelData;
         } else {
             SheepModelData sheepModelData = new SheepModelData();

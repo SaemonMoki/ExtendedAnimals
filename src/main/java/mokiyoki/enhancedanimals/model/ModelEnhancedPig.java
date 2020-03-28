@@ -280,12 +280,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         int[] sharedGenes = pigModelData.pigGenes;
         char[] uuidArry = pigModelData.uuidArray;
 
-        if (limbSwing == pigModelData.previousSwing) {
-            pigModelData.sleepCounter++;
-        } else {
-            pigModelData.previousSwing = limbSwing;
-        }
-
         //snoutLength
           float snoutLength1 = -0.065F;
           float snoutLength2 = -0.065F;
@@ -392,7 +386,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         char[] uuidArray;
         float size;
         boolean sleeping;
-        int sleepCounter = 0;
         int lastAccessed = 0;
 //        int dataReset = 0;
     }
@@ -415,10 +408,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
 //                pigModelData.dataReset = 0;
 //            }
-            if (pigModelData.sleepCounter > 1000) {
-                pigModelData.sleeping = enhancedPig.isAnimalSleeping();
-                pigModelData.sleepCounter = 0;
-            }
+            pigModelData.sleeping = enhancedPig.isAnimalSleeping();
+
             return pigModelData;
         } else {
             PigModelData pigModelData = new PigModelData();

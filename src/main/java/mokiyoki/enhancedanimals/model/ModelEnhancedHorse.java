@@ -193,12 +193,6 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
         char[] uuidArry = horseModelData.uuidArray;
 
-        if (limbSwing == horseModelData.previousSwing) {
-            horseModelData.sleepCounter++;
-        } else {
-            horseModelData.previousSwing = limbSwing;
-        }
-
         if (Character.isDigit(uuidArry[16])){
             if (uuidArry[16] - 48 == 0) {
                 this.hock3.rotationPointZ = 8.5F;
@@ -384,7 +378,6 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         char[] uuidArray;
         float size;
         boolean sleeping;
-        int sleepCounter = 0;
         int lastAccessed = 0;
 //        int dataReset = 0;
     }
@@ -407,10 +400,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
 //                pigModelData.dataReset = 0;
 //            }
-            if (horseModelData.sleepCounter > 1000) {
-                horseModelData.sleeping = enhancedHorse.isAnimalSleeping();
-                horseModelData.sleepCounter = 0;
-            }
+            horseModelData.sleeping = enhancedHorse.isAnimalSleeping();
             return horseModelData;
         } else {
             HorseModelData horseModelData = new HorseModelData();

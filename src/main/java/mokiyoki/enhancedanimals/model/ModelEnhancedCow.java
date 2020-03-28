@@ -691,12 +691,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float onGround;
         boolean dwarf = (sharedGenes[26] == 1 || sharedGenes[27] == 1);
 
-        if (limbSwing == cowModelData.previousSwing) {
-            cowModelData.sleepCounter++;
-        } else {
-            cowModelData.previousSwing = limbSwing;
-        }
-
         if (sleeping) {
             onGround = sleepingAnimation(sharedGenes, cowModelData.cowSize, cowModelData.bagSize);
         } else {
@@ -1476,8 +1470,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         String cowStatus;
         boolean sleeping;
         int dataReset = 0;
-        float previousSwing;
-        int sleepCounter = 0;
     }
 
     private CowModelData getCowModelData(T enhancedCow) {
@@ -1500,10 +1492,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 cowModelData.sleeping = enhancedCow.isAnimalSleeping();
                 cowModelData.dataReset = 0;
             }
-            if (cowModelData.sleepCounter > 1000) {
-                cowModelData.sleeping = enhancedCow.isAnimalSleeping();
-                cowModelData.sleepCounter = 0;
-            }
+            cowModelData.sleeping = enhancedCow.isAnimalSleeping();
             return cowModelData;
         } else {
             CowModelData cowModelData = new CowModelData();

@@ -506,7 +506,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.headModel.render(scale, null , unrenderedModels, true);
 
-        renderTail(scale, cowSize, babyScale, unrenderedModels);
+//        renderTail(scale, cowSize, babyScale, unrenderedModels);
 
         GlStateManager.popMatrix();
 
@@ -621,7 +621,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             List<Float> scalingsForTail = createScalings(cowSize, 0.0F, (-1.45F + 1.45F / (cowSize*babyScale)), 0.0F);
             mapOfScale.put("Tail", scalingsForTail);
-            this.hornGranparent.render(scale, mapOfScale, unrenderedModels, false);
     }
 
     public List<String> setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int[] sharedGenes, char[] uuidArray, boolean sleeping) {

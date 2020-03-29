@@ -505,7 +505,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.headModel.render(scale, null , unrenderedModels, true);
 
-        renderTail(scale, cowSize, babyScale, unrenderedModels);
+//        renderTail(scale, cowSize, babyScale, unrenderedModels);
 
         GlStateManager.popMatrix();
 
@@ -614,7 +614,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             List<Float> scalingsForTail = createScalings(cowSize, 0.0F, (-1.45F + 1.45F / (cowSize*babyScale)), 0.0F);
             mapOfScale.put("Tail", scalingsForTail);
-            this.hornGranparent.render(scale, mapOfScale, unrenderedModels, false);
     }
 
     public List<String> setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int[] sharedGenes, char[] uuidArray, boolean sleeping) {
@@ -683,12 +682,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         boolean sleeping = cowModelData.sleeping;
         float onGround;
         boolean dwarf = (sharedGenes[26] == 1 || sharedGenes[27] == 1);
-
-        if (limbSwing == cowModelData.previousSwing) {
-            cowModelData.sleepCounter++;
-        } else {
-            cowModelData.previousSwing = limbSwing;
-        }
 
         if (sleeping) {
             onGround = sleepingAnimation(sharedGenes, cowModelData.cowSize, cowModelData.bagSize);
@@ -1444,8 +1437,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         String cowStatus;
         boolean sleeping;
         int dataReset = 0;
-        float previousSwing;
-        int sleepCounter = 0;
     }
 
     private CowModelData getCowModelData(T enhancedCow) {
@@ -1468,10 +1459,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 cowModelData.sleeping = enhancedCow.isAnimalSleeping();
                 cowModelData.dataReset = 0;
             }
-            if (cowModelData.sleepCounter > 1000) {
-                cowModelData.sleeping = enhancedCow.isAnimalSleeping();
-                cowModelData.sleepCounter = 0;
-            }
+            cowModelData.sleeping = enhancedCow.isAnimalSleeping();
             return cowModelData;
         } else {
             CowModelData cowModelData = new CowModelData();

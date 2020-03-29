@@ -1080,12 +1080,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
         int[] sharedGenes = chickenModelData.chickenGenes;
 
-        if (limbSwing == chickenModelData.previousSwing) {
-            chickenModelData.sleepCounter++;
-        } else {
-            chickenModelData.previousSwing = limbSwing;
-        }
-
             this.rightLeg.rotationPointX = 0F;
             this.leftLeg.rotationPointX = 0F;
             this.rightLeg.rotationPointY = 0F;
@@ -1263,7 +1257,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         float previousSwing;
         int[] chickenGenes;
         boolean sleeping;
-        int sleepCounter = 0;
         int lastAccessed = 0;
 //        int dataReset = 0;
     }
@@ -1286,10 +1279,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 ////                chickenModelData.sleeping = enhancedChicken.isRoosting();
 //                chickenModelData.dataReset = 0;
 //            }
-            if (chickenModelData.sleepCounter > 1000) {
-                chickenModelData.sleeping = enhancedChicken.isRoosting();
-                chickenModelData.sleepCounter = 0;
-            }
+            chickenModelData.sleeping = enhancedChicken.isRoosting();
+
             return chickenModelData;
         } else {
             ChickenModelData chickenModelData = new ChickenModelData();

@@ -590,12 +590,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         this.body.rotationPointY = 2.0F;
 
-        if (limbSwing == llamaModelData.previousSwing) {
-            llamaModelData.sleepCounter++;
-        } else {
-            llamaModelData.previousSwing = limbSwing;
-        }
-
         if (this.isChild) {
             this.nose.rotationPointZ = -2.5F;
         }
@@ -687,7 +681,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         int[] llamaGenes;
         int coatlength;
         boolean sleeping;
-        int sleepCounter = 0;
         int lastAccessed = 0;
         int dataReset = 0;
     }
@@ -710,10 +703,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                 llamaModelData.coatlength = enhancedLlama.getCoatLength();
                 llamaModelData.dataReset = 0;
             }
-            if (llamaModelData.sleepCounter > 1000) {
-                llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
-                llamaModelData.sleepCounter = 0;
-            }
+            llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
+
             return llamaModelData;
         } else {
             LlamaModelData llamaModelData = new LlamaModelData();

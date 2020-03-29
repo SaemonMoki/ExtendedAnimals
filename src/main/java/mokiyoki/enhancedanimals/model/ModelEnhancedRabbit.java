@@ -588,14 +588,6 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime){
         super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
         this.jumpRotation = MathHelper.sin(((EnhancedRabbit)entitylivingbaseIn).getJumpCompletion(partialTickTime) * (float)Math.PI);
-        RabbitModelData rabbitModelData = getRabbitModelData(entitylivingbaseIn);
-
-        if (limbSwing == rabbitModelData.previousSwing) {
-            rabbitModelData.sleepCounter++;
-        } else {
-            rabbitModelData.previousSwing = limbSwing;
-        }
-
     }
 
     public static void copyModelAngles(RendererModel source, RendererModel dest) {
@@ -613,7 +605,6 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         int coatlength;
         boolean dwarf;
         boolean sleeping;
-        int sleepCounter = 0;
         int lastAccessed = 0;
         int dataReset = 0;
     }
@@ -636,10 +627,8 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
                 rabbitModelData.coatlength = enhancedRabbit.getCoatLength();
                 rabbitModelData.dataReset = 0;
             }
-            if (rabbitModelData.sleepCounter > 1000) {
-                rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
-                rabbitModelData.sleepCounter = 0;
-            }
+            rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
+
             return rabbitModelData;
         } else {
             RabbitModelData rabbitModelData = new RabbitModelData();

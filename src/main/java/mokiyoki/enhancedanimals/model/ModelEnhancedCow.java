@@ -277,31 +277,31 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.nipples.addBox(1.0F, 0.0F, 2.0F, 1, 2, 1, -0.15F);
         this.nipples.setRotationPoint(0.0F, 1.5F, -3.5F);
 
-        this.humpXSmall = new RendererModel(this, 0, 8);
+        this.humpXSmall = new EnhancedRendererModel(this, 0, 8, "HumpXSmall");
         this.humpXSmall.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -1.0F);
         this.humpXSmall.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
-        this.humpSmall = new RendererModel(this, 0, 8);
+        this.humpSmall = new EnhancedRendererModel(this, 0, 8, "HumpSmall");
         this.humpSmall.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -0.5F);
         this.humpSmall.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
-        this.humpSmallish = new RendererModel(this, 0, 8);
+        this.humpSmallish = new EnhancedRendererModel(this, 0, 8, "HumpSmallish");
         this.humpSmallish.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -0.25F);
         this.humpSmallish.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
-        this.humpMedium = new RendererModel(this, 0, 8);
+        this.humpMedium = new EnhancedRendererModel(this, 0, 8, "HumpMedium");
         this.humpMedium.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 0.0F);
         this.humpMedium.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
-        this.humpLargeish = new RendererModel(this, 0, 8);
+        this.humpLargeish = new EnhancedRendererModel(this, 0, 8, "HumpLargeish");
         this.humpLargeish.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 0.5F);
         this.humpLargeish.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
-        this.humpLarge = new RendererModel(this, 0, 8);
+        this.humpLarge = new EnhancedRendererModel(this, 0, 8, "HumpLarge");
         this.humpLarge.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 1.0F);
         this.humpLarge.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
-        this.humpXLarge = new RendererModel(this, 0, 8);
+        this.humpXLarge = new EnhancedRendererModel(this, 0, 8, "HumpXLarge");
         this.humpXLarge.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 1.5F);
         this.humpXLarge.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
@@ -390,6 +390,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.hornR7.addChild(this.hornR8);
         this.hornR8.addChild(this.hornR9);
         this.actualHead.addChild(this.mouth);
+
+        this.bodyMedium.addChild(this.humpXSmall);
+        this.bodyMedium.addChild(this.humpSmall);
+        this.bodyMedium.addChild(this.humpSmallish);
+        this.bodyMedium.addChild(this.humpMedium);
+        this.bodyMedium.addChild(this.humpLargeish);
+        this.bodyMedium.addChild(this.humpLarge);
+        this.bodyMedium.addChild(this.humpXLarge);
+
         this.bodyMedium.addChild(this.tail0);
         this.tail0.addChild(this.tail1);
         this.tail1.addChild(this.tail2);
@@ -499,9 +508,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         renderHorns(scale, horns, hornShift, unrenderedModels);
 
-        this.bodyMedium.render(scale);
+        renderHump(scale, hump, isChild, unrenderedModels);
 
-        renderHump(scale, hump, isChild);
+        this.bodyMedium.render(scale);
 
         this.headModel.render(scale, null , unrenderedModels, true);
 
@@ -577,34 +586,42 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
     }
 
-    private void renderHump(float scale, int hump, boolean child) {
+    private void renderHump(float scale, int hump, boolean child, List<String> unrenderedModels) {
+        unrenderedModels.add("HumpXSmall");
+        unrenderedModels.add("HumpSmall");
+        unrenderedModels.add("HumpSmallish");
+        unrenderedModels.add("HumpMedium");
+        unrenderedModels.add("HumpLargeish");
+        unrenderedModels.add("HumpLarge");
+        unrenderedModels.add("HumpXLarge");
+
         if(child) {
             if (hump >= 12){
-                this.humpLargeish.render(scale);
+                unrenderedModels.remove("HumpLargeish");
             }else if (hump >= 10){
-                this.humpMedium.render(scale);
+                unrenderedModels.remove("HumpMedium");
             }else if (hump >= 8){
-                this.humpSmallish.render(scale);
+                unrenderedModels.remove("HumpSmallish");
             }else if (hump >= 6){
-                this.humpSmall.render(scale);
+                unrenderedModels.remove("HumpSmall");
             }else if (hump >= 4){
-                this.humpXSmall.render(scale);
+                unrenderedModels.remove("HumpXSmall");
             }
         } else {
             if(hump == 12){
-                this.humpXLarge.render(scale);
+                unrenderedModels.remove("HumpXLarge");
             }else if (hump >= 10){
-                this.humpLarge.render(scale);
+                unrenderedModels.remove("HumpLarge");
             }else if (hump >= 8){
-                this.humpLargeish.render(scale);
+                unrenderedModels.remove("HumpLargeish");
             }else if (hump >= 6){
-                this.humpMedium.render(scale);
+                unrenderedModels.remove("HumpMedium");
             }else if (hump >= 4){
-                this.humpSmallish.render(scale);
+                unrenderedModels.remove("HumpSmallish");
             }else if (hump >= 2){
-                this.humpSmall.render(scale);
+                unrenderedModels.remove("HumpSmall");
             }else if (hump == 1){
-                this.humpXSmall.render(scale);
+                unrenderedModels.remove("HumpXSmall");
             }
         }
     }

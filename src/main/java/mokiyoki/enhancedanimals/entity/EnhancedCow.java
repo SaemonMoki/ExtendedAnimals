@@ -13,7 +13,6 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
@@ -21,9 +20,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -353,7 +349,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             this.cowTimer = Math.max(0, this.cowTimer - 1);
         } else {
 
-            if (((this.world.getDayTime() >= 12600 && this.world.getDayTime() <= 22000) || this.world.isThundering()) && awokenTimer == 0 && !sleeping) {
+            if (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && awokenTimer == 0 && !sleeping) {
                 setSleeping(true);
                 healTicks = 0;
             } else if (awokenTimer > 0) {
@@ -381,7 +377,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                     mixMateMitosisGenes();
                     mixMitosisGenes();
 
-                    createAndSpawnEnhancedChild();
+                    createAndSpawnEnhancedChild(this.world);
 
                 }
             }
@@ -477,13 +473,15 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         }
     }
 
-    protected void createAndSpawnEnhancedChild() {
+    protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
         int[] babyGenes = getCalfGenes(this.mitosisGenes, this.mateMitosisGenes);
         enhancedcow.setGenes(babyGenes);
         enhancedcow.setSharedGenes(babyGenes);
         enhancedcow.setCowSize();
         enhancedcow.setGrowingAge(-84000);
+
+        enhancedcow.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedcow.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
         enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
         enhancedcow.setMotherUUID(this.getUniqueID().toString());
@@ -1764,6 +1762,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         this.setBirthTime(compound.getString("BirthTime"));
 
+        if (genes[82] == 0) {
+            generateHornGenes(genes);
+        }
+
         setSharedGenes(genes);
         setCowSize();
         setMaxBagSize();
@@ -1836,7 +1838,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         setSharedGenes(genes);
         setCowSize();
         setMaxBagSize();
-        setBirthTime(String.valueOf(inWorld.getWorld().getGameTime()));
+        setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - ThreadLocalRandom.current().nextInt(64800, 108000)));
 
         configureAI();
         for (int i = 0; i <= 30; i++) {
@@ -2532,98 +2534,102 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
             initialGenes[81] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
+        generateHornGenes(initialGenes);
+
+        return initialGenes;
+    }
+
+    private void generateHornGenes(int[] genesArray) {
         //horn shortener [wildtype, shorter horns]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[82] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            genesArray[82] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[82] = (1);
+            genesArray[82] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[83] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            genesArray[83] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[83] = (2);
+            genesArray[83] = (2);
         }
 
         //modifier [wildtype, ...]
-        initialGenes[84] = (ThreadLocalRandom.current().nextInt(4) + 1);
-        initialGenes[85] = (ThreadLocalRandom.current().nextInt(4) + 1);
+        genesArray[84] = (ThreadLocalRandom.current().nextInt(4) + 1);
+        genesArray[85] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         //cow horn scale 1 [wildtype, 1.25]
-            initialGenes[86] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[87] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        genesArray[86] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        genesArray[87] = (ThreadLocalRandom.current().nextInt(2) + 1);
         //cow horn scale 2 [wildtype, 1.25]
-            initialGenes[88] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[89] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        genesArray[88] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        genesArray[89] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         // horn scale 3 [wildtype, 2.0]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[90] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            genesArray[90] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[90] = (2);
+            genesArray[90] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[91] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            genesArray[91] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[91] = (2);
+            genesArray[91] = (2);
         }
 
         //cow horn smoother
-        initialGenes[92] = ThreadLocalRandom.current().nextInt(9999) + 1;
-        initialGenes[93] = ThreadLocalRandom.current().nextInt(9999) + 1;
+        genesArray[92] = ThreadLocalRandom.current().nextInt(9999) + 1;
+        genesArray[93] = ThreadLocalRandom.current().nextInt(9999) + 1;
 
         //cow horn twist ... place matches following horn piece numbers { 4 5 6 7 8 9 }
-        initialGenes[94] = ThreadLocalRandom.current().nextInt(999999) + 1;
-        initialGenes[95] = ThreadLocalRandom.current().nextInt(999999) + 1;
+        genesArray[94] = ThreadLocalRandom.current().nextInt(999999) + 1;
+        genesArray[95] = ThreadLocalRandom.current().nextInt(999999) + 1;
 
         //cow horn base twist  ... place matches following horn piece numbers { *total twist mod* 1 2 3 }
-        initialGenes[96] = ThreadLocalRandom.current().nextInt(9999) + 1;
-        initialGenes[97] = ThreadLocalRandom.current().nextInt(9999) + 1;
+        genesArray[96] = ThreadLocalRandom.current().nextInt(9999) + 1;
+        genesArray[97] = ThreadLocalRandom.current().nextInt(9999) + 1;
 
         // cow horn root
-        initialGenes[98] = ThreadLocalRandom.current().nextInt(999) + 1;
-        initialGenes[99] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[98] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[99] = ThreadLocalRandom.current().nextInt(999) + 1;
 
         //cow horn1 X and Z
-        initialGenes[100] = ThreadLocalRandom.current().nextInt(999) + 1;
-        initialGenes[101] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[100] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[101] = ThreadLocalRandom.current().nextInt(999) + 1;
 
         //cow horn2 X and Z
-        initialGenes[102] = ThreadLocalRandom.current().nextInt(999) + 1;
-        initialGenes[103] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[102] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[103] = ThreadLocalRandom.current().nextInt(999) + 1;
 
         //cow horn3 X and Z
-        initialGenes[104] = ThreadLocalRandom.current().nextInt(999) + 1;
-        initialGenes[105] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[104] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[105] = ThreadLocalRandom.current().nextInt(999) + 1;
 
         //cow horn4 X and Z
-        initialGenes[106] = ThreadLocalRandom.current().nextInt(999) + 1;
-        initialGenes[107] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[106] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[107] = ThreadLocalRandom.current().nextInt(999) + 1;
 
         //cow horn5 X and Z
-        initialGenes[108] = ThreadLocalRandom.current().nextInt(999) + 1;
-        initialGenes[109] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[108] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[109] = ThreadLocalRandom.current().nextInt(999) + 1;
 
         //cow horn6 X and Z
-        initialGenes[110] = ThreadLocalRandom.current().nextInt(999) + 1;
-        initialGenes[111] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[110] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[111] = ThreadLocalRandom.current().nextInt(999) + 1;
 
         //cow horn7 X and Z
-        initialGenes[112] = ThreadLocalRandom.current().nextInt(999) + 1;
-        initialGenes[113] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[112] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[113] = ThreadLocalRandom.current().nextInt(999) + 1;
 
         //cow horn8 X and Z
-        initialGenes[114] = ThreadLocalRandom.current().nextInt(999) + 1;
-        initialGenes[115] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[114] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[115] = ThreadLocalRandom.current().nextInt(999) + 1;
 
         //cow horn9 X and Z
-        initialGenes[116] = ThreadLocalRandom.current().nextInt(999) + 1;
-        initialGenes[117] = ThreadLocalRandom.current().nextInt(999) + 1;
-
-        return initialGenes;
+        genesArray[116] = ThreadLocalRandom.current().nextInt(999) + 1;
+        genesArray[117] = ThreadLocalRandom.current().nextInt(999) + 1;
     }
 
     protected void configureAI() {

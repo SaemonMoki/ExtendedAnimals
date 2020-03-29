@@ -65,13 +65,15 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild() {
+    protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
         int[] babyGenes = getCalfGenes(this.mitosisGenes, this.mateMitosisGenes);
         enhancedmooshroom.setGenes(babyGenes);
         enhancedmooshroom.setSharedGenes(babyGenes);
         enhancedmooshroom.setCowSize();
         enhancedmooshroom.setGrowingAge(-84000);
+
+        enhancedmooshroom.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedmooshroom.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
         enhancedmooshroom.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
         enhancedmooshroom.setMotherUUID(this.getUniqueID().toString());

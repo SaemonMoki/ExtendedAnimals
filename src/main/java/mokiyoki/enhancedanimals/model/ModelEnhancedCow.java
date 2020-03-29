@@ -494,9 +494,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         renderHorns(scale, horns, hornShift, unrenderedModels);
 
-        renderBodyAndUdder(scale, cowSize, cowStatus, bodyLength, bagSize, unrenderedModels);
-
         renderHump(scale, hump, unrenderedModels);
+
+        renderBodyAndUdder(scale, cowSize, cowStatus, bodyLength, bagSize, unrenderedModels);
 
         this.headModel.render(scale, null , unrenderedModels, true);
 

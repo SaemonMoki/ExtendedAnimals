@@ -265,7 +265,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.udder = new EnhancedRendererModel(this, 24, 67, "Udder");
         this.udder.addBox(-2.0F, -2.0F, -5.0F, 4, 4, 6, 0.0F);
-        this.udder.setRotationPoint(0.0F, 11.0F, 20.0F);
+        this.udder.setRotationPoint(0.0F, 11.0F, 21.5F);
 
         this.nipples = new EnhancedRendererModel(this, 24, 77);
         this.nipples.addBox(-2.0F, 0.0F, -1.0F, 1, 2, 1, -0.15F);

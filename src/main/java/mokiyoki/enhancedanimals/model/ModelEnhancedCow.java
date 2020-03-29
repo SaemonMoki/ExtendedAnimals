@@ -90,13 +90,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final List<RendererModel> leftHorns = new ArrayList<>();
     private final List<RendererModel> rightHorns = new ArrayList<>();
 
-
     public ModelEnhancedCow() {
 
         this.textureWidth = 80;
         this.textureHeight = 80;
-
-        float xMove = -10.0F;
 
         this.actualHead = new  EnhancedRendererModel(this, 0, 33);
         this.actualHead.addBox(-4.0F, 0.0F, -7.0F, 8, 7, 6, 0.0F);
@@ -249,19 +246,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         // head is the neck cause thats how this works
         this.headModel = new EnhancedRendererModel(this, 46, 0);
         this.headModel.addBox(-3.0F, 0.0F, -8.0F, 6, 8, 11, 0.0F);
-        this.headModel.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
+        this.headModel.setRotationPoint(0.0F, 0.0F, -10.0F);
 
         this.bodyMedium = new EnhancedRendererModel(this, 0, 0);
         this.bodyMedium.addBox(-6.0F, 0.0F, 0.0F, 12, 11, 22, 0.0F);
-        this.bodyMedium.setRotationPoint(0.0F, 2.5F, 0.0F + xMove);
-
-//        this.bodySlim = new RendererModel(this, 0, 0);
-//        this.bodySlim.addBox(-6.0F, 0.0F, 0.0F, 12, 11, 22, -0.5F);
-//        this.bodySlim.setRotationPoint(0.0F, 2.5F, 0.0F + xMove);
-//
-//        this.bodyThin = new RendererModel(this, 0, 0);
-//        this.bodyThin.addBox(-5.0F, 0.0F, 0.0F, 10, 11, 22, 0.0F);
-//        this.bodyThin.setRotationPoint(0.0F, 2.5F, 0.0F + xMove);
+        this.bodyMedium.setRotationPoint(0.0F, 2.5F, -10.0F);
 
         this.udder = new EnhancedRendererModel(this, 24, 67, "Udder");
         this.udder.addBox(-2.0F, -2.0F, -5.0F, 4, 4, 6, 0.0F);
@@ -277,33 +266,33 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.nipples.addBox(1.0F, 0.0F, 2.0F, 1, 2, 1, -0.15F);
         this.nipples.setRotationPoint(0.0F, 1.5F, -3.5F);
 
-        this.humpXSmall = new EnhancedRendererModel(this, 0, 8, "HumpXSmall");
+        this.humpXSmall = new EnhancedRendererModel(this, 0, 8, "HumpXXS");
         this.humpXSmall.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -1.0F);
-        this.humpXSmall.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
+        this.humpXSmall.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.humpSmall = new EnhancedRendererModel(this, 0, 8, "HumpSmall");
+        this.humpSmall = new EnhancedRendererModel(this, 0, 8, "HumpXS");
         this.humpSmall.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -0.5F);
-        this.humpSmall.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
+        this.humpSmall.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.humpSmallish = new EnhancedRendererModel(this, 0, 8, "HumpSmallish");
+        this.humpSmallish = new EnhancedRendererModel(this, 0, 8, "HumpS");
         this.humpSmallish.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -0.25F);
-        this.humpSmallish.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
+        this.humpSmallish.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.humpMedium = new EnhancedRendererModel(this, 0, 8, "HumpMedium");
+        this.humpMedium = new EnhancedRendererModel(this, 0, 8, "Hump");
         this.humpMedium.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 0.0F);
-        this.humpMedium.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
+        this.humpMedium.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.humpLargeish = new EnhancedRendererModel(this, 0, 8, "HumpLargeish");
+        this.humpLargeish = new EnhancedRendererModel(this, 0, 8, "HumpL");
         this.humpLargeish.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 0.5F);
-        this.humpLargeish.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
+        this.humpLargeish.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.humpLarge = new EnhancedRendererModel(this, 0, 8, "HumpLarge");
+        this.humpLarge = new EnhancedRendererModel(this, 0, 8, "HumpXL");
         this.humpLarge.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 1.0F);
-        this.humpLarge.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
+        this.humpLarge.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.humpXLarge = new EnhancedRendererModel(this, 0, 8, "HumpXLarge");
+        this.humpXLarge = new EnhancedRendererModel(this, 0, 8, "HumpXXL");
         this.humpXLarge.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 1.5F);
-        this.humpXLarge.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
+        this.humpXLarge.setRotationPoint(0.0F, 0.0F, 1.0F);
 
         this.tail0 = new EnhancedRendererModel(this, 0,0, "Tail");
         this.tail0.addBox(-1.0F, 0.0F, 0.0F, 2, 4, 1);
@@ -339,19 +328,19 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.shortLeg1 = new RendererModel(this, 0, 54);
         this.shortLeg1.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
-        this.shortLeg1.setRotationPoint(-6.0F, 13.5F, 0.0F + xMove);
+        this.shortLeg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
 
         this.shortLeg2 = new RendererModel(this, 12, 54);
         this.shortLeg2.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
-        this.shortLeg2.setRotationPoint(3.0F, 13.5F, 0.0F + xMove);
+        this.shortLeg2.setRotationPoint(3.0F, 13.5F, -10.0F);
 
         this.shortLeg3 = new RendererModel(this, 0, 67);
         this.shortLeg3.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
-        this.shortLeg3.setRotationPoint(-6.0F, 13.5F, 19.0F + xMove);
+        this.shortLeg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
 
         this.shortLeg4 = new RendererModel(this, 12, 67);
         this.shortLeg4.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
-        this.shortLeg4.setRotationPoint(3.0F, 13.5F, 19.0F + xMove);
+        this.shortLeg4.setRotationPoint(3.0F, 13.5F, 9.0F);
 
         this.headModel.addChild(this.actualHead);
         this.actualHead.addChild(this.earLongestL);
@@ -390,7 +379,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.hornR7.addChild(this.hornR8);
         this.hornR8.addChild(this.hornR9);
         this.actualHead.addChild(this.mouth);
-
         this.bodyMedium.addChild(this.humpXSmall);
         this.bodyMedium.addChild(this.humpSmall);
         this.bodyMedium.addChild(this.humpSmallish);
@@ -398,7 +386,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.bodyMedium.addChild(this.humpLargeish);
         this.bodyMedium.addChild(this.humpLarge);
         this.bodyMedium.addChild(this.humpXLarge);
-
         this.bodyMedium.addChild(this.tail0);
         this.tail0.addChild(this.tail1);
         this.tail1.addChild(this.tail2);
@@ -425,7 +412,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         //size [0.75 to 2.5]
         float hornScale = 1.0F;
-        float hornShift = 0.0F;
 
         if (genes[26] == 1 || genes[27] == 1){
             //dwarf
@@ -482,46 +468,43 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             }
         }
 
-//        if (false) {
-//            renderChild(scale, dwarf, bodyWidth, bodyLength, hump, cowModelData.cowSize);
-//        } else {
-            renderAdult(scale, age, babyScale, cowModelData.cowStatus, dwarf, bodyWidth, bodyLength, hump, horns, hornScale, unrenderedModels, cowModelData.cowSize, cowModelData.bagSize);
-//        }
+            renderAdult(scale, age, babyScale, cowModelData.cowStatus, dwarf, bodyWidth, bodyLength, hump, horns, hornScale, unrenderedModels, cowModelData.cowSize, cowModelData.bagSize, cowModelData.sleeping);
 
 //        long renderTotalEndTime = System.nanoTime();
 //        System.out.println("CowRenderTotal: " + (renderTotalEndTime - renderTotalStartTime));
 
     }
 
-    private void renderAdult(float scale, float age, float babyScale, String cowStatus, boolean dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornShift, List<String> unrenderedModels, float cowSize, float bagSize) {
+    private void renderAdult(float scale, float age, float babyScale, String cowStatus, boolean dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornShift, List<String> unrenderedModels, float cowSize, float bagSize, boolean sleeping) {
 
         float d = 0.3F * (1.0F-age);
         if (dwarf) {
-            d = 0.21F * (1.0F-age);
+            if (sleeping) {
+                d = 0.11F * (1.0F-age);
+            } else {
+                d = 0.21F * (1.0F-age);
+            }
+        } else if (sleeping) {
+            d = 0.15F * (1.0F-age);
         }
         cowSize = (( 2.0F * cowSize * age) + cowSize) / 3.0F;
         GlStateManager.pushMatrix();
         GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize, cowSize + (cowSize * bodyLength));
         GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (cowSize)) - d, 0.0F);
-        // + ((0.23F - ((cowSize*babyScale)-0.7F)*0.0375F)*dwarf))
-        //TODO y value of translatef needs to scale with child sizes dynamically and cancel out as an adult. babyScale ranges from 1.0F (adult) to 1.5F (newborn).
 
         renderHorns(scale, horns, hornShift, unrenderedModels);
 
-        renderHump(scale, hump, isChild, unrenderedModels);
-
         renderBodyAndUdder(scale, cowSize, cowStatus, bodyLength, bagSize, unrenderedModels);
 
-        this.headModel.render(scale, null , unrenderedModels, true);
+        renderHump(scale, hump, unrenderedModels);
 
-//        renderTail(scale, cowSize, babyScale, unrenderedModels);
+        this.headModel.render(scale, null , unrenderedModels, true);
 
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();
         GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize * babyScale, cowSize + (cowSize * bodyLength));
         GlStateManager.translatef(0.0F, ((-1.45F + 1.45F / (cowSize * babyScale))), 0.0F);
-        // + ((0.23F - ((cowSize * babyScale)-0.7F)*0.0375F)*dwarf)
 
         renderLegs(scale, dwarf);
 
@@ -597,43 +580,29 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
     }
 
-    private void renderHump(float scale, int hump, boolean child, List<String> unrenderedModels) {
-        unrenderedModels.add("HumpXSmall");
-        unrenderedModels.add("HumpSmall");
-        unrenderedModels.add("HumpSmallish");
-        unrenderedModels.add("HumpMedium");
-        unrenderedModels.add("HumpLargeish");
-        unrenderedModels.add("HumpLarge");
-        unrenderedModels.add("HumpXLarge");
+    private void renderHump(float scale, int hump, List<String> unrenderedModels) {
+        unrenderedModels.add("HumpXXS");
+        unrenderedModels.add("HumpXS");
+        unrenderedModels.add("HumpS");
+        unrenderedModels.add("Hump");
+        unrenderedModels.add("HumpL");
+        unrenderedModels.add("HumpXL");
+        unrenderedModels.add("HumpXXL");
 
-        if(child) {
-            if (hump >= 12){
-                unrenderedModels.remove("HumpLargeish");
-            }else if (hump >= 10){
-                unrenderedModels.remove("HumpMedium");
-            }else if (hump >= 8){
-                unrenderedModels.remove("HumpSmallish");
-            }else if (hump >= 6){
-                unrenderedModels.remove("HumpSmall");
-            }else if (hump >= 4){
-                unrenderedModels.remove("HumpXSmall");
-            }
-        } else {
-            if(hump == 12){
-                unrenderedModels.remove("HumpXLarge");
-            }else if (hump >= 10){
-                unrenderedModels.remove("HumpLarge");
-            }else if (hump >= 8){
-                unrenderedModels.remove("HumpLargeish");
-            }else if (hump >= 6){
-                unrenderedModels.remove("HumpMedium");
-            }else if (hump >= 4){
-                unrenderedModels.remove("HumpSmallish");
-            }else if (hump >= 2){
-                unrenderedModels.remove("HumpSmall");
-            }else if (hump == 1){
-                unrenderedModels.remove("HumpXSmall");
-            }
+        if(hump == 12){
+            unrenderedModels.remove("HumpXXL");
+        }else if (hump >= 10){
+            unrenderedModels.remove("HumpXL");
+        }else if (hump >= 8){
+            unrenderedModels.remove("HumpL");
+        }else if (hump >= 6){
+            unrenderedModels.remove("Hump");
+        }else if (hump >= 4){
+            unrenderedModels.remove("HumpS");
+        }else if (hump >= 2){
+            unrenderedModels.remove("HumpXS");
+        }else if (hump == 1){
+            unrenderedModels.remove("HumpXXS");
         }
     }
 
@@ -725,7 +694,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.headRotationAngleX = (entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
 
-        setHumpAnimation(sharedGenes, onGround);
+        setHumpAnimation(sharedGenes);
         //TODO update tail bodyshape link
 //        int bodyShape = 0;
 //        for (int i = 1; i < sharedGenes[54]; i++) {
@@ -1331,12 +1300,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         return onGround;
     }
 
-    private void setHumpAnimation(int[] sharedGenes, float onGround) {
+    private void setHumpAnimation(int[] sharedGenes) {
         if (sharedGenes[40] != 1 && sharedGenes[41] != 1) {
-            int child = 1;
-            if (this.isChild) {
-                child = 2;
-            }
             float hump = 2.0F;
             for (int i = 1; i < sharedGenes[40]; i++) {
                 hump = hump - 0.5F;
@@ -1345,27 +1310,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 hump = hump - 0.5F;
             }
 
-            this.humpXLarge.rotationPointY = (hump / child) + (onGround - 2.75F);
-            this.humpLarge.rotationPointY = (hump / child) + (onGround - 2.75F);
-            this.humpLargeish.rotationPointY = (hump / child) + (onGround - 2.75F);
-            this.humpMedium.rotationPointY = (hump / child) + (onGround - 2.75F);
-            this.humpSmallish.rotationPointY = (hump / child) + (onGround - 2.75F);
-            this.humpSmall.rotationPointY = (hump / child) + (onGround - 2.75F);
-            this.humpXSmall.rotationPointY = (hump / child) + (onGround - 2.75F);
+            this.humpXLarge.rotationPointY = hump;
+            this.humpLarge.rotationPointY = hump;
+            this.humpLargeish.rotationPointY = hump;
+            this.humpMedium.rotationPointY = hump;
+            this.humpSmallish.rotationPointY = hump;
+            this.humpSmall.rotationPointY = hump;
+            this.humpXSmall.rotationPointY = hump;
 
-        } else {
-            int child = 1;
-            if (this.isChild) {
-                child = 2;
-            }
-
-            this.humpXLarge.rotationPointY = (2.0F / child) + (onGround - 2.75F);
-            this.humpLarge.rotationPointY = (2.0F / child) + (onGround - 2.75F);
-            this.humpLargeish.rotationPointY = (2.0F / child) + (onGround - 2.75F);
-            this.humpMedium.rotationPointY = (2.0F / child) + (onGround - 2.75F);
-            this.humpSmallish.rotationPointY = (2.0F / child) + (onGround - 2.75F);
-            this.humpSmall.rotationPointY = (2.0F / child) + (onGround - 2.75F);
-            this.humpXSmall.rotationPointY = (2.0F / child) + (onGround - 2.75F);
         }
     }
 

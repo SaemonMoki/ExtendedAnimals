@@ -267,7 +267,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.udder.addBox(-2.0F, -2.0F, -5.0F, 4, 4, 6, 0.0F);
         this.udder.setRotationPoint(0.0F, 11.0F, 21.5F);
 
-        this.nipples = new EnhancedRendererModel(this, 24, 77);
+        this.nipples = new EnhancedRendererModel(this, 24, 77, "Nipples");
         this.nipples.addBox(-2.0F, 0.0F, -1.0F, 1, 2, 1, -0.15F);
         this.nipples.setTextureOffset(29, 77);
         this.nipples.addBox(1.0F, 0.0F, -1.0F, 1, 2, 1, -0.15F);
@@ -510,17 +510,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         renderHump(scale, hump, isChild, unrenderedModels);
 
-        this.bodyMedium.render(scale);
+        renderBodyAndUdder(scale, cowSize, cowStatus, bodyLength, bagSize, unrenderedModels);
 
         this.headModel.render(scale, null , unrenderedModels, true);
 
 //        renderTail(scale, cowSize, babyScale, unrenderedModels);
 
         GlStateManager.popMatrix();
-
-//        if (!(cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString()))) {
-//
-//        }
 
         GlStateManager.pushMatrix();
         GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize * babyScale, cowSize + (cowSize * bodyLength));
@@ -531,6 +527,21 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         GlStateManager.popMatrix();
 
+    }
+
+    private void renderBodyAndUdder(float scale, float cowSize, String cowStatus, float bodyLength, float bagSize, List<String> unrenderedModels) {
+        Map<String, List<Float>> mapOfScale = new HashMap<>();
+
+        List<Float> scalingsForUdder = createScalings(bagSize, 0F, -(( 1.5F * bagSize) - scale*20) / bagSize, ((cowSize*bodyLength)-(bagSize*0.31F)));
+        mapOfScale.put("Udder", scalingsForUdder);
+//        mapOfScale.put("Nipples", scalingsForUdder);
+
+//        if ((!cowStatus.equals(EntityState.PREGNANT.toString()) && !cowStatus.equals(EntityState.MOTHER.toString()))) {
+//            unrenderedModels.add("Udder");
+//            unrenderedModels.add("Nipples");
+//        }
+
+        this.bodyMedium.render(scale, mapOfScale, unrenderedModels, false);
     }
 
 //    private void renderChild(float scale, float dwarf, float bodyWidth, float bodyLength, int hump, float cowSize) {

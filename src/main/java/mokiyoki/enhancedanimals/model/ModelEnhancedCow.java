@@ -263,11 +263,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 //        this.bodyThin.addBox(-5.0F, 0.0F, 0.0F, 10, 11, 22, 0.0F);
 //        this.bodyThin.setRotationPoint(0.0F, 2.5F, 0.0F + xMove);
 
-        this.udder = new RendererModel(this, 24, 67);
-        this.udder.addBox(-2.0F, 0.0F, 0.0F, 4, 4, 6, 0.0F);
-        this.udder.setRotationPoint(0.0F, 10.5F, 15.75F + xMove);
+        this.udder = new EnhancedRendererModel(this, 24, 67, "Udder");
+        this.udder.addBox(-2.0F, -2.0F, -5.0F, 4, 4, 6, 0.0F);
+        this.udder.setRotationPoint(0.0F, 11.0F, 20.0F);
 
-        this.nipples = new RendererModel(this, 24, 77);
+        this.nipples = new EnhancedRendererModel(this, 24, 77);
         this.nipples.addBox(-2.0F, 0.0F, -1.0F, 1, 2, 1, -0.15F);
         this.nipples.setTextureOffset(29, 77);
         this.nipples.addBox(1.0F, 0.0F, -1.0F, 1, 2, 1, -0.15F);
@@ -275,7 +275,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.nipples.addBox(-2.0F, 0.0F, 2.0F, 1, 2, 1, -0.15F);
         this.nipples.setTextureOffset(40, 77);
         this.nipples.addBox(1.0F, 0.0F, 2.0F, 1, 2, 1, -0.15F);
-        this.nipples.setRotationPoint(0.0F, 3.35F, 11.25F + xMove);
+        this.nipples.setRotationPoint(0.0F, 1.5F, -3.5F);
 
         this.humpXSmall = new RendererModel(this, 0, 8);
         this.humpXSmall.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -1.0F);
@@ -394,6 +394,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.tail0.addChild(this.tail1);
         this.tail1.addChild(this.tail2);
         this.tail2.addChild(this.tailBrush);
+        this.bodyMedium.addChild(this.udder);
         this.udder.addChild(this.nipples);
 
     }
@@ -465,10 +466,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float babyScale = 1.0F;
         if (!(cowModelData.birthTime == null) && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
             int ageTime = (int)(((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime() - Long.parseLong(cowModelData.birthTime));
-            if (ageTime > 108000) {
-                age = 1.0F;
-                babyScale = 1.0F;
-            } else {
+            if (ageTime <= 108000) {
                 age = ageTime/108000.0F;
                 //babyScale [ 1.0F - 1.5F ]
                 babyScale = (3.0F - age)/2;
@@ -487,14 +485,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     }
 
     private void renderAdult(float scale, float age, float babyScale, String cowStatus, boolean dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornShift, List<String> unrenderedModels, float cowSize, float bagSize) {
-//        cowSize = 1.0F;
-//        age = 0.0F;
-//        babyScale = 1.5F;
+
+        float d = 0.3F * (1.0F-age);
+        if (dwarf) {
+            d = 0.21F * (1.0F-age);
+        }
         cowSize = (( 2.0F * cowSize * age) + cowSize) / 3.0F;
-        //
         GlStateManager.pushMatrix();
         GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize, cowSize + (cowSize * bodyLength));
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (cowSize * ((((1.0F-age))+(33.0F*cowSize))/(33.0F*cowSize)))), 0.0F);
+        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (cowSize)) - d, 0.0F);
         // + ((0.23F - ((cowSize*babyScale)-0.7F)*0.0375F)*dwarf))
         //TODO y value of translatef needs to scale with child sizes dynamically and cancel out as an adult. babyScale ranges from 1.0F (adult) to 1.5F (newborn).
 
@@ -510,15 +509,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         GlStateManager.popMatrix();
 
-        if (cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString())) {
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(bagSize * cowSize, bagSize * cowSize, bagSize * cowSize);
-            GlStateManager.translatef(0.0F, (-1.45F + 1.45F / cowSize) + ((-0.6F*((1.5F-cowSize)*2.0F)) + (0.6F*((1.5F-cowSize)*2.0F))/bagSize), ((1.0F-bagSize)*0.35F)); // if biggest 0, -0.16, 0 : if smallest 0, -0.66, 0
-            // + ((0.23F - (cowSize-0.7F)*0.0375F)*dwarf)
-            GlStateManager.translatef(0.0F, 0.0F, 0.0F);
-            this.udder.render(scale);
-            GlStateManager.popMatrix();
-        }
+//        if (!(cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString()))) {
+//
+//        }
 
         GlStateManager.pushMatrix();
         GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize * babyScale, cowSize + (cowSize * bodyLength));
@@ -1282,26 +1275,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     private float sleepingAnimation(int[] sharedGenes, float cowSize, float bagSize) {
         float onGround;
-//        if (this.isChild) {
-//            onGround = 13.85F;
-//            this.bodyMedium.rotationPointY = 13.65F;
-//            this.tail0.rotationPointY = 13.65F;
-//        } else {
-            onGround = 9.80F;
-            this.bodyMedium.rotationPointY = 9.75F;
 
-            this.udder.rotationPointY = 17.55F;
-            if (cowSize < 1) {
-                this.udder.rotationPointY = this.udder.rotationPointY - (bagSize - 1.0F)*3.0F;
-            }
-//        }
-//        if (sharedGenes[26] == 1 || sharedGenes[27] == 1){
-//            //dwarf
-//            onGround = onGround - 3.75F;
-//            this.bodyMedium.rotationPointY = this.bodyMedium.rotationPointY - 3.75F;
-//            this.tail0.rotationPointY = this.bodyMedium.rotationPointY;
-//            this.udder.rotationPointY = this.udder.rotationPointY - 3.75F;
-//        }
+        onGround = 9.80F;
+        this.bodyMedium.rotationPointY = 9.75F;
 
         this.leg1.setRotationPoint(-6.0F, 14.0F+onGround, -10.0F);
         this.leg2.setRotationPoint(3.0F, 14.0F+onGround, -10.0F);
@@ -1316,12 +1292,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         if (dwarf){
             //dwarf
             this.bodyMedium.rotationPointY = 5.5F;
-//            this.headModel.rotationPointY = 5.5F;
-//            this.hornGranparent.rotationPointY = 5.5F;
-            this.udder.rotationPointY = 13.5F;
-            if (cowSize < 1) {
-                this.udder.rotationPointY = (this.udder.rotationPointY - (bagSize - 1.0F)*3.0F) + 3.0F;
-            }
+
             this.leg1.setRotationPoint(-6.0F, 16.5F, -10.0F);
             this.leg2.setRotationPoint(3.0F, 16.5F, -10.0F);
             this.leg3.setRotationPoint(-6.0F, 16.5F, 9.0F);
@@ -1329,10 +1300,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         } else {
             this.bodyMedium.rotationPointY = 2.5F;
-            this.udder.rotationPointY = 10.5F;
-            if (cowSize < 1) {
-                this.udder.rotationPointY = this.udder.rotationPointY - (bagSize - 1.0F)*3.0F;
-            }
+
             this.leg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
             this.leg2.setRotationPoint(3.0F, 13.5F, -10.0F);
             this.leg3.setRotationPoint(-6.0F, 13.5F, 9.0F);

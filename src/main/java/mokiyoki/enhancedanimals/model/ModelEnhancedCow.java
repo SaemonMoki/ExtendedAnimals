@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
+import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
@@ -464,7 +465,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             int ageTime = (int)(((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime() - Long.parseLong(cowModelData.birthTime));
             if (ageTime <= 108000) {
                 age = ageTime/108000.0F;
-                //babyScale [ 1.0F - 1.5F ]
                 babyScale = (3.0F - age)/2;
             }
         }
@@ -477,35 +477,34 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     }
 
     private void renderAdult(float scale, float age, float babyScale, String cowStatus, boolean dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornShift, List<String> unrenderedModels, float cowSize, float bagSize, boolean sleeping) {
-
         float d = 0.0F;
-        float s = 1.0F;
         if (!sleeping) {
-            d = 0.22F * (1.0F-age);
-//            if (dwarf) {
-//                d = 0.22F * (1.0F-age);
-//            } else {
-//                d = 0.42F * (1.0F-age);
-//            }
+            if (dwarf) {
+                d = 0.2F * (1.0F-age);
+            } else {
+                d = 0.3F * (1.0F-age);
+            }
+        } else {
+            babyScale = 1.0F;
         }
         cowSize = (( 2.0F * cowSize * age) + cowSize) / 3.0F;
         GlStateManager.pushMatrix();
         GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize, cowSize + (cowSize * bodyLength));
         GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (cowSize)) - d, 0.0F);
 
-        renderHorns(scale, horns, hornShift, unrenderedModels);
-
         renderHump(scale, hump, unrenderedModels);
 
         renderBodyAndUdder(scale, cowSize, cowStatus, bodyLength, bagSize, unrenderedModels);
+
+        renderHorns(scale, horns, hornShift, unrenderedModels);
 
         this.headModel.render(scale, null , unrenderedModels, true);
 
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();
-        GlStateManager.scalef(cowSize + (cowSize * bodyWidth), ((1.0F-s)*(cowSize * babyScale)) + (s*(cowSize + (cowSize * bodyLength))), cowSize + (cowSize * bodyLength));
-        GlStateManager.translatef(0.0F, -1.45F + 1.45F / (((1.0F-s)*(cowSize * babyScale)) + (s*(cowSize + (cowSize * bodyLength)))), 0.0F);
+        GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize * babyScale, cowSize + (cowSize * bodyLength));
+        GlStateManager.translatef(0.0F, -1.45F + 1.45F / (cowSize * babyScale), 0.0F);
 
         renderLegs(scale, dwarf);
 
@@ -520,10 +519,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         mapOfScale.put("Udder", scalingsForUdder);
         mapOfScale.put("Nipples", scalingsForNipples);
 
-//        if ((!cowStatus.equals(EntityState.PREGNANT.toString()) && !cowStatus.equals(EntityState.MOTHER.toString()))) {
-//            unrenderedModels.add("Udder");
-//            unrenderedModels.add("Nipples");
-//        }
+        if ((!cowStatus.equals(EntityState.PREGNANT.toString()) && !cowStatus.equals(EntityState.MOTHER.toString()))) {
+            unrenderedModels.add("Udder");
+            unrenderedModels.add("Nipples");
+        }
 
         this.bodyMedium.render(scale, mapOfScale, unrenderedModels, false);
     }

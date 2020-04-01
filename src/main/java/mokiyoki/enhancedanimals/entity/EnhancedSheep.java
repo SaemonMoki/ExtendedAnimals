@@ -1095,8 +1095,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
             switch (resultAmount) {
                 case 0:
-                    resultItem = new ItemStack(Items.BUCKET);
-                    break;
+                    return true;
                 case 1:
                     if (isBottle) {
                         resultItem = new ItemStack(ModItems.Half_Milk_Bottle);

@@ -438,7 +438,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                         }
                     }
 
-                    if (timeUntilNextMilk == 0) {
+                    if (timeUntilNextMilk <= 0) {
                         lactationTimer++;
                     } else if (getMilkAmount() <= 5 && lactationTimer >= -36000) {
                         lactationTimer--;
@@ -1538,8 +1538,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
             switch (resultAmount) {
                 case 0:
-                    resultItem = new ItemStack(Items.BUCKET);
-                    break;
+                    return true;
                 case 1:
                     if (isBottle) {
                         resultItem = new ItemStack(ModItems.Half_Milk_Bottle);

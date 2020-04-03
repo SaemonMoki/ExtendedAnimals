@@ -74,6 +74,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> SHEEP_STATUS = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.STRING);
     private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.VARINT);
+    private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedSheep.class, DataSerializers.STRING);
 
     private static final String[] SHEEP_TEXTURES_UNDER = new String[] {
             "c_solid_tan.png", "c_solid_black.png", "c_solid_choc.png", "c_solid_lighttan.png",
@@ -238,6 +239,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         this.dataManager.register(SHEEP_STATUS, new String());
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(MILK_AMOUNT, 0);
+        this.dataManager.register(BIRTH_TIME, "0");
     }
 
     private void setSheepStatus(String status) {
@@ -314,6 +316,13 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     public String getEntityStatus() {
         return this.dataManager.get(SHEEP_STATUS);
     }
+
+    protected void setBirthTime(String birthTime) {
+        this.dataManager.set(BIRTH_TIME, birthTime);
+    }
+
+    public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
+
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
@@ -467,20 +476,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                     }
 
                     for (int i = 0; i <= numberOfLambs; i++) {
-                        mixMateMitosisGenes();
-                        mixMitosisGenes();
-                        EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
-                        int[] babyGenes = getLambGenes(this.mitosisGenes, this.mateMitosisGenes);
-                        enhancedsheep.setGenes(babyGenes);
-                        enhancedsheep.setSharedGenes(babyGenes);
-                        enhancedsheep.setMaxCoatLength();
-                        enhancedsheep.currentCoatLength = enhancedsheep.maxCoatLength;
-                        enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
-                        enhancedsheep.setGrowingAge(-72000); // 3 days
-                        enhancedsheep.setSheepStatus(EntityState.CHILD_STAGE_ONE.toString());
-                        enhancedsheep.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-//                        enhancedsheep.setMotherUUID(this.getUniqueID().toString());
-                        this.world.addEntity(enhancedsheep);
+                        createAndSpawnEnhancedChild(this.world);
                     }
                 }
             }
@@ -525,6 +521,24 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             }
         }
 
+    }
+
+    protected void createAndSpawnEnhancedChild(World inWorld) {
+        mixMateMitosisGenes();
+        mixMitosisGenes();
+        EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
+        int[] babyGenes = getLambGenes(this.mitosisGenes, this.mateMitosisGenes);
+        enhancedsheep.setGenes(babyGenes);
+        enhancedsheep.setSharedGenes(babyGenes);
+        enhancedsheep.setMaxCoatLength();
+        enhancedsheep.currentCoatLength = enhancedsheep.maxCoatLength;
+        enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
+        enhancedsheep.setGrowingAge(-72000); // 3 days
+        enhancedsheep.setBirthTime(String.valueOf(inWorld.getGameTime()));
+        enhancedsheep.setSheepStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedsheep.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+//                        enhancedsheep.setMotherUUID(this.getUniqueID().toString());
+        this.world.addEntity(enhancedsheep);
     }
 
     protected SoundEvent getAmbientSound() {
@@ -702,28 +716,67 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         int spots = 0;
         DyeColor returnDye;
 
-
-        if (genes[8] == 2 && genes[9] == 2){
+        if ((genes[0] == 1 || genes[1] == 1) && !(genes[4] == 1 || genes[5] == 1)) {
+            //sheep is white
+            spots = 2;
+        } else if (genes[8] == 2 && genes[9] == 2){
+            // 1 out of 3 chance to drop white wool instead
             spots = this.rand.nextInt(3);
         }
 
         if (spots != 2) {
             if (genes[4] == 1 || genes[5] == 1) {
+                //sheep is dominant black
                 if (genes[2] == 1 || genes[3] == 1){
+                    //is not chocolate
                     returnDye = DyeColor.BLACK;
                 }else{
+                    //is chocolate
                     returnDye = DyeColor.BROWN;
                 }
-            } else if ((genes[0] >= 3 && genes[1] >= 3) && (genes[0] != 5 && genes[1] != 5)){
-                if ((genes[2] == 1 || genes[3] == 1) && (genes[0] != 3 && genes[1] != 3)){
-                    returnDye = DyeColor.BLACK;
-                }else{
-                    returnDye = DyeColor.BROWN;
+            } else if (genes[4] == 3 && genes[5] == 3) {
+                //red sheep
+                if (genes[0] == 2 || genes[1] == 2 || genes[0] == 3 || genes[1] == 3) {
+                    returnDye = DyeColor.WHITE;
+                } else {
+                    if ((genes[0] >= 5 && genes[1] >= 5) && (genes[0] == 5 || genes[1] == 5)) {
+                        returnDye = DyeColor.LIGHT_GRAY;
+                    } else {
+                        returnDye = DyeColor.BROWN;
+                    }
                 }
-            }else if ((genes[0] == 2 || genes[1] == 2) && getFleeceDyeColour() == DyeColor.WHITE) {
+            } else if (genes[0] >= 3 && genes[1] >= 3){
+                if (genes[0] == 3 || genes[1] == 3) {
+                    //badgerface or badgerface mix brown sheep
+                    returnDye = DyeColor.BROWN;
+                } else if (genes[0] == 4 || genes[1] == 4) {
+                    //mouflon black or black mix with blue
+                    if (genes[2] == 1 || genes[3] == 1){
+                        //is not chocolate
+                        returnDye = DyeColor.BLACK;
+                    }else{
+                        //is chocolate
+                        returnDye = DyeColor.BROWN;
+                    }
+                } else if (genes[0] == 5 || genes[1] == 5) {
+                    //blue
+                    if (genes[2] == 1 || genes[3] == 1) {
+                        returnDye = DyeColor.GRAY;
+                    } else {
+                        returnDye = DyeColor.BROWN;
+                    }
+                } else {
+                    if (genes[2] == 1 || genes[3] == 1){
+                        //is not chocolate
+                        returnDye = DyeColor.BLACK;
+                    }else{
+                        //is chocolate
+                        returnDye = DyeColor.BROWN;
+                    }
+                }
+            }else if ((genes[0] == 2 || genes[1] == 2) && !(genes[0] == 3 || genes[1] == 3)) {
                 returnDye = DyeColor.LIGHT_GRAY;
             } else {
-                spots = 2;
                 returnDye = DyeColor.WHITE;
             }
         } else {
@@ -779,6 +832,54 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                     break;
                 case RED:
                     returnDye = DyeColor.RED;
+                    break;
+                case BLACK:
+                    returnDye = DyeColor.BLACK;
+                    break;
+            }
+        } else if (returnDye == DyeColor.BROWN || returnDye == DyeColor.GRAY) {
+            switch (this.getFleeceDyeColour()) {
+                case ORANGE:
+                    returnDye = DyeColor.BROWN;
+                    break;
+                case MAGENTA:
+                    returnDye = DyeColor.BROWN;
+                    break;
+                case LIGHT_BLUE:
+                    returnDye = DyeColor.BLACK;
+                    break;
+                case YELLOW:
+                    returnDye = DyeColor.BROWN;
+                    break;
+                case LIME:
+                    returnDye = DyeColor.BLACK;
+                    break;
+                case PINK:
+                    returnDye = DyeColor.BROWN;
+                    break;
+                case GRAY:
+                    returnDye = DyeColor.BLACK;
+                    break;
+                case LIGHT_GRAY:
+                    returnDye = DyeColor.GRAY;
+                    break;
+                case CYAN:
+                    returnDye = DyeColor.BLACK;
+                    break;
+                case PURPLE:
+                    returnDye = DyeColor.BLACK;
+                    break;
+                case BLUE:
+                    returnDye = DyeColor.BLACK;
+                    break;
+                case BROWN:
+                    returnDye = DyeColor.BROWN;
+                    break;
+                case GREEN:
+                    returnDye = DyeColor.BLACK;
+                    break;
+                case RED:
+                    returnDye = DyeColor.BLACK;
                     break;
                 case BLACK:
                     returnDye = DyeColor.BLACK;
@@ -1275,6 +1376,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         compound.putInt("milk", getMilkAmount());
 
 //        compound.putString("MotherUUID", this.motherUUID);
+        compound.putString("BirthTime", this.getBirthTime());
 
     }
 
@@ -1313,6 +1415,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         setMilkAmount(compound.getInt("milk"));
 
 //        this.motherUUID = compound.getString("MotherUUID");
+        this.setBirthTime(compound.getString("BirthTime"));
 
         for (int i = 0; i < genes.length; i++) {
             if (genes[i] == 0) {
@@ -1401,6 +1504,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         setMaxCoatLength();
         this.currentCoatLength = this.maxCoatLength;
         setCoatLength(this.currentCoatLength);
+
+        setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - ThreadLocalRandom.current().nextInt(60000, 80000)));
 
         //"White" is considered no dye
         this.setFleeceDyeColour(DyeColor.WHITE);

@@ -453,6 +453,12 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 if (genes[91] == 2) {
                     hornScale = hornScale * 1.25F;
                 }
+                if (genes[80] >= 3) {
+                    hornScale = hornScale * 0.95F;
+                }
+                if (genes[81] >= 3) {
+                    hornScale = hornScale * 0.95F;
+                }
             } else {
                 //scurs
                 hornScale = (hornScale + 0.75F) * 0.5F;
@@ -657,7 +663,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         if (sleeping) {
             onGround = sleepingAnimation();
         } else {
-            onGround = standingAnimation(cowModelData.cowSize, cowModelData.bagSize, dwarf);
+            onGround = standingAnimation(dwarf);
         }
         this.headModel.rotationPointY = onGround + (entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
         this.headRotationAngleX = (entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
@@ -1226,7 +1232,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         return onGround;
     }
 
-    private float standingAnimation(float cowSize, float bagSize, boolean dwarf) {
+    private float standingAnimation( boolean dwarf) {
         float onGround;
         if (dwarf){
             //dwarf
@@ -1391,11 +1397,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.lastAccessed = 0;
             cowModelData.dataReset++;
             if (cowModelData.dataReset > 5000) {
-                cowModelData.bagSize = enhancedCow.getBagSize();
                 cowModelData.cowStatus = enhancedCow.getCowStatus();
-                cowModelData.sleeping = enhancedCow.isAnimalSleeping();
                 cowModelData.dataReset = 0;
             }
+            cowModelData.bagSize = enhancedCow.getBagSize();
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
             return cowModelData;
         } else {

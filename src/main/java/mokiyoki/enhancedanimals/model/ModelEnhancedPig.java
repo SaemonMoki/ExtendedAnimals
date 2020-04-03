@@ -191,12 +191,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
     }
 
-    private void setRotationOffset(RendererModel renderer, float x, float y, float z) {
-        renderer.rotateAngleX = x;
-        renderer.rotateAngleY = y;
-        renderer.rotateAngleZ = z;
-    }
-
     @Override
     public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         PigModelData pigModelData = getPigModelData(entityIn);
@@ -234,7 +228,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         }
     }
 
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, boolean sleeping) {
+    private void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, boolean sleeping) {
 
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
 
@@ -288,15 +282,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         PigModelData pigModelData = getPigModelData(entitylivingbaseIn);
         int[] sharedGenes = pigModelData.pigGenes;
         char[] uuidArry = pigModelData.uuidArray;
-        float onGround;
-
-        boolean sleeping = pigModelData.sleeping;
-
-        if (sleeping) {
-            onGround = sleepingAnimation();
-        } else {
-            onGround = standingAnimation();
-        }
 
         //snoutLength
           float snoutLength1 = -0.065F;
@@ -388,33 +373,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
     }
 
-    private float sleepingAnimation() {
-        float onGround;
-
-        onGround = 9.80F;
-
-        this.pig.rotateAngleZ = (float)Math.PI / 2.0F;
-        this.pig.setRotationPoint(15.0F, 19.0F, 0.0F);
-        this.leg1.rotateAngleZ = -0.8F;
-        this.leg1.rotateAngleX = 0.3F;
-        this.leg3.rotateAngleZ = -0.8F;
-        this.leg3.rotateAngleX = -0.3F;
-        this.neck.rotateAngleZ = 0.2F;
-
-        return onGround;
-    }
-
-    private float standingAnimation() {
-        float onGround;
-        onGround = 2.75F;
-
-        this.pig.rotateAngleZ = 0.0F;
-        this.pig.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.leg1.rotateAngleZ = 0.0F;
-        this.leg3.rotateAngleZ = 0.0F;
-
-        return onGround;
-    }
 
     public static void copyModelAngles(RendererModel source, RendererModel dest) {
         dest.rotateAngleX = source.rotateAngleX;
@@ -427,7 +385,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
 
     private class PigModelData {
-        float previousSwing;
         int[] pigGenes;
         char[] uuidArray;
         float size;

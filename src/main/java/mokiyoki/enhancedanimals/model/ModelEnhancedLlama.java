@@ -317,8 +317,9 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         int[] genes = llamaModelData.llamaGenes;
         int coatlength = llamaModelData.coatlength;
+        boolean sleeping = llamaModelData.sleeping;
 
-        this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, coatlength);
+        this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, coatlength, sleeping);
 
         float size = 1;
 
@@ -495,16 +496,23 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
      * and legs, where par1 represents the time(so that arms and legs swing back and forth) and par2 represents how
      * "far" arms and legs can swing at most.
      */
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int coatLength) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int coatLength, boolean sleeping) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
 //        this.body.rotateAngleX = ((float)Math.PI / 2F);
-        this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-        this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-        this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        if (sleeping) {
+            this.leg1.rotateAngleX = 1.575F;
+            this.leg2.rotateAngleX = 1.575F;
+            this.leg3.rotateAngleX = -1.575F;
+            this.leg4.rotateAngleX = -1.575F;
+        } else {
+            this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+            this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
+            this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
+            this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+        }
 
         copyModelAngles(head, headShaved);
         copyModelAngles(head, neckWool1);
@@ -587,6 +595,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         LlamaModelData llamaModelData = getLlamaModelData(entitylivingbaseIn);
 
         int[] sharedGenes = llamaModelData.llamaGenes;
+        boolean sleeping = llamaModelData.sleeping;
+        float onGround;
 
         this.body.rotationPointY = 2.0F;
 
@@ -596,6 +606,14 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         else {
             this.nose.rotationPointZ = -4F;
         }
+
+        if (sleeping) {
+            onGround = sleepingAnimation();
+        } else {
+            onGround = standingAnimation();
+        }
+
+        this.head.rotationPointY = onGround;
 
         //range from -12.1 to 10.5
         float noseHight;
@@ -665,6 +683,32 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         this.nose.rotationPointY = -11.3F - noseHight;
 
+    }
+
+    private float sleepingAnimation() {
+        float onGround;
+
+        onGround = 9.80F;
+        this.body.rotationPointY = 9.75F;
+
+        this.leg1.setRotationPoint(-6.0F, 14.0F+onGround, -10.0F);
+        this.leg2.setRotationPoint(3.0F, 14.0F+onGround, -10.0F);
+        this.leg3.setRotationPoint(-6.0F, 11.0F+onGround, 12.0F);
+        this.leg4.setRotationPoint(3.0F, 11.0F+onGround, 12.0F);
+        return onGround;
+    }
+
+    private float standingAnimation() {
+        float onGround;
+            onGround = 2.75F;
+            this.body.rotationPointY = 2.5F;
+
+            this.leg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
+            this.leg2.setRotationPoint(3.0F, 13.5F, -10.0F);
+            this.leg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
+            this.leg4.setRotationPoint(3.0F, 13.5F, 9.0F);
+
+        return onGround;
     }
 
     public static void copyModelAngles(RendererModel source, RendererModel dest) {

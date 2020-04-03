@@ -655,7 +655,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         boolean dwarf = (sharedGenes[26] == 1 || sharedGenes[27] == 1);
 
         if (sleeping) {
-            onGround = sleepingAnimation(sharedGenes);
+            onGround = sleepingAnimation();
         } else {
             onGround = standingAnimation(cowModelData.cowSize, cowModelData.bagSize, dwarf);
         }
@@ -1213,7 +1213,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
     }
 
-    private float sleepingAnimation(int[] sharedGenes) {
+    private float sleepingAnimation() {
         float onGround;
 
         onGround = 9.80F;

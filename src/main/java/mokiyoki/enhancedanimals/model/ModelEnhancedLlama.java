@@ -501,6 +501,10 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
+        LlamaModelData llamaModelData = getLlamaModelData(entityIn);
+
+        int[] sharedGenes = llamaModelData.llamaGenes;
+
 //        this.body.rotateAngleX = ((float)Math.PI / 2F);
         if (sleeping) {
             this.leg1.rotateAngleX = 1.575F;
@@ -584,36 +588,16 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         copyModelAngles(leg4, toeOuterBackL);
         copyModelAngles(leg4, toeInnerBackL);
 
+        setNoseRotations(sharedGenes);
     }
 
-    /**
-     * Used for easily adding entity-dependent animations. The second and third float params here are the same second
-     * and third as in the setRotationAngles method.
-     */
-    @Override
-    public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
-        LlamaModelData llamaModelData = getLlamaModelData(entitylivingbaseIn);
-
-        int[] sharedGenes = llamaModelData.llamaGenes;
-        boolean sleeping = llamaModelData.sleeping;
-        float onGround;
-
-        this.body.rotationPointY = 2.0F;
-
+    private void setNoseRotations(int[] sharedGenes) {
         if (this.isChild) {
             this.nose.rotationPointZ = -2.5F;
         }
         else {
             this.nose.rotationPointZ = -4F;
         }
-
-        if (sleeping) {
-            onGround = sleepingAnimation();
-        } else {
-            onGround = standingAnimation();
-        }
-
-        this.head.rotationPointY = onGround;
 
         //range from -12.1 to 10.5
         float noseHight;
@@ -682,7 +666,28 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         }
 
         this.nose.rotationPointY = -11.3F - noseHight;
+    }
 
+    /**
+     * Used for easily adding entity-dependent animations. The second and third float params here are the same second
+     * and third as in the setRotationAngles method.
+     */
+    @Override
+    public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
+        LlamaModelData llamaModelData = getLlamaModelData(entitylivingbaseIn);
+
+        boolean sleeping = llamaModelData.sleeping;
+        float onGround;
+
+        this.body.rotationPointY = 2.0F;
+
+        if (sleeping) {
+            onGround = sleepingAnimation();
+        } else {
+            onGround = standingAnimation();
+        }
+
+        this.head.rotationPointY = onGround;
     }
 
     private float sleepingAnimation() {
@@ -721,12 +726,11 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
     }
 
     private class LlamaModelData {
-        float previousSwing;
         int[] llamaGenes;
         int coatlength;
         boolean sleeping;
         int lastAccessed = 0;
-        int dataReset = 0;
+//        int dataReset = 0;
     }
 
     private LlamaModelData getLlamaModelData(T enhancedLlama) {
@@ -742,11 +746,11 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         if (llamaModelDataCache.containsKey(enhancedLlama.getEntityId())) {
             LlamaModelData llamaModelData = llamaModelDataCache.get(enhancedLlama.getEntityId());
             llamaModelData.lastAccessed = 0;
-            llamaModelData.dataReset++;
-            if (llamaModelData.dataReset > 5000) {
-                llamaModelData.coatlength = enhancedLlama.getCoatLength();
-                llamaModelData.dataReset = 0;
-            }
+//            llamaModelData.dataReset++;
+//            if (llamaModelData.dataReset > 5000) {
+//                llamaModelData.dataReset = 0;
+//            }
+            llamaModelData.coatlength = enhancedLlama.getCoatLength();
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
 
             return llamaModelData;

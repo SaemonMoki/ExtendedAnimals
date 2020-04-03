@@ -1635,7 +1635,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 }
                 return true;
             }
-        } /* else if (item == Items.GLASS_BOTTLE && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
+        }
+        /* else if (item == Items.GLASS_BOTTLE && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
                 if (milk == 0) {
                     entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
                 } else {
@@ -1840,9 +1841,9 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - ThreadLocalRandom.current().nextInt(64800, 108000)));
 
         configureAI();
-        for (int i = 0; i <= 30; i++) {
-            setHornAlteration(i , String.valueOf(0));
-        }
+//        for (int i = 0; i <= 30; i++) {
+//            setHornAlteration(i , String.valueOf(0));
+//        }
         return livingdata;
     }
 

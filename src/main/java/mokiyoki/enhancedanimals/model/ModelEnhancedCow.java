@@ -608,12 +608,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         copyModelRotations(humpXLarge, humpSmall);
         copyModelRotations(humpXLarge, humpXSmall);
 
-        if (sleeping) {
-            this.leg1.rotateAngleX = 1.575F;
-            this.leg2.rotateAngleX = 1.575F;
-            this.leg3.rotateAngleX = -1.575F;
-            this.leg4.rotateAngleX = -1.575F;
-        } else {
+        if (!sleeping) {
             this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
             this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
             this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
@@ -1224,6 +1219,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         onGround = 9.80F;
         this.bodyMedium.rotationPointY = 9.75F;
+
+        this.leg1.rotateAngleX = 1.575F;
+        this.leg2.rotateAngleX = 1.575F;
+        this.leg3.rotateAngleX = -1.575F;
+        this.leg4.rotateAngleX = -1.575F;
 
         this.leg1.setRotationPoint(-6.0F, 14.0F+onGround, -10.0F);
         this.leg2.setRotationPoint(3.0F, 14.0F+onGround, -10.0F);

@@ -434,6 +434,12 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                                 milk++;
                                 setMilkAmount(milk);
                                 this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - maxBagSize)*1200)) * (cowSize/1.5F)) - 300;
+
+                                //this takes the number of milk points a cow has over the number possible to make a number between 0 and 1.
+                                float milkBagSize = milk / (30*(cowSize/1.5F)*(maxBagSize/1.5F));
+
+                                this.setBagSize((1.1F*milkBagSize*(maxBagSize-1.0F))+1.0F);
+
                             }
                         }
                     }
@@ -1377,16 +1383,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             maxBagSize = 1.0F;
         }
 
-        maxBagSize = 1.5F;
-
         this.maxBagSize = maxBagSize;
-
-        //TODO move below to living tick and on right click
-        //this takes the number of milk points a cow has over the number possible to make a number between 0 and 1.
-        float milk = getMilkAmount() / (30*(cowSize/1.5F)*(maxBagSize/1.5F));
-
-        this.setBagSize((1.1F*milk*(maxBagSize-1.0F))+1.0F);
-
     }
 
     @Override
@@ -1535,7 +1532,12 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             }
 
             if (!this.world.isRemote) {
-                this.setMilkAmount(currentMilk - refillAmount);
+                int resultingMilkAmount = currentMilk - refillAmount;
+                this.setMilkAmount(resultingMilkAmount);
+
+                float milkBagSize = resultingMilkAmount / (30*(cowSize/1.5F)*(maxBagSize/1.5F));
+
+                this.setBagSize((1.1F*milkBagSize*(maxBagSize-1.0F))+1.0F);
             }
 
             int resultAmount = bucketSize - maxRefill + refillAmount;

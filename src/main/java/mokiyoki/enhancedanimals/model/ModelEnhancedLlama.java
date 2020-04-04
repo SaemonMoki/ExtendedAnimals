@@ -303,12 +303,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         headShaved.addChild(nose);
     }
 
-    private void setRotationOffset(RendererModel renderer, float x, float y, float z) {
-        renderer.rotateAngleX = x;
-        renderer.rotateAngleY = y;
-        renderer.rotateAngleZ = z;
-    }
-
     @Override
     public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         EnhancedLlama enhancedLlama = (EnhancedLlama) entityIn;

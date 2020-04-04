@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+  [
+    " S ",
+    " S ",
+    " S "
+  ],
+
+  "key":
+  {
+    "S":
+    {
+      "item": "minecraft:dark_oak_slab"
+    }
+  },
+  "result":
+  {
+    "item": "eanimod:post_dark_oak",
+    "count": 3
+  }
+}

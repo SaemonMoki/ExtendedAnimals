@@ -1,10 +1,10 @@
 [
 {
   "modid": "eanimod",
-  "name": "Enhanced Animals Mod",
+  "name": "Genetic Animals Mod",
   "description": "Improved animal behaviour and content adding mod.",
-  "version": "1.0",
-  "mcversion": "1.13.2",
+  "version": "0.4.11",
+  "mcversion": "1.14.4",
   "url": "",
   "updateUrl": "",
   "authorList": ["MokiYoki and Saemon"],

@@ -4,49 +4,51 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.init.Particles;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.projectile.ProjectileHelper;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
+import net.minecraft.network.play.server.SSpawnObjectPacket;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
-import java.util.List;
 import java.util.UUID;
+
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA_SPIT;
 
 public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
     public EnhancedLlama owner;
-    private NBTTagCompound ownerNbt;
+    private CompoundNBT ownerNbt;
 
-    public EnhancedEntityLlamaSpit(World worldIn) {
-        super(EntityType.LLAMA_SPIT, worldIn);
-        this.setSize(0.25F, 0.25F);
+
+    public EnhancedEntityLlamaSpit(EntityType<? extends EnhancedEntityLlamaSpit> p_i50162_1_, World p_i50162_2_) {
+        super(p_i50162_1_, p_i50162_2_);
     }
 
     public EnhancedEntityLlamaSpit(World worldIn, EnhancedLlama p_i47273_2_) {
-        this(worldIn);
+        this(ENHANCED_LLAMA_SPIT, worldIn);
         this.owner = p_i47273_2_;
-        this.setPosition(p_i47273_2_.posX - (double)(p_i47273_2_.width + 1.0F) * 0.5D * (double) MathHelper.sin(p_i47273_2_.renderYawOffset * ((float)Math.PI / 180F)), p_i47273_2_.posY + (double)p_i47273_2_.getEyeHeight() - (double)0.1F, p_i47273_2_.posZ + (double)(p_i47273_2_.width + 1.0F) * 0.5D * (double)MathHelper.cos(p_i47273_2_.renderYawOffset * ((float)Math.PI / 180F)));
+        this.setPosition(p_i47273_2_.posX - (double)(p_i47273_2_.getWidth() + 1.0F) * 0.5D * (double)MathHelper.sin(p_i47273_2_.renderYawOffset * ((float)Math.PI / 180F)), p_i47273_2_.posY + (double)p_i47273_2_.getEyeHeight() - (double)0.1F, p_i47273_2_.posZ + (double)(p_i47273_2_.getWidth() + 1.0F) * 0.5D * (double)MathHelper.cos(p_i47273_2_.renderYawOffset * ((float)Math.PI / 180F)));
     }
 
     @OnlyIn(Dist.CLIENT)
     public EnhancedEntityLlamaSpit(World worldIn, double x, double y, double z, double p_i47274_8_, double p_i47274_10_, double p_i47274_12_) {
-        this(worldIn);
+        this(ENHANCED_LLAMA_SPIT, worldIn);
         this.setPosition(x, y, z);
 
         for(int i = 0; i < 7; ++i) {
             double d0 = 0.4D + 0.1D * (double)i;
-            worldIn.spawnParticle(Particles.SPIT, x, y, z, p_i47274_8_ * d0, p_i47274_10_, p_i47274_12_ * d0);
+            worldIn.addParticle(ParticleTypes.SPIT, x, y, z, p_i47274_8_ * d0, p_i47274_10_, p_i47274_12_ * d0);
         }
 
-        this.motionX = p_i47274_8_;
-        this.motionY = p_i47274_10_;
-        this.motionZ = p_i47274_12_;
+        this.setMotion(p_i47274_8_, p_i47274_10_, p_i47274_12_);
     }
 
     /**
@@ -58,31 +60,21 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
             this.restoreOwnerFromSave();
         }
 
-        Vec3d vec3d = new Vec3d(this.posX, this.posY, this.posZ);
-        Vec3d vec3d1 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-        RayTraceResult raytraceresult = this.world.rayTraceBlocks(vec3d, vec3d1);
-        vec3d = new Vec3d(this.posX, this.posY, this.posZ);
-        vec3d1 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
-        if (raytraceresult != null) {
-            vec3d1 = new Vec3d(raytraceresult.hitVec.x, raytraceresult.hitVec.y, raytraceresult.hitVec.z);
-        }
-
-        Entity entity = this.getHitEntity(vec3d, vec3d1);
-        if (entity != null) {
-            raytraceresult = new RayTraceResult(entity);
-        }
-
+        Vec3d vec3d = this.getMotion();
+        RayTraceResult raytraceresult = ProjectileHelper.func_221267_a(this, this.getBoundingBox().expand(vec3d).grow(1.0D), (p_213879_1_) -> {
+            return !p_213879_1_.isSpectator() && p_213879_1_ != this.owner;
+        }, RayTraceContext.BlockMode.OUTLINE, true);
         if (raytraceresult != null && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
             this.onHit(raytraceresult);
         }
 
-        this.posX += this.motionX;
-        this.posY += this.motionY;
-        this.posZ += this.motionZ;
-        float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
-        this.rotationYaw = (float)(MathHelper.atan2(this.motionX, this.motionZ) * (double)(180F / (float)Math.PI));
+        this.posX += vec3d.x;
+        this.posY += vec3d.y;
+        this.posZ += vec3d.z;
+        float f = MathHelper.sqrt(func_213296_b(vec3d));
+        this.rotationYaw = (float)(MathHelper.atan2(vec3d.x, vec3d.z) * (double)(180F / (float)Math.PI));
 
-        for(this.rotationPitch = (float)(MathHelper.atan2(this.motionY, (double)f) * (double)(180F / (float)Math.PI)); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F) {
+        for(this.rotationPitch = (float)(MathHelper.atan2(vec3d.y, (double)f) * (double)(180F / (float)Math.PI)); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F) {
             ;
         }
 
@@ -98,8 +90,8 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
             this.prevRotationYaw += 360.0F;
         }
 
-        this.rotationPitch = this.prevRotationPitch + (this.rotationPitch - this.prevRotationPitch) * 0.2F;
-        this.rotationYaw = this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * 0.2F;
+        this.rotationPitch = MathHelper.lerp(0.2F, this.prevRotationPitch, this.rotationPitch);
+        this.rotationYaw = MathHelper.lerp(0.2F, this.prevRotationYaw, this.rotationYaw);
         float f1 = 0.99F;
         float f2 = 0.06F;
         if (!this.world.isMaterialInBB(this.getBoundingBox(), Material.AIR)) {
@@ -107,11 +99,9 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
         } else if (this.isInWaterOrBubbleColumn()) {
             this.remove();
         } else {
-            this.motionX *= (double)0.99F;
-            this.motionY *= (double)0.99F;
-            this.motionZ *= (double)0.99F;
+            this.setMotion(vec3d.scale((double)0.99F));
             if (!this.hasNoGravity()) {
-                this.motionY -= (double)0.06F;
+                this.setMotion(this.getMotion().add(0.0D, (double)-0.06F, 0.0D));
             }
 
             this.setPosition(this.posX, this.posY, this.posZ);
@@ -123,9 +113,7 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
      */
     @OnlyIn(Dist.CLIENT)
     public void setVelocity(double x, double y, double z) {
-        this.motionX = x;
-        this.motionY = y;
-        this.motionZ = z;
+        this.setMotion(x, y, z);
         if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F) {
             float f = MathHelper.sqrt(x * x + z * z);
             this.rotationPitch = (float)(MathHelper.atan2(y, (double)f) * (double)(180F / (float)Math.PI));
@@ -137,59 +125,24 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
 
     }
 
-    @Nullable
-    private Entity getHitEntity(Vec3d p_190538_1_, Vec3d p_190538_2_) {
-        Entity entity = null;
-        List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this, this.getBoundingBox().expand(this.motionX, this.motionY, this.motionZ).grow(1.0D));
-        double d0 = 0.0D;
-
-        for(Entity entity1 : list) {
-            if (entity1 != this.owner) {
-                AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double)0.3F);
-                RayTraceResult raytraceresult = axisalignedbb.calculateIntercept(p_190538_1_, p_190538_2_);
-                if (raytraceresult != null) {
-                    double d1 = p_190538_1_.squareDistanceTo(raytraceresult.hitVec);
-                    if (d1 < d0 || d0 == 0.0D) {
-                        entity = entity1;
-                        d0 = d1;
-                    }
-                }
-            }
-        }
-
-        return entity;
-    }
-
     /**
      * Similar to setArrowHeading, it's point the throwable entity to a x, y, z direction.
      */
     public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
-        float f = MathHelper.sqrt(x * x + y * y + z * z);
-        x = x / (double)f;
-        y = y / (double)f;
-        z = z / (double)f;
-        x = x + this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy;
-        y = y + this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy;
-        z = z + this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy;
-        x = x * (double)velocity;
-        y = y * (double)velocity;
-        z = z * (double)velocity;
-        this.motionX = x;
-        this.motionY = y;
-        this.motionZ = z;
-        float f1 = MathHelper.sqrt(x * x + z * z);
-        this.rotationYaw = (float)(MathHelper.atan2(x, z) * (double)(180F / (float)Math.PI));
-        this.rotationPitch = (float)(MathHelper.atan2(y, (double)f1) * (double)(180F / (float)Math.PI));
+        Vec3d vec3d = (new Vec3d(x, y, z)).normalize().add(this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy).scale((double)velocity);
+        this.setMotion(vec3d);
+        float f = MathHelper.sqrt(func_213296_b(vec3d));
+        this.rotationYaw = (float)(MathHelper.atan2(vec3d.x, z) * (double)(180F / (float)Math.PI));
+        this.rotationPitch = (float)(MathHelper.atan2(vec3d.y, (double)f) * (double)(180F / (float)Math.PI));
         this.prevRotationYaw = this.rotationYaw;
         this.prevRotationPitch = this.rotationPitch;
     }
 
     public void onHit(RayTraceResult p_190536_1_) {
-        if (p_190536_1_.entity != null && this.owner != null) {
-            p_190536_1_.entity.attackEntityFrom(DamageSource.causeIndirectDamage(this, this.owner).setProjectile(), 1.0F);
-        }
-
-        if (!this.world.isRemote) {
+        RayTraceResult.Type raytraceresult$type = p_190536_1_.getType();
+        if (raytraceresult$type == RayTraceResult.Type.ENTITY && this.owner != null) {
+            ((EntityRayTraceResult)p_190536_1_).getEntity().attackEntityFrom(DamageSource.causeIndirectDamage(this, this.owner).setProjectile(), 1.0F);
+        } else if (raytraceresult$type == RayTraceResult.Type.BLOCK && !this.world.isRemote) {
             this.remove();
         }
 
@@ -201,23 +154,19 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
-    protected void readAdditional(NBTTagCompound compound) {
+    protected void readAdditional(CompoundNBT compound) {
         if (compound.contains("Owner", 10)) {
             this.ownerNbt = compound.getCompound("Owner");
         }
 
     }
 
-    /**
-     * Writes the extra NBT data specific to this type of entity. Should <em>not</em> be called from outside this class;
-     * use {@link #writeUnlessPassenger} or {@link #writeWithoutTypeId} instead.
-     */
-    protected void writeAdditional(NBTTagCompound compound) {
+    protected void writeAdditional(CompoundNBT compound) {
         if (this.owner != null) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
+            CompoundNBT compoundnbt = new CompoundNBT();
             UUID uuid = this.owner.getUniqueID();
-            nbttagcompound.setUniqueId("OwnerUUID", uuid);
-            compound.setTag("Owner", nbttagcompound);
+            compoundnbt.putUniqueId("OwnerUUID", uuid);
+            compound.put("Owner", compoundnbt);
         }
 
     }
@@ -226,14 +175,18 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
         if (this.ownerNbt != null && this.ownerNbt.hasUniqueId("OwnerUUID")) {
             UUID uuid = this.ownerNbt.getUniqueId("OwnerUUID");
 
-            for(EnhancedLlama entityllama : this.world.getEntitiesWithinAABB(EnhancedLlama.class, this.getBoundingBox().grow(15.0D))) {
-                if (entityllama.getUniqueID().equals(uuid)) {
-                    this.owner = entityllama;
+            for(EnhancedLlama llamaentity : this.world.getEntitiesWithinAABB(EnhancedLlama.class, this.getBoundingBox().grow(15.0D))) {
+                if (llamaentity.getUniqueID().equals(uuid)) {
+                    this.owner = llamaentity;
                     break;
                 }
             }
         }
 
         this.ownerNbt = null;
+    }
+
+    public IPacket<?> createSpawnPacket() {
+        return new SSpawnObjectPacket(this);
     }
 }

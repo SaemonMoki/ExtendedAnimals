@@ -83,19 +83,27 @@
         }
       }
     },
-    "minecraft:pig": {
+    "eanimod:enhanced_pig": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {
-          "type": "minecraft:pig"
+          "type": "eanimod:enhanced_pig"
         }
       }
     },
-    "minecraft:mooshroom": {
+    "eanimod:enhanced_mooshroom": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {
-          "type": "minecraft:mooshroom"
+          "type": "eanimod:enhanced_mooshroom"
+        }
+      }
+    },
+    "minecraft:fox": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:fox"
         }
       }
     },
@@ -134,10 +142,13 @@
       "minecraft:wolf"
     ],
     [
-      "minecraft:mooshroom"
+      "eanimod:enhanced_mooshroom"
     ],
     [
-      "minecraft:pig"
+      "eanimod:enhanced_pig"
+    ],
+    [
+      "minecraft:fox"
     ],
     [
       "minecraft:horse"

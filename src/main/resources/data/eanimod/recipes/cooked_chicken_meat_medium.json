@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    [
+      {
+        "item": "eanimod:cookedchicken_dark"
+      },
+      {
+        "item": "eanimod:cookedchicken_pale"
+      }
+    ],
+    [
+      {
+        "item": "eanimod:cookedchicken_dark"
+      },
+      {
+        "item": "eanimod:cookedchicken_pale"
+      }
+    ],
+    [
+      {
+        "item": "eanimod:cookedchicken_dark"
+      },
+      {
+        "item": "eanimod:cookedchicken_pale"
+      }
+    ]
+  ],
+  "result":
+  {
+    "item": "minecraft:cooked_chicken",
+    "count": 2
+  }
+}

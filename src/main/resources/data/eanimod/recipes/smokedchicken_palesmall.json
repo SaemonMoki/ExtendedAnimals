@@ -1,0 +1,9 @@
+{
+  "type": "smoking",
+  "ingredient": {
+    "item": "eanimod:rawchicken_palesmall"
+  },
+  "result": "eanimod:cookedchicken_palesmall",
+  "experience": 0.35,
+  "cookingtime": 100
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "eanimod:items/twothirds_milk_bucket"
+  }
+}

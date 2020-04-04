@@ -2,13 +2,13 @@ package mokiyoki.enhancedanimals.ai;
 
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 
-public class ECRoost extends EntityAIBase {
+public class ECRoost extends Goal {
 
     private static final int MAX_DISTANCE = 256;
     private final EnhancedChicken enhancedChicken;
@@ -16,7 +16,7 @@ public class ECRoost extends EntityAIBase {
 
 
 
-    public ECRoost(EntityCreature entityIn) {
+    public ECRoost(CreatureEntity entityIn) {
         this.enhancedChicken = (EnhancedChicken) entityIn;
     }
 

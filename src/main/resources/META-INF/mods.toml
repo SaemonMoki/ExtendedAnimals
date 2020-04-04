@@ -4,7 +4,7 @@ loaderVersion="[25,)" #mandatory (24 is current forge version)
 [[mods]] #mandatory
 modId="eanimod" #mandatory
 version="${file.jarVersion}" #mandatory
-displayName="Enhanced Animals" #mandatory
+displayName="Genetic Animals" #mandatory
 description='''
-Improved animal behaviour and content adding mod.
+Genetics with improved animal behaviour and content adding mod.
 '''

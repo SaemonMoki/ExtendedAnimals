@@ -1,0 +1,9 @@
+{
+  "type": "smoking",
+  "ingredient": {
+    "item": "eanimod:rawchicken_dark"
+  },
+  "result": "eanimod:cookedchicken_dark",
+  "experience": 0.35,
+  "cookingtime": 100
+}

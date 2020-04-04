@@ -1,5 +1,5 @@
 {
-  "type": "crafting_shaped",
+  "type": "minecraft:crafting_shaped",
   "pattern": [
     "###",
     "SES",
@@ -13,36 +13,9 @@
       "item": "minecraft:sugar"
     },
     "E": [
-       {
-      "item": "eanimod:egg_blue"
-    }, {
-      "item": "eanimod:egg_brown"
-    }, {
-      "item": "eanimod:egg_browndark"
-    }, {
-      "item": "eanimod:egg_cream"
-    }, {
-      "item": "eanimod:egg_creamdark"
-    }, {
-      "item": "eanimod:egg_green"
-    }, {
-      "item": "eanimod:egg_greendark"
-    }, {
-      "item": "eanimod:egg_greenlight"
-    }, {
-      "item": "eanimod:egg_grey"
-    }, {
-      "item": "eanimod:egg_greygreen"
-    }, {
-      "item": "eanimod:egg_olive"
-    }, {
-      "item": "eanimod:egg_pink"
-    }, {
-      "item": "eanimod:egg_pinkdark"
-    }, {
-      "item": "eanimod:egg_white"
-    }
-
+      {
+        "tag": "forge:eggs"
+      }
     ],
     "W": {
       "item": "minecraft:wheat"

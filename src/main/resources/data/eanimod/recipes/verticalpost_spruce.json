@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+  [
+    " S ",
+    " S ",
+    " S "
+  ],
+
+  "key":
+  {
+    "S":
+    {
+      "item": "minecraft:spruce_slab"
+    }
+  },
+  "result":
+  {
+    "item": "eanimod:post_spruce",
+    "count": 3
+  }
+}

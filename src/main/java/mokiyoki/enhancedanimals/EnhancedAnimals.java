@@ -3,21 +3,26 @@ package mokiyoki.enhancedanimals;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityStorage;
 import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
+import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
+import mokiyoki.enhancedanimals.capability.hay.HayCapabilityStorage;
+import mokiyoki.enhancedanimals.capability.hay.IHayCapability;
 import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
+import mokiyoki.enhancedanimals.gui.EggCartonScreen;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.loot.EnhancedChickenLootCondition;
-import mokiyoki.enhancedanimals.loot.EnhancedLlamaLootCondition;
 import mokiyoki.enhancedanimals.loot.EnhancedRabbitLootCondition;
 import mokiyoki.enhancedanimals.proxy.ClientProxy;
 import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.proxy.ServerProxy;
 import mokiyoki.enhancedanimals.util.Reference;
-import mokiyoki.enhancedanimals.util.handlers.CapabilityHandler;
+import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
-import mokiyoki.enhancedanimals.util.handlers.EventHandler;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootTableList;
+import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -27,9 +32,12 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
 
 /**
  * Created by moki on 24/08/2018.
@@ -39,6 +47,15 @@ import org.apache.logging.log4j.Logger;
 public class EnhancedAnimals {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    public static final ItemGroup GENETICS_ANIMALS_GROUP = new ItemGroup(Reference.MODID) {
+        @Override
+        public ItemStack createIcon() {
+            return new ItemStack(ModItems.Egg_Blue);
+        }
+    };
+
+
 
     public static EnhancedAnimals instance;
 
@@ -51,12 +68,13 @@ public class EnhancedAnimals {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the doClientStuff method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientSetup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
-        MinecraftForge.EVENT_BUS.register(new EventHandler());
-//        MinecraftForge.EVENT_BUS.register(new RegistryHandler());
-        MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
+        MinecraftForge.EVENT_BUS.register(new EventSubscriber());
+//        MinecraftForge.EVENT_BUS.register(new EventRegistry());
+        MinecraftForge.EVENT_BUS.register(new CapabilityEvents());
         MinecraftForge.EVENT_BUS.register(instance);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);
@@ -68,23 +86,27 @@ public class EnhancedAnimals {
         // some preinit code
         proxy.init(event);
         CapabilityManager.INSTANCE.register(IPostCapability.class, new PostCapabilityStorage(), PostCapabilityProvider::new);
+        CapabilityManager.INSTANCE.register(IHayCapability.class, new HayCapabilityStorage(), HayCapabilityProvider::new);
         CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapabilityProvider::new);
 
-        LootTableList.register(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
+//        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
         LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());
-
-        LootTableList.register(new ResourceLocation(Reference.MODID, "enhanced_rabbit"));
+//
+//        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_rabbit"));
         LootConditionManager.registerCondition(new EnhancedRabbitLootCondition.Serializer());
-
-        LootTableList.register(new ResourceLocation(Reference.MODID, "enhanced_llama"));
-        LootConditionManager.registerCondition(new EnhancedLlamaLootCondition.Serializer());
+//
+//        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_llama"));
+//        LootConditionManager.registerCondition(new EnhancedLlamaLootCondition.Serializer());
 
     }
 
     private void doClientSetup(final FMLClientSetupEvent event) {
-//        RenderingRegistry.registerEntityRenderingHandler(EnhancedChicken.class, manager -> new RenderEnhancedChicken(manager));
-//        RenderEntities.entityRender();
-
+        ScreenManager.registerFactory(EGG_CARTON_CONTAINER, EggCartonScreen::new);
     }
+
+    private void loadComplete(final FMLLoadCompleteEvent event) {
+        proxy.initLoadComplete(event);
+    }
+
 }
 

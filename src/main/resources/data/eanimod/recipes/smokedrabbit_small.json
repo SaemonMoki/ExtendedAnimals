@@ -1,0 +1,9 @@
+{
+  "type": "smoking",
+  "ingredient": {
+    "item": "eanimod:rawrabbit_small"
+  },
+  "result": "eanimod:cookedrabbit_small",
+  "experience": 0.35,
+  "cookingtime": 100
+}

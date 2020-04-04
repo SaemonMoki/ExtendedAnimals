@@ -1,55 +1,109 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
+import mokiyoki.enhancedanimals.ai.general.pig.EnhancedWaterAvoidingRandomWalkingEatingGoalPig;
+import mokiyoki.enhancedanimals.init.ModBlocks;
+import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.goal.FollowParentGoal;
+import net.minecraft.entity.ai.goal.HurtByTargetGoal;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.TemptGoal;
+import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.AirItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.stats.StatList;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import static mokiyoki.enhancedanimals.util.handlers.RegistryHandler.ENHANCED_PIG;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 
-public class EnhancedPig  extends EntityAnimal {
+public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
+
+    //avalible UUID spaces : [ S X 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedPig.class, DataSerializers.STRING);
     private static final DataParameter<Float> PIG_SIZE = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.FLOAT);
+    private static final DataParameter<String> PIG_STATUS = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.STRING);
+    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.BOOLEAN);
+
+    private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
+            "", "skin_pink_bald.png", "skin_grey_bald.png", "skin_black_bald.png"
+//            ,
+//            "a_skin_pink_sparse.png", "a_skin_grey_sparse.png", "a_skin_black_sparse.png",
+//            "a_skin_pink_medium.png", "a_skin_grey_medium.png", "a_skin_black_medium.png",
+//            "a_skin_pink_furry.png", "a_skin_grey_furry.png", "a_skin_black_furry.png",
+//            "a_skin_pink_wooly.png", "a_skin_grey_wooly.png", "a_skin_black_wooly.png"
+    };
+
+    private static final String[] PIG_TEXTURES_SKINMARKINGS_SPOTS = new String[] {
+            "", "skin_spots.png", ""
+    };
+
+    private static final String[] PIG_TEXTURES_SKINMARKINGS_BELTED = new String[] {
+            "", "skin_pink_bald.png", "skin_belt.png"
+    };
+
+    private static final String[] PIG_TEXTURES_SKINMARKINGS_BERKSHIRE = new String[] {
+            "", "skin_tux.png", "skin_berkshire.png"
+    };
 
     private static final String[] PIG_TEXTURES_COATRED = new String[] {
             "pigbase.png", "solid_white.png", "solid_milk.png", "solid_cream.png", "solid_carmel.png", "solid_orange.png", "solid_ginger.png", "solid_red.png", "solid_brown.png"
     };
     private static final String[] PIG_TEXTURES_COATBLACK = new String[] {
-            "red", "black_solid.png", "black_wildtype.png", "black_brindle.png", "choc_wildtype.png"
+            "red", "black_solid.png", "black_wildtype.png", "black_brindle.png", "black_brindlesmall.png",
+                   "choc_solid.png", "choc_wildtype.png", "choc_brindle.png", "choc_brindlesmall.png",
+                   "lightchoc_wildtype.png"
     };
 
     private static final String[] PIG_TEXTURES_SPOT_SPOTS = new String[] {
@@ -64,16 +118,8 @@ public class EnhancedPig  extends EntityAnimal {
             "", "spot_tux.png", "spot_berkshire.png"
     };
 
-    private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
-            "", "skin_pink_bald.png", "skin_grey_bald.png", "skin_black_bald.png",
-                "skin_pink_sparse.png", "skin_grey_sparse.png", "skin_black_sparse.png",
-                "skin_pink_medium.png", "skin_grey_medium.png", "skin_black_medium.png",
-                "skin_pink_furry.png", "skin_grey_furry.png", "skin_black_furry.png",
-                "skin_pink_wooly.png", "skin_grey_wooly.png", "skin_black_wooly.png"
-    };
-
-    private static final String[] PIG_TEXTURES_SKINMARKINGS = new String[] {
-            "", "spots"
+    private static final String[] PIG_TEXTURES_COAT = new String[] {
+            "coat_normal.png", "coat_wooly.png"
     };
 
     private static final String[] PIG_TEXTURES_EYES = new String[] {
@@ -84,48 +130,136 @@ public class EnhancedPig  extends EntityAnimal {
             "hooves_black.png", "hooves_brown.png", "hooves_pink.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD);
+    private static final String[] PIG_TEXTURES_TUSKS = new String[] {
+            "", "tusks.png"
+    };
 
-    private static final int WTC = 90;
+    private static final String[] PIG_TEXTURES_ALPHA = new String[] {
+            "bald", "sparse.png", "medium.png", "furry.png", "wooly.png"
+    };
+
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD, ModItems.CookedChicken_Dark, ModItems.CookedChicken_DarkBig, ModItems.CookedChicken_DarkSmall, ModItems.CookedChicken_Pale, ModItems.CookedChicken_PaleSmall, ModItems.CookedRabbit_Small);
+    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
+    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.CARROT, Items.BEETROOT, Items.POTATO);
+
+    Map<Item, Integer> foodWeightMap = new HashMap() {{
+        put(new ItemStack(Blocks.MELON).getItem(), 10000);
+        put(new ItemStack(Blocks.PUMPKIN).getItem(), 10000);
+        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
+        put(new ItemStack(Items.GRASS).getItem(), 3000);
+        put(new ItemStack(Items.VINE).getItem(), 3000);
+        put(new ItemStack(Items.COOKED_BEEF).getItem(), 3000);
+        put(new ItemStack(Items.COOKED_CHICKEN).getItem(), 3000);
+        put(new ItemStack(ModItems.CookedChicken_Dark).getItem(), 2000);
+        put(new ItemStack(ModItems.CookedChicken_DarkBig).getItem(), 3000);
+        put(new ItemStack(ModItems.CookedChicken_DarkSmall).getItem(), 1000);
+        put(new ItemStack(ModItems.CookedChicken_Pale).getItem(), 2000);
+        put(new ItemStack(ModItems.CookedChicken_PaleSmall).getItem(), 1000);
+        put(new ItemStack(Items.COOKED_COD).getItem(), 1500);
+        put(new ItemStack(Items.COOKED_MUTTON).getItem(), 3000);
+        put(new ItemStack(Items.COOKED_RABBIT).getItem(), 1500);
+        put(new ItemStack(ModItems.CookedRabbit_Small).getItem(), 750);
+        put(new ItemStack(Items.COOKED_SALMON).getItem(), 3000);
+        put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
+        put(new ItemStack(Blocks.OAK_LEAVES).getItem(), 1000);
+        put(new ItemStack(Blocks.DARK_OAK_LEAVES).getItem(), 1000);
+        put(new ItemStack(Items.CARROT).getItem(), 3000);
+        put(new ItemStack(Items.POTATO).getItem(), 3000);
+        put(new ItemStack(Items.BEETROOT).getItem(), 3000);
+        put(new ItemStack(Items.WHEAT).getItem(), 6000);
+        put(new ItemStack(Items.SUGAR).getItem(), 1500);
+        put(new ItemStack(Items.APPLE).getItem(), 1500);
+        put(new ItemStack(Items.BREAD).getItem(), 18000);
+        put(new ItemStack(Items.WHEAT_SEEDS).getItem(), 100);
+        put(new ItemStack(Items.MELON_SEEDS).getItem(), 100);
+        put(new ItemStack(Items.PUMPKIN_SEEDS).getItem(), 100);
+        put(new ItemStack(Items.BEETROOT_SEEDS).getItem(), 100);
+        put(new ItemStack(Items.SWEET_BERRIES).getItem(), 100);
+        put(new ItemStack(Items.ROTTEN_FLESH).getItem(), 500);
+        put(new ItemStack(Items.BROWN_MUSHROOM).getItem(), 1000);
+        put(new ItemStack(Items.OAK_SAPLING).getItem(), 1000);
+        put(new ItemStack(Items.DARK_OAK_SAPLING).getItem(), 1000);
+        put(new ItemStack(Items.MILK_BUCKET).getItem(), 1500);
+        put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
+    }};
+
+    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private final List<String> pigTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 80;
+    private final List<String> pigAlphaTextures = new ArrayList<>();
+    private static final int GENES_LENGTH = 44;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
+    private UUID angerTargetUUID;
+    private int angerLevel;
     private float pigSize;
 
-    public EnhancedPig(World worldIn) {
-        super(ENHANCED_PIG, worldIn);
+    public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
+        super(entityType, worldIn);
         //TODO why doesnt this change from pig to pig
         this.setPigSize();
-        this.setSize(0.9F, pigSize*0.9F);
+//        this.setSize(0.9F, pigSize*0.9F);
     }
 
-    private int pigTimer;
-    private EntityAIEatGrass entityAIEatGrass;
+    private int grassTimer;
+    private EnhancedWaterAvoidingRandomWalkingEatingGoalPig wanderEatingGoal;
 
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
-    protected void initEntityAI() {
-        this.entityAIEatGrass = new EntityAIEatGrass(this);
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIPanic(this, 1.25D));
-        this.tasks.addTask(3, new EntityAIMate(this, 1.0D));
-        this.tasks.addTask(4, new EntityAITempt(this, 1.2D, Ingredient.fromItems(Items.CARROT_ON_A_STICK), false));
-        this.tasks.addTask(4, new EntityAITempt(this, 1.2D, false, TEMPTATION_ITEMS));
-        this.tasks.addTask(5, new EntityAIFollowParent(this, 1.1D));
-        this.tasks.addTask(5, this.entityAIEatGrass);
-        this.tasks.addTask(6, new EntityAIWanderAvoidWater(this, 1.0D));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 6.0F));
-        this.tasks.addTask(8, new EntityAILookIdle(this));
+    private int hunger = 0;
+    protected int healTicks = 0;
+    protected String motherUUID = "";
+
+    protected Boolean sleeping = false;
+    protected int awokenTimer = 0;
+
+    @Override
+    protected void registerGoals() {
+
+        wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalPig(this, 1.0D, 7, 0.001F, 120, 2, 20);
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
+//        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
+        this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.fromItems(Items.CARROT_ON_A_STICK), false));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(5, wanderEatingGoal);
+//        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
+        this.targetSelector.addGoal(1, new EnhancedPig.HurtByAggressorGoal(this));
+        this.targetSelector.addGoal(2, new EnhancedPig.TargetAggressorGoal(this));
     }
 
-    protected void updateAITasks()
-    {
-        this.pigTimer = this.entityAIEatGrass.getEatingGrassTimer();
+    @Override
+    protected void updateAITasks() {
+
+        LivingEntity livingentity = this.getRevengeTarget();
+        if (this.isAngry()) {
+
+            --this.angerLevel;
+            LivingEntity livingentity1 = livingentity != null ? livingentity : this.getAttackTarget();
+            if (!this.isAngry() && livingentity1 != null) {
+                if (!this.canEntityBeSeen(livingentity1)) {
+                    this.setRevengeTarget((LivingEntity)null);
+                    this.setAttackTarget((LivingEntity)null);
+                } else {
+                    this.angerLevel = this.angerAmount();
+                }
+            }
+        }
+
+        if (this.isAngry() && this.angerTargetUUID != null && livingentity == null) {
+            PlayerEntity playerentity = this.world.getPlayerByUuid(this.angerTargetUUID);
+            this.setRevengeTarget(playerentity);
+            this.attackingPlayer = playerentity;
+            this.recentlyHit = this.getRevengeTimer();
+        }
+        this.grassTimer = this.wanderEatingGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
 
@@ -133,6 +267,16 @@ public class EnhancedPig  extends EntityAnimal {
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(PIG_SIZE, 0.0F);
+        this.dataManager.register(PIG_STATUS, new String());
+        this.dataManager.register(SLEEPING, false);
+    }
+
+    private void setPigStatus(String status) {
+        this.dataManager.set(PIG_STATUS, status);
+    }
+
+    public String getPigStatus() {
+        return this.dataManager.get(PIG_STATUS);
     }
 
     private void setPigSize(float size) {
@@ -143,6 +287,145 @@ public class EnhancedPig  extends EntityAnimal {
         return this.dataManager.get(PIG_SIZE);
     }
 
+    public void setSleeping(Boolean sleeping) {
+        this.sleeping = sleeping;
+        this.dataManager.set(SLEEPING, sleeping); }
+
+    @Override
+    public Boolean isAnimalSleeping() {
+        if (this.sleeping == null) {
+            return false;
+        } else {
+            sleeping = this.dataManager.get(SLEEPING);
+            return sleeping;
+        }
+    }
+
+    @Override
+    public void awaken() {
+        this.awokenTimer = 200;
+        setSleeping(false);
+    }
+
+    public int getHunger(){
+        return hunger;
+    }
+
+    public void decreaseHunger(int decrease) {
+        if (this.hunger - decrease < 0) {
+            this.hunger = 0;
+        } else {
+            this.hunger = this.hunger - decrease;
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void handleStatusUpdate(byte id) {
+        if (id == 10) {
+            this.grassTimer = 40;
+        } else {
+            super.handleStatusUpdate(id);
+        }
+    }
+
+    @Override
+    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+        Item item = itemStack.getItem();
+        if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
+            if (item instanceof AirItem) {
+                ITextComponent message = getHungerText();
+                entityPlayer.sendMessage(message);
+                if (pregnant) {
+                    message = getPregnantText();
+                    entityPlayer.sendMessage(message);
+                }
+            } else if (item instanceof DebugGenesBook) {
+                Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
+            } else if (!getPigStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
+                if (this.foodWeightMap.containsKey(item)) {
+                    decreaseHunger(this.foodWeightMap.get(item));
+                } else {
+                    decreaseHunger(6000);
+                }
+                if (!entityPlayer.abilities.isCreativeMode) {
+                    if (item == Items.MILK_BUCKET) {
+                        if (itemStack.isEmpty()) {
+                            entityPlayer.setHeldItem(hand, new ItemStack(Items.MILK_BUCKET));
+                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.MILK_BUCKET))) {
+                            entityPlayer.dropItem(new ItemStack(Items.MILK_BUCKET), false);
+                        }
+                    } else {
+                        itemStack.shrink(1);
+                    }
+
+                }
+            } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
+
+                if (!entityPlayer.abilities.isCreativeMode) {
+                    if (item == ModItems.Half_Milk_Bottle) {
+                        decreaseHunger(6000);
+                        if (itemStack.isEmpty()) {
+                            entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                            entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                        }
+                    } else if (item == ModItems.Milk_Bottle) {
+                        if (hunger >= 12000) {
+                            decreaseHunger(12000);
+                            if (itemStack.isEmpty()) {
+                                entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                                entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                            }
+                        } else {
+                            decreaseHunger(6000);
+                            if (itemStack.isEmpty()) {
+                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
+                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
+                                entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        return super.processInteract(entityPlayer, hand);
+    }
+
+    private ITextComponent getHungerText() {
+        String hungerText = "";
+        if (this.hunger < 1000) {
+            hungerText = "eanimod.hunger.not_hungry";
+        } else if (this.hunger < 4000) {
+            hungerText = "eanimod.hunger.hungry";
+        } else if (this.hunger < 9000) {
+            hungerText = "eanimod.hunger.very_hunger";
+        } else if (this.hunger < 16000) {
+            hungerText = "eanimod.hunger.starving";
+        } else if (this.hunger > 24000) {
+            hungerText = "eanimod.hunger.dying";
+        }
+        return new TranslationTextComponent(hungerText);
+    }
+
+    private ITextComponent getPregnantText() {
+        String pregnancyText;
+        int days = ConfigHandler.COMMON.gestationDaysPig.get();
+        if (gestationTimer > (days/5 * 4)) {
+            pregnancyText = "eanimod.pregnancy.near_birth";
+        } else if (gestationTimer > days/2 ) {
+            pregnancyText = "eanimod.pregnancy.obviously_pregnant";
+        } else if (gestationTimer > days/3) {
+            pregnancyText = "eanimod.pregnancy.pregnant";
+        } else if (gestationTimer > days/5) {
+            pregnancyText = "eanimod.pregnancy.only_slightly_showing";
+        } else {
+            pregnancyText = "eanimod.pregnancy.not_showing";
+        }
+        return new TranslationTextComponent(pregnancyText);
+    }
 
     protected SoundEvent getAmbientSound() {
         return SoundEvents.ENTITY_PIG_AMBIENT;
@@ -156,7 +439,7 @@ public class EnhancedPig  extends EntityAnimal {
         return SoundEvents.ENTITY_PIG_DEATH;
     }
 
-    protected void playStepSound(BlockPos pos, IBlockState blockIn) {
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.ENTITY_PIG_STEP, 0.15F, 1.0F);
     }
 
@@ -164,28 +447,59 @@ public class EnhancedPig  extends EntityAnimal {
         return 0.4F;
     }
 
-    @Nullable
-    protected ResourceLocation getLootTable() {
-        return LootTableList.ENTITIES_PIG;
-    }
-
     protected void registerAttributes() {
         super.registerAttributes();
         this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        char[] uuidArry = getCachedUniqueIdString().toCharArray();
+        double tusks = 2.0D;
+        if (!isChild()) {
+            if ((Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8)) {
+                //tusks if "male"
+                tusks = 3.0D;
+            }
+        }
+        this.getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(tusks);
     }
 
     public void livingTick() {
         super.livingTick();
 
         if (this.world.isRemote) {
-            this.pigTimer = Math.max(0, this.pigTimer - 1);
-        }
+            this.grassTimer = Math.max(0, this.grassTimer - 1);
+        } else {
 
-        if (!this.world.isRemote) {
+            if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
+                setSleeping(true);
+                healTicks = 0;
+            } else if (awokenTimer > 0) {
+                awokenTimer--;
+            } else if (this.world.isDaytime() && sleeping) {
+                setSleeping(false);
+            }
+
+            if (this.getIdleTime() < 100) {
+                if (hunger <= 72000) {
+                    if (sleeping) {
+                        int days = ConfigHandler.COMMON.gestationDaysPig.get();
+                        if (hunger <= days * (0.50)) {
+                            hunger = hunger++;
+                        }
+                        healTicks++;
+                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
+                            this.heal(2.0F);
+                            hunger = hunger + 1000;
+                            healTicks = 0;
+                        }
+                    } else {
+                        hunger = hunger + 2;
+                    }
+                }
+            }
+
             if(pregnant) {
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDays.get();
+                int days = ConfigHandler.COMMON.gestationDaysPig.get();
                 if (gestationTimer >= days) {
                     pregnant = false;
                     gestationTimer = 0;
@@ -196,26 +510,130 @@ public class EnhancedPig  extends EntityAnimal {
                     int numberOfPiglets = ThreadLocalRandom.current().nextInt(pigletRange)+1+pigletAverage;
                     
                     for (int i = 0; i <= numberOfPiglets; i++) {
-                        EnhancedPig enhancedpig = new EnhancedPig(this.world);
+                        mixMateMitosisGenes();
+                        mixMitosisGenes();
+                        EnhancedPig enhancedpig = ENHANCED_PIG.create(this.world);
                         enhancedpig.setGrowingAge(0);
-                        int[] babyGenes = getPigletGenes();
+                        int[] babyGenes = getPigletGenes(this.mitosisGenes, this.mateMitosisGenes);
                         enhancedpig.setGenes(babyGenes);
                         enhancedpig.setSharedGenes(babyGenes);
                         enhancedpig.setPigSize();
-                        enhancedpig.setGrowingAge(-24000);
+                        enhancedpig.setGrowingAge(-60000);
+                        enhancedpig.setPigStatus(EntityState.CHILD_STAGE_ONE.toString());
                         enhancedpig.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-                        this.world.spawnEntity(enhancedpig);
+//                        enhancedpig.setMotherUUID(this.getUniqueID().toString());
+                        this.world.addEntity(enhancedpig);
                     }
 
                 }
             }
+            if (this.isChild()) {
+                if (getPigStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
+                    if(hunger < 5000) {
+                        setPigStatus(EntityState.CHILD_STAGE_TWO.toString());
+                    } else {
+                        this.setGrowingAge(-16500);
+                    }
+                } else if (getPigStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
+                    if(hunger < 5000) {
+                        setPigStatus(EntityState.CHILD_STAGE_THREE.toString());
+                    } else {
+                        this.setGrowingAge(-8500);
+                    }
+                }
+            } else if (getPigStatus().equals(EntityState.CHILD_STAGE_THREE.toString())) {
+                setPigStatus(EntityState.ADULT.toString());
+
+                //TODO remove the child follow mother ai
+
+            }
+
         }
 
         //TODO what lethal genes do pigs have?
-        if (!this.world.isRemote){
-            lethalGenes();
+//        if (!this.world.isRemote){
+//            lethalGenes();
+//        }
+
+    }
+
+
+    static class HurtByAggressorGoal extends HurtByTargetGoal {
+        public HurtByAggressorGoal(EnhancedPig entity) {
+            super(entity);
+            this.setCallsForHelp(new Class[]{EnhancedPig.class});
         }
 
+        protected void setAttackTarget(MobEntity mobIn, LivingEntity targetIn) {
+            if (mobIn instanceof EnhancedPig && this.goalOwner.canEntityBeSeen(targetIn) && ((EnhancedPig)mobIn).becomeAngryAt(targetIn)) {
+                mobIn.setAttackTarget(targetIn);
+            }
+
+        }
+    }
+
+    static class TargetAggressorGoal extends NearestAttackableTargetGoal<PlayerEntity> {
+        public TargetAggressorGoal(EnhancedPig entity) {
+            super(entity, PlayerEntity.class, true);
+        }
+
+        /**
+         * Returns whether the EntityAIBase should begin execution.
+         */
+        public boolean shouldExecute() {
+            return ((EnhancedPig)this.goalOwner).isAngry() && super.shouldExecute();
+        }
+    }
+
+    @Override
+    public boolean attackEntityAsMob(Entity entityIn) {
+        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), (float)((int)this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue()));
+        if (flag) {
+            this.applyEnchantments(this, entityIn);
+        }
+
+        return flag;
+    }
+
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        if (this.isInvulnerableTo(source)) {
+            return false;
+        } else {
+            Entity entity = source.getTrueSource();
+            if (entity instanceof PlayerEntity && !((PlayerEntity)entity).isCreative() && this.canEntityBeSeen(entity)) {
+                this.becomeAngryAt(entity);
+            }
+
+            return super.attackEntityFrom(source, amount);
+        }
+    }
+
+    private boolean becomeAngryAt(Entity entity) {
+        this.angerLevel = this.angerAmount();
+//        this.randomSoundDelay = this.rand.nextInt(40);
+        if (entity instanceof LivingEntity) {
+            this.setRevengeTarget((LivingEntity)entity);
+        }
+
+        return true;
+    }
+
+    @Override
+    public void setRevengeTarget(@Nullable LivingEntity livingBase) {
+        super.setRevengeTarget(livingBase);
+        if (livingBase != null) {
+            this.angerTargetUUID = livingBase.getUniqueID();
+        }
+
+    }
+
+    private int angerAmount() {
+        return 400 + this.rand.nextInt(400);
+    }
+
+    private boolean isAngry() {
+        return this.angerLevel > 0;
     }
 
     private void setPigSize(){
@@ -228,6 +646,46 @@ public class EnhancedPig  extends EntityAnimal {
         this.setPigSize(size);
     }
 
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
+        super.dropSpecialItems(source, looting, recentlyHitIn);
+
+        this.isBurning();
+
+//        float pigSize = this.getSize();
+
+//        int meatDrop;
+//        float meatChanceMod;
+
+        //pig size
+//        meatChanceMod = ((pigSize - 0.6F) * 4.445F) + 1;
+//        meatDrop = Math.round(meatChanceMod);
+//        if (meatDrop >= 5) {
+//            meatChanceMod = 0;
+//        } else {
+//            meatChanceMod = (meatChanceMod - meatDrop) * 100;
+//        }
+//
+//
+//        if (meatChanceMod  != 0) {
+//            int i = this.rand.nextInt(100);
+//            if (meatChanceMod > i) {
+//                meatDrop++;
+//            }
+//        }
+
+        //TODO add pig sizes and qualities here and remove the vanilla mimic
+
+        int meatDrop = ThreadLocalRandom.current().nextInt(3) + 1;
+
+        if (this.isBurning()){
+            ItemStack cookedBeefStack = new ItemStack(Items.COOKED_PORKCHOP, meatDrop);
+            this.entityDropItem(cookedBeefStack);
+        }else {
+            ItemStack beefStack = new ItemStack(Items.PORKCHOP, meatDrop);
+            this.entityDropItem(beefStack);
+        }
+    }
+
     public void lethalGenes(){
 
         //TODO lethal genes go here
@@ -235,9 +693,9 @@ public class EnhancedPig  extends EntityAnimal {
     }
 
     public void eatGrassBonus() {
-        if (this.isChild()) {
-            this.addGrowth(60);
-        }
+//        if (this.isChild()) {
+//            this.addGrowth(60);
+//        }
     }
 
 
@@ -267,31 +725,37 @@ public class EnhancedPig  extends EntityAnimal {
         return sharedGenesArray;
     }
 
-    public boolean isBreedingItem(ItemStack stack)
-    {
-        return TEMPTATION_ITEMS.test(stack);
+    public boolean isBreedingItem(ItemStack stack) {
+        //TODO set this to a separate item or type of item for force breeding
+        return BREED_ITEMS.test(stack);
     }
 
-    public EntityAgeable createChild(EntityAgeable ageable) {
-        this.mateGenes = ((EnhancedPig) ageable).getGenes();
-        mixMateMitosisGenes();
-        mixMitosisGenes();
-
-        pregnant = true;
+    public AgeableEntity createChild(AgeableEntity ageable) {
+        if(pregnant) {
+            ((EnhancedPig)ageable).pregnant = true;
+            ((EnhancedPig)ageable).setMateGenes(this.genes);
+            ((EnhancedPig)ageable).mixMateMitosisGenes();
+            ((EnhancedPig)ageable).mixMitosisGenes();
+        } else {
+            pregnant = true;
+            this.mateGenes = ((EnhancedPig) ageable).getGenes();
+            mixMateMitosisGenes();
+            mixMitosisGenes();
+        }
 
         this.setGrowingAge(10);
         this.resetInLove();
         ageable.setGrowingAge(10);
         ((EnhancedPig)ageable).resetInLove();
 
-        EntityPlayerMP entityplayermp = this.getLoveCause();
+        ServerPlayerEntity entityplayermp = this.getLoveCause();
         if (entityplayermp == null && ((EnhancedPig)ageable).getLoveCause() != null) {
             entityplayermp = ((EnhancedPig)ageable).getLoveCause();
         }
 
         if (entityplayermp != null) {
-            entityplayermp.addStat(StatList.ANIMALS_BRED);
-            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedPig)ageable), (EntityAgeable)null);
+            entityplayermp.addStat(Stats.ANIMALS_BRED);
+            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedPig)ageable), (AgeableEntity)null);
         }
 
         return null;
@@ -317,81 +781,232 @@ public class EnhancedPig  extends EntityAnimal {
     }
 
     @OnlyIn(Dist.CLIENT)
+    public String[] getVariantAlphaTexturePaths()
+    {
+        if (this.pigAlphaTextures.isEmpty()) {
+            this.setAlphaTexturePaths();
+        }
+
+
+        //todo this is only temporarity until we have alpha textures
+        if (this.pigAlphaTextures.isEmpty()) {
+            return null;
+        }
+
+        return this.pigAlphaTextures.stream().toArray(String[]::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
     private void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
             boolean agouti = false;
             int spotMod = 0;
-            
+            int red = 5;
+            int black = 0;
+            int spot = 0;
+            int belt = 0;
+            int berk = 0;
+            int coat = 0;
+            int skin = 0;
+            boolean tusks = false;
+
+            char[] uuidArry = getCachedUniqueIdString().toCharArray();
+
             if (genesForText[0] == 1 || genesForText[1] == 1){
                 //solid black
+                black = 1;
             }else if (genesForText[0] == 2 || genesForText[1] == 2){
                 agouti = true;
+                black = 2;
             }else if (genesForText[0] == 3 || genesForText[1] == 3){
                 //red with spots
                 if (genesForText[0] == 3 && genesForText[1] == 3){
                     //big spots
+                    black = 3;
                 }else{
                     //small spots
+                    black = 4;
                 }
-            }else{
-                //red
             }
 
             if (agouti){
                 if (genesForText[2] == 1 || genesForText[3] == 1){
                     //shaded black
+                    red = 8;
                 }else if (genesForText[2] == 2 || genesForText[3] == 2){
                     //shaded brown
-                }else if (genesForText[2] == 3 || genesForText[3] == 3){
-                    //agouti wild type
-                }else{
+                    black = 6;
+                }else if (genesForText[2] == 4 && genesForText[3] == 4) {
                     //recessive black
+                    black = 1;
                 }
             }
 
             if (genesForText[4] == 1 || genesForText[5] == 1){
                 // reduce red in coat colour
+                red = red - 2;
             }
 
             if (genesForText[6] == 2 && genesForText[7] == 2){
                 //black turns to dark chocolate
                 //reduce red in coat slightly
-            }
-
-            if (genesForText[8] == 1 || genesForText[9] == 1){
-                //turns black to blue/roan blue
-            }
-
-            if (genesForText[10] == 2 && genesForText[11] == 2){
-                //white spotted
-            }
-
-            if (genesForText[12] == 1 || genesForText[13] == 1){
-                //dominant white
-            }else if (genesForText[12] == 2 || genesForText[13] == 2){
-                //belted
-            }
-
-            if (genesForText[14] <= 2 || genesForText[15] <= 2){
-                if (genesForText[14] == 2 || genesForText[15] == 2){
-                    //tuxedo
+                if (black != 6) {
+                    black = black + 4;
                 }else{
-                    //berkshire
+                    black = 9;
+                }
+                red = red - 1;
+
+            }
+
+//TODO change this one
+
+//            if (genesForText[8] == 1 || genesForText[9] == 1){
+//                //turns black to blue/roan blue
+//
+//            }
+
+            if (genesForText[10] != 1 && genesForText[11] != 1) {
+                if (genesForText[10] == 2 || genesForText[11] == 2){
+                    //spotted
+                    spot = 1;
+                } else {
+                    //roan spotted
+                    spot = 2;
                 }
             }
 
-            if (genesForText[16] == 1 || genesForText[17] == 1){
-                spotMod = 2;
-            }else if (genesForText[16] == 2 || genesForText[17] == 2){
-                spotMod = 1;
+
+            if (genesForText[12] == 1 || genesForText[13] == 1){
+                //dominant white
+                belt = 1;
+            }else if (genesForText[12] == 2 || genesForText[13] == 2){
+                //belted
+                belt = 2;
             }
 
+            if (genesForText[14] != 1 && genesForText[15] != 1){
+                if (genesForText[14] == 2 || genesForText[15] == 2){
+                    //tuxedo
+                    berk = 1;
+                }else{
+                    //berkshire
+                    berk = 2;
+                }
+            }
 
-            
-        this.pigTextures.add(PIG_TEXTURES_COATRED[0]);
-        this.pigTextures.add(PIG_TEXTURES_COATBLACK[0]);
-        this.pigTextures.add(PIG_TEXTURES_SKINBASE[0]);
+            //TODO make textures for this
+//            if (genesForText[16] == 1 || genesForText[17] == 1){
+//                spotMod = 2;
+//            }else if (genesForText[16] == 2 || genesForText[17] == 2){
+//                spotMod = 1;
+//            }
+
+            if (belt == 1) {
+                skin = 1;
+            } else if (black == 1 || black == 2) {
+                skin = 3;
+            }else{
+                skin = 2;
+            }
+
+//            if (genesForText[36] != 1 && genesForText[37] != 1) {
+//                if ((genesForText[34] == 1 || genesForText[35] == 1) && (genesForText[34] != 3 && genesForText[35] != 3)) {
+//                    //furry
+//                    skin = skin * 4;
+//                }else if (genesForText[34] == 2 || genesForText[35] == 2) {
+//                    //normal
+//                    skin = skin * 3;
+//                }else{
+//                    //sparse
+//                    skin = skin * 2;
+//                }
+//            }
+//
+//            if ((genesForText[38] == 1 || genesForText[39] == 1) && skin <= 12) {
+//                skin = skin + 3;
+//            }
+
+            if (genesForText[36] != 1 && genesForText[37] != 1) {
+                if (genesForText[38] == 1 || genesForText[39] == 1) {
+                    //wooly
+                    coat = 1;
+                }
+            }
+
+            if (!isChild()) {
+                if ((Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8)) {
+                    //tusks if "male"
+                    tusks = true;
+                }
+            }
+
+            this.pigTextures.add(PIG_TEXTURES_SKINBASE[skin]);
+            if (spot == 1) {
+                this.pigTextures.add(PIG_TEXTURES_SKINMARKINGS_SPOTS[spot]);
+            }
+            if (belt != 0) {
+                this.pigTextures.add(PIG_TEXTURES_SKINMARKINGS_BELTED[belt]);
+            }
+            if (berk != 0) {
+                this.pigTextures.add(PIG_TEXTURES_SKINMARKINGS_BERKSHIRE[berk]);
+            }
+            if (genesForText[36] != 1 && genesForText[37] != 1) {
+            this.pigTextures.add("alpha_group_start");
+                this.pigTextures.add(PIG_TEXTURES_COATRED[red]);
+                if (black != 0) {
+                    this.pigTextures.add(PIG_TEXTURES_COATBLACK[black]);
+                }
+                if (spot != 0) {
+                    this.pigTextures.add(PIG_TEXTURES_SPOT_SPOTS[spot]);
+                }
+                if (belt != 0) {
+                    this.pigTextures.add(PIG_TEXTURES_SPOT_BELTED[belt]);
+                }
+                if (berk != 0) {
+                    this.pigTextures.add(PIG_TEXTURES_SPOT_BERKSHIRE[berk]);
+                }
+                this.pigTextures.add(PIG_TEXTURES_COAT[coat]);
+            this.pigTextures.add("alpha_group_end");
+            }
+            this.pigTextures.add(PIG_TEXTURES_EYES[0]);
+            this.pigTextures.add(PIG_TEXTURES_HOOVES[0]);
+            if (tusks){
+                this.pigTextures.add(PIG_TEXTURES_TUSKS[1]);
+            }
+
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void setAlphaTexturePaths() {
+        int[] genesForText = getSharedGenes();
+        if (genesForText != null) {
+            int coat = 0;
+
+            if (genesForText[36] != 1 && genesForText[37] != 1) {
+                if ((genesForText[34] == 1 || genesForText[35] == 1) && (genesForText[34] != 3 && genesForText[35] != 3)) {
+                    //furry
+                    coat = 3;
+                }else if (genesForText[34] == 2 || genesForText[35] == 2) {
+                    //normal
+                    coat = 2;
+                }else{
+                    //sparse
+                    coat = 1;
+                }
+
+                if (genesForText[38] == 1 || genesForText[39] == 1) {
+                    coat = coat + 1;
+                }
+            }
+
+            //todo do the alpha textures
+
+            if (coat != 0) {
+                this.pigAlphaTextures.add(PIG_TEXTURES_ALPHA[coat]);
+            }
 
         }
     }
@@ -399,49 +1014,58 @@ public class EnhancedPig  extends EntityAnimal {
     //TODO put item interactable stuff here like saddling pigs
 
 
-    public void writeAdditional(NBTTagCompound compound) {
+    public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
         //store this pigs's genes
-        NBTTagList geneList = new NBTTagList();
+        ListNBT geneList = new ListNBT();
         for (int i = 0; i < genes.length; i++) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("Gene", genes[i]);
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Gene", genes[i]);
             geneList.add(nbttagcompound);
         }
-        compound.setTag("Genes", geneList);
+        compound.put("Genes", geneList);
 
         //store this pigs's mate's genes
-        NBTTagList mateGeneList = new NBTTagList();
+        ListNBT mateGeneList = new ListNBT();
         for (int i = 0; i < mateGenes.length; i++) {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            nbttagcompound.setInt("Gene", mateGenes[i]);
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Gene", mateGenes[i]);
             mateGeneList.add(nbttagcompound);
         }
-        compound.setTag("FatherGenes", mateGeneList);
+        compound.put("FatherGenes", mateGeneList);
 
-        compound.setBoolean("Pregnant", this.pregnant);
-        compound.setInt("Gestation", this.gestationTimer);
+        compound.putBoolean("Pregnant", this.pregnant);
+        compound.putInt("Gestation", this.gestationTimer);
 
+        compound.putShort("Anger", (short)this.angerLevel);
+        if (this.angerTargetUUID != null) {
+            compound.putString("HurtBy", this.angerTargetUUID.toString());
+        } else {
+            compound.putString("HurtBy", "");
+        }
+
+        compound.putString("Status", getPigStatus());
+        compound.putInt("Hunger", hunger);
     }
 
     /**
      * (abstract) Protected helper method to read subclass entity assets from NBT.
      */
-    public void readAdditional(NBTTagCompound compound) {
+    public void readAdditional(CompoundNBT compound) {
 
         super.readAdditional(compound);
 
-        NBTTagList geneList = compound.getList("Genes", 10);
+        ListNBT geneList = compound.getList("Genes", 10);
         for (int i = 0; i < geneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = geneList.getCompound(i);
+            CompoundNBT nbttagcompound = geneList.getCompound(i);
             int gene = nbttagcompound.getInt("Gene");
             genes[i] = gene;
         }
 
-        NBTTagList mateGeneList = compound.getList("FatherGenes", 10);
+        ListNBT mateGeneList = compound.getList("FatherGenes", 10);
         for (int i = 0; i < mateGeneList.size(); ++i) {
-            NBTTagCompound nbttagcompound = mateGeneList.getCompound(i);
+            CompoundNBT nbttagcompound = mateGeneList.getCompound(i);
             int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
@@ -449,9 +1073,36 @@ public class EnhancedPig  extends EntityAnimal {
         this.pregnant = compound.getBoolean("Pregnant");
         this.gestationTimer = compound.getInt("Gestation");
 
+        for (int i = 0; i < genes.length; i++) {
+            if (genes[i] == 0) {
+                genes[i] = 1;
+            }
+        }
+        if (mateGenes[0] != 0) {
+            for (int i = 0; i < mateGenes.length; i++) {
+                if (mateGenes[i] == 0) {
+                    mateGenes[i] = 1;
+                }
+            }
+        }
+
         setSharedGenes(genes);
         setPigSize();
 
+        this.angerLevel = compound.getShort("Anger");
+        String s = compound.getString("HurtBy");
+        if (!s.isEmpty()) {
+            this.angerTargetUUID = UUID.fromString(s);
+            PlayerEntity playerentity = this.world.getPlayerByUuid(this.angerTargetUUID);
+            this.setRevengeTarget(playerentity);
+            if (playerentity != null) {
+                this.attackingPlayer = playerentity;
+                this.recentlyHit = this.getRevengeTimer();
+            }
+        }
+
+        setPigStatus(compound.getString("Status"));
+        hunger = compound.getInt("Hunger");
     }
 
     public void mixMitosisGenes() {
@@ -477,18 +1128,18 @@ public class EnhancedPig  extends EntityAnimal {
     }
 
 
-    public int[] getPigletGenes() {
+    public int[] getPigletGenes(int[] mitosis, int[] mateMitosis) {
         Random rand = new Random();
         int[] pigletGenes = new int[GENES_LENGTH];
 
         for (int i = 0; i < genes.length; i = (i + 2)) {
             boolean thisOrMate = rand.nextBoolean();
             if (thisOrMate) {
-                pigletGenes[i] = mitosisGenes[i];
-                pigletGenes[i+1] = mateMitosisGenes[i+1];
+                pigletGenes[i] = mitosis[i];
+                pigletGenes[i+1] = mateMitosis[i+1];
             } else {
-                pigletGenes[i] = mateMitosisGenes[i];
-                pigletGenes[i+1] = mitosisGenes[i+1];
+                pigletGenes[i] = mateMitosis[i];
+                pigletGenes[i+1] = mitosis[i+1];
             }
         }
 
@@ -498,14 +1149,21 @@ public class EnhancedPig  extends EntityAnimal {
 
     @Nullable
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata, @Nullable NBTTagCompound itemNbt) {
-        livingdata = super.onInitialSpawn(difficulty, livingdata, itemNbt);
+    public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
-            spawnGenes = ((GroupData) livingdata).groupGenes;
+            int[] spawnGenes1 = ((GroupData) livingdata).groupGenes;
+            int[] mitosis = new int[GENES_LENGTH];
+            punnetSquare(mitosis, spawnGenes1);
+
+            int[] spawnGenes2 = ((GroupData) livingdata).groupGenes;
+            int[] mateMitosis = new int[GENES_LENGTH];
+            punnetSquare(mateMitosis, spawnGenes2);
+            spawnGenes = replaceGenes(getPigletGenes(mitosis, mateMitosis), spawnGenes1);
         } else {
-            spawnGenes = createInitialGenes();
+            spawnGenes = createInitialGenes(inWorld);
             livingdata = new GroupData(spawnGenes);
         }
 
@@ -516,210 +1174,295 @@ public class EnhancedPig  extends EntityAnimal {
         return livingdata;
     }
 
-    private int[] createInitialGenes() {
+    private int[] replaceGenes(int[] resultGenes, int[] groupGenes) {
+        resultGenes[20] = groupGenes[20];
+        resultGenes[21] = groupGenes[21];
+        resultGenes[22] = groupGenes[22];
+        resultGenes[23] = groupGenes[23];
+        resultGenes[24] = groupGenes[24];
+        resultGenes[25] = groupGenes[25];
+        resultGenes[26] = groupGenes[26];
+        resultGenes[27] = groupGenes[27];
+        resultGenes[28] = groupGenes[28];
+        resultGenes[29] = groupGenes[29];
+        resultGenes[30] = groupGenes[30];
+        resultGenes[31] = groupGenes[31];
+
+        return resultGenes;
+    }
+
+    private int[] createInitialGenes(IWorld inWorld) {
         int[] initialGenes = new int[GENES_LENGTH];
         //TODO create biome WTC variable [hot and dry biomes, hot and wet biomes, cold biomes] WTC is all others
         int wildType = 2;
-        Biome biome = this.world.getBiome(new BlockPos(this));
+        Biome biome = inWorld.getBiome(new BlockPos(this));
 
-        if (biome.getDefaultTemperature() >= 0.9F) // hot and wet (jungle)
+        if (biome.getCategory().equals(Biome.Category.PLAINS))
         {
             wildType = 1;
         }
 
 
-        //Extension [ Dom.Black, Wildtype+, brindle, red ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[0] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
+        if (false) {
+            return new int[] {4,3,3,3,2,2,1,2,1,1,1,1,3,3,1,1,3,3,1,1,12,27,5,31,20,28,19,20,14,39,3,28,2,2,2,2,2,2,2,2,1,1,2,1};
         } else {
-            initialGenes[0] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[1] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
-        } else {
-            initialGenes[1] = (2);
-        }
+            //Extension [ Dom.Black, Wildtype+, brindle, red ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[0] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
-        //Agouti [ Black Enhancer, brown, wildtype? ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[2] = (ThreadLocalRandom.current().nextInt(1) + 1);
+            } else {
+                initialGenes[0] = (2);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[1] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
-        } else {
-            initialGenes[2] = (3);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[3] = (ThreadLocalRandom.current().nextInt(1) + 1);
+            } else {
+                initialGenes[1] = (2);
+            }
 
-        } else {
-            initialGenes[3] = (3);
-        }
+            //Agouti [ Black Enhancer, brown, wildtype? ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[2] = (ThreadLocalRandom.current().nextInt(1) + 1);
 
-        //Chinchilla [ chinchilla, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[4] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                initialGenes[2] = (3);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[3] = (ThreadLocalRandom.current().nextInt(1) + 1);
 
-        } else {
-            initialGenes[4] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[5] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                initialGenes[3] = (3);
+            }
 
-        } else {
-            initialGenes[5] = (2);
-        }
+            //Chinchilla [ chinchilla, wildtype ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[4] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        //Subtle Dilute [ Wildtype+, dilute ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                initialGenes[4] = (2);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[5] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        } else {
-            initialGenes[6] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[7] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                initialGenes[5] = (2);
+            }
 
-        } else {
-            initialGenes[7] = (1);
-        }
+            //Subtle Dilute [ Wildtype+, dilute ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        //Blue Dilute [ Dilute, wildtype+ ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[8] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                initialGenes[6] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[7] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        } else {
-            initialGenes[8] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[9] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                initialGenes[7] = (1);
+            }
 
-        } else {
-            initialGenes[9] = (1);
-        }
+            //Blue Dilute [ Dilute, wildtype+ ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[8] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        //White Spots [ Wildtype+, spotted, roanSpots ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            } else {
+                initialGenes[8] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[9] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        } else {
-            initialGenes[10] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            } else {
+                initialGenes[9] = (1);
+            }
 
-        } else {
-            initialGenes[11] = (1);
-        }
+            //White Spots [ Wildtype+, spotted, roanSpots ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
-        //Dom.White and Belted [ Dom.White, Belted, Wildtype+ ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[12] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            } else {
+                initialGenes[10] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[11] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
-        } else {
-            initialGenes[12] = (3);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[13] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            } else {
+                initialGenes[11] = (1);
+            }
 
-        } else {
-            initialGenes[13] = (3);
-        }
+            //Dom.White and Belted [ Dom.White, Belted, Wildtype+ ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[12] = (ThreadLocalRandom.current().nextInt(3) + 1);
+                if (wildType == 1) {
+                    initialGenes[13] = (1);
+                } else {
+                    initialGenes[13] = (3);
+                }
 
-        //Berkshire spots [ Wildtype+, tuxedo, berkshire ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[14] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            } else {
+                if (wildType == 1) {
+                    initialGenes[12] = (1);
+                    initialGenes[13] = (1);
+                } else {
+                    initialGenes[12] = (3);
+                    initialGenes[13] = (3);
+                }
+            }
 
-        } else {
-            initialGenes[14] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[15] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            //Berkshire spots [ Wildtype+, tuxedo, berkshire ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[14] = (ThreadLocalRandom.current().nextInt(3) + 1);
+                initialGenes[15] = (1);
 
-        } else {
-            initialGenes[15] = (1);
-        }
+            } else {
+                initialGenes[14] = (1);
+                initialGenes[15] = (1);
+            }
 
-        //White Extension [ Over marked, Medium, undermarked+ ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[16] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            //White Extension [ Over marked, Medium, undermarked+ ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[16] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
-        } else {
-            initialGenes[16] = (3);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[17] = (ThreadLocalRandom.current().nextInt(3) + 1);
+            } else {
+                initialGenes[16] = (3);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[17] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
-        } else {
-            initialGenes[17] = (3);
-        }
+            } else {
+                initialGenes[17] = (3);
+            }
 
-        //face squash gene 1 [ Wildtype+, long, medium, short, squashed ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[18] = (ThreadLocalRandom.current().nextInt(5) + 1);
+            //face squash gene 1 [ Wildtype+, long, medium, short, squashed ]
+            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[18] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
-        } else {
-            initialGenes[18] = (5);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[19] = (ThreadLocalRandom.current().nextInt(5) + 1);
+            } else {
+                initialGenes[18] = (1);
+            }
+            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[19] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
-        } else {
-            initialGenes[19] = (5);
-        }
+            } else {
+                initialGenes[19] = (1);
+            }
 
-        //face squash gene 2 [ shorter, normal, larger, largest ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[18] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            initialGenes[18] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[19] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            initialGenes[19] = (2);
-        }
-
-        //inbreeding detector A
+            //inbreeding detector A
             initialGenes[20] = (ThreadLocalRandom.current().nextInt(20) + 1);
             initialGenes[21] = (ThreadLocalRandom.current().nextInt(20) + 20);
 
-        //inbreeding detector B
+            //inbreeding detector B
             initialGenes[22] = (ThreadLocalRandom.current().nextInt(20) + 1);
             initialGenes[23] = (ThreadLocalRandom.current().nextInt(20) + 20);
 
-        //inbreeding detector C
+            //inbreeding detector C
             initialGenes[24] = (ThreadLocalRandom.current().nextInt(20) + 1);
             initialGenes[25] = (ThreadLocalRandom.current().nextInt(20) + 20);
 
-        //inbreeding detector D
+            //inbreeding detector D
             initialGenes[26] = (ThreadLocalRandom.current().nextInt(20) + 1);
             initialGenes[27] = (ThreadLocalRandom.current().nextInt(20) + 20);
 
-        //inbreeding detector E
+            //inbreeding detector E
             initialGenes[28] = (ThreadLocalRandom.current().nextInt(20) + 1);
             initialGenes[29] = (ThreadLocalRandom.current().nextInt(20) + 20);
 
-        //inbreeding detector F
+            //inbreeding detector F
             initialGenes[30] = (ThreadLocalRandom.current().nextInt(20) + 1);
             initialGenes[31] = (ThreadLocalRandom.current().nextInt(20) + 20);
 
 
-        //Waddles [ waddles, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            //Waddles [ waddles, wildtype ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        } else {
-            initialGenes[32] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            } else {
+                initialGenes[32] = (2);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
-        } else {
-            initialGenes[33] = (2);
+            } else {
+                initialGenes[33] = (2);
+            }
+
+            //hair density [ furry, wildtype, sparse ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[34] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[34] = (2);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[35] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[35] = (2);
+            }
+
+            //baldness [ Bald, wildtype ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                if (wildType == 1) {
+                    initialGenes[36] = (1);
+                } else {
+                    initialGenes[36] = (2);
+                }
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[37] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[37] = (2);
+            }
+
+            //wooly [ wooly, wildtype ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[38] = (2);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[39] = (2);
+            }
+
+            //thick hair [ thick hair+, less hair ]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[40] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[41] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[41] = (1);
+            }
+
+            //face squash gene 2 [ longest, normal, short, shortest]
+            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[42] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+            } else {
+                initialGenes[42] = (1);
+            }
+            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[43] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+            } else {
+                initialGenes[43] = (1);
+            }
         }
+
+
 
         return initialGenes;
     }
@@ -733,7 +1476,11 @@ public class EnhancedPig  extends EntityAnimal {
         return this.genes;
     }
 
-    public static class GroupData implements IEntityLivingData {
+    public void setMateGenes(int[] mateGenes){
+        this.mateGenes = mateGenes;
+    }
+
+    public static class GroupData implements ILivingEntityData {
 
         public int[] groupGenes;
 

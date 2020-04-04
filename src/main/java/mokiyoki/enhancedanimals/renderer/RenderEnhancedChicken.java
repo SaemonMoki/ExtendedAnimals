@@ -3,9 +3,10 @@ package mokiyoki.enhancedanimals.renderer;
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
+import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,14 +18,15 @@ import java.util.Map;
  * Created by saemon on 2/09/2018.
  */
 @OnlyIn(Dist.CLIENT)
-public class RenderEnhancedChicken extends RenderLiving<EnhancedChicken>
+public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnhancedChicken<EnhancedChicken>>
 {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_CHICKEN_TEXTURE_LOCATION = "eanimod:textures/entities/chicken/";
+    private static final String ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION = "eanimod:textures/entities/chickensilkie/";
 
-    public RenderEnhancedChicken(RenderManager render)
+    public RenderEnhancedChicken(EntityRendererManager render)
     {
-        super(render, new ModelEnhancedChicken(), 0.5F);
+        super(render, new ModelEnhancedChicken<>(), 0.5F);
     }
 
     /**
@@ -33,12 +35,19 @@ public class RenderEnhancedChicken extends RenderLiving<EnhancedChicken>
     protected ResourceLocation getEntityTexture(EnhancedChicken entity)
     {
         String s = entity.getChickenTexture();
+        int[] genes = entity.getSharedGenes();
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
         if (resourcelocation == null)
         {
             resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, entity.getVariantTexturePaths()));
+
+            if (genes[106] == 1 || genes[107] == 1) {
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, entity.getVariantTexturePaths(), null));
+            } else {
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION, null, entity.getVariantTexturePaths(), null));
+            }
+
             LAYERED_LOCATION_CACHE.put(s, resourcelocation);
         }
 

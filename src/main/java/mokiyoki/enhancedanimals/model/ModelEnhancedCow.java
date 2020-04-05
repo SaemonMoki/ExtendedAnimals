@@ -493,14 +493,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         } else {
             babyScale = 1.0F;
         }
-        cowSize = (( 2.0F * cowSize * age) + cowSize) / 3.0F;
+        float finalCowSize = (( 2.0F * cowSize * age) + cowSize) / 3.0F;
         GlStateManager.pushMatrix();
-        GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize, cowSize + (cowSize * bodyLength));
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (cowSize)) - d, 0.0F);
+        GlStateManager.scalef(finalCowSize + (finalCowSize * bodyWidth), finalCowSize, finalCowSize + (finalCowSize * bodyLength));
+        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (finalCowSize)) - d, 0.0F);
 
         renderHump(scale, hump, unrenderedModels);
 
-        renderBodyAndUdder(scale, cowSize, cowStatus, bodyLength, bagSize, unrenderedModels);
+        renderBodyAndUdder(scale, finalCowSize, cowStatus, bodyLength, bagSize, unrenderedModels);
 
         renderHorns(scale, horns, hornShift, unrenderedModels);
 
@@ -509,8 +509,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();
-        GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize * babyScale, cowSize + (cowSize * bodyLength));
-        GlStateManager.translatef(0.0F, -1.45F + 1.45F / (cowSize * babyScale), 0.0F);
+        GlStateManager.scalef(finalCowSize + (finalCowSize * bodyWidth), finalCowSize * babyScale, finalCowSize + (finalCowSize * bodyLength));
+        GlStateManager.translatef(0.0F, -1.45F + 1.45F / (finalCowSize * babyScale), 0.0F);
 
         renderLegs(scale, dwarf);
 

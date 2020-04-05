@@ -440,7 +440,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                 if (days/2 < gestationTimer) {
                     setSheepStatus(EntityState.PREGNANT.toString());
                 }
-                if (hunger > days*(0.75) && days !=0) {
+                if (hunger > 12000 && days !=0) {
                     pregnant = false;
                     setSheepStatus(EntityState.ADULT.toString());
                 }
@@ -476,6 +476,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                     }
 
                     for (int i = 0; i <= numberOfLambs; i++) {
+                        mixMateMitosisGenes();
+                        mixMitosisGenes();
                         createAndSpawnEnhancedChild(this.world);
                     }
                 }
@@ -524,8 +526,6 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     }
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
-        mixMateMitosisGenes();
-        mixMitosisGenes();
         EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
         int[] babyGenes = getLambGenes(this.mitosisGenes, this.mateMitosisGenes);
         enhancedsheep.setGenes(babyGenes);

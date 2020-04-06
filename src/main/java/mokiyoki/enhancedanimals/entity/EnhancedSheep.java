@@ -568,7 +568,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         enhancedsheep.setGrowingAge(-72000); // 3 days
         enhancedsheep.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedsheep.setSheepStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedsheep.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedsheep.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
 //                        enhancedsheep.setMotherUUID(this.getUniqueID().toString());
         this.world.addEntity(enhancedsheep);
     }

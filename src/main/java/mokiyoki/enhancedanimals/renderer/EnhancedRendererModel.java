@@ -1,10 +1,12 @@
 package mokiyoki.enhancedanimals.renderer;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -13,7 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class EnhancedRendererModel extends RendererModel {
+public class EnhancedRendererModel extends ModelRenderer {
+    private final ObjectList<ModelRenderer> childModels = new ObjectArrayList<>();
     private boolean compiled;
     private int displayList;
     public final String boxName;

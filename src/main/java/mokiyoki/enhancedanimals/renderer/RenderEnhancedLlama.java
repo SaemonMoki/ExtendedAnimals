@@ -30,7 +30,7 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    protected ResourceLocation getEntityTexture(EnhancedLlama entity)
+    public ResourceLocation getEntityTexture(EnhancedLlama entity)
     {
         String s = entity.getLlamaTexture();
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);

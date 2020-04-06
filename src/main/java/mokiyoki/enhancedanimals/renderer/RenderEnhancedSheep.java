@@ -26,7 +26,7 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    protected ResourceLocation getEntityTexture(EnhancedSheep entity)
+    public ResourceLocation getEntityTexture(EnhancedSheep entity)
     {
         String s = entity.getFleeceDyeColour().getName() + entity.getSheepTexture();
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);

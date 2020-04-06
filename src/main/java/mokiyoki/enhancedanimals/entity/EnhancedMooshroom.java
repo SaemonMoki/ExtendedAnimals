@@ -75,7 +75,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
         enhancedmooshroom.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedmooshroom.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedmooshroom.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedmooshroom.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
         enhancedmooshroom.setMotherUUID(this.getUniqueID().toString());
         enhancedmooshroom.configureAI();
         this.world.addEntity(enhancedmooshroom);
@@ -122,7 +122,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             if (this.getMooshroomType() == EnhancedMooshroom.Type.BROWN && itemstack.getItem().isIn(ItemTags.SMALL_FLOWERS)) {
                 if (this.hasStewEffect != null) {
                     for(int i = 0; i < 2; ++i) {
-                        this.world.addParticle(ParticleTypes.SMOKE, this.posX + (double)(this.rand.nextFloat() / 2.0F), this.posY + (double)(this.getHeight() / 2.0F), this.posZ + (double)(this.rand.nextFloat() / 2.0F), 0.0D, (double)(this.rand.nextFloat() / 5.0F), 0.0D);
+                        this.world.addParticle(ParticleTypes.SMOKE, this.getPosX() + (double)(this.rand.nextFloat() / 2.0F), this.getPosY() + (double)(this.getHeight() / 2.0F), this.getPosZ() + (double)(this.rand.nextFloat() / 2.0F), 0.0D, (double)(this.rand.nextFloat() / 5.0F), 0.0D);
                     }
                 } else {
                     Pair<Effect, Integer> pair = this.getStewEffect(itemstack);
@@ -131,7 +131,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
                     }
 
                     for(int j = 0; j < 4; ++j) {
-                        this.world.addParticle(ParticleTypes.EFFECT, this.posX + (double)(this.rand.nextFloat() / 2.0F), this.posY + (double)(this.getHeight() / 2.0F), this.posZ + (double)(this.rand.nextFloat() / 2.0F), 0.0D, (double)(this.rand.nextFloat() / 5.0F), 0.0D);
+                        this.world.addParticle(ParticleTypes.EFFECT, this.getPosX() + (double)(this.rand.nextFloat() / 2.0F), this.getPosY() + (double)(this.getHeight() / 2.0F), this.getPosZ() + (double)(this.rand.nextFloat() / 2.0F), 0.0D, (double)(this.rand.nextFloat() / 5.0F), 0.0D);
                     }
 
                     this.hasStewEffect = pair.getLeft();
@@ -229,11 +229,11 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IWorld world, net.minecraft.util.math.BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
-        this.world.addParticle(ParticleTypes.EXPLOSION, this.posX, this.posY + (double)(this.getHeight() / 2.0F), this.posZ, 0.0D, 0.0D, 0.0D);
+        this.world.addParticle(ParticleTypes.EXPLOSION, this.getPosX(), this.getPosY() + (double)(this.getHeight() / 2.0F), this.getPosZ(), 0.0D, 0.0D, 0.0D);
         if (!this.world.isRemote) {
             this.remove();
             EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
-            enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, (this.rotationYaw), this.rotationPitch);
+            enhancedcow.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), (this.rotationYaw), this.rotationPitch);
             enhancedcow.setHealth(this.getHealth());
             enhancedcow.renderYawOffset = this.renderYawOffset;
 

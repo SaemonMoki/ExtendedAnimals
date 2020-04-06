@@ -1,11 +1,13 @@
 package mokiyoki.enhancedanimals.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
@@ -65,30 +67,32 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final EnhancedRendererModel hornR9;
     private final EnhancedRendererModel headModel; //this is the neck not the head
     private final EnhancedRendererModel bodyMedium;
-    private final RendererModel udder;
-    private final RendererModel nipples;
-    private final RendererModel humpXSmall;
-    private final RendererModel humpSmall;
-    private final RendererModel humpSmallish;
-    private final RendererModel humpMedium;
-    private final RendererModel humpLargeish;
-    private final RendererModel humpLarge;
-    private final RendererModel humpXLarge;
+    private final ModelRenderer udder;
+    private final ModelRenderer nipples;
+    private final ModelRenderer humpXSmall;
+    private final ModelRenderer humpSmall;
+    private final ModelRenderer humpSmallish;
+    private final ModelRenderer humpMedium;
+    private final ModelRenderer humpLargeish;
+    private final ModelRenderer humpLarge;
+    private final ModelRenderer humpXLarge;
     private final EnhancedRendererModel tail0;
     private final EnhancedRendererModel tail1;
     private final EnhancedRendererModel tail2;
     private final EnhancedRendererModel tailBrush;
-    private final RendererModel leg1;
-    private final RendererModel leg2;
-    private final RendererModel leg3;
-    private final RendererModel leg4;
-    private final RendererModel shortLeg1;
-    private final RendererModel shortLeg2;
-    private final RendererModel shortLeg3;
-    private final RendererModel shortLeg4;
+    private final ModelRenderer leg1;
+    private final ModelRenderer leg2;
+    private final ModelRenderer leg3;
+    private final ModelRenderer leg4;
+    private final ModelRenderer shortLeg1;
+    private final ModelRenderer shortLeg2;
+    private final ModelRenderer shortLeg3;
+    private final ModelRenderer shortLeg4;
 
-    private final List<RendererModel> leftHorns = new ArrayList<>();
-    private final List<RendererModel> rightHorns = new ArrayList<>();
+    private final List<ModelRenderer> leftHorns = new ArrayList<>();
+    private final List<ModelRenderer> rightHorns = new ArrayList<>();
+
+    private Integer currentCow = null;
 
     public ModelEnhancedCow() {
 
@@ -310,35 +314,35 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.tailBrush.addBox(-1.0F, 0.0F, -0.5F, 2, 3, 2);
         this.tailBrush.setRotationPoint(0.0F, 3.0F, 0.0F);
 
-        this.leg1 = new RendererModel(this, 0, 54);
+        this.leg1 = new ModelRenderer(this, 0, 54);
         this.leg1.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
         this.leg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
 
-        this.leg2 = new RendererModel(this, 12, 54);
+        this.leg2 = new ModelRenderer(this, 12, 54);
         this.leg2.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
         this.leg2.setRotationPoint(3.0F, 13.5F, -10.0F);
 
-        this.leg3 = new RendererModel(this, 0, 67);
+        this.leg3 = new ModelRenderer(this, 0, 67);
         this.leg3.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
         this.leg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
 
-        this.leg4 = new RendererModel(this, 12, 67);
+        this.leg4 = new ModelRenderer(this, 12, 67);
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
         this.leg4.setRotationPoint(3.0F, 13.5F, 9.0F);
 
-        this.shortLeg1 = new RendererModel(this, 0, 54);
+        this.shortLeg1 = new ModelRenderer(this, 0, 54);
         this.shortLeg1.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
         this.shortLeg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
 
-        this.shortLeg2 = new RendererModel(this, 12, 54);
+        this.shortLeg2 = new ModelRenderer(this, 12, 54);
         this.shortLeg2.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
         this.shortLeg2.setRotationPoint(3.0F, 13.5F, -10.0F);
 
-        this.shortLeg3 = new RendererModel(this, 0, 67);
+        this.shortLeg3 = new ModelRenderer(this, 0, 67);
         this.shortLeg3.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
         this.shortLeg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
 
-        this.shortLeg4 = new RendererModel(this, 12, 67);
+        this.shortLeg4 = new ModelRenderer(this, 12, 67);
         this.shortLeg4.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
         this.shortLeg4.setRotationPoint(3.0F, 13.5F, 9.0F);
 
@@ -395,10 +399,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     }
 
-    @Override
-    public void render(T enhancedCow, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-
-        CowModelData cowModelData = getCowModelData(enhancedCow);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        CowModelData cowModelData = getCowModelData();
 
         int[] genes = cowModelData.cowGenes;
         float horns = calculateHorns(genes, cowModelData.uuidArray);
@@ -407,10 +409,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float bodyWidth = -0.165F;
         float bodyLength = 0.0F;
         int hump = 0;
-        //TODO find out why humps are glitchy
-        //TODO double check the widening/thinning genes and phenotype
-
-        List<String> unrenderedModels = this.setRotationAngles(enhancedCow, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, genes, cowModelData.uuidArray, cowModelData.sleeping);
 
         //size [0.75 to 2.5]
         float hornScale = 1.0F;
@@ -468,23 +466,19 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float age = 1.0F;
         float babyScale = 1.0F;
         if (!(cowModelData.birthTime == null) && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
-            int ageTime = (int)(((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime() - Long.parseLong(cowModelData.birthTime));
+            int ageTime = (int)(cowModelData.clientGameTime - Long.parseLong(cowModelData.birthTime));
             if (ageTime <= 108000) {
                 age = ageTime/108000.0F;
                 babyScale = (3.0F - age)/2;
             }
         }
 
-            renderAdult(scale, age, babyScale, cowModelData.cowStatus, dwarf, bodyWidth, bodyLength, hump, horns, hornScale, unrenderedModels, cowModelData.cowSize, cowModelData.bagSize, cowModelData.sleeping);
 
-//        long renderTotalEndTime = System.nanoTime();
-//        System.out.println("CowRenderTotal: " + (renderTotalEndTime - renderTotalStartTime));
 
-    }
 
-    private void renderAdult(float scale, float age, float babyScale, String cowStatus, boolean dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornShift, List<String> unrenderedModels, float cowSize, float bagSize, boolean sleeping) {
+
         float d = 0.0F;
-        if (!sleeping) {
+        if (!cowModelData.sleeping) {
             if (dwarf) {
                 d = 0.2F * (1.0F-age);
             } else {
@@ -493,18 +487,18 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         } else {
             babyScale = 1.0F;
         }
-        cowSize = (( 2.0F * cowSize * age) + cowSize) / 3.0F;
+        float cowSize = (( 2.0F * cowModelData.cowSize * age) + cowModelData.cowSize) / 3.0F;
         GlStateManager.pushMatrix();
         GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize, cowSize + (cowSize * bodyLength));
         GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (cowSize)) - d, 0.0F);
 
-        renderHump(scale, hump, unrenderedModels);
+        renderHump(hump, cowModelData.unrenderedModels);
 
-        renderBodyAndUdder(scale, cowSize, cowStatus, bodyLength, bagSize, unrenderedModels);
+        renderBodyAndUdder(cowModelData.cowStatus, cowModelData.bagSize, cowModelData.unrenderedModels);
 
-        renderHorns(scale, horns, hornShift, unrenderedModels);
+        renderHorns(horns, hornScale, cowModelData.unrenderedModels);
 
-        this.headModel.render(scale, null , unrenderedModels, true);
+        this.headModel.render(scale, null , cowModelData.unrenderedModels, true);
 
         GlStateManager.popMatrix();
 
@@ -512,13 +506,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         GlStateManager.scalef(cowSize + (cowSize * bodyWidth), cowSize * babyScale, cowSize + (cowSize * bodyLength));
         GlStateManager.translatef(0.0F, -1.45F + 1.45F / (cowSize * babyScale), 0.0F);
 
-        renderLegs(scale, dwarf);
+        renderLegs(dwarf);
 
         GlStateManager.popMatrix();
-
+        
     }
 
-    private void renderBodyAndUdder(float scale, float cowSize, String cowStatus, float bodyLength, float bagSize, List<String> unrenderedModels) {
+
+    private void renderBodyAndUdder(String cowStatus, float bagSize, List<String> unrenderedModels) {
         Map<String, List<Float>> mapOfScale = new HashMap<>();
         List<Float> scalingsForUdder = createScalings(bagSize, 0.0F, -(bagSize-1.0F)*0.4F, -(bagSize-1.0F)*0.85F);
         List<Float> scalingsForNipples = createScalings(1.5F/(0.5F+bagSize), 0.0F, (bagSize-1.0F)*0.05F, 0.0F);
@@ -533,7 +528,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.bodyMedium.render(scale, mapOfScale, unrenderedModels, false);
     }
 
-    private void renderHorns(float scale, float horns, float hornScale, List<String> unrenderedModels) {
+    private void renderHorns(float horns, float hornScale, List<String> unrenderedModels) {
         if (horns != 0.0F) {
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
@@ -544,7 +539,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
     }
 
-    private void renderLegs(float scale, boolean dwarf) {
+    private void renderLegs(boolean dwarf) {
         if (dwarf) {
             this.shortLeg1.render(scale);
             this.shortLeg2.render(scale);
@@ -558,7 +553,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
     }
 
-    private void renderHump(float scale, int hump, List<String> unrenderedModels) {
+    private void renderHump(int hump, List<String> unrenderedModels) {
         unrenderedModels.add("HumpXXS");
         unrenderedModels.add("HumpXS");
         unrenderedModels.add("HumpS");
@@ -1351,13 +1346,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         return horns;
     }
 
-    public static void copyModelRotations(RendererModel source, RendererModel dest) {
+    public static void copyModelRotations(ModelRenderer source, ModelRenderer dest) {
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
         dest.rotateAngleZ = source.rotateAngleZ;
     }
 
-    public static void copyModelAngles(RendererModel source, RendererModel dest) {
+    public static void copyModelAngles(ModelRenderer source, ModelRenderer dest) {
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
         dest.rotateAngleZ = source.rotateAngleZ;
@@ -1366,7 +1361,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         dest.rotationPointZ = source.rotationPointZ;
     }
 
-    public RendererModel getHead() {
+    public ModelRenderer getHead() {
         return this.headModel;
     }
 
@@ -1380,9 +1375,16 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         String cowStatus;
         boolean sleeping;
         int dataReset = 0;
+        long clientGameTime = 0;
+        List<String> unrenderedModels;
     }
 
-    private CowModelData getCowModelData(T enhancedCow) {
+    private CowModelData getCowModelData() {
+        CowModelData cowModelData = cowModelDataCache.get(this.currentCow);
+        return cowModelData;
+    }
+
+    private CowModelData getCreateCowModelData(T enhancedCow) {
         clearCacheTimer++;
         if(clearCacheTimer > 100000) {
             cowModelDataCache.values().removeIf(value -> value.lastAccessed==1);
@@ -1402,6 +1404,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             }
             cowModelData.bagSize = enhancedCow.getBagSize();
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
+            cowModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime());
             return cowModelData;
         } else {
             CowModelData cowModelData = new CowModelData();

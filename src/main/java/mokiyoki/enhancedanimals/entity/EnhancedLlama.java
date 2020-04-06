@@ -300,7 +300,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             float f = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
             float f1 = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
             float f2 = 0.3F;
-            passenger.setPosition(this.posX + (double)(0.3F * f1), this.posY + this.getMountedYOffset() + passenger.getYOffset(), this.posZ - (double)(0.3F * f));
+            passenger.setPosition(this.getPosX() + (double)(0.3F * f1), this.getPosY() + this.getMountedYOffset() + passenger.getYOffset(), this.getPosZ() - (double)(0.3F * f));
         }
     }
 
@@ -345,7 +345,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         }
 
         if (this.isChild() && i > 0) {
-            this.world.addParticle(ParticleTypes.HAPPY_VILLAGER, this.posX + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.posY + 0.5D + (double)(this.rand.nextFloat() * this.getWidth()), this.posZ + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), 0.0D, 0.0D, 0.0D);
+            this.world.addParticle(ParticleTypes.HAPPY_VILLAGER, this.getPosX() + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.getPosY() + 0.5D + (double)(this.rand.nextFloat() * this.getWidth()), this.getPosZ() + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), 0.0D, 0.0D, 0.0D);
             if (!this.world.isRemote) {
                 this.addGrowth(i);
             }
@@ -361,7 +361,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         }
 
         if (flag && !this.isSilent()) {
-            this.world.playSound((PlayerEntity)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_LLAMA_EAT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+            this.world.playSound((PlayerEntity)null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_LLAMA_EAT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
         }
 
         return flag;
@@ -579,7 +579,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                     enhancedllama.setCoatLength(enhancedllama.currentCoatLength);
                     enhancedllama.setGrowingAge(-120000);
                     enhancedllama.setLlamaStatus(EntityState.CHILD_STAGE_ONE.toString());
-                    enhancedllama.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+                    enhancedllama.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
 //                        enhancedllama.setMotherUUID(this.getUniqueID().toString());
                     this.world.addEntity(enhancedllama);
 
@@ -1542,12 +1542,12 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     private void spit(LivingEntity target) {
         EnhancedEntityLlamaSpit entityllamaspit = new EnhancedEntityLlamaSpit(this.world, this);
-        double d0 = target.posX - this.posX;
-        double d1 = target.getBoundingBox().minY + (double)(target.getHeight() / 3.0F) - entityllamaspit.posY;
-        double d2 = target.posZ - this.posZ;
+        double d0 = target.getPosX() - this.getPosX();
+        double d1 = target.getBoundingBox().minY + (double)(target.getHeight() / 3.0F) - entityllamaspit.getPosY();
+        double d2 = target.getPosZ() - this.getPosZ();
         float f = MathHelper.sqrt(d0 * d0 + d2 * d2) * 0.2F;
         entityllamaspit.shoot(d0, d1 + (double)f, d2, 1.5F, 10.0F);
-        this.world.playSound((PlayerEntity)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_LLAMA_SPIT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
+        this.world.playSound((PlayerEntity)null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_LLAMA_SPIT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
         this.world.addEntity(entityllamaspit);
         this.didSpit = true;
     }
@@ -1568,10 +1568,10 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                 }
             }
 
-            BlockState blockstate = this.world.getBlockState(new BlockPos(this.posX, this.posY - 0.2D - (double)this.prevRotationYaw, this.posZ));
+            BlockState blockstate = this.world.getBlockState(new BlockPos(this.getPosX(), this.getPosY() - 0.2D - (double)this.prevRotationYaw, this.getPosZ()));
             if (!blockstate.isAir() && !this.isSilent()) {
                 SoundType soundtype = blockstate.getSoundType();
-                this.world.playSound((PlayerEntity)null, this.posX, this.posY, this.posZ, soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
+                this.world.playSound((PlayerEntity)null, this.getPosX(), this.getPosY(), this.getPosZ(), soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
             }
 
         }

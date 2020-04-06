@@ -489,7 +489,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         enhancedcow.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedcow.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedcow.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
         enhancedcow.setMotherUUID(this.getUniqueID().toString());
         enhancedcow.configureAI();
         this.world.addEntity(enhancedcow);

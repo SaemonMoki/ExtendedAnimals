@@ -251,7 +251,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             float f = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
             float f1 = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
             float f2 = 0.3F;
-            passenger.setPosition(this.posX + (double)(0.3F * f1), this.posY + this.getMountedYOffset() + passenger.getYOffset(), this.posZ - (double)(0.3F * f));
+            passenger.setPosition(this.getPosX() + (double)(0.3F * f1), this.getPosY() + this.getMountedYOffset() + passenger.getYOffset(), this.getPosZ() - (double)(0.3F * f));
         }
     }
 
@@ -386,7 +386,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         enhancedhorse.setHorseSize();
         enhancedhorse.setGrowingAge(-84000);
         enhancedhorse.setHorseStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedhorse.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedhorse.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
         enhancedhorse.setMotherUUID(this.getUniqueID().toString());
         enhancedhorse.configureAI();
         this.world.addEntity(enhancedhorse);

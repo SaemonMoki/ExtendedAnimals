@@ -25,7 +25,7 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
         this.addLayer(new EnhancedMooshroomMushroomLayer<>(this));
     }
 
-    protected ResourceLocation getEntityTexture(EnhancedMooshroom entity) {
+    public ResourceLocation getEntityTexture(EnhancedMooshroom entity) {
         String s = entity.getCowTexture();
 
         float[] colourRGB = entity.getRgb();

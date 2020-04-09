@@ -370,6 +370,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 }
                 if (gestationTimer >= days) {
                     pregnant = false;
+                    gestationTimer = 0;
                     setCowStatus(EntityState.MOTHER.toString());
                     setMilkAmount(Math.round((30*(cowSize/1.5F))) - 1);
                     lactationTimer = -48000;

@@ -99,28 +99,31 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     private static final String[] HORSE_TEXTURES_BASE = new String[] {
             "r_solid_white.png"
     };
-    private static final String[] HORSE_TEXTURES_RED = new String[] {
-            "", "solid_red.png"
+//    private static final String[] HORSE_TEXTURES_RED = new String[] {
+//            "", "solid_red.png"
+//    };
+    private static final String[] HORSE_TEXTURES_DUN = new String[] {
+            "", "dun_smooth_strong.png", "dun_smooth_medium.png", "dun_smooth_weak.png",
+                "dun_wild_strong.png", "dun_wild_medium.png", "dun_wild_weak.png"
     };
-    private static final String[] HORSE_TEXTURES_BLACK = new String[] {
-            "sooty_dappled.png", "solid_black.png"
+    private static final String[] HORSE_TEXTURES_BLACKPATTERN = new String[] {
+            "", "b_bay_smooth_strong.png", "b_sealbrown.png"
     };
     private static final String[] HORSE_TEXTURES_SPOT_TOBIANO = new String[] {
             "",
             "spot_tobiano_0.png", "spot_tobiano_1.png", "spot_tobiano_2.png", "spot_tobiano_3.png", "spot_tobiano_4.png", "spot_tobiano_5.png", "spot_tobiano_6.png", "spot_tobiano_7.png", "spot_tobiano_8.png", "spot_tobiano_9.png", "spot_tobiano_a.png", "spot_tobiano_b.png", "spot_tobiano_c.png", "spot_tobiano_d.png", "spot_tobiano_e.png", "spot_tobiano_f.png"
     };
-    private static final String[] HORSE_TEXTURES_SPOT_DOMINANTWHITE1 = new String[] {
-            "",
-            "spot_domwhite1_0.png", "spot_domwhite1_1.png", "spot_domwhite1_2.png", "spot_domwhite1_3.png", "spot_domwhite1_4.png", "spot_domwhite1_5.png", "spot_domwhite1_6.png", "spot_domwhite1_7.png", "spot_domwhite1_8.png", "spot_domwhite1_9.png", "spot_domwhite1_a.png", "spot_domwhite1_b.png", "spot_domwhite1_c.png", "spot_domwhite1_d.png", "spot_domwhite1_e.png", "spot_domwhite1_f.png"
-    };
-    private static final String[] HORSE_TEXTURES_SPOT_DOMINANTWHITE2 = new String[] {
-            "",
-            "spot_domwhite2_0.png", "spot_domwhite2_1.png", "spot_domwhite2_2.png", "spot_domwhite2_3.png", "spot_domwhite2_4.png", "spot_domwhite2_5.png", "spot_domwhite2_6.png", "spot_domwhite2_7.png", "spot_domwhite2_8.png", "spot_domwhite2_9.png", "spot_domwhite2_a.png", "spot_domwhite2_b.png", "spot_domwhite2_c.png", "spot_domwhite2_d.png", "spot_domwhite2_e.png", "spot_domwhite2_f.png"
+    private static final String[] HORSE_TEXTURES_SPOT_DOMINANTWHITE = new String[] {
+            "", "spot_domwhite_solid.png", "spot_domwhite_1.png", "spot_domwhite1_2.png", "spot_domwhite1_3.png", "spot_domwhite1_4.png", "spot_domwhite1_5.png", "spot_domwhite1_6.png", "spot_domwhite1_7.png", "spot_domwhite1_8.png", "spot_domwhite1_9.png", "spot_domwhite1_a.png", "spot_domwhite1_b.png", "spot_domwhite1_c.png", "spot_domwhite1_d.png", "spot_domwhite1_e.png", "spot_domwhite1_f.png"
     };
 
     private static final String[] HORSE_TEXTURES_SPOT_APPALOOSA = new String[] {
             "",
             "spot_appaloosa_0.png", "spot_appaloosa_1.png", "spot_appaloosa_2.png", "spot_appaloosa_3.png", "spot_appaloosa_4.png", "spot_appaloosa_5.png", "spot_appaloosa_6.png", "spot_appaloosa_7.png", "spot_appaloosa_8.png", "spot_appaloosa_9.png", "spot_appaloosa_a.png", "spot_appaloosa_b.png", "spot_appaloosa_c.png", "spot_appaloosa_d.png", "spot_appaloosa_e.png", "spot_appaloosa_f.png"
+    };
+
+    private static final String[] HORSE_TEXTURES_SILVER = new String[]  {
+            "silver_mask.png"
     };
 
     private static final String[] HORSE_TEXTURES_SCLERA = new String[]  {
@@ -512,98 +515,110 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     private void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
+            int dun = 0;
+            int pattern = 0;
             int number = 0;
             int letter = 0;
             int sclera = 0;
+            boolean silver = false;
             char[] uuidArry = getCachedUniqueIdString().toCharArray();
 
-            if (genesForText[12] == 2 && genesForText[13] == 2) {
-                //horse is red based
-            } else {
-                if (genesForText[14] == 4 && genesForText[15] == 4) {
-                    //horse is black based
-                } else if (genesForText[14] == 1 || genesForText[15] == 1) {
-                    //wildtype bay
-                } else if (genesForText[14] == 2 || genesForText[15] == 2) {
-                    //heavy marked bay
+            if ((genesForText[18] == 20 || genesForText[18] == 28 || genesForText[18] == 29) && (genesForText[19] == 20 || genesForText[19] == 28 || genesForText[19] == 29)) {
+
+                if (genesForText[12] == 2 && genesForText[13] == 2) {
+                    //horse is red based
                 } else {
-                    //seal brown
+                    if (genesForText[14] == 4 && genesForText[15] == 4) {
+                        //horse is black based
+                    } else if (genesForText[14] == 1 || genesForText[15] == 1) {
+                        //wildtype bay
+                        pattern = 1;
+                    } else if (genesForText[14] == 2 || genesForText[15] == 2) {
+                        //heavy marked bay
+                        pattern = 1;
+                    } else {
+                        //seal brown
+                        pattern = 2;
+                    }
+                }
+
+                //TODO mushroom
+
+                if (genesForText[16] == 1 && genesForText[17] == 1) {
+                    //dun
+                    dun = 1;
+                }
+
+                if (genesForText[60] == 1 || genesForText[61] == 1) {
+                    //mealy markings
+                }
+
+                //TODO sooty
+
+                //TODO liver
+
+                if (Character.isDigit(uuidArry[16])) {
+                    number = uuidArry[16] - 48;
+                    if (number >= 8) {
+                        number = number - 8;
+                    }
+                } else {
+                    char test = uuidArry[16];
+                    switch (test) {
+                        case 'a':
+                            number = 3;
+                            break;
+                        case 'b':
+                            number = 4;
+                            break;
+                        case 'c':
+                            number = 5;
+                            break;
+                        case 'd':
+                            number = 6;
+                            break;
+                        case 'e':
+                            number = 7;
+                            break;
+                        case 'f':
+                            number = 8;
+                            break;
+                    }
+                }
+
+                if (Character.isDigit(uuidArry[17])) {
+                    letter = uuidArry[17] - 48;
+                    if (letter >= 8) {
+                        letter = letter - 8;
+                    }
+                } else {
+                    char test = uuidArry[17];
+                    switch (test) {
+                        case 'a':
+                            letter = 3;
+                            break;
+                        case 'b':
+                            letter = 4;
+                            break;
+                        case 'c':
+                            letter = 5;
+                            break;
+                        case 'd':
+                            letter = 6;
+                            break;
+                        case 'e':
+                            letter = 7;
+                            break;
+                        case 'f':
+                            letter = 8;
+                            break;
+                    }
                 }
             }
 
-            //TODO mushroom
-
-            if (genesForText[16] != 3 && genesForText[17] != 3) {
-                //primitive markings
+            if (genesForText[26] == 2 && genesForText[27] ==2) {
+                silver = true;
             }
-
-            if (genesForText[60] == 1 || genesForText[61] == 1) {
-                //mealy markings
-            }
-
-            //TODO sooty
-
-            //TODO liver
-
-            if (Character.isDigit(uuidArry[16])){
-                number = uuidArry[16] - 48;
-                if (number >= 8) {
-                    number = number - 8;
-                }
-            } else {
-                char test = uuidArry[16];
-                switch (test){
-                    case 'a':
-                        number = 3;
-                        break;
-                    case 'b':
-                        number = 4;
-                        break;
-                    case 'c':
-                        number = 5;
-                        break;
-                    case 'd':
-                        number = 6;
-                        break;
-                    case 'e':
-                        number = 7;
-                        break;
-                    case 'f':
-                        number = 8;
-                        break;
-                }
-            }
-
-            if (Character.isDigit(uuidArry[17])){
-                letter = uuidArry[17] - 48;
-                if (letter >= 8) {
-                    letter = letter - 8;
-                }
-            } else {
-                char test = uuidArry[17];
-                switch (test){
-                    case 'a':
-                        letter = 3;
-                        break;
-                    case 'b':
-                        letter = 4;
-                        break;
-                    case 'c':
-                        letter = 5;
-                        break;
-                    case 'd':
-                        letter = 6;
-                        break;
-                    case 'e':
-                        letter = 7;
-                        break;
-                    case 'f':
-                        letter = 8;
-                        break;
-                }
-            }
-
-            
 
             if (genesForText[36] == 2 || genesForText[37] == 2) {
                 sclera = 1;
@@ -611,7 +626,15 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
 
             this.horseTextures.add(HORSE_TEXTURES_SKIN[0]);
             this.horseTextures.add(HORSE_TEXTURES_BASE[0]);
-            this.horseTextures.add(HORSE_TEXTURES_BLACK[0]);
+            if (dun != 0) {
+                this.horseTextures.add(HORSE_TEXTURES_DUN[dun]);
+            }
+            if (pattern != 0) {
+                this.horseTextures.add(HORSE_TEXTURES_BLACKPATTERN[pattern]);
+            }
+            if (silver) {
+                this.horseTextures.add(HORSE_TEXTURES_SILVER[0]);
+            }
             this.horseTextures.add(HORSE_TEXTURES_TESTNUMBER[number]);
             this.horseTextures.add(HORSE_TEXTURES_TESTLETTER[letter]);
             this.horseTextures.add(HORSE_TEXTURES_SCLERA[sclera]);
@@ -1005,24 +1028,24 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[12] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[12] = (1);
+            initialGenes[12] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[13] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            initialGenes[13] = (1);
+            initialGenes[13] = (2);
         }
 
         //Agouti [ Wildtype+, Bay2, sealbrown, solid/black ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[14] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[14] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
             initialGenes[14] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[15] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            initialGenes[15] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         } else {
             initialGenes[15] = (1);
@@ -1033,13 +1056,13 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[16] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[16] = (3);
+            initialGenes[16] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[17] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
         } else {
-            initialGenes[17] = (3);
+            initialGenes[17] = (1);
         }
 
         //Dominant White Spotting [ W1-, W2-, W3-, W4-, W5, W6, W7, W8, W9-, W10-, W11-, W12, W13-, W14-, W15, W16, W17-, W18, W19, W20(Sabino2), W21, W22, W23-, W24-, W25-, W26, W27, Sabino1, wildtype+ ]

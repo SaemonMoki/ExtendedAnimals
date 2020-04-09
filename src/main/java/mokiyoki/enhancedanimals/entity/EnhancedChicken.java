@@ -3400,7 +3400,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
         //Recessive white [ wild, recessive white, albino ]  //mutation common in temperate areas and swamps
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
-            if (ThreadLocalRandom.current().nextInt(200) > 199) {
+            if (ThreadLocalRandom.current().nextInt(200) == 199) {
                 initialGenes[20] = (3);
             } else {
                 initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
@@ -3413,11 +3413,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
-            if (ThreadLocalRandom.current().nextInt(200) > 199) {
-                initialGenes[21] = (3);
-            } else {
-                initialGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            }
+            initialGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
             if (wildType == 0) {
                 initialGenes[21] = (2);

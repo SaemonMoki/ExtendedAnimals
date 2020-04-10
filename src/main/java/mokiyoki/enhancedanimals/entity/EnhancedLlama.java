@@ -721,7 +721,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     private void tryDespawn() {
         if (this.canDespawn()) {
-            this.despawnDelay = this.isLeashedToTrader() ? ((WanderingTraderEntity)this.getLeashHolder()).func_213735_eg() - 1 : this.despawnDelay - 1;
+            this.despawnDelay = this.isLeashedToTrader() ? ((WanderingTraderEntity)this.getLeashHolder()).getDespawnDelay() - 1 : this.despawnDelay - 1;
             if (this.despawnDelay <= 0) {
                 this.clearLeashed(true, false);
                 this.remove();

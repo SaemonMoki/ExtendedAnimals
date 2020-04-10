@@ -325,7 +325,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         super.jump();
         double d0 = this.moveController.getSpeed();
         if (d0 > 0.0D) {
-            double d1 = func_213296_b(this.getMotion());
+            double d1 = horizontalMag(this.getMotion());
             if (d1 < 0.01D) {
                 this.moveRelative(0.1F, new Vec3d(0.0D, 0.0D, 1.0D));
             }

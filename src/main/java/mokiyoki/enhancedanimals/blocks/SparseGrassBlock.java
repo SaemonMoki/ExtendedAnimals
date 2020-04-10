@@ -4,11 +4,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SpreadableSnowyDirtBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.util.BlockRenderLayer;
+//import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.PlantType;
 
 import java.util.Random;
@@ -20,7 +20,7 @@ public class SparseGrassBlock extends SpreadableSnowyDirtBlock {
     }
 
     @Override
-    public void tick(BlockState state, World worldIn, BlockPos pos, Random random) {
+    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
         super.tick(state, worldIn, pos, random);
         if (!worldIn.isRemote) {
             if (!worldIn.isAreaLoaded(pos, 3))
@@ -68,17 +68,12 @@ public class SparseGrassBlock extends SpreadableSnowyDirtBlock {
         return false;
     }
 
-    @Override
-    public boolean isSolid(BlockState state) {
-        return true;
-    }
-
     /**
      * Gets the render layer this block will render on. SOLID for solid blocks, CUTOUT or CUTOUT_MIPPED for on-off
      * transparency (glass, reeds), TRANSLUCENT for fully blended transparency (stained glass)
      */
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT_MIPPED;
-    }
+//    public BlockRenderLayer getRenderLayer() {
+//        return BlockRenderLayer.CUTOUT_MIPPED;
+//    }
 
 }

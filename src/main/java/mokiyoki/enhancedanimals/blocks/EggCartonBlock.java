@@ -10,7 +10,6 @@ import net.minecraft.block.material.PushReaction;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
@@ -22,6 +21,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
@@ -72,11 +72,11 @@ public class EggCartonBlock extends ContainerBlock {
     }
 
 
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (worldIn.isRemote) {
-            return true;
+            return ActionResultType.SUCCESS;
         } else if (player.isSpectator()) {
-            return true;
+            return ActionResultType.SUCCESS;
         } else {
             TileEntity tileentity = worldIn.getTileEntity(pos);
             if (tileentity instanceof EggCartonTileEntity) {
@@ -85,7 +85,7 @@ public class EggCartonBlock extends ContainerBlock {
                 boolean flag;
                 if (eggCartonTileEntity.getAnimationStatus() == EggCartonTileEntity.AnimationStatus.CLOSED) {
                     AxisAlignedBB axisalignedbb = VoxelShapes.fullCube().getBoundingBox().expand((double)(0.5F * (float)direction.getXOffset()), (double)(0.5F * (float)direction.getYOffset()), (double)(0.5F * (float)direction.getZOffset())).contract((double)direction.getXOffset(), (double)direction.getYOffset(), (double)direction.getZOffset());
-                    flag = worldIn.areCollisionShapesEmpty(axisalignedbb.offset(pos.offset(direction)));
+                    flag = worldIn.func_226664_a_(axisalignedbb.offset(pos.offset(direction)));
                 } else {
                     flag = true;
                 }
@@ -95,9 +95,9 @@ public class EggCartonBlock extends ContainerBlock {
                     player.addStat(Stats.OPEN_CHEST);
                 }
 
-                return true;
+                return ActionResultType.SUCCESS;
             } else {
-                return false;
+                return ActionResultType.PASS;
             }
         }
     }
@@ -247,11 +247,6 @@ public class EggCartonBlock extends ContainerBlock {
 
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.toRotation(state.get(FACING)));
-    }
-
-    @Override
-    public boolean isSolid(BlockState state) {
-        return false;
     }
 
     @Override

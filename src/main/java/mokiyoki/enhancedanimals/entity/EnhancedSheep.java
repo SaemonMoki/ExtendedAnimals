@@ -420,7 +420,6 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                             net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
                             ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
                         });
-                        //TODO How to make the sheep act as if sheared
                         onSheared(ItemStack.EMPTY, this.world, getPosition(), 0);
                     } else if (timeForGrowth >= (24000 / maxCoatLength)) {
                         timeForGrowth = 0;
@@ -440,7 +439,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                 if (days/2 < gestationTimer) {
                     setSheepStatus(EntityState.PREGNANT.toString());
                 }
-                if (hunger > days*(0.75) && days !=0) {
+                if (hunger > 12000 && days !=0) {
                     pregnant = false;
                     setSheepStatus(EntityState.ADULT.toString());
                 }
@@ -476,6 +475,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                     }
 
                     for (int i = 0; i <= numberOfLambs; i++) {
+                        mixMateMitosisGenes();
+                        mixMitosisGenes();
                         createAndSpawnEnhancedChild(this.world);
                     }
                 }
@@ -524,8 +525,6 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     }
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
-        mixMateMitosisGenes();
-        mixMitosisGenes();
         EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
         int[] babyGenes = getLambGenes(this.mitosisGenes, this.mateMitosisGenes);
         enhancedsheep.setGenes(babyGenes);
@@ -1500,12 +1499,16 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         }
 
         this.genes = spawnGenes;
-        setSharedGenes(genes);
-        setMaxCoatLength();
+        this.setSharedGenes(genes);
+        this.setMaxCoatLength();
         this.currentCoatLength = this.maxCoatLength;
-        setCoatLength(this.currentCoatLength);
+        this.setCoatLength(this.currentCoatLength);
 
-        setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - ThreadLocalRandom.current().nextInt(60000, 80000)));
+        int birthMod = ThreadLocalRandom.current().nextInt(60000, 80000);
+        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
+        if (birthMod < 72000) {
+            this.setGrowingAge(birthMod - 72000);
+        }
 
         //"White" is considered no dye
         this.setFleeceDyeColour(DyeColor.WHITE);

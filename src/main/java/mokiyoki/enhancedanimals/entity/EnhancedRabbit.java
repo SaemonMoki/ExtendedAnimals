@@ -86,6 +86,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     private static final DataParameter<Boolean> NOSE_WIGGLING = EntityDataManager.<Boolean>createKey(EnhancedRabbit.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<String> RABBIT_STATUS = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.STRING);
+    private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedRabbit.class, DataSerializers.STRING);
 
     private static final String[] RABBIT_TEXTURES_UNDER = new String[] {
         "under_cream.png", "under_grey.png", "under_white.png"
@@ -372,6 +373,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.dataManager.register(NOSE_WIGGLING, false);
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(RABBIT_STATUS, new String());
+        this.dataManager.register(BIRTH_TIME, "0");
     }
 
     protected void setRabbitStatus(String status) { this.dataManager.set(RABBIT_STATUS, status); }
@@ -385,6 +387,12 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     public int getCoatLength() {
         return this.dataManager.get(COAT_LENGTH);
     }
+
+    protected void setBirthTime(String birthTime) {
+        this.dataManager.set(BIRTH_TIME, birthTime);
+    }
+
+    public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
     public void setNoseWiggling(boolean wiggling) {
         this.dataManager.set(NOSE_WIGGLING, wiggling);
@@ -728,19 +736,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
                     for (int i = 0; i <= numberOfKits; i++) {
                         mixMateMitosisGenes();
                         mixMitosisGenes();
-                        EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.create(this.world);
-                        enhancedrabbit.setGrowingAge(0);
-                        int[] babyGenes = getBunnyGenes(this.mitosisGenes, this.mateMitosisGenes);
-                        enhancedrabbit.setGenes(babyGenes);
-                        enhancedrabbit.setSharedGenes(babyGenes);
-                        enhancedrabbit.setMaxCoatLength();
-                        enhancedrabbit.currentCoatLength = enhancedrabbit.maxCoatLength;
-                        enhancedrabbit.setCoatLength(enhancedrabbit.currentCoatLength);
-                        enhancedrabbit.setGrowingAge(-48000);
-                        enhancedrabbit.setRabbitStatus(EntityState.CHILD_STAGE_ONE.toString());
-                        enhancedrabbit.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-//                        enhancedrabbit.setMotherUUID(this.getUniqueID().toString());
-                        this.world.addEntity(enhancedrabbit);
+                        createAndSpawnEnhancedChild(this.world);
                     }
 
                 }
@@ -769,6 +765,23 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             lethalGenes();
         }
 
+    }
+
+    protected void createAndSpawnEnhancedChild(World inWorld) {
+        EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.create(this.world);
+        enhancedrabbit.setGrowingAge(0);
+        int[] babyGenes = getBunnyGenes(this.mitosisGenes, this.mateMitosisGenes);
+        enhancedrabbit.setGenes(babyGenes);
+        enhancedrabbit.setSharedGenes(babyGenes);
+        enhancedrabbit.setMaxCoatLength();
+        enhancedrabbit.currentCoatLength = enhancedrabbit.maxCoatLength;
+        enhancedrabbit.setCoatLength(enhancedrabbit.currentCoatLength);
+        enhancedrabbit.setGrowingAge(-48000);
+        enhancedrabbit.setBirthTime(String.valueOf(inWorld.getGameTime()));
+        enhancedrabbit.setRabbitStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedrabbit.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+//                        enhancedrabbit.setMotherUUID(this.getUniqueID().toString());
+        this.world.addEntity(enhancedrabbit);
     }
 
     public class JumpHelperController extends JumpController {
@@ -1164,6 +1177,8 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
         compound.putString("Status", getRabbitStatus());
         compound.putInt("Hunger", hunger);
+
+        compound.putString("BirthTime", this.getBirthTime());
     }
 
     /**
@@ -1214,6 +1229,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         //resets the max so we don't have to store it
         setMaxCoatLength();
 
+        this.setBirthTime(compound.getString("BirthTime"));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1729,6 +1745,13 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         setMaxCoatLength();
         this.currentCoatLength = this.maxCoatLength;
         setCoatLength(this.currentCoatLength);
+
+        int birthMod = ThreadLocalRandom.current().nextInt(30000, 80000);
+        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
+        if (birthMod < 48000) {
+            this.setGrowingAge(birthMod - 48000);
+        }
+
         return livingdata;
     }
 

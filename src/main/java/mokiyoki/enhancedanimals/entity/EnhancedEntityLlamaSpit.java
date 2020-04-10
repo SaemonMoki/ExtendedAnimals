@@ -35,7 +35,7 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
     public EnhancedEntityLlamaSpit(World worldIn, EnhancedLlama p_i47273_2_) {
         this(ENHANCED_LLAMA_SPIT, worldIn);
         this.owner = p_i47273_2_;
-        this.setPosition(p_i47273_2_.posX - (double)(p_i47273_2_.getWidth() + 1.0F) * 0.5D * (double)MathHelper.sin(p_i47273_2_.renderYawOffset * ((float)Math.PI / 180F)), p_i47273_2_.posY + (double)p_i47273_2_.getEyeHeight() - (double)0.1F, p_i47273_2_.posZ + (double)(p_i47273_2_.getWidth() + 1.0F) * 0.5D * (double)MathHelper.cos(p_i47273_2_.renderYawOffset * ((float)Math.PI / 180F)));
+        this.setPosition(p_i47273_2_.getPosX() - (double)(p_i47273_2_.getWidth() + 1.0F) * 0.5D * (double)MathHelper.sin(p_i47273_2_.renderYawOffset * ((float)Math.PI / 180F)), p_i47273_2_.getPosY() + (double)p_i47273_2_.getEyeHeight() - (double)0.1F, p_i47273_2_.getPosZ() + (double)(p_i47273_2_.getWidth() + 1.0F) * 0.5D * (double)MathHelper.cos(p_i47273_2_.renderYawOffset * ((float)Math.PI / 180F)));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -61,17 +61,17 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
         }
 
         Vec3d vec3d = this.getMotion();
-        RayTraceResult raytraceresult = ProjectileHelper.func_221267_a(this, this.getBoundingBox().expand(vec3d).grow(1.0D), (p_213879_1_) -> {
+        RayTraceResult raytraceresult = ProjectileHelper.rayTrace(this, this.getBoundingBox().expand(vec3d).grow(1.0D), (p_213879_1_) -> {
             return !p_213879_1_.isSpectator() && p_213879_1_ != this.owner;
         }, RayTraceContext.BlockMode.OUTLINE, true);
-        if (raytraceresult != null && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
+        if (raytraceresult != null && raytraceresult.getType() != RayTraceResult.Type.MISS && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, raytraceresult)) {
             this.onHit(raytraceresult);
         }
 
-        this.posX += vec3d.x;
-        this.posY += vec3d.y;
-        this.posZ += vec3d.z;
-        float f = MathHelper.sqrt(func_213296_b(vec3d));
+        double d0 = this.getPosX() + vec3d.x;
+        double d1 = this.getPosY() + vec3d.y;
+        double d2 = this.getPosZ() + vec3d.z;
+        float f = MathHelper.sqrt(horizontalMag(vec3d));
         this.rotationYaw = (float)(MathHelper.atan2(vec3d.x, vec3d.z) * (double)(180F / (float)Math.PI));
 
         for(this.rotationPitch = (float)(MathHelper.atan2(vec3d.y, (double)f) * (double)(180F / (float)Math.PI)); this.rotationPitch - this.prevRotationPitch < -180.0F; this.prevRotationPitch -= 360.0F) {
@@ -104,7 +104,7 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
                 this.setMotion(this.getMotion().add(0.0D, (double)-0.06F, 0.0D));
             }
 
-            this.setPosition(this.posX, this.posY, this.posZ);
+            this.setPosition(d0, d1, d2);
         }
     }
 
@@ -120,7 +120,7 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
             this.rotationYaw = (float)(MathHelper.atan2(x, z) * (double)(180F / (float)Math.PI));
             this.prevRotationPitch = this.rotationPitch;
             this.prevRotationYaw = this.rotationYaw;
-            this.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
+            this.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, this.rotationPitch);
         }
 
     }
@@ -131,7 +131,7 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
     public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
         Vec3d vec3d = (new Vec3d(x, y, z)).normalize().add(this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy).scale((double)velocity);
         this.setMotion(vec3d);
-        float f = MathHelper.sqrt(func_213296_b(vec3d));
+        float f = MathHelper.sqrt(horizontalMag(vec3d));
         this.rotationYaw = (float)(MathHelper.atan2(vec3d.x, z) * (double)(180F / (float)Math.PI));
         this.rotationPitch = (float)(MathHelper.atan2(vec3d.y, (double)f) * (double)(180F / (float)Math.PI));
         this.prevRotationYaw = this.rotationYaw;

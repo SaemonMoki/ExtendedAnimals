@@ -447,7 +447,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                     pregnant = false;
                     gestationTimer = -48000;
                     setSheepStatus(EntityState.MOTHER.toString());
-                    setMilkAmount(5);
+                    setMilkAmount(4);
                     int lambRange;
                     int lambAverage = 1;
                     int numberOfLambs;

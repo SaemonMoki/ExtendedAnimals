@@ -39,6 +39,11 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOS
 
 public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge.common.IShearable {
     private static final DataParameter<String> MOOSHROOM_TYPE = EntityDataManager.createKey(EnhancedMooshroom.class, DataSerializers.STRING);
+
+    private static final String[] MOOSHROOM_MUSHROOM = new String[] {
+            "red_mushroom.png", "brown_mushroom.png"
+    };
+
     private Effect hasStewEffect;
     private int effectDuration;
     /** Stores the UUID of the most recent lightning bolt to strike */
@@ -62,6 +67,18 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     protected void registerData() {
         super.registerData();
         this.dataManager.register(MOOSHROOM_TYPE, EnhancedMooshroom.Type.RED.name);
+    }
+
+    @Override
+    protected void setTexturePaths() {
+        super.setTexturePaths();
+        int mushroomType = 0;
+
+        if (getMooshroomType().name.equals("brown")) {
+            mushroomType = 1;
+        }
+
+        this.cowTextures.add(MOOSHROOM_MUSHROOM[0]);
     }
 
     @Override

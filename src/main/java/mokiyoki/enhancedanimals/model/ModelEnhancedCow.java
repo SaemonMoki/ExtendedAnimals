@@ -86,6 +86,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final RendererModel shortLeg2;
     private final RendererModel shortLeg3;
     private final RendererModel shortLeg4;
+    private final RendererModel mushroomBody1;
+    private final RendererModel mushroomBody2;
+    private final EnhancedRendererModel mushroomHead;
 
     private final List<RendererModel> leftHorns = new ArrayList<>();
     private final List<RendererModel> rightHorns = new ArrayList<>();
@@ -163,83 +166,83 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.hornParent = new EnhancedRendererModel(this, 0, 0);
         this.hornGranparent.addChild(hornParent);
 
-        this.hornL0 = new EnhancedRendererModel(this, 64, 34, "HornL0");
+        this.hornL0 = new EnhancedRendererModel(this, 64, 29, "HornL0");
         this.hornL0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
         leftHorns.add(hornL0);
 
-        this.hornL1 = new EnhancedRendererModel(this, 64, 42, "HornL1");
+        this.hornL1 = new EnhancedRendererModel(this, 64, 37, "HornL1");
         this.hornL1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.001F);
         leftHorns.add(hornL1);
 
-        this.hornL2 = new EnhancedRendererModel(this, 64, 50, "HornL2");
+        this.hornL2 = new EnhancedRendererModel(this, 64, 45, "HornL2");
         this.hornL2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.002F);
         leftHorns.add(hornL2);
 
-        this.hornL3 = new EnhancedRendererModel(this, 64, 58, "HornL3");
+        this.hornL3 = new EnhancedRendererModel(this, 64, 53, "HornL3");
         this.hornL3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.003F);
         leftHorns.add(hornL3);
 
-        this.hornL4 = new EnhancedRendererModel(this, 64, 66, "HornL4");
+        this.hornL4 = new EnhancedRendererModel(this, 64, 61, "HornL4");
         this.hornL4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.004F);
         leftHorns.add(hornL4);
 
-        this.hornL5 = new EnhancedRendererModel(this, 64, 66, "HornL5");
+        this.hornL5 = new EnhancedRendererModel(this, 64, 61, "HornL5");
         this.hornL5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
         leftHorns.add(hornL5);
 
-        this.hornL6 = new EnhancedRendererModel(this, 64, 66, "HornL6");
+        this.hornL6 = new EnhancedRendererModel(this, 64, 61, "HornL6");
         this.hornL6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
         leftHorns.add(hornL6);
 
-        this.hornL7 = new EnhancedRendererModel(this, 64, 66, "HornL7");
+        this.hornL7 = new EnhancedRendererModel(this, 64, 61, "HornL7");
         this.hornL7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
         leftHorns.add(hornL7);
 
-        this.hornL8 = new EnhancedRendererModel(this, 64, 66, "HornL8");
+        this.hornL8 = new EnhancedRendererModel(this, 64, 61, "HornL8");
         this.hornL8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
         leftHorns.add(hornL8);
 
-        this.hornL9 = new EnhancedRendererModel(this, 64, 66, "HornL9");
+        this.hornL9 = new EnhancedRendererModel(this, 64, 61, "HornL9");
         this.hornL9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
         leftHorns.add(hornL9);
 
-        this.hornR0 = new EnhancedRendererModel(this, 64, 34, "HornR0");
+        this.hornR0 = new EnhancedRendererModel(this, 64, 29, "HornR0");
         this.hornR0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
         rightHorns.add(hornR0);
 
-        this.hornR1 = new EnhancedRendererModel(this, 64, 42, "HornR1");
+        this.hornR1 = new EnhancedRendererModel(this, 64, 37, "HornR1");
         this.hornR1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.001F);
         rightHorns.add(hornR1);
 
-        this.hornR2 = new EnhancedRendererModel(this, 64, 50, "HornR2");
+        this.hornR2 = new EnhancedRendererModel(this, 64, 45, "HornR2");
         this.hornR2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.002F);
         rightHorns.add(hornR2);
 
-        this.hornR3 = new EnhancedRendererModel(this, 64, 58, "HornR3");
+        this.hornR3 = new EnhancedRendererModel(this, 64, 53, "HornR3");
         this.hornR3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.003F);
         rightHorns.add(hornR3);
 
-        this.hornR4 = new EnhancedRendererModel(this, 64, 66, "HornR4");
+        this.hornR4 = new EnhancedRendererModel(this, 64, 61, "HornR4");
         this.hornR4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.004F);
         rightHorns.add(hornR4);
 
-        this.hornR5 = new EnhancedRendererModel(this, 64, 66, "HornR5");
+        this.hornR5 = new EnhancedRendererModel(this, 64, 61, "HornR5");
         this.hornR5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
         rightHorns.add(hornR5);
 
-        this.hornR6 = new EnhancedRendererModel(this, 64, 66, "HornR6");
+        this.hornR6 = new EnhancedRendererModel(this, 64, 61, "HornR6");
         this.hornR6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
         rightHorns.add(hornR6);
 
-        this.hornR7 = new EnhancedRendererModel(this, 64, 66, "HornR7");
+        this.hornR7 = new EnhancedRendererModel(this, 64, 61, "HornR7");
         this.hornR7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
         rightHorns.add(hornR7);
 
-        this.hornR8 = new EnhancedRendererModel(this, 64, 66, "HornR8");
+        this.hornR8 = new EnhancedRendererModel(this, 64, 61, "HornR8");
         this.hornR8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
         rightHorns.add(hornR8);
 
-        this.hornR9 = new EnhancedRendererModel(this, 64, 66, "HornR9");
+        this.hornR9 = new EnhancedRendererModel(this, 64, 61, "HornR9");
         this.hornR9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
         rightHorns.add(hornR9);
 
@@ -342,6 +345,24 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.shortLeg4.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
         this.shortLeg4.setRotationPoint(3.0F, 13.5F, 9.0F);
 
+        this.mushroomBody1 = new RendererModel(this, 54, 64);
+        this.mushroomBody1.addBox(0.0F, -8.0F, 0.0F, 1, 8, 8);
+        this.mushroomBody1.setTextureOffset(62, 71);
+        this.mushroomBody1.addBox(-4.0F, -8.0F, 4.0F, 8, 8, 1);
+        this.mushroomBody1.setRotationPoint(-3.0F, 0.0F, -5.0F);
+
+        this.mushroomBody2 = new RendererModel(this, 54, 64);
+        this.mushroomBody2.addBox(0.0F, -8.0F, 0.0F, 1, 8, 8);
+        this.mushroomBody2.setTextureOffset(62, 71);
+        this.mushroomBody2.addBox(-4.0F, -8.0F, 4.0F, 8, 8, 1);
+        this.mushroomBody2.setRotationPoint(3.0F, 0.0F, 5.0F);
+
+        this.mushroomHead = new EnhancedRendererModel(this, 54, 64);
+        this.mushroomHead.addBox(0.0F, -8.0F, 0.0F, 1, 8, 8);
+        this.mushroomHead.setTextureOffset(62, 71);
+        this.mushroomHead.addBox(-4.0F, -8.0F, 4.0F, 8, 8, 1);
+        this.mushroomHead.setRotationPoint(0.0F, -0.5F, -6.0F);
+
         this.headModel.addChild(this.actualHead);
         this.actualHead.addChild(this.earLongestL);
         this.actualHead.addChild(this.earLongL);
@@ -392,6 +413,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.tail2.addChild(this.tailBrush);
         this.bodyMedium.addChild(this.udder);
         this.udder.addChild(this.nipples);
+
+        this.actualHead.addChild(mushroomHead);
 
     }
 
@@ -503,6 +526,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         renderBodyAndUdder(scale, finalCowSize, cowStatus, bodyLength, bagSize, unrenderedModels);
 
         renderHorns(scale, horns, hornShift, unrenderedModels);
+
+        this.mushroomBody1.render(scale);
+        this.mushroomBody2.render(scale);
 
         this.headModel.render(scale, null , unrenderedModels, true);
 
@@ -1223,6 +1249,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         onGround = 9.80F;
         this.bodyMedium.rotationPointY = 9.75F;
 
+        this.mushroomBody1.rotationPointY = 9.75F;
+        this.mushroomBody2.rotationPointY = 9.75F;
+
         this.leg1.rotateAngleX = 1.575F;
         this.leg2.rotateAngleX = 1.575F;
         this.leg3.rotateAngleX = -1.575F;
@@ -1242,6 +1271,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             onGround = 5.75F;
             this.bodyMedium.rotationPointY = 5.5F;
 
+            this.mushroomBody1.rotationPointY = 5.5F;
+            this.mushroomBody2.rotationPointY = 5.5F;
+
             this.leg1.setRotationPoint(-6.0F, 16.5F, -10.0F);
             this.leg2.setRotationPoint(3.0F, 16.5F, -10.0F);
             this.leg3.setRotationPoint(-6.0F, 16.5F, 9.0F);
@@ -1250,6 +1282,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         } else {
             onGround = 2.75F;
             this.bodyMedium.rotationPointY = 2.5F;
+
+            this.mushroomBody1.rotationPointY = 2.5F;
+            this.mushroomBody2.rotationPointY = 2.5F;
 
             this.leg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
             this.leg2.setRotationPoint(3.0F, 13.5F, -10.0F);

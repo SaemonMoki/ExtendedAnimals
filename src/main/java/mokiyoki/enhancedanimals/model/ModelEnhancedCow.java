@@ -93,7 +93,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final ModelRenderer mushroomBody2;
     private final EnhancedRendererModelNew mushroomHead;
 
-
     private final List<EnhancedRendererModelNew> leftHorns = new ArrayList<>();
     private final List<EnhancedRendererModelNew> rightHorns = new ArrayList<>();
 

@@ -1,33 +1,33 @@
-//package mokiyoki.enhancedanimals.renderer.layers;
+package mokiyoki.enhancedanimals.renderer.layers;
+
 //
-////
-//// Source code recreated from a .class file by IntelliJ IDEA
-//// (powered by Fernflower decompiler)
-////
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
 //
-//import com.mojang.blaze3d.platform.GlStateManager;
-//import com.mojang.blaze3d.platform.GlStateManager.CullFace;
-//import net.minecraft.block.BlockState;
-//import net.minecraft.client.Minecraft;
-//import net.minecraft.client.renderer.BlockRendererDispatcher;
-//import net.minecraft.client.renderer.entity.IEntityRenderer;
-//import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-//import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
-//import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
-//import net.minecraft.client.renderer.texture.AtlasTexture;
-//import net.minecraftforge.api.distmarker.Dist;
-//import net.minecraftforge.api.distmarker.OnlyIn;
-//
-//@OnlyIn(Dist.CLIENT)
-//public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends LayerRenderer<T, ModelEnhancedCow<T>> {
-//
-//    private float size;
-//
-//    public EnhancedMooshroomMushroomLayer(IEntityRenderer<T, ModelEnhancedCow<T>> p_i50931_1_) {
-//        super(p_i50931_1_);
-//    }
-//
-//    public void render(T entityIn, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float p_212842_6_, float p_212842_7_, float p_212842_8_) {
+
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.CullFace;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.entity.IEntityRenderer;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
+import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
+public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends LayerRenderer<T, ModelEnhancedCow<T>> {
+
+    private float size;
+
+    public EnhancedMooshroomMushroomLayer(IEntityRenderer<T, ModelEnhancedCow<T>> p_i50931_1_) {
+        super(p_i50931_1_);
+    }
+
+    public void render(T entityIn, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float p_212842_6_, float p_212842_7_, float p_212842_8_) {
 //        if (!entityIn.isChild() && !entityIn.isInvisible()) {
 //
 //            EnhancedMooshroom enhancedMooshroom = entityIn;
@@ -115,9 +115,9 @@
 //            GlStateManager.cullFace(GlStateManager.CullFace.BACK);
 //            GlStateManager.disableCull();
 //        }
-//    }
-//
-//    public boolean shouldCombineTextures() {
-//        return true;
-//    }
-//}
+    }
+
+    public boolean shouldCombineTextures() {
+        return true;
+    }
+}

@@ -72,6 +72,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     private static final DataParameter<Boolean> ROOSTING = EntityDataManager.<Boolean>createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Float> CHICKEN_SIZE = EntityDataManager.createKey(EnhancedChicken.class, DataSerializers.FLOAT);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedChicken.class, DataSerializers.STRING);
 
     /** [4] duckwing, partridge, wheaten, solid
      [5] silver, salmon, lemon, gold, mahogany */
@@ -317,6 +318,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         this.dataManager.register(ROOSTING, new Boolean(false));
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(CHICKEN_SIZE, 0.0F);
+        this.dataManager.register(BIRTH_TIME, "0");
     }
 
     private void setChickenSize(float size) {
@@ -326,6 +328,12 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     public float getSize() {
         return this.dataManager.get(CHICKEN_SIZE);
     }
+
+    protected void setBirthTime(String birthTime) {
+        this.dataManager.set(BIRTH_TIME, birthTime);
+    }
+
+    public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
@@ -3083,6 +3091,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         compound.put("FatherGenes", mateGeneList);
 
         compound.putInt("Hunger", hunger);
+
+        compound.putString("BirthTime", this.getBirthTime());
     }
 
     /**
@@ -3107,6 +3117,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         }
 
         hunger = compound.getInt("Hunger");
+
+        this.setBirthTime(compound.getString("BirthTime"));
 
         for (int i = 0; i < genes.length; i++) {
             if (genes[i] == 0) {
@@ -3247,6 +3259,13 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         this.genes = spawnGenes;
         setSharedGenes(genes);
         setChickenSize();
+
+        int birthMod = ThreadLocalRandom.current().nextInt(10000, 120000);
+        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
+        if (birthMod < 60000) {
+            this.setGrowingAge(birthMod - 60000);
+        }
+
         return livingdata;
     }
 

@@ -5,7 +5,9 @@ import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -199,33 +201,22 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, sleeping);
 
-        float childSize = size/4.0F;
+        float age = 1.0F;
+        if (!(pigModelData.birthTime == null) && !pigModelData.birthTime.equals("") && !pigModelData.birthTime.equals("0")) {
+            int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(pigModelData.birthTime));
+            if (ageTime <= 108000) {
+                age = ageTime/108000.0F;
+            }
+        }
 
-        if (isChild) {
+        float finalPigSize = (( 3.0F * size * age) + size) / 4.0F;
             GlStateManager.pushMatrix();
-            GlStateManager.scalef(childSize, childSize, childSize);
-            GlStateManager.translatef(0.0F, -1.5F + 1.5F/childSize, 0.0F);
-
-            this.neck.render(scale);
-            this.body.render(scale);
-            this.butt.render(scale);
-            this.tail0.render(scale);
-            this.leg1.render(scale);
-            this.leg2.render(scale);
-            this.leg3.render(scale);
-            this.leg4.render(scale);
-
-            GlStateManager.popMatrix();
-
-        }else{
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(size, size, size);
-            GlStateManager.translatef(0.0F, -1.5F + 1.5F/size, 0.0F);
+            GlStateManager.scalef(finalPigSize, finalPigSize, finalPigSize);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/finalPigSize, 0.0F);
 
             this.pig.render(scale);
 
             GlStateManager.popMatrix();
-        }
     }
 
     private void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, boolean sleeping) {
@@ -282,6 +273,15 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         PigModelData pigModelData = getPigModelData(entitylivingbaseIn);
         int[] sharedGenes = pigModelData.pigGenes;
         char[] uuidArry = pigModelData.uuidArray;
+        float onGround;
+
+        boolean sleeping = pigModelData.sleeping;
+
+        if (sleeping) {
+            onGround = sleepingAnimation();
+        } else {
+            onGround = standingAnimation();
+        }
 
         //snoutLength
           float snoutLength1 = -0.065F;
@@ -369,10 +369,35 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             this.tail3.rotateAngleY = -0.3555F * inbreedingFactor;
         }
 
-
-
     }
 
+    private float sleepingAnimation() {
+        float onGround;
+
+        onGround = 9.80F;
+
+        this.pig.rotateAngleZ = (float)Math.PI / 2.0F;
+        this.pig.setRotationPoint(15.0F, 19.0F, 0.0F);
+        this.leg1.rotateAngleZ = -0.8F;
+        this.leg1.rotateAngleX = 0.3F;
+        this.leg3.rotateAngleZ = -0.8F;
+        this.leg3.rotateAngleX = -0.3F;
+        this.neck.rotateAngleZ = 0.2F;
+
+        return onGround;
+    }
+
+    private float standingAnimation() {
+        float onGround;
+        onGround = 2.75F;
+
+        this.pig.rotateAngleZ = 0.0F;
+        this.pig.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.leg1.rotateAngleZ = 0.0F;
+        this.leg3.rotateAngleZ = 0.0F;
+
+        return onGround;
+    }
 
     public static void copyModelAngles(RendererModel source, RendererModel dest) {
         dest.rotateAngleX = source.rotateAngleX;
@@ -387,6 +412,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
     private class PigModelData {
         int[] pigGenes;
         char[] uuidArray;
+        String birthTime;
         float size;
         boolean sleeping;
         int lastAccessed = 0;
@@ -420,6 +446,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             pigModelData.size = enhancedPig.getSize();
             pigModelData.sleeping = enhancedPig.isAnimalSleeping();
             pigModelData.uuidArray = enhancedPig.getCachedUniqueIdString().toCharArray();
+            pigModelData.birthTime = enhancedPig.getBirthTime();
 
             pigModelDataCache.put(enhancedPig.getEntityId(), pigModelData);
 

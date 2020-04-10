@@ -89,6 +89,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<String> LLAMA_STATUS = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.STRING);
+    private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
 
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
             "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blacktan.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png", "fawn.png"
@@ -220,6 +221,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.dataManager.register(DATA_COLOR_ID, -1);
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(LLAMA_STATUS, new String());
+        this.dataManager.register(BIRTH_TIME, "0");
     }
 
     private void setLlamaStatus(String status) {
@@ -262,6 +264,12 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     public int getInventoryColumns() {
         return this.getInventory();
     }
+
+    protected void setBirthTime(String birthTime) {
+        this.dataManager.set(BIRTH_TIME, birthTime);
+    }
+
+    public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
@@ -567,21 +575,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
                     mixMateMitosisGenes();
                     mixMitosisGenes();
+                    createAndSpawnEnhancedChild(this.world);
 
-                    int[] babyGenes = getCriaGenes(this.mitosisGenes, this.mateMitosisGenes);
-                    EnhancedLlama enhancedllama = ENHANCED_LLAMA.create(this.world);
-                    enhancedllama.setGrowingAge(0);
-                    enhancedllama.setGenes(babyGenes);
-                    enhancedllama.setSharedGenes(babyGenes);
-                    enhancedllama.setStrengthAndInventory();
-                    enhancedllama.setMaxCoatLength();
-                    enhancedllama.currentCoatLength = enhancedllama.maxCoatLength;
-                    enhancedllama.setCoatLength(enhancedllama.currentCoatLength);
-                    enhancedllama.setGrowingAge(-120000);
-                    enhancedllama.setLlamaStatus(EntityState.CHILD_STAGE_ONE.toString());
-                    enhancedllama.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-//                        enhancedllama.setMotherUUID(this.getUniqueID().toString());
-                    this.world.addEntity(enhancedllama);
 
                 }
             }
@@ -610,6 +605,24 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         }
 
 
+    }
+
+    protected void createAndSpawnEnhancedChild(World inWorld) {
+        int[] babyGenes = getCriaGenes(this.mitosisGenes, this.mateMitosisGenes);
+        EnhancedLlama enhancedllama = ENHANCED_LLAMA.create(this.world);
+        enhancedllama.setGrowingAge(0);
+        enhancedllama.setGenes(babyGenes);
+        enhancedllama.setSharedGenes(babyGenes);
+        enhancedllama.setStrengthAndInventory();
+        enhancedllama.setMaxCoatLength();
+        enhancedllama.currentCoatLength = enhancedllama.maxCoatLength;
+        enhancedllama.setCoatLength(enhancedllama.currentCoatLength);
+        enhancedllama.setGrowingAge(-120000);
+        enhancedllama.setBirthTime(String.valueOf(inWorld.getGameTime()));
+        enhancedllama.setLlamaStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedllama.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+//                        enhancedllama.setMotherUUID(this.getUniqueID().toString());
+        this.world.addEntity(enhancedllama);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1038,6 +1051,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         compound.putString("Status", getLlamaStatus());
         compound.putInt("Hunger", hunger);
 
+        compound.putString("BirthTime", this.getBirthTime());
+
         if (this.despawnDelay != -1) {
             compound.putInt("DespawnDelay", this.despawnDelay);
         }
@@ -1084,6 +1099,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
         setLlamaStatus(compound.getString("Status"));
         hunger = compound.getInt("Hunger");
+
+        this.setBirthTime(compound.getString("BirthTime"));
 
         if (compound.contains("DespawnDelay", 99)) {
             this.despawnDelay = compound.getInt("DespawnDelay");
@@ -1173,6 +1190,13 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         setMaxCoatLength();
         this.currentCoatLength = this.maxCoatLength;
         setCoatLength(this.currentCoatLength);
+
+        int birthMod = ThreadLocalRandom.current().nextInt(20000, 500000);
+        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
+        if (birthMod < 120000) {
+            this.setGrowingAge(birthMod - 120000);
+        }
+
         return livingdata;
     }
 

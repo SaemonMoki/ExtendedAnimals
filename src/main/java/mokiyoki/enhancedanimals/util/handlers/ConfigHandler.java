@@ -124,32 +124,32 @@ public class ConfigHandler {
 //                    .defineInRange("gestation.days", 24000, 1, Integer.MAX_VALUE);
 
             gestationDaysRabbit = builder
-                    .comment("Number of ticks for rabbit gestation. Minimum time is 5 seconds. 24000 = 1 Minecraft Day")
-                    .defineInRange("rabbitGestation.days", 24000, 100, Integer.MAX_VALUE);
+                    .comment("Number of ticks for rabbit gestation. Minimum time is 50 seconds. 24000 = 1 Minecraft Day")
+                    .defineInRange("rabbitGestation.days", 24000, 1000, Integer.MAX_VALUE);
 
             gestationDaysCow = builder
-                    .comment("Number of ticks for cow and mooshroom gestation. Minimum time is 5 seconds. 48000 = 2 Minecraft Days")
-                    .defineInRange("cowGestation.days", 100, 100, Integer.MAX_VALUE);
+                    .comment("Number of ticks for cow and mooshroom gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
+                    .defineInRange("cowGestation.days", 48000, 1000, Integer.MAX_VALUE);
 
             gestationDaysSheep = builder
-                    .comment("Number of ticks for sheep gestation. Minimum time is 5 seconds. 48000 = 2 Minecraft Daysy")
-                    .defineInRange("sheepGestation.days", 48000, 100, Integer.MAX_VALUE);
+                    .comment("Number of ticks for sheep gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Daysy")
+                    .defineInRange("sheepGestation.days", 48000, 1000, Integer.MAX_VALUE);
 
             gestationDaysLlama = builder
-                    .comment("Number of ticks for llama gestation. Minimum time is 5 seconds. 48000 = 2 Minecraft Days")
-                    .defineInRange("llamaGestation.days", 48000, 100, Integer.MAX_VALUE);
+                    .comment("Number of ticks for llama gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
+                    .defineInRange("llamaGestation.days", 48000, 1000, Integer.MAX_VALUE);
 
             gestationDaysPig = builder
-                    .comment("Number of ticks for pig gestation. Minimum time is 5 seconds. 48000 = 2 Minecraft Days")
-                    .defineInRange("pigGestation.days", 48000, 100, Integer.MAX_VALUE);
+                    .comment("Number of ticks for pig gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
+                    .defineInRange("pigGestation.days", 48000, 1000, Integer.MAX_VALUE);
 
             gestationDaysHorse = builder
-                    .comment("Number of ticks for pig gestation. Minimum time is 5 seconds. 48000 = 2 Minecraft Days")
-                    .defineInRange("horseGestation.days", 48000, 100, Integer.MAX_VALUE);
+                    .comment("Number of ticks for pig gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
+                    .defineInRange("horseGestation.days", 48000, 1000, Integer.MAX_VALUE);
 
             gestationDaysCat = builder
-                    .comment("Number of ticks for pig gestation. Minimum time is 5 seconds. 48000 = 2 Minecraft Days")
-                    .defineInRange("catGestation.days", 48000, 100, Integer.MAX_VALUE);
+                    .comment("Number of ticks for pig gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
+                    .defineInRange("catGestation.days", 48000, 1000, Integer.MAX_VALUE);
 
             builder.pop();
         }

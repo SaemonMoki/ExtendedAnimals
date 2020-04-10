@@ -39,19 +39,18 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.textureWidth = 124;
         this.textureHeight = 124;
 
-        this.head = new RendererModel(this, 0, 32);
-        this.head.addBox(-3.0F, 0.0F, -6.0F, 6, 6, 6, 0.0F);
-        this.head.setTextureOffset(24, 32);
-        this.head.addBox(-2.0F, 0.0F, -9.0F, 4, 3, 3, 0.0F);
-        this.head.setTextureOffset(24, 38);
-        this.head.addBox(-2.0F, 0.1F, -12.0F, 4, 3, 3, 0.1F);
+        this.head = new RendererModel(this, 0, 35);
+        this.head.addBox(-3.5F, -0.5F, -6.51F, 7, 7, 7, -0.5F);
+        this.head.setTextureOffset(28, 35);
+        this.head.addBox(-2.5F, -0.5F, -9.5F, 5, 4, 4, -0.5F);
+        this.head.setTextureOffset(28, 43);
+        this.head.addBox(-2.5F, -0.4F, -12.5F, 5, 4, 4, -0.4F);
         this.head.setTextureOffset(0, 0);
-        this.head.addBox(-4.0F, 0.0F, -6.0F, 3, 4, 4, -1.0F);
-        this.head.addBox(1.0F, 0.0F, -6.0F, 3, 4, 4, -1.0F);
+        this.head.addBox(-4.01F, 0.0F, -6.0F, 3, 4, 4, -1.0F);
+        this.head.addBox(1.01F, 0.0F, -6.0F, 3, 4, 4, -1.0F);
 
         this.head.setTextureOffset(94, 0);
         this.head.addBox(-1.5F, -1.5F, -4.5F, 3, 3, 6, -0.5F); //mane piece 1
-
         this.head.setRotationPoint(0.0F, -14.0F, -1.0F);
 
         this.earL = new RendererModel(this, 6, 0);
@@ -62,9 +61,9 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.earR.addBox(0.0F, -3.0F, -0.5F, 2, 3, 1);
         this.earR.setRotationPoint(1.0F, 0.0F, -1.0F);
 
-        this.jaw = new RendererModel(this, 42,0);
+        this.jaw = new RendererModel(this, 69,0);
         this.jaw.addBox(-2.0F, 0.0F, -9.0F, 4, 4, 7, -0.1F);
-        this.jaw.setTextureOffset(0, 14);
+        this.jaw.setTextureOffset(0, 15);
         this.jaw.addBox(-2.0F, 2.25F, -9.0F, 4, 1, 7, -0.11F);
         this.jaw.setRotationPoint(0.0F, 2.5F, -2.0F);
 
@@ -72,55 +71,55 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.maneJoiner.addBox(-1.5F, -1.5F, -0.5F, 3, 2, 2, -0.505F); //mane piece 2
         this.maneJoiner.setRotationPoint(0.0F, -13.0F, 0.0F);
 
-        this.neck = new RendererModel(this, 68, 0);
+        this.neck = new RendererModel(this, 69, 15);
         this.neck.addBox(-2.0F, -13.0F, -7.0F, 4, 16, 7, 0.0F);
         this.neck.setTextureOffset(97, 13);
         this.neck.addBox(-1.5F, -13.5F, -0.5F, 3, 18, 3, -0.5F); // mane piece 3
         this.neck.setRotationPoint(0.0F, 1.0F, -5.0F);
 
         this.body = new RendererModel(this, 0, 0);
-        this.body.addBox(-5.0F, 0.0F, -10.0F, 10, 10, 22, 0.0F);
+        this.body.addBox(-5.5F, -0.5F, -10.5F, 11, 11, 23, -0.5F);
         this.body.setRotationPoint(0.0F, 1.0F, 0.0F);
 
         this.tail = new RendererModel(this, 97, 34);
         this.tail.addBox(-2.0F, 0.0F, -4.0F, 4, 15, 4, 0.0F);
         this.tail.setRotationPoint(0.0F, 0.0F, 12.0F);
 
-        this.leg1 = new RendererModel(this, 0, 44);
+        this.leg1 = new RendererModel(this, 6, 53);
         this.leg1.addBox(0.0F, 0.5F, 0.0F, 5, 13, 5, -1.0F);
-        this.leg1.setRotationPoint(-6.0F, 9.0F, -9.0F);
+        this.leg1.setRotationPoint(-6.0F, 9.5F, -9.0F);
 
-        this.leg2 = new RendererModel(this, 20, 44);
+        this.leg2 = new RendererModel(this, 26, 53);
         this.leg2.addBox(0.0F, 0.5F, 0.0F, 5, 13, 5, -1.0F);
-        this.leg2.setRotationPoint(1.0F, 9.0F, -9.0F);
+        this.leg2.setRotationPoint(1.0F, 9.5F, -9.0F);
 
-        this.hock3 = new RendererModel(this, 40, 32);
+        this.hock3 = new RendererModel(this, 47, 41);
         this.hock3.addBox(0.75F, -4.0F, -0.75F, 4, 7, 5, 0.0F);
-        this.hock3.setRotationPoint(-6.0F, 9.0F, 8.0F);
+        this.hock3.setRotationPoint(-6.0F, 9.5F, 8.0F);
 
-        this.leg3 = new RendererModel(this, 40, 44);
+        this.leg3 = new RendererModel(this, 46, 53);
         this.leg3.addBox(0.0F, 2.0F, 0.0F, 5, 12, 5, -1.0F);
-        this.leg3.setRotationPoint(-6.0F, 9.0F, 8.0F);
+        this.leg3.setRotationPoint(-6.0F, 9.5F, 8.0F);
 
-        this.hock4 = new RendererModel(this, 60, 32);
+        this.hock4 = new RendererModel(this, 67, 41);
         this.hock4.addBox(0.25F, -4.0F, -0.75F, 4, 7, 5, 0.0F);
-        this.hock4.setRotationPoint(1.0F, 9.0F, 8.0F);
+        this.hock4.setRotationPoint(1.0F, 9.5F, 8.0F);
 
-        this.leg4 = new RendererModel(this, 60, 44);
+        this.leg4 = new RendererModel(this, 66, 53);
         this.leg4.addBox(0.0F, 2.0F, 0.0F, 5, 12, 5, -1.0F);
-        this.leg4.setRotationPoint(1.0F, 9.0F, 8.0F);
+        this.leg4.setRotationPoint(1.0F, 9.5F, 8.0F);
 
-        this.hoof1 = new RendererModel(this, 0, 62);
-        this.hoof1.addBox(0.0F, 11.0F, 0.1F, 5, 3, 4, -0.5F);
+        this.hoof1 = new RendererModel(this, 6, 71);
+        this.hoof1.addBox(0.0F, 11.75F, 0.1F, 5, 3, 4, -0.5F);
 
-        this.hoof2 = new RendererModel(this, 20, 62);
-        this.hoof2.addBox(0.0F, 11.0F, 0.1F, 5, 3, 4, -0.5F);
+        this.hoof2 = new RendererModel(this, 26, 71);
+        this.hoof2.addBox(0.0F, 11.75F, 0.1F, 5, 3, 4, -0.5F);
 
-        this.hoof3 = new RendererModel(this, 40, 62);
-        this.hoof3.addBox(0.0F, 11.0F, 0.1F, 5, 3, 4, -0.5F);
+        this.hoof3 = new RendererModel(this, 46, 71);
+        this.hoof3.addBox(0.0F, 11.75F, 0.1F, 5, 3, 4, -0.5F);
 
-        this.hoof4 = new RendererModel(this, 60, 62);
-        this.hoof4.addBox(0.0F, 11.0F, 0.1F, 5, 3, 4, -0.5F);
+        this.hoof4 = new RendererModel(this, 66, 71);
+        this.hoof4.addBox(0.0F, 11.75F, 0.1F, 5, 3, 4, -0.5F);
 
 
         this.neck.addChild(head);
@@ -195,124 +194,156 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
         if (Character.isDigit(uuidArry[16])){
             if (uuidArry[16] - 48 == 0) {
+                //0
                 this.hock3.rotationPointZ = 8.5F;
                 this.hock4.rotationPointZ = 8.5F;
             } else if (uuidArry[16] - 48 == 1) {
+                //1
+                this.hock3.rotationPointZ = 8.4F;
+                this.hock4.rotationPointZ = 8.4F;
+            } else if (uuidArry[16] - 48 == 2) {
+                //2
+                this.hock3.rotationPointZ = 8.3F;
+                this.hock4.rotationPointZ = 8.3F;
+            } else if (uuidArry[16] - 48 == 3) {
+                //3
+                this.hock3.rotationPointZ = 8.2F;
+                this.hock4.rotationPointZ = 8.2F;
+            } else if (uuidArry[16] - 48 == 4) {
+                //4
+                this.hock3.rotationPointZ = 8.1F;
+                this.hock4.rotationPointZ = 8.1F;
+            } else if (uuidArry[16] - 48 == 5) {
+                //5
                 this.hock3.rotationPointZ = 8.0F;
                 this.hock4.rotationPointZ = 8.0F;
-            } else if (uuidArry[16] - 48 == 2) {
-                this.hock3.rotationPointZ = 7.5F;
-                this.hock4.rotationPointZ = 7.5F;
-            } else if (uuidArry[16] - 48 == 3) {
-                this.hock3.rotationPointZ = 7.0F;
-                this.hock4.rotationPointZ = 7.0F;
-            } else if (uuidArry[16] - 48 == 4) {
-                this.hock3.rotationPointZ = 6.5F;
-                this.hock4.rotationPointZ = 6.5F;
-            } else if (uuidArry[16] - 48 == 5) {
-                this.hock3.rotationPointZ = 6.0F;
-                this.hock4.rotationPointZ = 6.0F;
             } else if (uuidArry[16] - 48 == 6) {
-                this.hock3.rotationPointZ = 5.5F;
-                this.hock4.rotationPointZ = 5.5F;
+                //6
+                this.hock3.rotationPointZ = 7.9F;
+                this.hock4.rotationPointZ = 7.9F;
             } else if (uuidArry[16] - 48 == 7) {
-                this.hock3.rotationPointZ = 5.0F;
-                this.hock4.rotationPointZ = 5.0F;
+                //7
+                this.hock3.rotationPointZ = 7.8F;
+                this.hock4.rotationPointZ = 7.8F;
             } else if (uuidArry[16] - 48 == 8) {
+                //0
                 this.hock3.rotationPointZ = 8.5F;
                 this.hock4.rotationPointZ = 8.5F;
             } else {
-                this.hock3.rotationPointZ = 8.0F;
-                this.hock4.rotationPointZ = 8.0F;
+                //1
+                this.hock3.rotationPointZ = 8.4F;
+                this.hock4.rotationPointZ = 8.4F;
             }
         } else {
             char test = uuidArry[16];
             switch (test){
                 case 'a':
-                    this.hock3.rotationPointZ = 7.5F;
-                    this.hock4.rotationPointZ = 7.5F;
+                    //2
+                    this.hock3.rotationPointZ = 8.3F;
+                    this.hock4.rotationPointZ = 8.3F;
                     break;
                 case 'b':
-                    this.hock3.rotationPointZ = 7.0F;
-                    this.hock4.rotationPointZ = 7.0F;
+                    //3
+                    this.hock3.rotationPointZ = 8.2F;
+                    this.hock4.rotationPointZ = 8.2F;
                     break;
                 case 'c':
-                    this.hock3.rotationPointZ = 6.5F;
-                    this.hock4.rotationPointZ = 6.5F;
+                    //4
+                    this.hock3.rotationPointZ = 8.1F;
+                    this.hock4.rotationPointZ = 8.1F;
                     break;
                 case 'd':
-                    this.hock3.rotationPointZ = 6.0F;
-                    this.hock4.rotationPointZ = 6.0F;
+                    //5
+                    this.hock3.rotationPointZ = 8.0F;
+                    this.hock4.rotationPointZ = 8.0F;
                     break;
                 case 'e':
-                    this.hock3.rotationPointZ = 6.5F;
-                    this.hock4.rotationPointZ = 6.5F;
+                    //6
+                    this.hock3.rotationPointZ = 7.9F;
+                    this.hock4.rotationPointZ = 7.9F;
                     break;
                 case 'f':
-                    this.hock3.rotationPointZ = 5.0F;
-                    this.hock4.rotationPointZ = 5.0F;
+                    //7
+                    this.hock3.rotationPointZ = 7.8F;
+                    this.hock4.rotationPointZ = 7.8F;
                     break;
             }
         }
 
         if (Character.isDigit(uuidArry[17])){
             if (uuidArry[17] - 48 == 0) {
+                //a
                 this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.5F;
                 this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.5F;
             } else if (uuidArry[17] - 48 == 1) {
+                //b
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.35F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.35F;
+            } else if (uuidArry[17] - 48 == 2) {
+                //c
                 this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.25F;
                 this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.25F;
-            } else if (uuidArry[17] - 48 == 2) {
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.0F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.0F;
             } else if (uuidArry[17] - 48 == 3) {
+                //d
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.15F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.15F;
+            } else if (uuidArry[17] - 48 == 4) {
+                //e
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.05F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.05F;
+            } else if (uuidArry[17] - 48 == 5) {
+                //f
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.95F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.95F;
+            } else if (uuidArry[17] - 48 == 6) {
+                //g
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.85F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.85F;
+            } else if (uuidArry[17] - 48 == 7) {
+                //h
                 this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.75F;
                 this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.75F;
-            } else if (uuidArry[17] - 48 == 4) {
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.5F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.5F;
-            } else if (uuidArry[17] - 48 == 5) {
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.25F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.25F;
-            } else if (uuidArry[17] - 48 == 6) {
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ;
-            } else if (uuidArry[17] - 48 == 7) {
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ - 0.25F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ - 0.25F;
             } else if (uuidArry[17] - 48 == 8) {
+                //a
                 this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.5F;
                 this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.5F;
             } else {
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.25F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.25F;
+                //b
+                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.35F;
+                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.35F;
             }
         } else {
             char test = uuidArry[17];
             switch (test){
                 case 'a':
-                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.0F;
-                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.0F;
+                    //c
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.25F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.25F;
                     break;
                 case 'b':
-                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.75F;
-                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.75F;
+                    //d
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.15F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.15F;
                     break;
                 case 'c':
-                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.5F;
-                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.5F;
+                    //e
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.05F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.05F;
                     break;
                 case 'd':
-                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.25F;
-                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.25F;
+                    //f
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.95F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.95F;
                     break;
                 case 'e':
-                    this.leg3.rotationPointZ = this.hock3.rotationPointZ;
-                    this.leg4.rotationPointZ = this.hock4.rotationPointZ;
+                    //g
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.85F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.85F;
                     break;
                 case 'f':
-                    this.leg3.rotationPointZ = this.hock3.rotationPointZ - 0.25F;
-                    this.leg4.rotationPointZ = this.hock4.rotationPointZ - 0.25F;
+                    //h
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.75F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.75F;
                     break;
             }
         }

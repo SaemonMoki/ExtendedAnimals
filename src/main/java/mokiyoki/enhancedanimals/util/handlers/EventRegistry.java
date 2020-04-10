@@ -39,6 +39,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
@@ -241,53 +245,81 @@ public class EventRegistry {
     @SubscribeEvent
     public static void onLoadComplete(FMLLoadCompleteEvent event) {
 //        if (Dimension.isSurfaceWorld()) {
+        removeVanillaFromBiomes(ForgeRegistries.BIOMES);
 
-            for (Biome biome : ForgeRegistries.BIOMES) {
+        for (Biome biome : ForgeRegistries.BIOMES) {
 //
-                if ( !biome.getRegistryName().toString().contains("ocean") && !(biome.getRegistryName().toString().contains("_end") || biome.getRegistryName().toString().contains("end_")) && !biome.getRegistryName().toString().contains("nether")
-                ){
+            if (!biome.getRegistryName().toString().contains("ocean") && !(biome.getRegistryName().toString().contains("_end") || biome.getRegistryName().toString().contains("end_")) && !biome.getRegistryName().toString().contains("nether")
+            ) {
 
-                    if (!biome.getRegistryName().equals(Biomes.MUSHROOM_FIELDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.MUSHROOM_FIELD_SHORE.getRegistryName())){
+                if (!biome.getRegistryName().equals(Biomes.MUSHROOM_FIELDS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.MUSHROOM_FIELD_SHORE.getRegistryName())) {
 
-                        if (!biome.getRegistryName().equals(Biomes.DESERT.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_HILLS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_LAKES.getRegistryName()))
-                        {
-                            //Enhanced Pig Spawning
-                            if (ConfigHandler.COMMON.spawnGeneticPigs.get()) {
-                                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_PIG, 6, 2, 3));
-                            }
-                            //Enhanced Sheep Spawning
-                            if (ConfigHandler.COMMON.spawnGeneticSheep.get()) {
-                                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_SHEEP, 12, 4, 4));
-                            }
-                            //Enhanced Cow Spawning
-                            if (ConfigHandler.COMMON.spawnGeneticCows.get()) {
-                                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_COW, 8, 4, 4));
-                            }
-                            //Enhanced Chicken Spawning
-                            if (ConfigHandler.COMMON.spawnGeneticChickens.get()) {
-                                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
-                            }
-                            //Enhanced Llama Spawning
-                            if (ConfigHandler.COMMON.spawnGeneticLlamas.get() && (biome.getRegistryName().equals(Biomes.MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) ||
-                                    biome.getRegistryName().equals(Biomes.SAVANNA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SHATTERED_SAVANNA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SAVANNA_PLATEAU.getRegistryName()) || biome.getRegistryName().equals(Biomes.SHATTERED_SAVANNA_PLATEAU.getRegistryName())
-                            )) {
-                                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_LLAMA, 4, 2, 3)); }
-                            }
-                            //Enhanced Rabbit Spawning
-                            if (ConfigHandler.COMMON.spawnGeneticRabbits.get() && (biome.getRegistryName().equals(Biomes.SNOWY_TUNDRA.getRegistryName()) || biome.getRegistryName().equals(Biomes.ICE_SPIKES.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()) ||
-                                    biome.getRegistryName().equals(Biomes.FLOWER_FOREST.getRegistryName())
-                            )) { biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3)); }
-                        } else {
-                            //Enhanced Mooshroom Spawning
-                            if (ConfigHandler.COMMON.spawnGeneticMooshroom.get()) {
-                                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_MOOSHROOM, 8, 4, 4));
-                            }
+                    if (!biome.getRegistryName().equals(Biomes.DESERT.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_HILLS.getRegistryName()) && !biome.getRegistryName().equals(Biomes.DESERT_LAKES.getRegistryName())) {
+                        //Enhanced Pig Spawning
+                        if (ConfigHandler.COMMON.spawnGeneticPigs.get()) {
+                            biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_PIG, 6, 2, 3));
+                        }
+                        //Enhanced Sheep Spawning
+                        if (ConfigHandler.COMMON.spawnGeneticSheep.get()) {
+                            biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_SHEEP, 12, 4, 4));
+                        }
+                        //Enhanced Cow Spawning
+                        if (ConfigHandler.COMMON.spawnGeneticCows.get()) {
+                            biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_COW, 8, 4, 4));
+                        }
+                        //Enhanced Chicken Spawning
+                        if (ConfigHandler.COMMON.spawnGeneticChickens.get()) {
+                            biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
+                        }
+                        //Enhanced Llama Spawning
+                        if (ConfigHandler.COMMON.spawnGeneticLlamas.get() && (biome.getRegistryName().equals(Biomes.MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) ||
+                                biome.getRegistryName().equals(Biomes.SAVANNA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SHATTERED_SAVANNA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SAVANNA_PLATEAU.getRegistryName()) || biome.getRegistryName().equals(Biomes.SHATTERED_SAVANNA_PLATEAU.getRegistryName())
+                        )) {
+                            biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_LLAMA, 4, 2, 3));
                         }
                     }
-
+                    //Enhanced Rabbit Spawning
+                    if (ConfigHandler.COMMON.spawnGeneticRabbits.get() && (biome.getRegistryName().equals(Biomes.SNOWY_TUNDRA.getRegistryName()) || biome.getRegistryName().equals(Biomes.ICE_SPIKES.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()) ||
+                            biome.getRegistryName().equals(Biomes.FLOWER_FOREST.getRegistryName())
+                    )) {
+                        biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3));
+                    }
+                } else {
+                    //Enhanced Mooshroom Spawning
+                    if (ConfigHandler.COMMON.spawnGeneticMooshroom.get()) {
+                        biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_MOOSHROOM, 8, 4, 4));
+                    }
+                }
             }
+
+        }
 //        }
 
+    }
+
+    private static void removeVanillaFromBiomes(IForgeRegistry<Biome> biomes) {
+        for (Biome biome : biomes) {
+            List<Biome.SpawnListEntry> spawns = biome.getSpawns(EntityClassification.CREATURE);
+            if (spawns.isEmpty()) {
+                continue;
+            }
+            ArrayList<Biome.SpawnListEntry> removeSpawns = new ArrayList<Biome.SpawnListEntry>();
+            for (Biome.SpawnListEntry entry : spawns) {
+                if ((entry.entityType == EntityType.PIG && !ConfigHandler.COMMON.spawnVanillaPigs.get()) ||
+                        (entry.entityType == EntityType.SHEEP && !ConfigHandler.COMMON.spawnVanillaSheep.get()) ||
+                        (entry.entityType == EntityType.COW && !ConfigHandler.COMMON.spawnVanillaCows.get()) ||
+                        (entry.entityType == EntityType.LLAMA && !ConfigHandler.COMMON.spawnVanillaLlamas.get()) ||
+                        (entry.entityType == EntityType.CHICKEN && !ConfigHandler.COMMON.spawnVanillaChickens.get()) ||
+                        (entry.entityType == EntityType.RABBIT && !ConfigHandler.COMMON.spawnVanillaRabbits.get())
+                ) {
+                    removeSpawns.add(entry);
+                }
+
+            }
+            for (Biome.SpawnListEntry spawnToRemove : removeSpawns) {
+                spawns.remove(spawnToRemove);
+            }
+        }
     }
 
 }

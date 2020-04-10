@@ -537,7 +537,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         if (horns != 0.0F) {
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
-            List<Float> scalingsForHorn = createScalings(hornScale, -hornScale/29.0F, -hornScale*0.01F, (hornScale - 1.0F)*0.03F);
+            List<Float> scalingsForHorn = createScalings(hornScale, 0.0F, -hornScale*0.01F, (hornScale - 1.0F)*0.04F);
             mapOfScale.put("HornL0", scalingsForHorn);
             mapOfScale.put("HornR0", mirrorX(scalingsForHorn, false));
             this.hornGranparent.render(scale, mapOfScale, unrenderedModels, false);
@@ -713,10 +713,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         if (horns != 0.0F) {
 
-            Float[] hornHideL = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
-            Float[] hornHideR = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
-
-
             int lengthL = 2;
 
 
@@ -820,9 +816,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                     hornGrowth = 5;
                 } else if (ageTime > 43200) {
                     hornGrowth = 6;
-                } else if (ageTime > 32400) {
+                } else if (ageTime > 30000) {
                     hornGrowth = 7;
-                } else if (ageTime > 21600) {
+                } else if (ageTime > 12000) {
                     hornGrowth = 8;
                 } else {
                     hornGrowth = 9;
@@ -834,15 +830,22 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
 
 
-            if (lengthL != 0) {
+            if (lengthL != 0 || lengthR != 0) {
+
                 for (int i = 0; i <= 9; i++) {
                     if (i <= lengthL) {
                         hornGrowthL[i] = 0.0F;
                         unrenderedModels.add(this.leftHorns.get(i).boxName);
+                        if (i != 9) {
+                            hornGrowthL[i+1] = 0.0F;
+                        }
                     }
                     if (i <= lengthR) {
                         hornGrowthR[i] = 0.0F;
                         unrenderedModels.add(this.rightHorns.get(i).boxName);
+                        if (i != 9) {
+                            hornGrowthR[i+1] = 0.0F;
+                        }
                     }
                     if (i == lengthL) {
                         unrenderedModels.remove(this.leftHorns.get(i).boxName);
@@ -851,17 +854,17 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                         unrenderedModels.remove(this.rightHorns.get(i).boxName);
                     }
                 }
+
+
+
             }
 
-            this.hornL0.rotationPointX = 1.0F;
-            this.hornR0.rotationPointX = -1.0F;
+            this.hornL0.rotationPointX = 0.0F;
+            this.hornR0.rotationPointX = 0.0F;
 
             for (int i = 1; i <= 9; i++) {
                 this.leftHorns.get(i).rotationPointY = hornGrowthL[i];
                 this.rightHorns.get(i).rotationPointY = hornGrowthR[i];
-
-                this.leftHorns.get(i).rotationPointX = hornHideL[i];
-                this.rightHorns.get(i).rotationPointX = -hornHideR[i];
             }
         }
 

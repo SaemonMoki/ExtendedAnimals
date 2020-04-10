@@ -1000,11 +1000,11 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
                 //horns if "male"
                 if (Character.isLetter(uuidArray[2]) || uuidArray[2] - 48 >= 3) {
-                    polycerate = 0.5F;
+                    polycerate = -0.001F;
                 }
             } else {
                 if (uuidArray[2] - 48 <= 3) {
-                    polycerate = 0.5F;
+                    polycerate = -0.001F;
                 }
             }
         }
@@ -1021,8 +1021,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         //horn shape controllers
 //        if (horns != 0) {
-            float a = 0.25F * polycerate;
-            float b = 0.55F * polycerate;
+            float a = 0.2F + ((1.0F - polycerate)* -0.05F);
+            float b = 0.3F + ((1.0F - polycerate)* 0.05F);
             float x = a * ( 1.0F + (b * 1.5F));
                     
             Float[] hornCalculationsZ = {(a) + 0.25F, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a};
@@ -1046,11 +1046,11 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             this.hornR0.rotateAngleY = -hornCalculationsY[0];
 
             for (int r = 1; r <= 18; r++) {
-                this.sheepRightHorns.get(r).rotateAngleZ = (hornCalculationsZ[r] - 0.1F) * hornGrowthR[r];
-                this.sheepRightHorns.get(r).rotateAngleX = -hornCalculationsX[r] * hornGrowthR[r];
+                this.sheepRightHorns.get(r).rotateAngleZ = (hornCalculationsZ[r] - (0.3F*polycerate)) * hornGrowthR[r];
+                this.sheepRightHorns.get(r).rotateAngleX = -(hornCalculationsX[r] + (0.2F*polycerate)) * hornGrowthR[r];
                 this.sheepRightHorns.get(r).rotateAngleY = -hornCalculationsY[r] * hornGrowthR[r];
-                this.sheepLeftHorns.get(r).rotateAngleZ = -(hornCalculationsZ[r] - 0.1F) * hornGrowthL[r];
-                this.sheepLeftHorns.get(r).rotateAngleX = -hornCalculationsX[r] * hornGrowthL[r];
+                this.sheepLeftHorns.get(r).rotateAngleZ = -(hornCalculationsZ[r] - (0.3F*polycerate)) * hornGrowthL[r];
+                this.sheepLeftHorns.get(r).rotateAngleX = -(hornCalculationsX[r] + (0.2F*polycerate)) * hornGrowthL[r];
                 this.sheepLeftHorns.get(r).rotateAngleY = hornCalculationsZ[r] * hornGrowthL[r];
             }
 //        }
@@ -1083,6 +1083,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         float onGround;
         onGround = 15.75F;
         this.body.rotationPointY = 6.75F;
+        this.udder.rotationPointY = 18.75F;
         this.tailBase.rotationPointY = 15.75F;
 
         this.leg1.setRotationPoint(-4.0F, 20.75F,-5.0F);
@@ -1107,6 +1108,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         float onGround;
         onGround = 9.0F;
         this.body.rotationPointY = 0.0F;
+        this.udder.rotationPointY = 12.0F;
         this.tailBase.rotationPointY = 9.0F;
 
         this.leg1.setRotationPoint(-4.0F, 14.0F,-8.0F);

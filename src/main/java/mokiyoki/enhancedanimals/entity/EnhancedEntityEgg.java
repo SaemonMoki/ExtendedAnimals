@@ -31,6 +31,12 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         super(entityIn, worldIn);
     }
 
+
+    //TODO return the right default egg colour type... personal note: FUUUUUUUCCCCCKKKKKK!!!!!
+    protected Item getDefaultItem() {
+        return Items.EGG;
+    }
+
     public EnhancedEntityEgg(World worldIn, double x, double y, double z) {
         super(ENHANCED_ENTITY_EGG_ENTITY_TYPE, x, y, z,worldIn);
     }
@@ -128,7 +134,4 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
 
     }
 
-    protected Item func_213885_i() {
-        return Items.EGG;
-    }
 }

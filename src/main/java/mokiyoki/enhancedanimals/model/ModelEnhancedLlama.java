@@ -4,8 +4,10 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -101,7 +103,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 //        this.headShaved.addBox(-2.0F, -12.0F, -4.0F, 4, 4, 4, 0.0F); //nose
 
         this.neck = new RendererModel(this,0, 12);
-        this.neck.addBox(-4.0F, -10.0F, -1.1F, 8, 12, 6, -1.0F); //head and neck
+        this.neck.addBox(-4.0F, -9.0F, -1.1F, 8, 12, 6, -1.0F); //head and neck
 //        this.neck.addBox(-4.0F, -2.0F, -1.1F, 8, 6, 6, -1.0F); //head and neck
         this.neck.setRotationPoint(0, 5, -6);
 
@@ -366,10 +368,72 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             suri = true;
         }
 
-        if (this.isChild) {
+        float age = 1.0F;
+        if (!(llamaModelData.birthTime == null) && !llamaModelData.birthTime.equals("") && !llamaModelData.birthTime.equals("0")) {
+            int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(llamaModelData.birthTime));
+            if (ageTime <= 80000) {
+                age = ageTime/80000.0F;
+            }
+        }
+
+        float finalLlamaSize = (( 2.0F * size * age) + size) / 3.0F;
+        float babyScale = 1.0F;
+        float d = 0.0F;
+        if (!sleeping) {
+            babyScale = (2.0F - age)/1;
+            d = 0.5F * (1.0F-age);
+        }
+
+//        if (this.isChild) {
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
+//            GlStateManager.translatef(0.0F, 15.0F * scale, 0.0F);
+//
+//            this.neck.render(scale);
+//
+//            if (banana){
+//                this.earsTopR.isHidden = true;
+//                this.earsTopL.isHidden = true;
+//            }else {
+//                this.earsTopBananaR.isHidden = true;
+//                this.earsTopBananaL.isHidden = true;
+//            }
+//
+//            GlStateManager.popMatrix();
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scalef(0.5F, 0.5F, 0.5F);
+//            GlStateManager.translatef(0.0F, 20.0F * scale, 0.0F);
+//
+//            this.body.render(scale);
+//            this.tail.render(scale);
+//
+//            GlStateManager.popMatrix();
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scalef(0.5F, 0.7F, 0.5F);
+//            GlStateManager.translatef(0.0F, 10.0F * scale, 0.0F);
+//
+//            this.leg1.render(scale);
+//            this.leg2.render(scale);
+//            this.leg3.render(scale);
+//            this.leg4.render(scale);
+//            if (!sleeping) {
+//                this.toeOuterFrontR.render(scale);
+//                this.toeInnerFrontR.render(scale);
+//                this.toeOuterFrontL.render(scale);
+//                this.toeInnerFrontL.render(scale);
+//                this.toeOuterBackR.render(scale);
+//                this.toeInnerBackR.render(scale);
+//                this.toeOuterBackL.render(scale);
+//                this.toeInnerBackL.render(scale);
+//            }
+//
+//            GlStateManager.popMatrix();
+//
+//        } else {
+
             GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
-            GlStateManager.translatef(0.0F, 15.0F * scale, 0.0F);
+            GlStateManager.scalef(finalLlamaSize, finalLlamaSize, finalLlamaSize);
+            GlStateManager.translatef(0.0F, (-1.5F + 1.5F / finalLlamaSize) - d, 0.0F);
 
             this.neck.render(scale);
 
@@ -379,69 +443,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             }else {
                 this.earsTopBananaR.isHidden = true;
                 this.earsTopBananaL.isHidden = true;
-            }
-
-            GlStateManager.popMatrix();
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.5F, 0.5F, 0.5F);
-            GlStateManager.translatef(0.0F, 20.0F * scale, 0.0F);
-
-            this.body.render(scale);
-            this.tail.render(scale);
-
-            GlStateManager.popMatrix();
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.5F, 0.7F, 0.5F);
-            GlStateManager.translatef(0.0F, 10.0F * scale, 0.0F);
-
-            this.leg1.render(scale);
-            this.leg2.render(scale);
-            this.leg3.render(scale);
-            this.leg4.render(scale);
-            if (!sleeping) {
-                this.toeOuterFrontR.render(scale);
-                this.toeInnerFrontR.render(scale);
-                this.toeOuterFrontL.render(scale);
-                this.toeInnerFrontL.render(scale);
-                this.toeOuterBackR.render(scale);
-                this.toeInnerBackR.render(scale);
-                this.toeOuterBackL.render(scale);
-                this.toeInnerBackL.render(scale);
-            }
-
-            GlStateManager.popMatrix();
-
-        } else {
-
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(size, size, size);
-            GlStateManager.translatef(0.0F, -1.5F + 1.5F / size, 0.0F);
-//            this.earsR.render(scale);
-//            this.earsL.render(scale);
-
-            this.neck.render(scale);
-
-            if (banana){
-                this.earsTopR.isHidden = true;
-                this.earsTopL.isHidden = true;
-            }else {
-                this.earsTopBananaR.isHidden = true;
-                this.earsTopBananaL.isHidden = true;
-            }
-
-            this.leg1.render(scale);
-            this.leg2.render(scale);
-            this.leg3.render(scale);
-            this.leg4.render(scale);
-            if (!sleeping) {
-                this.toeOuterFrontR.render(scale);
-                this.toeInnerFrontR.render(scale);
-                this.toeOuterFrontL.render(scale);
-                this.toeInnerFrontL.render(scale);
-                this.toeOuterBackR.render(scale);
-                this.toeInnerBackR.render(scale);
-                this.toeOuterBackL.render(scale);
-                this.toeInnerBackL.render(scale);
             }
 
             if (enhancedLlama.hasChest()) {
@@ -449,13 +450,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                 this.chest2.render(scale);
             }
 
-//            if (coatlength == -1 ) {
-//
-//            } else {
-
-//                this.head.render(scale);
-
-                if (coatlength == 0 ) {
+                if (coatlength == 0 || this.isChild) {
                     this.neckWool0.render(scale);
                     this.body.render(scale);
                     this.tail.render(scale);
@@ -496,11 +491,32 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                     this.bodyShaved.render(scale);
                     this.tail.render(scale);
                 }
-//            }
+
             GlStateManager.popMatrix();
 
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(finalLlamaSize, finalLlamaSize * babyScale, finalLlamaSize);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F / (finalLlamaSize * babyScale), 0.0F);
 
-        }
+                this.leg1.render(scale);
+                this.leg2.render(scale);
+                this.leg3.render(scale);
+                this.leg4.render(scale);
+
+                if (!sleeping) {
+                    this.toeOuterFrontR.render(scale);
+                    this.toeInnerFrontR.render(scale);
+                    this.toeOuterFrontL.render(scale);
+                    this.toeInnerFrontL.render(scale);
+                    this.toeOuterBackR.render(scale);
+                    this.toeInnerBackR.render(scale);
+                    this.toeOuterBackL.render(scale);
+                    this.toeInnerBackL.render(scale);
+                }
+
+            GlStateManager.popMatrix();
+
+//        }
     }
 
     /**
@@ -517,8 +533,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         int[] sharedGenes = llamaModelData.llamaGenes;
 
-//        this.body.rotateAngleX = ((float)Math.PI / 2F);
-        float slep = 1.0F;
         if (!sleeping) {
             this.neck.rotateAngleX = headPitch * 0.017453292F;
             this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
@@ -601,16 +615,21 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         copyModelAngles(leg4, toeOuterBackL);
         copyModelAngles(leg4, toeInnerBackL);
 
-        setNoseRotations(sharedGenes);
+        setNoseRotations(sharedGenes, entityIn);
     }
 
-    private void setNoseRotations(int[] sharedGenes) {
-        if (this.isChild) {
-            this.nose.rotationPointZ = 1.5F;
+    private void setNoseRotations(int[] sharedGenes, T entityIn) {
+        LlamaModelData llamaModelData = getLlamaModelData(entityIn);
+
+        float age = 1.0F;
+        if (!(llamaModelData.birthTime == null) && !llamaModelData.birthTime.equals("") && !llamaModelData.birthTime.equals("0")) {
+            int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(llamaModelData.birthTime));
+            if (ageTime <= 80000) {
+                age = ageTime/80000.0F;
+            }
         }
-        else {
-            this.nose.rotationPointZ = 0.0F;
-        }
+
+        this.nose.rotationPointZ = 1.5F - (age*1.5F);
 
         //range from -12.1 to 10.5
         float noseHeight;
@@ -771,6 +790,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
     private class LlamaModelData {
         int[] llamaGenes;
         int coatlength;
+        String birthTime;
         boolean sleeping;
         int lastAccessed = 0;
 //        int dataReset = 0;
@@ -802,6 +822,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.llamaGenes = enhancedLlama.getSharedGenes();
             llamaModelData.coatlength = enhancedLlama.getCoatLength();
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
+            llamaModelData.birthTime = enhancedLlama.getBirthTime();
 
             llamaModelDataCache.put(enhancedLlama.getEntityId(), llamaModelData);
 

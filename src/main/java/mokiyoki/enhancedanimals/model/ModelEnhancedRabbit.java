@@ -5,7 +5,9 @@ import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -311,39 +313,49 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
 
         this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
-        if (this.isChild) {
-//            float f = 1.5F;
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.28F, 0.28F, 0.28F);
-            GlStateManager.translatef(0.0F, -1.45F + 1.45F/0.28F, 2.0F * scale);
-            this.rabbitHeadLeft.render(scale);
-            this.rabbitHeadRight.render(scale);
-            if (rabbitModelData.dwarf){
-                this.rabbitHeadMuzzleDwarf.render(scale);
-                this.rabbitNoseDwarf.render(scale);
-                this.DwarfParent.render(scale);
-            }else{
-                this.rabbitHeadMuzzle.render(scale);
-                this.rabbitNose.render(scale);
-                this.EarParent.render(scale);
+        float age = 1.0F;
+        if (!(rabbitModelData.birthTime == null) && !rabbitModelData.birthTime.equals("") && !rabbitModelData.birthTime.equals("0")) {
+            int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(rabbitModelData.birthTime));
+            if (ageTime <= 50000) {
+                age = ageTime/50000.0F;
             }
-            GlStateManager.popMatrix();
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.20F, 0.20F, 0.20F);
-            GlStateManager.translatef(0.0F, -1.45F + 1.45F/0.2F, 0.0F);
-            this.rabbitBody.render(scale);
-//            this.rabbitButtRound.render(scale);
-            this.rabbitButt.render(scale);
+        }
 
-//            this.rabbitButtTube.render(scale);
-            this.rabbitLeftArm.render(scale);
-            this.rabbitRightArm.render(scale);
-            this.rabbitTail.render(scale);
-            GlStateManager.popMatrix();
-        } else {
+        float finalRabbitSize = (( 3.0F * size * age) + size) / 4.0F;
+
+//        if (this.isChild) {
+////            float f = 1.5F;
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scalef(0.28F, 0.28F, 0.28F);
+//            GlStateManager.translatef(0.0F, -1.45F + 1.45F/0.28F, 2.0F * scale);
+//            this.rabbitHeadLeft.render(scale);
+//            this.rabbitHeadRight.render(scale);
+//            if (rabbitModelData.dwarf){
+//                this.rabbitHeadMuzzleDwarf.render(scale);
+//                this.rabbitNoseDwarf.render(scale);
+//                this.DwarfParent.render(scale);
+//            }else{
+//                this.rabbitHeadMuzzle.render(scale);
+//                this.rabbitNose.render(scale);
+//                this.EarParent.render(scale);
+//            }
+//            GlStateManager.popMatrix();
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scalef(0.20F, 0.20F, 0.20F);
+//            GlStateManager.translatef(0.0F, -1.45F + 1.45F/0.2F, 0.0F);
+//            this.rabbitBody.render(scale);
+////            this.rabbitButtRound.render(scale);
+//            this.rabbitButt.render(scale);
+//
+////            this.rabbitButtTube.render(scale);
+//            this.rabbitLeftArm.render(scale);
+//            this.rabbitRightArm.render(scale);
+//            this.rabbitTail.render(scale);
+//            GlStateManager.popMatrix();
+//        } else {
             GlStateManager.pushMatrix();
-            GlStateManager.scalef(size, size, size);
-            GlStateManager.translatef(0.0F, -1.45F + 1.45F/size, 0.0F);
+            GlStateManager.scalef(finalRabbitSize, finalRabbitSize, finalRabbitSize);
+            GlStateManager.translatef(0.0F, -1.45F + 1.45F/finalRabbitSize, 0.0F);
             this.rabbitHeadLeft.render(scale);
             this.rabbitHeadRight.render(scale);
             if (genes[24] == 2 && genes[25] == 2){
@@ -398,7 +410,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             this.rabbitRightArm.render(scale);
             this.rabbitTail.render(scale);
             GlStateManager.popMatrix();
-        }
+//        }
     }
 
     /**
@@ -602,6 +614,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     private class RabbitModelData {
         float previousSwing;
         int[] rabbitGenes;
+        String birthTime;
         int coatlength;
         boolean dwarf;
         boolean sleeping;
@@ -635,6 +648,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             rabbitModelData.rabbitGenes = enhancedRabbit.getSharedGenes();
             rabbitModelData.coatlength = enhancedRabbit.getCoatLength();
             rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
+            rabbitModelData.birthTime = enhancedRabbit.getBirthTime();
 
             rabbitModelDataCache.put(enhancedRabbit.getEntityId(), rabbitModelData);
 

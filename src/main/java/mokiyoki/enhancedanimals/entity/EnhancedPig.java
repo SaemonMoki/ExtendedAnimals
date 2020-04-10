@@ -75,6 +75,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     private static final DataParameter<Float> PIG_SIZE = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.FLOAT);
     private static final DataParameter<String> PIG_STATUS = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedPig.class, DataSerializers.STRING);
 
     private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
             "", "skin_pink_bald.png", "skin_grey_bald.png", "skin_black_bald.png"
@@ -269,6 +270,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         this.dataManager.register(PIG_SIZE, 0.0F);
         this.dataManager.register(PIG_STATUS, new String());
         this.dataManager.register(SLEEPING, false);
+        this.dataManager.register(BIRTH_TIME, "0");
     }
 
     private void setPigStatus(String status) {
@@ -286,6 +288,12 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     public float getSize() {
         return this.dataManager.get(PIG_SIZE);
     }
+
+    protected void setBirthTime(String birthTime) {
+        this.dataManager.set(BIRTH_TIME, birthTime);
+    }
+
+    public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
@@ -504,7 +512,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
                     pregnant = false;
                     gestationTimer = 0;
 
-                    int pigletAverage = 8;
+                    int pigletAverage = 6;
                     int pigletRange = 6;
 
                     int numberOfPiglets = ThreadLocalRandom.current().nextInt(pigletRange)+1+pigletAverage;
@@ -512,17 +520,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
                     for (int i = 0; i <= numberOfPiglets; i++) {
                         mixMateMitosisGenes();
                         mixMitosisGenes();
-                        EnhancedPig enhancedpig = ENHANCED_PIG.create(this.world);
-                        enhancedpig.setGrowingAge(0);
-                        int[] babyGenes = getPigletGenes(this.mitosisGenes, this.mateMitosisGenes);
-                        enhancedpig.setGenes(babyGenes);
-                        enhancedpig.setSharedGenes(babyGenes);
-                        enhancedpig.setPigSize();
-                        enhancedpig.setGrowingAge(-60000);
-                        enhancedpig.setPigStatus(EntityState.CHILD_STAGE_ONE.toString());
-                        enhancedpig.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-//                        enhancedpig.setMotherUUID(this.getUniqueID().toString());
-                        this.world.addEntity(enhancedpig);
+                        createAndSpawnEnhancedChild(this.world);
                     }
 
                 }
@@ -555,6 +553,21 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 //            lethalGenes();
 //        }
 
+    }
+
+    protected void createAndSpawnEnhancedChild(World inWorld) {
+        EnhancedPig enhancedpig = ENHANCED_PIG.create(this.world);
+        enhancedpig.setGrowingAge(0);
+        int[] babyGenes = getPigletGenes(this.mitosisGenes, this.mateMitosisGenes);
+        enhancedpig.setGenes(babyGenes);
+        enhancedpig.setSharedGenes(babyGenes);
+        enhancedpig.setPigSize();
+        enhancedpig.setGrowingAge(-60000);
+        enhancedpig.setBirthTime(String.valueOf(inWorld.getGameTime()));
+        enhancedpig.setPigStatus(EntityState.CHILD_STAGE_ONE.toString());
+        enhancedpig.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+//                        enhancedpig.setMotherUUID(this.getUniqueID().toString());
+        this.world.addEntity(enhancedpig);
     }
 
 
@@ -1047,6 +1060,8 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
         compound.putString("Status", getPigStatus());
         compound.putInt("Hunger", hunger);
+
+        compound.putString("BirthTime", this.getBirthTime());
     }
 
     /**
@@ -1103,6 +1118,8 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
         setPigStatus(compound.getString("Status"));
         hunger = compound.getInt("Hunger");
+
+        this.setBirthTime(compound.getString("BirthTime"));
     }
 
     public void mixMitosisGenes() {
@@ -1168,8 +1185,14 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         }
 
         this.genes = spawnGenes;
-        setSharedGenes(genes);
-        setPigSize();
+        this.setSharedGenes(genes);
+        this.setPigSize();
+
+        int birthMod = ThreadLocalRandom.current().nextInt(30000, 80000);
+        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
+        if (birthMod < 60000) {
+            this.setGrowingAge(birthMod - 60000);
+        }
 
         return livingdata;
     }

@@ -372,7 +372,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                     pregnant = false;
                     gestationTimer = 0;
                     setCowStatus(EntityState.MOTHER.toString());
-                    Integer milk = Math.round((30*(cowSize/1.5F))) - 1;
+                    //sets milk amount at first milk
+                    Integer milk = Math.round((30*(cowSize/1.5F)*(maxBagSize/1.5F)) * 0.75F);
                     setMilkAmount(milk);
 
                     float milkBagSize = milk / (30*(cowSize/1.5F)*(maxBagSize/1.5F));

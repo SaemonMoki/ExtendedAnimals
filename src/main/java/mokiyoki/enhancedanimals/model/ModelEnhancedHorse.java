@@ -1,9 +1,13 @@
 package mokiyoki.enhancedanimals.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedHorse;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -16,30 +20,32 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     private Map<Integer, HorseModelData> horseModelDataCache = new HashMap<>();
     private int clearCacheTimer = 0;
 
-    private final RendererModel head;
-    private final RendererModel earL;
-    private final RendererModel earR;
-    private final RendererModel jaw;
-    private final RendererModel maneJoiner;
-    private final RendererModel neck;
-    private final RendererModel body;
-    private final RendererModel tail;
-    private final RendererModel leg1;
-    private final RendererModel leg2;
-    private final RendererModel leg3;
-    private final RendererModel leg4;
-    private final RendererModel hock3;
-    private final RendererModel hock4;
-    private final RendererModel hoof1;
-    private final RendererModel hoof2;
-    private final RendererModel hoof3;
-    private final RendererModel hoof4;
+    private final ModelRenderer head;
+    private final ModelRenderer earL;
+    private final ModelRenderer earR;
+    private final ModelRenderer jaw;
+    private final ModelRenderer maneJoiner;
+    private final ModelRenderer neck;
+    private final ModelRenderer body;
+    private final ModelRenderer tail;
+    private final ModelRenderer leg1;
+    private final ModelRenderer leg2;
+    private final ModelRenderer leg3;
+    private final ModelRenderer leg4;
+    private final ModelRenderer hock3;
+    private final ModelRenderer hock4;
+    private final ModelRenderer hoof1;
+    private final ModelRenderer hoof2;
+    private final ModelRenderer hoof3;
+    private final ModelRenderer hoof4;
+
+    private Integer currentHorse = null;
 
     public ModelEnhancedHorse() {
         this.textureWidth = 124;
         this.textureHeight = 124;
 
-        this.head = new RendererModel(this, 0, 35);
+        this.head = new ModelRenderer(this, 0, 35);
         this.head.addBox(-3.5F, -0.5F, -6.51F, 7, 7, 7, -0.5F);
         this.head.setTextureOffset(28, 35);
         this.head.addBox(-2.5F, -0.5F, -9.5F, 5, 4, 4, -0.5F);
@@ -53,72 +59,72 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.head.addBox(-1.5F, -1.5F, -4.5F, 3, 3, 6, -0.5F); //mane piece 1
         this.head.setRotationPoint(0.0F, -14.0F, -1.0F);
 
-        this.earL = new RendererModel(this, 6, 0);
+        this.earL = new ModelRenderer(this, 6, 0);
         this.earL.addBox(-2.0F, -3.0F, -0.5F, 2, 3, 1);
         this.earL.setRotationPoint(-1.0F, 0.0F, -1.0F);
 
-        this.earR = new RendererModel(this, 0, 0);
+        this.earR = new ModelRenderer(this, 0, 0);
         this.earR.addBox(0.0F, -3.0F, -0.5F, 2, 3, 1);
         this.earR.setRotationPoint(1.0F, 0.0F, -1.0F);
 
-        this.jaw = new RendererModel(this, 69,0);
+        this.jaw = new ModelRenderer(this, 69,0);
         this.jaw.addBox(-2.0F, 0.0F, -9.0F, 4, 4, 7, -0.1F);
         this.jaw.setTextureOffset(0, 15);
         this.jaw.addBox(-2.0F, 2.25F, -9.0F, 4, 1, 7, -0.11F);
         this.jaw.setRotationPoint(0.0F, 2.5F, -2.0F);
 
-        this.maneJoiner = new RendererModel(this, 98, 9);
+        this.maneJoiner = new ModelRenderer(this, 98, 9);
         this.maneJoiner.addBox(-1.5F, -1.5F, -0.5F, 3, 2, 2, -0.505F); //mane piece 2
         this.maneJoiner.setRotationPoint(0.0F, -13.0F, 0.0F);
 
-        this.neck = new RendererModel(this, 69, 15);
+        this.neck = new ModelRenderer(this, 69, 15);
         this.neck.addBox(-2.0F, -13.0F, -7.0F, 4, 16, 7, 0.0F);
         this.neck.setTextureOffset(97, 13);
         this.neck.addBox(-1.5F, -13.5F, -0.5F, 3, 18, 3, -0.5F); // mane piece 3
         this.neck.setRotationPoint(0.0F, 1.0F, -5.0F);
 
-        this.body = new RendererModel(this, 0, 0);
+        this.body = new ModelRenderer(this, 0, 0);
         this.body.addBox(-5.5F, -0.5F, -10.5F, 11, 11, 23, -0.5F);
         this.body.setRotationPoint(0.0F, 1.0F, 0.0F);
 
-        this.tail = new RendererModel(this, 97, 34);
+        this.tail = new ModelRenderer(this, 97, 34);
         this.tail.addBox(-2.0F, 0.0F, -4.0F, 4, 15, 4, 0.0F);
         this.tail.setRotationPoint(0.0F, 0.0F, 12.0F);
 
-        this.leg1 = new RendererModel(this, 6, 53);
+        this.leg1 = new ModelRenderer(this, 6, 53);
         this.leg1.addBox(0.0F, 0.5F, 0.0F, 5, 13, 5, -1.0F);
         this.leg1.setRotationPoint(-6.0F, 9.5F, -9.0F);
 
-        this.leg2 = new RendererModel(this, 26, 53);
+        this.leg2 = new ModelRenderer(this, 26, 53);
         this.leg2.addBox(0.0F, 0.5F, 0.0F, 5, 13, 5, -1.0F);
         this.leg2.setRotationPoint(1.0F, 9.5F, -9.0F);
 
-        this.hock3 = new RendererModel(this, 47, 41);
+        this.hock3 = new ModelRenderer(this, 47, 41);
         this.hock3.addBox(0.75F, -4.0F, -0.75F, 4, 7, 5, 0.0F);
         this.hock3.setRotationPoint(-6.0F, 9.5F, 8.0F);
 
-        this.leg3 = new RendererModel(this, 46, 53);
+        this.leg3 = new ModelRenderer(this, 46, 53);
         this.leg3.addBox(0.0F, 2.0F, 0.0F, 5, 12, 5, -1.0F);
         this.leg3.setRotationPoint(-6.0F, 9.5F, 8.0F);
 
-        this.hock4 = new RendererModel(this, 67, 41);
+        this.hock4 = new ModelRenderer(this, 67, 41);
         this.hock4.addBox(0.25F, -4.0F, -0.75F, 4, 7, 5, 0.0F);
         this.hock4.setRotationPoint(1.0F, 9.5F, 8.0F);
 
-        this.leg4 = new RendererModel(this, 66, 53);
+        this.leg4 = new ModelRenderer(this, 66, 53);
         this.leg4.addBox(0.0F, 2.0F, 0.0F, 5, 12, 5, -1.0F);
         this.leg4.setRotationPoint(1.0F, 9.5F, 8.0F);
 
-        this.hoof1 = new RendererModel(this, 6, 71);
+        this.hoof1 = new ModelRenderer(this, 6, 71);
         this.hoof1.addBox(0.0F, 11.75F, 0.1F, 5, 3, 4, -0.5F);
 
-        this.hoof2 = new RendererModel(this, 26, 71);
+        this.hoof2 = new ModelRenderer(this, 26, 71);
         this.hoof2.addBox(0.0F, 11.75F, 0.1F, 5, 3, 4, -0.5F);
 
-        this.hoof3 = new RendererModel(this, 46, 71);
+        this.hoof3 = new ModelRenderer(this, 46, 71);
         this.hoof3.addBox(0.0F, 11.75F, 0.1F, 5, 3, 4, -0.5F);
 
-        this.hoof4 = new RendererModel(this, 66, 71);
+        this.hoof4 = new ModelRenderer(this, 66, 71);
         this.hoof4.addBox(0.0F, 11.75F, 0.1F, 5, 3, 4, -0.5F);
 
 
@@ -132,63 +138,31 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
 
     @Override
-    public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-
-        HorseModelData horseModelData = getHorseModelData(entityIn);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
 
 //        this.head.render(scale);
-        this.neck.render(scale);
-        this.body.render(scale);
-        this.tail.render(scale);
-        this.leg1.render(scale);
-        this.leg2.render(scale);
-        this.leg3.render(scale);
-        this.leg4.render(scale);
-        this.hock3.render(scale);
-        this.hock4.render(scale);
-        this.hoof1.render(scale);
-        this.hoof2.render(scale);
-        this.hoof3.render(scale);
-        this.hoof4.render(scale);
+        this.neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leg1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leg2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leg3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leg4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.hock3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.hock4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.hoof1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.hoof2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.hoof3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.hoof4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
 
         
     }
 
     @Override
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
-        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
-        this.neck.rotateAngleX = headPitch * 0.017453292F + 0.8F;
-        this.neck.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.40F);
-        this.head.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.14F);
-        this.maneJoiner.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.07F);
-
-        this.tail.rotateAngleX = 0.6F;
-
-        this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
-        this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        this.hock3.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        this.hock4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
-        this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
-
-        copyModelAngles(leg1, hoof1);
-        copyModelAngles(leg2, hoof2);
-        copyModelAngles(leg3, hoof3);
-        copyModelAngles(leg4, hoof4);
-
-        this.earL.rotateAngleZ = -0.15F;
-        this.earR.rotateAngleZ = 0.15F;
-        this.jaw.rotateAngleX = -0.15F;
-
-    }
-
-    @Override
     public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
-//        int[] sharedGenes = ((EnhancedHorse) entitylivingbaseIn).getSharedGenes();
-
-        HorseModelData horseModelData = getHorseModelData(entitylivingbaseIn);
+        HorseModelData horseModelData = getCreateHorseModelData(entitylivingbaseIn);
+        this.currentHorse = entitylivingbaseIn.getEntityId();
 
         char[] uuidArry = horseModelData.uuidArray;
 
@@ -350,10 +324,37 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
     }
 
+    @Override
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.neck.rotateAngleX = headPitch * 0.017453292F + 0.8F;
+        this.neck.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.40F);
+        this.head.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.14F);
+        this.maneJoiner.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.07F);
+
+        this.tail.rotateAngleX = 0.6F;
+
+        this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
+        this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        this.hock3.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
+        this.hock4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
+        this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
+
+        copyModelAngles(leg1, hoof1);
+        copyModelAngles(leg2, hoof2);
+        copyModelAngles(leg3, hoof3);
+        copyModelAngles(leg4, hoof4);
+
+        this.earL.rotateAngleZ = -0.15F;
+        this.earR.rotateAngleZ = 0.15F;
+        this.jaw.rotateAngleX = -0.15F;
+
+    }
+
     /**
      * An intricate method that adds rotations onto a current box's angle of an axis; useful for complex animations
      *
-     * @param box{RendererModel} - The box to rotate
+     * @param box{ModelRenderer} - The box to rotate
      * @param doAxis{boolean[]} - An array of booleans used to determine if x, y, and z should be rotated. Array should have an index of [2]
      * @param reverse{boolean} - Boolean to determine if the rotation should be inverted
      * @param scale{float} - A multiplier to the rotation
@@ -364,7 +365,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
      * @param distanceSpeed{float} - The angle distance speed
      *
      */
-    public void advancedRotateAngle(RendererModel box, boolean[] doAxis, boolean reverse, float scale, float speed, float degree, float offset, float weight, float distance, float distanceSpeed) {
+    public void advancedRotateAngle(ModelRenderer box, boolean[] doAxis, boolean reverse, float scale, float speed, float degree, float offset, float weight, float distance, float distanceSpeed) {
         int neg = reverse ? -1 : 1;
         box.rotateAngleX = doAxis[0] ? box.rotateAngleX + neg * MathHelper.cos(distance * (speed * scale) + offset) * (degree * scale) * distanceSpeed : box.rotateAngleX;
         box.rotateAngleY = doAxis[1] ? box.rotateAngleY + neg * MathHelper.cos(distance * (speed * scale) + offset) * (degree * scale) * distanceSpeed : box.rotateAngleY;
@@ -373,7 +374,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
     /**
      * Much like `advancedRotateAngle` above but takes in an array of boxes which it will rotate those boxes in correlation with each other making a chain effect; good for tails for example
-     * @param boxes{RendererModel} - The box to rotate
+     * @param boxes{ModelRenderer} - The box to rotate
      * @param doAxis{boolean[]} - An array of booleans used to determine if x, y, and z should be rotated. Array should have an index of [2]
      * @param reverse{boolean} - Boolean to determine if the rotation should be inverted
      * @param scale{float} - A multiplier to the rotation
@@ -384,7 +385,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
      * @param distanceSpeed{float} - The angle distance speed\
      */
 
-    public void chainAdvancedRotateAngle(RendererModel[] boxes, boolean[] doAxis, boolean reverse, float scale, float chainOffset, float speed, float degree, float distance, float distanceSpeed) {
+    public void chainAdvancedRotateAngle(ModelRenderer[] boxes, boolean[] doAxis, boolean reverse, float scale, float chainOffset, float speed, float degree, float distance, float distanceSpeed) {
         int neg = reverse ? -1 : 1;
         int length = boxes.length;
         for (int i = 0; i < length; i++) {
@@ -394,7 +395,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         }
     }
 
-    public static void copyModelAngles(RendererModel source, RendererModel dest) {
+    public static void copyModelAngles(ModelRenderer source, ModelRenderer dest) {
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
         dest.rotateAngleZ = source.rotateAngleZ;
@@ -407,13 +408,23 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         float previousSwing;
         int[] horseGenes;
         char[] uuidArray;
+        String birthTime;
         float size;
         boolean sleeping;
         int lastAccessed = 0;
+        long clientGameTime = 0;
 //        int dataReset = 0;
     }
 
-    private HorseModelData getHorseModelData(T enhancedHorse) {
+    private HorseModelData getHorseModelData() {
+        if (this.currentHorse == null) {
+            return null;
+        }
+        HorseModelData horseModelData = horseModelDataCache.get(this.currentHorse);
+        return horseModelData;
+    }
+
+    private HorseModelData getCreateHorseModelData(T enhancedHorse) {
         clearCacheTimer++;
         if(clearCacheTimer > 100000) {
             horseModelDataCache.values().removeIf(value -> value.lastAccessed==1);
@@ -432,6 +443,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 //                pigModelData.dataReset = 0;
 //            }
             horseModelData.sleeping = enhancedHorse.isAnimalSleeping();
+            horseModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedHorse.world).getWorldInfo()).getGameTime());
+
             return horseModelData;
         } else {
             HorseModelData horseModelData = new HorseModelData();
@@ -439,6 +452,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
             horseModelData.size = enhancedHorse.getSize();
             horseModelData.sleeping = enhancedHorse.isAnimalSleeping();
             horseModelData.uuidArray = enhancedHorse.getCachedUniqueIdString().toCharArray();
+            horseModelData.birthTime = enhancedHorse.getBirthTime();
+            horseModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedHorse.world).getWorldInfo()).getGameTime());
 
             horseModelDataCache.put(enhancedHorse.getEntityId(), horseModelData);
 

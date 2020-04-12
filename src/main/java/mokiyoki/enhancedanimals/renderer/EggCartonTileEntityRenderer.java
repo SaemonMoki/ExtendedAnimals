@@ -37,7 +37,7 @@ import static com.mojang.blaze3d.systems.RenderSystem.enableRescaleNormal;
 public class EggCartonTileEntityRenderer<T extends TileEntity & IChestLid> extends TileEntityRenderer<T> {
     private static final ResourceLocation EGG_CARTON_TEXTURE = new ResourceLocation("eanimod:textures/block/egg_carton.png");
 
-    private final ModelEggCarton modelEggCarton = new ModelEggCarton();
+//    private final ModelEggCarton modelEggCarton = new ModelEggCarton();
 
     public EggCartonTileEntityRenderer(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
         super(tileEntityRendererDispatcher);
@@ -46,38 +46,38 @@ public class EggCartonTileEntityRenderer<T extends TileEntity & IChestLid> exten
     public void render(T tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         BlockState blockstate = tileEntityIn.hasWorld() ? tileEntityIn.getBlockState() : ModBlocks.Egg_Carton.getDefaultState().with(EggCartonBlock.FACING, Direction.SOUTH);
 
-        ResourceLocation resourcelocation = EGG_CARTON_TEXTURE;
-        this.bindTexture(resourcelocation);
-
-        if (destroyStage >= 0) {
-            matrixStackIn.push();
-            matrixStackIn.scale(4.0F, 4.0F, 1.0F); //TODO first number might need to be 8.0F
-            matrixStackIn.translate(0.0625F, 0.0625F, 0.0625F);
-        } else {
-//            matrixStackIn.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        }
-
-        matrixStackIn.push();
-        enableRescaleNormal();
-        matrixStackIn.translate((float)x, (float)y + 1.0F, (float)z + 1.0F);
-        matrixStackIn.scale(1.0F, -1.0F, -1.0F);
-        float f = blockstate.get(EggCartonBlock.FACING).getHorizontalAngle();
-        if ((double)Math.abs(f) > 1.0E-5D) {
-            matrixStackIn.translate(0.5F, 0.5F, 0.5F);
-            matrixStackIn.rotate(f, 0.0F, 1.0F, 0.0F);
-            matrixStackIn.translate(-0.5F, -0.5F, -0.5F);
-        }
-
-        this.applyLidRotation(tileEntityIn, partialTicks, modelEggCarton);
-        modelEggCarton.renderAll();
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.popMatrix();
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        if (destroyStage >= 0) {
-            GlStateManager.matrixMode(5890);
-            GlStateManager.popMatrix();
-            GlStateManager.matrixMode(5888);
-        }
+//        ResourceLocation resourcelocation = EGG_CARTON_TEXTURE;
+//        this.bindTexture(resourcelocation);
+//
+//        if (destroyStage >= 0) {
+//            matrixStackIn.push();
+//            matrixStackIn.scale(4.0F, 4.0F, 1.0F); //TODO first number might need to be 8.0F
+//            matrixStackIn.translate(0.0625F, 0.0625F, 0.0625F);
+//        } else {
+////            matrixStackIn.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//        }
+//
+//        matrixStackIn.push();
+//        enableRescaleNormal();
+//        matrixStackIn.translate((float)x, (float)y + 1.0F, (float)z + 1.0F);
+//        matrixStackIn.scale(1.0F, -1.0F, -1.0F);
+//        float f = blockstate.get(EggCartonBlock.FACING).getHorizontalAngle();
+//        if ((double)Math.abs(f) > 1.0E-5D) {
+//            matrixStackIn.translate(0.5F, 0.5F, 0.5F);
+//            matrixStackIn.rotate(f, 0.0F, 1.0F, 0.0F);
+//            matrixStackIn.translate(-0.5F, -0.5F, -0.5F);
+//        }
+//
+//        this.applyLidRotation(tileEntityIn, partialTicks, modelEggCarton);
+//        modelEggCarton.renderAll();
+//        GlStateManager.disableRescaleNormal();
+//        GlStateManager.popMatrix();
+//        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//        if (destroyStage >= 0) {
+//            GlStateManager.matrixMode(5890);
+//            GlStateManager.popMatrix();
+//            GlStateManager.matrixMode(5888);
+//        }
     }
 
 

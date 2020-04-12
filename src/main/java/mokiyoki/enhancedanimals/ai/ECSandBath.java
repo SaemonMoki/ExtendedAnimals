@@ -41,7 +41,7 @@ public class ECSandBath  extends Goal
         }
         else
         {
-            BlockPos blockpos = new BlockPos(this.sandBatherEntity.posX, this.sandBatherEntity.posY, this.sandBatherEntity.posZ);
+            BlockPos blockpos = new BlockPos(this.sandBatherEntity.getPosX(), this.sandBatherEntity.getPosY(), this.sandBatherEntity.getPosZ());
             return this.entityWorld.getBlockState(blockpos.down()).getBlock() == Blocks.SAND;
         }
     }
@@ -87,7 +87,7 @@ public class ECSandBath  extends Goal
         this.sandBathTimer = Math.max(0, this.sandBathTimer - 1);
 
         if (this.sandBathTimer == 4) {
-            BlockPos blockpos = new BlockPos(this.sandBatherEntity.posX, this.sandBatherEntity.posY, this.sandBatherEntity.posZ);
+            BlockPos blockpos = new BlockPos(this.sandBatherEntity.getPosX(), this.sandBatherEntity.getPosY(), this.sandBatherEntity.getPosZ());
                 BlockPos blockpos1 = blockpos.down();
 
                 if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.SAND) {

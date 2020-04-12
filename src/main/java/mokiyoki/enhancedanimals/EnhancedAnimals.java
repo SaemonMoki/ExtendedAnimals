@@ -37,8 +37,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
-
 /**
  * Created by moki on 24/08/2018.
  */
@@ -101,7 +99,7 @@ public class EnhancedAnimals {
     }
 
     private void doClientSetup(final FMLClientSetupEvent event) {
-        ScreenManager.registerFactory(EGG_CARTON_CONTAINER, EggCartonScreen::new);
+        proxy.initClientSetup(event);
     }
 
     private void loadComplete(final FMLLoadCompleteEvent event) {

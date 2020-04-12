@@ -779,7 +779,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         enhancedrabbit.setGrowingAge(-48000);
         enhancedrabbit.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedrabbit.setRabbitStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedrabbit.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedrabbit.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
 //                        enhancedrabbit.setMotherUUID(this.getUniqueID().toString());
         this.world.addEntity(enhancedrabbit);
     }
@@ -1723,7 +1723,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
+//        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {

@@ -360,7 +360,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         }
 
         BlockPos blockpos = new BlockPos(this.creature);
-        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
+        BlockPos.Mutable blockpos$mutableblockpos = new BlockPos.Mutable();
 
         for(int k = this.field_203112_e; k <= j; k = k > 0 ? -k : 1 - k) {
             for(int l = 0; l < i; ++l) {

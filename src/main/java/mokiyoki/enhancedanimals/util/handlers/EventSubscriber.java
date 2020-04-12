@@ -93,7 +93,7 @@ public class EventSubscriber {
         Entity entity = event.getEntity();
         if (entity instanceof WanderingTraderEntity) {
             if(!ConfigHandler.COMMON.spawnVanillaLlamas.get()) {
-                ((WanderingTraderEntity)entity).func_213728_s(48000);
+                ((WanderingTraderEntity)entity).setDespawnDelay(48000);
                 World world = event.getWorld().getWorld();
 
                 for (int i = 0; i < 2; i++) {

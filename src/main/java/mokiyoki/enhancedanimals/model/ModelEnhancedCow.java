@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.model;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EntityState;
@@ -489,9 +488,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             babyScale = 1.0F;
         }
         float finalCowSize = (( 2.0F * cowModelData.cowSize * age) + cowModelData.cowSize) / 3.0F;
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(finalCowSize + (finalCowSize * bodyWidth), finalCowSize, finalCowSize + (finalCowSize * bodyLength));
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (finalCowSize)) - d, 0.0F);
+        matrixStackIn.push();
+        matrixStackIn.scale(finalCowSize + (finalCowSize * bodyWidth), finalCowSize, finalCowSize + (finalCowSize * bodyLength));
+        matrixStackIn.translate(0.0F, (-1.45F + 1.45F / (finalCowSize)) - d, 0.0F);
 
         renderHump(hump, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
@@ -501,15 +500,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.headModel.render(matrixStackIn, bufferIn , null, cowModelData.unrenderedModels, true, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        GlStateManager.popMatrix();
+        matrixStackIn.pop();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(finalCowSize + (finalCowSize * bodyWidth), finalCowSize * babyScale, finalCowSize + (finalCowSize * bodyLength));
-        GlStateManager.translatef(0.0F, -1.45F + 1.45F / (finalCowSize * babyScale), 0.0F);
+        matrixStackIn.push();
+        matrixStackIn.scale(finalCowSize + (finalCowSize * bodyWidth), finalCowSize * babyScale, finalCowSize + (finalCowSize * bodyLength));
+        matrixStackIn.translate(0.0F, -1.45F + 1.45F / (finalCowSize * babyScale), 0.0F);
 
         renderLegs(dwarf, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        GlStateManager.popMatrix();
+        matrixStackIn.pop();
 
     }
 
@@ -1381,7 +1380,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         boolean sleeping;
         int dataReset = 0;
         long clientGameTime = 0;
-        List<String> unrenderedModels;
+        List<String> unrenderedModels = new ArrayList<>();
     }
 
     private CowModelData getCowModelData() {
@@ -1413,6 +1412,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.bagSize = enhancedCow.getBagSize();
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
             cowModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime());
+            cowModelData.unrenderedModels = new ArrayList<>();
+
             return cowModelData;
         } else {
             CowModelData cowModelData = new CowModelData();
@@ -1428,6 +1429,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             } else {
                 cowModelData.uuidArray = enhancedCow.getMooshroomUUID().toCharArray();
             }
+            cowModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime());
 
             cowModelDataCache.put(enhancedCow.getEntityId(), cowModelData);
 

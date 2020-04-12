@@ -19,9 +19,13 @@ import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class EnhancedRendererModelNew extends ModelRenderer {
+    private float textureWidth = 64.0F;
+    private float textureHeight = 32.0F;
     private final ObjectList<EnhancedRendererModelNew.ModelBox> cubeList = new ObjectArrayList<>();
-    private final ObjectList<ModelRenderer> childModels = new ObjectArrayList<>();
+    private final ObjectList<EnhancedRendererModelNew> childModels = new ObjectArrayList<>();
     public final String boxName;
+    private int textureOffsetX;
+    private int textureOffsetY;
 
     public EnhancedRendererModelNew(Model model, String boxNameIn) {
         super(model);
@@ -40,14 +44,78 @@ public class EnhancedRendererModelNew extends ModelRenderer {
         this.setTextureOffset(texOffX, texOffY);
     }
 
+    /**
+     * Sets the current box's rotation points and rotation angles to another box.
+     */
+    public void addChild(EnhancedRendererModelNew renderer) {
+        this.childModels.add(renderer);
+    }
 
+    @Override
+    public EnhancedRendererModelNew setTextureSize(int textureWidthIn, int textureHeightIn) {
+        this.textureWidth = (float)textureWidthIn;
+        this.textureHeight = (float)textureHeightIn;
+        return this;
+    }
+
+    @Override
+    public EnhancedRendererModelNew setTextureOffset(int x, int y) {
+        this.textureOffsetX = x;
+        this.textureOffsetY = y;
+        return this;
+    }
+
+    @Override
+    public EnhancedRendererModelNew addBox(String partName, float x, float y, float z, int width, int height, int depth, float delta, int texX, int texY) {
+        this.setTextureOffset(texX, texY);
+        this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, (float)width, (float)height, (float)depth, delta, delta, delta, this.mirror, false);
+        return this;
+    }
+
+    @Override
+    public EnhancedRendererModelNew addBox(float x, float y, float z, float width, float height, float depth) {
+        this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, 0.0F, 0.0F, 0.0F, this.mirror, false);
+        return this;
+    }
+
+    @Override
+    public EnhancedRendererModelNew addBox(float x, float y, float z, float width, float height, float depth, boolean mirrorIn) {
+        this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, 0.0F, 0.0F, 0.0F, mirrorIn, false);
+        return this;
+    }
+
+    @Override
+    public void addBox(float x, float y, float z, float width, float height, float depth, float delta) {
+        this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, delta, delta, delta, this.mirror, false);
+    }
+
+    public void addBox(float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ) {
+        this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, this.mirror, false);
+    }
+
+    @Override
+    public void addBox(float x, float y, float z, float width, float height, float depth, float delta, boolean mirrorIn) {
+        this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, delta, delta, delta, mirrorIn, false);
+    }
+
+    private void addBox(int texOffX, int texOffY, float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ, boolean mirorIn, boolean p_228305_13_) {
+        this.cubeList.add(new EnhancedRendererModelNew.ModelBox(texOffX, texOffY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, mirorIn, this.textureWidth, this.textureHeight));
+    }
+
+    public void setRotationPoint(float rotationPointXIn, float rotationPointYIn, float rotationPointZIn) {
+        this.rotationPointX = rotationPointXIn;
+        this.rotationPointY = rotationPointYIn;
+        this.rotationPointZ = rotationPointZIn;
+    }
 
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender, Boolean pushPopEntireChain, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (this.showModel) {
             if (!this.cubeList.isEmpty() || !this.childModels.isEmpty()) {
-                if (pushPopEntireChain) {
-                    matrixStackIn.push();
-                }
+//                if (pushPopEntireChain) {
+//                    matrixStackIn.push();
+//                }
+
+                matrixStackIn.push();
 
                 if (mapOfScale != null) {
                     if (mapOfScale.containsKey(this.boxName)) {
@@ -67,12 +135,15 @@ public class EnhancedRendererModelNew extends ModelRenderer {
                     this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
 
-                for(ModelRenderer modelrenderer : this.childModels) {
-                    modelrenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                for(EnhancedRendererModelNew modelrenderer : this.childModels) {
+                    ((EnhancedRendererModelNew)modelrenderer).render(matrixStackIn, bufferIn, mapOfScale, boxesToNotRender, pushPopEntireChain, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
-                if (pushPopEntireChain) {
-                    matrixStackIn.pop();
-                }
+
+                matrixStackIn.pop();
+
+//                if (pushPopEntireChain) {
+//                    matrixStackIn.pop();
+//                }
             }
         }
     }

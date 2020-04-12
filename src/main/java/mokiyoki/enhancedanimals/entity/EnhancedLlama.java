@@ -620,7 +620,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         enhancedllama.setGrowingAge(-120000);
         enhancedllama.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedllama.setLlamaStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedllama.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedllama.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
 //                        enhancedllama.setMotherUUID(this.getUniqueID().toString());
         this.world.addEntity(enhancedllama);
     }
@@ -1162,7 +1162,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
+//        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (spawnReason == SpawnReason.EVENT) {

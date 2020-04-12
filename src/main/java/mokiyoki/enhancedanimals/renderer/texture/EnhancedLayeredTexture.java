@@ -1,9 +1,9 @@
 package mokiyoki.enhancedanimals.renderer.texture;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.TextureUtil;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.Texture;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;

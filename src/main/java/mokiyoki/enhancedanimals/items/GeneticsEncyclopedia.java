@@ -108,7 +108,7 @@ public class GeneticsEncyclopedia extends Item {
                         itextcomponent = new StringTextComponent(s);
                     }
 
-                    listnbt.set(i, (INBT)(new StringNBT(ITextComponent.Serializer.toJson(itextcomponent))));
+                    listnbt.set(i, (StringNBT.valueOf(ITextComponent.Serializer.toJson(itextcomponent))));
                 }
 
                 compoundnbt.put("pages", listnbt);

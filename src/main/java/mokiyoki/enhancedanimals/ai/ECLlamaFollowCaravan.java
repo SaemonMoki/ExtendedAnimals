@@ -105,8 +105,8 @@ public class ECLlamaFollowCaravan extends Goal {
             EnhancedLlama entityllama = this.llama.getCaravanHead();
             double d0 = (double)this.llama.getDistance(entityllama);
             float f = 2.0F;
-            Vec3d vec3d = (new Vec3d(entityllama.posX - this.llama.posX, entityllama.posY - this.llama.posY, entityllama.posZ - this.llama.posZ)).normalize().scale(Math.max(d0 - 2.0D, 0.0D));
-            this.llama.getNavigator().tryMoveToXYZ(this.llama.posX + vec3d.x, this.llama.posY + vec3d.y, this.llama.posZ + vec3d.z, this.speedModifier);
+            Vec3d vec3d = (new Vec3d(entityllama.getPosX() - this.llama.getPosX(), entityllama.getPosY() - this.llama.getPosY(), entityllama.getPosZ() - this.llama.getPosZ())).normalize().scale(Math.max(d0 - 2.0D, 0.0D));
+            this.llama.getNavigator().tryMoveToXYZ(this.llama.getPosX() + vec3d.x, this.llama.getPosY() + vec3d.y, this.llama.getPosZ() + vec3d.z, this.speedModifier);
         }
     }
 

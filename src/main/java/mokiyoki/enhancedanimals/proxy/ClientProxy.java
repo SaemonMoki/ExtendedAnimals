@@ -1,55 +1,59 @@
 package mokiyoki.enhancedanimals.proxy;
 
-import mokiyoki.enhancedanimals.entity.*;
-//import mokiyoki.enhancedanimals.gui.EncyclopediaScreen;
+import mokiyoki.enhancedanimals.gui.EggCartonScreen;
 import mokiyoki.enhancedanimals.gui.EncyclopediaScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.renderer.*;
-import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.entity.EntityType;
 import net.minecraft.item.BlockItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.GrassColors;
 import net.minecraft.world.biome.BiomeColors;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_TILE_ENTITY_TILE_ENTITY_TYPE;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOSHROOM;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
 
 /**
  * Created by moki on 24/08/2018.
  */
 public class ClientProxy implements IProxy {
-    public static EntityType<EnhancedChicken> enhancedChickenEntityType;
-    public static EntityType<EnhancedRabbit> enhancedRabbitEntityType;
-    public static EntityType<EnhancedSheep> enhancedSheepEntityType;
-    public static EntityType<EnhancedLlama> enhancedLlamaEntityType;
-    public static EntityType<EnhancedCow> enhancedCowEntityType;
-    public static EntityType<EnhancedPig> enhancedPigEntityType;
-    public static EntityType<EnhancedHorse> enhancedHorseEntityType;
-    public static EntityType<EnhancedMooshroom> enhancedMooshroomEntityType;
-
-    public static TileEntityType<EggCartonTileEntity> eggCartonTileEntityTileEntityType;
-
     @Override
     public void init(FMLCommonSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(enhancedChickenEntityType, manager -> new RenderEnhancedChicken(manager));
-        RenderingRegistry.registerEntityRenderingHandler(enhancedRabbitEntityType, manager -> new RenderEnhancedRabbit(manager));
-        RenderingRegistry.registerEntityRenderingHandler(enhancedSheepEntityType, manager -> new RenderEnhancedSheep(manager));
-        RenderingRegistry.registerEntityRenderingHandler(enhancedLlamaEntityType, manager -> new RenderEnhancedLlama(manager));
-        RenderingRegistry.registerEntityRenderingHandler(enhancedCowEntityType, manager -> new RenderEnhancedCow(manager));
-        RenderingRegistry.registerEntityRenderingHandler(enhancedPigEntityType, manager -> new RenderEnhancedPig(manager));
-        RenderingRegistry.registerEntityRenderingHandler(enhancedHorseEntityType, manager -> new RenderEnhancedHorse(manager));
-        RenderingRegistry.registerEntityRenderingHandler(enhancedMooshroomEntityType, manager -> new RenderEnhancedMooshroom(manager));
+    }
 
-        ClientRegistry.bindTileEntityRenderer(eggCartonTileEntityTileEntityType, manager -> new EggCartonTileEntityRenderer<>());
+    @OnlyIn(Dist.CLIENT)
+    public void initClientSetup(FMLClientSetupEvent event) {
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_CHICKEN, RenderEnhancedChicken::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_RABBIT, RenderEnhancedRabbit::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_SHEEP, RenderEnhancedSheep::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_LLAMA, RenderEnhancedLlama::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_COW, RenderEnhancedCow::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_PIG, RenderEnhancedPig::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_HORSE, RenderEnhancedHorse::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOSHROOM, RenderEnhancedMooshroom::new);
+
+        ScreenManager.registerFactory(EGG_CARTON_CONTAINER, EggCartonScreen::new);
+        ClientRegistry.bindTileEntityRenderer(EGG_CARTON_TILE_ENTITY_TILE_ENTITY_TYPE, EggCartonTileEntityRenderer::new);
     }
 
     @Override
@@ -70,8 +74,8 @@ public class ClientProxy implements IProxy {
     }
 
     @Override
-    public void setEncylopediaInfo(CompoundNBT geneticEncyclopediaNBT) {
-//        EncyclopediaScreen.geneticEncyclopediaNBT = geneticEncyclopediaNBT;
+    public void setEncylopediaInfo(ItemStack itemStack) {
+        EncyclopediaScreen.encyclopedia = itemStack;
     }
 
     @Override

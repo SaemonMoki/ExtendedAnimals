@@ -34,7 +34,7 @@ public class ECEat extends Goal {
         if (this.eatingEntity.getRNG().nextInt(this.eatingEntity.isChild() ? 50 : 1000) != 0) {
             return false;
         } else {
-            BlockPos blockpos = new BlockPos(this.eatingEntity.posX, this.eatingEntity.posY, this.eatingEntity.posZ);
+            BlockPos blockpos = new BlockPos(this.eatingEntity.getPosX(), this.eatingEntity.getPosY(), this.eatingEntity.getPosZ());
             if (IS_TALL_GRASS.test(this.entityWorld.getBlockState(blockpos))) {
                 return true;
             } else {
@@ -79,7 +79,7 @@ public class ECEat extends Goal {
     public void updateTask() {
         this.eatingTimer = Math.max(0, this.eatingTimer - 1);
         if (this.eatingTimer == 4) {
-            BlockPos blockpos = new BlockPos(this.eatingEntity.posX, this.eatingEntity.posY, this.eatingEntity.posZ);
+            BlockPos blockpos = new BlockPos(this.eatingEntity.getPosX(), this.eatingEntity.getPosY(), this.eatingEntity.getPosZ());
             //this is to eat the tall grass if the chicken is IN the tall grass
             if (IS_TALL_GRASS.test(this.entityWorld.getBlockState(blockpos))) {
                 if (ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.eatingEntity)) {

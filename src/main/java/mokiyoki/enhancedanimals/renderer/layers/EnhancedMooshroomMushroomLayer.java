@@ -5,11 +5,12 @@ package mokiyoki.enhancedanimals.renderer.layers;
 // (powered by Fernflower decompiler)
 //
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.CullFace;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
@@ -27,12 +28,13 @@ public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends
         super(p_i50931_1_);
     }
 
-    public void render(T entityIn, float p_212842_2_, float p_212842_3_, float p_212842_4_, float p_212842_5_, float p_212842_6_, float p_212842_7_, float p_212842_8_) {
-//        if (!entityIn.isChild() && !entityIn.isInvisible()) {
+
+    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (!entitylivingbaseIn.isChild() && !entitylivingbaseIn.isInvisible()) {
+
+//            EnhancedMooshroom enhancedMooshroom = entitylivingbaseIn;
 //
-//            EnhancedMooshroom enhancedMooshroom = entityIn;
-//
-//            int[] sharedGenes = (entityIn).getSharedGenes();
+//            int[] sharedGenes = (entitylivingbaseIn).getSharedGenes();
 //            char[] uuidArry = enhancedMooshroom.getCachedUniqueIdString().toCharArray();
 //            this.size = enhancedMooshroom.getSize();
 //            float horns = 0.05F;
@@ -83,7 +85,7 @@ public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends
 //            } else {
 //                dwarf = 0.0F;
 //            }
-//
+
 //            BlockState blockstate = entityIn.getMooshroomType().getRenderState();
 //            this.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 //            GlStateManager.enableCull();
@@ -114,7 +116,7 @@ public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends
 //            GlStateManager.popMatrix();
 //            GlStateManager.cullFace(GlStateManager.CullFace.BACK);
 //            GlStateManager.disableCull();
-//        }
+        }
     }
 
     public boolean shouldCombineTextures() {

@@ -335,6 +335,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
     public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
+    private int getAge() { return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime())); }
+
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
         this.dataManager.set(SLEEPING, sleeping); }
@@ -619,6 +621,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             size = size * 0.75F;
         }
 
+        // size is [ 0.5076 - 1.0F]
         this.chickenSize = size;
         this.setChickenSize(size);
 
@@ -1451,7 +1454,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     public String getChickenTexture() {
         if (this.chickenTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (!this.isChild() && resetTexture) {
+        } else if (resetTexture && getAge() > 20000) {
             resetTexture = false;
             this.setTexturePaths();
         }
@@ -1475,7 +1478,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     private void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if(genesForText!=null) {
-            if (!isChild()) {
+            if (getAge() >= 20000) {
                 int ground = 0;
                 int pattern = 0;
                 int moorhead = 0;
@@ -3008,6 +3011,14 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         }
     }
 
+    @Override
+    protected boolean canDropLoot() {
+        if (getAge() > 20000) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     @Override
     @Nullable
@@ -3015,49 +3026,70 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
         if (!this.world.isRemote) {
 
-            float bodyType;
+            int age = getAge();
+            int bodyType;
+            int meatSize;
 
-            if (genes[146] == 2 && genes[147] == 2) {
-                if (genes[148] == 2 && genes[149] == 2) {
+                if (genes[146] == 2 && genes[147] == 2) {
+                    if (genes[148] == 2 && genes[149] == 2) {
+                        //normal body
+                        bodyType = 0;
+                    } else {
+                        //big body
+                        bodyType = 1;
+                    }
+                } else if (genes[148] == 2 && genes[149] == 2) {
+                    if (genes[146] == 2 || genes[147] == 2) {
+                        //normal body
+                        bodyType = 0;
+                    } else {
+                        //small body
+                        bodyType = -1;
+                    }
+                } else {
                     //normal body
                     bodyType = 0;
-                } else {
-                    //big body
-                    bodyType = 0.18F;
-                }
-            } else if (genes[148] == 2 && genes[149] == 2) {
-                if (genes[146] == 2 || genes[147] == 2) {
-                    //normal body
-                    bodyType = 0;
-                } else {
-                    //small body
-                    bodyType = -0.18F;
-                }
-            } else {
-                //normal body
-                bodyType = 0;
-            }
-
-            if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
-
-                if (chickenSize + bodyType <= 0.7F) {
-                    dropMeatType = "rawchicken_darksmall";
-                } else if (chickenSize + bodyType >= 0.9F) {
-                    dropMeatType = "rawchicken_darkbig";
-                } else {
-                    dropMeatType = "rawchicken_dark";
                 }
 
-            } else {
-
-                if (chickenSize + bodyType <= 0.7F) {
-                    dropMeatType = "rawchicken_palesmall";
-                } else if (chickenSize + bodyType >= 0.9F) {
-                    dropMeatType = "rawchicken";
-                } else {
-                    dropMeatType = "rawchicken_pale";
+                if (age < 60000) {
+                    if (age > 40000) {
+                        bodyType = bodyType - 2;
+                    } else {
+                        bodyType = bodyType - 1;
+                    }
                 }
-            }
+
+                // size is [ 0.5076 - 1.0F]
+                if (chickenSize < 0.67) {
+                    meatSize = bodyType + 1;
+                } else if (chickenSize < 0.89) {
+                    meatSize = bodyType + 2;
+                } else {
+                    meatSize = bodyType + 3;
+                }
+
+                if (meatSize > 0) {
+                    if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
+
+                        if (meatSize == 1) {
+                            dropMeatType = "rawchicken_darksmall";
+                        } else if (meatSize == 2) {
+                            dropMeatType = "rawchicken_darkbig";
+                        } else {
+                            dropMeatType = "rawchicken_dark";
+                        }
+
+                    } else {
+
+                        if (meatSize == 1) {
+                            dropMeatType = "rawchicken_palesmall";
+                        } else if (meatSize == 2) {
+                            dropMeatType = "rawchicken";
+                        } else {
+                            dropMeatType = "rawchicken_pale";
+                        }
+                    }
+                }
         }
 
         return new ResourceLocation(Reference.MODID, "enhanced_chicken");

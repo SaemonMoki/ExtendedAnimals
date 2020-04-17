@@ -41,7 +41,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     private static final DataParameter<String> MOOSHROOM_TYPE = EntityDataManager.createKey(EnhancedMooshroom.class, DataSerializers.STRING);
 
     private static final String[] MOOSHROOM_MUSHROOM = new String[] {
-            "red_mushroom.png", "brown_mushroom.png"
+            "red_mushroom.png", "brown_mushroom.png", "yellow_flower.png"
     };
 
     private Effect hasStewEffect;

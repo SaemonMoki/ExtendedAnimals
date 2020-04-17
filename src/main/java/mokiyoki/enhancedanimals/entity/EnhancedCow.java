@@ -174,7 +174,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     protected final List<String> cowTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 118;
+    private static final int GENES_LENGTH = 120;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     protected int[] mitosisGenes = new int[GENES_LENGTH];
@@ -247,9 +247,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         return this.dataManager.get(COW_SIZE);
     }
 
-    private void setBagSize(float size) {
-        this.dataManager.set(BAG_SIZE, size);
-    }
+    private void setBagSize(float size) { this.dataManager.set(BAG_SIZE, size); }
 
     public float getBagSize() {
         return this.dataManager.get(BAG_SIZE);
@@ -1551,6 +1549,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
             switch (resultAmount) {
                 case 0:
+                    entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
                     return true;
                 case 1:
                     if (isBottle) {
@@ -1871,6 +1870,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             wildType = 1;
         }else if (biome.getCategory().equals(Biome.Category.PLAINS)) {
             wildType = 3;
+        } else if (biome.getCategory().equals(Biome.Category.MUSHROOM)) {
+            wildType = 4;
         }
 
 
@@ -2548,6 +2549,15 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             initialGenes[81] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
         generateHornGenes(initialGenes);
+
+        //parasitic immunity gene
+        if (wildType != 4) {
+            initialGenes[118] = 1;
+            initialGenes[119] = 1;
+        } else {
+            initialGenes[118] = 2;
+            initialGenes[119] = 2;
+        }
 
         return initialGenes;
     }

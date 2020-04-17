@@ -700,11 +700,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
     private List<Float> mirrorX(List<Float> scalings, boolean includeScaling) {
         List<Float> reversedNegative = new ArrayList<>();
 
-        if (includeScaling) {
-            reversedNegative.add(scalings.get(0));
-        } else {
-            reversedNegative.add(null);
-        }
+        reversedNegative.add(null);
         reversedNegative.add(scalings.get(1) * -2.0F);
         reversedNegative.add(0F);
         reversedNegative.add(0F);

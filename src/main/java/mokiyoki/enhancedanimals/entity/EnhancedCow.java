@@ -173,7 +173,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     }};
 
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
-    private final List<String> cowTextures = new ArrayList<>();
+    protected final List<String> cowTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 118;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
@@ -372,7 +372,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                     pregnant = false;
                     gestationTimer = 0;
                     setCowStatus(EntityState.MOTHER.toString());
-                    Integer milk = Math.round((30*(cowSize/1.5F))) - 1;
+                    //sets milk amount at first milk
+                    Integer milk = Math.round((30*(cowSize/1.5F)*(maxBagSize/1.5F)) * 0.75F);
                     setMilkAmount(milk);
 
                     float milkBagSize = milk / (30*(cowSize/1.5F)*(maxBagSize/1.5F));
@@ -801,7 +802,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void setTexturePaths() {
+    protected void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
 
@@ -1052,42 +1053,42 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 hooves = 1;
             }
 
-            if (genesForText[12] == 1 || genesForText[13] == 1) {
-                //should be polled unless...
-                //african horn gene
-                if (genesForText[76] == 1 && genesForText[77] == 1) {
-                    //horned
-                } else if (genesForText[76] == 1 || genesForText[77] == 1) {
-                    //sex determined horned
-                    if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
-                        //horned if male
-                    } else {
-                        //polled if female unless
-                        if (genesForText[78] == 1 && genesForText[79] == 1) {
-                            //she is scured
-                        } else {
-                            //polled
-                            horn = 0;
-                        }
-                    }
-                } else {
-                    //polled
-                    if (genesForText[78] == 1 && genesForText[79] == 1) {
-                        //scured
-                    } else if (genesForText[78] == 1 || genesForText[79] == 1) {
-                        //sex determined scured
-                        if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
-                            //scurred
-                        } else {
-                            //polled
-                            horn = 0;
-                        }
-                    } else {
-                        //polled
-                        horn = 0;
-                    }
-                }
-            }
+//            if (genesForText[12] == 1 || genesForText[13] == 1) {
+//                //should be polled unless...
+//                //african horn gene
+//                if (genesForText[76] == 1 && genesForText[77] == 1) {
+//                    //horned
+//                } else if (genesForText[76] == 1 || genesForText[77] == 1) {
+//                    //sex determined horned
+//                    if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
+//                        //horned if male
+//                    } else {
+//                        //polled if female unless
+//                        if (genesForText[78] == 1 && genesForText[79] == 1) {
+//                            //she is scured
+//                        } else {
+//                            //polled
+//                            horn = 0;
+//                        }
+//                    }
+//                } else {
+//                    //polled
+//                    if (genesForText[78] == 1 && genesForText[79] == 1) {
+//                        //scured
+//                    } else if (genesForText[78] == 1 || genesForText[79] == 1) {
+//                        //sex determined scured
+//                        if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
+//                            //scurred
+//                        } else {
+//                            //polled
+//                            horn = 0;
+//                        }
+//                    } else {
+//                        //polled
+//                        horn = 0;
+//                    }
+//                }
+//            }
 
             if (genesForText[48] == 1 || genesForText[49] == 1){
                 coat = 1;
@@ -1138,11 +1139,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             //TODO add eye colour genetics
             this.cowTextures.add(COW_TEXTURES_EYES[0]);
             //TODO add hoof colour genetics
-            if (horn != 0) {
-                this.cowTextures.add(COW_TEXTURES_HORNS[horn]);
-            }
+            this.cowTextures.add(COW_TEXTURES_HORNS[horn]);
             this.cowTextures.add(COW_TEXTURES_COAT[coat]);
-
 //              testing textures
 //              this.cowTextures.add(COW_TEXTURES_TEST[1]);
 

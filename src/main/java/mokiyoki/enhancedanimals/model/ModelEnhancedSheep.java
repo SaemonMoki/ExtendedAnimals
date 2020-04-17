@@ -553,6 +553,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         String sheepStatus = sheepModelData.sheepStatus;
         char[] uuidArry = sheepModelData.uuidArray;
         boolean sleeping = sheepModelData.sleeping;
+        float size = 1.0F;
 
         List<String> unrenderedModels = this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, genes, uuidArry, sleeping);
 
@@ -611,11 +612,38 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         //TODO horn scale logic
 
-        if (this.isChild) {
-            renderChild(scale);
-        }else {
-            renderAdult(scale, sheepStatus, horns, hornScale, facewool, polycerate, unrenderedModels, coatLength);
+        float age = 1.0F;
+        if (!(sheepModelData.birthTime == null) && !sheepModelData.birthTime.equals("") && !sheepModelData.birthTime.equals("0")) {
+            int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(sheepModelData.birthTime));
+            if (ageTime <= 75000) {
+                age = ageTime/75000.0F;
+            }
         }
+
+        float finalSheepSize = (( 2.0F * size * age) + size) / 3.0F;
+        float babyScale = 1.0F;
+        float d = 0.0F;
+        if (!sleeping) {
+            babyScale = (3.0F - age)/2;
+            d = 0.3F * (1.0F-age);
+        }
+
+        GlStateManager.pushMatrix();
+        GlStateManager.scalef(finalSheepSize, finalSheepSize, finalSheepSize);
+        GlStateManager.translatef(0.0F, (-1.5F + 1.5F/finalSheepSize) - d, 0.0F);
+
+            renderAdult(scale, sheepStatus, horns, hornScale, facewool, polycerate, unrenderedModels, coatLength);
+
+        GlStateManager.popMatrix();
+
+        GlStateManager.pushMatrix();
+        GlStateManager.scalef(finalSheepSize, finalSheepSize * babyScale, finalSheepSize);
+        GlStateManager.translatef(0.0F, -1.5F + 1.5F/(finalSheepSize * babyScale), 0.0F);
+
+            renderLegs(scale);
+
+        GlStateManager.popMatrix();
+//        }
     }
 
     private void renderAdult(float scale, String sheepStatus, boolean horns, float hornScale, int facewool, boolean polycerate, List<String> unrenderedModels, int coatLength) {
@@ -625,11 +653,6 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.body.render(scale);
 
         renderWool(scale, facewool, coatLength);
-
-        this.leg1.render(scale);
-        this.leg2.render(scale);
-        this.leg3.render(scale);
-        this.leg4.render(scale);
 
         if (horns){
             renderHorns(scale, polycerate, hornScale, unrenderedModels);
@@ -662,35 +685,11 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         }
     }
 
-    private void renderChild(float scale) {
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(0.6F, 0.6F, 0.6F);
-        GlStateManager.translatef(0.0F, 15.0F * scale, 0.0F);
-
-        this.neck.render(scale);
-        this.earsR.render(scale);
-        this.earsL.render(scale);
-
-        GlStateManager.popMatrix();
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(0.5F, 0.5F, 0.5F);
-        GlStateManager.translatef(0.0F, 20.0F * scale, 0.0F);
-
-        this.body.render(scale);
-        this.tailBase.render(scale);
-
-        GlStateManager.popMatrix();
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(0.5F, 0.7F, 0.5F);
-        GlStateManager.translatef(0.0F, 10.0F * scale, 0.0F);
-
+    private void renderLegs(float scale) {
         this.leg1.render(scale);
         this.leg2.render(scale);
         this.leg3.render(scale);
         this.leg4.render(scale);
-
-        GlStateManager.popMatrix();
-
     }
 
     private void renderHorns(float scale, boolean polycerate, float hornScale, List<String> unrenderedModels) {
@@ -820,7 +819,16 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
     public List<String> setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int[] sharedGenes, char[] uuidArry, boolean sleeping) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
+        SheepModelData sheepModelData = getSheepModelData(entityIn);
         List<String> unrenderedModels = new ArrayList<>();
+
+        float age = 1.0F;
+        if (!(sheepModelData.birthTime == null) && !sheepModelData.birthTime.equals("") && !sheepModelData.birthTime.equals("0")) {
+            int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(sheepModelData.birthTime));
+            if (ageTime <= 75000) {
+                age = ageTime/75000.0F;
+            }
+        }
 
         if (!sleeping) {
             this.neck.rotateAngleX = headPitch * 0.017453292F;
@@ -834,15 +842,10 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         }
 
-        if (isChild) {
-            this.tailBase.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 1.3F * limbSwingAmount;
-            this.tailMiddle.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-            this.tailTip.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 1.5F * limbSwingAmount;
-        }else{
-            this.tailBase.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.4F * limbSwingAmount;
-            this.tailMiddle.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.5F * limbSwingAmount;
-            this.tailTip.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.6F * limbSwingAmount;
-        }
+        this.tailBase.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * (1.3F - (0.9F * age)) * limbSwingAmount;
+        this.tailMiddle.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * (1.4F - (0.9F * age)) * limbSwingAmount;
+        this.tailTip.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * (1.5F - (0.9F * age)) * limbSwingAmount;
+
 
         this.neck.rotateAngleX = 1F + this.headRotationAngleX;   //might need to merge this with another line
 
@@ -959,7 +962,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                 hornGrowth = 16;
             } else if (ageTime > 21000) {
                 hornGrowth = 17;
-            } else if (ageTime > 18000) {
+            } else {
                 hornGrowth = 18;
             }
         }

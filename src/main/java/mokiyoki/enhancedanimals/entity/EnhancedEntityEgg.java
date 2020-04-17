@@ -16,6 +16,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -94,12 +95,12 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
 //                if (this.rand.nextInt(32) == 0) {
 //                    i = 4;
 //                }
-
 //                for (int j = 0; j < i; ++j) {
                 EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.create(this.world);
                 enhancedchicken.setSharedGenesFromEntityEgg(getGenes());
                 enhancedchicken.setGenes(enhancedchicken.getSharedGenes());
                 enhancedchicken.setGrowingAge(-60000);
+                enhancedchicken.setBirthTime(String.valueOf(this.world.getGameTime()));
                 enhancedchicken.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
                 this.world.addEntity(enhancedchicken);
 //                }

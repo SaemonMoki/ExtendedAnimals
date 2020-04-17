@@ -4,7 +4,9 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -668,140 +670,152 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
         this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 
-        if (this.isChild && size >= 0.65) {
+        float age = 1.0F;
+        if (!(chickenModelData.birthTime == null) && !chickenModelData.birthTime.equals("") && !chickenModelData.birthTime.equals("0")) {
+            int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(chickenModelData.birthTime));
+            if (ageTime <= 70000) {
+                age = ageTime/70000.0F;
+            }
+        }
+
+        float finalChickenSize = (( 3.0F * size * age) + size) / 4.0F;
+
+//        if (this.isChild && size >= 0.65) {
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
+//            GlStateManager.translatef(0.0F, -1.8F + 1.8F/0.6F, 0.1F);
+//            if (nakedNeck) {
+//                this.headNakedNeck.render(scale);
+//            } else {
+//                this.head.render(scale);
+//            }
+//            if (beard == 1) {
+//                this.beard.render(scale);
+//            } else if (beard == 2) {
+//                this.beardNN.render(scale);
+//            }
+//            if (crest >= 1) {
+//                this.forwardCrest.render(scale);
+//            }
+//
+//            this.billChild.render(scale);
+//
+//            if (earTuft) {
+//                this.earTuftHelper.render(scale);
+//            }
+//
+//            GlStateManager.popMatrix();
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scalef(0.4F, 0.4F, 0.4F);
+//            GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.4F, 0.0F);
+//
+//            this.body.render(scale);
+//            this.leftLeg.render(scale);
+//            this.rightLeg.render(scale);
+//            if (longLegs) {
+//                this.leftLegExtend.render(scale);
+//                this.rightLegExtend.render(scale);
+//            }
+//            if (fFeet >= 1) {
+//                    this.leftFeather1.render(scale);
+//                    this.rightFeather1.render(scale);
+//                if (longLegs) {
+//                    this.leftFeather1Extend.render(scale);
+//                    this.rightFeather1Extend.render(scale);
+//                }
+//                if (fFeet >= 2) {
+//                    this.leftFeather2.render(scale);
+//                    this.rightFeather2.render(scale);
+//                }
+//            }
+//
+//            if (wingSize == 2) {
+//                this.rightWing.render(scale);
+//                this.leftWing.render(scale);
+//            }else{
+//                this.rightWingSmall.render(scale);
+//                this.leftWingSmall.render(scale);
+//            }
+//
+//            GlStateManager.popMatrix();
+//        }else if(this.isChild) {
+//
+//
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scalef(0.3F, 0.3F, 0.3F);
+//            GlStateManager.translatef(0.0F, -1.6F + 1.6F/0.3F, 0.1F);
+//            if (nakedNeck) {
+//                this.headNakedNeck.render(scale);
+//            } else {
+//                this.head.render(scale);
+//            }
+//            if (beard == 1) {
+//                this.beard.render(scale);
+//            } else if (beard == 2) {
+//                this.beardNN.render(scale);
+//            }
+//            if (crest >= 1) {
+//                this.forwardCrest.render(scale);
+//            }
+//
+//            this.billChild.render(scale);
+//
+//            if (earTuft) {
+//                this.earTuftHelper.render(scale);
+//            }
+//
+//            GlStateManager.popMatrix();
+//            GlStateManager.pushMatrix();
+//            GlStateManager.scalef(0.2F, 0.2F, 0.2F);
+//            GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.2F, 0.0F);
+//
+//            this.body.render(scale);
+//            this.rightLeg.render(scale);
+//            this.leftLeg.render(scale);
+//            if (longLegs) {
+//                this.leftLegExtend.render(scale);
+//                this.rightLegExtend.render(scale);
+//            }
+//            if (fFeet >= 1) {
+//                    this.leftFeather1.render(scale);
+//                    this.rightFeather1.render(scale);
+//                if (longLegs) {
+//                    this.leftFeather1Extend.render(scale);
+//                    this.rightFeather1Extend.render(scale);
+//                }
+//                if (fFeet >= 2) {
+//                    this.leftFeather2.render(scale);
+//                    this.rightFeather2.render(scale);
+//                }
+//            }
+//
+//            if (wingSize == 2) {
+//                this.rightWing.render(scale);
+//                this.leftWing.render(scale);
+//            }else{
+//                this.rightWingSmall.render(scale);
+//                this.leftWingSmall.render(scale);
+//            }
+//
+//            GlStateManager.popMatrix();
+//
+//        } else {
             GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
-            GlStateManager.translatef(0.0F, -1.8F + 1.8F/0.6F, 0.1F);
+            GlStateManager.scalef(finalChickenSize, finalChickenSize, finalChickenSize);
+            GlStateManager.translatef(0.0F, -1.5F + 1.5F/finalChickenSize, 0.0F);
             if (nakedNeck) {
                 this.headNakedNeck.render(scale);
             } else {
                 this.head.render(scale);
             }
-            if (beard == 1) {
-                this.beard.render(scale);
-            } else if (beard == 2) {
-                this.beardNN.render(scale);
-            }
-            if (crest >= 1) {
-                this.forwardCrest.render(scale);
-            }
-
-            this.billChild.render(scale);
-
-            if (earTuft) {
-                this.earTuftHelper.render(scale);
-            }
-
-            GlStateManager.popMatrix();
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.4F, 0.4F, 0.4F);
-            GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.4F, 0.0F);
-
-            this.body.render(scale);
-            this.leftLeg.render(scale);
-            this.rightLeg.render(scale);
-            if (longLegs) {
-                this.leftLegExtend.render(scale);
-                this.rightLegExtend.render(scale);
-            }
-            if (fFeet >= 1) {
-                    this.leftFeather1.render(scale);
-                    this.rightFeather1.render(scale);
-                if (longLegs) {
-                    this.leftFeather1Extend.render(scale);
-                    this.rightFeather1Extend.render(scale);
-                }
-                if (fFeet >= 2) {
-                    this.leftFeather2.render(scale);
-                    this.rightFeather2.render(scale);
-                }
-            }
-
-            if (wingSize == 2) {
-                this.rightWing.render(scale);
-                this.leftWing.render(scale);
-            }else{
-                this.rightWingSmall.render(scale);
-                this.leftWingSmall.render(scale);
-            }
-
-            GlStateManager.popMatrix();
-        }else if(this.isChild) {
-
-
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.3F, 0.3F, 0.3F);
-            GlStateManager.translatef(0.0F, -1.6F + 1.6F/0.3F, 0.1F);
-            if (nakedNeck) {
-                this.headNakedNeck.render(scale);
-            } else {
-                this.head.render(scale);
-            }
-            if (beard == 1) {
-                this.beard.render(scale);
-            } else if (beard == 2) {
-                this.beardNN.render(scale);
-            }
-            if (crest >= 1) {
-                this.forwardCrest.render(scale);
-            }
-
-            this.billChild.render(scale);
-
-            if (earTuft) {
-                this.earTuftHelper.render(scale);
-            }
-
-            GlStateManager.popMatrix();
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(0.2F, 0.2F, 0.2F);
-            GlStateManager.translatef(0.0F, -1.5F + 1.5F/0.2F, 0.0F);
-
-            this.body.render(scale);
-            this.rightLeg.render(scale);
-            this.leftLeg.render(scale);
-            if (longLegs) {
-                this.leftLegExtend.render(scale);
-                this.rightLegExtend.render(scale);
-            }
-            if (fFeet >= 1) {
-                    this.leftFeather1.render(scale);
-                    this.rightFeather1.render(scale);
-                if (longLegs) {
-                    this.leftFeather1Extend.render(scale);
-                    this.rightFeather1Extend.render(scale);
-                }
-                if (fFeet >= 2) {
-                    this.leftFeather2.render(scale);
-                    this.rightFeather2.render(scale);
-                }
-            }
-
-            if (wingSize == 2) {
-                this.rightWing.render(scale);
-                this.leftWing.render(scale);
-            }else{
-                this.rightWingSmall.render(scale);
-                this.leftWingSmall.render(scale);
-            }
-
-            GlStateManager.popMatrix();
-
-        } else {
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(size, size, size);
-            GlStateManager.translatef(0.0F, -1.5F + 1.5F/size, 0.0F);
-            if (nakedNeck) {
-                this.headNakedNeck.render(scale);
-            } else {
-                this.head.render(scale);
-            }
 
             if (beard == 1) {
                 this.beard.render(scale);
             } else if (beard == 2) {
                 this.beardNN.render(scale);
             }
+
+        if (!isChild) {
 
             if ((wSize == 2 || wSize == 3 || wSize == 4)) {
 
@@ -825,55 +839,56 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                 }
             }
 
-            if((comb == 1 && crest == 0) || (comb == 1 && cSize >= 3)){
-                if (cSize == 0) {
-                    this.combXtraSmallSingle.render(scale);
-                } else if (cSize == 1) {
-                    this.combSmallSingle.render(scale);
-                } else if (cSize == 2) {
-                    //TODO change this back to combSingle
-                    this.combSingle.render(scale);
-                } else if (cSize == 3) {
-                    this.combLargeSingle.render(scale);
-                } else {
-                    this.combXtraLargeSingle.render(scale);
+                if ((comb == 1 && crest == 0) || (comb == 1 && cSize >= 3)) {
+                    if (cSize == 0) {
+                        this.combXtraSmallSingle.render(scale);
+                    } else if (cSize == 1) {
+                        this.combSmallSingle.render(scale);
+                    } else if (cSize == 2) {
+                        //TODO change this back to combSingle
+                        this.combSingle.render(scale);
+                    } else if (cSize == 3) {
+                        this.combLargeSingle.render(scale);
+                    } else {
+                        this.combXtraLargeSingle.render(scale);
+                    }
+                } else if (comb == 2 && crest == 0) {
+                    if (cSize == 0) {
+                        this.combSmallRose.render(scale);
+                    } else if (cSize == 1 || cSize == 2 || cSize == 3) {
+                        this.combRose.render(scale);
+                    } else {
+                        this.combLargeRose.render(scale);
+                    }
+                } else if (comb == 3) {
+                    if (cSize == 0) {
+                        this.combSmallRose2.render(scale);
+                    } else if (cSize == 1 || cSize == 2 || cSize == 3) {
+                        this.combRose2.render(scale);
+                    } else {
+                        this.combLargeRose2.render(scale);
+                    }
+                } else if (comb == 4 || (comb == 1 && crest != 0)) {
+                    if (cSize == 1 || cSize == 2) {
+                        this.combSmallPea.render(scale);
+                    } else if (cSize == 3) {
+                        this.combPea.render(scale);
+                    } else if (cSize == 4) {
+                        this.combLargePea.render(scale);
+                    }
+                } else if (comb == 5 || ((comb == 2 || comb == 3) && crest != 0)) {
+                    if (cSize == 1 || cSize == 2) {
+                        this.combSmallWalnut.render(scale);
+                    } else if (cSize == 3) {
+                        this.combWalnut.render(scale);
+                    } else if (cSize == 4) {
+                        this.combLargeWalnut.render(scale);
+                    }
+                } else if (comb == 6) {
+                    this.combV.render(scale);
                 }
-            }else if(comb == 2 && crest == 0){
-                if (cSize == 0){
-                    this.combSmallRose.render(scale);
-                }else if (cSize == 1 || cSize == 2 || cSize == 3) {
-                    this.combRose.render(scale);
-                }else{
-                    this.combLargeRose.render(scale);
-                }
-            }else if(comb == 3){
-                if (cSize == 0){
-                    this.combSmallRose2.render(scale);
-                }else if (cSize == 1 || cSize == 2 || cSize == 3) {
-                    this.combRose2.render(scale);
-                }else{
-                    this.combLargeRose2.render(scale);
-                }
-            }else if(comb == 4 || (comb == 1 && crest != 0)){
-                if (cSize == 1 || cSize == 2){
-                    this.combSmallPea.render(scale);
-                }else if (cSize == 3) {
-                    this.combPea.render(scale);
-                }else if (cSize == 4){
-                    this.combLargePea.render(scale);
-                }
-            }else if(comb == 5 || ((comb == 2 || comb == 3) && crest != 0)){
-                if (cSize == 1 || cSize == 2){
-                    this.combSmallWalnut.render(scale);
-                }else if (cSize == 3) {
-                    this.combWalnut.render(scale);
-                }else if (cSize == 4){
-                    this.combLargeWalnut.render(scale);
-                }
-            }else if(comb == 6){
-                this.combV.render(scale);
             }
-            if(crest == 1){
+            if(crest == 1 || (crest != 0 && isChild)){
                 this.smallCrest.render(scale);
             }else if(crest == 2){
                 this.forwardCrest.render(scale);
@@ -939,7 +954,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             this.earR.render(scale);
 
             GlStateManager.popMatrix();
-        }
+//        }
 
   }
 
@@ -1254,8 +1269,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
 
     private class ChickenModelData {
-        float previousSwing;
         int[] chickenGenes;
+        String birthTime;
         boolean sleeping;
         int lastAccessed = 0;
 //        int dataReset = 0;
@@ -1286,6 +1301,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             ChickenModelData chickenModelData = new ChickenModelData();
             chickenModelData.chickenGenes = enhancedChicken.getSharedGenes();
             chickenModelData.sleeping = enhancedChicken.isRoosting();
+            chickenModelData.birthTime = enhancedChicken.getBirthTime();
 
             chickenModelDataCache.put(enhancedChicken.getEntityId(), chickenModelData);
 

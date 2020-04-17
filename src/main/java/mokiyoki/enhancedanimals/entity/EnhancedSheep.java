@@ -70,6 +70,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedSheep.class, DataSerializers.STRING);
+    private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.FLOAT);
     private static final DataParameter<Byte> DYE_COLOUR = EntityDataManager.<Byte>createKey(EnhancedSheep.class, DataSerializers.BYTE);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> SHEEP_STATUS = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.STRING);
@@ -141,6 +142,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private int[] mitosisGenes = new int[GENES_LENGTH];
     private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
+    protected float maxBagSize;
     private int maxCoatLength;
     private int currentCoatLength;
     private int timeForGrowth = 0;
@@ -237,6 +239,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         this.dataManager.register(COAT_LENGTH, 0);
         this.dataManager.register(DYE_COLOUR, Byte.valueOf((byte)0));
         this.dataManager.register(SHEEP_STATUS, new String());
+        this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(MILK_AMOUNT, 0);
         this.dataManager.register(BIRTH_TIME, "0");
@@ -307,6 +310,14 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         super.registerAttributes();
         this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(8.0D);
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
+    }
+
+    private void setBagSize(float size) {
+        this.dataManager.set(BAG_SIZE, size);
+    }
+
+    public float getBagSize() {
+        return this.dataManager.get(BAG_SIZE);
     }
 
     private void setEntityStatus(String status) {
@@ -420,7 +431,6 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                             net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
                             ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
                         });
-                        //TODO How to make the sheep act as if sheared
                         onSheared(ItemStack.EMPTY, this.world, getPosition(), 0);
                     } else if (timeForGrowth >= (24000 / maxCoatLength)) {
                         timeForGrowth = 0;
@@ -448,7 +458,12 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                     pregnant = false;
                     gestationTimer = -48000;
                     setSheepStatus(EntityState.MOTHER.toString());
-                    setMilkAmount(5);
+                    setMilkAmount(4);
+
+                    float milkBagSize = 4 / (6*maxBagSize);
+
+                    this.setBagSize((milkBagSize*(maxBagSize/2.0F))+(maxBagSize/2.0F));
+
                     int lambRange;
                     int lambAverage = 1;
                     int numberOfLambs;
@@ -487,10 +502,14 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                 if (hunger <= 24000) {
                     if (--this.timeUntilNextMilk <= 0) {
                         int milk = getMilkAmount();
-                        if (milk < 6) {
+                        if (milk < (6*maxBagSize)) {
                             milk++;
                             setMilkAmount(milk);
                             this.timeUntilNextMilk = this.rand.nextInt(this.rand.nextInt(8000) + 4000);
+
+                            float milkBagSize = milk / (6*maxBagSize);
+
+                            this.setBagSize((milkBagSize*(maxBagSize/2.0F))+(maxBagSize/2.0F));
                         }
                     }
                 }
@@ -1147,6 +1166,24 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     }
 
 
+    private void setMaxBagSize(){
+        float maxBagSize = 0.0F;
+
+        if (!this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())){
+
+        }
+
+//        // [ 0.25 to 1.0 ]
+//        maxBagSize = maxBagSize + 1.0F;
+//        if (maxBagSize > 1.5F) {
+//            maxBagSize = 1.5F;
+//        } else if (maxBagSize < 1.0F) {
+//            maxBagSize = 1.0F;
+//        }
+
+        this.maxBagSize = maxBagSize;
+    }
+
     @Override
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
@@ -1433,6 +1470,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         setSharedGenes(genes);
 
         //resets the max so we don't have to store it
+        setMaxBagSize();
         setMaxCoatLength();
 //        configureAI();
 
@@ -1500,12 +1538,16 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         }
 
         this.genes = spawnGenes;
-        setSharedGenes(genes);
-        setMaxCoatLength();
+        this.setSharedGenes(genes);
+        this.setMaxCoatLength();
         this.currentCoatLength = this.maxCoatLength;
-        setCoatLength(this.currentCoatLength);
+        this.setCoatLength(this.currentCoatLength);
 
-        setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - ThreadLocalRandom.current().nextInt(60000, 80000)));
+        int birthMod = ThreadLocalRandom.current().nextInt(60000, 80000);
+        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
+        if (birthMod < 72000) {
+            this.setGrowingAge(birthMod - 72000);
+        }
 
         //"White" is considered no dye
         this.setFleeceDyeColour(DyeColor.WHITE);

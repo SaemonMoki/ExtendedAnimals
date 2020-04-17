@@ -209,7 +209,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             }
         }
 
-        float finalPigSize = (( 3.0F * size * age) + size) / 4.0F;
+        float finalPigSize = (( 3.75F * size * age) + size) / 4.75F;
             GlStateManager.pushMatrix();
             GlStateManager.scalef(finalPigSize, finalPigSize, finalPigSize);
             GlStateManager.translatef(0.0F, -1.5F + 1.5F/finalPigSize, 0.0F);

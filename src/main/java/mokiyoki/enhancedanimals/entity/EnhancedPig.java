@@ -26,7 +26,6 @@ import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TemptGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -187,7 +186,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private final List<String> pigTextures = new ArrayList<>();
     private final List<String> pigAlphaTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 44;
+    private static final int GENES_LENGTH = 58;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -195,7 +194,6 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
     private UUID angerTargetUUID;
     private int angerLevel;
-    private float pigSize;
 
     public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
         super(entityType, worldIn);
@@ -206,14 +204,11 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
     private int grassTimer;
     private EnhancedWaterAvoidingRandomWalkingEatingGoalPig wanderEatingGoal;
-
     private int gestationTimer = 0;
     private boolean pregnant = false;
-
     private int hunger = 0;
     protected int healTicks = 0;
     protected String motherUUID = "";
-
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
 
@@ -294,6 +289,8 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     }
 
     public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
+
+    private int getAge() { return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime())); }
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
@@ -511,12 +508,29 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
                 if (gestationTimer >= days) {
                     pregnant = false;
                     gestationTimer = 0;
+                    int age = getAge();
 
                     int pigletAverage = 6;
                     int pigletRange = 6;
 
+                    if (age < 108000) {
+                        if (age > 100000) {
+                            pigletAverage = 5;
+                        } else if (age > 92000) {
+                            pigletAverage = 4;
+                        } else if (age > 84000) {
+                            pigletAverage = 3;
+                        } else if (age > 76000) {
+                            pigletAverage = 2;
+                        } else if (age > 68000) {
+                            pigletAverage = 1;
+                        } else {
+                            pigletAverage = 0;
+                        }
+                    }
+
                     int numberOfPiglets = ThreadLocalRandom.current().nextInt(pigletRange)+1+pigletAverage;
-                    
+
                     for (int i = 0; i <= numberOfPiglets; i++) {
                         mixMateMitosisGenes();
                         mixMitosisGenes();
@@ -649,53 +663,176 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         return this.angerLevel > 0;
     }
 
-    private void setPigSize(){
-        float size = 1.0F;
+    private void setPigSize() {
+        float size = 0.4F;
 
-        //TODO size calculations go here
+            // [44/45] (1-3) potbelly dwarfism [wildtype, dwarfStrong, dwarfWeak]
+            // [46/47] (1-2) potbelly dwarfism2 [wildtype, dwarf]
+            // [48/49] (1-15) size genes reducer [wildtype, smaller smaller smallest...]
+            // [50/51] (1-15) size genes adder [wildtype, bigger bigger biggest...]
+            // [52/53] (1-3) size genes varient1 [wildtype, smaller, smallest]
+            // [54/55] (1-3) size genes varient2 [wildtype, larger, largest]
 
-        //        0.6F <= size <= 1.5F
-        this.pigSize = size;
+        size = size - genes[48]*0.0125F;
+        size = size - genes[49]*0.0125F;
+        size = size + genes[50]*0.0125F;
+        size = size + genes[51]*0.0125F;
+
+        if (genes[44] != 1 && genes[45] != 1) {
+            if (genes[44] == 2 || genes[45] == 2) {
+                //smaller rounder
+                size = size * 0.9F;
+            } else {
+                //smaller roundest
+                size = size * 0.8F;
+            }
+        }
+
+        if (genes[46] == 2 && genes[47] == 2) {
+            //smaller rounder
+            size = size * 0.9F;
+        }
+
+        if (genes[52] == 2 || genes[53] == 2) {
+            size = size * 0.975F;
+        } else if (genes[52] == 3 || genes[53] == 3) {
+            size = size * 0.925F;
+        }
+
+        if (genes[52] == 2 || genes[53] == 2) {
+            size = size * 1.025F;
+        } else if (genes[52] == 3 || genes[53] == 3) {
+            size = size * 1.075F;
+        }
+
+        if (size > 0.8F) {
+            size = 0.8F;
+        }
+
+        size = size + 0.7F;
+
+        //        0.7F <= size <= 1.5F
         this.setPigSize(size);
     }
 
+    @Override
+    protected boolean canDropLoot() { return true; }
+
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
+        int size = (int)((getSize()-0.7F)*10);
+        int age = getAge();
+        int meatDrop;
+        int meatChanceMod;
 
-        this.isBurning();
+        // max of 4
+        meatDrop = size/2;
 
-//        float pigSize = this.getSize();
+        if (genes[45] != 1 && genes[46] != 1) {
+            meatChanceMod = (genes[45] + genes[46]) - 4;
+            if (meatChanceMod > 4) {
+                if (meatChanceMod == 8) {
+                    //100% chance to + 1
+                    if (this.rand.nextInt(4) == 0) {
+                        // 25% chance to + 1
+                        meatDrop = meatDrop + 2;
+                    } else {
+                        meatDrop++;
+                    }
+                } else if (meatChanceMod == 7) {
+                    if (this.rand.nextInt(4) != 0) {
+                        //75% chance to + 1
+                        meatDrop++;
+                    }
+                    if (this.rand.nextInt(4) == 0) {
+                        //25% chance to + 1
+                        meatDrop++;
+                    }
+                } else if (meatChanceMod == 6) {
+                    // 50% chance to + 1
+                    if (this.rand.nextInt(2) == 0) {
+                        meatDrop++;
+                    }
+                } else {
+                    // 25% chance to + 1
+                    if (this.rand.nextInt(4) == 0) {
+                        meatDrop++;
+                    }
+                }
+            } else if (meatChanceMod < 4){
+                if (meatChanceMod == 3) {
+                    // 25% chance to - 1
+                    if (this.rand.nextInt(4) == 0) {
+                        meatDrop--;
+                    }
+                } else if (meatChanceMod == 2) {
+                    // 50% chance to - 1
+                    if (this.rand.nextInt(2) == 0) {
+                        meatDrop--;
+                    }
+                } else if (meatChanceMod == 1) {
+                    if (this.rand.nextInt(4) != 0) {
+                        //75% chance to - 1
+                        meatDrop--;
+                    }
+                    if (this.rand.nextInt(4) == 0) {
+                        //25% chance to - 1
+                        meatDrop--;
+                    }
+                } else {
+                    //100% chance to - 1
+                    meatDrop--;
+                    if (this.rand.nextInt(4) == 0) {
+                        // 25% chance to - 1
+                        meatDrop--;
+                    }
+                }
+            }
+        }
 
-//        int meatDrop;
-//        float meatChanceMod;
+        if (meatDrop <= 0) {
+            meatDrop = 1;
+        }
 
-        //pig size
-//        meatChanceMod = ((pigSize - 0.6F) * 4.445F) + 1;
-//        meatDrop = Math.round(meatChanceMod);
-//        if (meatDrop >= 5) {
-//            meatChanceMod = 0;
-//        } else {
-//            meatChanceMod = (meatChanceMod - meatDrop) * 100;
-//        }
-//
-//
-//        if (meatChanceMod  != 0) {
-//            int i = this.rand.nextInt(100);
-//            if (meatChanceMod > i) {
-//                meatDrop++;
-//            }
-//        }
+        if (age < 108000) {
+            if (age >= 90000) {
+                meatDrop = meatDrop - 1;
+                meatChanceMod = (age-90000)/180;
+            } else if (age >= 72000) {
+                meatDrop = meatDrop - 2;
+                meatChanceMod = (age-72000)/180;
+            } else if (age >= 54000) {
+                meatDrop = meatDrop - 3;
+                meatChanceMod = (age-54000)/180;
+            } else if (age >= 36000) {
+                meatDrop = meatDrop - 4;
+                meatChanceMod = (age-36000)/180;
+            } else if (age >= 18000) {
+                meatDrop = meatDrop - 5;
+                meatChanceMod = (age-18000)/180;
+            } else {
+                meatDrop = meatDrop - 6;
+                meatChanceMod = age/180;
+            }
 
-        //TODO add pig sizes and qualities here and remove the vanilla mimic
+            int i = this.rand.nextInt(100);
+            if (meatChanceMod > i) {
+                meatDrop++;
+            }
+        }
 
-        int meatDrop = ThreadLocalRandom.current().nextInt(3) + 1;
+        if (meatDrop > 6) {
+            meatDrop = 6;
+        } else if (meatDrop < 0) {
+            meatDrop = 0;
+        }
 
         if (this.isBurning()){
-            ItemStack cookedBeefStack = new ItemStack(Items.COOKED_PORKCHOP, meatDrop);
-            this.entityDropItem(cookedBeefStack);
+            ItemStack cookedPorkStack = new ItemStack(Items.COOKED_PORKCHOP, meatDrop);
+            this.entityDropItem(cookedPorkStack);
         }else {
-            ItemStack beefStack = new ItemStack(Items.PORKCHOP, meatDrop);
-            this.entityDropItem(beefStack);
+            ItemStack porkStack = new ItemStack(Items.PORKCHOP, meatDrop);
+            this.entityDropItem(porkStack);
         }
     }
 
@@ -1483,6 +1620,101 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             } else {
                 initialGenes[43] = (1);
             }
+
+            //potbelly dwarfism [wildtype, dwarfStrong, dwarfWeak]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[44] = (ThreadLocalRandom.current().nextInt(3) + 1);
+                initialGenes[45] = (1);
+
+            } else {
+                initialGenes[44] = (1);
+                initialGenes[45] = (1);
+            }
+
+            //potbelly dwarfism2 [wildtype, dwarf]
+                if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                    initialGenes[46] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+                } else {
+                    initialGenes[46] = (1);
+                }
+                if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                    initialGenes[47] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+                } else {
+                    initialGenes[47] = (1);
+                }
+
+            //size genes reducer [wildtype, smaller smaller smallest...] adds milk fat [none to most]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[48] = (ThreadLocalRandom.current().nextInt(16) + 1);
+
+            } else {
+                initialGenes[48] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[49] = (ThreadLocalRandom.current().nextInt(16) + 1);
+
+            } else {
+                initialGenes[49] = (1);
+            }
+
+            //size genes adder [wildtype, bigger bigger biggest...]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[50] = (ThreadLocalRandom.current().nextInt(16) + 1);
+
+            } else {
+                initialGenes[50] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[51] = (ThreadLocalRandom.current().nextInt(16) + 1);
+
+            } else {
+                initialGenes[51] = (1);
+            }
+
+            //size genes varient1 [wildtype, smaller, smallest]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[52] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[52] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[53] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[53] = (1);
+            }
+
+            //size genes varient2 [wildtype, smaller, smallest]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[54] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[54] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[55] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[55] = (1);
+            }
+
+            //body type [wildtype, smallest to largest] if mod with lard/fat smallest size has least fat, largest has most fat
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[56] = (ThreadLocalRandom.current().nextInt(6) + 1);
+
+            } else {
+                initialGenes[56] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[57] = (ThreadLocalRandom.current().nextInt(6) + 1);
+
+            } else {
+                initialGenes[57] = (1);
+            }
+
         }
 
 

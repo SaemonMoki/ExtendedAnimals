@@ -12,6 +12,7 @@ import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -211,12 +212,12 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             }
         }
 
-        float finalPigSize = (( 3.75F * size * age) + size) / 4.75F;
+        float finalPigSize = (( 3.0F * size * age) + size) / 4.0F;
         matrixStackIn.push();
         matrixStackIn.scale(finalPigSize, finalPigSize, finalPigSize);
         matrixStackIn.translate(0.0F, -1.5F + 1.5F/finalPigSize, 0.0F);
 
-        this.pig.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.pig.render(matrixStackIn, bufferIn, null, new ArrayList<>(), false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         matrixStackIn.pop();
     }

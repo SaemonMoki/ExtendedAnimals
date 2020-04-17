@@ -555,11 +555,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         int[] genes = sheepModelData.sheepGenes;
         int coatLength = sheepModelData.coatlength;
         String sheepStatus = sheepModelData.sheepStatus;
-        char[] uuidArry = sheepModelData.uuidArray;
         boolean sleeping = sheepModelData.sleeping;
         float size = 1.0F;
         float bagSize = sheepModelData.bagSize;
-        int horns = calculateHorns(genes, uuidArry);
 
         int facewool = 0;
 
@@ -601,7 +599,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         matrixStackIn.scale(finalSheepSize, finalSheepSize, finalSheepSize);
         matrixStackIn.translate(0.0F, (-1.5F + 1.5F/finalSheepSize) - d, 0.0F);
 
-        renderAdult(sheepStatus, horns, hornScale, facewool, sheepModelData.unrenderedModels, coatLength, bagSize, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        renderAdult(sheepStatus, sheepModelData.horns, hornScale, facewool, sheepModelData.unrenderedModels, coatLength, bagSize, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         matrixStackIn.pop();
 
@@ -623,7 +621,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         renderWool(facewool, coatLength, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        if (horns){
+        if (horns != 0){
             renderHorns(horns, hornScale, unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
@@ -797,6 +795,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         SheepModelData sheepModelData = getSheepModelData();
         List<String> unrenderedModels = new ArrayList<>();
 
+        int horns = calculateHorns(sheepModelData.sheepGenes, sheepModelData.uuidArray);
+        sheepModelData.horns = horns;
+
         float age = 1.0F;
         if (!(sheepModelData.birthTime == null) && !sheepModelData.birthTime.equals("") && !sheepModelData.birthTime.equals("0")) {
             int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(sheepModelData.birthTime));
@@ -895,20 +896,20 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             lengthL = lengthL + 8;
             lengthR = lengthR + 8;
 
-            if (Character.isDigit(uuidArray[4])) {
-                if ((uuidArray[4] - 48) <= 3 ) {
+            if (Character.isDigit(sheepModelData.uuidArray[4])) {
+                if ((sheepModelData.uuidArray[4] - 48) <= 3 ) {
                     //shorten left horn
-                    lengthL = lengthL + (uuidArray[4] - 48);
-                } else if ((uuidArray[4] - 48) <= 7 ) {
+                    lengthL = lengthL + (sheepModelData.uuidArray[4] - 48);
+                } else if ((sheepModelData.uuidArray[4] - 48) <= 7 ) {
                     //shorten right horn
-                    lengthR = lengthR + (uuidArray[4] - 52);
+                    lengthR = lengthR + (sheepModelData.uuidArray[4] - 52);
                 } else {
                     // shorten evenly
-                    lengthL = lengthL + (uuidArray[4] - 55);
+                    lengthL = lengthL + (sheepModelData.uuidArray[4] - 55);
                     lengthR = lengthL;
                 }
             } else {
-                char a = uuidArray[4];
+                char a = sheepModelData.uuidArray[4];
                 switch (a) {
                     case 'a':
                         lengthL = lengthL + 1;
@@ -1188,6 +1189,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         int lastAccessed = 0;
         int dataReset = 0;
         long clientGameTime = 0;
+        int horns;
         List<String> unrenderedModels = new ArrayList<>();
     }
 

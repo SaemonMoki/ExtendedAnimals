@@ -348,19 +348,19 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.mushroomBody1 = new RendererModel(this, 54, 64);
         this.mushroomBody1.addBox(0.0F, -8.0F, 0.0F, 1, 8, 8);
         this.mushroomBody1.setTextureOffset(62, 71);
-        this.mushroomBody1.addBox(-4.0F, -8.0F, 4.0F, 8, 8, 1);
+        this.mushroomBody1.addBox(-3.0F, -8.0F, 4.0F, 8, 8, 1);
         this.mushroomBody1.setRotationPoint(-3.0F, 0.0F, -5.0F);
 
         this.mushroomBody2 = new RendererModel(this, 54, 64);
         this.mushroomBody2.addBox(0.0F, -8.0F, 0.0F, 1, 8, 8);
         this.mushroomBody2.setTextureOffset(62, 71);
-        this.mushroomBody2.addBox(-4.0F, -8.0F, 4.0F, 8, 8, 1);
+        this.mushroomBody2.addBox(-3.0F, -8.0F, 4.0F, 8, 8, 1);
         this.mushroomBody2.setRotationPoint(3.0F, 0.0F, 5.0F);
 
         this.mushroomHead = new EnhancedRendererModel(this, 54, 64);
         this.mushroomHead.addBox(0.0F, -8.0F, 0.0F, 1, 8, 8);
         this.mushroomHead.setTextureOffset(62, 71);
-        this.mushroomHead.addBox(-4.0F, -8.0F, 4.0F, 8, 8, 1);
+        this.mushroomHead.addBox(-3.0F, -8.0F, 4.0F, 8, 8, 1);
         this.mushroomHead.setRotationPoint(0.0F, -0.5F, -6.0F);
 
         this.headModel.addChild(this.actualHead);
@@ -1442,6 +1442,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
             return cowModelData;
         } else {
+            //initial grab
             CowModelData cowModelData = new CowModelData();
             cowModelData.cowGenes = enhancedCow.getSharedGenes();
             cowModelData.cowSize = enhancedCow.getSize();

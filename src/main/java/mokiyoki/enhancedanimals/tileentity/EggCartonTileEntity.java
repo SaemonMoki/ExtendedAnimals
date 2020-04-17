@@ -74,7 +74,7 @@ public class EggCartonTileEntity extends LockableLootTileEntity implements ISide
         int j = this.pos.getY();
         int k = this.pos.getZ();
         ++this.ticksSinceSync;
-        this.numPlayersUsing = func_213977_a(this.world, this, this.ticksSinceSync, i, j, k, this.openCount);
+        this.numPlayersUsing = getNumberOfPlayersUsing(this.world, this, this.ticksSinceSync, i, j, k, this.openCount);
         this.prevLidAngle = this.lidAngle;
         float f = 0.05F; // speed the lid opens/closes
         if (this.numPlayersUsing > 0 && this.lidAngle == 0.0F) {
@@ -132,15 +132,15 @@ public class EggCartonTileEntity extends LockableLootTileEntity implements ISide
         this.world.playSound((PlayerEntity)null, d0, d1, d2, soundIn, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
     }
 
-    public static int func_213977_a(World p_213977_0_, LockableLootTileEntity thisEggCartonTileEntity, int ticksSinceSync, int cartonX, int cartonY, int cartonZ, int numPlayersUsing) {
+    public static int getNumberOfPlayersUsing(World p_213977_0_, LockableLootTileEntity thisEggCartonTileEntity, int ticksSinceSync, int cartonX, int cartonY, int cartonZ, int numPlayersUsing) {
         if (!p_213977_0_.isRemote && numPlayersUsing != 0 && (ticksSinceSync + cartonX + cartonY + cartonZ) % 200 == 0) {
-            numPlayersUsing = func_213976_a(p_213977_0_, thisEggCartonTileEntity, cartonX, cartonY, cartonZ);
+            numPlayersUsing = getNumberOfPlayersUsing(p_213977_0_, thisEggCartonTileEntity, cartonX, cartonY, cartonZ);
         }
 
         return numPlayersUsing;
     }
 
-    public static int func_213976_a(World p_213976_0_, LockableLootTileEntity p_213976_1_, int p_213976_2_, int p_213976_3_, int p_213976_4_) {
+    public static int getNumberOfPlayersUsing(World p_213976_0_, LockableLootTileEntity p_213976_1_, int p_213976_2_, int p_213976_3_, int p_213976_4_) {
         int i = 0;
 
         for(PlayerEntity playerentity : p_213976_0_.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB((double)((float)p_213976_2_ - 5.0F), (double)((float)p_213976_3_ - 5.0F), (double)((float)p_213976_4_ - 5.0F), (double)((float)(p_213976_2_ + 1) + 5.0F), (double)((float)(p_213976_3_ + 1) + 5.0F), (double)((float)(p_213976_4_ + 1) + 5.0F)))) {

@@ -560,7 +560,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             List<Float> scalingsForHorn = createScalings(hornScale, 0.0F, -hornScale*0.01F, (hornScale - 1.0F)*0.04F);
             mapOfScale.put("HornL0", scalingsForHorn);
-            mapOfScale.put("HornR0", mirrorX(scalingsForHorn, false));
+            mapOfScale.put("HornR0", mirrorX(scalingsForHorn));
             this.hornGranparent.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
     }
@@ -849,8 +849,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             lengthL = lengthL + hornGrowth;
             lengthR = lengthR + hornGrowth;
-
-
 
             if (lengthL != 0 || lengthR != 0) {
 
@@ -1324,17 +1322,12 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         return scalings;
     }
 
-    private List<Float> mirrorX(List<Float> scalings, boolean includeScaling) {
+    private List<Float> mirrorX(List<Float> scalings) {
         List<Float> reversedNegative = new ArrayList<>();
-
-        if (includeScaling) {
-            reversedNegative.add(scalings.get(0));
-        } else {
-            reversedNegative.add(null);
-        }
-        reversedNegative.add(scalings.get(1)*-2.0F);
-        reversedNegative.add(0F);
-        reversedNegative.add(0F);
+        reversedNegative.add(scalings.get(0));
+        reversedNegative.add(scalings.get(1)*-1.0F);
+        reversedNegative.add(scalings.get(2));
+        reversedNegative.add(scalings.get(3));
 
         return reversedNegative;
     }

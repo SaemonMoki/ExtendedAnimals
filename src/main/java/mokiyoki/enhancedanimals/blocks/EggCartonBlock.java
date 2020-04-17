@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
 import net.minecraft.block.Block;
@@ -20,7 +21,10 @@ import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.stats.Stats;
+import net.minecraft.tileentity.IChestLid;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityMerger;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -48,6 +52,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiPredicate;
+import java.util.function.Supplier;
+
+import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
 
 public class EggCartonBlock extends ContainerBlock {
 
@@ -110,6 +118,58 @@ public class EggCartonBlock extends ContainerBlock {
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         Direction direction = context.getPlacementHorizontalFacing().getOpposite();
         return this.getDefaultState().with(FACING, direction);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static TileEntityMerger.ICallback<EggCartonTileEntity, Float2FloatFunction> getLid(final IChestLid p_226917_0_) {
+        return new TileEntityMerger.ICallback<EggCartonTileEntity, Float2FloatFunction>() {
+            @Override
+            public Float2FloatFunction func_225539_a_(EggCartonTileEntity p_225539_1_, EggCartonTileEntity p_225539_2_) {
+                return (p_226921_2_) -> {
+                    return Math.max(p_225539_1_.getLidAngle(p_226921_2_), p_225539_2_.getLidAngle(p_226921_2_));
+                };
+            }
+
+            @Override
+            public Float2FloatFunction func_225538_a_(EggCartonTileEntity p_225538_1_) {
+                return p_225538_1_::getLidAngle;
+            }
+
+            @Override
+            public Float2FloatFunction func_225537_b_() {
+                return p_226917_0_::getLidAngle;
+            }
+        };
+    }
+
+    public TileEntityMerger.ICallbackWrapper<? extends EggCartonTileEntity> getWrapper(BlockState blockState, World world, BlockPos blockPos, boolean p_225536_4_) {
+        BiPredicate<IWorld, BlockPos> biPredicate;
+        if (p_225536_4_) {
+            biPredicate = (p_226918_0_, p_226918_1_) -> false;
+        }
+        else {
+            biPredicate = EggCartonBlock::isBlocked;
+        }
+
+        return TileEntityMerger.func_226924_a_(EGG_CARTON_TILE_ENTITY, EggCartonBlock::getMergerType, EggCartonBlock::getDirectionToAttached, FACING, blockState, world, blockPos, biPredicate);
+    }
+
+    public static TileEntityMerger.Type getMergerType(BlockState blockState) {
+        return TileEntityMerger.Type.SINGLE;
+    }
+
+    public static Direction getDirectionToAttached(BlockState state) {
+        Direction direction = state.get(FACING);
+        return direction.rotateYCCW();
+    }
+
+    private static boolean isBlocked(IWorld iWorld, BlockPos blockPos) {
+        return isBelowSolidBlock(iWorld, blockPos);
+    }
+
+    private static boolean isBelowSolidBlock(IBlockReader iBlockReader, BlockPos worldIn) {
+        BlockPos blockpos = worldIn.up();
+        return iBlockReader.getBlockState(blockpos).isNormalCube(iBlockReader, blockpos);
     }
 
 

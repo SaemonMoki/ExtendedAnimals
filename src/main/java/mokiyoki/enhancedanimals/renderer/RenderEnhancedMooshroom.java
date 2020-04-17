@@ -4,7 +4,7 @@ package mokiyoki.enhancedanimals.renderer;
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
-import mokiyoki.enhancedanimals.renderer.layers.EnhancedMooshroomMushroomLayer;
+//import mokiyoki.enhancedanimals.renderer.layers.EnhancedMooshroomMushroomLayer;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -22,7 +22,7 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
 
     public RenderEnhancedMooshroom(EntityRendererManager renderManagerIn) {
         super(renderManagerIn, new ModelEnhancedCow<>(), 0.7F);
-        this.addLayer(new EnhancedMooshroomMushroomLayer<>(this));
+//        this.addLayer(new EnhancedMooshroomMushroomLayer<>(this));
     }
 
     protected ResourceLocation getEntityTexture(EnhancedMooshroom entity) {

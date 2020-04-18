@@ -72,6 +72,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
     protected static final DataParameter<String> COW_STATUS = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> RESET_TEXTURE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> MOOSHROOM_UUID = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
     private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
     private static final DataParameter<String> HORN_ALTERATION = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
@@ -176,7 +177,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected boolean resetTexture = true;
 
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
-    protected final List<String> cowTextures = new ArrayList<>();
+    protected List<String> cowTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 120;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
@@ -207,7 +208,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn);
-//        this.setSize(0.4F, 1F);
         // cowsize from .7 to 1.5 max bag size is 1 to 1.5
         //large cows make from 30 to 12 milk points per day, small cows make up to 1/4
         this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - maxBagSize)*2400)) * (cowSize/1.5F)) - 300;
@@ -237,6 +237,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(COW_STATUS, new String());
         this.dataManager.register(SLEEPING, false);
+        this.dataManager.register(RESET_TEXTURE, false);
         this.dataManager.register(MOOSHROOM_UUID, "0");
         this.dataManager.register(MILK_AMOUNT, 0);
         this.dataManager.register(BIRTH_TIME, "0");
@@ -291,7 +292,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
-        this.dataManager.set(SLEEPING, sleeping); }
+        this.dataManager.set(SLEEPING, sleeping);
+    }
 
     @Override
     public Boolean isAnimalSleeping() {
@@ -301,6 +303,14 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             sleeping = this.dataManager.get(SLEEPING);
             return sleeping;
         }
+    }
+
+    public void setReloadTexture(Boolean resetTexture) {
+        this.dataManager.set(RESET_TEXTURE, resetTexture);
+    }
+
+    public boolean getReloadTexture() {
+            return this.dataManager.get(RESET_TEXTURE);
     }
 
     @Override
@@ -834,8 +844,9 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     public String getCowTexture() {
         if (this.cowTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (resetTexture) {
-            resetTexture = false;
+        } else if (getReloadTexture()) {
+            this.cowTextures.removeAll(this.cowTextures);
+            this.setReloadTexture(false);
             this.setTexturePaths();
         }
         return this.cowTextures.stream().collect(Collectors.joining("/","enhanced_cow/",""));

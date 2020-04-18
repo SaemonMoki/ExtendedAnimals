@@ -61,7 +61,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             this.setMooshroomType(this.getMooshroomType() == EnhancedMooshroom.Type.RED ? EnhancedMooshroom.Type.BROWN : EnhancedMooshroom.Type.RED);
             this.lightningUUID = uuid;
             this.playSound(SoundEvents.ENTITY_MOOSHROOM_CONVERT, 2.0F, 1.0F);
-            resetTexture = true;
+            this.setReloadTexture(true);
         }
 
     }
@@ -82,7 +82,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             mushroomType = 2;
         }
 
-        this.cowTextures.add(MOOSHROOM_MUSHROOM[0]);
+        this.cowTextures.add(MOOSHROOM_MUSHROOM[mushroomType]);
     }
 
     @Override

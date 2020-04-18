@@ -892,6 +892,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                 this.earR.render(scale);
 
             }
+
             if(crest == 1 || (crest != 0 && isChild)){
                 this.smallCrest.render(scale);
             }else if(crest == 2){
@@ -899,7 +900,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }else if(crest == 3){
                 this.bigCrest.render(scale);
             }
-            if(genes[72] != 2 && genes[73] != 2){
+
+            if ((!isChild || age >= 0.3333F) && (genes[72] == 1 && genes[73] == 1)) {
                 this.tail.render(scale);
             }
 

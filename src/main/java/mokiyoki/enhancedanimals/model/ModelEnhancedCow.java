@@ -521,8 +521,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         renderHorns(horns, hornScale, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        this.mushroomBody1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.mushroomBody2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        if (!this.isChild) {
+            this.mushroomBody1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.mushroomBody2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.mushroomHead.showModel = true;
+        } else {
+            this.mushroomHead.showModel = false;
+        }
 
         this.headModel.render(matrixStackIn, bufferIn , null, cowModelData.unrenderedModels, true, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
@@ -832,15 +837,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                     hornGrowth = 2;
                 } else if (ageTime > 75600) {
                     hornGrowth = 3;
-                } else if (ageTime > 64800) {
+                } else if (ageTime > 60800) {
                     hornGrowth = 4;
-                } else if (ageTime > 54000) {
+                } else if (ageTime > 40000) {
                     hornGrowth = 5;
-                } else if (ageTime > 43200) {
+                } else if (ageTime > 30200) {
                     hornGrowth = 6;
-                } else if (ageTime > 30000) {
-                    hornGrowth = 7;
                 } else if (ageTime > 12000) {
+                    hornGrowth = 7;
+                } else if (ageTime > 6000) {
                     hornGrowth = 8;
                 } else {
                     hornGrowth = 9;

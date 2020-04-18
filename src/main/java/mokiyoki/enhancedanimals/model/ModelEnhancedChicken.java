@@ -770,7 +770,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                 } else if (comb == 6) {
                     this.combV.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
+
+                this.earL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.earR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
             }
+
             if(crest == 1 || (crest != 0 && isChild)){
                 this.smallCrest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }else if(crest == 2){
@@ -778,7 +783,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }else if(crest == 3){
                 this.bigCrest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
-            if(genes[72] != 2 && genes[73] != 2){
+
+            if ((!isChild || age >= 0.3333F) && (genes[72] == 1 && genes[73] == 1)) {
                 this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
 
@@ -832,9 +838,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             if (earTuft) {
                 this.earTuftHelper.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
-
-            this.earL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.earR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         matrixStackIn.pop();
 //        }

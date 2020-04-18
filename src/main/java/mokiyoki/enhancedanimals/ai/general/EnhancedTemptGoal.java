@@ -1,61 +1,32 @@
 package mokiyoki.enhancedanimals.ai.general;
 
-import mokiyoki.enhancedanimals.entity.Temperament;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.item.crafting.Ingredient;
 
-import java.util.Map;
-
 public class EnhancedTemptGoal extends TemptGoal {
-    CreatureEntity entity;
-    Map<Temperament, Integer> temperaments;
 
-    public EnhancedTemptGoal(CreatureEntity entity, double speedIn, Ingredient temptingItem, boolean scaredByPlayerMovement,  Map<Temperament, Integer> temperaments) {
-        super(entity, speedIn, temptingItem, scaredByPlayerMovement);
-        this.entity = entity;
-        this.temperaments = temperaments;
+    protected final CreatureEntity temptedCreature;
+
+    public EnhancedTemptGoal(CreatureEntity creatureIn, double speedIn, boolean scaredOfPlayerMovement, Ingredient temptItemsIn) {
+        super(creatureIn, speedIn, scaredOfPlayerMovement, temptItemsIn);
+        this.temptedCreature = creatureIn;
     }
 
-
-    @Override
     public boolean shouldExecute() {
         boolean superShould = super.shouldExecute();
-        if ((temperaments.containsKey(Temperament.AFRAID) && temperaments.get(Temperament.AFRAID) > 8) || !superShould) {
+
+        if (!superShould || isSleeping()) {
             return false;
         }
-        return superShould;
-    }
 
-    public boolean shouldContinueExecuting() {
-        boolean shouldContinue = super.shouldContinueExecuting();
-        if (temperaments.containsKey(Temperament.AGGRESSIVE) && temperaments.get(Temperament.AGGRESSIVE) > 3 && tooCloseToPlayer()) {
-            this.entity.setAttackTarget(this.closestPlayer);
-            return false;
-        }
-        return shouldContinue;
-    }
-
-    private boolean tooCloseToPlayer() {
-        double distanceToPlayer = this.closestPlayer.getDistanceSq(this.entity);
-
-        if (temperaments.get(Temperament.AGGRESSIVE) > 8 && distanceToPlayer < 8) {
-            return true;
-        } else if (temperaments.get(Temperament.AGGRESSIVE) > 6 && distanceToPlayer < 5) {
-            return true;
-        } else if (temperaments.get(Temperament.AGGRESSIVE) > 4 && distanceToPlayer < 3) {
-            return true;
-        } else if (distanceToPlayer < 1) {
-            return true;
-        }
-
-        return false;
+        return true;
 
     }
 
-
-    protected boolean isScaredByPlayerMovement() {
-        return super.isScaredByPlayerMovement();
+    private boolean isSleeping() {
+        return ((EnhancedAnimal)temptedCreature).isAnimalSleeping();
     }
 
 }

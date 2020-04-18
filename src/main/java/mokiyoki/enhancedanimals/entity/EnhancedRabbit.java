@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
 import mokiyoki.enhancedanimals.init.ModItems;
@@ -257,7 +258,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedRabbit.AIPanic(this, 2.2D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 0.8D));
-        this.goalSelector.addGoal(3, new TemptGoal(this, 1.0D, TEMPTATION_ITEMS, false));
+        this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, WolfEntity.class, 10.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, MonsterEntity.class, 4.0F, 2.2D, 2.2D));
@@ -394,6 +395,14 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
     public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
+    private int getAge() {
+        if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
+            return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
+        } else {
+            return 500000;
+        }
+    }
+
     public void setNoseWiggling(boolean wiggling) {
         this.dataManager.set(NOSE_WIGGLING, wiggling);
     }
@@ -505,33 +514,36 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
                 }
             } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
 
-                if (!entityPlayer.abilities.isCreativeMode) {
                     if (item == ModItems.Half_Milk_Bottle) {
                         decreaseHunger(6000);
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                            entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                        }
-                    } else if (item == ModItems.Milk_Bottle) {
-                        if (hunger >= 12000) {
-                            decreaseHunger(12000);
+                        if (!entityPlayer.abilities.isCreativeMode) {
                             if (itemStack.isEmpty()) {
                                 entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
                             } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
                                 entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
                             }
+                        }
+                    } else if (item == ModItems.Milk_Bottle) {
+                        if (hunger >= 12000) {
+                            decreaseHunger(12000);
+                            if (!entityPlayer.abilities.isCreativeMode) {
+                                if (itemStack.isEmpty()) {
+                                    entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                                    entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                                }
+                            }
                         } else {
                             decreaseHunger(6000);
-                            if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
-                                entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                            if (!entityPlayer.abilities.isCreativeMode) {
+                                if (itemStack.isEmpty()) {
+                                    entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
+                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
+                                    entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                                }
                             }
                         }
                     }
-
-                }
             }
         }
         return super.processInteract(entityPlayer, hand);
@@ -1026,12 +1038,22 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     }
 
     @Override
+    protected boolean canDropLoot() {
+        int i = rand.nextInt(100);
+        if (getAge()/480 >= i) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     @Nullable
     protected ResourceLocation getLootTable() {
 
         if (!this.world.isRemote) {
 
-                if (Size() <= 0.8F) {
+                if (Size() <= 0.8F || getAge() < 48000) {
                     dropMeatType = "rawrabbit_small";
                 } else {
                     dropMeatType = "rawrabbit";

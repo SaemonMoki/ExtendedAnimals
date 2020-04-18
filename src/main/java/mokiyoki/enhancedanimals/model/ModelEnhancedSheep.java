@@ -556,7 +556,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         int coatLength = sheepModelData.coatlength;
         String sheepStatus = sheepModelData.sheepStatus;
         boolean sleeping = sheepModelData.sleeping;
-        float size = 1.0F;
+        float size = sheepModelData.size;
         float bagSize = sheepModelData.bagSize;
 
         int facewool = 0;
@@ -1182,6 +1182,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         int[] sheepGenes;
         String birthTime;
         float bagSize;
+        float size;
         String sheepStatus;
         int coatlength;
         char[] uuidArray;
@@ -1233,6 +1234,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.coatlength = enhancedSheep.getCoatLength();
             sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
             sheepModelData.bagSize = enhancedSheep.getBagSize();
+            sheepModelData.size = enhancedSheep.getSize();
             sheepModelData.sheepStatus = enhancedSheep.getSheepStatus();
             sheepModelData.uuidArray = enhancedSheep.getCachedUniqueIdString().toCharArray();
             sheepModelData.birthTime = enhancedSheep.getBirthTime();

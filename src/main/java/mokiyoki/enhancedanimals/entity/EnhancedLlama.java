@@ -271,6 +271,14 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
+    private int getAge() {
+        if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
+            return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
+        } else {
+            return 500000;
+        }
+    }
+
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
         this.dataManager.set(SLEEPING, sleeping); }
@@ -632,15 +640,61 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     @Nullable
     protected ResourceLocation getLootTable() {
 
-        if (genes[20] == 1 || genes[21] == 1){
-            //drops leather
-            dropMeatType = "leather";
-        }else{
-            //drops wool
-            dropMeatType = "brown_wool";
-        }
+//        if (genes[20] == 1 || genes[21] == 1){
+//            //drops leather
+//            dropMeatType = "leather";
+//        }else{
+//            //drops wool
+//            if (genes[6] == 1 || genes[7] == 1) {
+//                dropMeatType = "white_wool";
+//            } else if (genes[14] == 1 || genes[15] == 1) {
+//                dropMeatType = "black_wool";
+//            } else if (genes[14] == 3 || genes[15] == 3) {
+//                dropMeatType = "brown_wool";
+//            } else {
+//                if (genes[16] == 1 || genes[17] == 1) {
+//                    dropMeatType = "yellow_wool";
+//                } else if (genes[16] >= 5 && genes[17] >= 5) {
+//                    if (genes[16] == 5 || genes[17] == 5) {
+//                        dropMeatType = "red_wool";
+//                    } else {
+//                        dropMeatType = "black_wool";
+//                    }
+//                } else {
+//                    dropMeatType = "brown_wool";
+//                }
+//            }
+//
+//            if (dropMeatType.contains("black") && (genes[18] == 1 || genes[19] == 1)) {
+//                dropMeatType = "gray_wool";
+//            }
+//
+//            if (genes[10] == 2 && genes[11] == 2) {
+//                boolean i = rand.nextBoolean();
+//                if (i) {
+//                    dropMeatType = "white_wool";
+//                }
+//            }
+//
+//            if (genes[12] == 1 || genes[13] == 1) {
+//                boolean i = rand.nextBoolean();
+//                if (i) {
+//                    dropMeatType = "white_wool";
+//                }
+//            }
+//
+//            if (currentCoatLength == 4) {
+//                dropMeatType = dropMeatType + "_two";
+//            } else if (currentCoatLength == 3) {
+//                boolean i = rand.nextBoolean();
+//                if (i) {
+//                    dropMeatType = dropMeatType + "_two";
+//                }
+//            }
+//        }
 
-        return new ResourceLocation(Reference.MODID, "enhanced_llama");
+//        return new ResourceLocation(Reference.MODID, "enhanced_llama");
+        return null;
     }
 
     public String getDropMeatType() {
@@ -685,26 +739,114 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             if (currentCoatLength == 1) {
                 int i = this.rand.nextInt(4);
                 if (i>3){
-                    ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                    ret.add(new ItemStack(getWoolBlocks()));
                 }
             } else if (currentCoatLength == 2) {
                 int i = this.rand.nextInt(2);
                 if (i>0){
-                    ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                    ret.add(new ItemStack(getWoolBlocks()));
                 }
             } else if (currentCoatLength == 3) {
                 int i = this.rand.nextInt(4);
                 if (i>0){
-                    ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                    ret.add(new ItemStack(getWoolBlocks()));
                 }
             } else if (currentCoatLength == 4) {
-                ret.add(new ItemStack(Blocks.BROWN_WOOL));
+                ret.add(new ItemStack(getWoolBlocks()));
             }
 
         }
         currentCoatLength = -1;
         setCoatLength(currentCoatLength);
         return ret;
+    }
+
+    private Block getWoolBlocks () {
+        Block returnBlocks;
+
+            if (genes[6] == 1 || genes[7] == 1) {
+                returnBlocks = Blocks.WHITE_WOOL;
+            } else if (genes[14] == 1 || genes[15] == 1) {
+                returnBlocks = Blocks.BLACK_WOOL;
+            } else if (genes[14] == 3 || genes[15] == 3) {
+                returnBlocks = Blocks.BROWN_WOOL;
+            } else {
+                if (genes[16] == 1 || genes[17] == 1) {
+                    returnBlocks = Blocks.YELLOW_WOOL;
+                } else if (genes[16] >= 5 && genes[17] >= 5) {
+                    if (genes[16] == 5 || genes[17] == 5) {
+                        returnBlocks = Blocks.RED_WOOL;
+                    } else {
+                        returnBlocks = Blocks.BLACK_WOOL;
+                    }
+                } else {
+                    returnBlocks = Blocks.BROWN_WOOL;
+                }
+            }
+
+            if (returnBlocks.equals(Blocks.BLACK_WOOL) && (genes[18] == 1 || genes[19] == 1)) {
+                returnBlocks = Blocks.GRAY_WOOL;
+            }
+
+            if (genes[10] == 2 && genes[11] == 2) {
+                boolean i = rand.nextBoolean();
+                if (i) {
+                    returnBlocks = Blocks.WHITE_WOOL;
+                }
+            }
+
+            if (genes[12] == 1 || genes[13] == 1) {
+                boolean i = rand.nextBoolean();
+                if (i) {
+                    returnBlocks = Blocks.WHITE_WOOL;
+                }
+            }
+
+        return returnBlocks;
+    }
+
+    @Override
+    protected boolean canDropLoot() { return true; }
+
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
+        super.dropSpecialItems(source, looting, recentlyHitIn);
+        int age = this.getAge();
+        boolean woolDrop = false;
+        int lootCount = 0;
+
+        if (!this.isBurning()) {
+
+            int i = rand.nextInt(100);
+            if ((age/1200) > i) {
+
+                if (genes[20] != 1 && genes[21] != 1) {
+                    woolDrop = true;
+                    lootCount = 1;
+                    if (currentCoatLength > 2 && age > 80000) {
+                        if (rand.nextBoolean()) {
+                            lootCount++;
+                        }
+                    }
+                } else {
+                    lootCount = rand.nextInt(3);
+                    if (lootCount !=0 && age < 120000) {
+                        lootCount--;
+                        if (lootCount !=0 && age < 80000) {
+                            lootCount--;
+                        }
+                    }
+                }
+
+            }
+
+            if (woolDrop) {
+                ItemStack fleeceStack = new ItemStack(getWoolBlocks(), lootCount);
+                this.entityDropItem(fleeceStack);
+            } else {
+                ItemStack leatherStack = new ItemStack(Items.LEATHER, lootCount);
+                this.entityDropItem(leatherStack);
+            }
+        }
     }
 
     @Override

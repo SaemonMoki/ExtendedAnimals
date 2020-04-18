@@ -271,7 +271,13 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
-    private int getAge() { return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime())); }
+    private int getAge() {
+        if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
+            return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
+        } else {
+            return 500000;
+        }
+    }
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;

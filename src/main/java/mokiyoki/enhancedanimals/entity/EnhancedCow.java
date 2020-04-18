@@ -258,8 +258,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     public String getCowStatus() { return this.dataManager.get(COW_STATUS); }
 
     protected void setMooshroomUUID(String status) {
-        this.dataManager.set(MOOSHROOM_UUID, status);
-        this.mooshroomUUID = status;
+        if (!status.equals("")) {
+            this.dataManager.set(MOOSHROOM_UUID, status);
+            this.mooshroomUUID = status;
+        }
     }
 
     public String getMooshroomUUID() { return mooshroomUUID; }
@@ -276,7 +278,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
-    private int getAge() { return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime())); }
+    private int getAge() {
+        if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
+            return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
+        } else {
+            return 500000;
+        }
+    }
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;

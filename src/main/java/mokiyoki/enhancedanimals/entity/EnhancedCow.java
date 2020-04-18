@@ -205,6 +205,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
 
+    protected Boolean reload = false; //used in a toggle manner
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn);
@@ -305,8 +306,13 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         }
     }
 
-    public void setReloadTexture(Boolean resetTexture) {
-        this.dataManager.set(RESET_TEXTURE, resetTexture);
+//    public void setReloadTexture(Boolean resetTexture) {
+//        this.dataManager.set(RESET_TEXTURE, resetTexture);
+//    }
+
+    //toggles the reloading
+    protected void toggleReloadTexture() {
+        this.dataManager.set(RESET_TEXTURE, this.getReloadTexture() == true ? false : true);
     }
 
     public boolean getReloadTexture() {
@@ -844,10 +850,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     public String getCowTexture() {
         if (this.cowTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (getReloadTexture()) {
+        } else if (!this.reload && getReloadTexture() || this.reload && !getReloadTexture()) {
             this.cowTextures.removeAll(this.cowTextures);
-            this.setReloadTexture(false);
             this.setTexturePaths();
+            this.reload = (this.reload == true ? false : true);
         }
         return this.cowTextures.stream().collect(Collectors.joining("/","enhanced_cow/",""));
 

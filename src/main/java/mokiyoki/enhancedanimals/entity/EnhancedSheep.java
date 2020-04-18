@@ -991,7 +991,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     }
 
     private void setSheepSize() {
-        float size = 0.3F;
+        float size = 0.4F;
 
         //(56/57) 1-2 minature [wildtype, minature]
         //(58/59) 1-16 size genes reducer [wildtype, smaller smaller smallest...] adds milk fat [none to most]
@@ -999,10 +999,10 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         //(62/63) 1-3 size genes varient1 [wildtype, smaller, smallest]
         //(64/65) 1-3 size genes varient2 [wildtype, smaller, smallest]
 
-        size = size - (genes[58] - 1)*0.007F;
-        size = size - (genes[59] - 1)*0.007F;
-        size = size + (genes[60] - 1)*0.007F;
-        size = size + (genes[61] - 1)*0.007F;
+        size = size - (genes[58] - 1)*0.01F;
+        size = size - (genes[59] - 1)*0.01F;
+        size = size + (genes[60] - 1)*0.0075F;
+        size = size + (genes[61] - 1)*0.0075F;
 
         if (genes[56] == 2 || genes[57] == 2) {
             if (genes[56] == 2 && genes[57] == 2) {
@@ -1016,21 +1016,23 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             size = size * 0.975F;
         } else if (genes[62] == 3 || genes[63] == 3) {
             size = size * 0.925F;
+        } else {
+            size = size * 1.025F;
         }
 
         if (genes[64] == 2 || genes[65] == 2) {
-            size = size * 1.025F;
+            size = size * 1.05F;
         } else if (genes[64] == 3 || genes[65] == 3) {
-            size = size * 1.075F;
+            size = size * 1.1F;
         }
 
         if (size > 0.6F) {
             size = 0.6F;
         }
 
-        size = size + 0.44F;
+        size = size + 0.43F;
 
-        // [ 0.49994 - 1.1 ]
+        // [ 0.52325 - 1.1 ]
         this.setSheepSize(size);
     }
 

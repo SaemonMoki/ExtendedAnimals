@@ -527,8 +527,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         renderHorns(scale, horns, hornShift, unrenderedModels);
 
-        this.mushroomBody1.render(scale);
-        this.mushroomBody2.render(scale);
+        if (!this.isChild) {
+            this.mushroomBody1.render(scale);
+            this.mushroomBody2.render(scale);
+            this.mushroomHead.isHidden = false;
+        } else {
+            this.mushroomHead.isHidden = true;
+        }
 
         this.headModel.render(scale, null , unrenderedModels, true);
 

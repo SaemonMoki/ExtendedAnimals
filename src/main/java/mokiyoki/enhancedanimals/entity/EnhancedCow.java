@@ -173,6 +173,8 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
     }};
 
+    protected boolean resetTexture = true;
+
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     protected final List<String> cowTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 120;
@@ -831,6 +833,9 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     @OnlyIn(Dist.CLIENT)
     public String getCowTexture() {
         if (this.cowTextures.isEmpty()) {
+            this.setTexturePaths();
+        } else if (resetTexture) {
+            resetTexture = false;
             this.setTexturePaths();
         }
         return this.cowTextures.stream().collect(Collectors.joining("/","enhanced_cow/",""));

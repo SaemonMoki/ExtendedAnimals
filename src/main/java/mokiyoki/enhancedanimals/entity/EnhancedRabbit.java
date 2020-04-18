@@ -514,33 +514,36 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
                 }
             } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
 
-                if (!entityPlayer.abilities.isCreativeMode) {
                     if (item == ModItems.Half_Milk_Bottle) {
                         decreaseHunger(6000);
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                            entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                        }
-                    } else if (item == ModItems.Milk_Bottle) {
-                        if (hunger >= 12000) {
-                            decreaseHunger(12000);
+                        if (!entityPlayer.abilities.isCreativeMode) {
                             if (itemStack.isEmpty()) {
                                 entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
                             } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
                                 entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
                             }
+                        }
+                    } else if (item == ModItems.Milk_Bottle) {
+                        if (hunger >= 12000) {
+                            decreaseHunger(12000);
+                            if (!entityPlayer.abilities.isCreativeMode) {
+                                if (itemStack.isEmpty()) {
+                                    entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                                    entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                                }
+                            }
                         } else {
                             decreaseHunger(6000);
-                            if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
-                                entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                            if (!entityPlayer.abilities.isCreativeMode) {
+                                if (itemStack.isEmpty()) {
+                                    entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
+                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
+                                    entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                                }
                             }
                         }
                     }
-
-                }
             }
         }
         return super.processInteract(entityPlayer, hand);

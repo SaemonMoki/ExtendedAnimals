@@ -887,6 +887,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                 } else if (comb == 6) {
                     this.combV.render(scale);
                 }
+
+                this.earL.render(scale);
+                this.earR.render(scale);
+
             }
             if(crest == 1 || (crest != 0 && isChild)){
                 this.smallCrest.render(scale);
@@ -949,9 +953,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             if (earTuft) {
                 this.earTuftHelper.render(scale);
             }
-
-            this.earL.render(scale);
-            this.earR.render(scale);
 
             GlStateManager.popMatrix();
 //        }

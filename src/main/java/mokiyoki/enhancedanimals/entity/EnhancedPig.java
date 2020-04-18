@@ -280,9 +280,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         this.dataManager.set(PIG_SIZE, size);
     }
 
-    public float getSize() {
-        return this.dataManager.get(PIG_SIZE);
-    }
+    public float getSize() { return this.dataManager.get(PIG_SIZE); }
 
     protected void setBirthTime(String birthTime) {
         this.dataManager.set(BIRTH_TIME, birthTime);
@@ -673,10 +671,10 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             // [52/53] (1-3) size genes varient1 [wildtype, smaller, smallest]
             // [54/55] (1-3) size genes varient2 [wildtype, larger, largest]
 
-        size = size - genes[48]*0.0125F;
-        size = size - genes[49]*0.0125F;
-        size = size + genes[50]*0.0125F;
-        size = size + genes[51]*0.0125F;
+        size = size - (genes[48] - 1)*0.0125F;
+        size = size - (genes[49] - 1)*0.0125F;
+        size = size + (genes[50] - 1)*0.0125F;
+        size = size + (genes[51] - 1)*0.0125F;
 
         if (genes[44] != 1 && genes[45] != 1) {
             if (genes[44] == 2 || genes[45] == 2) {
@@ -699,9 +697,9 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             size = size * 0.925F;
         }
 
-        if (genes[52] == 2 || genes[53] == 2) {
+        if (genes[54] == 2 || genes[55] == 2) {
             size = size * 1.025F;
-        } else if (genes[52] == 3 || genes[53] == 3) {
+        } else if (genes[54] == 3 || genes[55] == 3) {
             size = size * 1.075F;
         }
 
@@ -720,8 +718,8 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
-        int size = (int)((getSize()-0.7F)*10);
-        int age = getAge();
+        int size = (int)((this.getSize()-0.7F)*10);
+        int age = this.getAge();
         int meatDrop;
         int meatChanceMod;
 

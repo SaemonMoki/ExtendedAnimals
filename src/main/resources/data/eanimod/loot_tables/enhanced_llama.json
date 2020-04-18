@@ -29,12 +29,309 @@
       ]
     },
     {
+      "name": "white_wool",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:white_wool",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": {
+                "min": 0,
+                "max": 2
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "yellow_wool",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:yellow_wool",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": {
+                "min": 0,
+                "max": 2
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "red_wool",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:red_wool",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": {
+                "min": 0,
+                "max": 2
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "brown_wool",
       "rolls": 1,
       "entries": [
         {
           "type": "item",
           "name": "minecraft:brown_wool",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": {
+                "min": 0,
+                "max": 2
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "black_wool",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:black_wool",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": {
+                "min": 0,
+                "max": 2
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gray_wool",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:gray_wool",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 1
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": {
+                "min": 0,
+                "max": 2
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "white_wool_two",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:white_wool",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 2
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": {
+                "min": 0,
+                "max": 3
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "yellow_wool_two",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:yellow_wool",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 2
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": {
+                "min": 0,
+                "max": 3
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "red_wool_two",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:red_wool",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 2
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": {
+                "min": 0,
+                "max": 3
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "brown_wool_two",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:brown_wool",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 2
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": {
+                "min": 0,
+                "max": 3
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "black_wool_two",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:black_wool",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 0,
+                "max": 2
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": {
+                "min": 0,
+                "max": 3
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gray_wool_two",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:gray_wool",
           "weight": 1,
           "functions": [
             {

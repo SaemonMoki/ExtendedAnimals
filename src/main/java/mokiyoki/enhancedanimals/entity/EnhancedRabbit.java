@@ -394,6 +394,8 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
     public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
+    private int getAge() { return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime())); }
+
     public void setNoseWiggling(boolean wiggling) {
         this.dataManager.set(NOSE_WIGGLING, wiggling);
     }
@@ -1026,12 +1028,22 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     }
 
     @Override
+    protected boolean canDropLoot() {
+        int i = rand.nextInt(100);
+        if (getAge()/480 >= i) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     @Nullable
     protected ResourceLocation getLootTable() {
 
         if (!this.world.isRemote) {
 
-                if (Size() <= 0.8F) {
+                if (Size() <= 0.8F || getAge() < 48000) {
                     dropMeatType = "rawrabbit_small";
                 } else {
                     dropMeatType = "rawrabbit";

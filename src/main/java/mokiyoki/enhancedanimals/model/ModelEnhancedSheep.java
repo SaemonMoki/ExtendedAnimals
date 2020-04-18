@@ -553,7 +553,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         String sheepStatus = sheepModelData.sheepStatus;
         char[] uuidArry = sheepModelData.uuidArray;
         boolean sleeping = sheepModelData.sleeping;
-        float size = 1.0F;
+        float size = sheepModelData.size;
         float bagSize = sheepModelData.bagSize;
         int horns = calculateHorns(genes, uuidArry);
 
@@ -581,12 +581,12 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         //TODO horn scale logic
 
         float age = 1.0F;
-//        if (!(sheepModelData.birthTime == null) && !sheepModelData.birthTime.equals("") && !sheepModelData.birthTime.equals("0")) {
-//            int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(sheepModelData.birthTime));
-//            if (ageTime <= 75000) {
-//                age = ageTime/75000.0F;
-//            }
-//        }
+        if (!(sheepModelData.birthTime == null) && !sheepModelData.birthTime.equals("") && !sheepModelData.birthTime.equals("0")) {
+            int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(sheepModelData.birthTime));
+            if (ageTime <= 75000) {
+                age = ageTime/75000.0F;
+            }
+        }
 
         float finalSheepSize = (( 2.0F * size * age) + size) / 3.0F;
         float babyScale = 1.0F;
@@ -647,7 +647,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
             this.udder.render(scale);
 
-                GlStateManager.popMatrix();
+        GlStateManager.popMatrix();
         }
     }
 
@@ -1200,6 +1200,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         int[] sheepGenes;
         String birthTime;
         float bagSize;
+        float size;
         String sheepStatus;
         int coatlength;
         char[] uuidArray;
@@ -1237,6 +1238,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.coatlength = enhancedSheep.getCoatLength();
             sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
             sheepModelData.bagSize = enhancedSheep.getBagSize();
+            sheepModelData.size = enhancedSheep.getSize();
             sheepModelData.sheepStatus = enhancedSheep.getSheepStatus();
             sheepModelData.uuidArray = enhancedSheep.getCachedUniqueIdString().toCharArray();
             sheepModelData.birthTime = enhancedSheep.getBirthTime();

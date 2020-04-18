@@ -138,7 +138,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
     private final List<String> sheepTextures = new ArrayList<>();
     private final List<String> sheepFleeceTextures = new ArrayList<>();
-    private static final int GENES_LENGTH = 54;
+    private static final int GENES_LENGTH = 68;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] mitosisGenes = new int[GENES_LENGTH];
@@ -164,7 +164,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     public EnhancedSheep(EntityType<? extends EnhancedSheep> entityType, World worldIn) {
         super(entityType, worldIn);
-//        this.setSize(0.4F, 1F);
+        this.setSheepSize();
         this.timeUntilNextMilk = this.rand.nextInt(this.rand.nextInt(8000) + 4000);
     }
 
@@ -243,6 +243,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         this.dataManager.register(COAT_LENGTH, 0);
         this.dataManager.register(DYE_COLOUR, Byte.valueOf((byte)0));
         this.dataManager.register(SHEEP_STATUS, new String());
+        this.dataManager.register(SHEEP_SIZE, 0.0F);
         this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(MILK_AMOUNT, 0);
@@ -257,13 +258,9 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         return this.dataManager.get(SHEEP_STATUS);
     }
 
-    private void setSheepSize(float size) {
-        this.dataManager.set(SHEEP_SIZE, size);
-    }
+    private void setSheepSize(float size) { this.dataManager.set(SHEEP_SIZE, size); }
 
-    public float getSize() {
-        return this.dataManager.get(SHEEP_SIZE);
-    }
+    public float getSize() { return this.dataManager.get(SHEEP_SIZE); }
 
     @Nullable
     protected ResourceLocation getLootTable() {
@@ -344,7 +341,6 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
     private int getAge() { return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime())); }
-
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
@@ -435,14 +431,15 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                     timeForGrowth++;
                 }
                 if (maxCoatLength > 0) {
-                    if (currentCoatLength == maxCoatLength && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= (12000 / maxCoatLength)) {
+                    if (!this.isChild() && currentCoatLength == maxCoatLength && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= 24000) {
                         timeForGrowth = 0;
-                        List<ItemStack> woolToDrop = onSheared(null, this.world, getPosition(), 0);
-                        woolToDrop.forEach(d -> {
-                            net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
-                            ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
-                        });
-                        onSheared(ItemStack.EMPTY, this.world, getPosition(), 0);
+                        currentCoatLength = rand.nextInt(maxCoatLength/2);
+//                        List<ItemStack> woolToDrop = onSheared(null, this.world, getPosition(), 0);
+//                        woolToDrop.forEach(d -> {
+//                            net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
+//                            ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
+//                        });
+//                        onSheared(ItemStack.EMPTY, this.world, getPosition(), 0);
                     } else if (timeForGrowth >= (24000 / maxCoatLength)) {
                         timeForGrowth = 0;
                         if (maxCoatLength > currentCoatLength) {
@@ -562,6 +559,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         int[] babyGenes = getLambGenes(this.mitosisGenes, this.mateMitosisGenes);
         enhancedsheep.setGenes(babyGenes);
         enhancedsheep.setSharedGenes(babyGenes);
+        enhancedsheep.setSheepSize();
         enhancedsheep.setMaxCoatLength();
         enhancedsheep.currentCoatLength = enhancedsheep.maxCoatLength;
         enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
@@ -986,7 +984,46 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     }
 
     private void setSheepSize() {
-        float size = 1.0F;
+        float size = 0.3F;
+
+        //(56/57) 1-2 minature [wildtype, minature]
+        //(58/59) 1-16 size genes reducer [wildtype, smaller smaller smallest...] adds milk fat [none to most]
+        //(60/61) 1-16 size genes adder [wildtype, bigger bigger biggest...]
+        //(62/63) 1-3 size genes varient1 [wildtype, smaller, smallest]
+        //(64/65) 1-3 size genes varient2 [wildtype, smaller, smallest]
+
+        size = size - (genes[58] - 1)*0.007F;
+        size = size - (genes[59] - 1)*0.007F;
+        size = size + (genes[60] - 1)*0.007F;
+        size = size + (genes[61] - 1)*0.007F;
+
+        if (genes[56] == 2 || genes[57] == 2) {
+            if (genes[56] == 2 && genes[57] == 2) {
+                size = size * 0.8F;
+            } else {
+                size = size * 0.9F;
+            }
+        }
+
+        if (genes[62] == 2 || genes[63] == 2) {
+            size = size * 0.975F;
+        } else if (genes[62] == 3 || genes[63] == 3) {
+            size = size * 0.925F;
+        }
+
+        if (genes[64] == 2 || genes[65] == 2) {
+            size = size * 1.025F;
+        } else if (genes[64] == 3 || genes[65] == 3) {
+            size = size * 1.075F;
+        }
+
+        if (size > 0.6F) {
+            size = 0.6F;
+        }
+
+        size = size + 0.44F;
+
+        // [ 0.49994 - 1.1 ]
         this.setSheepSize(size);
     }
 
@@ -995,10 +1032,11 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
-//        float size = (float)getSize();
-        int age = getAge();
+        float size = this.getSize();
+        int age = this.getAge();
         int meatDrop = rand.nextInt(4)+1;
         boolean woolDrop = false;
+        boolean leatherDrop = false;
         int meatChanceMod;
 
         if (currentCoatLength == maxCoatLength && maxCoatLength >= 1) {
@@ -1027,6 +1065,42 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             }
         }
 
+        if (maxCoatLength < 5 && !woolDrop) {
+            int i = this.rand.nextInt(3);
+            // 2 out of 3 times
+            if (i != 0) {
+                if (currentCoatLength == 0) {
+                    // 5 out of 5 times
+                    leatherDrop = true;
+                } else if (currentCoatLength == 1) {
+                    // 4 out of 5 times
+                    i = this.rand.nextInt(5);
+                    if (i != 0) {
+                        leatherDrop = true;
+                    }
+                } else if (currentCoatLength == 2) {
+                    // 3 out of 5 times
+                    i = this.rand.nextInt(5);
+                    if (i <= 2) {
+                        leatherDrop = true;
+                    }
+                } else if (currentCoatLength == 3) {
+                    // 2 out of 5 times
+                    i = this.rand.nextInt(5);
+                    if (i <= 1) {
+                        leatherDrop = true;
+                    }
+                } else {
+                    // 1 out of 5 times
+                    i = this.rand.nextInt(5);
+                    if (i == 0) {
+                        leatherDrop = true;
+                    }
+                }
+            }
+
+        }
+
         if (age < 72000) {
             if (age >= 54000) {
                 meatDrop = meatDrop - 1;
@@ -1047,12 +1121,17 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                 meatDrop++;
             }
 
-            if (woolDrop) {
+            if (woolDrop || leatherDrop) {
                 i = this.rand.nextInt(100);
                 if (age/720 > i) {
                     woolDrop = false;
+                    leatherDrop = false;
                 }
             }
+        }
+
+        if (meatDrop < 0) {
+            meatDrop = 0;
         }
 
         if (this.isBurning()){
@@ -1062,8 +1141,11 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             ItemStack muttonStack = new ItemStack(Items.MUTTON, meatDrop);
             this.entityDropItem(muttonStack);
             if (woolDrop) {
-                ItemStack fleeceStack = new ItemStack(getWoolBlocks());
+                ItemStack fleeceStack = new ItemStack(getWoolBlocks(), 1);
                 this.entityDropItem(fleeceStack);
+            } else if (leatherDrop) {
+                ItemStack leatherStack = new ItemStack(Items.LEATHER, 1);
+                this.entityDropItem(leatherStack);
             }
         }
     }
@@ -1466,6 +1548,15 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                     message = getPregnantText();
                     entityPlayer.sendMessage(message);
                 }
+                if (!this.isChild() && (genes[46] == 1 || genes[47] == 1) && currentCoatLength == maxCoatLength) {
+                        List<ItemStack> woolToDrop = onSheared(null, this.world, getPosition(), 0);
+                        woolToDrop.forEach(d -> {
+                            net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
+                            ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
+                        });
+                        onSheared(ItemStack.EMPTY, this.world, getPosition(), 0);
+                }
+
             } else if (item == Items.WATER_BUCKET) {
                 this.setFleeceDyeColour(DyeColor.WHITE);
             } else if (item instanceof DyeItem) {
@@ -1629,6 +1720,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
         //resets the max so we don't have to store it
         setMaxBagSize();
+        setSheepSize();
 //        this.setBagSize((compound.getInt("milk")*(maxBagSize/3.0F))+(maxBagSize*2.0F/3.0F));
         setMaxCoatLength();
 //        configureAI();
@@ -1699,6 +1791,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         this.genes = spawnGenes;
         this.setSharedGenes(genes);
         this.setMaxCoatLength();
+        this.setSheepSize();
         this.currentCoatLength = this.maxCoatLength;
         this.setCoatLength(this.currentCoatLength);
 
@@ -1716,9 +1809,12 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     }
 
     private void setMaxCoatLength() {
-        float maxCoatLength = 0.0F;
+        int maxCoatLength = 0;
+        int age = getAge();
+        if (age > 72000) {
+            age = 72000;
+        }
 
-        if ( !this.isChild() ) {
             if (genes[20] == 2){
                 maxCoatLength = 1;
             }
@@ -1765,9 +1861,9 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                 maxCoatLength = maxCoatLength + 1;
             }
 
-        }
+            maxCoatLength = maxCoatLength*(age/72000);
 
-        this.maxCoatLength = (int)maxCoatLength;
+        this.maxCoatLength = maxCoatLength;
 
     }
 
@@ -2185,6 +2281,100 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
             } else {
                 initialGenes[53] = (2);
+            }
+
+            //shortleg dwarfism [wildtype, dwarfStrong, dwarfWeak]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[54] = (ThreadLocalRandom.current().nextInt(3) + 1);
+                initialGenes[55] = (1);
+
+            } else {
+                initialGenes[54] = (1);
+                initialGenes[55] = (1);
+            }
+
+            //minature [wildtype, minature]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[56] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[56] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[57] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+            } else {
+                initialGenes[57] = (1);
+            }
+
+            //size genes reducer [wildtype, smaller smaller smallest...] adds milk fat [none to most]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[58] = (ThreadLocalRandom.current().nextInt(16) + 1);
+
+            } else {
+                initialGenes[58] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[59] = (ThreadLocalRandom.current().nextInt(16) + 1);
+
+            } else {
+                initialGenes[59] = (1);
+            }
+
+            //size genes adder [wildtype, bigger bigger biggest...]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[60] = (ThreadLocalRandom.current().nextInt(16) + 1);
+
+            } else {
+                initialGenes[60] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[61] = (ThreadLocalRandom.current().nextInt(16) + 1);
+
+            } else {
+                initialGenes[61] = (1);
+            }
+
+            //size genes varient1 [wildtype, smaller, smallest]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[62] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[62] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[63] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[63] = (1);
+            }
+
+            //size genes varient2 [wildtype, smaller, smallest]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[64] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[64] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[65] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[65] = (1);
+            }
+
+            //body type [wildtype, smallest to largest] if mod with lard/fat smallest size has least fat, largest has most fat
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[66] = (ThreadLocalRandom.current().nextInt(6) + 1);
+
+            } else {
+                initialGenes[66] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[67] = (ThreadLocalRandom.current().nextInt(6) + 1);
+
+            } else {
+                initialGenes[67] = (1);
             }
         }
 

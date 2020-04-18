@@ -527,8 +527,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         renderHorns(scale, horns, hornShift, unrenderedModels);
 
-        this.mushroomBody1.render(scale);
-        this.mushroomBody2.render(scale);
+        if (!this.isChild) {
+            this.mushroomBody1.render(scale);
+            this.mushroomBody2.render(scale);
+            this.mushroomHead.isHidden = false;
+        } else {
+            this.mushroomHead.isHidden = true;
+        }
 
         this.headModel.render(scale, null , unrenderedModels, true);
 
@@ -836,15 +841,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                     hornGrowth = 2;
                 } else if (ageTime > 75600) {
                     hornGrowth = 3;
-                } else if (ageTime > 64800) {
+                } else if (ageTime > 60800) {
                     hornGrowth = 4;
-                } else if (ageTime > 54000) {
+                } else if (ageTime > 40000) {
                     hornGrowth = 5;
-                } else if (ageTime > 43200) {
+                } else if (ageTime > 30200) {
                     hornGrowth = 6;
-                } else if (ageTime > 30000) {
-                    hornGrowth = 7;
                 } else if (ageTime > 12000) {
+                    hornGrowth = 7;
+                } else if (ageTime > 6000) {
                     hornGrowth = 8;
                 } else {
                     hornGrowth = 9;

@@ -27,9 +27,8 @@ public class ECRoost extends Goal {
                 if (allPostPos != null && !allPostPos.isEmpty()) {
                     BlockPos blockPosToGoTo = calculateClosestPost(allPostPos);
                     postPos = blockPosToGoTo;
-                    return true;
                 }
-                return false;
+                return true;
             }
             return false;
         }

@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -1452,7 +1453,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
 
             this.goalSelector.addGoal(1, new PanicGoal(this, 1.5D));
             this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
-            this.goalSelector.addGoal(3, new TemptGoal(this, 1.25D, TEMPTATION_ITEMS, false));
+            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.25D, false, TEMPTATION_ITEMS));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25D));
             this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, 1.25D));
             wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 20);

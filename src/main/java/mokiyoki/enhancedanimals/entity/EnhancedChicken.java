@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.ai.ECSandBath;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.ai.general.chicken.EnhancedWaterAvoidingRandomWalkingEatingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
@@ -294,7 +295,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new TemptGoal(this, 1.0D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(5, new ECWanderAvoidWater(this, 1.0D));
         this.goalSelector.addGoal(5, this.entityAIEatGrass);
@@ -335,7 +336,13 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
     public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
-    private int getAge() { return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime())); }
+    private int getAge() {
+        if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
+            return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
+        } else {
+            return 500000;
+        }
+    }
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;

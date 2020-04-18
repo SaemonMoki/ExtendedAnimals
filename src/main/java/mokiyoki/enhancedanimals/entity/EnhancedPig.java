@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.pig.EnhancedWaterAvoidingRandomWalkingEatingGoalPig;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
@@ -220,8 +221,8 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
 //        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
         this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.fromItems(Items.CARROT_ON_A_STICK), false));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.2D, false, Ingredient.fromItems(Items.CARROT_ON_A_STICK)));
+        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.2D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(5, wanderEatingGoal);
 //        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
@@ -280,9 +281,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         this.dataManager.set(PIG_SIZE, size);
     }
 
-    public float getSize() {
-        return this.dataManager.get(PIG_SIZE);
-    }
+    public float getSize() { return this.dataManager.get(PIG_SIZE); }
 
     protected void setBirthTime(String birthTime) {
         this.dataManager.set(BIRTH_TIME, birthTime);
@@ -290,7 +289,13 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
     public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
-    private int getAge() { return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime())); }
+    private int getAge() {
+        if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
+            return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
+        } else {
+            return 500000;
+        }
+    }
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
@@ -673,10 +678,10 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             // [52/53] (1-3) size genes varient1 [wildtype, smaller, smallest]
             // [54/55] (1-3) size genes varient2 [wildtype, larger, largest]
 
-        size = size - genes[48]*0.0125F;
-        size = size - genes[49]*0.0125F;
-        size = size + genes[50]*0.0125F;
-        size = size + genes[51]*0.0125F;
+        size = size - (genes[48] - 1)*0.0125F;
+        size = size - (genes[49] - 1)*0.0125F;
+        size = size + (genes[50] - 1)*0.0125F;
+        size = size + (genes[51] - 1)*0.0125F;
 
         if (genes[44] != 1 && genes[45] != 1) {
             if (genes[44] == 2 || genes[45] == 2) {
@@ -699,9 +704,9 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             size = size * 0.925F;
         }
 
-        if (genes[52] == 2 || genes[53] == 2) {
+        if (genes[54] == 2 || genes[55] == 2) {
             size = size * 1.025F;
-        } else if (genes[52] == 3 || genes[53] == 3) {
+        } else if (genes[54] == 3 || genes[55] == 3) {
             size = size * 1.075F;
         }
 
@@ -720,8 +725,8 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
-        int size = (int)((getSize()-0.7F)*10);
-        int age = getAge();
+        int size = (int)((this.getSize()-0.7F)*10);
+        int age = this.getAge();
         int meatDrop;
         int meatChanceMod;
 

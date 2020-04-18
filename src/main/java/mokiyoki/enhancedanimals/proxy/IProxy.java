@@ -2,6 +2,8 @@ package mokiyoki.enhancedanimals.proxy;
 
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
@@ -16,4 +18,6 @@ public interface IProxy {
     void setEncylopediaInfo(ItemStack itemStack);
 
     void openEncyclodepia();
+
+    void initClientSetup(FMLClientSetupEvent event);
 }

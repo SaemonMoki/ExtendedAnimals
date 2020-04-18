@@ -1,10 +1,10 @@
 package mokiyoki.enhancedanimals.model;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
-import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
@@ -24,51 +24,53 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     private float earY = 0.2617994F;
     private float earZ = 0;
 
-    private final RendererModel rabbitLeftFoot;
-    private final RendererModel rabbitRightFoot;
-    private final RendererModel rabbitLeftCalf;
-    private final RendererModel rabbitRightCalf;
-    private final RendererModel rabbitLeftThigh;
-    private final RendererModel rabbitRightThigh;
-    private final RendererModel rabbitBody;
-    private final RendererModel rabbitBodyAngora1;
-    private final RendererModel rabbitBodyAngora2;
-    private final RendererModel rabbitBodyAngora3;
-    private final RendererModel rabbitBodyAngora4;
-    private final RendererModel rabbitButtRound;
-    private final RendererModel rabbitButt;
-    private final RendererModel rabbitButtAngora1;
-    private final RendererModel rabbitButtAngora2;
-    private final RendererModel rabbitButtAngora3;
-    private final RendererModel rabbitButtAngora4;
-    private final RendererModel rabbitButtTube;
-    private final RendererModel rabbitLeftArm;
-    private final RendererModel rabbitRightArm;
-    private final RendererModel rabbitHeadLeft;
-    private final RendererModel rabbitHeadRight;
-    private final RendererModel rabbitHeadMuzzle;
-    private final RendererModel rabbitNose;
-    private final RendererModel rabbitHeadMuzzleDwarf;
-    private final RendererModel rabbitNoseDwarf;
-    private final RendererModel rabbitLionHeadL;
-    private final RendererModel rabbitLionHeadR;
-    private final RendererModel rabbitLionHeadL1;
-    private final RendererModel rabbitLionHeadR1;
-    private final RendererModel LionEarParent;
-    private final RendererModel LionEarL;
-    private final RendererModel LionEarR;
-    private final RendererModel LionEarParent1;
-    private final RendererModel LionEarL1;
-    private final RendererModel LionEarR1;
-    private final RendererModel EarParent;
-    private final RendererModel EarL;
-    private final RendererModel EarR;
-    private final RendererModel DwarfParent;
-    private final RendererModel DwarfEarL;
-    private final RendererModel DwarfEarR;
-    private final RendererModel rabbitTail;
+    private final ModelRenderer rabbitLeftFoot;
+    private final ModelRenderer rabbitRightFoot;
+    private final ModelRenderer rabbitLeftCalf;
+    private final ModelRenderer rabbitRightCalf;
+    private final ModelRenderer rabbitLeftThigh;
+    private final ModelRenderer rabbitRightThigh;
+    private final ModelRenderer rabbitBody;
+    private final ModelRenderer rabbitBodyAngora1;
+    private final ModelRenderer rabbitBodyAngora2;
+    private final ModelRenderer rabbitBodyAngora3;
+    private final ModelRenderer rabbitBodyAngora4;
+    private final ModelRenderer rabbitButtRound;
+    private final ModelRenderer rabbitButt;
+    private final ModelRenderer rabbitButtAngora1;
+    private final ModelRenderer rabbitButtAngora2;
+    private final ModelRenderer rabbitButtAngora3;
+    private final ModelRenderer rabbitButtAngora4;
+    private final ModelRenderer rabbitButtTube;
+    private final ModelRenderer rabbitLeftArm;
+    private final ModelRenderer rabbitRightArm;
+    private final ModelRenderer rabbitHeadLeft;
+    private final ModelRenderer rabbitHeadRight;
+    private final ModelRenderer rabbitHeadMuzzle;
+    private final ModelRenderer rabbitNose;
+    private final ModelRenderer rabbitHeadMuzzleDwarf;
+    private final ModelRenderer rabbitNoseDwarf;
+    private final ModelRenderer rabbitLionHeadL;
+    private final ModelRenderer rabbitLionHeadR;
+    private final ModelRenderer rabbitLionHeadL1;
+    private final ModelRenderer rabbitLionHeadR1;
+    private final ModelRenderer LionEarParent;
+    private final ModelRenderer LionEarL;
+    private final ModelRenderer LionEarR;
+    private final ModelRenderer LionEarParent1;
+    private final ModelRenderer LionEarL1;
+    private final ModelRenderer LionEarR1;
+    private final ModelRenderer EarParent;
+    private final ModelRenderer EarL;
+    private final ModelRenderer EarR;
+    private final ModelRenderer DwarfParent;
+    private final ModelRenderer DwarfEarL;
+    private final ModelRenderer DwarfEarR;
+    private final ModelRenderer rabbitTail;
     private float jumpRotation;
     private float testerFloat;
+
+    private Integer currentRabbit = null;
 
     public ModelEnhancedRabbit()
     {
@@ -77,184 +79,184 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
 
         float xMove = -2.0F;
 
-        this.rabbitLeftFoot = new RendererModel(this, 0, 55);
+        this.rabbitLeftFoot = new ModelRenderer(this, 0, 55);
         this.rabbitLeftFoot.addBox(0F, 0F, 0F, 3, 8, 1);
         this.rabbitLeftFoot.setRotationPoint(0.0F, 5.0F, 1.0F + xMove);
         this.setRotationOffset(this.rabbitLeftFoot, 3.0F, 0.0F, 0.0F);
         this.rabbitLeftFoot.mirror = true;
 
-        this.rabbitRightFoot = new RendererModel(this, 8, 55);
+        this.rabbitRightFoot = new ModelRenderer(this, 8, 55);
         this.rabbitRightFoot.addBox(0F, 0F, 0F, 3, 8, 1);
         this.rabbitRightFoot.setRotationPoint(0F, 5.0F, 1.0F + xMove);
         this.setRotationOffset(this.rabbitRightFoot, 3.0F, 0.0F, 0.0F);
         this.rabbitRightFoot.mirror = true;
 
-        this.rabbitLeftCalf = new RendererModel(this, 0, 49);
+        this.rabbitLeftCalf = new ModelRenderer(this, 0, 49);
         this.rabbitLeftCalf.addBox(0F, 0F, 0F, 3, 5, 1);
         this.rabbitLeftCalf.setRotationPoint(0.0F, 6.5F, 2.7F + xMove);
         this.setRotationOffset(this.rabbitLeftCalf, 2.0F, 0.0F, 0.0F);
         this.rabbitLeftCalf.addChild(rabbitLeftFoot);
 
-        this.rabbitRightCalf = new RendererModel(this, 18, 49);
+        this.rabbitRightCalf = new ModelRenderer(this, 18, 49);
         this.rabbitRightCalf.addBox(0F, 0F, 0F, 3, 5, 1);
         this.rabbitRightCalf.setRotationPoint(0, 6.5F, 2.7F + xMove);
         this.setRotationOffset(this.rabbitRightCalf, 2.0F, 0.0F, 0.0F);
         this.rabbitRightCalf.addChild(rabbitRightFoot);
 
-        this.rabbitLeftThigh = new RendererModel(this, 0, 37);
+        this.rabbitLeftThigh = new ModelRenderer(this, 0, 37);
         this.rabbitLeftThigh.addBox(0F, 0F, 0F, 3, 6, 6);
         this.rabbitLeftThigh.setRotationPoint(-4.5F, 1.0F, 2.5F);
         this.rabbitLeftThigh.addChild(rabbitLeftCalf);
 
-        this.rabbitRightThigh = new RendererModel(this, 18, 37);
+        this.rabbitRightThigh = new ModelRenderer(this, 18, 37);
         this.rabbitRightThigh.addBox(0F, 0F, 0F, 3, 6, 6);
         this.rabbitRightThigh.setRotationPoint(1.5F, 1.0F, 2.5F);
         this.rabbitRightThigh.addChild(rabbitRightCalf);
 
-        this.rabbitBody = new RendererModel(this, 7, 8);
+        this.rabbitBody = new ModelRenderer(this, 7, 8);
         this.rabbitBody.addBox(-3.5F, 0.0F, 0.0F, 7, 7, 9,0.5F);
         this.rabbitBody.setRotationPoint(0.0F, 16.0F, -4.5F + xMove);
 
-        this.rabbitBodyAngora1 = new RendererModel(this, 7, 8);
+        this.rabbitBodyAngora1 = new ModelRenderer(this, 7, 8);
         this.rabbitBodyAngora1.addBox(-3.5F, 0F, 0F, 7, 7, 9, 1F);
         this.rabbitBodyAngora1.setRotationPoint(0.0F, 15.5F, -4.5F);
 
-        this.rabbitBodyAngora2 = new RendererModel(this, 7, 8);
+        this.rabbitBodyAngora2 = new ModelRenderer(this, 7, 8);
         this.rabbitBodyAngora2.addBox(-3.5F, 0F, 0F, 7, 7, 9, 2F);
         this.rabbitBodyAngora2.setRotationPoint(0.0F, 15.0F, -4.5F);
 
-        this.rabbitBodyAngora3 = new RendererModel(this, 7, 8);
+        this.rabbitBodyAngora3 = new ModelRenderer(this, 7, 8);
         this.rabbitBodyAngora3.addBox(-3.5F, 0F, 0F, 7, 7, 9, 3F);
         this.rabbitBodyAngora3.setRotationPoint(0.0F, 14.5F, -4.5F);
 
-        this.rabbitBodyAngora4 = new RendererModel(this, 7, 8);
+        this.rabbitBodyAngora4 = new ModelRenderer(this, 7, 8);
         this.rabbitBodyAngora4.addBox(-3.5F, 0F, 0F, 7, 7, 9, 4F);
         this.rabbitBodyAngora4.setRotationPoint(0.0F, 14.0F, -4.5F);
 
-        this.rabbitButtRound = new RendererModel(this, 30, 0);
+        this.rabbitButtRound = new ModelRenderer(this, 30, 0);
         this.rabbitButtRound.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 0.5F);
         this.rabbitButtRound.setRotationPoint(0.0F, 14.0F, 2.5F + xMove);
         this.rabbitButtRound.addChild(this.rabbitLeftThigh);
         this.rabbitButtRound.addChild(this.rabbitRightThigh);
 
-        this.rabbitButt = new RendererModel(this, 30, 0);
+        this.rabbitButt = new ModelRenderer(this, 30, 0);
         this.rabbitButt.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8);
         this.rabbitButt.setRotationPoint(0.0F, 15.0F, 2.5F + xMove);
         this.rabbitButt.addChild(this.rabbitLeftThigh);
         this.rabbitButt.addChild(this.rabbitRightThigh);
 
-        this.rabbitButtTube = new RendererModel(this, 30, 0);
+        this.rabbitButtTube = new ModelRenderer(this, 30, 0);
         this.rabbitButtTube.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, -0.49F);
         this.rabbitButtTube.setRotationPoint(0.0F, 16.1F, 2.5F + xMove);
         this.rabbitButtTube.addChild(this.rabbitLeftThigh);
         this.rabbitButtTube.addChild(this.rabbitRightThigh);
 
-        this.rabbitButtAngora1 = new RendererModel(this, 30, 0);
+        this.rabbitButtAngora1 = new ModelRenderer(this, 30, 0);
         this.rabbitButtAngora1.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 1F);
         this.rabbitButtAngora1.setRotationPoint(0.0F, 14.5F, 2.5F);
         this.rabbitButtAngora1.addChild(this.rabbitLeftThigh);
         this.rabbitButtAngora1.addChild(this.rabbitRightThigh);
 
-        this.rabbitButtAngora2 = new RendererModel(this, 30, 0);
+        this.rabbitButtAngora2 = new ModelRenderer(this, 30, 0);
         this.rabbitButtAngora2.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 2F);
         this.rabbitButtAngora2.setRotationPoint(0.0F, 14.0F, 2.5F);
         this.rabbitButtAngora2.addChild(this.rabbitLeftThigh);
         this.rabbitButtAngora2.addChild(this.rabbitRightThigh);
 
-        this.rabbitButtAngora3 = new RendererModel(this, 30, 0);
+        this.rabbitButtAngora3 = new ModelRenderer(this, 30, 0);
         this.rabbitButtAngora3.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 3F);
         this.rabbitButtAngora3.setRotationPoint(0.0F, 13.5F, 2.5F);
         this.rabbitButtAngora3.addChild(this.rabbitLeftThigh);
         this.rabbitButtAngora3.addChild(this.rabbitRightThigh);
 
-        this.rabbitButtAngora4 = new RendererModel(this, 30, 0);
+        this.rabbitButtAngora4 = new ModelRenderer(this, 30, 0);
         this.rabbitButtAngora4.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 4F);
         this.rabbitButtAngora4.setRotationPoint(0.0F, 13.0F, 2.5F);
         this.rabbitButtAngora4.addChild(this.rabbitLeftThigh);
         this.rabbitButtAngora4.addChild(this.rabbitRightThigh);
 
-        this.rabbitLeftArm = new RendererModel(this, 16, 56);
+        this.rabbitLeftArm = new ModelRenderer(this, 16, 56);
         this.rabbitLeftArm.addBox(0.0F, 0.0F, 0.0F, 3, 6, 2);
         this.rabbitLeftArm.setRotationPoint(-3.5F, 23.5F, -2.0F + xMove);
         this.setRotationOffset(this.rabbitLeftArm, -1.6F, 0.0F, 0.0F);
 
-        this.rabbitRightArm = new RendererModel(this, 26, 56);
+        this.rabbitRightArm = new ModelRenderer(this, 26, 56);
         this.rabbitRightArm.addBox(0.0F, 0F, 0F, 3, 6, 2);
         this.rabbitRightArm.setRotationPoint(0.5F, 23.5F, -2.0F + xMove);
         this.setRotationOffset(this.rabbitRightArm, -1.6F, 0.0F, 0.0F);
 
-        this.rabbitHeadLeft = new RendererModel(this, 0, 24);
+        this.rabbitHeadLeft = new ModelRenderer(this, 0, 24);
         this.rabbitHeadLeft.addBox(0.0F, 0.0F, 0.0F, 3, 6, 6);
         this.rabbitHeadLeft.setRotationPoint(0.0F, 14.0F, -11.0F);
 
-        this.rabbitHeadRight = new RendererModel(this, 18, 24);
+        this.rabbitHeadRight = new ModelRenderer(this, 18, 24);
         this.rabbitHeadRight.addBox(-3.0F, 0F, 0F, 3, 6, 6);
         this.rabbitHeadRight.setRotationPoint(0.0F, 14.0F, -9.0F + xMove);
 
-        this.rabbitHeadMuzzle = new RendererModel(this, 0, 8);
+        this.rabbitHeadMuzzle = new ModelRenderer(this, 0, 8);
         this.rabbitHeadMuzzle.addBox(-2F, 1.5F, -2F, 4, 4, 4);
         this.rabbitHeadMuzzle.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
-        this.rabbitNose = new RendererModel(this, 0, 8);
+        this.rabbitNose = new ModelRenderer(this, 0, 8);
         this.rabbitNose.addBox(-0.5F, 1.6F, -2.1F, 1, 1, 1);
 
-        this.rabbitHeadMuzzleDwarf = new RendererModel(this, 0, 8);
+        this.rabbitHeadMuzzleDwarf = new ModelRenderer(this, 0, 8);
         this.rabbitHeadMuzzleDwarf.addBox(-2F, 1.5F, -1F, 4, 4, 4);
         this.rabbitHeadMuzzleDwarf.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
-        this.rabbitNoseDwarf = new RendererModel(this, 0, 8);
+        this.rabbitNoseDwarf = new ModelRenderer(this, 0, 8);
         this.rabbitNoseDwarf.addBox(-0.5F, 1.6F, -1.1F, 1, 1, 1);
 
-        this.rabbitLionHeadL = new RendererModel(this, 33, 30);
+        this.rabbitLionHeadL = new ModelRenderer(this, 33, 30);
         this.rabbitLionHeadL.addBox(0.0F, 0.0F, 0.0F, 3, 6, 6, 0.5F);
 
-        this.rabbitLionHeadR = new RendererModel(this, 33, 18);
+        this.rabbitLionHeadR = new ModelRenderer(this, 33, 18);
         this.rabbitLionHeadR.addBox(-3.0F, 0.0F, 0.0F, 3, 6, 6, 0.5F);
 
-        this.rabbitLionHeadL1 = new RendererModel(this, 33, 30);
+        this.rabbitLionHeadL1 = new ModelRenderer(this, 33, 30);
         this.rabbitLionHeadL1.addBox(0.0F, 0.0F, 0.0F, 3, 6, 6, 1.1F);
 
-        this.rabbitLionHeadR1 = new RendererModel(this, 33, 18);
+        this.rabbitLionHeadR1 = new ModelRenderer(this, 33, 18);
         this.rabbitLionHeadR1.addBox(-3.0F, 0.0F, 0.0F, 3, 6, 6, 1.1F);
 
-        this.LionEarParent = new RendererModel(this, 60, 62);
-        this.LionEarL = new RendererModel(this, 50, 46);
+        this.LionEarParent = new ModelRenderer(this, 60, 62);
+        this.LionEarL = new ModelRenderer(this, 50, 46);
         this.LionEarL.addBox(-3.0F, -7.0F, -0.5F, 4, 7, 1, 0.4F);
-        this.LionEarR = new RendererModel(this, 40, 46);
+        this.LionEarR = new ModelRenderer(this, 40, 46);
         this.LionEarR.addBox(-1.0F, -7.0F, -0.5F, 4, 7, 1, 0.4F);
         this.LionEarParent.addChild(LionEarL);
         this.LionEarParent.addChild(LionEarR);
 
-        this.LionEarParent1 = new RendererModel(this, 60, 62);
-        this.LionEarL1 = new RendererModel(this, 50, 46);
+        this.LionEarParent1 = new ModelRenderer(this, 60, 62);
+        this.LionEarL1 = new ModelRenderer(this, 50, 46);
         this.LionEarL1.addBox(-3.0F, -7.0F, -0.5F, 4, 7, 1, 0.5F);
-        this.LionEarR1 = new RendererModel(this, 40, 46);
+        this.LionEarR1 = new ModelRenderer(this, 40, 46);
         this.LionEarR1.addBox(-1.0F, -7.0F, -0.5F, 4, 7, 1, 0.5F);
         this.LionEarParent1.addChild(LionEarL1);
         this.LionEarParent1.addChild(LionEarR1);
 
-        this.EarParent = new RendererModel(this, 60, 62);
-        this.EarL = new RendererModel(this, 10, 0);
+        this.EarParent = new ModelRenderer(this, 60, 62);
+        this.EarL = new ModelRenderer(this, 10, 0);
         this.EarL.addBox(-3.0F, -7.0F, -0.5F, 4, 7, 1);
-        this.EarR = new RendererModel(this, 0, 0);
+        this.EarR = new ModelRenderer(this, 0, 0);
         this.EarR.addBox(-1.0F, -7.0F, -0.5F, 4, 7, 1);
         this.EarParent.addChild(EarL);
         this.EarParent.addChild(EarR);
 
-        this.DwarfParent = new RendererModel(this, 60, 62);
-        this.DwarfEarL = new RendererModel(this, 10, 0);
+        this.DwarfParent = new ModelRenderer(this, 60, 62);
+        this.DwarfEarL = new ModelRenderer(this, 10, 0);
         this.DwarfEarL.addBox(-3.0F, -5.0F, -0.5F, 4, 5, 1);
-        this.DwarfEarR = new RendererModel(this, 0, 0);
+        this.DwarfEarR = new ModelRenderer(this, 0, 0);
         this.DwarfEarR.addBox(-1.0F, -5.0F, -0.5F, 4, 5, 1);
         this.DwarfParent.addChild(DwarfEarL);
         this.DwarfParent.addChild(DwarfEarR);
 
-        this.rabbitTail = new RendererModel(this, 20, 0);
+        this.rabbitTail = new ModelRenderer(this, 20, 0);
         this.rabbitTail.addBox(-1.5F, 2.0F, 8.0F, 3, 4, 2);
         this.rabbitTail.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
     }
 
-    private void setRotationOffset(RendererModel renderer, float x, float y, float z) {
+    private void setRotationOffset(ModelRenderer renderer, float x, float y, float z) {
         renderer.rotateAngleX = x;
         renderer.rotateAngleY = y;
         renderer.rotateAngleZ = z;
@@ -264,8 +266,8 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
      * Sets the models various rotation angles then renders the model.
      */
     @Override
-    public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        RabbitModelData rabbitModelData = getRabbitModelData(entityIn);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        RabbitModelData rabbitModelData = getRabbitModelData();
 
         int[] genes = rabbitModelData.rabbitGenes;
         int coatLength = rabbitModelData.coatlength;
@@ -311,11 +313,9 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             rabbitModelData.dwarf = false;
         }
 
-        this.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-
         float age = 1.0F;
         if (!(rabbitModelData.birthTime == null) && !rabbitModelData.birthTime.equals("") && !rabbitModelData.birthTime.equals("0")) {
-            int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(rabbitModelData.birthTime));
+            int ageTime = (int)(rabbitModelData.clientGameTime - Long.parseLong(rabbitModelData.birthTime));
             if (ageTime <= 50000) {
                 age = ageTime/50000.0F;
             }
@@ -323,94 +323,76 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
 
         float finalRabbitSize = (( 3.0F * size * age) + size) / 4.0F;
 
-//        if (this.isChild) {
-////            float f = 1.5F;
-//            GlStateManager.pushMatrix();
-//            GlStateManager.scalef(0.28F, 0.28F, 0.28F);
-//            GlStateManager.translatef(0.0F, -1.45F + 1.45F/0.28F, 2.0F * scale);
-//            this.rabbitHeadLeft.render(scale);
-//            this.rabbitHeadRight.render(scale);
-//            if (rabbitModelData.dwarf){
-//                this.rabbitHeadMuzzleDwarf.render(scale);
-//                this.rabbitNoseDwarf.render(scale);
-//                this.DwarfParent.render(scale);
-//            }else{
-//                this.rabbitHeadMuzzle.render(scale);
-//                this.rabbitNose.render(scale);
-//                this.EarParent.render(scale);
-//            }
-//            GlStateManager.popMatrix();
-//            GlStateManager.pushMatrix();
-//            GlStateManager.scalef(0.20F, 0.20F, 0.20F);
-//            GlStateManager.translatef(0.0F, -1.45F + 1.45F/0.2F, 0.0F);
-//            this.rabbitBody.render(scale);
-////            this.rabbitButtRound.render(scale);
-//            this.rabbitButt.render(scale);
-//
-////            this.rabbitButtTube.render(scale);
-//            this.rabbitLeftArm.render(scale);
-//            this.rabbitRightArm.render(scale);
-//            this.rabbitTail.render(scale);
-//            GlStateManager.popMatrix();
-//        } else {
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(finalRabbitSize, finalRabbitSize, finalRabbitSize);
-            GlStateManager.translatef(0.0F, -1.45F + 1.45F/finalRabbitSize, 0.0F);
-            this.rabbitHeadLeft.render(scale);
-            this.rabbitHeadRight.render(scale);
+        matrixStackIn.push();
+        matrixStackIn.scale(finalRabbitSize, finalRabbitSize, finalRabbitSize);
+        matrixStackIn.translate(0.0F, -1.45F + 1.45F/finalRabbitSize, 0.0F);
+            this.rabbitHeadLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.rabbitHeadRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             if (genes[24] == 2 && genes[25] == 2){
-                this.rabbitLionHeadL1.render(scale);
-                this.rabbitLionHeadR1.render(scale);
-                this.LionEarParent1.render(scale);
+                this.rabbitLionHeadL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.rabbitLionHeadR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.LionEarParent1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }else if (genes[24] == 2 || genes[25] == 2){
-                this.rabbitLionHeadL.render(scale);
-                this.rabbitLionHeadR.render(scale);
-                this.LionEarParent.render(scale);
+                this.rabbitLionHeadL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.rabbitLionHeadR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.LionEarParent.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (rabbitModelData.dwarf){
-                this.rabbitHeadMuzzleDwarf.render(scale);
-                this.rabbitNoseDwarf.render(scale);
-                this.DwarfParent.render(scale);
+                this.rabbitHeadMuzzleDwarf.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.rabbitNoseDwarf.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.DwarfParent.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }else{
-                this.rabbitHeadMuzzle.render(scale);
-                this.rabbitNose.render(scale);
-                this.EarParent.render(scale);
+                this.rabbitHeadMuzzle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.rabbitNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.EarParent.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
 
             if (coatLength == 0){
-                this.rabbitBody.render(scale);
-                //this.rabbitButtRound.render(scale);
-                this.rabbitButt.render(scale);
-                //this.rabbitButtTube.render(scale);
+                this.rabbitBody.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                //this.rabbitButtRound.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.rabbitButt.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                //this.rabbitButtTube.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }else{
                 if(coatLength == 1){
-                    this.rabbitBodyAngora1.render(scale);
-                    //this.rabbitButtRoundAngora1.render(scale);
-                    this.rabbitButtAngora1.render(scale);
-                    //this.rabbitButtTubeAngora1.render(scale);
+                    this.rabbitBodyAngora1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    //this.rabbitButtRoundAngora1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.rabbitButtAngora1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    //this.rabbitButtTubeAngora1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }else if(coatLength == 2){
-                    this.rabbitBodyAngora2.render(scale);
-                    //this.rabbitButtRoundAngora2.render(scale);
-                    this.rabbitButtAngora2.render(scale);
-                    //this.rabbitButtTubeAngora2.render(scale);
+                    this.rabbitBodyAngora2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    //this.rabbitButtRoundAngora2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.rabbitButtAngora2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    //this.rabbitButtTubeAngora2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }else if(coatLength == 3){
-                    this.rabbitBodyAngora3.render(scale);
-                    //this.rabbitButtRoundAngora3.render(scale);
-                    this.rabbitButtAngora3.render(scale);
-                    //this.rabbitButtTubeAngora3.render(scale);
+                    this.rabbitBodyAngora3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    //this.rabbitButtRoundAngora3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.rabbitButtAngora3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    //this.rabbitButtTubeAngora3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }else if(coatLength == 4){
-                    this.rabbitBodyAngora4.render(scale);
-                    //this.rabbitButtRoundAngora4.render(scale);
-                    this.rabbitButtAngora4.render(scale);
-                    //this.rabbitButtTubeAngora4.render(scale);
+                    this.rabbitBodyAngora4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    //this.rabbitButtRoundAngora4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.rabbitButtAngora4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    //this.rabbitButtTubeAngora4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
             }
 
-            this.rabbitLeftArm.render(scale);
-            this.rabbitRightArm.render(scale);
-            this.rabbitTail.render(scale);
-            GlStateManager.popMatrix();
+            this.rabbitLeftArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.rabbitRightArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.rabbitTail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        matrixStackIn.pop();
 //        }
+    }
+
+    /**
+     * Used for easily adding entity-dependent animations. The second and third float params here are the same second
+     * and third as in the setRotationAngles method.
+     */
+    @Override
+    public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
+        super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
+        this.jumpRotation = MathHelper.sin(((EnhancedRabbit)entitylivingbaseIn).getJumpCompletion(partialTickTime) * (float)Math.PI);
+        RabbitModelData rabbitModelData = getCreateRabbitModelData(entitylivingbaseIn);
+        this.currentRabbit = entitylivingbaseIn.getEntityId();
     }
 
     /**
@@ -419,10 +401,10 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
      * "far" arms and legs can swing at most.
      */
     @Override
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         float f = ageInTicks - (float)entityIn.ticksExisted;
 
-        RabbitModelData rabbitModelData = getRabbitModelData(entityIn);
+        RabbitModelData rabbitModelData = getRabbitModelData();
 
         int[] genes = rabbitModelData.rabbitGenes;
         boolean dwarf = rabbitModelData.dwarf;
@@ -592,17 +574,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         copyModelAngles(rabbitNose, rabbitNoseDwarf);
     }
 
-    /**
-     * Used for easily adding entity-dependent animations. The second and third float params here are the same second
-     * and third as in the setRotationAngles method.
-     */
-    @Override
-    public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime){
-        super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
-        this.jumpRotation = MathHelper.sin(((EnhancedRabbit)entitylivingbaseIn).getJumpCompletion(partialTickTime) * (float)Math.PI);
-    }
-
-    public static void copyModelAngles(RendererModel source, RendererModel dest) {
+    public static void copyModelAngles(ModelRenderer source, ModelRenderer dest) {
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
         dest.rotateAngleZ = source.rotateAngleZ;
@@ -620,9 +592,18 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         boolean sleeping;
         int lastAccessed = 0;
         int dataReset = 0;
+        long clientGameTime = 0;
     }
 
-    private RabbitModelData getRabbitModelData(T enhancedRabbit) {
+    private RabbitModelData getRabbitModelData() {
+        if (this.currentRabbit == null) {
+            return null;
+        }
+        RabbitModelData cowModelData = rabbitModelDataCache.get(this.currentRabbit);
+        return cowModelData;
+    }
+
+    private RabbitModelData getCreateRabbitModelData(T enhancedRabbit) {
         clearCacheTimer++;
         if(clearCacheTimer > 100000) {
             rabbitModelDataCache.values().removeIf(value -> value.lastAccessed==1);
@@ -641,6 +622,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
                 rabbitModelData.dataReset = 0;
             }
             rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
+            rabbitModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedRabbit.world).getWorldInfo()).getGameTime());
 
             return rabbitModelData;
         } else {
@@ -649,6 +631,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             rabbitModelData.coatlength = enhancedRabbit.getCoatLength();
             rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
             rabbitModelData.birthTime = enhancedRabbit.getBirthTime();
+            rabbitModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedRabbit.world).getWorldInfo()).getGameTime());
 
             rabbitModelDataCache.put(enhancedRabbit.getEntityId(), rabbitModelData);
 

@@ -522,7 +522,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         enhancedcow.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedcow.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedcow.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedcow.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
         enhancedcow.setMotherUUID(this.getUniqueID().toString());
         enhancedcow.configureAI();
         this.world.addEntity(enhancedcow);
@@ -1897,7 +1897,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
+//        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {

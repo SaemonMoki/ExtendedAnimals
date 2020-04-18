@@ -1,11 +1,13 @@
 package mokiyoki.enhancedanimals.model;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EntityState;
-import mokiyoki.enhancedanimals.renderer.EnhancedRendererModel;
+import mokiyoki.enhancedanimals.renderer.EnhancedRendererModelNew;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
@@ -24,81 +26,83 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private int clearCacheTimer = 0;
     private float headRotationAngleX;
 
-    private final EnhancedRendererModel actualHead;
-    private final EnhancedRendererModel mouth;
-    private final EnhancedRendererModel earSmallestL;
-    private final EnhancedRendererModel earSmallL;
-    private final EnhancedRendererModel earMediumL;
-    private final EnhancedRendererModel earLongL;
-    private final EnhancedRendererModel earLongestL;
-    private final EnhancedRendererModel earSmallestR;
-    private final EnhancedRendererModel earSmallR;
-    private final EnhancedRendererModel earMediumR;
-    private final EnhancedRendererModel earLongR;
-    private final EnhancedRendererModel earLongestR;
-    private final EnhancedRendererModel hornNub1;
-    private final EnhancedRendererModel hornNub2;
-    private final EnhancedRendererModel hornNub3;
-    private final EnhancedRendererModel hornNub4;
-    private final EnhancedRendererModel hornNub5;
-    private final EnhancedRendererModel hornGranparent;
-    private final EnhancedRendererModel hornParent;
-    private final EnhancedRendererModel hornL0;
-    private final EnhancedRendererModel hornL1;
-    private final EnhancedRendererModel hornL2;
-    private final EnhancedRendererModel hornL3;
-    private final EnhancedRendererModel hornL4;
-    private final EnhancedRendererModel hornL5;
-    private final EnhancedRendererModel hornL6;
-    private final EnhancedRendererModel hornL7;
-    private final EnhancedRendererModel hornL8;
-    private final EnhancedRendererModel hornL9;
-    private final EnhancedRendererModel hornR0;
-    private final EnhancedRendererModel hornR1;
-    private final EnhancedRendererModel hornR2;
-    private final EnhancedRendererModel hornR3;
-    private final EnhancedRendererModel hornR4;
-    private final EnhancedRendererModel hornR5;
-    private final EnhancedRendererModel hornR6;
-    private final EnhancedRendererModel hornR7;
-    private final EnhancedRendererModel hornR8;
-    private final EnhancedRendererModel hornR9;
-    private final EnhancedRendererModel headModel; //this is the neck not the head
-    private final EnhancedRendererModel bodyMedium;
-    private final RendererModel udder;
-    private final RendererModel nipples;
-    private final RendererModel humpXSmall;
-    private final RendererModel humpSmall;
-    private final RendererModel humpSmallish;
-    private final RendererModel humpMedium;
-    private final RendererModel humpLargeish;
-    private final RendererModel humpLarge;
-    private final RendererModel humpXLarge;
-    private final EnhancedRendererModel tail0;
-    private final EnhancedRendererModel tail1;
-    private final EnhancedRendererModel tail2;
-    private final EnhancedRendererModel tailBrush;
-    private final RendererModel leg1;
-    private final RendererModel leg2;
-    private final RendererModel leg3;
-    private final RendererModel leg4;
-    private final RendererModel shortLeg1;
-    private final RendererModel shortLeg2;
-    private final RendererModel shortLeg3;
-    private final RendererModel shortLeg4;
-    private final RendererModel mushroomBody1;
-    private final RendererModel mushroomBody2;
-    private final EnhancedRendererModel mushroomHead;
+    private final EnhancedRendererModelNew actualHead;
+    private final EnhancedRendererModelNew mouth;
+    private final EnhancedRendererModelNew earSmallestL;
+    private final EnhancedRendererModelNew earSmallL;
+    private final EnhancedRendererModelNew earMediumL;
+    private final EnhancedRendererModelNew earLongL;
+    private final EnhancedRendererModelNew earLongestL;
+    private final EnhancedRendererModelNew earSmallestR;
+    private final EnhancedRendererModelNew earSmallR;
+    private final EnhancedRendererModelNew earMediumR;
+    private final EnhancedRendererModelNew earLongR;
+    private final EnhancedRendererModelNew earLongestR;
+    private final EnhancedRendererModelNew hornNub1;
+    private final EnhancedRendererModelNew hornNub2;
+    private final EnhancedRendererModelNew hornNub3;
+    private final EnhancedRendererModelNew hornNub4;
+    private final EnhancedRendererModelNew hornNub5;
+    private final EnhancedRendererModelNew hornGranparent;
+    private final EnhancedRendererModelNew hornParent;
+    private final EnhancedRendererModelNew hornL0;
+    private final EnhancedRendererModelNew hornL1;
+    private final EnhancedRendererModelNew hornL2;
+    private final EnhancedRendererModelNew hornL3;
+    private final EnhancedRendererModelNew hornL4;
+    private final EnhancedRendererModelNew hornL5;
+    private final EnhancedRendererModelNew hornL6;
+    private final EnhancedRendererModelNew hornL7;
+    private final EnhancedRendererModelNew hornL8;
+    private final EnhancedRendererModelNew hornL9;
+    private final EnhancedRendererModelNew hornR0;
+    private final EnhancedRendererModelNew hornR1;
+    private final EnhancedRendererModelNew hornR2;
+    private final EnhancedRendererModelNew hornR3;
+    private final EnhancedRendererModelNew hornR4;
+    private final EnhancedRendererModelNew hornR5;
+    private final EnhancedRendererModelNew hornR6;
+    private final EnhancedRendererModelNew hornR7;
+    private final EnhancedRendererModelNew hornR8;
+    private final EnhancedRendererModelNew hornR9;
+    private final EnhancedRendererModelNew headModel; //this is the neck not the head
+    private final EnhancedRendererModelNew bodyMedium;
+    private final ModelRenderer udder;
+    private final ModelRenderer nipples;
+    private final ModelRenderer humpXSmall;
+    private final ModelRenderer humpSmall;
+    private final ModelRenderer humpSmallish;
+    private final ModelRenderer humpMedium;
+    private final ModelRenderer humpLargeish;
+    private final ModelRenderer humpLarge;
+    private final ModelRenderer humpXLarge;
+    private final EnhancedRendererModelNew tail0;
+    private final EnhancedRendererModelNew tail1;
+    private final EnhancedRendererModelNew tail2;
+    private final EnhancedRendererModelNew tailBrush;
+    private final ModelRenderer leg1;
+    private final ModelRenderer leg2;
+    private final ModelRenderer leg3;
+    private final ModelRenderer leg4;
+    private final ModelRenderer shortLeg1;
+    private final ModelRenderer shortLeg2;
+    private final ModelRenderer shortLeg3;
+    private final ModelRenderer shortLeg4;
+    private final ModelRenderer mushroomBody1;
+    private final ModelRenderer mushroomBody2;
+    private final EnhancedRendererModelNew mushroomHead;
 
-    private final List<RendererModel> leftHorns = new ArrayList<>();
-    private final List<RendererModel> rightHorns = new ArrayList<>();
+    private final List<EnhancedRendererModelNew> leftHorns = new ArrayList<>();
+    private final List<EnhancedRendererModelNew> rightHorns = new ArrayList<>();
+
+    private Integer currentCow = null;
 
     public ModelEnhancedCow() {
 
         this.textureWidth = 80;
         this.textureHeight = 80;
 
-        this.actualHead = new  EnhancedRendererModel(this, 0, 33);
+        this.actualHead = new  EnhancedRendererModelNew(this, 0, 33);
         this.actualHead.addBox(-4.0F, 0.0F, -7.0F, 8, 7, 6, 0.0F);
         this.actualHead.setTextureOffset(28, 33);
         this.actualHead.addBox(-2.0F, 0.1F, -11.0F, 4, 5, 4, 0.0F);
@@ -106,160 +110,160 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.actualHead.addBox(-2.5F, 0.2F, -13.0F, 5, 4, 3, 0.0F);
         this.actualHead.setRotationPoint(0.0F, 0.0F, -7.0F);
 
-        this.mouth = new  EnhancedRendererModel(this, 25, 46);
+        this.mouth = new  EnhancedRendererModelNew(this, 25, 46);
         this.mouth.addBox(-1.5F, 1.0F, -10.0F, 3, 3, 7, 0.1F);
         this.mouth.setTextureOffset(37, 46);
         this.mouth.addBox(-1.5F, 3.0F, -10.0F, 3, 1, 6, -0.1F);
         this.mouth.setRotationPoint(0.0F, 4.0F, -2.0F);
 
-        this.earSmallestL = new EnhancedRendererModel(this, 8, 46, "SmallestL");
+        this.earSmallestL = new EnhancedRendererModelNew(this, 8, 46, "SmallestL");
         this.earSmallestL.addBox(0.0F, -3.0F, -0.5F, 3, 3, 1);
 
-        this.earSmallL = new EnhancedRendererModel(this, 8, 46, "SmallL");
+        this.earSmallL = new EnhancedRendererModelNew(this, 8, 46, "SmallL");
         this.earSmallL.addBox(0.0F, -4.0F, -0.5F, 3, 4, 1);
 
-        this.earMediumL = new EnhancedRendererModel(this, 8, 46, "MediumL");
+        this.earMediumL = new EnhancedRendererModelNew(this, 8, 46, "MediumL");
         this.earMediumL.addBox(0.0F, -5.0F, -0.5F, 3, 5, 1);
 
-        this.earLongL = new EnhancedRendererModel(this, 8, 46, "LongL");
+        this.earLongL = new EnhancedRendererModelNew(this, 8, 46, "LongL");
         this.earLongL.addBox(0.0F, -6.0F, -0.5F, 3, 6, 1, 0.15F);
 
-        this.earLongestL = new EnhancedRendererModel(this, 8, 46, "LongestL");
+        this.earLongestL = new EnhancedRendererModelNew(this, 8, 46, "LongestL");
         this.earLongestL.addBox(0.0F, -7.0F, -0.5F, 3, 7, 1, 0.3F);
 
-        this.earSmallestR = new EnhancedRendererModel(this, 0, 46, "SmallestR");
+        this.earSmallestR = new EnhancedRendererModelNew(this, 0, 46, "SmallestR");
         this.earSmallestR.addBox(-3.0F, -3.0F, -0.5F, 3, 3, 1);
 
-        this.earSmallR = new EnhancedRendererModel(this, 0, 46, "SmallR");
+        this.earSmallR = new EnhancedRendererModelNew(this, 0, 46, "SmallR");
         this.earSmallR.addBox(-3.0F, -4.0F, -0.5F, 3, 4, 1);
 
-        this.earMediumR = new EnhancedRendererModel(this, 0, 46, "MediumR");
+        this.earMediumR = new EnhancedRendererModelNew(this, 0, 46, "MediumR");
         this.earMediumR.addBox(-3.0F, -5.0F, -0.5F, 3, 5, 1);
 
-        this.earLongR = new EnhancedRendererModel(this, 0, 46, "LongR");
+        this.earLongR = new EnhancedRendererModelNew(this, 0, 46, "LongR");
         this.earLongR.addBox(-3.0F, -6.0F, -0.5F, 3, 6, 1, 0.15F);
 
-        this.earLongestR = new EnhancedRendererModel(this, 0, 46, "LongestR");
+        this.earLongestR = new EnhancedRendererModelNew(this, 0, 46, "LongestR");
         this.earLongestR.addBox(-3.0F, -7.0F, -0.5F, 3, 7, 1, 0.3F);
 
-        this.hornNub1 = new EnhancedRendererModel(this, 44, 33, "HornNub1");
+        this.hornNub1 = new EnhancedRendererModelNew(this, 44, 33, "HornNub1");
         this.hornNub1.addBox(-2.0F, 0.0F, 0.0F, 4, 2, 2);
         this.hornNub1.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornNub2 = new EnhancedRendererModel(this, 44, 33, "HornNub2");
+        this.hornNub2 = new EnhancedRendererModelNew(this, 44, 33, "HornNub2");
         this.hornNub2.addBox(-2.0F, 0.0F, 0.0F, 4, 3, 2);
         this.hornNub2.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornNub3 = new EnhancedRendererModel(this, 44, 33, "HornNub3");
+        this.hornNub3 = new EnhancedRendererModelNew(this, 44, 33, "HornNub3");
         this.hornNub3.addBox(-2.0F, 0.0F, 0.0F, 4, 4, 2);
         this.hornNub3.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornNub4 = new EnhancedRendererModel(this, 44, 33, "HornNub4");
+        this.hornNub4 = new EnhancedRendererModelNew(this, 44, 33, "HornNub4");
         this.hornNub4.addBox(-2.0F, 0.0F, 0.0F, 4, 5, 2);
         this.hornNub4.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornNub5 = new EnhancedRendererModel(this, 44, 33, "HornNub5");
+        this.hornNub5 = new EnhancedRendererModelNew(this, 44, 33, "HornNub5");
         this.hornNub5.addBox(-2.0F, 0.0F, 0.0F, 4, 6, 2);
         this.hornNub5.setRotationPoint(0.0F, 1.0F, -1.0F);
 
-        this.hornGranparent = new EnhancedRendererModel(this, 0, 0);
-        this.hornParent = new EnhancedRendererModel(this, 0, 0);
+        this.hornGranparent = new EnhancedRendererModelNew(this, 0, 0);
+        this.hornParent = new EnhancedRendererModelNew(this, 0, 0);
         this.hornGranparent.addChild(hornParent);
 
-        this.hornL0 = new EnhancedRendererModel(this, 64, 29, "HornL0");
+        this.hornL0 = new EnhancedRendererModelNew(this, 64, 29, "HornL0");
         this.hornL0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
         leftHorns.add(hornL0);
 
-        this.hornL1 = new EnhancedRendererModel(this, 64, 37, "HornL1");
+        this.hornL1 = new EnhancedRendererModelNew(this, 64, 37, "HornL1");
         this.hornL1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.001F);
         leftHorns.add(hornL1);
 
-        this.hornL2 = new EnhancedRendererModel(this, 64, 45, "HornL2");
+        this.hornL2 = new EnhancedRendererModelNew(this, 64, 45, "HornL2");
         this.hornL2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.002F);
         leftHorns.add(hornL2);
 
-        this.hornL3 = new EnhancedRendererModel(this, 64, 53, "HornL3");
+        this.hornL3 = new EnhancedRendererModelNew(this, 64, 53, "HornL3");
         this.hornL3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.003F);
         leftHorns.add(hornL3);
 
-        this.hornL4 = new EnhancedRendererModel(this, 64, 61, "HornL4");
+        this.hornL4 = new EnhancedRendererModelNew(this, 64, 61, "HornL4");
         this.hornL4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.004F);
         leftHorns.add(hornL4);
 
-        this.hornL5 = new EnhancedRendererModel(this, 64, 61, "HornL5");
+        this.hornL5 = new EnhancedRendererModelNew(this, 64, 61, "HornL5");
         this.hornL5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
         leftHorns.add(hornL5);
 
-        this.hornL6 = new EnhancedRendererModel(this, 64, 61, "HornL6");
+        this.hornL6 = new EnhancedRendererModelNew(this, 64, 61, "HornL6");
         this.hornL6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
         leftHorns.add(hornL6);
 
-        this.hornL7 = new EnhancedRendererModel(this, 64, 61, "HornL7");
+        this.hornL7 = new EnhancedRendererModelNew(this, 64, 61, "HornL7");
         this.hornL7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
         leftHorns.add(hornL7);
 
-        this.hornL8 = new EnhancedRendererModel(this, 64, 61, "HornL8");
+        this.hornL8 = new EnhancedRendererModelNew(this, 64, 61, "HornL8");
         this.hornL8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
         leftHorns.add(hornL8);
 
-        this.hornL9 = new EnhancedRendererModel(this, 64, 61, "HornL9");
+        this.hornL9 = new EnhancedRendererModelNew(this, 64, 61, "HornL9");
         this.hornL9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
         leftHorns.add(hornL9);
 
-        this.hornR0 = new EnhancedRendererModel(this, 64, 29, "HornR0");
+        this.hornR0 = new EnhancedRendererModelNew(this, 64, 29, "HornR0");
         this.hornR0.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.0F);
         rightHorns.add(hornR0);
 
-        this.hornR1 = new EnhancedRendererModel(this, 64, 37, "HornR1");
+        this.hornR1 = new EnhancedRendererModelNew(this, 64, 37, "HornR1");
         this.hornR1.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.001F);
         rightHorns.add(hornR1);
 
-        this.hornR2 = new EnhancedRendererModel(this, 64, 45, "HornR2");
+        this.hornR2 = new EnhancedRendererModelNew(this, 64, 45, "HornR2");
         this.hornR2.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.002F);
         rightHorns.add(hornR2);
 
-        this.hornR3 = new EnhancedRendererModel(this, 64, 53, "HornR3");
+        this.hornR3 = new EnhancedRendererModelNew(this, 64, 53, "HornR3");
         this.hornR3.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.003F);
         rightHorns.add(hornR3);
 
-        this.hornR4 = new EnhancedRendererModel(this, 64, 61, "HornR4");
+        this.hornR4 = new EnhancedRendererModelNew(this, 64, 61, "HornR4");
         this.hornR4.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.004F);
         rightHorns.add(hornR4);
 
-        this.hornR5 = new EnhancedRendererModel(this, 64, 61, "HornR5");
+        this.hornR5 = new EnhancedRendererModelNew(this, 64, 61, "HornR5");
         this.hornR5.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.1F);
         rightHorns.add(hornR5);
 
-        this.hornR6 = new EnhancedRendererModel(this, 64, 61, "HornR6");
+        this.hornR6 = new EnhancedRendererModelNew(this, 64, 61, "HornR6");
         this.hornR6.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.2F);
         rightHorns.add(hornR6);
 
-        this.hornR7 = new EnhancedRendererModel(this, 64, 61, "HornR7");
+        this.hornR7 = new EnhancedRendererModelNew(this, 64, 61, "HornR7");
         this.hornR7.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.3F);
         rightHorns.add(hornR7);
 
-        this.hornR8 = new EnhancedRendererModel(this, 64, 61, "HornR8");
+        this.hornR8 = new EnhancedRendererModelNew(this, 64, 61, "HornR8");
         this.hornR8.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.4F);
         rightHorns.add(hornR8);
 
-        this.hornR9 = new EnhancedRendererModel(this, 64, 61, "HornR9");
+        this.hornR9 = new EnhancedRendererModelNew(this, 64, 61, "HornR9");
         this.hornR9.addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, -1.5F);
         rightHorns.add(hornR9);
 
         // head is the neck cause thats how this works
-        this.headModel = new EnhancedRendererModel(this, 46, 0);
+        this.headModel = new EnhancedRendererModelNew(this, 46, 0);
         this.headModel.addBox(-3.0F, 0.0F, -8.0F, 6, 8, 11, 0.0F);
         this.headModel.setRotationPoint(0.0F, 0.0F, -10.0F);
 
-        this.bodyMedium = new EnhancedRendererModel(this, 0, 0);
+        this.bodyMedium = new EnhancedRendererModelNew(this, 0, 0);
         this.bodyMedium.addBox(-6.0F, 0.0F, 0.0F, 12, 11, 22, 0.0F);
         this.bodyMedium.setRotationPoint(0.0F, 2.5F, -10.0F);
 
-        this.udder = new EnhancedRendererModel(this, 24, 67, "Udder");
+        this.udder = new EnhancedRendererModelNew(this, 24, 67, "Udder");
         this.udder.addBox(-2.0F, -2.0F, -5.0F, 4, 4, 6, 0.0F);
         this.udder.setRotationPoint(0.0F, 10.0F, 21.25F);
 
-        this.nipples = new EnhancedRendererModel(this, 24, 77, "Nipples");
+        this.nipples = new EnhancedRendererModelNew(this, 24, 77, "Nipples");
         this.nipples.addBox(-2.0F, 0.0F, -1.0F, 1, 2, 1, -0.15F);
         this.nipples.setTextureOffset(29, 77);
         this.nipples.addBox(1.0F, 0.0F, -1.0F, 1, 2, 1, -0.15F);
@@ -269,95 +273,95 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.nipples.addBox(1.0F, 0.0F, 2.0F, 1, 2, 1, -0.15F);
         this.nipples.setRotationPoint(0.0F, 1.5F, -3.5F);
 
-        this.humpXSmall = new EnhancedRendererModel(this, 0, 8, "HumpXXS");
+        this.humpXSmall = new EnhancedRendererModelNew(this, 0, 8, "HumpXXS");
         this.humpXSmall.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -1.0F);
         this.humpXSmall.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.humpSmall = new EnhancedRendererModel(this, 0, 8, "HumpXS");
+        this.humpSmall = new EnhancedRendererModelNew(this, 0, 8, "HumpXS");
         this.humpSmall.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -0.5F);
         this.humpSmall.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.humpSmallish = new EnhancedRendererModel(this, 0, 8, "HumpS");
+        this.humpSmallish = new EnhancedRendererModelNew(this, 0, 8, "HumpS");
         this.humpSmallish.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, -0.25F);
         this.humpSmallish.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.humpMedium = new EnhancedRendererModel(this, 0, 8, "Hump");
+        this.humpMedium = new EnhancedRendererModelNew(this, 0, 8, "Hump");
         this.humpMedium.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 0.0F);
         this.humpMedium.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.humpLargeish = new EnhancedRendererModel(this, 0, 8, "HumpL");
+        this.humpLargeish = new EnhancedRendererModelNew(this, 0, 8, "HumpL");
         this.humpLargeish.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 0.5F);
         this.humpLargeish.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.humpLarge = new EnhancedRendererModel(this, 0, 8, "HumpXL");
+        this.humpLarge = new EnhancedRendererModelNew(this, 0, 8, "HumpXL");
         this.humpLarge.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 1.0F);
         this.humpLarge.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.humpXLarge = new EnhancedRendererModel(this, 0, 8, "HumpXXL");
+        this.humpXLarge = new EnhancedRendererModelNew(this, 0, 8, "HumpXXL");
         this.humpXLarge.addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, 1.5F);
         this.humpXLarge.setRotationPoint(0.0F, 0.0F, 1.0F);
 
-        this.tail0 = new EnhancedRendererModel(this, 0,0, "Tail");
+        this.tail0 = new EnhancedRendererModelNew(this, 0,0, "Tail");
         this.tail0.addBox(-1.0F, 0.0F, 0.0F, 2, 4, 1);
         this.tail0.setRotationPoint(0.0F, 0.0F, 22.0F);
 
-        this.tail1 = new EnhancedRendererModel(this, 6,0);
+        this.tail1 = new EnhancedRendererModelNew(this, 6,0);
         this.tail1.addBox(-0.5F, 0.0F, 0.0F, 1, 4, 1);
         this.tail1.setRotationPoint(0.0F, 4.0F, 0.0F);
 
-        this.tail2 = new EnhancedRendererModel(this, 10,0);
+        this.tail2 = new EnhancedRendererModelNew(this, 10,0);
         this.tail2.addBox(-0.5F, 0.0F, 0.0F, 1, 3, 1);
         this.tail2.setRotationPoint(0.0F, 3.0F, 0.0F);
 
-        this.tailBrush = new EnhancedRendererModel(this, 14,0);
+        this.tailBrush = new EnhancedRendererModelNew(this, 14,0);
         this.tailBrush.addBox(-1.0F, 0.0F, -0.5F, 2, 3, 2);
         this.tailBrush.setRotationPoint(0.0F, 3.0F, 0.0F);
 
-        this.leg1 = new RendererModel(this, 0, 54);
+        this.leg1 = new ModelRenderer(this, 0, 54);
         this.leg1.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
         this.leg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
 
-        this.leg2 = new RendererModel(this, 12, 54);
+        this.leg2 = new ModelRenderer(this, 12, 54);
         this.leg2.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
         this.leg2.setRotationPoint(3.0F, 13.5F, -10.0F);
 
-        this.leg3 = new RendererModel(this, 0, 67);
+        this.leg3 = new ModelRenderer(this, 0, 67);
         this.leg3.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
         this.leg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
 
-        this.leg4 = new RendererModel(this, 12, 67);
+        this.leg4 = new ModelRenderer(this, 12, 67);
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 10, 3, 0.0F);
         this.leg4.setRotationPoint(3.0F, 13.5F, 9.0F);
 
-        this.shortLeg1 = new RendererModel(this, 0, 54);
+        this.shortLeg1 = new ModelRenderer(this, 0, 54);
         this.shortLeg1.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
         this.shortLeg1.setRotationPoint(-6.0F, 13.5F, -10.0F);
 
-        this.shortLeg2 = new RendererModel(this, 12, 54);
+        this.shortLeg2 = new ModelRenderer(this, 12, 54);
         this.shortLeg2.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
         this.shortLeg2.setRotationPoint(3.0F, 13.5F, -10.0F);
 
-        this.shortLeg3 = new RendererModel(this, 0, 67);
+        this.shortLeg3 = new ModelRenderer(this, 0, 67);
         this.shortLeg3.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
         this.shortLeg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
 
-        this.shortLeg4 = new RendererModel(this, 12, 67);
+        this.shortLeg4 = new ModelRenderer(this, 12, 67);
         this.shortLeg4.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, 0.0F);
         this.shortLeg4.setRotationPoint(3.0F, 13.5F, 9.0F);
 
-        this.mushroomBody1 = new RendererModel(this, 54, 64);
+        this.mushroomBody1 = new ModelRenderer(this, 54, 64);
         this.mushroomBody1.addBox(0.0F, -8.0F, 0.0F, 1, 8, 8);
         this.mushroomBody1.setTextureOffset(62, 71);
         this.mushroomBody1.addBox(-3.0F, -8.0F, 4.0F, 8, 8, 1);
         this.mushroomBody1.setRotationPoint(-3.0F, 0.0F, -5.0F);
 
-        this.mushroomBody2 = new RendererModel(this, 54, 64);
+        this.mushroomBody2 = new ModelRenderer(this, 54, 64);
         this.mushroomBody2.addBox(0.0F, -8.0F, 0.0F, 1, 8, 8);
         this.mushroomBody2.setTextureOffset(62, 71);
         this.mushroomBody2.addBox(-3.0F, -8.0F, 4.0F, 8, 8, 1);
         this.mushroomBody2.setRotationPoint(3.0F, 0.0F, 5.0F);
 
-        this.mushroomHead = new EnhancedRendererModel(this, 54, 64);
+        this.mushroomHead = new EnhancedRendererModelNew(this, 54, 64);
         this.mushroomHead.addBox(0.0F, -8.0F, 0.0F, 1, 8, 8);
         this.mushroomHead.setTextureOffset(62, 71);
         this.mushroomHead.addBox(-3.0F, -8.0F, 4.0F, 8, 8, 1);
@@ -418,10 +422,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     }
 
-    @Override
-    public void render(T enhancedCow, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-
-        CowModelData cowModelData = getCowModelData(enhancedCow);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        CowModelData cowModelData = getCowModelData();
 
         int[] genes = cowModelData.cowGenes;
         float horns = calculateHorns(genes, cowModelData.uuidArray);
@@ -430,10 +432,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float bodyWidth = -0.165F;
         float bodyLength = 0.0F;
         int hump = 0;
-        //TODO find out why humps are glitchy
-        //TODO double check the widening/thinning genes and phenotype
-
-        List<String> unrenderedModels = this.setRotationAngles(enhancedCow, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, genes, cowModelData.uuidArray, cowModelData.sleeping);
 
         //size [0.75 to 2.5]
         float hornScale = 1.0F;
@@ -491,23 +489,19 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float age = 1.0F;
         float babyScale = 1.0F;
         if (!(cowModelData.birthTime == null) && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
-            int ageTime = (int)(((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime() - Long.parseLong(cowModelData.birthTime));
+            int ageTime = (int)(cowModelData.clientGameTime - Long.parseLong(cowModelData.birthTime));
             if (ageTime <= 108000) {
                 age = ageTime/108000.0F;
                 babyScale = (3.0F - age)/2;
             }
         }
 
-            renderAdult(scale, age, babyScale, cowModelData.cowStatus, dwarf, bodyWidth, bodyLength, hump, horns, hornScale, unrenderedModels, cowModelData.cowSize, cowModelData.bagSize, cowModelData.sleeping);
 
-//        long renderTotalEndTime = System.nanoTime();
-//        System.out.println("CowRenderTotal: " + (renderTotalEndTime - renderTotalStartTime));
 
-    }
 
-    private void renderAdult(float scale, float age, float babyScale, String cowStatus, boolean dwarf, float bodyWidth, float bodyLength, int hump, float horns, float hornShift, List<String> unrenderedModels, float cowSize, float bagSize, boolean sleeping) {
+
         float d = 0.0F;
-        if (!sleeping) {
+        if (!cowModelData.sleeping) {
             if (dwarf) {
                 d = 0.2F * (1.0F-age);
             } else {
@@ -516,40 +510,41 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         } else {
             babyScale = 1.0F;
         }
-        float finalCowSize = (( 2.0F * cowSize * age) + cowSize) / 3.0F;
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(finalCowSize + (finalCowSize * bodyWidth), finalCowSize, finalCowSize + (finalCowSize * bodyLength));
-        GlStateManager.translatef(0.0F, (-1.45F + 1.45F / (finalCowSize)) - d, 0.0F);
+        float finalCowSize = (( 2.0F * cowModelData.cowSize * age) + cowModelData.cowSize) / 3.0F;
+        matrixStackIn.push();
+        matrixStackIn.scale(finalCowSize + (finalCowSize * bodyWidth), finalCowSize, finalCowSize + (finalCowSize * bodyLength));
+        matrixStackIn.translate(0.0F, (-1.45F + 1.45F / (finalCowSize)) - d, 0.0F);
 
-        renderHump(scale, hump, unrenderedModels);
+        renderHump(hump, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        renderBodyAndUdder(scale, finalCowSize, cowStatus, bodyLength, bagSize, unrenderedModels);
+        renderBodyAndUdder(cowModelData.cowStatus, cowModelData.bagSize, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        renderHorns(scale, horns, hornShift, unrenderedModels);
+        renderHorns(horns, hornScale, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         if (!this.isChild) {
-            this.mushroomBody1.render(scale);
-            this.mushroomBody2.render(scale);
-            this.mushroomHead.isHidden = false;
+            this.mushroomBody1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.mushroomBody2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.mushroomHead.showModel = true;
         } else {
-            this.mushroomHead.isHidden = true;
+            this.mushroomHead.showModel = false;
         }
 
-        this.headModel.render(scale, null , unrenderedModels, true);
+        this.headModel.render(matrixStackIn, bufferIn , null, cowModelData.unrenderedModels, true, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        GlStateManager.popMatrix();
+        matrixStackIn.pop();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(finalCowSize + (finalCowSize * bodyWidth), finalCowSize * babyScale, finalCowSize + (finalCowSize * bodyLength));
-        GlStateManager.translatef(0.0F, -1.45F + 1.45F / (finalCowSize * babyScale), 0.0F);
+        matrixStackIn.push();
+        matrixStackIn.scale(finalCowSize + (finalCowSize * bodyWidth), finalCowSize * babyScale, finalCowSize + (finalCowSize * bodyLength));
+        matrixStackIn.translate(0.0F, -1.45F + 1.45F / (finalCowSize * babyScale), 0.0F);
 
-        renderLegs(scale, dwarf);
+        renderLegs(dwarf, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        GlStateManager.popMatrix();
+        matrixStackIn.pop();
 
     }
 
-    private void renderBodyAndUdder(float scale, float cowSize, String cowStatus, float bodyLength, float bagSize, List<String> unrenderedModels) {
+
+    private void renderBodyAndUdder(String cowStatus, float bagSize, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         Map<String, List<Float>> mapOfScale = new HashMap<>();
         List<Float> scalingsForUdder = createScalings(bagSize, 0.0F, -(bagSize-1.0F)*0.4F, -(bagSize-1.0F)*0.85F);
         List<Float> scalingsForNipples = createScalings(1.5F/(0.5F+bagSize), 0.0F, (bagSize-1.0F)*0.05F, 0.0F);
@@ -561,35 +556,33 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             unrenderedModels.add("Nipples");
         }
 
-        this.bodyMedium.render(scale, mapOfScale, unrenderedModels, false);
+        this.bodyMedium.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    private void renderHorns(float scale, float horns, float hornScale, List<String> unrenderedModels) {
+    private void renderHorns(float horns, float hornScale, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (horns != 0.0F) {
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
             List<Float> scalingsForHorn = createScalings(hornScale, 0.0F, -hornScale*0.01F, (hornScale - 1.0F)*0.04F);
             mapOfScale.put("HornL0", scalingsForHorn);
-            mapOfScale.put("HornR0", mirrorX(scalingsForHorn, false));
-            this.hornGranparent.render(scale, mapOfScale, unrenderedModels, false);
+            mapOfScale.put("HornR0", mirrorX(scalingsForHorn));
+            this.hornGranparent.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
     }
 
-    private void renderLegs(float scale, boolean dwarf) {
+    private void renderLegs(boolean dwarf, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (dwarf) {
-            this.shortLeg1.render(scale);
-            this.shortLeg2.render(scale);
-            this.shortLeg3.render(scale);
-            this.shortLeg4.render(scale);
+            ImmutableList.of(this.shortLeg1, this.shortLeg2, this.shortLeg3, this.shortLeg4).forEach((renderer) -> {
+                renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            });
         } else {
-            this.leg1.render(scale);
-            this.leg2.render(scale);
-            this.leg3.render(scale);
-            this.leg4.render(scale);
+            ImmutableList.of(this.leg1, this.leg2, this.leg3, this.leg4).forEach((renderer) -> {
+                renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            });
         }
     }
 
-    private void renderHump(float scale, int hump, List<String> unrenderedModels) {
+    private void renderHump(int hump, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         unrenderedModels.add("HumpXXS");
         unrenderedModels.add("HumpXS");
         unrenderedModels.add("HumpS");
@@ -622,8 +615,29 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             mapOfScale.put("Tail", scalingsForTail);
     }
 
-    public List<String> setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, int[] sharedGenes, char[] uuidArray, boolean sleeping) {
-        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
+    @Override
+    public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
+        super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
+        CowModelData cowModelData = getCreateCowModelData(entitylivingbaseIn);
+        this.currentCow = entitylivingbaseIn.getEntityId();
+
+        int[] sharedGenes = cowModelData.cowGenes;
+        boolean sleeping = cowModelData.sleeping;
+        float onGround;
+        boolean dwarf = (sharedGenes[26] == 1 || sharedGenes[27] == 1);
+
+        if (sleeping) {
+            onGround = sleepingAnimation();
+        } else {
+            onGround = standingAnimation(dwarf);
+        }
+        this.headModel.rotationPointY = onGround + (entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
+        this.headRotationAngleX = (entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
+    }
+
+    @Override
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        CowModelData cowModelData = getCowModelData();
         List<String> unrenderedModels = new ArrayList<>();
 
         this.headModel.rotateAngleX = (headPitch * 0.017453292F);
@@ -639,7 +653,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         copyModelRotations(humpXLarge, humpSmall);
         copyModelRotations(humpXLarge, humpXSmall);
 
-        if (!sleeping) {
+        if (!cowModelData.sleeping) {
             this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
             this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
             this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
@@ -667,37 +681,18 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.tail2.rotateAngleX = -0.2F;
         this.tailBrush.rotateAngleX = 0F;
 
-        setEarRotations(sharedGenes, unrenderedModels);
+        setEarRotations(cowModelData.cowGenes, unrenderedModels);
 
-        setHornRotations(sharedGenes, uuidArray, unrenderedModels, entityIn);
+        setHornRotations(cowModelData, unrenderedModels, entityIn);
 
-        setHumpPlacement(sharedGenes);
-
-        return unrenderedModels;
+        setHumpPlacement(cowModelData.cowGenes);
     }
 
-    @Override
-    public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
-        super.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTickTime);
-        CowModelData cowModelData = getCowModelData(entitylivingbaseIn);
+    private void setHornRotations(CowModelData cowModelData, List<String> unrenderedModels, T entityIn) {
 
-        int[] sharedGenes = cowModelData.cowGenes;
-        boolean sleeping = cowModelData.sleeping;
-        float onGround;
-        boolean dwarf = (sharedGenes[26] == 1 || sharedGenes[27] == 1);
+        int[] cowGenes = cowModelData.cowGenes;
+        char[] uuidArray = cowModelData.uuidArray;
 
-        if (sleeping) {
-            onGround = sleepingAnimation();
-        } else {
-            onGround = standingAnimation(dwarf);
-        }
-        this.headModel.rotationPointY = onGround + (entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
-        this.headRotationAngleX = (entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
-    }
-
-    private void setHornRotations(int[] sharedGenes, char[] uuidArray, List<String> unrenderedModels, T entityIn) {
-
-        CowModelData cowModelData = getCowModelData(entityIn);
 
         this.hornNub1.rotateAngleX = ((float)Math.PI / -2F);
         this.hornNub2.rotateAngleX = ((float)Math.PI / -2F);
@@ -708,26 +703,27 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         copyModelAngles(headModel, hornGranparent);
         copyModelAngles(actualHead, hornParent);
 
+
         float hornBaseHight = -1.0F;
-        if (sharedGenes[70] == 2) {
+        if (cowGenes[70] == 2) {
             hornBaseHight = hornBaseHight + 0.05F;
         }
-        if (sharedGenes[71] == 2) {
+        if (cowGenes[71] == 2) {
             hornBaseHight = hornBaseHight + 0.05F;
         }
-        if (sharedGenes[72] != 1) {
+        if (cowGenes[72] != 1) {
             hornBaseHight = hornBaseHight + 0.1F;
         }
-        if (sharedGenes[73] != 1) {
+        if (cowGenes[73] != 1) {
             hornBaseHight = hornBaseHight + 0.1F;
         }
-        if (sharedGenes[72] == 3 && sharedGenes[73] == 3) {
+        if (cowGenes[72] == 3 && cowGenes[73] == 3) {
             hornBaseHight = hornBaseHight + 0.1F;
         }
-        if (sharedGenes[74] == 1) {
+        if (cowGenes[74] == 1) {
             hornBaseHight = hornBaseHight * 0.75F;
         }
-        if (sharedGenes[75] == 1) {
+        if (cowGenes[75] == 1) {
             hornBaseHight = hornBaseHight * 0.75F;
         }
         hornParent.rotationPointY = hornBaseHight;
@@ -735,7 +731,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         hornL0.setRotationPoint(0.0F, 0.0F, -2.25F);
         hornR0.setRotationPoint(0.0F, 0.0F, -2.25F);
 
-        float horns = calculateHorns(sharedGenes, uuidArray);
+        float horns = calculateHorns(cowGenes, uuidArray);
 
         Float[] hornGrowthL = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
         Float[] hornGrowthR = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
@@ -747,9 +743,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             int lengthL = 2;
 
 
-            if (sharedGenes[80] != 2 || sharedGenes[81] != 2 ) {
-                if (sharedGenes[80] >= 3 || sharedGenes[81] >= 3 ) {
-                    if (sharedGenes[80] == 4 && sharedGenes[81] == 4) {
+            if (cowGenes[80] != 2 || cowGenes[81] != 2 ) {
+                if (cowGenes[80] >= 3 || cowGenes[81] >= 3 ) {
+                    if (cowGenes[80] == 4 && cowGenes[81] == 4) {
                         lengthL = -1;
                     } else {
                         lengthL = 1;
@@ -802,20 +798,20 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 }
             } else {
                 //if horns are not scurred shorten horns if they are extra thicc
-                if (sharedGenes[82] == 2) {
+                if (cowGenes[82] == 2) {
                     lengthL = lengthL + 1;
                 }
-                if (sharedGenes[83] == 2 ){
+                if (cowGenes[83] == 2 ){
                     lengthL = lengthL + 1 ;
                 }
 
-                if (sharedGenes[88] == 2) {
+                if (cowGenes[88] == 2) {
                     lengthL = lengthL + 1;
                 }
-                if (sharedGenes[89] == 2) {
+                if (cowGenes[89] == 2) {
                     lengthL = lengthL + 1;
                 }
-                if (sharedGenes[90] == 2 || sharedGenes[91] == 2) {
+                if (cowGenes[90] == 2 || cowGenes[91] == 2) {
                     lengthL = lengthL + 2;
                 }
 
@@ -859,8 +855,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             lengthL = lengthL + hornGrowth;
             lengthR = lengthR + hornGrowth;
 
-
-
             if (lengthL != 0 || lengthR != 0) {
 
                 for (int i = 0; i <= 9; i++) {
@@ -900,17 +894,17 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
 
         int hornNubLength = 4;
-        if (sharedGenes[70] == 1 || sharedGenes[71] == 1){
+        if (cowGenes[70] == 1 || cowGenes[71] == 1){
             hornNubLength--;
         }
 
-        if (sharedGenes[72] == 1 || sharedGenes[73] == 1){
+        if (cowGenes[72] == 1 || cowGenes[73] == 1){
             hornNubLength = hornNubLength - 2;
-        }else if (sharedGenes[72] == 2 || sharedGenes[73] == 2){
+        }else if (cowGenes[72] == 2 || cowGenes[73] == 2){
             hornNubLength--;
         }
 
-        if (sharedGenes[74] == 1 || sharedGenes[75] == 1) {
+        if (cowGenes[74] == 1 || cowGenes[75] == 1) {
             hornNubLength++;
         }
 
@@ -950,50 +944,50 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             int a = 100;
             for (int i = 1; i <= 9; i++) {
-                hornGenetics[i] = (float)(((sharedGenes[a]%10) + (sharedGenes[a+1]%10)) - 3) / -30;
-                hornGenetics[10 + i] = (float)((((sharedGenes[a]/10)%10) + ((sharedGenes[a+1]/10)%10)) - 6) / 30;
+                hornGenetics[i] = (float)(((cowGenes[a]%10) + (cowGenes[a+1]%10)) - 3) / -30;
+                hornGenetics[10 + i] = (float)((((cowGenes[a]/10)%10) + ((cowGenes[a+1]/10)%10)) - 6) / 30;
                 a = a + 2;
             }
 
-            hornGenetics[29] = (float)((sharedGenes[94]%10) + ((sharedGenes[95])%10)) / 18.0F;
-            hornGenetics[28] = (float)(((sharedGenes[94]/10)%10) + ((sharedGenes[95]/10)%10)) / 18.0F;
-            hornGenetics[27] = (float)(((sharedGenes[94]/100)%10) + ((sharedGenes[95]/100)%10)) / 18.0F;
-            hornGenetics[26] = (float)(((sharedGenes[94]/1000)%10) + ((sharedGenes[95]/1000)%10)) / 18.0F;
-            hornGenetics[25] = (float)(((sharedGenes[94]/10000)%10) + ((sharedGenes[95]/10000)%10)) / 18.0F;
-            hornGenetics[24] = (float)((sharedGenes[94]/100000) + (sharedGenes[95]/100000)) / 18.0F;
-            hornGenetics[23] = (float)((sharedGenes[96]%10) + ((sharedGenes[97])%10)) / 18.0F;
-            hornGenetics[22] = (float)(((sharedGenes[96]/10)%10) + ((sharedGenes[97]/10)%10)) / 18.0F;
-            hornGenetics[21] = (float)(((sharedGenes[96]/100)%10) + ((sharedGenes[97]/100)%10)) / 18.0F;
+            hornGenetics[29] = (float)((cowGenes[94]%10) + ((cowGenes[95])%10)) / 18.0F;
+            hornGenetics[28] = (float)(((cowGenes[94]/10)%10) + ((cowGenes[95]/10)%10)) / 18.0F;
+            hornGenetics[27] = (float)(((cowGenes[94]/100)%10) + ((cowGenes[95]/100)%10)) / 18.0F;
+            hornGenetics[26] = (float)(((cowGenes[94]/1000)%10) + ((cowGenes[95]/1000)%10)) / 18.0F;
+            hornGenetics[25] = (float)(((cowGenes[94]/10000)%10) + ((cowGenes[95]/10000)%10)) / 18.0F;
+            hornGenetics[24] = (float)((cowGenes[94]/100000) + (cowGenes[95]/100000)) / 18.0F;
+            hornGenetics[23] = (float)((cowGenes[96]%10) + ((cowGenes[97])%10)) / 18.0F;
+            hornGenetics[22] = (float)(((cowGenes[96]/10)%10) + ((cowGenes[97]/10)%10)) / 18.0F;
+            hornGenetics[21] = (float)(((cowGenes[96]/100)%10) + ((cowGenes[97]/100)%10)) / 18.0F;
 
 
             float averageMod = 1-((hornGenetics[29] + hornGenetics[28] + hornGenetics[27] + hornGenetics[26] + hornGenetics[25] + hornGenetics[24] + hornGenetics[23] + hornGenetics[22] + hornGenetics[21]) / 9);
             for (int i = 21; i <= 29; i++) {
-                hornGenetics[i] = hornGenetics[i] * (((float)((sharedGenes[96]/1000) + (sharedGenes[97]/1000) - (averageMod*5))) / 8.0F);
+                hornGenetics[i] = hornGenetics[i] * (((float)((cowGenes[96]/1000) + (cowGenes[97]/1000) - (averageMod*5))) / 8.0F);
             }
 
             // if b is lower horns curl more near ends
-            int b = ((sharedGenes[84]-1) + (sharedGenes[85]-1))/6;
+            int b = ((cowGenes[84]-1) + (cowGenes[85]-1))/6;
 
 //             [straight] , [ 1 2 3 ] , [ 4 5 6 ], [ 7 8 9 ]
-            float f = (1 + (float)(Math.abs((sharedGenes[92]%10)-3) + Math.abs((sharedGenes[92]%10)-3)) / 36);
+            float f = (1 + (float)(Math.abs((cowGenes[92]%10)-3) + Math.abs((cowGenes[92]%10)-3)) / 36);
             for (int i = 1; i <= 29; i++) {
                 if (i%10 <= 3) {
                     // horn 1, 2, 3 grab allele section [ O x x x ]
-                    int c = (sharedGenes[92]/1000) + (sharedGenes[93]/1000);
+                    int c = (cowGenes[92]/1000) + (cowGenes[93]/1000);
 //                    if (c >= 18) {
 //                        c = 17;
 //                    }
-                    hornGenetics[i] = hornGenetics[i] * ((((c) * ((1 + (float)(Math.abs((sharedGenes[92]%10)-3) + Math.abs((sharedGenes[92]%10)-3)) / 36)) ))/24.0F);
+                    hornGenetics[i] = hornGenetics[i] * ((((c) * ((1 + (float)(Math.abs((cowGenes[92]%10)-3) + Math.abs((cowGenes[92]%10)-3)) / 36)) ))/24.0F);
                 } else if (i%10 <= 6) {
                     // horn 4, 5, 6 grab allele section [ x O x x ]
-                    int d = ((sharedGenes[92]/100)%10) + ((sharedGenes[93]/100)%10);
+                    int d = ((cowGenes[92]/100)%10) + ((cowGenes[93]/100)%10);
 //                    if (d >= 18) {
 //                        d = 17;
 //                    }
                     hornGenetics[i] = (1.3F - (b/3.0F)) * hornGenetics[i] * ((d * f)/24.0F);
                 } else {
                     // horn 7, 8, 9 grab allele section [ x x O x ]
-                    int e = ((sharedGenes[92]/10)%10) + ((sharedGenes[93]/10)%10);
+                    int e = ((cowGenes[92]/10)%10) + ((cowGenes[93]/10)%10);
 //                    if (e >= 18) {
 //                        e = 17;
 //                    }
@@ -1004,7 +998,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             //TODO improve impressve curls in horns
 
             // if b is lower horns stick more out the side of the head
-            hornGenetics[10] = (b * (((sharedGenes[92]%10) - 3.0F) + ((sharedGenes[92]%10) - 3.0F))/-9.0F) * 0.5F;
+            hornGenetics[10] = (b * (((cowGenes[92]%10) - 3.0F) + ((cowGenes[92]%10) - 3.0F))/-9.0F) * 0.5F;
             hornGenetics[20] = hornGenetics[20] * (1 - b);
 
             Float[] hornCalculationsZ = {hornGenetics[0], hornGenetics[1], hornGenetics[2], hornGenetics[3], hornGenetics[4], hornGenetics[5], hornGenetics[6], hornGenetics[7], hornGenetics[8], hornGenetics[9]};
@@ -1333,17 +1327,12 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         return scalings;
     }
 
-    private List<Float> mirrorX(List<Float> scalings, boolean includeScaling) {
+    private List<Float> mirrorX(List<Float> scalings) {
         List<Float> reversedNegative = new ArrayList<>();
-
-        if (includeScaling) {
-            reversedNegative.add(scalings.get(0));
-        } else {
-            reversedNegative.add(null);
-        }
-        reversedNegative.add(scalings.get(1)*-2.0F);
-        reversedNegative.add(0F);
-        reversedNegative.add(0F);
+        reversedNegative.add(scalings.get(0));
+        reversedNegative.add(scalings.get(1)*-1.0F);
+        reversedNegative.add(scalings.get(2));
+        reversedNegative.add(scalings.get(3));
 
         return reversedNegative;
     }
@@ -1394,13 +1383,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         return horns;
     }
 
-    public static void copyModelRotations(RendererModel source, RendererModel dest) {
+    public static void copyModelRotations(ModelRenderer source, ModelRenderer dest) {
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
         dest.rotateAngleZ = source.rotateAngleZ;
     }
 
-    public static void copyModelAngles(RendererModel source, RendererModel dest) {
+    public static void copyModelAngles(ModelRenderer source, ModelRenderer dest) {
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
         dest.rotateAngleZ = source.rotateAngleZ;
@@ -1409,7 +1398,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         dest.rotationPointZ = source.rotationPointZ;
     }
 
-    public RendererModel getHead() {
+    public ModelRenderer getHead() {
         return this.headModel;
     }
 
@@ -1423,9 +1412,19 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         String cowStatus;
         boolean sleeping;
         int dataReset = 0;
+        long clientGameTime = 0;
+        List<String> unrenderedModels = new ArrayList<>();
     }
 
-    private CowModelData getCowModelData(T enhancedCow) {
+    private CowModelData getCowModelData() {
+        if (this.currentCow == null) {
+            return null;
+        }
+        CowModelData cowModelData = cowModelDataCache.get(this.currentCow);
+        return cowModelData;
+    }
+
+    private CowModelData getCreateCowModelData(T enhancedCow) {
         clearCacheTimer++;
         if(clearCacheTimer > 100000) {
             cowModelDataCache.values().removeIf(value -> value.lastAccessed==1);
@@ -1445,6 +1444,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             }
             cowModelData.bagSize = enhancedCow.getBagSize();
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
+            cowModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime());
+            cowModelData.unrenderedModels = new ArrayList<>();
+
             return cowModelData;
         } else {
             //initial grab
@@ -1461,6 +1463,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             } else {
                 cowModelData.uuidArray = enhancedCow.getMooshroomUUID().toCharArray();
             }
+            cowModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime());
 
             cowModelDataCache.put(enhancedCow.getEntityId(), cowModelData);
 

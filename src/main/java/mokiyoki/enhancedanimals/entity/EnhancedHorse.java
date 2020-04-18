@@ -66,6 +66,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     private static final DataParameter<Float> HORSE_SIZE = EntityDataManager.createKey(EnhancedHorse.class, DataSerializers.FLOAT);
     protected static final DataParameter<String> HORSE_STATUS = EntityDataManager.createKey(EnhancedHorse.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedHorse.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedHorse.class, DataSerializers.STRING);
 
     private static final String[] HORSE_TEXTURES_TESTNUMBER = new String[] {
             "0.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png"
@@ -206,6 +207,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         this.dataManager.register(HORSE_SIZE, 0.0F);
         this.dataManager.register(HORSE_STATUS, new String());
         this.dataManager.register(SLEEPING, false);
+        this.dataManager.register(BIRTH_TIME, "0");
     }
 
     protected void setHorseSize(float size) {
@@ -255,7 +257,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             float f = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
             float f1 = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
             float f2 = 0.3F;
-            passenger.setPosition(this.posX + (double)(0.3F * f1), this.posY + this.getMountedYOffset() + passenger.getYOffset(), this.posZ - (double)(0.3F * f));
+            passenger.setPosition(this.getPosX() + (double)(0.3F * f1), this.getPosY() + this.getMountedYOffset() + passenger.getYOffset(), this.getPosZ() - (double)(0.3F * f));
         }
     }
 
@@ -330,7 +332,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
                     mixMateMitosisGenes();
                     mixMitosisGenes();
 
-                    createAndSpawnEnhancedChild();
+                    createAndSpawnEnhancedChild(this.world);
 
                 }
             }
@@ -382,7 +384,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         }
     }
 
-    protected void createAndSpawnEnhancedChild() {
+    protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedHorse enhancedhorse = ENHANCED_HORSE.create(this.world);
         int[] babyGenes = getFoalGenes(this.mitosisGenes, this.mateMitosisGenes);
         enhancedhorse.setGenes(babyGenes);
@@ -390,7 +392,8 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         enhancedhorse.setHorseSize();
         enhancedhorse.setGrowingAge(-84000);
         enhancedhorse.setHorseStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedhorse.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedhorse.setBirthTime(String.valueOf(inWorld.getGameTime()));
+        enhancedhorse.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
         enhancedhorse.setMotherUUID(this.getUniqueID().toString());
         enhancedhorse.configureAI();
         this.world.addEntity(enhancedhorse);
@@ -431,6 +434,12 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         }
         this.dataManager.set(SHARED_GENES, sb.toString());
     }
+
+    protected void setBirthTime(String birthTime) {
+        this.dataManager.set(BIRTH_TIME, birthTime);
+    }
+
+    public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
     public int[] getSharedGenes() {
         String sharedGenes = ((String) this.dataManager.get(SHARED_GENES)).toString();
@@ -821,6 +830,8 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
 
         compound.putString("MotherUUID", this.motherUUID);
 
+        compound.putString("BirthTime", this.getBirthTime());
+
     }
 
     /**
@@ -851,6 +862,8 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         hunger = compound.getInt("Hunger");
 
         this.motherUUID = compound.getString("MotherUUID");
+
+        this.setBirthTime(compound.getString("BirthTime"));
 
         setSharedGenes(genes);
         setHorseSize();
@@ -912,7 +925,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
+//        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
@@ -934,6 +947,13 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         setHorseSize();
 
         configureAI();
+
+        int birthMod = ThreadLocalRandom.current().nextInt(30000, 80000);
+        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
+        if (birthMod < 48000) {
+            this.setGrowingAge(birthMod - 48000);
+        }
+
         return livingdata;
     }
 

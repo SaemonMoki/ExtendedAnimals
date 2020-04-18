@@ -57,18 +57,18 @@ public class EnhancedMeleeAttackGoal extends Goal {
             } else {
                 if (canPenalize) {
                     if (--this.delayCounter <= 0) {
-                        this.path = this.attacker.getNavigator().getPathToEntityLiving(livingentity, 0);
+                        this.path = this.attacker.getNavigator().getPathToEntity(livingentity, 0);
                         this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
                         return this.path != null;
                     } else {
                         return true;
                     }
                 }
-                this.path = this.attacker.getNavigator().getPathToEntityLiving(livingentity, 0);
+                this.path = this.attacker.getNavigator().getPathToEntity(livingentity, 0);
                 if (this.path != null) {
                     return true;
                 } else {
-                    return this.getAttackReachSqr(livingentity) >= this.attacker.getDistanceSq(livingentity.posX, livingentity.getBoundingBox().minY, livingentity.posZ);
+                    return this.getAttackReachSqr(livingentity) >= this.attacker.getDistanceSq(livingentity.getPosX(), livingentity.getPosY(), livingentity.getPosZ());
                 }
             }
         }
@@ -108,12 +108,12 @@ public class EnhancedMeleeAttackGoal extends Goal {
     public void tick() {
         LivingEntity livingentity = this.attacker.getAttackTarget();
         this.attacker.getLookController().setLookPositionWithEntity(livingentity, 30.0F, 30.0F);
-        double d0 = this.attacker.getDistanceSq(livingentity.posX, livingentity.getBoundingBox().minY, livingentity.posZ);
+        double d0 = this.attacker.getDistanceSq(livingentity.getPosX(), livingentity.getPosY(), livingentity.getPosZ());
         --this.delayCounter;
         if ((this.longMemory || this.attacker.getEntitySenses().canSee(livingentity)) && this.delayCounter <= 0 && (this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D || livingentity.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D || this.attacker.getRNG().nextFloat() < 0.05F)) {
-            this.targetX = livingentity.posX;
-            this.targetY = livingentity.getBoundingBox().minY;
-            this.targetZ = livingentity.posZ;
+            this.targetX = livingentity.getPosX();
+            this.targetY = livingentity.getPosY();
+            this.targetZ = livingentity.getPosZ();
             this.delayCounter = 4 + this.attacker.getRNG().nextInt(7);
             if (this.canPenalize) {
                 this.delayCounter += failedPathFindingPenalty;

@@ -272,11 +272,11 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     }
 
     protected float getJumpUpwardsMotion() {
-        if (!this.collidedHorizontally && (!this.moveController.isUpdating() || !(this.moveController.getY() > this.posY + 0.5D))) {
+        if (!this.collidedHorizontally && (!this.moveController.isUpdating() || !(this.moveController.getY() > this.getPosY() + 0.5D))) {
             Path path = this.navigator.getPath();
             if (path != null && path.getCurrentPathIndex() < path.getCurrentPathLength()) {
                 Vec3d vec3d = path.getPosition(this);
-                if (vec3d.y > this.posY + 0.5D) {
+                if (vec3d.y > this.getPosY() + 0.5D) {
                     return 0.5F;
                 }
             }
@@ -326,7 +326,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         super.jump();
         double d0 = this.moveController.getSpeed();
         if (d0 > 0.0D) {
-            double d1 = func_213296_b(this.getMotion());
+            double d1 = horizontalMag(this.getMotion());
             if (d1 < 0.01D) {
                 this.moveRelative(0.1F, new Vec3d(0.0D, 0.0D, 1.0D));
             }
@@ -449,7 +449,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     }
 
     private void calculateRotationYaw(double x, double z) {
-        this.rotationYaw = (float)(MathHelper.atan2(z - this.posZ, x - this.posX) * (double)(180F / (float)Math.PI)) - 90.0F;
+        this.rotationYaw = (float)(MathHelper.atan2(z - this.getPosZ(), x - this.getPosX()) * (double)(180F / (float)Math.PI)) - 90.0F;
     }
 
     private void enableJumpControl() {
@@ -791,7 +791,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         enhancedrabbit.setGrowingAge(-48000);
         enhancedrabbit.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedrabbit.setRabbitStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedrabbit.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedrabbit.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
 //                        enhancedrabbit.setMotherUUID(this.getUniqueID().toString());
         this.world.addEntity(enhancedrabbit);
     }
@@ -1745,7 +1745,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
+//        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {

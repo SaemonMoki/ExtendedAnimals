@@ -584,7 +584,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         enhancedpig.setGrowingAge(-60000);
         enhancedpig.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedpig.setPigStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedpig.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedpig.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
 //                        enhancedpig.setMotherUUID(this.getUniqueID().toString());
         this.world.addEntity(enhancedpig);
     }
@@ -1309,7 +1309,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
+//        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {

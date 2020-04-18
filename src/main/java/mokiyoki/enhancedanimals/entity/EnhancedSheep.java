@@ -573,7 +573,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         enhancedsheep.setGrowingAge(-72000); // 3 days
         enhancedsheep.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedsheep.setSheepStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedsheep.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+        enhancedsheep.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
 //                        enhancedsheep.setMotherUUID(this.getUniqueID().toString());
         this.world.addEntity(enhancedsheep);
     }
@@ -1780,7 +1780,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
+//        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 
         if (livingdata instanceof GroupData) {
@@ -1819,11 +1819,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     private void setMaxCoatLength() {
         int maxCoatLength = 0;
-        int age = getAge();
-        if (age > 72000) {
-            age = 72000;
-        }
 
+        if ( !this.isChild() ) {
             if (genes[20] == 2){
                 maxCoatLength = 1;
             }
@@ -1870,7 +1867,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                 maxCoatLength = maxCoatLength + 1;
             }
 
-            maxCoatLength = maxCoatLength*(age/72000);
+        }
 
         this.maxCoatLength = maxCoatLength;
 

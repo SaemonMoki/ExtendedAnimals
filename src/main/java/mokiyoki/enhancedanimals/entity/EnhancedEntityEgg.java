@@ -32,6 +32,12 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         super(entityIn, worldIn);
     }
 
+
+    //TODO return the right default egg colour type... personal note: FUUUUUUUCCCCCKKKKKK!!!!!
+    protected Item getDefaultItem() {
+        return Items.EGG;
+    }
+
     public EnhancedEntityEgg(World worldIn, double x, double y, double z) {
         super(ENHANCED_ENTITY_EGG_ENTITY_TYPE, x, y, z,worldIn);
     }
@@ -75,7 +81,7 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
             double d0 = 0.08D;
 
             for (int i = 0; i < 8; ++i) {
-                this.world.addParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(ModItems.Egg_White)), this.posX, this.posY, this.posZ, ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D);
+                this.world.addParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(ModItems.Egg_White)), this.getPosX(), this.getPosY(), this.getPosZ(), ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D);
             }
         }
     }
@@ -101,7 +107,7 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
                 enhancedchicken.setGenes(enhancedchicken.getSharedGenes());
                 enhancedchicken.setGrowingAge(-60000);
                 enhancedchicken.setBirthTime(String.valueOf(this.world.getGameTime()));
-                enhancedchicken.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+                enhancedchicken.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
                 this.world.addEntity(enhancedchicken);
 //                }
 //            }
@@ -129,7 +135,4 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
 
     }
 
-    protected Item func_213885_i() {
-        return Items.EGG;
-    }
 }

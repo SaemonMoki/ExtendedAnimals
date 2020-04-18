@@ -59,17 +59,17 @@ public class EnhancedAvoidEntityGoal<T extends LivingEntity> extends Goal {
      * Returns whether the EntityAIBase should begin execution.
      */
     public boolean shouldExecute() {
-        this.field_75376_d = this.entity.world.func_225318_b(this.classToAvoid, this.field_220872_k, this.entity, this.entity.posX, this.entity.posY, this.entity.posZ, this.entity.getBoundingBox().grow((double)this.avoidDistance, 3.0D, (double)this.avoidDistance));
+        this.field_75376_d = this.entity.world.func_225318_b(this.classToAvoid, this.field_220872_k, this.entity, this.entity.getPosX(), this.entity.getPosY(), this.entity.getPosZ(), this.entity.getBoundingBox().grow((double)this.avoidDistance, 3.0D, (double)this.avoidDistance));
         if (this.field_75376_d == null) {
             return false;
         } else {
-            Vec3d vec3d = RandomPositionGenerator.findRandomTargetBlockAwayFrom(this.entity, 16, 7, new Vec3d(this.field_75376_d.posX, this.field_75376_d.posY, this.field_75376_d.posZ));
+            Vec3d vec3d = RandomPositionGenerator.findRandomTargetBlockAwayFrom(this.entity, 16, 7, new Vec3d(this.field_75376_d.getPosX(), this.field_75376_d.getPosY(), this.field_75376_d.getPosZ()));
             if (vec3d == null) {
                 return false;
             } else if (this.field_75376_d.getDistanceSq(vec3d.x, vec3d.y, vec3d.z) < this.field_75376_d.getDistanceSq(this.entity)) {
                 return false;
             } else {
-                this.path = this.navigation.func_225466_a(vec3d.x, vec3d.y, vec3d.z, 0);
+                this.path = this.navigation.getPathToPos(vec3d.x, vec3d.y, vec3d.z, 0);
                 return this.path != null;
             }
         }

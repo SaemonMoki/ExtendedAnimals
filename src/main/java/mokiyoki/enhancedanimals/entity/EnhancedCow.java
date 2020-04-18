@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -71,6 +72,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
     protected static final DataParameter<String> COW_STATUS = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> RESET_TEXTURE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> MOOSHROOM_UUID = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
     private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
     private static final DataParameter<String> HORN_ALTERATION = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
@@ -172,8 +174,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
     }};
 
+    protected boolean resetTexture = true;
+
     private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
-    protected final List<String> cowTextures = new ArrayList<>();
+    protected List<String> cowTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 120;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
@@ -201,10 +205,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
 
+    protected Boolean reload = false; //used in a toggle manner
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn);
-//        this.setSize(0.4F, 1F);
         // cowsize from .7 to 1.5 max bag size is 1 to 1.5
         //large cows make from 30 to 12 milk points per day, small cows make up to 1/4
         this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - maxBagSize)*2400)) * (cowSize/1.5F)) - 300;
@@ -234,6 +238,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(COW_STATUS, new String());
         this.dataManager.register(SLEEPING, false);
+        this.dataManager.register(RESET_TEXTURE, false);
         this.dataManager.register(MOOSHROOM_UUID, "0");
         this.dataManager.register(MILK_AMOUNT, 0);
         this.dataManager.register(BIRTH_TIME, "0");
@@ -258,8 +263,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     public String getCowStatus() { return this.dataManager.get(COW_STATUS); }
 
     protected void setMooshroomUUID(String status) {
-        this.dataManager.set(MOOSHROOM_UUID, status);
-        this.mooshroomUUID = status;
+        if (!status.equals("")) {
+            this.dataManager.set(MOOSHROOM_UUID, status);
+            this.mooshroomUUID = status;
+        }
     }
 
     public String getMooshroomUUID() { return mooshroomUUID; }
@@ -276,10 +283,18 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
 
+    private int getAge() {
+        if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
+            return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
+        } else {
+            return 500000;
+        }
+    }
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
-        this.dataManager.set(SLEEPING, sleeping); }
+        this.dataManager.set(SLEEPING, sleeping);
+    }
 
     @Override
     public Boolean isAnimalSleeping() {
@@ -289,6 +304,19 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             sleeping = this.dataManager.get(SLEEPING);
             return sleeping;
         }
+    }
+
+//    public void setReloadTexture(Boolean resetTexture) {
+//        this.dataManager.set(RESET_TEXTURE, resetTexture);
+//    }
+
+    //toggles the reloading
+    protected void toggleReloadTexture() {
+        this.dataManager.set(RESET_TEXTURE, this.getReloadTexture() == true ? false : true);
+    }
+
+    public boolean getReloadTexture() {
+            return this.dataManager.get(RESET_TEXTURE);
     }
 
     @Override
@@ -646,13 +674,14 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         return hornsArray;
     }
 
+    @Override
+    protected boolean canDropLoot() { return true; }
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
-
         this.isBurning();
-
         float cowSize = this.getSize();
+        float age = this.getAge();
         int cowThickness = (genes[54] + genes[55]);
 
         int meatDrop;
@@ -730,8 +759,44 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
             leatherDrop++;
         }
 
+        if (age < 84000) {
+            if (age > 70000) {
+                leatherDrop = leatherDrop - 1;
+                meatDrop = meatDrop - 1;
+                meatChanceMod = (age-70000)/140;
+            } else if (age > 56000) {
+                leatherDrop = leatherDrop - 2;
+                meatDrop = meatDrop - 2;
+                meatChanceMod = (age-56000)/140;
+            } else if (age > 42000) {
+                leatherDrop = leatherDrop - 3;
+                meatDrop = meatDrop - 3;
+                meatChanceMod = (age-42000)/140;
+            } else if (age > 28000) {
+                leatherDrop = 0;
+                meatDrop = meatDrop - 4;
+                meatChanceMod = (age-28000)/140;
+            } else if (age > 14000) {
+                leatherDrop = 0;
+                meatDrop = meatDrop - 5;
+                meatChanceMod = (age-14000)/140;
+            } else {
+                leatherDrop = 0;
+                meatDrop = meatDrop - 6;
+                meatChanceMod = age/140;
+            }
+
+            int i = this.rand.nextInt(100);
+            if (meatChanceMod > i) {
+                meatDrop++;
+            }
+        }
+
         if (leatherDrop < 0) {
             leatherDrop = 0;
+        }
+        if (meatDrop < 0) {
+            meatDrop = 0;
         }
 
         if (this.isBurning()){
@@ -785,6 +850,10 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     public String getCowTexture() {
         if (this.cowTextures.isEmpty()) {
             this.setTexturePaths();
+        } else if (!this.reload && getReloadTexture() || this.reload && !getReloadTexture()) {
+            this.cowTextures.removeAll(this.cowTextures);
+            this.setTexturePaths();
+            this.reload = (this.reload == true ? false : true);
         }
         return this.cowTextures.stream().collect(Collectors.joining("/","enhanced_cow/",""));
 
@@ -1849,7 +1918,12 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         setSharedGenes(genes);
         setCowSize();
         setMaxBagSize();
-        setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - ThreadLocalRandom.current().nextInt(64800, 108000)));
+
+        int birthMod = ThreadLocalRandom.current().nextInt(64800, 108000);
+        setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
+        if (birthMod < 84000) {
+            this.setGrowingAge(birthMod - 84000);
+        }
 
         configureAI();
 //        for (int i = 0; i <= 30; i++) {
@@ -2686,7 +2760,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
             this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
             this.goalSelector.addGoal(2, new BreedGoal(this, speed));
-            this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.25D, TEMPTATION_ITEMS, false));
+            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed*1.25D, false, TEMPTATION_ITEMS));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
             this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
             wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);

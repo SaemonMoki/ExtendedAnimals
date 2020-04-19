@@ -686,6 +686,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         setHornRotations(cowModelData, unrenderedModels, entityIn);
 
         setHumpPlacement(cowModelData.cowGenes);
+
+        cowModelData.unrenderedModels.addAll(unrenderedModels);
     }
 
     private void setHornRotations(CowModelData cowModelData, List<String> unrenderedModels, T entityIn) {
@@ -892,6 +894,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.rightHorns.get(i).rotationPointY = hornGrowthR[i];
             }
         }
+
+        unrenderedModels.add(hornL0.boxName);
+        unrenderedModels.add(hornR0.boxName);
 
         int hornNubLength = 4;
         if (cowGenes[70] == 1 || cowGenes[71] == 1){

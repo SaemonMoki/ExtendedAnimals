@@ -93,7 +93,7 @@ public class EggCartonBlock extends ContainerBlock {
                 boolean flag;
                 if (eggCartonTileEntity.getAnimationStatus() == EggCartonTileEntity.AnimationStatus.CLOSED) {
                     AxisAlignedBB axisalignedbb = VoxelShapes.fullCube().getBoundingBox().expand((double)(0.5F * (float)direction.getXOffset()), (double)(0.5F * (float)direction.getYOffset()), (double)(0.5F * (float)direction.getZOffset())).contract((double)direction.getXOffset(), (double)direction.getYOffset(), (double)direction.getZOffset());
-                    flag = worldIn.func_226664_a_(axisalignedbb.offset(pos.offset(direction)));
+                    flag = worldIn.hasNoCollisions(axisalignedbb.offset(pos.offset(direction)));
                 } else {
                     flag = true;
                 }

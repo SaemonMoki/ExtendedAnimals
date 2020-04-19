@@ -115,10 +115,6 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
         builder.add(BITES, WATERLOGGED);
     }
 
-//    public BlockRenderLayer getRenderLayer() {
-//        return BlockRenderLayer.CUTOUT;
-//    }
-
     //TODO add rotation? should adopt RotatedPillarBlock state from hayblock
 
     public boolean causesSuffocation(BlockState state, IBlockReader worldIn, BlockPos pos) {

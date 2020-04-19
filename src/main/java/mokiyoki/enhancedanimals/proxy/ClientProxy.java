@@ -7,6 +7,8 @@ import mokiyoki.enhancedanimals.renderer.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.BlockItem;
@@ -54,6 +56,15 @@ public class ClientProxy implements IProxy {
 
         ScreenManager.registerFactory(EGG_CARTON_CONTAINER, EggCartonScreen::new);
         ClientRegistry.bindTileEntityRenderer(EGG_CARTON_TILE_ENTITY_TILE_ENTITY_TYPE, EggCartonTileEntityRenderer::new);
+
+        RenderTypeLookup.setRenderLayer(ModBlocks.SparseGrass_Block, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(ModBlocks.UnboundHay_Block, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.Post_Acacia, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.Post_Birch, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.Post_Dark_Oak, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.Post_Jungle, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.Post_Oak, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.Post_Spruce, RenderType.getCutout());
     }
 
     @Override

@@ -134,11 +134,6 @@ public class Post extends Block implements IWaterLoggable {
         builder.add(FACING, WATERLOGGED);
     }
 
-//    @Override
-//    public BlockRenderLayer getRenderLayer() {
-//        return BlockRenderLayer.CUTOUT;
-//    }
-
     public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type) {
         return false;
     }

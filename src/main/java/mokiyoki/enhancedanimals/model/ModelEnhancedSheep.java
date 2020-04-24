@@ -1206,8 +1206,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         clearCacheTimer++;
         if(clearCacheTimer > 100000) {
             sheepModelDataCache.values().removeIf(value -> value.lastAccessed==1);
-            for (SheepModelData llamaModelData : sheepModelDataCache.values()){
-                llamaModelData.lastAccessed = 1;
+            for (SheepModelData sheepModelData : sheepModelDataCache.values()){
+                sheepModelData.lastAccessed = 1;
             }
             clearCacheTimer = 0;
         }

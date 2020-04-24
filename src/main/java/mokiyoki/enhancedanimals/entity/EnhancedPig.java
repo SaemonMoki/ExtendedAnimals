@@ -196,13 +196,6 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     private UUID angerTargetUUID;
     private int angerLevel;
 
-    public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
-        super(entityType, worldIn);
-        //TODO why doesnt this change from pig to pig
-        this.setPigSize();
-//        this.setSize(0.9F, pigSize*0.9F);
-    }
-
     private int grassTimer;
     private EnhancedWaterAvoidingRandomWalkingEatingGoalPig wanderEatingGoal;
     private int gestationTimer = 0;
@@ -212,6 +205,12 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     protected String motherUUID = "";
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
+
+    public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
+        super(entityType, worldIn);
+        this.setPigSize();
+//        this.setSize(0.9F, pigSize*0.9F);
+    }
 
     @Override
     protected void registerGoals() {

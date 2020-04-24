@@ -34,20 +34,23 @@ public class EggCartonTileEntityRenderer<T extends TileEntity & IChestLid> exten
     public static final ResourceLocation EGG_CARTON_TEXTURE = new ResourceLocation(Reference.MODID, "block/egg_carton");
 
     private final ModelRenderer base;
+    private final ModelRenderer inside;
     private final ModelRenderer lid;
 
     public EggCartonTileEntityRenderer(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
         super(tileEntityRendererDispatcher);
 
-        base = new ModelRenderer(64, 64, 0, 19);
-        base.setRotationPoint(0.0F, 0.0F, 0.0F);
-        base.addBox(0, 0, 1.0F, 11.0F, 2.0F, 14, 5, 12, 0.0F);
-        base.addBox(0, 35, 0.5F, 10.0F, 2.0F, 15, 3, 12, -2.0F);
+        base = new ModelRenderer(64, 64, 0, 0);
+        base.addBox(1.0F, 0.0F, 2.0F, 14, 5, 12, 0.0F);
+//        base.setRotationPoint(0.0F, 0.0F, 0.0F);
 
-        lid = new ModelRenderer(64, 64, 0, 0);
+        inside = new ModelRenderer(64, 64, 0, 47);
+        inside.addBox( 0.5F, 0.0F, 2.0F, 15, 3, 12, -2.0F);
+
+        lid = new ModelRenderer(64, 64, 0, 19);
+        lid.addBox(1.0F, -12.0F, 0.0F, 14, 12, 4, 0.0F);
         lid.setRotationPoint(0.0F, 12.0F, 14.0F);
-        lid.addBox(0, 19, 1.0F, -12.0F, 0.0F, 14, 12, 4, 0.0F);
-        this.setLidRotationAngle(this.lid, 0.0F, 0.0F, 0.0F);
+//        this.setLidRotationAngle(this.lid, 0.0F, 0.0F, 0.0F);
 
     }
 
@@ -59,9 +62,8 @@ public class EggCartonTileEntityRenderer<T extends TileEntity & IChestLid> exten
         boolean flag = world != null;
 
         BlockState blockstate = flag ? tileEntityIn.getBlockState() : Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, Direction.SOUTH);
-        ChestType chesttype = blockstate.has(ChestBlock.TYPE) ? blockstate.get(ChestBlock.TYPE) : ChestType.SINGLE;
         Block block = blockstate.getBlock();
-
+        ChestType chestType = ChestType.SINGLE;
 
         EggCartonBlock eggCartonBlock = (EggCartonBlock) block;
 
@@ -86,16 +88,17 @@ public class EggCartonTileEntityRenderer<T extends TileEntity & IChestLid> exten
         Material material = new Material(Atlases.CHEST_ATLAS, EGG_CARTON_TEXTURE);
         IVertexBuilder ivertexbuilder = material.getBuffer(bufferIn, RenderType::getEntityCutout);
 
-        this.handleModelRender(matrixStackIn, ivertexbuilder, this.lid, this.base, f1, i, combinedOverlayIn);
+        this.handleModelRender(matrixStackIn, ivertexbuilder, f1, i, combinedOverlayIn);
 
         matrixStackIn.pop();
     }
 
 
-    private void handleModelRender(MatrixStack matrixStackIn, IVertexBuilder iVertexBuilder, ModelRenderer firstModel, ModelRenderer secondModel, float f1, int p_228871_7_, int p_228871_8_) {
+    private void handleModelRender(MatrixStack matrixStackIn, IVertexBuilder iVertexBuilder, float f1, int p_228871_7_, int p_228871_8_) {
         this.lid.rotateAngleX = -(f1 * ((float) Math.PI / 2F));
 //        secondModel.rotateAngleX = firstModel.rotateAngleX;
         this.lid.render(matrixStackIn, iVertexBuilder, p_228871_7_, p_228871_8_);
+        this.inside.render(matrixStackIn, iVertexBuilder, p_228871_7_, p_228871_8_);
         this.base.render(matrixStackIn, iVertexBuilder, p_228871_7_, p_228871_8_);
     }
 

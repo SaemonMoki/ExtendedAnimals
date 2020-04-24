@@ -509,13 +509,15 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                 this.leg3Wool1.rotationPointY = this.leg3.rotationPointY + (llamaModelData.coatlength/2.0F);
                 this.leg4Wool1.rotationPointY = this.leg4.rotationPointY + (llamaModelData.coatlength/2.0F);
             }
-            if (llamaModelData.sleeping) {
-                neckWool1.rotationPointY = neckWool1.rotationPointY - 1.0F;
-            }
-            copyModelAngles(neckWool1, neckWool2);
-            copyModelAngles(neckWool1, neckWool3);
-            copyModelAngles(neckWool1, neckWool4);
+//            if (llamaModelData.sleeping) {
+//                neckWool1.rotationPointY = neckWool1.rotationPointY - 1.0F;
+//            }
         }
+        copyModelAngles(neck, neckWool0);
+        copyModelAngles(neck, neckWool1);
+        copyModelAngles(neckWool1, neckWool2);
+        copyModelAngles(neckWool1, neckWool3);
+        copyModelAngles(neckWool1, neckWool4);
 
 //        copyModelAngles(head, earsR);
 //        copyModelAngles(head, earsL);

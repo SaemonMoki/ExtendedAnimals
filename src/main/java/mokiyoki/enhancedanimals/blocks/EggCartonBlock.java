@@ -75,6 +75,11 @@ public class EggCartonBlock extends ContainerBlock {
         return new EggCartonTileEntity();
     }
 
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }

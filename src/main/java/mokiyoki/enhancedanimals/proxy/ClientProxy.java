@@ -24,8 +24,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
+import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_TILE_ENTITY_TILE_ENTITY_TYPE;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
@@ -55,7 +55,7 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOSHROOM, RenderEnhancedMooshroom::new);
 
         ScreenManager.registerFactory(EGG_CARTON_CONTAINER, EggCartonScreen::new);
-        ClientRegistry.bindTileEntityRenderer(EGG_CARTON_TILE_ENTITY_TILE_ENTITY_TYPE, EggCartonTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(EGG_CARTON_TILE_ENTITY, EggCartonTileEntityRenderer::new);
 
         RenderTypeLookup.setRenderLayer(ModBlocks.SparseGrass_Block, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.UnboundHay_Block, RenderType.getCutout());

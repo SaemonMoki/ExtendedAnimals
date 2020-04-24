@@ -19,10 +19,10 @@ import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
-import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.entity.EntityClassification;
@@ -34,6 +34,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -46,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static mokiyoki.enhancedanimals.init.ModBlocks.Egg_Carton;
+import static mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer.EGG_CARTON_TEXTURE;
 
 //import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
@@ -68,8 +70,6 @@ public class EventRegistry {
     public static final EntityType<EnhancedCat> ENHANCED_CAT = EntityType.Builder.create(EnhancedCat::new, EntityClassification.CREATURE).size(0.6F, 0.7F).build(Reference.MODID + ":enhanced_cat");
 
     public static final ContainerType<EggCartonContainer> EGG_CARTON_CONTAINER = IForgeContainerType.create(EggCartonContainer::new);
-    public static final TileEntityType<EggCartonTileEntity> EGG_CARTON_TILE_ENTITY_TILE_ENTITY_TYPE = TileEntityType.Builder.create(EggCartonTileEntity::new, Egg_Carton).build(null);
-
 
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
@@ -244,6 +244,13 @@ public class EventRegistry {
 //        EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
 //        EntitySpawnPlacementRegistry.register(ENHANCED_COW, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
 //        EntitySpawnPlacementRegistry.register(ENHANCED_PIG, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
+    }
+
+    @SubscribeEvent
+    public static void onStitchEvent(TextureStitchEvent.Pre event) {
+        if (event.getMap().getTextureLocation().equals(Atlases.CHEST_ATLAS)) {
+            event.addSprite(EGG_CARTON_TEXTURE);
+        }
     }
 
     @SubscribeEvent

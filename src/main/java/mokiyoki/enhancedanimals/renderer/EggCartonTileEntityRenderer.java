@@ -41,15 +41,15 @@ public class EggCartonTileEntityRenderer<T extends TileEntity & IChestLid> exten
         super(tileEntityRendererDispatcher);
 
         base = new ModelRenderer(64, 64, 0, 0);
-        base.addBox(1.0F, 0.0F, 2.0F, 14, 5, 12, 0.0F);
+        base.addBox(1.0F, -5.0F, -14.0F, 14, 5, 12, 0.0F);
 //        base.setRotationPoint(0.0F, 0.0F, 0.0F);
 
-        inside = new ModelRenderer(64, 64, 0, 47);
-        inside.addBox( 0.5F, 0.0F, 2.0F, 15, 3, 12, -2.0F);
+        inside = new ModelRenderer(64, 64, 0, 35);
+        inside.addBox( 0.5F, -6.0F, -14.0F, 15, 3, 12, -2.0F);
 
         lid = new ModelRenderer(64, 64, 0, 19);
         lid.addBox(1.0F, -12.0F, 0.0F, 14, 12, 4, 0.0F);
-        lid.setRotationPoint(0.0F, 12.0F, 14.0F);
+        lid.setRotationPoint(0.0F, 4.0F, 2.0F);
 //        this.setLidRotationAngle(this.lid, 0.0F, 0.0F, 0.0F);
 
     }
@@ -95,7 +95,12 @@ public class EggCartonTileEntityRenderer<T extends TileEntity & IChestLid> exten
 
 
     private void handleModelRender(MatrixStack matrixStackIn, IVertexBuilder iVertexBuilder, float f1, int p_228871_7_, int p_228871_8_) {
-        this.lid.rotateAngleX = -(f1 * ((float) Math.PI / 2F));
+        this.lid.rotateAngleX = (f1 * ((float)Math.PI/2.0F)) + (float)Math.PI/2.0F;
+        this.lid.rotateAngleZ = (float)Math.PI;
+        this.lid.rotateAngleY = (float)Math.PI;
+        this.inside.rotateAngleX = (float)Math.PI;
+        this.base.rotateAngleX = (float)Math.PI;
+        //Math.PI / 2F
 //        secondModel.rotateAngleX = firstModel.rotateAngleX;
         this.lid.render(matrixStackIn, iVertexBuilder, p_228871_7_, p_228871_8_);
         this.inside.render(matrixStackIn, iVertexBuilder, p_228871_7_, p_228871_8_);

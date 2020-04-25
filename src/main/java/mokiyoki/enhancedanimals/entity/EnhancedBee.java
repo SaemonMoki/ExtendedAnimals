@@ -305,7 +305,8 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
     }
 
 //    public int[] getBreedGenes () {
-//
+//          input : biomeType, string "breed name"
+    //      output: GeneArray[]
 //        return
 //    }
 

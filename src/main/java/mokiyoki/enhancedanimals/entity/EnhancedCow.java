@@ -41,6 +41,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -204,6 +205,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     protected boolean pregnant = false;
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
+    protected int recalculateSizeTimer = 1000;
 
     protected Boolean reload = false; //used in a toggle manner
 
@@ -287,7 +289,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
             return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
         } else {
-            return 500000;
+            return 108000;
         }
     }
 
@@ -368,8 +370,29 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
     }
 
+    @Override
+    public float getRenderScale() {
+        float ageResult = 1.0F;
+        int age = getAge();
+        float size = getSize();
+        if (age < 108000) {
+            ageResult = age/108000.0F;
+            float finalCowSize = (( 2.0F * size * ageResult) + size) / 3.0F;
+            return finalCowSize ?
+            return finalCowSize;
+        } else {
+            return size;
+        }
+    }
+
     public void livingTick() {
         super.livingTick();
+
+        recalculateSizeTimer--;
+        if (recalculateSizeTimer >= 0) {
+            recalculateSize();
+            recalculateSizeTimer = 1000;
+        }
 
         if (this.world.isRemote) {
             this.cowTimer = Math.max(0, this.cowTimer - 1);

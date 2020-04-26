@@ -249,13 +249,6 @@ public class EventRegistry {
     }
 
     @SubscribeEvent
-    public static void onStitchEvent(TextureStitchEvent.Pre event) {
-        if (event.getMap().getTextureLocation().equals(Atlases.CHEST_ATLAS)) {
-            event.addSprite(EGG_CARTON_TEXTURE);
-        }
-    }
-
-    @SubscribeEvent
     public static void onLoadComplete(FMLLoadCompleteEvent event) {
 //        if (Dimension.isSurfaceWorld()) {
         removeVanillaFromBiomes(ForgeRegistries.BIOMES);

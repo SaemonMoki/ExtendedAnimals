@@ -370,32 +370,30 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
     }
 
-    @Override
-    public float getRenderScale() {
-        float ageResult = 1.0F;
-        int age = getAge();
-        float size = getSize();
-        if (age < 108000) {
-            ageResult = age/108000.0F;
-            float finalCowSize = (( 2.0F * size * ageResult) + size) / 3.0F;
-            return finalCowSize ?
-            return finalCowSize;
-        } else {
-            return size;
-        }
-    }
+//    @Override
+//    public float getRenderScale() {
+//        int age = getAge();
+//        float size = getSize();
+//        if (age < 108000) {
+//            float ageResult = age/108000.0F;
+//            float finalCowSize = ((( 1.5F * ageResult) + 1.5F) / 3.0F) * size;
+//            return finalCowSize;
+//        } else {
+//            return size;
+//        }
+//        return getSize();
+//    }
 
     public void livingTick() {
         super.livingTick();
 
-        recalculateSizeTimer--;
-        if (recalculateSizeTimer >= 0) {
-            recalculateSize();
-            recalculateSizeTimer = 1000;
-        }
-
         if (this.world.isRemote) {
             this.cowTimer = Math.max(0, this.cowTimer - 1);
+//            recalculateSizeTimer--;
+//            if (recalculateSizeTimer >= 0) {
+//                recalculateSize();
+//                recalculateSizeTimer = 1000;
+//            }
         } else {
 
             if (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && awokenTimer == 0 && !sleeping) {

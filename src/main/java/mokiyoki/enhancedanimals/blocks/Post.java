@@ -61,7 +61,6 @@ public class Post extends Block implements IWaterLoggable {
         //TODO should add voxel shapes together to make final shape
 //    protected static final VoxelShape SHAPE = VoxelShapes.combine();
 
-
     public Post(Properties properties) {
         super(properties);
         this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED, Boolean.valueOf(false)));

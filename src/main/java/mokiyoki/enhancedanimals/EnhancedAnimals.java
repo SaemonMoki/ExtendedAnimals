@@ -11,8 +11,6 @@ import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
 import mokiyoki.enhancedanimals.gui.EggCartonScreen;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.loot.EnhancedChickenLootCondition;
-import mokiyoki.enhancedanimals.loot.EnhancedRabbitLootCondition;
 import mokiyoki.enhancedanimals.proxy.ClientProxy;
 import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.proxy.ServerProxy;
@@ -88,10 +86,10 @@ public class EnhancedAnimals {
         CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapabilityProvider::new);
 
 //        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
-        LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());
+//        LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());
 //
 //        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_rabbit"));
-        LootConditionManager.registerCondition(new EnhancedRabbitLootCondition.Serializer());
+//        LootConditionManager.registerCondition(new EnhancedRabbitLootCondition.Serializer());
 //
 //        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_llama"));
 //        LootConditionManager.registerCondition(new EnhancedLlamaLootCondition.Serializer());

@@ -1204,7 +1204,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
     private SheepModelData getCreateSheepModelData(T enhancedSheep) {
         clearCacheTimer++;
-        if(clearCacheTimer > 100000) {
+        if(clearCacheTimer > 50000) {
             sheepModelDataCache.values().removeIf(value -> value.lastAccessed==1);
             for (SheepModelData sheepModelData : sheepModelDataCache.values()){
                 sheepModelData.lastAccessed = 1;
@@ -1240,8 +1240,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.birthTime = enhancedSheep.getBirthTime();
             sheepModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime());
 
-
-            sheepModelDataCache.put(enhancedSheep.getEntityId(), sheepModelData);
+            if(sheepModelData.sheepGenes != null) {
+                sheepModelDataCache.put(enhancedSheep.getEntityId(), sheepModelData);
+            }
 
             return sheepModelData;
         }

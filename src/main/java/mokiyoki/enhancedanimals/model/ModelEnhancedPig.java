@@ -202,7 +202,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         PigModelData pigModelData = getPigModelData();
         float size = pigModelData.size;
-        boolean sleeping = pigModelData.sleeping;
 
         float age = 1.0F;
         if (!(pigModelData.birthTime == null) && !pigModelData.birthTime.equals("") && !pigModelData.birthTime.equals("0")) {
@@ -244,35 +243,38 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         //snoutLength
         float snoutLength1 = -0.065F;
         float snoutLength2 = -0.065F;
-        float snoutLength;
+        float snoutLength = 0.01F;
 
-        for (int i = 1; i < sharedGenes[18];i++){
-            snoutLength1 = snoutLength1 + 0.03F;
-        }
-
-        for (int i = 1; i < sharedGenes[19];i++){
-            snoutLength2 = snoutLength2 + 0.03F;
-        }
-
-        if (snoutLength1 > snoutLength2){
-            snoutLength = (snoutLength1*0.75F) + (snoutLength2*0.25F);
-        }else if (snoutLength1 < snoutLength2){
-            snoutLength = (snoutLength1*0.25F) + (snoutLength2*0.75F);
-        }else{
-            snoutLength = snoutLength1 + snoutLength2;
-        }
-
-        if (sharedGenes[20] == 1 || sharedGenes[21] == 1){
-            if (snoutLength >= -0.12F){
-                snoutLength = snoutLength - 0.01F;
+        if(sharedGenes != null) {
+            for (int i = 1; i < sharedGenes[18];i++){
+                snoutLength1 = snoutLength1 + 0.03F;
             }
-        }else if (sharedGenes[20] != 2 && sharedGenes[21] != 2){
-            if (sharedGenes[20] == 3 || sharedGenes[21] == 3){
-                snoutLength = snoutLength + 0.01F;
+
+            for (int i = 1; i < sharedGenes[19];i++){
+                snoutLength2 = snoutLength2 + 0.03F;
+            }
+
+            if (snoutLength1 > snoutLength2){
+                snoutLength = (snoutLength1*0.75F) + (snoutLength2*0.25F);
+            }else if (snoutLength1 < snoutLength2){
+                snoutLength = (snoutLength1*0.25F) + (snoutLength2*0.75F);
             }else{
-                snoutLength = snoutLength + 0.02F;
+                snoutLength = snoutLength1 + snoutLength2;
+            }
+
+            if (sharedGenes[20] == 1 || sharedGenes[21] == 1){
+                if (snoutLength >= -0.12F){
+                    snoutLength = snoutLength - 0.01F;
+                }
+            }else if (sharedGenes[20] != 2 && sharedGenes[21] != 2){
+                if (sharedGenes[20] == 3 || sharedGenes[21] == 3){
+                    snoutLength = snoutLength + 0.01F;
+                }else{
+                    snoutLength = snoutLength + 0.02F;
+                }
             }
         }
+
 
         if (isChild){
             snoutLength = (snoutLength + 0.11F) / 2.0F;
@@ -292,23 +294,25 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         float inbreedingFactor = 0.0F;
 
-        if (sharedGenes[20] == sharedGenes[21]){
-            inbreedingFactor = 0.1667F;
-        }
-        if (sharedGenes[22] == sharedGenes[23]){
-            inbreedingFactor = inbreedingFactor + 0.1667F;
-        }
-        if (sharedGenes[24] == sharedGenes[25]){
-            inbreedingFactor = inbreedingFactor + 0.1667F;
-        }
-        if (sharedGenes[26] == sharedGenes[27]){
-            inbreedingFactor = inbreedingFactor + 0.1667F;
-        }
-        if (sharedGenes[28] == sharedGenes[29]){
-            inbreedingFactor = inbreedingFactor + 0.1667F;
-        }
-        if (sharedGenes[30] == sharedGenes[31]){
-            inbreedingFactor = inbreedingFactor + 0.1667F;
+        if(sharedGenes != null) {
+            if (sharedGenes[20] == sharedGenes[21]){
+                inbreedingFactor = 0.1667F;
+            }
+            if (sharedGenes[22] == sharedGenes[23]){
+                inbreedingFactor = inbreedingFactor + 0.1667F;
+            }
+            if (sharedGenes[24] == sharedGenes[25]){
+                inbreedingFactor = inbreedingFactor + 0.1667F;
+            }
+            if (sharedGenes[26] == sharedGenes[27]){
+                inbreedingFactor = inbreedingFactor + 0.1667F;
+            }
+            if (sharedGenes[28] == sharedGenes[29]){
+                inbreedingFactor = inbreedingFactor + 0.1667F;
+            }
+            if (sharedGenes[30] == sharedGenes[31]){
+                inbreedingFactor = inbreedingFactor + 0.1667F;
+            }
         }
 
         this.tail0.rotateAngleX = 1.5F * inbreedingFactor;
@@ -318,16 +322,18 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.tail4.rotateAngleX = 1.5F * inbreedingFactor;
         this.tail5.rotateAngleX = 0.1F * inbreedingFactor;
 
-        if (Character.isLetter(uuidArry[1])){
-            this.tail0.rotateAngleY = 0.3555F * inbreedingFactor;
-            this.tail1.rotateAngleY = 0.3555F * inbreedingFactor;
-            this.tail2.rotateAngleY = 0.3555F * inbreedingFactor;
-            this.tail3.rotateAngleY = 0.3555F * inbreedingFactor;
-        }else{
-            this.tail0.rotateAngleY = -0.3555F * inbreedingFactor;
-            this.tail1.rotateAngleY = -0.3555F * inbreedingFactor;
-            this.tail2.rotateAngleY = -0.3555F * inbreedingFactor;
-            this.tail3.rotateAngleY = -0.3555F * inbreedingFactor;
+        if(uuidArry != null) {
+            if (Character.isLetter(uuidArry[1])){
+                this.tail0.rotateAngleY = 0.3555F * inbreedingFactor;
+                this.tail1.rotateAngleY = 0.3555F * inbreedingFactor;
+                this.tail2.rotateAngleY = 0.3555F * inbreedingFactor;
+                this.tail3.rotateAngleY = 0.3555F * inbreedingFactor;
+            }else{
+                this.tail0.rotateAngleY = -0.3555F * inbreedingFactor;
+                this.tail1.rotateAngleY = -0.3555F * inbreedingFactor;
+                this.tail2.rotateAngleY = -0.3555F * inbreedingFactor;
+                this.tail3.rotateAngleY = -0.3555F * inbreedingFactor;
+            }
         }
 
     }
@@ -439,7 +445,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
     private PigModelData getCreatePigModelData(T enhancedPig) {
         clearCacheTimer++;
-        if(clearCacheTimer > 100000) {
+        if(clearCacheTimer > 50000) {
             pigModelDataCache.values().removeIf(value -> value.lastAccessed==1);
             for (PigModelData pigModelData : pigModelDataCache.values()){
                 pigModelData.lastAccessed = 1;
@@ -468,7 +474,9 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             pigModelData.birthTime = enhancedPig.getBirthTime();
             pigModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedPig.world).getWorldInfo()).getGameTime());
 
-            pigModelDataCache.put(enhancedPig.getEntityId(), pigModelData);
+            if(pigModelData.pigGenes != null) {
+                pigModelDataCache.put(enhancedPig.getEntityId(), pigModelData);
+            }
 
             return pigModelData;
         }

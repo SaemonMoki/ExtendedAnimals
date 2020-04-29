@@ -19,6 +19,7 @@ import java.util.Map;
 public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, ModelEnhancedCow<EnhancedMooshroom>> {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_COW_TEXTURE_LOCATION = "eanimod:textures/entities/cow/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/cow/cowbase.png");
 
     public RenderEnhancedMooshroom(EntityRendererManager renderManagerIn) {
         super(renderManagerIn, new ModelEnhancedCow<>(), 0.7F);
@@ -27,8 +28,12 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
 
     public ResourceLocation getEntityTexture(EnhancedMooshroom entity) {
         String s = entity.getCowTexture();
-
         float[] colourRGB = entity.getRgb();
+
+        if (s == null || s.isEmpty() || colourRGB == null) {
+            return ERROR_TEXTURE_LOCATION;
+        }
+
         if (colourRGB[0] == 1.0 && colourRGB[1] == 1.0 && colourRGB[2] == 1.0) {
             colourRGB = null;
         } else {

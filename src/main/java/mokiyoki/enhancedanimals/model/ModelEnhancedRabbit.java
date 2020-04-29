@@ -274,44 +274,49 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
 
         float size = 1F; // [minimum size = 0.3 maximum size = 1]
 
-        if (genes[46] < 5){
-            size = size - 0.07F;
-            if (genes[46] < 4){
+        if (genes != null) {
+            if (genes[46] < 5){
                 size = size - 0.07F;
-                if (genes[46] < 3){
+                if (genes[46] < 4){
                     size = size - 0.07F;
-                    if (genes[46] < 2){
-                        size = size - 0.03F;
+                    if (genes[46] < 3){
+                        size = size - 0.07F;
+                        if (genes[46] < 2){
+                            size = size - 0.03F;
+                        }
                     }
                 }
             }
-        }
-        if (genes[46] < 5){
-            size = size - 0.07F;
-            if (genes[46] < 4){
+            if (genes[46] < 5){
                 size = size - 0.07F;
-                if (genes[46] < 3){
+                if (genes[46] < 4){
                     size = size - 0.07F;
-                    if (genes[46] < 2){
-                        size = size - 0.03F;
+                    if (genes[46] < 3){
+                        size = size - 0.07F;
+                        if (genes[46] < 2){
+                            size = size - 0.03F;
+                        }
                     }
                 }
             }
-        }
-        if ( genes[48] == 3 && genes[49] == 3){
-            size = size - 0.075F;
-        }else if ( genes[48] == 2 && genes[49] == 2){
-            size = size - 0.05F;
-        }else if ( genes[48] == 2 || genes[49] == 2){
-            size = size - 0.025F;
-        }
+            if ( genes[48] == 3 && genes[49] == 3){
+                size = size - 0.075F;
+            }else if ( genes[48] == 2 && genes[49] == 2){
+                size = size - 0.05F;
+            }else if ( genes[48] == 2 || genes[49] == 2){
+                size = size - 0.025F;
+            }
 
-        if ( genes[34] == 2 || genes[35] == 2){
-            rabbitModelData.dwarf = true;
-            size = 0.3F + ((size - 0.3F)/2F);
-        }else{
+            if ( genes[34] == 2 || genes[35] == 2){
+                rabbitModelData.dwarf = true;
+                size = 0.3F + ((size - 0.3F)/2F);
+            }else{
+                rabbitModelData.dwarf = false;
+            }
+        } else {
             rabbitModelData.dwarf = false;
         }
+
 
         float age = 1.0F;
         if (!(rabbitModelData.birthTime == null) && !rabbitModelData.birthTime.equals("") && !rabbitModelData.birthTime.equals("0")) {
@@ -328,14 +333,16 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         matrixStackIn.translate(0.0F, -1.45F + 1.45F/finalRabbitSize, 0.0F);
             this.rabbitHeadLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.rabbitHeadRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            if (genes[24] == 2 && genes[25] == 2){
-                this.rabbitLionHeadL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                this.rabbitLionHeadR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                this.LionEarParent1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            }else if (genes[24] == 2 || genes[25] == 2){
-                this.rabbitLionHeadL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                this.rabbitLionHeadR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                this.LionEarParent.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            if (genes != null) {
+                if (genes[24] == 2 && genes[25] == 2){
+                    this.rabbitLionHeadL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.rabbitLionHeadR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.LionEarParent1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                }else if (genes[24] == 2 || genes[25] == 2){
+                    this.rabbitLionHeadL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.rabbitLionHeadR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.LionEarParent.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                }
             }
             if (rabbitModelData.dwarf){
                 this.rabbitHeadMuzzleDwarf.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -431,26 +438,28 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
 
         float lop = 0;
 
-        // genes 36 to 43
-        if (genes[36] == 3 && genes[37] == 3) {
-            lop = 0.25F;
-        } else {
-            if (genes[36] == 2) {
-                lop = 0.1F;
+        if (genes != null) {
+            // genes 36 to 43
+            if (genes[36] == 3 && genes[37] == 3) {
+                lop = 0.25F;
+            } else {
+                if (genes[36] == 2) {
+                    lop = 0.1F;
+                }
+                if (genes[37] == 2) {
+                    lop = 0.1F;
+                }
             }
-            if (genes[37] == 2) {
-                lop = 0.1F;
+            if (genes[38] == 2 && genes[39] == 2) {
+                lop = lop * 4.0F;
             }
-        }
-        if (genes[38] == 2 && genes[39] == 2) {
-            lop = lop * 4.0F;
-        }
 
-        lop = lop + ((genes[40]-1) * 0.1F);
-        lop = lop + ((genes[41]-1) * 0.1F);
+            lop = lop + ((genes[40]-1) * 0.1F);
+            lop = lop + ((genes[41]-1) * 0.1F);
 
-        if (genes[42] == 3 && genes[43] == 3) {
-            lop = lop + 0.1F;
+            if (genes[42] == 3 && genes[43] == 3) {
+                lop = lop + 0.1F;
+            }
         }
 
         if (lop >= 0.75F) {
@@ -605,7 +614,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
 
     private RabbitModelData getCreateRabbitModelData(T enhancedRabbit) {
         clearCacheTimer++;
-        if(clearCacheTimer > 100000) {
+        if(clearCacheTimer > 50000) {
             rabbitModelDataCache.values().removeIf(value -> value.lastAccessed==1);
             for (RabbitModelData rabbitModelData : rabbitModelDataCache.values()){
                 rabbitModelData.lastAccessed = 1;
@@ -633,7 +642,9 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             rabbitModelData.birthTime = enhancedRabbit.getBirthTime();
             rabbitModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedRabbit.world).getWorldInfo()).getGameTime());
 
-            rabbitModelDataCache.put(enhancedRabbit.getEntityId(), rabbitModelData);
+            if(rabbitModelData.rabbitGenes != null) {
+                rabbitModelDataCache.put(enhancedRabbit.getEntityId(), rabbitModelData);
+            }
 
             return rabbitModelData;
         }

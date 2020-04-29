@@ -18,6 +18,7 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
 
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_SHEEP_TEXTURE_LOCATION = "eanimod:textures/entities/sheep/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/sheep/sheep.png");
 
     public RenderEnhancedSheep(EntityRendererManager render) {
         super(render, new ModelEnhancedSheep<>(), 0.6F);
@@ -26,17 +27,23 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    public ResourceLocation getEntityTexture(EnhancedSheep entity)
-    {
+    public ResourceLocation getEntityTexture(EnhancedSheep entity) {
         String s = entity.getFleeceDyeColour().getName() + entity.getSheepTexture();
+
+        if (s == null || s.isEmpty()) {
+            return ERROR_TEXTURE_LOCATION;
+        }
+
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
         if (resourcelocation == null)
         {
             float[] dyeRGB = EnhancedSheep.getDyeRgb(entity.getFleeceDyeColour());
-//            if (dyeRGB != null) {
-//                GlStateManager.color3f(dyeRGB[0], dyeRGB[1], dyeRGB[2]);
-//            }
+
+            if (dyeRGB == null || dyeRGB.length == 0) {
+                return ERROR_TEXTURE_LOCATION;
+            }
+
             if (dyeRGB[0] == 1.0 && dyeRGB[1] == 1.0 && dyeRGB[2] == 1.0) {
                 dyeRGB = null;
             }

@@ -1280,101 +1280,103 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
             int tint;
 
-            if ((genesForText[6] == 1 || genesForText[7] == 1) || (genesForText[0] == 3 && genesForText[1] == 3)){
-                //red
-                tint = 4;
-            }else {
-                if (genesForText[0] == 1 || genesForText[1] == 1) {
-                    //black
-                    tint = 2;
-                } else {
-                    //wildtype
-                    tint = 3;
+            if (!(genesForText == null || genesForText.length == 0)) {
+                if ((genesForText[6] == 1 || genesForText[7] == 1) || (genesForText[0] == 3 && genesForText[1] == 3)){
+                    //red
+                    tint = 4;
+                }else {
+                    if (genesForText[0] == 1 || genesForText[1] == 1) {
+                        //black
+                        tint = 2;
+                    } else {
+                        //wildtype
+                        tint = 3;
+                    }
                 }
-            }
 
-            //standard dilution
-            if (genesForText[2] == 2 || genesForText[3] == 2) {
+                //standard dilution
+                if (genesForText[2] == 2 || genesForText[3] == 2) {
 //            if (true) {
-                if (genesForText[2] == 2 && genesForText[3] == 2) {
+                    if (genesForText[2] == 2 && genesForText[3] == 2) {
 //                if (false) {
 
-                    blackR = (blackR + (255F * tint)) / (tint+1);
-                    blackG = (blackG + (245F * tint)) / (tint+1);
-                    blackB = (blackB + (235F * tint)) / (tint+1);
+                        blackR = (blackR + (255F * tint)) / (tint+1);
+                        blackG = (blackG + (245F * tint)) / (tint+1);
+                        blackB = (blackB + (235F * tint)) / (tint+1);
 
-                    if (tint != 2) {
-                        redR = (redR + (255F * tint)) / (tint + 1);
-                        redG = (redG + (255F * tint)) / (tint + 1);
-                        redB = (redB + (255F * tint)) / (tint + 1);
-                    }
-                }else{
-                    if (tint == 3) {
-                        //wildtype
-                        redR = 160.5F;
-                        redG = 119.0F;
-                        redB = 67.0F;
+                        if (tint != 2) {
+                            redR = (redR + (255F * tint)) / (tint + 1);
+                            redG = (redG + (255F * tint)) / (tint + 1);
+                            redB = (redB + (255F * tint)) / (tint + 1);
+                        }
+                    }else{
+                        if (tint == 3) {
+                            //wildtype
+                            redR = 160.5F;
+                            redG = 119.0F;
+                            redB = 67.0F;
 
-                        if (genesForText[4] == 1 || genesForText[5] == 1) {
-                            if (genesForText[4] == 1 && genesForText[5] == 1) {
+                            if (genesForText[4] == 1 || genesForText[5] == 1) {
+                                if (genesForText[4] == 1 && genesForText[5] == 1) {
+                                    blackR = 81.0F;
+                                    blackG = 71.0F;
+                                    blackB = 65.0F;
+                                } else {
+                                    blackR = 40.0F;
+                                    blackG = 35.0F;
+                                    blackB = 32.0F;
+                                }
+                            } else if (genesForText[4] == 4 && genesForText[5] == 4) {
                                 blackR = 81.0F;
                                 blackG = 71.0F;
                                 blackB = 65.0F;
-                            } else {
-                                blackR = 40.0F;
-                                blackG = 35.0F;
-                                blackB = 32.0F;
                             }
-                        } else if (genesForText[4] == 4 && genesForText[5] == 4) {
+
+                        } else if (tint == 4){
+                            //red
+                            redR = (redR*0.5F) + (187.0F*0.5F);
+                            redG = (redG*0.5F) + (180.0F*0.5F);
+                            redB = (redB*0.5F) + (166.0F*0.5F);
+                        }else {
+                            //black
                             blackR = 81.0F;
                             blackG = 71.0F;
                             blackB = 65.0F;
                         }
-
-                    } else if (tint == 4){
-                        //red
-                        redR = (redR*0.5F) + (187.0F*0.5F);
-                        redG = (redG*0.5F) + (180.0F*0.5F);
-                        redB = (redB*0.5F) + (166.0F*0.5F);
-                    }else {
-                        //black
-                        blackR = 81.0F;
-                        blackG = 71.0F;
-                        blackB = 65.0F;
                     }
                 }
-            }
 
-            if (genesForText[4] == 3 || genesForText[5] == 3) {
-                redR = (redR + 245F) / 2;
-                redG = (redG + 237F) / 2;
-                redB = (redB + 222F) / 2;
-            }
+                if (genesForText[4] == 3 || genesForText[5] == 3) {
+                    redR = (redR + 245F) / 2;
+                    redG = (redG + 237F) / 2;
+                    redB = (redB + 222F) / 2;
+                }
 
-            //chocolate
-            if (genesForText[10] == 2 && genesForText[11] == 2){
-                blackR = blackR + 25F;
-                blackG = blackG + 15F;
-                blackB = blackB + 9F;
+                //chocolate
+                if (genesForText[10] == 2 && genesForText[11] == 2){
+                    blackR = blackR + 25F;
+                    blackG = blackG + 15F;
+                    blackB = blackB + 9F;
 
-                redR = redR + 25F;
-                redG = redG + 15F;
-                redB = redB + 9F;
-            }
+                    redR = redR + 25F;
+                    redG = redG + 15F;
+                    redB = redB + 9F;
+                }
 
-            if (this.isChild()) {
-                if (getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString())) {
-                    blackR = redR;
-                    blackG = redG;
-                    blackB = redB;
-                }else if (getCowStatus().equals(EntityState.CHILD_STAGE_TWO.toString())) {
-                    blackR = (blackR + redR)/2F;
-                    blackG = (blackG + redG)/2F;
-                    blackB = (blackB + redB)/2F;
-                } else {
-                    blackR = blackR*0.75F + redR*0.25F;
-                    blackG = blackG*0.75F + redG*0.25F;
-                    blackB = blackB*0.75F + redB*0.25F;
+                if (this.isChild()) {
+                    if (getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString())) {
+                        blackR = redR;
+                        blackG = redG;
+                        blackB = redB;
+                    }else if (getCowStatus().equals(EntityState.CHILD_STAGE_TWO.toString())) {
+                        blackR = (blackR + redR)/2F;
+                        blackG = (blackG + redG)/2F;
+                        blackB = (blackB + redB)/2F;
+                    } else {
+                        blackR = blackR*0.75F + redR*0.25F;
+                        blackG = blackG*0.75F + redG*0.25F;
+                        blackB = blackB*0.75F + redB*0.25F;
+                    }
                 }
             }
 

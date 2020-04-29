@@ -19,6 +19,7 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
 
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_PIG_TEXTURE_LOCATION = "eanimod:textures/entities/pig/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/pig/pigbase.png");
 
     public RenderEnhancedPig(EntityRendererManager render)
     {
@@ -30,6 +31,11 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
      */
     public ResourceLocation getEntityTexture(EnhancedPig entity) {
         String s = entity.getPigTexture();
+
+        if (s == null || s.isEmpty()) {
+            return ERROR_TEXTURE_LOCATION;
+        }
+
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
         if (resourcelocation == null)

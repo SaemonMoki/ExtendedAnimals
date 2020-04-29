@@ -21,6 +21,7 @@ public class RenderEnhancedRabbit extends MobRenderer<EnhancedRabbit, ModelEnhan
 {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_RABBIT_TEXTURE_LOCATION = "eanimod:textures/entities/rabbit/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/rabbit/rabbitbase.png");
 
     public RenderEnhancedRabbit(EntityRendererManager render)
     {
@@ -30,9 +31,13 @@ public class RenderEnhancedRabbit extends MobRenderer<EnhancedRabbit, ModelEnhan
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    public ResourceLocation getEntityTexture(EnhancedRabbit entity)
-    {
+    public ResourceLocation getEntityTexture(EnhancedRabbit entity) {
         String s = entity.getRabbitTexture();
+
+        if (s == null || s.isEmpty()) {
+            return ERROR_TEXTURE_LOCATION;
+        }
+
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
         if (resourcelocation == null)

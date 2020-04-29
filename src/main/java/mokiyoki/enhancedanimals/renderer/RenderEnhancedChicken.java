@@ -23,6 +23,8 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_CHICKEN_TEXTURE_LOCATION = "eanimod:textures/entities/chicken/";
     private static final String ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION = "eanimod:textures/entities/chickensilkie/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/chicken/chickenbase.png");
+
 
     public RenderEnhancedChicken(EntityRendererManager render)
     {
@@ -36,6 +38,11 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
     {
         String s = entity.getChickenTexture();
         int[] genes = entity.getSharedGenes();
+
+        if (s == null || s.isEmpty() || genes == null || genes.length == 0) {
+            return ERROR_TEXTURE_LOCATION;
+        }
+
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
         if (resourcelocation == null)

@@ -457,136 +457,180 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         int cSize = 0; // [0, 1, 2, 3, 4]
         int wSize = 0; // [0, 1, 2, 3, 4]
         int wingSize = 0; // [0, 1, 2]
-        int bodyType; //[-1, 0, 1]  [small, normal, big]
-        boolean earTuft;
+        int bodyType = 0; //[-1, 0, 1]  [small, normal, big]
+        boolean earTuft = false;
         boolean longLegs = false;
 
-        if (genes[52] == 1 || genes[53] == 1) {
-            nakedNeck = true;
-        }
+        if (genes != null) {
 
-        if (genes[50] == 1 && genes[51] == 1) {
-            if (genes[48] == 1 || genes[49] == 1) {
-                if (genes[46] == 3 && genes[47] == 3) {
-                    //peacomb
-                    comb = 4;
-                } else {
-                    //walnut
-                    comb = 5;
-                }
-            } else {
-                if (genes[46] == 3 && genes[47] == 3) {
-                    //single comb
-                    comb = 1;
-                } else if (genes[46] == 1 || genes[47] == 1) {
-                    //rose comb
-                    comb = 2;
-                } else {
-                    //rose comb2
-                    comb = 3;
-                }
-            }
-        } else {
-            if (genes[46] == 3 && genes[47] == 3 && genes[48] == 2 && genes[49] == 2) {
-                //v comb
-                comb = 6;
-            } else {
-                if (genes[48] == 2 && genes[49] == 2) {
-                    //only waddles
-                }
-            }
-        }
-
-        //bearded
-        if (genes[56] == 1 || genes[57] == 1) {
             if (genes[52] == 1 || genes[53] == 1) {
-                beard = 2;
-            } else {
-                beard = 1;
+                nakedNeck = true;
             }
-        }
 
-        //crestedness
-        if ((genes[54] == 2 || genes[55] == 2) && (genes[54] != 1 && genes[55] != 1)) {
-            crest = 2;
-        } else if (genes[54] == 1 || genes[55] == 1) {
-            if (genes[54] == genes[55]) {
-                if (genes[82] == 1 && genes[83] == 1) {
-                    crest = 1;
+            if (genes[50] == 1 && genes[51] == 1) {
+                if (genes[48] == 1 || genes[49] == 1) {
+                    if (genes[46] == 3 && genes[47] == 3) {
+                        //peacomb
+                        comb = 4;
+                    } else {
+                        //walnut
+                        comb = 5;
+                    }
                 } else {
-                    crest = 3;
+                    if (genes[46] == 3 && genes[47] == 3) {
+                        //single comb
+                        comb = 1;
+                    } else if (genes[46] == 1 || genes[47] == 1) {
+                        //rose comb
+                        comb = 2;
+                    } else {
+                        //rose comb2
+                        comb = 3;
+                    }
                 }
-
             } else {
-                crest = 1;
+                if (genes[46] == 3 && genes[47] == 3 && genes[48] == 2 && genes[49] == 2) {
+                    //v comb
+                    comb = 6;
+                } else {
+                    if (genes[48] == 2 && genes[49] == 2) {
+                        //only waddles
+                    }
+                }
             }
+
+            //bearded
+            if (genes[56] == 1 || genes[57] == 1) {
+                if (genes[52] == 1 || genes[53] == 1) {
+                    beard = 2;
+                } else {
+                    beard = 1;
+                }
+            }
+
+            //crestedness
+            if ((genes[54] == 2 || genes[55] == 2) && (genes[54] != 1 && genes[55] != 1)) {
+                crest = 2;
+            } else if (genes[54] == 1 || genes[55] == 1) {
+                if (genes[54] == genes[55]) {
+                    if (genes[82] == 1 && genes[83] == 1) {
+                        crest = 1;
+                    } else {
+                        crest = 3;
+                    }
+
+                } else {
+                    crest = 1;
+                }
+            }
+
+            //feather feets
+            if (genes[58] == 1 || genes[59] == 1) {
+                fFeet = fFeet + 1;
+            } else if (genes[58] == 2 || genes[59] == 2) {
+                fFeet = fFeet + 2;
+            }
+            if (genes[60] == 1 || genes[61] == 1) {
+                fFeet = fFeet + 1;
+            }
+
+            //chicken size [ 0.5 to 1 ] genes 74-79 & 7 & 8
+            if(genes[74] == 1){
+                size = size - 0.05F;
+            }else if(genes[74] == 2){
+                size = size - 0.025F;
+            }
+            if(genes[75] == 1){
+                size = size - 0.05F;
+            }else if(genes[75] == 2){
+                size = size - 0.025F;
+            }
+
+            if(genes[76] == 1 || genes[77] == 1){
+                size = size - 0.05F;
+            }else if(genes[76] == 3 && genes[77] == 3){
+                size = size - 0.1F;
+            }
+
+            if(genes[78] == 1 || genes[79] == 1){
+                size = size * 0.94F;
+            }
+
+            if(genes[7] == 2){
+                size = size * 0.9F;
+            }
+
+            if(genes[8] == 2){
+                size = size * 0.75F;
+            }
+
+            //comb size [80 and 81 small / 82 and 83 large]
+            if (genes[80] == 2) {
+                cSize = cSize + 1;
+            }
+            if (genes[81] == 2) {
+                cSize = cSize + 1;
+            }
+            if (genes[82] == 1) {
+                cSize = cSize + 1;
+            }
+            if (genes[83] == 1) {
+                cSize = cSize + 1;
+            }
+
+            wSize = cSize;
+
+            if (genes[84] == 1 && genes[85] == 1 && wSize > 0) {
+                wSize = wSize - 1;
+            }
+
+            if (genes[90] == 1 || genes[91] == 1){
+                wingSize = 2;
+            } else if (genes[92] == 1 || genes[93] == 1){
+                wingSize = 1;
+            }
+
+
+            if (genes[146] == 2 && genes[147] == 2) {
+                if (genes[148] == 2 && genes[149] == 2) {
+                    //normal body
+                    bodyType = 0;
+                } else {
+                    //big body
+                    bodyType = 1;
+                }
+            } else if (genes[148] == 2 && genes[149] == 2) {
+                if (genes[146] == 2 || genes[147] == 2) {
+                    //normal body
+                    bodyType = 0;
+                } else {
+                    //small body
+                    longHockFeathers = true;
+                    bodyType = -1;
+                }
+            } else {
+                //normal body
+                bodyType = 0;
+            }
+
+            //ear tufts
+            if (genes[150] == 2 || genes[151] == 2) {
+                earTuft = true;
+            } else {
+                earTuft = false;
+            }
+
+            if (!roosting) {
+                //long legs
+                if (genes[168] == 2 || genes[169] == 2) {
+                    longLegs = true;
+                } else {
+                    longLegs = false;
+                }
+            }
+
         }
 
-        //feather feets
-        if (genes[58] == 1 || genes[59] == 1) {
-            fFeet = fFeet + 1;
-        } else if (genes[58] == 2 || genes[59] == 2) {
-            fFeet = fFeet + 2;
-        }
-        if (genes[60] == 1 || genes[61] == 1) {
-            fFeet = fFeet + 1;
-        }
-
-        //chicken size [ 0.5 to 1 ] genes 74-79 & 7 & 8
-        if(genes[74] == 1){
-            size = size - 0.05F;
-        }else if(genes[74] == 2){
-            size = size - 0.025F;
-        }
-        if(genes[75] == 1){
-            size = size - 0.05F;
-        }else if(genes[75] == 2){
-            size = size - 0.025F;
-        }
-
-        if(genes[76] == 1 || genes[77] == 1){
-            size = size - 0.05F;
-        }else if(genes[76] == 3 && genes[77] == 3){
-            size = size - 0.1F;
-        }
-
-        if(genes[78] == 1 || genes[79] == 1){
-            size = size * 0.94F;
-        }
-
-        if(genes[7] == 2){
-            size = size * 0.9F;
-        }
-
-        if(genes[8] == 2){
-            size = size * 0.75F;
-        }
-
-        //comb size [80 and 81 small / 82 and 83 large]
-        if (genes[80] == 2) {
-            cSize = cSize + 1;
-        }
-        if (genes[81] == 2) {
-            cSize = cSize + 1;
-        }
-        if (genes[82] == 1) {
-            cSize = cSize + 1;
-        }
-        if (genes[83] == 1) {
-            cSize = cSize + 1;
-        }
-
-        wSize = cSize;
-
-        if (genes[84] == 1 && genes[85] == 1 && wSize > 0) {
-            wSize = wSize - 1;
-        }
-
-        if (genes[90] == 1 || genes[91] == 1){
-            wingSize = 2;
-        } else if (genes[92] == 1 || genes[93] == 1){
-            wingSize = 1;
-        }
 
         wingAngle = 0;   //do not use this to debug wingAngle scroll down
 //
@@ -635,43 +679,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 //        beard = 1;
 
 //        wingAngle = 1.5F;   // used for debugging wingAngle  [ 0 to 1.5 ]
-        if (genes[146] == 2 && genes[147] == 2) {
-            if (genes[148] == 2 && genes[149] == 2) {
-                //normal body
-                bodyType = 0;
-            } else {
-                //big body
-                bodyType = 1;
-            }
-        } else if (genes[148] == 2 && genes[149] == 2) {
-            if (genes[146] == 2 || genes[147] == 2) {
-                //normal body
-                bodyType = 0;
-            } else {
-                //small body
-                longHockFeathers = true;
-                bodyType = -1;
-            }
-        } else {
-            //normal body
-            bodyType = 0;
-        }
-
-        //ear tufts
-        if (genes[150] == 2 || genes[151] == 2) {
-            earTuft = true;
-        } else {
-            earTuft = false;
-        }
-
-        if (!roosting) {
-            //long legs
-            if (genes[168] == 2 || genes[169] == 2) {
-                longLegs = true;
-            } else {
-                longLegs = false;
-            }
-        }
 
         float age = 1.0F;
         if (!(chickenModelData.birthTime == null) && !chickenModelData.birthTime.equals("") && !chickenModelData.birthTime.equals("0")) {
@@ -784,8 +791,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                 this.bigCrest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
 
-            if ((!isChild || age >= 0.3333F) && (genes[72] == 1 && genes[73] == 1)) {
-                this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            if (genes != null) {
+                if ((!isChild || age >= 0.3333F) && (genes[72] == 1 && genes[73] == 1)) {
+                    this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                }
             }
 
             if (wingSize == 2) {
@@ -821,10 +830,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                         this.rightFeather1Extend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     }
                 }
-                if (genes[102] == 2 && genes[103] == 2){
-                    this.leftVultureHock.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    this.rightVultureHock.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+                if (genes != null) {
+                    if (genes[102] == 2 && genes[103] == 2){
+                        this.leftVultureHock.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                        this.rightVultureHock.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    }
                 }
+
                 if (fFeet >= 2) {
                     this.leftFeather2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     this.rightFeather2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -991,69 +1004,71 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
         float point = 19F;
 
-        float wingMod;
-        if (sharedGenes[148] == 2 && sharedGenes[149] == 2 && sharedGenes[146] != 2 && sharedGenes[147] != 2) {
-            wingMod = 0.5F;
-        } else {
-            wingMod = 0.0F;
-        }
+        float wingMod = 0.0F;
 
-        //gene variations
-        if ((sharedGenes[70] == 2 || sharedGenes [71] == 2) && (!nesting && !roosting)) {
-
-            if (sharedGenes[168] == 1 && sharedGenes[169] == 1) {
-                this.body.rotationPointY = 3F + point;
-//            this.tail.rotationPointY = 3F;
-                this.rightWing.rotationPointY = 16.0F + wingMod;
-                this.leftWing.rotationPointY = 16.0F + wingMod;
-                this.rightWingSmall.rotationPointY = 16.0F + wingMod;
-                this.leftWingSmall.rotationPointY = 16.0F + wingMod;
-                this.mutation = 1;
-            } else if (sharedGenes[168] == 2 && sharedGenes[169] == 2) {
-                this.body.rotationPointY = 2F + point;
-//            this.tail.rotationPointY = 3F;
-                this.rightWing.rotationPointY = 15.0F + wingMod;
-                this.leftWing.rotationPointY = 15.0F + wingMod;
-                this.rightWingSmall.rotationPointY = 15.0F + wingMod;
-                this.leftWingSmall.rotationPointY = 15.0F + wingMod;
-                this.mutation = 3;
-            } else {
-                this.body.rotationPointY = 2.5F + point;
-//            this.tail.rotationPointY = 3F;
-                this.rightWing.rotationPointY = 15.5F + wingMod;
-                this.leftWing.rotationPointY = 15.5F + wingMod;
-                this.rightWingSmall.rotationPointY = 15.5F + wingMod;
-                this.leftWingSmall.rotationPointY = 15.5F + wingMod;
-                this.mutation = 2;
+        if (sharedGenes != null) {
+            if (sharedGenes[148] == 2 && sharedGenes[149] == 2 && sharedGenes[146] != 2 && sharedGenes[147] != 2) {
+                wingMod = 0.5F;
             }
 
-        } else {
-            if (sharedGenes[168] == 1 && sharedGenes[169] == 1) {
-                this.body.rotationPointY = 0F + point;
-//            this.tail.rotationPointY = 0F;
-                this.rightWing.rotationPointY = 13.0F + wingMod;
-                this.leftWing.rotationPointY = 13.0F + wingMod;
-                this.rightWingSmall.rotationPointY = 13.0F + wingMod;
-                this.leftWingSmall.rotationPointY = 13.0F + wingMod;
-                this.mutation = 0;
-            } else if (sharedGenes[168] == 2 && sharedGenes[169] == 2) {
-                this.body.rotationPointY = -2F + point;
-//            this.tail.rotationPointY = 0F;
-                this.rightWing.rotationPointY = 11.0F + wingMod;
-                this.leftWing.rotationPointY = 11.0F + wingMod;
-                this.rightWingSmall.rotationPointY = 11.0F + wingMod;
-                this.leftWingSmall.rotationPointY = 11.0F + wingMod;
-                this.mutation = 5;
+            //gene variations
+            if ((sharedGenes[70] == 2 || sharedGenes [71] == 2) && (!nesting && !roosting)) {
+
+                if (sharedGenes[168] == 1 && sharedGenes[169] == 1) {
+                    this.body.rotationPointY = 3F + point;
+//            this.tail.rotationPointY = 3F;
+                    this.rightWing.rotationPointY = 16.0F + wingMod;
+                    this.leftWing.rotationPointY = 16.0F + wingMod;
+                    this.rightWingSmall.rotationPointY = 16.0F + wingMod;
+                    this.leftWingSmall.rotationPointY = 16.0F + wingMod;
+                    this.mutation = 1;
+                } else if (sharedGenes[168] == 2 && sharedGenes[169] == 2) {
+                    this.body.rotationPointY = 2F + point;
+//            this.tail.rotationPointY = 3F;
+                    this.rightWing.rotationPointY = 15.0F + wingMod;
+                    this.leftWing.rotationPointY = 15.0F + wingMod;
+                    this.rightWingSmall.rotationPointY = 15.0F + wingMod;
+                    this.leftWingSmall.rotationPointY = 15.0F + wingMod;
+                    this.mutation = 3;
+                } else {
+                    this.body.rotationPointY = 2.5F + point;
+//            this.tail.rotationPointY = 3F;
+                    this.rightWing.rotationPointY = 15.5F + wingMod;
+                    this.leftWing.rotationPointY = 15.5F + wingMod;
+                    this.rightWingSmall.rotationPointY = 15.5F + wingMod;
+                    this.leftWingSmall.rotationPointY = 15.5F + wingMod;
+                    this.mutation = 2;
+                }
+
             } else {
-                this.body.rotationPointY = -1F + point;
+                if (sharedGenes[168] == 1 && sharedGenes[169] == 1) {
+                    this.body.rotationPointY = 0F + point;
+//            this.tail.rotationPointY = 0F;
+                    this.rightWing.rotationPointY = 13.0F + wingMod;
+                    this.leftWing.rotationPointY = 13.0F + wingMod;
+                    this.rightWingSmall.rotationPointY = 13.0F + wingMod;
+                    this.leftWingSmall.rotationPointY = 13.0F + wingMod;
+                    this.mutation = 0;
+                } else if (sharedGenes[168] == 2 && sharedGenes[169] == 2) {
+                    this.body.rotationPointY = -2F + point;
+//            this.tail.rotationPointY = 0F;
+                    this.rightWing.rotationPointY = 11.0F + wingMod;
+                    this.leftWing.rotationPointY = 11.0F + wingMod;
+                    this.rightWingSmall.rotationPointY = 11.0F + wingMod;
+                    this.leftWingSmall.rotationPointY = 11.0F + wingMod;
+                    this.mutation = 5;
+                } else {
+                    this.body.rotationPointY = -1F + point;
 //            this.tail.rotationPointY = -1F;
-                this.rightWing.rotationPointY = 12.0F + wingMod;
-                this.leftWing.rotationPointY = 12.0F + wingMod;
-                this.rightWingSmall.rotationPointY = 12.0F + wingMod;
-                this.leftWingSmall.rotationPointY = 12.0F + wingMod;
-                this.mutation = 4;
+                    this.rightWing.rotationPointY = 12.0F + wingMod;
+                    this.leftWing.rotationPointY = 12.0F + wingMod;
+                    this.rightWingSmall.rotationPointY = 12.0F + wingMod;
+                    this.leftWingSmall.rotationPointY = 12.0F + wingMod;
+                    this.mutation = 4;
+                }
             }
         }
+
 
         //behaviour animations
         //nesting "moves legs together to remove clipping"
@@ -1095,48 +1110,49 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         //crowing
 
         /**       wing position variants         */
-
-        if ((sharedGenes[86] == 1 && sharedGenes[87] == 1) || (sharedGenes[86] == 3 && sharedGenes[87] == 3)){
-            this.rightWing.rotationPointY = this.rightWing.rotationPointY + 1F - wingMod;
-            this.leftWing.rotationPointY = this.leftWing.rotationPointY + 1F - wingMod;
-            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + 1F - wingMod;
-            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + 1F - wingMod;
-        } else if (sharedGenes[86] == 1 || sharedGenes[87] == 1){
-            this.rightWing.rotationPointY = this.rightWing.rotationPointY + 0.5F - (wingMod/2);
-            this.leftWing.rotationPointY = this.leftWing.rotationPointY + 0.5F - (wingMod/2);
-            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY - 0.5F - (wingMod/2);
-            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY - 0.5F - (wingMod/2);
-        }
+        if (sharedGenes != null) {
+            if ((sharedGenes[86] == 1 && sharedGenes[87] == 1) || (sharedGenes[86] == 3 && sharedGenes[87] == 3)){
+                this.rightWing.rotationPointY = this.rightWing.rotationPointY + 1F - wingMod;
+                this.leftWing.rotationPointY = this.leftWing.rotationPointY + 1F - wingMod;
+                this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + 1F - wingMod;
+                this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + 1F - wingMod;
+            } else if (sharedGenes[86] == 1 || sharedGenes[87] == 1){
+                this.rightWing.rotationPointY = this.rightWing.rotationPointY + 0.5F - (wingMod/2);
+                this.leftWing.rotationPointY = this.leftWing.rotationPointY + 0.5F - (wingMod/2);
+                this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY - 0.5F - (wingMod/2);
+                this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY - 0.5F - (wingMod/2);
+            }
 
 //            this.rightWing.rotationPointY = this.rightWing.rotationPointY + wingAngle* 2.2F;
 //            this.leftWing.rotationPointY = this.leftWing.rotationPointY + wingAngle * 2.2F;
 //            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + wingAngle * 2.2F;
 //            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + wingAngle * 2.2F;
 
-        if (sharedGenes[146] == 2 && sharedGenes[147] == 2) {
-            if (sharedGenes[148] == 2 && sharedGenes[149] == 2) {
+            if (sharedGenes[146] == 2 && sharedGenes[147] == 2) {
+                if (sharedGenes[148] == 2 && sharedGenes[149] == 2) {
+                    //normal body
+                    this.rightWing.rotationPointX = -4.0F;
+                    this.leftWing.rotationPointX = 4.0F;
+                } else {
+                    //big body
+                    this.rightWing.rotationPointX = -4.5F;
+                    this.leftWing.rotationPointX = 4.5F;
+                }
+            } else if (sharedGenes[148] == 2 && sharedGenes[149] == 2) {
+                if (sharedGenes[146] == 2 || sharedGenes[147] == 2) {
+                    //normal body
+                    this.rightWing.rotationPointX = -4.0F;
+                    this.leftWing.rotationPointX = 4.0F;
+                } else {
+                    //small body
+                    this.rightWing.rotationPointX = -3.5F;
+                    this.leftWing.rotationPointX = 3.5F;
+                }
+            } else {
                 //normal body
                 this.rightWing.rotationPointX = -4.0F;
                 this.leftWing.rotationPointX = 4.0F;
-            } else {
-                //big body
-                this.rightWing.rotationPointX = -4.5F;
-                this.leftWing.rotationPointX = 4.5F;
             }
-        } else if (sharedGenes[148] == 2 && sharedGenes[149] == 2) {
-            if (sharedGenes[146] == 2 || sharedGenes[147] == 2) {
-                //normal body
-                this.rightWing.rotationPointX = -4.0F;
-                this.leftWing.rotationPointX = 4.0F;
-            } else {
-                //small body
-                this.rightWing.rotationPointX = -3.5F;
-                this.leftWing.rotationPointX = 3.5F;
-            }
-        } else {
-            //normal body
-            this.rightWing.rotationPointX = -4.0F;
-            this.leftWing.rotationPointX = 4.0F;
         }
 
         this.head.rotationPointY = 9.0F + ((EnhancedChicken)entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
@@ -1176,7 +1192,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
     private ChickenModelData getCreateChickenModelData(T enhancedChicken) {
         clearCacheTimer++;
-        if(clearCacheTimer > 100000) {
+        if(clearCacheTimer > 50000) {
             chickenModelDataCache.values().removeIf(value -> value.lastAccessed==1);
             for (ChickenModelData cowModelData : chickenModelDataCache.values()){
                 cowModelData.lastAccessed = 1;
@@ -1199,7 +1215,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             chickenModelData.birthTime = enhancedChicken.getBirthTime();
             chickenModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedChicken.world).getWorldInfo()).getGameTime());
 
-            chickenModelDataCache.put(enhancedChicken.getEntityId(), chickenModelData);
+            if(chickenModelData.chickenGenes != null) {
+                chickenModelDataCache.put(enhancedChicken.getEntityId(), chickenModelData);
+            }
+
 
             return chickenModelData;
         }

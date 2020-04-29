@@ -331,40 +331,42 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         float size = 1;
 
-        if (genes[0] < 3) {
-            size = size - 0.025F;
-            if (genes[0] < 2) {
+        if (genes != null) {
+            if (genes[0] < 3) {
                 size = size - 0.025F;
+                if (genes[0] < 2) {
+                    size = size - 0.025F;
+                }
             }
-        }
-        if (genes[1] < 3) {
-            size = size - 0.025F;
-            if (genes[1] < 2) {
+            if (genes[1] < 3) {
                 size = size - 0.025F;
+                if (genes[1] < 2) {
+                    size = size - 0.025F;
+                }
             }
-        }
-        if (genes[2] < 3) {
-            size = size - 0.025F;
-            if (genes[2] < 2) {
+            if (genes[2] < 3) {
                 size = size - 0.025F;
+                if (genes[2] < 2) {
+                    size = size - 0.025F;
+                }
             }
-        }
-        if (genes[3] < 3) {
-            size = size - 0.025F;
-            if (genes[3] < 2) {
+            if (genes[3] < 3) {
                 size = size - 0.025F;
+                if (genes[3] < 2) {
+                    size = size - 0.025F;
+                }
             }
-        }
 
-        // banana ears
-        if (genes[18] != 1 && genes[19] != 1) {
-            if (genes[18] == 2 || genes[19] == 2) {
-                banana = true;
+            // banana ears
+            if (genes[18] != 1 && genes[19] != 1) {
+                if (genes[18] == 2 || genes[19] == 2) {
+                    banana = true;
+                }
             }
-        }
 
-        if (genes[20] == 2 && genes[21] == 2) {
-            suri = true;
+            if (genes[20] == 2 && genes[21] == 2) {
+                suri = true;
+            }
         }
 
         float age = 1.0F;
@@ -577,69 +579,71 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.nose.rotationPointZ = 1.5F - (age*1.5F);
 
         //range from -12.1 to 10.5
-        float noseHeight;
-        if (sharedGenes[28] == 1) {
-            noseHeight = 0.1F;
-        } else if (sharedGenes[28] == 2) {
-            noseHeight = 0.15F;
-        } else if (sharedGenes[28] == 3) {
-            noseHeight = 0.0F;
-        } else {
-            noseHeight = -0.1F;
-        }
+        float noseHeight = 0F;
+        if (sharedGenes != null) {
+            if (sharedGenes[28] == 1) {
+                noseHeight = 0.1F;
+            } else if (sharedGenes[28] == 2) {
+                noseHeight = 0.15F;
+            } else if (sharedGenes[28] == 3) {
+                noseHeight = 0.0F;
+            } else {
+                noseHeight = -0.1F;
+            }
 
-        if (sharedGenes[29] == 1) {
-            noseHeight = noseHeight + 0.1F;
-        } else if (sharedGenes[28] == 2) {
-            noseHeight = noseHeight + 0.05F;
-        } else if (sharedGenes[28] == 3) {
-            noseHeight = noseHeight + 0.0F;
-        } else {
-            noseHeight = noseHeight - 0.1F;
-        }
+            if (sharedGenes[29] == 1) {
+                noseHeight = noseHeight + 0.1F;
+            } else if (sharedGenes[28] == 2) {
+                noseHeight = noseHeight + 0.05F;
+            } else if (sharedGenes[28] == 3) {
+                noseHeight = noseHeight + 0.0F;
+            } else {
+                noseHeight = noseHeight - 0.1F;
+            }
 
-        if (sharedGenes[30] == 1) {
-            noseHeight = noseHeight + 0.1F;
-        } else if (sharedGenes[30] == 2) {
-            noseHeight = noseHeight + 0.15F;
-        } else if (sharedGenes[30] == 3) {
-            noseHeight = noseHeight + 0.0F;
-        } else {
-            noseHeight = noseHeight - 0.1F;
-        }
+            if (sharedGenes[30] == 1) {
+                noseHeight = noseHeight + 0.1F;
+            } else if (sharedGenes[30] == 2) {
+                noseHeight = noseHeight + 0.15F;
+            } else if (sharedGenes[30] == 3) {
+                noseHeight = noseHeight + 0.0F;
+            } else {
+                noseHeight = noseHeight - 0.1F;
+            }
 
-        if (sharedGenes[31] == 1) {
-            noseHeight = noseHeight + 0.1F;
-        } else if (sharedGenes[31] == 2) {
-            noseHeight = noseHeight + 0.05F;
-        } else if (sharedGenes[31] == 3) {
-            noseHeight = noseHeight + 0.0F;
-        } else {
-            noseHeight = noseHeight - 0.1F;
-        }
+            if (sharedGenes[31] == 1) {
+                noseHeight = noseHeight + 0.1F;
+            } else if (sharedGenes[31] == 2) {
+                noseHeight = noseHeight + 0.05F;
+            } else if (sharedGenes[31] == 3) {
+                noseHeight = noseHeight + 0.0F;
+            } else {
+                noseHeight = noseHeight - 0.1F;
+            }
 
-        if (sharedGenes[32] == 1) {
-            noseHeight = noseHeight + 0.2F;
-        } else if (sharedGenes[32] == 2) {
-            noseHeight = noseHeight + 0.15F;
-        } else if (sharedGenes[32] == 3) {
-            noseHeight = noseHeight + 0.0F;
-        } else if (sharedGenes[32] == 4) {
-            noseHeight = noseHeight - 0.15F;
-        } else {
-            noseHeight = noseHeight - 0.2F;
-        }
+            if (sharedGenes[32] == 1) {
+                noseHeight = noseHeight + 0.2F;
+            } else if (sharedGenes[32] == 2) {
+                noseHeight = noseHeight + 0.15F;
+            } else if (sharedGenes[32] == 3) {
+                noseHeight = noseHeight + 0.0F;
+            } else if (sharedGenes[32] == 4) {
+                noseHeight = noseHeight - 0.15F;
+            } else {
+                noseHeight = noseHeight - 0.2F;
+            }
 
-        if (sharedGenes[33] == 1) {
-            noseHeight = noseHeight + 0.2F;
-        } else if (sharedGenes[33] == 2) {
-            noseHeight = noseHeight + 0.15F;
-        } else if (sharedGenes[33] == 3) {
-            noseHeight = noseHeight + 0.0F;
-        } else if (sharedGenes[33] == 4) {
-            noseHeight = noseHeight - 0.15F;
-        } else {
-            noseHeight = noseHeight - 0.2F;
+            if (sharedGenes[33] == 1) {
+                noseHeight = noseHeight + 0.2F;
+            } else if (sharedGenes[33] == 2) {
+                noseHeight = noseHeight + 0.15F;
+            } else if (sharedGenes[33] == 3) {
+                noseHeight = noseHeight + 0.0F;
+            } else if (sharedGenes[33] == 4) {
+                noseHeight = noseHeight - 0.15F;
+            } else {
+                noseHeight = noseHeight - 0.2F;
+            }
         }
 
         this.nose.rotationPointY = -0.3F - noseHeight;
@@ -730,7 +734,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
     private LlamaModelData getCreateLlamaModelData(T enhancedLlama) {
         clearCacheTimer++;
-        if(clearCacheTimer > 100000) {
+        if(clearCacheTimer > 50000) {
             llamaModelDataCache.values().removeIf(value -> value.lastAccessed==1);
             for (LlamaModelData llamaModelData : llamaModelDataCache.values()){
                 llamaModelData.lastAccessed = 1;
@@ -758,7 +762,9 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.birthTime = enhancedLlama.getBirthTime();
             llamaModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedLlama.world).getWorldInfo()).getGameTime());
 
-            llamaModelDataCache.put(enhancedLlama.getEntityId(), llamaModelData);
+            if(llamaModelData.llamaGenes != null) {
+                llamaModelDataCache.put(enhancedLlama.getEntityId(), llamaModelData);
+            }
 
             return llamaModelData;
         }

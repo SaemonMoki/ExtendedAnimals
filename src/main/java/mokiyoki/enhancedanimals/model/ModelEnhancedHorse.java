@@ -426,7 +426,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
     private HorseModelData getCreateHorseModelData(T enhancedHorse) {
         clearCacheTimer++;
-        if(clearCacheTimer > 100000) {
+        if(clearCacheTimer > 50000) {
             horseModelDataCache.values().removeIf(value -> value.lastAccessed==1);
             for (HorseModelData pigModelData : horseModelDataCache.values()){
                 pigModelData.lastAccessed = 1;
@@ -455,7 +455,9 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
             horseModelData.birthTime = enhancedHorse.getBirthTime();
             horseModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedHorse.world).getWorldInfo()).getGameTime());
 
-            horseModelDataCache.put(enhancedHorse.getEntityId(), horseModelData);
+            if(horseModelData.horseGenes != null) {
+                horseModelDataCache.put(enhancedHorse.getEntityId(), horseModelData);
+            }
 
             return horseModelData;
         }

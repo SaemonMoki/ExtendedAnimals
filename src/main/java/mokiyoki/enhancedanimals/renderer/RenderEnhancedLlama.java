@@ -21,6 +21,7 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
 {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_LLAMA_TEXTURE_LOCATION = "eanimod:textures/entities/llama/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/llama/llamabase.png");
 
     public RenderEnhancedLlama(EntityRendererManager render)
     {
@@ -30,9 +31,13 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    public ResourceLocation getEntityTexture(EnhancedLlama entity)
-    {
+    public ResourceLocation getEntityTexture(EnhancedLlama entity) {
         String s = entity.getLlamaTexture();
+
+        if (s == null || s.isEmpty()) {
+            return ERROR_TEXTURE_LOCATION;
+        }
+
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
         if (resourcelocation == null)

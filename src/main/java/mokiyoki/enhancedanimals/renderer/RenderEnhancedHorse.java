@@ -17,6 +17,9 @@ import java.util.Map;
 public class RenderEnhancedHorse extends MobRenderer<EnhancedHorse, ModelEnhancedHorse<EnhancedHorse>> {
     private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
     private static final String ENHANCED_HORSE_TEXTURE_LOCATION = "eanimod:textures/entities/horse/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/horse/horsebase.png");
+
+
 
     public RenderEnhancedHorse(EntityRendererManager render)
     {
@@ -28,8 +31,12 @@ public class RenderEnhancedHorse extends MobRenderer<EnhancedHorse, ModelEnhance
      */
     public ResourceLocation getEntityTexture(EnhancedHorse entity) {
         String s = entity.getHorseTexture();
-
         float[] colourRGB = entity.getRgb();
+
+        if (s == null || s.isEmpty() || colourRGB == null) {
+            return ERROR_TEXTURE_LOCATION;
+        }
+
         if (colourRGB[0] == 1.0 && colourRGB[1] == 1.0 && colourRGB[2] == 1.0) {
             colourRGB = null;
         } else {

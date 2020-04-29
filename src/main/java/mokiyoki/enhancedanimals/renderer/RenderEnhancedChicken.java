@@ -45,14 +45,19 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
 
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
-        if (resourcelocation == null)
-        {
+        if (resourcelocation == null) {
+            String[] textures = entity.getVariantTexturePaths();
+
+            if (textures == null || textures.length == 0) {
+                return ERROR_TEXTURE_LOCATION;
+            }
+
             resourcelocation = new ResourceLocation(s);
 
             if (genes[106] == 1 || genes[107] == 1) {
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, entity.getVariantTexturePaths(), null));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, textures, null));
             } else {
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION, null, entity.getVariantTexturePaths(), null));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION, null, textures, null));
             }
 
             LAYERED_LOCATION_CACHE.put(s, resourcelocation);

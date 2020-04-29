@@ -36,11 +36,11 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
 
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
-        if (resourcelocation == null)
-        {
+        if (resourcelocation == null) {
             float[] dyeRGB = EnhancedSheep.getDyeRgb(entity.getFleeceDyeColour());
+            String[] textures = entity.getVariantTexturePaths();
 
-            if (dyeRGB == null || dyeRGB.length == 0) {
+            if (dyeRGB == null || dyeRGB.length == 0 || textures == null || textures.length == 0) {
                 return ERROR_TEXTURE_LOCATION;
             }
 
@@ -49,7 +49,7 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
             }
 
             resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_SHEEP_TEXTURE_LOCATION, dyeRGB, entity.getVariantTexturePaths(), null));
+            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_SHEEP_TEXTURE_LOCATION, dyeRGB, textures, null));
             LAYERED_LOCATION_CACHE.put(s, resourcelocation);
         }
 

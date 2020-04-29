@@ -45,8 +45,15 @@ public class RenderEnhancedCow extends MobRenderer<EnhancedCow, ModelEnhancedCow
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
         if (resourcelocation == null) {
+
+            String[] textures = entity.getVariantTexturePaths();
+
+            if (textures == null || textures.length == 0) {
+                return ERROR_TEXTURE_LOCATION;
+            }
+
             resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, colourRGB, entity.getVariantTexturePaths(), null));
+            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, colourRGB, textures, null));
             LAYERED_LOCATION_CACHE.put(s, resourcelocation);
         }
         return resourcelocation;

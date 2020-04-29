@@ -38,10 +38,15 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
 
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
-        if (resourcelocation == null)
-        {
+        if (resourcelocation == null) {
+            String[] textures = entity.getVariantTexturePaths();
+
+            if (textures == null || textures.length == 0) {
+                return ERROR_TEXTURE_LOCATION;
+            }
+
             resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_PIG_TEXTURE_LOCATION, null, entity.getVariantTexturePaths(), entity.getVariantAlphaTexturePaths()));
+            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_PIG_TEXTURE_LOCATION, null, textures, entity.getVariantAlphaTexturePaths()));
            LAYERED_LOCATION_CACHE.put(s, resourcelocation);
         }
 

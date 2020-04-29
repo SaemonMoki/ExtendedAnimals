@@ -1175,7 +1175,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     private class ChickenModelData {
         int[] chickenGenes;
         String birthTime;
-        boolean sleeping;
+        boolean sleeping = false;
         int lastAccessed = 0;
         long clientGameTime = 0;
         List<String> unrenderedModels = new ArrayList<>();
@@ -1183,11 +1183,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     }
 
     private ChickenModelData getChickenModelData() {
-        if (this.currentChicken == null) {
-            return null;
+        if (this.currentChicken == null || !chickenModelDataCache.containsKey(this.currentChicken)) {
+            return new ChickenModelData();
         }
-        ChickenModelData cowModelData = chickenModelDataCache.get(this.currentChicken);
-        return cowModelData;
+        return chickenModelDataCache.get(this.currentChicken);
     }
 
     private ChickenModelData getCreateChickenModelData(T enhancedChicken) {

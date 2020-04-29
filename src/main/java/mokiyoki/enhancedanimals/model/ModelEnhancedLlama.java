@@ -716,20 +716,19 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
     private class LlamaModelData {
         int[] llamaGenes;
-        int coatlength;
+        int coatlength = 0;
         String birthTime;
-        boolean sleeping;
+        boolean sleeping = false;
         int lastAccessed = 0;
         long clientGameTime = 0;
 //        int dataReset = 0;
     }
 
     private LlamaModelData getLlamaModelData() {
-        if (this.currentLlama == null) {
-            return null;
+        if (this.currentLlama == null || !llamaModelDataCache.containsKey(this.currentLlama)) {
+            return new LlamaModelData();
         }
-        LlamaModelData llamaModelData = llamaModelDataCache.get(this.currentLlama);
-        return llamaModelData;
+        return llamaModelDataCache.get(this.currentLlama);
     }
 
     private LlamaModelData getCreateLlamaModelData(T enhancedLlama) {

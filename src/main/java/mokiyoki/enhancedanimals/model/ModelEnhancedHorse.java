@@ -166,162 +166,163 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
         char[] uuidArry = horseModelData.uuidArray;
 
-        if (Character.isDigit(uuidArry[16])){
-            if (uuidArry[16] - 48 == 0) {
-                //0
-                this.hock3.rotationPointZ = 8.5F;
-                this.hock4.rotationPointZ = 8.5F;
-            } else if (uuidArry[16] - 48 == 1) {
-                //1
-                this.hock3.rotationPointZ = 8.4F;
-                this.hock4.rotationPointZ = 8.4F;
-            } else if (uuidArry[16] - 48 == 2) {
-                //2
-                this.hock3.rotationPointZ = 8.3F;
-                this.hock4.rotationPointZ = 8.3F;
-            } else if (uuidArry[16] - 48 == 3) {
-                //3
-                this.hock3.rotationPointZ = 8.2F;
-                this.hock4.rotationPointZ = 8.2F;
-            } else if (uuidArry[16] - 48 == 4) {
-                //4
-                this.hock3.rotationPointZ = 8.1F;
-                this.hock4.rotationPointZ = 8.1F;
-            } else if (uuidArry[16] - 48 == 5) {
-                //5
-                this.hock3.rotationPointZ = 8.0F;
-                this.hock4.rotationPointZ = 8.0F;
-            } else if (uuidArry[16] - 48 == 6) {
-                //6
-                this.hock3.rotationPointZ = 7.9F;
-                this.hock4.rotationPointZ = 7.9F;
-            } else if (uuidArry[16] - 48 == 7) {
-                //7
-                this.hock3.rotationPointZ = 7.8F;
-                this.hock4.rotationPointZ = 7.8F;
-            } else if (uuidArry[16] - 48 == 8) {
-                //0
-                this.hock3.rotationPointZ = 8.5F;
-                this.hock4.rotationPointZ = 8.5F;
-            } else {
-                //1
-                this.hock3.rotationPointZ = 8.4F;
-                this.hock4.rotationPointZ = 8.4F;
-            }
-        } else {
-            char test = uuidArry[16];
-            switch (test){
-                case 'a':
+        if (uuidArry != null) {
+            if (Character.isDigit(uuidArry[16])){
+                if (uuidArry[16] - 48 == 0) {
+                    //0
+                    this.hock3.rotationPointZ = 8.5F;
+                    this.hock4.rotationPointZ = 8.5F;
+                } else if (uuidArry[16] - 48 == 1) {
+                    //1
+                    this.hock3.rotationPointZ = 8.4F;
+                    this.hock4.rotationPointZ = 8.4F;
+                } else if (uuidArry[16] - 48 == 2) {
                     //2
                     this.hock3.rotationPointZ = 8.3F;
                     this.hock4.rotationPointZ = 8.3F;
-                    break;
-                case 'b':
+                } else if (uuidArry[16] - 48 == 3) {
                     //3
                     this.hock3.rotationPointZ = 8.2F;
                     this.hock4.rotationPointZ = 8.2F;
-                    break;
-                case 'c':
+                } else if (uuidArry[16] - 48 == 4) {
                     //4
                     this.hock3.rotationPointZ = 8.1F;
                     this.hock4.rotationPointZ = 8.1F;
-                    break;
-                case 'd':
+                } else if (uuidArry[16] - 48 == 5) {
                     //5
                     this.hock3.rotationPointZ = 8.0F;
                     this.hock4.rotationPointZ = 8.0F;
-                    break;
-                case 'e':
+                } else if (uuidArry[16] - 48 == 6) {
                     //6
                     this.hock3.rotationPointZ = 7.9F;
                     this.hock4.rotationPointZ = 7.9F;
-                    break;
-                case 'f':
+                } else if (uuidArry[16] - 48 == 7) {
                     //7
                     this.hock3.rotationPointZ = 7.8F;
                     this.hock4.rotationPointZ = 7.8F;
-                    break;
-            }
-        }
-
-        if (Character.isDigit(uuidArry[17])){
-            if (uuidArry[17] - 48 == 0) {
-                //a
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.5F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.5F;
-            } else if (uuidArry[17] - 48 == 1) {
-                //b
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.35F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.35F;
-            } else if (uuidArry[17] - 48 == 2) {
-                //c
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.25F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.25F;
-            } else if (uuidArry[17] - 48 == 3) {
-                //d
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.15F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.15F;
-            } else if (uuidArry[17] - 48 == 4) {
-                //e
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.05F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.05F;
-            } else if (uuidArry[17] - 48 == 5) {
-                //f
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.95F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.95F;
-            } else if (uuidArry[17] - 48 == 6) {
-                //g
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.85F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.85F;
-            } else if (uuidArry[17] - 48 == 7) {
-                //h
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.75F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.75F;
-            } else if (uuidArry[17] - 48 == 8) {
-                //a
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.5F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.5F;
+                } else if (uuidArry[16] - 48 == 8) {
+                    //0
+                    this.hock3.rotationPointZ = 8.5F;
+                    this.hock4.rotationPointZ = 8.5F;
+                } else {
+                    //1
+                    this.hock3.rotationPointZ = 8.4F;
+                    this.hock4.rotationPointZ = 8.4F;
+                }
             } else {
-                //b
-                this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.35F;
-                this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.35F;
+                char test = uuidArry[16];
+                switch (test){
+                    case 'a':
+                        //2
+                        this.hock3.rotationPointZ = 8.3F;
+                        this.hock4.rotationPointZ = 8.3F;
+                        break;
+                    case 'b':
+                        //3
+                        this.hock3.rotationPointZ = 8.2F;
+                        this.hock4.rotationPointZ = 8.2F;
+                        break;
+                    case 'c':
+                        //4
+                        this.hock3.rotationPointZ = 8.1F;
+                        this.hock4.rotationPointZ = 8.1F;
+                        break;
+                    case 'd':
+                        //5
+                        this.hock3.rotationPointZ = 8.0F;
+                        this.hock4.rotationPointZ = 8.0F;
+                        break;
+                    case 'e':
+                        //6
+                        this.hock3.rotationPointZ = 7.9F;
+                        this.hock4.rotationPointZ = 7.9F;
+                        break;
+                    case 'f':
+                        //7
+                        this.hock3.rotationPointZ = 7.8F;
+                        this.hock4.rotationPointZ = 7.8F;
+                        break;
+                }
             }
-        } else {
-            char test = uuidArry[17];
-            switch (test){
-                case 'a':
+
+            if (Character.isDigit(uuidArry[17])){
+                if (uuidArry[17] - 48 == 0) {
+                    //a
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.5F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.5F;
+                } else if (uuidArry[17] - 48 == 1) {
+                    //b
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.35F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.35F;
+                } else if (uuidArry[17] - 48 == 2) {
                     //c
                     this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.25F;
                     this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.25F;
-                    break;
-                case 'b':
+                } else if (uuidArry[17] - 48 == 3) {
                     //d
                     this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.15F;
                     this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.15F;
-                    break;
-                case 'c':
+                } else if (uuidArry[17] - 48 == 4) {
                     //e
                     this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.05F;
                     this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.05F;
-                    break;
-                case 'd':
+                } else if (uuidArry[17] - 48 == 5) {
                     //f
                     this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.95F;
                     this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.95F;
-                    break;
-                case 'e':
+                } else if (uuidArry[17] - 48 == 6) {
                     //g
                     this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.85F;
                     this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.85F;
-                    break;
-                case 'f':
+                } else if (uuidArry[17] - 48 == 7) {
                     //h
                     this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.75F;
                     this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.75F;
-                    break;
+                } else if (uuidArry[17] - 48 == 8) {
+                    //a
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.5F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.5F;
+                } else {
+                    //b
+                    this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.35F;
+                    this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.35F;
+                }
+            } else {
+                char test = uuidArry[17];
+                switch (test){
+                    case 'a':
+                        //c
+                        this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.25F;
+                        this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.25F;
+                        break;
+                    case 'b':
+                        //d
+                        this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.15F;
+                        this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.15F;
+                        break;
+                    case 'c':
+                        //e
+                        this.leg3.rotationPointZ = this.hock3.rotationPointZ + 1.05F;
+                        this.leg4.rotationPointZ = this.hock4.rotationPointZ + 1.05F;
+                        break;
+                    case 'd':
+                        //f
+                        this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.95F;
+                        this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.95F;
+                        break;
+                    case 'e':
+                        //g
+                        this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.85F;
+                        this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.85F;
+                        break;
+                    case 'f':
+                        //h
+                        this.leg3.rotationPointZ = this.hock3.rotationPointZ + 0.75F;
+                        this.leg4.rotationPointZ = this.hock4.rotationPointZ + 0.75F;
+                        break;
+                }
             }
         }
-
     }
 
     @Override
@@ -405,31 +406,29 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     }
 
     private class HorseModelData {
-        float previousSwing;
         int[] horseGenes;
         char[] uuidArray;
         String birthTime;
-        float size;
-        boolean sleeping;
+        float size = 1.0F;
+        boolean sleeping = false;
         int lastAccessed = 0;
         long clientGameTime = 0;
 //        int dataReset = 0;
     }
 
     private HorseModelData getHorseModelData() {
-        if (this.currentHorse == null) {
-            return null;
+        if (this.currentHorse == null || !horseModelDataCache.containsKey(this.currentHorse)) {
+            return new HorseModelData();
         }
-        HorseModelData horseModelData = horseModelDataCache.get(this.currentHorse);
-        return horseModelData;
+        return horseModelDataCache.get(this.currentHorse);
     }
 
     private HorseModelData getCreateHorseModelData(T enhancedHorse) {
         clearCacheTimer++;
         if(clearCacheTimer > 50000) {
             horseModelDataCache.values().removeIf(value -> value.lastAccessed==1);
-            for (HorseModelData pigModelData : horseModelDataCache.values()){
-                pigModelData.lastAccessed = 1;
+            for (HorseModelData horseModelData : horseModelDataCache.values()){
+                horseModelData.lastAccessed = 1;
             }
             clearCacheTimer = 0;
         }

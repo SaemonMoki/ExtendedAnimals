@@ -593,23 +593,21 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     }
 
     private class RabbitModelData {
-        float previousSwing;
         int[] rabbitGenes;
         String birthTime;
-        int coatlength;
-        boolean dwarf;
-        boolean sleeping;
+        int coatlength = 0;
+        boolean dwarf = false;
+        boolean sleeping = false;
         int lastAccessed = 0;
         int dataReset = 0;
         long clientGameTime = 0;
     }
 
     private RabbitModelData getRabbitModelData() {
-        if (this.currentRabbit == null) {
-            return null;
+        if (this.currentRabbit == null || !rabbitModelDataCache.containsKey(this.currentRabbit)) {
+            return new RabbitModelData();
         }
-        RabbitModelData cowModelData = rabbitModelDataCache.get(this.currentRabbit);
-        return cowModelData;
+        return rabbitModelDataCache.get(this.currentRabbit);
     }
 
     private RabbitModelData getCreateRabbitModelData(T enhancedRabbit) {

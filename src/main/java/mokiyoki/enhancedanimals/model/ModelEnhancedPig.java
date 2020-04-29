@@ -428,19 +428,18 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         int[] pigGenes;
         char[] uuidArray;
         String birthTime;
-        float size;
-        boolean sleeping;
+        float size = 1.0F;
+        boolean sleeping = false;
         int lastAccessed = 0;
         long clientGameTime = 0;
 //        int dataReset = 0;
     }
 
     private PigModelData getPigModelData() {
-        if (this.currentPig == null) {
-            return null;
+        if (this.currentPig == null || !pigModelDataCache.containsKey(this.currentPig)) {
+            return new PigModelData();
         }
-        PigModelData cowModelData = pigModelDataCache.get(this.currentPig);
-        return cowModelData;
+        return pigModelDataCache.get(this.currentPig);
     }
 
     private PigModelData getCreatePigModelData(T enhancedPig) {

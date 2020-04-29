@@ -1181,25 +1181,24 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         float previousSwing;
         int[] sheepGenes;
         String birthTime;
-        float bagSize;
-        float size;
-        String sheepStatus;
-        int coatlength;
+        float bagSize = 1.0F;
+        float size = 1.0F;
+        String sheepStatus = "";
+        int coatlength = 0;
         char[] uuidArray;
-        boolean sleeping;
+        boolean sleeping = false;
         int lastAccessed = 0;
         int dataReset = 0;
         long clientGameTime = 0;
-        int horns;
+        int horns = 0;
         List<String> unrenderedModels = new ArrayList<>();
     }
 
     private SheepModelData getSheepModelData() {
-        if (this.currentSheep == null) {
-            return null;
+        if (this.currentSheep == null || !sheepModelDataCache.containsKey(this.currentSheep)) {
+            return new SheepModelData();
         }
-        SheepModelData sheepModelData = sheepModelDataCache.get(this.currentSheep);
-        return sheepModelData;
+        return sheepModelDataCache.get(this.currentSheep);
     }
 
     private SheepModelData getCreateSheepModelData(T enhancedSheep) {

@@ -767,41 +767,44 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 lengthL = lengthL + 5;
                 lengthR = lengthR + 5;
 
-                if (Character.isDigit(uuidArray[4])) {
-                    if ((uuidArray[4] - 48) <= 3 ) {
-                        //shorten left horn
-                        lengthL = lengthL + (uuidArray[4] - 48);
-                    } else if ((uuidArray[4] - 48) <= 7 ) {
-                        //shorten right horn
-                        lengthR = lengthR + (uuidArray[4] - 52);
+                if (uuidArray != null) {
+                    if (Character.isDigit(uuidArray[4])) {
+                        if ((uuidArray[4] - 48) <= 3 ) {
+                            //shorten left horn
+                            lengthL = lengthL + (uuidArray[4] - 48);
+                        } else if ((uuidArray[4] - 48) <= 7 ) {
+                            //shorten right horn
+                            lengthR = lengthR + (uuidArray[4] - 52);
+                        } else {
+                            // shorten evenly
+                            lengthL = lengthL + (uuidArray[4] - 55);
+                            lengthR = lengthL;
+                        }
                     } else {
-                        // shorten evenly
-                        lengthL = lengthL + (uuidArray[4] - 55);
-                        lengthR = lengthL;
-                    }
-                } else {
-                    char a = uuidArray[4];
-                    switch (a) {
-                        case 'a':
-                            lengthL = lengthL + 1;
-                            lengthR = lengthR + 2;
-                        case 'b':
-                            lengthL = lengthL + 2;
-                            lengthR = lengthR + 1;
-                        case 'c':
-                            lengthL = lengthL + 1;
-                            lengthR = lengthR + 3;
-                        case 'd':
-                            lengthL = lengthL + 3;
-                            lengthR = lengthR + 1;
-                        case 'e':
-                            lengthL = lengthL + 2;
-                            lengthR = lengthR + 3;
-                        case 'f':
-                            lengthL = lengthL + 3;
-                            lengthR = lengthR + 2;
+                        char a = uuidArray[4];
+                        switch (a) {
+                            case 'a':
+                                lengthL = lengthL + 1;
+                                lengthR = lengthR + 2;
+                            case 'b':
+                                lengthL = lengthL + 2;
+                                lengthR = lengthR + 1;
+                            case 'c':
+                                lengthL = lengthL + 1;
+                                lengthR = lengthR + 3;
+                            case 'd':
+                                lengthL = lengthL + 3;
+                                lengthR = lengthR + 1;
+                            case 'e':
+                                lengthL = lengthL + 2;
+                                lengthR = lengthR + 3;
+                            case 'f':
+                                lengthL = lengthL + 3;
+                                lengthR = lengthR + 2;
+                        }
                     }
                 }
+
             } else {
                 if(cowGenes != null) {
                     //if horns are not scurred shorten horns if they are extra thicc
@@ -1365,16 +1368,18 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                     //horned
                 } else if (sharedGenes[76] == 1 || sharedGenes[77] == 1) {
                     //sex determined horned
-                    if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
-                        //horned if male
-                    } else {
-                        //polled if female unless
-                        if (sharedGenes[78] == 1 && sharedGenes[79] == 1) {
-                            //she is scured
-                            horns = -0.75F;
+                    if (uuidArray != null) {
+                        if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
+                            //horned if male
                         } else {
-                            //polled
-                            horns = 0.0F;
+                            //polled if female unless
+                            if (sharedGenes[78] == 1 && sharedGenes[79] == 1) {
+                                //she is scured
+                                horns = -0.75F;
+                            } else {
+                                //polled
+                                horns = 0.0F;
+                            }
                         }
                     }
                 } else {
@@ -1384,12 +1389,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                         horns = -0.75F;
                     } else if (sharedGenes[78] == 1 || sharedGenes[79] == 1) {
                         //sex determined scured
-                        if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
-                            //scurred
-                            horns = -0.75F;
-                        } else {
-                            //polled
-                            horns = 0.0F;
+                        if (uuidArray != null) {
+                            if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
+                                //scurred
+                                horns = -0.75F;
+                            } else {
+                                //polled
+                                horns = 0.0F;
+                            }
                         }
                     } else {
                         //polled
@@ -1424,11 +1431,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private class CowModelData {
         int[] cowGenes;
         String birthTime;
-        float cowSize;
+        float cowSize = 1.0F;
         char[] uuidArray;
         int lastAccessed = 0;
-        float bagSize;
-        String cowStatus;
+        float bagSize = 1.0F;
+        String cowStatus = "";
         boolean sleeping = false;
         int dataReset = 0;
         long clientGameTime = 0;
@@ -1436,11 +1443,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     }
 
     private CowModelData getCowModelData() {
-        if (this.currentCow == null) {
-            return null;
+        if (this.currentCow == null || !cowModelDataCache.containsKey(this.currentCow)) {
+            return new CowModelData();
         }
-        CowModelData cowModelData = cowModelDataCache.get(this.currentCow);
-        return cowModelData;
+        return cowModelDataCache.get(this.currentCow);
     }
 
     private CowModelData getCreateCowModelData(T enhancedCow) {

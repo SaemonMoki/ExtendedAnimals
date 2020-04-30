@@ -896,39 +896,41 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             lengthL = lengthL + 8;
             lengthR = lengthR + 8;
 
-            if (Character.isDigit(sheepModelData.uuidArray[4])) {
-                if ((sheepModelData.uuidArray[4] - 48) <= 3 ) {
-                    //shorten left horn
-                    lengthL = lengthL + (sheepModelData.uuidArray[4] - 48);
-                } else if ((sheepModelData.uuidArray[4] - 48) <= 7 ) {
-                    //shorten right horn
-                    lengthR = lengthR + (sheepModelData.uuidArray[4] - 52);
+            if (sheepModelData.uuidArray != null) {
+                if (Character.isDigit(sheepModelData.uuidArray[4])) {
+                    if ((sheepModelData.uuidArray[4] - 48) <= 3 ) {
+                        //shorten left horn
+                        lengthL = lengthL + (sheepModelData.uuidArray[4] - 48);
+                    } else if ((sheepModelData.uuidArray[4] - 48) <= 7 ) {
+                        //shorten right horn
+                        lengthR = lengthR + (sheepModelData.uuidArray[4] - 52);
+                    } else {
+                        // shorten evenly
+                        lengthL = lengthL + (sheepModelData.uuidArray[4] - 55);
+                        lengthR = lengthL;
+                    }
                 } else {
-                    // shorten evenly
-                    lengthL = lengthL + (sheepModelData.uuidArray[4] - 55);
-                    lengthR = lengthL;
-                }
-            } else {
-                char a = sheepModelData.uuidArray[4];
-                switch (a) {
-                    case 'a':
-                        lengthL = lengthL + 1;
-                        lengthR = lengthR + 2;
-                    case 'b':
-                        lengthL = lengthL + 2;
-                        lengthR = lengthR + 1;
-                    case 'c':
-                        lengthL = lengthL + 1;
-                        lengthR = lengthR + 3;
-                    case 'd':
-                        lengthL = lengthL + 3;
-                        lengthR = lengthR + 1;
-                    case 'e':
-                        lengthL = lengthL + 2;
-                        lengthR = lengthR + 3;
-                    case 'f':
-                        lengthL = lengthL + 3;
-                        lengthR = lengthR + 2;
+                    char a = sheepModelData.uuidArray[4];
+                    switch (a) {
+                        case 'a':
+                            lengthL = lengthL + 1;
+                            lengthR = lengthR + 2;
+                        case 'b':
+                            lengthL = lengthL + 2;
+                            lengthR = lengthR + 1;
+                        case 'c':
+                            lengthL = lengthL + 1;
+                            lengthR = lengthR + 3;
+                        case 'd':
+                            lengthL = lengthL + 3;
+                            lengthR = lengthR + 1;
+                        case 'e':
+                            lengthL = lengthL + 2;
+                            lengthR = lengthR + 3;
+                        case 'f':
+                            lengthL = lengthL + 3;
+                            lengthR = lengthR + 2;
+                    }
                 }
             }
         }
@@ -1019,15 +1021,17 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         float polycerate = 1.0F;
 
-        if (sheepModelData.sheepGenes[36] == 1 || sheepModelData.sheepGenes[37] == 1) {
-            if (Character.isLetter(sheepModelData.uuidArray[0]) || sheepModelData.uuidArray[0] - 48 >= 8) {
-                //horns if "male"
-                if (Character.isLetter(sheepModelData.uuidArray[2]) || sheepModelData.uuidArray[2] - 48 >= 3) {
-                    polycerate = -0.001F;
-                }
-            } else {
-                if (sheepModelData.uuidArray[2] - 48 <= 3) {
-                    polycerate = -0.001F;
+        if (sheepModelData.sheepGenes != null) {
+            if (sheepModelData.sheepGenes[36] == 1 || sheepModelData.sheepGenes[37] == 1) {
+                if (Character.isLetter(sheepModelData.uuidArray[0]) || sheepModelData.uuidArray[0] - 48 >= 8) {
+                    //horns if "male"
+                    if (Character.isLetter(sheepModelData.uuidArray[2]) || sheepModelData.uuidArray[2] - 48 >= 3) {
+                        polycerate = -0.001F;
+                    }
+                } else {
+                    if (sheepModelData.uuidArray[2] - 48 <= 3) {
+                        polycerate = -0.001F;
+                    }
                 }
             }
         }
@@ -1084,30 +1088,32 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         // 0 = no horns, 1 = scurs, 2 = horns, 3 = polyhorns
 
-        if (genes[6] == 2 || genes[7] == 2) {
-            horns = 2;
-            if (genes[6] == 1 || genes[7] == 1) {
-                //scurs, small horns ect
-                horns = 1;
-            }
-        }else if (genes[6] != 1 && genes[7] != 1){
-            // genderfied horns
-            if ( Character.isLetter(uuidArray[0]) || uuidArray[0]-48 >= 8 ){
-                //horns if "male"
+        if (genes != null) {
+            if (genes[6] == 2 || genes[7] == 2) {
                 horns = 2;
-            }
-        }
-
-        if (horns == 2) {
-            if (genes[36] == 1 || genes[37] == 1) {
-                if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
+                if (genes[6] == 1 || genes[7] == 1) {
+                    //scurs, small horns ect
+                    horns = 1;
+                }
+            }else if (genes[6] != 1 && genes[7] != 1){
+                // genderfied horns
+                if ( Character.isLetter(uuidArray[0]) || uuidArray[0]-48 >= 8 ){
                     //horns if "male"
-                    if (Character.isLetter(uuidArray[2]) || uuidArray[2] - 48 >= 3) {
-                        horns = 3;
-                    }
-                } else {
-                    if (uuidArray[2] - 48 <= 3) {
-                        horns = 3;
+                    horns = 2;
+                }
+            }
+
+            if (horns == 2) {
+                if (genes[36] == 1 || genes[37] == 1) {
+                    if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
+                        //horns if "male"
+                        if (Character.isLetter(uuidArray[2]) || uuidArray[2] - 48 >= 3) {
+                            horns = 3;
+                        }
+                    } else {
+                        if (uuidArray[2] - 48 <= 3) {
+                            horns = 3;
+                        }
                     }
                 }
             }

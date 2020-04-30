@@ -49,9 +49,13 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
                 return ERROR_TEXTURE_LOCATION;
             }
 
-            resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, colourRGB, textures, null));
-            LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+            try {
+                resourcelocation = new ResourceLocation(s);
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, colourRGB, textures, null));
+                LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+            } catch (IllegalStateException e) {
+                return ERROR_TEXTURE_LOCATION;
+            }
         }
 
         return resourcelocation;

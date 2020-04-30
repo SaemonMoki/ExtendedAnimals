@@ -47,9 +47,13 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
                 return ERROR_TEXTURE_LOCATION;
             }
 
-            resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_LLAMA_TEXTURE_LOCATION, null, textures, null));
-            LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+            try {
+                resourcelocation = new ResourceLocation(s);
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_LLAMA_TEXTURE_LOCATION, null, textures, null));
+                LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+            } catch (IllegalStateException e) {
+                return ERROR_TEXTURE_LOCATION;
+            }
         }
 
         return resourcelocation;

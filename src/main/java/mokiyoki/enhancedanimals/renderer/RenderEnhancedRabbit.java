@@ -47,9 +47,14 @@ public class RenderEnhancedRabbit extends MobRenderer<EnhancedRabbit, ModelEnhan
                 return ERROR_TEXTURE_LOCATION;
             }
 
-            resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_RABBIT_TEXTURE_LOCATION, null, textures, null));
-            LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+            try {
+                resourcelocation = new ResourceLocation(s);
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_RABBIT_TEXTURE_LOCATION, null, textures, null));
+                LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+            } catch (IllegalStateException e) {
+                return ERROR_TEXTURE_LOCATION;
+            }
+
         }
 
         return resourcelocation;

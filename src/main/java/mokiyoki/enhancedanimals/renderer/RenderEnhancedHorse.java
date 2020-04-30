@@ -52,9 +52,13 @@ public class RenderEnhancedHorse extends MobRenderer<EnhancedHorse, ModelEnhance
                 return ERROR_TEXTURE_LOCATION;
             }
 
-            resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_HORSE_TEXTURE_LOCATION, colourRGB, textures, null));
-            LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+            try {
+                resourcelocation = new ResourceLocation(s);
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_HORSE_TEXTURE_LOCATION, colourRGB, textures, null));
+                LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+            } catch (IllegalStateException e) {
+                return ERROR_TEXTURE_LOCATION;
+            }
         }
 
         return resourcelocation;

@@ -561,17 +561,19 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         int facewool = 0;
 
-        if (genes[42] == 1 || genes[43] == 1) {
-            if (genes[40] == 1) {
-                facewool++;
-            }
-            if (genes[41] == 1) {
-                facewool++;
-            }
-            if (genes[38] == 1 || genes[39] == 1) {
-                facewool++;
-            } else if (genes[38] == 3 && genes[39] == 3) {
-                facewool--;
+        if (genes != null) {
+            if (genes[42] == 1 || genes[43] == 1) {
+                if (genes[40] == 1) {
+                    facewool++;
+                }
+                if (genes[41] == 1) {
+                    facewool++;
+                }
+                if (genes[38] == 1 || genes[39] == 1) {
+                    facewool++;
+                } else if (genes[38] == 3 && genes[39] == 3) {
+                    facewool--;
+                }
             }
         }
 

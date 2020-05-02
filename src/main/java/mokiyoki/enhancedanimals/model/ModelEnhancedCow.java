@@ -67,15 +67,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final EnhancedRendererModelNew hornR9;
     private final EnhancedRendererModelNew headModel; //this is the neck not the head
     private final EnhancedRendererModelNew bodyMedium;
-    private final ModelRenderer udder;
-    private final ModelRenderer nipples;
-    private final ModelRenderer humpXSmall;
-    private final ModelRenderer humpSmall;
-    private final ModelRenderer humpSmallish;
-    private final ModelRenderer humpMedium;
-    private final ModelRenderer humpLargeish;
-    private final ModelRenderer humpLarge;
-    private final ModelRenderer humpXLarge;
+    private final EnhancedRendererModelNew udder;
+    private final EnhancedRendererModelNew nipples;
+    private final EnhancedRendererModelNew humpXSmall;
+    private final EnhancedRendererModelNew humpSmall;
+    private final EnhancedRendererModelNew humpSmallish;
+    private final EnhancedRendererModelNew humpMedium;
+    private final EnhancedRendererModelNew humpLargeish;
+    private final EnhancedRendererModelNew humpLarge;
+    private final EnhancedRendererModelNew humpXLarge;
     private final EnhancedRendererModelNew tail0;
     private final EnhancedRendererModelNew tail1;
     private final EnhancedRendererModelNew tail2;

@@ -12,7 +12,7 @@ import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -268,7 +268,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
     private boolean resetTexture = true;
 
-    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
+    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
     //'father' gene variables list

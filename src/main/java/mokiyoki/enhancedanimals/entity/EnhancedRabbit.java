@@ -5,11 +5,10 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.util.Reference;
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -25,12 +24,9 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.controller.JumpController;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.BreedGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
@@ -235,7 +231,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
 
-    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
+    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 60;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
@@ -567,7 +563,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
     private ITextComponent getPregnantText() {
         String pregnancyText;
-        int days = ConfigHandler.COMMON.gestationDaysRabbit.get();
+        int days = EanimodCommonConfig.COMMON.gestationDaysRabbit.get();
         if (gestationTimer > (days/5 * 4)) {
             pregnancyText = "eanimod.pregnancy.near_birth";
         } else if (gestationTimer > days/2 ) {
@@ -643,7 +639,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
                 if (hunger <= 72000) {
                     if (sleeping) {
-                        int days = ConfigHandler.COMMON.gestationDaysRabbit.get();
+                        int days = EanimodCommonConfig.COMMON.gestationDaysRabbit.get();
                         if ((hunger <= days*(0.50)) && (ticksExisted % 8 == 0)) {
                             hunger = hunger++;
                         }
@@ -700,7 +696,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
             if(pregnant) {
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDaysRabbit.get();
+                int days = EanimodCommonConfig.COMMON.gestationDaysRabbit.get();
                 if (hunger > days*(0.75) && days !=0) {
                     pregnant = false;
                 }

@@ -7,7 +7,7 @@ import mokiyoki.enhancedanimals.ai.general.pig.EnhancedWaterAvoidingRandomWalkin
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -26,7 +26,6 @@ import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -184,7 +183,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
     }};
 
-    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
+    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private final List<String> pigTextures = new ArrayList<>();
     private final List<String> pigAlphaTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 58;
@@ -421,7 +420,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
     private ITextComponent getPregnantText() {
         String pregnancyText;
-        int days = ConfigHandler.COMMON.gestationDaysPig.get();
+        int days = EanimodCommonConfig.COMMON.gestationDaysPig.get();
         if (gestationTimer > (days/5 * 4)) {
             pregnancyText = "eanimod.pregnancy.near_birth";
         } else if (gestationTimer > days/2 ) {
@@ -490,7 +489,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             if (this.getIdleTime() < 100) {
                 if (hunger <= 72000) {
                     if (sleeping) {
-                        int days = ConfigHandler.COMMON.gestationDaysPig.get();
+                        int days = EanimodCommonConfig.COMMON.gestationDaysPig.get();
                         if (hunger <= days * (0.50)) {
                             hunger = hunger++;
                         }
@@ -508,7 +507,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
 
             if(pregnant) {
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDaysPig.get();
+                int days = EanimodCommonConfig.COMMON.gestationDaysPig.get();
                 if (gestationTimer >= days) {
                     pregnant = false;
                     gestationTimer = 0;

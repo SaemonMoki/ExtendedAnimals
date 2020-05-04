@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals;
 
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.core.io.WritingMode;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityStorage;
 import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
@@ -9,31 +11,33 @@ import mokiyoki.enhancedanimals.capability.hay.IHayCapability;
 import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
-import mokiyoki.enhancedanimals.gui.EggCartonScreen;
+import mokiyoki.enhancedanimals.config.EanimodConfig;
+import mokiyoki.enhancedanimals.config.EanimodConfigHelper;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.proxy.ClientProxy;
 import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.proxy.ServerProxy;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
-import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.storage.loot.conditions.LootConditionManager;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.file.Path;
 
 /**
  * Created by moki on 24/08/2018.
@@ -57,8 +61,13 @@ public class EnhancedAnimals {
 
     public static IProxy proxy = DistExecutor.runForDist( () -> () -> new ClientProxy(), () -> () -> new ServerProxy() );
 
+    public static final EanimodCommonConfig commonConfig = new EanimodCommonConfig();
+
     public EnhancedAnimals() {
         instance = this;
+        EanimodConfigHelper.registerConfig(ModLoadingContext.get().getActiveContainer(), commonConfig);
+        Path path = FMLPaths.CONFIGDIR.get().resolve("eanimod-common.toml");
+        loadConfig(EanimodCommonConfig.COMMON_SPEC, path);
 
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -73,8 +82,9 @@ public class EnhancedAnimals {
         MinecraftForge.EVENT_BUS.register(new CapabilityEvents());
         MinecraftForge.EVENT_BUS.register(instance);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_SPEC);
-
+//        ModLoadingContext.get().registerConfig(EanimodConfig.Type.SERVER, EanimodCommonConfig.COMMON_SPEC);
+//        Path path = FMLPaths.CONFIGDIR.get().resolve("eanimod-common.toml");
+//        loadConfig(EanimodCommonConfig.COMMON_SPEC, path);
 
     }
 
@@ -102,6 +112,18 @@ public class EnhancedAnimals {
 
     private void loadComplete(final FMLLoadCompleteEvent event) {
         proxy.initLoadComplete(event);
+    }
+
+    public static void loadConfig(ForgeConfigSpec spec, Path path) {
+
+        final CommentedFileConfig configData = CommentedFileConfig.builder(path)
+                .sync()
+                .autosave()
+                .writingMode(WritingMode.REPLACE)
+                .build();
+
+        configData.load();
+        spec.setConfig(configData);
     }
 
 }

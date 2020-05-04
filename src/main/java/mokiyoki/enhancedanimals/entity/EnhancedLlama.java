@@ -9,8 +9,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEat
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.util.Reference;
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -34,7 +33,6 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.ai.goal.TargetGoal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.merchant.villager.WanderingTraderEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
@@ -153,7 +151,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     public float destPos;
     private String dropMeatType;
 
-    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
+    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 34;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
@@ -472,7 +470,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     private ITextComponent getPregnantText() {
         String pregnancyText;
-        int days = ConfigHandler.COMMON.gestationDaysLlama.get();
+        int days = EanimodCommonConfig.COMMON.gestationDaysLlama.get();
         if (gestationTimer > (days/5 * 4)) {
             pregnancyText = "eanimod.pregnancy.near_birth";
         } else if (gestationTimer > days/2 ) {
@@ -543,7 +541,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
                 if (hunger <= 72000) {
                     if (sleeping) {
-                        int days = ConfigHandler.COMMON.gestationDaysLlama.get();
+                        int days = EanimodCommonConfig.COMMON.gestationDaysLlama.get();
                         if ((hunger <= days*(0.50)) && (ticksExisted % 2 == 0)) {
                             hunger = hunger++;
                         }
@@ -573,7 +571,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
             if(pregnant) {
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDaysLlama.get();
+                int days = EanimodCommonConfig.COMMON.gestationDaysLlama.get();
                 if (hunger > days*(0.75) && days !=0) {
                     pregnant = false;
                 }

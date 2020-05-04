@@ -9,7 +9,7 @@ import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -22,7 +22,6 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -41,7 +40,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -177,7 +175,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     protected boolean resetTexture = true;
 
-    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
+    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     protected List<String> cowTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 120;
     private int[] genes = new int[GENES_LENGTH];
@@ -407,7 +405,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
             if(pregnant) {
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDaysCow.get();
+                int days = EanimodCommonConfig.COMMON.gestationDaysCow.get();
                 if (days/2 < gestationTimer) {
                     setCowStatus(EntityState.PREGNANT.toString());
                 }
@@ -439,7 +437,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                 if (hunger <= 72000) {
 
                     if (sleeping) {
-                        int days = ConfigHandler.COMMON.gestationDaysCow.get();
+                        int days = EanimodCommonConfig.COMMON.gestationDaysCow.get();
                         if (hunger <= days*(0.50)) {
                             hunger = hunger++;
                         }
@@ -1776,7 +1774,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     private ITextComponent getPregnantText() {
         String pregnancyText;
-        int days = ConfigHandler.COMMON.gestationDaysCow.get();
+        int days = EanimodCommonConfig.COMMON.gestationDaysCow.get();
         if (gestationTimer > (days/5 * 4)) {
             pregnancyText = "eanimod.pregnancy.near_birth";
         } else if (gestationTimer > days/2 ) {

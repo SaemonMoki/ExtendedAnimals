@@ -8,7 +8,7 @@ import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -23,7 +23,6 @@ import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.passive.horse.AbstractChestedHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -162,7 +161,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
     }};
 
-    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
+    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 72;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
@@ -316,7 +315,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
 
             if(pregnant) {
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDaysHorse.get();
+                int days = EanimodCommonConfig.COMMON.gestationDaysHorse.get();
                 if (days/2 < gestationTimer) {
                     setHorseStatus(EntityState.PREGNANT.toString());
                 }
@@ -339,7 +338,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             if (this.getIdleTime() < 100) {
                 if (hunger <= 72000) {
                     if (sleeping) {
-                        int days = ConfigHandler.COMMON.gestationDaysHorse.get();
+                        int days = EanimodCommonConfig.COMMON.gestationDaysHorse.get();
                         if (hunger <= days*(0.50)) {
                             hunger = hunger++;
                         }

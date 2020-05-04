@@ -1,9 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
@@ -66,7 +64,7 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
 
     private boolean fertilized = false;
     private boolean female = true;
-    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
+    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private final List<String> beeTextures = new ArrayList<>();
     private final List<String> beeAlphaTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 10;

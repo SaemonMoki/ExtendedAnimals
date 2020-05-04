@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 //import mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedBee;
 import mokiyoki.enhancedanimals.entity.EnhancedCat;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
@@ -23,7 +24,6 @@ import mokiyoki.enhancedanimals.init.ModTileEntities;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.client.renderer.Atlases;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.entity.EntityClassification;
@@ -35,21 +35,20 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import static mokiyoki.enhancedanimals.init.ModBlocks.Egg_Carton;
-import static mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer.EGG_CARTON_TEXTURE;
 
 //import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
@@ -58,6 +57,7 @@ import static mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer.EGG_
  */
 @Mod.EventBusSubscriber(bus= Mod.EventBusSubscriber.Bus.MOD)
 public class EventRegistry {
+    private static final Logger eventLogger = LogManager.getLogger();
 
     public static final EntityType<EnhancedEntityLlamaSpit> ENHANCED_LLAMA_SPIT = EntityType.Builder.<EnhancedEntityLlamaSpit>create(EnhancedEntityLlamaSpit::new, EntityClassification.MISC).size(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_llama_spit");
     public static final EntityType<EnhancedEntityEgg> ENHANCED_ENTITY_EGG_ENTITY_TYPE = EntityType.Builder.<EnhancedEntityEgg>create(EnhancedEntityEgg::new, EntityClassification.MISC).size(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_egg");
@@ -250,12 +250,12 @@ public class EventRegistry {
     }
 
     @SubscribeEvent
-    public static void onLoadComplete(FMLLoadCompleteEvent event) {
+    public static void onLoadComplete(FMLCommonSetupEvent event) {
         removeVanillaFromBiomes(ForgeRegistries.BIOMES);
 
         for (Biome biome : ForgeRegistries.BIOMES) {
             //Enhanced Rabbit Spawning
-            if (ConfigHandler.COMMON.spawnGeneticRabbits.get() && (biome.getRegistryName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()))) {
+            if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get() && (biome.getRegistryName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()))) {
                 biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3));
             }
         }
@@ -273,49 +273,51 @@ public class EventRegistry {
                 Biome.SpawnListEntry entry = spawns.next();
                 //add and remove pigs
                 if (entry.entityType == EntityType.PIG) {
-                    if(!ConfigHandler.COMMON.spawnVanillaPigs.get()) {
+                    if(!EanimodCommonConfig.COMMON.spawnVanillaPigs.get()) {
+                        eventLogger.info("Removed Pigs from Spawn of biome");
                         spawns.remove();
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_PIG, 6, 2, 3));
                 }
                 //add and remove sheep
                 if (entry.entityType == EntityType.SHEEP) {
-                    if (!ConfigHandler.COMMON.spawnVanillaSheep.get()) {
+                    if (!EanimodCommonConfig.COMMON.spawnVanillaSheep.get()) {
                         spawns.remove();
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_SHEEP, 12, 4, 4));
                 }
                 //add and remove cow
                 if (entry.entityType == EntityType.COW) {
-                    if(!ConfigHandler.COMMON.spawnVanillaCows.get()) {
+                    if(!EanimodCommonConfig.COMMON.spawnVanillaCows.get()) {
                         spawns.remove();
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_COW, 8, 4, 4));
                 }
                 //add and remove llama
                 if (entry.entityType == EntityType.LLAMA) {
-                    if(!ConfigHandler.COMMON.spawnVanillaLlamas.get()) {
+                    if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
                         spawns.remove();
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_LLAMA, 4, 2, 3));
                 }
                 //add and remove chicken
                 if (entry.entityType == EntityType.CHICKEN) {
-                    if (!ConfigHandler.COMMON.spawnVanillaChickens.get()) {
+                    if (!EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
+                        eventLogger.info("Removed Chickens from Spawn of biome");
                         spawns.remove();
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
                 }
                 //add and remove rabbit
                 if (entry.entityType == EntityType.RABBIT) {
-                    if (!ConfigHandler.COMMON.spawnVanillaRabbits.get()) {
+                    if (!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
                         spawns.remove();
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3));
                 }
                 //add and remove mooshroom
                 if (entry.entityType == EntityType.MOOSHROOM) {
-                    if (!ConfigHandler.COMMON.spawnVanillaMooshroom.get()) {
+                    if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
                         spawns.remove();
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_MOOSHROOM, 8, 4, 4));

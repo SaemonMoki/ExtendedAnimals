@@ -1,10 +1,11 @@
-package mokiyoki.enhancedanimals.util.handlers;
+package mokiyoki.enhancedanimals.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 
 
-public class ConfigHandler {
+public class EanimodCommonConfig implements IEanimodConfig{
 
     public static final CommonConfig COMMON;
     public static final ForgeConfigSpec COMMON_SPEC;
@@ -12,6 +13,21 @@ public class ConfigHandler {
         final Pair<CommonConfig, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(CommonConfig::new);
         COMMON_SPEC = specPair.getRight();
         COMMON = specPair.getLeft();
+    }
+
+    @Override
+    public String getFileName() {
+        return "eanimod-common";
+    }
+
+    @Override
+    public ForgeConfigSpec getConfigSpec() {
+        return COMMON_SPEC;
+    }
+
+    @Override
+    public ModConfig.Type getConfigType() {
+        return ModConfig.Type.SERVER;
     }
 
     public static class CommonConfig {

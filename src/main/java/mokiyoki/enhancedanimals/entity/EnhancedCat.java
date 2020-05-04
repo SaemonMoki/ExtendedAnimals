@@ -2,10 +2,9 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.AgeableEntity;
@@ -19,7 +18,6 @@ import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
@@ -173,7 +171,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     protected Boolean hemizygote = false;
     protected int awokenTimer = 0;
 
-    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
+    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 60;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
@@ -377,7 +375,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
     private ITextComponent getPregnantText() {
         String pregnancyText;
-        int days = ConfigHandler.COMMON.gestationDaysCat.get();
+        int days = EanimodCommonConfig.COMMON.gestationDaysCat.get();
         if (gestationTimer > (days/5 * 4)) {
             pregnancyText = "eanimod.pregnancy.near_birth";
         } else if (gestationTimer > days/2 ) {
@@ -446,7 +444,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
                 if (hunger <= 72000) {
                     if (sleeping) {
-                        int days = ConfigHandler.COMMON.gestationDaysCat.get();
+                        int days = EanimodCommonConfig.COMMON.gestationDaysCat.get();
                         if (hunger <= days * (0.50) && (ticksExisted % 8 == 0)) {
                             hunger = hunger++;
                         }
@@ -504,7 +502,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
             if(pregnant) {
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDaysCat.get();
+                int days = EanimodCommonConfig.COMMON.gestationDaysCat.get();
                 if (hunger > days*(0.75) && days !=0) {
                     pregnant = false;
                 }

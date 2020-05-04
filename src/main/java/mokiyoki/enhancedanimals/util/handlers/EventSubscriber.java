@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import net.minecraft.block.Block;
@@ -47,41 +48,41 @@ public class EventSubscriber {
         Entity entity = event.getEntity();
         //TODO figure out how to not delete named entities and maybe convert them instead.
         if (entity instanceof ChickenEntity) {
-            if(!ConfigHandler.COMMON.spawnVanillaChickens.get()) {
+            if(!EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
                 event.setCanceled(true);
             }
         }
         if (entity instanceof RabbitEntity) {
-            if(!ConfigHandler.COMMON.spawnVanillaRabbits.get()) {
+            if(!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
                 event.setCanceled(true);
             }
         }
         if (entity instanceof LlamaEntity) {
             if (!(entity instanceof TraderLlamaEntity)) {
-                    if(!ConfigHandler.COMMON.spawnVanillaLlamas.get()) {
+                    if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
                         event.setCanceled(true);
                     }
-                } else if (ConfigHandler.COMMON.spawnGeneticLlamas.get()) {
+                } else if (EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
                     event.setCanceled(true);
                 }
         }
         if (entity instanceof SheepEntity) {
-            if(!ConfigHandler.COMMON.spawnVanillaSheep.get()) {
+            if(!EanimodCommonConfig.COMMON.spawnVanillaSheep.get()) {
                 event.setCanceled(true);
             }
         }
         if (entity instanceof CowEntity && !(entity instanceof MooshroomEntity)) {
-            if(!ConfigHandler.COMMON.spawnVanillaCows.get()) {
+            if(!EanimodCommonConfig.COMMON.spawnVanillaCows.get()) {
                 event.setCanceled(true);
             }
         }
         if (entity instanceof MooshroomEntity) {
-            if(!ConfigHandler.COMMON.spawnVanillaMooshroom.get()) {
+            if(!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
                 event.setCanceled(true);
             }
         }
         if (entity instanceof PigEntity) {
-            if(!ConfigHandler.COMMON.spawnVanillaPigs.get()) {
+            if(!EanimodCommonConfig.COMMON.spawnVanillaPigs.get()) {
                 event.setCanceled(true);
             }
         }
@@ -92,7 +93,7 @@ public class EventSubscriber {
         public void livingspawnEvent(LivingSpawnEvent.SpecialSpawn event) {
         Entity entity = event.getEntity();
         if (entity instanceof WanderingTraderEntity) {
-            if(!ConfigHandler.COMMON.spawnVanillaLlamas.get()) {
+            if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
                 ((WanderingTraderEntity)entity).setDespawnDelay(48000);
                 World world = event.getWorld().getWorld();
 

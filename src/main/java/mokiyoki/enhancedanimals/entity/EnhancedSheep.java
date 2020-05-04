@@ -6,11 +6,10 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -25,11 +24,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -55,7 +50,6 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.storage.loot.LootTables;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -136,7 +130,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
     }};
 
-    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
+    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private final List<String> sheepTextures = new ArrayList<>();
     private final List<String> sheepFleeceTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 68;
@@ -419,7 +413,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             if (this.getIdleTime() < 100) {
                 if (hunger <= 72000) {
                     if (sleeping) {
-                        int days = ConfigHandler.COMMON.gestationDaysSheep.get();
+                        int days = EanimodCommonConfig.COMMON.gestationDaysSheep.get();
                         if (hunger <= days * (0.50) && (ticksExisted % 2 == 0)) {
                             hunger = hunger++;
                         }
@@ -461,7 +455,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             if(pregnant) {
 
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDaysSheep.get();
+                int days = EanimodCommonConfig.COMMON.gestationDaysSheep.get();
                 if (days/2 < gestationTimer) {
                     setSheepStatus(EntityState.PREGNANT.toString());
                 }
@@ -1610,7 +1604,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     private ITextComponent getPregnantText() {
         String pregnancyText;
-        int days = ConfigHandler.COMMON.gestationDaysSheep.get();
+        int days = EanimodCommonConfig.COMMON.gestationDaysSheep.get();
         if (gestationTimer > (days/5 * 4)) {
             pregnancyText = "eanimod.pregnancy.near_birth";
         } else if (gestationTimer > days/2 ) {

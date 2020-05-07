@@ -43,9 +43,6 @@ public class SparseGrassBlock extends SpreadableSnowyDirtBlock {
         }
     }
 
-
-    //TODO this seems to be what Im supposed to use to make grass/saplings/flowers/ect plantable but nothing calls it
-    //TODO if this does work changes are needed to make it not work for things like cactus and netherwart
     @Override
     public boolean canSustainPlant(BlockState state, IBlockReader world, BlockPos pos, Direction facing, net.minecraftforge.common.IPlantable plantable)
     {
@@ -67,4 +64,6 @@ public class SparseGrassBlock extends SpreadableSnowyDirtBlock {
         }
         return false;
     }
+
+
 }

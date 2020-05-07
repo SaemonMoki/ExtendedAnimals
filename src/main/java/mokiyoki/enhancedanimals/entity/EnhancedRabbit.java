@@ -1043,6 +1043,57 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         }
     }
 
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
+        super.dropSpecialItems(source, looting, recentlyHitIn);
+        int age = this.getAge();
+        float size = Size();
+
+        if ((((size-0.3F) * 71.4286F) + 25) > rand.nextInt(100)) {
+            ItemStack meatStack = new ItemStack(Items.RABBIT, 1 + looting);
+            if (size <= 0.65F || getAge() < 48000 || (size < 0.8F && (size-0.65F)/0.0015F < rand.nextInt(100))) {
+                //small meat
+                if (isBurning()) {
+                    meatStack = new ItemStack(ModItems.CookedRabbit_Small, 1 + looting);
+                } else {
+                    meatStack = new ItemStack(ModItems.RawRabbit_Small, 1 + looting);
+                }
+            } else if (isBurning()) {
+                meatStack = new ItemStack(Items.COOKED_RABBIT, 1 + looting);
+            }
+
+            this.entityDropItem(meatStack);
+        }
+
+        if (!this.isBurning() && ((((size-0.3F) * 71.4286F) + 25) > rand.nextInt(100))) {
+            ItemStack coatStack = new ItemStack(Items.RABBIT_HIDE, 1 + looting);
+            if (maxCoatLength != 0 && currentCoatLength >= 1) {
+                if (currentCoatLength == 1) {
+                    int i = this.rand.nextInt(3);
+                    if (i>2){
+                        coatStack = new ItemStack(Blocks.WHITE_WOOL, 1 + looting);
+                    }
+                } else if (currentCoatLength == 2) {
+                    int i = this.rand.nextInt(1);
+                    if (i>0){
+                        coatStack = new ItemStack(Blocks.WHITE_WOOL, 1 + looting);
+                    }
+                } else if (currentCoatLength == 3) {
+                    int i = this.rand.nextInt(3);
+                    if (i>0){
+                        coatStack = new ItemStack(Blocks.WHITE_WOOL, 1 + looting);
+                    }
+                } else if (currentCoatLength == 4) {
+                    coatStack = new ItemStack(Blocks.WHITE_WOOL, 1 + looting);
+                }
+            }
+            this.entityDropItem(coatStack);
+        }
+
+        if (age > 48000 && rand.nextInt(20) >= 18-looting) {
+            this.entityDropItem(Items.RABBIT_FOOT, 1);
+        }
+    }
+
     @Override
     @Nullable
     protected ResourceLocation getLootTable() {
@@ -1774,7 +1825,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     }
 
     private void setMaxCoatLength() {
-        float angora = 0.0F;
+        int angora = 0;
 
         if ( genes[26] == 2 && genes[27] == 2){
             if (genes[50] == 1 && genes[51] == 1 || genes[50] == 3 && genes[51] == 3){
@@ -1800,7 +1851,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             }
         }
 
-        this.maxCoatLength = (int)angora;
+        this.maxCoatLength = angora;
 
     }
 

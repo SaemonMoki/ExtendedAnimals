@@ -634,8 +634,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
     }
 
-    public void fall(float distance, float damageMultiplier)
-    {
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
     }
 
     public void lethalGenes(){
@@ -3024,6 +3024,113 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             return true;
         } else {
             return false;
+        }
+    }
+
+    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
+        super.dropSpecialItems(source, looting, recentlyHitIn);
+        int age = this.getAge();
+        int bodyType;
+        int meatSize;
+        int featherCount = rand.nextInt(4+looting)-1;
+
+        if (genes[146] == 2 && genes[147] == 2) {
+            if (genes[148] == 2 && genes[149] == 2) {
+                //normal body
+                bodyType = 0;
+            } else {
+                //big body
+                bodyType = 1;
+            }
+        } else if (genes[148] == 2 && genes[149] == 2) {
+            if (genes[146] == 2 || genes[147] == 2) {
+                //normal body
+                bodyType = 0;
+            } else {
+                //small body
+                bodyType = -1;
+            }
+        } else {
+            //normal body
+            bodyType = 0;
+        }
+
+        if (age < 60000) {
+            if (age > 40000) {
+                bodyType = bodyType - 1;
+                featherCount = featherCount - 1;
+            } else if (age > 20000){
+                bodyType = bodyType - (rand.nextInt(2)+1);
+                featherCount = featherCount - 2;
+            } else {
+                bodyType = bodyType - 2;
+                featherCount = featherCount - 3;
+            }
+        }
+
+        // size is [ 0.5076 - 1.0F]
+        if (chickenSize < 0.67) {
+            meatSize = bodyType + 1;
+        } else if (chickenSize < 0.89) {
+            meatSize = bodyType + 2;
+        } else {
+            meatSize = bodyType + 3;
+        }
+
+        if (meatSize > 0) {
+            ItemStack meatStack = new ItemStack(Items.CHICKEN, 1 + looting);
+
+            if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
+                if (meatSize == 1) {
+                    if (this.isBurning()) {
+                        meatStack = new ItemStack(ModItems.CookedChicken_DarkSmall, 1 + looting);
+                    } else {
+                        meatStack = new ItemStack(ModItems.RawChicken_DarkSmall, 1 + looting);
+                    }
+                } else if (meatSize == 2) {
+                    dropMeatType = "rawchicken_darkbig";
+                    if (this.isBurning()) {
+                        meatStack = new ItemStack(ModItems.CookedChicken_DarkBig,1 + looting);
+                    } else {
+                        meatStack = new ItemStack(ModItems.RawChicken_DarkBig, 1 + looting);
+                    }
+                } else {
+                    dropMeatType = "rawchicken_dark";
+                    if (this.isBurning()) {
+                        meatStack = new ItemStack(ModItems.CookedChicken_Dark, 1 + looting);
+                    } else {
+                        meatStack = new ItemStack(ModItems.RawChicken_Dark, 1 + looting);
+                    }
+                }
+            } else {
+                if (meatSize == 1) {
+                    dropMeatType = "rawchicken_palesmall";
+                    if (this.isBurning()) {
+                        meatStack = new ItemStack(ModItems.CookedChicken_PaleSmall, 1 + looting);
+                    } else {
+                        meatStack = new ItemStack(ModItems.RawChicken_PaleSmall, 1 + looting);
+                    }
+                } else if (meatSize == 2) {
+                    dropMeatType = "rawchicken";
+                    if (this.isBurning()) {
+                        meatStack = new ItemStack(ModItems.CookedChicken_Pale, 1 + looting);
+                    } else {
+                        meatStack = new ItemStack(ModItems.RawChicken_Pale, 1 + looting);
+                    }
+                } else {
+                    dropMeatType = "rawchicken_pale";
+                    if (this.isBurning()) {
+                        meatStack = new ItemStack(Items.COOKED_CHICKEN, 1 + looting);
+                    }
+                }
+            }
+
+            this.entityDropItem(meatStack);
+        }
+
+        if (featherCount > 0) {
+            ItemStack featherStack = new ItemStack(Items.FEATHER, featherCount);
+            this.entityDropItem(featherStack);
         }
     }
 

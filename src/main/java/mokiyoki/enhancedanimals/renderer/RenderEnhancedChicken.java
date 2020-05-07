@@ -41,6 +41,10 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
 
         if (s == null || s.isEmpty() || genes == null || genes.length == 0) {
             return ERROR_TEXTURE_LOCATION;
+        } else {
+            if (genes[106] == 2 && genes[107] == 2) {
+                s = s + "SILKIE";
+            }
         }
 
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);

@@ -248,6 +248,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         put(new ItemStack(Items.SPIDER_EYE).getItem(), 1500);
     }};
 
+    public boolean isFemale = true;
     public float wingRotation;
     public float destPos;
     public float oFlapSpeed;

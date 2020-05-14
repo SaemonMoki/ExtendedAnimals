@@ -63,7 +63,7 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.POPPY, Items.BLUE_ORCHID, Items.ALLIUM, Items.AZURE_BLUET, Items.ORANGE_TULIP, Items.RED_TULIP, Items.PINK_TULIP, Items.WHITE_TULIP, Items.OXEYE_DAISY, Items.CORNFLOWER, Items.LILY_OF_THE_VALLEY, Items.WITHER_ROSE, Items.SUNFLOWER, Items.LILAC, Items.ROSE_BUSH, Items.PEONY);
 
     private boolean fertilized = false;
-    private boolean female = true;
+    private boolean isFemale = true;
     private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private final List<String> beeTextures = new ArrayList<>();
     private final List<String> beeAlphaTextures = new ArrayList<>();
@@ -200,7 +200,15 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
      */
 
     /**
-     *
+     * Agouti [full body stripes, full body stripes with saturated patch, yellow body with striped tail, yellow body with striped tail and saturated patch]
+     * Saturated patch intensity controller 3 levels all recessive
+     * Saturated patch hue shifter to red
+     * black face mask dominant
+     * blacker bee recessive
+     * blacker bee recessive
+     * brown bee recessive
+     * wider bands dominant
+     * wider bands dominant
      */
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
@@ -273,9 +281,9 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
     public int[] getLarvaGenes(int[] gameteGenes, int[] mateGameteGenes) {
         Random rand = new Random();
         int[] larvaGenes = new int[GENES_LENGTH];
-        boolean female = rand.nextBoolean();
+        boolean isFemale = rand.nextBoolean();  //TODO this needs to be collected from create child instead
 
-        if (female) {
+        if (isFemale) {
             for (int i = 0; i < genes.length; i = (i + 2)) {
                 boolean mix = rand.nextBoolean();
                 if (mix) {
@@ -287,6 +295,8 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
                 }
             }
         } else {
+            //if (other parent is male || this bee is female) use this bee as mother,
+            // else use other bee as mother
             for (int i = 0; i < genes.length; i = (i + 2)) {
                 boolean mix = rand.nextBoolean();
                 if (mix) {

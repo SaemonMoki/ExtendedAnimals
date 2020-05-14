@@ -43,7 +43,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
             return ERROR_TEXTURE_LOCATION;
         } else {
             if (genes[106] == 2 && genes[107] == 2) {
-                s = s + "SILKIE";
+                s = "silkie" + s;
             }
         }
 
@@ -59,11 +59,12 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
             try {
                 resourcelocation = new ResourceLocation(s);
 
-                if (genes[106] == 1 || genes[107] == 1) {
-                    Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, textures, null));
-                } else {
-                    Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION, null, textures, null));
-                }
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, textures, null));
+//                if (genes[106] == 1 || genes[107] == 1) {
+//                    Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, textures, null));
+//                } else {
+//                    Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION, null, textures, null));
+//                }
 
                 LAYERED_LOCATION_CACHE.put(s, resourcelocation);
             } catch (IllegalStateException e) {

@@ -1421,7 +1421,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
-        if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())) {
+        if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;
             int bucketSize = 6;
             int currentMilk = getMilkAmount();
@@ -1514,7 +1514,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
         } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
 
-            if (!entityPlayer.abilities.isCreativeMode) {
+//            if (!entityPlayer.abilities.isCreativeMode) {
                 if (item == ModItems.Half_Milk_Bottle) {
                     decreaseHunger(6000);
                     if (itemStack.isEmpty()) {
@@ -1539,8 +1539,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                         }
                     }
                 }
-
-            }
+//            }
         }
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {

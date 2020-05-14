@@ -645,53 +645,53 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         return sharedGenesArray;
     }
 
-    public void setHornAlteration(int index, String value) {
-        String hornsAlterationsString = ((String) this.dataManager.get(HORN_ALTERATION)).toString();
-
-        String[] hornAlterations = hornsAlterationsString.split(",");
-        if (value.equals("reset")) {
-            hornAlterations[index] = "0";
-
-        } else {
-//            if (index >= 30) {
-                hornAlterations[index]= Float.toString(Float.valueOf(hornAlterations[index])+Float.valueOf(value));
-                if (hornAlterations[index].startsWith("-") || hornAlterations[index].startsWith("10")) {
-                    hornAlterations[index] = "9";
-                }
-//            }
-//            else {
+//    public void setHornAlteration(int index, String value) {
+//        String hornsAlterationsString = ((String) this.dataManager.get(HORN_ALTERATION)).toString();
+//
+//        String[] hornAlterations = hornsAlterationsString.split(",");
+//        if (value.equals("reset")) {
+//            hornAlterations[index] = "0";
+//
+//        } else {
+////            if (index >= 30) {
 //                hornAlterations[index]= Float.toString(Float.valueOf(hornAlterations[index])+Float.valueOf(value));
-//                if (hornAlterations[index].startsWith("1.6")) {
-//                    hornAlterations[index] = "-1.6";
+//                if (hornAlterations[index].startsWith("-") || hornAlterations[index].startsWith("10")) {
+//                    hornAlterations[index] = "9";
 //                }
+////            }
+////            else {
+////                hornAlterations[index]= Float.toString(Float.valueOf(hornAlterations[index])+Float.valueOf(value));
+////                if (hornAlterations[index].startsWith("1.6")) {
+////                    hornAlterations[index] = "-1.6";
+////                }
+////            }
+//        }
+//
+//        StringBuilder sb = new StringBuilder();
+//        for (int i = 0; i < hornAlterations.length; i++) {
+//            sb.append(hornAlterations[i]);
+//            if (i != hornAlterations.length - 1) {
+//                sb.append(",");
 //            }
-        }
+//        }
+//
+//        this.dataManager.set(HORN_ALTERATION, sb.toString());
+//    }
 
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < hornAlterations.length; i++) {
-            sb.append(hornAlterations[i]);
-            if (i != hornAlterations.length - 1) {
-                sb.append(",");
-            }
-        }
-
-        this.dataManager.set(HORN_ALTERATION, sb.toString());
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public float[] getHornAlteration() {
-        String hornsAlterations = ((String) this.dataManager.get(HORN_ALTERATION)).toString();
-
-        String[] hornAlterations = hornsAlterations.split(",");
-
-        float[] hornsArray = new float[hornAlterations.length];
-
-        for (int i = 0; i < hornsArray.length; i++) {
-            //parse and store each value into int[] to be returned
-            hornsArray[i] = Float.valueOf(hornAlterations[i]);
-        }
-        return hornsArray;
-    }
+//    @OnlyIn(Dist.CLIENT)
+//    public float[] getHornAlteration() {
+//        String hornsAlterations = ((String) this.dataManager.get(HORN_ALTERATION)).toString();
+//
+//        String[] hornAlterations = hornsAlterations.split(",");
+//
+//        float[] hornsArray = new float[hornAlterations.length];
+//
+//        for (int i = 0; i < hornsArray.length; i++) {
+//            //parse and store each value into int[] to be returned
+//            hornsArray[i] = Float.valueOf(hornAlterations[i]);
+//        }
+//        return hornsArray;
+//    }
 
     @Override
     protected boolean canDropLoot() { return true; }
@@ -1589,7 +1589,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 //            setHornAlteration(30, "1");
 //        }
 
-        if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !entityPlayer.abilities.isCreativeMode && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
+        if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !this.isChild() && getCowStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;
             int bucketSize = 6;
             int currentMilk = getMilkAmount();
@@ -1678,7 +1678,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
         } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
 
-            if (!entityPlayer.abilities.isCreativeMode) {
+//            if (!entityPlayer.abilities.isCreativeMode) {
                 if (item == ModItems.Half_Milk_Bottle) {
                     decreaseHunger(6000);
                     if (itemStack.isEmpty()) {
@@ -1703,8 +1703,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
                         }
                     }
                 }
-
-            }
+//            }
         }
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {

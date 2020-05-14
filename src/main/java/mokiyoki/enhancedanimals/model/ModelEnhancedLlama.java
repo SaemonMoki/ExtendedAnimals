@@ -28,7 +28,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
     private boolean suri = false;
 
     private final ModelRenderer nose;
-    private final ModelRenderer headShaved;
+    private final ModelRenderer head;
     private final ModelRenderer neck;
     private final ModelRenderer neckWool0;
     private final ModelRenderer neckWool1;
@@ -80,6 +80,13 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
     private final ModelRenderer toeInnerBackR;
     private final ModelRenderer toeOuterBackL;
     private final ModelRenderer toeInnerBackL;
+    private final ModelRenderer bodyBlanketTop;
+    private final ModelRenderer bodyBlanketLeft;
+//    private final ModelRenderer bodyBlanketRight;
+//    private final ModelRenderer neckBlanket;
+//    private final ModelRenderer headBlanketTop;
+//    private final ModelRenderer headBlanketLeft;
+//    private final ModelRenderer headBlanketRight;
 
     private Integer currentLlama = null;
 
@@ -99,11 +106,11 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.nose.addBox(-2.0F, 0.0F, -7.0F, 4, 4, 4, 0.0F); //nose
         this.nose.setRotationPoint(0, 0, 0);
 
-        this.headShaved = new ModelRenderer(this, 0, 0);
-        this.headShaved.addBox(-4.0F, -3.0F, -3.0F, 8, 6, 6, 0.0F); //head and neck
-        this.headShaved.setRotationPoint(0.0F, -11.0F, 1.0F);
-//        this.headShaved.setTextureOffset(28, 0);
-//        this.headShaved.addBox(-2.0F, -12.0F, -4.0F, 4, 4, 4, 0.0F); //nose
+        this.head = new ModelRenderer(this, 0, 0);
+        this.head.addBox(-4.0F, -3.0F, -3.0F, 8, 6, 6, 0.0F); //head and neck
+        this.head.setRotationPoint(0.0F, -11.0F, 1.0F);
+//        this.head.setTextureOffset(28, 0);
+//        this.head.addBox(-2.0F, -12.0F, -4.0F, 4, 4, 4, 0.0F); //nose
 
         this.neck = new ModelRenderer(this,0, 12);
         this.neck.addBox(-4.0F, -9.0F, -1.1F, 8, 12, 6, -1.0F); //head and neck
@@ -300,6 +307,12 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.toeInnerBackL = new ModelRenderer(this, 80, 84);
         this.toeInnerBackL.addBox(-0.75F, 10.0F, -2.5F, 3, 3, 4, -0.75F);
 
+        this.bodyBlanketTop = new ModelRenderer(this, 67, 21);
+        this.bodyBlanketTop.addBox(-12.0F, 0.0F, 0.0F, 24, 11, 0);
+
+        this.bodyBlanketLeft = new ModelRenderer(this, 68, 18);
+        this.bodyBlanketLeft.addBox(0.0F, 0.0F, 0.0F, 0, 11, 14);
+
 
 //        leg1.addChild(toeOuterFrontR);
 //        leg1.addChild(toeInnerFrontR);
@@ -311,14 +324,22 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 //        leg4.addChild(toeInnerBackL);
 
 //        head.addChild(nose);
-        this.neck.addChild(headShaved);
-        this.headShaved.addChild(nose);
-        this.headShaved.addChild(earsL);
-        this.headShaved.addChild(earsR);
-        this.headShaved.addChild(earsTopL);
-        this.headShaved.addChild(earsTopR);
-        this.headShaved.addChild(earsTopBananaL);
-        this.headShaved.addChild(earsTopBananaR);
+        this.neck.addChild(head);
+        this.head.addChild(nose);
+        this.head.addChild(earsL);
+        this.head.addChild(earsR);
+        this.head.addChild(earsTopL);
+        this.head.addChild(earsTopR);
+        this.head.addChild(earsTopBananaL);
+        this.head.addChild(earsTopBananaR);
+
+        this.bodyShaved.addChild(bodyBlanketTop);
+        this.body.addChild(bodyBlanketTop);
+        this.body1.addChild(bodyBlanketTop);
+        this.body2.addChild(bodyBlanketTop);
+        this.body3.addChild(bodyBlanketTop);
+        this.body4.addChild(bodyBlanketTop);
+        this.bodyBlanketTop.addChild(bodyBlanketLeft);
     }
 
     @Override
@@ -501,6 +522,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         copyModelAngles(body, tail);
         copyModelAngles(body, tail1);
 
+        this.bodyBlanketTop.rotateAngleX = -(float)Math.PI/2.0F;
+
         if ( suri && llamaModelData.coatlength >= 0 ) {
             if (llamaModelData.coatlength >= 1) {
                 this.neckWool1.rotationPointY = this.neck.rotationPointY + (llamaModelData.coatlength/2.0F);
@@ -663,7 +686,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.neck.rotateAngleX = 1.6F;
         this.neck.rotationPointZ = -9.0F;
 
-        this.headShaved.rotateAngleX = -1.6F;
+        this.head.rotateAngleX = -1.6F;
 
         this.leg1.rotateAngleX = 1.575F;
         this.leg1.rotateAngleY = 0.2F;
@@ -692,7 +715,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         this.neck.rotationPointZ = -10.0F;
 
-        this.headShaved.rotateAngleX = 0.0F;
+        this.head.rotateAngleX = 0.0F;
 
         this.chest1.rotationPointY = 3.0F;
         this.chest2.rotationPointY = 3.0F;

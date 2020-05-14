@@ -161,6 +161,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
     }};
 
+    public boolean isFemale = true;
     private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 72;
     private int[] genes = new int[GENES_LENGTH];

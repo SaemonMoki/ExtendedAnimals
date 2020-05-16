@@ -34,6 +34,8 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOS
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CAT;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_BEE;
 
 /**
  * Created by moki on 24/08/2018.
@@ -52,6 +54,8 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_COW, RenderEnhancedCow::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_PIG, RenderEnhancedPig::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_HORSE, RenderEnhancedHorse::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_CAT, RenderEnhancedCat::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_BEE, RenderEnhancedBee::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOSHROOM, RenderEnhancedMooshroom::new);
 
         ScreenManager.registerFactory(EGG_CARTON_CONTAINER, EggCartonScreen::new);

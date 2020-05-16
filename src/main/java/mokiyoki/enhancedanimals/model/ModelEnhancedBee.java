@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedBee;
 import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.ModelUtils;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
@@ -29,6 +30,7 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EntityModel<T> {
     private final ModelRenderer legs2;
     private final ModelRenderer legs3;
     private final ModelRenderer stinger;
+    private float bodyPitch;
 
     private Integer currentBee = null;
 
@@ -77,29 +79,78 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        boolean isFemale = true;
 
         this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-
-        if (isFemale) {
-            this.stinger.showModel = true;
-        } else {
-            this.stinger.showModel = false;
-        }
         
     }
 
     @Override
-    public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
-        BeeModelData beeModelData = getCreateBeeModelData(entitylivingbaseIn);
-        this.currentBee = entitylivingbaseIn.getEntityId();
+    public void setLivingAnimations(T entityIn, float limbSwing, float limbSwingAmount, float partialTick) {
+        BeeModelData beeModelData = getCreateBeeModelData(entityIn);
+        this.currentBee = entityIn.getEntityId();
+        this.bodyPitch = entityIn.getBodyPitch(partialTick);
+        boolean isFemale = true;
+        boolean hasStung = false;
 
-        char[] uuidArry = beeModelData.uuidArray;
+        if (isFemale && !hasStung) {
+            this.stinger.showModel = true;
+        } else {
+            this.stinger.showModel = false;
+        }
+
+//        char[] uuidArry = beeModelData.uuidArray;
     }
 
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.wingRight.rotateAngleX = 0.0F;
+        this.antennaLeft.rotateAngleX = 0.0F;
+        this.antennaRight.rotateAngleX = 0.0F;
+        this.body.rotateAngleX = 0.0F;
+        this.body.rotationPointY = 19.0F;
+        boolean flag = entityIn.onGround && entityIn.getMotion().lengthSquared() < 1.0E-7D;
+        if (flag) {
+            this.wingRight.rotateAngleY = -0.2618F;
+            this.wingRight.rotateAngleZ = 0.0F;
+            this.wingLeft.rotateAngleX = 0.0F;
+            this.wingLeft.rotateAngleY = 0.2618F;
+            this.wingLeft.rotateAngleZ = 0.0F;
+            this.legs1.rotateAngleX = 0.0F;
+            this.legs2.rotateAngleX = 0.0F;
+            this.legs3.rotateAngleX = 0.0F;
+        } else {
+            float f = ageInTicks * 2.1F;
+            this.wingRight.rotateAngleY = 0.0F;
+            this.wingRight.rotateAngleZ = MathHelper.cos(f) * (float)Math.PI * 0.15F;
+            this.wingLeft.rotateAngleX = this.wingRight.rotateAngleX;
+            this.wingLeft.rotateAngleY = this.wingRight.rotateAngleY;
+            this.wingLeft.rotateAngleZ = -this.wingRight.rotateAngleZ;
+            this.legs1.rotateAngleX = ((float)Math.PI / 4F);
+            this.legs2.rotateAngleX = ((float)Math.PI / 4F);
+            this.legs3.rotateAngleX = ((float)Math.PI / 4F);
+            this.body.rotateAngleX = 0.0F;
+            this.body.rotateAngleY = 0.0F;
+            this.body.rotateAngleZ = 0.0F;
+        }
 
+        if (!entityIn.isAngry()) {
+            this.body.rotateAngleX = 0.0F;
+            this.body.rotateAngleY = 0.0F;
+            this.body.rotateAngleZ = 0.0F;
+            if (!flag) {
+                float f1 = MathHelper.cos(ageInTicks * 0.18F);
+                this.body.rotateAngleX = 0.1F + f1 * (float)Math.PI * 0.025F;
+                this.antennaLeft.rotateAngleX = f1 * (float)Math.PI * 0.03F;
+                this.antennaRight.rotateAngleX = f1 * (float)Math.PI * 0.03F;
+                this.legs1.rotateAngleX = -f1 * (float)Math.PI * 0.1F + ((float)Math.PI / 8F);
+                this.legs3.rotateAngleX = -f1 * (float)Math.PI * 0.05F + ((float)Math.PI / 4F);
+                this.body.rotationPointY = 19.0F - MathHelper.cos(ageInTicks * 0.18F) * 0.9F;
+            }
+        }
+
+        if (this.bodyPitch > 0.0F) {
+            this.body.rotateAngleX = ModelUtils.func_228283_a_(this.body.rotateAngleX, 3.0915928F, this.bodyPitch);
+        }
     }
 
 

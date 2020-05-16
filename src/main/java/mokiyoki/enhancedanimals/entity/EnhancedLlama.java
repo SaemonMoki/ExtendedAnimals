@@ -130,6 +130,10 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     private static final String LLAMA_CHEST_TEXTURE = "chest.png";
 
+    private static final String[] LLAMA_TEXTURES_DECO = new String[] {
+            "", "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
+    };
+
 
     private final List<String> llamaTextures = new ArrayList<>();
 
@@ -867,6 +871,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
         }
     }
+
     private boolean canDespawn() {
         return !this.isTame() && !this.isLeashedToStranger() && !this.isOnePlayerRiding();
     }
@@ -1151,6 +1156,18 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         if (this.hasChest()) {
             this.llamaTextures.add(LLAMA_CHEST_TEXTURE);
 
+        }
+
+        int blanket = 0;
+        if (this.isLeashedToTrader()) {
+            blanket = 1;
+        } else {
+            blanket = 17;
+        }
+
+
+        if (blanket != 0) {
+            this.llamaTextures.add(LLAMA_TEXTURES_DECO[blanket]);
         }
 
     } // setTexturePaths end bracket

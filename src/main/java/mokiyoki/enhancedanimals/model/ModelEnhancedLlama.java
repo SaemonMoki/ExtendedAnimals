@@ -29,6 +29,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
     private final ModelRenderer nose;
     private final ModelRenderer head;
+    private final ModelRenderer neckBone;
     private final ModelRenderer neck;
     private final ModelRenderer neckWool0;
     private final ModelRenderer neckWool1;
@@ -80,13 +81,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
     private final ModelRenderer toeInnerBackR;
     private final ModelRenderer toeOuterBackL;
     private final ModelRenderer toeInnerBackL;
-    private final ModelRenderer bodyBlanketTop;
-    private final ModelRenderer bodyBlanketLeft;
-//    private final ModelRenderer bodyBlanketRight;
-//    private final ModelRenderer neckBlanket;
-//    private final ModelRenderer headBlanketTop;
-//    private final ModelRenderer headBlanketLeft;
-//    private final ModelRenderer headBlanketRight;
 
     private Integer currentLlama = null;
 
@@ -107,40 +101,47 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.nose.setRotationPoint(0, 0, 0);
 
         this.head = new ModelRenderer(this, 0, 0);
-        this.head.addBox(-4.0F, -3.0F, -3.0F, 8, 6, 6, 0.0F); //head and neck
+        this.head.addBox(-4.0F, -3.0F, -3.0F, 8, 6, 6, 0.0F); //head
+        this.head.setTextureOffset(28,8);
+        this.head.addBox(-4.0F, -3.0F, -3.0F, 8, 10, 6, 0.5F); //deco
         this.head.setRotationPoint(0.0F, -11.0F, 1.0F);
 //        this.head.setTextureOffset(28, 0);
 //        this.head.addBox(-2.0F, -12.0F, -4.0F, 4, 4, 4, 0.0F); //nose
 
+        this.neckBone = new ModelRenderer(this);
+        this.neckBone.setRotationPoint(0, 5, -6);
+
         this.neck = new ModelRenderer(this,0, 12);
-        this.neck.addBox(-4.0F, -9.0F, -1.1F, 8, 12, 6, -1.0F); //head and neck
+        this.neck.addBox(-4.0F, -9.0F, -1.1F, 8, 12, 6, -1.0F); //neck
+        this.neck.setTextureOffset(28,23);
+        this.neck.addBox(-4.0F, -2.0F, -1.1F, 8, 10, 6, 0.01F); //deco
 //        this.neck.addBox(-4.0F, -2.0F, -1.1F, 8, 6, 6, -1.0F); //head and neck
         this.neck.setRotationPoint(0, 5, -6);
 
         this.neckWool0 = new ModelRenderer(this, 0, 12);
-        this.neckWool0.addBox(-4.0F, -8.0F, headAdjust, 8, 12, 6, 0.0F); //head and neck
-//        this.neckWool0.setTextureOffset(0, 13);
-//        this.neckWool0.addBox(-4.0F, 0.0F, headAdjust, 8, 4, 6, 0.0F); //head and neck
+        this.neckWool0.addBox(-4.0F, -8.0F, headAdjust, 8, 12, 6, 0.0F); //neck
+        this.neckWool0.setTextureOffset(28,23);
+        this.neckWool0.addBox(-4.0F, -3.75F, headAdjust, 8, 10, 6, 0.51F); //neck
 
         this.neckWool1 = new ModelRenderer(this, 0, 12);
-        this.neckWool1.addBox(-4.0F, -8.5F, headAdjust, 8, 12, 6, 0.5F); //head and neck
-//        this.neckWool1.setTextureOffset(0, 13);
-//        this.neckWool1.addBox(-4.0F, 0.5F, headAdjust, 8, 4, 6, 0.5F); //head and neck
+        this.neckWool1.addBox(-4.0F, -8.5F, headAdjust, 8, 12, 6, 0.5F); //neck
+        this.neckWool1.setTextureOffset(28,23);
+        this.neckWool1.addBox(-4.0F, -2.25F, headAdjust, 8, 10, 6, 0.75F); //neck
 
         this.neckWool2 = new ModelRenderer(this, 0, 12);
-        this.neckWool2.addBox(-4.0F, -7.5F, headAdjust, 8, 12, 6, 1.0F); //head and neck
-//        this.neckWool2.setTextureOffset(0, 13);
-//        this.neckWool2.addBox(-4.0F, 2.0F, headAdjust, 8, 4, 6, 1.0F); //head and neck
+        this.neckWool2.addBox(-4.0F, -7.5F, headAdjust, 8, 12, 6, 1.0F); //neck
+        this.neckWool2.setTextureOffset(28,23);
+        this.neckWool2.addBox(-4.0F, -3.7F, headAdjust, 8, 10, 6, 1.2F); //neck
 
         this.neckWool3 = new ModelRenderer(this, 0, 12);
-        this.neckWool3.addBox(-4.0F, -7.0F, headAdjust, 8, 12, 6, 1.5F); //head and neck
-//        this.neckWool3.setTextureOffset(0, 13);
-//        this.neckWool3.addBox(-4.0F, 3.0F, headAdjust, 8, 4, 6, 1.5F); //head and neck
+        this.neckWool3.addBox(-4.0F, -7.0F, headAdjust, 8, 12, 6, 1.5F); //neck
+        this.neckWool3.setTextureOffset(28,23);
+        this.neckWool3.addBox(-4.0F, -3.1F, headAdjust, 8, 10, 6, 1.6F); //neck
 
         this.neckWool4 = new ModelRenderer(this, 0, 12);
-        this.neckWool4.addBox(-4.0F, -6.5F, headAdjust, 8, 12, 6, 2.0F); //head and neck
-//        this.neckWool4.setTextureOffset(0, 13);
-//        this.neckWool4.addBox(-4.0F, 4.0F, headAdjust, 8, 4, 6, 2.0F); //head and neck
+        this.neckWool4.addBox(-4.0F, -6.5F, headAdjust, 8, 12, 6, 2.0F); //neck
+        this.neckWool4.setTextureOffset(28,23);
+        this.neckWool4.addBox(-4.0F, -2.55F, headAdjust, 8, 10, 6, 2.05F); //neck
 
         this.earsR = new ModelRenderer(this, 44, 0);
         this.earsR.addBox(-4.0F, -6.0F, 0.0F, 3, 3, 2, 0.0F); //ear right
@@ -307,13 +308,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.toeInnerBackL = new ModelRenderer(this, 80, 84);
         this.toeInnerBackL.addBox(-0.75F, 10.0F, -2.5F, 3, 3, 4, -0.75F);
 
-        this.bodyBlanketTop = new ModelRenderer(this, 67, 21);
-        this.bodyBlanketTop.addBox(-12.0F, 0.0F, 0.0F, 24, 11, 0);
-
-        this.bodyBlanketLeft = new ModelRenderer(this, 68, 18);
-        this.bodyBlanketLeft.addBox(0.0F, 0.0F, 0.0F, 0, 11, 14);
-
-
 //        leg1.addChild(toeOuterFrontR);
 //        leg1.addChild(toeInnerFrontR);
 //        leg2.addChild(toeOuterFrontL);
@@ -324,7 +318,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 //        leg4.addChild(toeInnerBackL);
 
 //        head.addChild(nose);
-        this.neck.addChild(head);
+        this.neckBone.addChild(head);
         this.head.addChild(nose);
         this.head.addChild(earsL);
         this.head.addChild(earsR);
@@ -332,14 +326,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.head.addChild(earsTopR);
         this.head.addChild(earsTopBananaL);
         this.head.addChild(earsTopBananaR);
-
-        this.bodyShaved.addChild(bodyBlanketTop);
-        this.body.addChild(bodyBlanketTop);
-        this.body1.addChild(bodyBlanketTop);
-        this.body2.addChild(bodyBlanketTop);
-        this.body3.addChild(bodyBlanketTop);
-        this.body4.addChild(bodyBlanketTop);
-        this.bodyBlanketTop.addChild(bodyBlanketLeft);
     }
 
     @Override
@@ -348,6 +334,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         int[] genes = llamaModelData.llamaGenes;
         int coatlength = llamaModelData.coatlength;
+        int maxCoatlength = llamaModelData.maxCoatlength;
         boolean sleeping = llamaModelData.sleeping;
 
         float size = 1;
@@ -410,7 +397,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         matrixStackIn.scale(finalLlamaSize, finalLlamaSize, finalLlamaSize);
         matrixStackIn.translate(0.0F, (-1.5F + 1.5F / finalLlamaSize) - d, 0.0F);
 
-            this.neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.neckBone.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             if (banana){
                 this.earsTopR.showModel = false;
@@ -425,27 +412,47 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             this.chest2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
                 if (coatlength == 0 || this.isChild) {
-                    ImmutableList.of(this.neckWool0, this.body, this.tail).forEach((renderer) -> {
+                    ImmutableList.of(this.neckWool0, this.body).forEach((renderer) -> {
                         renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     });
                 } else if (coatlength == 1 ) {
-                    ImmutableList.of(this.neckWool1, this.body1, this.tail1, leg1Wool1, leg2Wool1, leg3Wool1, leg4Wool1).forEach((renderer) -> {
+                    ImmutableList.of(this.neckWool1, this.body1).forEach((renderer) -> {
                         renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     });
                 } else if (coatlength == 2 ) {
-                    ImmutableList.of(this.neckWool2, this.body2, this.tail2, leg1Wool2, leg2Wool2, leg3Wool2, leg4Wool2).forEach((renderer) -> {
+                    ImmutableList.of(this.neckWool2, this.body2).forEach((renderer) -> {
                         renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     });
                 } else if (coatlength == 3 ) {
-                    ImmutableList.of(this.neckWool3, this.body3, this.tail3, leg1Wool3, leg2Wool3, leg3Wool3, leg4Wool3).forEach((renderer) -> {
+                    ImmutableList.of(this.neckWool3, this.body3).forEach((renderer) -> {
                         renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     });
                 } else if (coatlength == 4 ) {
-                    ImmutableList.of(this.neckWool4, this.body4, this.tail4, leg1Wool4, leg2Wool4, leg3Wool4, leg4Wool4).forEach((renderer) -> {
+                    ImmutableList.of(this.neckWool4, this.body4).forEach((renderer) -> {
                         renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     });
                 } else {
-                    ImmutableList.of(this.bodyShaved, this.tail).forEach((renderer) -> {
+                    ImmutableList.of(this.neck, this.bodyShaved).forEach((renderer) -> {
+                        renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    });
+                }
+
+                if (maxCoatlength <= 0 || this.isChild) {
+                    this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                } else if (maxCoatlength == 1 ) {
+                    ImmutableList.of(this.tail1, leg1Wool1, leg2Wool1, leg3Wool1, leg4Wool1).forEach((renderer) -> {
+                        renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    });
+                } else if (maxCoatlength == 2 ) {
+                    ImmutableList.of(this.tail2, leg1Wool2, leg2Wool2, leg3Wool2, leg4Wool2).forEach((renderer) -> {
+                        renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    });
+                } else if (maxCoatlength == 3 ) {
+                    ImmutableList.of(this.tail3, leg1Wool3, leg2Wool3, leg3Wool3, leg4Wool3).forEach((renderer) -> {
+                        renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    });
+                } else {
+                    ImmutableList.of(this.tail4, leg1Wool4, leg2Wool4, leg3Wool4, leg4Wool4).forEach((renderer) -> {
                         renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     });
                 }
@@ -492,6 +499,9 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.neck.rotateAngleY = netHeadYaw * 0.017453292F;
 
+        //TODO if llama is angry turn ears back
+        //TODO stop llama legs from being sheared
+
         LlamaModelData llamaModelData = getLlamaModelData();
 
         int[] sharedGenes = llamaModelData.llamaGenes;
@@ -522,8 +532,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         copyModelAngles(body, tail);
         copyModelAngles(body, tail1);
 
-        this.bodyBlanketTop.rotateAngleX = -(float)Math.PI/2.0F;
-
         if ( suri && llamaModelData.coatlength >= 0 ) {
             if (llamaModelData.coatlength >= 1) {
                 this.neckWool1.rotationPointY = this.neck.rotationPointY + (llamaModelData.coatlength/2.0F);
@@ -538,6 +546,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 //                neckWool1.rotationPointY = neckWool1.rotationPointY - 1.0F;
 //            }
         }
+        copyModelAngles(neck, neckBone);
         copyModelAngles(neck, neckWool0);
         copyModelAngles(neck, neckWool1);
         copyModelAngles(neckWool1, neckWool2);
@@ -740,6 +749,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
     private class LlamaModelData {
         int[] llamaGenes;
         int coatlength = 0;
+        int maxCoatlength = 0;
         String birthTime;
         boolean sleeping = false;
         int lastAccessed = 0;
@@ -780,6 +790,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             LlamaModelData llamaModelData = new LlamaModelData();
             llamaModelData.llamaGenes = enhancedLlama.getSharedGenes();
             llamaModelData.coatlength = enhancedLlama.getCoatLength();
+            llamaModelData.maxCoatlength = enhancedLlama.getCoatLength();
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
             llamaModelData.birthTime = enhancedLlama.getBirthTime();
             llamaModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedLlama.world).getWorldInfo()).getGameTime());

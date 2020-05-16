@@ -16,15 +16,20 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_BEE;
 
@@ -35,6 +40,8 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
     private static final DataParameter<String> BEE_STATUS = EntityDataManager.createKey(EnhancedBee.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedBee.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedBee.class, DataSerializers.STRING);
+    private static final DataParameter<Byte> DATA_FLAGS_ID = EntityDataManager.createKey(EnhancedBee.class, DataSerializers.BYTE);
+    private static final DataParameter<Integer> ANGER_TIME = EntityDataManager.createKey(EnhancedBee.class, DataSerializers.VARINT);
 
     private static final String[] BEE_TEXTURES_BLUE = new String[] {
             "white base.png"
@@ -72,7 +79,12 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
     private int[] mateGenes = new int[GENES_LENGTH];
     private int[] gameteGenes = new int[GENES_LENGTH];
     private int[] mateGameteGenes = new int[GENES_LENGTH];
+    private UUID lastHurtBy;
+    private float rollAmount;
+    private float rollAmountO;
+    private int timeSinceSting;
 
+    private float[] beeColouration = null;
     private int hunger = 0;
     protected int healTicks = 0;
     protected Boolean sleeping = false;
@@ -90,6 +102,8 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
         this.dataManager.register(BEE_STATUS, new String());
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(BIRTH_TIME, "0");
+        this.dataManager.register(DATA_FLAGS_ID, (byte)0);
+        this.dataManager.register(ANGER_TIME, 0);
     }
 
     private void setBeeStatus(String status) {
@@ -152,6 +166,56 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
         }
     }
 
+    public boolean isAngry() {
+        return this.getAnger() > 0;
+    }
+
+    private int getAnger() {
+        return this.dataManager.get(ANGER_TIME);
+    }
+
+    private void setAnger(int angerTime) {
+        this.dataManager.set(ANGER_TIME, angerTime);
+    }
+
+
+    private boolean isNearTarget() {
+        return this.getBeeFlag(2);
+    }
+
+    private void setNearTarget(boolean p_226452_1_) {
+        this.setBeeFlag(2, p_226452_1_);
+    }
+
+    private void setBeeFlag(int flagId, boolean p_226404_2_) {
+        if (p_226404_2_) {
+            this.dataManager.set(DATA_FLAGS_ID, (byte)(this.dataManager.get(DATA_FLAGS_ID) | flagId));
+        } else {
+            this.dataManager.set(DATA_FLAGS_ID, (byte)(this.dataManager.get(DATA_FLAGS_ID) & ~flagId));
+        }
+
+    }
+
+    private boolean getBeeFlag(int flagId) {
+        return (this.dataManager.get(DATA_FLAGS_ID) & flagId) != 0;
+    }
+
+
+    @OnlyIn(Dist.CLIENT)
+    public float getBodyPitch(float p_226455_1_) {
+        return MathHelper.lerp(p_226455_1_, this.rollAmountO, this.rollAmount);
+    }
+
+    private void updateBodyPitch() {
+        this.rollAmountO = this.rollAmount;
+        if (this.isNearTarget()) {
+            this.rollAmount = Math.min(1.0F, this.rollAmount + 0.2F);
+        } else {
+            this.rollAmount = Math.max(0.0F, this.rollAmount - 0.24F);
+        }
+
+    }
+
     public void setSharedGenes(int[] genes) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < genes.length; i++) {
@@ -210,6 +274,110 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
      * wider bands dominant
      * wider bands dominant
      */
+
+    @OnlyIn(Dist.CLIENT)
+    public String getBeeTexture() {
+        if (this.beeTextures.isEmpty()) {
+            this.setTexturePaths();
+        }
+        return this.beeTextures.stream().collect(Collectors.joining("/","enhanced_bee",""));
+
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public String[] getVariantTexturePaths() {
+        if (this.beeTextures.isEmpty()) {
+            this.setTexturePaths();
+        }
+
+        return this.beeTextures.stream().toArray(String[]::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public String[] getVariantAlphaTexturePaths()
+    {
+        if (this.beeAlphaTextures.isEmpty()) {
+            this.setAlphaTexturePaths();
+        }
+
+
+        //todo this is only temporarity until we have alpha textures
+        if (this.beeAlphaTextures.isEmpty()) {
+            return null;
+        }
+
+        return this.beeAlphaTextures.stream().toArray(String[]::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void setTexturePaths() {
+        int[] genesForText = getSharedGenes();
+        if (genesForText != null) {
+
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void setAlphaTexturePaths() {
+        int[] genesForText = getSharedGenes();
+        if (genesForText != null) {
+
+        }
+    }
+
+
+    @OnlyIn(Dist.CLIENT)
+    public float[] getRgb() {
+        if (beeColouration == null) {
+            beeColouration = new float[6];
+
+            float blackR = 0.0F;
+            float blackG = 0.0F;
+            float blackB = 0.0F;
+
+            float redR = 255.0F;
+            float redG = 255.0F;
+            float redB = 0.0F;
+
+            float eyelR = 0.0F;
+            float eyelG = 0.0F;
+            float eyelB = 255.0F;
+
+            float eyerR = 0.0F;
+            float eyerG = 0.0F;
+            float eyerB = 255.0F;
+
+
+
+            //TODO TEMP AF
+            //black
+            beeColouration[0] = blackR;
+            beeColouration[1] = blackG;
+            beeColouration[2] = blackB;
+
+            //red
+            beeColouration[3] = redR;
+            beeColouration[4] = redG;
+            beeColouration[5] = redB;
+
+            beeColouration[6] = eyelR;
+            beeColouration[7] = eyelG;
+            beeColouration[8] = eyelB;
+
+            beeColouration[9] = eyerR;
+            beeColouration[10] = eyerG;
+            beeColouration[11] = eyerB;
+
+            for (int i = 0; i <= 11; i++) {
+                if (beeColouration[i] > 255.0F) {
+                    beeColouration[i] = 255.0F;
+                }
+                beeColouration[i] = beeColouration[i] / 255.0F;
+            }
+
+        }
+        return beeColouration;
+    }
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedBee enhancedbee = ENHANCED_BEE.create(this.world);

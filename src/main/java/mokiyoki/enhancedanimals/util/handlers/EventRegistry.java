@@ -68,9 +68,9 @@ public class EventRegistry {
     public static final EntityType<EnhancedCow> ENHANCED_COW = EntityType.Builder.create(EnhancedCow::new, EntityClassification.CREATURE).size(1.2F, 1.5F).build(Reference.MODID + ":enhanced_cow");
     public static final EntityType<EnhancedMooshroom> ENHANCED_MOOSHROOM = EntityType.Builder.create(EnhancedMooshroom::new, EntityClassification.CREATURE).size(1.2F, 1.5F).build(Reference.MODID + ":enhanced_mooshroom");
     public static final EntityType<EnhancedPig> ENHANCED_PIG = EntityType.Builder.create(EnhancedPig::new, EntityClassification.CREATURE).size(0.9F, 0.9F).build(Reference.MODID + ":enhanced_pig");
-    public static final EntityType<EnhancedBee> ENHANCED_BEE = EntityType.Builder.create(EnhancedBee::new, EntityClassification.CREATURE).size(0.4F, 0.4F).build(Reference.MODID + ":enhanced_bee");
     public static final EntityType<EnhancedHorse> ENHANCED_HORSE = EntityType.Builder.create(EnhancedHorse::new, EntityClassification.CREATURE).size(1.4F, 1.6F).build(Reference.MODID + ":enhanced_horse");
     public static final EntityType<EnhancedCat> ENHANCED_CAT = EntityType.Builder.create(EnhancedCat::new, EntityClassification.CREATURE).size(0.6F, 0.7F).build(Reference.MODID + ":enhanced_cat");
+    public static final EntityType<EnhancedBee> ENHANCED_BEE = EntityType.Builder.create(EnhancedBee::new, EntityClassification.CREATURE).size(0.4F, 0.4F).build(Reference.MODID + ":enhanced_bee");
 
     public static final ContainerType<EggCartonContainer> EGG_CARTON_CONTAINER = IForgeContainerType.create(EggCartonContainer::new);
 

@@ -27,6 +27,7 @@ import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.AirItem;
@@ -42,9 +43,12 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
@@ -66,10 +70,12 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 
-public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
+public class EnhancedPig extends AnimalEntity implements EnhancedAnimal {
 
     //avalible UUID spaces : [ S X 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
+    private static final DataParameter<Boolean> SADDLED = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> BOOST_TIME = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedPig.class, DataSerializers.STRING);
     private static final DataParameter<Float> PIG_SIZE = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.FLOAT);
     private static final DataParameter<String> PIG_STATUS = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.STRING);
@@ -205,6 +211,10 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
 
+    private boolean boosting;
+    private int boostTime;
+    private int totalBoostTime;
+
     public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
         super(entityType, worldIn);
         this.setPigSize();
@@ -228,6 +238,16 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new EnhancedPig.HurtByAggressorGoal(this));
         this.targetSelector.addGoal(2, new EnhancedPig.TargetAggressorGoal(this));
+    }
+
+    public void notifyDataManagerChange(DataParameter<?> key) {
+        if (BOOST_TIME.equals(key) && this.world.isRemote) {
+            this.boosting = true;
+            this.boostTime = 0;
+            this.totalBoostTime = this.dataManager.get(BOOST_TIME);
+        }
+
+        super.notifyDataManagerChange(key);
     }
 
     @Override
@@ -265,6 +285,23 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         this.dataManager.register(PIG_STATUS, new String());
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(BIRTH_TIME, "0");
+        this.dataManager.register(SADDLED, false);
+        this.dataManager.register(BOOST_TIME, 0);
+    }
+
+    @Nullable
+    public Entity getControllingPassenger() {
+        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
+    }
+
+    public boolean canBeSteered() {
+        Entity entity = this.getControllingPassenger();
+        if (!(entity instanceof PlayerEntity)) {
+            return false;
+        } else {
+            PlayerEntity playerentity = (PlayerEntity)entity;
+            return playerentity.getHeldItemMainhand().getItem() == Items.CARROT_ON_A_STICK || playerentity.getHeldItemOffhand().getItem() == Items.CARROT_ON_A_STICK;
+        }
     }
 
     private void setPigStatus(String status) {
@@ -340,6 +377,20 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
+
+        if (item == Items.NAME_TAG) {
+            itemStack.interactWithEntity(entityPlayer, this, hand);
+            return true;
+        } else if (this.getSaddled() && !this.isBeingRidden()) {
+            if (!this.world.isRemote) {
+                entityPlayer.startRiding(this);
+            }
+
+            return true;
+        } else if (item == Items.SADDLE){
+            return this.saddlePig(itemStack, entityPlayer, this);
+        }
+
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
                 ITextComponent message = getHungerText();
@@ -400,6 +451,96 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
             }
         }
         return super.processInteract(entityPlayer, hand);
+    }
+
+    public boolean saddlePig(ItemStack stack, PlayerEntity playerIn, LivingEntity target) {
+        EnhancedPig pigentity = (EnhancedPig)target;
+        if (pigentity.isAlive() && !pigentity.getSaddled() && !pigentity.isChild()) {
+            pigentity.setSaddled(true);
+            pigentity.world.playSound(playerIn, pigentity.getPosX(), pigentity.getPosY(), pigentity.getPosZ(), SoundEvents.ENTITY_PIG_SADDLE, SoundCategory.NEUTRAL, 0.5F, 1.0F);
+            stack.shrink(1);
+            return true;
+        }
+
+        return false;
+    }
+
+    protected void dropInventory() {
+        super.dropInventory();
+        if (this.getSaddled()) {
+            this.entityDropItem(Items.SADDLE);
+        }
+    }
+
+    public boolean getSaddled() {
+        return this.dataManager.get(SADDLED);
+    }
+
+    public void setSaddled(boolean saddled) {
+        if (saddled) {
+            this.dataManager.set(SADDLED, true);
+        } else {
+            this.dataManager.set(SADDLED, false);
+        }
+    }
+
+    public void travel(Vec3d p_213352_1_) {
+        if (this.isAlive()) {
+            Entity entity = this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
+            if (this.isBeingRidden() && this.canBeSteered()) {
+                this.rotationYaw = entity.rotationYaw;
+                this.prevRotationYaw = this.rotationYaw;
+                this.rotationPitch = entity.rotationPitch * 0.5F;
+                this.setRotation(this.rotationYaw, this.rotationPitch);
+                this.renderYawOffset = this.rotationYaw;
+                this.rotationYawHead = this.rotationYaw;
+                this.stepHeight = 1.0F;
+                this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
+                if (this.boosting && this.boostTime++ > this.totalBoostTime) {
+                    this.boosting = false;
+                }
+
+                if (this.canPassengerSteer()) {
+                    float f = (float)this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * 0.225F;
+                    if (this.boosting) {
+                        f += f * 1.15F * MathHelper.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
+                    }
+
+                    this.setAIMoveSpeed(f);
+                    super.travel(new Vec3d(0.0D, 0.0D, 1.0D));
+                    this.newPosRotationIncrements = 0;
+                } else {
+                    this.setMotion(Vec3d.ZERO);
+                }
+
+                this.prevLimbSwingAmount = this.limbSwingAmount;
+                double d1 = this.getPosX() - this.prevPosX;
+                double d0 = this.getPosZ() - this.prevPosZ;
+                float f1 = MathHelper.sqrt(d1 * d1 + d0 * d0) * 4.0F;
+                if (f1 > 1.0F) {
+                    f1 = 1.0F;
+                }
+
+                this.limbSwingAmount += (f1 - this.limbSwingAmount) * 0.4F;
+                this.limbSwing += this.limbSwingAmount;
+            } else {
+                this.stepHeight = 0.5F;
+                this.jumpMovementFactor = 0.02F;
+                super.travel(p_213352_1_);
+            }
+        }
+    }
+
+    public boolean boost() {
+        if (this.boosting) {
+            return false;
+        } else {
+            this.boosting = true;
+            this.boostTime = 0;
+            this.totalBoostTime = this.getRNG().nextInt(841) + 140;
+            this.getDataManager().set(BOOST_TIME, this.totalBoostTime);
+            return true;
+        }
     }
 
     private ITextComponent getHungerText() {
@@ -1202,6 +1343,8 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         compound.putInt("Hunger", hunger);
 
         compound.putString("BirthTime", this.getBirthTime());
+
+        compound.putBoolean("Saddle", this.getSaddled());
     }
 
     /**
@@ -1260,6 +1403,8 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal{
         hunger = compound.getInt("Hunger");
 
         this.setBirthTime(compound.getString("BirthTime"));
+
+        this.setSaddled(compound.getBoolean("Saddle"));
     }
 
     public void mixMitosisGenes() {

@@ -141,7 +141,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private static final String LLAMA_CHEST_TEXTURE = "chest.png";
 
     private static final String[] LLAMA_TEXTURES_DECO = new String[] {
-            "", "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
+            "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
     };
 
 
@@ -1224,14 +1224,13 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         }
 
         int blanket = 0;
-        if (this.isLeashedToTrader()) {
-            blanket = 1;
-        } else {
-            blanket = 17;
+
+        if (!this.isLeashedToTrader()) {
+            blanket = 6;
         }
 
 
-        if (blanket != 0) {
+        if (blanket != 0 || this.isLeashedToTrader()) {
             this.llamaTextures.add(LLAMA_TEXTURES_DECO[blanket]);
         }
 

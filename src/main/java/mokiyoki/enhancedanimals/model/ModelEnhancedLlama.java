@@ -103,7 +103,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.head = new ModelRenderer(this, 0, 0);
         this.head.addBox(-4.0F, -3.0F, -3.0F, 8, 6, 6, 0.0F); //head
         this.head.setTextureOffset(28,8);
-        this.head.addBox(-4.0F, -3.0F, -3.0F, 8, 10, 6, 0.5F); //deco
+        this.head.addBox(-4.0F, -3.0F, -3.0F, 8, 10, 6, 0.505F); //deco
         this.head.setRotationPoint(0.0F, -11.0F, 1.0F);
 //        this.head.setTextureOffset(28, 0);
 //        this.head.addBox(-2.0F, -12.0F, -4.0F, 4, 4, 4, 0.0F); //nose

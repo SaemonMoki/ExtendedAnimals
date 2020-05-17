@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -754,6 +755,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         boolean sleeping = false;
         int lastAccessed = 0;
         long clientGameTime = 0;
+//        boolean angry = false;
 //        int dataReset = 0;
     }
 
@@ -793,6 +795,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.maxCoatlength = enhancedLlama.getCoatLength();
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
             llamaModelData.birthTime = enhancedLlama.getBirthTime();
+//            llamaModelData.angry = (enhancedLlama.getAttackTarget().equals(LivingEntity));
             llamaModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedLlama.world).getWorldInfo()).getGameTime());
 
             if(llamaModelData.llamaGenes != null) {

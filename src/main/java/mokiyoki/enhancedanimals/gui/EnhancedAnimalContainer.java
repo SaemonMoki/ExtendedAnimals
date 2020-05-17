@@ -16,6 +16,7 @@ import net.minecraft.network.PacketBuffer;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIMAL_CONTAINER;
 
 public class EnhancedAnimalContainer extends Container {
+    public boolean canHaveChest = false;
     private IInventory inventory;
     private EnhancedAnimal enhancedAnimal;
     private EnhancedAnimalInfo animalInfo;
@@ -31,13 +32,16 @@ public class EnhancedAnimalContainer extends Container {
         retrievedInventory.openInventory(playerInventoryIn.player);
         int i = 3; // inv height
         int j = 5; // inv width
-        for(int k = 0; k < i; ++k) {
-            for(int l = 0; l < j; ++l) {
-                this.addSlot(new Slot(retrievedInventory, l + k * j, 80 + l * 18, 18 + k * 18){
+
+        if (canHaveChest) {
+            for(int k = 0; k < i; ++k) {
+                for(int l = 0; l < j; ++l) {
+                    this.addSlot(new Slot(retrievedInventory, l + k * j, 80 + l * 18, 18 + k * 18){
 //                    public int getSlotStackLimit() {
 //                        return 64;
 //                    }
-                });
+                    });
+                }
             }
         }
 

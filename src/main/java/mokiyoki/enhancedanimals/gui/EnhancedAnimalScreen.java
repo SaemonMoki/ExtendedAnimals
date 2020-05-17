@@ -28,7 +28,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 
     boolean canHaveChest = true;
     boolean hasChest = true;
-    boolean emptyInv = true;
+    boolean emptyInv = false;
 
     boolean canHaveSaddle = true;
     boolean canHaveBridle = true;
@@ -83,12 +83,21 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         int shiftX = 7;
         this.blit(i, j, 0, 0, this.xSize, this.ySize);
 
-        if (tabToggle) {
-            if (canHaveChest) {
-                    this.blit(i + 79, j + 17, 0, this.ySize + 54, 18, 54);
-                if (hasChest) {
+        /**
+         *  this.blit(drawFromX, drawFromY, imageX, imageY, sizeX, sizeY)
+         */
+
+
+        if (canHaveChest && tabToggle) {
+            if (hasChest) {
+                if (emptyInv) {
+                    this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
+                    this.blit(i + 112, j + 31, 180, this.ySize, 24, 26);
+                } else {
                     this.blit(i + 79, j + 17, 0, this.ySize, 18*invSize, 54);
                 }
+            } else {
+                this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
             }
         }
 

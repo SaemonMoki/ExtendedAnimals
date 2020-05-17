@@ -489,6 +489,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     public void openGUI(PlayerEntity playerEntity) {
         EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
         animalInfo.sleeping = this.isAnimalSleeping();
+        animalInfo.testRandom = ThreadLocalRandom.current().nextInt();
         EnhancedAnimals.proxy.setEnhancedAnimalInfo(animalInfo);
 
         if (!this.world.isRemote && (!this.isBeingRidden() || this.isPassenger(playerEntity)) && this.isTame()) {

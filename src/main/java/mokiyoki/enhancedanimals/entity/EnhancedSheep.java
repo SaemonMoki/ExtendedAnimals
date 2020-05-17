@@ -10,6 +10,7 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -366,6 +367,11 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     @Override
     public Inventory getEnhancedInventory() {
+        return null;
+    }
+
+    @Override
+    public EnhancedAnimalInfo getAnimalInfo() {
         return null;
     }
 

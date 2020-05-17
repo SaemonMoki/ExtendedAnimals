@@ -2,6 +2,8 @@ package mokiyoki.enhancedanimals.gui;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -15,20 +17,14 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIM
 
 public class EnhancedAnimalContainer extends Container {
     private IInventory inventory;
-
-    public EnhancedAnimalContainer(int i, PlayerInventory playerInventory, PacketBuffer packetBuffer) {
-        this(i, playerInventory, (EnhancedAnimal) null);
-    }
+    private EnhancedAnimal enhancedAnimal;
+    private EnhancedAnimalInfo animalInfo;
 
     public EnhancedAnimalContainer(int p_i50066_1_, PlayerInventory playerInventoryIn, EnhancedAnimal enhancedAnimal) {
         super(ENHANCED_ANIMAL_CONTAINER, p_i50066_1_);
-        Inventory retrievedInventory;
-
-        if (enhancedAnimal != null) {
-            retrievedInventory = enhancedAnimal.getEnhancedInventory();
-        } else {
-            retrievedInventory = new Inventory(15);
-        }
+        Inventory retrievedInventory = enhancedAnimal.getEnhancedInventory();
+        this.enhancedAnimal = enhancedAnimal;
+        this.animalInfo = animalInfo;
 
         assertInventorySize(retrievedInventory, 15);
         this.inventory = retrievedInventory;
@@ -95,4 +91,7 @@ public class EnhancedAnimalContainer extends Container {
         super.onContainerClosed(player);
     }
 
+    public EnhancedAnimal getAnimal() {
+        return enhancedAnimal;
+    }
 }

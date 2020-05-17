@@ -98,6 +98,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<String> LLAMA_STATUS = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.STRING);
     private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
+    private static final DataParameter<String> ANIMAL_DATA = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
 
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
             "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blacktan.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png", "fawn.png"
@@ -234,6 +235,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(LLAMA_STATUS, new String());
         this.dataManager.register(BIRTH_TIME, "0");
+        this.dataManager.register(ANIMAL_DATA, new String());
     }
 
     private void setLlamaStatus(String status) {
@@ -309,6 +311,14 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     public void awaken() {
         this.awokenTimer = 200;
         setSleeping(false);
+    }
+
+    public void setAnimalData(String data) {
+        this.dataManager.set(ANIMAL_DATA, data);
+    }
+
+    public EnhancedAnimalInfo getAnimalInfo() {
+        return new EnhancedAnimalInfo(this.dataManager.get(ANIMAL_DATA));
     }
 
     @Override
@@ -487,11 +497,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     @Override
     public void openGUI(PlayerEntity playerEntity) {
-        EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
-        animalInfo.sleeping = this.isAnimalSleeping();
-        animalInfo.testRandom = ThreadLocalRandom.current().nextInt();
-        EnhancedAnimals.proxy.setEnhancedAnimalInfo(animalInfo);
-
         if (!this.world.isRemote && (!this.isBeingRidden() || this.isPassenger(playerEntity)) && this.isTame()) {
             this.openInfoInventory(this, this.horseChest, playerEntity);
         }
@@ -503,6 +508,12 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 //            this.closeScreen();
 //        }
         if(!playerEntity.world.isRemote) {
+
+            EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
+            animalInfo.health = this.getHealth();
+            animalInfo.testRandom = ThreadLocalRandom.current().nextInt();
+
+            setAnimalData(animalInfo.serialiseToString());
 
             if(playerEntity instanceof ServerPlayerEntity) {
                 ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerEntity;
@@ -516,10 +527,14 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                     public ITextComponent getDisplayName() {
                         return new TranslationTextComponent("eanimod.animalinfocontainer");
                     }
+                }, buf -> {
+                    buf.writeInt(enhancedLlama.getEntityId());
                 });
             }
         }
     }
+
+
 
     private ITextComponent getHungerText() {
         String hungerText = "";

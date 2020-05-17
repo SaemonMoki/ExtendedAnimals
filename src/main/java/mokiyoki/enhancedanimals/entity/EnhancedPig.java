@@ -8,6 +8,7 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -355,6 +356,11 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal {
 
     @Override
     public Inventory getEnhancedInventory() {
+        return null;
+    }
+
+    @Override
+    public EnhancedAnimalInfo getAnimalInfo() {
         return null;
     }
 

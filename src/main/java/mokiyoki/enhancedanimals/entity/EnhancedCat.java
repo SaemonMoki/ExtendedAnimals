@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEat
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.AgeableEntity;
@@ -252,6 +253,11 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
     @Override
     public Inventory getEnhancedInventory() {
+        return null;
+    }
+
+    @Override
+    public EnhancedAnimalInfo getAnimalInfo() {
         return null;
     }
 

@@ -21,9 +21,5 @@ public interface IProxy {
 
     void openEncyclodepia();
 
-    void setEnhancedAnimalInfo(EnhancedAnimalInfo enhancedAnimal);
-
-    void openAnimalInfoGui(EnhancedAnimalScreen animalScreen);
-
     void initClientSetup(FMLClientSetupEvent event);
 }

@@ -4,6 +4,8 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
@@ -38,9 +40,11 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 
     public EnhancedAnimalScreen(EnhancedAnimalContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
+        setAnimalInfo();
     }
 
     public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
+        if (!enhancedAnimalInfo.created) {setAnimalInfo();}
         this.renderBackground();
         this.mousePosx = (float)p_render_1_;
         this.mousePosY = (float)p_render_2_;
@@ -121,6 +125,12 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
         }
 
-//        InventoryScreen.drawEntityOnScreen(i + 51, j + 60, 17, (float)(i + 51) - this.mousePosx, (float)(j + 75 - 50) - this.mousePosY, this.animal);
+        if (enhancedAnimalInfo.created) {
+            InventoryScreen.drawEntityOnScreen(i + 51, j + 60, 17, (float)(i + 51) - this.mousePosx, (float)(j + 75 - 50) - this.mousePosY, (LivingEntity) this.container.getAnimal());
+        }
+    }
+
+    private void setAnimalInfo() {
+        this.enhancedAnimalInfo = this.container.getAnimal().getAnimalInfo();
     }
 }

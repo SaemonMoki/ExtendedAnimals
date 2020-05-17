@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 //import mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.entity.EnhancedBee;
 import mokiyoki.enhancedanimals.entity.EnhancedCat;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
@@ -22,14 +23,17 @@ import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntityType;
@@ -74,7 +78,15 @@ public class EventRegistry {
     public static final EntityType<EnhancedBee> ENHANCED_BEE = EntityType.Builder.create(EnhancedBee::new, EntityClassification.CREATURE).size(0.4F, 0.4F).build(Reference.MODID + ":enhanced_bee");
 
     public static final ContainerType<EggCartonContainer> EGG_CARTON_CONTAINER = IForgeContainerType.create(EggCartonContainer::new);
-    public static final ContainerType<EnhancedAnimalContainer> ENHANCED_ANIMAL_CONTAINER = IForgeContainerType.create(EnhancedAnimalContainer::new);
+    public static final ContainerType<EnhancedAnimalContainer> ENHANCED_ANIMAL_CONTAINER = IForgeContainerType.create((windowId, inv, data) -> {
+        Entity entity = inv.player.world.getEntityByID(data.readInt());
+        if(entity instanceof EnhancedAnimal) {
+            return new EnhancedAnimalContainer(windowId, inv, (EnhancedAnimal)entity);
+        } else {
+            return null;
+        }
+    });
+
 
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {

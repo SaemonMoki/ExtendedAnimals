@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -306,6 +307,11 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
     @Override
     public Inventory getEnhancedInventory() {
+        return null;
+    }
+
+    @Override
+    public EnhancedAnimalInfo getAnimalInfo() {
         return null;
     }
 

@@ -30,16 +30,6 @@ public class ServerProxy implements IProxy {
     }
 
     @Override
-    public void setEnhancedAnimalInfo(EnhancedAnimalInfo enhancedAnimal) {
-
-    }
-
-    @Override
-    public void openAnimalInfoGui(EnhancedAnimalScreen animalScreen) {
-
-    }
-
-    @Override
     public void initClientSetup(FMLClientSetupEvent event) {
 
     }

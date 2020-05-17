@@ -11,6 +11,7 @@ import mokiyoki.enhancedanimals.ai.general.chicken.EnhancedWaterAvoidingRandomWa
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -320,6 +321,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     @Override
     public Inventory getEnhancedInventory() {
+        return null;
+    }
+
+    @Override
+    public EnhancedAnimalInfo getAnimalInfo() {
         return null;
     }
 

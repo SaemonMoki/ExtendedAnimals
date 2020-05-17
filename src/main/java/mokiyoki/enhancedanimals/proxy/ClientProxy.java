@@ -102,14 +102,4 @@ public class ClientProxy implements IProxy {
     public void openEncyclodepia() {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> Minecraft.getInstance().displayGuiScreen(EncyclopediaScreen.currentEncyclopedia));
     }
-
-    @Override
-    public void setEnhancedAnimalInfo(EnhancedAnimalInfo enhancedAnimal) {
-        EnhancedAnimalScreen.enhancedAnimalInfo = enhancedAnimal;
-    }
-
-    @Override
-    public void openAnimalInfoGui(EnhancedAnimalScreen animalScreen) {
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> Minecraft.getInstance().displayGuiScreen(animalScreen));
-    }
 }

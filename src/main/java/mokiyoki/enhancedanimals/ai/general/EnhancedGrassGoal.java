@@ -44,7 +44,7 @@ public class EnhancedGrassGoal extends Goal {
             //first stage babies should NOT eat grass
             return false;
         }
-        int eatingModifier = ((EnhancedAnimal)grassEaterEntity).getHunger()/50;
+        int eatingModifier = Math.round(((EnhancedAnimal)grassEaterEntity).getHunger()/50);
 
         if (((EnhancedAnimal)grassEaterEntity).getHunger() > 12000) {
             eatingModifier = 999;

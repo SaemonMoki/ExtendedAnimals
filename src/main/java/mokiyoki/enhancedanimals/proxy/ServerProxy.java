@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.proxy;
 
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -25,6 +26,11 @@ public class ServerProxy implements IProxy {
 
     @Override
     public void openEncyclodepia() {
+
+    }
+
+    @Override
+    public void setEnhancedAnimalInfo(EnhancedAnimalInfo enhancedAnimal) {
 
     }
 

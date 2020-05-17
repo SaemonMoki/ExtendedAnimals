@@ -192,7 +192,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
 
     protected float maxBagSize;
     protected float cowSize;
-    protected int hunger = 0;
+    protected float hunger = 0;
     protected int healTicks = 0;
     protected boolean aiConfigured = false;
 
@@ -368,9 +368,9 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         return null;
     }
 
-    public int getHunger(){ return hunger; }
+    public float getHunger(){ return hunger; }
 
-    public void decreaseHunger(int decrease) {
+    public void decreaseHunger(float decrease) {
         if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {
@@ -1961,7 +1961,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         compound.putInt("Lactation", this.lactationTimer);
 
         compound.putString("Status", getCowStatus());
-        compound.putInt("Hunger", hunger);
+        compound.putFloat("Hunger", hunger);
 
         compound.putString("MooshroomID", getMooshroomUUID());
 
@@ -2001,7 +2001,7 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         this.lactationTimer = compound.getInt("Lactation");
 
         setCowStatus(compound.getString("Status"));
-        hunger = compound.getInt("Hunger");
+        hunger = compound.getFloat("Hunger");
 
         setMooshroomUUID(compound.getString("MooshroomID"));
 

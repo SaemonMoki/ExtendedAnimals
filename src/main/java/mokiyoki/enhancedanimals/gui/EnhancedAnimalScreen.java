@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -15,6 +16,8 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     private float mousePosx;
     /** The mouse y-position recorded during the last renderered frame. */
     private float mousePosY;
+
+    public static EnhancedAnimalInfo enhancedAnimalInfo = new EnhancedAnimalInfo();
 
     public EnhancedAnimalScreen(EnhancedAnimalContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);

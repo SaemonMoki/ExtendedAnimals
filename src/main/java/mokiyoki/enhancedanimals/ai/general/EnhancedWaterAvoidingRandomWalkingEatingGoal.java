@@ -107,16 +107,16 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                     return eatingRoute();
                 }
 
-                int eatingModifier = createEatingModifier(((EnhancedAnimal)creature).getHunger());
+                float eatingModifier = createEatingModifier(((EnhancedAnimal)creature).getHunger());
 
-                int chanceToEat = 1000 - eatingModifier;
+                float chanceToEat = 1000 - eatingModifier;
 
                 if (chanceToEat < 1) {
                     chanceToEat = 1;
                 }
 
 
-                if (this.creature.getRNG().nextInt(chanceToEat) == 0) {
+                if (this.creature.getRNG().nextInt(Math.round(chanceToEat)) == 0) {
                     return eatingRoute();
                 }
 
@@ -141,8 +141,8 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         }
     }
 
-    private int createEatingModifier(int hunger) {
-        int modifier = hunger / this.hungerModifier;
+    private float createEatingModifier(float hunger) {
+        float modifier = hunger / this.hungerModifier;
         return modifier;
     }
 
@@ -254,7 +254,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
 
     protected int getEatDelay(CreatureEntity creatureIn) {
-        int delayInt = 300 + creatureIn.getRNG().nextInt(300) - ((EnhancedAnimal)creatureIn).getHunger()/50;
+        int delayInt = 300 + creatureIn.getRNG().nextInt(300) - Math.round(((EnhancedAnimal)creatureIn).getHunger()/50);
         if (delayInt < 0) {
             delayInt = 0;
         }

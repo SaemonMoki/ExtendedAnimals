@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
@@ -11,6 +12,7 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -179,7 +181,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
-    private int hunger = 0;
+    private float hunger = 0;
     private int healTicks = 0;
     protected String motherUUID = "";
     protected Boolean sleeping = false;
@@ -316,11 +318,11 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         return inventory;
     }
 
-    public int getHunger(){
+    public float getHunger(){
         return hunger;
     }
 
-    public void decreaseHunger(int decrease) {
+    public void decreaseHunger(float decrease) {
         if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {
@@ -413,7 +415,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         Item item = itemStack.getItem();
 
         if (!this.isChild()) {
-            if (this.isTame() && entityPlayer.isShiftKeyDown()) {
+            if (this.isTame() && entityPlayer.isSecondaryUseActive()) {
                 this.openGUI(entityPlayer);
                 return true;
             }
@@ -485,6 +487,10 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     @Override
     public void openGUI(PlayerEntity playerEntity) {
+        EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
+        animalInfo.sleeping = this.isAnimalSleeping();
+        EnhancedAnimals.proxy.setEnhancedAnimalInfo(animalInfo);
+
         if (!this.world.isRemote && (!this.isBeingRidden() || this.isPassenger(playerEntity)) && this.isTame()) {
             this.openInfoInventory(this, this.horseChest, playerEntity);
         }
@@ -1264,7 +1270,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         compound.putInt("Gestation", this.gestationTimer);
 
         compound.putString("Status", getLlamaStatus());
-        compound.putInt("Hunger", hunger);
+        compound.putFloat("Hunger", hunger);
 
         compound.putString("BirthTime", this.getBirthTime());
 
@@ -1313,7 +1319,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.gestationTimer = compound.getInt("Gestation");
 
         setLlamaStatus(compound.getString("Status"));
-        hunger = compound.getInt("Hunger");
+        hunger = compound.getFloat("Hunger");
 
         this.setBirthTime(compound.getString("BirthTime"));
 

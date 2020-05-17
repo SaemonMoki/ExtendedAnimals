@@ -226,7 +226,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
-    private int hunger = 0;
+    private float hunger = 0;
     protected int healTicks = 0;
     protected String motherUUID = "";
     protected Boolean sleeping = false;
@@ -309,11 +309,11 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         return null;
     }
 
-    public int getHunger(){
+    public float getHunger(){
         return hunger;
     }
 
-    public void decreaseHunger(int decrease) {
+    public void decreaseHunger(float decrease) {
         if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {
@@ -1251,7 +1251,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         compound.putInt("Gestation", this.gestationTimer);
 
         compound.putString("Status", getRabbitStatus());
-        compound.putInt("Hunger", hunger);
+        compound.putFloat("Hunger", hunger);
 
         compound.putString("BirthTime", this.getBirthTime());
     }
@@ -1280,7 +1280,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         }
 
         setRabbitStatus(compound.getString("Status"));
-        hunger = compound.getInt("Hunger");
+        hunger = compound.getFloat("Hunger");
 
         //TODO add a proper calculation for this
         for (int i = 0; i < genes.length; i++) {

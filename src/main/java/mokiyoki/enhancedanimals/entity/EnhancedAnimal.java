@@ -4,9 +4,9 @@ import net.minecraft.inventory.Inventory;
 
 public interface EnhancedAnimal {
 
-    int getHunger();
+    float getHunger();
 
-    void decreaseHunger(int decreaseAmount);
+    void decreaseHunger(float decreaseAmount);
 
     Boolean isAnimalSleeping();
 

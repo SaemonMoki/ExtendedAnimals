@@ -146,7 +146,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private int currentCoatLength;
     private int timeForGrowth = 0;
 
-    private int hunger = 0;
+    private float hunger = 0;
     protected int healTicks = 0;
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
@@ -369,11 +369,11 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         return null;
     }
 
-    public int getHunger(){
+    public float getHunger(){
         return hunger;
     }
 
-    public void decreaseHunger(int decrease) {
+    public void decreaseHunger(float decrease) {
         if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {
@@ -1665,7 +1665,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         compound.putInt("Lactation", this.lactationTimer);
 
         compound.putString("Status", getSheepStatus());
-        compound.putInt("Hunger", hunger);
+        compound.putFloat("Hunger", hunger);
 
         compound.putInt("milk", getMilkAmount());
 
@@ -1704,7 +1704,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         this.lactationTimer = compound.getInt("Lactation");
 
         setSheepStatus(compound.getString("Status"));
-        hunger = compound.getInt("Hunger");
+        hunger = compound.getFloat("Hunger");
 
         setMilkAmount(compound.getInt("milk"));
 

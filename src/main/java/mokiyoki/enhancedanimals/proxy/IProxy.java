@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.proxy;
 
 
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -19,6 +20,8 @@ public interface IProxy {
     void setEncylopediaInfo(ItemStack itemStack);
 
     void openEncyclodepia();
+
+    void setEnhancedAnimalInfo(EnhancedAnimalInfo enhancedAnimal);
 
     void openAnimalInfoGui(EnhancedAnimalScreen animalScreen);
 

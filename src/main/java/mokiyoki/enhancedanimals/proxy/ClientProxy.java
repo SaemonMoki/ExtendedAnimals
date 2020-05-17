@@ -1,10 +1,12 @@
 package mokiyoki.enhancedanimals.proxy;
 
+import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.gui.EggCartonScreen;
 import mokiyoki.enhancedanimals.gui.EncyclopediaScreen;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.renderer.*;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
@@ -99,6 +101,11 @@ public class ClientProxy implements IProxy {
     @Override
     public void openEncyclodepia() {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> Minecraft.getInstance().displayGuiScreen(EncyclopediaScreen.currentEncyclopedia));
+    }
+
+    @Override
+    public void setEnhancedAnimalInfo(EnhancedAnimalInfo enhancedAnimal) {
+        EnhancedAnimalScreen.enhancedAnimalInfo = enhancedAnimal;
     }
 
     @Override

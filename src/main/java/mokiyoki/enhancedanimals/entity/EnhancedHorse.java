@@ -172,7 +172,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
 
     private float[] horseColouration = null;
     private float horseSize;
-    protected int hunger = 0;
+    protected float hunger = 0;
     private int healTicks = 0;
     protected int horseTimer;
     protected boolean aiConfigured = false;
@@ -248,9 +248,9 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         return null;
     }
 
-    public int getHunger(){ return hunger; }
+    public float getHunger(){ return hunger; }
 
-    public void decreaseHunger(int decrease) {
+    public void decreaseHunger(float decrease) {
         if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {
@@ -832,7 +832,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         compound.putInt("Gestation", this.gestationTimer);
 
         compound.putString("Status", getHorseStatus());
-        compound.putInt("Hunger", hunger);
+        compound.putFloat("Hunger", hunger);
 
         compound.putString("MotherUUID", this.motherUUID);
 
@@ -865,7 +865,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         this.gestationTimer = compound.getInt("Gestation");
 
         setHorseStatus(compound.getString("Status"));
-        hunger = compound.getInt("Hunger");
+        hunger = compound.getFloat("Hunger");
 
         this.motherUUID = compound.getString("MotherUUID");
 

@@ -86,7 +86,7 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
     private int timeSinceSting;
 
     private float[] beeColouration = null;
-    private int hunger = 0;
+    private float hunger = 0;
     protected int healTicks = 0;
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
@@ -160,11 +160,11 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
         return null;
     }
 
-    public int getHunger(){
+    public float getHunger(){
         return hunger;
     }
 
-    public void decreaseHunger(int decrease) {
+    public void decreaseHunger(float decrease) {
         if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {

@@ -56,6 +56,7 @@ public class EanimodCommonConfig implements IEanimodConfig{
         public final ForgeConfigSpec.IntValue gestationDaysPig;
         public final ForgeConfigSpec.IntValue gestationDaysHorse;
         public final ForgeConfigSpec.IntValue gestationDaysCat;
+        public final ForgeConfigSpec.EnumValue<HungerConfigEnum> hungerScaling;
 
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
@@ -160,12 +161,17 @@ public class EanimodCommonConfig implements IEanimodConfig{
                     .defineInRange("pigGestation.days", 48000, 1000, Integer.MAX_VALUE);
 
             gestationDaysHorse = builder
-                    .comment("Number of ticks for pig gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
+                    .comment("Number of ticks for horse gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
                     .defineInRange("horseGestation.days", 48000, 1000, Integer.MAX_VALUE);
 
             gestationDaysCat = builder
-                    .comment("Number of ticks for pig gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
+                    .comment("Number of ticks for cat gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
                     .defineInRange("catGestation.days", 48000, 1000, Integer.MAX_VALUE);
+
+
+            hungerScaling = builder
+                    .comment("How fast the animals get hungry. Values: RAVENOUS, MORE_HUNGRY, STANDARD, LESS_HUNGRY, NEVER_HUNGRY")
+                    .defineEnum("hungerscaling", HungerConfigEnum.STANDARD);
 
             builder.pop();
         }

@@ -66,15 +66,12 @@ import java.util.stream.Collectors;
 /**
  * Created by saemon and moki on 30/08/2018.
  */
-public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
+public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedAnimal {
 
     //avalible UUID spaces : [ S 1 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
-    private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedChicken.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> ROOSTING = EntityDataManager.<Boolean>createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Float> CHICKEN_SIZE = EntityDataManager.createKey(EnhancedChicken.class, DataSerializers.FLOAT);
-    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedChicken.class, DataSerializers.STRING);
 
     /** [4] duckwing, partridge, wheaten, solid
      [5] silver, salmon, lemon, gold, mahogany */
@@ -235,20 +232,6 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.TALL_GRASS, Items.GRASS, Items.BREAD);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
 
-    Map<Item, Integer> foodWeightMap = new HashMap() {{
-        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-        put(new ItemStack(Items.GRASS).getItem(), 3000);
-        put(new ItemStack(Items.WHEAT).getItem(), 6000);
-        put(new ItemStack(Items.BREAD).getItem(), 18000);
-        put(new ItemStack(Items.WHEAT_SEEDS).getItem(), 4000);
-        put(new ItemStack(Items.MELON_SEEDS).getItem(), 4000);
-        put(new ItemStack(Items.PUMPKIN_SEEDS).getItem(), 4000);
-        put(new ItemStack(Items.BEETROOT_SEEDS).getItem(), 4000);
-        put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
-        put(new ItemStack(Items.DANDELION).getItem(), 1500);
-        put(new ItemStack(Items.SPIDER_EYE).getItem(), 1500);
-    }};
-
     public boolean isFemale = true;
     public float wingRotation;
     public float destPos;
@@ -263,30 +246,37 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     private ECSandBath ecSandBath;
     private String dropMeatType;
 
-    private int hunger = 0;
-    protected int healTicks = 0;
-    protected Boolean sleeping = false;
-    protected int awokenTimer = 0;
-
     private boolean resetTexture = true;
 
     private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private int broodingCount;
     private final List<String> chickenTextures = new ArrayList<>();
-    //'father' gene variables list
-    private int[] genes = new int[Reference.CHICKEN_GENES_LENGTH];
-    private int[] mateGenes = new int[Reference.CHICKEN_GENES_LENGTH];
-    private int[] mitosisGenes = new int[Reference.CHICKEN_GENES_LENGTH];
-    private int[] mateMitosisGenes = new int[Reference.CHICKEN_GENES_LENGTH];
 
     private float chickenSize = 0.0F;
 
     public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, World worldIn) {
-        super(entityType, worldIn);
+        super(entityType, worldIn, Reference.CHICKEN_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap());
         this.setChickenSize();
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
         this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
         this.setPathPriority(PathNodeType.WATER, 0.0F);
+    }
+
+    private static Map<Item, Integer> createFoodMap() {
+        return new HashMap() {{
+            put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
+            put(new ItemStack(Items.GRASS).getItem(), 3000);
+            put(new ItemStack(Items.WHEAT).getItem(), 6000);
+            put(new ItemStack(Items.BREAD).getItem(), 18000);
+            put(new ItemStack(Items.WHEAT_SEEDS).getItem(), 4000);
+            put(new ItemStack(Items.MELON_SEEDS).getItem(), 4000);
+            put(new ItemStack(Items.PUMPKIN_SEEDS).getItem(), 4000);
+            put(new ItemStack(Items.BEETROOT_SEEDS).getItem(), 4000);
+            put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
+            put(new ItemStack(Items.DANDELION).getItem(), 1500);
+            put(new ItemStack(Items.SPIDER_EYE).getItem(), 1500);
+        }};
+
     }
 
     @Override
@@ -307,8 +297,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
     }
 
-    protected void updateAITasks()
-    {
+    protected void updateAITasks() {
         this.grassTimer = this.entityAIEatGrass.getEatingGrassTimer();
         this.sandBathTimer = this.ecSandBath.getSandBathTimer();
         super.updateAITasks();
@@ -317,11 +306,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
     @Override
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(ROOSTING, new Boolean(false));
-        this.dataManager.register(SLEEPING, false);
         this.dataManager.register(CHICKEN_SIZE, 0.0F);
-        this.dataManager.register(BIRTH_TIME, "0");
     }
 
     private void setChickenSize(float size) {
@@ -332,55 +318,9 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         return this.dataManager.get(CHICKEN_SIZE);
     }
 
-    protected void setBirthTime(String birthTime) {
-        this.dataManager.set(BIRTH_TIME, birthTime);
-    }
-
-    public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
-
-    private int getAge() {
-        if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
-            return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
-        } else {
-            return 500000;
-        }
-    }
-
-    public void setSleeping(Boolean sleeping) {
-        this.sleeping = sleeping;
-        this.dataManager.set(SLEEPING, sleeping); }
-
-    @Override
-    public Boolean isAnimalSleeping() {
-        if (this.sleeping == null) {
-            return false;
-        } else {
-            sleeping = this.dataManager.get(SLEEPING);
-            return sleeping;
-        }
-    }
-
-    @Override
-    public void awaken() {
-        this.awokenTimer = 200;
-        setSleeping(false);
-    }
-
     @Override
     public Inventory getEnhancedInventory() {
         return null;
-    }
-
-    public int getHunger(){
-        return hunger;
-    }
-
-    public void decreaseHunger(int decrease) {
-        if (this.hunger - decrease < 0) {
-            this.hunger = 0;
-        } else {
-            this.hunger = this.hunger - decrease;
-        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -449,51 +389,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         return super.processInteract(entityPlayer, hand);
     }
 
-    private ITextComponent getHungerText() {
-        String hungerText = "";
-        if (this.hunger < 1000) {
-            hungerText = "eanimod.hunger.not_hungry";
-        } else if (this.hunger < 4000) {
-            hungerText = "eanimod.hunger.hungry";
-        } else if (this.hunger < 9000) {
-            hungerText = "eanimod.hunger.very_hunger";
-        } else if (this.hunger < 16000) {
-            hungerText = "eanimod.hunger.starving";
-        } else if (this.hunger > 24000) {
-            hungerText = "eanimod.hunger.dying";
-        }
-        return new TranslationTextComponent(hungerText);
-    }
-
-    public void setSharedGenes(int[] genes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < genes.length; i++){
-            sb.append(genes[i]);
-            if (i != genes.length -1){
-                sb.append(",");
-            }
-        }
-        this.dataManager.set(SHARED_GENES, sb.toString());
-    }
-
     public void setSharedGenesFromEntityEgg(String genes) {
         this.dataManager.set(SHARED_GENES, genes);
-    }
-
-    public int[] getSharedGenes() {
-        String sharedGenes = ((String)this.dataManager.get(SHARED_GENES)).toString();
-        int[] sharedGenesArray;
-        if(sharedGenes.isEmpty()){
-            return null;
-        } else {
-            String[] genesToSplit = sharedGenes.split(",");
-            sharedGenesArray = new int[genesToSplit.length];
-            for (int i = 0; i < sharedGenesArray.length; i++) {
-                //parse and store each value into int[] to be returned
-                sharedGenesArray[i] = Integer.parseInt(genesToSplit[i]);
-            }
-        }
-        return sharedGenesArray;
     }
 
     public boolean isRoosting() {
@@ -701,9 +598,8 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         return BREED_ITEMS.test(stack);
     }
 
-    @Nullable
     @Override
-    public AgeableEntity createChild(AgeableEntity ageable) {
+    protected void handlePartnerBreeding(AgeableEntity ageable) {
         this.mateGenes = ((EnhancedChicken)ageable).getGenes();
         mixMateMitosisGenes();
         mixMitosisGenes();
@@ -711,25 +607,9 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         ((EnhancedChicken)ageable).mixMateMitosisGenes();
         ((EnhancedChicken)ageable).mixMitosisGenes();
 
-        this.setGrowingAge(10);
-        this.resetInLove();
-        ageable.setGrowingAge(10);
-        ((EnhancedChicken)ageable).resetInLove();
-
-        ServerPlayerEntity entityplayermp = this.getLoveCause();
-        if (entityplayermp == null && ((EnhancedChicken)ageable).getLoveCause() != null) {
-            entityplayermp = ((EnhancedChicken)ageable).getLoveCause();
-        }
-
-        if (entityplayermp != null) {
-            entityplayermp.addStat(Stats.ANIMALS_BRED);
-            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedChicken)ageable), (AgeableEntity)null);
-        }
 
         this.setFertile();
         ((EnhancedChicken)ageable).setFertile();
-
-        return null;
     }
 
 
@@ -3243,7 +3123,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
         }
         compound.put("FatherGenes", mateGeneList);
 
-        compound.putInt("Hunger", hunger);
+        compound.putFloat("Hunger", hunger);
 
         compound.putString("BirthTime", this.getBirthTime());
     }
@@ -3269,7 +3149,7 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
             mateGenes[i] = gene;
         }
 
-        hunger = compound.getInt("Hunger");
+        hunger = compound.getFloat("Hunger");
 
         this.setBirthTime(compound.getString("BirthTime"));
 
@@ -4850,10 +4730,6 @@ public class EnhancedChicken extends AnimalEntity implements EnhancedAnimal {
 
     public int[] getGenes(){
         return this.genes;
-    }
-
-    public void setMateGenes(int[] mateGenes){
-        this.mateGenes = mateGenes;
     }
 
     public void setFertile(){

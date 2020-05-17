@@ -165,7 +165,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     private boolean pregnant = false;
 
     private float[] catColouration = null;
-    private int hunger = 0;
+    private float hunger = 0;
     private int healTicks = 0;
     protected String motherUUID = "";
     protected Boolean sleeping;
@@ -255,11 +255,11 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         return null;
     }
 
-    public int getHunger(){
+    public float getHunger(){
         return hunger;
     }
 
-    public void decreaseHunger(int decrease) {
+    public void decreaseHunger(float decrease) {
         if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {
@@ -838,7 +838,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         compound.putInt("Gestation", this.gestationTimer);
 
         compound.putString("Status", getCatStatus());
-        compound.putInt("Hunger", hunger);
+        compound.putFloat("Hunger", hunger);
 
         compound.putBoolean("Zygosity", this.getZygosity());
     }
@@ -867,7 +867,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         }
 
         setCatStatus(compound.getString("Status"));
-        hunger = compound.getInt("Hunger");
+        hunger = compound.getFloat("Hunger");
 
         hemizygote = compound.getBoolean("Zygosity");
 

@@ -641,14 +641,17 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.tailBase.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         matrixStackIn.pop();
 
-        if (sheepStatus.equals(EntityState.PREGNANT.toString()) || sheepStatus.equals(EntityState.MOTHER.toString())) {
-            matrixStackIn.push();
-            matrixStackIn.scale(bagSize, bagSize, bagSize);
-            matrixStackIn.translate(0.0F, (1.0F-bagSize) * 1.5F, (1.0F-bagSize)*0.8F);
+        matrixStackIn.push();
+        matrixStackIn.scale(bagSize, bagSize, bagSize);
+        matrixStackIn.translate(0.0F, (1.0F-bagSize) * 1.5F, (1.0F-bagSize)*0.8F);
 
-            this.udder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            matrixStackIn.pop();
+        this.udder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        if (sheepStatus.equals(EntityState.PREGNANT.toString()) || sheepStatus.equals(EntityState.MOTHER.toString())) {
+            this.udder.showModel = true;
+        } else {
+            this.udder.showModel = false;
         }
+        matrixStackIn.pop();
     }
 
     private void renderLegs(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {

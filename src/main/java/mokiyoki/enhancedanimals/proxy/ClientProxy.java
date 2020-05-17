@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.proxy;
 
 import mokiyoki.enhancedanimals.gui.EggCartonScreen;
 import mokiyoki.enhancedanimals.gui.EncyclopediaScreen;
+import mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.renderer.*;
 import net.minecraft.block.BlockState;
@@ -26,6 +27,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIMAL_CONTAINER;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
@@ -59,6 +61,7 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOSHROOM, RenderEnhancedMooshroom::new);
 
         ScreenManager.registerFactory(EGG_CARTON_CONTAINER, EggCartonScreen::new);
+        ScreenManager.registerFactory(ENHANCED_ANIMAL_CONTAINER, EnhancedAnimalScreen::new);
         ClientRegistry.bindTileEntityRenderer(EGG_CARTON_TILE_ENTITY, EggCartonTileEntityRenderer::new);
 
         RenderTypeLookup.setRenderLayer(ModBlocks.SparseGrass_Block, RenderType.getCutoutMipped());
@@ -96,5 +99,10 @@ public class ClientProxy implements IProxy {
     @Override
     public void openEncyclodepia() {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> Minecraft.getInstance().displayGuiScreen(EncyclopediaScreen.currentEncyclopedia));
+    }
+
+    @Override
+    public void openAnimalInfoGui(EnhancedAnimalScreen animalScreen) {
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> Minecraft.getInstance().displayGuiScreen(animalScreen));
     }
 }

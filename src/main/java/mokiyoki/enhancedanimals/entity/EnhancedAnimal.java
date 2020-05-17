@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
+import net.minecraft.inventory.Inventory;
+
 public interface EnhancedAnimal {
 
     int getHunger();
@@ -9,5 +11,7 @@ public interface EnhancedAnimal {
     Boolean isAnimalSleeping();
 
     void awaken();
+
+    Inventory getEnhancedInventory();
 
 }

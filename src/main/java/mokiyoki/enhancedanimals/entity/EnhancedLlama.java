@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
@@ -38,7 +39,12 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.passive.horse.AbstractChestedHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.AirItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
@@ -68,12 +74,14 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIMAL_CONTAINER;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 
 public class EnhancedLlama extends AbstractChestedHorseEntity implements IRangedAttackMob, net.minecraftforge.common.IShearable, EnhancedAnimal {
@@ -301,6 +309,13 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         setSleeping(false);
     }
 
+    @Override
+    public Inventory getEnhancedInventory() {
+        Inventory inventory =  new Inventory(15);
+        inventory.setInventorySlotContents(2, new ItemStack(Items.APPLE));
+        return inventory;
+    }
+
     public int getHunger(){
         return hunger;
     }
@@ -396,6 +411,18 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
+
+        if (!this.isChild()) {
+            if (this.isTame() && entityPlayer.isShiftKeyDown()) {
+                this.openGUI(entityPlayer);
+                return true;
+            }
+
+            if (this.isBeingRidden()) {
+                return super.processInteract(entityPlayer, hand);
+            }
+        }
+
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
                 ITextComponent message = getHungerText();
@@ -454,6 +481,37 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             }
         }
         return super.processInteract(entityPlayer, hand);
+    }
+
+    @Override
+    public void openGUI(PlayerEntity playerEntity) {
+        if (!this.world.isRemote && (!this.isBeingRidden() || this.isPassenger(playerEntity)) && this.isTame()) {
+            this.openInfoInventory(this, this.horseChest, playerEntity);
+        }
+
+    }
+
+    public void openInfoInventory(EnhancedLlama enhancedLlama, IInventory inventoryIn, PlayerEntity playerEntity) {
+//        if (this.openContainer != this.container) {
+//            this.closeScreen();
+//        }
+        if(!playerEntity.world.isRemote) {
+
+            if(playerEntity instanceof ServerPlayerEntity) {
+                ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerEntity;
+                NetworkHooks.openGui(entityPlayerMP, new INamedContainerProvider() {
+                    @Override
+                    public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+                        return new EnhancedAnimalContainer(windowId, inventory, enhancedLlama);
+                    }
+
+                    @Override
+                    public ITextComponent getDisplayName() {
+                        return new TranslationTextComponent("eanimod.animalinfocontainer");
+                    }
+                });
+            }
+        }
     }
 
     private ITextComponent getHungerText() {
@@ -1171,6 +1229,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         }
 
     } // setTexturePaths end bracket
+
+
 
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);

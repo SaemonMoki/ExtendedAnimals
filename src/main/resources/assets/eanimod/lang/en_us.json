@@ -320,5 +320,6 @@
 "eanimod.pregnancy.only_slightly_showing" : "It seems to be pregnant",
 "eanimod.pregnancy.pregnant" : "The pregnancy is showing well.",
 "eanimod.pregnancy.obviously_pregnant" : "It is obviously very pregnant!",
-"eanimod.pregnancy.near_birth" : "It is showing signs birth is soon!"
+"eanimod.pregnancy.near_birth" : "It is showing signs birth is soon!",
+"eanimod.animalinfocontainer" : "Animal Info Container TEST"
 }

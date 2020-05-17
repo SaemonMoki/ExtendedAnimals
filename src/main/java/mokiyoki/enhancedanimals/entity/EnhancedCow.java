@@ -27,6 +27,7 @@ import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.AirItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -360,6 +361,11 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
     public void awaken() {
         this.awokenTimer = 200;
         setSleeping(false);
+    }
+
+    @Override
+    public Inventory getEnhancedInventory() {
+        return null;
     }
 
     public int getHunger(){ return hunger; }

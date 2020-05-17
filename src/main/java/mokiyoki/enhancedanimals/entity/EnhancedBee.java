@@ -8,6 +8,7 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -152,6 +153,11 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
     public void awaken() {
         this.awokenTimer = 200;
         setSleeping(false);
+    }
+
+    @Override
+    public Inventory getEnhancedInventory() {
+        return null;
     }
 
     public int getHunger(){

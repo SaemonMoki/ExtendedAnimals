@@ -18,6 +18,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
+import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
@@ -73,6 +74,7 @@ public class EventRegistry {
     public static final EntityType<EnhancedBee> ENHANCED_BEE = EntityType.Builder.create(EnhancedBee::new, EntityClassification.CREATURE).size(0.4F, 0.4F).build(Reference.MODID + ":enhanced_bee");
 
     public static final ContainerType<EggCartonContainer> EGG_CARTON_CONTAINER = IForgeContainerType.create(EggCartonContainer::new);
+    public static final ContainerType<EnhancedAnimalContainer> ENHANCED_ANIMAL_CONTAINER = IForgeContainerType.create(EnhancedAnimalContainer::new);
 
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
@@ -196,6 +198,7 @@ public class EventRegistry {
     @SubscribeEvent
     public static void onContainerTypeRegistry(final RegistryEvent.Register<ContainerType<?>> event) {
         event.getRegistry().register(EGG_CARTON_CONTAINER.setRegistryName("egg_carton_container_box"));
+        event.getRegistry().register(ENHANCED_ANIMAL_CONTAINER.setRegistryName("enhanced_animal_container"));
     }
 
 //    @SubscribeEvent

@@ -16,13 +16,13 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIM
 public class EnhancedAnimalContainer extends Container {
     private IInventory inventory;
     private EnhancedAnimal enhancedAnimal;
-    private EnhancedAnimalInfo animalInfo;
+    public EnhancedAnimalInfo animalInfo;
 
-    public EnhancedAnimalContainer(int p_i50066_1_, PlayerInventory playerInventoryIn, EnhancedAnimal enhancedAnimal) {
+    public EnhancedAnimalContainer(int p_i50066_1_, PlayerInventory playerInventoryIn, EnhancedAnimal enhancedAnimal, EnhancedAnimalInfo animalInfo) {
         super(ENHANCED_ANIMAL_CONTAINER, p_i50066_1_);
         Inventory retrievedInventory = enhancedAnimal.getEnhancedInventory();
         this.enhancedAnimal = enhancedAnimal;
-        this.animalInfo = enhancedAnimal.getAnimalInfo();
+        this.animalInfo = animalInfo;
         this.inventory = retrievedInventory;
         retrievedInventory.openInventory(playerInventoryIn.player);
         int i = 3; // inv height
@@ -122,7 +122,7 @@ public class EnhancedAnimalContainer extends Container {
         if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
             for(int k = 0; k < i; ++k) {
                 for(int l = 0; l < j; ++l) {
-                    this.addSlot(new Slot(retrievedInventory, equipmentShift + l + k * j, 80 + l * 18, 18 + k * 18){
+                    this.addSlot(new Slot(retrievedInventory, l + k * j, 80 + l * 18, 18 + k * 18){
 //                    public int getSlotStackLimit() {
 //                        return 64;
 //                    }
@@ -142,6 +142,7 @@ public class EnhancedAnimalContainer extends Container {
         for(int j1 = 0; j1 < 9; ++j1) {
             this.addSlot(new Slot(playerInventoryIn, j1, 8 + j1 * 18, 142));
         }
+        int testBreakpointint = 0;
     }
 
     public boolean canInteractWith(PlayerEntity playerIn) {

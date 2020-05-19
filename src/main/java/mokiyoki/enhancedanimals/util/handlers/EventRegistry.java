@@ -33,7 +33,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntityType;
@@ -80,8 +79,9 @@ public class EventRegistry {
     public static final ContainerType<EggCartonContainer> EGG_CARTON_CONTAINER = IForgeContainerType.create(EggCartonContainer::new);
     public static final ContainerType<EnhancedAnimalContainer> ENHANCED_ANIMAL_CONTAINER = IForgeContainerType.create((windowId, inv, data) -> {
         Entity entity = inv.player.world.getEntityByID(data.readInt());
+        EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo(data.readString());
         if(entity instanceof EnhancedAnimal) {
-            return new EnhancedAnimalContainer(windowId, inv, (EnhancedAnimal)entity);
+            return new EnhancedAnimalContainer(windowId, inv, (EnhancedAnimal)entity, animalInfo);
         } else {
             return null;
         }

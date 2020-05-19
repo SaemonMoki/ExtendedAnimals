@@ -310,11 +310,6 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         return null;
     }
 
-    @Override
-    public EnhancedAnimalInfo getAnimalInfo() {
-        return null;
-    }
-
     public float getHunger(){
         return hunger;
     }

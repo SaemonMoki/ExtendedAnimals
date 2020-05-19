@@ -369,11 +369,6 @@ public class EnhancedCow extends AnimalEntity implements EnhancedAnimal {
         return null;
     }
 
-    @Override
-    public EnhancedAnimalInfo getAnimalInfo() {
-        return null;
-    }
-
     public float getHunger(){ return hunger; }
 
     public void decreaseHunger(float decrease) {

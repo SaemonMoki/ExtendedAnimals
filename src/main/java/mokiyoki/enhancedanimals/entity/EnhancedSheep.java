@@ -370,11 +370,6 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         return null;
     }
 
-    @Override
-    public EnhancedAnimalInfo getAnimalInfo() {
-        return null;
-    }
-
     public float getHunger(){
         return hunger;
     }

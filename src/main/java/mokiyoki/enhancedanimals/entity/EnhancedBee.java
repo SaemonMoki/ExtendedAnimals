@@ -161,11 +161,6 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
         return null;
     }
 
-    @Override
-    public EnhancedAnimalInfo getAnimalInfo() {
-        return null;
-    }
-
     public float getHunger(){
         return hunger;
     }

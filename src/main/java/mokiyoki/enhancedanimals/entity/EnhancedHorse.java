@@ -249,11 +249,6 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         return null;
     }
 
-    @Override
-    public EnhancedAnimalInfo getAnimalInfo() {
-        return null;
-    }
-
     public float getHunger(){ return hunger; }
 
     public void decreaseHunger(float decrease) {

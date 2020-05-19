@@ -324,11 +324,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         return null;
     }
 
-    @Override
-    public EnhancedAnimalInfo getAnimalInfo() {
-        return null;
-    }
-
     @OnlyIn(Dist.CLIENT)
     public void handleStatusUpdate(byte id) {
         if (id == 10) {

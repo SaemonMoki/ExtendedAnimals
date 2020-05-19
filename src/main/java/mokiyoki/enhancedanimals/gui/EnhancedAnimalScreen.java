@@ -145,6 +145,6 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     }
 
     private void setAnimalInfo() {
-        this.enhancedAnimalInfo = this.container.getAnimal().getAnimalInfo();
+        this.enhancedAnimalInfo = this.container.animalInfo;
     }
 }

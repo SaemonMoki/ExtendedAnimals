@@ -16,7 +16,6 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.CarpetBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.AgeableEntity;
@@ -47,7 +46,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.AirItem;
-import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -76,6 +74,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
+import org.apache.commons.lang3.SerializationUtils;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -95,7 +94,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> LLAMA_STATUS = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.STRING);
     private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
-    private static final DataParameter<String> ANIMAL_DATA = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
 
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
             "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blacktan.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png", "fawn.png"
@@ -201,6 +199,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         super(entityType, worldIn);
 //        this.setSize(0.9F, 1.87F);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
+        this.initHorseChest();
     }
 
     @Override
@@ -232,7 +231,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(LLAMA_STATUS, new String());
         this.dataManager.register(BIRTH_TIME, "0");
-        this.dataManager.register(ANIMAL_DATA, new String());
     }
 
     private boolean getGender() {
@@ -318,14 +316,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         setSleeping(false);
     }
 
-    public void setAnimalData(String data) {
-        this.dataManager.set(ANIMAL_DATA, data);
-    }
-
-    public EnhancedAnimalInfo getAnimalInfo() {
-        return new EnhancedAnimalInfo(this.dataManager.get(ANIMAL_DATA));
-    }
-
     public void onInventoryChanged(IInventory invBasic) {
         int dyecolor = this.getBlanketNumber();
         super.onInventoryChanged(invBasic);
@@ -339,6 +329,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     @Override
     public Inventory getEnhancedInventory() {
         return this.horseChest;
+//        return new Inventory(16);
     }
 
     private int getBlanketNumber() {
@@ -573,19 +564,15 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             animalInfo.canHaveChest = true;
             animalInfo.canHaveSaddle = true;
             animalInfo.canHaveBridle = true;
-            animalInfo.canHaveArmour = false;
             animalInfo.canHaveBlanket = true;
-            animalInfo.canHaveBanner = false;
             animalInfo.canHaveHarness = true;
-
-            setAnimalData(animalInfo.serialiseToString());
 
             if(playerEntity instanceof ServerPlayerEntity) {
                 ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerEntity;
                 NetworkHooks.openGui(entityPlayerMP, new INamedContainerProvider() {
                     @Override
                     public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
-                        return new EnhancedAnimalContainer(windowId, inventory, enhancedLlama);
+                        return new EnhancedAnimalContainer(windowId, inventory, enhancedLlama, animalInfo);
                     }
 
                     @Override
@@ -594,6 +581,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                     }
                 }, buf -> {
                     buf.writeInt(enhancedLlama.getEntityId());
+                    buf.writeString(animalInfo.serialiseToString());
                 });
             }
         }

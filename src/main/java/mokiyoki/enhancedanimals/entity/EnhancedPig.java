@@ -85,7 +85,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal {
     private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedPig.class, DataSerializers.STRING);
 
     private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
-            "", "skin_pink_bald.png", "skin_grey_bald.png", "skin_black_bald.png"
+            "", "skin_pink.png", "skin_grey.png", "skin_black.png"
 //            ,
 //            "a_skin_pink_sparse.png", "a_skin_grey_sparse.png", "a_skin_black_sparse.png",
 //            "a_skin_pink_medium.png", "a_skin_grey_medium.png", "a_skin_black_medium.png",
@@ -98,7 +98,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal {
     };
 
     private static final String[] PIG_TEXTURES_SKINMARKINGS_BELTED = new String[] {
-            "", "skin_pink_bald.png", "skin_belt.png"
+            "", "skin_pink.png", "skin_belt.png"
     };
 
     private static final String[] PIG_TEXTURES_SKINMARKINGS_BERKSHIRE = new String[] {
@@ -1109,6 +1109,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal {
         if (genesForText != null) {
             boolean agouti = false;
             int spotMod = 0;
+            int eyes = 0;
             int red = 5;
             int black = 0;
             int spot = 0;
@@ -1187,6 +1188,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal {
 
             if (genesForText[12] == 1 || genesForText[13] == 1){
                 //dominant white
+                eyes = 2;
                 belt = 1;
             }else if (genesForText[12] == 2 || genesForText[13] == 2){
                 //belted
@@ -1277,7 +1279,7 @@ public class EnhancedPig extends AnimalEntity implements EnhancedAnimal {
                 this.pigTextures.add(PIG_TEXTURES_COAT[coat]);
             this.pigTextures.add("alpha_group_end");
             }
-            this.pigTextures.add(PIG_TEXTURES_EYES[0]);
+            this.pigTextures.add(PIG_TEXTURES_EYES[eyes]);
             this.pigTextures.add(PIG_TEXTURES_HOOVES[0]);
             if (tusks){
                 this.pigTextures.add(PIG_TEXTURES_TUSKS[1]);

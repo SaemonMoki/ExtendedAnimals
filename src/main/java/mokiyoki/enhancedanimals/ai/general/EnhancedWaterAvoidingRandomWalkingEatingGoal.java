@@ -239,7 +239,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         this.wanderExecutionChance = newchance;
     }
 
-    private boolean checkForFood() {
+    protected boolean checkForFood() {
         BlockPos blockpos = new BlockPos(this.creature);
 
         //TODO add the predicate for different blocks to eat based on temperaments and animal type.
@@ -323,21 +323,20 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
             if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
                 this.entityWorld.destroyBlock(blockpos, false);
             }
-
             this.creature.eatGrassBonus();
         } else {
-            BlockPos blockpos1 = blockpos.down();
-            if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.GRASS_BLOCK) {
+            BlockPos blockposDown = blockpos.down();
+            if (this.entityWorld.getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
-                    this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                    this.entityWorld.setBlockState(blockpos1, ModBlocks.SparseGrass_Block.getDefaultState(), 2);
+                    this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
+                    this.entityWorld.setBlockState(blockposDown, ModBlocks.SparseGrass_Block.getDefaultState(), 2);
                 }
 
                 this.creature.eatGrassBonus();
-            } else if (this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SparseGrass_Block) {
+            } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.SparseGrass_Block) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
-                    this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                    this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);
+                    this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
+                    this.entityWorld.setBlockState(blockposDown, Blocks.DIRT.getDefaultState(), 2);
                 }
 
                 this.creature.eatGrassBonus();

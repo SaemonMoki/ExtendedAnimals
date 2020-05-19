@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "eanimod:sparsegrass_block"
+    "eanimod:sparsegrass_block",
+    "eanimod:patchymycelium_block"
   ]
 }

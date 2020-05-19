@@ -1,13 +1,13 @@
 package mokiyoki.enhancedanimals.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,7 +17,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContainer> {
     private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("eanimod:textures/gui/genetic_animal_screen.png");
     private IInventory inventory;
-    private EnhancedAnimal enhancedAnimal;
     /** The mouse x-position recorded during the last rendered frame. */
     private float mousePosx;
     /** The mouse y-position recorded during the last renderered frame. */
@@ -26,15 +25,6 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     /** temp booleans */
     boolean tabToggle = true;
 
-    boolean canHaveChest = true;
-    boolean hasChest = true;
-    boolean emptyInv = false;
-
-    boolean canHaveSaddle = true;
-    boolean canHaveBridle = true;
-    boolean canHaveArmor = true;
-    boolean canHaveBlanket = true;
-    boolean canHaveBanner = true;
 
     public static EnhancedAnimalInfo enhancedAnimalInfo = new EnhancedAnimalInfo();
 
@@ -58,6 +48,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         this.font.drawString(this.title.getFormattedText(), 8.0F, 6.0F, 4210752);
         this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+        this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
         // ageTag + name
         //(health points / max health points * 10) + "/" + "10"
         /**
@@ -76,61 +67,75 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
+        IInventory retrievedInventory = this.container.getEnhancedAnimalInventory();
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
         int invSize = 5;
         int shiftY = 17;
         int shiftX = 7;
         this.blit(i, j, 0, 0, this.xSize, this.ySize);
+        boolean hasItemsInChest = false;
+        int countEquipment = 0;
 
         /**
          *  this.blit(drawFromX, drawFromY, imageX, imageY, sizeX, sizeY)
          */
 
-
-        if (canHaveChest && tabToggle) {
-            if (hasChest) {
-                if (emptyInv) {
-                    this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
-                    this.blit(i + 112, j + 31, 180, this.ySize, 24, 26);
-                } else {
-                    this.blit(i + 79, j + 17, 0, this.ySize, 18*invSize, 54);
-                }
-            } else {
-                this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
-            }
-        }
-
-        if (canHaveSaddle) {
+        if (enhancedAnimalInfo.canHaveSaddle) {
             this.blit(i + shiftX, j + shiftY, 0, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
+            countEquipment++;
         }
-        if (canHaveBridle) {
+        if (enhancedAnimalInfo.canHaveBridle) {
             this.blit(i + shiftX, j + shiftY, 18, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
+            countEquipment++;
         }
-        if (canHaveArmor) {
-                this.blit(i + shiftX, j + shiftY, 36, this.ySize + 54, 18, 18);
+        if (enhancedAnimalInfo.canHaveArmour) {
+            this.blit(i + shiftX, j + shiftY, 36, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
                 shiftY = 17;
                 shiftX = 79;
             }
+            countEquipment++;
         }
-        if (canHaveBlanket && (shiftX == 7 || !tabToggle)) {
+        if (enhancedAnimalInfo.canHaveBlanket && (shiftX == 7 || !tabToggle)) {
             this.blit(i + shiftX, j + shiftY, 54, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
                 shiftY = 17;
                 shiftX = 79;
             }
+            countEquipment++;
         }
-        if (canHaveBanner && (shiftX == 7 || !tabToggle)) {
+        if (enhancedAnimalInfo.canHaveBanner && (shiftX == 7 || !tabToggle)) {
             this.blit(i + shiftX, j + shiftY, 72, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
                 shiftY = 17;
                 shiftX = 79;
+            }
+            countEquipment++;
+        }
+
+        for (int a = countEquipment; a <= retrievedInventory.getSizeInventory() && !hasItemsInChest; a++) {
+            if (!retrievedInventory.getStackInSlot(a).isEmpty()) {
+                hasItemsInChest = true;
+            }
+        }
+
+        if (enhancedAnimalInfo.canHaveChest && tabToggle) {
+            if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
+
+                if (hasItemsInChest) {
+                    this.blit(i + 79, j + 17, 0, this.ySize, 18*invSize, 54);
+                } else {
+                    this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
+                    this.blit(i + 112, j + 31, 180, this.ySize, 24, 26);
+                }
+            } else {
+                this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
             }
         }
 

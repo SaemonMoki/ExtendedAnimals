@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.init;
 
 import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
+import mokiyoki.enhancedanimals.blocks.PatchyMyceliumBlock;
 import mokiyoki.enhancedanimals.blocks.Post;
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
 import mokiyoki.enhancedanimals.blocks.UnboundHayBlock;
@@ -27,5 +28,6 @@ public class ModBlocks {
     public static final Block Egg_Carton = new EggCartonBlock(Block.Properties.create(Material.WOOL, MaterialColor.LIGHT_GRAY).hardnessAndResistance(0.0F).sound(SoundType.CLOTH).notSolid()).setRegistryName("eanimod:egg_carton");
     public static final Block UnboundHay_Block = new UnboundHayBlock(Block.Properties.create(Material.ORGANIC, MaterialColor.YELLOW).hardnessAndResistance(0.5F).sound(SoundType.PLANT).notSolid()).setRegistryName("eanimod:unboundhay_block");
     public static final Block SparseGrass_Block = new SparseGrassBlock(Block.Properties.create(Material.ORGANIC, MaterialColor.DIRT).tickRandomly().hardnessAndResistance(0.5F).sound(SoundType.PLANT)).setRegistryName("eanimod:sparsegrass_block");
+    public static final Block PatchyMycelium_Block = new PatchyMyceliumBlock(Block.Properties.create(Material.ORGANIC, MaterialColor.PURPLE).tickRandomly().hardnessAndResistance(0.5F).sound(SoundType.PLANT)).setRegistryName("eanimod:patchymycelium_block");
 
 }

@@ -90,7 +90,7 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-        final Block[] blocks = {ModBlocks.Post_Acacia, ModBlocks.Post_Birch, ModBlocks.Post_Dark_Oak, ModBlocks.Post_Jungle, ModBlocks.Post_Oak, ModBlocks.Post_Spruce, ModBlocks.UnboundHay_Block, ModBlocks.SparseGrass_Block, Egg_Carton
+        final Block[] blocks = {ModBlocks.Post_Acacia, ModBlocks.Post_Birch, ModBlocks.Post_Dark_Oak, ModBlocks.Post_Jungle, ModBlocks.Post_Oak, ModBlocks.Post_Spruce, ModBlocks.UnboundHay_Block, ModBlocks.SparseGrass_Block, ModBlocks.PatchyMycelium_Block, Egg_Carton
         };
             event.getRegistry().registerAll(blocks);
     }
@@ -128,6 +128,7 @@ public class EventRegistry {
                 new BlockItem(ModBlocks.Post_Spruce, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Spruce.getRegistryName()),
                 new BlockItem(ModBlocks.UnboundHay_Block, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.UnboundHay_Block.getRegistryName()),
                 new BlockItem(ModBlocks.SparseGrass_Block, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.SparseGrass_Block.getRegistryName()),
+                new BlockItem(ModBlocks.PatchyMycelium_Block, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.PatchyMycelium_Block.getRegistryName()),
                 new BlockItem(Egg_Carton, new Item.Properties().maxStackSize(1).group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(Egg_Carton.getRegistryName()),
         };
 

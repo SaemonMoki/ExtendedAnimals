@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
@@ -83,7 +82,6 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIMAL_CONTAINER;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 
 public class EnhancedLlama extends AbstractChestedHorseEntity implements IRangedAttackMob, net.minecraftforge.common.IShearable, EnhancedAnimal {
@@ -95,7 +93,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<String> LLAMA_STATUS = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.STRING);
     private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
     private static final DataParameter<String> ANIMAL_DATA = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
@@ -164,7 +161,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     }};
 
     public float destPos;
-    private String dropMeatType;
 
     private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 34;
@@ -187,10 +183,12 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     protected String motherUUID = "";
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
+    protected int equipmentInventorySize = 5;
 
     private boolean didSpit;
 
     private int despawnDelay = -1;
+    private boolean resetTexture = true;
 
     private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
@@ -231,11 +229,19 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.dataManager.register(DATA_STRENGTH_ID, 0);
         this.dataManager.register(DATA_INVENTORY_ID, 0);
         this.dataManager.register(COAT_LENGTH, -1);
-        this.dataManager.register(DATA_COLOR_ID, -1);
         this.dataManager.register(SLEEPING, false);
         this.dataManager.register(LLAMA_STATUS, new String());
         this.dataManager.register(BIRTH_TIME, "0");
         this.dataManager.register(ANIMAL_DATA, new String());
+    }
+
+    private boolean getGender() {
+        char[] uuidArray = getCachedUniqueIdString().toCharArray();
+        if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private void setLlamaStatus(String status) {
@@ -270,9 +276,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         return this.dataManager.get(COAT_LENGTH);
     }
 
-
     protected int getInventorySize() {
-        return this.hasChest() ? 2 + 3 * this.getInventoryColumns() : super.getInventorySize();
+        return this.hasChest() ? equipmentInventorySize + 3 * this.getInventoryColumns() : equipmentInventorySize;
     }
 
     public int getInventoryColumns() {
@@ -321,12 +326,61 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         return new EnhancedAnimalInfo(this.dataManager.get(ANIMAL_DATA));
     }
 
+    public void onInventoryChanged(IInventory invBasic) {
+        int dyecolor = this.getBlanketNumber();
+        super.onInventoryChanged(invBasic);
+        int dyecolor1 = this.getBlanketNumber();
+        if (this.ticksExisted > 20 && dyecolor1 != 0 && dyecolor1 != dyecolor) {
+            this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
+            resetTexture = true;
+        }
+    }
+
     @Override
     public Inventory getEnhancedInventory() {
-        Inventory inventory =  new Inventory(15);
-        inventory.setInventorySlotContents(2, new ItemStack(Items.APPLE));
-        return inventory;
+        return this.horseChest;
     }
+
+    private int getBlanketNumber() {
+            int colour = 0;
+            if (this.horseChest != null) {
+                Item blanketColour = this.horseChest.getStackInSlot(4).getItem();
+                if (blanketColour == Items.BLACK_CARPET) {
+                    colour = 1;
+                } else if (blanketColour == Items.BLUE_CARPET) {
+                    colour = 2;
+                } else if (blanketColour == Items.BROWN_CARPET) {
+                    colour = 3;
+                } else if (blanketColour == Items.CYAN_CARPET) {
+                    colour = 4;
+                } else if (blanketColour == Items.GRAY_CARPET) {
+                    colour = 5;
+                } else if (blanketColour == Items.GREEN_CARPET) {
+                    colour = 6;
+                } else if (blanketColour == Items.LIGHT_BLUE_CARPET) {
+                    colour = 7;
+                } else if (blanketColour == Items.LIGHT_GRAY_CARPET) {
+                    colour = 8;
+                } else if (blanketColour == Items.LIME_CARPET) {
+                    colour = 9;
+                } else if (blanketColour == Items.MAGENTA_CARPET) {
+                    colour = 10;
+                } else if (blanketColour == Items.ORANGE_CARPET) {
+                    colour = 11;
+                } else if (blanketColour == Items.PINK_CARPET) {
+                    colour = 12;
+                } else if (blanketColour == Items.PURPLE_CARPET) {
+                    colour = 13;
+                } else if (blanketColour == Items.RED_CARPET) {
+                    colour = 14;
+                } else if (blanketColour == Items.WHITE_CARPET) {
+                    colour = 15;
+                } else if (blanketColour == Items.YELLOW_CARPET) {
+                    colour = 16;
+                }
+            }
+            return colour;
+        }
 
     public float getHunger(){
         return hunger;
@@ -511,7 +565,18 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
             EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
             animalInfo.health = this.getHealth();
-            animalInfo.testRandom = ThreadLocalRandom.current().nextInt();
+            animalInfo.hunger = this.getHunger();
+            animalInfo.tameness = this.getTemper();
+            animalInfo.isFemale = this.getGender();
+            animalInfo.pregnant = this.gestationTimer;
+            animalInfo.name = this.getName().getUnformattedComponentText();
+            animalInfo.canHaveChest = true;
+            animalInfo.canHaveSaddle = true;
+            animalInfo.canHaveBridle = true;
+            animalInfo.canHaveArmour = false;
+            animalInfo.canHaveBlanket = true;
+            animalInfo.canHaveBanner = false;
+            animalInfo.canHaveHarness = true;
 
             setAnimalData(animalInfo.serialiseToString());
 
@@ -713,11 +778,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.world.addEntity(enhancedllama);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public boolean hasColor() {
-        return this.getColor() != null;
-    }
-
     @Override
     @Nullable
     protected ResourceLocation getLootTable() {
@@ -777,10 +837,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
 //        return new ResourceLocation(Reference.MODID, "enhanced_llama");
         return null;
-    }
-
-    public String getDropMeatType() {
-        return dropMeatType;
     }
 
     protected SoundEvent getAmbientSound()
@@ -1004,6 +1060,9 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     @OnlyIn(Dist.CLIENT)
     public String getLlamaTexture() {
         if (this.llamaTextures.isEmpty()) {
+            this.setTexturePaths();
+        } else if (resetTexture) {
+            resetTexture = false;
             this.setTexturePaths();
         }
         return this.llamaTextures.stream().collect(Collectors.joining("/","enhanced_llama/",""));
@@ -1241,9 +1300,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         int blanket = 0;
 
         if (!this.isLeashedToTrader()) {
-            blanket = 6;
+            blanket = getBlanketNumber();
         }
-
 
         if (blanket != 0 || this.isLeashedToTrader()) {
             this.llamaTextures.add(LLAMA_TEXTURES_DECO[blanket]);
@@ -1277,9 +1335,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         compound.putInt("Strength", this.getStrength());
         compound.putInt("Inventory", this.getInventory());
         compound.putFloat("CoatLength", this.getCoatLength());
-        if (!this.horseChest.getStackInSlot(1).isEmpty()) {
-            compound.put("DecorItem", this.horseChest.getStackInSlot(1).write(new CompoundNBT()));
-        }
 
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
@@ -1343,10 +1398,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         }
 
         setSharedGenes(genes);
-
-        if (compound.contains("DecorItem", 10)) {
-            this.horseChest.setInventorySlotContents(1, ItemStack.read(compound.getCompound("DecorItem")));
-        }
 
         this.updateHorseSlots();
 
@@ -1898,24 +1949,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     protected void updateHorseSlots() {
         if (!this.world.isRemote) {
             super.updateHorseSlots();
-            this.setColor(getCarpetColor(this.horseChest.getStackInSlot(1)));
+            this.resetTexture = true;
         }
-    }
-
-    private void setColor(@Nullable DyeColor color) {
-        this.dataManager.set(DATA_COLOR_ID, color == null ? -1 : color.getId());
-    }
-
-    @Nullable
-    private static DyeColor getCarpetColor(ItemStack p_195403_0_) {
-        Block block = Block.getBlockFromItem(p_195403_0_.getItem());
-        return block instanceof CarpetBlock ? ((CarpetBlock)block).getColor() : null;
-    }
-
-    @Nullable
-    public DyeColor getColor() {
-        int i = this.dataManager.get(DATA_COLOR_ID);
-        return i == -1 ? null : DyeColor.byId(i);
     }
 
     public boolean canMateWith(AnimalEntity otherAnimal) {

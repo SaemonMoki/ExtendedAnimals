@@ -67,6 +67,7 @@ public class ClientProxy implements IProxy {
         ClientRegistry.bindTileEntityRenderer(EGG_CARTON_TILE_ENTITY, EggCartonTileEntityRenderer::new);
 
         RenderTypeLookup.setRenderLayer(ModBlocks.SparseGrass_Block, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(ModBlocks.PatchyMycelium_Block, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.UnboundHay_Block, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.Post_Acacia, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.Post_Birch, RenderType.getCutout());

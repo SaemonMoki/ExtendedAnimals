@@ -40,7 +40,7 @@ public class EnhancedGrassGoal extends Goal {
      */
     public boolean shouldExecute() {
         //TODO make the amount needed before 'hungry' using temperaments
-        if (grassEaterEntity instanceof EnhancedCow && ((EnhancedCow)grassEaterEntity).getCowStatus().equals(EntityState.CHILD_STAGE_ONE)) {
+        if (grassEaterEntity instanceof EnhancedCow && ((EnhancedCow)grassEaterEntity).getEntityStatus().equals(EntityState.CHILD_STAGE_ONE)) {
             //first stage babies should NOT eat grass
             return false;
         }

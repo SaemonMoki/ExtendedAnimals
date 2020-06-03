@@ -1464,7 +1464,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.lastAccessed = 0;
             cowModelData.dataReset++;
             if (cowModelData.dataReset > 5000) {
-                cowModelData.cowStatus = enhancedCow.getCowStatus();
+                cowModelData.cowStatus = enhancedCow.getEntityStatus();
                 cowModelData.dataReset = 0;
             }
             cowModelData.bagSize = enhancedCow.getBagSize();
@@ -1477,9 +1477,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             //initial grab
             CowModelData cowModelData = new CowModelData();
             cowModelData.cowGenes = enhancedCow.getSharedGenes();
-            cowModelData.cowSize = enhancedCow.getSize();
+            cowModelData.cowSize = enhancedCow.getAnimalSize();
             cowModelData.bagSize = enhancedCow.getBagSize();
-            cowModelData.cowStatus = enhancedCow.getCowStatus();
+            cowModelData.cowStatus = enhancedCow.getEntityStatus();
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
             cowModelData.birthTime = enhancedCow.getBirthTime();
 

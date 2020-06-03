@@ -84,21 +84,16 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         }
         this.cowColouration = null;
 
-        this.cowTextures.add(MOOSHROOM_MUSHROOM[mushroomType]);
+        this.enhancedAnimalTextures.add(MOOSHROOM_MUSHROOM[mushroomType]);
     }
 
     @Override
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
         int[] babyGenes = getCalfGenes(this.mitosisGenes, this.mateMitosisGenes);
-        enhancedmooshroom.setGenes(babyGenes);
-        enhancedmooshroom.setSharedGenes(babyGenes);
-        enhancedmooshroom.setCowSize();
-        enhancedmooshroom.setGrowingAge(-84000);
 
-        enhancedmooshroom.setBirthTime(String.valueOf(inWorld.getGameTime()));
-        enhancedmooshroom.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedmooshroom.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
+        defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -84000);
+
         enhancedmooshroom.setMotherUUID(this.getUniqueID().toString());
         enhancedmooshroom.configureAI();
         this.world.addEntity(enhancedmooshroom);
@@ -106,7 +101,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemstack = entityPlayer.getHeldItem(hand);
-        if (itemstack.getItem() == Items.BOWL && this.getGrowingAge() >= 0 && !entityPlayer.abilities.isCreativeMode && getCowStatus().equals(EntityState.MOTHER.toString())) {
+        if (itemstack.getItem() == Items.BOWL && this.getGrowingAge() >= 0 && !entityPlayer.abilities.isCreativeMode && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int milk = getMilkAmount();
             if (milk <= 3) {
                 entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
@@ -265,7 +260,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             enhancedcow.setSharedGenes(this.getGenes());
             enhancedcow.setCowSize();
             enhancedcow.setGrowingAge(this.growingAge);
-            enhancedcow.setCowStatus(this.getCowStatus());
+            enhancedcow.setEntityStatus(this.getEntityStatus());
             enhancedcow.configureAI();
             enhancedcow.setMooshroomUUID(this.getCachedUniqueIdString());
 
@@ -505,11 +500,11 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             }
 
             if (this.isChild()) {
-                if (getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString())) {
+                if (getEntityStatus().equals(EntityState.CHILD_STAGE_ONE.toString())) {
                     blackR = redR;
                     blackG = redG;
                     blackB = redB;
-                }else if (getCowStatus().equals(EntityState.CHILD_STAGE_TWO.toString())) {
+                }else if (getEntityStatus().equals(EntityState.CHILD_STAGE_TWO.toString())) {
                     blackR = (blackR + redR)/2F;
                     blackG = (blackG + redG)/2F;
                     blackB = (blackB + redB)/2F;

@@ -1227,7 +1227,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.lastAccessed = 0;
             sheepModelData.dataReset++;
             if (sheepModelData.dataReset > 5000) {
-                sheepModelData.sheepStatus = enhancedSheep.getSheepStatus();
+                sheepModelData.sheepStatus = enhancedSheep.getEntityStatus();
                 sheepModelData.dataReset = 0;
             }
             sheepModelData.bagSize = enhancedSheep.getBagSize();
@@ -1244,8 +1244,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.coatlength = enhancedSheep.getCoatLength();
             sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
             sheepModelData.bagSize = enhancedSheep.getBagSize();
-            sheepModelData.size = enhancedSheep.getSize();
-            sheepModelData.sheepStatus = enhancedSheep.getSheepStatus();
+            sheepModelData.size = enhancedSheep.getAnimalSize();
+            sheepModelData.sheepStatus = enhancedSheep.getEntityStatus();
             sheepModelData.uuidArray = enhancedSheep.getCachedUniqueIdString().toCharArray();
             sheepModelData.birthTime = enhancedSheep.getBirthTime();
             sheepModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime());

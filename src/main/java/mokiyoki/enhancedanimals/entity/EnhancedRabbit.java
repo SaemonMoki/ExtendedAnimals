@@ -2,72 +2,52 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitPanicGoal;
+import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRaidFarmGoal;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.CarrotBlock;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.controller.JumpController;
 import net.minecraft.entity.ai.controller.MovementController;
+import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.BreedGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.AirItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -75,17 +55,12 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
 
-public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.common.IShearable, EnhancedAnimal {
+public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecraftforge.common.IShearable, EnhancedAnimal {
 
     //avalible UUID spaces : [ S X X X X X 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
-    private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedRabbit.class, DataSerializers.STRING);
-    private static final DataParameter<Integer> DATA_COLOR_ID = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.VARINT);
-    private static final DataParameter<Boolean> NOSE_WIGGLING = EntityDataManager.<Boolean>createKey(EnhancedRabbit.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<String> RABBIT_STATUS = EntityDataManager.createKey(EnhancedRabbit.class, DataSerializers.STRING);
-    private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedRabbit.class, DataSerializers.STRING);
+//    private static final DataParameter<Boolean> NOSE_WIGGLING = EntityDataManager.<Boolean>createKey(EnhancedRabbit.class, DataSerializers.BOOLEAN);
 
     private static final String[] RABBIT_TEXTURES_UNDER = new String[] {
         "under_cream.png", "under_grey.png", "under_white.png"
@@ -197,27 +172,14 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     //TODO find broken texture spawns in desert
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.CARROT, Items.GOLDEN_CARROT, Items.GRASS, Items.TALL_GRASS, Items.ROSE_BUSH, Items.SWEET_BERRIES);
-    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.CARROT, Items.GOLDEN_CARROT);
-
-    Map<Item, Integer> foodWeightMap = new HashMap() {{
-        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-        put(new ItemStack(Items.GRASS).getItem(), 3000);
-        put(new ItemStack(Items.CARROT).getItem(), 3000);
-        put(new ItemStack(Items.GOLDEN_CARROT).getItem(), 12000);
-        put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
-        put(new ItemStack(Items.DANDELION).getItem(), 1500);
-        put(new ItemStack(Items.ROSE_BUSH).getItem(), 1500);
-    }};
-
-    private final List<String> rabbitTextures = new ArrayList<>();
 
     private int jumpTicks;
     private int jumpDuration;
     public int noseTwitch;
     private boolean wasOnGround;
     private int currentMoveTypeDuration;
-    private int carrotTicks;
+    public int carrotTicks;
     private String dropMeatType;
 
     private int maxCoatLength;
@@ -227,46 +189,47 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     private int gestationTimer = 0;
     private boolean pregnant = false;
 
-    private float hunger = 0;
-    protected int healTicks = 0;
-    protected String motherUUID = "";
-    protected Boolean sleeping = false;
-    protected int awokenTimer = 0;
+    private float rabbitSize = 0.0F;
 
-    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 60;
-    private int[] genes = new int[GENES_LENGTH];
-    private int[] mateGenes = new int[GENES_LENGTH];
-    private int[] mitosisGenes = new int[GENES_LENGTH];
-    private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
     private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
     public EnhancedRabbit(EntityType<? extends EnhancedRabbit> entityType, World worldIn) {
-        super(ENHANCED_RABBIT, worldIn);
+        super(entityType, worldIn, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
 //        this.setSize(0.4F, 0.5F);
         this.jumpController = new EnhancedRabbit.JumpHelperController(this);
         this.moveController = new EnhancedRabbit.MoveHelperController(this);
         this.setMovementSpeed(0.0D);
     }
 
+    private static Map<Item, Integer> createFoodMap() {
+        return new HashMap() {{
+            put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
+            put(new ItemStack(Items.GRASS).getItem(), 3000);
+            put(new ItemStack(Items.CARROT).getItem(), 3000);
+            put(new ItemStack(Items.GOLDEN_CARROT).getItem(), 12000);
+            put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
+            put(new ItemStack(Items.DANDELION).getItem(), 1500);
+            put(new ItemStack(Items.ROSE_BUSH).getItem(), 1500);
+        }};
+    }
+
     @Override
     protected void registerGoals() {
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 100);
         this.goalSelector.addGoal(1, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new EnhancedRabbit.AIPanic(this, 2.2D));
+        this.goalSelector.addGoal(1, new EnhancedRabbitPanicGoal(this, 2.2D));
         this.goalSelector.addGoal(2, new BreedGoal(this, 0.8D));
         this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, false, TEMPTATION_ITEMS));
-        this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D));
-        this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, WolfEntity.class, 10.0F, 2.2D, 2.2D));
-        this.goalSelector.addGoal(4, new EnhancedRabbit.AIAvoidEntity<>(this, MonsterEntity.class, 4.0F, 2.2D, 2.2D));
+        this.goalSelector.addGoal(4, new AvoidEntityGoal<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D));
+        this.goalSelector.addGoal(4, new AvoidEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2D, 2.2D));
+        this.goalSelector.addGoal(4, new AvoidEntityGoal<>(this, MonsterEntity.class, 4.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(5, this.wanderEatingGoal);
-        this.goalSelector.addGoal(5, new EnhancedRabbit.AIRaidFarm(this));
+        this.goalSelector.addGoal(5, new EnhancedRaidFarmGoal(this));
 //        this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 0.6D));
         this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 10.0F));
         this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
-
-
     }
 
     protected float getJumpUpwardsMotion() {
@@ -285,41 +248,9 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         }
     }
 
-    public void setSleeping(Boolean sleeping) {
-        this.sleeping = sleeping;
-        this.dataManager.set(SLEEPING, sleeping); }
-
-    @Override
-    public Boolean isAnimalSleeping() {
-        if (this.sleeping == null) {
-            return false;
-        } else {
-            sleeping = this.dataManager.get(SLEEPING);
-            return sleeping;
-        }
-    }
-
-    @Override
-    public void awaken() {
-        this.awokenTimer = 200;
-        setSleeping(false);
-    }
-
     @Override
     public Inventory getEnhancedInventory() {
         return null;
-    }
-
-    public float getHunger(){
-        return hunger;
-    }
-
-    public void decreaseHunger(float decrease) {
-        if (this.hunger - decrease < 0) {
-            this.hunger = 0;
-        } else {
-            this.hunger = this.hunger - decrease;
-        }
     }
 
     /**
@@ -365,24 +296,16 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         this.jumpTicks = 0;
     }
 
-    public void noseTwitch() {
-
-    }
-
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(COAT_LENGTH, 0);
-        this.dataManager.register(DATA_COLOR_ID, -1);
-        this.dataManager.register(NOSE_WIGGLING, false);
-        this.dataManager.register(SLEEPING, false);
-        this.dataManager.register(RABBIT_STATUS, new String());
-        this.dataManager.register(BIRTH_TIME, "0");
+//        this.dataManager.register(NOSE_WIGGLING, false);
     }
 
-    protected void setRabbitStatus(String status) { this.dataManager.set(RABBIT_STATUS, status); }
-
-    public String getRabbitStatus() { return this.dataManager.get(RABBIT_STATUS); }
+    @Override
+    protected int gestationConfig() {
+        return EanimodCommonConfig.COMMON.gestationDaysRabbit.get();
+    }
 
     private void setCoatLength(int coatLength) {
         this.dataManager.set(COAT_LENGTH, coatLength);
@@ -392,27 +315,13 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         return this.dataManager.get(COAT_LENGTH);
     }
 
-    protected void setBirthTime(String birthTime) {
-        this.dataManager.set(BIRTH_TIME, birthTime);
-    }
-
-    public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
-
-    private int getAge() {
-        if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
-            return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
-        } else {
-            return 500000;
-        }
-    }
-
-    public void setNoseWiggling(boolean wiggling) {
-        this.dataManager.set(NOSE_WIGGLING, wiggling);
-    }
-
-    public boolean isNoseWiggling() {
-        return this.dataManager.get(NOSE_WIGGLING);
-    }
+//    public void setNoseWiggling(boolean wiggling) {
+//        this.dataManager.set(NOSE_WIGGLING, wiggling);
+//    }
+//
+//    public boolean isNoseWiggling() {
+//        return this.dataManager.get(NOSE_WIGGLING);
+//    }
 
     public void updateAITasks() {
         if (this.currentMoveTypeDuration > 0) {
@@ -443,12 +352,6 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         }
 
         this.wasOnGround = this.onGround;
-    }
-
-    /**
-     * Attempts to create sprinting particles if the entity is sprinting and not in water.
-     */
-    public void spawnRunningParticles() {
     }
 
     private void calculateRotationYaw(double x, double z) {
@@ -491,131 +394,6 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
     }
 
-    @Override
-    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
-        ItemStack itemStack = entityPlayer.getHeldItem(hand);
-        Item item = itemStack.getItem();
-
-        if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
-            if (item instanceof AirItem) {
-                ITextComponent message = getHungerText();
-                entityPlayer.sendMessage(message);
-                if (pregnant) {
-                    message = getPregnantText();
-                    entityPlayer.sendMessage(message);
-                }
-            } else if (item instanceof DebugGenesBook) {
-                Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
-            } else if (!getRabbitStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
-                if (this.foodWeightMap.containsKey(item)) {
-                    decreaseHunger(this.foodWeightMap.get(item));
-                } else {
-                    decreaseHunger(6000);
-                }
-                if (!entityPlayer.abilities.isCreativeMode) {
-                    itemStack.shrink(1);
-                }
-            } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
-
-                    if (item == ModItems.Half_Milk_Bottle) {
-                        decreaseHunger(6000);
-                        if (!entityPlayer.abilities.isCreativeMode) {
-                            if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                                entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                            }
-                        }
-                    } else if (item == ModItems.Milk_Bottle) {
-                        if (hunger >= 12000) {
-                            decreaseHunger(12000);
-                            if (!entityPlayer.abilities.isCreativeMode) {
-                                if (itemStack.isEmpty()) {
-                                    entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                                    entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                                }
-                            }
-                        } else {
-                            decreaseHunger(6000);
-                            if (!entityPlayer.abilities.isCreativeMode) {
-                                if (itemStack.isEmpty()) {
-                                    entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
-                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
-                                    entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
-                                }
-                            }
-                        }
-                    }
-            }
-        }
-        return super.processInteract(entityPlayer, hand);
-    }
-
-    private ITextComponent getHungerText() {
-        String hungerText = "";
-        if (this.hunger < 1000) {
-            hungerText = "eanimod.hunger.not_hungry";
-        } else if (this.hunger < 4000) {
-            hungerText = "eanimod.hunger.hungry";
-        } else if (this.hunger < 9000) {
-            hungerText = "eanimod.hunger.very_hunger";
-        } else if (this.hunger < 16000) {
-            hungerText = "eanimod.hunger.starving";
-        } else if (this.hunger > 24000) {
-            hungerText = "eanimod.hunger.dying";
-        }
-        return new TranslationTextComponent(hungerText);
-    }
-
-    private ITextComponent getPregnantText() {
-        String pregnancyText;
-        int days = EanimodCommonConfig.COMMON.gestationDaysRabbit.get();
-        if (gestationTimer > (days/5 * 4)) {
-            pregnancyText = "eanimod.pregnancy.near_birth";
-        } else if (gestationTimer > days/2 ) {
-            pregnancyText = "eanimod.pregnancy.obviously_pregnant";
-        } else if (gestationTimer > days/3) {
-            pregnancyText = "eanimod.pregnancy.pregnant";
-        } else if (gestationTimer > days/5) {
-            pregnancyText = "eanimod.pregnancy.only_slightly_showing";
-        } else {
-            pregnancyText = "eanimod.pregnancy.not_showing";
-        }
-        return new TranslationTextComponent(pregnancyText);
-    }
-
-    public void setSharedGenes(int[] genes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < genes.length; i++) {
-            sb.append(genes[i]);
-            if (i != genes.length - 1) {
-                sb.append(",");
-            }
-        }
-        this.dataManager.set(SHARED_GENES, sb.toString());
-    }
-
-    public int[] getSharedGenes() {
-        String sharedGenes = ((String) this.dataManager.get(SHARED_GENES)).toString();
-        if (sharedGenes.isEmpty()) {
-            return null;
-        }
-        String[] genesToSplit = sharedGenes.split(",");
-        int[] sharedGenesArray = new int[genesToSplit.length];
-
-        for (int i = 0; i < sharedGenesArray.length; i++) {
-            //parse and store each value into int[] to be returned
-            sharedGenesArray[i] = Integer.parseInt(genesToSplit[i]);
-        }
-        return sharedGenesArray;
-    }
-
-//    public float getEyeHeight()
-//    {
-//        return this.height;
-//    }
-
     protected void registerAttributes() {
         super.registerAttributes();
         this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
@@ -631,171 +409,130 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
             this.jumpDuration = 0;
             this.setJumping(false);
         }
-        if (!this.world.isRemote) {
+    }
 
-            if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
-                setSleeping(true);
-                healTicks = 0;
-            } else if (awokenTimer > 0) {
-                awokenTimer--;
-            } else if (this.world.isDaytime() && sleeping) {
-                setSleeping(false);
-            }
+    @Override
+    protected void runLivingTickClient() {
+    }
 
-            if (this.getIdleTime() < 100) {
-
-                if (hunger <= 72000) {
-                    if (sleeping) {
-                        int days = EanimodCommonConfig.COMMON.gestationDaysRabbit.get();
-                        if ((hunger <= days*(0.50)) && (ticksExisted % 8 == 0)) {
-                            hunger = hunger++;
-                        }
-                        healTicks++;
-                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
-                            this.heal(2.0F);
-                            hunger = hunger + 1000;
-                            healTicks = 0;
-                        }
-                    } else {
-                        if (ticksExisted % 4 == 0){
-                            hunger++;
-                        }
-                    }
-                }
-                //TODO add a limiter to time for growth if the animal is extremely hungry
-                if (hunger <= 36000) {
-                    timeForGrowth++;
-                }
-                if (maxCoatLength == 1){
-                    if (timeForGrowth >= 48000) {
-                        timeForGrowth = 0;
-                        if (maxCoatLength > currentCoatLength) {
-                            currentCoatLength++;
-                            setCoatLength(currentCoatLength);
-                        }
-                    }
-                }else if (maxCoatLength == 2){
-                    if (timeForGrowth >= 24000) {
-                        timeForGrowth = 0;
-                        if (maxCoatLength > currentCoatLength) {
-                            currentCoatLength++;
-                            setCoatLength(currentCoatLength);
-                        }
-                    }
-                }else if (maxCoatLength == 3){
-                    if (timeForGrowth >= 16000) {
-                        timeForGrowth = 0;
-                        if (maxCoatLength > currentCoatLength) {
-                            currentCoatLength++;
-                            setCoatLength(currentCoatLength);
-                        }
-                    }
-                }else if (maxCoatLength == 4){
-                    if (timeForGrowth >= 12000) {
-                        timeForGrowth = 0;
-                        if (maxCoatLength > currentCoatLength) {
-                            currentCoatLength++;
-                            setCoatLength(currentCoatLength);
-                        }
-                    }
-                }
-            }
-
-            if(pregnant) {
-                gestationTimer++;
-                int days = EanimodCommonConfig.COMMON.gestationDaysRabbit.get();
-                if (hunger > days*(0.75) && days !=0) {
-                    pregnant = false;
-                }
-                if (gestationTimer >= days) {
-                    pregnant = false;
-                    gestationTimer = 0;
-                    int kitAverage = 1;
-                    int kitRange = 2;
-
-                    if ( Size() <= 0.4 ){
-//                        kitAverage = 1;
-                        kitRange = 1;
-                    }else if ( Size() <= 0.5 ){
-                        kitAverage = 2;
-                        kitRange = 1;
-                    }else if ( Size() <= 0.6 ){
-                        kitAverage = 4;
-//                        kitRange = 2;
-                    }else if ( Size() <= 0.7 ){
-                        kitAverage = 5;
-//                        kitRange = 2;
-                    }else if ( Size() <= 0.8 ){
-                        kitAverage = 6;
-                        kitRange = 3;
-                    }else if ( Size() <= 0.9 ){
-                        kitAverage = 7;
-                        kitRange = 3;
-                    }else{
-                        kitAverage = 8;
-                        kitRange = 4;
-                    }
-
-                    if (genes[56] == 2 && genes[57] == 2){
-                        if (genes[58] == 1 && genes[59] == 1){
-                            kitRange++;
-                        }
-                    }else{
-                        if (genes[58] == 2 && genes[59] == 2){
-                            kitRange--;
-                        }
-                    }
-
-                    int numberOfKits = ThreadLocalRandom.current().nextInt(kitRange)+kitAverage;
-
-                    for (int i = 0; i <= numberOfKits; i++) {
-                        mixMateMitosisGenes();
-                        mixMitosisGenes();
-                        createAndSpawnEnhancedChild(this.world);
-                    }
-
-                }
-            }
-
-            if (this.isChild()) {
-                if (getRabbitStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
-                    if(hunger < 5000) {
-                        setRabbitStatus(EntityState.CHILD_STAGE_TWO.toString());
-                    } else {
-                        this.setGrowingAge(-16500);
-                    }
-                } else if (getRabbitStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
-                    if(hunger < 5000) {
-                        setRabbitStatus(EntityState.CHILD_STAGE_THREE.toString());
-                    } else {
-                        this.setGrowingAge(-8500);
-                    }
-                }
-            } else if (getRabbitStatus().equals(EntityState.CHILD_STAGE_THREE.toString())) {
-                setRabbitStatus(EntityState.ADULT.toString());
-
-                //TODO remove the child follow mother ai
-
-            }
-            lethalGenes();
+    @Override
+    protected void incrementHunger() {
+        if (sleeping) {
+            hunger = hunger + 0.125F;
+        } else {
+            hunger = hunger + 0.25F;
         }
+    }
 
+    @Override
+    protected void runExtraIdleTimeTick() {
+        if (hunger <= 36000) {
+            timeForGrowth++;
+        }
+        if (maxCoatLength == 1){
+            if (timeForGrowth >= 48000) {
+                timeForGrowth = 0;
+                if (maxCoatLength > currentCoatLength) {
+                    currentCoatLength++;
+                    setCoatLength(currentCoatLength);
+                }
+            }
+        }else if (maxCoatLength == 2){
+            if (timeForGrowth >= 24000) {
+                timeForGrowth = 0;
+                if (maxCoatLength > currentCoatLength) {
+                    currentCoatLength++;
+                    setCoatLength(currentCoatLength);
+                }
+            }
+        }else if (maxCoatLength == 3){
+            if (timeForGrowth >= 16000) {
+                timeForGrowth = 0;
+                if (maxCoatLength > currentCoatLength) {
+                    currentCoatLength++;
+                    setCoatLength(currentCoatLength);
+                }
+            }
+        }else if (maxCoatLength == 4){
+            if (timeForGrowth >= 12000) {
+                timeForGrowth = 0;
+                if (maxCoatLength > currentCoatLength) {
+                    currentCoatLength++;
+                    setCoatLength(currentCoatLength);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void runPregnancyTick() {
+        if(pregnant) {
+            gestationTimer++;
+            int days = EanimodCommonConfig.COMMON.gestationDaysRabbit.get();
+            if (hunger > days*(0.75) && days !=0) {
+                pregnant = false;
+            }
+            if (gestationTimer >= days) {
+                pregnant = false;
+                gestationTimer = 0;
+                int kitAverage = 1;
+                int kitRange = 2;
+
+                if (rabbitSize <= 0.4 ){
+//                        kitAverage = 1;
+                    kitRange = 1;
+                }else if (rabbitSize <= 0.5 ){
+                    kitAverage = 2;
+                    kitRange = 1;
+                }else if (rabbitSize <= 0.6 ){
+                    kitAverage = 4;
+//                        kitRange = 2;
+                }else if (rabbitSize <= 0.7 ){
+                    kitAverage = 5;
+//                        kitRange = 2;
+                }else if (rabbitSize <= 0.8 ){
+                    kitAverage = 6;
+                    kitRange = 3;
+                }else if (rabbitSize <= 0.9 ){
+                    kitAverage = 7;
+                    kitRange = 3;
+                }else{
+                    kitAverage = 8;
+                    kitRange = 4;
+                }
+
+                if (genes[56] == 2 && genes[57] == 2){
+                    if (genes[58] == 1 && genes[59] == 1){
+                        kitRange++;
+                    }
+                }else{
+                    if (genes[58] == 2 && genes[59] == 2){
+                        kitRange--;
+                    }
+                }
+
+                int numberOfKits = ThreadLocalRandom.current().nextInt(kitRange)+kitAverage;
+
+                for (int i = 0; i <= numberOfKits; i++) {
+                    mixMateMitosisGenes();
+                    mixMitosisGenes();
+                    createAndSpawnEnhancedChild(this.world);
+                }
+
+            }
+        }
     }
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.create(this.world);
-        enhancedrabbit.setGrowingAge(0);
         int[] babyGenes = getBunnyGenes(this.mitosisGenes, this.mateMitosisGenes);
-        enhancedrabbit.setGenes(babyGenes);
-        enhancedrabbit.setSharedGenes(babyGenes);
+
+        defaultCreateAndSpawn(enhancedrabbit, inWorld, babyGenes, -48000);
+
         enhancedrabbit.setMaxCoatLength();
         enhancedrabbit.currentCoatLength = enhancedrabbit.maxCoatLength;
         enhancedrabbit.setCoatLength(enhancedrabbit.currentCoatLength);
-        enhancedrabbit.setGrowingAge(-48000);
-        enhancedrabbit.setBirthTime(String.valueOf(inWorld.getGameTime()));
-        enhancedrabbit.setRabbitStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedrabbit.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
-//                        enhancedrabbit.setMotherUUID(this.getUniqueID().toString());
+
         this.world.addEntity(enhancedrabbit);
     }
 
@@ -832,7 +569,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         }
     }
 
-    private boolean isCarrotEaten() {
+    public boolean isCarrotEaten() {
         return this.carrotTicks == 0;
     }
 
@@ -871,134 +608,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         }
     }
 
-
-    static class AIAvoidEntity<T extends LivingEntity> extends net.minecraft.entity.ai.goal.AvoidEntityGoal<T> {
-        private final EnhancedRabbit rabbit;
-
-        public AIAvoidEntity(EnhancedRabbit rabbit, Class<T> p_i46403_2_, float p_i46403_3_, double p_i46403_4_, double p_i46403_6_) {
-            super(rabbit, p_i46403_2_, p_i46403_3_, p_i46403_4_, p_i46403_6_);
-            this.rabbit = rabbit;
-        }
-
-        /**
-         * Returns whether the EntityAIBase should begin execution.
-         */
-        public boolean shouldExecute() {
-            return super.shouldExecute();
-        }
-    }
-
-    static class EvilAttackGoal extends MeleeAttackGoal {
-        public EvilAttackGoal(EnhancedRabbit rabbit) {
-            super(rabbit, 1.4D, true);
-        }
-
-        protected double getAttackReachSqr(LivingEntity attackTarget) {
-            return (double)(4.0F + attackTarget.getWidth());
-        }
-    }
-
-    static class AIPanic extends EnhancedPanicGoal {
-        private final EnhancedRabbit rabbit;
-
-        public AIPanic(EnhancedRabbit rabbit, double speedIn) {
-            super(rabbit, speedIn);
-            this.rabbit = rabbit;
-        }
-
-        /**
-         * Keep ticking a continuous task that has already been started
-         */
-        public void tick() {
-            super.tick();
-            this.rabbit.setMovementSpeed(this.speed);
-        }
-    }
-
-    static class AIRaidFarm extends MoveToBlockGoal {
-        private final EnhancedRabbit rabbit;
-        private boolean wantsToRaid;
-        private boolean canRaid;
-
-        public AIRaidFarm(EnhancedRabbit rabbitIn) {
-            super(rabbitIn, (double)0.7F, 16);
-            this.rabbit = rabbitIn;
-        }
-
-        /**
-         * Returns whether the EntityAIBase should begin execution.
-         */
-        public boolean shouldExecute() {
-            if (this.runDelay <= 0) {
-                if (!net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.rabbit.world, this.rabbit)) {
-                    return false;
-                }
-
-                this.canRaid = false;
-                this.wantsToRaid = this.rabbit.isCarrotEaten();
-                this.wantsToRaid = true;
-            }
-
-            return super.shouldExecute();
-        }
-
-        /**
-         * Returns whether an in-progress EntityAIBase should continue executing
-         */
-        public boolean shouldContinueExecuting() {
-            return this.canRaid && super.shouldContinueExecuting();
-        }
-
-        /**
-         * Keep ticking a continuous task that has already been started
-         */
-        public void tick() {
-            super.tick();
-            this.rabbit.getLookController().setLookPosition((double)this.destinationBlock.getX() + 0.5D, (double)(this.destinationBlock.getY() + 1), (double)this.destinationBlock.getZ() + 0.5D, 10.0F, (float)this.rabbit.getVerticalFaceSpeed());
-            if (this.getIsAboveDestination()) {
-                World world = this.rabbit.world;
-                BlockPos blockpos = this.destinationBlock.up();
-                BlockState iblockstate = world.getBlockState(blockpos);
-                Block block = iblockstate.getBlock();
-                if (this.canRaid && block instanceof CarrotBlock) {
-                    Integer integer = iblockstate.get(CarrotBlock.AGE);
-                    if (integer == 0) {
-                        world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 2);
-                        world.destroyBlock(blockpos, true);
-                    } else {
-                        world.setBlockState(blockpos, iblockstate.with(CarrotBlock.AGE, Integer.valueOf(integer - 1)), 2);
-                        world.playEvent(2001, blockpos, Block.getStateId(iblockstate));
-                    }
-                    this.rabbit.decreaseHunger(750);
-                    this.rabbit.carrotTicks = 40;
-                }
-
-                this.canRaid = false;
-                this.runDelay = 10;
-            }
-
-        }
-
-        /**
-         * Return true to set given position as destination
-         */
-        protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
-            Block block = worldIn.getBlockState(pos).getBlock();
-            if (block == Blocks.FARMLAND && this.wantsToRaid && !this.canRaid) {
-                pos = pos.up();
-                BlockState iblockstate = worldIn.getBlockState(pos);
-                block = iblockstate.getBlock();
-                if (block instanceof CarrotBlock && ((CarrotBlock)block).isMaxAge(iblockstate)) {
-                    this.canRaid = true;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
-    public float Size(){
+    public float setRabbitSize(){
         float size = 1F; // [minimum size = 0.3 maximum size = 1]
 
         if (genes[46] < 5){
@@ -1053,7 +663,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
         int age = this.getAge();
-        float size = Size();
+        float size = setRabbitSize();
 
         if ((((size-0.3F) * 71.4286F) + 25) > rand.nextInt(100)) {
             ItemStack meatStack = new ItemStack(Items.RABBIT, 1 + looting);
@@ -1107,7 +717,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
         if (!this.world.isRemote) {
 
-                if (Size() <= 0.8F || getAge() < 48000) {
+                if (this.rabbitSize <= 0.8F || getAge() < 48000) {
                     dropMeatType = "rawrabbit_small";
                 } else {
                     dropMeatType = "rawrabbit";
@@ -1145,10 +755,6 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     protected SoundEvent getDeathSound()
     {
         return SoundEvents.ENTITY_RABBIT_DEATH;
-    }
-
-    protected void playStepSound(BlockPos pos, Block blockIn) {
-        this.playSound(SoundEvents.ENTITY_RABBIT_JUMP, 0.15F, 1.0F);
     }
 
     @Override
@@ -1193,68 +799,12 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         return BREED_ITEMS.test(stack);
     }
 
-    @Override
-    public AgeableEntity createChild(AgeableEntity ageable) {
-        if(pregnant) {
-            ((EnhancedRabbit)ageable).pregnant = true;
-            ((EnhancedRabbit)ageable).setMateGenes(this.genes);
-            ((EnhancedRabbit)ageable).mixMateMitosisGenes();
-            ((EnhancedRabbit)ageable).mixMitosisGenes();
-        } else {
-            pregnant = true;
-            this.mateGenes = ((EnhancedRabbit) ageable).getGenes();
-            mixMateMitosisGenes();
-            mixMitosisGenes();
-        }
-
-        this.setGrowingAge(10);
-        this.resetInLove();
-        ageable.setGrowingAge(10);
-        ((EnhancedRabbit)ageable).resetInLove();
-
-        ServerPlayerEntity entityplayermp = this.getLoveCause();
-        if (entityplayermp == null && ((EnhancedRabbit)ageable).getLoveCause() != null) {
-            entityplayermp = ((EnhancedRabbit)ageable).getLoveCause();
-        }
-
-        if (entityplayermp != null) {
-            entityplayermp.addStat(Stats.ANIMALS_BRED);
-            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedRabbit)ageable), (AgeableEntity)null);
-        }
-
-        return null;
-    }
-
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
-        //store this rabbits's genes
-        ListNBT geneList = new ListNBT();
-        for (int i = 0; i < genes.length; i++) {
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Gene", genes[i]);
-            geneList.add(nbttagcompound);
-        }
-        compound.put("Genes", geneList);
-
-        //store this rabbits's mate's genes
-        ListNBT mateGeneList = new ListNBT();
-        for (int i = 0; i < mateGenes.length; i++) {
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Gene", mateGenes[i]);
-            mateGeneList.add(nbttagcompound);
-        }
-        compound.put("FatherGenes", mateGeneList);
-
         compound.putFloat("CoatLength", this.getCoatLength());
-
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
-
-        compound.putString("Status", getRabbitStatus());
-        compound.putFloat("Hunger", hunger);
-
-        compound.putString("BirthTime", this.getBirthTime());
     }
 
     /**
@@ -1266,68 +816,23 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         currentCoatLength = compound.getInt("CoatLength");
         this.setCoatLength(currentCoatLength);
 
-        ListNBT geneList = compound.getList("Genes", 10);
-        for (int i = 0; i < geneList.size(); ++i) {
-            CompoundNBT nbttagcompound = geneList.getCompound(i);
-            int gene = nbttagcompound.getInt("Gene");
-            genes[i] = gene;
-        }
-
-        ListNBT mateGeneList = compound.getList("FatherGenes", 10);
-        for (int i = 0; i < mateGeneList.size(); ++i) {
-            CompoundNBT nbttagcompound = mateGeneList.getCompound(i);
-            int gene = nbttagcompound.getInt("Gene");
-            mateGenes[i] = gene;
-        }
-
-        setRabbitStatus(compound.getString("Status"));
-        hunger = compound.getFloat("Hunger");
-
-        //TODO add a proper calculation for this
-        for (int i = 0; i < genes.length; i++) {
-            if (genes[i] == 0) {
-                genes[i] = 1;
-            }
-        }
-        if (mateGenes[0] != 0) {
-            for (int i = 0; i < mateGenes.length; i++) {
-                if (mateGenes[i] == 0) {
-                    mateGenes[i] = 1;
-                }
-            }
-        }
-
         this.pregnant = compound.getBoolean("Pregnant");
         this.gestationTimer = compound.getInt("Gestation");
 
-        setSharedGenes(genes);
-
         //resets the max so we don't have to store it
         setMaxCoatLength();
-
-        this.setBirthTime(compound.getString("BirthTime"));
     }
 
     @OnlyIn(Dist.CLIENT)
     public String getRabbitTexture() {
-        if (this.rabbitTextures.isEmpty()) {
+        if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
         }
-        return this.rabbitTextures.stream().collect(Collectors.joining("/","enhanced_rabbit",""));
+        return this.enhancedAnimalTextures.stream().collect(Collectors.joining("/","enhanced_rabbit",""));
 
     }
-
     @OnlyIn(Dist.CLIENT)
-    public String[] getVariantTexturePaths() {
-        if (this.rabbitTextures.isEmpty()) {
-            this.setTexturePaths();
-        }
-
-        return this.rabbitTextures.stream().toArray(String[]::new);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private void setTexturePaths() {
+    protected void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
             int under = 0;
@@ -1720,62 +1225,49 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
 
 
-            this.rabbitTextures.add(RABBIT_TEXTURES_UNDER[under]);
+            this.enhancedAnimalTextures.add(RABBIT_TEXTURES_UNDER[under]);
             if (lower != 0) {
-                this.rabbitTextures.add(RABBIT_TEXTURES_LOWER[lower]);
+                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_LOWER[lower]);
             }
             if(middle != 0) {
-                this.rabbitTextures.add(RABBIT_TEXTURES_MIDDLE[middle]);
+                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_MIDDLE[middle]);
             }
             if(higher != 0) {
-                this.rabbitTextures.add(RABBIT_TEXTURES_HIGHER[higher]);
+                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_HIGHER[higher]);
             }
             if(top != 0) {
-                this.rabbitTextures.add(RABBIT_TEXTURES_TOP[top]);
+                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_TOP[top]);
             }
             if(dutch != 0) {
-                this.rabbitTextures.add(RABBIT_TEXTURES_DUTCH[dutch]);
+                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_DUTCH[dutch]);
             }
             if(broken != 0) {
-                this.rabbitTextures.add(RABBIT_TEXTURES_BROKEN[broken]);
+                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_BROKEN[broken]);
             }
             if (vienna != 0){
-                this.rabbitTextures.add(RABBIT_TEXTURES_VIENNA[vienna]);
+                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_VIENNA[vienna]);
             }
             if (fur != 0) {
-                this.rabbitTextures.add(RABBIT_TEXTURES_FUR[fur]);
+                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_FUR[fur]);
             }
-            this.rabbitTextures.add(RABBIT_TEXTURES_EYES[eyes]);
+            this.enhancedAnimalTextures.add(RABBIT_TEXTURES_EYES[eyes]);
                 if(vieye > 7 && (vieye <= 17 || vieye >= 25)) {
-                    this.rabbitTextures.add(RABBIT_TEXTURES_VIENNAEYES[vieye]);
+                    this.enhancedAnimalTextures.add(RABBIT_TEXTURES_VIENNAEYES[vieye]);
             }
-            this.rabbitTextures.add(RABBIT_TEXTURES_SKIN[skin]);
+            this.enhancedAnimalTextures.add(RABBIT_TEXTURES_SKIN[skin]);
 
 
         } //if genes are not null end bracket
 
     } // setTexturePaths end bracket
 
-    public void mixMitosisGenes() {
-        punnetSquare(mitosisGenes, genes);
+    @Override
+    protected void setAlphaTexturePaths() {
     }
 
-    public void mixMateMitosisGenes() {
-        punnetSquare(mateMitosisGenes, mateGenes);
-    }
-
-    public void punnetSquare(int[] mitosis, int[] parentGenes) {
-        Random rand = new Random();
-        for (int i = 0; i < genes.length; i = (i + 2)) {
-            boolean mateOddOrEven = rand.nextBoolean();
-            if (mateOddOrEven) {
-                mitosis[i] = parentGenes[i + 1];
-                mitosis[i + 1] = parentGenes[i];
-            } else {
-                mitosis[i] = parentGenes[i];
-                mitosis[i + 1] = parentGenes[i + 1];
-            }
-        }
+    @Override
+    protected void initilizeAnimalSize() {
+        setRabbitSize();
     }
 
     public int[] getBunnyGenes(int[] mitosis, int[] mateMitosis) {
@@ -1799,36 +1291,18 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-//        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
-        int[] spawnGenes;
+        livingdata = commonInitialSpawnSetup(inWorld, livingdata, 20, GENES_LENGTH, 48000, 30000, 80000);
 
-        if (livingdata instanceof GroupData) {
-            int[] spawnGenes1 = ((GroupData) livingdata).groupGenes;
-            int[] mitosis = new int[GENES_LENGTH];
-            punnetSquare(mitosis, spawnGenes1);
-
-            int[] spawnGenes2 = ((GroupData) livingdata).groupGenes;
-            int[] mateMitosis = new int[GENES_LENGTH];
-            punnetSquare(mateMitosis, spawnGenes2);
-            spawnGenes = getBunnyGenes(mitosis, mateMitosis);
-        } else {
-            spawnGenes = createInitialGenes(inWorld);
-            livingdata = new GroupData(spawnGenes);
-        }
-
-        this.genes = spawnGenes;
-        setSharedGenes(genes);
         setMaxCoatLength();
         this.currentCoatLength = this.maxCoatLength;
         setCoatLength(this.currentCoatLength);
 
-        int birthMod = ThreadLocalRandom.current().nextInt(30000, 80000);
-        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
-        if (birthMod < 48000) {
-            this.setGrowingAge(birthMod - 48000);
-        }
-
         return livingdata;
+    }
+
+    @Override
+    protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
+        return getBunnyGenes(mitosis, mateMitosis);
     }
 
     private void setMaxCoatLength() {
@@ -1862,7 +1336,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
 
     }
 
-    private int[] createInitialGenes(IWorld inWorld) {
+    protected int[] createInitialGenes(IWorld inWorld) {
         int[] initialGenes = new int[GENES_LENGTH];
         //TODO create biome WTC variable [hot and dry biomes, cold biomes ] WTC is neutral biomes "all others"
 
@@ -2388,23 +1862,7 @@ public class EnhancedRabbit extends AnimalEntity implements net.minecraftforge.c
         return initialGenes;
     }
 
-    public void setGenes(int[] genes) {
-        this.genes = genes;
-    }
-
-    public int[] getGenes() {
-        return this.genes;
-    }
-
-    public void setMateGenes(int[] mateGenes){ this.mateGenes = mateGenes; }
-
-    public static class GroupData implements ILivingEntityData {
-
-        public int[] groupGenes;
-
-        public GroupData(int[] groupGenes) {
-            this.groupGenes = groupGenes;
-        }
-
+    @Override
+    protected void setInitialDefaults() {
     }
 }

@@ -470,7 +470,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         } else {
             PigModelData pigModelData = new PigModelData();
             pigModelData.pigGenes = enhancedPig.getSharedGenes();
-            pigModelData.size = enhancedPig.getSize();
+            pigModelData.size = enhancedPig.getAnimalSize();
             pigModelData.sleeping = enhancedPig.isAnimalSleeping();
             pigModelData.uuidArray = enhancedPig.getCachedUniqueIdString().toCharArray();
             pigModelData.birthTime = enhancedPig.getBirthTime();

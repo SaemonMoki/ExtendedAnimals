@@ -11,6 +11,7 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
+import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -62,19 +63,14 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
 
-public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.common.IShearable, EnhancedAnimal{
+public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecraftforge.common.IShearable, EnhancedAnimal{
 
     //avalible UUID spaces : [ S X X 3 X 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.VARINT);
-    private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedSheep.class, DataSerializers.STRING);
-    private static final DataParameter<Float> SHEEP_SIZE = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.FLOAT);
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.FLOAT);
     private static final DataParameter<Byte> DYE_COLOUR = EntityDataManager.<Byte>createKey(EnhancedSheep.class, DataSerializers.BYTE);
-    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<String> SHEEP_STATUS = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.STRING);
     private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedSheep.class, DataSerializers.VARINT);
-    private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedSheep.class, DataSerializers.STRING);
 
     private static final String[] SHEEP_TEXTURES_UNDER = new String[] {
             "c_solid_tan.png", "c_solid_black.png", "c_solid_choc.png", "c_solid_lighttan.png",
@@ -114,43 +110,14 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
-    Map<Item, Integer> foodWeightMap = new HashMap() {{
-        put(new ItemStack(Blocks.MELON).getItem(), 10000);
-        put(new ItemStack(Blocks.PUMPKIN).getItem(), 10000);
-        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-        put(new ItemStack(Items.GRASS).getItem(), 3000);
-        put(new ItemStack(Items.VINE).getItem(), 3000);
-        put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
-        put(new ItemStack(Items.WHEAT).getItem(), 6000);
-        put(new ItemStack(Items.CARROT).getItem(), 3000);
-        put(new ItemStack(Items.GOLDEN_CARROT).getItem(), 12000);
-        put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
-        put(new ItemStack(Items.DANDELION).getItem(), 1500);
-        put(new ItemStack(Items.ROSE_BUSH).getItem(), 1500);
-        put(new ItemStack(Items.SUGAR).getItem(), 1500);
-        put(new ItemStack(Items.APPLE).getItem(), 1500);
-        put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
-    }};
-
-    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
-    private final List<String> sheepTextures = new ArrayList<>();
     private final List<String> sheepFleeceTextures = new ArrayList<>();
     private static final int GENES_LENGTH = 68;
-    private int[] genes = new int[GENES_LENGTH];
-    private int[] mateGenes = new int[GENES_LENGTH];
-    private int[] mitosisGenes = new int[GENES_LENGTH];
-    private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
     protected float maxBagSize;
     private int currentBagSize;
     private int maxCoatLength;
     private int currentCoatLength;
     private int timeForGrowth = 0;
-
-    private float hunger = 0;
-    protected int healTicks = 0;
-    protected Boolean sleeping = false;
-    protected int awokenTimer = 0;
 
 //    protected boolean aiConfigured = false;
     private String motherUUID = "";
@@ -160,9 +127,30 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     private boolean pregnant = false;
 
     public EnhancedSheep(EntityType<? extends EnhancedSheep> entityType, World worldIn) {
-        super(entityType, worldIn);
+        super(entityType, worldIn, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
         this.setSheepSize();
         this.timeUntilNextMilk = this.rand.nextInt(this.rand.nextInt(8000) + 4000);
+    }
+
+    private static Map<Item, Integer> createFoodMap() {
+        return new HashMap() {{
+            put(new ItemStack(Blocks.MELON).getItem(), 10000);
+            put(new ItemStack(Blocks.PUMPKIN).getItem(), 10000);
+            put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
+            put(new ItemStack(Items.GRASS).getItem(), 3000);
+            put(new ItemStack(Items.VINE).getItem(), 3000);
+            put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
+            put(new ItemStack(Items.WHEAT).getItem(), 6000);
+            put(new ItemStack(Items.CARROT).getItem(), 3000);
+            put(new ItemStack(Items.GOLDEN_CARROT).getItem(), 12000);
+            put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
+            put(new ItemStack(Items.DANDELION).getItem(), 1500);
+            put(new ItemStack(Items.ROSE_BUSH).getItem(), 1500);
+            put(new ItemStack(Items.SUGAR).getItem(), 1500);
+            put(new ItemStack(Items.APPLE).getItem(), 1500);
+            put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
+        }};
+
     }
 
 //    private int sheepTimer;
@@ -209,7 +197,6 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     }
 
     private int timeUntilNextMilk;
-    private int sheepTimer;
     private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
     @Override
@@ -230,79 +217,16 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     protected void updateAITasks()
     {
-        this.sheepTimer = this.wanderEatingGoal.getEatingGrassTimer();
+        this.animalEatingTimer = this.wanderEatingGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
 
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(COAT_LENGTH, 0);
         this.dataManager.register(DYE_COLOUR, Byte.valueOf((byte)0));
-        this.dataManager.register(SHEEP_STATUS, new String());
-        this.dataManager.register(SHEEP_SIZE, 0.0F);
         this.dataManager.register(BAG_SIZE, 0.0F);
-        this.dataManager.register(SLEEPING, false);
         this.dataManager.register(MILK_AMOUNT, 0);
-        this.dataManager.register(BIRTH_TIME, "0");
-    }
-
-    private void setSheepStatus(String status) {
-        this.dataManager.set(SHEEP_STATUS, status);
-    }
-
-    public String getSheepStatus() {
-        return this.dataManager.get(SHEEP_STATUS);
-    }
-
-    private void setSheepSize(float size) { this.dataManager.set(SHEEP_SIZE, size); }
-
-    public float getSize() { return this.dataManager.get(SHEEP_SIZE); }
-
-    @Nullable
-    protected ResourceLocation getLootTable() {
-//        if (this.getSheared()) {
-//            return this.getType().getLootTable();
-//        } else {
-//            DyeColor woolColour = getWoolColour();
-//
-//            switch (woolColour) {
-//                case WHITE:
-//                default:
-//                    return LootTables.ENTITIES_SHEEP_WHITE;
-//                case ORANGE:
-//                    return LootTables.ENTITIES_SHEEP_ORANGE;
-//                case MAGENTA:
-//                    return LootTables.ENTITIES_SHEEP_MAGENTA;
-//                case LIGHT_BLUE:
-//                    return LootTables.ENTITIES_SHEEP_LIGHT_BLUE;
-//                case YELLOW:
-//                    return LootTables.ENTITIES_SHEEP_YELLOW;
-//                case LIME:
-//                    return LootTables.ENTITIES_SHEEP_LIME;
-//                case PINK:
-//                    return LootTables.ENTITIES_SHEEP_PINK;
-//                case GRAY:
-//                    return LootTables.ENTITIES_SHEEP_GRAY;
-//                case LIGHT_GRAY:
-//                    return LootTables.ENTITIES_SHEEP_LIGHT_GRAY;
-//                case CYAN:
-//                    return LootTables.ENTITIES_SHEEP_CYAN;
-//                case PURPLE:
-//                    return LootTables.ENTITIES_SHEEP_PURPLE;
-//                case BLUE:
-//                    return LootTables.ENTITIES_SHEEP_BLUE;
-//                case BROWN:
-//                    return LootTables.ENTITIES_SHEEP_BROWN;
-//                case GREEN:
-//                    return LootTables.ENTITIES_SHEEP_GREEN;
-//                case RED:
-//                    return LootTables.ENTITIES_SHEEP_RED;
-//                case BLACK:
-//                    return LootTables.ENTITIES_SHEEP_BLACK;
-//            }
-//        }
-        return null;
     }
 
     private void setCoatLength(int coatLength) {
@@ -323,63 +247,9 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     public float getBagSize() { return this.dataManager.get(BAG_SIZE); }
 
-    private void setEntityStatus(String status) {
-        this.dataManager.set(SHEEP_STATUS, status);
-    }
-
-    public String getEntityStatus() {
-        return this.dataManager.get(SHEEP_STATUS);
-    }
-
-    protected void setBirthTime(String birthTime) {
-        this.dataManager.set(BIRTH_TIME, birthTime);
-    }
-
-    public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
-
-    private int getAge() {
-        if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
-            return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
-        } else {
-            return 500000;
-        }
-    }
-
-    public void setSleeping(Boolean sleeping) {
-        this.sleeping = sleeping;
-        this.dataManager.set(SLEEPING, sleeping); }
-
-    @Override
-    public Boolean isAnimalSleeping() {
-        if (this.sleeping == null) {
-            return false;
-        } else {
-            sleeping = this.dataManager.get(SLEEPING);
-            return sleeping;
-        }
-    }
-
-    @Override
-    public void awaken() {
-        this.awokenTimer = 200;
-        setSleeping(false);
-    }
-
     @Override
     public Inventory getEnhancedInventory() {
         return null;
-    }
-
-    public float getHunger(){
-        return hunger;
-    }
-
-    public void decreaseHunger(float decrease) {
-        if (this.hunger - decrease < 0) {
-            this.hunger = 0;
-        } else {
-            this.hunger = this.hunger - decrease;
-        }
     }
 
     protected void setMilkAmount(Integer milkAmount) {
@@ -400,123 +270,12 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         }
     }
 
+    @Override
     public void livingTick() {
         super.livingTick();
 
-        if (this.world.isRemote) {
-            this.sheepTimer = Math.max(0, this.sheepTimer - 1);
-        } else {
-
-            if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
-                setSleeping(true);
-                healTicks = 0;
-            } else if (awokenTimer > 0) {
-                awokenTimer--;
-            } else if (this.world.isDaytime() && sleeping) {
-                setSleeping(false);
-            }
-
-//           && ticksExisted % 2 == 0
-            if (this.getIdleTime() < 100) {
-                if (hunger <= 72000) {
-                    if (sleeping) {
-                        int days = EanimodCommonConfig.COMMON.gestationDaysSheep.get();
-                        if (hunger <= days * (0.50) && (ticksExisted % 2 == 0)) {
-                            hunger = hunger++;
-                        }
-                        healTicks++;
-                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
-                            this.heal(2.0F);
-                            hunger = hunger + 1000;
-                            healTicks = 0;
-                        }
-                    } else {
-                        hunger++;
-                    }
-                }
-
-                if (hunger <= 36000) {
-                    timeForGrowth++;
-                }
-                if (maxCoatLength > 0) {
-                    if (!this.isChild() && currentCoatLength == maxCoatLength && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= 24000) {
-                        timeForGrowth = 0;
-                        currentCoatLength = rand.nextInt(maxCoatLength/2);
-//                        List<ItemStack> woolToDrop = onSheared(null, this.world, getPosition(), 0);
-//                        woolToDrop.forEach(d -> {
-//                            net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
-//                            ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
-//                        });
-//                        onSheared(ItemStack.EMPTY, this.world, getPosition(), 0);
-                    } else if (timeForGrowth >= (24000 / maxCoatLength)) {
-                        timeForGrowth = 0;
-                        if (maxCoatLength > currentCoatLength) {
-                            currentCoatLength++;
-                            setCoatLength(currentCoatLength);
-                        }
-                    }
-
-                }
-            }
-
-            if(pregnant) {
-
-                gestationTimer++;
-                int days = EanimodCommonConfig.COMMON.gestationDaysSheep.get();
-                if (days/2 < gestationTimer) {
-                    setSheepStatus(EntityState.PREGNANT.toString());
-                }
-                if (hunger > 12000 && days !=0) {
-                    pregnant = false;
-                    gestationTimer = 0;
-                    setSheepStatus(EntityState.ADULT.toString());
-                }
-                if (gestationTimer >= days) {
-                    pregnant = false;
-                    gestationTimer = 0;
-                    lactationTimer = -48000;
-                    setSheepStatus(EntityState.MOTHER.toString());
-                    setMilkAmount(4);
-
-                    float milkBagSize = 4 / (6*maxBagSize);
-
-                    this.setBagSize((milkBagSize*(maxBagSize/3.0F))+(maxBagSize*2.0F/3.0F));
-
-                    int lambRange;
-                    int lambAverage = 1;
-                    int numberOfLambs;
-
-                    if (genes[38] == 1 || genes[39] == 1) {
-                        //1 baby
-                        lambRange = 1;
-                    } else if (genes[38] == 3 && genes[39] == 3) {
-                        // 2-3 babies
-                        lambRange = 2;
-                        lambAverage = 2;
-                    } else if (genes[38] == 2 && genes[39] == 2) {
-                        //1 to 2 babies
-                        lambRange = 2;
-                    } else {
-                        // 1-3 babies
-                        lambRange = 3;
-                        lambAverage = 1;
-                    }
-
-                    if (lambRange != 1) {
-                        numberOfLambs = ThreadLocalRandom.current().nextInt(lambRange) + lambAverage;
-                    } else {
-                        numberOfLambs = 1;
-                    }
-
-                    for (int i = 0; i <= numberOfLambs; i++) {
-                        mixMateMitosisGenes();
-                        mixMitosisGenes();
-                        createAndSpawnEnhancedChild(this.world);
-                    }
-                }
-            }
-
-            if (getSheepStatus().equals(EntityState.MOTHER.toString())) {
+        if (!this.world.isRemote) {
+            if (getEntityStatus().equals(EntityState.MOTHER.toString())) {
                 if (hunger <= 24000) {
                     if (--this.timeUntilNextMilk <= 0) {
                         int milk = getMilkAmount();
@@ -539,43 +298,116 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                 }
 
                 if (lactationTimer >= 0) {
-                    setSheepStatus(EntityState.ADULT.toString());
-                }
-            }
-
-            if (this.isChild()) {
-                if (getSheepStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
-                    if(hunger < 5000) {
-                        setSheepStatus(EntityState.CHILD_STAGE_TWO.toString());
-                    } else {
-                        this.setGrowingAge(-16500);
-                    }
-                } else if (getSheepStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
-                    if(hunger < 5000) {
-                        setSheepStatus(EntityState.CHILD_STAGE_THREE.toString());
-                    } else {
-                        this.setGrowingAge(-8500);
-                    }
+                    setEntityStatus(EntityState.ADULT.toString());
                 }
             }
         }
 
     }
 
+    @Override
+    protected void runExtraIdleTimeTick() {
+        if (hunger <= 36000) {
+            timeForGrowth++;
+        }
+        if (maxCoatLength > 0) {
+            if (!this.isChild() && currentCoatLength == maxCoatLength && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= 24000) {
+                timeForGrowth = 0;
+                currentCoatLength = rand.nextInt(maxCoatLength/2);
+            } else if (timeForGrowth >= (24000 / maxCoatLength)) {
+                timeForGrowth = 0;
+                if (maxCoatLength > currentCoatLength) {
+                    currentCoatLength++;
+                    setCoatLength(currentCoatLength);
+                }
+            }
+
+        }
+    }
+
+    @Override
+    protected void lethalGenes() {
+    }
+
+    @Override
+    protected void runPregnancyTick() {
+        if(pregnant) {
+
+            gestationTimer++;
+            int days = gestationConfig();
+            if (days/2 < gestationTimer) {
+                setEntityStatus(EntityState.PREGNANT.toString());
+            }
+            if (hunger > 12000 && days !=0) {
+                pregnant = false;
+                gestationTimer = 0;
+                setEntityStatus(EntityState.ADULT.toString());
+            }
+            if (gestationTimer >= days) {
+                pregnant = false;
+                gestationTimer = 0;
+                lactationTimer = -48000;
+                setEntityStatus(EntityState.MOTHER.toString());
+                setMilkAmount(4);
+
+                float milkBagSize = 4 / (6*maxBagSize);
+
+                this.setBagSize((milkBagSize*(maxBagSize/3.0F))+(maxBagSize*2.0F/3.0F));
+
+                int lambRange;
+                int lambAverage = 1;
+                int numberOfLambs;
+
+                if (genes[38] == 1 || genes[39] == 1) {
+                    //1 baby
+                    lambRange = 1;
+                } else if (genes[38] == 3 && genes[39] == 3) {
+                    // 2-3 babies
+                    lambRange = 2;
+                    lambAverage = 2;
+                } else if (genes[38] == 2 && genes[39] == 2) {
+                    //1 to 2 babies
+                    lambRange = 2;
+                } else {
+                    // 1-3 babies
+                    lambRange = 3;
+                    lambAverage = 1;
+                }
+
+                if (lambRange != 1) {
+                    numberOfLambs = ThreadLocalRandom.current().nextInt(lambRange) + lambAverage;
+                } else {
+                    numberOfLambs = 1;
+                }
+
+                for (int i = 0; i <= numberOfLambs; i++) {
+                    mixMateMitosisGenes();
+                    mixMitosisGenes();
+                    createAndSpawnEnhancedChild(this.world);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void incrementHunger() {
+        if(sleeping) {
+            hunger = hunger + 0.5F;
+        } else {
+            hunger = hunger + 1.0F;
+        }
+    }
+
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
         int[] babyGenes = getLambGenes(this.mitosisGenes, this.mateMitosisGenes);
-        enhancedsheep.setGenes(babyGenes);
-        enhancedsheep.setSharedGenes(babyGenes);
-        enhancedsheep.setSheepSize();
+
+        defaultCreateAndSpawn(enhancedsheep, inWorld, babyGenes, -72000);
+
         enhancedsheep.setMaxCoatLength();
         enhancedsheep.currentCoatLength = enhancedsheep.maxCoatLength;
         enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
-        enhancedsheep.setGrowingAge(-72000); // 3 days
-        enhancedsheep.setBirthTime(String.valueOf(inWorld.getGameTime()));
-        enhancedsheep.setSheepStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedsheep.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
-//                        enhancedsheep.setMotherUUID(this.getUniqueID().toString());
+
         this.world.addEntity(enhancedsheep);
     }
 
@@ -1034,7 +866,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         size = size + 0.43F;
 
         // [ 0.52325 - 1.1 ]
-        this.setSheepSize(size);
+        this.setAnimalSize(size);
     }
 
     @Override
@@ -1042,9 +874,9 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
-        float size = this.getSize();
+        float size = this.getAnimalSize();
         int age = this.getAge();
-        int meatDrop = rand.nextInt(4)+1;
+        int meatDrop = this.rand.nextInt(4)+1;
         boolean woolDrop = false;
         boolean leatherDrop = false;
         int meatChanceMod;
@@ -1160,69 +992,6 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         }
     }
 
-    public void setSharedGenes(int[] genes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < genes.length; i++) {
-            sb.append(genes[i]);
-            if (i != genes.length - 1) {
-                sb.append(",");
-            }
-        }
-        this.dataManager.set(SHARED_GENES, sb.toString());
-    }
-
-    public int[] getSharedGenes() {
-        String sharedGenes = ((String) this.dataManager.get(SHARED_GENES)).toString();
-        if (sharedGenes.isEmpty()) {
-            return null;
-        }
-        String[] genesToSplit = sharedGenes.split(",");
-        int[] sharedGenesArray = new int[genesToSplit.length];
-
-        for (int i = 0; i < sharedGenesArray.length; i++) {
-            //parse and store each value into int[] to be returned
-            sharedGenesArray[i] = Integer.parseInt(genesToSplit[i]);
-        }
-        return sharedGenesArray;
-    }
-
-    public boolean isBreedingItem(ItemStack stack) {
-        //TODO set this to a separate item or type of item for force breeding
-        return BREED_ITEMS.test(stack);
-    }
-
-    public AgeableEntity createChild(AgeableEntity ageable) {
-        if(pregnant) {
-            ((EnhancedSheep)ageable).pregnant = true;
-            ((EnhancedSheep)ageable).setMateGenes(this.genes);
-            ((EnhancedSheep)ageable).mixMateMitosisGenes();
-            ((EnhancedSheep)ageable).mixMitosisGenes();
-        } else {
-            pregnant = true;
-            this.mateGenes = ((EnhancedSheep) ageable).getGenes();
-            mixMateMitosisGenes();
-            mixMitosisGenes();
-        }
-
-        //TODO figure out whats wrong with pregnancy
-            this.setGrowingAge(10);
-            this.resetInLove();
-            ageable.setGrowingAge(10);
-            ((EnhancedSheep) ageable).resetInLove();
-
-        ServerPlayerEntity entityplayermp = this.getLoveCause();
-        if (entityplayermp == null && ((EnhancedSheep)ageable).getLoveCause() != null) {
-            entityplayermp = ((EnhancedSheep)ageable).getLoveCause();
-        }
-
-        if (entityplayermp != null) {
-            entityplayermp.addStat(Stats.ANIMALS_BRED);
-            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedSheep)ageable), (AgeableEntity)null);
-        }
-
-        return null;
-    }
-
     public boolean getSheared()
     {
         return (this.dataManager.get(DYE_COLOUR) & 16) != 0;
@@ -1230,25 +999,16 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     @OnlyIn(Dist.CLIENT)
     public String getSheepTexture() {
-        if (this.sheepTextures.isEmpty()) {
+        if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
         }
-        return this.sheepTextures.stream().collect(Collectors.joining("/","enhanced_sheep/",""));
+        return this.enhancedAnimalTextures.stream().collect(Collectors.joining("/","enhanced_sheep/",""));
 
     }
 
+    @Override
     @OnlyIn(Dist.CLIENT)
-    public String[] getVariantTexturePaths()
-    {
-        if (this.sheepTextures.isEmpty()) {
-            this.setTexturePaths();
-        }
-
-        return this.sheepTextures.stream().toArray(String[]::new);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private void setTexturePaths() {
+    protected void setTexturePaths() {
 
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
@@ -1320,90 +1080,26 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
             }
 
 
-         this.sheepTextures.add(SHEEP_TEXTURES_UNDER[under]);
+         this.enhancedAnimalTextures.add(SHEEP_TEXTURES_UNDER[under]);
          if (pattern != 0) {
-             this.sheepTextures.add(SHEEP_TEXTURES_PATTERN[pattern]);
+             this.enhancedAnimalTextures.add(SHEEP_TEXTURES_PATTERN[pattern]);
          }
          if (grey != 0) {
-             this.sheepTextures.add(SHEEP_TEXTURES_GREY[grey]);
+             this.enhancedAnimalTextures.add(SHEEP_TEXTURES_GREY[grey]);
          }
             if (spots != 0) {
-                this.sheepTextures.add(SHEEP_TEXTURES_SPOTS[spots]);
+                this.enhancedAnimalTextures.add(SHEEP_TEXTURES_SPOTS[spots]);
             }
-         this.sheepTextures.add(SHEEP_TEXTURES_SKIN[skin]);
-         this.sheepTextures.add(SHEEP_TEXTURES_HOOVES[hooves]);
-         this.sheepTextures.add(SHEEP_TEXTURES_FUR[fur]);
-         this.sheepTextures.add(SHEEP_TEXTURES_EYES[eyes]);
-
-
+         this.enhancedAnimalTextures.add(SHEEP_TEXTURES_SKIN[skin]);
+         this.enhancedAnimalTextures.add(SHEEP_TEXTURES_HOOVES[hooves]);
+         this.enhancedAnimalTextures.add(SHEEP_TEXTURES_FUR[fur]);
+         this.enhancedAnimalTextures.add(SHEEP_TEXTURES_EYES[eyes]);
         }
     }
 
-
-//TODO ask Saemon if this is needed any more
-    @OnlyIn(Dist.CLIENT)
-    public String getSheepFleeceTexture() {
-        if (this.sheepFleeceTextures.isEmpty()) {
-            this.setFleeceTexturePaths();
-        }
-        return this.sheepFleeceTextures.stream().collect(Collectors.joining(", ","[","]"));
-
+    @Override
+    protected void setAlphaTexturePaths() {
     }
-
-    @OnlyIn(Dist.CLIENT)
-    public String[] getVariantFleeceTexturePaths() {
-        if (this.sheepFleeceTextures.isEmpty()) {
-            this.setFleeceTexturePaths();
-        }
-
-        return this.sheepFleeceTextures.stream().toArray(String[]::new);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private void setFleeceTexturePaths() {
-        this.sheepFleeceTextures.add("sheep_wool.png");
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id) {
-        if (id == 10) {
-            this.sheepTimer = 40;
-        } else {
-            super.handleStatusUpdate(id);
-        }
-    }
-
-
-    //Eating Animation
-    @OnlyIn(Dist.CLIENT)
-    public float getHeadRotationPointY(float partialTickTime) {
-        if (this.sheepTimer <= 0)
-        {
-            return 0.0F;
-        }
-        else if (this.sheepTimer >= 4 && this.sheepTimer <= 36)
-        {
-            return 0.2F;
-        }
-        else
-        {
-            return this.sheepTimer < 4 ? ((float)this.sheepTimer - partialTickTime) / 4.0F : -((float)(this.sheepTimer - 40) - partialTickTime) / 4.0F;
-        }
-    }
-    //Eating Animation
-    @OnlyIn(Dist.CLIENT)
-    public float getHeadRotationAngleX(float partialTickTime) {
-        if (this.sheepTimer > 4 && this.sheepTimer <= 36)
-        {
-            float f = ((float)(this.sheepTimer - 4) - partialTickTime) / 32.0F;
-            return ((float)Math.PI / 5F) + ((float)Math.PI * 7F / 100F) * MathHelper.sin(f * 28.7F);
-        }
-        else
-        {
-            return this.sheepTimer > 0 ? ((float)Math.PI / 5F) : this.rotationPitch * 0.017453292F;
-        }
-    }
-
 
     private void setMaxBagSize(){
         float maxBagSize = 1.0F;
@@ -1428,7 +1124,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
-        if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())) {
+        if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;
             int bucketSize = 6;
             int currentMilk = getMilkAmount();
@@ -1578,7 +1274,7 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
                 }
             }  else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
-            } else if (!getSheepStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
+            } else if (!getEntityStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
                 if (this.foodWeightMap.containsKey(item)) {
                     decreaseHunger(this.foodWeightMap.get(item));
                 } else {
@@ -1592,37 +1288,9 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
         return super.processInteract(entityPlayer, hand);
     }
 
-    private ITextComponent getHungerText() {
-        String hungerText = "";
-        if (this.hunger < 1000) {
-            hungerText = "eanimod.hunger.not_hungry";
-        } else if (this.hunger < 4000) {
-            hungerText = "eanimod.hunger.hungry";
-        } else if (this.hunger < 9000) {
-            hungerText = "eanimod.hunger.very_hunger";
-        } else if (this.hunger < 16000) {
-            hungerText = "eanimod.hunger.starving";
-        } else if (this.hunger > 24000) {
-            hungerText = "eanimod.hunger.dying";
-        }
-        return new TranslationTextComponent(hungerText);
-    }
-
-    private ITextComponent getPregnantText() {
-        String pregnancyText;
-        int days = EanimodCommonConfig.COMMON.gestationDaysSheep.get();
-        if (gestationTimer > (days/5 * 4)) {
-            pregnancyText = "eanimod.pregnancy.near_birth";
-        } else if (gestationTimer > days/2 ) {
-            pregnancyText = "eanimod.pregnancy.obviously_pregnant";
-        } else if (gestationTimer > days/3) {
-            pregnancyText = "eanimod.pregnancy.pregnant";
-        } else if (gestationTimer > days/5) {
-            pregnancyText = "eanimod.pregnancy.only_slightly_showing";
-        } else {
-            pregnancyText = "eanimod.pregnancy.not_showing";
-        }
-        return new TranslationTextComponent(pregnancyText);
+    @Override
+    protected  int gestationConfig() {
+        return EanimodCommonConfig.COMMON.gestationDaysSheep.get();
     }
 
     /**
@@ -1639,39 +1307,14 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
-
         compound.putByte("Colour", (byte)this.getFleeceDyeColour().getId());
-
-        //store this sheeps's genes
-        ListNBT geneList = new ListNBT();
-        for (int i = 0; i < genes.length; i++) {
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Gene", genes[i]);
-            geneList.add(nbttagcompound);
-        }
-        compound.put("Genes", geneList);
-
-        //store this sheeps's mate's genes
-        ListNBT mateGeneList = new ListNBT();
-        for (int i = 0; i < mateGenes.length; i++) {
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Gene", mateGenes[i]);
-            mateGeneList.add(nbttagcompound);
-        }
-        compound.put("FatherGenes", mateGeneList);
         compound.putFloat("CoatLength", this.getCoatLength());
 
         compound.putBoolean("Pregnant", this.pregnant);
         compound.putInt("Gestation", this.gestationTimer);
         compound.putInt("Lactation", this.lactationTimer);
 
-        compound.putString("Status", getSheepStatus());
-        compound.putFloat("Hunger", hunger);
-
         compound.putInt("milk", getMilkAmount());
-
-//        compound.putString("MotherUUID", this.motherUUID);
-        compound.putString("BirthTime", this.getBirthTime());
 
     }
 
@@ -1686,76 +1329,20 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
         this.setFleeceDyeColour(DyeColor.byId(compound.getByte("Colour")));
 
-        ListNBT geneList = compound.getList("Genes", 10);
-        for (int i = 0; i < geneList.size(); ++i) {
-            CompoundNBT nbttagcompound = geneList.getCompound(i);
-            int gene = nbttagcompound.getInt("Gene");
-            genes[i] = gene;
-        }
-
-        ListNBT mateGeneList = compound.getList("FatherGenes", 10);
-        for (int i = 0; i < mateGeneList.size(); ++i) {
-            CompoundNBT nbttagcompound = mateGeneList.getCompound(i);
-            int gene = nbttagcompound.getInt("Gene");
-            mateGenes[i] = gene;
-        }
-
         this.pregnant = compound.getBoolean("Pregnant");
         this.gestationTimer = compound.getInt("Gestation");
         this.lactationTimer = compound.getInt("Lactation");
 
-        setSheepStatus(compound.getString("Status"));
-        hunger = compound.getFloat("Hunger");
-
         setMilkAmount(compound.getInt("milk"));
-
-//        this.motherUUID = compound.getString("MotherUUID");
-        this.setBirthTime(compound.getString("BirthTime"));
-
-        for (int i = 0; i < genes.length; i++) {
-            if (genes[i] == 0) {
-                genes[i] = 1;
-            }
-        }
-        if (mateGenes[0] != 0) {
-            for (int i = 0; i < mateGenes.length; i++) {
-                if (mateGenes[i] == 0) {
-                    mateGenes[i] = 1;
-                }
-            }
-        }
-
-        setSharedGenes(genes);
-
         //resets the max so we don't have to store it
         setMaxBagSize();
-        setSheepSize();
 //        this.setBagSize((compound.getInt("milk")*(maxBagSize/3.0F))+(maxBagSize*2.0F/3.0F));
         setMaxCoatLength();
 //        configureAI();
-
     }
 
-    public void mixMitosisGenes() {
-        punnetSquare(mitosisGenes, genes);
-    }
-
-    public void mixMateMitosisGenes() {
-        punnetSquare(mateMitosisGenes, mateGenes);
-    }
-
-    public void punnetSquare(int[] mitosis, int[] parentGenes) {
-        Random rand = new Random();
-        for (int i = 0; i < genes.length; i = (i + 2)) {
-            boolean mateOddOrEven = rand.nextBoolean();
-            if (mateOddOrEven) {
-                mitosis[i] = parentGenes[i + 1];
-                mitosis[i + 1] = parentGenes[i];
-            } else {
-                mitosis[i] = parentGenes[i];
-                mitosis[i + 1] = parentGenes[i + 1];
-            }
-        }
+    protected void initilizeAnimalSize() {
+        setSheepSize();
     }
 
 
@@ -1780,41 +1367,22 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-//        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
-        int[] spawnGenes;
+        return commonInitialSpawnSetup(inWorld, livingdata, 0, GENES_LENGTH, 72000, 60000, 80000);
+    }
 
-        if (livingdata instanceof GroupData) {
-            int[] spawnGenes1 = ((GroupData) livingdata).groupGenes;
-            int[] mitosis = new int[GENES_LENGTH];
-            punnetSquare(mitosis, spawnGenes1);
+    @Override
+    protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
+        return getLambGenes(mitosis, mateMitosis);
+    }
 
-            int[] spawnGenes2 = ((GroupData) livingdata).groupGenes;
-            int[] mateMitosis = new int[GENES_LENGTH];
-            punnetSquare(mateMitosis, spawnGenes2);
-            spawnGenes = getLambGenes(mitosis, mateMitosis);
-        } else {
-            spawnGenes = createInitialGenes(inWorld);
-            livingdata = new GroupData(spawnGenes);
-        }
-
-        this.genes = spawnGenes;
-        this.setSharedGenes(genes);
+    @Override
+    protected void setInitialDefaults() {
         this.setMaxCoatLength();
-        this.setSheepSize();
         this.currentCoatLength = this.maxCoatLength;
         this.setCoatLength(this.currentCoatLength);
 
-        int birthMod = ThreadLocalRandom.current().nextInt(60000, 80000);
-        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
-        if (birthMod < 72000) {
-            this.setGrowingAge(birthMod - 72000);
-        }
-
         //"White" is considered no dye
         this.setFleeceDyeColour(DyeColor.WHITE);
-
-//        configureAI();
-        return livingdata;
     }
 
     private void setMaxCoatLength() {
@@ -1873,7 +1441,8 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 
     }
 
-    private int[] createInitialGenes(IWorld inWorld) {
+    @Override
+    protected int[] createInitialGenes(IWorld inWorld) {
         int[] initialGenes = new int[GENES_LENGTH];
         //TODO create biome WTC variable [hot and dry biomes, hot and wet biomes, cold biomes] WTC is all others
 
@@ -2401,26 +1970,4 @@ public class EnhancedSheep extends AnimalEntity implements net.minecraftforge.co
 //        }
 //        aiConfigured = true;
 //    }
-
-    public void setGenes(int[] genes) {
-        this.genes = genes;
-    }
-
-    public int[] getGenes() {
-        return this.genes;
-    }
-
-    public void setMateGenes(int[] mateGenes){
-        this.mateGenes = mateGenes;
-    }
-
-    public static class GroupData implements ILivingEntityData {
-
-        public int[] groupGenes;
-
-        public GroupData(int[] groupGenes) {
-            this.groupGenes = groupGenes;
-        }
-
-    }
 }

@@ -132,7 +132,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
     public ModelEnhancedSheep()
     {
-        this.textureWidth = 64;
+        this.textureWidth = 128;
         this.textureHeight = 64;
 
         float xMove = -6.0F;

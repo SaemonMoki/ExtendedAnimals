@@ -292,6 +292,14 @@
 "item.eanimod.enhanced_mooshroom_spawn_egg": "Genetic Mooshroom",
 "item.eanimod.enhanced_pig_spawn_egg": "Genetic Pig",
 "item.eanimod.enhanced_horse_spawn_egg": "WIP",
+"item.eanimod.bridle_basic_cloth": "Cloth Bridle",
+"item.eanimod.bridle_basic_leather": "Leather Bridle",
+"item.eanimod.saddle_basic_cloth": "Saddle",
+"item.eanimod.saddle_basic_leather": "Saddle",
+"item.eanimod.saddle_basicpomel_cloth": "Saddle with Pomel",
+"item.eanimod.saddle_basicpomel_leather": "Saddle with Pomel",
+"item.eanimod.collar_basic_cloth": "Cloth Collar",
+"item.eanimod.collar_basic_leather": "Leather Collar",
 "block.eanimod.post_oak": "Oak Post",
 "block.eanimod.post_dark_oak": "Dark Oak Post",
 "block.eanimod.post_acacia": "Acacia Post",
@@ -322,5 +330,5 @@
 "eanimod.pregnancy.pregnant" : "The pregnancy is showing well.",
 "eanimod.pregnancy.obviously_pregnant" : "It is obviously very pregnant!",
 "eanimod.pregnancy.near_birth" : "It is showing signs birth is soon!",
-"eanimod.animalinfocontainer" : "Animal Info Container TEST"
+"eanimod.animalinfocontainer" : "Animal Info Container"
 }

@@ -74,7 +74,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
-import org.apache.commons.lang3.SerializationUtils;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -144,7 +143,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private final List<String> llamaTextures = new ArrayList<>();
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT, Items.CARROT, Items.SUGAR_CANE, Items.BEETROOT, Items.GRASS, Items.TALL_GRASS);
-    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
+    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK);
 
     Map<Item, Integer> foodWeightMap = new HashMap() {{
@@ -155,7 +154,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         put(new ItemStack(Items.WHEAT).getItem(), 6000);
         put(new ItemStack(Items.SUGAR).getItem(), 1500);
         put(new ItemStack(Items.APPLE).getItem(), 1500);
-        put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
+        put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
     }};
 
     public float destPos;
@@ -296,6 +295,27 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         }
     }
 
+    private String getAnimalsName() {
+        String name = "Llama";
+        if (this.getCustomName() != null) {
+            name = this.getCustomName().getUnformattedComponentText();
+            if (name.equals("")) {
+                name = "Llama";
+            }
+        }
+
+        int age = this.getAge();
+        if (age < 120000) {
+            if (age > 40000) {
+                name = "Young" + " " + name;
+            } else {
+                name = "Baby" + " " + name;
+            }
+        }
+
+        return name;
+    }
+
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
         this.dataManager.set(SLEEPING, sleeping); }
@@ -332,7 +352,39 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 //        return new Inventory(16);
     }
 
-    private int getBlanketNumber() {
+    public int getSaddleNumber() {
+        int saddle = 0;
+        if (this.horseChest != null) {
+            if (!this.horseChest.getStackInSlot(1).isEmpty()) {
+                Item saddleType = this.horseChest.getStackInSlot(1).getItem();
+                if (saddleType == ModItems.BASIC_LEATHER_SADDLE) {
+                    saddle = 2;
+                } else if (saddleType == ModItems.BASIC_CLOTH_SADDLE) {
+                    saddle = 3;
+                } else {
+                    saddle = 1;
+                }
+            }
+        }
+        return saddle;
+    }
+
+    public int getBridleNumber() {
+        int bridle = 0;
+        if (this.horseChest != null) {
+            if (!this.horseChest.getStackInSlot(2).isEmpty()) {
+                Item saddleType = this.horseChest.getStackInSlot(2).getItem();
+                if (saddleType == ModItems.BASIC_LEATHER_BRIDLE) {
+                    bridle = 1;
+                } else if (saddleType == ModItems.BASIC_CLOTH_BRIDLE) {
+                    bridle = 2;
+                }
+            }
+        }
+        return bridle;
+    }
+
+    public int getBlanketNumber() {
             int colour = 0;
             if (this.horseChest != null) {
                 Item blanketColour = this.horseChest.getStackInSlot(4).getItem();
@@ -373,6 +425,21 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             return colour;
         }
 
+    public int getHarnessNumber() {
+        int bridle = 0;
+        if (this.horseChest != null) {
+            if (!this.horseChest.getStackInSlot(6).isEmpty()) {
+                Item saddleType = this.horseChest.getStackInSlot(6).getItem();
+                if (saddleType == ModItems.BASIC_LEATHER_BRIDLE) {
+                    bridle = 1;
+                } else if (saddleType == ModItems.BASIC_CLOTH_BRIDLE) {
+                    bridle = 2;
+                }
+            }
+        }
+        return bridle;
+    }
+
     public float getHunger(){
         return hunger;
     }
@@ -383,6 +450,34 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         } else {
             this.hunger = this.hunger - decrease;
         }
+    }
+
+    public boolean canCarryChest() {
+        return !this.isChild();
+    }
+
+    public boolean canBeSaddled () {
+        return !this.isChild();
+    }
+
+    public boolean canBeBridled () {
+        return true;
+    }
+
+    public boolean canBeArmored () {
+        return false;
+    }
+
+    public boolean canBeBlanketed () {
+        return !this.isChild();
+    }
+
+    public boolean canBeClothed () {
+        return false;
+    }
+
+    public boolean canBeHarnessed () {
+        return !this.isChild();
     }
 
     public void updatePassenger(Entity passenger) {
@@ -469,15 +564,13 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
-        if (!this.isChild()) {
-            if (this.isTame() && entityPlayer.isSecondaryUseActive()) {
-                this.openGUI(entityPlayer);
-                return true;
-            }
+        if (entityPlayer.isSecondaryUseActive()) {
+            this.openGUI(entityPlayer);
+            return true;
+        }
 
-            if (this.isBeingRidden()) {
-                return super.processInteract(entityPlayer, hand);
-            }
+        if (this.isBeingRidden()) {
+            return super.processInteract(entityPlayer, hand);
         }
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
@@ -509,14 +602,14 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
 
                 if (!entityPlayer.abilities.isCreativeMode) {
-                    if (item == ModItems.Half_Milk_Bottle) {
+                    if (item == ModItems.HALF_MILK_BOTTLE) {
                         decreaseHunger(6000);
                         if (itemStack.isEmpty()) {
                             entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
                         } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
                             entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
                         }
-                    } else if (item == ModItems.Milk_Bottle) {
+                    } else if (item == ModItems.MILK_BOTTLE) {
                         if (hunger >= 12000) {
                             decreaseHunger(12000);
                             if (itemStack.isEmpty()) {
@@ -527,9 +620,9 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
                         } else {
                             decreaseHunger(6000);
                             if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
-                                entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
+                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
+                                entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
                             }
                         }
                     }
@@ -542,7 +635,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     @Override
     public void openGUI(PlayerEntity playerEntity) {
-        if (!this.world.isRemote && (!this.isBeingRidden() || this.isPassenger(playerEntity)) && this.isTame()) {
+        if (!this.world.isRemote && (!this.isBeingRidden() || this.isPassenger(playerEntity))) {
             this.openInfoInventory(this, this.horseChest, playerEntity);
         }
 
@@ -555,17 +648,17 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         if(!playerEntity.world.isRemote) {
 
             EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
-            animalInfo.health = this.getHealth();
-            animalInfo.hunger = this.getHunger();
-            animalInfo.tameness = this.getTemper();
+            animalInfo.health = (int)(10 * (this.getHealth() / this.getMaxHealth()));
+            animalInfo.hunger = (int)(this.getHunger() / 7200);
+            animalInfo.tameness = (this.getTemper()/10);
             animalInfo.isFemale = this.getGender();
-            animalInfo.pregnant = this.gestationTimer;
-            animalInfo.name = this.getName().getUnformattedComponentText();
-            animalInfo.canHaveChest = true;
-            animalInfo.canHaveSaddle = true;
-            animalInfo.canHaveBridle = true;
-            animalInfo.canHaveBlanket = true;
-            animalInfo.canHaveHarness = true;
+            animalInfo.pregnant = (10 * this.gestationTimer)/EanimodCommonConfig.COMMON.gestationDaysLlama.get();
+            animalInfo.name = this.getAnimalsName();
+            animalInfo.canHaveChest = this.canCarryChest();
+            animalInfo.canHaveSaddle = this.canBeSaddled();
+            animalInfo.canHaveBridle = this.canBeBridled();
+            animalInfo.canHaveBlanket = this.canBeBlanketed();
+            animalInfo.canHaveHarness = this.canBeHarnessed();
 
             if(playerEntity instanceof ServerPlayerEntity) {
                 ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerEntity;
@@ -1027,9 +1120,9 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             mixMitosisGenes();
         }
 
-        this.setGrowingAge(10);
+        this.setGrowingAge(20);
         this.resetInLove();
-        ageable.setGrowingAge(10);
+        ageable.setGrowingAge(20);
         ((EnhancedLlama)ageable).resetInLove();
 
         ServerPlayerEntity entityplayermp = this.getLoveCause();
@@ -1053,8 +1146,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             resetTexture = false;
             this.setTexturePaths();
         }
-        return this.llamaTextures.stream().collect(Collectors.joining("/","enhanced_llama/",""));
 
+        return this.llamaTextures.stream().collect(Collectors.joining("/","enhanced_llama/",""));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1285,7 +1378,10 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
         }
 
+        int saddle = 0;
+        int bridle = 0;
         int blanket = 0;
+        int harness = 0;
 
         if (!this.isLeashedToTrader()) {
             blanket = getBlanketNumber();

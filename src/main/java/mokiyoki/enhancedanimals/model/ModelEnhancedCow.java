@@ -18,15 +18,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
+
+    String saddleType = "english";
 
     private Map<Integer, CowModelData> cowModelDataCache = new HashMap<>();
     private int clearCacheTimer = 0;
     private float headRotationAngleX;
 
     private final EnhancedRendererModelNew actualHead;
+    private final EnhancedRendererModelNew eyelidLeft;
+    private final EnhancedRendererModelNew eyelidRight;
     private final EnhancedRendererModelNew mouth;
     private final EnhancedRendererModelNew earSmallestL;
     private final EnhancedRendererModelNew earSmallL;
@@ -66,7 +71,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final EnhancedRendererModelNew hornR8;
     private final EnhancedRendererModelNew hornR9;
     private final EnhancedRendererModelNew headModel; //this is the neck not the head
-    private final EnhancedRendererModelNew bodyMedium;
+    private final EnhancedRendererModelNew body;
     private final EnhancedRendererModelNew udder;
     private final EnhancedRendererModelNew nipples;
     private final EnhancedRendererModelNew humpXSmall;
@@ -91,18 +96,32 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final ModelRenderer mushroomBody1;
     private final ModelRenderer mushroomBody2;
     private final EnhancedRendererModelNew mushroomHead;
+    private final EnhancedRendererModelNew saddle;
+    private final EnhancedRendererModelNew saddleWestern;
+    private final EnhancedRendererModelNew saddleEnglish;
+    private final EnhancedRendererModelNew saddleHorn;
+    private final EnhancedRendererModelNew saddlePomel;
+    private final EnhancedRendererModelNew saddleSideL;
+    private final EnhancedRendererModelNew stirrup2DWideL;
+    private final EnhancedRendererModelNew stirrup2DWideR;
+    private final EnhancedRendererModelNew stirrup3DNarrowL;
+    private final EnhancedRendererModelNew stirrup3DNarrowR;
+    private final EnhancedRendererModelNew stirrup;
+    private final EnhancedRendererModelNew saddleSideR;
+    private final EnhancedRendererModelNew saddlePad;
 
     private final List<EnhancedRendererModelNew> leftHorns = new ArrayList<>();
     private final List<EnhancedRendererModelNew> rightHorns = new ArrayList<>();
+    private final List<EnhancedRendererModelNew> saddles = new ArrayList<>();
 
     private Integer currentCow = null;
 
     public ModelEnhancedCow() {
 
-        this.textureWidth = 80;
+        this.textureWidth = 160;
         this.textureHeight = 80;
 
-        this.actualHead = new  EnhancedRendererModelNew(this, 0, 33);
+        this.actualHead = new EnhancedRendererModelNew(this, 0, 33);
         this.actualHead.addBox(-4.0F, 0.0F, -7.0F, 8, 7, 6, 0.0F);
         this.actualHead.setTextureOffset(28, 33);
         this.actualHead.addBox(-2.0F, 0.1F, -11.0F, 4, 5, 4, 0.0F);
@@ -110,7 +129,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.actualHead.addBox(-2.5F, 0.2F, -13.0F, 5, 4, 3, 0.0F);
         this.actualHead.setRotationPoint(0.0F, 0.0F, -7.0F);
 
-        this.mouth = new  EnhancedRendererModelNew(this, 25, 46);
+        this.eyelidLeft = new EnhancedRendererModelNew(this, 22, 35);
+        this.eyelidLeft.addBox(0.0F, 0.0F, 0.0F, 1, 2, 2, 0.01F);
+        this.eyelidLeft.setRotationPoint(3.0F, 2.0F, -7.0F);
+
+        this.eyelidRight = new EnhancedRendererModelNew(this, 0, 35);
+        this.eyelidRight.addBox(0.0F, 0.0F, 0.0F, 1, 2, 2, 0.01F);
+        this.eyelidRight.setRotationPoint(-4.0F, 2.0F, -7.0F);
+
+        this.mouth = new EnhancedRendererModelNew(this, 25, 46);
         this.mouth.addBox(-1.5F, 1.0F, -10.0F, 3, 3, 7, 0.1F);
         this.mouth.setTextureOffset(37, 46);
         this.mouth.addBox(-1.5F, 3.0F, -10.0F, 3, 1, 6, -0.1F);
@@ -255,9 +282,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.headModel.addBox(-3.0F, 0.0F, -8.0F, 6, 8, 11, 0.0F);
         this.headModel.setRotationPoint(0.0F, 0.0F, -10.0F);
 
-        this.bodyMedium = new EnhancedRendererModelNew(this, 0, 0);
-        this.bodyMedium.addBox(-6.0F, 0.0F, 0.0F, 12, 11, 22, 0.0F);
-        this.bodyMedium.setRotationPoint(0.0F, 2.5F, -10.0F);
+        this.body = new EnhancedRendererModelNew(this, 0, 0);
+        this.body.addBox(-6.0F, 0.0F, 0.0F, 12, 11, 22, 0.0F);
+        this.body.setRotationPoint(0.0F, 2.5F, -10.0F);
 
         this.udder = new EnhancedRendererModelNew(this, 24, 67, "Udder");
         this.udder.addBox(-2.0F, -2.0F, -5.0F, 4, 4, 6, 0.0F);
@@ -378,6 +405,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.actualHead.addChild(this.earMediumR);
         this.actualHead.addChild(this.earSmallR);
         this.actualHead.addChild(this.earSmallestR);
+        this.actualHead.addChild(this.mouth);
+        this.actualHead.addChild(this.eyelidLeft);
+        this.actualHead.addChild(this.eyelidRight);
         this.actualHead.addChild(this.hornNub1);
         this.actualHead.addChild(this.hornNub2);
         this.actualHead.addChild(this.hornNub3);
@@ -403,22 +433,107 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.hornR6.addChild(this.hornR7);
         this.hornR7.addChild(this.hornR8);
         this.hornR8.addChild(this.hornR9);
-        this.actualHead.addChild(this.mouth);
-        this.bodyMedium.addChild(this.humpXSmall);
-        this.bodyMedium.addChild(this.humpSmall);
-        this.bodyMedium.addChild(this.humpSmallish);
-        this.bodyMedium.addChild(this.humpMedium);
-        this.bodyMedium.addChild(this.humpLargeish);
-        this.bodyMedium.addChild(this.humpLarge);
-        this.bodyMedium.addChild(this.humpXLarge);
-        this.bodyMedium.addChild(this.tail0);
+        this.body.addChild(this.humpXSmall);
+        this.body.addChild(this.humpSmall);
+        this.body.addChild(this.humpSmallish);
+        this.body.addChild(this.humpMedium);
+        this.body.addChild(this.humpLargeish);
+        this.body.addChild(this.humpLarge);
+        this.body.addChild(this.humpXLarge);
+        this.body.addChild(this.tail0);
         this.tail0.addChild(this.tail1);
         this.tail1.addChild(this.tail2);
         this.tail2.addChild(this.tailBrush);
-        this.bodyMedium.addChild(this.udder);
+        this.body.addChild(this.udder);
         this.udder.addChild(this.nipples);
 
         this.actualHead.addChild(mushroomHead);
+
+        /**
+         * Equipment stuff
+         */
+
+        this.saddle = new EnhancedRendererModelNew(this, 115, 1, "Saddle");
+        this.saddle.addBox(-5.0F, -1.0F, -4.0F, 10, 2, 12, 0.0F);
+
+        this.saddleWestern = new EnhancedRendererModelNew(this, 114, 0, "WesternSaddle");
+        this.saddleWestern.addBox(-5.0F, -2.0F, -5.0F, 10, 2, 13, 0.0F);
+        this.saddleWestern.setTextureOffset(114, 15);
+        this.saddleWestern.addBox(-4.0F, -3.0F, 5.0F, 8, 2, 4, 0.0F);
+        this.saddleWestern.setTextureOffset(134, 15);
+        this.saddleWestern.addBox(-3.5F, -4.0F, 8.0F, 7, 2, 2, 0.0F);
+
+        this.saddleEnglish = new EnhancedRendererModelNew(this, 115, 1, "EnglishSaddle");
+        this.saddleEnglish.addBox(-5.0F, -1.0F, -4.0F, 10, 2, 12, 0.0F);
+        this.saddleEnglish.setTextureOffset(114, 15);
+        this.saddleEnglish.addBox(-4.0F, -1.5F, 5.0F, 8, 2, 4, 0.0F);
+        this.saddleEnglish.setTextureOffset(134, 15);
+        this.saddleEnglish.addBox(-3.5F, -2.0F, 7.5F, 7, 2, 2, 0.0F);
+
+        this.saddleHorn = new EnhancedRendererModelNew(this, 138, 19, "SaddleHorn");
+        this.saddleHorn.addBox(-4.0F, -2.0F, -3.0F, 8, 2, 3, 0.0F);
+
+        this.saddlePomel = new EnhancedRendererModelNew(this, 147, 0, "SaddlePomel");
+        this.saddlePomel.addBox(-1.0F, -3.0F, -2.0F, 2, 4, 2, -0.25F);
+        this.saddlePomel.setRotationPoint(0.0F, -2.0F, -2.0F);
+
+        this.saddleSideL = new EnhancedRendererModelNew(this, 138, 49, "SaddleLeft");
+        this.saddleSideL.addBox(0.0F, 0.0F, 0.0F, 3, 4, 8);
+
+        this.saddleSideR = new EnhancedRendererModelNew(this, 138, 61, "SaddleRight");
+        this.saddleSideR.addBox(-3.0F, 0.0F, 0.0F, 3, 4, 8);
+
+        this.stirrup2DWideL = new EnhancedRendererModelNew(this, 152, 24, "2DStirrupL");
+        this.stirrup2DWideL.addBox(0.0F, 0.0F, 0.0F, 0, 10, 4); // strap
+
+        this.stirrup2DWideR = new EnhancedRendererModelNew(this, 152, 24, "2DStirrupR");
+        this.stirrup2DWideR.addBox(0.0F, 0.0F, 0.0F, 0, 10, 4); // strap
+
+        this.stirrup3DNarrowL = new EnhancedRendererModelNew(this, 153, 27, "3DStirrupL");
+        this.stirrup3DNarrowL.addBox(-1.0F, 0.0F, 0.0F, 1, 10, 1); // strap
+
+        this.stirrup3DNarrowR = new EnhancedRendererModelNew(this, 155, 27, "3DStirrupR");
+        this.stirrup3DNarrowR.addBox(0.0F, 0.0F, 0.0F, 1, 10, 1);
+
+        this.stirrup = new EnhancedRendererModelNew(this, 114, 0, "Stirrup");
+        this.stirrup.addBox(-0.5F, 9.5F, -1.0F, 1, 1, 1);
+        this.stirrup.setTextureOffset(118, 0);
+        this.stirrup.addBox(-0.5F, 9.5F, 1.0F, 1, 1, 1);
+        this.stirrup.setTextureOffset(114, 2);
+        this.stirrup.addBox(-0.5F, 10.5F, -1.5F, 1, 3, 1);
+        this.stirrup.setTextureOffset(118, 2);
+        this.stirrup.addBox(-0.5F, 10.5F, 1.5F, 1, 3, 1);
+        this.stirrup.setTextureOffset(115, 7);
+        this.stirrup.addBox(-0.5F, 12.5F, -0.5F, 1, 1, 2);
+
+        this.saddlePad = new EnhancedRendererModelNew(this, 98, 24, "SaddlePad");
+        this.saddlePad.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
+
+//magic # is 88
+
+        this.body.addChild(saddle);
+        this.saddleHorn.addChild(saddlePomel);
+
+        //western
+        this.body.addChild(saddleWestern);
+        this.saddleWestern.addChild(saddleHorn);
+        this.saddleWestern.addChild(saddleSideL);
+        this.saddleWestern.addChild(saddleSideR);
+        this.saddleWestern.addChild(saddlePad);
+        this.saddleWestern.addChild(stirrup2DWideL);
+        this.saddleWestern.addChild(stirrup2DWideR);
+        this.stirrup2DWideL.addChild(stirrup);
+        this.stirrup2DWideR.addChild(stirrup);
+        //english
+        this.body.addChild(saddleEnglish);
+        this.saddleEnglish.addChild(saddleHorn);
+        this.saddleEnglish.addChild(saddleSideL);
+        this.saddleEnglish.addChild(saddleSideR);
+        this.saddleEnglish.addChild(saddlePad);
+        this.saddleEnglish.addChild(stirrup3DNarrowL);
+        this.saddleEnglish.addChild(stirrup3DNarrowR);
+        this.stirrup3DNarrowL.addChild(stirrup);
+        this.stirrup3DNarrowR.addChild(stirrup);
 
     }
 
@@ -427,6 +542,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         int[] genes = cowModelData.cowGenes;
         float horns = calculateHorns(genes, cowModelData.uuidArray);
+        int blink = cowModelData.blink;
 
         boolean dwarf = false;
         float bodyWidth = -0.165F;
@@ -514,7 +630,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         renderHump(hump, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        renderBodyAndUdder(cowModelData.cowStatus, cowModelData.bagSize, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        renderBodySaddleAndUdder(cowModelData.cowStatus, cowModelData.bagSize, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         renderHorns(horns, hornScale, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
@@ -538,10 +654,18 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         matrixStackIn.pop();
 
+        if (blink == 0 || blink >= 8) {
+            this.eyelidLeft.showModel = true;
+            this.eyelidRight.showModel = true;
+        } else {
+            this.eyelidLeft.showModel = false;
+            this.eyelidRight.showModel = false;
+        }
+
     }
 
 
-    private void renderBodyAndUdder(String cowStatus, float bagSize, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    private void renderBodySaddleAndUdder(String cowStatus, float bagSize, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         Map<String, List<Float>> mapOfScale = new HashMap<>();
         List<Float> scalingsForUdder = createScalings(bagSize, 0.0F, -(bagSize-1.0F)*0.4F, -(bagSize-1.0F)*0.85F);
         List<Float> scalingsForNipples = createScalings(1.5F/(0.5F+bagSize), 0.0F, (bagSize-1.0F)*0.05F, 0.0F);
@@ -553,7 +677,33 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             unrenderedModels.add("Nipples");
         }
 
-        this.bodyMedium.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        if (true) {
+            float saddleScale = 0.875F;
+
+            this.saddleWestern.showModel = false;
+            this.saddleEnglish.showModel = false;
+            this.saddle.showModel = false;
+            this.saddlePomel.showModel = false;
+
+//            float antiScale = 1.25F;
+            List<Float> scalingsForSaddle = createScalings(saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
+//            List<Float> scalingsForPad = createScalings(antiScale, 0.0F, -antiScale*0.01F, (antiScale - 1.0F)*0.04F);
+//            mapOfScale.put("SaddlePad", scalingsForPad);
+
+            if (saddleType.equals("western")) {
+                this.saddleWestern.showModel = true;
+                this.saddlePomel.showModel = true;
+                mapOfScale.put("WesternSaddle", scalingsForSaddle);
+            } else if (saddleType.equals("english")) {
+                this.saddleEnglish.showModel = true;
+                mapOfScale.put("EnglishSaddle", scalingsForSaddle);
+            } else {
+                this.saddle.showModel = true;
+                mapOfScale.put("Saddle", scalingsForSaddle);
+            }
+        }
+
+        this.body.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     private void renderHorns(float horns, float hornScale, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
@@ -627,7 +777,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
              dwarf = (sharedGenes[26] == 1 || sharedGenes[27] == 1);
         }
 
-        if (sleeping) {
+        if (cowModelData.sleeping) {
             onGround = sleepingAnimation();
         } else {
             onGround = standingAnimation(dwarf);
@@ -689,6 +839,26 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         setHumpPlacement(cowModelData.cowGenes);
 
         cowModelData.unrenderedModels.addAll(unrenderedModels);
+
+        if (saddleType.equals("western")) {
+            this.saddleWestern.rotationPointZ = 9.0F;
+            this.saddleSideL.setRotationPoint(5.0F, -1.0F, -5.25F);
+            this.saddleSideR.setRotationPoint(-5.0F, -1.0F, -5.25F);
+            this.saddleHorn.setRotationPoint(0.0F, -2.0F, -2.0F);
+            this.saddleHorn.rotateAngleX = (float)Math.PI / 8.0F;
+            this.saddlePomel.setRotationPoint(0.0F, -1.5F, -0.5F);
+            this.saddlePomel.rotateAngleX = -0.2F;
+            this.stirrup2DWideL.setRotationPoint(7.5F, 0.0F, -3.5F);
+            this.stirrup2DWideR.setRotationPoint(-7.5F, 0.0F, -3.5F);
+        } else if (saddleType.equals("english")) {
+            this.saddleEnglish.rotationPointZ = 9.0F;
+            this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
+            this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
+            this.saddleHorn.setRotationPoint(0.0F, -1.0F, -1.0F);
+            this.saddleHorn.rotateAngleX = (float)Math.PI / 4.5F;
+            this.stirrup3DNarrowL.setRotationPoint(7.25F, -0.25F, -1.5F);
+            this.stirrup3DNarrowR.setRotationPoint(-7.25F, -0.25F, -1.5F);
+        }
     }
 
     private void setHornRotations(CowModelData cowModelData, List<String> unrenderedModels, T entityIn) {
@@ -1264,7 +1434,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float onGround;
 
         onGround = 9.80F;
-        this.bodyMedium.rotationPointY = 9.75F;
+        this.body.rotationPointY = 9.75F;
 
         this.mushroomBody1.rotationPointY = 9.75F;
         this.mushroomBody2.rotationPointY = 9.75F;
@@ -1281,12 +1451,12 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         return onGround;
     }
 
-    private float standingAnimation( boolean dwarf) {
+    private float standingAnimation(boolean dwarf) {
         float onGround;
         if (dwarf){
             //dwarf
             onGround = 5.75F;
-            this.bodyMedium.rotationPointY = 5.5F;
+            this.body.rotationPointY = 5.5F;
 
             this.mushroomBody1.rotationPointY = 5.5F;
             this.mushroomBody2.rotationPointY = 5.5F;
@@ -1298,7 +1468,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         } else {
             onGround = 2.75F;
-            this.bodyMedium.rotationPointY = 2.5F;
+            this.body.rotationPointY = 2.5F;
 
             this.mushroomBody1.rotationPointY = 2.5F;
             this.mushroomBody2.rotationPointY = 2.5F;
@@ -1437,6 +1607,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float bagSize = 1.0F;
         String cowStatus = "";
         boolean sleeping = false;
+        int blink = 0;
         int dataReset = 0;
         long clientGameTime = 0;
         List<String> unrenderedModels = new ArrayList<>();
@@ -1469,6 +1640,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             }
             cowModelData.bagSize = enhancedCow.getBagSize();
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
+            cowModelData.blink = enhancedCow.getBlink();
             cowModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime());
             cowModelData.unrenderedModels = new ArrayList<>();
 
@@ -1481,6 +1653,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.bagSize = enhancedCow.getBagSize();
             cowModelData.cowStatus = enhancedCow.getEntityStatus();
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
+            cowModelData.blink = enhancedCow.getBlink();
             cowModelData.birthTime = enhancedCow.getBirthTime();
 
             if (enhancedCow.getMooshroomUUID().isEmpty() || enhancedCow.getMooshroomUUID().equals("0")) {

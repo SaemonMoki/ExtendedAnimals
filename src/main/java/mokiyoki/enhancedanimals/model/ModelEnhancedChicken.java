@@ -97,246 +97,258 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     private final ModelRenderer earTuftL;
     private final ModelRenderer earTuftR;
     private final ModelRenderer earTuftHelper;
+    private final ModelRenderer eyeLeft;
+    private final ModelRenderer eyeRight;
 
     private Integer currentChicken = null;
 
-    public ModelEnhancedChicken(){
+    public ModelEnhancedChicken(float fluffyscale, boolean silkie) {
         this.textureWidth = 64;
         this.textureHeight = 64;
 
-        int combRy = -15;
         int combRz = 3;
 
         this.head = new ModelRenderer(this, 12, 0);
-        this.head.addBox(-2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F);
+        this.head.addBox(-2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F + fluffyscale);
 
         this.headNakedNeck = new ModelRenderer(this, 12, 0);
-        this.headNakedNeck.addBox(-2.0F, -6.0F, -2.0F, 4, 4, 3, 0.0F);
-        this.headNakedNeck.setTextureOffset(0,6);
-        this.headNakedNeck.addBox(-1F, (13F+combRy), (-4F+combRz), 2, 3, 2);
+        this.headNakedNeck.addBox(-2.0F, -6.0F, -2.0F, 4, 4, 3, 0.0F + fluffyscale);
+        this.headNakedNeck.setTextureOffset(0, 6);
+        this.headNakedNeck.addBox(-1F, -2.0F, -4F + combRz, 2, 3, 2);
 
-        this.bigCrest = new ModelRenderer(this,1,42);
-        this.bigCrest.addBox(-2F, (6F+combRy), (-5.5F+combRz), 4, 4, 4, 0.4F);
+        this.bigCrest = new ModelRenderer(this, 1, 42);
+        this.bigCrest.addBox(-2F, -9.0F, -5.5F + combRz, 4, 4, 4, 0.4F + fluffyscale);
 
-        this.smallCrest = new ModelRenderer(this,2,43);
-        this.smallCrest.addBox(-1.5F, (6.5F+combRy), (-5F+combRz), 3, 3, 3, 0.1F);
+        this.smallCrest = new ModelRenderer(this, 2, 43);
+        this.smallCrest.addBox(-1.5F, -8.5F, -5F + combRz, 3, 3, 3, 0.1F + fluffyscale);
 
-        this.forwardCrest = new ModelRenderer(this,2,43);
-        this.forwardCrest.addBox(-1.5F, (7F+combRy), (-6F+combRz), 3, 3, 3, 0.2F);
+        this.forwardCrest = new ModelRenderer(this, 2, 43);
+        this.forwardCrest.addBox(-1.5F, -8.0F, -6F + combRz, 3, 3, 3, 0.2F + fluffyscale);
 
         this.earL = new ModelRenderer(this, 1, 52);
-        this.earL.addBox(-2.2F, -6.0F, -2.2F, 1, 6, 3);
-
         this.earR = new ModelRenderer(this, 1, 52);
-        this.earR.addBox(2.2F, -6.0F, -2.4F, 1, 6, 3);
-        this.earR.mirror = true;
+        this.eyeLeft = new ModelRenderer(this, 23, 0);
+        this.eyeRight = new ModelRenderer(this, 11, 0);
+        if (!silkie) {
+            this.earL.addBox(-2.2F, -6.0F, -2.2F, 1, 6, 3);
+            this.earR.addBox(2.2F, -6.0F, -2.4F, 1, 6, 3);
+            this.earR.mirror = true;
 
-        this.earTuftL = new ModelRenderer(this,12, 47);
-        this.earTuftL.addBox(-2.0F, 0.0F, 0.0F, 2, 1, 3);
+            this.eyeLeft.addBox(1.0F, -5.0F, -2.0F, 1, 1, 1, 0.01F);
+            this.eyeRight.addBox(-2.0F, -5.0F, -2.0F, 1, 1, 1, 0.01F);
+        }
+
+        this.earTuftL = new ModelRenderer(this, 12, 47);
+        this.earTuftL.addBox(-2.0F, 0.0F, 0.0F, 2, 1, 3 + fluffyscale);
         this.earTuftL.setRotationPoint(-1.5F, -4.5F, -1.0F);
 
-        this.earTuftR = new ModelRenderer(this,12, 47);
-        this.earTuftR.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3);
+        this.earTuftR = new ModelRenderer(this, 12, 47);
+        this.earTuftR.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3 + fluffyscale);
         this.earTuftR.setRotationPoint(1.5F, -4.5F, -1.0F);
         this.earR.mirror = true;
 
-        int combSy = -3;
         int combSz = 3;
 
-        this.combXtraSmallSingle = new ModelRenderer(this,0,0);
-        this.combXtraSmallSingle.addBox(-0.5F, (-3.5F+combSy), (-5.5F+combSz), 1, 2, 1, -0.25F);
-        this.combXtraSmallSingle.addBox(-0.5F, (-4F+combSy), (-5F+combSz), 1, 2, 1,-0.25F);
-        this.combXtraSmallSingle.addBox(-0.5F, (-3.75F+combSy), (-4.5F+combSz), 1, 1, 1,-0.25F);
-        this.combXtraSmallSingle.addBox(-0.5F, (-4.25F+combSy), (-4F+combSz), 1, 2, 1,-0.25F);
-        this.combXtraSmallSingle.addBox(-0.5F, (-3.75F+combSy), (-3.5F+combSz), 1, 1, 1,-0.25F);
-        this.combXtraSmallSingle.addBox(-0.5F, (-4F+combSy), (-3.25F+combSz), 1, 1, 1,-0.25F);
 
-        this.combSmallSingle = new ModelRenderer(this,0,0);
-        this.combSmallSingle.addBox(-0.5F, -6.75F, -2.25F, 1, 2, 1, -0.125F);
-        this.combSmallSingle.addBox(-0.5F, -7.5F, -1.75F, 1, 1, 1, -0.125F);
-        this.combSmallSingle.addBox(-0.5F, -6.75F, -1.5F, 1, 1, 2, -0.125F);
-        this.combSmallSingle.addBox(-0.5F, -7.5F, -0.5F, 1, 1, 1, -0.125F);
-        this.combSmallSingle.addBox(-0.5F, -6.75F, 0F, 1, 1, 1, -0.125F);
-        this.combSmallSingle.addBox(-0.5F, -7F, 0.75F, 1, 1, 1, -0.125F);
+        this.combXtraSmallSingle = new ModelRenderer(this, 0, 0);
+        this.combSmallSingle = new ModelRenderer(this, 0, 0);
+        this.combSingle = new ModelRenderer(this, 0, 0);
+        this.combLargeSingle = new ModelRenderer(this, 0, 0);
+        this.combXtraLargeSingle = new ModelRenderer(this, 0, 0);
+        this.combSmallRose = new ModelRenderer(this, 0, 0);
+        this.combRose = new ModelRenderer(this, 0, 0);
+        this.combLargeRose = new ModelRenderer(this, 0, 0);
+        this.combSmallRose2 = new ModelRenderer(this, 0, 0);
+        this.combRose2 = new ModelRenderer(this, 0, 0);
+        this.combLargeRose2 = new ModelRenderer(this, 0, 0);
+        this.combSmallPea = new ModelRenderer(this, 0, 0);
+        this.combV = new ModelRenderer(this, 0, 0);
+        this.combPea = new ModelRenderer(this, 0, 0);
+        this.combLargePea = new ModelRenderer(this, 0, 0);
+        this.combSmallWalnut = new ModelRenderer(this, 0, 0);
+        this.combWalnut = new ModelRenderer(this, 0, 0);
+        this.combLargeWalnut = new ModelRenderer(this, 0, 0);
 
-        this.combSingle = new ModelRenderer(this,0,0);
-        this.combSingle.addBox(-0.5F, (-3.0F+combSy), (-6F+combSz), 1, 1, 1);
-        this.combSingle.addBox(-0.5F, (-3.5F+combSy), (-6F+combSz), 1, 1, 1);
-        this.combSingle.addBox(-0.5F, (-4.5F+combSy), (-5F+combSz), 1, 2, 1);
-        this.combSingle.addBox(-0.5F, (-4F+combSy), (-4F+combSz), 1, 1, 1);
-        this.combSingle.addBox(-0.5F, (-4.5F+combSy), (-3F+combSz), 1, 2, 1);
-        this.combSingle.addBox(-0.5F, (-3.5F+combSy), (-2F+combSz), 1, 1, 1);
+        if (!silkie) {
+            this.combXtraSmallSingle.addBox(-0.5F, -6.5F, (-5.5F + combSz), 1, 2, 1, -0.25F);
+            this.combXtraSmallSingle.addBox(-0.5F, -7.0F, (-5F + combSz), 1, 2, 1, -0.25F);
+            this.combXtraSmallSingle.addBox(-0.5F, -6.75F, (-4.5F + combSz), 1, 1, 1, -0.25F);
+            this.combXtraSmallSingle.addBox(-0.5F, -7.25F, (-4F + combSz), 1, 2, 1, -0.25F);
+            this.combXtraSmallSingle.addBox(-0.5F, -6.75F, (-3.5F + combSz), 1, 1, 1, -0.25F);
+            this.combXtraSmallSingle.addBox(-0.5F, -7.0F, (-3.25F + combSz), 1, 1, 1, -0.25F);
 
-        this.combLargeSingle = new ModelRenderer(this,0,0);
-        this.combLargeSingle.addBox(-0.5F, (-4.5F+combSy), (-6.5F+combSz), 1, 1, 1);
-        this.combLargeSingle.addBox(-0.5F, (-3.5F+combSy), (-6F+combSz), 1, 2, 1);
-        this.combLargeSingle.addBox(-0.5F, (-5.5F+combSy), (-5F+combSz), 1, 3, 1);
-        this.combLargeSingle.addBox(-0.5F, (-4.5F+combSy), (-4F+combSz), 1, 2, 1);
-        this.combLargeSingle.addBox(-0.5F, (-6F+combSy), (-3F+combSz), 1, 3, 1);
-        this.combLargeSingle.addBox(-0.5F, (-4.5F+combSy), (-2F+combSz), 1, 2, 1);
-        this.combLargeSingle.addBox(-0.5F, (-5.5F+combSy), (-1F+combSz), 1, 3, 1);
-        this.combLargeSingle.addBox(-0.5F, (-4F+combSy), (0F+combSz), 1, 1, 1);
+            this.combSmallSingle.addBox(-0.5F, -6.75F, -2.25F, 1, 2, 1, -0.125F);
+            this.combSmallSingle.addBox(-0.5F, -7.5F, -1.75F, 1, 1, 1, -0.125F);
+            this.combSmallSingle.addBox(-0.5F, -6.75F, -1.5F, 1, 1, 2, -0.125F);
+            this.combSmallSingle.addBox(-0.5F, -7.5F, -0.5F, 1, 1, 1, -0.125F);
+            this.combSmallSingle.addBox(-0.5F, -6.75F, 0F, 1, 1, 1, -0.125F);
+            this.combSmallSingle.addBox(-0.5F, -7F, 0.75F, 1, 1, 1, -0.125F);
 
-        this.combXtraLargeSingle = new ModelRenderer(this,0,0);
-        this.combXtraLargeSingle.addBox(-0.5F, (-5.5F+combSy), (-6.5F+combSz), 1, 2, 1);
-        this.combXtraLargeSingle.addBox(-0.5F, (-4.5F+combSy), (-6F+combSz), 1, 3, 1);
-        this.combXtraLargeSingle.addBox(-0.5F, (-7F+combSy), (-5F+combSz), 1, 4, 1);
-        this.combXtraLargeSingle.addBox(-0.5F, (-5.5F+combSy), (-4F+combSz), 1, 3, 1);
-        this.combXtraLargeSingle.addBox(-0.5F, (-6.5F+combSy), (-3F+combSz), 1, 4, 1);
-        this.combXtraLargeSingle.addBox(-0.5F, (-7.5F+combSy), (-2.5F+combSz), 1, 1, 1);
-        this.combXtraLargeSingle.addBox(-0.5F, (-5.5F+combSy), (-2F+combSz), 1, 3, 1);
-        this.combXtraLargeSingle.addBox(-0.5F, (-6.5F+combSy), (-1F+combSz), 1, 4, 1);
-        this.combXtraLargeSingle.addBox(-0.5F, (-7F+combSy), (-0.5F+combSz), 1, 1, 1);
-        this.combXtraLargeSingle.addBox(-0.5F, (-5F+combSy), (0F+combSz), 1, 2, 1);
-        this.combXtraLargeSingle.addBox(-0.5F, (-5.5F+combSy), (1F+combSz), 1, 2, 1);
+            this.combSingle.addBox(-0.5F, -6.0F, (-6F + combSz), 1, 1, 1);
+            this.combSingle.addBox(-0.5F, -6.5F, (-6F + combSz), 1, 1, 1);
+            this.combSingle.addBox(-0.5F, -7.5F, (-5F + combSz), 1, 2, 1);
+            this.combSingle.addBox(-0.5F, -7.0F, (-4F + combSz), 1, 1, 1);
+            this.combSingle.addBox(-0.5F, -7.5F, (-3F + combSz), 1, 2, 1);
+            this.combSingle.addBox(-0.5F, -6.5F, (-2F + combSz), 1, 1, 1);
 
-        this.combSmallRose = new ModelRenderer(this,0,0);
-        this.combSmallRose.addBox(-1F, -6.25F, (-5.75F+combRz), 2, 2, 1, -0.25F);
-        this.combSmallRose.addBox(-0.5F, -7F, (-5.25F+combRz), 1, 2, 1, -0.1F);
-        this.combSmallRose.addBox(-0.5F, -7.4F, (-4.75F+combRz), 1, 1, 1, -0.25F);
+            this.combLargeSingle.addBox(-0.5F, -7.5F, (-6.5F + combSz), 1, 1, 1);
+            this.combLargeSingle.addBox(-0.5F, -6.5F, (-6F + combSz), 1, 2, 1);
+            this.combLargeSingle.addBox(-0.5F, -8.5F, (-5F + combSz), 1, 3, 1);
+            this.combLargeSingle.addBox(-0.5F, -7.5F, (-4F + combSz), 1, 2, 1);
+            this.combLargeSingle.addBox(-0.5F, -9.0F, (-3F + combSz), 1, 3, 1);
+            this.combLargeSingle.addBox(-0.5F, -7.5F, (-2F + combSz), 1, 2, 1);
+            this.combLargeSingle.addBox(-0.5F, -8.5F, (-1F + combSz), 1, 3, 1);
+            this.combLargeSingle.addBox(-0.5F, -7.0F, (0F + combSz), 1, 1, 1);
 
-        this.combRose = new ModelRenderer(this,0,0);
-        this.combRose.addBox(-0.5F, (9F+combRy), (-6F+combRz), 1, 1, 1, 0.5F);
-        this.combRose.addBox(-0.5F, (8F+combRy), (-5F+combRz), 1, 1, 1, 0.25F);
-        this.combRose.addBox(-0.5F, (7F+combRy), (-4F+combRz), 1, 1, 1);
+            this.combXtraLargeSingle.addBox(-0.5F, -8.5F, (-6.5F + combSz), 1, 2, 1);
+            this.combXtraLargeSingle.addBox(-0.5F, -7.5F, (-6F + combSz), 1, 3, 1);
+            this.combXtraLargeSingle.addBox(-0.5F, -10.0F, (-5F + combSz), 1, 4, 1);
+            this.combXtraLargeSingle.addBox(-0.5F, -8.5F, (-4F + combSz), 1, 3, 1);
+            this.combXtraLargeSingle.addBox(-0.5F, -9.5F, (-3F + combSz), 1, 4, 1);
+            this.combXtraLargeSingle.addBox(-0.5F, -10.5F, (-2.5F + combSz), 1, 1, 1);
+            this.combXtraLargeSingle.addBox(-0.5F, -8.5F, (-2F + combSz), 1, 3, 1);
+            this.combXtraLargeSingle.addBox(-0.5F, -9.5F, (-1F + combSz), 1, 4, 1);
+            this.combXtraLargeSingle.addBox(-0.5F, -10.0F, (-0.5F + combSz), 1, 1, 1);
+            this.combXtraLargeSingle.addBox(-0.5F, -8.0F, (0F + combSz), 1, 2, 1);
+            this.combXtraLargeSingle.addBox(-0.5F, -8.5F, (1F + combSz), 1, 2, 1);
 
-        this.combLargeRose = new ModelRenderer(this,0,0);
-        this.combLargeRose.addBox(-1.0F, -6.0F, -3.0F, 2, 2, 1);
-        this.combLargeRose.addBox(-0.5F, -7.0F, -2.5F, 1, 1, 2, 0.2F);
-        this.combLargeRose.addBox(-0.5F, -8.0F, -0.5F, 1, 2, 1);
-        this.combLargeRose.addBox(-0.5F, -9.0F, -0.0F, 1, 1, 1);
+            this.combSmallRose.addBox(-1F, -6.25F, (-5.75F + combRz), 2, 2, 1, -0.25F);
+            this.combSmallRose.addBox(-0.5F, -7F, (-5.25F + combRz), 1, 2, 1, -0.1F);
+            this.combSmallRose.addBox(-0.5F, -7.4F, (-4.75F + combRz), 1, 1, 1, -0.25F);
 
-        this.combSmallRose2 = new ModelRenderer(this,0,0);
-        this.combSmallRose2.addBox(-0.5F, -6.0F, -2.5F, 1, 1, 1, 0.1F);
-        this.combSmallRose2.addBox(-0.5F, -6.5F, -2.0F, 1, 1, 1);
-        this.combSmallRose2.addBox(-0.5F, -6.4F, -1F, 1, 1, 1);
+            this.combRose.addBox(-0.5F, -6.0F, (-6F + combRz), 1, 1, 1, 0.5F);
+            this.combRose.addBox(-0.5F, -7.0F, (-5F + combRz), 1, 1, 1, 0.25F);
+            this.combRose.addBox(-0.5F, -8.0F, (-4F + combRz), 1, 1, 1);
 
-        this.combRose2 = new ModelRenderer(this,0,0);
-        this.combRose2.addBox(-0.5F, (9F+combRy), (-6F+combRz), 1, 1, 1, 0.5F);
-        this.combRose2.addBox(-0.5F, (8F+combRy), (-5F+combRz), 1, 1, 1, 0.25F);
-        this.combRose2.addBox(-0.5F, (8F+combRy), (-4F+combRz), 1, 1, 1);
+            this.combLargeRose.addBox(-1.0F, -6.0F, -3.0F, 2, 2, 1);
+            this.combLargeRose.addBox(-0.5F, -7.0F, -2.5F, 1, 1, 2, 0.2F);
+            this.combLargeRose.addBox(-0.5F, -8.0F, -0.5F, 1, 2, 1);
+            this.combLargeRose.addBox(-0.5F, -9.0F, -0.0F, 1, 1, 1);
 
-        this.combLargeRose2 = new ModelRenderer(this,0,0);
-        this.combLargeRose2.addBox(-1.0F, -6.0F, -3.0F, 2, 2, 1);
-        this.combLargeRose2.addBox(-1.0F, -6.75F, -2.5F, 2, 1, 2);
-        this.combLargeRose2.addBox(-0.5F, -6.5F, -0.5F, 1, 1, 1, 0.2F);
+            this.combSmallRose2.addBox(-0.5F, -6.0F, -2.5F, 1, 1, 1, 0.1F);
+            this.combSmallRose2.addBox(-0.5F, -6.5F, -2.0F, 1, 1, 1);
+            this.combSmallRose2.addBox(-0.5F, -6.4F, -1F, 1, 1, 1);
 
-        int combPy = -15;
-        int combPz = 3;
-        this.combSmallPea = new ModelRenderer(this,0,0);
-        this.combSmallPea.addBox(-0.5F, -6F, -2.5F, 1, 1, 1, -0.25F);
-        this.combSmallPea.addBox(-0.5F, -6.5F, -2.5F, 1, 1, 1, -0.125F);
-        this.combSmallPea.addBox(-0.5F, -6.5F, -1.9F, 1, 1, 1,-0.25F);
+            this.combRose2.addBox(-0.5F, -6.0F, (-6F + combRz), 1, 1, 1, 0.5F);
+            this.combRose2.addBox(-0.5F, -7.0F, (-5F + combRz), 1, 1, 1, 0.25F);
+            this.combRose2.addBox(-0.5F, -7.0F, (-4F + combRz), 1, 1, 1);
 
-        this.combPea = new ModelRenderer(this,0,0);
-        this.combPea.addBox(-0.5F, (9F+combPy), (-6F+combPz), 1, 1, 2, -0.2F);
-        this.combPea.addBox(-0.5F, (8.5F+combPy), (-5.5F+combPz), 1, 1, 1);
-        this.combPea.addBox(-0.5F, (8F+combPy), (-5F+combPz), 1, 2, 1,-0.2F);
+            this.combLargeRose2.addBox(-1.0F, -6.0F, -3.0F, 2, 2, 1);
+            this.combLargeRose2.addBox(-1.0F, -6.75F, -2.5F, 2, 1, 2);
+            this.combLargeRose2.addBox(-0.5F, -6.5F, -0.5F, 1, 1, 1, 0.2F);
 
-        this.combLargePea = new ModelRenderer(this,0,0);
-        this.combLargePea.addBox(-1.0F, -5.75F, -2.25F, 2, 1, 1);
-        this.combLargePea.addBox(-0.5F, -6.75F, -2.4F, 1, 2, 2);
-        this.combLargePea.setTextureOffset(0, 14);
-        this.combLargePea.addBox(0.5F, -6.75F, -2.4F, 1, 2, 2);
-        this.combLargePea.addBox(-0.5F, -7F, -1.1F, 1, 1, 1);
+            int combPy = -15;
+            int combPz = 3;
+            this.combSmallPea.addBox(-0.5F, -6F, -2.5F, 1, 1, 1, -0.25F);
+            this.combSmallPea.addBox(-0.5F, -6.5F, -2.5F, 1, 1, 1, -0.125F);
+            this.combSmallPea.addBox(-0.5F, -6.5F, -1.9F, 1, 1, 1, -0.25F);
 
-        this.combSmallWalnut = new ModelRenderer(this,0,0);
-        this.combSmallWalnut.addBox(-0.5F, (8.5F+combPy), (-5.5F+combPz), 1, 1, 1, -0.25F);
+            this.combPea.addBox(-0.5F, (9F + combPy), (-6F + combPz), 1, 1, 2, -0.2F);
+            this.combPea.addBox(-0.5F, (8.5F + combPy), (-5.5F + combPz), 1, 1, 1);
+            this.combPea.addBox(-0.5F, (8F + combPy), (-5F + combPz), 1, 2, 1, -0.2F);
 
-        this.combWalnut = new ModelRenderer(this,0,0);
-        this.combWalnut.addBox(-0.5F, (8.5F+combPy), (-5.5F+combPz), 1, 1, 1);
+            this.combLargePea.addBox(-1.0F, -5.75F, -2.25F, 2, 1, 1);
+            this.combLargePea.addBox(-0.5F, -6.75F, -2.4F, 1, 2, 2);
+            this.combLargePea.setTextureOffset(0, 14);
+            this.combLargePea.addBox(0.5F, -6.75F, -2.4F, 1, 2, 2);
+            this.combLargePea.addBox(-0.5F, -7F, -1.1F, 1, 1, 1);
 
-        this.combLargeWalnut = new ModelRenderer(this,0,0);
-        this.combLargeWalnut.addBox(-1F, (8F+combPy), (-5.5F+combPz), 2, 2, 1, -0.125F);
-        this.combLargeWalnut.addBox(-0.5F, (8.5F+combPy), (-5F+combPz), 1, 1, 1);
+            this.combSmallWalnut.addBox(-0.5F, (8.5F + combPy), (-5.5F + combPz), 1, 1, 1, -0.25F);
 
-        this.combV = new ModelRenderer(this,0,0);
-        this.combV.addBox(-0.5F, (8.5F+combRy), (-5.5F+combRz), 1, 1, 1);
-        this.combV.addBox(0F, (8F+combRy), (-5.25F+combRz), 1, 1, 1, -0.2F);
-        this.combV.addBox(-1F, (8F+combRy), (-5.25F+combRz), 1, 1, 1, -0.2F);
-        this.combV.addBox(.1F, (7.7F+combRy), (-5F+combRz), 1, 1, 1, -0.3F);
-        this.combV.addBox(-1.1F, (7.7F+combRy), (-5F+combRz), 1, 1, 1, -0.3F);
+            this.combWalnut.addBox(-0.5F, (8.5F + combPy), (-5.5F + combPz), 1, 1, 1);
+
+            this.combLargeWalnut.addBox(-1F, (8F + combPy), (-5.5F + combPz), 2, 2, 1, -0.125F);
+            this.combLargeWalnut.addBox(-0.5F, (8.5F + combPy), (-5F + combPz), 1, 1, 1);
+
+            this.combV.addBox(-0.5F, (8.5F + -15), (-5.5F + combRz), 1, 1, 1);
+            this.combV.addBox(0F, -7.0F, (-5.25F + combRz), 1, 1, 1, -0.2F);
+            this.combV.addBox(-1F, -7.0F, (-5.25F + combRz), 1, 1, 1, -0.2F);
+            this.combV.addBox(.1F, (7.7F + -15), (-5F + combRz), 1, 1, 1, -0.3F);
+            this.combV.addBox(-1.1F, (7.7F + -15), (-5F + combRz), 1, 1, 1, -0.3F);
+        }
 
         this.body = new ModelRenderer(this, 22, 10);
-        this.body.addBox(-3F, -6F, -4F, 6, 6, 8);
+        this.body.addBox(-3F, -6F, -4F, 6, 6, 8 + fluffyscale);
         this.body.setRotationPoint(0F, 0F, 1F);
 
         this.bodyBig = new ModelRenderer(this, 22, 10);
-        this.bodyBig.addBox(-3F, -6F, -4F, 6, 6, 8, 0.5F);
+        this.bodyBig.addBox(-3F, -6F, -4F, 6, 6, 8, 0.5F + fluffyscale);
         this.bodyBig.setRotationPoint(0F, 0F, 1F);
 
         this.bodySmall = new ModelRenderer(this, 22, 10);
-        this.bodySmall.addBox(-3F, -6F, -4F, 6, 6, 8, -0.5F);
+        this.bodySmall.addBox(-3F, -6F, -4F, 6, 6, 8, -0.5F + fluffyscale);
         this.bodySmall.setRotationPoint(0F, 0F, 1F);
 
-        this.xtraShortTail = new ModelRenderer(this,36,10);
-        this.xtraShortTail.addBox(-0.5F, 12F, 3F, 1, 4, 3);
+        this.xtraShortTail = new ModelRenderer(this, 36, 10);
+        this.xtraShortTail.addBox(-0.5F, 12F, 3F, 1, 4, 3 + fluffyscale);
         this.xtraShortTail.setTextureOffset(37, 11);
-        this.xtraShortTail.addBox(-0.5F, 11F, 4F, 1, 1, 2);
+        this.xtraShortTail.addBox(-0.5F, 11F, 4F, 1, 1, 2 + fluffyscale);
 
-        this.shortTail = new ModelRenderer(this,34,11);
-        this.shortTail.addBox(-0.5F, 12F, 3F, 1, 4, 4);
+        this.shortTail = new ModelRenderer(this, 34, 11);
+        this.shortTail.addBox(-0.5F, 12F, 3F, 1, 4, 4 + fluffyscale);
         this.shortTail.setTextureOffset(36, 11);
-        this.shortTail.addBox(-0.5F, 11F, 4F, 1, 1, 3);
+        this.shortTail.addBox(-0.5F, 11F, 4F, 1, 1, 3 + fluffyscale);
 
-        this.tail = new ModelRenderer(this,30,0);
-        this.tail.addBox(-0.5F, -7F, 3F, 1, 4, 5);
+        this.tail = new ModelRenderer(this, 30, 0);
+        this.tail.addBox(-0.5F, -7F, 3F, 1, 4, 5 + fluffyscale);
         this.tail.setTextureOffset(44, 3);
-        this.tail.addBox(-0.5F, -8F, 4F, 1, 1, 4);
+        this.tail.addBox(-0.5F, -8F, 4F, 1, 1, 4 + fluffyscale);
 
-        this.longTail = new ModelRenderer(this,34,10);
-        this.longTail.addBox(-0.5F, 12F, 3F, 1, 4, 5);
+        this.longTail = new ModelRenderer(this, 34, 10);
+        this.longTail.addBox(-0.5F, 12F, 3F, 1, 4, 5 + fluffyscale);
         this.longTail.setTextureOffset(35, 11);
-        this.longTail.addBox(-0.5F, 11F, 4F, 1, 1, 4);
+        this.longTail.addBox(-0.5F, 11F, 4F, 1, 1, 4 + fluffyscale);
         this.longTail.setTextureOffset(38, 13);
-        this.longTail.addBox(-0.5F, 12F, 8F, 1, 3, 2);
+        this.longTail.addBox(-0.5F, 12F, 8F, 1, 3, 2 + fluffyscale);
         this.longTail.setTextureOffset(39, 15);
-        this.longTail.addBox(-0.5F, 13F, 10F, 1, 1, 1);
+        this.longTail.addBox(-0.5F, 13F, 10F, 1, 1, 1 + fluffyscale);
 
-        this.xtraLongTail = new ModelRenderer(this,34,10);
-        this.xtraLongTail.addBox(-0.5F, 12F, 4F, 1, 4, 5);
+        this.xtraLongTail = new ModelRenderer(this, 34, 10);
+        this.xtraLongTail.addBox(-0.5F, 12F, 4F, 1, 4, 5 + fluffyscale);
         this.xtraLongTail.setTextureOffset(35, 11);
-        this.xtraLongTail.addBox(-0.5F, 11F, 5F, 1, 1, 4);
+        this.xtraLongTail.addBox(-0.5F, 11F, 5F, 1, 1, 4 + fluffyscale);
         this.xtraLongTail.setTextureOffset(38, 13);
-        this.xtraLongTail.addBox(-0.5F, 12F, 9F, 1, 3, 2);
-        this.xtraLongTail.addBox(-0.5F, 15F, 9F, 1, 3, 3);
+        this.xtraLongTail.addBox(-0.5F, 12F, 9F, 1, 3, 2 + fluffyscale);
+        this.xtraLongTail.addBox(-0.5F, 15F, 9F, 1, 3, 3 + fluffyscale);
         this.xtraLongTail.setTextureOffset(39, 15);
-        this.xtraLongTail.addBox(-0.5F, 18F, 11F, 1, 1, 1);
-        this.xtraLongTail.addBox(-0.5F, 16F, 5F, 1, 1, 1);
+        this.xtraLongTail.addBox(-0.5F, 18F, 11F, 1, 1, 1 + fluffyscale);
+        this.xtraLongTail.addBox(-0.5F, 16F, 5F, 1, 1, 1 + fluffyscale);
 
         this.leftLeg = new ModelRenderer(this, 8, 18);
-        this.leftLeg.addBox(-2F, 3.5F, 1F, 1, 5, 1);
-        this.leftLeg.setTextureOffset(0,22);
-        this.leftLeg.addBox(-3F, 8F, -1F, 3, 1, 2);
-        this.leftLeg.setTextureOffset(2,23);
-        this.leftLeg.addBox(-2F, 8F, -2F, 1, 1, 1);
-
         this.leftLegExtend = new ModelRenderer(this, 8, 18);
-        this.leftLegExtend.addBox(-2F, 1.5F, 1F, 1, 2, 1);
-
         this.rightLeg = new ModelRenderer(this, 8, 18);
-        this.rightLeg.addBox(1F, 3.5F, 1F, 1, 5, 1);
-        this.rightLeg.setTextureOffset(0,22);
-        this.rightLeg.addBox(0F, 8F, -1F, 3, 1, 2);
-        this.rightLeg.setTextureOffset(3,23);
-        this.rightLeg.addBox(1F, 8F, -2F, 1, 1, 1);
-
         this.rightLegExtend = new ModelRenderer(this, 8, 18);
-        this.rightLegExtend.addBox(1F, 1.5F, 1F, 1, 2, 1);
+        if (!silkie) {
+            this.leftLeg.addBox(-2F, 3.5F, 1F, 1, 5, 1);
+            this.leftLeg.setTextureOffset(0, 22);
+            this.leftLeg.addBox(-3F, 8F, -1F, 3, 1, 2);
+            this.leftLeg.setTextureOffset(2, 23);
+            this.leftLeg.addBox(-2F, 8F, -2F, 1, 1, 1);
 
-        this.rightFeather1 = new ModelRenderer(this,1,35);
-        this.rightFeather1.addBox(1.1F, 4F, 0F, 2, 3, 3);
+            this.leftLegExtend.addBox(-2F, 1.5F, 1F, 1, 2, 1);
 
-        this.rightFeather1Extend = new ModelRenderer(this,1,35);
-        this.rightFeather1Extend.addBox(1.1F, 2F, 0F, 2, 2, 3);
+            this.rightLeg.addBox(1F, 3.5F, 1F, 1, 5, 1);
+            this.rightLeg.setTextureOffset(0, 22);
+            this.rightLeg.addBox(0F, 8F, -1F, 3, 1, 2);
+            this.rightLeg.setTextureOffset(3, 23);
+            this.rightLeg.addBox(1F, 8F, -2F, 1, 1, 1);
 
-        this.leftFeather1 = new ModelRenderer(this,1,35);
+            this.rightLegExtend.addBox(1F, 1.5F, 1F, 1, 2, 1);
+        }
+
+        this.rightFeather1 = new ModelRenderer(this, 1, 35);
+        this.rightFeather1.addBox(1.1F, 4F, 0F, 2, 3, 3 + fluffyscale);
+
+        this.rightFeather1Extend = new ModelRenderer(this, 1, 35);
+        this.rightFeather1Extend.addBox(1.1F, 2F, 0F, 2, 2, 3 + fluffyscale);
+
+        this.leftFeather1 = new ModelRenderer(this, 1, 35);
         this.leftFeather1.mirror = true;
-        this.leftFeather1.addBox(-3.1F, 4F, 0F, 2, 3, 3);
+        this.leftFeather1.addBox(-3.1F, 4F, 0F, 2, 3, 3 + fluffyscale);
 
-        this.leftFeather1Extend = new ModelRenderer(this,1,35);
+        this.leftFeather1Extend = new ModelRenderer(this, 1, 35);
         this.leftFeather1Extend.mirror = true;
-        this.leftFeather1Extend.addBox(-3.1F, 2F, 0F, 2, 2, 3);
+        this.leftFeather1Extend.addBox(-3.1F, 2F, 0F, 2, 2, 3 + fluffyscale);
 
 //        this.rightFeatherTall1 = new ModelRenderer(this,1,35);
 //        this.rightFeatherTall1.addBox(1.1F, 3F, 0F, 2, 1, 3);
@@ -347,89 +359,96 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 //        this.leftFeatherTall1.addBox(-3.1F, 3F, 0F, 2, 1, 3);
 //        this.leftFeatherTall1.addBox(-3.1F, 4F, 0F, 2, 3, 3);
 
-        this.rightFeather2 = new ModelRenderer(this,12,34);
-        this.rightFeather2.addBox(1.5F, 7F, -2.5F, 2, 2, 5);
+        this.rightFeather2 = new ModelRenderer(this, 12, 34);
+        this.rightFeather2.addBox(1.5F, 7F, -2.5F, 2, 2, 5 + fluffyscale);
 
-        this.leftFeather2 = new ModelRenderer(this,12,34);
+        this.leftFeather2 = new ModelRenderer(this, 12, 34);
         this.leftFeather2.mirror = true;
-        this.leftFeather2.addBox(-3.5F, 7F, -2.5F, 2, 2, 5);
+        this.leftFeather2.addBox(-3.5F, 7F, -2.5F, 2, 2, 5 + fluffyscale);
 
-        this.rightFeather3 = new ModelRenderer(this,28,36);
+        this.rightFeather3 = new ModelRenderer(this, 28, 36);
         this.rightFeather3.mirror = true;
-        this.rightFeather3.addBox(3.5F, 8.9F, -2.5F, 4, 1, 5);
+        this.rightFeather3.addBox(3.5F, 8.9F, -2.5F, 4, 1, 5 + fluffyscale);
 
-        this.leftFeather3 = new ModelRenderer(this,28,36);
-        this.leftFeather3.addBox(-7.5F, 8.9F, -2.5F, 4, 1, 5);
+        this.leftFeather3 = new ModelRenderer(this, 28, 36);
+        this.leftFeather3.addBox(-7.5F, 8.9F, -2.5F, 4, 1, 5 + fluffyscale);
 
-        this.rightVultureHock = new ModelRenderer(this,33,32);
+        this.rightVultureHock = new ModelRenderer(this, 33, 32);
         this.rightVultureHock.mirror = true;
-        this.rightVultureHock.addBox(2.5F, 3.0F, 2.5F, 1, 3, 4, -0.2F);
+        this.rightVultureHock.addBox(2.5F, 3.0F, 2.5F, 1, 3, 4, -0.2F + fluffyscale);
 
-        this.leftVultureHock = new ModelRenderer(this,33,32);
-        this.leftVultureHock.addBox(-3.5F, 3.0F, 2.5F, 1, 3, 4, -0.2F);
+        this.leftVultureHock = new ModelRenderer(this, 33, 32);
+        this.leftVultureHock.addBox(-3.5F, 3.0F, 2.5F, 1, 3, 4, -0.2F + fluffyscale);
 
         this.rightWing = new ModelRenderer(this, 13, 19);
-        this.rightWing.addBox(0F, 0F, -3.0F, 1, 4, 6);
+        this.rightWing.addBox(0F, 0F, -3.0F, 1, 4, 6 + fluffyscale);
         this.rightWing.setRotationPoint(-4.0F, 13.0F, 1.0F);
 
         this.leftWing = new ModelRenderer(this, 45, 19);
-        this.leftWing.addBox(-1.0F, 0F, -3.0F, 1, 4, 6);
+        this.leftWing.addBox(-1.0F, 0F, -3.0F, 1, 4, 6 + fluffyscale);
         this.leftWing.setRotationPoint(4.0F, 13.0F, 1.0F);
 
         this.rightWingSmall = new ModelRenderer(this, 14, 20);
-        this.rightWingSmall.addBox(0F, 0F, -3.0F, 1, 3, 5);
+        this.rightWingSmall.addBox(0F, 0F, -3.0F, 1, 3, 5 + fluffyscale);
         this.rightWingSmall.setRotationPoint(-4.0F, 13.0F, 1.0F);
 
         this.leftWingSmall = new ModelRenderer(this, 46, 20);
-        this.leftWingSmall.addBox(-1.0F, 0F, -3.0F, 1, 3, 5);
+        this.leftWingSmall.addBox(-1.0F, 0F, -3.0F, 1, 3, 5 + fluffyscale);
         this.leftWingSmall.setRotationPoint(4.0F, 13.0F, 1.0F);
 
         this.bill = new ModelRenderer(this, 0, 18);
-        this.bill.addBox(-1.0F, -4.0F, -4.0F, 2, 2, 2, 0.0F);
-        this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
-
         this.billChild = new ModelRenderer(this, 0, 18);
-        this.billChild.addBox(-1.0F, -4.0F, -3F, 2, 2, 2, 0.0F);
-        this.billChild.setRotationPoint(0.0F, 15.0F, -4.0F);
-
         this.smallChin = new ModelRenderer(this, 14, 10);
-        this.smallChin.addBox(-1.0F, -2.0F, -3.0F, 2, 1, 2, 0.0F);
-
         this.chin = new ModelRenderer(this, 14, 10);
-        this.chin.addBox(-1.0F, -2.0F, -3.0F, 2, 2, 1, 0.0F);
-
         this.bigChin = new ModelRenderer(this, 14, 10);
-        this.bigChin.addBox(-1.0F, -2.0F, -3.0F, 2, 3, 1, 0.0F);
-
         this.peaChin = new ModelRenderer(this, 14, 10);
-        this.peaChin.addBox(-0.5F, -2.0F, -3.0F, 1, 1, 2, 0.0F);
-
         this.beardChin = new ModelRenderer(this, 14, 10);
-        this.beardChin.addBox(-1.5F, -2.5F, -3.0F, 3, 1, 1, 0.0F);
+        if (!silkie) {
+            this.bill.addBox(-1.0F, -4.0F, -4.0F, 2, 2, 2, 0.0F);
+            this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
+
+            this.billChild.addBox(-1.0F, -4.0F, -3F, 2, 2, 2, 0.0F);
+            this.billChild.setRotationPoint(0.0F, 15.0F, -4.0F);
+
+            this.smallChin.addBox(-1.0F, -2.0F, -3.0F, 2, 1, 2, 0.0F);
+
+            this.chin.addBox(-1.0F, -2.0F, -3.0F, 2, 2, 1, 0.0F);
+
+            this.bigChin.addBox(-1.0F, -2.0F, -3.0F, 2, 3, 1, 0.0F);
+
+            this.peaChin.addBox(-0.5F, -2.0F, -3.0F, 1, 1, 2, 0.0F);
+
+            this.beardChin.addBox(-1.5F, -2.5F, -3.0F, 3, 1, 1, 0.0F);
+        }
 
         this.beard = new ModelRenderer(this,2,29);
-        this.beard.addBox(-3F, -4F, -2F, 1, 2, 2);
-        this.beard.addBox(-2.5F, -3F, -2.75F, 2, 2, 2);
+        this.beard.addBox(-3F, -4F, -2F, 1, 2, 2 + fluffyscale);
+        this.beard.addBox(-2.5F, -3F, -2.75F, 2, 2, 2 + fluffyscale);
         this.beard.setTextureOffset(3,30);
-        this.beard.addBox(-1F, -2.25F, -2.9F, 2, 2, 2);
-        this.beard.addBox(-0.5F, -2F, -3.75F, 1, 1, 1);
+        this.beard.addBox(-1F, -2.25F, -2.9F, 2, 2, 2 + fluffyscale);
+        this.beard.addBox(-0.5F, -2F, -3.75F, 1, 1, 1 + fluffyscale);
         this.beard.setTextureOffset(2,29);
-        this.beard.addBox(2F, -4F, -2F, 1, 2, 2);
-        this.beard.addBox(0.5F, -3F, -2.75F, 2, 2, 2);
+        this.beard.addBox(2F, -4F, -2F, 1, 2, 2 + fluffyscale);
+        this.beard.addBox(0.5F, -3F, -2.75F, 2, 2, 2 + fluffyscale);
 
         this.beardNN = new ModelRenderer(this,2,29);
-        this.beardNN.addBox(-3F, -4F, -2F, 1, 2, 2);
-        this.beardNN.addBox(-2F, -3F, -2.75F, 2, 2, 2);
+        this.beardNN.addBox(-3F, -4F, -2F, 1, 2, 2 + fluffyscale);
+        this.beardNN.addBox(-2F, -3F, -2.75F, 2, 2, 2 + fluffyscale);
         this.beardNN.setTextureOffset(3,30);
-        this.beardNN.addBox(-0.5F, -2F, -3.5F, 1, 1, 1);
+        this.beardNN.addBox(-0.5F, -2F, -3.5F, 1, 1, 1 + fluffyscale);
         this.beardNN.setTextureOffset(2,29);
-        this.beardNN.addBox(2F, -4F, -2F, 1, 2, 2);
-        this.beardNN.addBox(0F, -3F, -2.75F, 2, 2, 2);
+        this.beardNN.addBox(2F, -4F, -2F, 1, 2, 2 + fluffyscale);
+        this.beardNN.addBox(0F, -3F, -2.75F, 2, 2, 2 + fluffyscale);
 
         this.earTuftHelper = new ModelRenderer(this, 47, 44);
 
         this.earTuftHelper.addChild(this.earTuftL);
         this.earTuftHelper.addChild(this.earTuftR);
+
+        this.headNakedNeck.addChild(this.eyeLeft);
+        this.headNakedNeck.addChild(this.eyeRight);
+        this.head.addChild(this.eyeLeft);
+        this.head.addChild(this.eyeRight);
     }
 
     private void setRotationOffset(ModelRenderer renderer, float x, float y, float z) {
@@ -444,6 +463,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         ChickenModelData chickenModelData = getChickenModelData();
 
         Boolean roosting = chickenModelData.sleeping;
+        int blink = chickenModelData.blink;
 
         int[] genes = chickenModelData.chickenGenes;
         boolean nakedNeck = false;
@@ -855,6 +875,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         matrixStackIn.pop();
 //        }
 
+        if (blink == 0 || blink >= 8) {
+            this.eyeLeft.showModel = true;
+            this.eyeRight.showModel = true;
+        } else {
+            this.eyeLeft.showModel = false;
+            this.eyeRight.showModel = false;
+        }
+
   }
 
 
@@ -1176,6 +1204,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         int[] chickenGenes;
         String birthTime;
         boolean sleeping = false;
+        int blink = 0;
         int lastAccessed = 0;
         long clientGameTime = 0;
         List<String> unrenderedModels = new ArrayList<>();
@@ -1203,6 +1232,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             ChickenModelData chickenModelData = chickenModelDataCache.get(enhancedChicken.getEntityId());
             chickenModelData.lastAccessed = 0;
             chickenModelData.sleeping = enhancedChicken.isRoosting();
+            chickenModelData.blink = enhancedChicken.getBlink();
             chickenModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedChicken.world).getWorldInfo()).getGameTime());
             chickenModelData.unrenderedModels = new ArrayList<>();
 
@@ -1211,6 +1241,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             ChickenModelData chickenModelData = new ChickenModelData();
             chickenModelData.chickenGenes = enhancedChicken.getSharedGenes();
             chickenModelData.sleeping = enhancedChicken.isRoosting();
+            chickenModelData.blink = enhancedChicken.getBlink();
             chickenModelData.birthTime = enhancedChicken.getBirthTime();
             chickenModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedChicken.world).getWorldInfo()).getGameTime());
 

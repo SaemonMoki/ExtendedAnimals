@@ -9,6 +9,7 @@ import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -25,6 +26,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.SuspiciousStewItem;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -35,6 +37,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.datafix.fixes.PotionItems;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -137,12 +140,12 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             "coat_normal.png", "coat_smooth.png", "coat_furry.png"
     };
 
-    private static final String[] COW_TEXTURES_TEST = new String[] {
-            "cowbase.png", "cowtest.png"
+    private static final String[] COW_TEXTURES_SADDLE = new String[] {
+            "", "saddle_english.png"
     };
 
 
-    protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UnboundHay_Block);
+    protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UNBOUNDHAY_BLOCK);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     protected boolean resetTexture = true;
@@ -190,7 +193,7 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             put(new ItemStack(Items.WHEAT).getItem(), 6000);
             put(new ItemStack(Items.SUGAR).getItem(), 1500);
             put(new ItemStack(Items.APPLE).getItem(), 1500);
-            put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
+            put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
         }};
 
     }
@@ -340,15 +343,6 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
     public void livingTick() {
         super.livingTick();
-
-        if (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && awokenTimer == 0 && !sleeping) {
-            setSleeping(true);
-            healTicks = 0;
-        } else if (awokenTimer > 0) {
-            awokenTimer--;
-        } else if (this.world.isDaytime() && sleeping) {
-            setSleeping(false);
-        }
 
         if (!this.world.isRemote) {
             if (getEntityStatus().equals(EntityState.MOTHER.toString())) {
@@ -500,7 +494,6 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
     }
 
     public void lethalGenes(){
-
         if(genes[26] == 1 && genes[27] == 1) {
             this.remove();
         }
@@ -1006,6 +999,11 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 //              testing textures
 //              this.enhancedAnimalTextures.add(COW_TEXTURES_TEST[1]);
 
+
+            int saddle = 1;
+            if (saddle != 0) {
+                this.enhancedAnimalTextures.add(COW_TEXTURES_SADDLE[saddle]);
+            }
         }
     }
 
@@ -1252,7 +1250,7 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             return this.saddleCow(itemStack, entityPlayer, this);
         }
 
-        if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
+        if ((item == Items.BUCKET || item == ModItems.ONESIXTH_MILK_BUCKET || item == ModItems.ONETHIRD_MILK_BUCKET || item == ModItems.HALF_MILK_BUCKET || item == ModItems.TWOTHIRDS_MILK_BUCKET || item == ModItems.FIVESIXTHS_MILK_BUCKET || item == ModItems.HALF_MILK_BOTTLE || item == Items.GLASS_BOTTLE) && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;
             int bucketSize = 6;
             int currentMilk = getMilkAmount();
@@ -1260,17 +1258,17 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             boolean isBottle = false;
             if (item == Items.BUCKET) {
                 maxRefill = 6;
-            } else if (item == ModItems.OneSixth_Milk_Bucket) {
+            } else if (item == ModItems.ONESIXTH_MILK_BUCKET) {
                 maxRefill = 5;
-            } else if (item == ModItems.OneThird_Milk_Bucket) {
+            } else if (item == ModItems.ONETHIRD_MILK_BUCKET) {
                 maxRefill = 4;
-            } else if (item == ModItems.Half_Milk_Bucket) {
+            } else if (item == ModItems.HALF_MILK_BUCKET) {
                 maxRefill = 3;
-            } else if (item == ModItems.TwoThirds_Milk_Bucket) {
+            } else if (item == ModItems.TWOTHIRDS_MILK_BUCKET) {
                 maxRefill = 2;
-            } else if (item == ModItems.FiveSixths_Milk_Bucket) {
+            } else if (item == ModItems.FIVESIXTHS_MILK_BUCKET) {
                 maxRefill = 1;
-            } else if (item == ModItems.Half_Milk_Bottle) {
+            } else if (item == ModItems.HALF_MILK_BOTTLE) {
                 maxRefill = 1;
                 isBottle = true;
                 bucketSize = 2;
@@ -1305,26 +1303,26 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
                     return true;
                 case 1:
                     if (isBottle) {
-                        resultItem = new ItemStack(ModItems.Half_Milk_Bottle);
+                        resultItem = new ItemStack(ModItems.HALF_MILK_BOTTLE);
                     } else {
-                        resultItem = new ItemStack(ModItems.OneSixth_Milk_Bucket);
+                        resultItem = new ItemStack(ModItems.ONESIXTH_MILK_BUCKET);
                     }
                     break;
                 case 2:
                     if (isBottle) {
-                        resultItem = new ItemStack(ModItems.Milk_Bottle);
+                        resultItem = new ItemStack(ModItems.MILK_BOTTLE);
                     } else {
-                        resultItem = new ItemStack(ModItems.OneThird_Milk_Bucket);
+                        resultItem = new ItemStack(ModItems.ONETHIRD_MILK_BUCKET);
                     }
                     break;
                 case 3:
-                    resultItem = new ItemStack(ModItems.Half_Milk_Bucket);
+                    resultItem = new ItemStack(ModItems.HALF_MILK_BUCKET);
                     break;
                 case 4:
-                    resultItem = new ItemStack(ModItems.TwoThirds_Milk_Bucket);
+                    resultItem = new ItemStack(ModItems.TWOTHIRDS_MILK_BUCKET);
                     break;
                 case 5:
-                    resultItem = new ItemStack(ModItems.FiveSixths_Milk_Bucket);
+                    resultItem = new ItemStack(ModItems.FIVESIXTHS_MILK_BUCKET);
                     break;
                 case 6:
                     resultItem = new ItemStack(Items.MILK_BUCKET);
@@ -2205,12 +2203,12 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
         generateHornGenes(initialGenes);
 
         //parasitic immunity gene
-        if (wildType != 4) {
-            initialGenes[118] = 1;
-            initialGenes[119] = 1;
-        } else {
+        if (wildType == 4) {
             initialGenes[118] = 2;
             initialGenes[119] = 2;
+        } else {
+            initialGenes[118] = 1;
+            initialGenes[119] = 1;
         }
 
         return initialGenes;

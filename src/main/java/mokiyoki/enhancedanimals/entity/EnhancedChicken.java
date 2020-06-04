@@ -40,6 +40,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -215,7 +216,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     };
     private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
-        "eyes_albino.png","eyes_black.png"
+        "eyes_albino.png", "eyes_black.png"
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.TALL_GRASS, Items.GRASS, Items.BREAD);
@@ -2232,39 +2233,39 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
                 if (meatSize == 1) {
                     if (this.isBurning()) {
-                        meatStack = new ItemStack(ModItems.CookedChicken_DarkSmall, 1 + looting);
+                        meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARKSMALL, 1 + looting);
                     } else {
-                        meatStack = new ItemStack(ModItems.RawChicken_DarkSmall, 1 + looting);
+                        meatStack = new ItemStack(ModItems.RAWCHICKEN_DARKSMALL, 1 + looting);
                     }
                 } else if (meatSize == 2) {
                     dropMeatType = "rawchicken_darkbig";
                     if (this.isBurning()) {
-                        meatStack = new ItemStack(ModItems.CookedChicken_DarkBig,1 + looting);
+                        meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARKBIG,1 + looting);
                     } else {
-                        meatStack = new ItemStack(ModItems.RawChicken_DarkBig, 1 + looting);
+                        meatStack = new ItemStack(ModItems.RAWCHICKEN_DARKBIG, 1 + looting);
                     }
                 } else {
                     dropMeatType = "rawchicken_dark";
                     if (this.isBurning()) {
-                        meatStack = new ItemStack(ModItems.CookedChicken_Dark, 1 + looting);
+                        meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARK, 1 + looting);
                     } else {
-                        meatStack = new ItemStack(ModItems.RawChicken_Dark, 1 + looting);
+                        meatStack = new ItemStack(ModItems.RAWCHICKEN_DARK, 1 + looting);
                     }
                 }
             } else {
                 if (meatSize == 1) {
                     dropMeatType = "rawchicken_palesmall";
                     if (this.isBurning()) {
-                        meatStack = new ItemStack(ModItems.CookedChicken_PaleSmall, 1 + looting);
+                        meatStack = new ItemStack(ModItems.COOKEDCHICKEN_PALESMALL, 1 + looting);
                     } else {
-                        meatStack = new ItemStack(ModItems.RawChicken_PaleSmall, 1 + looting);
+                        meatStack = new ItemStack(ModItems.RAWCHICKEN_PALESMALL, 1 + looting);
                     }
                 } else if (meatSize == 2) {
                     dropMeatType = "rawchicken";
                     if (this.isBurning()) {
-                        meatStack = new ItemStack(ModItems.CookedChicken_Pale, 1 + looting);
+                        meatStack = new ItemStack(ModItems.COOKEDCHICKEN_PALE, 1 + looting);
                     } else {
-                        meatStack = new ItemStack(ModItems.RawChicken_Pale, 1 + looting);
+                        meatStack = new ItemStack(ModItems.RAWCHICKEN_PALE, 1 + looting);
                     }
                 } else {
                     dropMeatType = "rawchicken_pale";
@@ -2507,27 +2508,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                 wildType = 4;
             }
 
-//        if (pureBreed.equalsIgnoreCase("false")) {
-//             if(wildType == 1) {
-//                initialGenes = new int[]{1,1,6,1,1,1,6,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,1,1,2,2,2,2,2,2,2,2,3,3,2,2,1,1,2,2,1,1,2,2,1,1,3,3,2,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,3,3,3,3,2,2,1,1,1,1,2,2,2,2,1,1,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,10,1,7,4,4,5,5,6,6,4,6,5,5,2,2,1,1};
-//            } else if(wildType == 2) {
-//                initialGenes = new int[]{1,1,6,1,1,1,1,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,1,1,4,2,1,2,2,2,2,2,3,3,1,2,1,1,2,2,1,1,2,2,1,1,3,3,2,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,3,3,3,3,2,2,1,1,1,1,2,2,2,2,1,1,2,2,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,10,1,7,5,5,3,3,7,7,3,7,2,2,2,2,1,1};
-//            } else if(wildType == 3) {
-//                initialGenes = new int[]{1,1,3,1,1,1,1,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,1,1,4,4,1,1,1,1,1,1,3,3,2,2,1,1,2,2,1,1,2,2,3,3,2,2,2,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,3,3,3,3,1,1,1,1,1,1,3,3,2,2,2,1,2,2,2,2,2,2,2,2,1,1,2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,5,5,5,5,11,11,3,3,5,5,21,21,2,2,1,1,1,1};
-//            } else if(wildType == 4) {
-//                initialGenes = new int[]{1,1,3,1,1,1,1,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,1,1,4,4,1,1,1,1,1,1,3,3,2,2,1,1,2,2,1,1,2,2,3,3,2,2,2,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,3,3,3,3,1,1,1,1,1,1,3,3,2,2,2,1,2,2,2,2,2,2,2,2,1,1,2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,5,5,5,5,11,11,3,3,5,5,21,21,2,2,1,1,1,1};
-//            } else {
-//                 initialGenes = new int[]{1,1,3,1,1,1,1,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,1,1,4,4,1,1,1,1,1,1,3,3,2,2,1,1,2,2,1,1,2,2,3,3,2,2,2,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,3,3,3,3,1,1,1,1,1,1,3,3,2,2,2,1,2,2,2,2,2,2,2,2,1,1,2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,5,5,5,5,11,11,3,3,5,5,21,21,2,2,1,1,1,1};
-//             }
-//        }
-
-
-    if (false){
-        //THE DNA PRINTER-5069 !!!!!
-        return new int[] {2,1,6,1,1,2,6,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,2,2,5,5,2,2,2,2,1,1,3,3,2,2,2,2,2,2,1,1,1,1,1,1,3,3,2,2,1,1,2,2,3,3,1,1,2,2,1,1,1,1,3,3,3,3,2,2,1,1,1,1,2,2,2,2,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,12,12,12,12,12,12,6,6,20,20,20,20,5,5,2,2,1,1,2,2,1,1,1,1,1,1
-        };
-
-    }else {
+//    if (false){
+//        //THE DNA PRINTER-5069 !!!!!
+//        return new int[] {2,1,6,1,1,2,6,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,2,2,5,5,2,2,2,2,1,1,3,3,2,2,2,2,2,2,1,1,1,1,1,1,3,3,2,2,1,1,2,2,3,3,1,1,2,2,1,1,1,1,3,3,3,3,2,2,1,1,1,1,2,2,2,2,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,12,12,12,12,12,12,6,6,20,20,20,20,5,5,2,2,1,1,2,2,1,1,1,1,1,1
+//        };
         /**
          * parent linked genes
          */
@@ -3895,8 +3879,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         //favourite flavours/foods
         //phobias: heights, certain mobs, swords/sticks/axes in hand, fire/lava, things bigger than them running
         //loves: heights, warm places, food,
-
-    }
 
     // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken ai modifiers
 

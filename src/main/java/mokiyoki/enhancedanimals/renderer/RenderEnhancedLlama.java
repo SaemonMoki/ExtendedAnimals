@@ -25,7 +25,7 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
 
     public RenderEnhancedLlama(EntityRendererManager render)
     {
-        super(render, new ModelEnhancedLlama<>(), 0.75F);
+        super(render, new ModelEnhancedLlama<>(0.0F), 0.75F);
     }
 
     /**

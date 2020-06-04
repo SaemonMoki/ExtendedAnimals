@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.ai.general.pig;
 
-import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.mooshroom.EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import net.minecraft.block.Block;
@@ -64,7 +63,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoalPig extends EnhancedWat
                             this.entityWorld.setBlockState(blockpos1, Blocks.FARMLAND.getDefaultState(), 2);
                         }
                         this.creature.eatGrassBonus();
-                    } else if (blockDown == ModBlocks.SparseGrass_Block) {
+                    } else if (blockDown == ModBlocks.SPARSE_GRASS_BLOCK) {
                         if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
                             this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
                             this.entityWorld.setBlockState(blockpos1, Blocks.FARMLAND.getDefaultState(), 2);

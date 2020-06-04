@@ -46,7 +46,7 @@ public class EncyclopediaScreen extends Screen {
     private EncyclopediaScreen.IBookInfo bookInfo;
 
     public EncyclopediaScreen() {
-        this(new TranslationTextComponent(ModItems.Genetics_Encyclopedia.getTranslationKey()));
+        this(new TranslationTextComponent(ModItems.GENETICS_ENCYCLOPEDIA.getTranslationKey()));
     }
 
     protected EncyclopediaScreen(ITextComponent titleIn) {

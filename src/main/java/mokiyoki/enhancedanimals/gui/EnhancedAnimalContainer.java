@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.gui;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -28,9 +29,103 @@ public class EnhancedAnimalContainer extends Container {
         int i = 3; // inv height
         int j = 5; // inv width
         int equipmentShift = 1;
+        int xShift = 8;
+        int yShift = 18;
 
         if (animalInfo.canHaveSaddle) {
-            this.addSlot(new Slot(retrievedInventory, equipmentShift, 8, 18) {
+            this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
+
+                public boolean isItemValid(ItemStack stack) {
+                    return stack.getItem() == Items.SADDLE || stack.getItem() == ModItems.BASIC_LEATHER_SADDLE || stack.getItem() == ModItems.BASIC_CLOTH_SADDLE;
+                }
+
+                public int getSlotStackLimit() {
+                    return 1;
+                }
+
+            });
+            equipmentShift = equipmentShift + 1;
+            yShift = yShift + 18;
+        }
+
+        if (animalInfo.canHaveBridle) {
+            this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
+
+                public boolean isItemValid(ItemStack stack) {
+                    return stack.getItem() == ModItems.BASIC_LEATHER_BRIDLE || stack.getItem() == ModItems.BASIC_CLOTH_BRIDLE;
+                }
+
+                public int getSlotStackLimit() {
+                    return 1;
+                }
+
+            });
+            equipmentShift = equipmentShift + 1;
+            yShift = yShift + 18;
+        }
+
+        if (animalInfo.canHaveArmour) {
+            this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
+
+                public boolean isItemValid(ItemStack stack) {
+                    return stack.getItem() == Items.LEATHER_HORSE_ARMOR || stack.getItem() == Items.IRON_HORSE_ARMOR || stack.getItem() == Items.GOLDEN_HORSE_ARMOR || stack.getItem() == Items.DIAMOND_HORSE_ARMOR;
+                }
+
+                public int getSlotStackLimit() {
+                    return 1;
+                }
+
+            });
+            equipmentShift = equipmentShift + 1;
+            yShift = yShift + 18;
+            if (yShift >= 54) {
+                yShift = 18;
+                xShift = 80;
+            }
+        }
+
+        if (animalInfo.canHaveBlanket) {
+            this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
+
+                public boolean isItemValid(ItemStack stack) {
+                    return stack.getItem() == Items.BLACK_CARPET || stack.getItem() == Items.WHITE_CARPET || stack.getItem() == Items.BLUE_CARPET || stack.getItem() == Items.BROWN_CARPET || stack.getItem() == Items.CYAN_CARPET || stack.getItem() == Items.GRAY_CARPET || stack.getItem() == Items.GREEN_CARPET || stack.getItem() == Items.LIGHT_BLUE_CARPET || stack.getItem() == Items.LIGHT_GRAY_CARPET || stack.getItem() == Items.LIME_CARPET || stack.getItem() == Items.MAGENTA_CARPET || stack.getItem() == Items.ORANGE_CARPET || stack.getItem() == Items.PINK_CARPET || stack.getItem() == Items.PURPLE_CARPET || stack.getItem() == Items.RED_CARPET || stack.getItem() == Items.YELLOW_CARPET;
+                }
+
+                public int getSlotStackLimit() {
+                    return 1;
+                }
+
+            });
+            equipmentShift = equipmentShift + 1;
+            yShift = yShift + 18;
+            if (yShift >= 54) {
+                yShift = 18;
+                xShift = 80;
+            }
+        }
+
+        if (animalInfo.canHaveBanner) {
+            this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
+
+                public boolean isItemValid(ItemStack stack) {
+                    return stack.getItem() == Items.BLACK_BANNER || stack.getItem() == Items.WHITE_BANNER || stack.getItem() == Items.BLUE_BANNER || stack.getItem() == Items.BROWN_BANNER || stack.getItem() == Items.CYAN_BANNER || stack.getItem() == Items.GRAY_BANNER || stack.getItem() == Items.GREEN_BANNER || stack.getItem() == Items.LIGHT_BLUE_BANNER || stack.getItem() == Items.LIGHT_GRAY_BANNER || stack.getItem() == Items.LIME_BANNER || stack.getItem() == Items.MAGENTA_BANNER || stack.getItem() == Items.ORANGE_BANNER || stack.getItem() == Items.PINK_BANNER || stack.getItem() == Items.PURPLE_BANNER || stack.getItem() == Items.RED_BANNER || stack.getItem() == Items.YELLOW_BANNER;
+                }
+
+                public int getSlotStackLimit() {
+                    return 1;
+                }
+
+            });
+            equipmentShift = equipmentShift + 1;
+            yShift = yShift + 18;
+            if (yShift >= 54) {
+                yShift = 18;
+                xShift = 80;
+            }
+        }
+
+        if (animalInfo.canHaveHarness) {
+            this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
                     return stack.getItem() == Items.SADDLE;
@@ -42,87 +137,17 @@ public class EnhancedAnimalContainer extends Container {
 
             });
             equipmentShift = equipmentShift + 1;
+            yShift = yShift + 18;
+            if (yShift >= 54) {
+                yShift = 18;
+                xShift = 80;
+            }
         }
-
-//        if (animalInfo.canHaveBridle) {
-//            this.addSlot(new Slot(retrievedInventory, equipmentShift, 8, 18) {
-//
-//                public boolean isItemValid(ItemStack stack) {
-//                    return stack.getItem() == Items.SADDLE;
-//                }
-//
-//                public int getSlotStackLimit() {
-//                    return 1;
-//                }
-//
-//            });
-//            equipmentShift = equipmentShift + 1;
-//        }
-//
-//        if (animalInfo.canHaveArmour) {
-//            this.addSlot(new Slot(retrievedInventory, equipmentShift, 8, 18) {
-//
-//                public boolean isItemValid(ItemStack stack) {
-//                    return stack.getItem() == Items.LEATHER_HORSE_ARMOR || stack.getItem() == Items.IRON_HORSE_ARMOR || stack.getItem() == Items.GOLDEN_HORSE_ARMOR || stack.getItem() == Items.DIAMOND_HORSE_ARMOR;
-//                }
-//
-//                public int getSlotStackLimit() {
-//                    return 1;
-//                }
-//
-//            });
-//            equipmentShift = equipmentShift + 1;
-//        }
-//
-//        if (animalInfo.canHaveBlanket) {
-//            this.addSlot(new Slot(retrievedInventory, equipmentShift, 8, 18) {
-//
-//                public boolean isItemValid(ItemStack stack) {
-//                    return stack.getItem() == Items.BLACK_CARPET || stack.getItem() == Items.WHITE_CARPET || stack.getItem() == Items.BLUE_CARPET || stack.getItem() == Items.BROWN_CARPET || stack.getItem() == Items.CYAN_CARPET || stack.getItem() == Items.GRAY_CARPET || stack.getItem() == Items.GREEN_CARPET || stack.getItem() == Items.LIGHT_BLUE_CARPET || stack.getItem() == Items.LIGHT_GRAY_CARPET || stack.getItem() == Items.LIME_CARPET || stack.getItem() == Items.MAGENTA_CARPET || stack.getItem() == Items.ORANGE_CARPET || stack.getItem() == Items.PINK_CARPET || stack.getItem() == Items.PURPLE_CARPET || stack.getItem() == Items.RED_CARPET || stack.getItem() == Items.YELLOW_CARPET;
-//                }
-//
-//                public int getSlotStackLimit() {
-//                    return 1;
-//                }
-//
-//            });
-//            equipmentShift = equipmentShift + 1;
-//        }
-//
-//        if (animalInfo.canHaveBanner) {
-//            this.addSlot(new Slot(retrievedInventory, equipmentShift, 8, 18) {
-//
-//                public boolean isItemValid(ItemStack stack) {
-//                    return stack.getItem() == Items.BLACK_BANNER || stack.getItem() == Items.WHITE_BANNER || stack.getItem() == Items.BLUE_BANNER || stack.getItem() == Items.BROWN_BANNER || stack.getItem() == Items.CYAN_BANNER || stack.getItem() == Items.GRAY_BANNER || stack.getItem() == Items.GREEN_BANNER || stack.getItem() == Items.LIGHT_BLUE_BANNER || stack.getItem() == Items.LIGHT_GRAY_BANNER || stack.getItem() == Items.LIME_BANNER || stack.getItem() == Items.MAGENTA_BANNER || stack.getItem() == Items.ORANGE_BANNER || stack.getItem() == Items.PINK_BANNER || stack.getItem() == Items.PURPLE_BANNER || stack.getItem() == Items.RED_BANNER || stack.getItem() == Items.YELLOW_BANNER;
-//                }
-//
-//                public int getSlotStackLimit() {
-//                    return 1;
-//                }
-//
-//            });
-//            equipmentShift = equipmentShift + 1;
-//        }
-//
-//        if (animalInfo.canHaveHarness) {
-//            this.addSlot(new Slot(retrievedInventory, equipmentShift, 8, 18) {
-//
-//                public boolean isItemValid(ItemStack stack) {
-//                    return stack.getItem() == Items.SADDLE;
-//                }
-//
-//                public int getSlotStackLimit() {
-//                    return 1;
-//                }
-//
-//            });
-//            equipmentShift = equipmentShift + 1;
-//        }
 
         if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
             for(int k = 0; k < i; ++k) {
                 for(int l = 0; l < j; ++l) {
-                    this.addSlot(new Slot(retrievedInventory, l + k * j, 80 + l * 18, 18 + k * 18){
+                    this.addSlot(new Slot(retrievedInventory, equipmentShift, 80 + l * 18, 18 + k * 18){
 //                    public int getSlotStackLimit() {
 //                        return 64;
 //                    }

@@ -74,7 +74,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
 
     public ModelEnhancedRabbit()
     {
-        this.textureWidth = 64;
+        this.textureWidth = 128;
         this.textureHeight = 64;
 
         float xMove = -2.0F;

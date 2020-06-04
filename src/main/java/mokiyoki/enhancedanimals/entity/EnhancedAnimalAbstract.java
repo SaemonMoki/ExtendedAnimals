@@ -48,7 +48,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     private static Ingredient TEMPTATION_ITEMS;
     private static Ingredient BREED_ITEMS;
-    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
+    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
 
     // Genetic Info
     protected int[] genes;
@@ -67,6 +67,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     //Sleeping
     protected Boolean sleeping = false;
     protected int awokenTimer = 0;
+
+    //Animations
+    protected int blink = 0;
 
     //Pregnancy
     protected int gestationTimer = 0;
@@ -136,7 +139,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     //called during construction to set up the animal size
     protected abstract void initilizeAnimalSize();
-
 
     /*
     Getters and Setters for variables and datamanagers
@@ -215,6 +217,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return this.genes;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public int getBlink() { return this.blink; }
+
+    @OnlyIn(Dist.CLIENT)
+    public void setBlink(int blinkTimer) { this.blink = blinkTimer; }
+
     /*
     Living Tick
     */
@@ -266,6 +274,17 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     protected void runLivingTickClient() {
         this.animalEatingTimer = Math.max(0, this.animalEatingTimer - 1);
+
+        //blinking animation timer
+        if (isAnimalSleeping()) {
+            this.blink = 1;
+        } else {
+            if (blink == 0) {
+                this.blink = rand.nextInt(400);
+            } else {
+                this.blink--;
+            }
+        }
     }
 
     protected void updateStatusTick() {
@@ -320,7 +339,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                     itemStack.shrink(1);
                 }
             }  else if (this.isChild() && MILK_ITEMS.test(itemStack) && bottleFeedable && hunger >= 6000) {
-                if (item == ModItems.Half_Milk_Bottle) {
+                if (item == ModItems.HALF_MILK_BOTTLE) {
                     decreaseHunger(6000);
                     if (!entityPlayer.abilities.isCreativeMode) {
                         if (itemStack.isEmpty()) {
@@ -329,7 +348,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                             entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
                         }
                     }
-                } else if (item == ModItems.Milk_Bottle) {
+                } else if (item == ModItems.MILK_BOTTLE) {
                     if (hunger >= 12000) {
                         decreaseHunger(12000);
                         if (!entityPlayer.abilities.isCreativeMode) {
@@ -343,9 +362,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                         decreaseHunger(6000);
                         if (!entityPlayer.abilities.isCreativeMode) {
                             if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
-                                entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
+                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
+                                entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
                             }
                         }
                     }

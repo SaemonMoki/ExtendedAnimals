@@ -50,7 +50,7 @@ public class EnhancedGrassGoalPig extends EnhancedGrassGoal {
 
                 }
                 BlockPos blockpos1 = blockpos.down();
-                if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.GRASS_BLOCK || this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.DIRT || this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.COARSE_DIRT || this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.PODZOL || this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.MYCELIUM || this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SparseGrass_Block) {
+                if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.GRASS_BLOCK || this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.DIRT || this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.COARSE_DIRT || this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.PODZOL || this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.MYCELIUM || this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SPARSE_GRASS_BLOCK) {
                     if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
                         this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
 //                        this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);

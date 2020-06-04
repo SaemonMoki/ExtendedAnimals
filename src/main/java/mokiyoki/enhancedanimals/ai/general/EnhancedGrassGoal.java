@@ -130,11 +130,11 @@ public class EnhancedGrassGoal extends Goal {
                     if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
                         this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
 //                        this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);
-                        this.entityWorld.setBlockState(blockpos1, ModBlocks.SparseGrass_Block.getDefaultState(), 2);
+                        this.entityWorld.setBlockState(blockpos1, ModBlocks.SPARSE_GRASS_BLOCK.getDefaultState(), 2);
                     }
 
                     this.grassEaterEntity.eatGrassBonus();
-                } else if (this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SparseGrass_Block) {
+                } else if (this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SPARSE_GRASS_BLOCK) {
                     if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
                         this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
                         this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);

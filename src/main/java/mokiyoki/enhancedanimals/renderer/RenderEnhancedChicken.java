@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.renderer;
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
+import mokiyoki.enhancedanimals.renderer.layers.SilkieChickenLayer;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -28,7 +29,8 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
 
     public RenderEnhancedChicken(EntityRendererManager render)
     {
-        super(render, new ModelEnhancedChicken<>(), 0.5F);
+        super(render, new ModelEnhancedChicken<>(0.0F, false), 0.5F);
+        this.addLayer(new SilkieChickenLayer(this));
     }
 
     /**

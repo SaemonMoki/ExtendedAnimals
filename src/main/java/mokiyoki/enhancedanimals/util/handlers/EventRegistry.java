@@ -52,7 +52,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import static mokiyoki.enhancedanimals.init.ModBlocks.Egg_Carton;
+import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
 
 //import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
@@ -90,7 +90,7 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-        final Block[] blocks = {ModBlocks.Post_Acacia, ModBlocks.Post_Birch, ModBlocks.Post_Dark_Oak, ModBlocks.Post_Jungle, ModBlocks.Post_Oak, ModBlocks.Post_Spruce, ModBlocks.UnboundHay_Block, ModBlocks.SparseGrass_Block, ModBlocks.PatchyMycelium_Block, Egg_Carton
+        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK, ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSE_GRASS_BLOCK, ModBlocks.PATCHY_MYCELIUM_BLOCK, EGG_CARTON
         };
             event.getRegistry().registerAll(blocks);
     }
@@ -114,22 +114,22 @@ public class EventRegistry {
                                  ModItems.Egg_Matcha_Spatter, ModItems.Egg_MatchaDark_Spatter, ModItems.Egg_Moss_Spatter, ModItems.Egg_MossDark_Spatter, ModItems.Egg_GreenUmber_Spatter, ModItems.Egg_Celadon_Spatter, ModItems.Egg_Fern_Spatter, ModItems.Egg_Asparagus_Spatter, ModItems.Egg_Hunter_Spatter, ModItems.Egg_HunterDark_Spatter, ModItems.Egg_TreeDark_Spatter, ModItems.Egg_GreyNeutral_Spatter, ModItems.Egg_Laurel_Spatter, ModItems.Egg_Reseda_Spatter, ModItems.Egg_GreenPewter_Spatter, ModItems.Egg_GreyDark_Spatter,
                                  ModItems.Egg_Earth_Spatter, ModItems.Egg_Khaki_Spatter, ModItems.Egg_Grullo_Spatter, ModItems.Egg_KhakiDark_Spatter, ModItems.Egg_Carob_Spatter, ModItems.Egg_Jade_Spatter, ModItems.Egg_Pistachio_Spatter, ModItems.Egg_Sage_Spatter, ModItems.Egg_Rosemary_Spatter, ModItems.Egg_GreenBrown_Spatter, ModItems.Egg_Umber_Spatter, ModItems.Egg_PinkGrey_Spatter, ModItems.Egg_WarmGrey_Spatter, ModItems.Egg_Artichoke_Spatter, ModItems.Egg_MyrtleGrey_Spatter, ModItems.Egg_Rifle_Spatter};
 
-        final Item[] items = {ModItems.RawChicken_DarkSmall, ModItems.RawChicken_Dark, ModItems.RawChicken_DarkBig, ModItems.CookedChicken_DarkSmall, ModItems.CookedChicken_Dark,
-                ModItems.CookedChicken_DarkBig, ModItems.RawChicken_PaleSmall, ModItems.RawChicken_Pale, ModItems.CookedChicken_PaleSmall, ModItems.CookedChicken_Pale,
-                ModItems.RawRabbit_Small, ModItems.CookedRabbit_Small, ModItems.RabbitStew_Weak, ModItems.Half_Milk_Bottle, ModItems.Milk_Bottle, ModItems.OneSixth_Milk_Bucket,
-                ModItems.OneThird_Milk_Bucket, ModItems.Half_Milk_Bucket, ModItems.TwoThirds_Milk_Bucket, ModItems.FiveSixths_Milk_Bucket, ModItems.Debug_Gene_Book};
+        final Item[] items = {ModItems.RAWCHICKEN_DARKSMALL, ModItems.RAWCHICKEN_DARK, ModItems.RAWCHICKEN_DARKBIG, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_DARK,
+                ModItems.COOKEDCHICKEN_DARKBIG, ModItems.RAWCHICKEN_PALESMALL, ModItems.RAWCHICKEN_PALE, ModItems.COOKEDCHICKEN_PALESMALL, ModItems.COOKEDCHICKEN_PALE,
+                ModItems.RAWRABBIT_SMALL, ModItems.COOKEDRABBIT_SMALL, ModItems.RABBITSTEW_WEAK, ModItems.HALF_MILK_BOTTLE, ModItems.MILK_BOTTLE, ModItems.ONESIXTH_MILK_BUCKET,
+                ModItems.ONETHIRD_MILK_BUCKET, ModItems.HALF_MILK_BUCKET, ModItems.TWOTHIRDS_MILK_BUCKET, ModItems.FIVESIXTHS_MILK_BUCKET, ModItems.BASIC_LEATHER_BRIDLE, ModItems.BASIC_LEATHER_SADDLE, ModItems.BASIC_CLOTH_BRIDLE, ModItems.BASIC_CLOTH_SADDLE, ModItems.BASIC_CLOTH_COLLAR, ModItems.BASIC_LEATHER_COLLAR, ModItems.BASICPOMEL_CLOTH_SADDLE, ModItems.BASICPOMEL_LEATHER_SADDLE, ModItems.DEBUG_GENE_BOOK};
 
         final Item[] itemBlocks = {
-                new BlockItem(ModBlocks.Post_Acacia, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Acacia.getRegistryName()),
-                new BlockItem(ModBlocks.Post_Birch, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Birch.getRegistryName()),
-                new BlockItem(ModBlocks.Post_Dark_Oak, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Dark_Oak.getRegistryName()),
-                new BlockItem(ModBlocks.Post_Jungle, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Jungle.getRegistryName()),
-                new BlockItem(ModBlocks.Post_Oak, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Oak.getRegistryName()),
-                new BlockItem(ModBlocks.Post_Spruce, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.Post_Spruce.getRegistryName()),
-                new BlockItem(ModBlocks.UnboundHay_Block, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.UnboundHay_Block.getRegistryName()),
-                new BlockItem(ModBlocks.SparseGrass_Block, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.SparseGrass_Block.getRegistryName()),
-                new BlockItem(ModBlocks.PatchyMycelium_Block, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.PatchyMycelium_Block.getRegistryName()),
-                new BlockItem(Egg_Carton, new Item.Properties().maxStackSize(1).group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(Egg_Carton.getRegistryName()),
+                new BlockItem(ModBlocks.POST_ACACIA, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_ACACIA.getRegistryName()),
+                new BlockItem(ModBlocks.POST_BIRCH, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_BIRCH.getRegistryName()),
+                new BlockItem(ModBlocks.POST_DARK_OAK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_DARK_OAK.getRegistryName()),
+                new BlockItem(ModBlocks.POST_JUNGLE, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_JUNGLE.getRegistryName()),
+                new BlockItem(ModBlocks.POST_OAK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_OAK.getRegistryName()),
+                new BlockItem(ModBlocks.POST_SPRUCE, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_SPRUCE.getRegistryName()),
+                new BlockItem(ModBlocks.UNBOUNDHAY_BLOCK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.UNBOUNDHAY_BLOCK.getRegistryName()),
+                new BlockItem(ModBlocks.SPARSE_GRASS_BLOCK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.SPARSE_GRASS_BLOCK.getRegistryName()),
+                new BlockItem(ModBlocks.PATCHY_MYCELIUM_BLOCK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.PATCHY_MYCELIUM_BLOCK.getRegistryName()),
+                new BlockItem(EGG_CARTON, new Item.Properties().maxStackSize(1).group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(EGG_CARTON.getRegistryName()),
         };
 
         event.getRegistry().register(new SpawnEggItem(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000, new Item.Properties()
@@ -191,7 +191,7 @@ public class EventRegistry {
 //    public static void registerBlockColourHandlers(final ColorHandlerEvent.Block event) {
 //        final BlockColors blockColors = event.getBlockColors();
 //
-//        blockColors.register(new SparseGrassBlockColour(), ModBlocks.SparseGrass_Block);
+//        blockColors.register(new SparseGrassBlockColour(), ModBlocks.SPARSE_GRASS_BLOCK);
 //    }
 
 
@@ -199,7 +199,7 @@ public class EventRegistry {
 //    public static void registerItemColourHandlers(final ColorHandlerEvent.Item event) {
 //        final ItemColors itemColors = event.getItemColors();
 //
-//        itemColors.register(new SparseGrassItemColour(), ModBlocks.SparseGrass_Block);
+//        itemColors.register(new SparseGrassItemColour(), ModBlocks.SPARSE_GRASS_BLOCK);
 //    }
 
 

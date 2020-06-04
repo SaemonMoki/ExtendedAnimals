@@ -1,12 +1,11 @@
 package mokiyoki.enhancedanimals.proxy;
 
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.gui.EggCartonScreen;
 import mokiyoki.enhancedanimals.gui.EncyclopediaScreen;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
+import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.renderer.*;
-import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
@@ -15,6 +14,7 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.IDyeableArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.GrassColors;
 import net.minecraft.world.biome.BiomeColors;
@@ -66,15 +66,15 @@ public class ClientProxy implements IProxy {
         ScreenManager.registerFactory(ENHANCED_ANIMAL_CONTAINER, EnhancedAnimalScreen::new);
         ClientRegistry.bindTileEntityRenderer(EGG_CARTON_TILE_ENTITY, EggCartonTileEntityRenderer::new);
 
-        RenderTypeLookup.setRenderLayer(ModBlocks.SparseGrass_Block, RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(ModBlocks.PatchyMycelium_Block, RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(ModBlocks.UnboundHay_Block, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.Post_Acacia, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.Post_Birch, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.Post_Dark_Oak, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.Post_Jungle, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.Post_Oak, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.Post_Spruce, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.SPARSE_GRASS_BLOCK, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(ModBlocks.PATCHY_MYCELIUM_BLOCK, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(ModBlocks.UNBOUNDHAY_BLOCK, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.POST_ACACIA, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.POST_BIRCH, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.POST_DARK_OAK, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.POST_JUNGLE, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.POST_OAK, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.POST_SPRUCE, RenderType.getCutout());
     }
 
     @Override
@@ -85,13 +85,19 @@ public class ClientProxy implements IProxy {
         //Grass Colouring
         blockColours.register((state, world, pos, tintIndex) ->
                         world != null && pos != null ? BiomeColors.getGrassColor(world, pos) : GrassColors.get(0.5D, 1.0D),
-                ModBlocks.SparseGrass_Block);
+                ModBlocks.SPARSE_GRASS_BLOCK);
 
         //Item Colouring
         itemColours.register((stack, tintIndex) -> {
                     BlockState BlockState = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
                     return blockColours.getColor(BlockState, null, null, tintIndex); },
-                ModBlocks.SparseGrass_Block);
+                ModBlocks.SPARSE_GRASS_BLOCK);
+
+        //Dyeable Item colouring
+
+        itemColours.register((itemStack, tintIndex) -> {
+            return tintIndex > 0 ? -1 : ((IDyeableArmorItem)itemStack.getItem()).getColor(itemStack);
+        }, ModItems.BASIC_LEATHER_BRIDLE, ModItems.BASIC_LEATHER_SADDLE, ModItems.BASIC_CLOTH_BRIDLE, ModItems.BASIC_CLOTH_SADDLE, ModItems.BASIC_CLOTH_COLLAR, ModItems.BASIC_LEATHER_COLLAR, ModItems.BASICPOMEL_CLOTH_SADDLE, ModItems.BASICPOMEL_LEATHER_SADDLE);
     }
 
     @Override

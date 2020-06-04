@@ -111,7 +111,7 @@ public class EventSubscriber {
         Item item = event.getItemStack().getItem();
         Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
         if (block instanceof HayBlock && (item instanceof AxeItem || item instanceof SwordItem || item instanceof ShearsItem)) {
-            event.getWorld().setBlockState(event.getPos(), ModBlocks.UnboundHay_Block.getDefaultState(), 11);
+            event.getWorld().setBlockState(event.getPos(), ModBlocks.UNBOUNDHAY_BLOCK.getDefaultState(), 11);
         } else if (block instanceof SparseGrassBlock && (item instanceof HoeItem)) {
             event.getWorld().setBlockState(event.getPos(), Blocks.FARMLAND.getDefaultState(), 11);
         }

@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
@@ -15,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContainer> {
-    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("eanimod:textures/gui/genetic_animal_screen.png");
+    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("eanimod:textures/gui/genetic_animal_gui.png");
     private IInventory inventory;
     /** The mouse x-position recorded during the last rendered frame. */
     private float mousePosx;
@@ -23,7 +24,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     private float mousePosY;
 
     /** temp booleans */
-    boolean tabToggle = true;
+    boolean tabToggle = false;
 
 
     public static EnhancedAnimalInfo enhancedAnimalInfo = new EnhancedAnimalInfo();
@@ -46,8 +47,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
      * Draw the foreground layer for the GuiContainer (everything in front of the items)
      */
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        this.font.drawString(this.title.getFormattedText(), 8.0F, 6.0F, 4210752);
-        this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+        this.font.drawString(enhancedAnimalInfo.name, 8.0F, 6.0F, 4210752);
         this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
         // ageTag + name
         //(health points / max health points * 10) + "/" + "10"
@@ -81,6 +81,28 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
          *  this.blit(drawFromX, drawFromY, imageX, imageY, sizeX, sizeY)
          */
 
+        if (enhancedAnimalInfo.isFemale) {
+            this.blit(i + 126, j + 5, 117, this.ySize + 54, 8, 10); // female icon
+                int pregnancy = enhancedAnimalInfo.pregnant;
+            this.blit(i + 126, j + 5 + (10-pregnancy) , 117, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
+
+        } else {
+            this.blit(i + 126, j + 5, 108, this.ySize + 54, 8, 10); // male icon
+                int pregnancy = enhancedAnimalInfo.pregnant;
+            this.blit(i + 126, j + 5 + (10-pregnancy) , 108, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
+        }
+
+        this.blit(i + 136, j + 5, 125, this.ySize + 54, 9, 10); // health icon
+        this.blit(i + 147, j + 5, 134, this.ySize + 54, 9, 10); // hunger icon
+        this.blit(i + 158, j + 5, 143, this.ySize + 54, 10, 10); // tameness icon
+
+        int health = enhancedAnimalInfo.health;
+        int hunger = 10 - enhancedAnimalInfo.hunger;
+        int tameness = enhancedAnimalInfo.tameness;
+        this.blit(i + 136, j + 5 + (10-health), 125, this.ySize + 64 + (10-health), 9, health); // health icon
+        this.blit(i + 147, j + 5 + (10-hunger), 134, this.ySize + 64 + (10-hunger), 9, hunger); // hunger icon
+        this.blit(i + 158, j + 5 + (10-tameness), 143, this.ySize + 64 + (10-tameness), 10, tameness); // tameness icon
+
         if (enhancedAnimalInfo.canHaveSaddle) {
             this.blit(i + shiftX, j + shiftY, 0, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
@@ -111,6 +133,15 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         }
         if (enhancedAnimalInfo.canHaveBanner && (shiftX == 7 || !tabToggle)) {
             this.blit(i + shiftX, j + shiftY, 72, this.ySize + 54, 18, 18);
+            shiftY = shiftY + 18;
+            if (shiftY >= 69) {
+                shiftY = 17;
+                shiftX = 79;
+            }
+            countEquipment++;
+        }
+        if (enhancedAnimalInfo.canHaveHarness && (shiftX == 7 || !tabToggle)) {
+            this.blit(i + shiftX, j + shiftY, 90, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
                 shiftY = 17;

@@ -141,10 +141,22 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             "hooves_black.png", "hooves_brown.png"
     };
 
+    private static final String[] HORSE_TEXTURES_BLANKETS = new String[]  {
+            "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
+    };
+
+    private static final String[] HORSE_TEXTURES_SADDLE = new String[]  {
+            "", "saddle_western_dyeable.png", "saddle_english.png"
+    };
+
+    private static final String[] HORSE_TEXTURES_SADDLE_Deco = new String[]  {
+            "", "c_saddleseat.png"
+    };
+
     private final List<String> horseTextures = new ArrayList<>();
 
-    protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UnboundHay_Block);
-    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
+    protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UNBOUNDHAY_BLOCK);
+    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     Map<Item, Integer> foodWeightMap = new HashMap() {{
@@ -160,7 +172,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         put(new ItemStack(Items.WHEAT).getItem(), 6000);
         put(new ItemStack(Items.SUGAR).getItem(), 1500);
         put(new ItemStack(Items.APPLE).getItem(), 1500);
-        put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
+        put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
     }};
 
     public boolean isFemale = true;
@@ -263,8 +275,8 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         if (this.isPassenger(passenger)) {
             float f = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
             float f1 = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
-            float f2 = 0.3F;
-            passenger.setPosition(this.getPosX() + (double)(0.3F * f1), this.getPosY() + this.getMountedYOffset() + passenger.getYOffset(), this.getPosZ() - (double)(0.3F * f));
+            float f2 = 0.15F;
+            passenger.setPosition(this.getPosX() + (double)(f2 * f1), this.getPosY() + this.getMountedYOffset() + passenger.getYOffset(), this.getPosZ() - (double)(f2 * f));
         }
     }
 
@@ -272,7 +284,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
      * Returns the Y offset from the entity's position for any entity riding this one.
      */
     public double getMountedYOffset() {
-        return (double)this.getHeight() * 0.67D;
+        return (double)this.getHeight() * 0.725D;
     }
 
     /**
@@ -387,7 +399,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
 
                 }
             }
-            lethalGenes();
+//            lethalGenes();
         }
     }
 
@@ -654,9 +666,11 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             }
             this.horseTextures.add(HORSE_TEXTURES_TESTNUMBER[number]);
             this.horseTextures.add(HORSE_TEXTURES_TESTLETTER[letter]);
-            this.horseTextures.add(HORSE_TEXTURES_SCLERA[sclera]);
             this.horseTextures.add(HORSE_TEXTURES_EYES[1]);
+            this.horseTextures.add(HORSE_TEXTURES_SCLERA[sclera]);
             this.horseTextures.add(HORSE_TEXTURES_HOOVES[0]);
+            this.horseTextures.add(HORSE_TEXTURES_BLANKETS[14]);
+            this.horseTextures.add(HORSE_TEXTURES_SADDLE[1]);
         }
     }
 
@@ -776,14 +790,14 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
 
                 if (!entityPlayer.abilities.isCreativeMode) {
-                    if (item == ModItems.Half_Milk_Bottle) {
+                    if (item == ModItems.HALF_MILK_BOTTLE) {
                         decreaseHunger(6000);
                         if (itemStack.isEmpty()) {
                             entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
                         } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
                             entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
                         }
-                    } else if (item == ModItems.Milk_Bottle) {
+                    } else if (item == ModItems.MILK_BOTTLE) {
                         if (hunger >= 12000) {
                             decreaseHunger(12000);
                             if (itemStack.isEmpty()) {
@@ -794,9 +808,9 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
                         } else {
                             decreaseHunger(6000);
                             if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
-                                entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
+                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
+                                entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
                             }
                         }
                     }

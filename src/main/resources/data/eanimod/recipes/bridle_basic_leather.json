@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+  [
+    "LLL",
+    "I I",
+    " L "
+  ],
+
+  "key":
+  {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "I": {
+      "item": "minecraft:iron_nugget"
+    }
+  },
+  "result":
+  {
+    "item": "eanimod:bridle_basic_leather",
+    "count": 1
+  }
+}

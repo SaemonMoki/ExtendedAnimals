@@ -106,8 +106,7 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
             "eyes_black.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.TALL_GRASS, Items.VINE, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.ROSE_BUSH, Items.DANDELION, Items.SUGAR, Items.APPLE, ModBlocks.UnboundHay_Block);
-    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.TALL_GRASS, Items.VINE, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.ROSE_BUSH, Items.DANDELION, Items.SUGAR, Items.APPLE, ModBlocks.UNBOUNDHAY_BLOCK);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     private final List<String> sheepFleeceTextures = new ArrayList<>();
@@ -148,7 +147,7 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
             put(new ItemStack(Items.ROSE_BUSH).getItem(), 1500);
             put(new ItemStack(Items.SUGAR).getItem(), 1500);
             put(new ItemStack(Items.APPLE).getItem(), 1500);
-            put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
+            put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
         }};
 
     }
@@ -1124,7 +1123,7 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
-        if ((item == Items.BUCKET || item == ModItems.OneSixth_Milk_Bucket || item == ModItems.OneThird_Milk_Bucket || item == ModItems.Half_Milk_Bucket || item == ModItems.TwoThirds_Milk_Bucket || item == ModItems.FiveSixths_Milk_Bucket || item == ModItems.Half_Milk_Bottle || item == Items.GLASS_BOTTLE) && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
+        if ((item == Items.BUCKET || item == ModItems.ONESIXTH_MILK_BUCKET || item == ModItems.ONETHIRD_MILK_BUCKET || item == ModItems.HALF_MILK_BUCKET || item == ModItems.TWOTHIRDS_MILK_BUCKET || item == ModItems.FIVESIXTHS_MILK_BUCKET || item == ModItems.HALF_MILK_BOTTLE || item == Items.GLASS_BOTTLE) && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;
             int bucketSize = 6;
             int currentMilk = getMilkAmount();
@@ -1132,17 +1131,17 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
             boolean isBottle = false;
             if (item == Items.BUCKET) {
                 maxRefill = 6;
-            } else if (item == ModItems.OneSixth_Milk_Bucket) {
+            } else if (item == ModItems.ONESIXTH_MILK_BUCKET) {
                 maxRefill = 5;
-            } else if (item == ModItems.OneThird_Milk_Bucket) {
+            } else if (item == ModItems.ONETHIRD_MILK_BUCKET) {
                 maxRefill = 4;
-            } else if (item == ModItems.Half_Milk_Bucket) {
+            } else if (item == ModItems.HALF_MILK_BUCKET) {
                 maxRefill = 3;
-            } else if (item == ModItems.TwoThirds_Milk_Bucket) {
+            } else if (item == ModItems.TWOTHIRDS_MILK_BUCKET) {
                 maxRefill = 2;
-            } else if (item == ModItems.FiveSixths_Milk_Bucket) {
+            } else if (item == ModItems.FIVESIXTHS_MILK_BUCKET) {
                 maxRefill = 1;
-            } else if (item == ModItems.Half_Milk_Bottle) {
+            } else if (item == ModItems.HALF_MILK_BOTTLE) {
                 maxRefill = 1;
                 isBottle = true;
                 bucketSize = 2;
@@ -1181,26 +1180,26 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
                     return true;
                 case 1:
                     if (isBottle) {
-                        resultItem = new ItemStack(ModItems.Half_Milk_Bottle);
+                        resultItem = new ItemStack(ModItems.HALF_MILK_BOTTLE);
                     } else {
-                        resultItem = new ItemStack(ModItems.OneSixth_Milk_Bucket);
+                        resultItem = new ItemStack(ModItems.ONESIXTH_MILK_BUCKET);
                     }
                     break;
                 case 2:
                     if (isBottle) {
-                        resultItem = new ItemStack(ModItems.Milk_Bottle);
+                        resultItem = new ItemStack(ModItems.MILK_BOTTLE);
                     } else {
-                        resultItem = new ItemStack(ModItems.OneThird_Milk_Bucket);
+                        resultItem = new ItemStack(ModItems.ONETHIRD_MILK_BUCKET);
                     }
                     break;
                 case 3:
-                    resultItem = new ItemStack(ModItems.Half_Milk_Bucket);
+                    resultItem = new ItemStack(ModItems.HALF_MILK_BUCKET);
                     break;
                 case 4:
-                    resultItem = new ItemStack(ModItems.TwoThirds_Milk_Bucket);
+                    resultItem = new ItemStack(ModItems.TWOTHIRDS_MILK_BUCKET);
                     break;
                 case 5:
-                    resultItem = new ItemStack(ModItems.FiveSixths_Milk_Bucket);
+                    resultItem = new ItemStack(ModItems.FIVESIXTHS_MILK_BUCKET);
                     break;
                 case 6:
                     resultItem = new ItemStack(Items.MILK_BUCKET);
@@ -1215,34 +1214,6 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
                 entityPlayer.dropItem(resultItem, false);
             }
 
-        } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
-
-//            if (!entityPlayer.abilities.isCreativeMode) {
-                if (item == ModItems.Half_Milk_Bottle) {
-                    decreaseHunger(6000);
-                    if (itemStack.isEmpty()) {
-                        entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                        entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                    }
-                } else if (item == ModItems.Milk_Bottle) {
-                    if (hunger >= 12000) {
-                        decreaseHunger(12000);
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                            entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                        }
-                    } else {
-                        decreaseHunger(6000);
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
-                            entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
-                        }
-                    }
-                }
-//            }
         }
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {

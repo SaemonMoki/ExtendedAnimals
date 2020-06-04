@@ -141,7 +141,11 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             "bald", "sparse.png", "medium.png", "furry.png", "wooly.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD, ModItems.CookedChicken_Dark, ModItems.CookedChicken_DarkBig, ModItems.CookedChicken_DarkSmall, ModItems.CookedChicken_Pale, ModItems.CookedChicken_PaleSmall, ModItems.CookedRabbit_Small);
+    private static final String[] PIG_TEXTURES_SADDLE = new String[] {
+            "", "saddle_western.png", "saddle_english.png"
+    };
+
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD, ModItems.COOKEDCHICKEN_DARK, ModItems.COOKEDCHICKEN_DARKBIG, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_PALE, ModItems.COOKEDCHICKEN_PALESMALL, ModItems.COOKEDRABBIT_SMALL);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.CARROT, Items.BEETROOT, Items.POTATO);
 
     private static final int GENES_LENGTH = 58;
@@ -169,16 +173,16 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             put(new ItemStack(Items.GRASS).getItem(), 3000);
             put(new ItemStack(Items.VINE).getItem(), 3000);
             put(new ItemStack(Items.COOKED_BEEF).getItem(), 3000);
+            put(new ItemStack(ModItems.COOKEDCHICKEN_DARKBIG).getItem(), 3000);
+            put(new ItemStack(ModItems.COOKEDCHICKEN_DARK).getItem(), 2000);
+            put(new ItemStack(ModItems.COOKEDCHICKEN_DARKSMALL).getItem(), 1000);
             put(new ItemStack(Items.COOKED_CHICKEN).getItem(), 3000);
-            put(new ItemStack(ModItems.CookedChicken_Dark).getItem(), 2000);
-            put(new ItemStack(ModItems.CookedChicken_DarkBig).getItem(), 3000);
-            put(new ItemStack(ModItems.CookedChicken_DarkSmall).getItem(), 1000);
-            put(new ItemStack(ModItems.CookedChicken_Pale).getItem(), 2000);
-            put(new ItemStack(ModItems.CookedChicken_PaleSmall).getItem(), 1000);
+            put(new ItemStack(ModItems.COOKEDCHICKEN_PALE).getItem(), 2000);
+            put(new ItemStack(ModItems.COOKEDCHICKEN_PALESMALL).getItem(), 1000);
             put(new ItemStack(Items.COOKED_COD).getItem(), 1500);
             put(new ItemStack(Items.COOKED_MUTTON).getItem(), 3000);
             put(new ItemStack(Items.COOKED_RABBIT).getItem(), 1500);
-            put(new ItemStack(ModItems.CookedRabbit_Small).getItem(), 750);
+            put(new ItemStack(ModItems.COOKEDRABBIT_SMALL).getItem(), 750);
             put(new ItemStack(Items.COOKED_SALMON).getItem(), 3000);
             put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
             put(new ItemStack(Blocks.OAK_LEAVES).getItem(), 1000);
@@ -200,7 +204,7 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             put(new ItemStack(Items.OAK_SAPLING).getItem(), 1000);
             put(new ItemStack(Items.DARK_OAK_SAPLING).getItem(), 1000);
             put(new ItemStack(Items.MILK_BUCKET).getItem(), 1500);
-            put(new ItemStack(ModBlocks.UnboundHay_Block).getItem(), 54000);
+            put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
         }};
     }
 
@@ -1004,7 +1008,7 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             if (tusks){
                 this.enhancedAnimalTextures.add(PIG_TEXTURES_TUSKS[1]);
             }
-
+            this.enhancedAnimalTextures.add(PIG_TEXTURES_SADDLE[2]);
         }
     }
 
@@ -1504,6 +1508,10 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             } else {
                 initialGenes[57] = (1);
             }
+
+            //ear size [xsmall, small, medium, large, xlarge]
+
+            //ear angle [up, medium, down
 
         }
 

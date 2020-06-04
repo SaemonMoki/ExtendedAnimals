@@ -2,8 +2,8 @@ package mokiyoki.enhancedanimals.util;
 
 public class EnhancedAnimalInfo {
 
-    public float health = 0.0F;
-    public float hunger = 0.0F;
+    public int health = 0;
+    public int hunger = 0;
     public int tameness = 0;
     public boolean isFemale = true;
     public int pregnant = 0;
@@ -23,8 +23,8 @@ public class EnhancedAnimalInfo {
     public EnhancedAnimalInfo(String serialised) {
         if (serialised != null && !serialised.isEmpty()) {
             String[] splits = serialised.split("\\|");
-            health = Float.valueOf(splits[0]);
-            hunger = Float.valueOf(splits[1]);
+            health = Integer.valueOf(splits[0]);
+            hunger = Integer.valueOf(splits[1]);
             tameness = Integer.valueOf(splits[2]);
             isFemale = Boolean.valueOf(splits[3]);
             pregnant = Integer.valueOf(splits[4]);

@@ -670,9 +670,9 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             if (size <= 0.65F || getAge() < 48000 || (size < 0.8F && (size-0.65F)/0.0015F < rand.nextInt(100))) {
                 //small meat
                 if (isBurning()) {
-                    meatStack = new ItemStack(ModItems.CookedRabbit_Small, 1 + looting);
+                    meatStack = new ItemStack(ModItems.COOKEDRABBIT_SMALL, 1 + looting);
                 } else {
-                    meatStack = new ItemStack(ModItems.RawRabbit_Small, 1 + looting);
+                    meatStack = new ItemStack(ModItems.RAWRABBIT_SMALL, 1 + looting);
                 }
             } else if (isBurning()) {
                 meatStack = new ItemStack(Items.COOKED_RABBIT, 1 + looting);

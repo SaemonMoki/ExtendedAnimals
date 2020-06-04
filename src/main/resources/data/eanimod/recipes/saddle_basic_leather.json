@@ -1,0 +1,11 @@
+{
+  "type": "crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:saddle"
+    }
+  ],
+  "result": {
+    "item": "eanimod:saddle_basic_leather"
+  }
+}

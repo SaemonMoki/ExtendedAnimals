@@ -5,7 +5,6 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEat
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
-import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.AgeableEntity;
@@ -142,7 +141,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.CHICKEN, Items.BEEF, Items.MUTTON, Items.RABBIT, Items.TROPICAL_FISH, Items.SALMON, Items.COD);
-    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
+    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.TROPICAL_FISH, Items.SALMON, Items.COD);
 
     Map<Item, Integer> foodWeightMap = new HashMap() {{
@@ -333,14 +332,14 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
             } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
 
                 if (!entityPlayer.abilities.isCreativeMode) {
-                    if (item == ModItems.Half_Milk_Bottle) {
+                    if (item == ModItems.HALF_MILK_BOTTLE) {
                         decreaseHunger(6000);
                         if (itemStack.isEmpty()) {
                             entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
                         } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
                             entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
                         }
-                    } else if (item == ModItems.Milk_Bottle) {
+                    } else if (item == ModItems.MILK_BOTTLE) {
                         if (hunger >= 12000) {
                             decreaseHunger(12000);
                             if (itemStack.isEmpty()) {
@@ -351,9 +350,9 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
                         } else {
                             decreaseHunger(6000);
                             if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
-                                entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
+                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
+                                entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
                             }
                         }
                     }

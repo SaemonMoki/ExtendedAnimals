@@ -2379,6 +2379,21 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     }
 
     @Override
+    protected void createAndSpawnEnhancedChild(World world) {
+
+    }
+
+    @Override
+    protected boolean canBePregnant() {
+        return false;
+    }
+
+    @Override
+    protected boolean canLactate() {
+        return false;
+    }
+
+    @Override
     public void mixMitosisGenes() {
         punnetSquare(20, mitosisGenes, genes);
     }

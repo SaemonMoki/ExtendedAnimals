@@ -186,9 +186,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     private int currentCoatLength;
     private int timeForGrowth = 0;
 
-    private int gestationTimer = 0;
-    private boolean pregnant = false;
-
     private float rabbitSize = 0.0F;
 
     private static final int GENES_LENGTH = 60;
@@ -465,62 +462,44 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     @Override
-    protected void runPregnancyTick() {
-        if(pregnant) {
-            gestationTimer++;
-            int days = EanimodCommonConfig.COMMON.gestationDaysRabbit.get();
-            if (hunger > days*(0.75) && days !=0) {
-                pregnant = false;
-            }
-            if (gestationTimer >= days) {
-                pregnant = false;
-                gestationTimer = 0;
-                int kitAverage = 1;
-                int kitRange = 2;
+    protected int getNumberOfChildren() {
+        int kitAverage = 1;
+        int kitRange = 2;
 
-                if (rabbitSize <= 0.4 ){
+        if (rabbitSize <= 0.4 ){
 //                        kitAverage = 1;
-                    kitRange = 1;
-                }else if (rabbitSize <= 0.5 ){
-                    kitAverage = 2;
-                    kitRange = 1;
-                }else if (rabbitSize <= 0.6 ){
-                    kitAverage = 4;
+            kitRange = 1;
+        }else if (rabbitSize <= 0.5 ){
+            kitAverage = 2;
+            kitRange = 1;
+        }else if (rabbitSize <= 0.6 ){
+            kitAverage = 4;
 //                        kitRange = 2;
-                }else if (rabbitSize <= 0.7 ){
-                    kitAverage = 5;
+        }else if (rabbitSize <= 0.7 ){
+            kitAverage = 5;
 //                        kitRange = 2;
-                }else if (rabbitSize <= 0.8 ){
-                    kitAverage = 6;
-                    kitRange = 3;
-                }else if (rabbitSize <= 0.9 ){
-                    kitAverage = 7;
-                    kitRange = 3;
-                }else{
-                    kitAverage = 8;
-                    kitRange = 4;
-                }
+        }else if (rabbitSize <= 0.8 ){
+            kitAverage = 6;
+            kitRange = 3;
+        }else if (rabbitSize <= 0.9 ){
+            kitAverage = 7;
+            kitRange = 3;
+        }else{
+            kitAverage = 8;
+            kitRange = 4;
+        }
 
-                if (genes[56] == 2 && genes[57] == 2){
-                    if (genes[58] == 1 && genes[59] == 1){
-                        kitRange++;
-                    }
-                }else{
-                    if (genes[58] == 2 && genes[59] == 2){
-                        kitRange--;
-                    }
-                }
-
-                int numberOfKits = ThreadLocalRandom.current().nextInt(kitRange)+kitAverage;
-
-                for (int i = 0; i <= numberOfKits; i++) {
-                    mixMateMitosisGenes();
-                    mixMitosisGenes();
-                    createAndSpawnEnhancedChild(this.world);
-                }
-
+        if (genes[56] == 2 && genes[57] == 2){
+            if (genes[58] == 1 && genes[59] == 1){
+                kitRange++;
+            }
+        }else{
+            if (genes[58] == 2 && genes[59] == 2){
+                kitRange--;
             }
         }
+
+        return ThreadLocalRandom.current().nextInt(kitRange)+kitAverage;
     }
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
@@ -534,6 +513,16 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         enhancedrabbit.setCoatLength(enhancedrabbit.currentCoatLength);
 
         this.world.addEntity(enhancedrabbit);
+    }
+
+    @Override
+    protected boolean canBePregnant() {
+        return true;
+    }
+
+    @Override
+    protected boolean canLactate() {
+        return false;
     }
 
     public class JumpHelperController extends JumpController {

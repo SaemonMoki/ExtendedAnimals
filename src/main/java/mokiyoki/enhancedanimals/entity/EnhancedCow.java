@@ -63,10 +63,8 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
     private static final DataParameter<Boolean> SADDLED = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> BOOST_TIME = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
-    private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.FLOAT);
     protected static final DataParameter<Boolean> RESET_TEXTURE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> MOOSHROOM_UUID = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
-    private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
     private static final DataParameter<String> HORN_ALTERATION = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
 
     private static final String[] COW_TEXTURES_BASE = new String[] {
@@ -152,7 +150,6 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
     private static final int GENES_LENGTH = 120;
 
-    protected float maxBagSize;
     protected boolean aiConfigured = false;
 
     private String mooshroomUUID = "0";
@@ -160,11 +157,7 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
     private float[] cowColouration = null;
     protected String motherUUID = "";
 
-    protected int timeUntilNextMilk;
     protected EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
-    protected int gestationTimer = 0;
-    protected int lactationTimer = 0;
-    protected boolean pregnant = false;
 
     private boolean boosting;
     private int boostTime;
@@ -195,7 +188,6 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             put(new ItemStack(Items.APPLE).getItem(), 1500);
             put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
         }};
-
     }
 
     @Override
@@ -227,10 +219,8 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
     protected void registerData() {
         super.registerData();
         this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
-        this.dataManager.register(BAG_SIZE, 0.0F);
         this.dataManager.register(RESET_TEXTURE, false);
         this.dataManager.register(MOOSHROOM_UUID, "0");
-        this.dataManager.register(MILK_AMOUNT, 0);
         this.dataManager.register(SADDLED, false);
         this.dataManager.register(BOOST_TIME, 0);
     }
@@ -255,12 +245,6 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
         }
     }
 
-    private void setBagSize(float size) { this.dataManager.set(BAG_SIZE, size); }
-
-    public float getBagSize() {
-        return this.dataManager.get(BAG_SIZE);
-    }
-
     protected void setMooshroomUUID(String status) {
         if (!status.equals("")) {
             this.dataManager.set(MOOSHROOM_UUID, status);
@@ -269,12 +253,6 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
     }
 
     public String getMooshroomUUID() { return mooshroomUUID; }
-
-    protected void setMilkAmount(Integer milkAmount) {
-        this.dataManager.set(MILK_AMOUNT, milkAmount);
-    }
-
-    public Integer getMilkAmount() { return this.dataManager.get(MILK_AMOUNT); }
 
 //    public void setReloadTexture(Boolean resetTexture) {
 //        this.dataManager.set(RESET_TEXTURE, resetTexture);
@@ -294,16 +272,14 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
         return null;
     }
 
-    public boolean decreaseMilk(int decrease) {
-        int milk = getMilkAmount();
-        if (milk >= decrease) {
-            milk = milk - decrease;
-            setMilkAmount(milk);
-            return true;
-        } else {
-//            entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
-            return false;
-        }
+    @Override
+    protected boolean canBePregnant() {
+        return true;
+    }
+
+    @Override
+    protected boolean canLactate() {
+        return true;
     }
 
     protected SoundEvent getAmbientSound() { return SoundEvents.ENTITY_COW_AMBIENT; }
@@ -381,38 +357,14 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
         return (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && awokenTimer == 0 && !sleeping);
     }
 
-    @Override
-    protected void runPregnancyTick() {
-        if(pregnant) {
-            gestationTimer++;
-            int days = EanimodCommonConfig.COMMON.gestationDaysCow.get();
-            if (days/2 < gestationTimer) {
-                setEntityStatus(EntityState.PREGNANT.toString());
-            }
-            if (hunger > 12000 && days !=0) {
-                pregnant = false;
-                setEntityStatus(EntityState.ADULT.toString());
-            }
-            if (gestationTimer >= days) {
-                pregnant = false;
-                gestationTimer = 0;
-                setEntityStatus(EntityState.MOTHER.toString());
-                //sets milk amount at first milk
-                Integer milk = Math.round((30*(getAnimalSize()/1.5F)*(maxBagSize/1.5F)) * 0.75F);
-                setMilkAmount(milk);
+    protected void initialMilk() {
+        lactationTimer = -48000;
+        //sets milk amount at first milk
+        Integer milk = Math.round((30*(getAnimalSize()/1.5F)*(maxBagSize/1.5F)) * 0.75F);
+        setMilkAmount(milk);
 
-                float milkBagSize = milk / (30*(getAnimalSize()/1.5F)*(maxBagSize/1.5F));
-                this.setBagSize((1.1F*milkBagSize*(maxBagSize-1.0F))+1.0F);
-
-                lactationTimer = -48000;
-
-                mixMateMitosisGenes();
-                mixMitosisGenes();
-
-                createAndSpawnEnhancedChild(this.world);
-
-            }
-        }
+        float milkBagSize = milk / (30*(getAnimalSize()/1.5F)*(maxBagSize/1.5F));
+        this.setBagSize((1.1F*milkBagSize*(maxBagSize-1.0F))+1.0F);
     }
 
     @Override
@@ -1154,7 +1106,8 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
         return cowColouration;
     }
 
-    private void setMaxBagSize(){
+    @Override
+    protected void setMaxBagSize(){
         float maxBagSize = 0.0F;
 
         if (!this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())){
@@ -1436,15 +1389,9 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
-        compound.putBoolean("Pregnant", this.pregnant);
-        compound.putInt("Gestation", this.gestationTimer);
-        compound.putInt("Lactation", this.lactationTimer);
-
         compound.putString("MooshroomID", getMooshroomUUID());
 
         compound.putString("MotherUUID", this.motherUUID);
-
-        compound.putInt("milk", getMilkAmount());
 
         compound.putBoolean("Saddle", this.getSaddled());
 
@@ -1456,15 +1403,10 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
 
-        this.pregnant = compound.getBoolean("Pregnant");
-        this.gestationTimer = compound.getInt("Gestation");
-        this.lactationTimer = compound.getInt("Lactation");
 
         setMooshroomUUID(compound.getString("MooshroomID"));
 
         this.motherUUID = compound.getString("MotherUUID");
-
-        setMilkAmount(compound.getInt("milk"));
 
         if (genes[82] == 0) {
             generateHornGenes(genes);
@@ -1472,7 +1414,6 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
         this.setSaddled(compound.getBoolean("Saddle"));
 
-        setMaxBagSize();
         configureAI();
     }
 

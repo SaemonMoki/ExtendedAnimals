@@ -45,9 +45,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     private static final DataParameter<Float> ANIMAL_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
     private static final DataParameter<String> ENTITY_STATUS = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
+    private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.VARINT);
 
-    private static Ingredient TEMPTATION_ITEMS;
-    private static Ingredient BREED_ITEMS;
+    private Ingredient TEMPTATION_ITEMS;
+    private Ingredient BREED_ITEMS;
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
 
     // Genetic Info
@@ -74,6 +76,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     //Pregnancy
     protected int gestationTimer = 0;
     protected boolean pregnant = false;
+
+    //Lactation
+    protected int lactationTimer = 0;
+    protected float maxBagSize;
+    protected int timeUntilNextMilk;
 
     //Texture
     protected final List<String> enhancedAnimalTextures = new ArrayList<>();
@@ -103,6 +110,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         this.dataManager.register(ENTITY_STATUS, new String());
         this.dataManager.register(BIRTH_TIME, "0");
         this.dataManager.register(ANIMAL_SIZE, 0.0F);
+        if (canLactate()) {
+            this.dataManager.register(BAG_SIZE, 0.0F);
+            this.dataManager.register(MILK_AMOUNT, 0);
+        }
     }
 
     /*
@@ -121,9 +132,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     //any lethal gene checks the animal has
     protected abstract void lethalGenes();
 
-    //all pregnancy work during living tick goes here
-    protected abstract void runPregnancyTick();
-
     //when the animal wakes up
     protected boolean sleepingConditional() {
         return (!this.world.isDaytime() && awokenTimer == 0 && !sleeping);
@@ -139,6 +147,16 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     //called during construction to set up the animal size
     protected abstract void initilizeAnimalSize();
+
+    //method to create the new child
+    protected abstract void createAndSpawnEnhancedChild(World world);
+
+    //used to set if an animal runs the pregnancy code
+    protected abstract boolean canBePregnant();
+
+    //used to set if an animal can producte milk
+    protected abstract boolean canLactate();
+
 
     /*
     Getters and Setters for variables and datamanagers
@@ -208,6 +226,32 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             return 500000;
         }
     }
+
+    protected void setBagSize(float size) { this.dataManager.set(BAG_SIZE, size); }
+
+    public float getBagSize() {
+        return this.dataManager.get(BAG_SIZE);
+    }
+
+    protected void setMilkAmount(Integer milkAmount) {
+        this.dataManager.set(MILK_AMOUNT, milkAmount);
+    }
+
+    public Integer getMilkAmount() { return this.dataManager.get(MILK_AMOUNT); }
+
+    public boolean decreaseMilk(int decrease) {
+        int milk = getMilkAmount();
+        if (milk >= decrease) {
+            milk = milk - decrease;
+            setMilkAmount(milk);
+            return true;
+        } else {
+//            entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
+            return false;
+        }
+    }
+
+    protected void setMaxBagSize(){ }
 
     public void setGenes(int[] genes) {
         this.genes = genes;
@@ -285,6 +329,52 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                 this.blink--;
             }
         }
+    }
+
+    protected void runPregnancyTick() {
+        if(pregnant) {
+
+            gestationTimer++;
+            int days = gestationConfig();
+            if (days/2 < gestationTimer) {
+                setEntityStatus(EntityState.PREGNANT.toString());
+            }
+            if (hunger > 12000 && days !=0) {
+                pregnant = false;
+                gestationTimer = 0;
+                setEntityStatus(EntityState.ADULT.toString());
+            }
+            if (gestationTimer >= days) {
+                pregnant = false;
+                gestationTimer = 0;
+                setEntityStatus(EntityState.MOTHER.toString());
+
+                if (canLactate()) {
+                    initialMilk();
+                }
+
+                int numberOfChildren = getNumberOfChildren();
+
+                for (int i = 0; i <= numberOfChildren; i++) {
+                    mixMateMitosisGenes();
+                    mixMitosisGenes();
+                    createAndSpawnEnhancedChild(this.world);
+                }
+            }
+        }
+    }
+
+    protected void initialMilk() {
+        lactationTimer = -48000;
+        setMilkAmount(4);
+
+        float milkBagSize = 4 / (6*maxBagSize);
+
+        this.setBagSize((milkBagSize*(maxBagSize/3.0F))+(maxBagSize*2.0F/3.0F));
+    }
+
+    protected int getNumberOfChildren() {
+        return 1;
     }
 
     protected void updateStatusTick() {
@@ -405,6 +495,16 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         compound.putString("Status", getEntityStatus());
 
         compound.putString("BirthTime", this.getBirthTime());
+
+        if (canBePregnant()) {
+            compound.putBoolean("Pregnant", this.pregnant);
+            compound.putInt("Gestation", this.gestationTimer);
+        }
+
+        if (canLactate()) {
+            compound.putInt("Lactation", this.lactationTimer);
+            compound.putInt("milk", getMilkAmount());
+        }
     }
 
     @Override
@@ -430,6 +530,17 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         setEntityStatus(compound.getString("Status"));
 
         this.setBirthTime(compound.getString("BirthTime"));
+
+        if (canBePregnant()) {
+            this.pregnant = compound.getBoolean("Pregnant");
+            this.gestationTimer = compound.getInt("Gestation");
+        }
+
+        if (canLactate()) {
+            this.lactationTimer = compound.getInt("Lactation");
+            setMilkAmount(compound.getInt("milk"));
+            setMaxBagSize();
+        }
 
         geneFixer();
 
@@ -481,7 +592,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             ((EnhancedAnimalAbstract)ageable).mixMitosisGenes();
         } else {
             pregnant = true;
-            this.mateGenes = ((EnhancedCow) ageable).getGenes();
+            this.mateGenes = ((EnhancedAnimalAbstract) ageable).getGenes();
             mixMateMitosisGenes();
             mixMitosisGenes();
         }
@@ -560,7 +671,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     @Override
     public boolean isBreedingItem(ItemStack stack) {
         //TODO set this to a separate item or type of item for force breeding
-        return BREED_ITEMS.test(stack);
+        return this.BREED_ITEMS.test(stack);
     }
 
     public void setSharedGenes(int[] genes) {

@@ -121,10 +121,6 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
 //    protected boolean aiConfigured = false;
     private String motherUUID = "";
 
-    private int gestationTimer = 0;
-    protected int lactationTimer = 0;
-    private boolean pregnant = false;
-
     public EnhancedSheep(EntityType<? extends EnhancedSheep> entityType, World worldIn) {
         super(entityType, worldIn, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
         this.setSheepSize();
@@ -242,10 +238,6 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
     }
 
-    private void setBagSize(float size) { this.dataManager.set(BAG_SIZE, size); }
-
-    public float getBagSize() { return this.dataManager.get(BAG_SIZE); }
-
     @Override
     public Inventory getEnhancedInventory() {
         return null;
@@ -329,63 +321,34 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
     }
 
     @Override
-    protected void runPregnancyTick() {
-        if(pregnant) {
+    protected int getNumberOfChildren() {
+        int lambRange;
+        int lambAverage = 1;
+        int numberOfLambs;
 
-            gestationTimer++;
-            int days = gestationConfig();
-            if (days/2 < gestationTimer) {
-                setEntityStatus(EntityState.PREGNANT.toString());
-            }
-            if (hunger > 12000 && days !=0) {
-                pregnant = false;
-                gestationTimer = 0;
-                setEntityStatus(EntityState.ADULT.toString());
-            }
-            if (gestationTimer >= days) {
-                pregnant = false;
-                gestationTimer = 0;
-                lactationTimer = -48000;
-                setEntityStatus(EntityState.MOTHER.toString());
-                setMilkAmount(4);
-
-                float milkBagSize = 4 / (6*maxBagSize);
-
-                this.setBagSize((milkBagSize*(maxBagSize/3.0F))+(maxBagSize*2.0F/3.0F));
-
-                int lambRange;
-                int lambAverage = 1;
-                int numberOfLambs;
-
-                if (genes[38] == 1 || genes[39] == 1) {
-                    //1 baby
-                    lambRange = 1;
-                } else if (genes[38] == 3 && genes[39] == 3) {
-                    // 2-3 babies
-                    lambRange = 2;
-                    lambAverage = 2;
-                } else if (genes[38] == 2 && genes[39] == 2) {
-                    //1 to 2 babies
-                    lambRange = 2;
-                } else {
-                    // 1-3 babies
-                    lambRange = 3;
-                    lambAverage = 1;
-                }
-
-                if (lambRange != 1) {
-                    numberOfLambs = ThreadLocalRandom.current().nextInt(lambRange) + lambAverage;
-                } else {
-                    numberOfLambs = 1;
-                }
-
-                for (int i = 0; i <= numberOfLambs; i++) {
-                    mixMateMitosisGenes();
-                    mixMitosisGenes();
-                    createAndSpawnEnhancedChild(this.world);
-                }
-            }
+        if (genes[38] == 1 || genes[39] == 1) {
+            //1 baby
+            lambRange = 1;
+        } else if (genes[38] == 3 && genes[39] == 3) {
+            // 2-3 babies
+            lambRange = 2;
+            lambAverage = 2;
+        } else if (genes[38] == 2 && genes[39] == 2) {
+            //1 to 2 babies
+            lambRange = 2;
+        } else {
+            // 1-3 babies
+            lambRange = 3;
+            lambAverage = 1;
         }
+
+        if (lambRange != 1) {
+            numberOfLambs = ThreadLocalRandom.current().nextInt(lambRange) + lambAverage;
+        } else {
+            numberOfLambs = 1;
+        }
+
+        return numberOfLambs;
     }
 
     @Override
@@ -408,6 +371,16 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
         enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
 
         this.world.addEntity(enhancedsheep);
+    }
+
+    @Override
+    protected boolean canBePregnant() {
+        return true;
+    }
+
+    @Override
+    protected boolean canLactate() {
+        return true;
     }
 
     protected SoundEvent getAmbientSound() {
@@ -1100,7 +1073,8 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
     protected void setAlphaTexturePaths() {
     }
 
-    private void setMaxBagSize(){
+    @Override
+    protected void setMaxBagSize(){
         float maxBagSize = 1.0F;
 
 //        if (!this.isChild() && getSheepStatus().equals(EntityState.MOTHER.toString())){
@@ -1281,8 +1255,6 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
         compound.putByte("Colour", (byte)this.getFleeceDyeColour().getId());
         compound.putFloat("CoatLength", this.getCoatLength());
 
-        compound.putBoolean("Pregnant", this.pregnant);
-        compound.putInt("Gestation", this.gestationTimer);
         compound.putInt("Lactation", this.lactationTimer);
 
         compound.putInt("milk", getMilkAmount());
@@ -1300,8 +1272,6 @@ public class EnhancedSheep extends EnhancedAnimalAbstract implements net.minecra
 
         this.setFleeceDyeColour(DyeColor.byId(compound.getByte("Colour")));
 
-        this.pregnant = compound.getBoolean("Pregnant");
-        this.gestationTimer = compound.getInt("Gestation");
         this.lactationTimer = compound.getInt("Lactation");
 
         setMilkAmount(compound.getInt("milk"));

@@ -473,44 +473,28 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
     }
 
     @Override
-    protected void runPregnancyTick() {
-        if(pregnant) {
-            gestationTimer++;
-            int days = EanimodCommonConfig.COMMON.gestationDaysPig.get();
-            if (gestationTimer >= days) {
-                pregnant = false;
-                gestationTimer = 0;
-                int age = getAge();
+    protected int getNumberOfChildren() {
+        int pigletAverage = 6;
+        int pigletRange = 6;
+        int age = getAge();
 
-                int pigletAverage = 6;
-                int pigletRange = 6;
-
-                if (age < 108000) {
-                    if (age > 100000) {
-                        pigletAverage = 5;
-                    } else if (age > 92000) {
-                        pigletAverage = 4;
-                    } else if (age > 84000) {
-                        pigletAverage = 3;
-                    } else if (age > 76000) {
-                        pigletAverage = 2;
-                    } else if (age > 68000) {
-                        pigletAverage = 1;
-                    } else {
-                        pigletAverage = 0;
-                    }
-                }
-
-                int numberOfPiglets = ThreadLocalRandom.current().nextInt(pigletRange)+1+pigletAverage;
-
-                for (int i = 0; i <= numberOfPiglets; i++) {
-                    mixMateMitosisGenes();
-                    mixMitosisGenes();
-                    createAndSpawnEnhancedChild(this.world);
-                }
-
+        if (age < 108000) {
+            if (age > 100000) {
+                pigletAverage = 5;
+            } else if (age > 92000) {
+                pigletAverage = 4;
+            } else if (age > 84000) {
+                pigletAverage = 3;
+            } else if (age > 76000) {
+                pigletAverage = 2;
+            } else if (age > 68000) {
+                pigletAverage = 1;
+            } else {
+                pigletAverage = 0;
             }
         }
+
+        return ThreadLocalRandom.current().nextInt(pigletRange)+1+pigletAverage;
     }
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
@@ -520,6 +504,16 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
         defaultCreateAndSpawn(enhancedpig, inWorld, babyGenes, -60000);
 
         this.world.addEntity(enhancedpig);
+    }
+
+    @Override
+    protected boolean canBePregnant() {
+        return true;
+    }
+
+    @Override
+    protected boolean canLactate() {
+        return false;
     }
 
 
@@ -1051,9 +1045,6 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
-        compound.putBoolean("Pregnant", this.pregnant);
-        compound.putInt("Gestation", this.gestationTimer);
-
         compound.putShort("Anger", (short)this.angerLevel);
         if (this.angerTargetUUID != null) {
             compound.putString("HurtBy", this.angerTargetUUID.toString());
@@ -1070,9 +1061,6 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
     public void readAdditional(CompoundNBT compound) {
 
         super.readAdditional(compound);
-
-        this.pregnant = compound.getBoolean("Pregnant");
-        this.gestationTimer = compound.getInt("Gestation");
 
         this.angerLevel = compound.getShort("Anger");
         String s = compound.getString("HurtBy");

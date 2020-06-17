@@ -6,7 +6,7 @@ import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 //import mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedBee;
 import mokiyoki.enhancedanimals.entity.EnhancedCat;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
@@ -80,8 +80,8 @@ public class EventRegistry {
     public static final ContainerType<EnhancedAnimalContainer> ENHANCED_ANIMAL_CONTAINER = IForgeContainerType.create((windowId, inv, data) -> {
         Entity entity = inv.player.world.getEntityByID(data.readInt());
         EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo(data.readString());
-        if(entity instanceof EnhancedAnimal) {
-            return new EnhancedAnimalContainer(windowId, inv, (EnhancedAnimal)entity, animalInfo);
+        if(entity instanceof EnhancedAnimalAbstract) {
+            return new EnhancedAnimalContainer(windowId, inv, (EnhancedAnimalAbstract) entity, animalInfo);
         } else {
             return null;
         }

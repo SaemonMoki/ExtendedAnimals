@@ -98,22 +98,22 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 
         int health = enhancedAnimalInfo.health;
         int hunger = 10 - enhancedAnimalInfo.hunger;
-        int tameness = enhancedAnimalInfo.tameness;
+//        int tameness = enhancedAnimalInfo.tameness;
         this.blit(i + 136, j + 5 + (10-health), 125, this.ySize + 64 + (10-health), 9, health); // health icon
         this.blit(i + 147, j + 5 + (10-hunger), 134, this.ySize + 64 + (10-hunger), 9, hunger); // hunger icon
-        this.blit(i + 158, j + 5 + (10-tameness), 143, this.ySize + 64 + (10-tameness), 10, tameness); // tameness icon
+//        this.blit(i + 158, j + 5 + (10-tameness), 143, this.ySize + 64 + (10-tameness), 10, tameness); // tameness icon
 
-        if (enhancedAnimalInfo.canHaveSaddle) {
+        if (this.container.enhancedAnimal.canHaveSaddle()) {
             this.blit(i + shiftX, j + shiftY, 0, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             countEquipment++;
         }
-        if (enhancedAnimalInfo.canHaveBridle) {
+        if (this.container.enhancedAnimal.canHaveBridle()) {
             this.blit(i + shiftX, j + shiftY, 18, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             countEquipment++;
         }
-        if (enhancedAnimalInfo.canHaveArmour) {
+        if (this.container.enhancedAnimal.canHaveArmour()) {
             this.blit(i + shiftX, j + shiftY, 36, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -122,7 +122,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
             countEquipment++;
         }
-        if (enhancedAnimalInfo.canHaveBlanket && (shiftX == 7 || !tabToggle)) {
+        if (this.container.enhancedAnimal.canHaveBlanket() && (shiftX == 7 || !tabToggle)) {
             this.blit(i + shiftX, j + shiftY, 54, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -131,7 +131,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
             countEquipment++;
         }
-        if (enhancedAnimalInfo.canHaveBanner && (shiftX == 7 || !tabToggle)) {
+        if (this.container.enhancedAnimal.canHaveBanner() && (shiftX == 7 || !tabToggle)) {
             this.blit(i + shiftX, j + shiftY, 72, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -140,7 +140,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
             countEquipment++;
         }
-        if (enhancedAnimalInfo.canHaveHarness && (shiftX == 7 || !tabToggle)) {
+        if (this.container.enhancedAnimal.canHaveHarness() && (shiftX == 7 || !tabToggle)) {
             this.blit(i + shiftX, j + shiftY, 90, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -156,7 +156,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
         }
 
-        if (enhancedAnimalInfo.canHaveChest && tabToggle) {
+        if (this.container.enhancedAnimal.canHaveChest() && tabToggle) {
             if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
 
                 if (hasItemsInChest) {

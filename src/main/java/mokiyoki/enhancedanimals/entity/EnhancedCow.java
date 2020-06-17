@@ -268,11 +268,6 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
     }
 
     @Override
-    public Inventory getEnhancedInventory() {
-        return null;
-    }
-
-    @Override
     protected boolean canBePregnant() {
         return true;
     }

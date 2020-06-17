@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.gui;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,10 +17,10 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIM
 
 public class EnhancedAnimalContainer extends Container {
     private IInventory inventory;
-    private EnhancedAnimal enhancedAnimal;
+    public EnhancedAnimalAbstract enhancedAnimal;
     public EnhancedAnimalInfo animalInfo;
 
-    public EnhancedAnimalContainer(int p_i50066_1_, PlayerInventory playerInventoryIn, EnhancedAnimal enhancedAnimal, EnhancedAnimalInfo animalInfo) {
+    public EnhancedAnimalContainer(int p_i50066_1_, PlayerInventory playerInventoryIn, EnhancedAnimalAbstract enhancedAnimal, EnhancedAnimalInfo animalInfo) {
         super(ENHANCED_ANIMAL_CONTAINER, p_i50066_1_);
         Inventory retrievedInventory = enhancedAnimal.getEnhancedInventory();
         this.enhancedAnimal = enhancedAnimal;
@@ -32,7 +33,7 @@ public class EnhancedAnimalContainer extends Container {
         int xShift = 8;
         int yShift = 18;
 
-        if (animalInfo.canHaveSaddle) {
+        if (enhancedAnimal.canHaveSaddle()) {
             this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
@@ -48,7 +49,7 @@ public class EnhancedAnimalContainer extends Container {
             yShift = yShift + 18;
         }
 
-        if (animalInfo.canHaveBridle) {
+        if (enhancedAnimal.canHaveBridle()) {
             this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
@@ -64,7 +65,7 @@ public class EnhancedAnimalContainer extends Container {
             yShift = yShift + 18;
         }
 
-        if (animalInfo.canHaveArmour) {
+        if (enhancedAnimal.canHaveArmour()) {
             this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
@@ -84,7 +85,7 @@ public class EnhancedAnimalContainer extends Container {
             }
         }
 
-        if (animalInfo.canHaveBlanket) {
+        if (enhancedAnimal.canHaveBlanket()) {
             this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
@@ -104,7 +105,7 @@ public class EnhancedAnimalContainer extends Container {
             }
         }
 
-        if (animalInfo.canHaveBanner) {
+        if (enhancedAnimal.canHaveBanner()) {
             this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
@@ -124,7 +125,7 @@ public class EnhancedAnimalContainer extends Container {
             }
         }
 
-        if (animalInfo.canHaveHarness) {
+        if (enhancedAnimal.canHaveHarness()) {
             this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
@@ -144,7 +145,8 @@ public class EnhancedAnimalContainer extends Container {
             }
         }
 
-        if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
+        if (true) {
+//        if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
             for(int k = 0; k < i; ++k) {
                 for(int l = 0; l < j; ++l) {
                     this.addSlot(new Slot(retrievedInventory, equipmentShift, 80 + l * 18, 18 + k * 18){
@@ -202,9 +204,9 @@ public class EnhancedAnimalContainer extends Container {
         return this.inventory;
     }
 
-    @Override
-    public void onContainerClosed(PlayerEntity player) {
-        super.onContainerClosed(player);
+    public void onContainerClosed(PlayerEntity playerIn) {
+        super.onContainerClosed(playerIn);
+        this.inventory.closeInventory(playerIn);
     }
 
     public EnhancedAnimal getAnimal() {

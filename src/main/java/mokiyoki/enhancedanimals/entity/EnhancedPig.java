@@ -238,6 +238,11 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
     }
 
     @Override
+    public boolean canHaveSaddle() {
+        return true;
+    }
+
+    @Override
     protected void updateAITasks() {
 
         LivingEntity livingentity = this.getRevengeTarget();

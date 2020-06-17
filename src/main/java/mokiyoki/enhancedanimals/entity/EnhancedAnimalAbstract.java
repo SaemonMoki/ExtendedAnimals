@@ -1,16 +1,25 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.IInventoryChangedListener;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.AirItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,6 +31,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -30,6 +40,9 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -38,7 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class EnhancedAnimalAbstract extends AnimalEntity implements EnhancedAnimal {
+public abstract class EnhancedAnimalAbstract extends AnimalEntity implements EnhancedAnimal, IInventoryChangedListener {
 
     protected static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
@@ -86,6 +99,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected final List<String> enhancedAnimalTextures = new ArrayList<>();
     protected final List<String> enhancedAnimalAlphaTextures = new ArrayList<>();
 
+    //Inventory
+    protected Inventory animalInventory;
+
     /*
     Entity Construction
     */
@@ -100,6 +116,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         this.BREED_ITEMS = breedItems;
         this.foodWeightMap = foodWeightMap;
         this.bottleFeedable = bottleFeedable;
+
+        initInventory();
     }
 
     @Override
@@ -156,6 +174,42 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     //used to set if an animal can producte milk
     protected abstract boolean canLactate();
+
+
+    //used to set if an animal can have a saddle
+    public boolean canHaveSaddle() {
+        return false;
+    }
+
+    //used to set if an animal can have a bridle
+    public boolean canHaveBridle() {
+        return false;
+    }
+
+    //used to set if an animal can have armour
+    public boolean canHaveArmour() {
+        return false;
+    }
+
+    //used to set if an animal can have a blanket
+    public boolean canHaveBlanket() {
+        return false;
+    }
+
+    //used to set if an animal can have a banner
+    public boolean canHaveBanner() {
+        return false;
+    }
+
+    //used to set if an animal can have a harness
+    public boolean canHaveHarness() {
+        return false;
+    }
+
+    //used to set if an animal can have a chest
+    public boolean canHaveChest() {
+        return false;
+    }
 
 
     /*
@@ -266,6 +320,18 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     @OnlyIn(Dist.CLIENT)
     public void setBlink(int blinkTimer) { this.blink = blinkTimer; }
+
+    /*
+    General Info
+    */
+    protected boolean getGender() {
+        char[] uuidArray = getCachedUniqueIdString().toCharArray();
+        if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     /*
     Living Tick
@@ -411,6 +477,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
+        if (entityPlayer.isSecondaryUseActive()) {
+            this.openGUI(entityPlayer);
+            return true;
+        }
+
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
                 ITextComponent message = getHungerText();
@@ -490,6 +561,20 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
         compound.put("FatherGenes", mateGeneList);
 
+        ListNBT listnbt = new ListNBT();
+
+        for(int i = 0; i < this.animalInventory.getSizeInventory(); ++i) {
+            ItemStack itemstack = this.animalInventory.getStackInSlot(i);
+            if (!itemstack.isEmpty()) {
+                CompoundNBT compoundnbt = new CompoundNBT();
+                compoundnbt.putByte("Slot", (byte)i);
+                itemstack.write(compoundnbt);
+                listnbt.add(compoundnbt);
+            }
+        }
+
+        compound.put("Items", listnbt);
+
         compound.putFloat("Hunger", hunger);
 
         compound.putString("Status", getEntityStatus());
@@ -524,6 +609,19 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
+
+        ListNBT listnbt = compound.getList("Items", 10);
+        this.initInventory();
+
+        for(int i = 0; i < listnbt.size(); ++i) {
+            CompoundNBT compoundnbt = listnbt.getCompound(i);
+            int j = compoundnbt.getByte("Slot") & 255;
+            if (j >= 0 && j < this.animalInventory.getSizeInventory()) {
+                this.animalInventory.setInventorySlotContents(j, ItemStack.read(compoundnbt));
+            }
+        }
+
+        this.updateInventorySlots();
 
         hunger = compound.getFloat("Hunger");
 
@@ -596,6 +694,148 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             mixMateMitosisGenes();
             mixMitosisGenes();
         }
+    }
+
+    /*
+    Inventory
+    */
+
+    @Override
+    public Inventory getEnhancedInventory() {
+        return this.animalInventory;
+    }
+
+    @Override
+    public void onInventoryChanged(IInventory invBasic) {
+        this.updateInventorySlots();
+    }
+
+    protected void updateInventorySlots() {
+        if (!this.world.isRemote) {
+//            if ()
+//            this.setHorseSaddled(!this.horseChest.getStackInSlot(0).isEmpty() && this.canBeSaddled());
+        }
+    }
+
+    protected int getInventorySize() {
+        return 16;
+    }
+
+    protected void initInventory() {
+        Inventory inventory = this.animalInventory;
+        this.animalInventory = new Inventory(this.getInventorySize());
+        if (inventory != null) {
+            inventory.removeListener(this);
+            int i = Math.min(inventory.getSizeInventory(), this.animalInventory.getSizeInventory());
+
+            for(int j = 0; j < i; ++j) {
+                ItemStack itemstack = inventory.getStackInSlot(j);
+                if (!itemstack.isEmpty()) {
+                    this.animalInventory.setInventorySlotContents(j, itemstack.copy());
+                }
+            }
+        }
+
+        this.animalInventory.addListener(this);
+        this.updateInventorySlots();
+        this.itemHandler = net.minecraftforge.common.util.LazyOptional.of(() -> new net.minecraftforge.items.wrapper.InvWrapper(this.animalInventory));
+    }
+
+    public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
+        int i = inventorySlot - 400;
+        if (i >= 0 && i < 2 && i < this.animalInventory.getSizeInventory()) {
+            if (i == 0 && itemStackIn.getItem() != Items.SADDLE) {
+                return false;
+            } else {
+                return false;
+            }
+        } else {
+            int j = inventorySlot - 500 + 2;
+            if (j >= 2 && j < this.animalInventory.getSizeInventory()) {
+                this.animalInventory.setInventorySlotContents(j, itemStackIn);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    protected void dropInventory() {
+        super.dropInventory();
+        if (this.animalInventory != null) {
+            for(int i = 0; i < this.animalInventory.getSizeInventory(); ++i) {
+                ItemStack itemstack = this.animalInventory.getStackInSlot(i);
+                if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
+                    this.entityDropItem(itemstack);
+                }
+            }
+
+        }
+    }
+
+    private net.minecraftforge.common.util.LazyOptional<?> itemHandler = null;
+
+    @Override
+    public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        if (this.isAlive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && itemHandler != null)
+            return itemHandler.cast();
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public void remove(boolean keepData) {
+        super.remove(keepData);
+        if (!keepData && itemHandler != null) {
+            itemHandler.invalidate();
+            itemHandler = null;
+        }
+    }
+
+    /*
+    GUI
+    */
+
+    public void openGUI(PlayerEntity playerEntity) {
+        if (!this.world.isRemote && (!this.isBeingRidden() || this.isPassenger(playerEntity))) {
+            this.openInfoInventory(this, this.animalInventory, playerEntity);
+        }
+    }
+
+    public void openInfoInventory(EnhancedAnimalAbstract enhancedAnimal, IInventory inventoryIn, PlayerEntity playerEntity) {
+//        if (this.openContainer != this.container) {
+//            this.closeScreen();
+//        }
+        if(!playerEntity.world.isRemote) {
+
+            EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
+            animalInfo.health = (int)(10 * (this.getHealth() / this.getMaxHealth()));
+            animalInfo.hunger = (int)(this.getHunger() / 7200);
+            animalInfo.isFemale = this.getGender();
+            animalInfo.pregnant = (10 * this.gestationTimer)/EanimodCommonConfig.COMMON.gestationDaysLlama.get();
+            animalInfo.name = this.getAnimalsName();
+
+            if(playerEntity instanceof ServerPlayerEntity) {
+                ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerEntity;
+                NetworkHooks.openGui(entityPlayerMP, new INamedContainerProvider() {
+                    @Override
+                    public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+                        return new EnhancedAnimalContainer(windowId, inventory, enhancedAnimal, animalInfo);
+                    }
+
+                    @Override
+                    public ITextComponent getDisplayName() {
+                        return new TranslationTextComponent("eanimod.animalinfocontainer");
+                    }
+                }, buf -> {
+                    buf.writeInt(enhancedAnimal.getEntityId());
+                    buf.writeString(animalInfo.serialiseToString());
+                });
+            }
+        }
+    }
+
+    protected String getAnimalsName() {
+        return "EnhancedAnimal";
     }
 
     /*

@@ -564,10 +564,10 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
-        if (entityPlayer.isSecondaryUseActive()) {
-            this.openGUI(entityPlayer);
-            return true;
-        }
+//        if (entityPlayer.isSecondaryUseActive()) {
+//            this.openGUI(entityPlayer);
+//            return true;
+//        }
 
         if (this.isBeingRidden()) {
             return super.processInteract(entityPlayer, hand);
@@ -650,22 +650,17 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
             animalInfo.health = (int)(10 * (this.getHealth() / this.getMaxHealth()));
             animalInfo.hunger = (int)(this.getHunger() / 7200);
-            animalInfo.tameness = (this.getTemper()/10);
             animalInfo.isFemale = this.getGender();
             animalInfo.pregnant = (10 * this.gestationTimer)/EanimodCommonConfig.COMMON.gestationDaysLlama.get();
             animalInfo.name = this.getAnimalsName();
-            animalInfo.canHaveChest = this.canCarryChest();
-            animalInfo.canHaveSaddle = this.canBeSaddled();
-            animalInfo.canHaveBridle = this.canBeBridled();
-            animalInfo.canHaveBlanket = this.canBeBlanketed();
-            animalInfo.canHaveHarness = this.canBeHarnessed();
 
             if(playerEntity instanceof ServerPlayerEntity) {
                 ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerEntity;
                 NetworkHooks.openGui(entityPlayerMP, new INamedContainerProvider() {
                     @Override
                     public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
-                        return new EnhancedAnimalContainer(windowId, inventory, enhancedLlama, animalInfo);
+//                        return new EnhancedAnimalContainer(windowId, inventory, enhancedLlama, animalInfo);
+                        return null;
                     }
 
                     @Override

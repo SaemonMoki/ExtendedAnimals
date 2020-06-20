@@ -4,10 +4,10 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -82,9 +82,9 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
     private final ModelRenderer toeInnerBackR;
     private final ModelRenderer toeOuterBackL;
     private final ModelRenderer toeInnerBackL;
-    private final ModelRenderer eyelidLeft;
-    private final ModelRenderer eyelidRight;
-//    private final ModelRenderer eyelidRight;
+    private final ModelRenderer eyeLeft;
+    private final ModelRenderer eyeRight;
+//    private final ModelRenderer eyeRight;
 
     private Integer currentLlama = null;
 
@@ -312,13 +312,13 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.toeInnerBackL = new ModelRenderer(this, 80, 84);
         this.toeInnerBackL.addBox(-0.75F, 10.0F, -2.5F, 3, 3, 4, scale - 0.75F);
 
-        this.eyelidLeft = new ModelRenderer(this, 11, 5);
-        this.eyelidLeft.addBox(0.0F, 0.0F, 0.0F, 2, 2, 1, 0.1F);
-        this.eyelidLeft.setRotationPoint(2.0F, -1.0F, -3.0F);
+        this.eyeLeft = new ModelRenderer(this, 22, 3);
+        this.eyeLeft.addBox(0.0F, 0.0F, 0.0F, 2, 2, 1, 0.01F);
+        this.eyeLeft.setRotationPoint(2.0F, -1.0F, -3.0F);
 
-        this.eyelidRight = new ModelRenderer(this, 5, 5);
-        this.eyelidRight.addBox(0.0F, 0.0F, 0.0F, 2, 2, 1, 0.1F);
-        this.eyelidRight.setRotationPoint(-4.0F, -1.0F, -3.0F);
+        this.eyeRight = new ModelRenderer(this, 0, 3);
+        this.eyeRight.addBox(0.0F, 0.0F, 0.0F, 2, 2, 1, 0.01F);
+        this.eyeRight.setRotationPoint(-4.0F, -1.0F, -3.0F);
 
 //        leg1.addChild(toeOuterFrontR);
 //        leg1.addChild(toeInnerFrontR);
@@ -338,8 +338,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.head.addChild(earsTopR);
         this.head.addChild(earsTopBananaL);
         this.head.addChild(earsTopBananaR);
-        this.head.addChild(eyelidLeft);
-        this.head.addChild(eyelidRight);
+        this.head.addChild(eyeLeft);
+        this.head.addChild(eyeRight);
     }
 
     @Override
@@ -489,11 +489,11 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         matrixStackIn.pop();
 
             if (sleeping) {
-                this.eyelidLeft.showModel = true;
-                this.eyelidRight.showModel = true;
+                this.eyeLeft.showModel = false;
+                this.eyeRight.showModel = false;
             } else {
-                this.eyelidLeft.showModel = false;
-                this.eyelidRight.showModel = false;
+                this.eyeLeft.showModel = true;
+                this.eyeRight.showModel = true;
             }
 
     }
@@ -540,19 +540,19 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         }
 
-        copyModelAngles(neck, neckWool0);
-        copyModelAngles(neck, neckWool1);
+        ModelHelper.copyModelAngles(neck, neckWool0);
+        ModelHelper.copyModelAngles(neck, neckWool1);
 
-        copyModelAngles(body, bodyShaved);
-        copyModelAngles(body, body1);
+        ModelHelper.copyModelAngles(body, bodyShaved);
+        ModelHelper.copyModelAngles(body, body1);
 
-        copyModelAngles(leg1, leg1Wool1);
-        copyModelAngles(leg2, leg2Wool1);
-        copyModelAngles(leg3, leg3Wool1);
-        copyModelAngles(leg4, leg4Wool1);
+        ModelHelper.copyModelAngles(leg1, leg1Wool1);
+        ModelHelper.copyModelAngles(leg2, leg2Wool1);
+        ModelHelper.copyModelAngles(leg3, leg3Wool1);
+        ModelHelper.copyModelAngles(leg4, leg4Wool1);
 
-        copyModelAngles(body, tail);
-        copyModelAngles(body, tail1);
+        ModelHelper.copyModelAngles(body, tail);
+        ModelHelper.copyModelAngles(body, tail1);
 
         if ( suri && llamaModelData.coatlength >= 0 ) {
             if (llamaModelData.coatlength >= 1) {
@@ -565,12 +565,12 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                 this.leg4Wool1.rotationPointY = this.leg4.rotationPointY + (llamaModelData.coatlength/2.0F);
             }
         }
-        copyModelAngles(neck, neckBone);
-        copyModelAngles(neck, neckWool0);
-        copyModelAngles(neck, neckWool1);
-        copyModelAngles(neckWool1, neckWool2);
-        copyModelAngles(neckWool1, neckWool3);
-        copyModelAngles(neckWool1, neckWool4);
+        ModelHelper.copyModelAngles(neck, neckBone);
+        ModelHelper.copyModelAngles(neck, neckWool0);
+        ModelHelper.copyModelAngles(neck, neckWool1);
+        ModelHelper.copyModelAngles(neckWool1, neckWool2);
+        ModelHelper.copyModelAngles(neckWool1, neckWool3);
+        ModelHelper.copyModelAngles(neckWool1, neckWool4);
 
 //        copyModelAngles(head, earsR);
 //        copyModelAngles(head, earsL);
@@ -579,40 +579,40 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 //        copyModelAngles(head, earsTopBananaR);
 //        copyModelAngles(head, earsTopBananaL);
 
-        copyModelAngles(body, body2);
-        copyModelAngles(body, body3);
-        copyModelAngles(body, body4);
+        ModelHelper.copyModelAngles(body, body2);
+        ModelHelper.copyModelAngles(body, body3);
+        ModelHelper.copyModelAngles(body, body4);
 
-        copyModelAngles(tail1, tail2);
-        copyModelAngles(tail1, tail3);
-        copyModelAngles(tail1, tail4);
+        ModelHelper.copyModelAngles(tail1, tail2);
+        ModelHelper.copyModelAngles(tail1, tail3);
+        ModelHelper.copyModelAngles(tail1, tail4);
 
         //TODO fix the toes so they angle properly and maintain the angle while they walk
 
-        copyModelAngles(leg1Wool1, leg1Wool2);
-        copyModelAngles(leg1Wool1, leg1Wool3);
-        copyModelAngles(leg1Wool1, leg1Wool4);
-        copyModelAngles(leg1, toeOuterFrontR);
-        copyModelAngles(leg1, toeInnerFrontR);
+        ModelHelper.copyModelAngles(leg1Wool1, leg1Wool2);
+        ModelHelper.copyModelAngles(leg1Wool1, leg1Wool3);
+        ModelHelper.copyModelAngles(leg1Wool1, leg1Wool4);
+        ModelHelper.copyModelAngles(leg1, toeOuterFrontR);
+        ModelHelper.copyModelAngles(leg1, toeInnerFrontR);
 
 
-        copyModelAngles(leg2Wool1, leg2Wool2);
-        copyModelAngles(leg2Wool1, leg2Wool3);
-        copyModelAngles(leg2Wool1, leg2Wool4);
-        copyModelAngles(leg2, toeOuterFrontL);
-        copyModelAngles(leg2, toeInnerFrontL);
+        ModelHelper.copyModelAngles(leg2Wool1, leg2Wool2);
+        ModelHelper.copyModelAngles(leg2Wool1, leg2Wool3);
+        ModelHelper.copyModelAngles(leg2Wool1, leg2Wool4);
+        ModelHelper.copyModelAngles(leg2, toeOuterFrontL);
+        ModelHelper.copyModelAngles(leg2, toeInnerFrontL);
 
-        copyModelAngles(leg3Wool1, leg3Wool2);
-        copyModelAngles(leg3Wool1, leg3Wool3);
-        copyModelAngles(leg3Wool1, leg3Wool4);
-        copyModelAngles(leg3, toeOuterBackR);
-        copyModelAngles(leg3, toeInnerBackR);
+        ModelHelper.copyModelAngles(leg3Wool1, leg3Wool2);
+        ModelHelper.copyModelAngles(leg3Wool1, leg3Wool3);
+        ModelHelper.copyModelAngles(leg3Wool1, leg3Wool4);
+        ModelHelper.copyModelAngles(leg3, toeOuterBackR);
+        ModelHelper.copyModelAngles(leg3, toeInnerBackR);
 
-        copyModelAngles(leg4Wool1, leg4Wool2);
-        copyModelAngles(leg4Wool1, leg4Wool3);
-        copyModelAngles(leg4Wool1, leg4Wool4);
-        copyModelAngles(leg4, toeOuterBackL);
-        copyModelAngles(leg4, toeInnerBackL);
+        ModelHelper.copyModelAngles(leg4Wool1, leg4Wool2);
+        ModelHelper.copyModelAngles(leg4Wool1, leg4Wool3);
+        ModelHelper.copyModelAngles(leg4Wool1, leg4Wool4);
+        ModelHelper.copyModelAngles(leg4, toeOuterBackL);
+        ModelHelper.copyModelAngles(leg4, toeInnerBackL);
 
         setNoseRotations(sharedGenes, llamaModelData);
     }
@@ -758,15 +758,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.leg4.setRotationPoint(2.0F, 12.0F,6.0F);
 
         return onGround;
-    }
-
-    public static void copyModelAngles(ModelRenderer source, ModelRenderer dest) {
-        dest.rotateAngleX = source.rotateAngleX;
-        dest.rotateAngleY = source.rotateAngleY;
-        dest.rotateAngleZ = source.rotateAngleZ;
-        dest.rotationPointX = source.rotationPointX;
-        dest.rotationPointY = source.rotationPointY;
-        dest.rotationPointZ = source.rotationPointZ;
     }
 
     private class LlamaModelData {

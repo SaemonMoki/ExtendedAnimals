@@ -35,6 +35,7 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOSHROOM;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOBLOOM;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
@@ -61,6 +62,7 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_CAT, RenderEnhancedCat::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_BEE, RenderEnhancedBee::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOSHROOM, RenderEnhancedMooshroom::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOBLOOM, RenderEnhancedMoobloom::new);
 
         ScreenManager.registerFactory(EGG_CARTON_CONTAINER, EggCartonScreen::new);
         ScreenManager.registerFactory(ENHANCED_ANIMAL_CONTAINER, EnhancedAnimalScreen::new);
@@ -69,6 +71,14 @@ public class ClientProxy implements IProxy {
         RenderTypeLookup.setRenderLayer(ModBlocks.SPARSE_GRASS_BLOCK, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.PATCHY_MYCELIUM_BLOCK, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.UNBOUNDHAY_BLOCK, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_ALLIUM, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_AZURE_BLUET, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_BLUE_ORCHID, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_CORNFLOWER, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_DANDELION, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_OXEYE_DAISY, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_ROSE_BUSH, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_SUNFLOWER, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.POST_ACACIA, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.POST_BIRCH, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.POST_DARK_OAK, RenderType.getCutout());

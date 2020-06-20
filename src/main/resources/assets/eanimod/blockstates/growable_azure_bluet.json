@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "age=0": { "model": "eanimod:block/azure_bluet0" },
+    "age=1": { "model": "eanimod:block/azure_bluet1" },
+    "age=2": { "model": "eanimod:block/azure_bluet2" },
+    "age=3": { "model": "eanimod:block/azure_bluet3" },
+    "age=4": { "model": "eanimod:block/azure_bluet4" },
+    "age=5": { "model": "eanimod:block/azure_bluet5" },
+    "age=6": { "model": "eanimod:block/azure_bluet6" },
+    "age=7": { "model": "block/azure_bluet" }
+  }
+}

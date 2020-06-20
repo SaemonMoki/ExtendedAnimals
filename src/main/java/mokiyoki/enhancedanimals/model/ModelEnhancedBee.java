@@ -153,16 +153,6 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EntityModel<T> {
         }
     }
 
-
-    public static void copyModelAngles(ModelRenderer source, ModelRenderer dest) {
-        dest.rotateAngleX = source.rotateAngleX;
-        dest.rotateAngleY = source.rotateAngleY;
-        dest.rotateAngleZ = source.rotateAngleZ;
-        dest.rotationPointX = source.rotationPointX;
-        dest.rotationPointY = source.rotationPointY;
-        dest.rotationPointZ = source.rotationPointZ;
-    }
-
     private class BeeModelData {
         int[] beeGenes;
         char[] uuidArray;

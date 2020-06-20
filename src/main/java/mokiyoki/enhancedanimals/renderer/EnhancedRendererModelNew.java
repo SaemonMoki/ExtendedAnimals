@@ -117,20 +117,29 @@ public class EnhancedRendererModelNew extends ModelRenderer {
 
                 matrixStackIn.push();
 
+                this.translateRotate(matrixStackIn);
+
                 if (mapOfScale != null) {
                     if (mapOfScale.containsKey(this.boxName)) {
                         List<Float> scaleAmounts = mapOfScale.get(this.boxName);
-                        Float scaling = scaleAmounts.get(0);
-                        if (scaling != null) {
-                            matrixStackIn.scale(scaling, scaling, scaling);
+//                        Float scaling = scaleAmounts.get(0);
+//                        if (scaling != null) {
+//                            if (scaling == 2.0F) {
+//                                matrixStackIn.scale(0.8F, scaling, 2.0F);
+//                            } else {
+//                                matrixStackIn.scale(scaling, scaling, scaling);
+//                            }
+//                        }
+                        if (scaleAmounts.get(0) != null && scaleAmounts.get(1) != null && scaleAmounts.get(2) != null) {
+                            matrixStackIn.scale(scaleAmounts.get(0), scaleAmounts.get(1), scaleAmounts.get(2));
                         }
-                        if (scaleAmounts.get(1) != null && scaleAmounts.get(2) != null && scaleAmounts.get(3) != null) {
-                            matrixStackIn.translate(scaleAmounts.get(1), scaleAmounts.get(2), scaleAmounts.get(3));
+                        if (scaleAmounts.get(3) != null && scaleAmounts.get(4) != null && scaleAmounts.get(5) != null) {
+                            matrixStackIn.translate(scaleAmounts.get(3), scaleAmounts.get(4), scaleAmounts.get(5));
                         }
                     }
                 }
 
-                this.translateRotate(matrixStackIn);
+
                 if (this.boxName == null || !(boxesToNotRender.contains(this.boxName))) {
                     this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }

@@ -13,6 +13,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityLlamaSpit;
 import mokiyoki.enhancedanimals.entity.EnhancedHorse;
+import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
 import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
@@ -71,6 +72,7 @@ public class EventRegistry {
     public static final EntityType<EnhancedLlama> ENHANCED_LLAMA = EntityType.Builder.create(EnhancedLlama::new, EntityClassification.CREATURE).size(0.9F, 1.87F).build(Reference.MODID + ":enhanced_llama");
     public static final EntityType<EnhancedCow> ENHANCED_COW = EntityType.Builder.create(EnhancedCow::new, EntityClassification.CREATURE).size(1.2F, 1.5F).build(Reference.MODID + ":enhanced_cow");
     public static final EntityType<EnhancedMooshroom> ENHANCED_MOOSHROOM = EntityType.Builder.create(EnhancedMooshroom::new, EntityClassification.CREATURE).size(1.2F, 1.5F).build(Reference.MODID + ":enhanced_mooshroom");
+    public static final EntityType<EnhancedMoobloom> ENHANCED_MOOBLOOM = EntityType.Builder.create(EnhancedMoobloom::new, EntityClassification.CREATURE).size(1.2F, 1.5F).build(Reference.MODID + ":enhanced_moobloom");
     public static final EntityType<EnhancedPig> ENHANCED_PIG = EntityType.Builder.create(EnhancedPig::new, EntityClassification.CREATURE).size(0.9F, 0.9F).build(Reference.MODID + ":enhanced_pig");
     public static final EntityType<EnhancedHorse> ENHANCED_HORSE = EntityType.Builder.create(EnhancedHorse::new, EntityClassification.CREATURE).size(1.4F, 1.6F).build(Reference.MODID + ":enhanced_horse");
     public static final EntityType<EnhancedCat> ENHANCED_CAT = EntityType.Builder.create(EnhancedCat::new, EntityClassification.CREATURE).size(0.6F, 0.7F).build(Reference.MODID + ":enhanced_cat");
@@ -90,7 +92,7 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK, ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSE_GRASS_BLOCK, ModBlocks.PATCHY_MYCELIUM_BLOCK, EGG_CARTON
+        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK, ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSE_GRASS_BLOCK, ModBlocks.PATCHY_MYCELIUM_BLOCK, EGG_CARTON, ModBlocks.GROWABLE_ALLIUM, ModBlocks.GROWABLE_AZURE_BLUET, ModBlocks.GROWABLE_BLUE_ORCHID, ModBlocks.GROWABLE_CORNFLOWER, ModBlocks.GROWABLE_DANDELION, ModBlocks.GROWABLE_OXEYE_DAISY, ModBlocks.GROWABLE_ROSE_BUSH, ModBlocks.GROWABLE_SUNFLOWER
         };
             event.getRegistry().registerAll(blocks);
     }
@@ -129,6 +131,14 @@ public class EventRegistry {
                 new BlockItem(ModBlocks.UNBOUNDHAY_BLOCK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.UNBOUNDHAY_BLOCK.getRegistryName()),
                 new BlockItem(ModBlocks.SPARSE_GRASS_BLOCK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.SPARSE_GRASS_BLOCK.getRegistryName()),
                 new BlockItem(ModBlocks.PATCHY_MYCELIUM_BLOCK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.PATCHY_MYCELIUM_BLOCK.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_ALLIUM, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_ALLIUM.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_AZURE_BLUET, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_AZURE_BLUET.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_BLUE_ORCHID, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_BLUE_ORCHID.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_CORNFLOWER, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_CORNFLOWER.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_DANDELION, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_DANDELION.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_OXEYE_DAISY, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_OXEYE_DAISY.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_ROSE_BUSH, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_ROSE_BUSH.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_SUNFLOWER, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_SUNFLOWER.getRegistryName()),
                 new BlockItem(EGG_CARTON, new Item.Properties().maxStackSize(1).group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(EGG_CARTON.getRegistryName()),
         };
 
@@ -250,6 +260,7 @@ public class EventRegistry {
         event.getRegistry().register(ENHANCED_LLAMA.setRegistryName("enhanced_llama"));
         event.getRegistry().register(ENHANCED_COW.setRegistryName("enhanced_cow"));
         event.getRegistry().register(ENHANCED_MOOSHROOM.setRegistryName("enhanced_mooshroom"));
+        event.getRegistry().register(ENHANCED_MOOBLOOM.setRegistryName("enhanced_moobloom"));
         event.getRegistry().register(ENHANCED_PIG.setRegistryName("enhanced_pig"));
         event.getRegistry().register(ENHANCED_HORSE.setRegistryName("enhanced_horse"));
         event.getRegistry().register(ENHANCED_CAT.setRegistryName("enhanced_cat"));

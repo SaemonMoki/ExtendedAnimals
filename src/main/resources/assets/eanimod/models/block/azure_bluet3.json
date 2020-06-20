@@ -1,0 +1,6 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "eanimod:block/azure_bluet3"
+  }
+}

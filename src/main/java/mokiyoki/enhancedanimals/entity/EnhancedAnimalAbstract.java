@@ -84,7 +84,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected int awokenTimer = 0;
 
     //Animations
-    protected int blink = 0;
+    private int blink = 0;
+    private int earTwitchTicker = 0;
+    private int earTwitch = 0;
 
     //Pregnancy
     protected int gestationTimer = 0;
@@ -319,7 +321,32 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     public int getBlink() { return this.blink; }
 
     @OnlyIn(Dist.CLIENT)
-    public void setBlink(int blinkTimer) { this.blink = blinkTimer; }
+    public float getEarTwitch() {
+        int timer = this.earTwitchTicker;
+        boolean left = true;
+        if (timer < 0) {
+            timer = -timer;
+            left = false;
+        }
+        if (timer < 40) {
+           if (timer > 30) {
+               this.earTwitch--;
+           } else if (timer > 20) {
+               this.earTwitch++;
+           } else if (timer > 10) {
+               this.earTwitch--;
+           } else {
+               this.earTwitch++;
+           }
+        }
+
+        if (left) {
+            return ((this.earTwitch*0.15F) + 10);
+        } else {
+            return ((this.earTwitch*0.15F) - 10);
+        }
+
+    }
 
     /*
     General Info
@@ -385,16 +412,34 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected void runLivingTickClient() {
         this.animalEatingTimer = Math.max(0, this.animalEatingTimer - 1);
 
+        boolean asleep = isAnimalSleeping();
         //blinking animation timer
-        if (isAnimalSleeping()) {
+        if (asleep) {
             this.blink = 1;
         } else {
-            if (blink == 0) {
+            if (this.blink == 0) {
                 this.blink = rand.nextInt(400);
             } else {
                 this.blink--;
             }
         }
+
+        //ear twitch timer
+        if (this.earTwitchTicker == 0) {
+            if (asleep) {
+                this.earTwitchTicker = rand.nextInt(2400);
+            } else {
+                this.earTwitchTicker = rand.nextInt(1200);
+            }
+            if (rand.nextBoolean()) {
+                this.earTwitchTicker = -this.earTwitchTicker;
+            }
+        } else if (this.earTwitchTicker > 0) {
+            this.earTwitchTicker--;
+        } else {
+            this.earTwitchTicker++;
+        }
+
     }
 
     protected void runPregnancyTick() {
@@ -490,7 +535,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             } else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             }
-            else if (!this.isChild() && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
+            else if ((!this.isChild() || !bottleFeedable) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
                 if (this.foodWeightMap.containsKey(item)) {
                     decreaseHunger(this.foodWeightMap.get(item));
                 } else {
@@ -498,6 +543,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                 }
                 if (!entityPlayer.abilities.isCreativeMode) {
                     itemStack.shrink(1);
+                } else {
+                    if (itemStack.getCount() > 1) {
+                        itemStack.shrink(1);
+                    }
                 }
             }  else if (this.isChild() && MILK_ITEMS.test(itemStack) && bottleFeedable && hunger >= 6000) {
                 if (item == ModItems.HALF_MILK_BOTTLE) {
@@ -962,6 +1011,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
 
         return this.enhancedAnimalAlphaTextures.stream().toArray(String[]::new);
+    }
+
+    protected float mixColours(float colour1, float colour2, float percentage) {
+        colour1 = (colour1 * (1.0F - percentage)) + (colour2 * percentage);
+        return colour1;
     }
 
     protected void geneFixer() {

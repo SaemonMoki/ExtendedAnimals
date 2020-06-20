@@ -153,7 +153,6 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
     private UUID angerTargetUUID;
     private int angerLevel;
 
-    private int grassTimer;
     private EnhancedWaterAvoidingRandomWalkingEatingGoalPig wanderEatingGoal;
 
     private boolean boosting;
@@ -266,7 +265,7 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             this.attackingPlayer = playerentity;
             this.recentlyHit = this.getRevengeTimer();
         }
-        this.grassTimer = this.wanderEatingGoal.getEatingGrassTimer();
+        this.animalEatingTimer = this.wanderEatingGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
 
@@ -294,15 +293,6 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
     @Override
     public Inventory getEnhancedInventory() {
         return null;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id) {
-        if (id == 10) {
-            this.grassTimer = 40;
-        } else {
-            super.handleStatusUpdate(id);
-        }
     }
 
     @Override
@@ -456,12 +446,7 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
     }
 
     @Override
-    protected void runLivingTickClient() {
-        this.grassTimer = Math.max(0, this.grassTimer - 1);
-    }
-
-    @Override
-    protected  void runExtraIdleTimeTick() {
+    protected void runExtraIdleTimeTick() {
     }
 
     @Override
@@ -1432,7 +1417,7 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
                     initialGenes[47] = (1);
                 }
 
-            //size genes reducer [wildtype, smaller smaller smallest...] adds milk fat [none to most]
+            //size genes reducer [wildtype, smaller smaller smallest...]
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
                 initialGenes[48] = (ThreadLocalRandom.current().nextInt(16) + 1);
 

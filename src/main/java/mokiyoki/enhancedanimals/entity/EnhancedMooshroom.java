@@ -11,7 +11,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -46,6 +45,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             "red_mushroom.png", "brown_mushroom.png", "yellow_flower.png"
     };
 
+    protected EnhancedMooshroom.Type mateMushroomType;
     private Effect hasStewEffect;
     private int effectDuration;
     /** Stores the UUID of the most recent lightning bolt to strike */
@@ -54,6 +54,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     public EnhancedMooshroom(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn);
+        this.mateMushroomType = Type.RED;
     }
 
     public void onStruckByLightning(LightningBoltEntity lightningBolt) {
@@ -91,8 +92,10 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
         int[] babyGenes = getCalfGenes(this.mitosisGenes, this.mateMitosisGenes);
-
         defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -84000);
+
+        EnhancedMooshroom EnhancedMooshroom = ENHANCED_MOOSHROOM.create(this.world);
+        EnhancedMooshroom.setMooshroomType(this.setChildMushroomType((EnhancedMooshroom)));
 
         enhancedmooshroom.setMotherUUID(this.getUniqueID().toString());
         enhancedmooshroom.configureAI();
@@ -166,6 +169,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
         compound.putString("Type", this.getMooshroomType().name);
+        compound.putString("MateType", this.mateMushroomType.name);
         if (this.hasStewEffect != null) {
             compound.putByte("EffectId", (byte)Effect.getId(this.hasStewEffect));
             compound.putInt("EffectDuration", this.effectDuration);
@@ -180,6 +184,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
         this.setMooshroomType(EnhancedMooshroom.Type.getTypeByName(compound.getString("Type")));
+        this.mateMushroomType = (EnhancedMooshroom.Type.getTypeByName(compound.getString("MateType")));
         if (compound.contains("EffectId", 1)) {
             this.hasStewEffect = Effect.get(compound.getByte("EffectId"));
         }
@@ -222,14 +227,12 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     public EnhancedMooshroom createChild(AgeableEntity ageable) {
         super.createChild(ageable);
-//        EnhancedMooshroom EnhancedMooshroom = ENHANCED_MOOSHROOM.create(this.world);
-//        EnhancedMooshroom.setMooshroomType(this.func_213445_a((EnhancedMooshroom)ageable));
         return null;
     }
 
-    private EnhancedMooshroom.Type func_213445_a(EnhancedMooshroom p_213445_1_) {
+    private EnhancedMooshroom.Type setChildMushroomType(EnhancedMooshroom fatherMooshroom) {
         EnhancedMooshroom.Type EnhancedMooshroom$type = this.getMooshroomType();
-        EnhancedMooshroom.Type EnhancedMooshroom$type1 = p_213445_1_.getMooshroomType();
+        EnhancedMooshroom.Type EnhancedMooshroom$type1 = fatherMooshroom.getMooshroomType();
         EnhancedMooshroom.Type EnhancedMooshroom$type2;
         if (EnhancedMooshroom$type == EnhancedMooshroom$type1 && this.rand.nextInt(1024) == 0) {
             EnhancedMooshroom$type2 = EnhancedMooshroom$type == EnhancedMooshroom.Type.BROWN ? EnhancedMooshroom.Type.RED : EnhancedMooshroom.Type.BROWN;

@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedHorse;
+import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModelNew;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -26,6 +27,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     private int clearCacheTimer = 0;
 
     private final ModelRenderer head;
+    private final ModelRenderer eyeLeft;
+    private final ModelRenderer eyeRight;
     private final ModelRenderer earL;
     private final ModelRenderer earR;
     private final ModelRenderer jaw;
@@ -71,13 +74,19 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.head.addBox(-2.5F, -0.5F, -9.5F, 5, 4, 4, -0.5F);
         this.head.setTextureOffset(28, 43);
         this.head.addBox(-2.5F, -0.4F, -12.5F, 5, 4, 4, -0.4F);
-        this.head.setTextureOffset(0, 0);
-        this.head.addBox(-4.01F, 0.0F, -6.0F, 3, 4, 4, -1.0F);
-        this.head.addBox(1.01F, 0.0F, -6.0F, 3, 4, 4, -1.0F);
+//        this.head.setTextureOffset(0, 0);
+//        this.head.addBox(-4.01F, 0.0F, -6.0F, 3, 4, 4, -1.0F);
+//        this.head.addBox(1.01F, 0.0F, -6.0F, 3, 4, 4, -1.0F);
 
         this.head.setTextureOffset(94, 0);
         this.head.addBox(-1.5F, -1.5F, -4.5F, 3, 3, 6, -0.5F); //mane piece 1
         this.head.setRotationPoint(0.0F, -14.0F, -1.0F);
+
+        this.eyeLeft = new ModelRenderer(this, 0, 0);
+        this.eyeLeft.addBox(2.01F, 0.0F, -6.0F, 0, 4, 4, -1.0F);
+
+        this.eyeRight = new ModelRenderer(this, 3, 0);
+        this.eyeRight.addBox(-2.01F, 0.0F, -6.0F, 0, 4, 4, -1.0F);
 
         this.earL = new ModelRenderer(this, 6, 0);
         this.earL.addBox(-2.0F, -3.0F, -0.5F, 2, 3, 1);
@@ -152,6 +161,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.head.addChild(earL);
         this.head.addChild(earR);
         this.head.addChild(jaw);
+        this.head.addChild(eyeLeft);
+        this.head.addChild(eyeRight);
 
             /**
              * Equipment stuff
@@ -260,6 +271,14 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.hoof3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.hoof4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
+        if (horseModelData.sleeping) {
+            this.eyeLeft.showModel = false;
+            this.eyeRight.showModel = false;
+        } else {
+            this.eyeLeft.showModel = true;
+            this.eyeRight.showModel = true;
+        }
+
     }
 
     private void renderBodyandSaddle(List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
@@ -273,7 +292,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
             this.saddlePomel.showModel = false;
 
 //            float antiScale = 1.25F;
-            List<Float> scalingsForSaddle = createScalings(saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
+            List<Float> scalingsForSaddle = ModelHelper.createScalings(saddleScale,saddleScale,saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
 //            List<Float> scalingsForPad = createScalings(antiScale, 0.0F, -antiScale*0.01F, (antiScale - 1.0F)*0.04F);
 //            mapOfScale.put("SaddlePad", scalingsForPad);
 
@@ -474,10 +493,10 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.hock4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
         this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
 
-        copyModelAngles(leg1, hoof1);
-        copyModelAngles(leg2, hoof2);
-        copyModelAngles(leg3, hoof3);
-        copyModelAngles(leg4, hoof4);
+        ModelHelper.copyModelAngles(leg1, hoof1);
+        ModelHelper.copyModelAngles(leg2, hoof2);
+        ModelHelper.copyModelAngles(leg3, hoof3);
+        ModelHelper.copyModelAngles(leg4, hoof4);
 
         this.earL.rotateAngleZ = -0.15F;
         this.earR.rotateAngleZ = 0.15F;
@@ -501,33 +520,6 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
             this.stirrup3DNarrowR.setRotationPoint(-7.25F, -0.25F, -1.5F);
         }
 
-    }
-
-    private List<Float> createScalings(Float scaling, Float translateX, Float translateY, Float translateZ) {
-        List<Float> scalings = new ArrayList<>();
-        //scaling
-        scalings.add(scaling);
-
-        //translations
-        scalings.add(translateX);
-        scalings.add(translateY);
-        scalings.add(translateZ);
-        return scalings;
-    }
-
-    public static void setRotations(ModelRenderer model, float angleX, float angleY, float angleZ) {
-        model.rotateAngleX = angleX;
-        model.rotateAngleY = angleY;
-        model.rotateAngleZ = angleZ;
-    }
-
-    public static void copyModelAngles(ModelRenderer source, ModelRenderer dest) {
-        dest.rotateAngleX = source.rotateAngleX;
-        dest.rotateAngleY = source.rotateAngleY;
-        dest.rotateAngleZ = source.rotateAngleZ;
-        dest.rotationPointX = source.rotationPointX;
-        dest.rotationPointY = source.rotationPointY;
-        dest.rotationPointZ = source.rotationPointZ;
     }
 
     private class HorseModelData {

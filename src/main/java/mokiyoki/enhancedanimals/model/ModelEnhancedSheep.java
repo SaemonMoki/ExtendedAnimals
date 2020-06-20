@@ -5,6 +5,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EntityState;
+import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModelNew;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -29,6 +30,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
     private float f12 = 0F;
 
     private final ModelRenderer head;
+    private final ModelRenderer eyeLeft;
+    private final ModelRenderer eyeRight;
     private final ModelRenderer neck;
     private final EnhancedRendererModelNew hornBase;
     private final EnhancedRendererModelNew polyHornBase;
@@ -72,8 +75,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
     private final EnhancedRendererModelNew hornR7;
     private final EnhancedRendererModelNew hornR8;
     private final EnhancedRendererModelNew hornR9;
-    private final ModelRenderer earsR;
-    private final ModelRenderer earsL;
+    private final ModelRenderer earRight;
+    private final ModelRenderer earLeft;
     private final ModelRenderer body;
     private final ModelRenderer wool1;
     private final ModelRenderer wool2;
@@ -142,6 +145,12 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.head.setTextureOffset(0, 8);
         this.head.addBox(-2.0F, 0.0F, -8.0F, 4, 3, 3, 0.0F); //nose
         this.head.setRotationPoint(0.0F, -8.0F, 0.0F);
+
+        this.eyeLeft = new ModelRenderer(this, 12, 8);
+        this.eyeLeft.addBox(1.5F, 1.0F, -5.0F, 1, 1, 2, 0.01F);
+
+        this.eyeRight = new ModelRenderer(this, 12, 13);
+        this.eyeRight.addBox(-2.5F, 1.0F, -5.0F, 1, 1, 2, 0.01F);
 
         this.neck = new ModelRenderer(this, 34, 0);
         this.neck.addBox(-2.0F, -7.0F, -4.0F, 4, 9, 4, 0.0F); //neck
@@ -354,10 +363,13 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.hornR9.setRotationPoint(0.0F, 0.0F, 0.0F);
         sheepRightHorns.add(hornR9);
 
-        this.earsR = new ModelRenderer(this, 50, 0);
-        this.earsR.addBox(-5.0F, -8.5F, -2.0F, 3, 2, 1, 0.0F); //ear right
-        this.earsL = new ModelRenderer(this, 50, 3);
-        this.earsL.addBox(2.0F, -8.5F, -2.0F, 3, 2, 1, 0.0F); //ear left
+        this.earLeft = new ModelRenderer(this, 50, 3);
+        this.earLeft.addBox(0.0F, -2.0F, 0.0F, 3, 2, 1, 0.0F); //ear left
+        this.earLeft.setRotationPoint(2.0F, 2.0F, -2.0F);
+
+        this.earRight = new ModelRenderer(this, 50, 0);
+        this.earRight.addBox(-3.0F, -2.0F, 0.0F, 3, 2, 1, 0.0F); //ear right
+        this.earRight.setRotationPoint(-2.0F, 2.0F, -2.0F);
 
         this.body = new ModelRenderer(this, 2, 0);
         this.body.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 0.0F);
@@ -538,6 +550,10 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.polyHornR0.addChild(hornR3);
 
         this.neck.addChild(head);
+        this.head.addChild(this.eyeLeft);
+        this.head.addChild(this.eyeRight);
+        this.head.addChild(this.earLeft);
+        this.head.addChild(this.earRight);
 
         this.headWool1.addChild(headWool1Child);
         this.cheekWool1.addChild(cheekWool1Child);
@@ -613,12 +629,19 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         matrixStackIn.pop();
 //        }
+
+        if (sheepModelData.blink >= 6) {
+            this.eyeLeft.showModel = true;
+            this.eyeRight.showModel = true;
+        } else {
+            this.eyeLeft.showModel = false;
+            this.eyeRight.showModel = false;
+        }
+
     }
 
     private void renderAdult(String sheepStatus, int horns, float hornScale, int facewool, List<String> unrenderedModels, int coatLength, float bagSize, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.earsR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.earsL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         renderWool(facewool, coatLength, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -667,21 +690,10 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         Map<String, List<Float>> mapOfScale = new HashMap<>();
 
-        List<Float> scalingsForHorn = createScalings(hornScale, 0.0F, 0.0F, 0.0F);
+        List<Float> scalingsForHorn = ModelHelper.createScalings(hornScale, hornScale, hornScale,0.0F, 0.0F, 0.0F);
         mapOfScale.put("HornL0", scalingsForHorn);
-        mapOfScale.put("HornR0", mirrorX(scalingsForHorn, false));
+        mapOfScale.put("HornR0", ModelHelper.mirrorX(scalingsForHorn));
         this.hornBase.render(matrixStackIn, bufferIn, mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-    }
-
-    private List<Float> mirrorX(List<Float> scalings, boolean includeScaling) {
-        List<Float> reversedNegative = new ArrayList<>();
-
-        reversedNegative.add(null);
-        reversedNegative.add(scalings.get(1) * -2.0F);
-        reversedNegative.add(0F);
-        reversedNegative.add(0F);
-
-        return reversedNegative;
     }
 
     private void renderWool(int facewool, int coatLength, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)  {
@@ -828,58 +840,57 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         this.neck.rotateAngleX = 1F + this.headRotationAngleX;   //might need to merge this with another line
 
-        copyModelAngles(neck, earsL);
-        copyModelAngles(neck, earsR);
-        this.earsL.rotateAngleY = this.earsL.rotateAngleY + 0.15F;
-        this.earsR.rotateAngleY = this.earsR.rotateAngleY - 0.15F;
-        copyModelAngles(body, wool1);
+
+        this.earLeft.rotateAngleY = 0.15F;
+        this.earRight.rotateAngleY = -0.15F;
+        ModelHelper.copyModelAngles(body, wool1);
             this.wool1.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0133F * limbSwingAmount;
-        copyModelAngles(body, wool2);
+        ModelHelper.copyModelAngles(body, wool2);
             this.wool2.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0266F * limbSwingAmount;
-        copyModelAngles(body, wool3);
+        ModelHelper.copyModelAngles(body, wool3);
             this.wool3.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0399F * limbSwingAmount;
-        copyModelAngles(body, wool4);
+        ModelHelper.copyModelAngles(body, wool4);
             this.wool4.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0533F * limbSwingAmount;
-        copyModelAngles(body, wool5);
+        ModelHelper.copyModelAngles(body, wool5);
             this.wool5.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0666F * limbSwingAmount;
-        copyModelAngles(body, wool6);
+        ModelHelper.copyModelAngles(body, wool6);
             this.wool6.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0799F * limbSwingAmount;
-        copyModelAngles(body, wool7);
+        ModelHelper.copyModelAngles(body, wool7);
             this.wool7.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.0933F * limbSwingAmount;
-        copyModelAngles(body, wool8);
+        ModelHelper.copyModelAngles(body, wool8);
             this.wool8.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1066F * limbSwingAmount;
-        copyModelAngles(body, wool9);
+        ModelHelper.copyModelAngles(body, wool9);
             this.wool9.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1199F * limbSwingAmount;
-        copyModelAngles(body, wool10);
+        ModelHelper.copyModelAngles(body, wool10);
             this.wool10.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1333F * limbSwingAmount;
-        copyModelAngles(body, wool11);
+        ModelHelper.copyModelAngles(body, wool11);
             this.wool11.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1466F * limbSwingAmount;
-        copyModelAngles(body, wool12);
+        ModelHelper.copyModelAngles(body, wool12);
             this.wool12.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1599F * limbSwingAmount;
-        copyModelAngles(body, wool13);
+        ModelHelper.copyModelAngles(body, wool13);
          this.wool13.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1733F * limbSwingAmount;
-        copyModelAngles(body, wool14);
+        ModelHelper.copyModelAngles(body, wool14);
             this.wool14.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.1866F * limbSwingAmount;
-        copyModelAngles(body, wool15);
+        ModelHelper.copyModelAngles(body, wool15);
             this.wool15.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F) * 0.2F * limbSwingAmount;
 
-        copyModelAngles(neck, neckWool1);
-        copyModelAngles(neck, neckWool2);
-        copyModelAngles(neck, neckWool3);
-        copyModelAngles(neck, neckWool4);
-        copyModelAngles(neck, neckWool5);
-        copyModelAngles(neck, neckWool6);
-        copyModelAngles(neck, neckWool7);
+        ModelHelper.copyModelAngles(neck, neckWool1);
+        ModelHelper.copyModelAngles(neck, neckWool2);
+        ModelHelper.copyModelAngles(neck, neckWool3);
+        ModelHelper.copyModelAngles(neck, neckWool4);
+        ModelHelper.copyModelAngles(neck, neckWool5);
+        ModelHelper.copyModelAngles(neck, neckWool6);
+        ModelHelper.copyModelAngles(neck, neckWool7);
 
-        copyModelAngles(neck, headWool1);
-        copyModelAngles(neck, cheekWool1);
-        copyModelAngles(neck, noseWool1);
+        ModelHelper.copyModelAngles(neck, headWool1);
+        ModelHelper.copyModelAngles(neck, cheekWool1);
+        ModelHelper.copyModelAngles(neck, noseWool1);
         this.headWool1Child.rotateAngleX = 1.6F;
         this.cheekWool1Child.rotateAngleX = 1.6F;
         this.noseWool1Child.rotateAngleX = 1.6F;
 
-        copyModelAngles(neck, hornBase);
-        copyModelAngles(neck, polyHornBase);
+        ModelHelper.copyModelAngles(neck, hornBase);
+        ModelHelper.copyModelAngles(neck, polyHornBase);
 
 
         setHornRotations(sheepModelData, horns, unrenderedModels, entityIn);
@@ -1167,27 +1178,6 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         return onGround;
     }
 
-    public static void copyModelAngles(ModelRenderer source, ModelRenderer dest) {
-        dest.rotateAngleX = source.rotateAngleX;
-        dest.rotateAngleY = source.rotateAngleY;
-        dest.rotateAngleZ = source.rotateAngleZ;
-        dest.rotationPointX = source.rotationPointX;
-        dest.rotationPointY = source.rotationPointY;
-        dest.rotationPointZ = source.rotationPointZ;
-    }
-
-    private List<Float> createScalings(Float scaling, Float translateX, Float translateY, Float translateZ) {
-        List<Float> scalings = new ArrayList<>();
-        //scaling
-        scalings.add(scaling);
-
-        //translations
-        scalings.add(translateX);
-        scalings.add(translateY);
-        scalings.add(translateZ);
-        return scalings;
-    }
-
     private class SheepModelData {
         float previousSwing;
         int[] sheepGenes;
@@ -1198,6 +1188,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         int coatlength = 0;
         char[] uuidArray;
         boolean sleeping = false;
+        int blink = 0;
         int lastAccessed = 0;
         int dataReset = 0;
         long clientGameTime = 0;
@@ -1233,6 +1224,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.bagSize = enhancedSheep.getBagSize();
             sheepModelData.coatlength = enhancedSheep.getCoatLength();
             sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
+            sheepModelData.blink = enhancedSheep.getBlink();
             sheepModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime());
 
             sheepModelData.unrenderedModels = new ArrayList<>();
@@ -1243,6 +1235,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.sheepGenes = enhancedSheep.getSharedGenes();
             sheepModelData.coatlength = enhancedSheep.getCoatLength();
             sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
+            sheepModelData.blink = enhancedSheep.getBlink();
             sheepModelData.bagSize = enhancedSheep.getBagSize();
             sheepModelData.size = enhancedSheep.getAnimalSize();
             sheepModelData.sheepStatus = enhancedSheep.getEntityStatus();

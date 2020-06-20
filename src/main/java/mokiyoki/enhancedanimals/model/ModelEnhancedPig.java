@@ -2,15 +2,12 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import mokiyoki.enhancedanimals.EnhancedAnimals;
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
-import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
+import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModelNew;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
@@ -29,7 +25,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
     private Map<Integer, PigModelData> pigModelDataCache = new HashMap<>();
     private int clearCacheTimer = 0;
-
+    private float headRotationAngleX;
 
     private final EnhancedRendererModelNew pig;
     private final EnhancedRendererModelNew head;
@@ -58,8 +54,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
     private final EnhancedRendererModelNew leg2;
     private final EnhancedRendererModelNew leg3;
     private final EnhancedRendererModelNew leg4;
-    private final EnhancedRendererModelNew eyelidLeft;
-    private final EnhancedRendererModelNew eyelidRight;
+    private final EnhancedRendererModelNew eyeLeft;
+    private final EnhancedRendererModelNew eyeRight;
 
     private final EnhancedRendererModelNew saddle;
     private final EnhancedRendererModelNew saddleWestern;
@@ -193,13 +189,13 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 8, 3);
         this.leg4.setRotationPoint(2.0F, 16.0F, 7.0F);
 
-        this.eyelidLeft = new EnhancedRendererModelNew(this, 61, 7);
-        this.eyelidLeft.addBox(0.0F, 0.0F, 0.0F, 1, 1, 1, 0.1F);
-        this.eyelidLeft.setRotationPoint(2.5F, -5.0F, 0.0F);
+        this.eyeLeft = new EnhancedRendererModelNew(this, 69, 15);
+        this.eyeLeft.addBox(0.0F, 0.0F, 0.0F, 1, 1, 1, 0.01F);
+        this.eyeLeft.setRotationPoint(2.5F, -5.0F, 0.0F);
 
-        this.eyelidRight = new EnhancedRendererModelNew(this, 54, 7);
-        this.eyelidRight.addBox(0.0F, 0.0F, 0.0F, 1, 1, 1, 0.1F);
-        this.eyelidRight.setRotationPoint(-3.5F, -5.0F, 0.0F);
+        this.eyeRight = new EnhancedRendererModelNew(this, 49, 15);
+        this.eyeRight.addBox(0.0F, 0.0F, 0.0F, 1, 1, 1, 0.01F);
+        this.eyeRight.setRotationPoint(-3.5F, -5.0F, 0.0F);
 
         this.body.addChild(this.neckBigger);
 //        this.neck.addChild(this.head);
@@ -215,8 +211,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 //        this.head.addChild(this.earSmallR);
         this.head.addChild(this.earMediumL);
         this.head.addChild(this.earMediumR);
-        this.head.addChild(this.eyelidLeft);
-        this.head.addChild(this.eyelidRight);
+        this.head.addChild(this.eyeLeft);
+        this.head.addChild(this.eyeRight);
         this.butt.addChild(this.tail0);
         this.tail0.addChild(this.tail1);
         this.tail1.addChild(this.tail2);
@@ -291,8 +287,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.saddlePad = new EnhancedRendererModelNew(this, 98, 24, "SaddlePad");
         this.saddlePad.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
 
-//magic # is 88
-
         this.body.addChild(saddle);
         this.saddleHorn.addChild(saddlePomel);
 
@@ -345,12 +339,12 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             this.pig.render(matrixStackIn, bufferIn, null, new ArrayList<>(), false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
-        if (blink == 0 || blink >= 8) {
-            this.eyelidLeft.showModel = false;
-            this.eyelidRight.showModel = false;
+        if (blink >= 6) {
+            this.eyeLeft.showModel = true;
+            this.eyeRight.showModel = true;
         } else {
-            this.eyelidLeft.showModel = true;
-            this.eyelidRight.showModel = true;
+            this.eyeLeft.showModel = false;
+            this.eyeRight.showModel = false;
         }
 
         matrixStackIn.pop();
@@ -367,7 +361,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             this.saddlePomel.showModel = false;
 
 //            float antiScale = 1.25F;
-            List<Float> scalingsForSaddle = createScalings(saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
+            List<Float> scalingsForSaddle = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
 //            List<Float> scalingsForPad = createScalings(antiScale, 0.0F, -antiScale*0.01F, (antiScale - 1.0F)*0.04F);
 //            mapOfScale.put("SaddlePad", scalingsForPad);
 
@@ -378,7 +372,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             } else if (saddleType.equals("english")) {
                 this.saddleEnglish.showModel = true;
                 saddleScale = 1.125F;
-                List<Float> scalingsForSaddlePad = createScalings(saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
+                List<Float> scalingsForSaddlePad = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
                 mapOfScale.put("SaddlePad", scalingsForSaddlePad);
                 mapOfScale.put("EnglishSaddle", scalingsForSaddle);
             } else {
@@ -408,57 +402,88 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             onGround = standingAnimation();
         }
 
+        this.neck.rotationPointZ = onGround - (entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 4.5F;
+        this.headRotationAngleX = (entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
+
         //snoutLength
-        float snoutLength1 = -0.065F;
-        float snoutLength2 = -0.065F;
-        float snoutLength = 0.01F;
+        float snoutLength1 = 1.0F;
+        float snoutLength2 = 1.0F;
+        float snoutLength = 0.0F;
 
         if(sharedGenes != null) {
+            // 1 - 5, longest - shortest
             for (int i = 1; i < sharedGenes[18];i++){
-                snoutLength1 = snoutLength1 + 0.03F;
+                snoutLength1 = snoutLength1 - 0.1F;
             }
 
             for (int i = 1; i < sharedGenes[19];i++){
-                snoutLength2 = snoutLength2 + 0.03F;
+                snoutLength2 = snoutLength2 - 0.1F;
             }
 
+            //causes partial dominance of longer nose over shorter nose.
             if (snoutLength1 > snoutLength2){
                 snoutLength = (snoutLength1*0.75F) + (snoutLength2*0.25F);
             }else if (snoutLength1 < snoutLength2){
                 snoutLength = (snoutLength1*0.25F) + (snoutLength2*0.75F);
             }else{
-                snoutLength = snoutLength1 + snoutLength2;
+                snoutLength = snoutLength1;
             }
 
-            if (sharedGenes[20] == 1 || sharedGenes[21] == 1){
-                if (snoutLength >= -0.12F){
-                    snoutLength = snoutLength - 0.01F;
-                }
-            }else if (sharedGenes[20] != 2 && sharedGenes[21] != 2){
-                if (sharedGenes[20] == 3 || sharedGenes[21] == 3){
-                    snoutLength = snoutLength + 0.01F;
-                }else{
-                    snoutLength = snoutLength + 0.02F;
+            // 1 - 4, longest - shortest
+            if (sharedGenes[42] >= sharedGenes[43]) {
+                snoutLength = snoutLength + ((4 - sharedGenes[42])/8.0F);
+            } else {
+                snoutLength = snoutLength + ((4 - sharedGenes[43])/8.0F);
+            }
+
+            if (sharedGenes[44] >= 2 && sharedGenes[45] >= 2) {
+                if (sharedGenes[44] == 2 || sharedGenes[45] == 2) {
+                    snoutLength = snoutLength * 0.9F;
+                } else {
+                    snoutLength = snoutLength * 0.75F;
                 }
             }
+
+            if (sharedGenes[46] == 2 && sharedGenes[47] == 2) {
+                snoutLength = snoutLength * 0.75F;
+            }
+
+        }
+
+        if (snoutLength > 1.0F) {
+            snoutLength = 1.0F;
+        } else if (snoutLength < 0.0F) {
+            snoutLength = 0.0F;
         }
 
 
         if (!(pigModelData.birthTime == null) && !pigModelData.birthTime.equals("") && !pigModelData.birthTime.equals("0")) {
             int ageTime = (int) (pigModelData.clientGameTime - Long.parseLong(pigModelData.birthTime));
             if (ageTime < 70000) {
-                float age = 1.0F - (ageTime/70000.F);
-                snoutLength = (snoutLength + (0.11F * age)) / (1.0F + (age));
+                float age = ageTime/70000.F;
+                snoutLength = snoutLength * age;
             }
         }
 
+        /*
+            shortest nose Y rotation point:
+                snout = -2.0F
+                topTusks = -4.5F
+                bottomTusks = -5.0F
+
+            longest nose Y rotation point:
+                snout = -7.0F
+                topTusks = -1.0F
+                bottomTusks = -2.0F
+         */
+
         //TODO check that baby pig snoots are short and cute
-        this.snout.rotateAngleX = -snoutLength;
-        this.tuskTL.rotationPointY = -3.5F + ((snoutLength - 0.11F)*-10F);
-        this.tuskTR.rotationPointY = -3.5F + ((snoutLength - 0.11F)*-10F);
-        this.tuskBL.rotationPointY = -4.0F + ((snoutLength - 0.11F)*-10F);
-        this.tuskBR.rotationPointY = -4.0F + ((snoutLength - 0.11F)*-10F);
-//        this.tuskBL.rotateAngleY = snoutLength;
+//        this.snout.rotateAngleX = -snoutLength;
+        this.snout.rotationPointY = -(2.0F + (5.0F*snoutLength));
+        this.tuskTL.rotationPointY = -(4.5F - (3.5F*snoutLength));
+        this.tuskTR.rotationPointY = this.tuskTL.rotationPointY;
+        this.tuskBL.rotationPointY = -(5.0F - (3.0F*snoutLength));
+        this.tuskBR.rotationPointY = this.tuskBL.rotationPointY;
 
 
 
@@ -564,12 +589,12 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 //        this.earSmallR.rotateAngleY = 0.0F;
 //        this.earSmallR.rotateAngleZ = ((float)Math.PI / -2F);
 
-        copyModelAngles(earSmallL, earMediumL);
-        copyModelAngles(earSmallR, earMediumR);
+        ModelHelper.copyModelAngles(earSmallL, earMediumL);
+        ModelHelper.copyModelAngles(earSmallR, earMediumR);
 
 
-        this.neck.rotateAngleX = this.neck.rotateAngleX + ((headPitch * 0.017453292F) / 2.0F);
-        this.head.rotateAngleX = (headPitch * 0.017453292F)/2.0F;
+        this.neck.rotateAngleX = this.neck.rotateAngleX + ((headPitch * 0.017453292F) / 5.0F) + (this.headRotationAngleX / 2.0F);
+        this.head.rotateAngleX = ((headPitch * 0.017453292F)/5.0F)  + (this.headRotationAngleX / 2.0F);
 
         this.head.rotateAngleZ = -(netHeadYaw * 0.017453292F)/2.0F;
 
@@ -581,7 +606,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         }
 
-        this.mouth.rotateAngleX = -0.12F;
+        this.mouth.rotateAngleX = -0.12F + this.headRotationAngleX;
 
         this.tuskTL.rotateAngleZ = 1.3F;
         this.tuskTR.rotateAngleZ = -1.3F;
@@ -589,7 +614,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.tuskBL.rotateAngleZ = 1.5F;
         this.tuskBR.rotateAngleZ = -1.5F;
 
-        copyModelAngles(neck, neckBigger);
+        ModelHelper.copyModelAngles(neck, neckBigger);
 
         this.tail0.rotateAngleX = -((float)Math.PI / 2F);
 
@@ -635,7 +660,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
     private float standingAnimation() {
         float onGround;
-        onGround = 2.75F;
+        onGround = 8.75F;
 
         this.pig.rotateAngleZ = 0.0F;
         this.pig.setRotationPoint(0.0F, 0.0F, 0.0F);
@@ -644,28 +669,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         return onGround;
     }
-
-    private List<Float> createScalings(Float scaling, Float translateX, Float translateY, Float translateZ) {
-        List<Float> scalings = new ArrayList<>();
-        //scaling
-        scalings.add(scaling);
-
-        //translations
-        scalings.add(translateX);
-        scalings.add(translateY);
-        scalings.add(translateZ);
-        return scalings;
-    }
-
-    public static void copyModelAngles(ModelRenderer source, ModelRenderer dest) {
-        dest.rotateAngleX = source.rotateAngleX;
-        dest.rotateAngleY = source.rotateAngleY;
-        dest.rotateAngleZ = source.rotateAngleZ;
-        dest.rotationPointX = source.rotationPointX;
-        dest.rotationPointY = source.rotationPointY;
-        dest.rotationPointZ = source.rotationPointZ;
-    }
-
 
     private class PigModelData {
         int[] pigGenes;

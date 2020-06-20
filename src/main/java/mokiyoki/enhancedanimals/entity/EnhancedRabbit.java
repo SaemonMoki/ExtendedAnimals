@@ -176,7 +176,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     private int jumpTicks;
     private int jumpDuration;
-    public int noseTwitch;
+    public int[] noseTwitch = {0,0,0,0}; //how long to twitch/not twitch, how fast to twitch, count up or down, twitch cycle
     private boolean wasOnGround;
     private int currentMoveTypeDuration;
     public int carrotTicks;
@@ -293,6 +293,9 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         this.jumpTicks = 0;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public int getNoseTwitch() { return this.noseTwitch[3]; }
+
     protected void registerData() {
         super.registerData();
         this.dataManager.register(COAT_LENGTH, 0);
@@ -380,15 +383,13 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     @OnlyIn(Dist.CLIENT)
     public void handleStatusUpdate(byte id) {
+        super.handleStatusUpdate(id);
         if (id == 1) {
+
             this.createRunningParticles();
             this.jumpDuration = 10;
             this.jumpTicks = 0;
-            this.noseTwitch = 0;
-        } else {
-            super.handleStatusUpdate(id);
         }
-
     }
 
     protected void registerAttributes() {
@@ -410,6 +411,48 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     @Override
     protected void runLivingTickClient() {
+        super.runLivingTickClient();
+        //how long to twitch/not twitch, how fast to twitch, twitch cycle
+        if (this.sleeping) {
+            if (noseTwitch[0] == 0) {
+                noseTwitch[0] = -rand.nextInt(900); //dont twitch nose for up to 45 seconds
+            } else if (noseTwitch[0] == -1){
+                noseTwitch[0] = rand.nextInt(300); //twitch for up to 15 seconds
+            }
+            if (noseTwitch[0] > 0) {
+                noseTwitch[1] = 1;
+            }
+        } else {
+            if (noseTwitch[0] == 0) {
+                noseTwitch[0] = rand.nextInt(1500) - 200; //twitch nose continuously for up to a minute, may stop for up to 10 seconds;
+            } else if (noseTwitch[0] > 0) {
+                if (noseTwitch[0] > 900) {
+                    noseTwitch[1] = 1;
+                } else {
+                    noseTwitch[1] = 2;
+                }
+            }
+        }
+
+        if (noseTwitch[0] > 0) {
+            noseTwitch[0] = noseTwitch[0] - 1;
+            if (noseTwitch[2] == 0) {
+                if (noseTwitch[3] <= -1) {
+                    noseTwitch[2] = 1;
+                } else {
+                    noseTwitch[3]--;
+                }
+            } else {
+                if (noseTwitch[3] >= 1) {
+                    noseTwitch[2] = 0;
+                } else {
+                    noseTwitch[3]++;
+                }
+            }
+        } else {
+            noseTwitch[0] = noseTwitch[0] + 1;
+        }
+
     }
 
     @Override

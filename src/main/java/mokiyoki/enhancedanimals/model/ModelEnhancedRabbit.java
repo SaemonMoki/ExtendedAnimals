@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
+import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
@@ -40,12 +41,14 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     private final ModelRenderer rabbitButtAngora1;
     private final ModelRenderer rabbitButtAngora2;
     private final ModelRenderer rabbitButtAngora3;
-    private final ModelRenderer rabbitButtAngora4;
+    private final ModelRenderer buttAngora4;
     private final ModelRenderer rabbitButtTube;
-    private final ModelRenderer rabbitLeftArm;
-    private final ModelRenderer rabbitRightArm;
-    private final ModelRenderer rabbitHeadLeft;
-    private final ModelRenderer rabbitHeadRight;
+    private final ModelRenderer leftArm;
+    private final ModelRenderer rightArm;
+    private final ModelRenderer headLeft;
+    private final ModelRenderer headRight;
+    private final ModelRenderer eyeLeft;
+    private final ModelRenderer eyeRight;
     private final ModelRenderer rabbitHeadMuzzle;
     private final ModelRenderer rabbitNose;
     private final ModelRenderer rabbitHeadMuzzleDwarf;
@@ -68,7 +71,6 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     private final ModelRenderer DwarfEarR;
     private final ModelRenderer rabbitTail;
     private float jumpRotation;
-    private float testerFloat;
 
     private Integer currentRabbit = null;
 
@@ -169,29 +171,35 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         this.rabbitButtAngora3.addChild(this.rabbitLeftThigh);
         this.rabbitButtAngora3.addChild(this.rabbitRightThigh);
 
-        this.rabbitButtAngora4 = new ModelRenderer(this, 30, 0);
-        this.rabbitButtAngora4.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 4F);
-        this.rabbitButtAngora4.setRotationPoint(0.0F, 13.0F, 2.5F);
-        this.rabbitButtAngora4.addChild(this.rabbitLeftThigh);
-        this.rabbitButtAngora4.addChild(this.rabbitRightThigh);
+        this.buttAngora4 = new ModelRenderer(this, 30, 0);
+        this.buttAngora4.addBox(-4.0F, 0.0F, 0.0F, 8, 8, 8, 4F);
+        this.buttAngora4.setRotationPoint(0.0F, 13.0F, 2.5F);
+        this.buttAngora4.addChild(this.rabbitLeftThigh);
+        this.buttAngora4.addChild(this.rabbitRightThigh);
 
-        this.rabbitLeftArm = new ModelRenderer(this, 16, 56);
-        this.rabbitLeftArm.addBox(0.0F, 0.0F, 0.0F, 3, 6, 2);
-        this.rabbitLeftArm.setRotationPoint(-3.5F, 23.5F, -2.0F + xMove);
-        this.setRotationOffset(this.rabbitLeftArm, -1.6F, 0.0F, 0.0F);
+        this.leftArm = new ModelRenderer(this, 16, 56);
+        this.leftArm.addBox(0.0F, 0.0F, 0.0F, 3, 6, 2);
+        this.leftArm.setRotationPoint(-3.5F, 23.5F, -2.0F + xMove);
+        this.setRotationOffset(this.leftArm, -1.6F, 0.0F, 0.0F);
 
-        this.rabbitRightArm = new ModelRenderer(this, 26, 56);
-        this.rabbitRightArm.addBox(0.0F, 0F, 0F, 3, 6, 2);
-        this.rabbitRightArm.setRotationPoint(0.5F, 23.5F, -2.0F + xMove);
-        this.setRotationOffset(this.rabbitRightArm, -1.6F, 0.0F, 0.0F);
+        this.rightArm = new ModelRenderer(this, 26, 56);
+        this.rightArm.addBox(0.0F, 0F, 0F, 3, 6, 2);
+        this.rightArm.setRotationPoint(0.5F, 23.5F, -2.0F + xMove);
+        this.setRotationOffset(this.rightArm, -1.6F, 0.0F, 0.0F);
 
-        this.rabbitHeadLeft = new ModelRenderer(this, 0, 24);
-        this.rabbitHeadLeft.addBox(0.0F, 0.0F, 0.0F, 3, 6, 6);
-        this.rabbitHeadLeft.setRotationPoint(0.0F, 14.0F, -11.0F);
+        this.headLeft = new ModelRenderer(this, 0, 24);
+        this.headLeft.addBox(0.0F, 0.0F, 0.0F, 3, 6, 6);
+        this.headLeft.setRotationPoint(0.0F, 14.0F, -11.0F);
 
-        this.rabbitHeadRight = new ModelRenderer(this, 18, 24);
-        this.rabbitHeadRight.addBox(-3.0F, 0F, 0F, 3, 6, 6);
-        this.rabbitHeadRight.setRotationPoint(0.0F, 14.0F, -9.0F + xMove);
+        this.headRight = new ModelRenderer(this, 18, 24);
+        this.headRight.addBox(-3.0F, 0F, 0F, 3, 6, 6);
+        this.headRight.setRotationPoint(0.0F, 14.0F, -9.0F + xMove);
+
+        this.eyeLeft = new ModelRenderer(this, 0, 16);
+        this.eyeLeft.addBox(2.0F, 2.0F, 1.0F, 1, 2, 2, 0.01F);
+
+        this.eyeRight = new ModelRenderer(this, 0, 20);
+        this.eyeRight.addBox(-3.0F, 2.0F, 1.0F, 1, 2, 2, 0.01F);
 
         this.rabbitHeadMuzzle = new ModelRenderer(this, 0, 8);
         this.rabbitHeadMuzzle.addBox(-2F, 1.5F, -2F, 4, 4, 4);
@@ -254,6 +262,9 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         this.rabbitTail = new ModelRenderer(this, 20, 0);
         this.rabbitTail.addBox(-1.5F, 2.0F, 8.0F, 3, 4, 2);
         this.rabbitTail.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
+
+        this.headLeft.addChild(this.eyeLeft);
+        this.headRight.addChild(this.eyeRight);
     }
 
     private void setRotationOffset(ModelRenderer renderer, float x, float y, float z) {
@@ -331,8 +342,8 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         matrixStackIn.push();
         matrixStackIn.scale(finalRabbitSize, finalRabbitSize, finalRabbitSize);
         matrixStackIn.translate(0.0F, -1.45F + 1.45F/finalRabbitSize, 0.0F);
-            this.rabbitHeadLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.rabbitHeadRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.headLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.headRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             if (genes != null) {
                 if (genes[24] == 2 && genes[25] == 2){
                     this.rabbitLionHeadL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -378,16 +389,24 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
                 }else if(coatLength == 4){
                     this.rabbitBodyAngora4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     //this.rabbitButtRoundAngora4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    this.rabbitButtAngora4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.buttAngora4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     //this.rabbitButtTubeAngora4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
             }
 
-            this.rabbitLeftArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.rabbitRightArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.leftArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.rightArm.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.rabbitTail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         matrixStackIn.pop();
 //        }
+
+        if (rabbitModelData.blink >= 6) {
+            this.eyeLeft.showModel = true;
+            this.eyeRight.showModel = true;
+        } else {
+            this.eyeLeft.showModel = false;
+            this.eyeRight.showModel = false;
+        }
     }
 
     /**
@@ -416,21 +435,21 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         int[] genes = rabbitModelData.rabbitGenes;
         boolean dwarf = rabbitModelData.dwarf;
 
-        this.rabbitHeadLeft.rotateAngleX = headPitch * 0.017453292F;
-        this.rabbitHeadLeft.rotateAngleY = netHeadYaw * 0.017453292F;
-        copyModelAngles(rabbitHeadLeft, rabbitHeadRight);
-        copyModelAngles(rabbitHeadLeft, rabbitHeadMuzzle);
-        copyModelAngles(rabbitHeadLeft, rabbitHeadMuzzleDwarf);
-        copyModelAngles(rabbitHeadLeft, rabbitLionHeadL);
-        copyModelAngles(rabbitHeadRight, rabbitLionHeadR);
-        copyModelAngles(rabbitHeadLeft, rabbitLionHeadL1);
-        copyModelAngles(rabbitHeadRight, rabbitLionHeadR1);
-        copyModelAngles(rabbitHeadLeft, rabbitNose);
+        this.headLeft.rotateAngleX = headPitch * 0.017453292F;
+        this.headLeft.rotateAngleY = netHeadYaw * 0.017453292F;
+        ModelHelper.copyModelAngles(headLeft, headRight);
+        ModelHelper.copyModelAngles(headLeft, rabbitHeadMuzzle);
+        ModelHelper.copyModelAngles(headLeft, rabbitHeadMuzzleDwarf);
+        ModelHelper.copyModelAngles(headLeft, rabbitLionHeadL);
+        ModelHelper.copyModelAngles(headRight, rabbitLionHeadR);
+        ModelHelper.copyModelAngles(headLeft, rabbitLionHeadL1);
+        ModelHelper.copyModelAngles(headRight, rabbitLionHeadR1);
+        ModelHelper.copyModelAngles(headLeft, rabbitNose);
 
-        copyModelAngles(rabbitHeadLeft, EarParent);
-        copyModelAngles(rabbitHeadLeft, LionEarParent);
-        copyModelAngles(rabbitHeadLeft, LionEarParent1);
-        copyModelAngles(rabbitHeadLeft, DwarfParent);
+        ModelHelper.copyModelAngles(headLeft, EarParent);
+        ModelHelper.copyModelAngles(headLeft, LionEarParent);
+        ModelHelper.copyModelAngles(headLeft, LionEarParent1);
+        ModelHelper.copyModelAngles(headLeft, DwarfParent);
 
 //        this.rabbitNose.rotateAngleY = netHeadYaw * 0.017453292F;
 //        this.EarL.rotateAngleY = Math.abs(this.rabbitNose.rotateAngleY) * 1.0F;
@@ -500,12 +519,12 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         this.EarL.rotateAngleZ = (earRotateZ*(1.0F-lop) + floppyEarRotateZ*(lop));
         this.EarR.rotateAngleZ = (-earRotateZ*(1.0F-lop) + floppyEarRotateZ*(lop));
 
-        copyModelAngles(EarL, LionEarL);
-        copyModelAngles(EarR, LionEarR);
-        copyModelAngles(EarL, LionEarL1);
-        copyModelAngles(EarR, LionEarR1);
-        copyModelAngles(EarL, DwarfEarL);
-        copyModelAngles(EarR, DwarfEarR);
+        ModelHelper.copyModelAngles(EarL, LionEarL);
+        ModelHelper.copyModelAngles(EarR, LionEarR);
+        ModelHelper.copyModelAngles(EarL, LionEarL1);
+        ModelHelper.copyModelAngles(EarR, LionEarR1);
+        ModelHelper.copyModelAngles(EarL, DwarfEarL);
+        ModelHelper.copyModelAngles(EarR, DwarfEarR);
 
         //changes some rotation angles
         this.rabbitButtRound.rotationPointZ = 2.5F;
@@ -518,21 +537,19 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             this.rabbitButtTube.rotationPointZ = 0.5F;
         }
 
-        //TODO add twitching nose
-
         this.jumpRotation = MathHelper.sin(((EnhancedRabbit)entityIn).getJumpCompletion(f) * (float)Math.PI);
         if (this.jumpRotation == 0.0F) {
             this.rabbitLeftFoot.rotateAngleX = 3.0F;
             this.rabbitRightFoot.rotateAngleX = 3.0F;
             this.rabbitLeftCalf.rotateAngleX = 2.1F;
             this.rabbitRightCalf.rotateAngleX = 2.1F;
-            this.rabbitLeftArm.rotateAngleX = -1.6F;
-            this.rabbitRightArm.rotateAngleX = -1.6F;
+            this.leftArm.rotateAngleX = -1.6F;
+            this.rightArm.rotateAngleX = -1.6F;
             this.rabbitBody.rotateAngleX = 0.0F;
-            this.EarParent.rotateAngleX = this.rabbitHeadLeft.rotateAngleX + 0.4F;
-            this.LionEarParent.rotateAngleX = this.rabbitHeadLeft.rotateAngleX + 0.4F;
-            this.LionEarParent1.rotateAngleX = this.rabbitHeadLeft.rotateAngleX + 0.4F;
-            this.DwarfParent.rotateAngleX = this.rabbitHeadLeft.rotateAngleX + 0.4F;
+            this.EarParent.rotateAngleX = this.headLeft.rotateAngleX + 0.4F;
+            this.LionEarParent.rotateAngleX = this.headLeft.rotateAngleX + 0.4F;
+            this.LionEarParent1.rotateAngleX = this.headLeft.rotateAngleX + 0.4F;
+            this.DwarfParent.rotateAngleX = this.headLeft.rotateAngleX + 0.4F;
             this.rabbitBodyAngora1.rotateAngleX = 0.0F;
             this.rabbitBodyAngora2.rotateAngleX = 0.0F;
             this.rabbitBodyAngora3.rotateAngleX = 0.0F;
@@ -542,25 +559,25 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             this.rabbitButtAngora1.rotateAngleX = 0.0F;
             this.rabbitButtAngora2.rotateAngleX = 0.0F;
             this.rabbitButtAngora3.rotateAngleX = 0.0F;
-            this.rabbitButtAngora4.rotateAngleX = 0.0F;
+            this.buttAngora4.rotateAngleX = 0.0F;
             this.rabbitButtTube.rotateAngleX = 0.0F;
         } else {
             this.rabbitLeftFoot.rotateAngleX = 3.0F + this.jumpRotation * 80.0F * ((float)Math.PI / 180F);
             this.rabbitRightFoot.rotateAngleX = 3.0F + this.jumpRotation * 80.0F * ((float)Math.PI / 180F);
             this.rabbitLeftCalf.rotateAngleX = 2.1F - (this.jumpRotation * +50.0F * ((float)Math.PI / 180F));
             this.rabbitRightCalf.rotateAngleX = 2.1F - (this.jumpRotation * +50.0F * ((float)Math.PI / 180F));
-            this.rabbitLeftArm.rotateAngleX = -1.6F - (this.jumpRotation * -40.0F - 11.0F) * ((float)Math.PI / 180F);
-            this.rabbitRightArm.rotateAngleX = -1.6F - (this.jumpRotation * -40.0F - 11.0F) * ((float)Math.PI / 180F);
+            this.leftArm.rotateAngleX = -1.6F - (this.jumpRotation * -40.0F - 11.0F) * ((float)Math.PI / 180F);
+            this.rightArm.rotateAngleX = -1.6F - (this.jumpRotation * -40.0F - 11.0F) * ((float)Math.PI / 180F);
             this.rabbitButt.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
             this.rabbitButtAngora1.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
             this.rabbitButtAngora2.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
             this.rabbitButtAngora3.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
-            this.rabbitButtAngora4.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
+            this.buttAngora4.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
             this.rabbitBody.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
-            this.EarParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.rabbitHeadLeft.rotateAngleX + 0.4F;
-            this.LionEarParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.rabbitHeadLeft.rotateAngleX + 0.4F;
-            this.LionEarParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.rabbitHeadLeft.rotateAngleX + 0.4F;
-            this.DwarfParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.rabbitHeadLeft.rotateAngleX + 0.4F;
+            this.EarParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.headLeft.rotateAngleX + 0.4F;
+            this.LionEarParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.headLeft.rotateAngleX + 0.4F;
+            this.LionEarParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.headLeft.rotateAngleX + 0.4F;
+            this.DwarfParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.headLeft.rotateAngleX + 0.4F;
             this.rabbitBodyAngora1.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
             this.rabbitBodyAngora2.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
             this.rabbitBodyAngora3.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
@@ -569,27 +586,11 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         this.rabbitLeftThigh.rotateAngleX = (this.jumpRotation * 50.0F - 21.0F) * ((float)Math.PI / 180F);
         this.rabbitRightThigh.rotateAngleX = (this.jumpRotation * 50.0F - 21.0F) * ((float)Math.PI / 180F);
 
-        copyModelAngles(rabbitButt, rabbitTail);
+        ModelHelper.copyModelAngles(rabbitButt, rabbitTail);
 
-//        if (ageInTicks+(entityIn.getEntityId()*7)%20 == 0) {
-//            if (entityIn.noseTwitch != 1) {
-//                entityIn.noseTwitch = 1;
-//            } else {
-//                entityIn.noseTwitch = -1;
-//            }
-//        }
+        this.rabbitNose.rotationPointY = 14.2F + (float)entityIn.getNoseTwitch()/4.0F;
 
-        this.rabbitNose.rotationPointY = 14.0F + entityIn.noseTwitch;
-        copyModelAngles(rabbitNose, rabbitNoseDwarf);
-    }
-
-    public static void copyModelAngles(ModelRenderer source, ModelRenderer dest) {
-        dest.rotateAngleX = source.rotateAngleX;
-        dest.rotateAngleY = source.rotateAngleY;
-        dest.rotateAngleZ = source.rotateAngleZ;
-        dest.rotationPointX = source.rotationPointX;
-        dest.rotationPointY = source.rotationPointY;
-        dest.rotationPointZ = source.rotationPointZ;
+        ModelHelper.copyModelAngles(rabbitNose, rabbitNoseDwarf);
     }
 
     private class RabbitModelData {
@@ -598,6 +599,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         int coatlength = 0;
         boolean dwarf = false;
         boolean sleeping = false;
+        int blink = 0;
         int lastAccessed = 0;
         int dataReset = 0;
         long clientGameTime = 0;
@@ -629,6 +631,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
                 rabbitModelData.dataReset = 0;
             }
             rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
+            rabbitModelData.blink = enhancedRabbit.getBlink();
             rabbitModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedRabbit.world).getWorldInfo()).getGameTime());
 
             return rabbitModelData;
@@ -637,6 +640,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             rabbitModelData.rabbitGenes = enhancedRabbit.getSharedGenes();
             rabbitModelData.coatlength = enhancedRabbit.getCoatLength();
             rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
+            rabbitModelData.blink = enhancedRabbit.getBlink();
             rabbitModelData.birthTime = enhancedRabbit.getBirthTime();
             rabbitModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedRabbit.world).getWorldInfo()).getGameTime());
 

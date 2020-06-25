@@ -6,19 +6,13 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
-import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
-import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
@@ -37,28 +31,18 @@ import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.merchant.villager.WanderingTraderEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.passive.horse.AbstractChestedHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.AirItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -66,14 +50,11 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -140,8 +121,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     public float destPos;
 
     private static final int GENES_LENGTH = 34;
-
-    protected int temper;
 
     private int maxCoatLength;
     private int currentCoatLength;
@@ -246,6 +225,11 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         }
 
         return name;
+    }
+
+    @Override
+    public boolean canBeSteered() {
+        return (this.isTame() && this.hasSaddle());
     }
 
     public void onInventoryChanged(IInventory invBasic) {
@@ -367,7 +351,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     protected void registerAttributes() {
         super.registerAttributes();
         this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.175F);
     }
 
     @Override
@@ -1382,38 +1366,12 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return 2.0D;
     }
 
-    public void makeMad() {
-        SoundEvent soundevent = this.getAngrySound();
-        if (soundevent != null) {
-            this.playSound(soundevent, this.getSoundVolume(), this.getSoundPitch());
-        }
-
-    }
-
     protected SoundEvent getAngrySound() {
         return SoundEvents.ENTITY_LLAMA_ANGRY;
     }
 
-    public int increaseTemper(int p_110198_1_) {
-        int i = MathHelper.clamp(this.getTemper() + p_110198_1_, 0, this.getMaxTemper());
-        this.setTemper(i);
-        return i;
-    }
-
     public boolean canMateWith(AnimalEntity otherAnimal) {
         return otherAnimal != this && otherAnimal instanceof EnhancedLlama;
-    }
-
-    public int getMaxTemper() {
-        return 100;
-    }
-
-    public int getTemper() {
-        return this.temper;
-    }
-
-    public void setTemper(int temperIn) {
-        this.temper = temperIn;
     }
 
     /**

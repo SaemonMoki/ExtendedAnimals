@@ -626,6 +626,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         compound.putString("BirthTime", this.getBirthTime());
 
+        compound.putBoolean("Tamed", this.isTame());
+
         if (canBePregnant()) {
             compound.putBoolean("Pregnant", this.pregnant);
             compound.putInt("Gestation", this.gestationTimer);
@@ -706,6 +708,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         setEntityStatus(compound.getString("Status"));
 
         this.setBirthTime(compound.getString("BirthTime"));
+
+        this.setTame(compound.getBoolean("Tamed"));
 
         if (canBePregnant()) {
             this.pregnant = compound.getBoolean("Pregnant");
@@ -1009,6 +1013,17 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     //------------
+
+    public boolean setTamedBy(PlayerEntity player) {
+//        this.setOwnerUniqueId(player.getUniqueID());
+        this.setTame(true);
+        if (player instanceof ServerPlayerEntity) {
+            CriteriaTriggers.TAME_ANIMAL.trigger((ServerPlayerEntity)player, this);
+        }
+
+        this.world.setEntityState(this, (byte)7);
+        return true;
+    }
 
     protected ITextComponent getHungerText() {
         String hungerText = "";

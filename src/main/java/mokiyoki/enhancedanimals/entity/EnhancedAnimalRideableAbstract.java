@@ -18,12 +18,17 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -41,8 +46,11 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     protected int gallopTime;
     private boolean allowStandSliding;
 
+    protected int temper;
+
     protected EnhancedAnimalRideableAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int genesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
         super(type, worldIn, genesSize, temptationItems, breedItems, foodWeightMap, bottleFeedable);
+        this.stepHeight = 1.0F;
     }
 
     protected void registerData() {
@@ -89,7 +97,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                 jumpPowerIn = 0;
             } else {
                 this.allowStandSliding = true;
-                this.makeHorseRear();
+                this.makeRear();
             }
 
             if (jumpPowerIn >= 90) {
@@ -106,13 +114,13 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     public void handleStartJump(int p_184775_1_) {
         this.allowStandSliding = true;
-        this.makeHorseRear();
+        this.makeRear();
     }
 
     public void handleStopJump() {
     }
 
-    private void makeHorseRear() {
+    private void makeRear() {
         if (this.canPassengerSteer() || this.isServerWorld()) {
             this.jumpRearingCounter = 1;
             this.setRearing(true);
@@ -136,14 +144,49 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     //Byte 4 is Saddle
     public boolean hasSaddle() {
-//        return this.getRideableWatchableBoolean(4);
-        return !this.animalInventory.getStackInSlot(1).isEmpty();
+        return this.getRideableWatchableBoolean(4);
+    }
+
+    public void setSaddled(boolean saddled) {
+        this.setRideableWatchableBoolean(4, saddled);
     }
 
     protected void updateInventorySlots() {
         if (!this.world.isRemote) {
-//            this.setSaddle(!this.animalInventory.getStackInSlot(1).isEmpty() && this.canHaveSaddle());
+            this.setSaddled(!this.animalInventory.getStackInSlot(1).isEmpty() && this.canHaveSaddle());
         }
+    }
+
+    public void makeMad() {
+        SoundEvent soundevent = this.getAngrySound();
+        if (soundevent != null) {
+            this.playSound(soundevent, this.getSoundVolume(), this.getSoundPitch());
+        }
+
+    }
+
+    @Nullable
+    protected SoundEvent getAngrySound() {
+        this.makeRear();
+        return null;
+    }
+
+    public int increaseTemper(int p_110198_1_) {
+        int i = MathHelper.clamp(this.getTemper() + p_110198_1_, 0, this.getMaxTemper());
+        this.setTemper(i);
+        return i;
+    }
+
+    public int getMaxTemper() {
+        return 100;
+    }
+
+    public int getTemper() {
+        return this.temper;
+    }
+
+    public void setTemper(int temperIn) {
+        this.temper = temperIn;
     }
 
     @Override
@@ -304,6 +347,30 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     protected void playJumpSound() {
         this.playSound(SoundEvents.ENTITY_HORSE_JUMP, 0.4F, 1.0F);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void handleStatusUpdate(byte id) {
+        if (id == 7) {
+            this.spawnParticles(true);
+        } else if (id == 6) {
+            this.spawnParticles(false);
+        } else {
+            super.handleStatusUpdate(id);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected void spawnParticles(boolean p_110216_1_) {
+        IParticleData iparticledata = p_110216_1_ ? ParticleTypes.HEART : ParticleTypes.SMOKE;
+
+        for(int i = 0; i < 7; ++i) {
+            double d0 = this.rand.nextGaussian() * 0.02D;
+            double d1 = this.rand.nextGaussian() * 0.02D;
+            double d2 = this.rand.nextGaussian() * 0.02D;
+            this.world.addParticle(iparticledata, this.getPosXRandom(1.0D), this.getPosYRandom() + 0.5D, this.getPosZRandom(1.0D), d0, d1, d2);
+        }
+
     }
 
 }

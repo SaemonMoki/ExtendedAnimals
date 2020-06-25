@@ -1,0 +1,10 @@
+Statues
+
+Inventory
+0: Chest
+1: Saddle
+2: Armour
+3: Bridle
+4: Blanket
+5: Harness
+6: Banner

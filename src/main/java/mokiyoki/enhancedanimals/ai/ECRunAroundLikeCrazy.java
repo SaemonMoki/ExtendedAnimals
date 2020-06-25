@@ -69,7 +69,9 @@ public class ECRunAroundLikeCrazy extends Goal {
                 int i = this.llama.getTemper();
                 int j = this.llama.getMaxTemper();
                 if (j > 0 && this.llama.getRNG().nextInt(j) < i && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(llama, (PlayerEntity)entity)) {
-                    this.llama.setTamedBy((PlayerEntity)entity);
+                    //TODO ADD OWNERSHIP
+//                    this.llama.setTamedBy((PlayerEntity)entity);
+                    this.llama.setTame(true);
                     return;
                 }
 

@@ -82,17 +82,12 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 
-public class EnhancedLlama extends AbstractChestedHorseEntity implements IRangedAttackMob, net.minecraftforge.common.IShearable, EnhancedAnimal {
+public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRangedAttackMob, net.minecraftforge.common.IShearable, EnhancedAnimal {
 
     //avalible UUID spaces : [ S X X 3 X 5 X 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
     private static final DataParameter<Integer> DATA_STRENGTH_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> DATA_INVENTORY_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
-    private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
-    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<String> LLAMA_STATUS = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.STRING);
-    private static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedLlama.class, DataSerializers.STRING);
 
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
             "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blacktan.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png", "fawn.png"
@@ -139,32 +134,12 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
             "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
     };
 
-
-    private final List<String> llamaTextures = new ArrayList<>();
-
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT, Items.CARROT, Items.SUGAR_CANE, Items.BEETROOT, Items.GRASS, Items.TALL_GRASS);
-    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK);
-
-    Map<Item, Integer> foodWeightMap = new HashMap() {{
-        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-        put(new ItemStack(Items.GRASS).getItem(), 3000);
-        put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
-        put(new ItemStack(Items.CARROT).getItem(), 1500);
-        put(new ItemStack(Items.WHEAT).getItem(), 6000);
-        put(new ItemStack(Items.SUGAR).getItem(), 1500);
-        put(new ItemStack(Items.APPLE).getItem(), 1500);
-        put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
-    }};
 
     public float destPos;
 
-    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 34;
-    private int[] genes = new int[GENES_LENGTH];
-    private int[] mateGenes = new int[GENES_LENGTH];
-    private int[] mitosisGenes = new int[GENES_LENGTH];
-    private int[] mateMitosisGenes = new int[GENES_LENGTH];
 
     protected int temper;
 
@@ -172,15 +147,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private int currentCoatLength;
     private int timeForGrowth = 0;
 
-    private int gestationTimer = 0;
-    private boolean pregnant = false;
-
-    private float hunger = 0;
-    private int healTicks = 0;
     protected String motherUUID = "";
-    protected Boolean sleeping = false;
-    protected int awokenTimer = 0;
-    protected int equipmentInventorySize = 5;
 
     private boolean didSpit;
 
@@ -195,10 +162,21 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     private EnhancedLlama caravanTail;
 
     public EnhancedLlama(EntityType<? extends EnhancedLlama> entityType, World worldIn) {
-        super(entityType, worldIn);
-//        this.setSize(0.9F, 1.87F);
+        super(entityType, worldIn, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
-        this.initHorseChest();
+    }
+
+    private static Map<Item, Integer> createFoodMap() {
+        return new HashMap() {{
+            put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
+            put(new ItemStack(Items.GRASS).getItem(), 3000);
+            put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
+            put(new ItemStack(Items.CARROT).getItem(), 1500);
+            put(new ItemStack(Items.WHEAT).getItem(), 6000);
+            put(new ItemStack(Items.SUGAR).getItem(), 1500);
+            put(new ItemStack(Items.APPLE).getItem(), 1500);
+            put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
+        }};
     }
 
     @Override
@@ -223,30 +201,13 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(DATA_STRENGTH_ID, 0);
-        this.dataManager.register(DATA_INVENTORY_ID, 0);
         this.dataManager.register(COAT_LENGTH, -1);
-        this.dataManager.register(SLEEPING, false);
-        this.dataManager.register(LLAMA_STATUS, new String());
-        this.dataManager.register(BIRTH_TIME, "0");
     }
 
-    private boolean getGender() {
-        char[] uuidArray = getCachedUniqueIdString().toCharArray();
-        if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    private void setLlamaStatus(String status) {
-        this.dataManager.set(LLAMA_STATUS, status);
-    }
-
-    public String getLlamaStatus() {
-        return this.dataManager.get(LLAMA_STATUS);
+    @Override
+    protected int gestationConfig() {
+        return EanimodCommonConfig.COMMON.gestationDaysLlama.get();
     }
 
     private void setStrength(int strengthIn) {
@@ -257,14 +218,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         return this.dataManager.get(DATA_STRENGTH_ID);
     }
 
-    private void setInventory(int inventoryIn) {
-        this.dataManager.set(DATA_INVENTORY_ID, inventoryIn);
-    }
-
-    public int getInventory() {
-        return this.dataManager.get(DATA_INVENTORY_ID);
-    }
-
     private void setCoatLength(int coatLength) {
         this.dataManager.set(COAT_LENGTH, coatLength);
     }
@@ -273,29 +226,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         return this.dataManager.get(COAT_LENGTH);
     }
 
-    protected int getInventorySize() {
-        return this.hasChest() ? equipmentInventorySize + 3 * this.getInventoryColumns() : equipmentInventorySize;
-    }
-
-    public int getInventoryColumns() {
-        return this.getInventory();
-    }
-
-    protected void setBirthTime(String birthTime) {
-        this.dataManager.set(BIRTH_TIME, birthTime);
-    }
-
-    public String getBirthTime() { return this.dataManager.get(BIRTH_TIME); }
-
-    private int getAge() {
-        if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
-            return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
-        } else {
-            return 500000;
-        }
-    }
-
-    private String getAnimalsName() {
+    @Override
+    protected String getAnimalsName() {
         String name = "Llama";
         if (this.getCustomName() != null) {
             name = this.getCustomName().getUnformattedComponentText();
@@ -316,29 +248,9 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         return name;
     }
 
-    public void setSleeping(Boolean sleeping) {
-        this.sleeping = sleeping;
-        this.dataManager.set(SLEEPING, sleeping); }
-
-    @Override
-    public Boolean isAnimalSleeping() {
-        if (this.sleeping == null) {
-            return false;
-        } else {
-            sleeping = this.dataManager.get(SLEEPING);
-            return sleeping;
-        }
-    }
-
-    @Override
-    public void awaken() {
-        this.awokenTimer = 200;
-        setSleeping(false);
-    }
-
     public void onInventoryChanged(IInventory invBasic) {
-        int dyecolor = this.getBlanketNumber();
         super.onInventoryChanged(invBasic);
+        int dyecolor = this.getBlanketNumber();
         int dyecolor1 = this.getBlanketNumber();
         if (this.ticksExisted > 20 && dyecolor1 != 0 && dyecolor1 != dyecolor) {
             this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
@@ -346,17 +258,11 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         }
     }
 
-    @Override
-    public Inventory getEnhancedInventory() {
-        return this.horseChest;
-//        return new Inventory(16);
-    }
-
     public int getSaddleNumber() {
         int saddle = 0;
-        if (this.horseChest != null) {
-            if (!this.horseChest.getStackInSlot(1).isEmpty()) {
-                Item saddleType = this.horseChest.getStackInSlot(1).getItem();
+        if (this.animalInventory != null) {
+            if (!this.animalInventory.getStackInSlot(1).isEmpty()) {
+                Item saddleType = this.animalInventory.getStackInSlot(1).getItem();
                 if (saddleType == ModItems.BASIC_LEATHER_SADDLE) {
                     saddle = 2;
                 } else if (saddleType == ModItems.BASIC_CLOTH_SADDLE) {
@@ -371,9 +277,9 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     public int getBridleNumber() {
         int bridle = 0;
-        if (this.horseChest != null) {
-            if (!this.horseChest.getStackInSlot(2).isEmpty()) {
-                Item saddleType = this.horseChest.getStackInSlot(2).getItem();
+        if (this.animalInventory != null) {
+            if (!this.animalInventory.getStackInSlot(3).isEmpty()) {
+                Item saddleType = this.animalInventory.getStackInSlot(3).getItem();
                 if (saddleType == ModItems.BASIC_LEATHER_BRIDLE) {
                     bridle = 1;
                 } else if (saddleType == ModItems.BASIC_CLOTH_BRIDLE) {
@@ -386,8 +292,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     public int getBlanketNumber() {
             int colour = 0;
-            if (this.horseChest != null) {
-                Item blanketColour = this.horseChest.getStackInSlot(4).getItem();
+            if (this.animalInventory != null) {
+                Item blanketColour = this.animalInventory.getStackInSlot(4).getItem();
                 if (blanketColour == Items.BLACK_CARPET) {
                     colour = 1;
                 } else if (blanketColour == Items.BLUE_CARPET) {
@@ -427,9 +333,9 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     public int getHarnessNumber() {
         int bridle = 0;
-        if (this.horseChest != null) {
-            if (!this.horseChest.getStackInSlot(6).isEmpty()) {
-                Item saddleType = this.horseChest.getStackInSlot(6).getItem();
+        if (this.animalInventory != null) {
+            if (!this.animalInventory.getStackInSlot(5).isEmpty()) {
+                Item saddleType = this.animalInventory.getStackInSlot(5).getItem();
                 if (saddleType == ModItems.BASIC_LEATHER_BRIDLE) {
                     bridle = 1;
                 } else if (saddleType == ModItems.BASIC_CLOTH_BRIDLE) {
@@ -440,46 +346,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         return bridle;
     }
 
-    public float getHunger(){
-        return hunger;
-    }
-
-    public void decreaseHunger(float decrease) {
-        if (this.hunger - decrease < 0) {
-            this.hunger = 0;
-        } else {
-            this.hunger = this.hunger - decrease;
-        }
-    }
-
-    public boolean canCarryChest() {
-        return !this.isChild();
-    }
-
-    public boolean canBeSaddled () {
-        return !this.isChild();
-    }
-
-    public boolean canBeBridled () {
-        return true;
-    }
-
-    public boolean canBeArmored () {
-        return false;
-    }
-
-    public boolean canBeBlanketed () {
-        return !this.isChild();
-    }
-
-    public boolean canBeClothed () {
-        return false;
-    }
-
-    public boolean canBeHarnessed () {
-        return !this.isChild();
-    }
-
+    @Override
     public void updatePassenger(Entity passenger) {
         if (this.isPassenger(passenger)) {
             float f = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
@@ -489,252 +356,12 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         }
     }
 
-    /**
-     * Returns the Y offset from the entity's position for any entity riding this one.
-     */
     public double getMountedYOffset() {
         return (double)this.getHeight() * 0.67D;
     }
 
-    /**
-     * returns true if all the conditions for steering the entity are met. For pigs, this is true if it is being ridden
-     * by a player and the player is holding a carrot-on-a-stick
-     */
-    public boolean canBeSteered() {
-        return false;
-    }
-
-    protected boolean handleEating(PlayerEntity player, ItemStack stack) {
-        int i = 0;
-        int j = 0;
-        float f = 0.0F;
-        boolean flag = false;
-        Item item = stack.getItem();
-        if (item == Items.WHEAT) {
-            i = 10;
-            j = 3;
-            f = 2.0F;
-        } else if (item == Blocks.HAY_BLOCK.asItem()) {
-            i = 90;
-            j = 6;
-            f = 10.0F;
-            if (this.isTame() && this.getGrowingAge() == 0 && this.canBreed()) {
-                flag = true;
-                this.setInLove(player);
-            }
-        }
-
-        if (this.getHealth() < this.getMaxHealth() && f > 0.0F) {
-            this.heal(f);
-            flag = true;
-        }
-
-        if (this.isChild() && i > 0) {
-            this.world.addParticle(ParticleTypes.HAPPY_VILLAGER, this.getPosX() + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), this.getPosY() + 0.5D + (double)(this.rand.nextFloat() * this.getWidth()), this.getPosZ() + (double)(this.rand.nextFloat() * this.getWidth() * 2.0F) - (double)this.getWidth(), 0.0D, 0.0D, 0.0D);
-            if (!this.world.isRemote) {
-                this.addGrowth(i);
-            }
-
-            flag = true;
-        }
-
-        if (j > 0 && (flag || !this.isTame()) && this.getTemper() < this.getMaxTemper()) {
-            flag = true;
-            if (!this.world.isRemote) {
-                this.increaseTemper(j);
-            }
-        }
-
-        if (flag && !this.isSilent()) {
-            this.world.playSound((PlayerEntity)null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_LLAMA_EAT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-        }
-
-        return flag;
-    }
-
-    /**
-     * Dead and sleeping entities cannot move
-     */
     protected boolean isMovementBlocked() {
-        return this.getHealth() <= 0.0F || this.isEatingHaystack();
-    }
-
-    @Override
-    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
-        ItemStack itemStack = entityPlayer.getHeldItem(hand);
-        Item item = itemStack.getItem();
-
-//        if (entityPlayer.isSecondaryUseActive()) {
-//            this.openGUI(entityPlayer);
-//            return true;
-//        }
-
-        if (this.isBeingRidden()) {
-            return super.processInteract(entityPlayer, hand);
-        }
-
-        if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
-            if (item instanceof AirItem) {
-                ITextComponent message = getHungerText();
-                entityPlayer.sendMessage(message);
-                if (pregnant) {
-                    message = getPregnantText();
-                    entityPlayer.sendMessage(message);
-                }
-            } else if (item instanceof DebugGenesBook) {
-                Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
-            } else if (item instanceof ShearsItem) {
-                List<ItemStack> woolToDrop = onSheared(itemStack, null, null, 0);
-                java.util.Random rand = new java.util.Random();
-                woolToDrop.forEach(d -> {
-                    net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
-                    ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
-                });
-            } else if (!getLlamaStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
-                if (this.foodWeightMap.containsKey(item)) {
-                    decreaseHunger(this.foodWeightMap.get(item));
-                } else {
-                    decreaseHunger(6000);
-                }
-                if (!entityPlayer.abilities.isCreativeMode) {
-                    itemStack.shrink(1);
-                }
-            } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
-
-                if (!entityPlayer.abilities.isCreativeMode) {
-                    if (item == ModItems.HALF_MILK_BOTTLE) {
-                        decreaseHunger(6000);
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                            entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                        }
-                    } else if (item == ModItems.MILK_BOTTLE) {
-                        if (hunger >= 12000) {
-                            decreaseHunger(12000);
-                            if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                                entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                            }
-                        } else {
-                            decreaseHunger(6000);
-                            if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
-                                entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
-                            }
-                        }
-                    }
-
-                }
-            }
-        }
-        return super.processInteract(entityPlayer, hand);
-    }
-
-    @Override
-    public void openGUI(PlayerEntity playerEntity) {
-        if (!this.world.isRemote && (!this.isBeingRidden() || this.isPassenger(playerEntity))) {
-            this.openInfoInventory(this, this.horseChest, playerEntity);
-        }
-
-    }
-
-    public void openInfoInventory(EnhancedLlama enhancedLlama, IInventory inventoryIn, PlayerEntity playerEntity) {
-//        if (this.openContainer != this.container) {
-//            this.closeScreen();
-//        }
-        if(!playerEntity.world.isRemote) {
-
-            EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
-            animalInfo.health = (int)(10 * (this.getHealth() / this.getMaxHealth()));
-            animalInfo.hunger = (int)(this.getHunger() / 7200);
-            animalInfo.isFemale = this.getGender();
-            animalInfo.pregnant = (10 * this.gestationTimer)/EanimodCommonConfig.COMMON.gestationDaysLlama.get();
-            animalInfo.name = this.getAnimalsName();
-
-            if(playerEntity instanceof ServerPlayerEntity) {
-                ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerEntity;
-                NetworkHooks.openGui(entityPlayerMP, new INamedContainerProvider() {
-                    @Override
-                    public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
-//                        return new EnhancedAnimalContainer(windowId, inventory, enhancedLlama, animalInfo);
-                        return null;
-                    }
-
-                    @Override
-                    public ITextComponent getDisplayName() {
-                        return new TranslationTextComponent("eanimod.animalinfocontainer");
-                    }
-                }, buf -> {
-                    buf.writeInt(enhancedLlama.getEntityId());
-                    buf.writeString(animalInfo.serialiseToString());
-                });
-            }
-        }
-    }
-
-
-
-    private ITextComponent getHungerText() {
-        String hungerText = "";
-        if (this.hunger < 1000) {
-            hungerText = "eanimod.hunger.not_hungry";
-        } else if (this.hunger < 4000) {
-            hungerText = "eanimod.hunger.hungry";
-        } else if (this.hunger < 9000) {
-            hungerText = "eanimod.hunger.very_hunger";
-        } else if (this.hunger < 16000) {
-            hungerText = "eanimod.hunger.starving";
-        } else if (this.hunger > 24000) {
-            hungerText = "eanimod.hunger.dying";
-        }
-        return new TranslationTextComponent(hungerText);
-    }
-
-    private ITextComponent getPregnantText() {
-        String pregnancyText;
-        int days = EanimodCommonConfig.COMMON.gestationDaysLlama.get();
-        if (gestationTimer > (days/5 * 4)) {
-            pregnancyText = "eanimod.pregnancy.near_birth";
-        } else if (gestationTimer > days/2 ) {
-            pregnancyText = "eanimod.pregnancy.obviously_pregnant";
-        } else if (gestationTimer > days/3) {
-            pregnancyText = "eanimod.pregnancy.pregnant";
-        } else if (gestationTimer > days/5) {
-            pregnancyText = "eanimod.pregnancy.only_slightly_showing";
-        } else {
-            pregnancyText = "eanimod.pregnancy.not_showing";
-        }
-        return new TranslationTextComponent(pregnancyText);
-    }
-
-
-    public void setSharedGenes(int[] genes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < genes.length; i++) {
-            sb.append(genes[i]);
-            if (i != genes.length - 1) {
-                sb.append(",");
-            }
-        }
-        this.dataManager.set(SHARED_GENES, sb.toString());
-    }
-
-    public int[] getSharedGenes() {
-        String sharedGenes = ((String) this.dataManager.get(SHARED_GENES)).toString();
-        if (sharedGenes.isEmpty()) {
-            return null;
-        }
-        String[] genesToSplit = sharedGenes.split(",");
-        int[] sharedGenesArray = new int[genesToSplit.length];
-
-        for (int i = 0; i < sharedGenesArray.length; i++) {
-            //parse and store each value into int[] to be returned
-            sharedGenesArray[i] = Integer.parseInt(genesToSplit[i]);
-        }
-        return sharedGenesArray;
+        return this.getHealth() <= 0.0F;
     }
 
     protected void registerAttributes() {
@@ -743,175 +370,92 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 
+    @Override
+    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+        Item item = itemStack.getItem();
+
+        if (this.isBeingRidden()) {
+            return super.processInteract(entityPlayer, hand);
+        }
+
+        if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
+            if (item instanceof ShearsItem) {
+                List<ItemStack> woolToDrop = onSheared(itemStack, null, null, 0);
+                java.util.Random rand = new java.util.Random();
+                woolToDrop.forEach(d -> {
+                    net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
+                    ent.setMotion(ent.getMotion().add((double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double) (rand.nextFloat() * 0.05F), (double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
+                });
+            }
+        }
+        return super.processInteract(entityPlayer, hand);
+    }
+
     public void livingTick() {
         super.livingTick();
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
         this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
         if (!this.world.isRemote) {
-
             if (this.despawnDelay != -1) {
                 this.tryDespawn();
             }
-
-            if (!this.world.isDaytime() && awokenTimer == 0 && !sleeping) {
-                setSleeping(true);
-                healTicks = 0;
-            } else if (awokenTimer > 0) {
-                awokenTimer--;
-            } else if (this.world.isDaytime() && sleeping) {
-                setSleeping(false);
-            }
-
-            if (this.getIdleTime() < 100) {
-
-                if (hunger <= 72000) {
-                    if (sleeping) {
-                        int days = EanimodCommonConfig.COMMON.gestationDaysLlama.get();
-                        if ((hunger <= days*(0.50)) && (ticksExisted % 2 == 0)) {
-                            hunger = hunger++;
-                        }
-                        healTicks++;
-                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
-                            this.heal(2.0F);
-                            hunger = hunger + 1000;
-                            healTicks = 0;
-                        }
-                    } else {
-                        hunger++;
-                    }
-                }
-
-
-                if (hunger <= 36000) {
-                    timeForGrowth++;
-                }
-                if (timeForGrowth >= 24000) {
-                    timeForGrowth = 0;
-                    if (maxCoatLength > currentCoatLength) {
-                        currentCoatLength++;
-                        setCoatLength(currentCoatLength);
-                    }
-                }
-            }
-
-            if(pregnant) {
-                gestationTimer++;
-                int days = EanimodCommonConfig.COMMON.gestationDaysLlama.get();
-                if (hunger > days*(0.75) && days !=0) {
-                    pregnant = false;
-                }
-                if (gestationTimer >= days) {
-                    pregnant = false;
-                    gestationTimer = 0;
-
-                    mixMateMitosisGenes();
-                    mixMitosisGenes();
-                    createAndSpawnEnhancedChild(this.world);
-                }
-            }
-
-            if (this.isChild()) {
-                if (getLlamaStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
-                    if(hunger < 5000) {
-                        setLlamaStatus(EntityState.CHILD_STAGE_TWO.toString());
-                    } else {
-                        this.setGrowingAge(-16500);
-                    }
-                } else if (getLlamaStatus().equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
-                    if(hunger < 5000) {
-                        setLlamaStatus(EntityState.CHILD_STAGE_THREE.toString());
-                    } else {
-                        this.setGrowingAge(-8500);
-                    }
-                }
-            } else if (getLlamaStatus().equals(EntityState.CHILD_STAGE_THREE.toString())) {
-                setLlamaStatus(EntityState.ADULT.toString());
-
-                //TODO remove the child follow mother ai
-
-            }
-
         }
+    }
+
+    protected void runExtraIdleTimeTick() {
+        if (hunger <= 36000) {
+            timeForGrowth++;
+        }
+        if (timeForGrowth >= 24000) {
+            timeForGrowth = 0;
+            if (maxCoatLength > currentCoatLength) {
+                currentCoatLength++;
+                setCoatLength(currentCoatLength);
+            }
+        }
+    }
+
+    @Override
+    protected void lethalGenes() {
+    }
 
 
+    protected  void incrementHunger() {
+        if(sleeping) {
+            hunger = hunger + 0.5F;
+        } else {
+            hunger = hunger + 1.0F;
+        }
     }
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
-        int[] babyGenes = getCriaGenes(this.mitosisGenes, this.mateMitosisGenes);
         EnhancedLlama enhancedllama = ENHANCED_LLAMA.create(this.world);
-        enhancedllama.setGrowingAge(0);
-        enhancedllama.setGenes(babyGenes);
-        enhancedllama.setSharedGenes(babyGenes);
+        int[] babyGenes = getCriaGenes(this.mitosisGenes, this.mateMitosisGenes);
+
+        defaultCreateAndSpawn(enhancedllama, inWorld, babyGenes, -120000);
+
         enhancedllama.setStrengthAndInventory();
         enhancedllama.setMaxCoatLength();
         enhancedllama.currentCoatLength = enhancedllama.maxCoatLength;
         enhancedllama.setCoatLength(enhancedllama.currentCoatLength);
-        enhancedllama.setGrowingAge(-120000);
-        enhancedllama.setBirthTime(String.valueOf(inWorld.getGameTime()));
-        enhancedllama.setLlamaStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedllama.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
-//                        enhancedllama.setMotherUUID(this.getUniqueID().toString());
+
         this.world.addEntity(enhancedllama);
+    }
+
+    @Override
+    protected boolean canBePregnant() {
+        return true;
+    }
+
+    @Override
+    protected boolean canLactate() {
+        return false;
     }
 
     @Override
     @Nullable
     protected ResourceLocation getLootTable() {
-
-//        if (genes[20] == 1 || genes[21] == 1){
-//            //drops leather
-//            dropMeatType = "leather";
-//        }else{
-//            //drops wool
-//            if (genes[6] == 1 || genes[7] == 1) {
-//                dropMeatType = "white_wool";
-//            } else if (genes[14] == 1 || genes[15] == 1) {
-//                dropMeatType = "black_wool";
-//            } else if (genes[14] == 3 || genes[15] == 3) {
-//                dropMeatType = "brown_wool";
-//            } else {
-//                if (genes[16] == 1 || genes[17] == 1) {
-//                    dropMeatType = "yellow_wool";
-//                } else if (genes[16] >= 5 && genes[17] >= 5) {
-//                    if (genes[16] == 5 || genes[17] == 5) {
-//                        dropMeatType = "red_wool";
-//                    } else {
-//                        dropMeatType = "black_wool";
-//                    }
-//                } else {
-//                    dropMeatType = "brown_wool";
-//                }
-//            }
-//
-//            if (dropMeatType.contains("black") && (genes[18] == 1 || genes[19] == 1)) {
-//                dropMeatType = "gray_wool";
-//            }
-//
-//            if (genes[10] == 2 && genes[11] == 2) {
-//                boolean i = rand.nextBoolean();
-//                if (i) {
-//                    dropMeatType = "white_wool";
-//                }
-//            }
-//
-//            if (genes[12] == 1 || genes[13] == 1) {
-//                boolean i = rand.nextBoolean();
-//                if (i) {
-//                    dropMeatType = "white_wool";
-//                }
-//            }
-//
-//            if (currentCoatLength == 4) {
-//                dropMeatType = dropMeatType + "_two";
-//            } else if (currentCoatLength == 3) {
-//                boolean i = rand.nextBoolean();
-//                if (i) {
-//                    dropMeatType = dropMeatType + "_two";
-//                }
-//            }
-//        }
-
-//        return new ResourceLocation(Reference.MODID, "enhanced_llama");
         return null;
     }
 
@@ -1066,10 +610,10 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     @Override
     public void setChested(boolean chested) {
         super.setChested(chested);
-        if (chested && !this.llamaTextures.contains(LLAMA_CHEST_TEXTURE)) {
-            this.llamaTextures.add(LLAMA_CHEST_TEXTURE);
-        } else if (!chested && this.llamaTextures.contains(LLAMA_CHEST_TEXTURE)) {
-            this.llamaTextures.remove(LLAMA_CHEST_TEXTURE);
+        if (chested && !this.enhancedAnimalTextures.contains(LLAMA_CHEST_TEXTURE)) {
+            this.enhancedAnimalTextures.add(LLAMA_CHEST_TEXTURE);
+        } else if (!chested && this.enhancedAnimalTextures.contains(LLAMA_CHEST_TEXTURE)) {
+            this.enhancedAnimalTextures.remove(LLAMA_CHEST_TEXTURE);
         }
     }
 
@@ -1096,66 +640,20 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         return this.getLeashed() && !this.isLeashedToTrader();
     }
 
-
-    public boolean isBreedingItem(ItemStack stack) {
-        //TODO set this to a separate item or type of item for force breeding
-        return BREED_ITEMS.test(stack);
-    }
-
-    public AgeableEntity createChild(AgeableEntity ageable) {
-        if(pregnant) {
-            ((EnhancedLlama)ageable).pregnant = true;
-            ((EnhancedLlama)ageable).setMateGenes(this.genes);
-            ((EnhancedLlama)ageable).mixMateMitosisGenes();
-            ((EnhancedLlama)ageable).mixMitosisGenes();
-        } else {
-            pregnant = true;
-            this.mateGenes = ((EnhancedLlama) ageable).getGenes();
-            mixMateMitosisGenes();
-            mixMitosisGenes();
-        }
-
-        this.setGrowingAge(20);
-        this.resetInLove();
-        ageable.setGrowingAge(20);
-        ((EnhancedLlama)ageable).resetInLove();
-
-        ServerPlayerEntity entityplayermp = this.getLoveCause();
-        if (entityplayermp == null && ((EnhancedLlama)ageable).getLoveCause() != null) {
-            entityplayermp = ((EnhancedLlama)ageable).getLoveCause();
-        }
-
-        if (entityplayermp != null) {
-            entityplayermp.addStat(Stats.ANIMALS_BRED);
-            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedLlama)ageable), (AgeableEntity)null);
-        }
-
-        return null;
-    }
-
     @OnlyIn(Dist.CLIENT)
     public String getLlamaTexture() {
-        if (this.llamaTextures.isEmpty()) {
+        if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
         } else if (resetTexture) {
             resetTexture = false;
             this.setTexturePaths();
         }
 
-        return this.llamaTextures.stream().collect(Collectors.joining("/","enhanced_llama/",""));
+        return this.enhancedAnimalTextures.stream().collect(Collectors.joining("/","enhanced_llama/",""));
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String[] getVariantTexturePaths() {
-        if (this.llamaTextures.isEmpty()) {
-            this.setTexturePaths();
-        }
-
-        return this.llamaTextures.stream().toArray(String[]::new);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private void setTexturePaths() {
+    protected void setTexturePaths() {
         int[] genesForText = getSharedGenes();
         if (genesForText != null) {
             int ground = 0;
@@ -1336,40 +834,40 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
 
 
-            this.llamaTextures.add(LLAMA_TEXTURES_GROUND[ground]);
+            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_GROUND[ground]);
 
         if (pattern != 0) {
-            this.llamaTextures.add(LLAMA_TEXTURES_PATTERN[pattern]);
+            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_PATTERN[pattern]);
         }
 
         if (roan != 0) {
-            this.llamaTextures.add(LLAMA_TEXTURES_ROAN[roan]);
+            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_ROAN[roan]);
         }
 
         if (tux != 0) {
-            this.llamaTextures.add(LLAMA_TEXTURES_TUXEDO[tux]);
+            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_TUXEDO[tux]);
         }
 
         if (piebald != 0) {
-            this.llamaTextures.add(LLAMA_TEXTURES_PIEBALD[piebald]);
+            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_PIEBALD[piebald]);
         }
 
         if (domwhite != 0) {
-            this.llamaTextures.add(LLAMA_TEXTURES_DOMWHITE[domwhite]);
+            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_DOMWHITE[domwhite]);
         }
 
         if (fur != 0) {
-            this.llamaTextures.add(LLAMA_TEXTURES_FUR[fur]);
+            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_FUR[fur]);
         }
 
-            this.llamaTextures.add(LLAMA_TEXTURES_EYES[eyes]);
+            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_EYES[eyes]);
 
-            this.llamaTextures.add(LLAMA_TEXTURES_SKIN[skin]);
+            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_SKIN[skin]);
 
 
         } //if genes are not null end bracket
         if (this.hasChest()) {
-            this.llamaTextures.add(LLAMA_CHEST_TEXTURE);
+            this.enhancedAnimalTextures.add(LLAMA_CHEST_TEXTURE);
 
         }
 
@@ -1383,45 +881,25 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         }
 
         if (blanket != 0 || this.isLeashedToTrader()) {
-            this.llamaTextures.add(LLAMA_TEXTURES_DECO[blanket]);
+            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_DECO[blanket]);
         }
 
     } // setTexturePaths end bracket
 
+    @Override
+    protected void setAlphaTexturePaths() {
+    }
+
+    @Override
+    protected void initilizeAnimalSize() {
+    }
 
 
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
-        //store this llamas's genes
-        ListNBT geneList = new ListNBT();
-        for (int i = 0; i < genes.length; i++) {
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Gene", genes[i]);
-            geneList.add(nbttagcompound);
-        }
-        compound.put("Genes", geneList);
-
-        //store this llamas's mate's genes
-        ListNBT mateGeneList = new ListNBT();
-        for (int i = 0; i < mateGenes.length; i++) {
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Gene", mateGenes[i]);
-            mateGeneList.add(nbttagcompound);
-        }
-        compound.put("FatherGenes", mateGeneList);
-
         compound.putInt("Strength", this.getStrength());
-        compound.putInt("Inventory", this.getInventory());
         compound.putFloat("CoatLength", this.getCoatLength());
-
-        compound.putBoolean("Pregnant", this.pregnant);
-        compound.putInt("Gestation", this.gestationTimer);
-
-        compound.putString("Status", getLlamaStatus());
-        compound.putFloat("Hunger", hunger);
-
-        compound.putString("BirthTime", this.getBirthTime());
 
         if (this.despawnDelay != -1) {
             compound.putInt("DespawnDelay", this.despawnDelay);
@@ -1430,81 +908,18 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     }
 
     public void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
         this.setStrength(compound.getInt("Strength"));
-        this.setInventory(compound.getInt("Inventory"));
         currentCoatLength = compound.getInt("CoatLength");
         this.setCoatLength(currentCoatLength);
-        super.readAdditional(compound);
-
-        ListNBT geneList = compound.getList("Genes", 10);
-        for (int i = 0; i < geneList.size(); ++i) {
-            CompoundNBT nbttagcompound = geneList.getCompound(i);
-            int gene = nbttagcompound.getInt("Gene");
-            genes[i] = gene;
-        }
-
-        ListNBT mateGeneList = compound.getList("FatherGenes", 10);
-        for (int i = 0; i < mateGeneList.size(); ++i) {
-            CompoundNBT nbttagcompound = mateGeneList.getCompound(i);
-            int gene = nbttagcompound.getInt("Gene");
-            mateGenes[i] = gene;
-        }
-
-        //TODO add a proper calculation for this
-        for (int i = 0; i < genes.length; i++) {
-            if (genes[i] == 0) {
-                genes[i] = 1;
-            }
-        }
-        if (mateGenes[0] != 0) {
-            for (int i = 0; i < mateGenes.length; i++) {
-                if (mateGenes[i] == 0) {
-                    mateGenes[i] = 1;
-                }
-            }
-        }
-
-        this.pregnant = compound.getBoolean("Pregnant");
-        this.gestationTimer = compound.getInt("Gestation");
-
-        setLlamaStatus(compound.getString("Status"));
-        hunger = compound.getFloat("Hunger");
-
-        this.setBirthTime(compound.getString("BirthTime"));
 
         if (compound.contains("DespawnDelay", 99)) {
             this.despawnDelay = compound.getInt("DespawnDelay");
         }
 
-        setSharedGenes(genes);
-
-        this.updateHorseSlots();
-
         //resets the max so we don't have to store it
         setMaxCoatLength();
 
-    }
-
-    public void mixMitosisGenes() {
-        punnetSquare(mitosisGenes, genes);
-    }
-
-    public void mixMateMitosisGenes() {
-        punnetSquare(mateMitosisGenes, mateGenes);
-    }
-
-    public void punnetSquare(int[] mitosis, int[] parentGenes) {
-        Random rand = new Random();
-        for (int i = 0; i < genes.length; i = (i + 2)) {
-            boolean mateOddOrEven = rand.nextBoolean();
-            if (mateOddOrEven) {
-                mitosis[i] = parentGenes[i + 1];
-                mitosis[i + 1] = parentGenes[i];
-            } else {
-                mitosis[i] = parentGenes[i];
-                mitosis[i + 1] = parentGenes[i + 1];
-            }
-        }
     }
 
     public int[] getCriaGenes(int[] mitosis, int[] mateMitosis) {
@@ -1528,42 +943,24 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-//        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
-        int[] spawnGenes;
+        livingdata =  commonInitialSpawnSetup(inWorld, livingdata, 0, GENES_LENGTH, 120000, 20000, 500000);
 
         if (spawnReason == SpawnReason.EVENT) {
             this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
             this.despawnDelay = 49999;
         }
 
-        if (livingdata instanceof GroupData) {
-            int[] spawnGenes1 = ((GroupData) livingdata).groupGenes;
-            int[] mitosis = new int[GENES_LENGTH];
-            punnetSquare(mitosis, spawnGenes1);
-
-            int[] spawnGenes2 = ((GroupData) livingdata).groupGenes;
-            int[] mateMitosis = new int[GENES_LENGTH];
-            punnetSquare(mateMitosis, spawnGenes2);
-            spawnGenes = getCriaGenes(mitosis, mateMitosis);
-        } else {
-            spawnGenes = createInitialGenes(inWorld);
-            livingdata = new GroupData(spawnGenes);
-        }
-
-        this.genes = spawnGenes;
-        setSharedGenes(genes);
         setStrengthAndInventory();
         setMaxCoatLength();
         this.currentCoatLength = this.maxCoatLength;
         setCoatLength(this.currentCoatLength);
 
-        int birthMod = ThreadLocalRandom.current().nextInt(20000, 500000);
-        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
-        if (birthMod < 120000) {
-            this.setGrowingAge(birthMod - 120000);
-        }
-
         return livingdata;
+    }
+
+    @Override
+    protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
+        return getCriaGenes(mitosis, mateMitosis);
     }
 
     private void setStrengthAndInventory() {
@@ -1601,7 +998,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         }
 
         setStrength(str);
-        setInventory(inv);
     }
 
     private void setMaxCoatLength() {
@@ -1649,7 +1045,7 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     }
 
-    private int[] createInitialGenes(IWorld inWorld) {
+    protected int[] createInitialGenes(IWorld inWorld) {
         int[] initialGenes = new int[GENES_LENGTH];
         //TODO create biome WTC variable [hot and dry biomes, cold biomes ] WTC is neutral biomes "all others"
 
@@ -1915,20 +1311,9 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         return initialGenes;
     }
 
-
-
-    public void setGenes(int[] genes) {
-        this.genes = genes;
+    @Override
+    protected void setInitialDefaults() {
     }
-
-    public int[] getGenes() {
-        return this.genes;
-    }
-
-    public void setMateGenes(int[] mateGenes){
-        this.mateGenes = mateGenes;
-    }
-
 
     private void spit(LivingEntity target) {
         EnhancedEntityLlamaSpit entityllamaspit = new EnhancedEntityLlamaSpit(this.world, this);
@@ -1997,13 +1382,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         return 2.0D;
     }
 
-    protected void followMother() {
-        if (!this.inCaravan() && this.isChild()) {
-            super.followMother();
-        }
-    }
-
-
     public void makeMad() {
         SoundEvent soundevent = this.getAngrySound();
         if (soundevent != null) {
@@ -2022,18 +1400,8 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
         return i;
     }
 
-    /**
-     * Updates the items in the saddle and armor slots of the horse's inventory.
-     */
-    protected void updateHorseSlots() {
-        if (!this.world.isRemote) {
-            super.updateHorseSlots();
-            this.resetTexture = true;
-        }
-    }
-
     public boolean canMateWith(AnimalEntity otherAnimal) {
-        return otherAnimal != this && otherAnimal instanceof EnhancedLlama && this.canMate() && ((EnhancedLlama)otherAnimal).canMate();
+        return otherAnimal != this && otherAnimal instanceof EnhancedLlama;
     }
 
     public int getMaxTemper() {
@@ -2046,13 +1414,6 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
     public void setTemper(int temperIn) {
         this.temper = temperIn;
-    }
-
-    public boolean canEatGrass() {
-        return false;
-    }
-
-    public void setSwingingArms(boolean swingingArms) {
     }
 
     /**
@@ -2135,15 +1496,5 @@ public class EnhancedLlama extends AbstractChestedHorseEntity implements IRanged
 
             super.startExecuting();
         }
-    }
-
-    public static class GroupData implements ILivingEntityData {
-
-        public int[] groupGenes;
-
-        public GroupData(int[] groupGenes) {
-            this.groupGenes = groupGenes;
-        }
-
     }
 }

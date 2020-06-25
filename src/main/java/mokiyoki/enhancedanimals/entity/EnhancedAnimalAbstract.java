@@ -55,6 +55,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     protected static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> TAMED = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     private static final DataParameter<Float> ANIMAL_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
     private static final DataParameter<String> ENTITY_STATUS = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
@@ -127,6 +128,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         super.registerData();
         this.dataManager.register(SHARED_GENES, new String());
         this.dataManager.register(SLEEPING, false);
+        this.dataManager.register(TAMED, false);
         this.dataManager.register(ENTITY_STATUS, new String());
         this.dataManager.register(BIRTH_TIME, "0");
         this.dataManager.register(ANIMAL_SIZE, 0.0F);
@@ -273,6 +275,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         } else {
             this.hunger = this.hunger - decrease;
         }
+    }
+
+    public boolean isTame() {
+        return this.dataManager.get(TAMED);
+    }
+
+    public void setTame(boolean tame) {
+        this.dataManager.set(TAMED, tame);
     }
 
     protected int getAge() {
@@ -610,20 +620,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
         compound.put("FatherGenes", mateGeneList);
 
-        ListNBT listnbt = new ListNBT();
-
-        for(int i = 0; i < this.animalInventory.getSizeInventory(); ++i) {
-            ItemStack itemstack = this.animalInventory.getStackInSlot(i);
-            if (!itemstack.isEmpty()) {
-                CompoundNBT compoundnbt = new CompoundNBT();
-                compoundnbt.putByte("Slot", (byte)i);
-                itemstack.write(compoundnbt);
-                listnbt.add(compoundnbt);
-            }
-        }
-
-        compound.put("Items", listnbt);
-
         compound.putFloat("Hunger", hunger);
 
         compound.putString("Status", getEntityStatus());
@@ -639,6 +635,52 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             compound.putInt("Lactation", this.lactationTimer);
             compound.putInt("milk", getMilkAmount());
         }
+
+        writeInventory(compound);
+    }
+
+    protected void writeInventory(CompoundNBT compound) {
+        ListNBT listnbt = new ListNBT();
+
+        if (!this.animalInventory.getStackInSlot(0).isEmpty()) {
+            compound.put("Chest", this.animalInventory.getStackInSlot(0).write(new CompoundNBT()));
+        }
+
+        if (!this.animalInventory.getStackInSlot(1).isEmpty()) {
+            compound.put("Saddle", this.animalInventory.getStackInSlot(1).write(new CompoundNBT()));
+        }
+
+        if (!this.animalInventory.getStackInSlot(2).isEmpty()) {
+            compound.put("Armour", this.animalInventory.getStackInSlot(2).write(new CompoundNBT()));
+        }
+
+        if (!this.animalInventory.getStackInSlot(3).isEmpty()) {
+            compound.put("Bridle", this.animalInventory.getStackInSlot(3).write(new CompoundNBT()));
+        }
+
+        if (!this.animalInventory.getStackInSlot(4).isEmpty()) {
+            compound.put("Blanket", this.animalInventory.getStackInSlot(4).write(new CompoundNBT()));
+        }
+
+        if (!this.animalInventory.getStackInSlot(5).isEmpty()) {
+            compound.put("Harness", this.animalInventory.getStackInSlot(5).write(new CompoundNBT()));
+        }
+
+        if (!this.animalInventory.getStackInSlot(6).isEmpty()) {
+            compound.put("Banner", this.animalInventory.getStackInSlot(6).write(new CompoundNBT()));
+        }
+
+        for(int i = 7; i < this.animalInventory.getSizeInventory(); ++i) {
+            ItemStack itemstack = this.animalInventory.getStackInSlot(i);
+            if (!itemstack.isEmpty()) {
+                CompoundNBT compoundnbt = new CompoundNBT();
+                compoundnbt.putByte("Slot", (byte)i);
+                itemstack.write(compoundnbt);
+                listnbt.add(compoundnbt);
+            }
+        }
+
+        compound.put("Items", listnbt);
     }
 
     @Override
@@ -658,19 +700,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             int gene = nbttagcompound.getInt("Gene");
             mateGenes[i] = gene;
         }
-
-        ListNBT listnbt = compound.getList("Items", 10);
-        this.initInventory();
-
-        for(int i = 0; i < listnbt.size(); ++i) {
-            CompoundNBT compoundnbt = listnbt.getCompound(i);
-            int j = compoundnbt.getByte("Slot") & 255;
-            if (j >= 0 && j < this.animalInventory.getSizeInventory()) {
-                this.animalInventory.setInventorySlotContents(j, ItemStack.read(compoundnbt));
-            }
-        }
-
-        this.updateInventorySlots();
 
         hunger = compound.getFloat("Hunger");
 
@@ -693,6 +722,63 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         setSharedGenes(genes);
         initilizeAnimalSize();
+
+        readInventory(compound);
+    }
+
+    private void readInventory(CompoundNBT compound) {
+        this.initInventory();
+
+        if (compound.contains("Chest", 10)) {
+            ItemStack itemstack = ItemStack.read(compound.getCompound("Chest"));
+            if (itemstack.getItem() == Items.CHEST) {
+                this.animalInventory.setInventorySlotContents(0, itemstack);
+            }
+        }
+
+        if (compound.contains("Saddle", 10)) {
+            ItemStack itemstack = ItemStack.read(compound.getCompound("Saddle"));
+            if (itemstack.getItem() == Items.SADDLE) {
+                this.animalInventory.setInventorySlotContents(1, itemstack);
+            }
+        }
+
+        if (compound.contains("Armour", 10)) {
+            ItemStack itemstack = ItemStack.read(compound.getCompound("Armour"));
+            this.animalInventory.setInventorySlotContents(2, itemstack);
+        }
+
+        if (compound.contains("Bridle", 10)) {
+            ItemStack itemstack = ItemStack.read(compound.getCompound("Bridle"));
+            this.animalInventory.setInventorySlotContents(3, itemstack);
+        }
+
+        if (compound.contains("Blanket", 10)) {
+            ItemStack itemstack = ItemStack.read(compound.getCompound("Blanket"));
+            this.animalInventory.setInventorySlotContents(4, itemstack);
+        }
+
+        if (compound.contains("Harness", 10)) {
+            ItemStack itemstack = ItemStack.read(compound.getCompound("Harness"));
+            this.animalInventory.setInventorySlotContents(5, itemstack);
+        }
+
+        if (compound.contains("Banner", 10)) {
+            ItemStack itemstack = ItemStack.read(compound.getCompound("Banner"));
+            this.animalInventory.setInventorySlotContents(6, itemstack);
+        }
+
+        ListNBT listnbt = compound.getList("Items", 10);
+
+        for(int i = 7; i < listnbt.size(); ++i) {
+            CompoundNBT compoundnbt = listnbt.getCompound(i);
+            int j = compoundnbt.getByte("Slot") & 255;
+            if (j >= 0 && j < this.animalInventory.getSizeInventory()) {
+                this.animalInventory.setInventorySlotContents(j, ItemStack.read(compoundnbt));
+            }
+        }
+
+        this.updateInventorySlots();
     }
 
     /*
@@ -767,7 +853,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected int getInventorySize() {
-        return 16;
+        return 22;
     }
 
     protected void initInventory() {
@@ -800,7 +886,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             }
         } else {
             int j = inventorySlot - 500 + 2;
-            if (j >= 2 && j < this.animalInventory.getSizeInventory()) {
+            if (j >= 7 && j < this.animalInventory.getSizeInventory()) {
                 this.animalInventory.setInventorySlotContents(j, itemStackIn);
                 return true;
             } else {
@@ -860,7 +946,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             animalInfo.health = (int)(10 * (this.getHealth() / this.getMaxHealth()));
             animalInfo.hunger = (int)(this.getHunger() / 7200);
             animalInfo.isFemale = this.getGender();
-            animalInfo.pregnant = (10 * this.gestationTimer)/EanimodCommonConfig.COMMON.gestationDaysLlama.get();
+            animalInfo.pregnant = (10 * this.gestationTimer)/gestationConfig();
             animalInfo.name = this.getAnimalsName();
 
             if(playerEntity instanceof ServerPlayerEntity) {

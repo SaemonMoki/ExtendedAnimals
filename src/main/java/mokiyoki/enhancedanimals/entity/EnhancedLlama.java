@@ -115,6 +115,10 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
     };
 
+    private static final String[] LLAMA_TEXTURES_SADDLE = new String[] {
+            "", "saddle_vanilla.png", "saddle_western.png", "saddle_english.png"
+    };
+
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT, Items.CARROT, Items.SUGAR_CANE, Items.BEETROOT, Items.GRASS, Items.TALL_GRASS);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK);
 
@@ -247,9 +251,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         if (this.animalInventory != null) {
             if (!this.animalInventory.getStackInSlot(1).isEmpty()) {
                 Item saddleType = this.animalInventory.getStackInSlot(1).getItem();
-                if (saddleType == ModItems.BASIC_LEATHER_SADDLE) {
+                if (saddleType == ModItems.SADDLE_LEATHER) {
                     saddle = 2;
-                } else if (saddleType == ModItems.BASIC_CLOTH_SADDLE) {
+                } else if (saddleType == ModItems.SADDLE_CLOTH) {
                     saddle = 3;
                 } else {
                     saddle = 1;
@@ -264,9 +268,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         if (this.animalInventory != null) {
             if (!this.animalInventory.getStackInSlot(3).isEmpty()) {
                 Item saddleType = this.animalInventory.getStackInSlot(3).getItem();
-                if (saddleType == ModItems.BASIC_LEATHER_BRIDLE) {
+                if (saddleType == ModItems.BRIDLE_BASIC_LEATHER) {
                     bridle = 1;
-                } else if (saddleType == ModItems.BASIC_CLOTH_BRIDLE) {
+                } else if (saddleType == ModItems.BRIDLE_BASIC_CLOTH) {
                     bridle = 2;
                 }
             }
@@ -320,9 +324,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         if (this.animalInventory != null) {
             if (!this.animalInventory.getStackInSlot(5).isEmpty()) {
                 Item saddleType = this.animalInventory.getStackInSlot(5).getItem();
-                if (saddleType == ModItems.BASIC_LEATHER_BRIDLE) {
+                if (saddleType == ModItems.BRIDLE_BASIC_LEATHER) {
                     bridle = 1;
-                } else if (saddleType == ModItems.BASIC_CLOTH_BRIDLE) {
+                } else if (saddleType == ModItems.BRIDLE_BASIC_CLOTH) {
                     bridle = 2;
                 }
             }
@@ -848,14 +852,12 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
             this.enhancedAnimalTextures.add(LLAMA_TEXTURES_SKIN[skin]);
 
-
-        } //if genes are not null end bracket
         if (this.hasChest()) {
             this.enhancedAnimalTextures.add(LLAMA_CHEST_TEXTURE);
 
         }
 
-        int saddle = 0;
+        int saddle = 2;
         int bridle = 0;
         int blanket = 0;
         int harness = 0;
@@ -867,6 +869,11 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         if (blanket != 0 || this.isLeashedToTrader()) {
             this.enhancedAnimalTextures.add(LLAMA_TEXTURES_DECO[blanket]);
         }
+        if (this.hasSaddle()) {
+            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_SADDLE[saddle]);
+        }
+
+        } //if genes are not null end bracket
 
     } // setTexturePaths end bracket
 
@@ -1293,10 +1300,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
 
         return initialGenes;
-    }
-
-    @Override
-    protected void setInitialDefaults() {
     }
 
     private void spit(LivingEntity target) {

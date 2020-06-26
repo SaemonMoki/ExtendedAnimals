@@ -139,8 +139,12 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             "coat_normal.png", "coat_smooth.png", "coat_furry.png"
     };
 
+    private static final String[] COW_TEXTURES_BLANKET = new String[] {
+            "", "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
+    };
+
     private static final String[] COW_TEXTURES_SADDLE = new String[] {
-            "", "saddle_english.png"
+            "", "saddle_vanilla.png", "saddle_western.png", "saddle_english.png"
     };
 
 
@@ -956,8 +960,10 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 //              testing textures
 //              this.enhancedAnimalTextures.add(COW_TEXTURES_TEST[1]);
 
+            int blanket = 7;
+                this.enhancedAnimalTextures.add(COW_TEXTURES_BLANKET[blanket]);
 
-            int saddle = 1;
+            int saddle = 0;
             if (saddle != 0) {
                 this.enhancedAnimalTextures.add(COW_TEXTURES_SADDLE[saddle]);
             }
@@ -1441,6 +1447,7 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
     @Override
     protected void setInitialDefaults() {
+        super.setInitialDefaults();
         configureAI();
     }
 
@@ -1460,18 +1467,24 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
         }
 
 
+        if (false) {
+            //THE DNA PRINTER-5069 !!!!!
+            return new int[]{2, 1, 1, 1, 2, 3, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 4, 5, 3, 3, 5, 5, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 2, 1, 1, 2, 2, 7821, 5728, 49761, 705117, 5995, 5995, 411, 411, 143, 627, 610, 162, 459, 314, 64, 30, 642, 309, 471, 957, 708, 708, 182, 963, 422, 422, 1, 1, 1, 1
+            };
+        }
+
         //Extension [ Dom.Black, Wildtype+, red, indusWhite, indusRed ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[0] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
-            initialGenes[0] = (1);
+            initialGenes[0] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[1] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
-            initialGenes[1] = (1);
+            initialGenes[1] = (2);
         }
 
         //Dilution [ wildtype, dilute]

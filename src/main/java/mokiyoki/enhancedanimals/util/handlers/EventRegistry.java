@@ -92,7 +92,7 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK, ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSE_GRASS_BLOCK, ModBlocks.PATCHY_MYCELIUM_BLOCK, EGG_CARTON, ModBlocks.GROWABLE_ALLIUM, ModBlocks.GROWABLE_AZURE_BLUET, ModBlocks.GROWABLE_BLUE_ORCHID, ModBlocks.GROWABLE_CORNFLOWER, ModBlocks.GROWABLE_DANDELION, ModBlocks.GROWABLE_OXEYE_DAISY, ModBlocks.GROWABLE_ROSE_BUSH, ModBlocks.GROWABLE_SUNFLOWER
+        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK, ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSE_GRASS_BLOCK, ModBlocks.PATCHY_MYCELIUM_BLOCK, EGG_CARTON, ModBlocks.GROWABLE_ALLIUM, ModBlocks.GROWABLE_AZURE_BLUET, ModBlocks.GROWABLE_BLUE_ORCHID, ModBlocks.GROWABLE_CORNFLOWER, ModBlocks.GROWABLE_DANDELION, ModBlocks.GROWABLE_OXEYE_DAISY, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_ROSE_BUSH, ModBlocks.GROWABLE_SUNFLOWER, ModBlocks.GROWABLE_TALLGRASS, ModBlocks.GROWABLE_LARGEFERN
         };
             event.getRegistry().registerAll(blocks);
     }
@@ -119,7 +119,20 @@ public class EventRegistry {
         final Item[] items = {ModItems.RAWCHICKEN_DARKSMALL, ModItems.RAWCHICKEN_DARK, ModItems.RAWCHICKEN_DARKBIG, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_DARK,
                 ModItems.COOKEDCHICKEN_DARKBIG, ModItems.RAWCHICKEN_PALESMALL, ModItems.RAWCHICKEN_PALE, ModItems.COOKEDCHICKEN_PALESMALL, ModItems.COOKEDCHICKEN_PALE,
                 ModItems.RAWRABBIT_SMALL, ModItems.COOKEDRABBIT_SMALL, ModItems.RABBITSTEW_WEAK, ModItems.HALF_MILK_BOTTLE, ModItems.MILK_BOTTLE, ModItems.ONESIXTH_MILK_BUCKET,
-                ModItems.ONETHIRD_MILK_BUCKET, ModItems.HALF_MILK_BUCKET, ModItems.TWOTHIRDS_MILK_BUCKET, ModItems.FIVESIXTHS_MILK_BUCKET, ModItems.BASIC_LEATHER_BRIDLE, ModItems.BASIC_LEATHER_SADDLE, ModItems.BASIC_CLOTH_BRIDLE, ModItems.BASIC_CLOTH_SADDLE, ModItems.BASIC_CLOTH_COLLAR, ModItems.BASIC_LEATHER_COLLAR, ModItems.BASICPOMEL_CLOTH_SADDLE, ModItems.BASICPOMEL_LEATHER_SADDLE, ModItems.DEBUG_GENE_BOOK};
+                ModItems.ONETHIRD_MILK_BUCKET, ModItems.HALF_MILK_BUCKET, ModItems.TWOTHIRDS_MILK_BUCKET, ModItems.FIVESIXTHS_MILK_BUCKET,
+                ModItems.BRIDLE_BASIC_LEATHER, ModItems.BRIDLE_BASIC_LEATHER_G, ModItems.BRIDLE_BASIC_LEATHER_D,
+                ModItems.BRIDLE_BASIC_CLOTH, ModItems.BRIDLE_BASIC_CLOTH_G, ModItems.BRIDLE_BASIC_CLOTH_D,
+                ModItems.SADDLE_LEATHER, ModItems.SADDLE_LEATHER_D, ModItems.SADDLE_LEATHER_G, ModItems.SADDLE_LEATHER_W,
+                ModItems.SADDLE_CLOTH, ModItems.SADDLE_CLOTH_G, ModItems.SADDLE_CLOTH_D, ModItems.SADDLE_CLOTH_W,
+                ModItems.SADDLE_CLOTH_LEATHERCLOTHSEAT, ModItems.SADDLE_CLOTH_LEATHERCLOTHSEAT_G, ModItems.SADDLE_CLOTH_LEATHERCLOTHSEAT_D, ModItems.SADDLE_CLOTH_LEATHERCLOTHSEAT_W,
+                ModItems.SADDLE_POMEL_LEATHER, ModItems.SADDLE_POMEL_LEATHER_G, ModItems.SADDLE_POMEL_LEATHER_D, ModItems.SADDLE_POMEL_LEATHER_W,
+                ModItems.SADDLE_POMEL_CLOTH, ModItems.SADDLE_POMEL_CLOTH_G, ModItems.SADDLE_POMEL_CLOTH_D, ModItems.SADDLE_POMEL_CLOTH_W,
+                ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT, ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_G, ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_D, ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_W,
+                ModItems.SADDLE_ENGLISH_LEATHER, ModItems.SADDLE_ENGLISH_LEATHER_G, ModItems.SADDLE_ENGLISH_LEATHER_D, ModItems.SADDLE_ENGLISH_LEATHER_W,
+                ModItems.SADDLE_ENGLISH_CLOTH,ModItems.SADDLE_ENGLISH_CLOTH_G, ModItems.SADDLE_ENGLISH_CLOTH_D, ModItems.SADDLE_ENGLISH_CLOTH_W,
+                ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_G, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_D, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_W,
+                ModItems.COLLAR_LEATHER, ModItems.COLLAR_LEATHER_BELL, ModItems.COLLAR_LEATHER_RING, ModItems.COLLAR_LEATHER_GBELL, ModItems.COLLAR_LEATHER_G, ModItems.COLLAR_LEATHER_DBELL, ModItems.COLLAR_LEATHER_D,
+                ModItems.COLLAR_CLOTH, ModItems.COLLAR_CLOTH_BELL, ModItems.COLLAR_CLOTH_RING, ModItems.COLLAR_CLOTH_GBELL, ModItems.COLLAR_CLOTH_G, ModItems.COLLAR_CLOTH_DBELL, ModItems.COLLAR_CLOTH_D, ModItems.DEBUG_GENE_BOOK};
 
         final Item[] itemBlocks = {
                 new BlockItem(ModBlocks.POST_ACACIA, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_ACACIA.getRegistryName()),
@@ -137,8 +150,12 @@ public class EventRegistry {
                 new BlockItem(ModBlocks.GROWABLE_CORNFLOWER, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_CORNFLOWER.getRegistryName()),
                 new BlockItem(ModBlocks.GROWABLE_DANDELION, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_DANDELION.getRegistryName()),
                 new BlockItem(ModBlocks.GROWABLE_OXEYE_DAISY, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_OXEYE_DAISY.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_GRASS, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_GRASS.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_FERN, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_FERN.getRegistryName()),
                 new BlockItem(ModBlocks.GROWABLE_ROSE_BUSH, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_ROSE_BUSH.getRegistryName()),
                 new BlockItem(ModBlocks.GROWABLE_SUNFLOWER, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_SUNFLOWER.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_TALLGRASS, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_TALLGRASS.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_LARGEFERN, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_LARGEFERN.getRegistryName()),
                 new BlockItem(EGG_CARTON, new Item.Properties().maxStackSize(1).group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(EGG_CARTON.getRegistryName()),
         };
 

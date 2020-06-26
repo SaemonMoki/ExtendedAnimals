@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "eanimod:patchymycelium_block"
+          "name": "minecraft:dirt"
         }
       ],
       "conditions": [

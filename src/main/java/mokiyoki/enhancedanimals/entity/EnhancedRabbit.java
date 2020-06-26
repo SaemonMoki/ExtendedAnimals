@@ -245,11 +245,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         }
     }
 
-    @Override
-    public Inventory getEnhancedInventory() {
-        return null;
-    }
-
     /**
      * Causes this entity to do an upwards motion (jumping).
      */
@@ -1892,9 +1887,5 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
 
         return initialGenes;
-    }
-
-    @Override
-    protected void setInitialDefaults() {
     }
 }

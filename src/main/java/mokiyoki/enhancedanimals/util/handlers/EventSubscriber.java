@@ -47,21 +47,21 @@ public class EventSubscriber {
     public void replaceVanillaMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
         //TODO figure out how to not delete named entities and maybe convert them instead.
-        if (entity instanceof ChickenEntity) {
-            if(!EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
-                event.setCanceled(true);
-            }
-        }
-        if (entity instanceof RabbitEntity) {
-            if(!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
-                event.setCanceled(true);
-            }
-        }
+//        if (entity instanceof ChickenEntity) {
+//            if(!EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
+//                event.setCanceled(true);
+//            }
+//        }
+//        if (entity instanceof RabbitEntity) {
+//            if(!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
+//                event.setCanceled(true);
+//            }
+//        }
         if (entity instanceof LlamaEntity) {
             if (!(entity instanceof TraderLlamaEntity)) {
-                    if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
-                        event.setCanceled(true);
-                    }
+//                    if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
+//                        event.setCanceled(true);
+//                    }
                 } else if (EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
                     event.setCanceled(true);
                 }

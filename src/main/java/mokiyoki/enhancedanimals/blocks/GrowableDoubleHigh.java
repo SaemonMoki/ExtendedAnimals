@@ -27,11 +27,13 @@ import java.util.Random;
 public class GrowableDoubleHigh extends CropsBlock {
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 //    private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[]{Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 2.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 4.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 5.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 6.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 7.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 8.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 9.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D)};
-    IItemProvider plantType;
-    public GrowableDoubleHigh(Properties properties, IItemProvider plant) {
+    private IItemProvider plantType;
+    private boolean onlyGrowsOnGrass;
+    public GrowableDoubleHigh(Properties properties, IItemProvider plant, boolean growsOnDirt) {
         super(properties);
         this.setDefaultState(this.stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER));
         setPlantType(plant);
+        setOnlyGrowsOnGrass(growsOnDirt);
     }
 
     @Nullable
@@ -101,30 +103,33 @@ public class GrowableDoubleHigh extends CropsBlock {
     @Override
     public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
         if (state.get(HALF) != DoubleBlockHalf.UPPER) {
-        int bottomAge = getAge(worldIn.getBlockState(pos));
-            if (bottomAge < 5) {
-                super.tick(state, worldIn, pos, rand);
-            } else {
-                if (worldIn.getBlockState(pos.up()).getBlock() != this) {
-                    worldIn.setBlockState(pos.up(), this.getDefaultState().with(AGE, 0).with(HALF, DoubleBlockHalf.UPPER));
-                }
-                int topAge = getAge(worldIn.getBlockState(pos.up()));
-                if (topAge < 5) {
-                    super.tick(worldIn.getBlockState(pos.up()), worldIn, pos.up(), rand);
-                    int ageUpdate = getAge(worldIn.getBlockState(pos.up()));
-                    if (topAge != ageUpdate) {
-                        this.setHalfToUpper(worldIn, pos, ageUpdate);
-                    }
-                } else if (topAge >= 7 && bottomAge >= 7) {
-                    worldIn.setBlockState(pos.up(), getBlockFromItem(getPlantType().asItem()).getDefaultState().with(HALF, DoubleBlockHalf.UPPER));
-                    worldIn.setBlockState(pos, getBlockFromItem(getPlantType().asItem()).getDefaultState().with(HALF, DoubleBlockHalf.LOWER));
-                } else{
-                    super.tick(worldIn.getBlockState(pos.up()), worldIn, pos.up(), rand);
-                    int ageUpdate = getAge(worldIn.getBlockState(pos.up()));
-                    if (topAge != ageUpdate) {
-                        this.setHalfToUpper(worldIn, pos, ageUpdate);
-                    }
+            Block groundType = worldIn.getBlockState(pos.down()).getBlock();
+            if (!getOnlyGrowsOnGrass() || groundType == Blocks.GRASS_BLOCK || groundType == Blocks.FARMLAND) {
+                int bottomAge = getAge(worldIn.getBlockState(pos));
+                if (bottomAge < 5) {
                     super.tick(state, worldIn, pos, rand);
+                } else {
+                    if (worldIn.getBlockState(pos.up()).getBlock() != this) {
+                        worldIn.setBlockState(pos.up(), this.getDefaultState().with(AGE, 0).with(HALF, DoubleBlockHalf.UPPER));
+                    }
+                    int topAge = getAge(worldIn.getBlockState(pos.up()));
+                    if (topAge < 5) {
+                        super.tick(worldIn.getBlockState(pos.up()), worldIn, pos.up(), rand);
+                        int ageUpdate = getAge(worldIn.getBlockState(pos.up()));
+                        if (topAge != ageUpdate) {
+                            this.setHalfToUpper(worldIn, pos, ageUpdate);
+                        }
+                    } else if (topAge >= 7 && bottomAge >= 7) {
+                        worldIn.setBlockState(pos.up(), getBlockFromItem(getPlantType().asItem()).getDefaultState().with(HALF, DoubleBlockHalf.UPPER));
+                        worldIn.setBlockState(pos, getBlockFromItem(getPlantType().asItem()).getDefaultState().with(HALF, DoubleBlockHalf.LOWER));
+                    } else {
+                        super.tick(worldIn.getBlockState(pos.up()), worldIn, pos.up(), rand);
+                        int ageUpdate = getAge(worldIn.getBlockState(pos.up()));
+                        if (topAge != ageUpdate) {
+                            this.setHalfToUpper(worldIn, pos, ageUpdate);
+                        }
+                        super.tick(state, worldIn, pos, rand);
+                    }
                 }
             }
         }
@@ -152,8 +157,16 @@ public class GrowableDoubleHigh extends CropsBlock {
 
     protected IItemProvider getPlantType() { return this.plantType; }
 
-    protected void setPlantType(IItemProvider flower) {
-        this.plantType = flower;
+    protected void setPlantType(IItemProvider plant) {
+        this.plantType = plant;
+    }
+
+    private void setOnlyGrowsOnGrass(boolean growsOnDirt) {
+        this.onlyGrowsOnGrass = !growsOnDirt;
+    }
+
+    private boolean getOnlyGrowsOnGrass() {
+        return this.onlyGrowsOnGrass;
     }
 
     @Override

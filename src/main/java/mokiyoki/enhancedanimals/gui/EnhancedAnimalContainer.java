@@ -29,15 +29,14 @@ public class EnhancedAnimalContainer extends Container {
         retrievedInventory.openInventory(playerInventoryIn.player);
         int i = 3; // inv height
         int j = 5; // inv width
-        int equipmentShift = 1;
         int xShift = 8;
         int yShift = 18;
 
         if (enhancedAnimal.canHaveSaddle()) {
-            this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
+            this.addSlot(new Slot(retrievedInventory, 1, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
-                    return stack.getItem() == Items.SADDLE || stack.getItem() == ModItems.BASIC_LEATHER_SADDLE || stack.getItem() == ModItems.BASIC_CLOTH_SADDLE;
+                    return stack.getItem() == Items.SADDLE || stack.getItem() == ModItems.SADDLE_LEATHER || stack.getItem() == ModItems.SADDLE_CLOTH;
                 }
 
                 public int getSlotStackLimit() {
@@ -45,15 +44,14 @@ public class EnhancedAnimalContainer extends Container {
                 }
 
             });
-            equipmentShift = equipmentShift + 1;
             yShift = yShift + 18;
         }
 
         if (enhancedAnimal.canHaveBridle()) {
-            this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
+            this.addSlot(new Slot(retrievedInventory, 3, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
-                    return stack.getItem() == ModItems.BASIC_LEATHER_BRIDLE || stack.getItem() == ModItems.BASIC_CLOTH_BRIDLE;
+                    return stack.getItem() == ModItems.BRIDLE_BASIC_LEATHER || stack.getItem() == ModItems.BRIDLE_BASIC_CLOTH;
                 }
 
                 public int getSlotStackLimit() {
@@ -61,12 +59,11 @@ public class EnhancedAnimalContainer extends Container {
                 }
 
             });
-            equipmentShift = equipmentShift + 1;
             yShift = yShift + 18;
         }
 
         if (enhancedAnimal.canHaveArmour()) {
-            this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
+            this.addSlot(new Slot(retrievedInventory, 2, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
                     return stack.getItem() == Items.LEATHER_HORSE_ARMOR || stack.getItem() == Items.IRON_HORSE_ARMOR || stack.getItem() == Items.GOLDEN_HORSE_ARMOR || stack.getItem() == Items.DIAMOND_HORSE_ARMOR;
@@ -77,7 +74,6 @@ public class EnhancedAnimalContainer extends Container {
                 }
 
             });
-            equipmentShift = equipmentShift + 1;
             yShift = yShift + 18;
             if (yShift >= 54) {
                 yShift = 18;
@@ -86,7 +82,7 @@ public class EnhancedAnimalContainer extends Container {
         }
 
         if (enhancedAnimal.canHaveBlanket()) {
-            this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
+            this.addSlot(new Slot(retrievedInventory, 4, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
                     return stack.getItem() == Items.BLACK_CARPET || stack.getItem() == Items.WHITE_CARPET || stack.getItem() == Items.BLUE_CARPET || stack.getItem() == Items.BROWN_CARPET || stack.getItem() == Items.CYAN_CARPET || stack.getItem() == Items.GRAY_CARPET || stack.getItem() == Items.GREEN_CARPET || stack.getItem() == Items.LIGHT_BLUE_CARPET || stack.getItem() == Items.LIGHT_GRAY_CARPET || stack.getItem() == Items.LIME_CARPET || stack.getItem() == Items.MAGENTA_CARPET || stack.getItem() == Items.ORANGE_CARPET || stack.getItem() == Items.PINK_CARPET || stack.getItem() == Items.PURPLE_CARPET || stack.getItem() == Items.RED_CARPET || stack.getItem() == Items.YELLOW_CARPET;
@@ -97,7 +93,6 @@ public class EnhancedAnimalContainer extends Container {
                 }
 
             });
-            equipmentShift = equipmentShift + 1;
             yShift = yShift + 18;
             if (yShift >= 54) {
                 yShift = 18;
@@ -106,7 +101,7 @@ public class EnhancedAnimalContainer extends Container {
         }
 
         if (enhancedAnimal.canHaveBanner()) {
-            this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
+            this.addSlot(new Slot(retrievedInventory, 6, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
                     return stack.getItem() == Items.BLACK_BANNER || stack.getItem() == Items.WHITE_BANNER || stack.getItem() == Items.BLUE_BANNER || stack.getItem() == Items.BROWN_BANNER || stack.getItem() == Items.CYAN_BANNER || stack.getItem() == Items.GRAY_BANNER || stack.getItem() == Items.GREEN_BANNER || stack.getItem() == Items.LIGHT_BLUE_BANNER || stack.getItem() == Items.LIGHT_GRAY_BANNER || stack.getItem() == Items.LIME_BANNER || stack.getItem() == Items.MAGENTA_BANNER || stack.getItem() == Items.ORANGE_BANNER || stack.getItem() == Items.PINK_BANNER || stack.getItem() == Items.PURPLE_BANNER || stack.getItem() == Items.RED_BANNER || stack.getItem() == Items.YELLOW_BANNER;
@@ -117,7 +112,6 @@ public class EnhancedAnimalContainer extends Container {
                 }
 
             });
-            equipmentShift = equipmentShift + 1;
             yShift = yShift + 18;
             if (yShift >= 54) {
                 yShift = 18;
@@ -126,7 +120,7 @@ public class EnhancedAnimalContainer extends Container {
         }
 
         if (enhancedAnimal.canHaveHarness()) {
-            this.addSlot(new Slot(retrievedInventory, equipmentShift, xShift, yShift) {
+            this.addSlot(new Slot(retrievedInventory, 5, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
                     return stack.getItem() == Items.SADDLE;
@@ -137,7 +131,6 @@ public class EnhancedAnimalContainer extends Container {
                 }
 
             });
-            equipmentShift = equipmentShift + 1;
             yShift = yShift + 18;
             if (yShift >= 54) {
                 yShift = 18;
@@ -149,13 +142,12 @@ public class EnhancedAnimalContainer extends Container {
             if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
                 for (int k = 0; k < i; ++k) {
                     for (int l = 0; l < j; ++l) {
-                        this.addSlot(new Slot(retrievedInventory, equipmentShift, 80 + (l * 18), 18 + (k * 18)) {
+                        this.addSlot(new Slot(retrievedInventory, 7, 80 + (l * 18), 18 + (k * 18)) {
 
         //                    public int getSlotStackLimit() {
         //                        return 64;
         //                    }
                         });
-                        equipmentShift++;
                     }
                 }
             }

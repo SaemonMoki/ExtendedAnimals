@@ -4,6 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CropsBlock;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -11,23 +14,29 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 
 import java.util.Random;
 
 public class GrowablePlant extends CropsBlock {
     private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[]{Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 2.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 4.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 5.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 6.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 7.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 8.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 9.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D)};
-    IItemProvider plantType;
-    public GrowablePlant(Block.Properties properties, net.minecraft.util.IItemProvider plant) {
+    private IItemProvider plantType;
+    private boolean onlyGrowsOnGrass;
+    public GrowablePlant(Block.Properties properties, net.minecraft.util.IItemProvider plant, boolean growsOnDirt) {
         super(properties);
         setPlantType(plant);
+        setOnlyGrowsOnGrass(growsOnDirt);
     }
 
     @Override
     public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
-        if (!worldIn.isRemote && this.isMaxAge(state)) {
-            worldIn.setBlockState(pos, getBlockFromItem(getSeedsItem().asItem()).getDefaultState());
+        Block groundType = worldIn.getBlockState(pos.down()).getBlock();
+        if (!getOnlyGrowsOnGrass() || groundType == Blocks.GRASS_BLOCK || groundType == Blocks.FARMLAND) {
+            if (!worldIn.isRemote && this.isMaxAge(state)) {
+                worldIn.setBlockState(pos, getBlockFromItem(getSeedsItem().asItem()).getDefaultState());
+            }
+            super.tick(state, worldIn, pos, rand);
         }
-        super.tick(state, worldIn, pos, rand);
     }
 
     @Override
@@ -48,8 +57,16 @@ public class GrowablePlant extends CropsBlock {
         return this.plantType;
     }
 
-    protected void setPlantType(net.minecraft.util.IItemProvider flower) {
-        this.plantType = flower;
+    protected void setPlantType(net.minecraft.util.IItemProvider plant) {
+        this.plantType = plant;
+    }
+
+    private void setOnlyGrowsOnGrass(boolean growsOnDirt) {
+        this.onlyGrowsOnGrass = !growsOnDirt;
+    }
+
+    private boolean getOnlyGrowsOnGrass() {
+        return this.onlyGrowsOnGrass;
     }
 
     @Override

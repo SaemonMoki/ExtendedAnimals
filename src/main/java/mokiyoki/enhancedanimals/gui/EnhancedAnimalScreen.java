@@ -49,7 +49,10 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         this.font.drawString(enhancedAnimalInfo.name, 8.0F, 6.0F, 4210752);
         this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
-        // ageTag + name
+
+        if (!tabToggle) {
+            
+        }
         //(health points / max health points * 10) + "/" + "10"
         /**
          * hunger needs a buffer

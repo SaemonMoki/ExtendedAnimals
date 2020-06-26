@@ -11,6 +11,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -250,6 +251,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
+    //TODO cant seem to get the animals to open their eyes when awoken, idk why and i dont want to work on it rn
     @Override
     public void awaken() {
         this.awokenTimer = 200;
@@ -328,7 +330,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     @OnlyIn(Dist.CLIENT)
-    public int getBlink() { return this.blink; }
+    public int getBlink() {
+        return this.blink;
+    }
 
     @OnlyIn(Dist.CLIENT)
     public float getEarTwitch() {
@@ -1120,15 +1124,21 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected void geneFixer() {
-        for (int i = 0; i < genes.length; i++) {
-            if (genes[i] == 0) {
-                genes[i] = 1;
+        if (genes[0] == 0) {
+            this.genes = createInitialGenes(this.world);
+            setInitialDefaults();
+            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (ThreadLocalRandom.current().nextInt(24000, 180000))));
+        } else {
+            for (int i = 0; i < genes.length; i++) {
+                if (genes[i] == 0) {
+                    genes[i] = 1;
+                }
             }
-        }
-        if (mateGenes[0] != 0) {
-            for (int i = 0; i < mateGenes.length; i++) {
-                if (mateGenes[i] == 0) {
-                    mateGenes[i] = 1;
+            if (mateGenes[0] != 0) {
+                for (int i = 0; i < mateGenes.length; i++) {
+                    if (mateGenes[i] == 0) {
+                        mateGenes[i] = 1;
+                    }
                 }
             }
         }
@@ -1185,8 +1195,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
 
         this.genes = spawnGenes;
-        setSharedGenes(genes);
-        initilizeAnimalSize();
         setInitialDefaults();
 
         int birthMod = ThreadLocalRandom.current().nextInt(ageMinimum, ageMaximum);
@@ -1202,7 +1210,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     protected abstract int[] createInitialGenes(IWorld inWorld);
 
-    protected abstract void setInitialDefaults();
+    protected void setInitialDefaults() {
+        setSharedGenes(this.genes);
+        initilizeAnimalSize();
+    }
 
     public static class GroupData implements ILivingEntityData {
         public int[] groupGenes;

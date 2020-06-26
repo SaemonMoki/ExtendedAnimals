@@ -5,6 +5,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
+import mokiyoki.enhancedanimals.renderer.EnhancedRendererModelNew;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
@@ -13,7 +14,9 @@ import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
@@ -24,6 +27,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
     private final ModelRenderer chest1;
     private final ModelRenderer chest2;
+
+    String saddleType = "western";
 
     private boolean banana = false;
     private boolean suri = false;
@@ -84,7 +89,19 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
     private final ModelRenderer toeInnerBackL;
     private final ModelRenderer eyeLeft;
     private final ModelRenderer eyeRight;
-//    private final ModelRenderer eyeRight;
+    private final EnhancedRendererModelNew saddle;
+    private final EnhancedRendererModelNew saddleWestern;
+    private final EnhancedRendererModelNew saddleEnglish;
+    private final EnhancedRendererModelNew saddleHorn;
+    private final EnhancedRendererModelNew saddlePomel;
+    private final EnhancedRendererModelNew saddleSideL;
+    private final EnhancedRendererModelNew stirrup2DWideL;
+    private final EnhancedRendererModelNew stirrup2DWideR;
+    private final EnhancedRendererModelNew stirrup3DNarrowL;
+    private final EnhancedRendererModelNew stirrup3DNarrowR;
+    private final EnhancedRendererModelNew stirrup;
+    private final EnhancedRendererModelNew saddleSideR;
+    private final EnhancedRendererModelNew saddlePad;
 
     private Integer currentLlama = null;
 
@@ -340,6 +357,90 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.head.addChild(earsTopBananaR);
         this.head.addChild(eyeLeft);
         this.head.addChild(eyeRight);
+
+        /**
+         * Equipment stuff
+         */
+
+        this.saddle = new EnhancedRendererModelNew(this, 0, 0, "Saddle");
+
+        this.saddleWestern = new EnhancedRendererModelNew(this, 146, 0, "WesternSaddle");
+        this.saddleWestern.addBox(-5.0F, -2.0F, -5.0F, 10, 2, 13, 0.0F);
+        this.saddleWestern.setTextureOffset(146, 15);
+        this.saddleWestern.addBox(-4.0F, -3.0F, 5.0F, 8, 2, 4, 0.0F);
+        this.saddleWestern.setTextureOffset(222, 15);
+        this.saddleWestern.addBox(-3.5F, -4.0F, 8.0F, 7, 2, 2, 0.0F);
+
+        this.saddleEnglish = new EnhancedRendererModelNew(this, 147, 1, "EnglishSaddle");
+        this.saddleEnglish.addBox(-5.0F, -1.0F, -4.0F, 10, 2, 12, 0.0F);
+        this.saddleEnglish.setTextureOffset(146, 15);
+        this.saddleEnglish.addBox(-4.0F, -1.5F, 5.0F, 8, 2, 4, 0.0F);
+        this.saddleEnglish.setTextureOffset(222, 15);
+        this.saddleEnglish.addBox(-3.5F, -2.0F, 7.5F, 7, 2, 2, 0.0F);
+
+        this.saddleHorn = new EnhancedRendererModelNew(this, 170, 19, "SaddleHorn");
+        this.saddleHorn.addBox(-4.0F, -2.0F, -3.0F, 8, 2, 3, 0.0F);
+
+        this.saddlePomel = new EnhancedRendererModelNew(this, 179, 0, "SaddlePomel");
+        this.saddlePomel.addBox(-1.0F, -3.0F, -2.0F, 2, 4, 2, -0.25F);
+        this.saddlePomel.setRotationPoint(0.0F, -2.0F, -2.0F);
+
+        this.saddleSideL = new EnhancedRendererModelNew(this, 170, 49, "SaddleLeft");
+        this.saddleSideL.addBox(0.0F, 0.0F, 0.0F, 3, 4, 8);
+
+        this.saddleSideR = new EnhancedRendererModelNew(this, 170, 61, "SaddleRight");
+        this.saddleSideR.addBox(-3.0F, 0.0F, 0.0F, 3, 4, 8);
+
+        this.stirrup2DWideL = new EnhancedRendererModelNew(this, 184, 24, "2DStirrupL");
+        this.stirrup2DWideL.addBox(0.0F, 0.0F, 0.0F, 0, 10, 4); // strap
+
+        this.stirrup2DWideR = new EnhancedRendererModelNew(this, 184, 24, "2DStirrupR");
+        this.stirrup2DWideR.addBox(0.0F, 0.0F, 0.0F, 0, 10, 4); // strap
+
+        this.stirrup3DNarrowL = new EnhancedRendererModelNew(this, 185, 27, "3DStirrupL");
+        this.stirrup3DNarrowL.addBox(-1.0F, 0.0F, 0.0F, 1, 10, 1); // strap
+
+        this.stirrup3DNarrowR = new EnhancedRendererModelNew(this, 187, 27, "3DStirrupR");
+        this.stirrup3DNarrowR.addBox(0.0F, 0.0F, 0.0F, 1, 10, 1);
+
+        this.stirrup = new EnhancedRendererModelNew(this, 146, 0, "Stirrup");
+        this.stirrup.addBox(-0.5F, 9.5F, -1.0F, 1, 1, 1);
+        this.stirrup.setTextureOffset(150, 0);
+        this.stirrup.addBox(-0.5F, 9.5F, 1.0F, 1, 1, 1);
+        this.stirrup.setTextureOffset(146, 2);
+        this.stirrup.addBox(-0.5F, 10.5F, -1.5F, 1, 3, 1);
+        this.stirrup.setTextureOffset(150, 2);
+        this.stirrup.addBox(-0.5F, 10.5F, 1.5F, 1, 3, 1);
+        this.stirrup.setTextureOffset(147, 7);
+        this.stirrup.addBox(-0.5F, 12.5F, -0.5F, 1, 1, 2);
+
+        this.saddlePad = new EnhancedRendererModelNew(this, 130, 24, "SaddlePad");
+        this.saddlePad.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
+
+        this.body.addChild(saddle);
+        this.saddle.addChild(saddlePad);
+        this.saddle.addChild(stirrup3DNarrowL);
+        this.saddle.addChild(stirrup3DNarrowR);
+        this.saddleHorn.addChild(saddlePomel);
+        this.saddlePad.addChild(saddleSideL);
+        this.saddlePad.addChild(saddleSideR);
+
+        //western
+        this.body.addChild(saddleWestern);
+        this.saddleWestern.addChild(saddleHorn);
+        this.saddleWestern.addChild(saddlePad);
+        this.saddleWestern.addChild(stirrup2DWideL);
+        this.saddleWestern.addChild(stirrup2DWideR);
+        this.stirrup2DWideL.addChild(stirrup);
+        this.stirrup2DWideR.addChild(stirrup);
+        //english
+        this.body.addChild(saddleEnglish);
+        this.saddleEnglish.addChild(saddleHorn);
+        this.saddleEnglish.addChild(saddlePad);
+        this.saddleEnglish.addChild(stirrup3DNarrowL);
+        this.saddleEnglish.addChild(stirrup3DNarrowR);
+        this.stirrup3DNarrowL.addChild(stirrup);
+        this.stirrup3DNarrowR.addChild(stirrup);
     }
 
     @Override
@@ -425,7 +526,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             this.chest1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.chest2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-                if (coatlength == 0 || this.isChild) {
+                if (coatlength == 0) {
                     ImmutableList.of(this.neckWool0, this.body).forEach((renderer) -> {
                         renderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     });
@@ -471,6 +572,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                     });
                 }
 
+                renderSaddle(coatlength, llamaModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
         matrixStackIn.pop();
 
         matrixStackIn.push();
@@ -495,10 +598,62 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                 this.eyeLeft.showModel = true;
                 this.eyeRight.showModel = true;
             }
-
     }
 
-    @Override
+    private void renderSaddle(int coatLength, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        Map<String, List<Float>> mapOfScale = new HashMap<>();
+
+        this.saddleWestern.showModel = false;
+        this.saddleEnglish.showModel = false;
+        this.saddle.showModel = false;
+        this.saddlePomel.showModel = false;
+        this.saddleSideL.showModel = true;
+        this.saddleSideR.showModel = true;
+
+        float coatMod = 1.0F;
+
+        if (coatLength != 0) {
+            if (coatLength == -1) {
+                coatMod = 0.875F;
+            } else if (coatLength == 1) {
+                coatMod = 1.0625F;
+            } else if (coatLength == 2) {
+                coatMod = 1.125F;
+            } else if (coatLength == 3) {
+                coatMod = 1.25F;
+            } else {
+                coatMod = 1.375F;
+            }
+        }
+
+        if (saddleType != "") {
+            float saddleScale = 0.875F;
+            List<Float> scalingsForSaddle = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
+            List<Float> scalingsForPad = ModelHelper.createScalings(coatMod, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
+
+            if (saddleType.equals("western")) {
+                this.saddleWestern.showModel = true;
+                this.saddlePomel.showModel = true;
+                mapOfScale.put("WesternSaddle", scalingsForSaddle);
+                mapOfScale.put("SaddlePad", scalingsForPad);
+                this.saddleWestern.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            } else if (saddleType.equals("english")) {
+                this.saddleEnglish.showModel = true;
+                mapOfScale.put("EnglishSaddle", scalingsForSaddle);
+                mapOfScale.put("SaddlePad", scalingsForPad);
+                this.saddleEnglish.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            } else {
+                this.saddle.showModel = true;
+                mapOfScale.put("Saddle", scalingsForSaddle);
+                mapOfScale.put("SaddlePad", scalingsForPad);
+                    this.saddleSideL.showModel = false;
+                    this.saddleSideR.showModel = false;
+                this.saddle.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            }
+        }
+    }
+
+        @Override
     public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
         LlamaModelData llamaModelData = getCreateLlamaModelData(entitylivingbaseIn);
         this.currentLlama = entitylivingbaseIn.getEntityId();
@@ -615,6 +770,38 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         ModelHelper.copyModelAngles(leg4, toeInnerBackL);
 
         setNoseRotations(sharedGenes, llamaModelData);
+
+        float coatLength = (float)llamaModelData.coatlength;
+        if (coatLength >= 1) {
+            coatLength = coatLength/1.825F;
+        } else if (coatLength == -1) {
+            coatLength = -1.25F;
+        }
+            if (saddleType != "") {
+                if (saddleType.equals("western")) {
+                    this.saddleWestern.rotationPointY = 2.0F - coatLength;
+                    this.saddleSideL.setRotationPoint(4.75F, -1.0F, -5.25F);
+                    this.saddleSideR.setRotationPoint(-4.75F, -1.0F, -5.25F);
+                    this.saddleHorn.setRotationPoint(0.0F, -2.0F, -2.0F);
+                    this.saddleHorn.rotateAngleX = (float) Math.PI / 8.0F;
+                    this.saddlePomel.setRotationPoint(0.0F, -1.5F, -0.5F);
+                    this.saddlePomel.rotateAngleX = -0.2F;
+                    this.stirrup2DWideL.setRotationPoint(7.5F + coatLength, 0.0F, -3.5F);
+                    this.stirrup2DWideR.setRotationPoint(-7.5F - coatLength, 0.0F, -3.5F);
+                } else if (saddleType.equals("english")) {
+                    this.saddleEnglish.rotationPointY = 2.0F - coatLength;
+                    this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
+                    this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
+                    this.saddleHorn.setRotationPoint(0.0F, -1.0F, -1.0F);
+                    this.saddleHorn.rotateAngleX = (float) Math.PI / 4.5F;
+                    this.stirrup3DNarrowL.setRotationPoint(7.25F + coatLength, -0.25F, -1.5F);
+                    this.stirrup3DNarrowR.setRotationPoint(-7.25F - coatLength, -0.25F, -1.5F);
+                } else {
+                    this.saddle.rotationPointY = 2.0F - coatLength;
+                    this.stirrup3DNarrowL.setRotationPoint(7.5F + coatLength, 0.0F, 0.0F);
+                    this.stirrup3DNarrowR.setRotationPoint(-7.5F - coatLength, 0.0F, 0.0F);
+                }
+            }
     }
 
     private void setNoseRotations(int[] sharedGenes, LlamaModelData llamaModelData) {
@@ -770,6 +957,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         boolean angry = false;
         long clientGameTime = 0;
 //        int dataReset = 0;
+        List<String> unrenderedModels = new ArrayList<>();
     }
 
     private LlamaModelData getLlamaModelData() {
@@ -800,6 +988,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
             llamaModelData.angry = (enhancedLlama.isAggressive());
             llamaModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedLlama.world).getWorldInfo()).getGameTime());
+            llamaModelData.unrenderedModels = new ArrayList<>();
 
             return llamaModelData;
         } else {

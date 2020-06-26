@@ -142,7 +142,7 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
     };
 
     private static final String[] PIG_TEXTURES_SADDLE = new String[] {
-            "", "saddle_western.png", "saddle_english.png"
+            "", "saddle_vanilla.png", "saddle_western.png", "saddle_english.png"
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD, ModItems.COOKEDCHICKEN_DARK, ModItems.COOKEDCHICKEN_DARKBIG, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_PALE, ModItems.COOKEDCHICKEN_PALESMALL, ModItems.COOKEDRABBIT_SMALL);
@@ -288,11 +288,6 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             PlayerEntity playerentity = (PlayerEntity)entity;
             return playerentity.getHeldItemMainhand().getItem() == Items.CARROT_ON_A_STICK || playerentity.getHeldItemOffhand().getItem() == Items.CARROT_ON_A_STICK;
         }
-    }
-
-    @Override
-    public Inventory getEnhancedInventory() {
-        return null;
     }
 
     @Override
@@ -992,7 +987,7 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             if (tusks){
                 this.enhancedAnimalTextures.add(PIG_TEXTURES_TUSKS[1]);
             }
-            this.enhancedAnimalTextures.add(PIG_TEXTURES_SADDLE[2]);
+            this.enhancedAnimalTextures.add(PIG_TEXTURES_SADDLE[1]);
         }
     }
 
@@ -1116,10 +1111,6 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
         resultGenes[31] = groupGenes[31];
 
         return resultGenes;
-    }
-
-    @Override
-    protected void setInitialDefaults() {
     }
 
     @Override

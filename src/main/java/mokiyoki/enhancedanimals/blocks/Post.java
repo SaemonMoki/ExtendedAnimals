@@ -150,7 +150,7 @@ public class Post extends Block implements IWaterLoggable {
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         Direction Orientation = state.get(FACING);
         if (Orientation == Direction.UP) {
-            VoxelShape fenceConnected = getShape(state, worldIn, pos, context);
+            VoxelShape fenceConnected = PILLAR;
             if (state.get(FENCENORTH)) {
                 fenceConnected = VoxelShapes.combine(fenceConnected, NORTHFENCECOLLISION, IBooleanFunction.OR);
             }

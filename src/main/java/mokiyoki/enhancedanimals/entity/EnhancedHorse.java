@@ -146,10 +146,10 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     };
 
     private static final String[] HORSE_TEXTURES_SADDLE = new String[]  {
-            "", "saddle_western_dyeable.png", "saddle_english.png"
+            "", "saddle_vanilla.png", "saddle_western_dyeable.png", "saddle_english.png"
     };
 
-    private static final String[] HORSE_TEXTURES_SADDLE_Deco = new String[]  {
+    private static final String[] HORSE_TEXTURES_SADDLE_DECO = new String[]  {
             "", "c_saddleseat.png"
     };
 

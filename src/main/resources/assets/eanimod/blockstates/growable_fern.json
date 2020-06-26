@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "age=0": { "model": "eanimod:block/fern0" },
+    "age=1": { "model": "eanimod:block/fern1" },
+    "age=2": { "model": "eanimod:block/fern2" },
+    "age=3": { "model": "eanimod:block/fern3" },
+    "age=4": { "model": "eanimod:block/fern4" },
+    "age=5": { "model": "eanimod:block/fern5" },
+    "age=6": { "model": "eanimod:block/fern6" },
+    "age=7": { "model": "block/fern" }
+  }
+}

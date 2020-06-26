@@ -11,8 +11,6 @@ import mokiyoki.enhancedanimals.ai.general.chicken.EnhancedWaterAvoidingRandomWa
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Reference;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
-import net.minecraft.block.Block;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -22,26 +20,22 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -51,7 +45,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -301,11 +294,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     @Override
     protected int gestationConfig() {
         return 24000;
-    }
-
-    @Override
-    public Inventory getEnhancedInventory() {
-        return null;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -2491,10 +2479,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     @Override
     protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
         return getEggGenes(spawnGenes1, spawnGenes2, mitosis, mateMitosis, true);
-    }
-
-    @Override
-    protected void setInitialDefaults() {
     }
 
     @Override

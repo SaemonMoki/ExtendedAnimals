@@ -77,8 +77,12 @@ public class ClientProxy implements IProxy {
         RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_CORNFLOWER, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_DANDELION, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_OXEYE_DAISY, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_GRASS, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_FERN, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_ROSE_BUSH, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_SUNFLOWER, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_TALLGRASS, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_LARGEFERN, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.POST_ACACIA, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.POST_BIRCH, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.POST_DARK_OAK, RenderType.getCutout());
@@ -94,20 +98,33 @@ public class ClientProxy implements IProxy {
 
         //Grass Colouring
         blockColours.register((state, world, pos, tintIndex) ->
-                        world != null && pos != null ? BiomeColors.getGrassColor(world, pos) : GrassColors.get(0.5D, 1.0D),
-                ModBlocks.SPARSE_GRASS_BLOCK);
+                world != null && pos != null ? BiomeColors.getGrassColor(world, pos) : GrassColors.get(0.5D, 1.0D),
+            ModBlocks.SPARSE_GRASS_BLOCK, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_TALLGRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_LARGEFERN);
 
         //Item Colouring
         itemColours.register((stack, tintIndex) -> {
-                    BlockState BlockState = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
-                    return blockColours.getColor(BlockState, null, null, tintIndex); },
-                ModBlocks.SPARSE_GRASS_BLOCK);
+                BlockState BlockState = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
+                return blockColours.getColor(BlockState, null, null, tintIndex); },
+            ModBlocks.SPARSE_GRASS_BLOCK, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_TALLGRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_LARGEFERN);
 
         //Dyeable Item colouring
-
+        //TODO figure out how to use colour map for some items
         itemColours.register((itemStack, tintIndex) -> {
-            return tintIndex > 0 ? -1 : ((IDyeableArmorItem)itemStack.getItem()).getColor(itemStack);
-        }, ModItems.BASIC_LEATHER_BRIDLE, ModItems.BASIC_LEATHER_SADDLE, ModItems.BASIC_CLOTH_BRIDLE, ModItems.BASIC_CLOTH_SADDLE, ModItems.BASIC_CLOTH_COLLAR, ModItems.BASIC_LEATHER_COLLAR, ModItems.BASICPOMEL_CLOTH_SADDLE, ModItems.BASICPOMEL_LEATHER_SADDLE);
+            return tintIndex > 0 ? -1 : ((IDyeableArmorItem)itemStack.getItem()).getColor(itemStack); },
+            ModItems.BRIDLE_BASIC_LEATHER, ModItems.BRIDLE_BASIC_LEATHER_G, ModItems.BRIDLE_BASIC_LEATHER_D,
+                ModItems.BRIDLE_BASIC_CLOTH, ModItems.BRIDLE_BASIC_CLOTH_G, ModItems.BRIDLE_BASIC_CLOTH_D,
+                ModItems.SADDLE_LEATHER, ModItems.SADDLE_LEATHER_D, ModItems.SADDLE_LEATHER_G, ModItems.SADDLE_LEATHER_W,
+                ModItems.SADDLE_CLOTH, ModItems.SADDLE_CLOTH_G, ModItems.SADDLE_CLOTH_D, ModItems.SADDLE_CLOTH_W,
+                ModItems.SADDLE_CLOTH_LEATHERCLOTHSEAT, ModItems.SADDLE_CLOTH_LEATHERCLOTHSEAT_G, ModItems.SADDLE_CLOTH_LEATHERCLOTHSEAT_D, ModItems.SADDLE_CLOTH_LEATHERCLOTHSEAT_W,
+                ModItems.SADDLE_POMEL_LEATHER, ModItems.SADDLE_POMEL_LEATHER_G, ModItems.SADDLE_POMEL_LEATHER_D, ModItems.SADDLE_POMEL_LEATHER_W,
+                ModItems.SADDLE_POMEL_CLOTH, ModItems.SADDLE_POMEL_CLOTH_G, ModItems.SADDLE_POMEL_CLOTH_D, ModItems.SADDLE_POMEL_CLOTH_W,
+                ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT, ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_G, ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_D, ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_W,
+                ModItems.SADDLE_ENGLISH_LEATHER, ModItems.SADDLE_ENGLISH_LEATHER_G, ModItems.SADDLE_ENGLISH_LEATHER_D, ModItems.SADDLE_ENGLISH_LEATHER_W,
+                ModItems.SADDLE_ENGLISH_CLOTH,ModItems.SADDLE_ENGLISH_CLOTH_G, ModItems.SADDLE_ENGLISH_CLOTH_D, ModItems.SADDLE_ENGLISH_CLOTH_W,
+                ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_G, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_D, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_W,
+                ModItems.COLLAR_LEATHER, ModItems.COLLAR_LEATHER_BELL, ModItems.COLLAR_LEATHER_RING, ModItems.COLLAR_LEATHER_GBELL, ModItems.COLLAR_LEATHER_G, ModItems.COLLAR_LEATHER_DBELL, ModItems.COLLAR_LEATHER_D,
+                ModItems.COLLAR_CLOTH, ModItems.COLLAR_CLOTH_BELL, ModItems.COLLAR_CLOTH_RING, ModItems.COLLAR_CLOTH_GBELL, ModItems.COLLAR_CLOTH_G, ModItems.COLLAR_CLOTH_DBELL, ModItems.COLLAR_CLOTH_D);
+
     }
 
     @Override

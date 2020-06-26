@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "eanimod:sparsegrass_block"
+          "name": "minecraft:dirt"
         }
       ],
       "conditions": [

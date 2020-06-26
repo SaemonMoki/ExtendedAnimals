@@ -9,7 +9,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.PlantType;
+import net.minecraftforge.common.ToolType;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public class PatchyMyceliumBlock extends SpreadableSnowyDirtBlock {
@@ -57,5 +59,11 @@ public class PatchyMyceliumBlock extends SpreadableSnowyDirtBlock {
             case Beach: return false;
         }
         return false;
+    }
+
+    @Nullable
+    @Override
+    public ToolType getHarvestTool(BlockState p_getHarvestTool_1_) {
+        return ToolType.SHOVEL;
     }
 }

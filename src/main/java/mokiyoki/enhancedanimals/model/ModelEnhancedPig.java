@@ -21,7 +21,7 @@ import java.util.Map;
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
-    String saddleType = "english";
+    String saddleType = "vanilla";
 
     private Map<Integer, PigModelData> pigModelDataCache = new HashMap<>();
     private int clearCacheTimer = 0;
@@ -231,8 +231,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
          * Equipment stuff
          */
 
-        this.saddle = new EnhancedRendererModelNew(this, 115, 1, "Saddle");
-        this.saddle.addBox(-5.0F, -1.0F, -4.0F, 10, 2, 12, 0.0F);
+        this.saddle = new EnhancedRendererModelNew(this, 98, 24, "Saddle");
+        this.saddle.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
 
         this.saddleWestern = new EnhancedRendererModelNew(this, 114, 0, "WesternSaddle");
         this.saddleWestern.addBox(-5.0F, -2.0F, -5.0F, 10, 2, 13, 0.0F);
@@ -287,30 +287,32 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.saddlePad = new EnhancedRendererModelNew(this, 98, 24, "SaddlePad");
         this.saddlePad.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
 
-        this.body.addChild(saddle);
-        this.saddleHorn.addChild(saddlePomel);
+        this.saddleHorn.addChild(this.saddlePomel);
 
         //western
-        this.body.addChild(saddleWestern);
-        this.saddleWestern.addChild(saddleHorn);
-        this.saddleWestern.addChild(saddleSideL);
-        this.saddleWestern.addChild(saddleSideR);
-        this.saddleWestern.addChild(saddlePad);
-        this.saddleWestern.addChild(stirrup2DWideL);
-        this.saddleWestern.addChild(stirrup2DWideR);
-        this.stirrup2DWideL.addChild(stirrup);
-        this.stirrup2DWideR.addChild(stirrup);
+        this.body.addChild(this.saddleWestern);
+        this.saddleWestern.addChild(this.saddleHorn);
+        this.saddleWestern.addChild(this.saddleSideL);
+        this.saddleWestern.addChild(this.saddleSideR);
+        this.saddleWestern.addChild(this.saddlePad);
+        this.saddleWestern.addChild(this.stirrup2DWideL);
+        this.saddleWestern.addChild(this.stirrup2DWideR);
+        this.stirrup2DWideL.addChild(this.stirrup);
+        this.stirrup2DWideR.addChild(this.stirrup);
         //english
-        this.body.addChild(saddleEnglish);
-        this.saddleEnglish.addChild(saddleHorn);
-        this.saddleEnglish.addChild(saddleSideL);
-        this.saddleEnglish.addChild(saddleSideR);
-        this.saddleEnglish.addChild(saddlePad);
-        this.saddleEnglish.addChild(stirrup3DNarrowL);
-        this.saddleEnglish.addChild(stirrup3DNarrowR);
-        this.stirrup3DNarrowL.addChild(stirrup);
-        this.stirrup3DNarrowR.addChild(stirrup);
-
+        this.body.addChild(this.saddleEnglish);
+        this.saddleEnglish.addChild(this.saddleHorn);
+        this.saddleEnglish.addChild(this.saddleSideL);
+        this.saddleEnglish.addChild(this.saddleSideR);
+        this.saddleEnglish.addChild(this.saddlePad);
+        this.saddleEnglish.addChild(this.stirrup3DNarrowL);
+        this.saddleEnglish.addChild(this.stirrup3DNarrowR);
+        this.stirrup3DNarrowL.addChild(this.stirrup);
+        this.stirrup3DNarrowR.addChild(this.stirrup);
+        //vanilla
+        this.body.addChild(this.saddle);
+        this.saddle.addChild(this.stirrup3DNarrowL);
+        this.saddle.addChild(this.stirrup3DNarrowR);
     }
 
     @Override
@@ -620,7 +622,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         if (saddleType.equals("western")) {
             this.saddleWestern.rotateAngleX = -((float)Math.PI / 2F);
-            this.saddleWestern.setRotationPoint(0.0F, 4.0F, 13.5F);
+            this.saddleWestern.setRotationPoint(0.0F, 4.0F, 10.5F);
             this.saddleSideL.setRotationPoint(5.0F, -1.0F, -5.25F);
             this.saddleSideR.setRotationPoint(-5.0F, -1.0F, -5.25F);
             this.saddleHorn.setRotationPoint(0.0F, -2.0F, -2.0F);
@@ -631,13 +633,18 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             this.stirrup2DWideR.setRotationPoint(-7.5F, 0.0F, -3.5F);
         } else if (saddleType.equals("english")) {
             this.saddleEnglish.rotateAngleX = -((float)Math.PI / 2F);
-            this.saddleEnglish.setRotationPoint(0.0F, 4.0F, 13.5F);
+            this.saddleEnglish.setRotationPoint(0.0F, 4.0F, 10.5F);
             this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
             this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
             this.saddleHorn.setRotationPoint(0.0F, -1.0F, -1.0F);
             this.saddleHorn.rotateAngleX = (float)Math.PI / 4.5F;
             this.stirrup3DNarrowL.setRotationPoint(8.0F, -0.5F, -1.5F);
             this.stirrup3DNarrowR.setRotationPoint(-8.0F, -0.5F, -1.5F);
+        } else {
+            this.saddle.rotateAngleX = -((float)Math.PI / 2F);
+            this.saddle.setRotationPoint(0.0F, 4.0F, 10.5F);
+            this.stirrup3DNarrowL.setRotationPoint(8.0F, 0.0F, 0.0F);
+            this.stirrup3DNarrowR.setRotationPoint(-8.0F, 0.0F, 0.0F);
         }
 
     }

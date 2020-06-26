@@ -21,7 +21,7 @@ import java.util.Map;
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T> {
 
-    String saddleType = "western";
+    String saddleType = "vanilla";
 
     private Map<Integer, HorseModelData> horseModelDataCache = new HashMap<>();
     private int clearCacheTimer = 0;
@@ -168,8 +168,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
              * Equipment stuff
              */
 
-        this.saddle = new EnhancedRendererModelNew(this, 203, 1, "Saddle");
-        this.saddle.addBox(-5.0F, -1.0F, -4.0F, 10, 2, 12, 0.0F);
+        this.saddle = new EnhancedRendererModelNew(this, 186, 24, "Saddle");
+        this.saddle.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
 
         this.saddleWestern = new EnhancedRendererModelNew(this, 202, 0, "WesternSaddle");
         this.saddleWestern.addBox(-5.0F, -2.0F, -5.0F, 10, 2, 13, 0.0F);
@@ -224,9 +224,9 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.saddlePad = new EnhancedRendererModelNew(this, 186, 24, "SaddlePad");
         this.saddlePad.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
 
-
-
         this.body.addChild(saddle);
+        this.saddle.addChild(stirrup3DNarrowL);
+        this.saddle.addChild(stirrup3DNarrowR);
         this.saddleHorn.addChild(saddlePomel);
 
         //western
@@ -304,6 +304,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
                 this.saddleEnglish.showModel = true;
                 mapOfScale.put("EnglishSaddle", scalingsForSaddle);
             } else {
+                //vanilla saddle
                 this.saddle.showModel = true;
                 mapOfScale.put("Saddle", scalingsForSaddle);
             }
@@ -518,6 +519,9 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
             this.saddleHorn.rotateAngleX = (float)Math.PI / 4.5F;
             this.stirrup3DNarrowL.setRotationPoint(7.25F, -0.25F, -1.5F);
             this.stirrup3DNarrowR.setRotationPoint(-7.25F, -0.25F, -1.5F);
+        } else {
+            this.stirrup3DNarrowL.setRotationPoint(8.0F, 0.0F, 0.0F);
+            this.stirrup3DNarrowR.setRotationPoint(-8.0F, 0.0F, 0.0F);
         }
 
     }

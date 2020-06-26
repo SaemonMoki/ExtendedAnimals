@@ -26,11 +26,17 @@ public class EnhancedLayeredTexture extends Texture {
     private static final Logger LOGGER = LogManager.getLogger();
     protected final List<String> layeredTextureNames;
     protected final List<String> maskingTextureNames = new ArrayList<>();
+    //TODO there has to be a better way to do this.
     protected  int dyeRGB = 0;
     protected  int blackRGB = 0;
     protected  int redRGB = 0;
     protected  int eyeLRGB = 0;
     protected  int eyeRRGB = 0;
+    protected  int dyeSaddleRGB = 0;
+    protected  int dyeArmourRGB = 0;
+    protected  int dyeBridleRGB = 0;
+    protected  int dyeHarnessRGB = 0;
+    //TODO add banner part colouring? will probably need an array
     protected String modLocation = "";
 
     public EnhancedLayeredTexture(String modLocation, float[] dyeRGB, String[] textureNames, String[] maskingTextureNames) {
@@ -115,6 +121,30 @@ public class EnhancedLayeredTexture extends Texture {
                         blendDye(j, i, eyeRRGB, nativeimage);
                     }
                 }
+            } else if(s.startsWith("d_s") && dyeSaddleRGB !=0) {
+                for(int i = 0; i < nativeimage.getHeight(); ++i) {
+                    for (int j = 0; j < nativeimage.getWidth(); ++j) {
+                        blendDye(j, i, dyeSaddleRGB, nativeimage);
+                    }
+                }
+            } else if(s.startsWith("d_a") && dyeArmourRGB !=0) {
+                for(int i = 0; i < nativeimage.getHeight(); ++i) {
+                    for (int j = 0; j < nativeimage.getWidth(); ++j) {
+                        blendDye(j, i, dyeSaddleRGB, nativeimage);
+                    }
+                }
+            } else if(s.startsWith("d_br") && dyeBridleRGB !=0) {
+                for(int i = 0; i < nativeimage.getHeight(); ++i) {
+                    for (int j = 0; j < nativeimage.getWidth(); ++j) {
+                        blendDye(j, i, dyeSaddleRGB, nativeimage);
+                    }
+                }
+            } else if(s.startsWith("d_h") && dyeHarnessRGB !=0) {
+                for(int i = 0; i < nativeimage.getHeight(); ++i) {
+                    for (int j = 0; j < nativeimage.getWidth(); ++j) {
+                        blendDye(j, i, dyeSaddleRGB, nativeimage);
+                    }
+                }
             }
             while(true) {
                 if (!iterator.hasNext()) {
@@ -165,6 +195,30 @@ public class EnhancedLayeredTexture extends Texture {
                                         blendDye(j, i, eyeRRGB, nativeimage1);
                                     }
                                 }
+                            } else if(s1.startsWith("d_s") && dyeSaddleRGB !=0) {
+                                for(int i = 0; i < nativeimage1.getHeight(); ++i) {
+                                    for (int j = 0; j < nativeimage1.getWidth(); ++j) {
+                                        blendDye(j, i, dyeSaddleRGB, nativeimage1);
+                                    }
+                                }
+                            } else if(s1.startsWith("d_a") && dyeArmourRGB !=0) {
+                                for(int i = 0; i < nativeimage1.getHeight(); ++i) {
+                                    for (int j = 0; j < nativeimage1.getWidth(); ++j) {
+                                        blendDye(j, i, dyeArmourRGB, nativeimage1);
+                                    }
+                                }
+                            } else if(s1.startsWith("d_br") && dyeBridleRGB !=0) {
+                                for(int i = 0; i < nativeimage1.getHeight(); ++i) {
+                                    for (int j = 0; j < nativeimage1.getWidth(); ++j) {
+                                        blendDye(j, i, dyeBridleRGB, nativeimage1);
+                                    }
+                                }
+                            } else if(s1.startsWith("d_h") && dyeHarnessRGB !=0) {
+                                for(int i = 0; i < nativeimage1.getHeight(); ++i) {
+                                    for (int j = 0; j < nativeimage1.getWidth(); ++j) {
+                                        blendDye(j, i, dyeHarnessRGB, nativeimage1);
+                                    }
+                                }
                             }
 
                             for(int i = 0; i < nativeimage1.getHeight(); ++i) {
@@ -207,19 +261,20 @@ public class EnhancedLayeredTexture extends Texture {
                         blendDye(j, i, blackRGB, firstGroupImage);
                     }
                 }
-            } else if(s.startsWith("eyel_") && eyeLRGB !=0) {
-                for(int i = 0; i < firstGroupImage.getHeight(); ++i) {
-                    for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
-                        blendDye(j, i, eyeLRGB, firstGroupImage);
-                    }
-                }
-            } else if(s.startsWith("eyer_") && eyeRRGB !=0) {
-                for(int i = 0; i < firstGroupImage.getHeight(); ++i) {
-                    for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
-                        blendDye(j, i, eyeRRGB, firstGroupImage);
-                    }
-                }
             }
+//            else if(s.startsWith("eyel_") && eyeLRGB !=0) {
+//                for(int i = 0; i < firstGroupImage.getHeight(); ++i) {
+//                    for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
+//                        blendDye(j, i, eyeLRGB, firstGroupImage);
+//                    }
+//                }
+//            } else if(s.startsWith("eyer_") && eyeRRGB !=0) {
+//                for(int i = 0; i < firstGroupImage.getHeight(); ++i) {
+//                    for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
+//                        blendDye(j, i, eyeRRGB, firstGroupImage);
+//                    }
+//                }
+//            }
 
             while(true) {
                 String s1 = iterator.next();
@@ -262,19 +317,20 @@ public class EnhancedLayeredTexture extends Texture {
                                     blendDye(j, i, blackRGB, nativeimage1);
                                 }
                             }
-                        } else if(s1.startsWith("eyel_") && eyeLRGB !=0) {
-                            for(int i = 0; i < nativeimage1.getHeight(); ++i) {
-                                for (int j = 0; j < nativeimage1.getWidth(); ++j) {
-                                    blendDye(j, i, eyeLRGB, nativeimage1);
-                                }
-                            }
-                        } else if(s1.startsWith("eyer_") && eyeRRGB !=0) {
-                            for(int i = 0; i < nativeimage1.getHeight(); ++i) {
-                                for (int j = 0; j < nativeimage1.getWidth(); ++j) {
-                                    blendDye(j, i, eyeRRGB, nativeimage1);
-                                }
-                            }
                         }
+//                        else if(s1.startsWith("eyel_") && eyeLRGB !=0) {
+//                            for(int i = 0; i < nativeimage1.getHeight(); ++i) {
+//                                for (int j = 0; j < nativeimage1.getWidth(); ++j) {
+//                                    blendDye(j, i, eyeLRGB, nativeimage1);
+//                                }
+//                            }
+//                        } else if(s1.startsWith("eyer_") && eyeRRGB !=0) {
+//                            for(int i = 0; i < nativeimage1.getHeight(); ++i) {
+//                                for (int j = 0; j < nativeimage1.getWidth(); ++j) {
+//                                    blendDye(j, i, eyeRRGB, nativeimage1);
+//                                }
+//                            }
+//                        }
 
                         for(int i = 0; i < nativeimage1.getHeight(); ++i) {
                             for(int j = 0; j < nativeimage1.getWidth(); ++j) {

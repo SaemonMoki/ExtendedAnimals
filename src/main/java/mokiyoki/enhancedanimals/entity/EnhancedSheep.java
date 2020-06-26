@@ -1293,6 +1293,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void setInitialDefaults() {
+        super.setInitialDefaults();
         this.setMaxCoatLength();
         this.currentCoatLength = this.maxCoatLength;
         this.setCoatLength(this.currentCoatLength);

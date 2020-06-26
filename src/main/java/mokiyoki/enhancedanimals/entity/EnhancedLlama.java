@@ -109,14 +109,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             "skin_black.png", "skin_pink.png"
     };
 
-    private static final String LLAMA_CHEST_TEXTURE = "chest.png";
-
     private static final String[] LLAMA_TEXTURES_DECO = new String[] {
             "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
-    };
-
-    private static final String[] LLAMA_TEXTURES_SADDLE = new String[] {
-            "", "saddle_vanilla.png", "saddle_western.png", "saddle_english.png"
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT, Items.CARROT, Items.SUGAR_CANE, Items.BEETROOT, Items.GRASS, Items.TALL_GRASS);
@@ -595,16 +589,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         }
     }
 
-    @Override
-    public void setChested(boolean chested) {
-        super.setChested(chested);
-        if (chested && !this.enhancedAnimalTextures.contains(LLAMA_CHEST_TEXTURE)) {
-            this.enhancedAnimalTextures.add(LLAMA_CHEST_TEXTURE);
-        } else if (!chested && this.enhancedAnimalTextures.contains(LLAMA_CHEST_TEXTURE)) {
-            this.enhancedAnimalTextures.remove(LLAMA_CHEST_TEXTURE);
-        }
-    }
-
     private void tryDespawn() {
         if (this.canDespawn()) {
             this.despawnDelay = this.isLeashedToTrader() ? ((WanderingTraderEntity)this.getLeashHolder()).getDespawnDelay() - 1 : this.despawnDelay - 1;
@@ -848,14 +832,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             this.enhancedAnimalTextures.add(LLAMA_TEXTURES_FUR[fur]);
         }
 
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_EYES[eyes]);
+        this.enhancedAnimalTextures.add(LLAMA_TEXTURES_EYES[eyes]);
 
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_SKIN[skin]);
-
-        if (this.hasChest()) {
-            this.enhancedAnimalTextures.add(LLAMA_CHEST_TEXTURE);
-
-        }
+        this.enhancedAnimalTextures.add(LLAMA_TEXTURES_SKIN[skin]);
 
         int saddle = 2;
         int bridle = 0;
@@ -868,9 +847,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
         if (blanket != 0 || this.isLeashedToTrader()) {
             this.enhancedAnimalTextures.add(LLAMA_TEXTURES_DECO[blanket]);
-        }
-        if (this.hasSaddle()) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_SADDLE[saddle]);
         }
 
         } //if genes are not null end bracket

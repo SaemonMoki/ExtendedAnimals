@@ -20,6 +20,8 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     private static final DataParameter<Boolean> HAS_CHEST = EntityDataManager.createKey(EnhancedAnimalChestedAbstract.class, DataSerializers.BOOLEAN);
 
+    private static final String CHEST_TEXTURE = "chest.png";
+
     protected EnhancedAnimalChestedAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int genesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
         super(type, worldIn, genesSize, temptationItems, breedItems, foodWeightMap, bottleFeedable);
     }
@@ -50,7 +52,12 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     }
 
     public void setChested(boolean chested) {
-        this.dataManager.set(HAS_CHEST, chested);
+        this.dataManager.set(HAS_CHEST,chested);
+        if (chested && !this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
+            this.enhancedAnimalTextures.add(CHEST_TEXTURE);
+        } else if (!chested && this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
+            this.enhancedAnimalTextures.remove(CHEST_TEXTURE);
+        }
     }
 
     public boolean processInteract(PlayerEntity player, Hand hand) {

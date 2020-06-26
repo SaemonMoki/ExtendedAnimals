@@ -38,6 +38,9 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     private static final DataParameter<Byte> STATUS = EntityDataManager.createKey(EnhancedAnimalRideableAbstract.class, DataSerializers.BYTE);
     protected static final IAttribute JUMP_STRENGTH = (new RangedAttribute((IAttribute)null, "ea.jumpStrength", 0.7D, 0.0D, 2.0D)).setDescription("Jump Strength").setShouldWatch(true);
 
+    private static final String[] TEXTURES_SADDLE = new String[] {
+            "", "saddle_vanilla.png", "saddle_western.png", "saddle_english.png"
+    };
 
     protected boolean isAnimalJumping;
     protected float jumpPower;
@@ -149,6 +152,11 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     public void setSaddled(boolean saddled) {
         this.setRideableWatchableBoolean(4, saddled);
+        if (saddled && !this.enhancedAnimalTextures.contains(TEXTURES_SADDLE[2])) {
+            this.enhancedAnimalTextures.add(TEXTURES_SADDLE[2]);
+        } else if (!saddled && this.enhancedAnimalTextures.contains(TEXTURES_SADDLE[2])) {
+            this.enhancedAnimalTextures.remove(TEXTURES_SADDLE[2]);
+        }
     }
 
     protected void updateInventorySlots() {

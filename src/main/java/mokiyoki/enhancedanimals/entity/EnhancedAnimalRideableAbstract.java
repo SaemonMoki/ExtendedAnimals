@@ -66,16 +66,16 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         this.getAttributes().registerAttribute(JUMP_STRENGTH);
     }
 
-    protected boolean getRideableWatchableBoolean(int p_110233_1_) {
-        return (this.dataManager.get(STATUS) & p_110233_1_) != 0;
+    protected boolean getRideableWatchableBoolean(int byteNumber) {
+        return (this.dataManager.get(STATUS) & byteNumber) != 0;
     }
 
-    protected void setRideableWatchableBoolean(int p_110208_1_, boolean p_110208_2_) {
+    protected void setRideableWatchableBoolean(int byteNumber, boolean p_110208_2_) {
         byte b0 = this.dataManager.get(STATUS);
         if (p_110208_2_) {
-            this.dataManager.set(STATUS, (byte)(b0 | p_110208_1_));
+            this.dataManager.set(STATUS, (byte)(b0 | byteNumber));
         } else {
-            this.dataManager.set(STATUS, (byte)(b0 & ~p_110208_1_));
+            this.dataManager.set(STATUS, (byte)(b0 & ~byteNumber));
         }
 
     }

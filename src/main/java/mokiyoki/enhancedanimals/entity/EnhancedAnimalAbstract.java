@@ -464,7 +464,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             if (days/2 < gestationTimer) {
                 setEntityStatus(EntityState.PREGNANT.toString());
             }
-            if (hunger > 12000 && days !=0) {
+            if (hunger > getPregnancyHungerLimit() && days !=0) {
                 pregnant = false;
                 gestationTimer = 0;
                 setEntityStatus(EntityState.ADULT.toString());
@@ -487,6 +487,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                 }
             }
         }
+    }
+
+    protected float getPregnancyHungerLimit() {
+        return 12000F;
     }
 
     protected void initialMilk() {
@@ -542,11 +546,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
-            if (item instanceof AirItem) {
-                ITextComponent message = getHungerText();
-                entityPlayer.sendMessage(message);
-
-            } else if (item instanceof DebugGenesBook) {
+            if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             }
             else if ((!this.isChild() || !bottleFeedable) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
@@ -1027,39 +1027,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         this.world.setEntityState(this, (byte)7);
         return true;
-    }
-
-    protected ITextComponent getHungerText() {
-        String hungerText = "";
-        if (this.hunger < 1000) {
-            hungerText = "eanimod.hunger.not_hungry";
-        } else if (this.hunger < 4000) {
-            hungerText = "eanimod.hunger.hungry";
-        } else if (this.hunger < 9000) {
-            hungerText = "eanimod.hunger.very_hunger";
-        } else if (this.hunger < 16000) {
-            hungerText = "eanimod.hunger.starving";
-        } else if (this.hunger > 24000) {
-            hungerText = "eanimod.hunger.dying";
-        }
-        return new TranslationTextComponent(hungerText);
-    }
-
-    protected ITextComponent getPregnantText() {
-        String pregnancyText;
-        int days = gestationConfig();
-        if (gestationTimer > (days/5 * 4)) {
-            pregnancyText = "eanimod.pregnancy.near_birth";
-        } else if (gestationTimer > days/2 ) {
-            pregnancyText = "eanimod.pregnancy.obviously_pregnant";
-        } else if (gestationTimer > days/3) {
-            pregnancyText = "eanimod.pregnancy.pregnant";
-        } else if (gestationTimer > days/5) {
-            pregnancyText = "eanimod.pregnancy.only_slightly_showing";
-        } else {
-            pregnancyText = "eanimod.pregnancy.not_showing";
-        }
-        return new TranslationTextComponent(pregnancyText);
     }
 
     @Override

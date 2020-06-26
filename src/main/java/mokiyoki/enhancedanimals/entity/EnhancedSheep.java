@@ -1176,12 +1176,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
-                ITextComponent message = getHungerText();
-                entityPlayer.sendMessage(message);
-                if (pregnant) {
-                    message = getPregnantText();
-                    entityPlayer.sendMessage(message);
-                }
                 if (!this.isChild() && (genes[46] == 1 || genes[47] == 1) && currentCoatLength == maxCoatLength) {
                         List<ItemStack> woolToDrop = onSheared(null, this.world, getPosition(), 0);
                         woolToDrop.forEach(d -> {

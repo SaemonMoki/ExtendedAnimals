@@ -275,6 +275,10 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
         this.dataManager.register(BOOST_TIME, 0);
     }
 
+    protected String getSpecies() {
+        return "Pig";
+    }
+
     @Nullable
     public Entity getControllingPassenger() {
         return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);

@@ -297,6 +297,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 //        this.dataManager.register(NOSE_WIGGLING, false);
     }
 
+    protected String getSpecies() { return "Rabbit"; }
+
     @Override
     protected int gestationConfig() {
         return EanimodCommonConfig.COMMON.gestationDaysRabbit.get();

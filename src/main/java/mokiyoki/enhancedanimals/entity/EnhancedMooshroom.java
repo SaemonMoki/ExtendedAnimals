@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.ai.general.mooshroom.EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerBlock;
@@ -33,6 +34,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.awt.*;
 import java.util.UUID;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
@@ -50,7 +52,6 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     private int effectDuration;
     /** Stores the UUID of the most recent lightning bolt to strike */
     private UUID lightningUUID;
-    private float[] cowColouration = null;
 
     public EnhancedMooshroom(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn);
@@ -74,6 +75,11 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
+    protected String getSpecies() {
+        return "Mooshroom";
+    }
+
+    @Override
     protected void setTexturePaths() {
         super.setTexturePaths();
         int mushroomType = 0;
@@ -83,7 +89,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         } else if (getMooshroomType().name.equals("yellow")) {
             mushroomType = 2;
         }
-        this.cowColouration = null;
+        this.colouration = null;
 
         this.enhancedAnimalTextures.add(MOOSHROOM_MUSHROOM[mushroomType]);
     }
@@ -318,225 +324,52 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float[] getRgb() {
-        if (cowColouration == null) {
-            cowColouration = new float[6];
+    public Colouration getRgb() {
+        if (this.colouration.getPheomelaninColour() == null || this.colouration.getMelaninColour() == null) {
             int[] genesForText = getSharedGenes();
 
-            float blackR = 148.0F;
-            float blackG = 14.0F;
-            float blackB = 15.0F;
+            float blackHue = 0.0F;
+            float blackSaturation = 0.05F;
+            float blackBrightness = 0.05F;
 
-            float redR = 126.0F;
-            float redG = 96.0F;
-            float redB = 96.0F;
+            float redHue = 0.05F;
+            float redSaturation = 0.57F;
+            float redBrightness = 0.55F;
 
-            if (getMooshroomType().name.equals("red")) {
+            //puts final values into array for processing
+            float[] melanin = {blackHue, blackSaturation, blackBrightness};
+            float[] pheomelanin = {redHue, redSaturation, redBrightness};
 
-                int tint;
-
-                if ((genesForText[6] == 1 || genesForText[7] == 1) || (genesForText[0] == 3 && genesForText[1] == 3)){
-                    //red
-                    tint = 4;
-                }else {
-                    if (genesForText[0] == 1 || genesForText[1] == 1) {
-                        //black
-                        tint = 2;
-                    } else {
-                        //wildtype
-                        tint = 3;
-                    }
+            //checks that numbers are within the valid range
+            for (int i = 0; i <= 2; i++) {
+                if (melanin[i] > 1.0F) {
+                    melanin[i] = 1.0F;
+                } else if (melanin[i] < 0.0F) {
+                    melanin[i] = 0.0F;
                 }
-
-                //standard dilution
-                if (genesForText[2] == 2 || genesForText[3] == 2) {
-//            if (true) {
-                    if (genesForText[2] == 2 && genesForText[3] == 2) {
-//                if (false) {
-
-                        blackR = (blackR + (255F * tint)) / (tint+1);
-                        blackG = (blackG + (245F * tint)) / (tint+1);
-                        blackB = (blackB + (235F * tint)) / (tint+1);
-
-                        if (tint != 2) {
-                            redR = (redR + (255F * tint)) / (tint + 1);
-                            redG = (redG + (255F * tint)) / (tint + 1);
-                            redB = (redB + (255F * tint)) / (tint + 1);
-                        }
-                    }else{
-                        if (tint == 3) {
-                            //wildtype
-                            redR = 126.0F;
-                            // 160.5
-                            redG = 96.0F;
-                            // 119
-                            redB = 96.0F;
-                            // 67
-
-                            if (genesForText[4] == 1 || genesForText[5] == 1) {
-                                if (genesForText[4] == 1 && genesForText[5] == 1) {
-                                    blackR = 236.0F;
-                                    blackG = 6.0F;
-                                    blackB = 6.0F;
-                                } else {
-                                    blackR = 236.0F;
-                                    blackG = 6.0F;
-                                    blackB = 6.0F;
-                                }
-                            } else if (genesForText[4] == 4 && genesForText[5] == 4) {
-                                blackR = 185.0F;
-                                blackG = 40.0F;
-                                blackB = 40.0F;
-                            }
-
-                        } else if (tint == 4){
-                            //red
-                            redR = (redR*0.5F) + (187.0F*0.5F);
-                            redG = (redG*0.5F) + (180.0F*0.5F);
-                            redB = (redB*0.5F) + (166.0F*0.5F);
-                        }else {
-                            //black
-                            blackR = 236.0F;
-                            blackG = 6.0F;
-                            blackB = 6.0F;
-                        }
-                    }
-                }
-
-            } else {
-
-                blackR = 106.0F;
-                blackG = 78.0F;
-                blackB = 59.0F;
-
-                redR = 204.0F;
-                redG = 153.0F;
-                redB = 120.0F;
-
-                int tint;
-
-                if ((genesForText[6] == 1 || genesForText[7] == 1) || (genesForText[0] == 3 && genesForText[1] == 3)){
-                    //red
-                    tint = 4;
-                }else {
-                    if (genesForText[0] == 1 || genesForText[1] == 1) {
-                        //black
-                        tint = 2;
-                    } else {
-                        //wildtype
-                        tint = 3;
-                    }
-                }
-
-                //standard dilution
-                if (genesForText[2] == 2 || genesForText[3] == 2) {
-//            if (true) {
-                    if (genesForText[2] == 2 && genesForText[3] == 2) {
-//                if (false) {
-
-                        blackR = (blackR + (255F * tint)) / (tint+1);
-                        blackG = (blackG + (245F * tint)) / (tint+1);
-                        blackB = (blackB + (235F * tint)) / (tint+1);
-
-                        if (tint != 2) {
-                            redR = (redR + (255F * tint)) / (tint + 1);
-                            redG = (redG + (255F * tint)) / (tint + 1);
-                            redB = (redB + (255F * tint)) / (tint + 1);
-                        }
-                    }else{
-                        if (tint == 3) {
-                            //wildtype
-                            redR = 170.5F;
-                            // 160.5
-                            redG = 140.0F;
-                            // 119
-                            redB = 132.0F;
-                            // 67
-
-                            if (genesForText[4] == 1 || genesForText[5] == 1) {
-                                if (genesForText[4] == 1 && genesForText[5] == 1) {
-                                    blackR = 236.0F;
-                                    blackG = 6.0F;
-                                    blackB = 6.0F;
-                                } else {
-                                    blackR = 236.0F;
-                                    blackG = 6.0F;
-                                    blackB = 6.0F;
-                                }
-                            } else if (genesForText[4] == 4 && genesForText[5] == 4) {
-                                blackR = 185.0F;
-                                blackG = 40.0F;
-                                blackB = 40.0F;
-                            }
-
-                        } else if (tint == 4){
-                            //red
-                            redR = (redR*0.5F) + (187.0F*0.5F);
-                            redG = (redG*0.5F) + (180.0F*0.5F);
-                            redB = (redB*0.5F) + (166.0F*0.5F);
-                        }else {
-                            //black
-                            blackR = 236.0F;
-                            blackG = 6.0F;
-                            blackB = 6.0F;
-                        }
-                    }
-                }
-
-            }
-
-            if (genesForText[4] == 3 || genesForText[5] == 3) {
-                redR = (redR + 245F) / 2;
-                redG = (redG + 237F) / 2;
-                redB = (redB + 222F) / 2;
-            }
-
-            //chocolate
-            if (genesForText[10] == 2 && genesForText[11] == 2){
-                blackR = blackR + 25F;
-                blackG = blackG + 15F;
-                blackB = blackB + 9F;
-
-                redR = redR + 25F;
-                redG = redG + 15F;
-                redB = redB + 9F;
-            }
-
-            if (this.isChild()) {
-                if (getEntityStatus().equals(EntityState.CHILD_STAGE_ONE.toString())) {
-                    blackR = redR;
-                    blackG = redG;
-                    blackB = redB;
-                }else if (getEntityStatus().equals(EntityState.CHILD_STAGE_TWO.toString())) {
-                    blackR = (blackR + redR)/2F;
-                    blackG = (blackG + redG)/2F;
-                    blackB = (blackB + redB)/2F;
-                } else {
-                    blackR = blackR*0.75F + redR*0.25F;
-                    blackG = blackG*0.75F + redG*0.25F;
-                    blackB = blackB*0.75F + redB*0.25F;
+                if (pheomelanin[i] > 1.0F) {
+                    pheomelanin[i] = 1.0F;
+                } else if (pheomelanin[i] < 0.0F) {
+                    pheomelanin[i] = 0.0F;
                 }
             }
 
-            //TODO TEMP AF
-            //black
-            cowColouration[0] = blackR;
-            cowColouration[1] = blackG;
-            cowColouration[2] = blackB;
+            //changes cow melanin from HSB to RGB
+            int rgb = Color.HSBtoRGB(melanin[0], melanin[1], melanin[2]);
+            melanin[0] = rgb & 0xFF;
+            melanin[1] = (rgb >> 8) & 0xFF;
+            melanin[2] = (rgb >> 16) & 0xFF;
 
-            //red
-            cowColouration[3] = redR;
-            cowColouration[4] = redG;
-            cowColouration[5] = redB;
+            //changes cow pheomelanin from HSB to RGB
+            rgb = Color.HSBtoRGB(pheomelanin[3], pheomelanin[4], pheomelanin[5]);
+            pheomelanin[0] = rgb & 0xFF;
+            pheomelanin[1] = (rgb >> 8) & 0xFF;
+            pheomelanin[2] = (rgb >> 16) & 0xFF;
 
-            for (int i = 0; i <= 5; i++) {
-                if (cowColouration[i] > 255.0F) {
-                    cowColouration[i] = 255.0F;
-                }
-                cowColouration[i] = cowColouration[i] / 255.0F;
-            }
-
+            this.colouration.setMelaninColour(melanin);
+            this.colouration.setPheomelaninColour(pheomelanin);
         }
-        return cowColouration;
+
+        return this.colouration;
     }
 }

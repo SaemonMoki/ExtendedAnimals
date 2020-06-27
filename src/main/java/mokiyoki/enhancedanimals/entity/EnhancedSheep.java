@@ -213,6 +213,10 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         this.dataManager.register(MILK_AMOUNT, 0);
     }
 
+    protected String getSpecies() {
+        return "Sheep";
+    }
+
     private void setCoatLength(int coatLength) {
         this.dataManager.set(COAT_LENGTH, coatLength);
     }

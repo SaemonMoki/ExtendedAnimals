@@ -31,17 +31,8 @@ public class RenderEnhancedBee extends MobRenderer<EnhancedBee, ModelEnhancedBee
      */
     public ResourceLocation getEntityTexture(EnhancedBee entity) {
         String s = entity.getBeeTexture();
-        float[] colourRGB = entity.getRgb();
 
-        if (s == null || s.isEmpty() || colourRGB == null) {
-            return ERROR_TEXTURE_LOCATION;
-        }
-
-        if (colourRGB[0] == 1.0 && colourRGB[1] == 1.0 && colourRGB[2] == 1.0) {
-            colourRGB = null;
-        } else {
-            s = s + colourRGB[0] + colourRGB[1] + colourRGB[2] + colourRGB[3] + colourRGB[4] + colourRGB[5];
-        }
+        //TODO add colouration
 
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
@@ -54,7 +45,7 @@ public class RenderEnhancedBee extends MobRenderer<EnhancedBee, ModelEnhancedBee
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_BEE_TEXTURE_LOCATION, colourRGB, textures, null));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_BEE_TEXTURE_LOCATION, null, textures, null));
                 LAYERED_LOCATION_CACHE.put(s, resourcelocation);
             } catch (IllegalStateException e) {
                 return ERROR_TEXTURE_LOCATION;

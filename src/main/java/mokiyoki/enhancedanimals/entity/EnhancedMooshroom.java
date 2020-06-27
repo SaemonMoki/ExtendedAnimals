@@ -32,6 +32,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.commons.compress.archivers.dump.DumpArchiveEntry;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.awt.*;
@@ -86,10 +87,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
         if (getMooshroomType().name.equals("brown")) {
             mushroomType = 1;
-        } else if (getMooshroomType().name.equals("yellow")) {
-            mushroomType = 2;
         }
-        this.colouration = null;
 
         this.enhancedAnimalTextures.add(MOOSHROOM_MUSHROOM[mushroomType]);
     }
@@ -325,20 +323,25 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @OnlyIn(Dist.CLIENT)
     @Override
     public Colouration getRgb() {
-        if (this.colouration.getPheomelaninColour() == null || this.colouration.getMelaninColour() == null) {
-            int[] genesForText = getSharedGenes();
+        if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
+            this.colouration = super.getRgb();
 
-            float blackHue = 0.0F;
-            float blackSaturation = 0.05F;
-            float blackBrightness = 0.05F;
+            float[] melanin = Colouration.getHSBFromABGR(this.colouration.getMelaninColour());
+            float[] pheomelanin = Colouration.getHSBFromABGR(this.colouration.getPheomelaninColour());
 
-            float redHue = 0.05F;
-            float redSaturation = 0.57F;
-            float redBrightness = 0.55F;
+            if (getMooshroomType() == Type.RED) {
+                melanin[0] = 0;
+                melanin[1] = 1.0F;
 
-            //puts final values into array for processing
-            float[] melanin = {blackHue, blackSaturation, blackBrightness};
-            float[] pheomelanin = {redHue, redSaturation, redBrightness};
+                pheomelanin[0] = (pheomelanin[0] - 0.05F) * 0.5F;
+                pheomelanin[1] = pheomelanin[1] + 0.25F;
+            } else {
+                melanin[1] = melanin[1] + 0.25F;
+                melanin[2] = melanin[2] + 0.1F;
+
+                pheomelanin[1] = pheomelanin[1] * 0.75F;
+                pheomelanin[2] = pheomelanin[2] + 0.1F;
+            }
 
             //checks that numbers are within the valid range
             for (int i = 0; i <= 2; i++) {
@@ -354,20 +357,9 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
                 }
             }
 
-            //changes cow melanin from HSB to RGB
-            int rgb = Color.HSBtoRGB(melanin[0], melanin[1], melanin[2]);
-            melanin[0] = rgb & 0xFF;
-            melanin[1] = (rgb >> 8) & 0xFF;
-            melanin[2] = (rgb >> 16) & 0xFF;
+            this.colouration.setMelaninColour(Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]));
+            this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
 
-            //changes cow pheomelanin from HSB to RGB
-            rgb = Color.HSBtoRGB(pheomelanin[3], pheomelanin[4], pheomelanin[5]);
-            pheomelanin[0] = rgb & 0xFF;
-            pheomelanin[1] = (rgb >> 8) & 0xFF;
-            pheomelanin[2] = (rgb >> 16) & 0xFF;
-
-            this.colouration.setMelaninColour(melanin);
-            this.colouration.setPheomelaninColour(pheomelanin);
         }
 
         return this.colouration;

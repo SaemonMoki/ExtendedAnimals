@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.renderer.texture;
 
 import com.google.common.collect.Lists;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
-import mokiyoki.enhancedanimals.entity.util.Colouration.RGBHolder;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureUtil;
@@ -52,40 +51,40 @@ public class EnhancedLayeredTexture extends Texture {
         }
         this.modLocation = modLocation;
 
-        if (colouration.getDyeColour()!=null) {
-            this.dyeRGB = getDecimalFromRGB(colouration.getDyeColour());
+        if (colouration.getDyeColour()!=-1) {
+            this.dyeRGB = colouration.getDyeColour();
         }
 
-        if (colouration.getMelaninColour()!=null) {
-            this.blackRGB = getDecimalFromRGB(colouration.getDyeColour());
+        if (colouration.getMelaninColour()!=-1) {
+            this.blackRGB = colouration.getMelaninColour();
         }
 
-        if (colouration.getPheomelaninColour()!=null) {
-            this.redRGB = getDecimalFromRGB(colouration.getDyeColour());
+        if (colouration.getPheomelaninColour()!=-1) {
+            this.redRGB = colouration.getPheomelaninColour();
         }
 
-        if (colouration.getLeftEyeColour()!=null) {
-            this.eyeLRGB = getDecimalFromRGB(colouration.getDyeColour());
+        if (colouration.getLeftEyeColour()!=-1) {
+            this.eyeLRGB = colouration.getLeftEyeColour();
         }
 
-        if (colouration.getRightEyeColour()!=null) {
-            this.eyeRRGB = getDecimalFromRGB(colouration.getDyeColour());
+        if (colouration.getRightEyeColour()!=-1) {
+            this.eyeRRGB = colouration.getRightEyeColour();
         }
 
-        if (colouration.getSaddleColour()!=null) {
-            this.dyeSaddleRGB = getDecimalFromRGB(colouration.getDyeColour());
+        if (colouration.getSaddleColour()!=-1) {
+            this.dyeSaddleRGB = colouration.getSaddleColour();
         }
 
-        if (colouration.getArmourColour()!=null) {
-            this.dyeArmourRGB = getDecimalFromRGB(colouration.getDyeColour());
+        if (colouration.getArmourColour()!=-1) {
+            this.dyeArmourRGB = colouration.getArmourColour();
         }
 
-        if (colouration.getBridleColour()!=null) {
-            this.dyeBridleRGB = getDecimalFromRGB(colouration.getDyeColour());
+        if (colouration.getBridleColour()!=-1) {
+            this.dyeBridleRGB = colouration.getBridleColour();
         }
 
-        if (colouration.getHarnessColour()!=null) {
-            this.dyeHarnessRGB = getDecimalFromRGB(colouration.getDyeColour());
+        if (colouration.getHarnessColour()!=-1) {
+            this.dyeHarnessRGB = colouration.getHarnessColour();
         }
 
     }
@@ -436,15 +435,6 @@ public class EnhancedLayeredTexture extends Texture {
 
             nativeImage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
         }
-    }
-
-    private int getDecimalFromRGB(RGBHolder colour) {
-        int alpha = (int) (0.4 * 255.0F);
-        int blue = (int) (colour.getBlue() * 255.0F);
-        int green = (int) (colour.getGreen() * 255.0F);
-        int red = (int) (colour.getRed() * 255.0F);
-
-        return alpha << 24 | blue << 16 | green << 8 | red;
     }
 
 }

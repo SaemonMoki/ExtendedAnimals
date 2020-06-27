@@ -57,35 +57,35 @@ public class EnhancedLayeredTexture extends Texture {
         }
 
         if (colouration.getMelaninColour()!=null) {
-            this.blackRGB = getDecimalFromRGB(colouration.getDyeColour());
+            this.blackRGB = getDecimalFromRGB(colouration.getMelaninColour());
         }
 
         if (colouration.getPheomelaninColour()!=null) {
-            this.redRGB = getDecimalFromRGB(colouration.getDyeColour());
+            this.redRGB = getDecimalFromRGB(colouration.getPheomelaninColour());
         }
 
         if (colouration.getLeftEyeColour()!=null) {
-            this.eyeLRGB = getDecimalFromRGB(colouration.getDyeColour());
+            this.eyeLRGB = getDecimalFromRGB(colouration.getLeftEyeColour());
         }
 
         if (colouration.getRightEyeColour()!=null) {
-            this.eyeRRGB = getDecimalFromRGB(colouration.getDyeColour());
+            this.eyeRRGB = getDecimalFromRGB(colouration.getRightEyeColour());
         }
 
         if (colouration.getSaddleColour()!=null) {
-            this.dyeSaddleRGB = getDecimalFromRGB(colouration.getDyeColour());
+            this.dyeSaddleRGB = getDecimalFromRGB(colouration.getSaddleColour());
         }
 
         if (colouration.getArmourColour()!=null) {
-            this.dyeArmourRGB = getDecimalFromRGB(colouration.getDyeColour());
+            this.dyeArmourRGB = getDecimalFromRGB(colouration.getArmourColour());
         }
 
         if (colouration.getBridleColour()!=null) {
-            this.dyeBridleRGB = getDecimalFromRGB(colouration.getDyeColour());
+            this.dyeBridleRGB = getDecimalFromRGB(colouration.getBridleColour());
         }
 
         if (colouration.getHarnessColour()!=null) {
-            this.dyeHarnessRGB = getDecimalFromRGB(colouration.getDyeColour());
+            this.dyeHarnessRGB = getDecimalFromRGB(colouration.getHarnessColour());
         }
 
     }

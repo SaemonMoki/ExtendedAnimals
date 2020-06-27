@@ -1102,7 +1102,7 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             melanin[2] = (rgb >> 16) & 0xFF;
 
             //changes cow pheomelanin from HSB to RGB
-            rgb = Color.HSBtoRGB(pheomelanin[3], pheomelanin[4], pheomelanin[5]);
+            rgb = Color.HSBtoRGB(pheomelanin[0], pheomelanin[1], pheomelanin[2]);
             pheomelanin[0] = rgb & 0xFF;
             pheomelanin[1] = (rgb >> 8) & 0xFF;
             pheomelanin[2] = (rgb >> 16) & 0xFF;

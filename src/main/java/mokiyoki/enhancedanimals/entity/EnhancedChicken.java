@@ -291,6 +291,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         this.dataManager.register(ROOSTING, new Boolean(false));
     }
 
+    protected String getSpecies() {
+        return "Chicken";
+    }
+
     @Override
     protected int gestationConfig() {
         return 24000;

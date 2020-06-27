@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
@@ -40,7 +41,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     private int effectDuration;
     /** Stores the UUID of the most recent lightning bolt to strike */
     private UUID lightningUUID;
-    private float[] cowColouration = null;
+
 
     public EnhancedMoobloom(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn);
@@ -51,11 +52,14 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     }
 
     @Override
+    protected String getSpecies() {
+        return "Moobloom";
+    }
+
+    @Override
     protected void setTexturePaths() {
         super.setTexturePaths();
-
-        this.cowColouration = null;
-
+        this.colouration = null;
         this.enhancedAnimalTextures.add(MOOBLOOM_FLOWER[0]);
     }
 
@@ -140,10 +144,9 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float[] getRgb() {
-        if (cowColouration == null) {
+    public Colouration getRgb() {
+        if (this.colouration.getPheomelaninColour() == null || this.colouration.getMelaninColour() == null) {
             int[] genesForText = getSharedGenes();
-            String extention = "wildtype";
 
             float blackHue = 0.0F;
             float blackSaturation = 0.05F;
@@ -153,100 +156,40 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
             float redSaturation = 0.57F;
             float redBrightness = 0.55F;
 
-            if (genesForText[0] == 1 || genesForText[1] == 1) {
-                //black cow
-                redHue = blackHue;
-                redSaturation = blackSaturation;
-                redBrightness = blackBrightness;
-                extention = "black";
-            } else if (genesForText[0] != 2 && genesForText[1] != 2){
-                if (genesForText[0] == 3 || genesForText[1] == 3) {
-                    if (genesForText[0] != 4 && genesForText[1] != 4) {
-                        //red cow as in red angus, red hereford
-                        blackHue = mixColours(redHue, 0.0F, 0.5F);
-                        blackSaturation = mixColours(redSaturation, 1.0F, 0.5F);
-                        blackBrightness = mixColours(redBrightness, blackBrightness, 0.75F);
-                        extention = "red";
-                    } //else red and black wildtype colouration
-                } else if (genesForText[0] == 4 || genesForText[1] == 4) {
-                    //cow is grey as in brahman, guzerat, and probably hungarian grey
-                        redHue = 0.1F;
-                        redSaturation = 0.075F;
-                        redBrightness = 0.9F;
-//                    if (genesForText[0] == 4 && genesForText[1] == 4) {
-//                        //cow is indus white
-//                        blackSaturation = redSaturation;
-//                        blackBrightness = mixColours(redBrightness, blackBrightness, 0.25F);
-//                        //TODO homozygous indus white needs to restrict the spread of black pigment to tips.
-//                    }
-                    //else its "blue" possibly carrot top..
-                    //TODO do something about carrot top
-                } else if (genesForText[0] == 5 && genesForText[1] == 5) {
-                    //red cow as in red brahman and red gyr, indistinguishable from taros red
-                    blackHue = mixColours(redHue, 0.0F, 0.5F);
-                    blackSaturation = mixColours(redSaturation, 1.0F, 0.5F);
-                    blackBrightness = mixColours(redBrightness, blackBrightness, 0.75F);
-                    extention = "red";
-                }
-            } //else red and black wildtype colouration
-
-            if (genesForText[120] == 2 && genesForText[121] == 2) {
-                //indus dilution
-                blackHue = redHue;
-                blackSaturation = mixColours(blackSaturation, redSaturation, 0.5F);
-                redHue = redHue + 0.01F;
-                redSaturation = mixColours(redSaturation, 0.0F, 0.48F);
-                redBrightness = mixColours(redBrightness, 1.0F, 0.55F);
-                blackBrightness = mixColours(blackBrightness, redBrightness, 0.25F);
-            }
-
-            if (genesForText[2] == 2 || genesForText[3] == 2) {
-                //typical bos taros dilution in murray grey and highland cattle
-                redHue = mixColours(redHue, 0.1F, 0.75F);
-                redSaturation = mixColours(redSaturation, 0.0F, 0.1F);
-                redBrightness = mixColours(redBrightness, 1.0F, 0.4F);
-
-                if (extention.equals("black")) {
-                    blackSaturation = mixColours(blackSaturation, 1.0F, 0.05F);
-                    blackBrightness = mixColours(blackBrightness, 1.0F, 0.45F);
-                } else if (!extention.equals("red")) {
-                    blackHue = mixColours(blackHue, redHue, 0.5F);
-                    blackSaturation = mixColours(blackSaturation, redSaturation, 0.5F);
-                    blackBrightness = mixColours(blackBrightness, redBrightness, 0.45F);
-                }
-            }
-
-
             //puts final values into array for processing
-            cowColouration = new float[]{blackHue, blackSaturation, blackBrightness, redHue, redSaturation, redBrightness};
+            float[] melanin = {blackHue, blackSaturation, blackBrightness};
+            float[] pheomelanin = {redHue, redSaturation, redBrightness};
 
             //checks that numbers are within the valid range
-            for (int i = 0; i <= 5; i++) {
-                if (cowColouration[i] > 1.0F) {
-                    cowColouration[i] = 1.0F;
-                } else if (cowColouration[i] < 0.0F) {
-                    cowColouration[i] = 0.0F;
+            for (int i = 0; i <= 2; i++) {
+                if (melanin[i] > 1.0F) {
+                    melanin[i] = 1.0F;
+                } else if (melanin[i] < 0.0F) {
+                    melanin[i] = 0.0F;
+                }
+                if (pheomelanin[i] > 1.0F) {
+                    pheomelanin[i] = 1.0F;
+                } else if (pheomelanin[i] < 0.0F) {
+                    pheomelanin[i] = 0.0F;
                 }
             }
 
             //changes cow melanin from HSB to RGB
-            int rgb = Color.HSBtoRGB(cowColouration[0], cowColouration[1], cowColouration[2]);
-            cowColouration[0] = (rgb >> 16) & 0xFF;
-            cowColouration[1] = (rgb >> 8) & 0xFF;
-            cowColouration[2] = rgb & 0xFF;
+            int rgb = Color.HSBtoRGB(melanin[0], melanin[1], melanin[2]);
+            melanin[0] = rgb & 0xFF;
+            melanin[1] = (rgb >> 8) & 0xFF;
+            melanin[2] = (rgb >> 16) & 0xFF;
 
             //changes cow pheomelanin from HSB to RGB
-            rgb = Color.HSBtoRGB(cowColouration[3], cowColouration[4], cowColouration[5]);
-            cowColouration[3] = (rgb >> 16) & 0xFF;
-            cowColouration[4] = (rgb >> 8) & 0xFF;
-            cowColouration[5] = rgb & 0xFF;
+            rgb = Color.HSBtoRGB(pheomelanin[3], pheomelanin[4], pheomelanin[5]);
+            pheomelanin[0] = rgb & 0xFF;
+            pheomelanin[1] = (rgb >> 8) & 0xFF;
+            pheomelanin[2] = (rgb >> 16) & 0xFF;
 
-            for (int i = 0; i <= 5; i++) {
-                cowColouration[i] = cowColouration[i] / 255.0F;
-            }
-
+            this.colouration.setMelaninColour(melanin);
+            this.colouration.setPheomelaninColour(pheomelanin);
         }
-        return cowColouration;
-    }
 
+        return this.colouration;
+    }
 }

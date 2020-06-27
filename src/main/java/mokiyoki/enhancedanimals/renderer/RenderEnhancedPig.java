@@ -47,7 +47,7 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_PIG_TEXTURE_LOCATION, null, textures, entity.getVariantAlphaTexturePaths()));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_PIG_TEXTURE_LOCATION, textures, entity.getVariantAlphaTexturePaths(), entity.colouration));
                LAYERED_LOCATION_CACHE.put(s, resourcelocation);
             } catch (IllegalStateException e) {
                 return ERROR_TEXTURE_LOCATION;

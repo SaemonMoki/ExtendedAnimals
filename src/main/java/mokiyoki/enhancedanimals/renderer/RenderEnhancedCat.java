@@ -46,7 +46,7 @@ public class RenderEnhancedCat extends MobRenderer<EnhancedCat, ModelEnhancedCat
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CAT_TEXTURE_LOCATION, null, textures, null));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CAT_TEXTURE_LOCATION, textures, null, null));
                 LAYERED_LOCATION_CACHE.put(s, resourcelocation);
             } catch (IllegalStateException e) {
                 return ERROR_TEXTURE_LOCATION;

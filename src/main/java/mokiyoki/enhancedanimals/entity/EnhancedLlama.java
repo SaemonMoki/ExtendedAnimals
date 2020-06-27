@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
@@ -182,6 +183,10 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         this.dataManager.register(COAT_LENGTH, -1);
     }
 
+    protected String getSpecies() {
+        return "Llama";
+    }
+
     @Override
     protected int gestationConfig() {
         return EanimodCommonConfig.COMMON.gestationDaysLlama.get();
@@ -201,28 +206,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     public int getCoatLength() {
         return this.dataManager.get(COAT_LENGTH);
-    }
-
-    @Override
-    protected String getAnimalsName() {
-        String name = "Llama";
-        if (this.getCustomName() != null) {
-            name = this.getCustomName().getUnformattedComponentText();
-            if (name.equals("")) {
-                name = "Llama";
-            }
-        }
-
-        int age = this.getAge();
-        if (age < 120000) {
-            if (age > 40000) {
-                name = "Young" + " " + name;
-            } else {
-                name = "Baby" + " " + name;
-            }
-        }
-
-        return name;
     }
 
     @Override
@@ -621,7 +604,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             this.setTexturePaths();
         }
 
-        return this.enhancedAnimalTextures.stream().collect(Collectors.joining("/","enhanced_llama/",""));
+        return getCompiledTextures("enhanced_llama");
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -805,8 +788,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             }
 
 
-
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_GROUND[ground]);
+        this.enhancedAnimalTextures.add(LLAMA_TEXTURES_GROUND[ground]);
 
         if (pattern != 0) {
             this.enhancedAnimalTextures.add(LLAMA_TEXTURES_PATTERN[pattern]);
@@ -845,7 +827,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             blanket = getBlanketNumber();
         }
 
-        if (blanket != 0 || this.isLeashedToTrader()) {
+        if (hasBlanket() || this.isLeashedToTrader()) {
             this.enhancedAnimalTextures.add(LLAMA_TEXTURES_DECO[blanket]);
         }
 

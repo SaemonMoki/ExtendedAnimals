@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
@@ -11,7 +13,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -47,10 +48,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class EnhancedAnimalAbstract extends AnimalEntity implements EnhancedAnimal, IInventoryChangedListener {
 
@@ -102,6 +106,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     //Texture
     protected final List<String> enhancedAnimalTextures = new ArrayList<>();
     protected final List<String> enhancedAnimalAlphaTextures = new ArrayList<>();
+    protected final Map<Equipment, List<String>> equipmentTextures = new HashMap<>();
+    public Colouration colouration = new Colouration();
 
     //Inventory
     protected Inventory animalInventory;
@@ -138,6 +144,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             this.dataManager.register(MILK_AMOUNT, 0);
         }
     }
+
+    protected abstract String getSpecies();
 
     /*
     Animal expected abstracts and overrides
@@ -955,7 +963,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             animalInfo.hunger = (int)(this.getHunger() / 7200);
             animalInfo.isFemale = this.getGender();
             animalInfo.pregnant = (10 * this.gestationTimer)/gestationConfig();
-            animalInfo.name = this.getAnimalsName();
+            animalInfo.name = this.getAnimalsName(getSpecies());
 
             if(playerEntity instanceof ServerPlayerEntity) {
                 ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerEntity;
@@ -977,8 +985,25 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
-    protected String getAnimalsName() {
-        return "EnhancedAnimal";
+    protected String getAnimalsName(String species) {
+        String name = species;
+        if (this.getCustomName() != null) {
+            name = this.getCustomName().getUnformattedComponentText();
+            if (name.equals("")) {
+                name = species;
+            }
+        }
+
+        int age = this.getAge();
+        if (age < 120000) {
+            if (age > 40000) {
+                name = "Young" + " " + name;
+            } else {
+                name = "Baby" + " " + name;
+            }
+        }
+
+        return name;
     }
 
     /*
@@ -1099,8 +1124,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
         }
+        List<String> compiledTextures = new ArrayList<>();
+        compiledTextures.addAll(this.enhancedAnimalTextures);
+        compiledTextures.addAll(this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
 
-        return this.enhancedAnimalTextures.stream().toArray(String[]::new);
+        return compiledTextures.stream().toArray(String[]::new);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1116,6 +1144,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
 
         return this.enhancedAnimalAlphaTextures.stream().toArray(String[]::new);
+    }
+
+    protected String getCompiledTextures(String eanimal) {
+        String compiledTextures = this.enhancedAnimalTextures.stream().collect(Collectors.joining("/",eanimal+"/",""));
+        compiledTextures = compiledTextures + this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.joining("/"));
+        return compiledTextures;
     }
 
     protected float mixColours(float colour1, float colour2, float percentage) {

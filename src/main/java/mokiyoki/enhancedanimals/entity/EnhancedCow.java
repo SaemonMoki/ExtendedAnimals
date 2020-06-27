@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
@@ -159,7 +160,6 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
     private String mooshroomUUID = "0";
 
-    private float[] cowColouration = null;
     protected String motherUUID = "";
 
     protected EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
@@ -228,6 +228,10 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
         this.dataManager.register(MOOSHROOM_UUID, "0");
         this.dataManager.register(SADDLED, false);
         this.dataManager.register(BOOST_TIME, 0);
+    }
+
+    protected String getSpecies() {
+        return "Cow";
     }
 
     @Override
@@ -980,8 +984,8 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float[] getRgb() {
-        if (cowColouration == null) {
+    public Colouration getRgb() {
+        if (this.colouration.getPheomelaninColour() == null || this.colouration.getMelaninColour() == null) {
             int[] genesForText = getSharedGenes();
             String extention = "wildtype";
 
@@ -1073,35 +1077,41 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
 
             //puts final values into array for processing
-            cowColouration = new float[]{blackHue, blackSaturation, blackBrightness, redHue, redSaturation, redBrightness};
+            float[] melanin = {blackHue, blackSaturation, blackBrightness};
+            float[] pheomelanin = {redHue, redSaturation, redBrightness};
 
             //checks that numbers are within the valid range
-            for (int i = 0; i <= 5; i++) {
-                if (cowColouration[i] > 1.0F) {
-                    cowColouration[i] = 1.0F;
-                } else if (cowColouration[i] < 0.0F) {
-                    cowColouration[i] = 0.0F;
+            for (int i = 0; i <= 2; i++) {
+                if (melanin[i] > 1.0F) {
+                    melanin[i] = 1.0F;
+                } else if (melanin[i] < 0.0F) {
+                    melanin[i] = 0.0F;
+                }
+                if (pheomelanin[i] > 1.0F) {
+                    pheomelanin[i] = 1.0F;
+                } else if (pheomelanin[i] < 0.0F) {
+                    pheomelanin[i] = 0.0F;
                 }
             }
 
+
             //changes cow melanin from HSB to RGB
-            int rgb = Color.HSBtoRGB(cowColouration[0], cowColouration[1], cowColouration[2]);
-            cowColouration[0] = (rgb >> 16) & 0xFF;
-            cowColouration[1] = (rgb >> 8) & 0xFF;
-            cowColouration[2] = rgb & 0xFF;
+            int rgb = Color.HSBtoRGB(melanin[0], melanin[1], melanin[2]);
+            melanin[0] = rgb & 0xFF;
+            melanin[1] = (rgb >> 8) & 0xFF;
+            melanin[2] = (rgb >> 16) & 0xFF;
 
             //changes cow pheomelanin from HSB to RGB
-            rgb = Color.HSBtoRGB(cowColouration[3], cowColouration[4], cowColouration[5]);
-            cowColouration[3] = (rgb >> 16) & 0xFF;
-            cowColouration[4] = (rgb >> 8) & 0xFF;
-            cowColouration[5] = rgb & 0xFF;
+            rgb = Color.HSBtoRGB(pheomelanin[3], pheomelanin[4], pheomelanin[5]);
+            pheomelanin[0] = rgb & 0xFF;
+            pheomelanin[1] = (rgb >> 8) & 0xFF;
+            pheomelanin[2] = (rgb >> 16) & 0xFF;
 
-            for (int i = 0; i <= 5; i++) {
-                cowColouration[i] = cowColouration[i] / 255.0F;
-            }
-
+            this.colouration.setMelaninColour(melanin);
+            this.colouration.setPheomelaninColour(pheomelanin);
         }
-        return cowColouration;
+
+        return this.colouration;
     }
 
     @Override

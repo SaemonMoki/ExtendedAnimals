@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.renderer;
 
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import net.minecraft.client.Minecraft;
@@ -28,17 +29,13 @@ public class RenderEnhancedMoobloom extends MobRenderer<EnhancedMoobloom, ModelE
 
     public ResourceLocation getEntityTexture(EnhancedMoobloom entity) {
         String s = entity.getCowTexture();
-        float[] colourRGB = entity.getRgb();
+        Colouration colourRGB = entity.getRgb();
 
         if (s == null || s.isEmpty() || colourRGB == null) {
             return ERROR_TEXTURE_LOCATION;
         }
 
-        if (colourRGB[0] == 1.0 && colourRGB[1] == 1.0 && colourRGB[2] == 1.0) {
-            colourRGB = null;
-        } else {
-            s = s + colourRGB[0] + colourRGB[1] + colourRGB[2] + colourRGB[3] + colourRGB[4] + colourRGB[5];
-        }
+        s = s + colourRGB.getRGBStrings();
 
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
@@ -51,7 +48,7 @@ public class RenderEnhancedMoobloom extends MobRenderer<EnhancedMoobloom, ModelE
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, colourRGB, textures, null));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, textures, null, colourRGB));
                 LAYERED_LOCATION_CACHE.put(s, resourcelocation);
             } catch (IllegalStateException e) {
                 return ERROR_TEXTURE_LOCATION;

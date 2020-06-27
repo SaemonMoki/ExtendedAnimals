@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.renderer.texture;
 
 import com.google.common.collect.Lists;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.entity.util.Colouration.RGBHolder;
 import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureUtil;
@@ -39,7 +41,7 @@ public class EnhancedLayeredTexture extends Texture {
     //TODO add banner part colouring? will probably need an array
     protected String modLocation = "";
 
-    public EnhancedLayeredTexture(String modLocation, float[] dyeRGB, String[] textureNames, String[] maskingTextureNames) {
+    public EnhancedLayeredTexture(String modLocation, String[] textureNames, String[] maskingTextureNames, Colouration colouration) {
         this.layeredTextureNames = Lists.newArrayList(textureNames);
         if (maskingTextureNames != null) {
             this.maskingTextureNames.addAll(Lists.newArrayList(maskingTextureNames));
@@ -50,24 +52,40 @@ public class EnhancedLayeredTexture extends Texture {
         }
         this.modLocation = modLocation;
 
-        if (dyeRGB != null) {
-            int j = (int)(0.4 * 255.0F);
-            int k = (int)(dyeRGB[2] * 255.0F);
-            int l = (int)(dyeRGB[1] * 255.0F);
-            int i1 = (int)(dyeRGB[0] * 255.0F);
+        if (colouration.getDyeColour()!=null) {
+            this.dyeRGB = getDecimalFromRGB(colouration.getDyeColour());
+        }
 
-            this.dyeRGB = j << 24 | k << 16 | l << 8 | i1 << 0;
-            this.blackRGB = this.dyeRGB;
+        if (colouration.getMelaninColour()!=null) {
+            this.blackRGB = getDecimalFromRGB(colouration.getDyeColour());
+        }
 
-            if(dyeRGB.length>3) {
-                int j2 = (int)(0.4 * 255.0F);
-                int k2 = (int)(dyeRGB[5] * 255.0F);
-                int l2 = (int)(dyeRGB[4] * 255.0F);
-                int i2 = (int)(dyeRGB[3] * 255.0F);
+        if (colouration.getPheomelaninColour()!=null) {
+            this.redRGB = getDecimalFromRGB(colouration.getDyeColour());
+        }
 
-                this.redRGB = j2 << 24 | k2 << 16 | l2 << 8 | i2 << 0;
-            }
+        if (colouration.getLeftEyeColour()!=null) {
+            this.eyeLRGB = getDecimalFromRGB(colouration.getDyeColour());
+        }
 
+        if (colouration.getRightEyeColour()!=null) {
+            this.eyeRRGB = getDecimalFromRGB(colouration.getDyeColour());
+        }
+
+        if (colouration.getSaddleColour()!=null) {
+            this.dyeSaddleRGB = getDecimalFromRGB(colouration.getDyeColour());
+        }
+
+        if (colouration.getArmourColour()!=null) {
+            this.dyeArmourRGB = getDecimalFromRGB(colouration.getDyeColour());
+        }
+
+        if (colouration.getBridleColour()!=null) {
+            this.dyeBridleRGB = getDecimalFromRGB(colouration.getDyeColour());
+        }
+
+        if (colouration.getHarnessColour()!=null) {
+            this.dyeHarnessRGB = getDecimalFromRGB(colouration.getDyeColour());
         }
 
     }
@@ -418,6 +436,15 @@ public class EnhancedLayeredTexture extends Texture {
 
             nativeImage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
         }
+    }
+
+    private int getDecimalFromRGB(RGBHolder colour) {
+        int alpha = (int) (0.4 * 255.0F);
+        int blue = (int) (colour.getBlue() * 255.0F);
+        int green = (int) (colour.getGreen() * 255.0F);
+        int red = (int) (colour.getRed() * 255.0F);
+
+        return alpha << 24 | blue << 16 | green << 8 | red;
     }
 
 }

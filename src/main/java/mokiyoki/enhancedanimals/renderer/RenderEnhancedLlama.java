@@ -2,8 +2,8 @@ package mokiyoki.enhancedanimals.renderer;
 
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedLlama;
-import mokiyoki.enhancedanimals.renderer.layers.SilkieChickenLayer;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -34,10 +34,13 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
      */
     public ResourceLocation getEntityTexture(EnhancedLlama entity) {
         String s = entity.getLlamaTexture();
+        Colouration colourRGB = entity.colouration;
 
-        if (s == null || s.isEmpty()) {
+        if (s == null || s.isEmpty() || colourRGB == null) {
             return ERROR_TEXTURE_LOCATION;
         }
+
+        s = s + colourRGB.getRGBStrings();
 
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
@@ -50,7 +53,7 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_LLAMA_TEXTURE_LOCATION, null, textures, null));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_LLAMA_TEXTURE_LOCATION, textures, null, entity.colouration));
                 LAYERED_LOCATION_CACHE.put(s, resourcelocation);
             } catch (IllegalStateException e) {
                 return ERROR_TEXTURE_LOCATION;

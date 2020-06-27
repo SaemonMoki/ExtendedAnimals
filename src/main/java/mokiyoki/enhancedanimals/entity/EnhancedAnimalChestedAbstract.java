@@ -235,40 +235,28 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     @OnlyIn(Dist.CLIENT)
     public void getRgb() {
         ItemStack bridle = this.getEnhancedInventory().getStackInSlot(3);
-        ItemStack harness = this.getEnhancedInventory().getStackInSlot(6);
+//        ItemStack harness = this.getEnhancedInventory().getStackInSlot(6);
 
         if (bridle != ItemStack.EMPTY) {
-            this.colouration.setBridleColour(getEquipmentColor(bridle));
+            this.colouration.setBridleColour(Colouration.getEquipmentColor(bridle));
         }
 
-        if (harness != ItemStack.EMPTY) {
-            this.colouration.setHarnessColour(getEquipmentColor(harness));
-        }
+//        if (harness != ItemStack.EMPTY) {
+//            this.colouration.setHarnessColour(Colouration.getEquipmentColor(harness));
+//        }
 
-    }
-
-    protected float[] getEquipmentColor(ItemStack stack) {
-        float[] colour = {0,0,0};
-        if (stack.getItem() instanceof CustomizableAnimalEquipment) {
-            CompoundNBT compoundnbt = stack.getChildTag("display");
-            int rawColour = compoundnbt.getInt("color");
-
-            colour[0] = (float)(rawColour & 255) / 255.0F;
-            colour[1] = (float)(rawColour >> 8 & 255) / 255.0F;
-            colour[2] = (float)(rawColour >> 16 & 255) / 255.0F;
-        }
-
-        return colour;
     }
 
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
         compound.putBoolean("Chested", this.hasChest());
+        compound.putBoolean("Bridled", this.hasBridle());
     }
 
 
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
         this.setChested(compound.getBoolean("Chested"));
+        this.setBridle(compound.getBoolean("Chested"));
     }
 }

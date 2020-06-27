@@ -1119,11 +1119,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return compiledTextures;
     }
 
-    protected float mixColours(float colour1, float colour2, float percentage) {
-        colour1 = (colour1 * (1.0F - percentage)) + (colour2 * percentage);
-        return colour1;
-    }
-
     protected void geneFixer() {
         if (genes[0] == 0) {
             this.genes = createInitialGenes(this.world);

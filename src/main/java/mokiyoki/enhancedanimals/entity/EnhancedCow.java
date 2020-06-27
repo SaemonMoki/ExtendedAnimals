@@ -10,7 +10,6 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -23,11 +22,9 @@ import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.SuspiciousStewItem;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -38,7 +35,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.datafix.fixes.PotionItems;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -985,7 +981,7 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
     @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
-        if (this.colouration.getPheomelaninColour() == null || this.colouration.getMelaninColour() == null) {
+        if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
             int[] genesForText = getSharedGenes();
             String extention = "wildtype";
 
@@ -1007,9 +1003,9 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
                 if (genesForText[0] == 3 || genesForText[1] == 3) {
                     if (genesForText[0] != 4 && genesForText[1] != 4) {
                         //red cow as in red angus, red hereford
-                        blackHue = mixColours(redHue, 0.0F, 0.5F);
-                        blackSaturation = mixColours(redSaturation, 1.0F, 0.5F);
-                        blackBrightness = mixColours(redBrightness, blackBrightness, 0.75F);
+                        blackHue = Colouration.mixColours(redHue, 0.0F, 0.5F);
+                        blackSaturation = Colouration.mixColours(redSaturation, 1.0F, 0.5F);
+                        blackBrightness = Colouration.mixColours(redBrightness, blackBrightness, 0.75F);
                         extention = "red";
                     } //else red and black wildtype colouration
                 } else if (genesForText[0] == 4 || genesForText[1] == 4) {
@@ -1027,9 +1023,9 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
                     //TODO do something about carrot top
                 } else if (genesForText[0] == 5 && genesForText[1] == 5) {
                     //red cow as in red brahman and red gyr, indistinguishable from taros red
-                    blackHue = mixColours(redHue, 0.0F, 0.5F);
-                    blackSaturation = mixColours(redSaturation, 1.0F, 0.5F);
-                    blackBrightness = mixColours(redBrightness, blackBrightness, 0.75F);
+                    blackHue = Colouration.mixColours(redHue, 0.0F, 0.5F);
+                    blackSaturation = Colouration.mixColours(redSaturation, 1.0F, 0.5F);
+                    blackBrightness = Colouration.mixColours(redBrightness, blackBrightness, 0.75F);
                     extention = "red";
                 }
             } //else red and black wildtype colouration
@@ -1037,11 +1033,11 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             if (genesForText[120] == 2 || genesForText[121] == 2) {
                 //indus dilution
                 blackHue = redHue;
-                blackSaturation = mixColours(blackSaturation, redSaturation, 0.5F);
+                blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
                 redHue = redHue + 0.01F;
-                redSaturation = mixColours(redSaturation, 0.0F, 0.48F);
-                redBrightness = mixColours(redBrightness, 1.0F, 0.55F);
-                blackBrightness = mixColours(blackBrightness, redBrightness, 0.25F);
+                redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.48F);
+                redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.55F);
+                blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.25F);
             }
 
             if (genesForText[2] == 2 && genesForText[3] == 2) {
@@ -1050,28 +1046,28 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             } else if (genesForText[2] == 2 || genesForText[3] == 2) {
                 //typical bos taros dilution in murray grey and highland cattle
                 if (extention.equals("black")) {
-                    redHue = mixColours(redHue, 0.1F, 0.75F);
-                    redSaturation = mixColours(redSaturation, 0.0F, 0.1F);
-                    redBrightness = mixColours(redBrightness, 1.0F, 0.4F);
-                    blackHue = mixColours(blackHue, redHue, 0.5F);
-                    blackSaturation = mixColours(blackSaturation, redSaturation, 0.5F);
-                    blackBrightness = mixColours(blackBrightness, redBrightness, 0.45F);
+                    redHue = Colouration.mixColours(redHue, 0.1F, 0.75F);
+                    redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.1F);
+                    redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.4F);
+                    blackHue = Colouration.mixColours(blackHue, redHue, 0.5F);
+                    blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
+                    blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.45F);
                 } else if (!extention.equals("red")) {
-                    redSaturation = mixColours(redSaturation, 0.0F, 0.1F);
-                    redBrightness = mixColours(redBrightness, 1.0F, 0.4F);
+                    redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.1F);
+                    redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.4F);
                     blackHue = redHue;
-                    redHue = mixColours(redHue, 0.1F, 0.75F);
+                    redHue = Colouration.mixColours(redHue, 0.1F, 0.75F);
                     blackSaturation = redSaturation;
-                    blackBrightness = mixColours(blackBrightness, redBrightness, 0.25F);
+                    blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.25F);
                 } else {
 //                    blackHue = mixColours(blackHue, redHue, 0.5F);
 //                    blackSaturation = mixColours(blackSaturation, redSaturation, 0.5F);
-                    redHue = mixColours(redHue, 0.1F, 0.80F);
-                    redSaturation = mixColours(redSaturation, 0.0F, 0.1F);
-                    redBrightness = mixColours(redBrightness, 1.0F, 0.4F);
-                    blackHue = mixColours(blackHue, redHue, 0.6F);
-                    blackSaturation = mixColours(blackSaturation, redSaturation, 0.5F);
-                    blackBrightness = mixColours(blackBrightness, redBrightness, 0.4F);
+                    redHue = Colouration.mixColours(redHue, 0.1F, 0.80F);
+                    redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.1F);
+                    redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.4F);
+                    blackHue = Colouration.mixColours(blackHue, redHue, 0.6F);
+                    blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
+                    blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.4F);
                 }
             }
 
@@ -1096,19 +1092,19 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
 
             //changes cow melanin from HSB to RGB
-            int rgb = Color.HSBtoRGB(melanin[0], melanin[1], melanin[2]);
-            melanin[0] = rgb & 0xFF;
-            melanin[1] = (rgb >> 8) & 0xFF;
-            melanin[2] = (rgb >> 16) & 0xFF;
+            this.colouration.setMelaninColour(Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]));
+//            melanin[0] = rgb & 0xFF;
+//            melanin[1] = (rgb >> 8) & 0xFF;
+//            melanin[2] = (rgb >> 16) & 0xFF;
 
             //changes cow pheomelanin from HSB to RGB
-            rgb = Color.HSBtoRGB(pheomelanin[0], pheomelanin[1], pheomelanin[2]);
-            pheomelanin[0] = rgb & 0xFF;
-            pheomelanin[1] = (rgb >> 8) & 0xFF;
-            pheomelanin[2] = (rgb >> 16) & 0xFF;
-
-            this.colouration.setMelaninColour(melanin);
-            this.colouration.setPheomelaninColour(pheomelanin);
+            this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
+//            pheomelanin[0] = rgb & 0xFF;
+//            pheomelanin[1] = (rgb >> 8) & 0xFF;
+//            pheomelanin[2] = (rgb >> 16) & 0xFF;
+//
+//            this.colouration.setMelaninColourRGB(melanin);
+//            this.colouration.setPheomelaninColourRGB(pheomelanin);
         }
 
         return this.colouration;

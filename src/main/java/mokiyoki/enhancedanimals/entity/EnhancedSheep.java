@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
@@ -140,25 +141,18 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 //    private int sheepTimer;
 //    private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
-    /** Map from EnumDyeColor to RGB values for passage to GlStateManager.color() */
-    private static final Map<DyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(Arrays.stream(DyeColor.values()).collect(Collectors.toMap((DyeColor p_200204_0_) -> {
-        return p_200204_0_;
-    }, EnhancedSheep::createSheepDyeColor)));
+//    /** Map from EnumDyeColor to RGB values for passage to GlStateManager.color() */
+//    private static final Map<DyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(Arrays.stream(DyeColor.values()).collect(Collectors.toMap((DyeColor p_200204_0_) -> {
+//        return p_200204_0_;
+//    }, EnhancedSheep::createSheepDyeColor)));
 
-    private static float[] createSheepDyeColor(DyeColor enumDyeColour) {
-        if (enumDyeColour == DyeColor.WHITE) {
-//            return new float[]{0.9019608F, 0.9019608F, 0.9019608F};
-            return new float[]{1.0F, 1.0F, 1.0F};
-        } else {
-            float[] afloat = enumDyeColour.getColorComponentValues();
-            float f = 0.75F;
-            return new float[]{afloat[0] * f, afloat[1] * f, afloat[2] * f};
-        }
+    private static int createSheepDyeColor(DyeColor enumDyeColour) {
+        return enumDyeColour.getColorValue();
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static float[] getDyeRgb(DyeColor dyeColour) {
-        return DYE_TO_RGB.get(dyeColour);
+    public static int getDyeRgb(DyeColor dyeColour) {
+        return Colouration.getABGRFromARGB(dyeColour.getColorValue());
     }
 
     /**

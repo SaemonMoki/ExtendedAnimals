@@ -39,7 +39,17 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     protected static final IAttribute JUMP_STRENGTH = (new RangedAttribute((IAttribute)null, "ea.jumpStrength", 0.7D, 0.0D, 2.0D)).setDescription("Jump Strength").setShouldWatch(true);
 
     private static final String[] TEXTURES_SADDLE = new String[] {
-            "", "saddle_vanilla.png", "saddle_western.png", "saddle_english.png"
+            "", "d_saddle_vanilla.png", "d_saddle_western.png", "d_saddle_english.png"
+    };
+
+    private static final String[] TEXTURES_SADDLE_LEATHER = new String[] {
+            "", "saddle_vanilla_leather.png", "saddle_western_leather.png", "saddle_english_leather.png"
+              , "saddle_vanilla_clothseat.png", "saddle_western_clothseat.png", "saddle_english_clothseat.png"
+    };
+
+    private static final String[] TEXTURES_SADDLE_HARDWARE = new String[] {
+            "", "stirrups_gold.png", "stirrups_diamond.png", "stirrups_wood.png"
+              , "stirrups_western_gold.png", "stirrups_western_diamond.png", "stirrups_wood.png"
     };
 
     protected boolean isAnimalJumping;
@@ -382,5 +392,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         }
 
     }
+
+
 
 }

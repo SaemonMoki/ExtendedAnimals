@@ -600,11 +600,13 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
         } else if (!this.reload && getReloadTexture() || this.reload && !getReloadTexture()) {
-            this.enhancedAnimalTextures.removeAll(this.enhancedAnimalTextures);
+            this.texturesIndexes.clear();
+            this.enhancedAnimalTextures.clear();
             this.setTexturePaths();
             this.reload = (this.reload == true ? false : true);
         }
-        return this.enhancedAnimalTextures.stream().collect(Collectors.joining("/","enhanced_cow/",""));
+
+        return getCompiledTextures("enhanced_cow");
 
     }
 
@@ -924,48 +926,65 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             //TODO add shading under correct conditions
 
             this.enhancedAnimalTextures.add(COW_TEXTURES_BASE[0]);
+            this.texturesIndexes.add(String.valueOf(0));
             this.enhancedAnimalTextures.add(COW_TEXTURES_UDDER[skin]);
+            this.texturesIndexes.add(String.valueOf(skin));
             if (red != 0){
                 this.enhancedAnimalTextures.add(COW_TEXTURES_RED[red]);
+                this.texturesIndexes.add(String.valueOf(red));
             }
             if (black != 0){
                 this.enhancedAnimalTextures.add(COW_TEXTURES_BLACK[black]);
+                this.texturesIndexes.add(String.valueOf(black));
             }
             this.enhancedAnimalTextures.add(COW_TEXTURES_SKIN[skin]);
+            this.texturesIndexes.add(String.valueOf(skin));
             if (whiteface != 0){
                 this.enhancedAnimalTextures.add(COW_TEXTURES_WHITEFACE[whiteface]);
+                this.texturesIndexes.add(String.valueOf(whiteface));
                 if (whitefacehead >= 4) {
                     this.enhancedAnimalTextures.add(COW_TEXTURES_WHITEFACEHEAD[whitefacehead]);
+                    this.texturesIndexes.add(String.valueOf(whitefacehead));
                 }
             }
             if (coloursided != 0){
                 this.enhancedAnimalTextures.add(COW_TEXTURES_COLOURSIDED[coloursided]);
+                this.texturesIndexes.add(String.valueOf(coloursided));
             }
             if (belted != 0){
                 this.enhancedAnimalTextures.add(COW_TEXTURES_BELTED[belted]);
+                this.texturesIndexes.add(String.valueOf(belted));
             }
             if (roan != 0){
                 this.enhancedAnimalTextures.add(COW_TEXTURES_ROAN[roan]);
+                this.texturesIndexes.add(String.valueOf(roan));
             }
             if (speckled != 0){
                 this.enhancedAnimalTextures.add(COW_TEXTURES_SPECKLED[speckled]);
+                this.texturesIndexes.add(String.valueOf(speckled));
             }
             //TODO add hoof colour genetics
             this.enhancedAnimalTextures.add(COW_TEXTURES_HOOVES[hooves]);
+            this.texturesIndexes.add(String.valueOf(hooves));
             //TODO add eye colour genetics
             this.enhancedAnimalTextures.add(COW_TEXTURES_EYES[0]);
+            this.texturesIndexes.add(String.valueOf(0));
             //TODO add hoof colour genetics
             this.enhancedAnimalTextures.add(COW_TEXTURES_HORNS[horn]);
+            this.texturesIndexes.add(String.valueOf(horn));
             this.enhancedAnimalTextures.add(COW_TEXTURES_COAT[coat]);
+            this.texturesIndexes.add(String.valueOf(coat));
 //              testing textures
 //              this.enhancedAnimalTextures.add(COW_TEXTURES_TEST[1]);
 
             int blanket = 7;
                 this.enhancedAnimalTextures.add(COW_TEXTURES_BLANKET[blanket]);
+            this.texturesIndexes.add(String.valueOf(blanket));
 
             int saddle = 0;
             if (saddle != 0) {
                 this.enhancedAnimalTextures.add(COW_TEXTURES_SADDLE[saddle]);
+                this.texturesIndexes.add(String.valueOf(saddle));
             }
         }
     }

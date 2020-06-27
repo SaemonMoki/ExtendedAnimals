@@ -805,8 +805,8 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
         }
-        return this.enhancedAnimalTextures.stream().collect(Collectors.joining("/","enhanced_pig/",""));
 
+        return getCompiledTextures("enhanced_pig");
     }
 
     @Override
@@ -959,39 +959,53 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             }
 
             this.enhancedAnimalTextures.add(PIG_TEXTURES_SKINBASE[skin]);
+            this.texturesIndexes.add(String.valueOf(skin));
             if (spot == 1) {
                 this.enhancedAnimalTextures.add(PIG_TEXTURES_SKINMARKINGS_SPOTS[spot]);
+                this.texturesIndexes.add(String.valueOf(spot));
             }
             if (belt != 0) {
                 this.enhancedAnimalTextures.add(PIG_TEXTURES_SKINMARKINGS_BELTED[belt]);
+                this.texturesIndexes.add(String.valueOf(belt));
             }
             if (berk != 0) {
                 this.enhancedAnimalTextures.add(PIG_TEXTURES_SKINMARKINGS_BERKSHIRE[berk]);
+                this.texturesIndexes.add(String.valueOf(berk));
             }
             if (genesForText[36] != 1 && genesForText[37] != 1) {
             this.enhancedAnimalTextures.add("alpha_group_start");
                 this.enhancedAnimalTextures.add(PIG_TEXTURES_COATRED[red]);
+                this.texturesIndexes.add(String.valueOf(red));
                 if (black != 0) {
                     this.enhancedAnimalTextures.add(PIG_TEXTURES_COATBLACK[black]);
+                    this.texturesIndexes.add(String.valueOf(black));
                 }
                 if (spot != 0) {
                     this.enhancedAnimalTextures.add(PIG_TEXTURES_SPOT_SPOTS[spot]);
+                    this.texturesIndexes.add(String.valueOf(spot));
                 }
                 if (belt != 0) {
                     this.enhancedAnimalTextures.add(PIG_TEXTURES_SPOT_BELTED[belt]);
+                    this.texturesIndexes.add(String.valueOf(belt));
                 }
                 if (berk != 0) {
                     this.enhancedAnimalTextures.add(PIG_TEXTURES_SPOT_BERKSHIRE[berk]);
+                    this.texturesIndexes.add(String.valueOf(berk));
                 }
                 this.enhancedAnimalTextures.add(PIG_TEXTURES_COAT[coat]);
+                this.texturesIndexes.add(String.valueOf(coat));
             this.enhancedAnimalTextures.add("alpha_group_end");
             }
             this.enhancedAnimalTextures.add(PIG_TEXTURES_EYES[eyes]);
+            this.texturesIndexes.add(String.valueOf(eyes));
             this.enhancedAnimalTextures.add(PIG_TEXTURES_HOOVES[0]);
+            this.texturesIndexes.add(String.valueOf(0));
             if (tusks){
                 this.enhancedAnimalTextures.add(PIG_TEXTURES_TUSKS[1]);
+                this.texturesIndexes.add(String.valueOf(1));
             }
             this.enhancedAnimalTextures.add(PIG_TEXTURES_SADDLE[1]);
+            this.texturesIndexes.add(String.valueOf(1));
         }
     }
 

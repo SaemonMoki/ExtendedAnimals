@@ -613,10 +613,12 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             this.setTexturePaths();
         } else if (resetTexture && getAge() > 20000) {
             resetTexture = false;
+            this.texturesIndexes.clear();
+            this.enhancedAnimalTextures.clear();
             this.setTexturePaths();
         }
 
-        return this.enhancedAnimalTextures.stream().collect(Collectors.joining("/","enhanced_chicken/",""));
+        return getCompiledTextures("enhanced_chicken");
     }
 
     @Override
@@ -1959,24 +1961,33 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
 //            after finished genesForText
                 this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_GROUND[ground]);
+                this.texturesIndexes.add(String.valueOf(ground));
                 if (pattern <= 350) {
                     this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_PATTERN[pattern]);
+                    this.texturesIndexes.add(String.valueOf(pattern));
                 }
                 if (moorhead != 0) {
                     this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_MOORHEAD[moorhead]);
+                    this.texturesIndexes.add(String.valueOf(moorhead));
                 }
                 if (white != 0) {
                     this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_WHITE[white]);
+                    this.texturesIndexes.add(String.valueOf(white));
                 }
                 this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
+                this.texturesIndexes.add(String.valueOf(shanks));
                 if (face >= 1) {
                     this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_FACE[face]);
+                    this.texturesIndexes.add(String.valueOf(face));
                 }
                 if (ears >= 1) {
                     this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_EARS[ears]);
+                    this.texturesIndexes.add(String.valueOf(ears));
                 }
                 this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_COMB[comb]);
+                this.texturesIndexes.add(String.valueOf(comb));
                 this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_EYES[eyes]);
+                this.texturesIndexes.add(String.valueOf(eyes));
             }else{
                 int shanks = 4;
                 int comb = 2;
@@ -2141,18 +2152,25 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                 }
 
                 this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_CHICKBASE[downBase]);
+                this.texturesIndexes.add(String.valueOf(downBase));
                 if (red != 0) {
                     this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_CHICKRED[red]);
+                    this.texturesIndexes.add(String.valueOf(red));
                 }
                 if (black != 0) {
                     this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_CHICKBLACK[black]);
+                    this.texturesIndexes.add(String.valueOf(black));
                 }
                 if (white != 0) {
                     this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_CHICKWHITE[white]);
+                    this.texturesIndexes.add(String.valueOf(white));
                 }
                 this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
+                this.texturesIndexes.add(String.valueOf(shanks));
                 this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_COMB[comb]);
+                this.texturesIndexes.add(String.valueOf(comb));
                 this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_EYES[eyes]);
+                this.texturesIndexes.add(String.valueOf(eyes));
             }
         }
     }

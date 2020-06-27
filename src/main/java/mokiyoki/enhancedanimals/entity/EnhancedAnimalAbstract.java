@@ -105,6 +105,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     //Texture
     protected final List<String> enhancedAnimalTextures = new ArrayList<>();
+    protected final List<String> texturesIndexes = new ArrayList<>();
     protected final List<String> enhancedAnimalAlphaTextures = new ArrayList<>();
     protected final Map<Equipment, List<String>> equipmentTextures = new HashMap<>();
     public Colouration colouration = new Colouration();
@@ -1114,7 +1115,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected String getCompiledTextures(String eanimal) {
-        String compiledTextures = this.enhancedAnimalTextures.stream().collect(Collectors.joining("/",eanimal+"/",""));
+        String compiledTextures = this.texturesIndexes.stream().collect(Collectors.joining("/",eanimal+"/",""));
         compiledTextures = compiledTextures + this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.joining("/"));
         return compiledTextures;
     }

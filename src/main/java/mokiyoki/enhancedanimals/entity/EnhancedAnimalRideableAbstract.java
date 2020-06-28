@@ -186,9 +186,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     @Override
     protected void updateInventorySlots() {
-        if (!this.world.isRemote) {
-            this.setSaddled(!this.animalInventory.getStackInSlot(1).isEmpty() && this.canHaveSaddle());
-        }
+        this.setSaddled(!this.animalInventory.getStackInSlot(1).isEmpty() && this.canHaveSaddle());
         super.updateInventorySlots();
     }
 

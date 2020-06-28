@@ -198,7 +198,9 @@ public class Colouration {
         int colour = 0;
         if (stack.getItem() instanceof CustomizableAnimalEquipment) {
             CompoundNBT compoundnbt = stack.getChildTag("display");
-            colour = compoundnbt.getInt("color");
+            if (compoundnbt != null && compoundnbt.contains("color", 99)) {
+                colour = compoundnbt.getInt("color");
+            }
         }
 
         colour = getABGRFromARGB(colour);

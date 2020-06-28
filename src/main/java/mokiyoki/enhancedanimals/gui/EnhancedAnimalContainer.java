@@ -3,6 +3,9 @@ package mokiyoki.enhancedanimals.gui;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.CustomizableBridle;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
+import mokiyoki.enhancedanimals.items.CustomizableSaddle;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -36,7 +39,7 @@ public class EnhancedAnimalContainer extends Container {
             this.addSlot(new Slot(retrievedInventory, 1, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
-                    return stack.getItem() == Items.SADDLE || stack.getItem() == ModItems.SADDLE_LEATHER || stack.getItem() == ModItems.SADDLE_CLOTH;
+                    return stack.getItem() == Items.SADDLE || stack.getItem() instanceof CustomizableSaddle;
                 }
 
                 public int getSlotStackLimit() {
@@ -51,7 +54,7 @@ public class EnhancedAnimalContainer extends Container {
             this.addSlot(new Slot(retrievedInventory, 3, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
-                    return stack.getItem() == ModItems.BRIDLE_BASIC_LEATHER || stack.getItem() == ModItems.BRIDLE_BASIC_CLOTH;
+                    return stack.getItem() instanceof CustomizableBridle;
                 }
 
                 public int getSlotStackLimit() {
@@ -123,7 +126,7 @@ public class EnhancedAnimalContainer extends Container {
             this.addSlot(new Slot(retrievedInventory, 5, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
-                    return stack.getItem() == Items.SADDLE;
+                    return stack.getItem() instanceof CustomizableCollar;
                 }
 
                 public int getSlotStackLimit() {

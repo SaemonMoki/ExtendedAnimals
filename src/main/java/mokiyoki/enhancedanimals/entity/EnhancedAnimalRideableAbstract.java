@@ -1,5 +1,9 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.entity.util.Equipment;
+import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.CustomizableSaddle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IJumpingMount;
@@ -31,25 +35,28 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChestedAbstract implements IJumpingMount {
 
     private static final DataParameter<Byte> STATUS = EntityDataManager.createKey(EnhancedAnimalRideableAbstract.class, DataSerializers.BYTE);
     protected static final IAttribute JUMP_STRENGTH = (new RangedAttribute((IAttribute)null, "ea.jumpStrength", 0.7D, 0.0D, 2.0D)).setDescription("Jump Strength").setShouldWatch(true);
+    private static final DataParameter<Boolean> HAS_SADDLE = EntityDataManager.createKey(EnhancedAnimalRideableAbstract.class, DataSerializers.BOOLEAN);
 
     private static final String[] TEXTURES_SADDLE = new String[] {
-            "", "d_saddle_vanilla.png", "d_saddle_western.png", "d_saddle_english.png"
+            "d_saddle_vanilla.png", "d_saddle_western.png", "d_saddle_english.png"
     };
 
     private static final String[] TEXTURES_SADDLE_LEATHER = new String[] {
-            "", "saddle_vanilla_leather.png", "saddle_western_leather.png", "saddle_english_leather.png"
-              , "saddle_vanilla_clothseat.png", "saddle_western_clothseat.png", "saddle_english_clothseat.png"
+            "saddle_vanilla_leather.png", "saddle_western_leather.png", "saddle_english_leather.png",
+            "saddle_vanilla_clothseat.png", "saddle_western_clothseat.png", "saddle_english_clothseat.png"
     };
 
     private static final String[] TEXTURES_SADDLE_HARDWARE = new String[] {
-            "", "stirrups_gold.png", "stirrups_diamond.png", "stirrups_wood.png"
-              , "stirrups_western_gold.png", "stirrups_western_diamond.png", "stirrups_wood.png"
+            "stirrups_gold.png", "stirrups_diamond.png", "stirrups_wood.png",
+            "stirrups_western_gold.png", "stirrups_western_diamond.png", "stirrups_wood.png"
     };
 
     protected boolean isAnimalJumping;
@@ -69,6 +76,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     protected void registerData() {
         super.registerData();
         this.dataManager.register(STATUS, (byte)0);
+        this.dataManager.register(HAS_SADDLE, false);
     }
 
     protected void registerAttributes() {
@@ -161,11 +169,18 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     }
 
     public void setSaddled(boolean saddled) {
-        this.setRideableWatchableBoolean(4, saddled);
-        if (saddled && !this.enhancedAnimalTextures.contains(TEXTURES_SADDLE[2])) {
-            this.enhancedAnimalTextures.add(TEXTURES_SADDLE[2]);
-        } else if (!saddled && this.enhancedAnimalTextures.contains(TEXTURES_SADDLE[2])) {
-            this.enhancedAnimalTextures.remove(TEXTURES_SADDLE[2]);
+        this.dataManager.set(HAS_SADDLE, saddled);
+        List<String> previousSaddleTextures = equipmentTextures.get(Equipment.SADDLE);
+        List<String> newSaddleTextures = getSaddleTextures();
+
+        if(saddled) {
+            if(previousSaddleTextures == null || !previousSaddleTextures.containsAll(newSaddleTextures)){
+                equipmentTextures.put(Equipment.SADDLE, newSaddleTextures);
+            }
+        } else {
+            if(previousSaddleTextures != null){
+                equipmentTextures.remove(Equipment.SADDLE);
+            }
         }
     }
 
@@ -223,7 +238,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             return true;
         }
 
-        if (item == Items.SADDLE){
+        if (item == Items.SADDLE || item instanceof CustomizableSaddle){
             return this.saddleAnimal(itemStack, entityPlayer, this);
         }
 
@@ -393,6 +408,120 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     }
 
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public Colouration getRgb() {
+        ItemStack saddle = this.getEnhancedInventory().getStackInSlot(1);
+//        ItemStack armour = this.getEnhancedInventory().getStackInSlot(2);
 
+        if (saddle != ItemStack.EMPTY) {
+            this.colouration.setSaddleColour(Colouration.getEquipmentColor(saddle));
+        }
+
+//        if (armour != ItemStack.EMPTY) {
+//            this.colouration.setHarnessColour(Colouration.getEquipmentColor(armour));
+//        }
+
+        return this.colouration;
+    }
+
+    private List<String> getSaddleTextures() {
+        List<String> saddleTextures = new ArrayList<>();
+
+        if (this.getEnhancedInventory() != null) {
+            ItemStack saddleSlot = this.animalInventory.getStackInSlot(1);
+            if (saddleSlot != ItemStack.EMPTY) {
+                Item saddle = saddleSlot.getItem();
+                if (saddle == ModItems.SADDLE_CLOTH) {
+                    saddleTextures.add(TEXTURES_SADDLE[0]);
+                } else if (saddle == ModItems.SADDLE_CLOTH_G) {
+                    setSaddledTextures(saddleTextures, 0, -1, 0);
+                } else if (saddle == ModItems.SADDLE_CLOTH_D) {
+                    setSaddledTextures(saddleTextures, 0, -1, 1);
+                } else if (saddle == ModItems.SADDLE_CLOTH_W) {
+                    setSaddledTextures(saddleTextures, 0, -1, 2);
+                } else if (saddle == ModItems.SADDLE_LEATHER) {
+                    setSaddledTextures(saddleTextures,0,0, -1 );
+                } else if (saddle == ModItems.SADDLE_LEATHER_G) {
+                    setSaddledTextures(saddleTextures,0,0, 0 );
+                } else if (saddle == ModItems.SADDLE_LEATHER_D) {
+                    setSaddledTextures(saddleTextures,0,0, 1 );
+                } else if (saddle == ModItems.SADDLE_LEATHER_W) {
+                    setSaddledTextures(saddleTextures,0,0, 2 );
+                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT) {
+                    setSaddledTextures(saddleTextures,0,3, -1 );
+                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT_G) {
+                    setSaddledTextures(saddleTextures,0,3, 0 );
+                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT_D) {
+                    setSaddledTextures(saddleTextures,0,3, 1 );
+                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT_W) {
+                    setSaddledTextures(saddleTextures,0,3, 2 );
+                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH) {
+                    saddleTextures.add(TEXTURES_SADDLE[1]);
+                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH_G) {
+                    setSaddledTextures(saddleTextures, 1, -1, 3);
+                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH_D) {
+                    setSaddledTextures(saddleTextures, 1, -1, 4);
+                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH_W) {
+                    setSaddledTextures(saddleTextures, 1, -1, 5);
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER) {
+                    setSaddledTextures(saddleTextures,1,1, -1 );
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER_G) {
+                    setSaddledTextures(saddleTextures,1,1, 3 );
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER_D) {
+                    setSaddledTextures(saddleTextures,1,1, 4 );
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER_W) {
+                    setSaddledTextures(saddleTextures,1,1, 5 );
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT) {
+                    setSaddledTextures(saddleTextures,1,4, -1 );
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_G) {
+                    setSaddledTextures(saddleTextures,1,4, 3 );
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_D) {
+                    setSaddledTextures(saddleTextures,1,4, 4 );
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_W) {
+                    setSaddledTextures(saddleTextures,1,4, 5 );
+                }if (saddle == ModItems.SADDLE_ENGLISH_CLOTH) {
+                    saddleTextures.add(TEXTURES_SADDLE[2]);
+                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_G) {
+                    setSaddledTextures(saddleTextures, 2, -1, 0);
+                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_D) {
+                    setSaddledTextures(saddleTextures, 2, -1, 1);
+                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_W) {
+                    setSaddledTextures(saddleTextures, 2, -1, 2);
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER) {
+                    setSaddledTextures(saddleTextures,2,2, -1 );
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_G) {
+                    setSaddledTextures(saddleTextures,2,2, 0 );
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_D) {
+                    setSaddledTextures(saddleTextures,2,2, 1 );
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_W) {
+                    setSaddledTextures(saddleTextures,2,2, 2 );
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT) {
+                    setSaddledTextures(saddleTextures,2,5, -1 );
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_G) {
+                    setSaddledTextures(saddleTextures,2,5, 0 );
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_D) {
+                    setSaddledTextures(saddleTextures,2,5, 1 );
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_W) {
+                    setSaddledTextures(saddleTextures,2,5, 2 );
+                }
+
+            }
+        }
+
+        return saddleTextures;
+    }
+
+    private void setSaddledTextures(List<String> saddleTextures, int saddle, int material, int hardware) {
+        if (saddle != -1) {
+            saddleTextures.add(TEXTURES_SADDLE[saddle]);
+        }
+        if (material != -1) {
+            saddleTextures.add(TEXTURES_SADDLE_LEATHER[material]);
+        }
+        if (hardware != -1) {
+            saddleTextures.add(TEXTURES_SADDLE_HARDWARE[hardware]);
+        }
+    }
 
 }

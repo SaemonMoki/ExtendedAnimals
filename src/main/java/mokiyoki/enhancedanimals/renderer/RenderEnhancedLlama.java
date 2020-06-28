@@ -34,7 +34,7 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
      */
     public ResourceLocation getEntityTexture(EnhancedLlama entity) {
         String s = entity.getLlamaTexture();
-        Colouration colourRGB = entity.colouration;
+        Colouration colourRGB = entity.getRgb();
 
         if (s == null || s.isEmpty() || colourRGB == null) {
             return ERROR_TEXTURE_LOCATION;
@@ -53,7 +53,7 @@ public class RenderEnhancedLlama extends MobRenderer<EnhancedLlama, ModelEnhance
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_LLAMA_TEXTURE_LOCATION, textures, null, entity.colouration));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_LLAMA_TEXTURE_LOCATION, textures, null, colourRGB));
                 LAYERED_LOCATION_CACHE.put(s, resourcelocation);
             } catch (IllegalStateException e) {
                 return ERROR_TEXTURE_LOCATION;

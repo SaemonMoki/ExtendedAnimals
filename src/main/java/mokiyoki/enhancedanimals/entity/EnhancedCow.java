@@ -1109,21 +1109,9 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
                 }
             }
 
-
-            //changes cow melanin from HSB to RGB
             this.colouration.setMelaninColour(Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]));
-//            melanin[0] = rgb & 0xFF;
-//            melanin[1] = (rgb >> 8) & 0xFF;
-//            melanin[2] = (rgb >> 16) & 0xFF;
-
-            //changes cow pheomelanin from HSB to RGB
             this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
-//            pheomelanin[0] = rgb & 0xFF;
-//            pheomelanin[1] = (rgb >> 8) & 0xFF;
-//            pheomelanin[2] = (rgb >> 16) & 0xFF;
-//
-//            this.colouration.setMelaninColourRGB(melanin);
-//            this.colouration.setPheomelaninColourRGB(pheomelanin);
+
         }
 
         return this.colouration;

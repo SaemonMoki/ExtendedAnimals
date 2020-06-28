@@ -748,16 +748,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         if (compound.contains("Chest", 10)) {
             ItemStack itemstack = ItemStack.read(compound.getCompound("Chest"));
-            if (itemstack.getItem() == Items.CHEST) {
-                this.animalInventory.setInventorySlotContents(0, itemstack);
-            }
+            this.animalInventory.setInventorySlotContents(0, itemstack);
         }
 
         if (compound.contains("Saddle", 10)) {
             ItemStack itemstack = ItemStack.read(compound.getCompound("Saddle"));
-            if (itemstack.getItem() == Items.SADDLE) {
-                this.animalInventory.setInventorySlotContents(1, itemstack);
-            }
+            this.animalInventory.setInventorySlotContents(1, itemstack);
         }
 
         if (compound.contains("Armour", 10)) {

@@ -57,6 +57,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         super.registerData();
         this.dataManager.register(HAS_CHEST, false);
         this.dataManager.register(HAS_BLANKET, false);
+        this.dataManager.register(HAS_BRIDLE, false);
     }
 
     @Override
@@ -165,7 +166,6 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     @Override
     protected void updateInventorySlots() {
         super.updateInventorySlots();
-
     }
 
     private String getBlanketString() {
@@ -233,7 +233,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void getRgb() {
+    public Colouration getRgb() {
         ItemStack bridle = this.getEnhancedInventory().getStackInSlot(3);
 //        ItemStack harness = this.getEnhancedInventory().getStackInSlot(6);
 
@@ -244,7 +244,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 //        if (harness != ItemStack.EMPTY) {
 //            this.colouration.setHarnessColour(Colouration.getEquipmentColor(harness));
 //        }
-
+        return this.colouration;
     }
 
     public void writeAdditional(CompoundNBT compound) {
@@ -257,6 +257,6 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
         this.setChested(compound.getBoolean("Chested"));
-        this.setBridle(compound.getBoolean("Chested"));
+        this.setBridle(compound.getBoolean("Bridled"));
     }
 }

@@ -14,6 +14,7 @@ import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
 import mokiyoki.enhancedanimals.config.EanimodConfig;
 import mokiyoki.enhancedanimals.config.EanimodConfigHelper;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.proxy.ClientProxy;
 import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.proxy.ServerProxy;
@@ -23,6 +24,7 @@ import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -34,10 +36,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Path;
+
+import static mokiyoki.enhancedanimals.util.Reference.MODID;
 
 /**
  * Created by moki on 24/08/2018.
@@ -48,7 +54,16 @@ public class EnhancedAnimals {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final ItemGroup GENETICS_ANIMALS_GROUP = new ItemGroup(Reference.MODID) {
+    private static final String PROTOCOL_VERSION = "1.0";
+
+    public static SimpleChannel channel = NetworkRegistry.ChannelBuilder
+            .named(new ResourceLocation(MODID, "eanetwork"))
+            .clientAcceptedVersions(PROTOCOL_VERSION::equals)
+            .serverAcceptedVersions(PROTOCOL_VERSION::equals)
+            .networkProtocolVersion(() -> PROTOCOL_VERSION)
+            .simpleChannel();
+
+    public static final ItemGroup GENETICS_ANIMALS_GROUP = new ItemGroup(MODID) {
         @Override
         public ItemStack createIcon() {
             return new ItemStack(ModItems.Egg_Blue);
@@ -94,6 +109,9 @@ public class EnhancedAnimals {
         CapabilityManager.INSTANCE.register(IPostCapability.class, new PostCapabilityStorage(), PostCapabilityProvider::new);
         CapabilityManager.INSTANCE.register(IHayCapability.class, new HayCapabilityStorage(), HayCapabilityProvider::new);
         CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapabilityProvider::new);
+
+        int messageNumber = 0;
+        channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumer(EAEquipmentPacket::processPacket).add();
 
 //        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
 //        LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());

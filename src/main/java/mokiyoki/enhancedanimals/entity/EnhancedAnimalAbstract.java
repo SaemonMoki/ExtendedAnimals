@@ -1,11 +1,14 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
+import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
+import mokiyoki.enhancedanimals.network.EAPacketHandler;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
@@ -22,7 +25,6 @@ import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.AirItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -35,15 +37,18 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
@@ -54,7 +59,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public abstract class EnhancedAnimalAbstract extends AnimalEntity implements EnhancedAnimal, IInventoryChangedListener {
 
@@ -66,6 +70,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     private static final DataParameter<String> ENTITY_STATUS = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.VARINT);
+
+    private final NonNullList<ItemStack> equipmentArray = NonNullList.withSize(7, ItemStack.EMPTY);
 
     private Ingredient TEMPTATION_ITEMS;
     private Ingredient BREED_ITEMS;
@@ -380,6 +386,29 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             return false;
         } else {
             return true;
+        }
+    }
+
+    /*
+    Tick
+    */
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.world.isRemote) {
+            for(int invSlot = 0; invSlot < 7; invSlot++) {
+                ItemStack inventoryItemStack = this.animalInventory.getStackInSlot(invSlot);
+                ItemStack equipmentItemStack = equipmentArray.get(invSlot);
+
+                if (!ItemStack.areItemStacksEqual(inventoryItemStack, equipmentItemStack)) {
+                    if (!inventoryItemStack.equals(equipmentItemStack, true)) {
+                        EAEquipmentPacket equipmentPacket = new EAEquipmentPacket(this.getEntityId(), invSlot, inventoryItemStack);
+                        EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), equipmentPacket);
+                    }
+                    this.equipmentArray.set(invSlot, inventoryItemStack.copy());
+                }
+            }
         }
     }
 
@@ -921,7 +950,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
-    private net.minecraftforge.common.util.LazyOptional<?> itemHandler = null;
+    protected net.minecraftforge.common.util.LazyOptional<?> itemHandler = null;
 
     @Override
     public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {

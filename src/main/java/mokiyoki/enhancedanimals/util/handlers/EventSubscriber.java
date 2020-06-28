@@ -1,9 +1,12 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
+import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.init.ModBlocks;
+import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.HayBlock;
@@ -20,9 +23,12 @@ import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.entity.passive.horse.TraderLlamaEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.util.math.BlockPos;
@@ -31,9 +37,11 @@ import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 
@@ -90,7 +98,22 @@ public class EventSubscriber {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-        public void livingspawnEvent(LivingSpawnEvent.SpecialSpawn event) {
+    public void onStartEntityTracking(PlayerEvent.StartTracking event) {
+        Entity targetEntity = event.getTarget();
+        if (targetEntity instanceof EnhancedAnimalAbstract) {
+            PlayerEntity trackingPlayer = event.getPlayer();
+
+            for(int invSlot = 0; invSlot < 7; invSlot++) {
+                ItemStack inventoryItemStack = ((EnhancedAnimalAbstract)targetEntity).getEnhancedInventory().getStackInSlot(invSlot);
+
+                EAEquipmentPacket equipmentPacket = new EAEquipmentPacket(targetEntity.getEntityId(), invSlot, inventoryItemStack);
+                EnhancedAnimals.channel.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) trackingPlayer), equipmentPacket);
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void livingspawnEvent(LivingSpawnEvent.SpecialSpawn event) {
         Entity entity = event.getEntity();
         if (entity instanceof WanderingTraderEntity) {
             if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {

@@ -4,6 +4,7 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableSaddle;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IJumpingMount;
@@ -255,6 +256,22 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         if (this.ticksExisted > 20 && !flag && this.dataManager.get(HAS_SADDLE)) {
             this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
         }
+    }
+
+    @Override
+    public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
+        int i = inventorySlot - 400;
+        if (i >= 0 && i < 2 && i < this.animalInventory.getSizeInventory()) {
+            if (i != 1 && itemStackIn.getItem() instanceof CustomizableSaddle) {
+                this.animalInventory.setInventorySlotContents(i, itemStackIn);
+                this.updateInventorySlots();
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return super.replaceItemInInventory(inventorySlot, itemStackIn);
     }
 
     @Nullable

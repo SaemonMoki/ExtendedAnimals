@@ -77,8 +77,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
     public ModelEnhancedPig() {
 
-        this.textureWidth = 160;
-        this.textureHeight = 80;
+        this.textureWidth = 256;
+        this.textureHeight = 256;
 
         this.pig = new EnhancedRendererModelNew(this, 49, 0);
         this.pig.setRotationPoint(0.0F, 0.0F, 0.0F);

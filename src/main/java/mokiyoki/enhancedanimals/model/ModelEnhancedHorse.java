@@ -65,8 +65,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     private Integer currentHorse = null;
 
     public ModelEnhancedHorse() {
-        this.textureWidth = 248;
-        this.textureHeight = 124;
+        this.textureWidth = 256;
+        this.textureHeight = 256;
 
         this.head = new ModelRenderer(this, 0, 35);
         this.head.addBox(-3.5F, -0.5F, -6.51F, 7, 7, 7, -0.5F);

@@ -107,8 +107,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
     public ModelEnhancedLlama(float scale)
     {
-        this.textureWidth = 192;
-        this.textureHeight = 96;
+        this.textureWidth = 256;
+        this.textureHeight = 256;
 
         float xMove = -6.0F;
         float headAdjust = -2.0F;

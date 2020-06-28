@@ -200,6 +200,8 @@ public class Colouration {
             CompoundNBT compoundnbt = stack.getChildTag("display");
             if (compoundnbt != null && compoundnbt.contains("color", 99)) {
                 colour = compoundnbt.getInt("color");
+            } else {
+                colour = ((CustomizableAnimalEquipment) stack.getItem()).getDefaultColour();
             }
         }
 

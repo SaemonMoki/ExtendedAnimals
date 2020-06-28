@@ -3,6 +3,6 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "eanimod:items/saddle_withpomel",
-    "layer1": "eanimod:items/saddle_stirup_diamond"
+    "layer1": "eanimod:items/saddle_western_stirup_diamond"
   }
 }

@@ -55,8 +55,8 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     };
 
     private static final String[] TEXTURES_SADDLE_HARDWARE = new String[] {
-            "stirrups_gold.png", "stirrups_diamond.png", "stirrups_wood.png",
-            "stirrups_western_gold.png", "stirrups_western_diamond.png", "stirrups_wood.png"
+            "stirrups_iron.png", "stirrups_gold.png", "stirrups_diamond.png", "stirrups_wood.png",
+            "stirrups_western_iron.png","stirrups_western_gold.png", "stirrups_western_diamond.png", "stirrups_western_wood.png"
     };
 
     protected boolean isAnimalJumping;
@@ -95,7 +95,6 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         } else {
             this.dataManager.set(STATUS, (byte)(b0 & ~byteNumber));
         }
-
     }
 
     public boolean isAnimalJumping() {
@@ -113,7 +112,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     @Override
     public void setJumpPower(int jumpPowerIn) {
-        if (this.hasSaddle()) {
+        if (this.dataManager.get(HAS_SADDLE)) {
             if (jumpPowerIn < 0) {
                 jumpPowerIn = 0;
             } else {
@@ -130,7 +129,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     }
 
     public boolean canJump() {
-        return this.hasSaddle();
+        return this.dataManager.get(HAS_SADDLE);
     }
 
     public void handleStartJump(int p_184775_1_) {
@@ -161,11 +160,6 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     @Override
     public boolean canHaveSaddle() {
         return true;
-    }
-
-    //Byte 4 is Saddle
-    public boolean hasSaddle() {
-        return this.getRideableWatchableBoolean(4);
     }
 
     public void setSaddled(boolean saddled) {
@@ -245,7 +239,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     public boolean saddleAnimal(ItemStack itemStack, PlayerEntity playerIn, LivingEntity target) {
         EnhancedAnimalRideableAbstract enhancedAnimal = (EnhancedAnimalRideableAbstract) target;
-        if (enhancedAnimal.isAlive() && !enhancedAnimal.hasSaddle() && !enhancedAnimal.isChild()) {
+        if (enhancedAnimal.isAlive() && !enhancedAnimal.dataManager.get(HAS_SADDLE) && !enhancedAnimal.isChild()) {
             this.animalInventory.setInventorySlotContents(1, itemStack);
             this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
             itemStack.shrink(1);
@@ -256,12 +250,11 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     }
 
     public void onInventoryChanged(IInventory invBasic) {
-        boolean flag = this.hasSaddle();
+        boolean flag = this.dataManager.get(HAS_SADDLE);
         this.updateInventorySlots();
-        if (this.ticksExisted > 20 && !flag && this.hasSaddle()) {
+        if (this.ticksExisted > 20 && !flag && this.dataManager.get(HAS_SADDLE)) {
             this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
         }
-
     }
 
     @Nullable
@@ -286,7 +279,6 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                 ((LivingEntity)passenger).renderYawOffset = this.renderYawOffset;
             }
         }
-
     }
 
     protected void mountTo(PlayerEntity player) {
@@ -305,7 +297,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     public void travel(Vec3d p_213352_1_) {
         if (this.isAlive()) {
-            if (this.isBeingRidden() && this.canBeSteered() && this.hasSaddle()) {
+            if (this.isBeingRidden() && this.canBeSteered() && this.dataManager.get(HAS_SADDLE)) {
                 LivingEntity livingentity = (LivingEntity)this.getControllingPassenger();
                 this.rotationYaw = livingentity.rotationYaw;
                 this.prevRotationYaw = this.rotationYaw;
@@ -403,7 +395,6 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             double d2 = this.rand.nextGaussian() * 0.02D;
             this.world.addParticle(iparticledata, this.getPosXRandom(1.0D), this.getPosYRandom() + 0.5D, this.getPosZRandom(1.0D), d0, d1, d2);
         }
-
     }
 
     @Override
@@ -431,77 +422,77 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             if (saddleSlot != ItemStack.EMPTY) {
                 Item saddle = saddleSlot.getItem();
                 if (saddle == ModItems.SADDLE_CLOTH) {
-                    saddleTextures.add(TEXTURES_SADDLE[0]);
-                } else if (saddle == ModItems.SADDLE_CLOTH_G) {
                     setSaddledTextures(saddleTextures, 0, -1, 0);
-                } else if (saddle == ModItems.SADDLE_CLOTH_D) {
+                } else if (saddle == ModItems.SADDLE_CLOTH_G) {
                     setSaddledTextures(saddleTextures, 0, -1, 1);
-                } else if (saddle == ModItems.SADDLE_CLOTH_W) {
+                } else if (saddle == ModItems.SADDLE_CLOTH_D) {
                     setSaddledTextures(saddleTextures, 0, -1, 2);
+                } else if (saddle == ModItems.SADDLE_CLOTH_W) {
+                    setSaddledTextures(saddleTextures, 0, -1, 3);
                 } else if (saddle == ModItems.SADDLE_LEATHER) {
-                    setSaddledTextures(saddleTextures,0,0, -1 );
-                } else if (saddle == ModItems.SADDLE_LEATHER_G) {
                     setSaddledTextures(saddleTextures,0,0, 0 );
-                } else if (saddle == ModItems.SADDLE_LEATHER_D) {
+                } else if (saddle == ModItems.SADDLE_LEATHER_G) {
                     setSaddledTextures(saddleTextures,0,0, 1 );
-                } else if (saddle == ModItems.SADDLE_LEATHER_W) {
+                } else if (saddle == ModItems.SADDLE_LEATHER_D) {
                     setSaddledTextures(saddleTextures,0,0, 2 );
+                } else if (saddle == ModItems.SADDLE_LEATHER_W) {
+                    setSaddledTextures(saddleTextures,0,0, 3 );
                 } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT) {
-                    setSaddledTextures(saddleTextures,0,3, -1 );
-                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT_G) {
                     setSaddledTextures(saddleTextures,0,3, 0 );
-                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT_D) {
+                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT_G) {
                     setSaddledTextures(saddleTextures,0,3, 1 );
-                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT_W) {
+                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT_D) {
                     setSaddledTextures(saddleTextures,0,3, 2 );
+                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT_W) {
+                    setSaddledTextures(saddleTextures,0,3, 3 );
                 } else if (saddle == ModItems.SADDLE_POMEL_CLOTH) {
-                    saddleTextures.add(TEXTURES_SADDLE[1]);
-                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH_G) {
-                    setSaddledTextures(saddleTextures, 1, -1, 3);
-                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH_D) {
                     setSaddledTextures(saddleTextures, 1, -1, 4);
-                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH_W) {
+                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH_G) {
                     setSaddledTextures(saddleTextures, 1, -1, 5);
+                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH_D) {
+                    setSaddledTextures(saddleTextures, 1, -1, 6);
+                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH_W) {
+                    setSaddledTextures(saddleTextures, 1, -1, 7);
                 } else if (saddle == ModItems.SADDLE_POMEL_LEATHER) {
-                    setSaddledTextures(saddleTextures,1,1, -1 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER_G) {
-                    setSaddledTextures(saddleTextures,1,1, 3 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER_D) {
                     setSaddledTextures(saddleTextures,1,1, 4 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER_W) {
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER_G) {
                     setSaddledTextures(saddleTextures,1,1, 5 );
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER_D) {
+                    setSaddledTextures(saddleTextures,1,1, 6 );
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER_W) {
+                    setSaddledTextures(saddleTextures,1,1, 7 );
                 } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT) {
-                    setSaddledTextures(saddleTextures,1,4, -1 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_G) {
-                    setSaddledTextures(saddleTextures,1,4, 3 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_D) {
                     setSaddledTextures(saddleTextures,1,4, 4 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_W) {
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_G) {
                     setSaddledTextures(saddleTextures,1,4, 5 );
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_D) {
+                    setSaddledTextures(saddleTextures,1,4, 6 );
+                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_W) {
+                    setSaddledTextures(saddleTextures,1,4, 7 );
                 }if (saddle == ModItems.SADDLE_ENGLISH_CLOTH) {
-                    saddleTextures.add(TEXTURES_SADDLE[2]);
-                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_G) {
                     setSaddledTextures(saddleTextures, 2, -1, 0);
-                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_D) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_G) {
                     setSaddledTextures(saddleTextures, 2, -1, 1);
-                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_W) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_D) {
                     setSaddledTextures(saddleTextures, 2, -1, 2);
+                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_W) {
+                    setSaddledTextures(saddleTextures, 2, -1, 3);
                 } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER) {
-                    setSaddledTextures(saddleTextures,2,2, -1 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_G) {
                     setSaddledTextures(saddleTextures,2,2, 0 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_D) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_G) {
                     setSaddledTextures(saddleTextures,2,2, 1 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_W) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_D) {
                     setSaddledTextures(saddleTextures,2,2, 2 );
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_W) {
+                    setSaddledTextures(saddleTextures,2,2, 3 );
                 } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT) {
-                    setSaddledTextures(saddleTextures,2,5, -1 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_G) {
                     setSaddledTextures(saddleTextures,2,5, 0 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_D) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_G) {
                     setSaddledTextures(saddleTextures,2,5, 1 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_W) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_D) {
                     setSaddledTextures(saddleTextures,2,5, 2 );
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_W) {
+                    setSaddledTextures(saddleTextures,2,5, 3 );
                 }
 
             }

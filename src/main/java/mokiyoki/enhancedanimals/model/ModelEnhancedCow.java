@@ -122,8 +122,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     public ModelEnhancedCow() {
 
-        this.textureWidth = 160;
-        this.textureHeight = 80;
+        this.textureWidth = 256;
+        this.textureHeight = 256;
 
         this.head = new EnhancedRendererModelNew(this, 0, 33);
         this.head.addBox(-4.0F, 0.0F, -7.0F, 8, 7, 6, 0.0F);
@@ -342,7 +342,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.tail1.setRotationPoint(0.0F, 4.0F, 0.0F);
 
         this.tail2 = new EnhancedRendererModelNew(this, 10,0);
-        this.tail2.addBox(-0.5F, 0.0F, 0.0F, 1, 3, 1);
+        this.tail2.addBox(-0.5F, 0.0F, 0.0F, 1, 3, 1, -0.01F);
         this.tail2.setRotationPoint(0.0F, 3.0F, 0.0F);
 
         this.tailBrush = new EnhancedRendererModelNew(this, 14,0);
@@ -547,7 +547,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         //blanket deco
         this.head.addChild(this.headTassles);
-
     }
 
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {

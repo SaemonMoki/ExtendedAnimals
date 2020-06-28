@@ -208,10 +208,10 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return this.dataManager.get(COAT_LENGTH);
     }
 
-    @Override
-    public boolean canBeSteered() {
-        return (this.isTame() && this.hasSaddle());
-    }
+//    @Override
+//    public boolean canBeSteered() {
+//        return (this.isTame() && this.dataManager.get(HAS_SADDLE);
+//    }
 
     public void onInventoryChanged(IInventory invBasic) {
         super.onInventoryChanged(invBasic);

@@ -55,15 +55,15 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 
-public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnimal {
+public class EnhancedCow extends EnhancedAnimalRideableAbstract implements EnhancedAnimal {
 
     //avalible UUID spaces : [ S X X X X 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
-    private static final DataParameter<Boolean> SADDLED = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> BOOST_TIME = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
+//    private static final DataParameter<Boolean> SADDLED = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
+//    private static final DataParameter<Integer> BOOST_TIME = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
     protected static final DataParameter<Boolean> RESET_TEXTURE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> MOOSHROOM_UUID = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
-    private static final DataParameter<String> HORN_ALTERATION = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
+//    private static final DataParameter<String> HORN_ALTERATION = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
 
     private static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
@@ -136,15 +136,6 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             "coat_normal.png", "coat_smooth.png", "coat_furry.png"
     };
 
-    private static final String[] COW_TEXTURES_BLANKET = new String[] {
-            "", "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
-    };
-
-    private static final String[] COW_TEXTURES_SADDLE = new String[] {
-            "", "saddle_vanilla.png", "saddle_western.png", "saddle_english.png"
-    };
-
-
     protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UNBOUNDHAY_BLOCK);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
@@ -160,9 +151,9 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
     protected EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
-    private boolean boosting;
-    private int boostTime;
-    private int totalBoostTime;
+//    private boolean boosting;
+//    private int boostTime;
+//    private int totalBoostTime;
 
     protected Boolean reload = false; //used in a toggle manner
 
@@ -191,25 +182,15 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
         }};
     }
 
-    @Override
-    protected void registerGoals() {
-        //Todo add the temperamants
-//        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
-        this.goalSelector.addGoal(0, new SwimGoal(this));
-//        this.goalSelector.addGoal(5, this.eatGrassGoal);
-        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
-    }
-
-    public void notifyDataManagerChange(DataParameter<?> key) {
-        if (BOOST_TIME.equals(key) && this.world.isRemote) {
-            this.boosting = true;
-            this.boostTime = 0;
-            this.totalBoostTime = this.dataManager.get(BOOST_TIME);
-        }
-
-        super.notifyDataManagerChange(key);
-    }
+//    @Override
+//    protected void registerGoals() {
+//        //Todo add the temperamants
+////        this.eatGrassGoal = new EnhancedGrassGoal(this, null);
+//        this.goalSelector.addGoal(0, new SwimGoal(this));
+////        this.goalSelector.addGoal(5, this.eatGrassGoal);
+//        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+//        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
+//    }
 
     protected void updateAITasks()
     {
@@ -219,36 +200,36 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
+//        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
         this.dataManager.register(RESET_TEXTURE, false);
         this.dataManager.register(MOOSHROOM_UUID, "0");
-        this.dataManager.register(SADDLED, false);
-        this.dataManager.register(BOOST_TIME, 0);
     }
 
     protected String getSpecies() {
         return "Cow";
     }
 
+    protected int getAdultAge() { return 84000;}
+
     @Override
     protected int gestationConfig() {
         return EanimodCommonConfig.COMMON.gestationDaysCow.get();
     }
 
-    @Nullable
-    public Entity getControllingPassenger() {
-        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
-    }
+//    @Nullable
+//    public Entity getControllingPassenger() {
+//        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
+//    }
 
-    public boolean canBeSteered() {
-        Entity entity = this.getControllingPassenger();
-        if (!(entity instanceof PlayerEntity)) {
-            return false;
-        } else {
-            PlayerEntity playerentity = (PlayerEntity)entity;
-            return playerentity.getHeldItemMainhand().getItem() == Items.CARROT_ON_A_STICK || playerentity.getHeldItemOffhand().getItem() == Items.CARROT_ON_A_STICK;
-        }
-    }
+//    public boolean canBeSteered() {
+//        Entity entity = this.getControllingPassenger();
+//        if (!(entity instanceof PlayerEntity)) {
+//            return false;
+//        } else {
+//            PlayerEntity playerentity = (PlayerEntity)entity;
+//            return playerentity.getHeldItemMainhand().getItem() == Items.CARROT_ON_A_STICK || playerentity.getHeldItemOffhand().getItem() == Items.CARROT_ON_A_STICK;
+//        }
+//    }
 
     protected void setMooshroomUUID(String status) {
         if (!status.equals("")) {
@@ -974,18 +955,6 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             this.texturesIndexes.add(String.valueOf(horn));
             this.enhancedAnimalTextures.add(COW_TEXTURES_COAT[coat]);
             this.texturesIndexes.add(String.valueOf(coat));
-//              testing textures
-//              this.enhancedAnimalTextures.add(COW_TEXTURES_TEST[1]);
-
-            int blanket = 7;
-                this.enhancedAnimalTextures.add(COW_TEXTURES_BLANKET[blanket]);
-            this.texturesIndexes.add(String.valueOf(blanket));
-
-            int saddle = 0;
-            if (saddle != 0) {
-                this.enhancedAnimalTextures.add(COW_TEXTURES_SADDLE[saddle]);
-                this.texturesIndexes.add(String.valueOf(saddle));
-            }
         }
     }
 
@@ -1000,6 +969,7 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
     @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
+        this.colouration = super.getRgb();
         if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
             int[] genesForText = getSharedGenes();
             String extention = "wildtype";
@@ -1204,15 +1174,16 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
         if (item == Items.NAME_TAG) {
             itemStack.interactWithEntity(entityPlayer, this, hand);
             return true;
-        } else if (this.getSaddled() && !this.isBeingRidden()) {
-            if (!this.world.isRemote) {
-                entityPlayer.startRiding(this);
-            }
-
-            return true;
-        } else if (item == Items.SADDLE){
-            return this.saddleCow(itemStack, entityPlayer, this);
         }
+//        else if (this.getSaddled() && !this.isBeingRidden()) {
+//            if (!this.world.isRemote) {
+//                entityPlayer.startRiding(this);
+//            }
+//
+//            return true;
+//        } else if (item == Items.SADDLE){
+//            return this.saddleCow(itemStack, entityPlayer, this);
+//        }
 
         if ((item == Items.BUCKET || item == ModItems.ONESIXTH_MILK_BUCKET || item == ModItems.ONETHIRD_MILK_BUCKET || item == ModItems.HALF_MILK_BUCKET || item == ModItems.TWOTHIRDS_MILK_BUCKET || item == ModItems.FIVESIXTHS_MILK_BUCKET || item == ModItems.HALF_MILK_BOTTLE || item == Items.GLASS_BOTTLE) && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;
@@ -1307,95 +1278,92 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
     }
 
 
-    public boolean saddleCow(ItemStack stack, PlayerEntity playerIn, LivingEntity target) {
-        EnhancedCow entity = (EnhancedCow)target;
-        if (entity.isAlive() && !entity.getSaddled() && !entity.isChild()) {
-            entity.setSaddled(true);
-            entity.world.playSound(playerIn, entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_PIG_SADDLE, SoundCategory.NEUTRAL, 0.5F, 1.0F);
-            stack.shrink(1);
-            return true;
-        }
-
-        return false;
-    }
+//    public boolean saddleCow(ItemStack stack, PlayerEntity playerIn, LivingEntity target) {
+//        EnhancedCow entity = (EnhancedCow)target;
+//        if (entity.isAlive() && !entity.getSaddled() && !entity.isChild()) {
+//            entity.setSaddled(true);
+//            entity.world.playSound(playerIn, entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_PIG_SADDLE, SoundCategory.NEUTRAL, 0.5F, 1.0F);
+//            stack.shrink(1);
+//            return true;
+//        }
+//
+//        return false;
+//    }
 
     protected void dropInventory() {
         super.dropInventory();
-        if (this.getSaddled()) {
-            this.entityDropItem(Items.SADDLE);
-        }
     }
 
-    public boolean getSaddled() {
-        return this.dataManager.get(SADDLED);
-    }
-
-    public void setSaddled(boolean saddled) {
-        if (saddled) {
-            this.dataManager.set(SADDLED, true);
-        } else {
-            this.dataManager.set(SADDLED, false);
-        }
-    }
-
-    public void travel(Vec3d p_213352_1_) {
-        if (this.isAlive()) {
-            Entity entity = this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
-            if (this.isBeingRidden() && this.canBeSteered()) {
-                this.rotationYaw = entity.rotationYaw;
-                this.prevRotationYaw = this.rotationYaw;
-                this.rotationPitch = entity.rotationPitch * 0.5F;
-                this.setRotation(this.rotationYaw, this.rotationPitch);
-                this.renderYawOffset = this.rotationYaw;
-                this.rotationYawHead = this.rotationYaw;
-                this.stepHeight = 1.0F;
-                this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
-                if (this.boosting && this.boostTime++ > this.totalBoostTime) {
-                    this.boosting = false;
-                }
-
-                if (this.canPassengerSteer()) {
-                    float f = (float)this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * 0.225F;
-                    if (this.boosting) {
-                        f += f * 1.15F * MathHelper.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
-                    }
-
-                    this.setAIMoveSpeed(f);
-                    super.travel(new Vec3d(0.0D, 0.0D, 1.0D));
-                    this.newPosRotationIncrements = 0;
-                } else {
-                    this.setMotion(Vec3d.ZERO);
-                }
-
-                this.prevLimbSwingAmount = this.limbSwingAmount;
-                double d1 = this.getPosX() - this.prevPosX;
-                double d0 = this.getPosZ() - this.prevPosZ;
-                float f1 = MathHelper.sqrt(d1 * d1 + d0 * d0) * 4.0F;
-                if (f1 > 1.0F) {
-                    f1 = 1.0F;
-                }
-
-                this.limbSwingAmount += (f1 - this.limbSwingAmount) * 0.4F;
-                this.limbSwing += this.limbSwingAmount;
-            } else {
-                this.stepHeight = 0.5F;
-                this.jumpMovementFactor = 0.02F;
-                super.travel(p_213352_1_);
-            }
-        }
-    }
-
-    public boolean boost() {
-        if (this.boosting) {
-            return false;
-        } else {
-            this.boosting = true;
-            this.boostTime = 0;
-            this.totalBoostTime = this.getRNG().nextInt(841) + 140;
-            this.getDataManager().set(BOOST_TIME, this.totalBoostTime);
-            return true;
-        }
-    }
+//    public boolean getSaddled() {
+//        return this.dataManager.get(SADDLED);
+//    }
+//
+//    public void setSaddled(boolean saddled) {
+//        if (saddled) {
+//            this.dataManager.set(SADDLED, true);
+//        } else {
+//            this.dataManager.set(SADDLED, false);
+//        }
+//    }
+//
+//    public void travel(Vec3d p_213352_1_) {
+//        if (this.isAlive()) {
+//            Entity entity = this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
+//            if (this.isBeingRidden() && this.canBeSteered()) {
+//                this.rotationYaw = entity.rotationYaw;
+//                this.prevRotationYaw = this.rotationYaw;
+//                this.rotationPitch = entity.rotationPitch * 0.5F;
+//                this.setRotation(this.rotationYaw, this.rotationPitch);
+//                this.renderYawOffset = this.rotationYaw;
+//                this.rotationYawHead = this.rotationYaw;
+//                this.stepHeight = 1.0F;
+//                this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
+//                if (this.boosting && this.boostTime++ > this.totalBoostTime) {
+//                    this.boosting = false;
+//                }
+//
+//                if (this.canPassengerSteer()) {
+//                    float f = (float)this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * 0.225F;
+//                    if (this.boosting) {
+//                        f += f * 1.15F * MathHelper.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
+//                    }
+//
+//                    this.setAIMoveSpeed(f);
+//                    super.travel(new Vec3d(0.0D, 0.0D, 1.0D));
+//                    this.newPosRotationIncrements = 0;
+//                } else {
+//                    this.setMotion(Vec3d.ZERO);
+//                }
+//
+//                this.prevLimbSwingAmount = this.limbSwingAmount;
+//                double d1 = this.getPosX() - this.prevPosX;
+//                double d0 = this.getPosZ() - this.prevPosZ;
+//                float f1 = MathHelper.sqrt(d1 * d1 + d0 * d0) * 4.0F;
+//                if (f1 > 1.0F) {
+//                    f1 = 1.0F;
+//                }
+//
+//                this.limbSwingAmount += (f1 - this.limbSwingAmount) * 0.4F;
+//                this.limbSwing += this.limbSwingAmount;
+//            } else {
+//                this.stepHeight = 0.5F;
+//                this.jumpMovementFactor = 0.02F;
+//                super.travel(p_213352_1_);
+//            }
+//        }
+//    }
+//
+//    public boolean boost() {
+//        if (this.boosting) {
+//            return false;
+//        } else {
+//            this.boosting = true;
+//            this.boostTime = 0;
+//            this.totalBoostTime = this.getRNG().nextInt(841) + 140;
+//            this.getDataManager().set(BOOST_TIME, this.totalBoostTime);
+//            return true;
+//        }
+//    }
 
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
@@ -1404,7 +1372,7 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
 
         compound.putString("MotherUUID", this.motherUUID);
 
-        compound.putBoolean("Saddle", this.getSaddled());
+//        compound.putBoolean("Saddle", this.getSaddled());
 
     }
 
@@ -1423,7 +1391,7 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
             generateHornGenes(genes);
         }
 
-        this.setSaddled(compound.getBoolean("Saddle"));
+//        this.setSaddled(compound.getBoolean("Saddle"));
 
         configureAI();
     }
@@ -1450,7 +1418,7 @@ public class EnhancedCow extends EnhancedAnimalAbstract implements EnhancedAnima
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, 0, GENES_LENGTH, 84000, 64800, 108000);
+        return commonInitialSpawnSetup(inWorld, livingdata, 0, GENES_LENGTH, getAdultAge(), 64800, 108000);
     }
 
     @Override

@@ -1,6 +1,9 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
@@ -16,6 +19,9 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.goal.FollowParentGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -152,7 +158,18 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
+    @Override
+    protected void registerGoals() {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
+    }
+
     protected abstract String getSpecies();
+
+    protected abstract int getAdultAge();
 
     /*
     Animal expected abstracts and overrides
@@ -1022,9 +1039,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         int age = this.getAge();
         if (age < 120000) {
-            if (age > 40000) {
+            if (age > 80000) {
                 name = "Young" + " " + name;
-            } else {
+            } else if (age > 40000) {
                 name = "Baby" + " " + name;
             }
         }

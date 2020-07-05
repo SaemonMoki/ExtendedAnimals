@@ -33,6 +33,7 @@ import net.minecraft.entity.merchant.villager.WanderingTraderEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -51,6 +52,9 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -159,19 +163,20 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     protected void registerGoals() {
+        super.registerGoals();
         //Todo add the temperamants
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
-        this.goalSelector.addGoal(0, new SwimGoal(this));
+//        this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new ECRunAroundLikeCrazy(this, 1.2D));
         this.goalSelector.addGoal(2, new ECLlamaFollowCaravan(this, (double)2.1F));
         this.goalSelector.addGoal(3, new RangedAttackGoal(this, 1.25D, 40, 20.0F));
         this.goalSelector.addGoal(3, new EnhancedPanicGoal(this, 1.2D));
-        this.goalSelector.addGoal(4, new BreedGoal(this, 1.0D));
+//        this.goalSelector.addGoal(4, new BreedGoal(this, 1.0D));
         this.goalSelector.addGoal(5, this.wanderEatingGoal);
-        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.0D));
+//        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.0D));
 //        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.7D));
-        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
+//        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+//        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new EnhancedLlama.HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new EnhancedLlama.DefendTargetGoal(this));
     }
@@ -186,6 +191,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     protected String getSpecies() {
         return "Llama";
     }
+
+    protected int getAdultAge() { return 120000;}
 
     @Override
     protected int gestationConfig() {
@@ -208,108 +215,101 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return this.dataManager.get(COAT_LENGTH);
     }
 
-//    @Override
-//    public boolean canBeSteered() {
-//        return (this.isTame() && this.dataManager.get(HAS_SADDLE);
+//    public void onInventoryChanged(IInventory invBasic) {
+//        super.onInventoryChanged(invBasic);
+//        if (this.ticksExisted > 20 && dyecolor1 != 0 && dyecolor1 != dyecolor) {
+//            this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
+//            resetTexture = true;
+//        }
 //    }
 
-    public void onInventoryChanged(IInventory invBasic) {
-        super.onInventoryChanged(invBasic);
-        int dyecolor = this.getBlanketNumber();
-        int dyecolor1 = this.getBlanketNumber();
-        if (this.ticksExisted > 20 && dyecolor1 != 0 && dyecolor1 != dyecolor) {
-            this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
-            resetTexture = true;
-        }
-    }
+//    public int getSaddleNumber() {
+//        int saddle = 0;
+//        if (this.animalInventory != null) {
+//            if (!this.animalInventory.getStackInSlot(1).isEmpty()) {
+//                Item saddleType = this.animalInventory.getStackInSlot(1).getItem();
+//                if (saddleType == ModItems.SADDLE_LEATHER) {
+//                    saddle = 2;
+//                } else if (saddleType == ModItems.SADDLE_CLOTH) {
+//                    saddle = 3;
+//                } else {
+//                    saddle = 1;
+//                }
+//            }
+//        }
+//        return saddle;
+//    }
 
-    public int getSaddleNumber() {
-        int saddle = 0;
-        if (this.animalInventory != null) {
-            if (!this.animalInventory.getStackInSlot(1).isEmpty()) {
-                Item saddleType = this.animalInventory.getStackInSlot(1).getItem();
-                if (saddleType == ModItems.SADDLE_LEATHER) {
-                    saddle = 2;
-                } else if (saddleType == ModItems.SADDLE_CLOTH) {
-                    saddle = 3;
-                } else {
-                    saddle = 1;
-                }
-            }
-        }
-        return saddle;
-    }
+//    public int getBridleNumber() {
+//        int bridle = 0;
+//        if (this.animalInventory != null) {
+//            if (!this.animalInventory.getStackInSlot(3).isEmpty()) {
+//                Item saddleType = this.animalInventory.getStackInSlot(3).getItem();
+//                if (saddleType == ModItems.BRIDLE_BASIC_LEATHER) {
+//                    bridle = 1;
+//                } else if (saddleType == ModItems.BRIDLE_BASIC_CLOTH) {
+//                    bridle = 2;
+//                }
+//            }
+//        }
+//        return bridle;
+//    }
 
-    public int getBridleNumber() {
-        int bridle = 0;
-        if (this.animalInventory != null) {
-            if (!this.animalInventory.getStackInSlot(3).isEmpty()) {
-                Item saddleType = this.animalInventory.getStackInSlot(3).getItem();
-                if (saddleType == ModItems.BRIDLE_BASIC_LEATHER) {
-                    bridle = 1;
-                } else if (saddleType == ModItems.BRIDLE_BASIC_CLOTH) {
-                    bridle = 2;
-                }
-            }
-        }
-        return bridle;
-    }
+//    public int getBlanketNumber() {
+//            int colour = 0;
+//            if (this.animalInventory != null) {
+//                Item blanketColour = this.animalInventory.getStackInSlot(4).getItem();
+//                if (blanketColour == Items.BLACK_CARPET) {
+//                    colour = 1;
+//                } else if (blanketColour == Items.BLUE_CARPET) {
+//                    colour = 2;
+//                } else if (blanketColour == Items.BROWN_CARPET) {
+//                    colour = 3;
+//                } else if (blanketColour == Items.CYAN_CARPET) {
+//                    colour = 4;
+//                } else if (blanketColour == Items.GRAY_CARPET) {
+//                    colour = 5;
+//                } else if (blanketColour == Items.GREEN_CARPET) {
+//                    colour = 6;
+//                } else if (blanketColour == Items.LIGHT_BLUE_CARPET) {
+//                    colour = 7;
+//                } else if (blanketColour == Items.LIGHT_GRAY_CARPET) {
+//                    colour = 8;
+//                } else if (blanketColour == Items.LIME_CARPET) {
+//                    colour = 9;
+//                } else if (blanketColour == Items.MAGENTA_CARPET) {
+//                    colour = 10;
+//                } else if (blanketColour == Items.ORANGE_CARPET) {
+//                    colour = 11;
+//                } else if (blanketColour == Items.PINK_CARPET) {
+//                    colour = 12;
+//                } else if (blanketColour == Items.PURPLE_CARPET) {
+//                    colour = 13;
+//                } else if (blanketColour == Items.RED_CARPET) {
+//                    colour = 14;
+//                } else if (blanketColour == Items.WHITE_CARPET) {
+//                    colour = 15;
+//                } else if (blanketColour == Items.YELLOW_CARPET) {
+//                    colour = 16;
+//                }
+//            }
+//            return colour;
+//        }
 
-    public int getBlanketNumber() {
-            int colour = 0;
-            if (this.animalInventory != null) {
-                Item blanketColour = this.animalInventory.getStackInSlot(4).getItem();
-                if (blanketColour == Items.BLACK_CARPET) {
-                    colour = 1;
-                } else if (blanketColour == Items.BLUE_CARPET) {
-                    colour = 2;
-                } else if (blanketColour == Items.BROWN_CARPET) {
-                    colour = 3;
-                } else if (blanketColour == Items.CYAN_CARPET) {
-                    colour = 4;
-                } else if (blanketColour == Items.GRAY_CARPET) {
-                    colour = 5;
-                } else if (blanketColour == Items.GREEN_CARPET) {
-                    colour = 6;
-                } else if (blanketColour == Items.LIGHT_BLUE_CARPET) {
-                    colour = 7;
-                } else if (blanketColour == Items.LIGHT_GRAY_CARPET) {
-                    colour = 8;
-                } else if (blanketColour == Items.LIME_CARPET) {
-                    colour = 9;
-                } else if (blanketColour == Items.MAGENTA_CARPET) {
-                    colour = 10;
-                } else if (blanketColour == Items.ORANGE_CARPET) {
-                    colour = 11;
-                } else if (blanketColour == Items.PINK_CARPET) {
-                    colour = 12;
-                } else if (blanketColour == Items.PURPLE_CARPET) {
-                    colour = 13;
-                } else if (blanketColour == Items.RED_CARPET) {
-                    colour = 14;
-                } else if (blanketColour == Items.WHITE_CARPET) {
-                    colour = 15;
-                } else if (blanketColour == Items.YELLOW_CARPET) {
-                    colour = 16;
-                }
-            }
-            return colour;
-        }
-
-    public int getHarnessNumber() {
-        int bridle = 0;
-        if (this.animalInventory != null) {
-            if (!this.animalInventory.getStackInSlot(5).isEmpty()) {
-                Item saddleType = this.animalInventory.getStackInSlot(5).getItem();
-                if (saddleType == ModItems.BRIDLE_BASIC_LEATHER) {
-                    bridle = 1;
-                } else if (saddleType == ModItems.BRIDLE_BASIC_CLOTH) {
-                    bridle = 2;
-                }
-            }
-        }
-        return bridle;
-    }
+//    public int getHarnessNumber() {
+//        int bridle = 0;
+//        if (this.animalInventory != null) {
+//            if (!this.animalInventory.getStackInSlot(5).isEmpty()) {
+//                Item saddleType = this.animalInventory.getStackInSlot(5).getItem();
+//                if (saddleType == ModItems.BRIDLE_BASIC_LEATHER) {
+//                    bridle = 1;
+//                } else if (saddleType == ModItems.BRIDLE_BASIC_CLOTH) {
+//                    bridle = 2;
+//                }
+//            }
+//        }
+//        return bridle;
+//    }
 
     @Override
     public void updatePassenger(Entity passenger) {
@@ -829,20 +829,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         this.enhancedAnimalTextures.add(LLAMA_TEXTURES_SKIN[skin]);
             this.texturesIndexes.add(String.valueOf(skin));
 
-        int saddle = 2;
-        int bridle = 0;
-        int blanket = 0;
-        int harness = 0;
-
-        if (!this.isLeashedToTrader()) {
-            blanket = getBlanketNumber();
-        }
-
-        if (hasBlanket() || this.isLeashedToTrader()) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_DECO[blanket]);
-            this.texturesIndexes.add(String.valueOf(blanket));
-        }
-
         } //if genes are not null end bracket
 
     } // setTexturePaths end bracket
@@ -909,6 +895,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         if (spawnReason == SpawnReason.EVENT) {
             this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
             this.despawnDelay = 49999;
+            this.setBirthTime("");
+            this.animalInventory.setInventorySlotContents(4, Items.BLUE_CARPET.getDefaultInstance().setDisplayName(new StringTextComponent("Trader's Blanket")));
         }
 
         setStrengthAndInventory();

@@ -3,11 +3,15 @@ package mokiyoki.enhancedanimals.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModelNew;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,8 +24,6 @@ import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
-
-    String saddleType = "vanilla";
 
     private Map<Integer, PigModelData> pigModelDataCache = new HashMap<>();
     private int clearCacheTimer = 0;
@@ -232,7 +234,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
          */
 
         this.saddle = new EnhancedRendererModelNew(this, 98, 24, "Saddle");
-        this.saddle.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
 
         this.saddleWestern = new EnhancedRendererModelNew(this, 114, 0, "WesternSaddle");
         this.saddleWestern.addBox(-5.0F, -2.0F, -5.0F, 10, 2, 13, 0.0F);
@@ -311,6 +312,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.stirrup3DNarrowR.addChild(this.stirrup);
         //vanilla
         this.body.addChild(this.saddle);
+        this.saddle.addChild(this.saddlePad);
         this.saddle.addChild(this.stirrup3DNarrowL);
         this.saddle.addChild(this.stirrup3DNarrowR);
     }
@@ -320,7 +322,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         PigModelData pigModelData = getPigModelData();
         float size = pigModelData.size;
-        int blink = pigModelData.blink;
 
         float age = 1.0F;
         if (!(pigModelData.birthTime == null) && !pigModelData.birthTime.equals("") && !pigModelData.birthTime.equals("0")) {
@@ -336,12 +337,12 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         matrixStackIn.translate(0.0F, -1.5F + 1.5F/finalPigSize, 0.0F);
 
         if (true) {
-            renderPigandSaddle(pigModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            renderPigandSaddle(pigModelData.saddle, pigModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
             this.pig.render(matrixStackIn, bufferIn, null, new ArrayList<>(), false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
-        if (blink >= 6) {
+        if (pigModelData.blink >= 6) {
             this.eyeLeft.showModel = true;
             this.eyeRight.showModel = true;
         } else {
@@ -352,8 +353,10 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         matrixStackIn.pop();
     }
 
-    private void renderPigandSaddle(List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (true) {
+    private void renderPigandSaddle( ItemStack saddleStack,List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        if (!saddleStack.isEmpty()) {
+            Item saddle = saddleStack.getItem();
+
             Map<String, List<Float>> mapOfScale = new HashMap<>();
             float saddleScale = 0.75F;
 
@@ -367,11 +370,11 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 //            List<Float> scalingsForPad = createScalings(antiScale, 0.0F, -antiScale*0.01F, (antiScale - 1.0F)*0.04F);
 //            mapOfScale.put("SaddlePad", scalingsForPad);
 
-            if (saddleType.equals("western")) {
+            if (saddle instanceof CustomizableSaddleWestern) {
                 this.saddleWestern.showModel = true;
                 this.saddlePomel.showModel = true;
                 mapOfScale.put("WesternSaddle", scalingsForSaddle);
-            } else if (saddleType.equals("english")) {
+            } else if (saddle instanceof CustomizableSaddleEnglish) {
                 this.saddleEnglish.showModel = true;
                 saddleScale = 1.125F;
                 List<Float> scalingsForSaddlePad = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
@@ -541,6 +544,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         PigModelData pigModelData = getPigModelData();
         int ticks = entityIn.ticksExisted;
+        ItemStack saddleStack = pigModelData.saddle;
 //        List<String> unrenderedModels = new ArrayList<>();
 
         this.neck.rotateAngleX = ((float)Math.PI * 2.0F);
@@ -550,9 +554,9 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         /**
          * change only earFlopMod for ear effects. If anything is tweaked it needs to be through that.
          */
-        float earFlopMod = -1.0F; //[-1.0 = full droop, -0.65 = half droop, -0.25 = over eyes flop, 0 = stiff flop, 0.5F is half flop, 1 is no flop]
+        float earFlopMod = 1.0F; //[-1.0 = full droop, -0.65 = half droop, -0.25 = over eyes flop, 0 = stiff flop, 0.5F is half flop, 1 is no flop]
 
-        float earFlopContinuationMod = 1.0F;
+        float earFlopContinuationMod;
 
         if (earFlopMod < -0.25) {
             earFlopContinuationMod = (1 + earFlopMod)/0.75F;
@@ -620,31 +624,34 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         this.tail0.rotateAngleX = -((float)Math.PI / 2F);
 
-        if (saddleType.equals("western")) {
-            this.saddleWestern.rotateAngleX = -((float)Math.PI / 2F);
-            this.saddleWestern.setRotationPoint(0.0F, 4.0F, 10.5F);
-            this.saddleSideL.setRotationPoint(5.0F, -1.0F, -5.25F);
-            this.saddleSideR.setRotationPoint(-5.0F, -1.0F, -5.25F);
-            this.saddleHorn.setRotationPoint(0.0F, -2.0F, -2.0F);
-            this.saddleHorn.rotateAngleX = (float)Math.PI / 8.0F;
-            this.saddlePomel.setRotationPoint(0.0F, -1.5F, -0.5F);
-            this.saddlePomel.rotateAngleX = -0.2F;
-            this.stirrup2DWideL.setRotationPoint(7.5F, 0.0F, -3.5F);
-            this.stirrup2DWideR.setRotationPoint(-7.5F, 0.0F, -3.5F);
-        } else if (saddleType.equals("english")) {
-            this.saddleEnglish.rotateAngleX = -((float)Math.PI / 2F);
-            this.saddleEnglish.setRotationPoint(0.0F, 4.0F, 10.5F);
-            this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
-            this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
-            this.saddleHorn.setRotationPoint(0.0F, -1.0F, -1.0F);
-            this.saddleHorn.rotateAngleX = (float)Math.PI / 4.5F;
-            this.stirrup3DNarrowL.setRotationPoint(8.0F, -0.5F, -1.5F);
-            this.stirrup3DNarrowR.setRotationPoint(-8.0F, -0.5F, -1.5F);
-        } else {
-            this.saddle.rotateAngleX = -((float)Math.PI / 2F);
-            this.saddle.setRotationPoint(0.0F, 4.0F, 10.5F);
-            this.stirrup3DNarrowL.setRotationPoint(8.0F, 0.0F, 0.0F);
-            this.stirrup3DNarrowR.setRotationPoint(-8.0F, 0.0F, 0.0F);
+        if (!saddleStack.isEmpty()) {
+            Item saddle = saddleStack.getItem();
+            if (saddle instanceof CustomizableSaddleWestern) {
+                this.saddleWestern.rotateAngleX = -((float) Math.PI / 2F);
+                this.saddleWestern.setRotationPoint(0.0F, 4.0F, 10.5F);
+                this.saddleSideL.setRotationPoint(5.0F, -1.0F, -5.25F);
+                this.saddleSideR.setRotationPoint(-5.0F, -1.0F, -5.25F);
+                this.saddleHorn.setRotationPoint(0.0F, -2.0F, -2.0F);
+                this.saddleHorn.rotateAngleX = (float) Math.PI / 8.0F;
+                this.saddlePomel.setRotationPoint(0.0F, -1.5F, -0.5F);
+                this.saddlePomel.rotateAngleX = -0.2F;
+                this.stirrup2DWideL.setRotationPoint(7.5F, 0.0F, -3.5F);
+                this.stirrup2DWideR.setRotationPoint(-7.5F, 0.0F, -3.5F);
+            } else if (saddle instanceof CustomizableSaddleEnglish) {
+                this.saddleEnglish.rotateAngleX = -((float) Math.PI / 2F);
+                this.saddleEnglish.setRotationPoint(0.0F, 4.0F, 10.5F);
+                this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
+                this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
+                this.saddleHorn.setRotationPoint(0.0F, -1.0F, -1.0F);
+                this.saddleHorn.rotateAngleX = (float) Math.PI / 4.5F;
+                this.stirrup3DNarrowL.setRotationPoint(8.0F, -0.5F, -1.5F);
+                this.stirrup3DNarrowR.setRotationPoint(-8.0F, -0.5F, -1.5F);
+            } else {
+                this.saddle.rotateAngleX = -((float) Math.PI / 2F);
+                this.saddle.setRotationPoint(0.0F, 4.0F, 10.5F);
+                this.stirrup3DNarrowL.setRotationPoint(8.0F, 0.0F, 0.0F);
+                this.stirrup3DNarrowR.setRotationPoint(-8.0F, 0.0F, 0.0F);
+            }
         }
 
     }
@@ -688,6 +695,9 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         long clientGameTime = 0;
 //        int dataReset = 0;
         List<String> unrenderedModels = new ArrayList<>();
+        ItemStack saddle;
+        ItemStack bridle;
+        ItemStack harness;
     }
 
     private PigModelData getPigModelData() {
@@ -718,6 +728,10 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             pigModelData.sleeping = enhancedPig.isAnimalSleeping();
             pigModelData.blink = enhancedPig.getBlink();
             pigModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedPig.world).getWorldInfo()).getGameTime());
+            pigModelData.saddle = enhancedPig.getEnhancedInventory().getStackInSlot(1);
+            pigModelData.bridle = enhancedPig.getEnhancedInventory().getStackInSlot(3);
+            pigModelData.harness = enhancedPig.getEnhancedInventory().getStackInSlot(5);
+
 
             return pigModelData;
         } else {
@@ -729,6 +743,9 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             pigModelData.uuidArray = enhancedPig.getCachedUniqueIdString().toCharArray();
             pigModelData.birthTime = enhancedPig.getBirthTime();
             pigModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedPig.world).getWorldInfo()).getGameTime());
+            pigModelData.saddle = enhancedPig.getEnhancedInventory().getStackInSlot(1);
+            pigModelData.bridle = enhancedPig.getEnhancedInventory().getStackInSlot(3);
+            pigModelData.harness = enhancedPig.getEnhancedInventory().getStackInSlot(5);
 
             if(pigModelData.pigGenes != null) {
                 pigModelDataCache.put(enhancedPig.getEntityId(), pigModelData);

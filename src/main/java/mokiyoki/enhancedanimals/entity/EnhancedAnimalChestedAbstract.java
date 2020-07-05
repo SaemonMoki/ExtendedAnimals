@@ -3,10 +3,13 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.CarpetBlock;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -15,6 +18,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
@@ -89,10 +93,17 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     public void setBlanket(boolean blanketed) {
         this.dataManager.set(HAS_BLANKET, blanketed);
-        if (blanketed && !this.enhancedAnimalTextures.contains(BLANKET_TEXTURE)) {
-            this.enhancedAnimalTextures.add(getBlanketString());
-        } else if (!blanketed && this.enhancedAnimalTextures.contains(BLANKET_TEXTURE)) {
-            this.enhancedAnimalTextures.remove(BLANKET_TEXTURE);
+        List<String> previousBlanketTextures = equipmentTextures.get(Equipment.BLANKET);
+        List<String> newBlanketTextures = getBlanket();
+
+        if(blanketed) {
+            if(previousBlanketTextures == null || !previousBlanketTextures.containsAll(newBlanketTextures)){
+                equipmentTextures.put(Equipment.BLANKET, newBlanketTextures);
+            }
+        } else {
+            if(previousBlanketTextures != null){
+                equipmentTextures.remove(Equipment.BLANKET);
+            }
         }
     }
 
@@ -135,6 +146,30 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         return super.processInteract(player, hand);
     }
 
+    public boolean canBeSteered() {
+        return this.getControllingPassenger() instanceof LivingEntity/* && this.isTame()*/ && this.dataManager.get(HAS_BRIDLE);
+    }
+
+    public boolean blanketAnimal(ItemStack itemStack, LivingEntity target) {
+        EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
+        if (enhancedAnimal.isAlive() && !enhancedAnimal.dataManager.get(HAS_BLANKET) && !enhancedAnimal.isChild()) {
+            this.animalInventory.setInventorySlotContents(4, itemStack);
+            this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
+            itemStack.shrink(1);
+            return true;
+        }
+
+        return true;
+    }
+
+    public void onInventoryChanged(IInventory invBasic) {
+        boolean flag = this.dataManager.get(HAS_BLANKET);
+        this.updateInventorySlots();
+        if (this.ticksExisted > 20 && !flag && this.dataManager.get(HAS_BLANKET)) {
+            this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
+        }
+    }
+
     protected void playChestEquipSound() {
         this.playSound(SoundEvents.ENTITY_DONKEY_CHEST, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
     }
@@ -155,6 +190,17 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             }
         }
 
+        int i = inventorySlot - 400;
+        if (i >= 0 && i < 2 && i < this.animalInventory.getSizeInventory()) {
+            if (i != 1 && (isCarpet(itemStackIn))) {
+                this.animalInventory.setInventorySlotContents(i, itemStackIn);
+                this.updateInventorySlots();
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         return super.replaceItemInInventory(inventorySlot, itemStackIn);
     }
 
@@ -165,71 +211,9 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     @Override
     protected void updateInventorySlots() {
+        this.setBridle(!this.animalInventory.getStackInSlot(3).isEmpty() && this.canHaveBridle());
+        this.setBlanket(!this.animalInventory.getStackInSlot(4).isEmpty() && this.canHaveBlanket());
         super.updateInventorySlots();
-    }
-
-    private String getBlanketString() {
-        if (this.getEnhancedInventory() != null) {
-            String blanket = "blanket_";
-            ItemStack blanketSlot = this.animalInventory.getStackInSlot(4);
-            if (blanketSlot != ItemStack.EMPTY) {
-                Item blanketColour = blanketSlot.getItem();
-                if (blanketColour == Items.BLACK_CARPET) {
-                    blanket = blanket + "black";
-                } else if (blanketColour == Items.BLUE_CARPET) {
-                    blanket = blanket + "blue";
-                } else if (blanketColour == Items.BROWN_CARPET) {
-                    blanket = blanket + "brown";
-                } else if (blanketColour == Items.CYAN_CARPET) {
-                    blanket = blanket + "cyan";
-                } else if (blanketColour == Items.GRAY_CARPET) {
-                    blanket = blanket + "grey";
-                } else if (blanketColour == Items.GREEN_CARPET) {
-                    blanket = blanket + "green";
-                } else if (blanketColour == Items.LIGHT_BLUE_CARPET) {
-                    blanket = blanket + "lightblue";
-                } else if (blanketColour == Items.LIGHT_GRAY_CARPET) {
-                    blanket = blanket + "lightgrey";
-                } else if (blanketColour == Items.LIME_CARPET) {
-                    blanket = blanket + "lime";
-                } else if (blanketColour == Items.MAGENTA_CARPET) {
-                    blanket = blanket + "magenta";
-                } else if (blanketColour == Items.ORANGE_CARPET) {
-                    blanket = blanket + "orange";
-                } else if (blanketColour == Items.PINK_CARPET) {
-                    blanket = blanket + "pink";
-                } else if (blanketColour == Items.PURPLE_CARPET) {
-                    blanket = blanket + "purple";
-                } else if (blanketColour == Items.RED_CARPET) {
-                    blanket = blanket + "red";
-                } else if (blanketColour == Items.WHITE_CARPET) {
-                    blanket = blanket + "white";
-                } else if (blanketColour == Items.YELLOW_CARPET) {
-                    blanket = blanket + "yellow";
-                }
-
-                blanket = blanket + ".png";
-                return blanket;
-            }
-        }
-        return "";
-    }
-
-    private List<String> getBridleTextures() {
-        List<String> bridleTextures = new ArrayList<>();
-
-        if (this.getEnhancedInventory() != null) {
-            ItemStack blanketSlot = this.animalInventory.getStackInSlot(3);
-            if (blanketSlot != ItemStack.EMPTY) {
-                Item blanketColour = blanketSlot.getItem();
-                if (blanketColour == ModItems.BRIDLE_BASIC_CLOTH) {
-                    bridleTextures.add(BRIDLE_TEXTURE);
-                    bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[0]);
-                }
-            }
-        }
-
-        return bridleTextures;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -258,5 +242,129 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         super.readAdditional(compound);
         this.setChested(compound.getBoolean("Chested"));
         this.setBridle(compound.getBoolean("Bridled"));
+    }
+
+    private List<String> getBlanket() {
+        List<String> blanketTextures = new ArrayList<>();
+
+        if (this.getEnhancedInventory() != null) {
+            ItemStack blanketSlot = this.animalInventory.getStackInSlot(4);
+            if (blanketSlot != ItemStack.EMPTY) {
+                Item blanket = blanketSlot.getItem();
+                if (blanket == Items.BLACK_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[1]);
+                } else if (blanket == Items.BLUE_CARPET) {
+                    if (blanketSlot.hasDisplayName()) {
+                        if (blanketSlot.getDisplayName().getString().equals("Trader's Blanket")) {
+                            //TODO maybe make this so it checks "ownership" instead?
+                            blanketTextures.add(BLANKET_TEXTURE[0]);
+                            return blanketTextures;
+                        }
+                    }
+                        blanketTextures.add(BLANKET_TEXTURE[2]);
+                } else if (blanket == Items.BROWN_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[3]);
+                } else if (blanket == Items.CYAN_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[4]);
+                } else if (blanket == Items.GRAY_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[5]);
+                } else if (blanket == Items.GREEN_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[6]);
+                } else if (blanket == Items.LIGHT_BLUE_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[7]);
+                } else if (blanket == Items.LIGHT_GRAY_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[8]);
+                } else if (blanket == Items.LIME_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[9]);
+                } else if (blanket == Items.MAGENTA_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[10]);
+                } else if (blanket == Items.ORANGE_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[11]);
+                } else if (blanket == Items.PINK_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[12]);
+                } else if (blanket == Items.PURPLE_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[13]);
+                } else if (blanket == Items.RED_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[14]);
+                } else if (blanket == Items.WHITE_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[15]);
+                } else if (blanket == Items.YELLOW_CARPET) {
+                    blanketTextures.add(BLANKET_TEXTURE[16]);
+                }
+
+            }
+        }
+        return blanketTextures;
+    }
+
+    private boolean isCarpet(ItemStack itemStack) {
+        Item item = itemStack.getItem();
+        boolean isVanillaCarpet = false;
+        if (item == Items.BLACK_CARPET) {
+            return true;
+        }
+        if (item == Items.BLUE_CARPET) {
+            return true;
+        }
+        if (item == Items.BROWN_CARPET) {
+            return true;
+        }
+        if (item == Items.CYAN_CARPET) {
+            return true;
+        }
+        if (item == Items.GRAY_CARPET) {
+            return true;
+        }
+        if (item == Items.GREEN_CARPET) {
+            return true;
+        }
+        if (item == Items.LIGHT_BLUE_CARPET) {
+            return true;
+        }
+        if (item == Items.LIGHT_GRAY_CARPET) {
+            return true;
+        }
+        if (item == Items.LIME_CARPET) {
+            return true;
+        }
+        if (item == Items.MAGENTA_CARPET) {
+            return true;
+        }
+        if (item == Items.ORANGE_CARPET) {
+            return true;
+        }
+        if (item == Items.PINK_CARPET) {
+            return true;
+        }
+        if (item == Items.PURPLE_CARPET) {
+            return true;
+        }
+        if (item == Items.RED_CARPET) {
+            return true;
+        }
+        if (item == Items.WHITE_CARPET) {
+            return true;
+        }
+        if (item == Items.YELLOW_CARPET) {
+            return true;
+        }
+        return false;
+    }
+
+    private List<String> getBridleTextures() {
+        List<String> bridleTextures = new ArrayList<>();
+
+        if (this.getEnhancedInventory() != null) {
+            ItemStack blanketSlot = this.animalInventory.getStackInSlot(3);
+            if (blanketSlot != ItemStack.EMPTY) {
+                Item blanketColour = blanketSlot.getItem();
+                if (blanketColour == ModItems.BRIDLE_BASIC_CLOTH) {
+                    bridleTextures.add(BRIDLE_TEXTURE);
+                    bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[0]);
+                }
+            }
+        }
+
+        return bridleTextures;
     }
 }

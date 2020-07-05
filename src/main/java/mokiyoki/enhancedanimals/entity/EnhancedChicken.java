@@ -295,6 +295,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         return "Chicken";
     }
 
+    protected int getAdultAge() { return 60000;}
+
     @Override
     protected int gestationConfig() {
         return 24000;
@@ -2495,7 +2497,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, 20, Reference.CHICKEN_GENES_LENGTH, 60000, 10000, 120000);
+        return commonInitialSpawnSetup(inWorld, livingdata, 20, Reference.CHICKEN_GENES_LENGTH, getAdultAge(), 10000, 120000);
     }
 
     @Override

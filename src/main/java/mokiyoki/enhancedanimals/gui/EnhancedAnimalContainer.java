@@ -2,10 +2,11 @@ package mokiyoki.enhancedanimals.gui;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
-import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
-import mokiyoki.enhancedanimals.items.CustomizableSaddle;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -13,6 +14,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
@@ -39,7 +41,8 @@ public class EnhancedAnimalContainer extends Container {
             this.addSlot(new Slot(retrievedInventory, 1, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
-                    return stack.getItem() == Items.SADDLE || stack.getItem() instanceof CustomizableSaddle;
+                    Item saddle = stack.getItem();
+                    return saddle == Items.SADDLE || saddle instanceof CustomizableSaddleVanilla || saddle instanceof CustomizableSaddleWestern || saddle instanceof CustomizableSaddleEnglish;
                 }
 
                 public int getSlotStackLimit() {

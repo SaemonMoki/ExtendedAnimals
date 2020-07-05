@@ -72,20 +72,12 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 
-public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnimal {
+public class EnhancedPig extends EnhancedAnimalRideableAbstract implements EnhancedAnimal {
 
     //avalible UUID spaces : [ S X 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
-    private static final DataParameter<Boolean> SADDLED = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> BOOST_TIME = EntityDataManager.createKey(EnhancedPig.class, DataSerializers.VARINT);
-
     private static final String[] PIG_TEXTURES_SKINBASE = new String[] {
             "", "skin_pink.png", "skin_grey.png", "skin_black.png"
-//            ,
-//            "a_skin_pink_sparse.png", "a_skin_grey_sparse.png", "a_skin_black_sparse.png",
-//            "a_skin_pink_medium.png", "a_skin_grey_medium.png", "a_skin_black_medium.png",
-//            "a_skin_pink_furry.png", "a_skin_grey_furry.png", "a_skin_black_furry.png",
-//            "a_skin_pink_wooly.png", "a_skin_grey_wooly.png", "a_skin_black_wooly.png"
     };
 
     private static final String[] PIG_TEXTURES_SKINMARKINGS_SPOTS = new String[] {
@@ -93,7 +85,7 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
     };
 
     private static final String[] PIG_TEXTURES_SKINMARKINGS_BELTED = new String[] {
-            "", "skin_pink.png", "skin_belt.png"
+            "", "skin_pink.png", "skin_belt.png", "skin_patchy.png"
     };
 
     private static final String[] PIG_TEXTURES_SKINMARKINGS_BERKSHIRE = new String[] {
@@ -110,15 +102,16 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
     };
 
     private static final String[] PIG_TEXTURES_SPOT_SPOTS = new String[] {
+            //discontinued genes
             "", "spot_spots.png", "spot_roanspots.png"
     };
 
     private static final String[] PIG_TEXTURES_SPOT_BELTED = new String[] {
-            "", "spot_white.png", "spot_belt.png"
+            "", "spot_white.png", "spot_belt.png", "spot_patchy.png", "spot_roan.png", "spot_roanbelted.png"
     };
 
     private static final String[] PIG_TEXTURES_SPOT_BERKSHIRE = new String[] {
-            "", "spot_tux.png", "spot_berkshire.png"
+            "", "spot_tux.png", "spot_berkshire.png", "spot_extended_berkshire"
     };
 
     private static final String[] PIG_TEXTURES_COAT = new String[] {
@@ -141,23 +134,19 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             "bald", "sparse.png", "medium.png", "furry.png", "wooly.png"
     };
 
-    private static final String[] PIG_TEXTURES_SADDLE = new String[] {
-            "", "saddle_vanilla.png", "saddle_western.png", "saddle_english.png"
-    };
-
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD, ModItems.COOKEDCHICKEN_DARK, ModItems.COOKEDCHICKEN_DARKBIG, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_PALE, ModItems.COOKEDCHICKEN_PALESMALL, ModItems.COOKEDRABBIT_SMALL);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.CARROT, Items.BEETROOT, Items.POTATO);
 
-    private static final int GENES_LENGTH = 58;
+    private static final int GENES_LENGTH = 60;
 
     private UUID angerTargetUUID;
     private int angerLevel;
 
     private EnhancedWaterAvoidingRandomWalkingEatingGoalPig wanderEatingGoal;
 
-    private boolean boosting;
-    private int boostTime;
-    private int totalBoostTime;
+//    private boolean boosting;
+//    private int boostTime;
+//    private int totalBoostTime;
 
     public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
         super(entityType, worldIn, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
@@ -207,38 +196,21 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
         }};
     }
 
-
     @Override
     protected void registerGoals() {
+        super.registerGoals();
         wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalPig(this, 1.0D, 7, 0.001F, 120, 2, 20);
-        this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
 //        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
-        this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.2D, false, Ingredient.fromItems(Items.CARROT_ON_A_STICK)));
-        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.2D, false, TEMPTATION_ITEMS));
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(5, wanderEatingGoal);
-//        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
-        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
-        this.targetSelector.addGoal(1, new EnhancedPig.HurtByAggressorGoal(this));
+        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.2D, false, TEMPTATION_ITEMS));
         this.targetSelector.addGoal(2, new EnhancedPig.TargetAggressorGoal(this));
-    }
-
-    public void notifyDataManagerChange(DataParameter<?> key) {
-        if (BOOST_TIME.equals(key) && this.world.isRemote) {
-            this.boosting = true;
-            this.boostTime = 0;
-            this.totalBoostTime = this.dataManager.get(BOOST_TIME);
-        }
-
-        super.notifyDataManagerChange(key);
+        this.targetSelector.addGoal(1, new EnhancedPig.HurtByAggressorGoal(this));
     }
 
     @Override
-    public boolean canHaveSaddle() {
-        return true;
+    public boolean canHaveBridle() {
+        return false;
     }
 
     @Override
@@ -271,28 +243,13 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
 
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(SADDLED, false);
-        this.dataManager.register(BOOST_TIME, 0);
     }
 
     protected String getSpecies() {
         return "Pig";
     }
 
-    @Nullable
-    public Entity getControllingPassenger() {
-        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
-    }
-
-    public boolean canBeSteered() {
-        Entity entity = this.getControllingPassenger();
-        if (!(entity instanceof PlayerEntity)) {
-            return false;
-        } else {
-            PlayerEntity playerentity = (PlayerEntity)entity;
-            return playerentity.getHeldItemMainhand().getItem() == Items.CARROT_ON_A_STICK || playerentity.getHeldItemOffhand().getItem() == Items.CARROT_ON_A_STICK;
-        }
-    }
+    protected int getAdultAge() { return 60000;}
 
     @Override
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
@@ -302,108 +259,109 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
         if (item == Items.NAME_TAG) {
             itemStack.interactWithEntity(entityPlayer, this, hand);
             return true;
-        } else if (this.getSaddled() && !this.isBeingRidden()) {
-            if (!this.world.isRemote) {
-                entityPlayer.startRiding(this);
-            }
-
-            return true;
-        } else if (item == Items.SADDLE){
-            return this.saddlePig(itemStack, entityPlayer, this);
         }
+//        else if (this.getSaddled() && !this.isBeingRidden()) {
+//            if (!this.world.isRemote) {
+//                entityPlayer.startRiding(this);
+//            }
+//
+//            return true;
+//        } else if (item == Items.SADDLE){
+//            return this.saddlePig(itemStack, entityPlayer, this);
+//        }
 
         return super.processInteract(entityPlayer, hand);
     }
 
-    public boolean saddlePig(ItemStack stack, PlayerEntity playerIn, LivingEntity target) {
-        EnhancedPig pigentity = (EnhancedPig)target;
-        if (pigentity.isAlive() && !pigentity.getSaddled() && !pigentity.isChild()) {
-            pigentity.setSaddled(true);
-            pigentity.world.playSound(playerIn, pigentity.getPosX(), pigentity.getPosY(), pigentity.getPosZ(), SoundEvents.ENTITY_PIG_SADDLE, SoundCategory.NEUTRAL, 0.5F, 1.0F);
-            stack.shrink(1);
-            return true;
-        }
-
-        return false;
-    }
+//    public boolean saddlePig(ItemStack stack, PlayerEntity playerIn, LivingEntity target) {
+//        EnhancedPig pigentity = (EnhancedPig)target;
+//        if (pigentity.isAlive() && !pigentity.getSaddled() && !pigentity.isChild()) {
+//            pigentity.setSaddled(true);
+//            pigentity.world.playSound(playerIn, pigentity.getPosX(), pigentity.getPosY(), pigentity.getPosZ(), SoundEvents.ENTITY_PIG_SADDLE, SoundCategory.NEUTRAL, 0.5F, 1.0F);
+//            stack.shrink(1);
+//            return true;
+//        }
+//
+//        return false;
+//    }
 
     protected void dropInventory() {
         super.dropInventory();
-        if (this.getSaddled()) {
-            this.entityDropItem(Items.SADDLE);
-        }
+//        if (this.getSaddled()) {
+//            this.entityDropItem(Items.SADDLE);
+//        }
     }
 
-    public boolean getSaddled() {
-        return this.dataManager.get(SADDLED);
-    }
+//    public boolean getSaddled() {
+//        return this.dataManager.get(SADDLED);
+//    }
+//
+//    public void setSaddled(boolean saddled) {
+//        if (saddled) {
+//            this.dataManager.set(SADDLED, true);
+//        } else {
+//            this.dataManager.set(SADDLED, false);
+//        }
+//    }
 
-    public void setSaddled(boolean saddled) {
-        if (saddled) {
-            this.dataManager.set(SADDLED, true);
-        } else {
-            this.dataManager.set(SADDLED, false);
-        }
-    }
-
-    public void travel(Vec3d p_213352_1_) {
-        if (this.isAlive()) {
-            Entity entity = this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
-            if (this.isBeingRidden() && this.canBeSteered()) {
-                this.rotationYaw = entity.rotationYaw;
-                this.prevRotationYaw = this.rotationYaw;
-                this.rotationPitch = entity.rotationPitch * 0.5F;
-                this.setRotation(this.rotationYaw, this.rotationPitch);
-                this.renderYawOffset = this.rotationYaw;
-                this.rotationYawHead = this.rotationYaw;
-                this.stepHeight = 1.0F;
-                this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
-                if (this.boosting && this.boostTime++ > this.totalBoostTime) {
-                    this.boosting = false;
-                }
-
-                if (this.canPassengerSteer()) {
-                    float f = (float)this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * 0.225F;
-                    if (this.boosting) {
-                        f += f * 1.15F * MathHelper.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
-                    }
-
-                    this.setAIMoveSpeed(f);
-                    super.travel(new Vec3d(0.0D, 0.0D, 1.0D));
-                    this.newPosRotationIncrements = 0;
-                } else {
-                    this.setMotion(Vec3d.ZERO);
-                }
-
-                this.prevLimbSwingAmount = this.limbSwingAmount;
-                double d1 = this.getPosX() - this.prevPosX;
-                double d0 = this.getPosZ() - this.prevPosZ;
-                float f1 = MathHelper.sqrt(d1 * d1 + d0 * d0) * 4.0F;
-                if (f1 > 1.0F) {
-                    f1 = 1.0F;
-                }
-
-                this.limbSwingAmount += (f1 - this.limbSwingAmount) * 0.4F;
-                this.limbSwing += this.limbSwingAmount;
-            } else {
-                this.stepHeight = 0.5F;
-                this.jumpMovementFactor = 0.02F;
-                super.travel(p_213352_1_);
-            }
-        }
-    }
-
-    public boolean boost() {
-        if (this.boosting) {
-            return false;
-        } else {
-            this.boosting = true;
-            this.boostTime = 0;
-            this.totalBoostTime = this.getRNG().nextInt(841) + 140;
-            this.getDataManager().set(BOOST_TIME, this.totalBoostTime);
-            return true;
-        }
-    }
+//    public void travel(Vec3d p_213352_1_) {
+//        if (this.isAlive()) {
+//            Entity entity = this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
+//            if (this.isBeingRidden() && this.canBeSteered()) {
+//                this.rotationYaw = entity.rotationYaw;
+//                this.prevRotationYaw = this.rotationYaw;
+//                this.rotationPitch = entity.rotationPitch * 0.5F;
+//                this.setRotation(this.rotationYaw, this.rotationPitch);
+//                this.renderYawOffset = this.rotationYaw;
+//                this.rotationYawHead = this.rotationYaw;
+//                this.stepHeight = 1.0F;
+//                this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
+//                if (this.boosting && this.boostTime++ > this.totalBoostTime) {
+//                    this.boosting = false;
+//                }
+//
+//                if (this.canPassengerSteer()) {
+//                    float f = (float)this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * 0.225F;
+//                    if (this.boosting) {
+//                        f += f * 1.15F * MathHelper.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
+//                    }
+//
+//                    this.setAIMoveSpeed(f);
+//                    super.travel(new Vec3d(0.0D, 0.0D, 1.0D));
+//                    this.newPosRotationIncrements = 0;
+//                } else {
+//                    this.setMotion(Vec3d.ZERO);
+//                }
+//
+//                this.prevLimbSwingAmount = this.limbSwingAmount;
+//                double d1 = this.getPosX() - this.prevPosX;
+//                double d0 = this.getPosZ() - this.prevPosZ;
+//                float f1 = MathHelper.sqrt(d1 * d1 + d0 * d0) * 4.0F;
+//                if (f1 > 1.0F) {
+//                    f1 = 1.0F;
+//                }
+//
+//                this.limbSwingAmount += (f1 - this.limbSwingAmount) * 0.4F;
+//                this.limbSwing += this.limbSwingAmount;
+//            } else {
+//                this.stepHeight = 0.5F;
+//                this.jumpMovementFactor = 0.02F;
+//                super.travel(p_213352_1_);
+//            }
+//        }
+//    }
+//
+//    public boolean boost() {
+//        if (this.boosting) {
+//            return false;
+//        } else {
+//            this.boosting = true;
+//            this.boostTime = 0;
+//            this.totalBoostTime = this.getRNG().nextInt(841) + 140;
+//            this.getDataManager().set(BOOST_TIME, this.totalBoostTime);
+//            return true;
+//        }
+//    }
 
     protected SoundEvent getAmbientSound() {
         return SoundEvents.ENTITY_PIG_AMBIENT;
@@ -463,27 +421,37 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
 
     @Override
     protected int getNumberOfChildren() {
-        int pigletAverage = 6;
-        int pigletRange = 6;
+        int pigletAverage = 11;
+        int pigletRange = 4;
         int age = getAge();
+
+        if (genes[58] == 1 || genes[59] == 1) {
+            pigletAverage = 4;
+            pigletRange = 3;
+        } else if (genes[58] == 2 && genes[59] == 2) {
+            pigletAverage = 8;
+            pigletRange = 3;
+        } else if (genes[58] == 2 || genes[59] == 2) {
+            pigletAverage = 8;
+        }
 
         if (age < 108000) {
             if (age > 100000) {
-                pigletAverage = 5;
+                pigletAverage = (pigletAverage*5)/6;
             } else if (age > 92000) {
-                pigletAverage = 4;
+                pigletAverage = (pigletAverage*4)/6;
             } else if (age > 84000) {
-                pigletAverage = 3;
+                pigletAverage = (pigletAverage*3)/6;
             } else if (age > 76000) {
-                pigletAverage = 2;
+                pigletAverage = (pigletAverage*2)/6;
             } else if (age > 68000) {
-                pigletAverage = 1;
+                pigletAverage = pigletAverage/6;
             } else {
-                pigletAverage = 0;
+                pigletAverage = pigletAverage/12;
             }
         }
 
-        return ThreadLocalRandom.current().nextInt(pigletRange)+1+pigletAverage;
+        return (ThreadLocalRandom.current().nextInt(pigletRange*2) - (pigletRange)) + pigletAverage;
     }
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
@@ -900,6 +868,10 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             }else if (genesForText[12] == 2 || genesForText[13] == 2){
                 //belted
                 belt = 2;
+            } else if (genesForText[12] == 4 || genesForText[13] == 4) {
+                //patchy
+            } else if (genesForText[12] == 5 || genesForText[13] == 5) {
+                //roan
             }
 
             if (genesForText[14] != 1 && genesForText[15] != 1){
@@ -1004,8 +976,6 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
                 this.enhancedAnimalTextures.add(PIG_TEXTURES_TUSKS[1]);
                 this.texturesIndexes.add(String.valueOf(1));
             }
-            this.enhancedAnimalTextures.add(PIG_TEXTURES_SADDLE[1]);
-            this.texturesIndexes.add(String.valueOf(1));
         }
     }
 
@@ -1055,7 +1025,7 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             compound.putString("HurtBy", "");
         }
 
-        compound.putBoolean("Saddle", this.getSaddled());
+//        compound.putBoolean("Saddle", this.getSaddled());
     }
 
     /**
@@ -1077,7 +1047,7 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             }
         }
 
-        this.setSaddled(compound.getBoolean("Saddle"));
+//        this.setSaddled(compound.getBoolean("Saddle"));
     }
 
     protected void initilizeAnimalSize() {
@@ -1205,19 +1175,20 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
             }
 
             //Blue Dilute [ Dilute, wildtype+ ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[8] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+////                initialGenes[8] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
                 initialGenes[8] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[9] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+////                initialGenes[9] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
                 initialGenes[9] = (1);
-            }
+//            }
 
+            //this one will combo with agouti I guess
             //White Spots [ Wildtype+, spotted, roanSpots ]
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
                 initialGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
@@ -1232,9 +1203,9 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
                 initialGenes[11] = (1);
             }
 
-            //Dom.White and Belted [ Dom.White, Belted, Wildtype+ ]
+            //Dom.White and Belted [ Dom.White, Belted, wildtype+, Patch, Roan]
             if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[12] = (ThreadLocalRandom.current().nextInt(3) + 1);
+                initialGenes[12] = (ThreadLocalRandom.current().nextInt(5) + 1);
                 if (wildType == 1) {
                     initialGenes[13] = (1);
                 } else {
@@ -1496,13 +1467,25 @@ public class EnhancedPig extends EnhancedAnimalAbstract implements EnhancedAnima
                 initialGenes[57] = (1);
             }
 
+            //litter size reduction [wildtype (half), weak reduction (2/3), prolific]
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[58] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[58] = (1);
+            }
+            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+                initialGenes[59] = (ThreadLocalRandom.current().nextInt(3) + 1);
+
+            } else {
+                initialGenes[59] = (1);
+            }
+
             //ear size [xsmall, small, medium, large, xlarge]
 
             //ear angle [up, medium, down
 
         }
-
-
 
         return initialGenes;
     }

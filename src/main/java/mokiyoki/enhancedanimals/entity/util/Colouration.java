@@ -203,6 +203,8 @@ public class Colouration {
             } else {
                 colour = ((CustomizableAnimalEquipment) stack.getItem()).getDefaultColour();
             }
+        } else {
+            colour = 10511680; //leather colour
         }
 
         colour = getABGRFromARGB(colour);

@@ -299,6 +299,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     protected String getSpecies() { return "Rabbit"; }
 
+    protected int getAdultAge() { return 48000;}
+
     @Override
     protected int gestationConfig() {
         return EanimodCommonConfig.COMMON.gestationDaysRabbit.get();
@@ -1333,7 +1335,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata = commonInitialSpawnSetup(inWorld, livingdata, 20, GENES_LENGTH, 48000, 30000, 80000);
+        livingdata = commonInitialSpawnSetup(inWorld, livingdata, 20, GENES_LENGTH, getAdultAge(), 30000, 80000);
 
         setMaxCoatLength();
         this.currentCoatLength = this.maxCoatLength;

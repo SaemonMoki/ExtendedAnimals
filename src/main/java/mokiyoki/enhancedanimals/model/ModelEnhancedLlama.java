@@ -4,11 +4,15 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModelNew;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,8 +31,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
     private final ModelRenderer chest1;
     private final ModelRenderer chest2;
-
-    String saddleType = "western";
 
     private boolean banana = false;
     private boolean suri = false;
@@ -572,7 +574,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                     });
                 }
 
-                renderSaddle(coatlength, llamaModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                renderSaddle(llamaModelData.saddle, coatlength, llamaModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         matrixStackIn.pop();
 
@@ -591,16 +593,16 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         matrixStackIn.pop();
 
-            if (sleeping) {
-                this.eyeLeft.showModel = false;
-                this.eyeRight.showModel = false;
-            } else {
-                this.eyeLeft.showModel = true;
-                this.eyeRight.showModel = true;
-            }
+        if (llamaModelData.blink >= 6) {
+            this.eyeLeft.showModel = true;
+            this.eyeRight.showModel = true;
+        } else {
+            this.eyeLeft.showModel = false;
+            this.eyeRight.showModel = false;
+        }
     }
 
-    private void renderSaddle(int coatLength, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    private void renderSaddle(ItemStack saddleStack, int coatLength, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         Map<String, List<Float>> mapOfScale = new HashMap<>();
 
         this.saddleWestern.showModel = false;
@@ -626,18 +628,19 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             }
         }
 
-        if (saddleType != "") {
+        if (!saddleStack.isEmpty()) {
+            Item saddle = saddleStack.getItem();
             float saddleScale = 0.875F;
             List<Float> scalingsForSaddle = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
             List<Float> scalingsForPad = ModelHelper.createScalings(coatMod, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
 
-            if (saddleType.equals("western")) {
+            if (saddle instanceof CustomizableSaddleWestern) {
                 this.saddleWestern.showModel = true;
                 this.saddlePomel.showModel = true;
                 mapOfScale.put("WesternSaddle", scalingsForSaddle);
                 mapOfScale.put("SaddlePad", scalingsForPad);
                 this.saddleWestern.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            } else if (saddleType.equals("english")) {
+            } else if (saddle instanceof CustomizableSaddleEnglish) {
                 this.saddleEnglish.showModel = true;
                 mapOfScale.put("EnglishSaddle", scalingsForSaddle);
                 mapOfScale.put("SaddlePad", scalingsForPad);
@@ -674,14 +677,13 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.neck.rotateAngleY = netHeadYaw * 0.017453292F;
-
         //TODO if llama is angry turn ears back
-        //TODO stop llama legs from being sheared
 
         LlamaModelData llamaModelData = getLlamaModelData();
-
         int[] sharedGenes = llamaModelData.llamaGenes;
+        ItemStack saddleStack = llamaModelData.saddle;
+
+        this.neck.rotateAngleY = netHeadYaw * 0.017453292F;
 
         boolean flag = !entityIn.isChild() && entityIn.hasChest();
         this.chest1.showModel = flag;
@@ -777,8 +779,9 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         } else if (coatLength == -1) {
             coatLength = -1.25F;
         }
-            if (saddleType != "") {
-                if (saddleType.equals("western")) {
+            if (!saddleStack.isEmpty()) {
+                Item saddle = saddleStack.getItem();
+                if (saddle instanceof CustomizableSaddleWestern) {
                     this.saddleWestern.rotationPointY = 2.0F - coatLength;
                     this.saddleSideL.setRotationPoint(4.75F, -1.0F, -5.25F);
                     this.saddleSideR.setRotationPoint(-4.75F, -1.0F, -5.25F);
@@ -788,7 +791,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                     this.saddlePomel.rotateAngleX = -0.2F;
                     this.stirrup2DWideL.setRotationPoint(7.5F + coatLength, 0.0F, -3.5F);
                     this.stirrup2DWideR.setRotationPoint(-7.5F - coatLength, 0.0F, -3.5F);
-                } else if (saddleType.equals("english")) {
+                } else if (saddle instanceof CustomizableSaddleEnglish) {
                     this.saddleEnglish.rotationPointY = 2.0F - coatLength;
                     this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
                     this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
@@ -953,11 +956,15 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         int maxCoatlength = 0;
         String birthTime;
         boolean sleeping = false;
+        int blink = 0;
         int lastAccessed = 0;
         boolean angry = false;
         long clientGameTime = 0;
 //        int dataReset = 0;
         List<String> unrenderedModels = new ArrayList<>();
+        ItemStack saddle;
+        ItemStack bridle;
+        ItemStack harness;
     }
 
     private LlamaModelData getLlamaModelData() {
@@ -986,9 +993,13 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 //            }
             llamaModelData.coatlength = enhancedLlama.getCoatLength();
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
+            llamaModelData.blink = enhancedLlama.getBlink();
             llamaModelData.angry = (enhancedLlama.isAggressive());
             llamaModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedLlama.world).getWorldInfo()).getGameTime());
             llamaModelData.unrenderedModels = new ArrayList<>();
+            llamaModelData.saddle = enhancedLlama.getEnhancedInventory().getStackInSlot(1);
+            llamaModelData.bridle = enhancedLlama.getEnhancedInventory().getStackInSlot(3);
+            llamaModelData.harness = enhancedLlama.getEnhancedInventory().getStackInSlot(5);
 
             return llamaModelData;
         } else {
@@ -997,9 +1008,13 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.coatlength = enhancedLlama.getCoatLength();
             llamaModelData.maxCoatlength = enhancedLlama.getCoatLength();
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
+            llamaModelData.blink = enhancedLlama.getBlink();
             llamaModelData.birthTime = enhancedLlama.getBirthTime();
             llamaModelData.angry = (!(enhancedLlama.getRevengeTarget() == null));
             llamaModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedLlama.world).getWorldInfo()).getGameTime());
+            llamaModelData.saddle = enhancedLlama.getEnhancedInventory().getStackInSlot(1);
+            llamaModelData.bridle = enhancedLlama.getEnhancedInventory().getStackInSlot(3);
+            llamaModelData.harness = enhancedLlama.getEnhancedInventory().getStackInSlot(5);
 
             if(llamaModelData.llamaGenes != null) {
                 llamaModelDataCache.put(enhancedLlama.getEntityId(), llamaModelData);

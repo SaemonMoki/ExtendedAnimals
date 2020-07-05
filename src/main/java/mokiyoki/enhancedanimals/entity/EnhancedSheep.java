@@ -211,6 +211,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         return "Sheep";
     }
 
+    protected int getAdultAge() { return 72000;}
+
     private void setCoatLength(int coatLength) {
         this.dataManager.set(COAT_LENGTH, coatLength);
     }
@@ -1283,7 +1285,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, 0, GENES_LENGTH, 72000, 60000, 80000);
+        return commonInitialSpawnSetup(inWorld, livingdata, 0, GENES_LENGTH, getAdultAge(), 60000, 80000);
     }
 
     @Override

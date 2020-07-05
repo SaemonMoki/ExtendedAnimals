@@ -44,5 +44,4 @@ public class ModBlocks {
     public static final Block GROWABLE_SUNFLOWER = new GrowableDoubleHigh(Block.Properties.create(Material.TALL_PLANTS).tickRandomly().doesNotBlockMovement().hardnessAndResistance(0.0F).sound(SoundType.PLANT), Items.SUNFLOWER, true).setRegistryName("eanimod:growable_sunflower");
     public static final Block GROWABLE_TALLGRASS = new GrowableDoubleHigh(Block.Properties.create(Material.TALL_PLANTS).tickRandomly().doesNotBlockMovement().hardnessAndResistance(0.0F).sound(SoundType.PLANT), Items.TALL_GRASS, false).setRegistryName("eanimod:growable_tall_grass");
     public static final Block GROWABLE_LARGEFERN = new GrowableDoubleHigh(Block.Properties.create(Material.TALL_PLANTS).tickRandomly().doesNotBlockMovement().hardnessAndResistance(0.0F).sound(SoundType.PLANT), Items.LARGE_FERN, true).setRegistryName("eanimod:growable_large_fern");
-
 }

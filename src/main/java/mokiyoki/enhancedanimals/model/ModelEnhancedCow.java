@@ -27,8 +27,8 @@ import java.util.Map;
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
-//    Float hornScaleTest = 1.0F;
-//    int hornLengthTest = 6;
+//    private final Float hornScaleTest = 2.5F;
+//    private final int hornLengthTest = 5;
 
     private Map<Integer, CowModelData> cowModelDataCache = new HashMap<>();
     private int clearCacheTimer = 0;
@@ -462,59 +462,59 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
          * Equipment stuff
          */
 
-        this.saddle = new EnhancedRendererModelNew(this, 115, 1, "Saddle");
+        this.saddle = new EnhancedRendererModelNew(this, 0, 0, "Saddle");
 
-        this.saddleWestern = new EnhancedRendererModelNew(this, 114, 0, "WesternSaddle");
+        this.saddleWestern = new EnhancedRendererModelNew(this, 210, 0, "WesternSaddle");
         this.saddleWestern.addBox(-5.0F, -2.0F, -5.0F, 10, 2, 13, 0.0F);
-        this.saddleWestern.setTextureOffset(114, 15);
+        this.saddleWestern.setTextureOffset(210, 15);
         this.saddleWestern.addBox(-4.0F, -3.0F, 5.0F, 8, 2, 4, 0.0F);
-        this.saddleWestern.setTextureOffset(134, 15);
+        this.saddleWestern.setTextureOffset(230, 15);
         this.saddleWestern.addBox(-3.5F, -4.0F, 8.0F, 7, 2, 2, 0.0F);
 
-        this.saddleEnglish = new EnhancedRendererModelNew(this, 115, 1, "EnglishSaddle");
+        this.saddleEnglish = new EnhancedRendererModelNew(this, 211, 1, "EnglishSaddle");
         this.saddleEnglish.addBox(-5.0F, -1.0F, -4.0F, 10, 2, 12, 0.0F);
-        this.saddleEnglish.setTextureOffset(114, 15);
+        this.saddleEnglish.setTextureOffset(210, 15);
         this.saddleEnglish.addBox(-4.0F, -1.5F, 5.0F, 8, 2, 4, 0.0F);
-        this.saddleEnglish.setTextureOffset(134, 15);
+        this.saddleEnglish.setTextureOffset(230, 15);
         this.saddleEnglish.addBox(-3.5F, -2.0F, 7.5F, 7, 2, 2, 0.0F);
 
-        this.saddleHorn = new EnhancedRendererModelNew(this, 138, 19, "SaddleHorn");
+        this.saddleHorn = new EnhancedRendererModelNew(this, 234, 19, "SaddleHorn");
         this.saddleHorn.addBox(-4.0F, -2.0F, -3.0F, 8, 2, 3, 0.0F);
 
-        this.saddlePomel = new EnhancedRendererModelNew(this, 147, 0, "SaddlePomel");
+        this.saddlePomel = new EnhancedRendererModelNew(this, 243, 0, "SaddlePomel");
         this.saddlePomel.addBox(-1.0F, -3.0F, -2.0F, 2, 4, 2, -0.25F);
         this.saddlePomel.setRotationPoint(0.0F, -2.0F, -2.0F);
 
-        this.saddleSideL = new EnhancedRendererModelNew(this, 138, 49, "SaddleLeft");
+        this.saddleSideL = new EnhancedRendererModelNew(this, 234, 49, "SaddleLeft");
         this.saddleSideL.addBox(0.0F, 0.0F, 0.0F, 3, 4, 8);
 
-        this.saddleSideR = new EnhancedRendererModelNew(this, 138, 61, "SaddleRight");
+        this.saddleSideR = new EnhancedRendererModelNew(this, 234, 61, "SaddleRight");
         this.saddleSideR.addBox(-3.0F, 0.0F, 0.0F, 3, 4, 8);
 
-        this.stirrup2DWideL = new EnhancedRendererModelNew(this, 152, 24, "2DStirrupL");
+        this.stirrup2DWideL = new EnhancedRendererModelNew(this, 248, 24, "2DStirrupL");
         this.stirrup2DWideL.addBox(0.0F, 0.0F, 0.0F, 0, 10, 4); // strap
 
-        this.stirrup2DWideR = new EnhancedRendererModelNew(this, 152, 24, "2DStirrupR");
+        this.stirrup2DWideR = new EnhancedRendererModelNew(this, 248, 24, "2DStirrupR");
         this.stirrup2DWideR.addBox(0.0F, 0.0F, 0.0F, 0, 10, 4); // strap
 
-        this.stirrup3DNarrowL = new EnhancedRendererModelNew(this, 153, 27, "3DStirrupL");
+        this.stirrup3DNarrowL = new EnhancedRendererModelNew(this, 249, 27, "3DStirrupL");
         this.stirrup3DNarrowL.addBox(-1.0F, 0.0F, 0.0F, 1, 10, 1); // strap
 
-        this.stirrup3DNarrowR = new EnhancedRendererModelNew(this, 155, 27, "3DStirrupR");
+        this.stirrup3DNarrowR = new EnhancedRendererModelNew(this, 251, 27, "3DStirrupR");
         this.stirrup3DNarrowR.addBox(0.0F, 0.0F, 0.0F, 1, 10, 1);
 
-        this.stirrup = new EnhancedRendererModelNew(this, 114, 0, "Stirrup");
+        this.stirrup = new EnhancedRendererModelNew(this, 210, 0, "Stirrup");
         this.stirrup.addBox(-0.5F, 9.5F, -1.0F, 1, 1, 1);
-        this.stirrup.setTextureOffset(118, 0);
+        this.stirrup.setTextureOffset(214, 0);
         this.stirrup.addBox(-0.5F, 9.5F, 1.0F, 1, 1, 1);
-        this.stirrup.setTextureOffset(114, 2);
+        this.stirrup.setTextureOffset(210, 2);
         this.stirrup.addBox(-0.5F, 10.5F, -1.5F, 1, 3, 1);
-        this.stirrup.setTextureOffset(118, 2);
+        this.stirrup.setTextureOffset(214, 2);
         this.stirrup.addBox(-0.5F, 10.5F, 1.5F, 1, 3, 1);
-        this.stirrup.setTextureOffset(115, 7);
+        this.stirrup.setTextureOffset(211, 7);
         this.stirrup.addBox(-0.5F, 12.5F, -0.5F, 1, 1, 2);
 
-        this.saddlePad = new EnhancedRendererModelNew(this, 98, 24, "SaddlePad");
+        this.saddlePad = new EnhancedRendererModelNew(this, 194, 24, "SaddlePad");
         this.saddlePad.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
 
         this.headTassles = new EnhancedRendererModelNew(this, 25, 56);
@@ -1087,66 +1087,77 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 lengthR = 9;
             }
 
-            int hornGrowth = 0;
             if (cowModelData.birthTime != null && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
                 int ageTime = (int)(cowModelData.clientGameTime - Long.parseLong(cowModelData.birthTime));
-                if (ageTime > 108000) {
-                    hornGrowth = 0;
-                } else if (ageTime > 97200) {
-                    hornGrowth = 1;
-                } else if (ageTime > 86400) {
-                    hornGrowth = 2;
-                } else if (ageTime > 75600) {
-                    hornGrowth = 3;
-                } else if (ageTime > 60800) {
-                    hornGrowth = 4;
-                } else if (ageTime > 40000) {
-                    hornGrowth = 5;
-                } else if (ageTime > 30200) {
-                    hornGrowth = 6;
-                } else if (ageTime > 12000) {
-                    hornGrowth = 7;
-                } else if (ageTime > 6000) {
-                    hornGrowth = 8;
-                } else {
-                    hornGrowth = 9;
+                if (ageTime < 108000) {
+                    if (ageTime > 97200) {
+                        lengthL += 1;
+                        lengthR += 1;
+                    } else if (ageTime > 86400) {
+                        lengthL += 2;
+                        lengthL += 2;
+                    } else if (ageTime > 75600) {
+                        lengthL += 3;
+                        lengthL += 3;
+                    } else if (ageTime > 60800) {
+                        lengthL += 4;
+                        lengthR += 4;
+                    } else if (ageTime > 40000) {
+                        lengthL += 5;
+                        lengthR += 5;
+                    } else if (ageTime > 30200) {
+                        lengthL += 6;
+                        lengthR += 6;
+                    } else if (ageTime > 12000) {
+                        lengthL += 7;
+                        lengthR += 7;
+                    } else if (ageTime > 9000) {
+                        lengthL += 8;
+                        lengthR += 8;
+                    } else if (ageTime > 6000) {
+                        lengthL = 9;
+                        lengthR = 9;
+                    }
                 }
             }
-
-            lengthL = lengthL + hornGrowth;
-            lengthR = lengthR + hornGrowth;
 
 //            lengthL = hornLengthTest;
 //            lengthR = hornLengthTest;
 
-            if (lengthL != 0 || lengthR != 0) {
+            if (lengthL != 0 && lengthR != 0) {
 
                 for (int i = 0; i <= 9; i++) {
                     if (i <= lengthL) {
                         hornGrowthL[i] = 0.0F;
                         unrenderedModels.add(this.leftHorns.get(i).boxName);
-                        if (i != 9) {
-                            hornGrowthL[i+1] = 0.0F;
+                        if (i == lengthL) {
+                            unrenderedModels.remove(this.leftHorns.get(i).boxName);
                         }
                     }
                     if (i <= lengthR) {
                         hornGrowthR[i] = 0.0F;
                         unrenderedModels.add(this.rightHorns.get(i).boxName);
-                        if (i != 9) {
-                            hornGrowthR[i+1] = 0.0F;
+                        if (i == lengthR) {
+                            unrenderedModels.remove(this.rightHorns.get(i).boxName);
                         }
-                    }
-                    if (i == lengthL) {
-                        unrenderedModels.remove(this.leftHorns.get(i).boxName);
-                    }
-                    if (i == lengthR) {
-                        unrenderedModels.remove(this.rightHorns.get(i).boxName);
                     }
                 }
             }
 
 //            hornScale = hornScaleTest;
             float hornScaleR = hornScale;
+
+            // hornlength 0 [ (scale=1.0F, 1.0F) (scale=2.5F, 5.5) ]
+            // hornlength 1 [ (scale=1.0F, -1.0F) (scale=2.5F, 0.6) ]
+            // hornlength 2 [ (scale=1.0F, -1.0F) (scale=2.5F, 0.6) ]
+            // hornlength 3 [ (scale=1.0F, -1.0F) (scale=2.5F, ) ]
+            // hornlength 4 [ (scale=1.0F, -1.0F) (scale=2.5F, ) ]
+            // hornlength 5 [ (scale=1.0F, -1.0F) (scale=2.5F, 2.5) ]
+            // hornlength 6 [ (scale=1.0F, -0.75F) (scale=2.5F, 1.2F) ]
+            // hornlength 7 [ (scale=1.0F, -0.65F) (scale=2.5F, 1.25F) ]
+            // hornlength 8 [ (scale=1.0F, -0.6) (scale=2.5F, 2.0) ]
+            // hornlength 9 [ (scale=1.0F, -0.5) (scale=2.5F, 1.9) ]
+
             switch(lengthL) {
                 case 0 : hornScale = 1.0F + ((hornScale-1.0F)*3.0F);
                     break;
@@ -1158,44 +1169,17 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                     break;
                 case 4 : hornScale = -1.0F + ((hornScale-1.0F)*1.0666F);
                     break;
-                case 5 : hornScale = 1.0F + ((hornScale-1.0F)*0.75F);
+                case 5 : hornScale = -1.0F + ((hornScale-1.0F)*1.25F);
                     break;
                 case 6 : hornScale = -0.75F + ((hornScale-1.0F)*1.3F);
                     break;
-                case 8 : hornScale = 0.5F + ((hornScale-1.0F));
+                case 7 : hornScale = -0.65F + ((hornScale-1.0F)*1.2666F);
                     break;
-                case 9 : hornScale = 2.0F + ((hornScale-1.0F)*1.2F);
+                case 8 : hornScale = -0.6F +((hornScale-1.0F)*1.4666F);
+                    break;
+                case 9 : hornScale = -0.5F + ((hornScale-1.0F)*1.6F);
                     break;
             }
-
-//            hornScale = 1.0F + ((hornScale-1.0F)*3.0F);   // works when horn length is 0
-            // hornlength 0 [ (scale=1.0F, 1) (scale=2.5F, 5.5) ]
-            // hornlength 1 [ (scale=1.0F, -1) (scale=2.5F, 0.6) ]
-            // hornlength 2 [ (scale=1.0F, -1.0) (scale=2.5F, 0.6) ]
-            // hornlength 3 [ (scale=1.0F, ) (scale=2.5F, ) ]
-            // hornlength 4 [ (scale=1.0F, ) (scale=2.5F, ) ]
-            // hornlength 5 [ (scale=1.0F, 1.0F) (scale=2.5F, 2.5) ]
-            // hornlength 6 [ (scale=1.0F, -0.75F) (scale=2.5F, 1.2F) ]
-            // hornlength 7 [ (scale=1.0F, 1.0F) (scale=2.5F, 2.5) ]
-            // hornlength 8 [ (scale=1.0F, 0.5) (scale=2.5F, 2.0) ]
-            // hornlength 9 [ (scale=1.0F, 2.0) (scale=2.5F, 3.8) ]
-//            this.hornL0.rotationPointX = -hornScale;
-//            this.hornR0.rotationPointX = hornScale;
-//            if (lengthL == 0) {
-//                hornScale = 1.0F + ((hornScale-1.0F)*3.0F);
-//            } else if (lengthL >= 1 && lengthL <= 4) {
-//                hornScale = -1.0F + ((hornScale-1.0F)*1.0666F);
-//            } else if (lengthL == 5) {
-//                hornScale = 1.0F + ((hornScale-1.0F)*0.75F);
-//            } else if (lengthL == 6) {
-//                hornScale = 1.0F + ((hornScale-1.0F)*0.8333F);
-//            } else if (lengthL == 8) {
-//                hornScale = 0.5F + ((hornScale-1.0F));
-//            } else if (lengthL == 9) {
-//                hornScale = 2.0F + ((hornScale-1.0F)*1.2F);
-//            }
-
-            this.hornL0.rotationPointX = -hornScale;
 
             switch(lengthR) {
                 case 0 : hornScaleR = 1.0F + ((hornScaleR-1.0F)*3.0F);
@@ -1208,16 +1192,19 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                     break;
                 case 4 : hornScaleR = -1.0F + ((hornScaleR-1.0F)*1.0666F);
                     break;
-                case 5 : hornScaleR = 1.0F + ((hornScaleR-1.0F)*0.75F);
+                case 5 : hornScaleR = -1.0F + ((hornScaleR-1.0F)*1.25F);
                     break;
                 case 6 : hornScaleR = -0.75F + ((hornScaleR-1.0F)*1.3F);
                     break;
-                case 8 : hornScaleR = 0.5F + ((hornScaleR-1.0F));
+                case 7 : hornScaleR = -0.65F + ((hornScaleR-1.0F)*1.2666F);
                     break;
-                case 9 : hornScaleR = 2.0F + ((hornScaleR-1.0F)*1.2F);
+                case 8 : hornScaleR = -0.6F +((hornScaleR-1.0F)*1.4666F);
+                    break;
+                case 9 : hornScaleR = -0.5F + ((hornScaleR-1.0F)*1.6F);
                     break;
             }
 
+            this.hornL0.rotationPointX = -hornScale;
             this.hornR0.rotationPointX = hornScaleR;
 
             for (int i = 1; i <= 9; i++) {

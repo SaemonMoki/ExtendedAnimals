@@ -2123,9 +2123,17 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
         }
 
         //cow horn length modifier [wildtype, longer horns 1, shorter horns 2, shorter horns 3]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[80] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
+        } else {
+            initialGenes[80] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[81] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            initialGenes[81] = (1);
+        }
 
         generateHornGenes(initialGenes);
 
@@ -2154,7 +2162,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
         //horn shortener [wildtype, shorter horns]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             genesArray[82] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
         } else {
             genesArray[82] = (1);
         }
@@ -2166,81 +2173,236 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
         }
 
         //modifier [wildtype, ...]
-        genesArray[84] = (ThreadLocalRandom.current().nextInt(4) + 1);
-        genesArray[85] = (ThreadLocalRandom.current().nextInt(4) + 1);
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[84] = (ThreadLocalRandom.current().nextInt(4) + 1);
+        } else {
+            genesArray[84] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[85] = (ThreadLocalRandom.current().nextInt(4) + 1);
+        } else {
+            genesArray[85] = (1);
+        }
 
         //cow horn scale 1 [wildtype, 1.25]
-        genesArray[86] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        genesArray[87] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[86] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            genesArray[86] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[87] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            genesArray[87] = (1);
+        }
+
         //cow horn scale 2 [wildtype, 1.25]
-        genesArray[88] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        genesArray[89] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[88] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            genesArray[88] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[89] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            genesArray[89] = (1);
+        }
 
         // horn scale 3 [wildtype, 2.0]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             genesArray[90] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            genesArray[90] = (2);
+            genesArray[90] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             genesArray[91] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            genesArray[91] = (2);
+            genesArray[91] = (1);
         }
 
         //cow horn smoother
-        genesArray[92] = ThreadLocalRandom.current().nextInt(9999) + 1;
-        genesArray[93] = ThreadLocalRandom.current().nextInt(9999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[92] = (ThreadLocalRandom.current().nextInt(9999) + 1);
+
+        } else {
+            genesArray[92] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[93] = (ThreadLocalRandom.current().nextInt(9999) + 1);
+
+        } else {
+            genesArray[93] = (1);
+        }
 
         //cow horn twist ... place matches following horn piece numbers { 4 5 6 7 8 9 }
-        genesArray[94] = ThreadLocalRandom.current().nextInt(999999) + 1;
-        genesArray[95] = ThreadLocalRandom.current().nextInt(999999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[94] = (ThreadLocalRandom.current().nextInt(999999) + 1);
+
+        } else {
+            genesArray[94] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[95] = (ThreadLocalRandom.current().nextInt(999999) + 1);
+
+        } else {
+            genesArray[95] = (1);
+        }
 
         //cow horn base twist  ... place matches following horn piece numbers { *total twist mod* 1 2 3 }
-        genesArray[96] = ThreadLocalRandom.current().nextInt(9999) + 1;
-        genesArray[97] = ThreadLocalRandom.current().nextInt(9999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[96] = (ThreadLocalRandom.current().nextInt(9999) + 1);
+
+        } else {
+            genesArray[96] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[97] = (ThreadLocalRandom.current().nextInt(9999) + 1);
+
+        } else {
+            genesArray[97] = (1);
+        }
 
         // cow horn root
-        genesArray[98] = ThreadLocalRandom.current().nextInt(999) + 1;
-        genesArray[99] = ThreadLocalRandom.current().nextInt(999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[98] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[98] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[99] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[99] = (1);
+        }
 
         //cow horn1 X and Z
-        genesArray[100] = ThreadLocalRandom.current().nextInt(999) + 1;
-        genesArray[101] = ThreadLocalRandom.current().nextInt(999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[100] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[100] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[101] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[101] = (1);
+        }
 
         //cow horn2 X and Z
-        genesArray[102] = ThreadLocalRandom.current().nextInt(999) + 1;
-        genesArray[103] = ThreadLocalRandom.current().nextInt(999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[102] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[102] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[103] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[103] = (1);
+        }
 
         //cow horn3 X and Z
-        genesArray[104] = ThreadLocalRandom.current().nextInt(999) + 1;
-        genesArray[105] = ThreadLocalRandom.current().nextInt(999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[104] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[104] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[105] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[105] = (1);
+        };
 
         //cow horn4 X and Z
-        genesArray[106] = ThreadLocalRandom.current().nextInt(999) + 1;
-        genesArray[107] = ThreadLocalRandom.current().nextInt(999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[106] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[106] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[107] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[107] = (1);
+        }
 
         //cow horn5 X and Z
-        genesArray[108] = ThreadLocalRandom.current().nextInt(999) + 1;
-        genesArray[109] = ThreadLocalRandom.current().nextInt(999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[108] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[108] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[109] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[109] = (1);
+        }
 
         //cow horn6 X and Z
-        genesArray[110] = ThreadLocalRandom.current().nextInt(999) + 1;
-        genesArray[111] = ThreadLocalRandom.current().nextInt(999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[110] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[110] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[111] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[111] = (1);
+        }
 
         //cow horn7 X and Z
-        genesArray[112] = ThreadLocalRandom.current().nextInt(999) + 1;
-        genesArray[113] = ThreadLocalRandom.current().nextInt(999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[112] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[112] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[113] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[113] = (1);
+        }
 
         //cow horn8 X and Z
-        genesArray[114] = ThreadLocalRandom.current().nextInt(999) + 1;
-        genesArray[115] = ThreadLocalRandom.current().nextInt(999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[114] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[114] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[115] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[115] = (1);
+        }
 
         //cow horn9 X and Z
-        genesArray[116] = ThreadLocalRandom.current().nextInt(999) + 1;
-        genesArray[117] = ThreadLocalRandom.current().nextInt(999) + 1;
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[116] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[116] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            genesArray[117] = (ThreadLocalRandom.current().nextInt(999) + 1);
+
+        } else {
+            genesArray[117] = (1);
+        }
     }
 
     protected void configureAI() {

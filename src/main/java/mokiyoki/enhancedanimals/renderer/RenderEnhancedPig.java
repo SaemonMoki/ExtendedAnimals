@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.renderer;
 
 import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedPig;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import net.minecraft.client.Minecraft;
@@ -31,10 +32,13 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
      */
     public ResourceLocation getEntityTexture(EnhancedPig entity) {
         String s = entity.getPigTexture();
+        Colouration colourRGB = entity.getRgb();
 
-        if (s == null || s.isEmpty()) {
+        if (s == null || s.isEmpty() || colourRGB == null) {
             return ERROR_TEXTURE_LOCATION;
         }
+
+        s = s + colourRGB.getRGBStrings();
 
         ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
 
@@ -47,7 +51,7 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_PIG_TEXTURE_LOCATION, textures, entity.getVariantAlphaTexturePaths(), entity.colouration));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_PIG_TEXTURE_LOCATION, textures, null, colourRGB));
                LAYERED_LOCATION_CACHE.put(s, resourcelocation);
             } catch (IllegalStateException e) {
                 return ERROR_TEXTURE_LOCATION;

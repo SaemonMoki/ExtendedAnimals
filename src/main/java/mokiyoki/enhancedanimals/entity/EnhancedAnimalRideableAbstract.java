@@ -48,7 +48,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     private static final DataParameter<Byte> STATUS = EntityDataManager.createKey(EnhancedAnimalRideableAbstract.class, DataSerializers.BYTE);
     protected static final IAttribute JUMP_STRENGTH = (new RangedAttribute((IAttribute)null, "ea.jumpStrength", 0.7D, 0.0D, 2.0D)).setDescription("Jump Strength").setShouldWatch(true);
     private static final DataParameter<Boolean> HAS_SADDLE = EntityDataManager.createKey(EnhancedAnimalRideableAbstract.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> BOOST_TIME = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> BOOST_TIME = EntityDataManager.createKey(EnhancedAnimalRideableAbstract.class, DataSerializers.VARINT);
 
     private static final String[] TEXTURES_SADDLE = new String[] {
             "d_saddle_vanilla.png", "d_saddle_western.png", "d_saddle_english.png"
@@ -192,7 +192,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     @Override
     public boolean canHaveSaddle() {
-        return true;
+        return getAge() >= (3*getAdultAge()/4);
     }
 
     public void setSaddled(boolean saddled) {
@@ -253,17 +253,19 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
+        int age = getAge();
+        int adultAge = getAdultAge();
 
         if (this.isBeingRidden()) {
             return super.processInteract(entityPlayer, hand);
         }
 
-        if (!this.isBeingRidden() && item instanceof AirItem && !entityPlayer.isSecondaryUseActive()) {
+        if (!this.isBeingRidden() && item instanceof AirItem && !entityPlayer.isSecondaryUseActive() && age >= adultAge) {
             this.mountTo(entityPlayer);
             return true;
         }
 
-        if (item == Items.SADDLE || item instanceof CustomizableSaddleVanilla || item instanceof CustomizableSaddleWestern || item instanceof CustomizableSaddleEnglish){
+        if (age >= (3*adultAge)/4 && (item == Items.SADDLE || item instanceof CustomizableSaddleVanilla || item instanceof CustomizableSaddleWestern || item instanceof CustomizableSaddleEnglish)){
             return this.saddleAnimal(itemStack, entityPlayer, this);
         }
 

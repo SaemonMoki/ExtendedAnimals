@@ -1,10 +1,10 @@
 package mokiyoki.enhancedanimals.renderer;
 
-import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
 import mokiyoki.enhancedanimals.renderer.layers.SilkieChickenLayer;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
+import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -13,19 +13,16 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Map;
 
 /**
  * Created by saemon on 2/09/2018.
  */
 @OnlyIn(Dist.CLIENT)
-public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnhancedChicken<EnhancedChicken>>
-{
-    private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
+public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnhancedChicken<EnhancedChicken>> {
+    private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_CHICKEN_TEXTURE_LOCATION = "eanimod:textures/entities/chicken/";
     private static final String ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION = "eanimod:textures/entities/chickensilkie/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/chicken/chickenbase.png");
-
 
     public RenderEnhancedChicken(EntityRendererManager render)
     {
@@ -36,8 +33,8 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    public ResourceLocation getEntityTexture(EnhancedChicken entity)
-    {
+    public ResourceLocation getEntityTexture(EnhancedChicken entity) {
+        entity.getEntityWorld().getProfiler().startSection("ChickenRenderer");
         String s = entity.getChickenTexture();
         int[] genes = entity.getSharedGenes();
 
@@ -49,7 +46,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
             }
         }
 
-        ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
+        ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {
             String[] textures = entity.getVariantTexturePaths();
@@ -68,7 +65,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
 //                    Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION, null, textures, null));
 //                }
 
-                LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+                textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {
                 return ERROR_TEXTURE_LOCATION;
             }

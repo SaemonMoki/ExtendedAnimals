@@ -1,12 +1,10 @@
 package mokiyoki.enhancedanimals.renderer;
 
-
-import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
-//import mokiyoki.enhancedanimals.renderer.layers.EnhancedMooshroomMushroomLayer;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
+import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -14,11 +12,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Map;
-
 @OnlyIn(Dist.CLIENT)
 public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, ModelEnhancedCow<EnhancedMooshroom>> {
-    private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
+    private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_COW_TEXTURE_LOCATION = "eanimod:textures/entities/cow/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/cow/cowbase.png");
 
@@ -37,7 +33,7 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
 
         s = s + colourRGB.getRGBStrings();
 
-        ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
+        ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {
             String[] textures = entity.getVariantTexturePaths();
@@ -49,7 +45,8 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
             try {
                 resourcelocation = new ResourceLocation(s);
                 Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, textures, null, colourRGB));
-                LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+
+                textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {
                 return ERROR_TEXTURE_LOCATION;
             }

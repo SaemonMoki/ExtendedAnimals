@@ -49,7 +49,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -85,6 +84,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     // Genetic Info
     protected int[] genes;
+    protected int[] genesSplitForClient;
     protected int[] mateGenes;
     protected int[] mitosisGenes;
     protected int[] mateMitosisGenes;
@@ -1117,19 +1117,25 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         this.dataManager.set(SHARED_GENES, sb.toString());
     }
 
+    @OnlyIn(Dist.CLIENT)
     public int[] getSharedGenes() {
-        String sharedGenes = ((String) this.dataManager.get(SHARED_GENES)).toString();
-        if (sharedGenes.isEmpty()) {
-            return null;
-        }
-        String[] genesToSplit = sharedGenes.split(",");
-        int[] sharedGenesArray = new int[genesToSplit.length];
+        if(this.genesSplitForClient==null) {
+            String sharedGenes = ((String) this.dataManager.get(SHARED_GENES)).toString();
+            if (sharedGenes.isEmpty()) {
+                return null;
+            }
+            String[] genesToSplit = sharedGenes.split(",");
+            int[] sharedGenesArray = new int[genesToSplit.length];
 
-        for (int i = 0; i < sharedGenesArray.length; i++) {
-            //parse and store each value into int[] to be returned
-            sharedGenesArray[i] = Integer.parseInt(genesToSplit[i]);
+            for (int i = 0; i < sharedGenesArray.length; i++) {
+                //parse and store each value into int[] to be returned
+                sharedGenesArray[i] = Integer.parseInt(genesToSplit[i]);
+            }
+
+            this.genesSplitForClient = sharedGenesArray;
+            return sharedGenesArray;
         }
-        return sharedGenesArray;
+        return this.genesSplitForClient;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1145,8 +1151,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String[] getVariantAlphaTexturePaths()
-    {
+    public String[] getVariantAlphaTexturePaths() {
         if (this.enhancedAnimalAlphaTextures.isEmpty()) {
             this.setAlphaTexturePaths();
         }
@@ -1218,6 +1223,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected void extraMixingOverrides(int[] mitosis, int[] parentGenes){}
+
+    //overriden to prevent aging up when fed
+    @Override
+    public void ageUp(int growthSeconds, boolean updateForcedAge) {
+        if (!updateForcedAge) {
+            super.ageUp(growthSeconds, updateForcedAge);
+        }
+    }
 
     protected ILivingEntityData commonInitialSpawnSetup(IWorld inWorld, @Nullable ILivingEntityData livingdata, int geneStartIndex, int geneLength, int childAge, int ageMinimum, int ageMaximum) {
         int[] spawnGenes;

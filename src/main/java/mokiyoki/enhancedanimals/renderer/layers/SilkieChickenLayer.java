@@ -30,7 +30,7 @@ public class SilkieChickenLayer extends LayerRenderer<EnhancedChicken, ModelEnha
     }
 
     public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, EnhancedChicken entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        int[] genes = entitylivingbaseIn.getGenes();
+        int[] genes = entitylivingbaseIn.getSharedGenes();
         float fuzz = 0.0F;
         if (genes[106] == 2 && genes[107] == 2) {
             fuzz = 0.5F;

@@ -30,7 +30,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
     public RenderEnhancedChicken(EntityRendererManager render)
     {
         super(render, new ModelEnhancedChicken<>(0.0F, false), 0.5F);
-        this.addLayer(new SilkieChickenLayer(this));
+//        this.addLayer(new SilkieChickenLayer(this));
     }
 
     /**

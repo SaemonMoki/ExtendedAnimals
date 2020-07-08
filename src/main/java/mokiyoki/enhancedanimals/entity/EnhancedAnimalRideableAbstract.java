@@ -192,7 +192,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     @Override
     public boolean canHaveSaddle() {
-        return true;
+        return getAge() >= (3*getAdultAge()/4);
     }
 
     public void setSaddled(boolean saddled) {
@@ -253,17 +253,19 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
+        int age = getAge();
+        int adultAge = getAdultAge();
 
         if (this.isBeingRidden()) {
             return super.processInteract(entityPlayer, hand);
         }
 
-        if (!this.isBeingRidden() && item instanceof AirItem && !entityPlayer.isSecondaryUseActive()) {
+        if (!this.isBeingRidden() && item instanceof AirItem && !entityPlayer.isSecondaryUseActive() && age >= adultAge) {
             this.mountTo(entityPlayer);
             return true;
         }
 
-        if (item == Items.SADDLE || item instanceof CustomizableSaddleVanilla || item instanceof CustomizableSaddleWestern || item instanceof CustomizableSaddleEnglish){
+        if (age >= (3*adultAge)/4 && (item == Items.SADDLE || item instanceof CustomizableSaddleVanilla || item instanceof CustomizableSaddleWestern || item instanceof CustomizableSaddleEnglish)){
             return this.saddleAnimal(itemStack, entityPlayer, this);
         }
 

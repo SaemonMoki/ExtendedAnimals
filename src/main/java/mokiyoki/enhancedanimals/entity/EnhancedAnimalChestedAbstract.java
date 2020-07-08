@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CarpetBlock;
 import net.minecraft.entity.EntityType;
@@ -135,12 +136,19 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     public boolean processInteract(PlayerEntity player, Hand hand) {
         ItemStack itemstack = player.getHeldItem(hand);
         if (!itemstack.isEmpty()) {
-            if (!this.hasChest() && itemstack.getItem() == Blocks.CHEST.asItem()) {
+            Item item = itemstack.getItem();
+            if (this.canHaveChest() && !this.hasChest() && item == Items.CHEST) {
                 this.setChested(true);
                 this.playChestEquipSound();
                 this.animalInventory.setInventorySlotContents(0, itemstack);
                 this.initInventory();
                 return true;
+            }
+            if (this.canHaveBlanket() && isCarpet(itemstack)) {
+                return this.blanketAnimal(itemstack, this);
+            }
+            if (this.canHaveBridle() && item instanceof CustomizableBridle) {
+                return this.bridleAnimal(itemstack, player, hand, this);
             }
         }
         return super.processInteract(player, hand);
@@ -152,13 +160,33 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     public boolean blanketAnimal(ItemStack itemStack, LivingEntity target) {
         EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
-        if (enhancedAnimal.isAlive() && !enhancedAnimal.dataManager.get(HAS_BLANKET) && !enhancedAnimal.isChild()) {
+        if (enhancedAnimal.isAlive() && !enhancedAnimal.dataManager.get(HAS_BLANKET)) {
             this.animalInventory.setInventorySlotContents(4, itemStack);
             this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
             itemStack.shrink(1);
             return true;
         }
 
+        return true;
+    }
+
+    public boolean bridleAnimal(ItemStack itemStack, PlayerEntity player, Hand hand, LivingEntity target) {
+        EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
+        if (enhancedAnimal.isAlive()) {
+            if (!enhancedAnimal.dataManager.get(HAS_BRIDLE)) {
+                this.animalInventory.setInventorySlotContents(3, itemStack);
+                this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
+                itemStack.shrink(1);
+                return true;
+            } else {
+                ItemStack otherBridle = this.animalInventory.getStackInSlot(3);
+                this.animalInventory.setInventorySlotContents(3, itemStack);
+                this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
+                itemStack.shrink(1);
+                player.setHeldItem(hand, otherBridle);
+                return true;
+            }
+        }
         return true;
     }
 

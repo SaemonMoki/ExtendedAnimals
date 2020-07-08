@@ -233,59 +233,59 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
          * Equipment stuff
          */
 
-        this.saddle = new EnhancedRendererModelNew(this, 98, 24, "Saddle");
+        this.saddle = new EnhancedRendererModelNew(this, 0, 0, "Saddle");
 
-        this.saddleWestern = new EnhancedRendererModelNew(this, 114, 0, "WesternSaddle");
+        this.saddleWestern = new EnhancedRendererModelNew(this, 210, 0, "WesternSaddle");
         this.saddleWestern.addBox(-5.0F, -2.0F, -5.0F, 10, 2, 13, 0.0F);
-        this.saddleWestern.setTextureOffset(114, 15);
+        this.saddleWestern.setTextureOffset(210, 15);
         this.saddleWestern.addBox(-4.0F, -3.0F, 5.0F, 8, 2, 4, 0.0F);
-        this.saddleWestern.setTextureOffset(134, 15);
+        this.saddleWestern.setTextureOffset(230, 15);
         this.saddleWestern.addBox(-3.5F, -4.0F, 8.0F, 7, 2, 2, 0.0F);
 
-        this.saddleEnglish = new EnhancedRendererModelNew(this, 115, 1, "EnglishSaddle");
+        this.saddleEnglish = new EnhancedRendererModelNew(this, 211, 1, "EnglishSaddle");
         this.saddleEnglish.addBox(-5.0F, -1.0F, -4.0F, 10, 2, 12, 0.0F);
-        this.saddleEnglish.setTextureOffset(114, 15);
+        this.saddleEnglish.setTextureOffset(210, 15);
         this.saddleEnglish.addBox(-4.0F, -1.5F, 5.0F, 8, 2, 4, 0.0F);
-        this.saddleEnglish.setTextureOffset(134, 15);
+        this.saddleEnglish.setTextureOffset(230, 15);
         this.saddleEnglish.addBox(-3.5F, -2.0F, 7.5F, 7, 2, 2, 0.0F);
 
-        this.saddleHorn = new EnhancedRendererModelNew(this, 138, 19, "SaddleHorn");
+        this.saddleHorn = new EnhancedRendererModelNew(this, 234, 19, "SaddleHorn");
         this.saddleHorn.addBox(-4.0F, -2.0F, -3.0F, 8, 2, 3, 0.0F);
 
-        this.saddlePomel = new EnhancedRendererModelNew(this, 147, 0, "SaddlePomel");
+        this.saddlePomel = new EnhancedRendererModelNew(this, 243, 0, "SaddlePomel");
         this.saddlePomel.addBox(-1.0F, -3.0F, -2.0F, 2, 4, 2, -0.25F);
         this.saddlePomel.setRotationPoint(0.0F, -2.0F, -2.0F);
 
-        this.saddleSideL = new EnhancedRendererModelNew(this, 138, 49, "SaddleLeft");
+        this.saddleSideL = new EnhancedRendererModelNew(this, 234, 49, "SaddleLeft");
         this.saddleSideL.addBox(0.0F, 0.0F, 0.0F, 3, 4, 8);
 
-        this.saddleSideR = new EnhancedRendererModelNew(this, 138, 61, "SaddleRight");
+        this.saddleSideR = new EnhancedRendererModelNew(this, 234, 61, "SaddleRight");
         this.saddleSideR.addBox(-3.0F, 0.0F, 0.0F, 3, 4, 8);
 
-        this.stirrup2DWideL = new EnhancedRendererModelNew(this, 152, 24, "2DStirrupL");
+        this.stirrup2DWideL = new EnhancedRendererModelNew(this, 248, 24, "2DStirrupL");
         this.stirrup2DWideL.addBox(0.0F, 0.0F, 0.0F, 0, 10, 4); // strap
 
-        this.stirrup2DWideR = new EnhancedRendererModelNew(this, 152, 24, "2DStirrupR");
+        this.stirrup2DWideR = new EnhancedRendererModelNew(this, 248, 24, "2DStirrupR");
         this.stirrup2DWideR.addBox(0.0F, 0.0F, 0.0F, 0, 10, 4); // strap
 
-        this.stirrup3DNarrowL = new EnhancedRendererModelNew(this, 153, 27, "3DStirrupL");
+        this.stirrup3DNarrowL = new EnhancedRendererModelNew(this, 249, 27, "3DStirrupL");
         this.stirrup3DNarrowL.addBox(-1.0F, 0.0F, 0.0F, 1, 10, 1); // strap
 
-        this.stirrup3DNarrowR = new EnhancedRendererModelNew(this, 155, 27, "3DStirrupR");
+        this.stirrup3DNarrowR = new EnhancedRendererModelNew(this, 251, 27, "3DStirrupR");
         this.stirrup3DNarrowR.addBox(0.0F, 0.0F, 0.0F, 1, 10, 1);
 
-        this.stirrup = new EnhancedRendererModelNew(this, 114, 0, "Stirrup");
+        this.stirrup = new EnhancedRendererModelNew(this, 210, 0, "Stirrup");
         this.stirrup.addBox(-0.5F, 9.5F, -1.0F, 1, 1, 1);
-        this.stirrup.setTextureOffset(118, 0);
+        this.stirrup.setTextureOffset(214, 0);
         this.stirrup.addBox(-0.5F, 9.5F, 1.0F, 1, 1, 1);
-        this.stirrup.setTextureOffset(114, 2);
+        this.stirrup.setTextureOffset(210, 2);
         this.stirrup.addBox(-0.5F, 10.5F, -1.5F, 1, 3, 1);
-        this.stirrup.setTextureOffset(118, 2);
+        this.stirrup.setTextureOffset(214, 2);
         this.stirrup.addBox(-0.5F, 10.5F, 1.5F, 1, 3, 1);
-        this.stirrup.setTextureOffset(115, 7);
+        this.stirrup.setTextureOffset(211, 7);
         this.stirrup.addBox(-0.5F, 12.5F, -0.5F, 1, 1, 2);
 
-        this.saddlePad = new EnhancedRendererModelNew(this, 98, 24, "SaddlePad");
+        this.saddlePad = new EnhancedRendererModelNew(this, 194, 24, "SaddlePad");
         this.saddlePad.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
 
         this.saddleHorn.addChild(this.saddlePomel);
@@ -354,8 +354,6 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
     }
 
     private void renderPigandSaddle( ItemStack saddleStack,List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (!saddleStack.isEmpty()) {
-            Item saddle = saddleStack.getItem();
 
             Map<String, List<Float>> mapOfScale = new HashMap<>();
             float saddleScale = 0.75F;
@@ -365,11 +363,9 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             this.saddle.showModel = false;
             this.saddlePomel.showModel = false;
 
-//            float antiScale = 1.25F;
+        if (!saddleStack.isEmpty()) {
             List<Float> scalingsForSaddle = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
-//            List<Float> scalingsForPad = createScalings(antiScale, 0.0F, -antiScale*0.01F, (antiScale - 1.0F)*0.04F);
-//            mapOfScale.put("SaddlePad", scalingsForPad);
-
+            Item saddle = saddleStack.getItem();
             if (saddle instanceof CustomizableSaddleWestern) {
                 this.saddleWestern.showModel = true;
                 this.saddlePomel.showModel = true;
@@ -384,8 +380,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
                 this.saddle.showModel = true;
                 mapOfScale.put("Saddle", scalingsForSaddle);
             }
-            this.pig.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
+        this.pig.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     @Override
@@ -628,7 +624,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             Item saddle = saddleStack.getItem();
             if (saddle instanceof CustomizableSaddleWestern) {
                 this.saddleWestern.rotateAngleX = -((float) Math.PI / 2F);
-                this.saddleWestern.setRotationPoint(0.0F, 4.0F, 10.5F);
+                this.saddleWestern.setRotationPoint(0.0F, 4.0F, 10.0F);
                 this.saddleSideL.setRotationPoint(5.0F, -1.0F, -5.25F);
                 this.saddleSideR.setRotationPoint(-5.0F, -1.0F, -5.25F);
                 this.saddleHorn.setRotationPoint(0.0F, -2.0F, -2.0F);
@@ -639,7 +635,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
                 this.stirrup2DWideR.setRotationPoint(-7.5F, 0.0F, -3.5F);
             } else if (saddle instanceof CustomizableSaddleEnglish) {
                 this.saddleEnglish.rotateAngleX = -((float) Math.PI / 2F);
-                this.saddleEnglish.setRotationPoint(0.0F, 4.0F, 10.5F);
+                this.saddleEnglish.setRotationPoint(0.0F, 4.0F, 10.0F);
                 this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
                 this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
                 this.saddleHorn.setRotationPoint(0.0F, -1.0F, -1.0F);
@@ -648,7 +644,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
                 this.stirrup3DNarrowR.setRotationPoint(-8.0F, -0.5F, -1.5F);
             } else {
                 this.saddle.rotateAngleX = -((float) Math.PI / 2F);
-                this.saddle.setRotationPoint(0.0F, 4.0F, 10.5F);
+                this.saddle.setRotationPoint(0.0F, 4.0F, 10.0F);
                 this.stirrup3DNarrowL.setRotationPoint(8.0F, 0.0F, 0.0F);
                 this.stirrup3DNarrowR.setRotationPoint(-8.0F, 0.0F, 0.0F);
             }

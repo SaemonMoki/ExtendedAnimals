@@ -195,6 +195,14 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     protected int getAdultAge() { return 120000;}
 
     @Override
+    public Boolean isAnimalSleeping() {
+        if (isLeashedToTrader()) {
+            return false;
+        }
+        return super.isAnimalSleeping();
+    }
+
+    @Override
     protected int gestationConfig() {
         return EanimodCommonConfig.COMMON.gestationDaysLlama.get();
     }

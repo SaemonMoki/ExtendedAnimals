@@ -1038,11 +1038,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
 
         int age = this.getAge();
-        if (age < 120000) {
-            if (age > 80000) {
+        int adultAge = getAdultAge();
+        if (age < adultAge) {
+            if (age > (adultAge*3)/4) {
                 name = "Young" + " " + name;
-            } else if (age > 40000) {
+            } else if (age > adultAge/3) {
                 name = "Baby" + " " + name;
+            } else {
+                name = "Newborn" + " " + name;
             }
         }
 

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EntityState;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
@@ -116,6 +117,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final EnhancedRendererModelNew saddleSideR;
     private final EnhancedRendererModelNew saddlePad;
     private final EnhancedRendererModelNew headTassles;
+    private final EnhancedRendererModelNew collar;
 
     private final List<EnhancedRendererModelNew> leftHorns = new ArrayList<>();
     private final List<EnhancedRendererModelNew> rightHorns = new ArrayList<>();
@@ -522,6 +524,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.headTassles.setTextureOffset(34, 56);
         this.headTassles.addBox(1.0F, 0.0F, 4.0F, 4, 9, 1);
 
+        this.collar = new EnhancedRendererModelNew(this, 80, 68);
+        this.collar.addBox(-3.5F, 0.0F, -0.5F, 7,  2, 9);
+        this.collar.setTextureOffset(103, 71);
+        this.collar.addBox(0.0F, -0.5F, 7.5F, 0,  3, 3);
+        this.collar.setTextureOffset(103, 71);
+        this.collar.addBox(-3.0F, -0.5F, 9.0F, 3, 3, 3, -0.25F);
+        this.collar.rotateAngleX = (float)-Math.PI/2.0F;
+        this.neck.addChild(this.collar);
 
         this.body.addChild(this.saddle);
         this.saddleHorn.addChild(this.saddlePomel);
@@ -569,6 +579,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         //size [0.75 to 2.5]
         float hornScale = 1.0F;
         if(genes != null) {
+            hornScale = getHornScale(genes, horns);
+
             if (genes[26] == 1 || genes[27] == 1){
                 //dwarf
                 dwarf = true;
@@ -591,32 +603,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             for (int i = 1; i < genes[39]; i++){
                 hump++;
-            }
-
-            if (horns != 0.0F) {
-                if (horns == -1.0F) {
-                    //normal horns
-                    for (int i = 86; i <= 89; i++){
-                        if (genes[i] == 2) {
-                            hornScale = hornScale * 1.15F;
-                        }
-                    }
-                    if (genes[90] == 2) {
-                        hornScale = hornScale * 1.25F;
-                    }
-                    if (genes[91] == 2) {
-                        hornScale = hornScale * 1.25F;
-                    }
-                    if (genes[80] >= 3) {
-                        hornScale = hornScale * 0.95F;
-                    }
-                    if (genes[81] >= 3) {
-                        hornScale = hornScale * 0.95F;
-                    }
-                } else {
-                    //scurs
-                    hornScale = (hornScale + 0.75F) * 0.5F;
-                }
             }
         }
 
@@ -700,6 +686,12 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.eyeRight.showModel = false;
         }
 
+        if (cowModelData.bridle.getItem() instanceof CustomizableCollar || cowModelData.harness.getItem() instanceof CustomizableCollar) {
+            this.collar.showModel = true;
+        } else {
+            this.collar.showModel = false;
+        }
+
     }
 
 
@@ -724,10 +716,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         if (!saddleStack.isEmpty()) {
             Item saddle = saddleStack.getItem();
             float saddleScale = 0.875F;
-//            float antiScale = 1.25F;
             List<Float> scalingsForSaddle = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
-//            List<Float> scalingsForPad = createScalings(antiScale, 0.0F, -antiScale*0.01F, (antiScale - 1.0F)*0.04F);
-//            mapOfScale.put("SaddlePad", scalingsForPad);
 
             if (saddle instanceof CustomizableSaddleWestern) {
                 this.saddleWestern.showModel = true;
@@ -748,8 +737,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private void renderHorns(float horns, float hornScale, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (horns != 0.0F) {
             Map<String, List<Float>> mapOfScale = new HashMap<>();
-//            hornScale = hornScaleTest;
-//            List<Float> scalingsForHorn = ModelHelper.createScalings(hornScale, hornScale, hornScale,0.0F, -hornScale*0.01F, (hornScale - 1.0F)*0.04F);
             List<Float> scalingsForHorn = ModelHelper.createScalings(hornScale, hornScale, hornScale,0.0F, 0.0F, 0.0F);
             mapOfScale.put("HornL0", scalingsForHorn);
             mapOfScale.put("HornR0", ModelHelper.mirrorX(scalingsForHorn));
@@ -834,7 +821,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.neck.rotateAngleX = (headPitch * 0.017453292F);
         this.neck.rotateAngleY = netHeadYaw * 0.017453292F;
-//        this.neck.rotateAngleY = (float)Math.PI/2.0F;
 
         this.humpXLarge.rotateAngleX = ((headPitch * 0.017453292F)/2.5F) - 0.2F;
         this.humpXLarge.rotateAngleY = (netHeadYaw * 0.017453292F)/2.5F;
@@ -876,7 +862,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         setEarRotations(cowModelData.cowGenes, unrenderedModels);
 
-        setHornRotations(cowModelData, unrenderedModels, entityIn);
+        setHornRotations(cowModelData, unrenderedModels);
 
         setHumpPlacement(cowModelData.cowGenes);
 
@@ -912,7 +898,37 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.headTassles.rotateAngleY = (float)Math.PI/2.0F;
     }
 
-    private void setHornRotations(CowModelData cowModelData, List<String> unrenderedModels, T entityIn) {
+    private float getHornScale(int[] genes, float horns) {
+        float hornScale = 1.0F;
+        if (horns != 0.0F) {
+            if (horns == -1.0F) {
+                //normal horns
+                for (int i = 86; i <= 89; i++){
+                    if (genes[i] == 2) {
+                        hornScale = hornScale * 1.15F;
+                    }
+                }
+                if (genes[90] == 2) {
+                    hornScale = hornScale * 1.25F;
+                }
+                if (genes[91] == 2) {
+                    hornScale = hornScale * 1.25F;
+                }
+                if (genes[80] >= 3) {
+                    hornScale = hornScale * 0.95F;
+                }
+                if (genes[81] >= 3) {
+                    hornScale = hornScale * 0.95F;
+                }
+            } else {
+                //scurs
+                hornScale = (hornScale + 0.75F) * 0.5F;
+            }
+        }
+        return hornScale;
+    }
+
+    private void setHornRotations(CowModelData cowModelData, List<String> unrenderedModels) {
 
         int[] genes = cowModelData.cowGenes;
         char[] uuidArray = cowModelData.uuidArray;
@@ -961,38 +977,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         float horns = calculateHorns(genes, uuidArray);
 
-        float hornScale = 1.0F;
-        if (horns != 0.0F) {
-            if (horns == -1.0F) {
-                //normal horns
-                for (int i = 86; i <= 89; i++){
-                    if (genes[i] == 2) {
-                        hornScale = hornScale * 1.15F;
-                    }
-                }
-                if (genes[90] == 2) {
-                    hornScale = hornScale * 1.25F;
-                }
-                if (genes[91] == 2) {
-                    hornScale = hornScale * 1.25F;
-                }
-                if (genes[80] >= 3) {
-                    hornScale = hornScale * 0.95F;
-                }
-                if (genes[81] >= 3) {
-                    hornScale = hornScale * 0.95F;
-                }
-            } else {
-                //scurs
-                hornScale = (hornScale + 0.75F) * 0.5F;
-            }
-        }
+        float hornScale = getHornScale(genes, horns);
 
         Float[] hornGrowthL = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
         Float[] hornGrowthR = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
-
-//        Float[] hornGrowthL = {-1.0F, -1.0F, -1.0F, -1.0F, -1.0F, -1.0F, -1.0F, -1.0F, -1.0F, -1.0F};
-//        Float[] hornGrowthR = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
 
         if (horns != 0.0F) {
 
@@ -1076,7 +1064,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                         lengthL = lengthL + 2;
                     }
                 }
-
                 lengthR = lengthL;
             }
 
@@ -1090,41 +1077,46 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             if (cowModelData.birthTime != null && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
                 int ageTime = (int)(cowModelData.clientGameTime - Long.parseLong(cowModelData.birthTime));
                 if (ageTime < 108000) {
+                    int hornAge = 0;
                     if (ageTime > 97200) {
-                        lengthL += 1;
-                        lengthR += 1;
+                        lengthL = 1 + (8*(lengthL/9));
+                        lengthR = 1 + (8*(lengthR/9));
                     } else if (ageTime > 86400) {
-                        lengthL += 2;
-                        lengthL += 2;
+                        hornAge = 2;
                     } else if (ageTime > 75600) {
-                        lengthL += 3;
-                        lengthL += 3;
+                        hornAge = 3;
                     } else if (ageTime > 60800) {
-                        lengthL += 4;
-                        lengthR += 4;
+                        hornAge = 4;
                     } else if (ageTime > 40000) {
-                        lengthL += 5;
-                        lengthR += 5;
+                        hornAge = 5;
                     } else if (ageTime > 30200) {
-                        lengthL += 6;
-                        lengthR += 6;
-                    } else if (ageTime > 12000) {
-                        lengthL += 7;
-                        lengthR += 7;
+                        hornAge = 6;
+                    } else if (ageTime > 24000) {
+                        hornAge = 7;
                     } else if (ageTime > 9000) {
-                        lengthL += 8;
-                        lengthR += 8;
+                        hornAge = 8;
                     } else if (ageTime > 6000) {
-                        lengthL = 9;
-                        lengthR = 9;
+                        hornAge = 9;
+                    } else {
+                        hornAge = 10;
                     }
+
+                    //this grows the horns from nothing to their adult size
+                    lengthL = hornAge + (8*(lengthL/9));
+                    lengthR = hornAge + (8*(lengthR/9));
+
                 }
             }
+
+
 
 //            lengthL = hornLengthTest;
 //            lengthR = hornLengthTest;
 
-            if (lengthL != 0 && lengthR != 0) {
+            /*
+                creates horn model of correct length
+             */
+            if (lengthL != 0 || lengthR != 0) {
 
                 for (int i = 0; i <= 9; i++) {
                     if (i <= lengthL) {
@@ -1144,7 +1136,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 }
             }
 
-//            hornScale = hornScaleTest;
             float hornScaleR = hornScale;
 
             // hornlength 0 [ (scale=1.0F, 1.0F) (scale=2.5F, 5.5) ]
@@ -1158,6 +1149,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             // hornlength 8 [ (scale=1.0F, -0.6) (scale=2.5F, 2.0) ]
             // hornlength 9 [ (scale=1.0F, -0.5) (scale=2.5F, 1.9) ]
 
+            /*
+                sets base of horns to the correct place
+             */
             switch(lengthL) {
                 case 0 : hornScale = 1.0F + ((hornScale-1.0F)*3.0F);
                     break;

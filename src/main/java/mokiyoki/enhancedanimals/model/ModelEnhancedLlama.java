@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
@@ -104,6 +105,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
     private final EnhancedRendererModelNew stirrup;
     private final EnhancedRendererModelNew saddleSideR;
     private final EnhancedRendererModelNew saddlePad;
+    private final ModelRenderer collar;
 
     private Integer currentLlama = null;
 
@@ -138,33 +140,32 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.neck.addBox(-4.0F, -9.0F, -1.1F, 8, 12, 6, scale - 1.0F); //neck
         this.neck.setTextureOffset(28,23);
         this.neck.addBox(-4.0F, -2.0F, -1.1F, 8, 10, 6, scale + 0.01F); //deco
-//        this.neck.addBox(-4.0F, -2.0F, -1.1F, 8, 6, 6, -1.0F); //head and neck
         this.neck.setRotationPoint(0, 5, -6);
 
         this.neckWool0 = new ModelRenderer(this, 0, 12);
         this.neckWool0.addBox(-4.0F, -8.0F, headAdjust, 8, 12, 6, scale + 0.0F); //neck
         this.neckWool0.setTextureOffset(28,23);
-        this.neckWool0.addBox(-4.0F, -3.75F, headAdjust, 8, 10, 6, scale + 0.51F); //neck
+        this.neckWool0.addBox(-4.0F, -3.75F, headAdjust, 8, 10, 6, scale + 0.51F); //deco
 
         this.neckWool1 = new ModelRenderer(this, 0, 12);
         this.neckWool1.addBox(-4.0F, -8.5F, headAdjust, 8, 12, 6, scale + 0.5F); //neck
         this.neckWool1.setTextureOffset(28,23);
-        this.neckWool1.addBox(-4.0F, -2.25F, headAdjust, 8, 10, 6, scale + 0.75F); //neck
+        this.neckWool1.addBox(-4.0F, -2.25F, headAdjust, 8, 10, 6, scale + 0.75F); //deco
 
         this.neckWool2 = new ModelRenderer(this, 0, 12);
         this.neckWool2.addBox(-4.0F, -7.5F, headAdjust, 8, 12, 6, scale + 1.0F); //neck
         this.neckWool2.setTextureOffset(28,23);
-        this.neckWool2.addBox(-4.0F, -3.7F, headAdjust, 8, 10, 6, scale + 1.2F); //neck
+        this.neckWool2.addBox(-4.0F, -3.7F, headAdjust, 8, 10, 6, scale + 1.2F); //deco
 
         this.neckWool3 = new ModelRenderer(this, 0, 12);
         this.neckWool3.addBox(-4.0F, -7.0F, headAdjust, 8, 12, 6, scale + 1.5F); //neck
         this.neckWool3.setTextureOffset(28,23);
-        this.neckWool3.addBox(-4.0F, -3.1F, headAdjust, 8, 10, 6, scale + 1.6F); //neck
+        this.neckWool3.addBox(-4.0F, -3.1F, headAdjust, 8, 10, 6, scale + 1.6F); //deco
 
         this.neckWool4 = new ModelRenderer(this, 0, 12);
         this.neckWool4.addBox(-4.0F, -6.5F, headAdjust, 8, 12, 6, scale + 2.0F); //neck
         this.neckWool4.setTextureOffset(28,23);
-        this.neckWool4.addBox(-4.0F, -2.55F, headAdjust, 8, 10, 6, scale + 2.05F); //neck
+        this.neckWool4.addBox(-4.0F, -2.55F, -2.0F, 8, 10, 6, scale + 2.05F); //deco
 
         this.earsR = new ModelRenderer(this, 44, 0);
         this.earsR.addBox(-4.0F, -6.0F, 0.0F, 3, 3, 2, scale + 0.0F); //ear right
@@ -220,16 +221,16 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.tail.addBox(-3.0F, -2.0F, 15.0F, 6, 6, 6, scale);
 
         this.tail1 = new ModelRenderer(this, 42, 39);
-        this.tail1.addBox(-3.0F, -2.0F, 15.0F, 6, 6, 6, scale + 0.25F);
+        this.tail1.addBox(-3.0F, -1.75F, 15.25F, 6, 6, 6, scale + 0.25F);
 
         this.tail2 = new ModelRenderer(this, 42, 39);
-        this.tail2.addBox(-3.0F, -2.0F, 15.0F, 6, 6, 6, scale + 0.5F);
+        this.tail2.addBox(-3.0F, -1.5F, 15.5F, 6, 6, 6, scale + 0.5F);
 
         this.tail3 = new ModelRenderer(this, 42, 39);
-        this.tail3.addBox(-3.0F, -2.0F, 15.0F, 6, 6, 6, scale + 0.75F);
+        this.tail3.addBox(-3.0F, -1.25F, 15.75F, 6, 6, 6, scale + 0.75F);
 
         this.tail4 = new ModelRenderer(this, 42, 39);
-        this.tail4.addBox(-3.0F, -2.0F, 15.0F, 6, 6, 6, scale + 1.0F);
+        this.tail4.addBox(-3.0F, -0.75F, 16.25F, 6, 6, 6, scale + 1.25F);
 
         this.leg1 = new ModelRenderer(this, 0, 68);
         this.leg1.addBox(0.0F, 0.0F, 0.0F, 3, 11, 3, scale);
@@ -419,6 +420,14 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.saddlePad = new EnhancedRendererModelNew(this, 130, 24, "SaddlePad");
         this.saddlePad.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
 
+        this.collar = new ModelRenderer(this, 87, 84);
+        this.collar.addBox(-5.0F, -4.5F, -3.0F, 10, 2, 8, 0.0F);
+        this.collar.setTextureOffset(124, 88);
+        this.collar.addBox(0.0F, -5.0F, -5.0F, 0, 3, 3, 0.0F);
+        this.collar.setTextureOffset(116, 84);
+        this.collar.addBox(-1.5F, -2.5F, -5.75F, 3, 3, 3, 0.0F);
+        this.neckBone.addChild(this.collar);
+
         this.body.addChild(saddle);
         this.saddle.addChild(saddlePad);
         this.saddle.addChild(stirrup3DNarrowL);
@@ -600,6 +609,13 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             this.eyeLeft.showModel = false;
             this.eyeRight.showModel = false;
         }
+
+        if (llamaModelData.bridle.getItem() instanceof CustomizableCollar || llamaModelData.harness.getItem() instanceof CustomizableCollar) {
+            this.collar.showModel = true;
+        } else {
+            this.collar.showModel = false;
+        }
+
     }
 
     private void renderSaddle(ItemStack saddleStack, int coatLength, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
@@ -620,7 +636,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             } else if (coatLength == 1) {
                 coatMod = 1.0625F;
             } else if (coatLength == 2) {
-                coatMod = 1.125F;
+                coatMod = 1.15F;
             } else if (coatLength == 3) {
                 coatMod = 1.25F;
             } else {
@@ -976,6 +992,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
     private LlamaModelData getCreateLlamaModelData(T enhancedLlama) {
         clearCacheTimer++;
+//        int coatTest = 1;
         if(clearCacheTimer > 50000) {
             llamaModelDataCache.values().removeIf(value -> value.lastAccessed==1);
             for (LlamaModelData llamaModelData : llamaModelDataCache.values()){
@@ -992,6 +1009,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 //                llamaModelData.dataReset = 0;
 //            }
             llamaModelData.coatlength = enhancedLlama.getCoatLength();
+//            llamaModelData.coatlength = coatTest;
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
             llamaModelData.blink = enhancedLlama.getBlink();
             llamaModelData.angry = (enhancedLlama.isAggressive());
@@ -1007,6 +1025,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.llamaGenes = enhancedLlama.getSharedGenes();
             llamaModelData.coatlength = enhancedLlama.getCoatLength();
             llamaModelData.maxCoatlength = enhancedLlama.getCoatLength();
+//            llamaModelData.coatlength = coatTest;
+//            llamaModelData.maxCoatlength = coatTest;
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
             llamaModelData.blink = enhancedLlama.getBlink();
             llamaModelData.birthTime = enhancedLlama.getBirthTime();

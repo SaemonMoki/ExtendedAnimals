@@ -2,12 +2,14 @@ package mokiyoki.enhancedanimals.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -47,7 +49,26 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
      * Draw the foreground layer for the GuiContainer (everything in front of the items)
      */
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        this.font.drawString(enhancedAnimalInfo.name, 8.0F, 6.0F, 4210752);
+        IInventory retrievedInventory = this.container.getEnhancedAnimalInventory();
+        int collarSlot = 0;
+
+        if (retrievedInventory.getStackInSlot(3).getItem() instanceof CustomizableCollar) {
+            collarSlot = 3;
+        } else if (retrievedInventory.getStackInSlot(5).getItem() instanceof CustomizableCollar) {
+            collarSlot = 5;
+        }
+        String name;
+        if (collarSlot != 0) {
+            ItemStack collarItem = retrievedInventory.getStackInSlot(collarSlot);
+            name = collarItem.getDisplayName().getString();
+            if (name.equals("") || name.equals(collarItem.getItem().getDisplayName(collarItem).getString())) {
+                name = enhancedAnimalInfo.name;
+            }
+        } else {
+            name = enhancedAnimalInfo.name;
+        }
+
+        this.font.drawString(name, 8.0F, 6.0F, 4210752);
         this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
 
         if (!tabToggle) {

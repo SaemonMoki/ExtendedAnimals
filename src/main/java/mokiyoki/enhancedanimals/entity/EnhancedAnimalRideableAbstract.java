@@ -18,9 +18,11 @@ import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.AirItem;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.MilkBucketItem;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -256,17 +258,20 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         int age = getAge();
         int adultAge = getAdultAge();
 
-        if (this.isBeingRidden()) {
+        if (age >= (3*adultAge)/4 && (item == Items.SADDLE || item instanceof CustomizableSaddleVanilla || item instanceof CustomizableSaddleWestern || item instanceof CustomizableSaddleEnglish)){
+            return this.saddleAnimal(itemStack, entityPlayer, this);
+        }
+
+        if (TEMPTATION_ITEMS.test(itemStack) || BREED_ITEMS.test(itemStack)) {
             return super.processInteract(entityPlayer, hand);
         }
 
-        if (!this.isBeingRidden() && item instanceof AirItem && !entityPlayer.isSecondaryUseActive() && age >= adultAge) {
+        if (this.isBeingRidden()) {
+            return super.processInteract(entityPlayer, hand);
+//        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge && !(item instanceof BucketItem) && !(item instanceof MilkBucketItem) && !(TEMPTATION_ITEMS.test(itemStack)) && !(BREED_ITEMS.test(itemStack))) {
+        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge) {
             this.mountTo(entityPlayer);
             return true;
-        }
-
-        if (age >= (3*adultAge)/4 && (item == Items.SADDLE || item instanceof CustomizableSaddleVanilla || item instanceof CustomizableSaddleWestern || item instanceof CustomizableSaddleEnglish)){
-            return this.saddleAnimal(itemStack, entityPlayer, this);
         }
 
         return super.processInteract(entityPlayer, hand);

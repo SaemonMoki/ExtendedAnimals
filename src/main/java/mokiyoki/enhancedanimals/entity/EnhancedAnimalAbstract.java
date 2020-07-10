@@ -9,6 +9,7 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.network.EAPacketHandler;
@@ -78,8 +79,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     private final NonNullList<ItemStack> equipmentArray = NonNullList.withSize(7, ItemStack.EMPTY);
 
-    private Ingredient TEMPTATION_ITEMS;
-    private Ingredient BREED_ITEMS;
+    protected Ingredient TEMPTATION_ITEMS;
+    protected Ingredient BREED_ITEMS;
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
 
     // Genetic Info
@@ -248,7 +249,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return false;
     }
 
-
     /*
     Getters and Setters for variables and datamanagers
     */
@@ -392,6 +392,25 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             return ((this.earTwitch*0.15F) - 10);
         }
 
+    }
+
+    //used to set if an animal is wearing bells
+    protected boolean getBells() {
+        ItemStack bridleStack = this.getEnhancedInventory().getStackInSlot(3);
+        if (!bridleStack.isEmpty()) {
+            if (bridleStack.getItem() instanceof CustomizableCollar) {
+                if (((CustomizableCollar) bridleStack.getItem()).getHasBells()) {
+                    return true;
+                }
+            }
+        }
+        ItemStack harnessStack = this.getEnhancedInventory().getStackInSlot(5);
+        if (!harnessStack.isEmpty()) {
+            if (harnessStack.getItem() instanceof CustomizableCollar) {
+                return ((CustomizableCollar) harnessStack.getItem()).getHasBells();
+            }
+        }
+        return false;
     }
 
     /*
@@ -1036,6 +1055,21 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                 name = species;
             }
         }
+
+//        if (name.equals(species)) {
+//            int slot = 0;
+//            if (getEnhancedInventory().getStackInSlot(3).getItem() instanceof CustomizableCollar) {
+//                slot = 3;
+//            } else if (getEnhancedInventory().getStackInSlot(3).getItem() instanceof CustomizableCollar) {
+//                slot = 5;
+//            }
+//            if (slot != 0) {
+//                name = getEnhancedInventory().getStackInSlot(slot).getDisplayName().getString();
+//            }
+//            if (name.equals("")) {
+//                name = species;
+//            }
+//        }
 
         int age = this.getAge();
         int adultAge = getAdultAge();

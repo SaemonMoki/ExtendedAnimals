@@ -269,7 +269,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     protected SoundEvent getDeathSound() { return SoundEvents.ENTITY_COW_DEATH; }
 
-    protected void playStepSound(BlockPos pos, BlockState blockIn) { this.playSound(SoundEvents.ENTITY_COW_STEP, 0.15F, 1.0F); }
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
+        this.playSound(SoundEvents.ENTITY_COW_STEP, 0.15F, 1.0F);
+        if (!this.isSilent() && this.getBells()) {
+            this.world.playSound((PlayerEntity)null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.BLOCK_NOTE_BLOCK_CHIME, this.getSoundCategory(), 1.5F, 0.000000001F);
+        }
+    }
 
     /**
      * Returns the volume for the sounds this mob makes.
@@ -955,6 +960,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
             this.texturesIndexes.add(String.valueOf(horn));
             this.enhancedAnimalTextures.add(COW_TEXTURES_COAT[coat]);
             this.texturesIndexes.add(String.valueOf(coat));
+            this.enhancedAnimalTextures.add("d_collar.png");
+            this.texturesIndexes.add(String.valueOf(0));
         }
     }
 
@@ -1272,6 +1279,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
                 entityPlayer.dropItem(resultItem, false);
             }
 
+            return true;
         }
 
         return super.processInteract(entityPlayer, hand);

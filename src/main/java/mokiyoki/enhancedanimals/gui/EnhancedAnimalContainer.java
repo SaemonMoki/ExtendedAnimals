@@ -57,7 +57,7 @@ public class EnhancedAnimalContainer extends Container {
             this.addSlot(new Slot(retrievedInventory, 3, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
-                    return stack.getItem() instanceof CustomizableBridle;
+                    return stack.getItem() instanceof CustomizableBridle || (!enhancedAnimal.canHaveHarness() && stack.getItem() instanceof CustomizableCollar);
                 }
 
                 public int getSlotStackLimit() {

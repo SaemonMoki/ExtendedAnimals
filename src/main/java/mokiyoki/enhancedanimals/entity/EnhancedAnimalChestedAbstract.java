@@ -178,8 +178,9 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
                 itemStack.shrink(1);
                 return true;
-            } else {
-                ItemStack otherBridle = this.animalInventory.getStackInSlot(3);
+            }
+            else {
+                ItemStack otherBridle = this.getEnhancedInventory().getStackInSlot(3);
                 this.animalInventory.setInventorySlotContents(3, itemStack);
                 this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
                 itemStack.shrink(1);

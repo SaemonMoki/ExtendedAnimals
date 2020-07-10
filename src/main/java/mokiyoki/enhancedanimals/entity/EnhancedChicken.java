@@ -48,6 +48,8 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import static mokiyoki.enhancedanimals.init.GeneticsInstantiation.CHICKEN_GENETICS;
+
 /**
  * Created by saemon and moki on 30/08/2018.
  */
@@ -2507,6 +2509,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     @Override
     protected int[] createInitialGenes(IWorld inWorld) {
+
+//        return CHICKEN_GENETICS.generateNewChickenGenetics("thebiome")
+
         int[] initialGenes = new int[Reference.CHICKEN_GENES_LENGTH];
 
 //        String pureBreed = "false";

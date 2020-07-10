@@ -268,8 +268,8 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
         if (this.isBeingRidden()) {
             return super.processInteract(entityPlayer, hand);
-//        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge && !(item instanceof BucketItem) && !(item instanceof MilkBucketItem) && !(TEMPTATION_ITEMS.test(itemStack)) && !(BREED_ITEMS.test(itemStack))) {
-        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge) {
+        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge && !(item instanceof BucketItem || item instanceof MilkBucketItem || TEMPTATION_ITEMS.test(itemStack) || BREED_ITEMS.test(itemStack) || hand.equals(Hand.OFF_HAND))) {
+//        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge) {
             this.mountTo(entityPlayer);
             return true;
         }

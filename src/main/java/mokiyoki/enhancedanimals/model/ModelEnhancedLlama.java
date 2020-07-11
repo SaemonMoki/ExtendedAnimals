@@ -610,10 +610,9 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             this.eyeRight.showModel = false;
         }
 
+        this.collar.showModel = false;
         if (llamaModelData.bridle.getItem() instanceof CustomizableCollar || llamaModelData.harness.getItem() instanceof CustomizableCollar) {
             this.collar.showModel = true;
-        } else {
-            this.collar.showModel = false;
         }
 
     }

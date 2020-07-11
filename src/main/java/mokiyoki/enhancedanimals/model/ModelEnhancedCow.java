@@ -642,12 +642,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         renderHorns(horns, hornScale, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
+        this.mushroomHead.showModel = false;
         if (!this.isChild) {
             this.mushroomBody1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.mushroomBody2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.mushroomHead.showModel = true;
-        } else {
-            this.mushroomHead.showModel = false;
         }
 
         matrixStackIn.pop();
@@ -686,10 +685,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.eyeRight.showModel = false;
         }
 
+        this.collar.showModel = false;
         if (cowModelData.bridle.getItem() instanceof CustomizableCollar || cowModelData.harness.getItem() instanceof CustomizableCollar) {
             this.collar.showModel = true;
-        } else {
-            this.collar.showModel = false;
         }
 
     }

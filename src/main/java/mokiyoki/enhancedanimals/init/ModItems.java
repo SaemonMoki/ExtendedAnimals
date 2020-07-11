@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.init;
 import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.items.*;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.item.EggItem;
 import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;

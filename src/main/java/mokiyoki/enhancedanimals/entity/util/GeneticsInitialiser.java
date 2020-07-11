@@ -13,12 +13,34 @@ public class GeneticsInitialiser {
     private static void runGeneticsScrambler(String[] selectedGeneticsBase, int[] genes) {
         int index = 0;
         for(String gene : selectedGeneticsBase) {
-            if (gene.contains("-")) {
+            String allele_A;
+            String allele_B;
+            if (gene.contains(",")) {
                 String[] splitGene = gene.split("-");
-                ThreadLocalRandom.current().nextInt(Integer.valueOf(splitGene[0]), (Integer.valueOf(splitGene[1])+1));
+                allele_A = splitGene[0];
+                allele_B = splitGene[1];
             } else {
-                genes[index] = Integer.valueOf(gene);
+                allele_A = gene;
+                allele_B = gene;
             }
+
+            genes[index] = getAllele(allele_A);
+            index++;
+            genes[index] = getAllele(allele_B);
+            index++;
+
+        }
+    }
+
+    private static int getAllele(String alleleData) {
+        if (alleleData.contains("-")) {
+            String[] splitGene = alleleData.split("-");
+            return ThreadLocalRandom.current().nextInt(Integer.valueOf(splitGene[0]), (Integer.valueOf(splitGene[1])));
+        } else if (alleleData.contains("|")) {
+            String[] splitGene = alleleData.split("\\|");
+            return Integer.valueOf(splitGene[ThreadLocalRandom.current().nextInt((splitGene.length))]);
+        } else {
+            return Integer.valueOf(alleleData);
         }
     }
 
@@ -40,7 +62,7 @@ public class GeneticsInitialiser {
         }
 
         public ChickenGeneticsInitialiser() {
-            String[] plainsBreed = new String[]{"1-2","1","1","1","1-2","1-3","1-4","1-4"};
+            String[] plainsBreed = new String[]{"1-2","1-2","1|3|5,1|3","7","1-2","1|3|6|9","1-4","1-4"};
 //            String[] taigaBreed = new String[]{0,0,0,0,0,0,0,0};
 //            String[] leghorn = new String[]{0,0,0,0,0,0,0,0};
 //            String[] wyandotte = new String[]{0,0,0,0,0,0,0,0};

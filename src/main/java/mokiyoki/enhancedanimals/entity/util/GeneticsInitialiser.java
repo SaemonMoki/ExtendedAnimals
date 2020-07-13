@@ -16,7 +16,7 @@ public class GeneticsInitialiser {
             String allele_A;
             String allele_B;
             if (gene.contains(",")) {
-                String[] splitGene = gene.split("-");
+                String[] splitGene = gene.split(",");
                 allele_A = splitGene[0];
                 allele_B = splitGene[1];
             } else {

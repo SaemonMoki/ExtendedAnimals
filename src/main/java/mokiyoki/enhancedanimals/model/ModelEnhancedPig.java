@@ -336,18 +336,18 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         matrixStackIn.scale(finalPigSize, finalPigSize, finalPigSize);
         matrixStackIn.translate(0.0F, -1.5F + 1.5F/finalPigSize, 0.0F);
 
-        if (true) {
-            renderPigandSaddle(pigModelData.saddle, pigModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        } else {
-            this.pig.render(matrixStackIn, bufferIn, null, new ArrayList<>(), false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        }
-
         if (pigModelData.blink >= 6) {
             this.eyeLeft.showModel = true;
             this.eyeRight.showModel = true;
         } else {
             this.eyeLeft.showModel = false;
             this.eyeRight.showModel = false;
+        }
+
+        if (true) {
+            renderPigandSaddle(pigModelData.saddle, pigModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        } else {
+            this.pig.render(matrixStackIn, bufferIn, null, new ArrayList<>(), false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
         matrixStackIn.pop();

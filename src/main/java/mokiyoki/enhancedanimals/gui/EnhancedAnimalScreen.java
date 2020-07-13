@@ -50,22 +50,19 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
      */
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         IInventory retrievedInventory = this.container.getEnhancedAnimalInventory();
-        int collarSlot = 0;
+        int collarSlot = getCollarSlot(retrievedInventory);
+        String name = enhancedAnimalInfo.name;
 
-        if (retrievedInventory.getStackInSlot(3).getItem() instanceof CustomizableCollar) {
-            collarSlot = 3;
-        } else if (retrievedInventory.getStackInSlot(5).getItem() instanceof CustomizableCollar) {
-            collarSlot = 5;
-        }
-        String name;
         if (collarSlot != 0) {
-            ItemStack collarItem = retrievedInventory.getStackInSlot(collarSlot);
-            name = collarItem.getDisplayName().getString();
-            if (name.equals("") || name.equals(collarItem.getItem().getDisplayName(collarItem).getString())) {
-                name = enhancedAnimalInfo.name;
+            ItemStack collarStack = retrievedInventory.getStackInSlot(collarSlot);
+            String collarName = ((CustomizableCollar)collarStack.getItem()).getCollarName(collarStack);
+            if (!collarName.equals("")) {
+                name = collarName;
             }
-        } else {
-            name = enhancedAnimalInfo.name;
+        }
+
+        if (!enhancedAnimalInfo.agePrefix.equals("ADULT")) {
+            name = enhancedAnimalInfo.agePrefix+name;
         }
 
         this.font.drawString(name, 8.0F, 6.0F, 4210752);
@@ -202,4 +199,14 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     private void setAnimalInfo() {
         this.enhancedAnimalInfo = this.container.animalInfo;
     }
+
+    private int getCollarSlot(IInventory retrievedInventory) {
+        for (int i = 1; i <= 6; i++) {
+            if (retrievedInventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
 }

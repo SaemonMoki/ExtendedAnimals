@@ -7,6 +7,7 @@ public class EnhancedAnimalInfo {
     public boolean isFemale = true;
     public int pregnant = 0;
     public String name = "Animal";
+    public String agePrefix = "ADULT";
 
     public boolean created = false;
 
@@ -20,6 +21,7 @@ public class EnhancedAnimalInfo {
             isFemale = Boolean.valueOf(splits[2]);
             pregnant = Integer.valueOf(splits[3]);
             name = String.valueOf(splits[4]);
+            agePrefix = String.valueOf(splits[5]);
             created = true;
         }
     }
@@ -31,6 +33,7 @@ public class EnhancedAnimalInfo {
         sb.append(isFemale).append("|");
         sb.append(pregnant).append("|");
         sb.append(name).append("|");
+        sb.append(agePrefix).append("|");
         return sb.toString();
     }
 

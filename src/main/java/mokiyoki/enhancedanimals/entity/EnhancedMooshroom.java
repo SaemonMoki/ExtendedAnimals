@@ -32,10 +32,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.commons.compress.archivers.dump.DumpArchiveEntry;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.awt.*;
 import java.util.UUID;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;

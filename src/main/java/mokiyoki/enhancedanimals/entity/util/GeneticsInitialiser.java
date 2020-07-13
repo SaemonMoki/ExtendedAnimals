@@ -47,6 +47,7 @@ public class GeneticsInitialiser {
     public static class ChickenGeneticsInitialiser extends GeneticsInitialiser {
         Map<String, List<String[]>> breedsForBiomes = new HashMap<String, List<String[]>>();
         Map<String, List<String[]>> breedsForVillages = new HashMap<String, List<String[]>>();
+        Map<String, List<String[]>> exactBreeds = new HashMap<String, List<String[]>>();
 
         public int[] generateNewChickenGenetics(String biome) {
             int[] chickenGenes = new int[Reference.CHICKEN_GENES_LENGTH];
@@ -62,24 +63,32 @@ public class GeneticsInitialiser {
         }
 
         public ChickenGeneticsInitialiser() {
-            String[] plainsBreed = new String[]{"1-2","1-2","1|3|5,1|3","7","1-2","1|3|6|9","1-4","1-4"};
-//            String[] taigaBreed = new String[]{0,0,0,0,0,0,0,0};
-//            String[] leghorn = new String[]{0,0,0,0,0,0,0,0};
-//            String[] wyandotte = new String[]{0,0,0,0,0,0,0,0};
-//            String[] araucana = new String[]{0,0,0,0,0,0,0,0};
+//            if (breed != localwildtype) {
+//                String[] plainsBreed = new String[]{"1-2", "1-2", "1|3|5,1|3", "7", "1-2", "1|3|6|9", "1-4", "1-4"};
+//                String[] plainsBreed2 = new String[]{"1", "1", "5,1|3", "7", "1", "1|3|6|9", "1-3", "1-4"};
+//                String[] leghorn = new String[]{"exact genes"};
+//            }
+//
+//            String[] plainsBreed = new String[]{"1-2", "1-2", "1|3|5,1|3", "7", "1-2", "1|3|6|9", "1-4", "1-4"};
+//
+//
+//
+//            List<String[]> breedsForPlains = new ArrayList<>();
+//            breedsForPlains.add(plainsBreed);
+//
+//            breedsForBiomes.put("Plains", breedsForPlains);
+//
+//
+//            List<String[]> breedsForPlainsVillage = new ArrayList<>();
+////            breedsForVillages.add(leghorn);
+////            breedsForVillages.add(wyandotte);
+////            breedsForVillages.add(araucana);
+//
+//            breedsForVillages.put("PlainsVillage", breedsForPlainsVillage);
+//
+//
+//            breedsForVillages.put("Leghorn", new List<String>().add(leghorn));
 
-            List<String[]> breedsForPlains = new ArrayList<>();
-            breedsForPlains.add(plainsBreed);
-
-            breedsForBiomes.put("Plains", breedsForPlains);
-
-
-            List<String[]> breedsForPlainsVillage = new ArrayList<>();
-//            breedsForVillages.add(leghorn);
-//            breedsForVillages.add(wyandotte);
-//            breedsForVillages.add(araucana);
-
-            breedsForVillages.put("PlainsVillage", breedsForPlainsVillage);
         }
 
     }

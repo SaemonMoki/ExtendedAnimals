@@ -420,7 +420,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.saddlePad = new EnhancedRendererModelNew(this, 130, 24, "SaddlePad");
         this.saddlePad.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
 
-        this.collar = new ModelRenderer(this, 87, 84);
+        this.collar = new ModelRenderer(this, 89, 84);
         this.collar.addBox(-5.0F, -4.5F, -3.0F, 10, 2, 8, 0.0F);
         this.collar.setTextureOffset(124, 88);
         this.collar.addBox(0.0F, -5.0F, -5.0F, 0, 3, 3, 0.0F);
@@ -523,6 +523,20 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         matrixStackIn.scale(finalLlamaSize, finalLlamaSize, finalLlamaSize);
         matrixStackIn.translate(0.0F, (-1.5F + 1.5F / finalLlamaSize) - d, 0.0F);
 
+            if (llamaModelData.blink >= 6) {
+                this.eyeLeft.showModel = true;
+                this.eyeRight.showModel = true;
+            } else {
+                this.eyeLeft.showModel = false;
+                this.eyeRight.showModel = false;
+            }
+
+            if (llamaModelData.bridle.getItem() instanceof CustomizableCollar || llamaModelData.harness.getItem() instanceof CustomizableCollar) {
+                this.collar.showModel = true;
+            } else {
+                this.collar.showModel = false;
+            }
+
             this.neckBone.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             if (banana){
@@ -601,19 +615,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             }
 
         matrixStackIn.pop();
-
-        if (llamaModelData.blink >= 6) {
-            this.eyeLeft.showModel = true;
-            this.eyeRight.showModel = true;
-        } else {
-            this.eyeLeft.showModel = false;
-            this.eyeRight.showModel = false;
-        }
-
-        this.collar.showModel = false;
-        if (llamaModelData.bridle.getItem() instanceof CustomizableCollar || llamaModelData.harness.getItem() instanceof CustomizableCollar) {
-            this.collar.showModel = true;
-        }
 
     }
 
@@ -991,7 +992,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
     private LlamaModelData getCreateLlamaModelData(T enhancedLlama) {
         clearCacheTimer++;
-//        int coatTest = 1;
+        int coatTest = 0;
         if(clearCacheTimer > 50000) {
             llamaModelDataCache.values().removeIf(value -> value.lastAccessed==1);
             for (LlamaModelData llamaModelData : llamaModelDataCache.values()){
@@ -1008,7 +1009,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 //                llamaModelData.dataReset = 0;
 //            }
             llamaModelData.coatlength = enhancedLlama.getCoatLength();
-//            llamaModelData.coatlength = coatTest;
+            llamaModelData.coatlength = coatTest;
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
             llamaModelData.blink = enhancedLlama.getBlink();
             llamaModelData.angry = (enhancedLlama.isAggressive());
@@ -1024,8 +1025,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.llamaGenes = enhancedLlama.getSharedGenes();
             llamaModelData.coatlength = enhancedLlama.getCoatLength();
             llamaModelData.maxCoatlength = enhancedLlama.getCoatLength();
-//            llamaModelData.coatlength = coatTest;
-//            llamaModelData.maxCoatlength = coatTest;
+            llamaModelData.coatlength = coatTest;
+            llamaModelData.maxCoatlength = coatTest;
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
             llamaModelData.blink = enhancedLlama.getBlink();
             llamaModelData.birthTime = enhancedLlama.getBirthTime();

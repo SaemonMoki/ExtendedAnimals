@@ -9,6 +9,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.ai.general.chicken.EnhancedWaterAvoidingRandomWalkingEatingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
+import mokiyoki.enhancedanimals.init.Breed;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.entity.AgeableEntity;
@@ -23,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.Rarity;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -2494,6 +2496,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             }
         }
         return false;
+    }
+
+    private void createBreeds() {
+        new Breed("Wyandotte", 0.5F, 0.5F, Breed.Rarity.ORDINARY);
     }
 
     @Nullable

@@ -39,7 +39,7 @@ import javax.annotation.Nullable;
 /**
  * Created by moki on 25/08/2018.
  */
-public class Post extends Block implements IWaterLoggable {
+public class PostBlock extends Block implements IWaterLoggable {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING; //only NORTH, EAST, UP
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -73,7 +73,7 @@ public class Post extends Block implements IWaterLoggable {
     private static final VoxelShape UPCONNECTOR = Block.makeCuboidShape(6D, 10D, 6D, 10D, 16D, 10D);
     private static final VoxelShape DOWNCONNECTOR = Block.makeCuboidShape(6D, 0D, 6D, 10D, 6D, 10D);
 
-    public Post(Properties properties) {
+    public PostBlock(Properties properties) {
         super(properties);
         this.setDefaultState(this.stateContainer.getBaseState()
                 .with(FACING, Direction.NORTH)
@@ -220,7 +220,7 @@ public class Post extends Block implements IWaterLoggable {
 
     public boolean shouldConnectTo(BlockState thatBlocksState, Direction thatBlocksDirection, Direction thisBlocksOrientation, Boolean fenceConnection) {
         Block thatBlock = thatBlocksState.getBlock();
-        boolean isConnectable = thatBlock instanceof FenceBlock || thatBlock instanceof Post;
+        boolean isConnectable = thatBlock instanceof FenceBlock || thatBlock instanceof PostBlock;
         if (isConnectable) {
             if (thisBlocksOrientation == Direction.UP || thisBlocksOrientation == Direction.DOWN) {
                 if (fenceConnection && thatBlock instanceof FenceBlock && thatBlocksDirection != Direction.UP && thatBlocksDirection != Direction.DOWN) {

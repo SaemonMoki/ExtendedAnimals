@@ -45,10 +45,14 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.Region;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -63,6 +67,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -1026,6 +1031,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             animalInfo.isFemale = this.getGender();
             animalInfo.pregnant = (10 * this.gestationTimer)/gestationConfig();
             animalInfo.name = this.getAnimalsName(getSpecies());
+            animalInfo.agePrefix = this.getAnimalsAgeString();
 
             if(playerEntity instanceof ServerPlayerEntity) {
                 ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerEntity;
@@ -1056,34 +1062,22 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             }
         }
 
-//        if (name.equals(species)) {
-//            int slot = 0;
-//            if (getEnhancedInventory().getStackInSlot(3).getItem() instanceof CustomizableCollar) {
-//                slot = 3;
-//            } else if (getEnhancedInventory().getStackInSlot(3).getItem() instanceof CustomizableCollar) {
-//                slot = 5;
-//            }
-//            if (slot != 0) {
-//                name = getEnhancedInventory().getStackInSlot(slot).getDisplayName().getString();
-//            }
-//            if (name.equals("")) {
-//                name = species;
-//            }
-//        }
+        return name;
+    }
 
+    protected String getAnimalsAgeString() {
         int age = this.getAge();
         int adultAge = getAdultAge();
         if (age < adultAge) {
             if (age > (adultAge*3)/4) {
-                name = "Young" + " " + name;
+                return "Young ";
             } else if (age > adultAge/3) {
-                name = "Baby" + " " + name;
+                return "Baby ";
             } else {
-                name = "Newborn" + " " + name;
+                return "Newborn ";
             }
         }
-
-        return name;
+        return "ADULT";
     }
 
     /*
@@ -1209,6 +1203,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             this.genes = createInitialGenes(this.world);
             setInitialDefaults();
             this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (ThreadLocalRandom.current().nextInt(24000, 180000))));
+            this.setCustomName(new StringTextComponent(selectBreed(this.world)));
         } else {
             for (int i = 0; i < genes.length; i++) {
                 if (genes[i] == 0) {
@@ -1223,6 +1218,48 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                 }
             }
         }
+    }
+
+    public String selectBreed(IWorld world) {
+        int areaSize = 16; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
+        BlockPos pos = new BlockPos(this);
+        int posX = (pos.getX()>>4)/areaSize;
+        int posZ = (pos.getZ()>>4)/areaSize;
+
+        Random randomBreed = new Random(posX+world.getSeed()+posZ);
+
+        String[] breeds;
+        switch (getSpecies()) {
+            case "Chicken":
+                breeds = new String[]{"Wyandotte", "RhodeIslandRed", "PlymouthRock", "Orpington", "Leghorn",
+                        "Silkie", "BelgianD'Uccle", "Polish", "WhiteFaceSpanish", "Lakenvelder", "Araucana",
+                        "JapaneseBantam", "FrenchMarans", "Australorp", "Sussex", "Delaware", "Fayoumi", "Faverolles", "Hamburg", "TransylvanianNakedNeck"};
+                return breeds[randomBreed.nextInt(breeds.length)];
+            case "Pig":
+                breeds = new String[]{"Duroc", "Hampshire", "LargeBlack", "LargeWhite", "OldSpot", "Yorkshire", "Meishan"};
+                return breeds[randomBreed.nextInt(breeds.length)];
+            case "Cow":
+            case "Mooshroom":
+            case "Moobloom":
+                breeds = new String[]{"Angus", "Hereford", "TexasLonghorn", "Holstein", "Friesian", "Highland", "Brahman", "Nadudana", "Jersey", "Guernsey"};
+                return breeds[randomBreed.nextInt(breeds.length)];
+            case "Sheep":
+                breeds = new String[]{"Dorper", "Dorset", "Freisian", "Merino", "Jacob", "Suffolk"};
+                return breeds[randomBreed.nextInt(breeds.length)];
+            case "Rabbit":
+                breeds = new String[]{"Dutch", "DwarfLop", "DwarfHotot", "EnglishLop", "EnglishSpot", "FrenchAngora", "Havana", "Himalayan", "HollandLop",
+                        "Lionhead", "Netherland Dwarf"};
+                return breeds[randomBreed.nextInt(breeds.length)];
+            case "Llama":
+                breeds = new String[]{"Ccara", "Argentine", "Suri"};
+                return breeds[randomBreed.nextInt(breeds.length)];
+            case "Horse":
+                breeds = new String[]{"Arabian", "Thoroughbred", "Appaloosa", "Morgan", "ShetlandPony", "Clydesdale", "Shire", "BelgianDraft", "Percheron",
+                        "Fjord", "Fallabella", "HackneyPony"};
+                return breeds[randomBreed.nextInt(breeds.length)];
+        }
+
+        return "LocalWildType";
     }
 
     public void setMateGenes(int[] mateGenes){

@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
+import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
+import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
@@ -525,11 +527,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.headTassles.addBox(1.0F, 0.0F, 4.0F, 4, 9, 1);
 
         this.collar = new EnhancedRendererModelNew(this, 80, 68);
-        this.collar.addBox(-3.5F, 0.0F, -0.5F, 7,  2, 9);
+        this.collar.addBox(-3.5F, 1.0F, -0.5F, 7,  2, 9);
+        this.collar.setTextureOffset(81, 71);
+        this.collar.addBox(0.0F, 0.5F, 8.5F, 0,  3, 3);
         this.collar.setTextureOffset(103, 71);
-        this.collar.addBox(0.0F, -0.5F, 7.5F, 0,  3, 3);
-        this.collar.setTextureOffset(103, 71);
-        this.collar.addBox(-3.0F, -0.5F, 9.0F, 3, 3, 3, -0.25F);
+        this.collar.addBox(-1.5F, 0.5F, 10.0F, 3, 3, 3, -0.25F);
         this.collar.rotateAngleX = (float)-Math.PI/2.0F;
         this.neck.addChild(this.collar);
 
@@ -634,13 +636,19 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         matrixStackIn.scale(bodyWidth, finalCowSize, bodyLength);
         matrixStackIn.translate(0.0F, (-1.45F + 1.45F / (finalCowSize)) - d, 0.0F);
 
-        renderHump(hump, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        if (cowModelData.blink >= 6) {
+            this.eyeLeft.showModel = true;
+            this.eyeRight.showModel = true;
+        } else {
+            this.eyeLeft.showModel = false;
+            this.eyeRight.showModel = false;
+        }
 
-        renderBodySaddleAndUdder(cowModelData.saddle, cowModelData.cowStatus, cowModelData.bagSize, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-
-        this.neck.render(matrixStackIn, bufferIn , null, cowModelData.unrenderedModels, true, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-
-        renderHorns(horns, hornScale, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        if (cowModelData.bridle.getItem() instanceof CustomizableCollar || cowModelData.harness.getItem() instanceof CustomizableCollar) {
+            this.collar.showModel = true;
+        } else {
+            this.collar.showModel = false;
+        }
 
         this.mushroomHead.showModel = false;
         if (!this.isChild) {
@@ -648,6 +656,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.mushroomBody2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.mushroomHead.showModel = true;
         }
+
+        renderHump(hump, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+        renderBodySaddleAndUdder(cowModelData.saddle, cowModelData.cowStatus, cowModelData.bagSize, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+        this.neck.render(matrixStackIn, bufferIn , null, cowModelData.unrenderedModels, true, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+        renderHorns(horns, hornScale, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         matrixStackIn.pop();
 
@@ -676,19 +692,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 ////        mapOfScale.put("Neck", scalings);
 //
 //        matrixStackIn.pop();
-
-        if (cowModelData.blink >= 6) {
-            this.eyeLeft.showModel = true;
-            this.eyeRight.showModel = true;
-        } else {
-            this.eyeLeft.showModel = false;
-            this.eyeRight.showModel = false;
-        }
-
-        this.collar.showModel = false;
-        if (cowModelData.bridle.getItem() instanceof CustomizableCollar || cowModelData.harness.getItem() instanceof CustomizableCollar) {
-            this.collar.showModel = true;
-        }
 
     }
 
@@ -1693,6 +1696,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     }
 
     private class CowModelData {
+        boolean isCow;
         int[] cowGenes;
         String birthTime;
         float cowSize = 1.0F;
@@ -1748,6 +1752,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         } else {
             //initial grab
             CowModelData cowModelData = new CowModelData();
+            cowModelData.isCow = !(enhancedCow instanceof EnhancedMooshroom || enhancedCow instanceof EnhancedMoobloom);
             cowModelData.cowGenes = enhancedCow.getSharedGenes();
             cowModelData.cowSize = enhancedCow.getAnimalSize();
             cowModelData.bagSize = enhancedCow.getBagSize();

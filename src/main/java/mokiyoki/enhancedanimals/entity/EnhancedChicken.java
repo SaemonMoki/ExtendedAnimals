@@ -9,7 +9,6 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.ai.general.chicken.EnhancedWaterAvoidingRandomWalkingEatingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
-import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.entity.AgeableEntity;
@@ -4006,7 +4005,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             case 44:
                 return ModItems.Egg_GreenUmber;
             case 45:
-                return ModItems.Egg_GreyBlue;
+                return ModItems.EGG_GREYBLUE;
             case 46:
                 return ModItems.Egg_GreyNeutral;
             case 47:
@@ -4030,9 +4029,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             case 56:
                 return ModItems.Egg_TreeDark;
             case 57:
-                return ModItems.Egg_PaleBlue;
+                return ModItems.EGG_PALEBLUE;
             case 58:
-                return ModItems.Egg_HoneyDew;
+                return ModItems.EGG_HONEYDEW;
             case 59:
                 return ModItems.Egg_Earth;
             case 60:
@@ -4044,7 +4043,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             case 63:
                 return ModItems.Egg_Carob;
             case 64:
-                return ModItems.Egg_CoolGrey;
+                return ModItems.EGG_COOLGREY;
             case 65:
                 return ModItems.Egg_PinkGrey;
             case 66:
@@ -4160,7 +4159,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             case 120:
                 return ModItems.Egg_GreenUmber_Speckle;
             case 121:
-                return ModItems.Egg_GreyBlue;
+                return ModItems.EGG_GREYBLUE;
             case 122:
                 return ModItems.Egg_GreyNeutral_Speckle;
             case 123:
@@ -4184,9 +4183,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             case 132:
                 return ModItems.Egg_TreeDark_Speckle;
             case 133:
-                return ModItems.Egg_PaleBlue;
+                return ModItems.EGG_PALEBLUE;
             case 134:
-                return ModItems.Egg_HoneyDew;
+                return ModItems.EGG_HONEYDEW;
             case 135:
                 return ModItems.Egg_Earth_Speckle;
             case 136:
@@ -4198,7 +4197,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             case 139:
                 return ModItems.Egg_Carob_Speckle;
             case 140:
-                return ModItems.Egg_CoolGrey;
+                return ModItems.EGG_COOLGREY;
             case 141:
                 return ModItems.Egg_PinkGrey_Speckle;
             case 142:
@@ -4312,7 +4311,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             case 196:
                 return ModItems.Egg_GreenUmber_Spatter;
             case 197:
-                return ModItems.Egg_GreyBlue;
+                return ModItems.EGG_GREYBLUE;
             case 198:
                 return ModItems.Egg_GreyNeutral_Spatter;
             case 199:
@@ -4336,9 +4335,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             case 208:
                 return ModItems.Egg_TreeDark_Spatter;
             case 209:
-                return ModItems.Egg_PaleBlue;
+                return ModItems.EGG_PALEBLUE;
             case 210:
-                return ModItems.Egg_HoneyDew;
+                return ModItems.EGG_HONEYDEW;
             case 211:
                 return ModItems.Egg_Earth_Spatter;
             case 212:
@@ -4350,7 +4349,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             case 215:
                 return ModItems.Egg_Carob_Spatter;
             case 216:
-                return ModItems.Egg_CoolGrey;
+                return ModItems.EGG_COOLGREY;
             case 217:
                 return ModItems.Egg_PinkGrey_Spatter;
             case 218:
@@ -4458,73 +4457,73 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             case 269:
                 return ModItems.Egg_MatchaDark_Spot;
             case 270:
-                return ModItems.Egg_Moss_Spot;
+                return ModItems.EGG_MOSS_SPOT;
             case 271:
-                return ModItems.Egg_MossDark_Spot;
+                return ModItems.EGG_MOSSDARK_SPOT;
             case 272:
-                return ModItems.Egg_GreenUmber_Spot;
+                return ModItems.EGG_GREENUMBER_SPOT;
             case 273:
-                return ModItems.Egg_GreyBlue;
+                return ModItems.EGG_GREYBLUE;
             case 274:
-                return ModItems.Egg_GreyNeutral_Spot;
+                return ModItems.EGG_GREYNEUTRAL_SPOT;
             case 275:
-                return ModItems.Egg_Laurel_Spot;
+                return ModItems.EGG_LAUREL_SPOT;
             case 276:
-                return ModItems.Egg_Reseda_Spot;
+                return ModItems.EGG_RESEDA_SPOT;
             case 277:
-                return ModItems.Egg_GreenPewter_Spot;
+                return ModItems.EGG_GREENPEWTER_SPOT;
             case 278:
-                return ModItems.Egg_GreyDark_Spot;
+                return ModItems.EGG_GREYDARK_SPOT;
             case 279:
-                return ModItems.Egg_Celadon_Spot;
+                return ModItems.EGG_CELADON_SPOT;
             case 280:
-                return ModItems.Egg_Fern_Spot;
+                return ModItems.EGG_FERN_SPOT;
             case 281:
-                return ModItems.Egg_Asparagus_Spot;
+                return ModItems.EGG_ASPARAGUS_SPOT;
             case 282:
-                return ModItems.Egg_Hunter_Spot;
+                return ModItems.EGG_HUNTER_SPOT;
             case 283:
-                return ModItems.Egg_HunterDark_Spot;
+                return ModItems.EGG_HUNTERDARK_SPOT;
             case 284:
-                return ModItems.Egg_TreeDark_Spot;
+                return ModItems.EGG_TREEDARK_SPOT;
             case 285:
-                return ModItems.Egg_PaleBlue;
+                return ModItems.EGG_PALEBLUE;
             case 286:
-                return ModItems.Egg_HoneyDew;
+                return ModItems.EGG_HONEYDEW;
             case 287:
-                return ModItems.Egg_Earth_Spot;
+                return ModItems.EGG_EARTH_SPOT;
             case 288:
-                return ModItems.Egg_Khaki_Spot;
+                return ModItems.EGG_KHAKI_SPOT;
             case 289:
-                return ModItems.Egg_Grullo_Spot;
+                return ModItems.EGG_GRULLO_SPOT;
             case 290:
-                return ModItems.Egg_KhakiDark_Spot;
+                return ModItems.EGG_KHAKIDARK_SPOT;
             case 291:
-                return ModItems.Egg_Carob_Spot;
+                return ModItems.EGG_CAROB_SPOT;
             case 292:
-                return ModItems.Egg_CoolGrey;
+                return ModItems.EGG_COOLGREY;
             case 293:
-                return ModItems.Egg_PinkGrey_Spot;
+                return ModItems.EGG_PINKGREY_SPOT;
             case 294:
-                return ModItems.Egg_WarmGrey_Spot;
+                return ModItems.EGG_WARMGREY_SPOT;
             case 295:
-                return ModItems.Egg_Artichoke_Spot;
+                return ModItems.EGG_ARTICHOKE_SPOT;
             case 296:
-                return ModItems.Egg_MyrtleGrey_Spot;
+                return ModItems.EGG_MYRTLEGREY_SPOT;
             case 297:
-                return ModItems.Egg_Rifle_Spot;
+                return ModItems.EGG_RIFLE_SPOT;
             case 298:
-                return ModItems.Egg_Jade_Spot;
+                return ModItems.EGG_JADE_SPOT;
             case 299:
-                return ModItems.Egg_Pistachio_Spot;
+                return ModItems.EGG_PISTACHIO_SPOT;
             case 300:
-                return ModItems.Egg_Sage_Spot;
+                return ModItems.EGG_SAGE_SPOT;
             case 301:
-                return ModItems.Egg_Rosemary_Spot;
+                return ModItems.EGG_ROSEMARY_SPOT;
             case 302:
-                return ModItems.Egg_GreenBrown_Spot;
+                return ModItems.EGG_GREENBROWN_SPOT;
             case 303:
-                return ModItems.Egg_Umber_Spot;
+                return ModItems.EGG_UMBER_SPOT;
         }
 
         //TODO set up exception handling and put an exception here we should NEVER get here.

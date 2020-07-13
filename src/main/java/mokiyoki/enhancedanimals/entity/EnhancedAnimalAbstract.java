@@ -1231,7 +1231,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         String[] breeds;
         switch (getSpecies()) {
             case "Chicken":
-                breeds = new String[]{"Wyandotte", "RhodeIslandRed", "PlymouthRock", "Orpington", "Leghorn",
+                breeds = new String[]{"WYANDOTTE", "RHODE_ISLAND_RED", "PLYMOUTH_ROCK", "Orpington", "Leghorn",
                         "Silkie", "BelgianD'Uccle", "Polish", "WhiteFaceSpanish", "Lakenvelder", "Araucana",
                         "JapaneseBantam", "FrenchMarans", "Australorp", "Sussex", "Delaware", "Fayoumi", "Faverolles", "Hamburg", "TransylvanianNakedNeck"};
                 return breeds[randomBreed.nextInt(breeds.length)];

@@ -1,6 +1,10 @@
 package mokiyoki.enhancedanimals.util;
 
+import javafx.util.Pair;
 import net.minecraft.world.biome.Biome;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Breed {
     /**
@@ -77,7 +81,7 @@ public class Breed {
 //            return this;
 //        }
 
-        public Breed.Properties setVarieties(PatternColour[] patternColours, GroundColour[] groundColours) {
+        public Breed.Properties setVarieties(VarientHolder varieties) {
 
             return this;
         }
@@ -166,6 +170,10 @@ public class Breed {
 
         }
 
+        public Pair asPair() {
+            return new Pair(this.sexlinked, this.autosomal);
+        }
+
         public Genes getGenes() {
             return new Genes().setGenes(this.sexlinked, this.autosomal);
         }
@@ -184,75 +192,84 @@ public class Breed {
         private Pattern(String sexlinked, String autosomal) {
             this.sexlinked = sexlinked;
             this.autosomal = autosomal;
+        }
 
+        public Pair asPair() {
+            return new Pair(this.sexlinked, this.autosomal);
         }
     }
 
     public enum BodyVarients {
-        NONE("",""),
+        NONE(new String[]{}, new String[]{}),
         ROSE("",""),
         SINGLE("",""),
         FOOTFEATHERS("",""),
         BEARDED("","");
 
-        public final String sexlinked;
-        public final String autosomal;
+        public final String[] sexlinked;
+        public final String[] autosomal;
 
-        private BodyVarients(String sexlinked, String autosomal) {
+        private BodyVarients(String[] sexlinked, String[] autosomal) {
             this.sexlinked = sexlinked;
             this.autosomal = autosomal;
+        }
 
+        public Pair asPair() {
+            return new Pair(this.sexlinked, this.autosomal);
         }
     }
 
-    public class VarientHolder {
-        PatternColour[] patternColours;
-        GroundColour[] groundColours;
-        Pattern[] patterns;
-        BodyVarients[] bodyVarients;
+    public static class VarientHolder {
+        /*
+        Pair<String[], String[]> is a single varient. ie: ROSE(new String[]{}, new String[]{})
+        List<Pair<String[], String[]>> is ALL of the chosen varients from a single group. ie: Rose and Single from BodyVarients
+        List<List<Pair<String[], String[]>>> is all of the different varients in total, ie: BodyVarients, Pattern, ect
+         */
+        List<List<Pair<String[], String[]>>> varientsToGoThrough = new ArrayList<>();
 
-        private VarientHolder(PatternColour[] patternColours, GroundColour[] groundColours, Pattern[] patterns, BodyVarients[] bodyVarients) {
-            this.patternColours = patternColours;
-            this.groundColours = groundColours;
-            this.patterns = patterns;
-            this.bodyVarients = bodyVarients;
+//        PatternColour[] patternColours;
+//        GroundColour[] groundColours;
+//        Pattern[] patterns;
+//        BodyVarients[] bodyVarients;
+
+        public VarientHolder(List<Pair<String[], String[]>> ... varientsToGoThrough ) {
+
         }
-
-        private VarientHolder(PatternColour[] patternColours) {
-            this.patternColours = patternColours;
-            this.groundColours = new GroundColour[]{GroundColour.NONE};
-            this.patterns = new Pattern[]{Pattern.NONE};
-            this.bodyVarients = new BodyVarients[]{BodyVarients.NONE};
-        }
-
-        private VarientHolder(GroundColour[] groundColours) {
-            this.patternColours = new PatternColour[]{PatternColour.NONE};
-            this.groundColours = new GroundColour[]{GroundColour.NONE};
-            this.patterns = new Pattern[]{Pattern.NONE};
-            this.bodyVarients = new BodyVarients[]{BodyVarients.NONE};
-        }
-
-        private VarientHolder(Pattern[] patterns) {
-            this.patternColours = new PatternColour[]{PatternColour.NONE};
-            this.groundColours = new GroundColour[]{GroundColour.NONE};
-            this.patterns = patterns;
-            this.bodyVarients = new BodyVarients[]{BodyVarients.NONE};
-        }
-
-        private VarientHolder(BodyVarients[] bodyVarients) {
-            this.patternColours = new PatternColour[]{PatternColour.NONE};
-            this.groundColours = new GroundColour[]{GroundColour.NONE};
-            this.patterns = new Pattern[]{Pattern.NONE};
-            this.bodyVarients = bodyVarients;
-        }
-
-        private VarientHolder() {
-            this.patternColours = new PatternColour[]{PatternColour.NONE};
-            this.groundColours = new GroundColour[]{GroundColour.NONE};
-            this.patterns = new Pattern[]{Pattern.NONE};
-            this.bodyVarients = new BodyVarients[]{BodyVarients.NONE};
-        }
-
+//
+//        private VarientHolder(PatternColour[] patternColours, GroundColour[] groundColours, Pattern[] patterns, BodyVarients[] bodyVarients) {
+//            this.patternColours = patternColours;
+//            this.groundColours = groundColours;
+//            this.patterns = patterns;
+//            this.bodyVarients = bodyVarients;
+//        }
+//
+//        private VarientHolder(PatternColour[] patternColours) {
+//            this.patternColours = patternColours;
+//            this.groundColours = new GroundColour[]{GroundColour.NONE};
+//            this.patterns = new Pattern[]{Pattern.NONE};
+//            this.bodyVarients = new BodyVarients[]{BodyVarients.NONE};
+//        }
+//
+//        private VarientHolder(GroundColour[] groundColours) {
+//            this.patternColours = new PatternColour[]{PatternColour.NONE};
+//            this.groundColours = new GroundColour[]{GroundColour.NONE};
+//            this.patterns = new Pattern[]{Pattern.NONE};
+//            this.bodyVarients = new BodyVarients[]{BodyVarients.NONE};
+//        }
+//
+//        private VarientHolder(Pattern[] patterns) {
+//            this.patternColours = new PatternColour[]{PatternColour.NONE};
+//            this.groundColours = new GroundColour[]{GroundColour.NONE};
+//            this.patterns = patterns;
+//            this.bodyVarients = new BodyVarients[]{BodyVarients.NONE};
+//        }
+//
+//        private VarientHolder(BodyVarients[] bodyVarients) {
+//            this.patternColours = new PatternColour[]{PatternColour.NONE};
+//            this.groundColours = new GroundColour[]{GroundColour.NONE};
+//            this.patterns = new Pattern[]{Pattern.NONE};
+//            this.bodyVarients = bodyVarients;
+//        }
     }
 
 }

@@ -2,8 +2,10 @@ package mokiyoki.enhancedanimals.util;
 
 import javafx.util.Pair;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -23,20 +25,125 @@ public class Breed {
     private final Float temperature;
     private final Float rain;
     private final Rarity rarity;
-    private final Genes genes;
-    private final String[] varieties;
+    private final GeneSketch sexlinkedGeneSketch;
+    private final GeneSketch autosomalGeneSketch;
+    private final VarientHolder varieties;
 
     public Breed(Breed.Properties properties) {
         this.breedName = properties.breedName;
         this.temperature = properties.temperature;
         this.rain = properties.rain;
         this.rarity = properties.rarity;
-        this.genes = properties.genes;
+        this.sexlinkedGeneSketch = properties.sexlinkedGeneSketch;
+        this.autosomalGeneSketch = properties.autosomalGeneSketch;
         this.varieties = properties.varieties;
+    }
+
+    public Breed(Breed breedbase, Breed.Properties properties) {
+        this.breedName = properties.breedName == null ? breedbase.getBreedName() : properties.breedName;
+        this.temperature = properties.temperature == null ? breedbase.getNativeTemperature() : properties.temperature;
+        this.rain = properties.rain == null ? breedbase.getNativeHumidity() : properties.rain;
+        this.rarity = properties.rarity == null ? breedbase.getRarity() : properties.rarity;
+        this.sexlinkedGeneSketch = properties.sexlinkedGeneSketch == null ? breedbase.getSexlinkedGeneSketch() : properties.sexlinkedGeneSketch;
+        this.autosomalGeneSketch = properties.autosomalGeneSketch == null ? breedbase.getAutosomalGeneSketch() : properties.autosomalGeneSketch;
+        this.varieties = properties.varieties == null ? breedbase.getVarieties() : properties.varieties;
     }
 
     public final String getBreedName() {
         return this.breedName;
+    }
+
+    public final float getNativeTemperature() {
+        return this.temperature;
+    }
+
+    public final float getNativeHumidity() {
+        return this.rain;
+    }
+
+    public final Breed.Rarity getRarity() {
+        return this.rarity;
+    }
+
+    public final Pair<GeneSketch, GeneSketch> getGeneSketches() {
+        return new Pair<>(this.sexlinkedGeneSketch, this.autosomalGeneSketch);
+    }
+
+    public final GeneSketch getSexlinkedGeneSketch() {
+        return this.sexlinkedGeneSketch;
+    }
+
+    public final GeneSketch getAutosomalGeneSketch() {
+        return this.autosomalGeneSketch;
+    }
+
+    public final VarientHolder getVarieties() {
+        return this.varieties;
+    }
+
+    public final Float likelyhood(Biome biome, boolean forTrader) {
+        // temperature ranges from -0.5 to 2.0
+        //downfall ranges from 0.0 to 0.9
+        //5 levels of rarity
+        float rarity = 1.0F;
+
+        switch (this.rarity) {
+            case COMMON: rarity = 0.8F;
+                break;
+            case UNCOMMON: rarity = 0.6F;
+                break;
+            case RARE: rarity = 0.2F;
+                break;
+            case EXOTIC: rarity = 0.05F;
+        }
+
+        if (forTrader) {
+            return (rarity + 1.0F)/2.0F;
+        }
+
+        float temp = (0.5F + biome.getDefaultTemperature())*0.4F;
+        float rain = biome.getDownfall()*1.1111F;
+
+        temp = 1.0F - Math.abs(((0.5F + this.temperature)*0.4F)-temp);
+        rain = 1.0F - Math.abs((this.rain*1.1111F) - rain);
+
+        return temp*rain*rarity;
+    }
+
+    public final Float likelyhood(Biome biome) {
+        return likelyhood(biome, false);
+    }
+
+    public final Float likelyhood(boolean forTrader) {
+        return likelyhood(Biomes.THE_VOID, true);
+    }
+
+    public final Genes generateGenes(Genes genes) {
+        Pair<GeneSketch, GeneSketch> sketch = this.varieties.getSketchWithVarients(new Pair<>(this.sexlinkedGeneSketch, this.autosomalGeneSketch));
+        return new Genes().setGenes(sketch.getKey().getGeneArray(genes.getSexlinkedGenes()), sketch.getValue().getGeneArray(genes.getAutosomalGenes()));
+    }
+
+
+    /**
+     * meant for small tweaks to a breed, should probably attach rarity to varients instead of this
+     * this only works on the main gene blueprint, varients override main genes
+     */
+    public final Breed editGenes(Pair<GeneSketch, GeneSketch> sketch) {
+        this.autosomalGeneSketch.addLayer(sketch.getKey());
+        this.sexlinkedGeneSketch.addLayer(sketch.getValue());
+        return this;
+    }
+
+    public final Breed editGenes(Pair<GeneSketch, GeneSketch> sketch, Float rarity) {
+        this.autosomalGeneSketch.addLayer(sketch.getKey(), rarity);
+        this.sexlinkedGeneSketch.addLayer(sketch.getValue(), rarity);
+        return this;
+    }
+
+    public final Breed editGenes(Pair<GeneSketch, GeneSketch> sketch, Breed.Rarity rarity) {
+        this.autosomalGeneSketch.addLayer(sketch.getKey(), rarity);
+        this.sexlinkedGeneSketch.addLayer(sketch.getValue(), rarity);
+        return this;
     }
 
     public static class Properties {
@@ -44,8 +151,9 @@ public class Breed {
         private Float temperature;
         private Float rain;
         private Rarity rarity;
-        private Genes genes;
-        private String[] varieties;
+        private GeneSketch sexlinkedGeneSketch;
+        private GeneSketch autosomalGeneSketch;
+        private VarientHolder varieties;
 
         public Breed.Properties setData(String name, Biome biome, Breed.Rarity rarity) {
             this.breedName = name;
@@ -55,142 +163,33 @@ public class Breed {
             return this;
         }
 
-        public Breed.Properties setGenes(Genes geneBluePrint) {
-            if (geneBluePrint == null) {
-                this.genes = new Genes().setGenes(new String[]{}, new String[]{});
-            } else {
-                this.genes = geneBluePrint;
-            }
+        public Breed.Properties setName(String name) {
+            this.breedName = name;
             return this;
         }
 
-//        public Breed.Properties setSexlinkedGenes(String geneBluePrint) {
-//            if (geneBluePrint == null) {
-//                this.sexlinked = "";
-//            } else {
-//                this.sexlinked = geneBluePrint;
-//            }
-//            return this;
-//        }
-//
-//        public Breed.Properties setAutosomalGenes(String geneBluePrint) {
-//            if (geneBluePrint == null) {
-//                this.autosomal = "";
-//            } else {
-//                this.autosomal = geneBluePrint;
-//            }
-//            return this;
-//        }
+        public Breed.Properties setBiome(Biome biome) {
+            this.temperature = biome.getDefaultTemperature();
+            this.rain = biome.getDownfall();
+            return this;
+        }
+
+        public Breed.Properties setRarity(Breed.Rarity rarity) {
+            this.rarity = rarity;
+            return this;
+        }
+
+        public Breed.Properties setGeneSketch(GeneSketch sexlinkedSketch, GeneSketch autosomalSketch) {
+            this.sexlinkedGeneSketch = sexlinkedSketch;
+            this.autosomalGeneSketch = autosomalSketch;
+            return this;
+        }
 
         public Breed.Properties setVarieties(VarientHolder varieties) {
-
+            this.varieties = varieties;
             return this;
         }
 
-    }
-
-    public static class Genes {
-        private String[] sexlinked;
-        private String[] autosomal;
-
-        public Genes setGenes(String[] sexlinked, String[] autosomal) {
-            this.sexlinked = sexlinked;
-            this.autosomal = autosomal;
-            return this;
-        }
-
-        public Genes setGenes(String[] autosomal) {
-            this.sexlinked = new String[]{""};
-            this.autosomal = autosomal;
-            return this;
-        }
-
-        public String[] getSexlinkedGenes() {
-            return sexlinked;
-        }
-
-        public String[] getAutosomalGenes() {
-            return autosomal;
-        }
-
-        public void overlayGenes(String[] sexlinked, String[] autosomal) {
-            for (int i = 0; sexlinked.length >= i; i++) {
-                if (sexlinked[i] != "") {
-                    this.sexlinked[i] = sexlinked[i];
-                }
-            }
-            for (int i = 0; autosomal.length >= i; i++) {
-                if (autosomal[i] != "") {
-                    this.autosomal[i] = autosomal[i];
-                }
-            }
-        }
-
-        public int[][] getGeneArray() {
-            int[] sexlinkedGenes = new int[]{getSexlinkedGenes().length};
-            int[] autosomalGenes = new int[]{getAutosomalGenes().length};
-            int index = 0;
-            for(String sexlinkedgene : getSexlinkedGenes()) {
-                String allele_A;
-                String allele_B;
-                if (sexlinkedgene.contains(",")) {
-                    String[] splitGene = sexlinkedgene.split(",");
-                    if (ThreadLocalRandom.current().nextBoolean()) {
-                        allele_A = splitGene[0];
-                        allele_B = splitGene[1];
-                    } else {
-                        allele_A = splitGene[1];
-                        allele_B = splitGene[0];
-                    }
-                } else {
-                    allele_A = sexlinkedgene;
-                    allele_B = sexlinkedgene;
-                }
-
-                sexlinkedGenes[index] = getAllele(allele_A);
-                index++;
-                sexlinkedGenes[index] = getAllele(allele_B);
-                index++;
-            }
-
-            index = 0;
-            for(String autosomalgene : getAutosomalGenes()) {
-                String allele_A;
-                String allele_B;
-                if (autosomalgene.contains(",")) {
-                    String[] splitGene = autosomalgene.split(",");
-                    if (ThreadLocalRandom.current().nextBoolean()) {
-                        allele_A = splitGene[0];
-                        allele_B = splitGene[1];
-                    } else {
-                        allele_A = splitGene[1];
-                        allele_B = splitGene[0];
-                    }
-                } else {
-                    allele_A = autosomalgene;
-                    allele_B = autosomalgene;
-                }
-
-                sexlinkedGenes[index] = getAllele(allele_A);
-                index++;
-                sexlinkedGenes[index] = getAllele(allele_B);
-                index++;
-            }
-
-            return new int[][]{sexlinkedGenes,autosomalGenes};
-        }
-    }
-
-    private static int getAllele(String alleleData) {
-        if (alleleData.contains("-")) {
-            String[] splitGene = alleleData.split("-");
-            return ThreadLocalRandom.current().nextInt(Integer.valueOf(splitGene[0]), (Integer.valueOf(splitGene[1])));
-        } else if (alleleData.contains("|")) {
-            String[] splitGene = alleleData.split("\\|");
-            return Integer.valueOf(splitGene[ThreadLocalRandom.current().nextInt((splitGene.length))]);
-        } else {
-            return Integer.valueOf(alleleData);
-        }
     }
 
     public enum Rarity {
@@ -201,134 +200,36 @@ public class Breed {
         EXOTIC
     }
 
-    /**
-     * animal species specific stuff that needs to be in a chicken breed class I think
-     */
-
-    public enum PatternColour {
-        NONE(new String[]{}, new String[]{}),
-        DOM_WHITE(new String[]{}, new String[]{}),
-        BLACK(new String[]{}, new String[]{}),
-        CHOCOLATE(new String[]{}, new String[]{}),
-        BLUE(new String[]{}, new String[]{});
-
-        public final String[] sexlinked;
-        public final String[] autosomal;
-        
-        private PatternColour(String[] sexlinked, String[] autosomal) {
-            this.sexlinked = sexlinked;
-            this.autosomal = autosomal;
-            
-        }
-
-        public Pair asPair() {
-            return new Pair(this.sexlinked, this.autosomal);
-        }
-
-        public Genes getGenes(){
-            return new Genes().setGenes(sexlinked, autosomal);
-        }
-    }
-
-    public enum Pattern {
-        NONE(new String[]{}, new String[]{}),
-        LACED(new String[]{}, new String[]{}),
-        DOUBLELACED(new String[]{}, new String[]{}),
-        DUCKWING(new String[]{}, new String[]{}),
-        SPANGLED(new String[]{}, new String[]{});
-
-        public final String[] sexlinked;
-        public final String[] autosomal;
-
-        private Pattern(String[] sexlinked, String[] autosomal) {
-            this.sexlinked = sexlinked;
-            this.autosomal = autosomal;
-        }
-
-        public Pair asPair() {
-            return new Pair(this.sexlinked, this.autosomal);
-        }
-
-        public Genes getGenes(){
-            return new Genes().setGenes(sexlinked, autosomal);
-        }
-    }
-
-    public enum BodyVarients {
-        NONE(new String[]{}, new String[]{}),
-        ROSE(new String[]{}, new String[]{}),
-        SINGLE(new String[]{}, new String[]{}),
-        FOOTFEATHERS(new String[]{}, new String[]{}),
-        BEARDED(new String[]{}, new String[]{});
-
-        public final String[] sexlinked;
-        public final String[] autosomal;
-
-        private BodyVarients(String[] sexlinked, String[] autosomal) {
-            this.sexlinked = sexlinked;
-            this.autosomal = autosomal;
-        }
-
-        public Pair asPair() {
-            return new Pair(this.sexlinked, this.autosomal);
-        }
-
-        public Genes getGenes(){
-            return new Genes().setGenes(sexlinked, autosomal);
-        }
-    }
-
     public static class VarientHolder {
         /*
         Pair<String[], String[]> is a single varient. ie: ROSE(new String[]{}, new String[]{})
         List<Pair<String[], String[]>> is ALL of the chosen varients from a single group. ie: Rose and Single from BodyVarients
         List<List<Pair<String[], String[]>>> is all of the different varients in total, ie: BodyVarients, Pattern, ect
          */
-        List<List<Pair<String[], String[]>>> varientsToGoThrough = new ArrayList<>();
-
-//        PatternColour[] patternColours;
-//        GroundColour[] groundColours;
-//        Pattern[] patterns;
-//        BodyVarients[] bodyVarients;
-
-        public VarientHolder(List<Pair<String[], String[]>> ... varientsToGoThrough ) {
-
+        List<List<Pair<GeneSketch, GeneSketch>>> varientsToGoThrough = new ArrayList<>();
+        public VarientHolder(List<Pair<GeneSketch, GeneSketch>> ... varientsToGoThrough ) {
+            this.varientsToGoThrough.addAll(Arrays.asList(varientsToGoThrough));
         }
-//
-//        private VarientHolder(PatternColour[] patternColours, GroundColour[] groundColours, Pattern[] patterns, BodyVarients[] bodyVarients) {
-//            this.patternColours = patternColours;
-//            this.groundColours = groundColours;
-//            this.patterns = patterns;
-//            this.bodyVarients = bodyVarients;
-//        }
-//
-//        private VarientHolder(PatternColour[] patternColours) {
-//            this.patternColours = patternColours;
-//            this.groundColours = new GroundColour[]{GroundColour.NONE};
-//            this.patterns = new Pattern[]{Pattern.NONE};
-//            this.bodyVarients = new BodyVarients[]{BodyVarients.NONE};
-//        }
-//
-//        private VarientHolder(GroundColour[] groundColours) {
-//            this.patternColours = new PatternColour[]{PatternColour.NONE};
-//            this.groundColours = new GroundColour[]{GroundColour.NONE};
-//            this.patterns = new Pattern[]{Pattern.NONE};
-//            this.bodyVarients = new BodyVarients[]{BodyVarients.NONE};
-//        }
-//
-//        private VarientHolder(Pattern[] patterns) {
-//            this.patternColours = new PatternColour[]{PatternColour.NONE};
-//            this.groundColours = new GroundColour[]{GroundColour.NONE};
-//            this.patterns = patterns;
-//            this.bodyVarients = new BodyVarients[]{BodyVarients.NONE};
-//        }
-//
-//        private VarientHolder(BodyVarients[] bodyVarients) {
-//            this.patternColours = new PatternColour[]{PatternColour.NONE};
-//            this.groundColours = new GroundColour[]{GroundColour.NONE};
-//            this.patterns = new Pattern[]{Pattern.NONE};
-//            this.bodyVarients = bodyVarients;
-//        }
+
+        public Pair<GeneSketch, GeneSketch> getSketchWithVarients(Pair<GeneSketch, GeneSketch> genesketch) {
+            List<Pair<GeneSketch, GeneSketch>> varients = new ArrayList<>();
+            for (List<Pair<GeneSketch, GeneSketch>> var : this.varientsToGoThrough) {
+                varients.add(var.get(ThreadLocalRandom.current().nextInt(var.size())));
+            }
+
+            for (Pair<GeneSketch, GeneSketch> sketch : varients) {
+                genesketch.getKey().addLayer(sketch.getKey());
+                genesketch.getValue().addLayer(sketch.getValue());
+            }
+
+            return genesketch;
+        }
+    }
+
+    public static List<Pair<GeneSketch, GeneSketch>> createVarientList(Pair<GeneSketch, GeneSketch>... varients) {
+        List<Pair<GeneSketch,GeneSketch>> varientList = new ArrayList<>();
+        varientList.addAll(Arrays.asList(varients));
+        return varientList;
     }
 
 }

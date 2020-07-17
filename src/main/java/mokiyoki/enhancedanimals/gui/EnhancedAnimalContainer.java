@@ -234,7 +234,7 @@ public class EnhancedAnimalContainer extends Container {
         this.inventory.closeInventory(playerIn);
     }
 
-    public EnhancedAnimal getAnimal() {
+    public EnhancedAnimalAbstract getAnimal() {
         return enhancedAnimal;
     }
 }

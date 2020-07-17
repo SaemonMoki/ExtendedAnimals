@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -149,7 +150,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     protected String motherUUID = "";
 
-    protected EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
+    protected GrazingGoal wanderEatingGoal;
+//    protected EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
 //    private boolean boosting;
 //    private int boostTime;
@@ -305,7 +307,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     public void livingTick() {
         super.livingTick();
-
         if (!this.world.isRemote) {
             if (getEntityStatus().equals(EntityState.MOTHER.toString())) {
                 if (hunger <= 24000) {
@@ -2449,7 +2450,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed*1.25D, false, TEMPTATION_ITEMS));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
             this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
-            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);
+//            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);
+            wanderEatingGoal = new GrazingGoal(this, speed);
             this.goalSelector.addGoal(6, wanderEatingGoal);
         }
         aiConfigured = true;

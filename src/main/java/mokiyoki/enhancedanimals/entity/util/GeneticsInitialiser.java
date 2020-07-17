@@ -5,6 +5,8 @@ import mokiyoki.enhancedanimals.init.ChickenBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GeneticsInitialiser {
@@ -55,9 +58,14 @@ public class GeneticsInitialiser {
         List<Breed> wildGenetics = new ArrayList<>();
         List<Breed> chickenbreeds = new ArrayList<>();
 
-        public Genes generateNewChickenGenetics(Biome biome) {
+        public Genes generateNewChickenGenetics(IWorld world, BlockPos pos) {
+            Biome biome = world.getBiome(pos);
+            int areaSize = 16; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
+            int posX = (pos.getX()>>4)/areaSize;
+            int posZ = (pos.getZ()>>4)/areaSize;
+            Random random = new Random(posX+world.getSeed()*posZ);
             Genes trueWildType = new Genes().setGenes(new int[]{1, 1, 1, 1, 6, 6, 1, 1, 1, 1, 1, 1, 3, 6, 1, 1, 1, 1, 1, 1}, new int[]{1,1,6,1,1,1,6,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,1,1,2,2,2,2,2,2,2,2,3,3,2,2,1,1,2,2,1,1,2,2,1,1,3,3,2,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,3,3,3,3,2,2,1,1,1,1,2,2,2,2,1,1,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,10,6,6,5,5,5,5,6,6,4,6,5,5,2,2,1,1,1,1,1,1,1,1,1,1});
-            Breed breed = ChickenBreeds.LEGHORN.editGenes(selectBreed(chickenbreeds, biome).getGeneSketches());
+            Breed breed = ChickenBreeds.LEGHORN.editGenes(selectBreed(chickenbreeds, biome, random).getGeneSketches());
 
             return breed.generateGenes(trueWildType);
 
@@ -74,7 +82,7 @@ public class GeneticsInitialiser {
             chickenbreeds.add(ChickenBreeds.BELGIUMBANTAM);
         }
 
-        public Breed selectBreed(List<Breed> selection, Biome biome, boolean forTrader) {
+        public Breed selectBreed(List<Breed> selection, Biome biome, Random random, boolean forTrader) {
             LinkedList<Pair<Float, Breed>> breedsByChance = new LinkedList();
 
             breedsByChance.add(new Pair<>(selection.get(0).likelyhood(biome, forTrader), selection.get(0)));
@@ -89,7 +97,7 @@ public class GeneticsInitialiser {
             }
 
             for (Pair<Float, Breed> breed : breedsByChance) {
-                if (ThreadLocalRandom.current().nextFloat() < breed.getKey()) {
+                if (random.nextFloat() < breed.getKey()) {
                     return breed.getValue();
                 }
             }
@@ -98,12 +106,12 @@ public class GeneticsInitialiser {
 
         }
 
-        public Breed selectBreed(List<Breed> selection, Biome biome) {
-            return selectBreed(selection, biome, false);
+        public Breed selectBreed(List<Breed> selection, Biome biome, Random random) {
+            return selectBreed(selection, biome, random, false);
         }
 
         public Breed selectBreed(List<Breed> selection, boolean forTrader) {
-            return selectBreed(selection, Biomes.THE_VOID, forTrader);
+            return selectBreed(selection, Biomes.THE_VOID, new Random(), forTrader);
         }
 
     }

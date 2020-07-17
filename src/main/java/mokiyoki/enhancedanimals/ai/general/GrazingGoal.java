@@ -332,7 +332,7 @@ public class GrazingGoal extends Goal {
         searchHay = false;
         eatingHay = false;
         timeoutCounter = 0;
-        amountEating = 0;-
+        amountEating = 0;
     }
 
 }

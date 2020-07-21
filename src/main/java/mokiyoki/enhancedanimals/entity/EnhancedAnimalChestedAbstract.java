@@ -54,8 +54,8 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             "harness_iron.png", "harness_gold.png", "harness_diamond.png"
     };
 
-    protected EnhancedAnimalChestedAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int genesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
-        super(type, worldIn, genesSize, temptationItems, breedItems, foodWeightMap, bottleFeedable);
+    protected EnhancedAnimalChestedAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn,int SgenesSize, int AgenesSize, int genesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
+        super(type, worldIn, SgenesSize, AgenesSize, genesSize, temptationItems, breedItems, foodWeightMap, bottleFeedable);
     }
 
     protected void registerData() {
@@ -243,21 +243,6 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         this.setBridle(!this.animalInventory.getStackInSlot(3).isEmpty() && this.canHaveBridle());
         this.setBlanket(!this.animalInventory.getStackInSlot(4).isEmpty() && this.canHaveBlanket());
         super.updateInventorySlots();
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public Colouration getRgb() {
-        ItemStack bridle = this.getEnhancedInventory().getStackInSlot(3);
-//        ItemStack harness = this.getEnhancedInventory().getStackInSlot(6);
-
-        if (bridle != ItemStack.EMPTY) {
-            this.colouration.setBridleColour(Colouration.getEquipmentColor(bridle));
-        }
-
-//        if (harness != ItemStack.EMPTY) {
-//            this.colouration.setHarnessColour(Colouration.getEquipmentColor(harness));
-//        }
-        return this.colouration;
     }
 
     public void writeAdditional(CompoundNBT compound) {

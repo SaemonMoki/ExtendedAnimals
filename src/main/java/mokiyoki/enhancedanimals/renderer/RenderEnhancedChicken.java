@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.renderer;
 
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
 import mokiyoki.enhancedanimals.renderer.layers.SilkieChickenLayer;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
@@ -36,15 +37,13 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
     public ResourceLocation getEntityTexture(EnhancedChicken entity) {
         entity.getEntityWorld().getProfiler().startSection("ChickenRenderer");
         String s = entity.getChickenTexture();
-        int[] genes = entity.getSharedGenes();
+        Colouration colourRGB = entity.getRgb();
 
-        if (s == null || s.isEmpty() || genes == null || genes.length == 0) {
+        if (s == null || s.isEmpty() || colourRGB == null) {
             return ERROR_TEXTURE_LOCATION;
-        } else {
-            if (genes[106] == 2 && genes[107] == 2) {
-                s = "silkie" + s;
-            }
         }
+
+        s = s + colourRGB.getRGBStrings();
 
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 

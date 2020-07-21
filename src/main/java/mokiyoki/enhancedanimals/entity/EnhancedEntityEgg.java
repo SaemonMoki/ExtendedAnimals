@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,7 +43,7 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         super(ENHANCED_ENTITY_EGG_ENTITY_TYPE, x, y, z,worldIn);
     }
 
-    public EnhancedEntityEgg(World worldIn, PlayerEntity playerIn, int[] eggGenes) {
+    public EnhancedEntityEgg(World worldIn, PlayerEntity playerIn, Genes eggGenes) {
         super(ENHANCED_ENTITY_EGG_ENTITY_TYPE, playerIn, worldIn);
         this.setGenes(eggGenes);
     }
@@ -51,25 +52,28 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         this.getDataManager().register(GENES, new String());
     }
 
-    public void setGenes(int[] eggGenes) {
+    public void setGenes(Genes eggGenes) {
+//        if (eggGenes != null) {
+//            StringBuilder sb = new StringBuilder();
+//            for (int i = 0; i < eggGenes.length; i++){
+//                sb.append(eggGenes[i]);
+//                if (i != eggGenes.length -1){
+//                    sb.append(",");
+//                }
+//            }
+//            this.getDataManager().set(GENES, sb.toString());
+//        } else {
+//            this.getDataManager().set(GENES, "INFERTILE");
+//        }
         if (eggGenes != null) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < eggGenes.length; i++){
-                sb.append(eggGenes[i]);
-                if (i != eggGenes.length -1){
-                    sb.append(",");
-                }
-            }
-            this.getDataManager().set(GENES, sb.toString());
+            this.getDataManager().set(GENES, eggGenes.getGenesAsString());
         } else {
             this.getDataManager().set(GENES, "INFERTILE");
         }
-
     }
 
     public String getGenes() {
-        String genes = ((String)this.dataManager.get(GENES)).toString();
-        return genes;
+        return this.dataManager.get(GENES);
     }
 
     /**
@@ -81,7 +85,7 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
             double d0 = 0.08D;
 
             for (int i = 0; i < 8; ++i) {
-                this.world.addParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(ModItems.Egg_White)), this.getPosX(), this.getPosY(), this.getPosZ(), ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D);
+                this.world.addParticle(new ItemParticleData(ParticleTypes.ITEM, this.getItem()), this.getPosX(), this.getPosY(), this.getPosZ(), ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D);
             }
         }
     }

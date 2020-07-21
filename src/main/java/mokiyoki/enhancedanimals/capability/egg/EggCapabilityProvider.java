@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.capability.egg;
 
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -22,15 +23,15 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
 
     private final LazyOptional<IEggCapability> holder = LazyOptional.of(() -> this);
 
-    private int[] genes;
+    private Genes genes;
     @Override
-    public int[] getGenes() {
+    public Genes getGenes() {
         return this.genes;
     }
 
     @Override
-    public void setGenes(int[] genes) {
-        this.genes = genes;
+    public void setGenes(Genes chickGenes) {
+        this.genes = chickGenes;
     }
 
     @Nullable

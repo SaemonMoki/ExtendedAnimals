@@ -1,12 +1,14 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
+import mokiyoki.enhancedanimals.entity.util.GeneticsInitialiser;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.pig.GrazingGoalPig;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -115,6 +117,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD, ModItems.COOKEDCHICKEN_DARK, ModItems.COOKEDCHICKEN_DARKBIG, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_PALE, ModItems.COOKEDCHICKEN_PALESMALL, ModItems.COOKEDRABBIT_SMALL);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.CARROT, Items.BEETROOT, Items.POTATO);
 
+    private static final int SEXLINKED_GENES_LENGTH = 2;
     private static final int GENES_LENGTH = 60;
 
     private UUID angerTargetUUID;
@@ -127,7 +130,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 //    private int totalBoostTime;
 
     public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
-        super(entityType, worldIn, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, GENES_LENGTH, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
         this.setPigSize();
     }
 
@@ -435,8 +438,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedPig enhancedpig = ENHANCED_PIG.create(this.world);
-        int[] babyGenes = getPigletGenes(this.mitosisGenes, this.mateMitosisGenes);
-
+//        int[] babyGenes = getPigletGenes(this.mitosisGenes, this.mateMitosisGenes);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.mateGenetics);
         defaultCreateAndSpawn(enhancedpig, inWorld, babyGenes, -60000);
 
         this.world.addEntity(enhancedpig);
@@ -716,36 +719,36 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 //        }
     }
 
-    public AgeableEntity createChild(AgeableEntity ageable) {
-        if(pregnant) {
-            ((EnhancedPig)ageable).pregnant = true;
-            ((EnhancedPig)ageable).setMateGenes(this.genes);
-            ((EnhancedPig)ageable).mixMateMitosisGenes();
-            ((EnhancedPig)ageable).mixMitosisGenes();
-        } else {
-            pregnant = true;
-            this.mateGenes = ((EnhancedPig) ageable).getGenes();
-            mixMateMitosisGenes();
-            mixMitosisGenes();
-        }
-
-        this.setGrowingAge(10);
-        this.resetInLove();
-        ageable.setGrowingAge(10);
-        ((EnhancedPig)ageable).resetInLove();
-
-        ServerPlayerEntity entityplayermp = this.getLoveCause();
-        if (entityplayermp == null && ((EnhancedPig)ageable).getLoveCause() != null) {
-            entityplayermp = ((EnhancedPig)ageable).getLoveCause();
-        }
-
-        if (entityplayermp != null) {
-            entityplayermp.addStat(Stats.ANIMALS_BRED);
-            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedPig)ageable), (AgeableEntity)null);
-        }
-
-        return null;
-    }
+//    public AgeableEntity createChild(AgeableEntity ageable) {
+//        if(pregnant) {
+//            ((EnhancedPig)ageable).pregnant = true;
+//            ((EnhancedPig)ageable).setMateGenes(this.genes);
+//            ((EnhancedPig)ageable).mixMateMitosisGenes();
+//            ((EnhancedPig)ageable).mixMitosisGenes();
+//        } else {
+//            pregnant = true;
+//            this.mateGenes = ((EnhancedPig) ageable).getGenes();
+//            mixMateMitosisGenes();
+//            mixMitosisGenes();
+//        }
+//
+//        this.setGrowingAge(10);
+//        this.resetInLove();
+//        ageable.setGrowingAge(10);
+//        ((EnhancedPig)ageable).resetInLove();
+//
+//        ServerPlayerEntity entityplayermp = this.getLoveCause();
+//        if (entityplayermp == null && ((EnhancedPig)ageable).getLoveCause() != null) {
+//            entityplayermp = ((EnhancedPig)ageable).getLoveCause();
+//        }
+//
+//        if (entityplayermp != null) {
+//            entityplayermp.addStat(Stats.ANIMALS_BRED);
+//            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedPig)ageable), (AgeableEntity)null);
+//        }
+//
+//        return null;
+//    }
 
     @OnlyIn(Dist.CLIENT)
     public String getPigTexture() {
@@ -759,7 +762,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        int[] genesForText = getSharedGenes();
+        int[] genesForText = getSharedGenes().getAutosomalGenes();
         if (genesForText != null) {
             boolean agouti = false;
             int spotMod = 0;
@@ -961,7 +964,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setAlphaTexturePaths() {
-        int[] genesForText = getSharedGenes();
+        int[] genesForText = getSharedGenes().getAutosomalGenes();
         if (genesForText != null) {
             int coat = 0;
 
@@ -1055,13 +1058,13 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, 0, GENES_LENGTH, 60000, 30000, 80000);
+        return commonInitialSpawnSetup(inWorld, livingdata, 60000, 30000, 80000);
     }
 
-    @Override
-    protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
-        return replaceGenes(getPigletGenes(mitosis, mateMitosis), spawnGenes1);
-    }
+//    @Override
+//    protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
+//        return replaceGenes(getPigletGenes(mitosis, mateMitosis), spawnGenes1);
+//    }
 
     private int[] replaceGenes(int[] resultGenes, int[] groupGenes) {
         resultGenes[20] = groupGenes[20];
@@ -1081,391 +1084,396 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     @Override
-    protected int[] createInitialGenes(IWorld inWorld) {
-        int[] initialGenes = new int[GENES_LENGTH];
-        //TODO create biome WTC variable [hot and dry biomes, hot and wet biomes, cold biomes] WTC is all others
-        int wildType = 2;
-        Biome biome = inWorld.getBiome(new BlockPos(this));
-
-        if (biome.getCategory().equals(Biome.Category.PLAINS))
-        {
-            wildType = 1;
-        }
-
-
-        if (false) {
-            return new int[] {4,3,3,3,2,2,1,2,1,1,1,1,3,3,1,1,3,3,1,1,12,27,5,31,20,28,19,20,14,39,3,28,2,2,2,2,2,2,2,2,1,1,2,1};
-        } else {
-
-            //Extension [ Dom.Black, Wildtype+, brindle, red ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[0] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-            } else {
-                initialGenes[0] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[1] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-            } else {
-                initialGenes[1] = (2);
-            }
-
-            //Agouti [ Black Enhancer, brown, wildtype? ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[2] = (ThreadLocalRandom.current().nextInt(1) + 1);
-
-            } else {
-                initialGenes[2] = (3);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[3] = (ThreadLocalRandom.current().nextInt(1) + 1);
-
-            } else {
-                initialGenes[3] = (3);
-            }
-
-            //Chinchilla [ chinchilla, wildtype ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[4] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[4] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[5] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[5] = (2);
-            }
-
-            //Subtle Dilute [ Wildtype+, dilute ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[6] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[7] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[7] = (1);
-            }
-
-            //Blue Dilute [ Dilute, wildtype+ ]
-//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-////                initialGenes[8] = (ThreadLocalRandom.current().nextInt(2) + 1);
-//
-//            } else {
-                initialGenes[8] = (1);
-//            }
-//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-////                initialGenes[9] = (ThreadLocalRandom.current().nextInt(2) + 1);
-//
-//            } else {
-                initialGenes[9] = (1);
-//            }
-
-            //this one will combo with agouti I guess
-            //White Spots [ Wildtype+, spotted, roanSpots ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[10] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[11] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[11] = (1);
-            }
-
-            //Dom.White and Belted [ Dom.White, Belted, wildtype+, Patch, Roan]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[12] = (ThreadLocalRandom.current().nextInt(5) + 1);
-                if (wildType == 1) {
-                    initialGenes[13] = (1);
-                } else {
-                    initialGenes[13] = (3);
-                }
-
-            } else {
-                if (wildType == 1) {
-                    initialGenes[12] = (1);
-                    initialGenes[13] = (1);
-                } else {
-                    initialGenes[12] = (3);
-                    initialGenes[13] = (3);
-                }
-            }
-
-            //Berkshire spots [ Wildtype+, tuxedo, berkshire ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[14] = (ThreadLocalRandom.current().nextInt(3) + 1);
-                initialGenes[15] = (1);
-
-            } else {
-                initialGenes[14] = (1);
-                initialGenes[15] = (1);
-            }
-
-            //White Extension [ Over marked, Medium, undermarked+ ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[16] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[16] = (3);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[17] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[17] = (3);
-            }
-
-            //face squash gene 1 [ Wildtype+, long, medium, short, squashed ]
-            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[18] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
-            } else {
-                initialGenes[18] = (1);
-            }
-            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[19] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
-            } else {
-                initialGenes[19] = (1);
-            }
-
-            //inbreeding detector A
-            initialGenes[20] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            initialGenes[21] = (ThreadLocalRandom.current().nextInt(20) + 20);
-
-            //inbreeding detector B
-            initialGenes[22] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            initialGenes[23] = (ThreadLocalRandom.current().nextInt(20) + 20);
-
-            //inbreeding detector C
-            initialGenes[24] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            initialGenes[25] = (ThreadLocalRandom.current().nextInt(20) + 20);
-
-            //inbreeding detector D
-            initialGenes[26] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            initialGenes[27] = (ThreadLocalRandom.current().nextInt(20) + 20);
-
-            //inbreeding detector E
-            initialGenes[28] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            initialGenes[29] = (ThreadLocalRandom.current().nextInt(20) + 20);
-
-            //inbreeding detector F
-            initialGenes[30] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            initialGenes[31] = (ThreadLocalRandom.current().nextInt(20) + 20);
-
-
-            //Waddles [ waddles, wildtype ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[32] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[33] = (2);
-            }
-
-            //hair density [ furry, wildtype, sparse ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[34] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[34] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[35] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[35] = (2);
-            }
-
-            //baldness [ Bald, wildtype ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                if (wildType == 1) {
-                    initialGenes[36] = (1);
-                } else {
-                    initialGenes[36] = (2);
-                }
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[37] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[37] = (2);
-            }
-
-            //wooly [ wooly, wildtype ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[38] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[39] = (2);
-            }
-
-            //thick hair [ thick hair+, less hair ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[40] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[41] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[41] = (1);
-            }
-
-            //face squash gene 2 [ longest, normal, short, shortest]
-            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[42] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-            } else {
-                initialGenes[42] = (1);
-            }
-            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[43] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-            } else {
-                initialGenes[43] = (1);
-            }
-
-            //potbelly dwarfism [wildtype, dwarfStrong, dwarfWeak]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[44] = (ThreadLocalRandom.current().nextInt(3) + 1);
-                initialGenes[45] = (1);
-
-            } else {
-                initialGenes[44] = (1);
-                initialGenes[45] = (1);
-            }
-
-            //potbelly dwarfism2 [wildtype, dwarf]
-                if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                    initialGenes[46] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-                } else {
-                    initialGenes[46] = (1);
-                }
-                if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                    initialGenes[47] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-                } else {
-                    initialGenes[47] = (1);
-                }
-
-            //size genes reducer [wildtype, smaller smaller smallest...]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[48] = (ThreadLocalRandom.current().nextInt(16) + 1);
-
-            } else {
-                initialGenes[48] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[49] = (ThreadLocalRandom.current().nextInt(16) + 1);
-
-            } else {
-                initialGenes[49] = (1);
-            }
-
-            //size genes adder [wildtype, bigger bigger biggest...]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[50] = (ThreadLocalRandom.current().nextInt(16) + 1);
-
-            } else {
-                initialGenes[50] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[51] = (ThreadLocalRandom.current().nextInt(16) + 1);
-
-            } else {
-                initialGenes[51] = (1);
-            }
-
-            //size genes varient1 [wildtype, smaller, smallest]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[52] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[52] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[53] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[53] = (1);
-            }
-
-            //size genes varient2 [wildtype, smaller, smallest]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[54] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[54] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[55] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[55] = (1);
-            }
-
-            //body type [wildtype, smallest to largest] if mod with lard/fat smallest size has least fat, largest has most fat
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[56] = (ThreadLocalRandom.current().nextInt(6) + 1);
-
-            } else {
-                initialGenes[56] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[57] = (ThreadLocalRandom.current().nextInt(6) + 1);
-
-            } else {
-                initialGenes[57] = (1);
-            }
-
-            //litter size reduction [wildtype (half), weak reduction (2/3), prolific]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[58] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[58] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[59] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[59] = (1);
-            }
-
-            //ear size [xsmall, small, medium, large, xlarge]
-
-            //ear angle [up, medium, down
-
-        }
-
-        return initialGenes;
+    protected Genes createInitialGenes(IWorld world, BlockPos pos) {
+        return new GeneticsInitialiser.PigGeneticsInitialiser().generateNewPigGenetics(world, pos);
     }
+
+//    @Override
+//    protected int[] createInitialGenes(IWorld inWorld) {
+//        int[] initialGenes = new int[GENES_LENGTH];
+//        //TODO create biome WTC variable [hot and dry biomes, hot and wet biomes, cold biomes] WTC is all others
+//        int wildType = 2;
+//        Biome biome = inWorld.getBiome(new BlockPos(this));
+//
+//        if (biome.getCategory().equals(Biome.Category.PLAINS))
+//        {
+//            wildType = 1;
+//        }
+//
+//
+//        if (false) {
+//            return new int[] {4,3,3,3,2,2,1,2,1,1,1,1,3,3,1,1,3,3,1,1,12,27,5,31,20,28,19,20,14,39,3,28,2,2,2,2,2,2,2,2,1,1,2,1};
+//        } else {
+//
+//            //Extension [ Dom.Black, Wildtype+, brindle, red ]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[0] = (ThreadLocalRandom.current().nextInt(4) + 1);
+//
+//            } else {
+//                initialGenes[0] = (2);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[1] = (ThreadLocalRandom.current().nextInt(4) + 1);
+//
+//            } else {
+//                initialGenes[1] = (2);
+//            }
+//
+//            //Agouti [ Black Enhancer, brown, wildtype? ]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[2] = (ThreadLocalRandom.current().nextInt(1) + 1);
+//
+//            } else {
+//                initialGenes[2] = (3);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[3] = (ThreadLocalRandom.current().nextInt(1) + 1);
+//
+//            } else {
+//                initialGenes[3] = (3);
+//            }
+//
+//            //Chinchilla [ chinchilla, wildtype ]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[4] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
+//                initialGenes[4] = (2);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[5] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
+//                initialGenes[5] = (2);
+//            }
+//
+//            //Subtle Dilute [ Wildtype+, dilute ]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
+//                initialGenes[6] = (1);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[7] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
+//                initialGenes[7] = (1);
+//            }
+//
+//            //Blue Dilute [ Dilute, wildtype+ ]
+////            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//////                initialGenes[8] = (ThreadLocalRandom.current().nextInt(2) + 1);
+////
+////            } else {
+//                initialGenes[8] = (1);
+////            }
+////            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//////                initialGenes[9] = (ThreadLocalRandom.current().nextInt(2) + 1);
+////
+////            } else {
+//                initialGenes[9] = (1);
+////            }
+//
+//            //this one will combo with agouti I guess
+//            //White Spots [ Wildtype+, spotted, roanSpots ]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//            } else {
+//                initialGenes[10] = (1);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[11] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//            } else {
+//                initialGenes[11] = (1);
+//            }
+//
+//            //Dom.White and Belted [ Dom.White, Belted, wildtype+, Patch, Roan]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[12] = (ThreadLocalRandom.current().nextInt(5) + 1);
+//                if (wildType == 1) {
+//                    initialGenes[13] = (1);
+//                } else {
+//                    initialGenes[13] = (3);
+//                }
+//
+//            } else {
+//                if (wildType == 1) {
+//                    initialGenes[12] = (1);
+//                    initialGenes[13] = (1);
+//                } else {
+//                    initialGenes[12] = (3);
+//                    initialGenes[13] = (3);
+//                }
+//            }
+//
+//            //Berkshire spots [ Wildtype+, tuxedo, berkshire ]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[14] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//                initialGenes[15] = (1);
+//
+//            } else {
+//                initialGenes[14] = (1);
+//                initialGenes[15] = (1);
+//            }
+//
+//            //White Extension [ Over marked, Medium, undermarked+ ]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[16] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//            } else {
+//                initialGenes[16] = (3);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[17] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//            } else {
+//                initialGenes[17] = (3);
+//            }
+//
+//            //face squash gene 1 [ Wildtype+, long, medium, short, squashed ]
+//            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[18] = (ThreadLocalRandom.current().nextInt(5) + 1);
+//
+//            } else {
+//                initialGenes[18] = (1);
+//            }
+//            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[19] = (ThreadLocalRandom.current().nextInt(5) + 1);
+//
+//            } else {
+//                initialGenes[19] = (1);
+//            }
+//
+//            //inbreeding detector A
+//            initialGenes[20] = (ThreadLocalRandom.current().nextInt(20) + 1);
+//            initialGenes[21] = (ThreadLocalRandom.current().nextInt(20) + 20);
+//
+//            //inbreeding detector B
+//            initialGenes[22] = (ThreadLocalRandom.current().nextInt(20) + 1);
+//            initialGenes[23] = (ThreadLocalRandom.current().nextInt(20) + 20);
+//
+//            //inbreeding detector C
+//            initialGenes[24] = (ThreadLocalRandom.current().nextInt(20) + 1);
+//            initialGenes[25] = (ThreadLocalRandom.current().nextInt(20) + 20);
+//
+//            //inbreeding detector D
+//            initialGenes[26] = (ThreadLocalRandom.current().nextInt(20) + 1);
+//            initialGenes[27] = (ThreadLocalRandom.current().nextInt(20) + 20);
+//
+//            //inbreeding detector E
+//            initialGenes[28] = (ThreadLocalRandom.current().nextInt(20) + 1);
+//            initialGenes[29] = (ThreadLocalRandom.current().nextInt(20) + 20);
+//
+//            //inbreeding detector F
+//            initialGenes[30] = (ThreadLocalRandom.current().nextInt(20) + 1);
+//            initialGenes[31] = (ThreadLocalRandom.current().nextInt(20) + 20);
+//
+//
+//            //Waddles [ waddles, wildtype ]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
+//                initialGenes[32] = (2);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
+//                initialGenes[33] = (2);
+//            }
+//
+//            //hair density [ furry, wildtype, sparse ]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[34] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//            } else {
+//                initialGenes[34] = (2);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[35] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//            } else {
+//                initialGenes[35] = (2);
+//            }
+//
+//            //baldness [ Bald, wildtype ]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
+//                if (wildType == 1) {
+//                    initialGenes[36] = (1);
+//                } else {
+//                    initialGenes[36] = (2);
+//                }
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[37] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
+//                initialGenes[37] = (2);
+//            }
+//
+//            //wooly [ wooly, wildtype ]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
+//                initialGenes[38] = (2);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
+//                initialGenes[39] = (2);
+//            }
+//
+//            //thick hair [ thick hair+, less hair ]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
+//                initialGenes[40] = (1);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[41] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//            } else {
+//                initialGenes[41] = (1);
+//            }
+//
+//            //face squash gene 2 [ longest, normal, short, shortest]
+//            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[42] = (ThreadLocalRandom.current().nextInt(4) + 1);
+//
+//            } else {
+//                initialGenes[42] = (1);
+//            }
+//            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[43] = (ThreadLocalRandom.current().nextInt(4) + 1);
+//
+//            } else {
+//                initialGenes[43] = (1);
+//            }
+//
+//            //potbelly dwarfism [wildtype, dwarfStrong, dwarfWeak]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[44] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//                initialGenes[45] = (1);
+//
+//            } else {
+//                initialGenes[44] = (1);
+//                initialGenes[45] = (1);
+//            }
+//
+//            //potbelly dwarfism2 [wildtype, dwarf]
+//                if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                    initialGenes[46] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//                } else {
+//                    initialGenes[46] = (1);
+//                }
+//                if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                    initialGenes[47] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//                } else {
+//                    initialGenes[47] = (1);
+//                }
+//
+//            //size genes reducer [wildtype, smaller smaller smallest...]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[48] = (ThreadLocalRandom.current().nextInt(16) + 1);
+//
+//            } else {
+//                initialGenes[48] = (1);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[49] = (ThreadLocalRandom.current().nextInt(16) + 1);
+//
+//            } else {
+//                initialGenes[49] = (1);
+//            }
+//
+//            //size genes adder [wildtype, bigger bigger biggest...]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[50] = (ThreadLocalRandom.current().nextInt(16) + 1);
+//
+//            } else {
+//                initialGenes[50] = (1);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[51] = (ThreadLocalRandom.current().nextInt(16) + 1);
+//
+//            } else {
+//                initialGenes[51] = (1);
+//            }
+//
+//            //size genes varient1 [wildtype, smaller, smallest]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[52] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//            } else {
+//                initialGenes[52] = (1);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[53] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//            } else {
+//                initialGenes[53] = (1);
+//            }
+//
+//            //size genes varient2 [wildtype, smaller, smallest]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[54] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//            } else {
+//                initialGenes[54] = (1);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[55] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//            } else {
+//                initialGenes[55] = (1);
+//            }
+//
+//            //body type [wildtype, smallest to largest] if mod with lard/fat smallest size has least fat, largest has most fat
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[56] = (ThreadLocalRandom.current().nextInt(6) + 1);
+//
+//            } else {
+//                initialGenes[56] = (1);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[57] = (ThreadLocalRandom.current().nextInt(6) + 1);
+//
+//            } else {
+//                initialGenes[57] = (1);
+//            }
+//
+//            //litter size reduction [wildtype (half), weak reduction (2/3), prolific]
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[58] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//            } else {
+//                initialGenes[58] = (1);
+//            }
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                initialGenes[59] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//            } else {
+//                initialGenes[59] = (1);
+//            }
+//
+//            //ear size [xsmall, small, medium, large, xlarge]
+//
+//            //ear angle [up, medium, down
+//
+//        }
+//
+//        return initialGenes;
+//    }
 }

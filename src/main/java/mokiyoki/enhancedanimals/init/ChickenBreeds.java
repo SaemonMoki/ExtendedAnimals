@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import static mokiyoki.enhancedanimals.util.Breed.createVarientList;
 
-public class ChickenBreeds {
+public final class ChickenBreeds {
     public static final Breed PLAINSNATIVE = new Breed(new Breed.Properties().setData("wild plains chicken", Biomes.PLAINS, Breed.Rarity.ORDINARY)
     .setGeneSketch(new GeneSketch(),
             new GeneSketch()));

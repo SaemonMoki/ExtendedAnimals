@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
+import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.IJumpingMount;
@@ -23,6 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MilkBucketItem;
+import net.minecraft.item.SaddleItem;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -78,8 +80,8 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     protected int temper;
 
-    protected EnhancedAnimalRideableAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int genesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
-        super(type, worldIn, genesSize, temptationItems, breedItems, foodWeightMap, bottleFeedable);
+    protected EnhancedAnimalRideableAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, int genesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
+        super(type, worldIn, SgenesSize, AgenesSize, genesSize, temptationItems, breedItems, foodWeightMap, bottleFeedable);
         this.stepHeight = 1.0F;
     }
 
@@ -262,13 +264,13 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             return this.saddleAnimal(itemStack, entityPlayer, this);
         }
 
-        if (TEMPTATION_ITEMS.test(itemStack) || BREED_ITEMS.test(itemStack)) {
+        if (TEMPTATION_ITEMS.test(itemStack) || BREED_ITEMS.test(itemStack) || item instanceof DebugGenesBook) {
             return super.processInteract(entityPlayer, hand);
         }
 
         if (this.isBeingRidden()) {
             return super.processInteract(entityPlayer, hand);
-        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge && !(item instanceof BucketItem || item instanceof MilkBucketItem || TEMPTATION_ITEMS.test(itemStack) || BREED_ITEMS.test(itemStack) || hand.equals(Hand.OFF_HAND))) {
+        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge && !(item instanceof BucketItem || item instanceof MilkBucketItem || TEMPTATION_ITEMS.test(itemStack) || BREED_ITEMS.test(itemStack) || item instanceof DebugGenesBook || hand.equals(Hand.OFF_HAND))) {
 //        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge) {
             this.mountTo(entityPlayer);
             return true;
@@ -519,10 +521,9 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     @Override
     @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
+        this.colouration = super.getRgb();
         ItemStack saddle = this.getEnhancedInventory().getStackInSlot(1);
-//        ItemStack armour = this.getEnhancedInventory().getStackInSlot(2);
-
-        if (saddle != ItemStack.EMPTY) {
+        if (saddle.getItem() instanceof SaddleItem) {
             this.colouration.setSaddleColour(Colouration.getEquipmentColor(saddle));
         }
 

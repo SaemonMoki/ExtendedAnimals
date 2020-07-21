@@ -732,7 +732,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             return pigModelData;
         } else {
             PigModelData pigModelData = new PigModelData();
-            pigModelData.pigGenes = enhancedPig.getSharedGenes();
+            pigModelData.pigGenes = enhancedPig.getSharedGenes().getAutosomalGenes();
             pigModelData.size = enhancedPig.getAnimalSize();
             pigModelData.sleeping = enhancedPig.isAnimalSleeping();
             pigModelData.blink = enhancedPig.getBlink();

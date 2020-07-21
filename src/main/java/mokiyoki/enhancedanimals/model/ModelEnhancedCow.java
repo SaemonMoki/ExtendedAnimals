@@ -1753,7 +1753,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             //initial grab
             CowModelData cowModelData = new CowModelData();
             cowModelData.isCow = !(enhancedCow instanceof EnhancedMooshroom || enhancedCow instanceof EnhancedMoobloom);
-            cowModelData.cowGenes = enhancedCow.getSharedGenes();
+            cowModelData.cowGenes = enhancedCow.getSharedGenes().getAutosomalGenes();
             cowModelData.cowSize = enhancedCow.getAnimalSize();
             cowModelData.bagSize = enhancedCow.getBagSize();
             cowModelData.cowStatus = enhancedCow.getEntityStatus();

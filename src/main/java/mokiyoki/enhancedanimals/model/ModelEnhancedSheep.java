@@ -1232,7 +1232,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             return sheepModelData;
         } else {
             SheepModelData sheepModelData = new SheepModelData();
-            sheepModelData.sheepGenes = enhancedSheep.getSharedGenes();
+            sheepModelData.sheepGenes = enhancedSheep.getSharedGenes().getAutosomalGenes();
             sheepModelData.coatlength = enhancedSheep.getCoatLength();
             sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
             sheepModelData.blink = enhancedSheep.getBlink();

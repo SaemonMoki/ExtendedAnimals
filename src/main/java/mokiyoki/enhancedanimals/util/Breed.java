@@ -120,7 +120,7 @@ public class Breed {
 
     public final Genes generateGenes(Genes genes) {
         Pair<GeneSketch, GeneSketch> sketch = this.varieties.getSketchWithVarients(new Pair<>(this.sexlinkedGeneSketch, this.autosomalGeneSketch));
-        return new Genes().setGenes(sketch.getKey().getGeneArray(genes.getSexlinkedGenes()), sketch.getValue().getGeneArray(genes.getAutosomalGenes()));
+        return new Genes(sketch.getKey().getGeneArray(genes.getSexlinkedGenes()), sketch.getValue().getGeneArray(genes.getAutosomalGenes()));
     }
 
 

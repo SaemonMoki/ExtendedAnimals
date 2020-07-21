@@ -4,6 +4,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.ai.general.mooshroom.EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerBlock;
@@ -93,11 +94,10 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
-        int[] babyGenes = getCalfGenes(this.mitosisGenes, this.mateMitosisGenes);
-        defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -84000);
+        Genes babyGenes = new Genes(this.genetics).makeChild(mateGenetics);
 
-        EnhancedMooshroom EnhancedMooshroom = ENHANCED_MOOSHROOM.create(this.world);
-        EnhancedMooshroom.setMooshroomType(this.setChildMushroomType((EnhancedMooshroom)));
+        enhancedmooshroom.setMooshroomType(this.setChildMushroomType((enhancedmooshroom)));
+        defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -84000);
 
         enhancedmooshroom.setMotherUUID(this.getUniqueID().toString());
         enhancedmooshroom.configureAI();

@@ -31,6 +31,8 @@ public class EanimodCommonConfig implements IEanimodConfig{
     }
 
     public static class CommonConfig {
+        public final ForgeConfigSpec.BooleanValue omnigenders;
+        public final ForgeConfigSpec.BooleanValue feedGrowth;
         public final ForgeConfigSpec.BooleanValue spawnVanillaChickens;
         public final ForgeConfigSpec.BooleanValue spawnVanillaRabbits;
         public final ForgeConfigSpec.BooleanValue spawnVanillaSheep;
@@ -60,6 +62,12 @@ public class EanimodCommonConfig implements IEanimodConfig{
 
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
+            omnigenders = builder
+                    .comment("Set this to true to enable omnigenders, meaning the gender of the animal is irrelevant to who can fall pregnant, lay eggs, milk or sire young. False results in gendered animals. Visually nothing changes.")
+                    .define("genders.enabled", false);
+            feedGrowth = builder
+                    .comment("true lets you grow/age animals to adulthood by feeding them breeding items, false disables feed growth.")
+                    .define("feedgrowth.enabled", true);
             spawnVanillaChickens = builder
                     .comment("Set this to true to allow vanilla minecraft chickens to continue to spawn/exist. False will prevent vanilla chicken spawning and delete existing ones from the world.")
                     .define("spawnVanillaChickens.enabled", false);

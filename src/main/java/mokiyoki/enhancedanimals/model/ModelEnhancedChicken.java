@@ -726,7 +726,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             this.beardNN.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
-        if (!isChild) {
+        if (age > 0.3F) {
 
             if ((wSize == 2 || wSize == 3 || wSize == 4)) {
 
@@ -804,7 +804,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
             }
 
-            if(crest == 1 || (crest != 0 && isChild)){
+            if(crest == 1 || (crest != 0 && age > 0.5F)){
                 this.smallCrest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }else if(crest == 2){
                 this.forwardCrest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -813,7 +813,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }
 
             if (genes != null) {
-                if ((!isChild || age >= 0.3333F) && (genes[72] == 1 && genes[73] == 1)) {
+                if ((age > 0.15F || age >= 0.3333F) && (genes[72] == 1 && genes[73] == 1)) {
                     this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
             }
@@ -874,7 +874,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }
 
         matrixStackIn.pop();
-//        }
 
         if (blink == 0 || blink >= 6) {
             this.eyeLeft.showModel = true;
@@ -1230,7 +1229,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             return chickenModelData;
         } else {
             ChickenModelData chickenModelData = new ChickenModelData();
-            chickenModelData.chickenGenes = enhancedChicken.getSharedGenes();
+            chickenModelData.chickenGenes = enhancedChicken.getSharedGenes().getAutosomalGenes();
             chickenModelData.sleeping = enhancedChicken.isRoosting();
             chickenModelData.blink = enhancedChicken.getBlink();
             chickenModelData.birthTime = enhancedChicken.getBirthTime();

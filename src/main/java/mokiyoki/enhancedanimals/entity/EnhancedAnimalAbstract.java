@@ -1107,6 +1107,23 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
+    /**
+     * Returns true if the mob is currently able to mate with the specified mob.
+     */
+    @Override
+    public boolean canMateWith(AnimalEntity otherAnimal) {
+        if (otherAnimal == this) {
+            return false;
+        } else if (otherAnimal.getClass() != this.getClass()) {
+            return false;
+        } else {
+            if (EanimodCommonConfig.COMMON.omnigenders.get() || (this.getGender() ^ ((EnhancedAnimalAbstract)otherAnimal).getGender())) {
+                return this.isInLove() && otherAnimal.isInLove();
+            }
+            return false;
+        }
+    }
+
     /*
     Inventory
     */
@@ -1123,8 +1140,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     protected void updateInventorySlots() {
         if (!this.world.isRemote) {
-//            if ()
-//            this.setHorseSaddled(!this.horseChest.getStackInSlot(0).isEmpty() && this.canBeSaddled());
         }
     }
 

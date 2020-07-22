@@ -710,12 +710,19 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected void setColourBySlot(int i) {
         switch (i) {
             case 0 : this.colouration.setDyeColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(0)));
-            case 1 : this.colouration.setDyeColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(1)));
-            case 2 : this.colouration.setDyeColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(2)));
-            case 3 : this.colouration.setDyeColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(3)));
+                break;
+            case 1 : this.colouration.setSaddleColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(1)));
+                break;
+            case 2 : this.colouration.setArmourColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(2)));
+                break;
+            case 3 : this.colouration.setBridleColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(3)));
+                break;
             case 4 : this.colouration.setDyeColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(4)));
-            case 5 : this.colouration.setDyeColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(5)));
+                break;
+            case 5 : this.colouration.setHarnessColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(5)));
+                break;
             case 6 : this.colouration.setDyeColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(6)));
+                break;
         }
     }
 

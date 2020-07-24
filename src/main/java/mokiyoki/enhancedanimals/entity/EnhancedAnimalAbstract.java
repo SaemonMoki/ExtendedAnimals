@@ -1,21 +1,17 @@
 package mokiyoki.enhancedanimals.entity;
 
-import javafx.util.Pair;
 import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
-import mokiyoki.enhancedanimals.entity.util.GeneticsInitialiser;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
-import mokiyoki.enhancedanimals.network.EAPacketHandler;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -50,13 +46,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.Region;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -71,7 +64,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -95,14 +87,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     // Genetic Info
     protected Genes genetics;
     protected Genes mateGenetics;
+    protected Boolean mateGender;
     protected Genes genesSplitForClient;
     protected static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
-
-    //all being replaced
-    protected int[] genes;
-    protected int[] mateGenes;
-    protected int[] mitosisGenes;
-    protected int[] mateMitosisGenes;
 
     //Hunger
     Map<Item, Integer> foodWeightMap = new HashMap();
@@ -143,16 +130,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     Entity Construction
     */
 
-    protected EnhancedAnimalAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, int genesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
+    protected EnhancedAnimalAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
         super(type, worldIn);
         this.genetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
         this.mateGenetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
-
-        this.genes = new int[genesSize];
-        this.mateGenes = new int[genesSize];
-        this.mitosisGenes = new int[genesSize];
-        this.mateMitosisGenes = new int[genesSize];
-
+        this.mateGender = false;
         this.TEMPTATION_ITEMS = temptationItems;
         this.BREED_ITEMS = breedItems;
         this.foodWeightMap = foodWeightMap;
@@ -437,7 +419,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     /*
     General Info
     */
-    public boolean getGender() {
+    public boolean getIsFemale() {
         char[] uuidArray = getCachedUniqueIdString().toCharArray();
         if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
             return false;
@@ -849,11 +831,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             }
         } else {
             if (this instanceof EnhancedChicken) {
-                for (int i = 0; i < 9; ++i) {
+                for (int i = 0; i < 10; ++i) {
                     int gene = geneList.getCompound(i).getInt("Gene");
-                    if (gene == 10) {
-                        break;
-                    }
                     this.genetics.setSexlinkedGene(i*2, gene);
                     this.genetics.setSexlinkedGene((i*2)+1, gene);
                 }
@@ -867,8 +846,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             for (int i = 0; i < geneList.size(); ++i) {
                 if (i < 20 && this instanceof EnhancedChicken) {
                     this.genetics.setAutosomalGene(i, 1);
+                } else {
+                    this.genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
                 }
-                this.genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
             }
         }
 
@@ -1002,22 +982,20 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     @Override
     public AgeableEntity createChild(AgeableEntity ageable) {
-        if (EanimodCommonConfig.COMMON.omnigenders.get() || (getGender() ^ ((EnhancedAnimalAbstract)ageable).getGender())) {
-            handlePartnerBreeding(ageable);
-            this.setGrowingAge(10);
-            this.resetInLove();
-            ageable.setGrowingAge(10);
-            ((EnhancedAnimalAbstract)ageable).resetInLove();
+        handlePartnerBreeding(ageable);
+        this.setGrowingAge(10);
+        this.resetInLove();
+        ageable.setGrowingAge(10);
+        ((EnhancedAnimalAbstract)ageable).resetInLove();
 
-            ServerPlayerEntity entityplayermp = this.getLoveCause();
-            if (entityplayermp == null && ((EnhancedAnimalAbstract)ageable).getLoveCause() != null) {
-                entityplayermp = ((EnhancedAnimalAbstract)ageable).getLoveCause();
-            }
+        ServerPlayerEntity entityplayermp = this.getLoveCause();
+        if (entityplayermp == null && ((EnhancedAnimalAbstract)ageable).getLoveCause() != null) {
+            entityplayermp = ((EnhancedAnimalAbstract)ageable).getLoveCause();
+        }
 
-            if (entityplayermp != null) {
-                entityplayermp.addStat(Stats.ANIMALS_BRED);
-                CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedAnimalAbstract)ageable), (AgeableEntity)null);
-            }
+        if (entityplayermp != null) {
+            entityplayermp.addStat(Stats.ANIMALS_BRED);
+            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedAnimalAbstract)ageable), (AgeableEntity)null);
         }
 
         return null;
@@ -1028,22 +1006,22 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             if(pregnant) {
                 ((EnhancedAnimalAbstract)ageable).pregnant = true;
                 ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
-//                ((EnhancedAnimalAbstract)ageable).mixMateMitosisGenes();
-//                ((EnhancedAnimalAbstract)ageable).mixMitosisGenes();
+                ((EnhancedAnimalAbstract)ageable).setMateGender(this.getIsFemale());
             } else {
                 this.pregnant = true;
                 this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
-//                mixMateMitosisGenes();
-//                mixMitosisGenes();
+                this.mateGender = ((EnhancedAnimalAbstract)ageable).getIsFemale();
             }
-        } else if (getGender()) {
+        } else if (getIsFemale()) {
            //is female
            this.pregnant = true;
            this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
+           this.mateGender = false;
         } else {
             //is male
             ((EnhancedAnimalAbstract)ageable).pregnant = true;
             ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
+            ((EnhancedAnimalAbstract)ageable).mateGender = false;
         }
     }
 
@@ -1057,7 +1035,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         } else if (otherAnimal.getClass() != this.getClass()) {
             return false;
         } else {
-            if (EanimodCommonConfig.COMMON.omnigenders.get() || (this.getGender() ^ ((EnhancedAnimalAbstract)otherAnimal).getGender())) {
+            if (EanimodCommonConfig.COMMON.omnigenders.get() || (this.getIsFemale() ^ ((EnhancedAnimalAbstract)otherAnimal).getIsFemale())) {
                 return this.isInLove() && otherAnimal.isInLove();
             }
             return false;
@@ -1168,15 +1146,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     public void openInfoInventory(EnhancedAnimalAbstract enhancedAnimal, IInventory inventoryIn, PlayerEntity playerEntity) {
-//        if (this.openContainer != this.container) {
-//            this.closeScreen();
-//        }
         if(!playerEntity.world.isRemote) {
 
             EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
             animalInfo.health = (int)(10 * (this.getHealth() / this.getMaxHealth()));
             animalInfo.hunger = (int)(this.getHunger() / 7200);
-            animalInfo.isFemale = this.getGender();
+            animalInfo.isFemale = this.getIsFemale();
             animalInfo.pregnant = (10 * this.gestationTimer)/gestationConfig();
             animalInfo.name = this.getAnimalsName(getSpecies());
             animalInfo.agePrefix = this.getAnimalsAgeString();
@@ -1283,14 +1258,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     public void setSharedGenes(Genes genes) {
-//        StringBuilder sb = new StringBuilder();
-//        for (int i = 0; i < genes.length; i++){
-//            sb.append(genes[i]);
-//            if (i != genes.length -1){
-//                sb.append(",");
-//            }
-//        }
-
         this.dataManager.set(SHARED_GENES, genes.getGenesAsString());
     }
 
@@ -1343,101 +1310,34 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected void geneFixer() {
-        if (genes[0] == 0) {
-            //this.genetics = new GeneticsInitialiser.ChickenGeneticsInitialiser().generateNewChickenGenetics(this.world, new BlockPos(this));
-            setInitialDefaults();
-            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (ThreadLocalRandom.current().nextInt(24000, 180000))));
-//            this.setCustomName(new StringTextComponent(selectBreed(this.world)));
-        } else {
-            for (int i = 0; i < genes.length; i++) {
-                if (genes[i] == 0) {
-                    genes[i] = 1;
-                }
-            }
-            if (mateGenes[0] != 0) {
-                for (int i = 0; i < mateGenes.length; i++) {
-                    if (mateGenes[i] == 0) {
-                        mateGenes[i] = 1;
-                    }
-                }
-            }
-        }
-    }
-
-//    public String selectBreed(IWorld world) {
-//        int areaSize = 16; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
-//        BlockPos pos = new BlockPos(this);
-//        int posX = (pos.getX()>>4)/areaSize;
-//        int posZ = (pos.getZ()>>4)/areaSize;
-//
-//        Random randomBreed = new Random(posX+world.getSeed()+posZ);
-//
-//        String[] breeds;
-//        switch (getSpecies()) {
-//            case "Chicken":
-//                breeds = new String[]{"WYANDOTTE", "RHODE_ISLAND_RED", "PLYMOUTH_ROCK", "Orpington", "Leghorn",
-//                        "Silkie", "BelgianD'Uccle", "Polish", "WhiteFaceSpanish", "Lakenvelder", "Araucana",
-//                        "JapaneseBantam", "FrenchMarans", "Australorp", "Sussex", "Delaware", "Fayoumi", "Faverolles", "Hamburg", "TransylvanianNakedNeck"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//            case "Pig":
-//                breeds = new String[]{"Duroc", "Hampshire", "LargeBlack", "LargeWhite", "OldSpot", "Yorkshire", "Meishan"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//            case "Cow":
-//            case "Mooshroom":
-//            case "Moobloom":
-//                breeds = new String[]{"Angus", "Hereford", "TexasLonghorn", "Holstein", "Friesian", "Highland", "Brahman", "Nadudana", "Jersey", "Guernsey"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//            case "Sheep":
-//                breeds = new String[]{"Dorper", "Dorset", "Freisian", "Merino", "Jacob", "Suffolk"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//            case "Rabbit":
-//                breeds = new String[]{"Dutch", "DwarfLop", "DwarfHotot", "EnglishLop", "EnglishSpot", "FrenchAngora", "Havana", "Himalayan", "HollandLop",
-//                        "Lionhead", "Netherland Dwarf"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//            case "Llama":
-//                breeds = new String[]{"Ccara", "Argentine", "Suri"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//            case "Horse":
-//                breeds = new String[]{"Arabian", "Thoroughbred", "Appaloosa", "Morgan", "ShetlandPony", "Clydesdale", "Shire", "BelgianDraft", "Percheron",
-//                        "Fjord", "Fallabella", "HackneyPony"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
+//        if (genes[0] == 0) {
+//            //this.genetics = new GeneticsInitialiser.ChickenGeneticsInitialiser().generateNewChickenGenetics(this.world, new BlockPos(this));
+//            setInitialDefaults();
+//            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (ThreadLocalRandom.current().nextInt(24000, 180000))));
+////            this.setCustomName(new StringTextComponent(selectBreed(this.world)));
+//        } else {
+//            for (int i = 0; i < genes.length; i++) {
+//                if (genes[i] == 0) {
+//                    genes[i] = 1;
+//                }
+//            }
+//            if (mateGenes[0] != 0) {
+//                for (int i = 0; i < mateGenes.length; i++) {
+//                    if (mateGenes[i] == 0) {
+//                        mateGenes[i] = 1;
+//                    }
+//                }
+//            }
 //        }
-//
-//        return "LocalWildType";
-//    }
+    }
 
     public void setMateGenes(Genes genes){
         this.mateGenetics = genes;
     }
 
-    public void mixMateMitosisGenes() {
-        punnetSquare(0, mateMitosisGenes, mateGenes);
+    public void setMateGender(Boolean gender){
+        this.mateGender = gender;
     }
-
-    public void mixMitosisGenes() {
-        punnetSquare(0, mitosisGenes, genes);
-    }
-
-    public void punnetSquare(int startIndex, int[] mitosis, int[] parentGenes) {
-        mixGenes(startIndex, mitosis, parentGenes, 2);
-
-        extraMixingOverrides(mitosis, parentGenes);
-    }
-
-    protected void mixGenes(int startIndex, int[] mitosis, int[] parentGenes, int increaseAmount) {
-        for (int i = startIndex; i < genes.length; i = (i + increaseAmount)) {
-            boolean mateOddOrEven = this.rand.nextBoolean();
-            if (mateOddOrEven) {
-                mitosis[i] = parentGenes[i + 1];
-                mitosis[i + 1] = parentGenes[i];
-            } else {
-                mitosis[i] = parentGenes[i];
-                mitosis[i + 1] = parentGenes[i + 1];
-            }
-        }
-    }
-
-    protected void extraMixingOverrides(int[] mitosis, int[] parentGenes){}
 
     //overriden to prevent aging up when fed
     @Override

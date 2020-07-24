@@ -115,7 +115,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     private String motherUUID = "";
 
     public EnhancedSheep(EntityType<? extends EnhancedSheep> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, GENES_LENGTH, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
         this.setSheepSize();
         this.timeUntilNextMilk = this.rand.nextInt(this.rand.nextInt(8000) + 4000);
     }
@@ -289,6 +289,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             timeForGrowth++;
         }
         if (maxCoatLength > 0) {
+            int[] genes = this.genetics.getAutosomalGenes();
             if (!this.isChild() && currentCoatLength == maxCoatLength && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= 24000) {
                 timeForGrowth = 0;
                 currentCoatLength = rand.nextInt(maxCoatLength/2);
@@ -309,6 +310,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected int getNumberOfChildren() {
+        int[] genes = this.genetics.getAutosomalGenes();
         int lambRange;
         int lambAverage = 1;
         int numberOfLambs;
@@ -544,6 +546,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     private DyeColor getWoolColour() {
+        int[] genes = this.genetics.getAutosomalGenes();
         int spots = 0;
         DyeColor returnDye;
 
@@ -785,6 +788,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     private void setSheepSize() {
+        int[] genes = this.genetics.getAutosomalGenes();
         float size = 0.4F;
 
         //(56/57) 1-2 minature [wildtype, minature]
@@ -1188,6 +1192,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
+                int[] genes = this.genetics.getAutosomalGenes();
                 if (!this.isChild() && (genes[46] == 1 || genes[47] == 1) && currentCoatLength == maxCoatLength) {
                         List<ItemStack> woolToDrop = onSheared(null, this.world, getPosition(), 0);
                         woolToDrop.forEach(d -> {
@@ -1267,25 +1272,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         setSheepSize();
     }
 
-
-    public int[] getLambGenes(int[] mitosis, int[] mateMitosis) {
-        Random rand = new Random();
-        int[] lambGenes = new int[GENES_LENGTH];
-
-        for (int i = 0; i < genes.length; i = (i + 2)) {
-            boolean thisOrMate = rand.nextBoolean();
-            if (thisOrMate) {
-                lambGenes[i] = mitosis[i];
-                lambGenes[i+1] = mateMitosis[i+1];
-            } else {
-                lambGenes[i] = mateMitosis[i];
-                lambGenes[i+1] = mitosis[i+1];
-            }
-        }
-
-        return lambGenes;
-    }
-
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
@@ -1309,6 +1295,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     private void setMaxCoatLength() {
+        int[] genes = this.genetics.getAutosomalGenes();
         int maxCoatLength = 0;
 
         if ( !this.isChild() ) {

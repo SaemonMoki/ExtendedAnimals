@@ -135,7 +135,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     private EnhancedLlama caravanTail;
 
     public EnhancedLlama(EntityType<? extends EnhancedLlama> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, GENES_LENGTH, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
     }
 
@@ -458,24 +458,25 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     @Override
     public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IWorld world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
+        int[] genes = this.genetics.getAutosomalGenes();
         if (!this.world.isRemote && !isChild()) {
             if (currentCoatLength == 1) {
                 int i = this.rand.nextInt(4);
                 if (i>3){
-                    ret.add(new ItemStack(getWoolBlocks()));
+                    ret.add(new ItemStack(getWoolBlocks(genes)));
                 }
             } else if (currentCoatLength == 2) {
                 int i = this.rand.nextInt(2);
                 if (i>0){
-                    ret.add(new ItemStack(getWoolBlocks()));
+                    ret.add(new ItemStack(getWoolBlocks(genes)));
                 }
             } else if (currentCoatLength == 3) {
                 int i = this.rand.nextInt(4);
                 if (i>0){
-                    ret.add(new ItemStack(getWoolBlocks()));
+                    ret.add(new ItemStack(getWoolBlocks(genes)));
                 }
             } else if (currentCoatLength == 4) {
-                ret.add(new ItemStack(getWoolBlocks()));
+                ret.add(new ItemStack(getWoolBlocks(genes)));
             }
 
         }
@@ -484,7 +485,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return ret;
     }
 
-    private Block getWoolBlocks () {
+    private Block getWoolBlocks (int[] genes) {
         Block returnBlocks;
 
             if (genes[6] == 1 || genes[7] == 1) {
@@ -533,6 +534,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
+        int[] genes = this.genetics.getAutosomalGenes();
         int age = this.getAge();
         boolean woolDrop = false;
         int lootCount = 0;
@@ -563,7 +565,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             }
 
             if (woolDrop) {
-                ItemStack fleeceStack = new ItemStack(getWoolBlocks(), lootCount);
+                ItemStack fleeceStack = new ItemStack(getWoolBlocks(genes), lootCount);
                 this.entityDropItem(fleeceStack);
             } else {
                 ItemStack leatherStack = new ItemStack(Items.LEATHER, lootCount);
@@ -876,24 +878,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     }
 
-    public int[] getCriaGenes(int[] mitosis, int[] mateMitosis) {
-        Random rand = new Random();
-        int[] criaGenes = new int[GENES_LENGTH];
-
-        for (int i = 0; i < genes.length; i = (i + 2)) {
-            boolean thisOrMate = rand.nextBoolean();
-            if (thisOrMate) {
-                criaGenes[i] = mitosis[i];
-                criaGenes[i+1] = mateMitosis[i+1];
-            } else {
-                criaGenes[i] = mateMitosis[i];
-                criaGenes[i+1] = mitosis[i+1];
-            }
-        }
-
-        return criaGenes;
-    }
-
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
@@ -920,6 +904,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 //    }
 
     private void setStrengthAndInventory() {
+        int[] genes = this.genetics.getAutosomalGenes();
         int inv = 1;
         int str = 1;
         if (genes[2] != 1 &&  genes[3] !=1) {
@@ -957,6 +942,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     private void setMaxCoatLength() {
+        int[] genes = this.genetics.getAutosomalGenes();
         float maxCoatLength = 0.0F;
 
         if ( !this.isChild() && (genes[22] >= 2 || genes[23] >= 2) ){

@@ -137,7 +137,7 @@ public class Genes {
             int[] haploid = new int[this.sexlinked.length];
             for (int i = 0; i < haploid.length;i+=2){
                 haploid[i] = this.sexlinked[i];
-                haploid[i+1] = -1;
+                haploid[i+1] = this.sexlinked[i];
             }
             return haploid;
         }
@@ -167,7 +167,7 @@ public class Genes {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < this.sexlinked.length; i++){
             sb.append(sexlinked[i]);
-            if (i != sexlinked.length -1){
+            if (i != sexlinked.length - 1){
                 sb.append(",");
             }
         }
@@ -175,7 +175,7 @@ public class Genes {
         sb.append("+");
         for (int i = 0; i < this.autosomal.length; i++){
             sb.append(autosomal[i]);
-            if (i != autosomal.length -1){
+            if (i != autosomal.length - 1){
                 sb.append(",");
             }
         }
@@ -221,7 +221,7 @@ public class Genes {
             List<GeneLink> linkages = getLinkages(species);
             if (linkages.get(0).isNotBlank()) {
                 for (GeneLink linkage : linkages) {
-                    gamiteGenes = linkage.getLinkedGenes(this, gamiteGenes);
+                    gamiteGenes = linkage.getLinkedGenes(this, gamiteGenes, isDiploid);
                 }
             }
 
@@ -232,11 +232,21 @@ public class Genes {
         return getGamite(isDiploid, Species.UNIMPORTANT);
     }
 
-    public Genes makeChild(Genes donorParent) {
-        Genes childGenes = this.getGamite(true);
+    public Genes makeChild(boolean thisIsDiploid, Genes donorParent, boolean donorIsDiploid, Species species) {
+        Genes childGenes;
 
         if (donorParent != null) {
-            Genes donor = donorParent.getGamite(false);
+            Genes donor;
+            if (thisIsDiploid) {
+                childGenes = this.getGamite(true, species);
+                donor = donorParent.getGamite(false, species);
+            } else if (donorIsDiploid) {
+                childGenes = donorParent.getGamite(true, species);
+                donor = this.getGamite(false, species);
+            } else {
+                childGenes = this.getGamite(false, species);
+                donor = donorParent.getGamite(false, species);
+            }
 
             int sexlinkedGenes = childGenes.getNumberOfSexlinkedGenes();
             int[] donorSexChromosome = donor.getSexlinkedGenes();
@@ -249,14 +259,20 @@ public class Genes {
             for (int i = 0; i < autosomalGenes;i+=2) {
                 childGenes.setAutosomalGene(i+1, donorAutosomes[i]);
             }
+        } else {
+            childGenes = this.getGamite(thisIsDiploid, species);
         }
 
         return childGenes;
     }
 
-    public Genes makeChild() {
-        //this is for bees which can have just 1 parent
-        return this.getGamite(true);
+    public Genes makeChild(Boolean isDiploid, Species species) {
+        //this is for bees which can have just 1 female parent
+        return this.getGamite(isDiploid, species);
+    }
+
+    public Genes makeChild(Genes donor) {
+        return this.makeChild(true, donor, true, Species.UNIMPORTANT);
     }
 
     public List<GeneLink> getLinkages(Species species) {
@@ -289,9 +305,9 @@ public class Genes {
             this.link = link;
         }
 
-        public Genes getLinkedGenes(Genes original, Genes gamite) {
+        public Genes getLinkedGenes(Genes original, Genes gamite, boolean isDiploid) {
             if (ThreadLocalRandom.current().nextFloat() < this.link) {
-                if (this.isAutosomal || gamite.getSexlinkedGene(1) != -1) {
+                if (this.isAutosomal || isDiploid) {
                     if (ThreadLocalRandom.current().nextBoolean()) {
                         gamite.setAutosomalGene(this.gene1, original.getAutosomalGene(this.gene1));
                         gamite.setAutosomalGene(this.gene1+1, original.getAutosomalGene(this.gene1+1));

@@ -80,8 +80,8 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     protected int temper;
 
-    protected EnhancedAnimalRideableAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, int genesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
-        super(type, worldIn, SgenesSize, AgenesSize, genesSize, temptationItems, breedItems, foodWeightMap, bottleFeedable);
+    protected EnhancedAnimalRideableAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
+        super(type, worldIn, SgenesSize, AgenesSize, temptationItems, breedItems, foodWeightMap, bottleFeedable);
         this.stepHeight = 1.0F;
     }
 

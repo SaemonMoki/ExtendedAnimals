@@ -161,7 +161,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     protected Boolean reload = false; //used in a toggle manner
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, GENES_LENGTH, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
         // cowsize from .7 to 1.5 max bag size is 1 to 1.5
         //large cows make from 30 to 12 milk points per day, small cows make up to 1/4
         this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - maxBagSize)*2400)) * (getAnimalSize()/1.5F)) - 300;
@@ -384,6 +384,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     protected void setCowSize(){
+        int[] genes = this.genetics.getAutosomalGenes();
         float size = 1.0F;
 
         //[ 1 to 15 ] max - is 0.3F
@@ -437,6 +438,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     public void lethalGenes(){
+        int[] genes = this.genetics.getAutosomalGenes();
         if(genes[26] == 1 && genes[27] == 1) {
             this.remove();
         }
@@ -455,6 +457,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
+        int[] genes = this.genetics.getAutosomalGenes();
         this.isBurning();
         float cowSize = this.getAnimalSize();
         float age = this.getAge();
@@ -1101,6 +1104,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     @Override
     protected void setMaxBagSize(){
+        int[] genes = this.genetics.getAutosomalGenes();
         float maxBagSize = 0.0F;
 
         if (!this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())){
@@ -1400,44 +1404,16 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
         this.motherUUID = compound.getString("MotherUUID");
 
-        if (genes[82] == 0) {
-            generateHornGenes(genes);
-        }
-
 //        this.setSaddled(compound.getBoolean("Saddle"));
 
         configureAI();
     }
-
-    public int[] getCalfGenes(int[] mitosis, int[] mateMitosis) {
-        Random rand = new Random();
-        int[] calfGenes = new int[GENES_LENGTH];
-
-        for (int i = 0; i < genes.length; i = (i + 2)) {
-            boolean thisOrMate = rand.nextBoolean();
-            if (thisOrMate) {
-                calfGenes[i] = mitosis[i];
-                calfGenes[i+1] = mateMitosis[i+1];
-            } else {
-                calfGenes[i] = mateMitosis[i];
-                calfGenes[i+1] = mitosis[i+1];
-            }
-        }
-
-        return calfGenes;
-    }
-
 
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
         return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 64800, 108000);
     }
-
-//    @Override
-//    protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
-//        return getCalfGenes(mitosis, mateMitosis);
-//    }
 
     @Override
     protected void setInitialDefaults() {

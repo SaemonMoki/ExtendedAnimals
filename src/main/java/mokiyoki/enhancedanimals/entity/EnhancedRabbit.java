@@ -195,7 +195,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
     public EnhancedRabbit(EntityType<? extends EnhancedRabbit> entityType, World worldIn) {
-        super(entityType, worldIn,SEXLINKED_GENES_LENGTH, GENES_LENGTH, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn,SEXLINKED_GENES_LENGTH, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
 //        this.setSize(0.4F, 0.5F);
         this.jumpController = new EnhancedRabbit.JumpHelperController(this);
         this.moveController = new EnhancedRabbit.MoveHelperController(this);
@@ -507,6 +507,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     @Override
     protected int getNumberOfChildren() {
+        int[] genes = this.genetics.getAutosomalGenes();
         int kitAverage = 1;
         int kitRange = 2;
 
@@ -643,6 +644,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     public float setRabbitSize(){
+        int[] genes = this.genetics.getAutosomalGenes();
         float size = 1F; // [minimum size = 0.3 maximum size = 1]
 
         if (genes[46] < 5){
@@ -762,7 +764,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     public void lethalGenes(){
-
+        int[] genes = this.genetics.getAutosomalGenes();
         if(genes[34] == 2 && genes[35] == 2) {
             this.remove();
         }
@@ -1335,6 +1337,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 //    }
 
     private void setMaxCoatLength() {
+        int[] genes = this.genetics.getAutosomalGenes();
         int angora = 0;
 
         if ( genes[26] == 2 && genes[27] == 2){

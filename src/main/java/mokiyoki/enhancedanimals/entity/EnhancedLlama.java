@@ -3,7 +3,9 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.block.Block;
@@ -124,7 +126,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     private int despawnDelay = -1;
     private boolean resetTexture = true;
 
-    private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
+    private GrazingGoal grazingGoal;
 
     @Nullable
     private EnhancedLlama caravanHead;
@@ -153,14 +155,15 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     protected void registerGoals() {
         super.registerGoals();
         //Todo add the temperamants
-        this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
+        this.grazingGoal = new GrazingGoal(this, 1.0D);
 //        this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new ECRunAroundLikeCrazy(this, 1.2D));
         this.goalSelector.addGoal(2, new ECLlamaFollowCaravan(this, (double)2.1F));
         this.goalSelector.addGoal(3, new RangedAttackGoal(this, 1.25D, 40, 20.0F));
         this.goalSelector.addGoal(3, new EnhancedPanicGoal(this, 1.2D));
 //        this.goalSelector.addGoal(4, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, this.wanderEatingGoal);
+        this.goalSelector.addGoal(5, this.grazingGoal);
+        this.goalSelector.addGoal(6, new EnhancedWanderingGoal(this, 1.0D));
 //        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.0D));
 //        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.7D));
 //        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));

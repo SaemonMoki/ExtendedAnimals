@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
+import mokiyoki.enhancedanimals.ai.general.AIStatus;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
@@ -18,12 +19,16 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.item.LeashKnotEntity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -48,12 +53,14 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.Region;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -68,6 +75,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -103,6 +111,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected int healTicks = 0;
     protected boolean bottleFeedable = false;
     protected int animalEatingTimer;
+    protected AIStatus currentAIStatus = AIStatus.NONE;
 
     //Sleeping
     protected Boolean sleeping = false;
@@ -131,6 +140,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     //Inventory
     protected Inventory animalInventory;
+
+    //Overrides
+    @Nullable
+    private CompoundNBT leashNBTTag;
 
     /*
     Entity Construction
@@ -317,6 +330,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
+    public AIStatus getAIStatus() {
+        return this.currentAIStatus;
+    }
+
+    public void setAIStatus(AIStatus aiStatus) {
+        this.currentAIStatus = aiStatus;
+    }
+
     public int getHungerLimit() {
         return 2000;
     }
@@ -456,6 +477,45 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                 }
             }
         }
+    }
+
+    @Override
+    protected void updateLeashedState() {
+        if (this.leashNBTTag != null) {
+            super.updateLeashedState();
+            leashNBTTag = null;
+        }
+
+        if (this.getLeashHolder() != null) {
+            if (!this.isAlive() || !this.getLeashHolder().isAlive()) {
+                this.clearLeashed(true, true);
+            }
+        }
+
+        Entity entity = this.getLeashHolder();
+        if (entity != null && entity.world == this.world) {
+            this.setHomePosAndDistance(new BlockPos(entity), 5);
+            float f = this.getDistance(entity);
+
+            this.onLeashDistance(f);
+            if (f > 10.0F) {
+                this.clearLeashed(true, true);
+                this.goalSelector.disableFlag(Goal.Flag.MOVE);
+            } else if (f > 6.0F) {
+                double d0 = (entity.getPosX() - this.getPosX()) / (double)f;
+                double d1 = (entity.getPosY() - this.getPosY()) / (double)f;
+                double d2 = (entity.getPosZ() - this.getPosZ()) / (double)f;
+                this.setMotion(this.getMotion().add(Math.copySign(d0 * d0 * 0.4D, d0), Math.copySign(d1 * d1 * 0.4D, d1), Math.copySign(d2 * d2 * 0.4D, d2)));
+            } else if (!ableToMoveWhileLeashed()){
+                this.goalSelector.enableFlag(Goal.Flag.MOVE);
+                Vec3d vec3d = (new Vec3d(entity.getPosX() - this.getPosX(), entity.getPosY() - this.getPosY(), entity.getPosZ() - this.getPosZ())).normalize().scale((double)Math.max(f - 2.0F, 0.0F));
+                this.getNavigator().tryMoveToXYZ(this.getPosX() + vec3d.x, this.getPosY() + vec3d.y, this.getPosZ() + vec3d.z, this.followLeashSpeed());
+            }
+        }
+    }
+
+    protected boolean ableToMoveWhileLeashed() {
+        return false;
     }
 
     /*
@@ -808,6 +868,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             this.lactationTimer = compound.getInt("Lactation");
             setMilkAmount(compound.getInt("milk"));
             setMaxBagSize();
+        }
+
+        //from MobEntity parent
+        if (compound.contains("Leash", 10)) {
+            this.leashNBTTag = compound.getCompound("Leash");
         }
 
         geneFixer();

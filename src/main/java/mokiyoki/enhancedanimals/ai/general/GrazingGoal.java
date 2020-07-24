@@ -4,20 +4,23 @@ import mokiyoki.enhancedanimals.blocks.GrowableDoubleHigh;
 import mokiyoki.enhancedanimals.blocks.GrowablePlant;
 import mokiyoki.enhancedanimals.blocks.UnboundHayBlock;
 import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.pattern.BlockStateMatcher;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IWorldReader;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
@@ -27,8 +30,7 @@ public class GrazingGoal extends Goal {
     protected final EnhancedAnimalAbstract eanimal;
     public final double movementSpeed;
     private int hungerLimit;
-    private boolean finishedGrazing;
-    private int amountEating = 0;
+    private int amountToEat = 0;
 
     private boolean eatingSearch;
     private boolean eating;
@@ -38,11 +40,15 @@ public class GrazingGoal extends Goal {
     private int eatingGrassTimer;
     protected int timeoutCounter;
     private int maxTicks = 200;
+    private int waitingTimer;
 
-    private int hayHungerRestore = 6000;
+    private int hayHungerRestore = 8000;
     private int otherHungerRestore = 3000;
 
     protected BlockPos destinationBlock = BlockPos.ZERO;
+    boolean randomSelection = false;
+
+    List<BlockPos> allFoundPos = new ArrayList<>();
 
     public GrazingGoal(EnhancedAnimalAbstract eanimal, double movementSpeed) {
         this.eanimal = eanimal;
@@ -62,6 +68,11 @@ public class GrazingGoal extends Goal {
             return false;
         } else {
 
+            if (this.waitingTimer > 0) {
+                waitingTimer--;
+                return false;
+            }
+
             if (this.eanimal.getIdleTime() >= 100) {
                 return false;
             }
@@ -75,8 +86,14 @@ public class GrazingGoal extends Goal {
     }
 
     private boolean eatingRoute() {
-        this.eatingSearch = true;
-        return this.searchForDestination();
+        boolean foundFood = this.searchForDestination();
+        if (foundFood) {
+            this.eanimal.setAIStatus(AIStatus.EATING);
+            this.eatingSearch = true;
+            return true;
+        }
+
+        return false;
     }
 
     protected boolean searchForDestination() {
@@ -85,64 +102,93 @@ public class GrazingGoal extends Goal {
             return true;
         }
 
-        BlockPos eanimalBlockPos = new BlockPos(this.eanimal);
+        BlockPos baseBlockPos = new BlockPos(this.eanimal);
         BlockPos.Mutable mutableblockpos = new BlockPos.Mutable();
 
         Vec3d directionVec = getDirectionVec();
 
-        if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move((int)directionVec.x, -1, (int)directionVec.z))) {
-            this.destinationBlock = mutableblockpos;
+        int horizontalRange = 10;
+        int verticalRange = 3;
+        Entity holder = this.eanimal.getLeashHolder();
+
+        if (holder != null) {
+            if (holder instanceof PlayerEntity) {
+                this.destinationBlock = new BlockPos(this.eanimal.getPosition().getX(), this.eanimal.getPosition().getY()-1, this.eanimal.getPosition().getZ());
+                return true;
+            }
+
+            horizontalRange = 4;
+            verticalRange = 2;
+            baseBlockPos = new BlockPos(this.eanimal.getLeashHolder());
+            randomSelection = true;
+        } else {
+            allFoundPos.clear();
+            randomSelection = false;
+            if(checkSquaresInFront(baseBlockPos, mutableblockpos, directionVec)) {
+                this.destinationBlock = mutableblockpos;
+                return true;
+            }
+        }
+
+        mutableblockpos.setPos(baseBlockPos);
+
+        if (randomSelection && !allFoundPos.isEmpty()) {
+            this.destinationBlock = allFoundPos.get(ThreadLocalRandom.current().nextInt(0, allFoundPos.size()));
             return true;
         }
 
-        mutableblockpos.setPos(eanimalBlockPos);
-        if(checkSquaresInFront(eanimalBlockPos, mutableblockpos, directionVec)) {
-            this.destinationBlock = mutableblockpos;
-            return true;
-        }
-
-        for(int k = 0; k <= 3; k = k > 0 ? -k : 1 - k) {
-            for(int l = 0; l < 10; ++l) {
+        for(int k = 0; k <= verticalRange; k = k > 0 ? -k : 1 - k) {
+            for(int l = 0; l < horizontalRange; ++l) {
                 for(int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
                     for(int j1 = i1 < l && i1 > -l ? l : 0; j1 <= l; j1 = j1 > 0 ? -j1 : 1 - j1) {
-                        mutableblockpos.setPos(eanimalBlockPos).move(i1, k - 1, j1);
+                        mutableblockpos.setPos(baseBlockPos).move(i1, k - 1, j1);
                         if (this.isEdibleBlock(this.eanimal.world, mutableblockpos)) {
-                            this.destinationBlock = mutableblockpos;
-                            return true;
+                            if(randomSelection) {
+                                allFoundPos.add(new BlockPos(mutableblockpos));
+                            } else {
+                                this.destinationBlock = mutableblockpos;
+                                return true;
+                            }
                         }
                     }
                 }
             }
         }
 
+        if (randomSelection) {
+            this.destinationBlock = allFoundPos.get(ThreadLocalRandom.current().nextInt(0, allFoundPos.size()));
+            return true;
+        }
+
+        this.waitingTimer = 500;
         return false;
     }
 
     private boolean checkSquaresInFront(BlockPos eanimalBlockPos, BlockPos.Mutable mutableblockpos, Vec3d directionVec) {
-        if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move((int)directionVec.x*2, -1, (int)directionVec.z*2))) {
+        if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move((int)(directionVec.x*2)+1, -1, (int)(directionVec.z*2)+1))) {
             this.destinationBlock = mutableblockpos;
             return true;
         }
-        if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move((int)directionVec.x*3, -1, (int)directionVec.z*3))) {
+        if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move((int)(directionVec.x*3)+1, -1, (int)(directionVec.z*3)+1))) {
             this.destinationBlock = mutableblockpos;
             return true;
         }
 
         if (directionVec.x != 0) {
-            if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move((int)directionVec.x, -1, -1))) {
+            if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move((int)directionVec.x+1, -1, -1))) {
                 this.destinationBlock = mutableblockpos;
                 return true;
             }
-            if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move((int)directionVec.x, -1, 1))) {
+            if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move((int)directionVec.x+1, -1, 1))) {
                 this.destinationBlock = mutableblockpos;
                 return true;
             }
         } else {
-            if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move(-1, -1, (int)directionVec.z))) {
+            if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move(-1, -1, (int)directionVec.z+1))) {
                 this.destinationBlock = mutableblockpos;
                 return true;
             }
-            if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move(1, -1, (int)directionVec.z))) {
+            if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move(1, -1, (int)directionVec.z+1))) {
                 this.destinationBlock = mutableblockpos;
                 return true;
             }
@@ -172,15 +218,27 @@ public class GrazingGoal extends Goal {
 
     private boolean findIfNearbyHay() {
         Set<BlockPos> hayList = eanimal.world.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).getAllHayPos();
-        double closestDistance = 32;
+        double closestDistance = 128;
         boolean found = false;
         for (BlockPos pos : hayList) {
-            double distance = pos.distanceSq(eanimal.getPosition());
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                this.destinationBlock = pos;
-                found = true;
+            double distance;
+            if(this.eanimal.getLeashHolder()!= null) {
+                distance = pos.distanceSq(this.eanimal.getLeashHolder().getPosition());
+                if (distance < 12) {
+                    closestDistance = distance;
+                    this.destinationBlock = pos;
+                    found = true;
+                }
+            } else {
+                distance = pos.distanceSq(eanimal.getPosition());
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    this.destinationBlock = pos;
+                    found = true;
+                }
             }
+
+
         }
         return found;
     }
@@ -189,6 +247,7 @@ public class GrazingGoal extends Goal {
     public void startExecuting() {
         this.createNavigation();
         this.timeoutCounter = 0;
+        this.amountToEat = ThreadLocalRandom.current().nextInt(1,4);
     }
 
     protected void createNavigation() {
@@ -205,7 +264,7 @@ public class GrazingGoal extends Goal {
             return false;
         }
 
-        if (eatingSearch || searchHay || eating || eatingHay) {
+        if (isSearching()) {
             return true;
         }
 
@@ -248,6 +307,7 @@ public class GrazingGoal extends Goal {
                 eatBlocks();
             } else if (this.eatingGrassTimer == 0) {
                 eating = false;
+                this.amountToEat--;
                 shouldContinueEating();
             }
         } else if (eatingHay) {
@@ -260,19 +320,24 @@ public class GrazingGoal extends Goal {
                     //clean up
                     this.eanimal.world.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(this.destinationBlock);
                 }
-            }else if (this.eatingGrassTimer == 0) {
+            } else if (this.eatingGrassTimer == 0) {
                 eatingHay = false;
             }
         }
     }
 
     private void shouldContinueEating() {
-
-
+        if (amountToEat > 0) {
+            eatingRoute();
+        }
     }
 
     public int getEatingGrassTimer() {
         return this.eatingGrassTimer;
+    }
+
+    public boolean isSearching() {
+        return (eatingSearch || searchHay || eating || eatingHay);
     }
 
     protected void eatBlocks() {
@@ -307,6 +372,9 @@ public class GrazingGoal extends Goal {
     }
 
     public double getGoundBlockTargetDistanceSq() {
+        if (this.eanimal.getLeashed()) {
+            return 1.5D;
+        }
         return 1.0D;
     }
 
@@ -332,7 +400,9 @@ public class GrazingGoal extends Goal {
         searchHay = false;
         eatingHay = false;
         timeoutCounter = 0;
-        amountEating = 0;
+        amountToEat = 0;
+        this.eanimal.setAIStatus(AIStatus.NONE);
+        randomSelection = false;
     }
 
 }

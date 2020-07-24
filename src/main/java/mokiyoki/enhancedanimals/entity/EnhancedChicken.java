@@ -6,8 +6,11 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
+import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.ai.general.chicken.EnhancedWaterAvoidingRandomWalkingEatingGoalChicken;
+import mokiyoki.enhancedanimals.ai.general.chicken.GrazingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -225,7 +228,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     private int grassTimer;
     private int sandBathTimer;
     private int fertileTimer = 0;
-    private EnhancedWaterAvoidingRandomWalkingEatingGoalChicken entityAIEatGrass;
+
+    protected GrazingGoal grazingGoal;
+
     private ECSandBath ecSandBath;
     private String dropMeatType;
 
@@ -263,7 +268,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     @Override
     protected void registerGoals() {
         //TODO add temperaments
-        this.entityAIEatGrass = new EnhancedWaterAvoidingRandomWalkingEatingGoalChicken(this, 1.0D, 7, 0.001F, 120, 2, 50);
+        this.grazingGoal = new GrazingGoalChicken(this, 1.0D);
         this.ecSandBath = new ECSandBath(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
@@ -271,15 +276,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(5, new ECWanderAvoidWater(this, 1.0D));
-        this.goalSelector.addGoal(5, this.entityAIEatGrass);
-        this.goalSelector.addGoal(6, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
-        this.goalSelector.addGoal(9, new ECRoost(this));
+        this.goalSelector.addGoal(6, this.grazingGoal);
+        this.goalSelector.addGoal(7, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(8, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(9, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(10, new ECRoost(this));
 
     }
 
     protected void updateAITasks() {
-        this.grassTimer = this.entityAIEatGrass.getEatingGrassTimer();
+        this.grassTimer = this.grazingGoal.getEatingGrassTimer();
         this.sandBathTimer = this.ecSandBath.getSandBathTimer();
         super.updateAITasks();
     }

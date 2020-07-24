@@ -1,7 +1,9 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
-import mokiyoki.enhancedanimals.ai.general.pig.EnhancedWaterAvoidingRandomWalkingEatingGoalPig;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
+import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
+import mokiyoki.enhancedanimals.ai.general.pig.GrazingGoalPig;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
@@ -118,7 +120,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     private UUID angerTargetUUID;
     private int angerLevel;
 
-    private EnhancedWaterAvoidingRandomWalkingEatingGoalPig wanderEatingGoal;
+    private GrazingGoal grazingGoal;
 
 //    private boolean boosting;
 //    private int boostTime;
@@ -175,10 +177,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalPig(this, 1.0D, 7, 0.001F, 120, 2, 20);
+        this.grazingGoal = new GrazingGoalPig(this, 1.0D);
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
 //        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
-        this.goalSelector.addGoal(5, wanderEatingGoal);
+        this.goalSelector.addGoal(5, this.grazingGoal);
+        this.goalSelector.addGoal(6, new EnhancedWanderingGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.2D, false, TEMPTATION_ITEMS));
         this.targetSelector.addGoal(2, new EnhancedPig.TargetAggressorGoal(this));
         this.targetSelector.addGoal(1, new EnhancedPig.HurtByAggressorGoal(this));
@@ -213,7 +216,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
             this.attackingPlayer = playerentity;
             this.recentlyHit = this.getRevengeTimer();
         }
-        this.animalEatingTimer = this.wanderEatingGoal.getEatingGrassTimer();
+        this.animalEatingTimer = this.grazingGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
 

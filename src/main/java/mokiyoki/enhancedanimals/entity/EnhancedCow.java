@@ -1,10 +1,8 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
@@ -13,15 +11,12 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -33,12 +28,9 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -47,12 +39,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 
@@ -150,8 +140,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     protected String motherUUID = "";
 
-    protected GrazingGoal wanderEatingGoal;
-//    protected EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
+    protected GrazingGoal grazingGoal;
 
 //    private boolean boosting;
 //    private int boostTime;
@@ -194,9 +183,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 //        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
 //    }
 
-    protected void updateAITasks()
-    {
-        this.animalEatingTimer = this.wanderEatingGoal.getEatingGrassTimer();
+    protected void updateAITasks() {
+        this.animalEatingTimer = this.grazingGoal.getEatingGrassTimer();
         super.updateAITasks();
     }
 
@@ -263,6 +251,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     @Override
     protected boolean canLactate() {
         return true;
+    }
+
+    @Override
+    protected boolean ableToMoveWhileLeashed() {
+        return this.grazingGoal.isSearching();
     }
 
     protected SoundEvent getAmbientSound() { return SoundEvents.ENTITY_COW_AMBIENT; }
@@ -981,6 +974,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
         if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
             int[] genesForText = getSharedGenes();
             String extention = "wildtype";
+
+            if (genesForText == null || genesForText[0] == 0) {
+                return null;
+            }
 
             float blackHue = 0.0F;
             float blackSaturation = 0.05F;
@@ -2450,9 +2447,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed*1.25D, false, TEMPTATION_ITEMS));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
             this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
-//            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);
-            wanderEatingGoal = new GrazingGoal(this, speed);
-            this.goalSelector.addGoal(6, wanderEatingGoal);
+//            grazingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);
+            grazingGoal = new GrazingGoal(this, speed);
+            this.goalSelector.addGoal(6, grazingGoal);
+            this.goalSelector.addGoal(7, new EnhancedWanderingGoal(this, speed));
         }
         aiConfigured = true;
     }

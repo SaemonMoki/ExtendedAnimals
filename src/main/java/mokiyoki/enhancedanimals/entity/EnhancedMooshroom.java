@@ -3,7 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
-import mokiyoki.enhancedanimals.ai.general.mooshroom.EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom;
+import mokiyoki.enhancedanimals.ai.general.mooshroom.GrazingGoalMooshroom;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -208,9 +208,9 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed*1.25D,false, TEMPTATION_ITEMS));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
             this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
-//            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom(this, speed, 7, 0.001F, 120, 2, 20);
-            wanderEatingGoal = new GrazingGoal(this, speed);
-            this.goalSelector.addGoal(6, wanderEatingGoal);
+//            grazingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom(this, speed, 7, 0.001F, 120, 2, 20);
+            grazingGoal = new GrazingGoalMooshroom(this, speed);
+            this.goalSelector.addGoal(6, grazingGoal);
         }
         aiConfigured = true;
     }
@@ -325,6 +325,10 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     public Colouration getRgb() {
         if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
             this.colouration = super.getRgb();
+
+            if(this.colouration == null) {
+                return null;
+            }
 
             float[] melanin = Colouration.getHSBFromABGR(this.colouration.getMelaninColour());
             float[] pheomelanin = Colouration.getHSBFromABGR(this.colouration.getPheomelaninColour());

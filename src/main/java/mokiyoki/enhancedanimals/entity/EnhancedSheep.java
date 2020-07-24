@@ -139,7 +139,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
 //    private int sheepTimer;
-//    private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
+//    private EnhancedWaterAvoidingRandomWalkingEatingGoal grazingGoal;
 
 //    /** Map from EnumDyeColor to RGB values for passage to GlStateManager.color() */
 //    private static final Map<DyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(Arrays.stream(DyeColor.values()).collect(Collectors.toMap((DyeColor p_200204_0_) -> {
@@ -1884,8 +1884,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 //            this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.1D, TEMPTATION_ITEMS, false));
 //            this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
 //            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.1D));
-//            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 12, 0.001F, 120, 2);
-//            this.goalSelector.addGoal(6, wanderEatingGoal);
+//            grazingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 12, 0.001F, 120, 2);
+//            this.goalSelector.addGoal(6, grazingGoal);
 //        }
 //        aiConfigured = true;
 //    }

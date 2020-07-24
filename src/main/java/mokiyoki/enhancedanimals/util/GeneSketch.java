@@ -97,18 +97,20 @@ public class GeneSketch {
 //    }
 
     public void addLayer(GeneSketch layer) {
-        if (layer.hasSketch()) {
-            HashMap<Integer, String> overlaySketch = layer.getRawSketch();
-            for (Integer gene : overlaySketch.keySet()) {
-                this.geneSketch.put(gene, overlaySketch.get(gene));
+        if (layer != null) {
+            if (layer.hasSketch()) {
+                HashMap<Integer, String> overlaySketch = layer.getRawSketch();
+                for (Integer gene : overlaySketch.keySet()) {
+                    this.geneSketch.put(gene, overlaySketch.get(gene));
+                }
             }
-        }
 //        if (layer.hasRaritySketch()) {
 //            HashMap<Integer,Pair<Float, String>> overlaySketch = layer.getRawRaritySketch();
 //            for (Integer gene : overlaySketch.keySet()) {
 //                this.rarityGeneSketches.put(gene, overlaySketch.get(gene));
 //            }
 //        }
+        }
     }
 
     public int[] getGeneArray(Float accuracy, int[] genes) {

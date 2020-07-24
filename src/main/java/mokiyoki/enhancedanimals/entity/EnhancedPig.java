@@ -130,7 +130,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 //    private int totalBoostTime;
 
     public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, GENES_LENGTH, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
         this.setPigSize();
     }
 
@@ -403,6 +403,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 
     @Override
     protected int getNumberOfChildren() {
+        int[] genes = this.genetics.getAutosomalGenes();
         int pigletAverage = 11;
         int pigletRange = 4;
         int age = getAge();
@@ -535,6 +536,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     private void setPigSize() {
+        int[] genes = this.genetics.getAutosomalGenes();
         float size = 0.4F;
 
             // [44/45] (1-3) potbelly dwarfism [wildtype, dwarfStrong, dwarfWeak]
@@ -591,6 +593,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
+        int[] genes = this.genetics.getAutosomalGenes();
         int size = (int)((this.getAnimalSize()-0.7F)*10);
         int age = this.getAge();
         int meatDrop;
@@ -718,37 +721,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 //            this.addGrowth(60);
 //        }
     }
-
-//    public AgeableEntity createChild(AgeableEntity ageable) {
-//        if(pregnant) {
-//            ((EnhancedPig)ageable).pregnant = true;
-//            ((EnhancedPig)ageable).setMateGenes(this.genes);
-//            ((EnhancedPig)ageable).mixMateMitosisGenes();
-//            ((EnhancedPig)ageable).mixMitosisGenes();
-//        } else {
-//            pregnant = true;
-//            this.mateGenes = ((EnhancedPig) ageable).getGenes();
-//            mixMateMitosisGenes();
-//            mixMitosisGenes();
-//        }
-//
-//        this.setGrowingAge(10);
-//        this.resetInLove();
-//        ageable.setGrowingAge(10);
-//        ((EnhancedPig)ageable).resetInLove();
-//
-//        ServerPlayerEntity entityplayermp = this.getLoveCause();
-//        if (entityplayermp == null && ((EnhancedPig)ageable).getLoveCause() != null) {
-//            entityplayermp = ((EnhancedPig)ageable).getLoveCause();
-//        }
-//
-//        if (entityplayermp != null) {
-//            entityplayermp.addStat(Stats.ANIMALS_BRED);
-//            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedPig)ageable), (AgeableEntity)null);
-//        }
-//
-//        return null;
-//    }
 
     @OnlyIn(Dist.CLIENT)
     public String getPigTexture() {
@@ -1028,32 +1000,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
                 this.recentlyHit = this.getRevengeTimer();
             }
         }
-
-//        this.setSaddled(compound.getBoolean("Saddle"));
     }
 
     protected void initilizeAnimalSize() {
         setPigSize();
     }
-
-    public int[] getPigletGenes(int[] mitosis, int[] mateMitosis) {
-        Random rand = new Random();
-        int[] pigletGenes = new int[GENES_LENGTH];
-
-        for (int i = 0; i < genes.length; i = (i + 2)) {
-            boolean thisOrMate = rand.nextBoolean();
-            if (thisOrMate) {
-                pigletGenes[i] = mitosis[i];
-                pigletGenes[i+1] = mateMitosis[i+1];
-            } else {
-                pigletGenes[i] = mateMitosis[i];
-                pigletGenes[i+1] = mitosis[i+1];
-            }
-        }
-
-        return pigletGenes;
-    }
-
 
     @Nullable
     @Override

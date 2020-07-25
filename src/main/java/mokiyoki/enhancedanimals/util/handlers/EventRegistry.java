@@ -293,7 +293,7 @@ public class EventRegistry {
     }
 
     @SubscribeEvent
-    public static void onLoadComplete(FMLCommonSetupEvent event) {
+    public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
         removeVanillaFromBiomes(ForgeRegistries.BIOMES);
 
         for (Biome biome : ForgeRegistries.BIOMES) {
@@ -312,62 +312,64 @@ public class EventRegistry {
             Iterator<Biome.SpawnListEntry> spawns = biome.getSpawns(EntityClassification.CREATURE).iterator();
 
             ArrayList<Biome.SpawnListEntry> addSpawns = new ArrayList<Biome.SpawnListEntry>();
+            ArrayList<Biome.SpawnListEntry> removeSpawns = new ArrayList<>();
             while (spawns.hasNext()) {
                 Biome.SpawnListEntry entry = spawns.next();
                 //add and remove pigs
                 if (entry.entityType == EntityType.PIG) {
                     if(!EanimodCommonConfig.COMMON.spawnVanillaPigs.get()) {
-                        eventLogger.info("Removed Pigs from Spawn of biome");
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_PIG, 6, 2, 3));
                 }
                 //add and remove sheep
                 if (entry.entityType == EntityType.SHEEP) {
                     if (!EanimodCommonConfig.COMMON.spawnVanillaSheep.get()) {
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_SHEEP, 12, 4, 4));
                 }
                 //add and remove cow
                 if (entry.entityType == EntityType.COW) {
                     if(!EanimodCommonConfig.COMMON.spawnVanillaCows.get()) {
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_COW, 8, 4, 4));
                 }
                 //add and remove llama
                 if (entry.entityType == EntityType.LLAMA) {
                     if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_LLAMA, 4, 2, 3));
                 }
                 //add and remove chicken
                 if (entry.entityType == EntityType.CHICKEN) {
                     if (!EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
-                        eventLogger.info("Removed Chickens from Spawn of biome");
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
                 }
                 //add and remove rabbit
                 if (entry.entityType == EntityType.RABBIT) {
                     if (!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3));
                 }
                 //add and remove mooshroom
                 if (entry.entityType == EntityType.MOOSHROOM) {
                     if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_MOOSHROOM, 8, 4, 4));
                 }
             }
             if (!addSpawns.isEmpty()) {
                 biome.getSpawns(EntityClassification.CREATURE).addAll(addSpawns);
+            }
+            if (!removeSpawns.isEmpty()) {
+                biome.getSpawns(EntityClassification.CREATURE).removeAll(removeSpawns);
             }
         }
     }

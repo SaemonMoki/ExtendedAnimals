@@ -231,7 +231,9 @@ public class Breed {
         }
 
         public VarientHolder addVarients(VarientHolder additionalVarients) {
-            this.varientsToGoThrough.addAll(additionalVarients.getVarientList());
+            if (additionalVarients != null) {
+                this.varientsToGoThrough.addAll(additionalVarients.getVarientList());
+            }
             return this;
         }
 
@@ -255,9 +257,7 @@ public class Breed {
     }
 
     public static List<Pair<GeneSketch, GeneSketch>> createVarientList(Pair<GeneSketch, GeneSketch>... varients) {
-        List<Pair<GeneSketch,GeneSketch>> varientList = new ArrayList<>();
-        varientList.addAll(Arrays.asList(varients));
-        return varientList;
+        return new ArrayList<>(Arrays.asList(varients));
     }
 
 }

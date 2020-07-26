@@ -61,16 +61,21 @@ public final class ChickenBreeds {
 
     public static final Breed PLAINSNATIVE = new Breed(JUNGLENATIVE, new Breed.Properties().setData("wild plains native", Biomes.PLAINS, Breed.Rarity.ORDINARY)
         .setGeneSketch(new GeneSketch().add(4, "1").add(12,"1").add(18, "2"),
-                new GeneSketch().add(20, "2").add(44, "2")/*.add(0.2F, 44, "3")*/.add(166, "1")/*.add(0.2F, 72, "1,2")*/
+                new GeneSketch().add(20, "2").add(44, "10%1","10%3","2").add(166, "1").add(72, "5%1,1|2")
         ));
     public static final Breed PLAINSSUNFLOWERNATIVE = new Breed(PLAINSNATIVE, new Breed.Properties().setData("wild sunflowerplains native", Biomes.SUNFLOWER_PLAINS, Breed.Rarity.UNCOMMON)
         .setGeneSketch(new GeneSketch(),
-                       new GeneSketch().add(44, "3"))
+                       new GeneSketch().add(44, "80%3").add(22, "5%2"))
     );
     public static final Breed SAVANNANATIVE = new Breed(JUNGLENATIVE, new Breed.Properties().setData("wild savanna native", Biomes.SAVANNA, Breed.Rarity.ORDINARY)
-        .setGeneSketch(new GeneSketch()/*.add(0.1F, 6, "1|2")*/,
+        .setGeneSketch(new GeneSketch().add(6, "5%1|2"),
                        new GeneSketch().add(24, "4","1|2")/*.add(0.25F, 30, "1|2").add(0.25F, 34, "1|2")*/
     ));
+    public static final Breed SWAMPNATIVE = new Breed(JUNGLENATIVE, new Breed.Properties().setData("wild swamp native", Biomes.SWAMP, Breed.Rarity.ORDINARY)
+            .setVarieties(new Breed.VarientHolder(createVarientList(GeneSet.EASTEREGGER.get())))
+            .setGeneSketch(new GeneSketch(),
+                    new GeneSketch().add(24, "4","1|2")
+            ));
     public static final Breed LEGHORN = new Breed(new Breed.Properties().setData("Leghorn", Biomes.PLAINS, Breed.Rarity.ORDINARY)
         .setVarieties(new Breed.VarientHolder(
                 createVarientList(GeneSet.LEGHORNWHITE.get())

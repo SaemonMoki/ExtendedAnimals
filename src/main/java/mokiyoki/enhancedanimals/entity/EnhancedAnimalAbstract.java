@@ -10,7 +10,11 @@ import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
+import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
@@ -50,6 +54,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -84,8 +89,16 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     private static final DataParameter<String> ENTITY_STATUS = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.VARINT);
+    private static final DataParameter<Boolean> HAS_COLLAR = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
 
     private final NonNullList<ItemStack> equipmentArray = NonNullList.withSize(7, ItemStack.EMPTY);
+
+    private static final String COLLAR = "d_collar.png";
+    private static final String COLLAR_TEXTURE = "collar_leather.png";
+    private static final String[] COLLAR_HARDWARE = new String[] {
+            "collar_ringiron.png", "collar_ringgold.png", "collar_ringdiamond.png",
+            "collar_belliron.png", "collar_bellgold.png", "collar_belldiamond.png"
+    };
 
     protected Ingredient TEMPTATION_ITEMS;
     protected Ingredient BREED_ITEMS;
@@ -168,6 +181,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             this.dataManager.register(BAG_SIZE, 0.0F);
             this.dataManager.register(MILK_AMOUNT, 0);
         }
+        this.dataManager.register(HAS_COLLAR, false);
     }
 
     @Override
@@ -421,20 +435,35 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     }
 
-    //used to set if an animal is wearing bells
-    protected boolean getBells() {
-        ItemStack bridleStack = this.getEnhancedInventory().getStackInSlot(3);
-        if (!bridleStack.isEmpty()) {
-            if (bridleStack.getItem() instanceof CustomizableCollar) {
-                if (((CustomizableCollar) bridleStack.getItem()).getHasBells()) {
-                    return true;
-                }
+    public boolean hasCollar() {
+        return this.dataManager.get(HAS_COLLAR);
+    }
+
+    public void setCollar(boolean collared) {
+        this.dataManager.set(HAS_COLLAR, collared);
+        List<String> previousCollarTextures = this.equipmentTextures.get(Equipment.COLLAR);
+        List<String> newCollarTextures = getCollarTextures();
+
+        if(collared) {
+            if(previousCollarTextures == null || !previousCollarTextures.containsAll(newCollarTextures)){
+                this.equipmentTextures.put(Equipment.COLLAR, newCollarTextures);
+            }
+        } else {
+            if(previousCollarTextures != null){
+                this.equipmentTextures.remove(Equipment.COLLAR);
             }
         }
-        ItemStack harnessStack = this.getEnhancedInventory().getStackInSlot(5);
-        if (!harnessStack.isEmpty()) {
-            if (harnessStack.getItem() instanceof CustomizableCollar) {
-                return ((CustomizableCollar) harnessStack.getItem()).getHasBells();
+    }
+
+    //used to set if an animal is wearing bells
+    protected boolean getBells() {
+        ItemStack collarStack;
+        for (int i = 1; i < 6;i++) {
+            collarStack = this.getEnhancedInventory().getStackInSlot(i);
+            if (!collarStack.isEmpty()) {
+                if (collarStack.getItem() instanceof CustomizableCollar) {
+                    return true;
+                }
             }
         }
         return false;
@@ -744,30 +773,24 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
         for (int i = 1; i <= 6;i++) {
-            if (this.getEnhancedInventory().getStackInSlot(i).getItem() instanceof CustomizableAnimalEquipment) {
-                setColourBySlot(i);
+            Item item = this.getEnhancedInventory().getStackInSlot(i).getItem();
+            if (item instanceof CustomizableAnimalEquipment) {
+                setColourToSlot(item, i);
             }
         }
 
         return this.colouration;
     }
 
-    protected void setColourBySlot(int i) {
-        switch (i) {
-            case 0 : this.colouration.setDyeColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(0)));
-                break;
-            case 1 : this.colouration.setSaddleColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(1)));
-                break;
-            case 2 : this.colouration.setArmourColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(2)));
-                break;
-            case 3 : this.colouration.setBridleColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(3)));
-                break;
-            case 4 : this.colouration.setDyeColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(4)));
-                break;
-            case 5 : this.colouration.setHarnessColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(5)));
-                break;
-            case 6 : this.colouration.setDyeColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(6)));
-                break;
+    protected void setColourToSlot(Item item, int i) {
+        if (item instanceof CustomizableSaddleEnglish || item instanceof CustomizableSaddleWestern || item instanceof CustomizableSaddleVanilla) {
+            this.colouration.setSaddleColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(i)));
+        } else if (item instanceof CustomizableBridle) {
+            this.colouration.setBridleColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(i)));
+        } else if (item instanceof CustomizableCollar) {
+            this.colouration.setCollarColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(i)));
+        } else if (item instanceof CustomizableAnimalEquipment) {
+            this.colouration.setHarnessColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(i)));
         }
     }
 
@@ -829,6 +852,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             compound.putInt("Lactation", this.lactationTimer);
             compound.putInt("milk", getMilkAmount());
         }
+
+        compound.putBoolean("Collared", this.hasCollar());
 
         writeInventory(compound);
     }
@@ -980,6 +1005,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         setSharedGenes(this.genetics);
         initilizeAnimalSize();
 
+        this.setCollar(compound.getBoolean("Collared"));
+
         readInventory(compound);
     }
 
@@ -1121,10 +1148,23 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     @Override
     public void onInventoryChanged(IInventory invBasic) {
+        boolean flag = this.dataManager.get(HAS_COLLAR);
+        this.updateInventorySlots();
+        if (this.ticksExisted > 20 && !flag && this.dataManager.get(HAS_COLLAR)) {
+            this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
+        }
         this.updateInventorySlots();
     }
 
     protected void updateInventorySlots() {
+        boolean hasCollar = false;
+        for (int i = 1; i <= 6;i++) {
+            if (this.animalInventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                hasCollar = true;
+                break;
+            }
+        }
+        this.setCollar(hasCollar);
         if (!this.world.isRemote) {
         }
     }
@@ -1309,6 +1349,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     //------------
 
     public boolean setTamedBy(PlayerEntity player) {
+        //TODO save player's name to be displayed in GUI
 //        this.setOwnerUniqueId(player.getUniqueID());
         this.setTame(true);
         if (player instanceof ServerPlayerEntity) {
@@ -1452,5 +1493,56 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
+    private List<String> getCollarTextures() {
+        List<String> collarTextures = new ArrayList<>();
 
+        if (this.getEnhancedInventory() != null) {
+            ItemStack collarSlot = ItemStack.EMPTY;
+            for (int i = 1; i <= 6;i++) {
+                if (this.animalInventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                    collarSlot = this.animalInventory.getStackInSlot(i);
+                    break;
+                }
+            }
+            if (collarSlot != ItemStack.EMPTY) {
+                Item collar = collarSlot.getItem();
+                collarTextures.add(COLLAR);
+                if (collar == ModItems.COLLAR_CLOTH_RING) {
+                    collarTextures.add(COLLAR_HARDWARE[0]);
+                } else if (collar == ModItems.COLLAR_CLOTH_G) {
+                    collarTextures.add(COLLAR_HARDWARE[1]);
+                } else if (collar == ModItems.COLLAR_CLOTH_D) {
+                    collarTextures.add(COLLAR_HARDWARE[2]);
+                } else if (collar == ModItems.COLLAR_CLOTH_BELL) {
+                    collarTextures.add(COLLAR_HARDWARE[3]);
+                } else if (collar == ModItems.COLLAR_CLOTH_GBELL) {
+                    collarTextures.add(COLLAR_HARDWARE[4]);
+                } else if (collar == ModItems.COLLAR_CLOTH_DBELL) {
+                    collarTextures.add(COLLAR_HARDWARE[5]);
+                } else if (collar == ModItems.COLLAR_LEATHER) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                } else if (collar == ModItems.COLLAR_LEATHER_RING) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                    collarTextures.add(COLLAR_HARDWARE[0]);
+                } else if (collar == ModItems.COLLAR_LEATHER_G) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                    collarTextures.add(COLLAR_HARDWARE[1]);
+                } else if (collar == ModItems.COLLAR_LEATHER_D) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                    collarTextures.add(COLLAR_HARDWARE[2]);
+                } else if (collar == ModItems.COLLAR_LEATHER_BELL) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                    collarTextures.add(COLLAR_HARDWARE[3]);
+                } else if (collar == ModItems.COLLAR_LEATHER_GBELL) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                    collarTextures.add(COLLAR_HARDWARE[4]);
+                } else if (collar == ModItems.COLLAR_LEATHER_DBELL) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                    collarTextures.add(COLLAR_HARDWARE[5]);
+                }
+            }
+        }
+
+        return collarTextures;
+    }
 }

@@ -1,10 +1,11 @@
 package mokiyoki.enhancedanimals.util;
 
 import javafx.util.Pair;
-import mokiyoki.enhancedanimals.init.ChickenBreeds;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GeneSketch {
@@ -13,88 +14,68 @@ public class GeneSketch {
      *  the int[] they are eventually converted to.
      */
     HashMap<Integer, String> geneSketch = new HashMap<>();
-//    HashMap<Integer, Pair<Float, String>> rarityGeneSketches = new HashMap<>();
+    HashMap<Integer, List<Pair<Float, String>>> weightedGeneSketches = new HashMap<>();
 
     public GeneSketch (Pair<Integer, String>... geneSketch ) {
         for(Pair<Integer, String> pair : geneSketch) {
-            this.geneSketch.put(pair.getKey(), pair.getValue());
+            if (pair.getValue().contains("%")) {
+                setWeightedGeneSketch(pair.getKey(), pair.getValue());
+            } else {
+                this.geneSketch.put(pair.getKey(), pair.getValue());
+            }
         }
     }
 
-    public GeneSketch(int gene, String string) {
-        this.geneSketch.put(gene, string);
+    public GeneSketch(int gene, String sketch) {
+        if (sketch.contains("%")) {
+            setWeightedGeneSketch(gene, sketch);
+        } else {
+            this.geneSketch.put(gene, sketch);
+        }
     }
 
     public GeneSketch () {
     }
 
     public GeneSketch add(int gene, String sketch) {
-        this.geneSketch.put(gene, sketch);
+        if (sketch.contains("%")) {
+            setWeightedGeneSketch(gene, sketch);
+        } else {
+            this.geneSketch.put(gene, sketch);
+        }
         return this;
     }
 
     public GeneSketch add(int gene, String... sketch) {
         for (String string : sketch) {
-            this.geneSketch.put(gene, string);
-            gene += 2;
+            if (string.contains("%")) {
+                setWeightedGeneSketch(gene, string);
+            } else {
+                this.geneSketch.put(gene, string);
+                gene += 2;
+            }
         }
         return this;
     }
 
-//    public GeneSketch add(float rarity, int gene, String sketch) {
-//        this.rarityGeneSketches.put(gene, new Pair<>(rarity, sketch));
-//        return this;
-//    }
+    private void setWeightedGeneSketch(int gene, String sketch) {
+        String[] weightedsketch = sketch.split("%");
+        setWeightedGeneSketches(gene, Float.valueOf(weightedsketch[0])/100F, weightedsketch[1]);
+    }
 
-//    public GeneSketch add(float rarity, int gene, String... sketch) {
-//        for (String string : sketch) {
-//            if (ThreadLocalRandom.current().nextFloat() < rarity) {
-//                this.rarityGeneSketches.put(gene, new Pair<>(rarity, string));
-//            }
-//            gene += 2;
-//        }
-//        return this;
-//    }
-
-//    public GeneSketch add(Breed.Rarity rarity, int gene, String... sketch) {
-//        float rare = 1.0F;
-//        switch (rarity) {
-//            case COMMON: rare = 0.8F;
-//                break;
-//            case UNCOMMON: rare = 0.6F;
-//                break;
-//            case RARE: rare = 0.2F;
-//                break;
-//            case EXOTIC: rare = 0.05F;
-//        }
-//
-//        add(rare, gene, sketch);
-//        return this;
-//    }
-
-//    public void addLayer(GeneSketch layer, float rarity) {
-//        if (layer.hasSketch()) {
-//            HashMap<Integer, String> overlaySketch = layer.getRawSketch();
-//            for (Integer gene : overlaySketch.keySet()) {
-//                this.rarityGeneSketches.put(gene, new Pair<>(rarity,overlaySketch.get(gene)));
-//            }
-//        }
-//    }
-
-//    public void addLayer(GeneSketch layer, Breed.Rarity rarity) {
-//        Float rare = 1.0F;
-//        switch (rarity) {
-//            case COMMON: rare = 0.8F;
-//                break;
-//            case UNCOMMON: rare = 0.6F;
-//                break;
-//            case RARE: rare = 0.2F;
-//                break;
-//            case EXOTIC: rare = 0.05F;
-//        }
-//
-//        addLayer(layer, rare);
-//    }
+    private void setWeightedGeneSketches(int gene, float weight, String sketch) {
+        List<Pair<Float, String>> weightedListEntry = new ArrayList<>();
+        List<Pair<Float, String>> removePair = new ArrayList<>();
+        if (this.weightedGeneSketches.containsKey(gene)) {
+            for (Pair<Float, String> alleleSketch : this.weightedGeneSketches.get(gene)) {
+                if (alleleSketch.getValue().equals(sketch)) {
+                    removePair.add(alleleSketch);
+                }
+            }
+        }
+        weightedListEntry.add(new Pair<>(weight, sketch));
+        this.weightedGeneSketches.replace(gene, removePair, weightedListEntry);
+    }
 
     public void addLayer(GeneSketch layer) {
         if (layer != null) {
@@ -104,30 +85,33 @@ public class GeneSketch {
                     this.geneSketch.put(gene, overlaySketch.get(gene));
                 }
             }
-//        if (layer.hasRaritySketch()) {
-//            HashMap<Integer,Pair<Float, String>> overlaySketch = layer.getRawRaritySketch();
-//            for (Integer gene : overlaySketch.keySet()) {
-//                this.rarityGeneSketches.put(gene, overlaySketch.get(gene));
-//            }
-//        }
+            if (layer.hasWeightedSketch()) {
+                HashMap<Integer,List<Pair<Float, String>>> overlaySketch = layer.getRawWeightedSketch();
+                for (Integer gene : overlaySketch.keySet()) {
+                    for (Pair<Float, String> sketchPairs : overlaySketch.get(gene)) {
+                        setWeightedGeneSketches(gene, sketchPairs.getKey(), sketchPairs.getValue());
+                    }
+                }
+            }
         }
     }
 
     public int[] getGeneArray(Float accuracy, int[] genes) {
-        if (!this.geneSketch.isEmpty() ) {
+        if (!this.geneSketch.isEmpty() && !this.weightedGeneSketches.isEmpty()) {
             int length = genes.length;
             for (int i = 0; i < length; i += 2) {
                 String gene = "";
-//                if (this.rarityGeneSketches.containsKey(i)) {
-//                    Pair<Float, String> raregene = this.rarityGeneSketches.get(i);
-//                    if (ThreadLocalRandom.current().nextFloat() < raregene.getKey()) {
-//                        gene = raregene.getValue();
-//                    } else if (this.geneSketch.containsKey(i)){
-//                        gene = this.geneSketch.get(i);
-//                    }
-//                } else
-                    if (this.geneSketch.containsKey(i)){
-                    gene = this.geneSketch.get(i);
+                if (this.weightedGeneSketches.containsKey(i)) {
+                    List<Pair<Float, String>> geneOptionsList = this.weightedGeneSketches.get(i);
+                    for (Pair<Float, String> geneOptions : geneOptionsList) {
+                        if (ThreadLocalRandom.current().nextFloat() < geneOptions.getKey()) {
+                            gene = geneOptions.getValue();
+                            break;
+                        }
+                    }
+                }
+                if (gene.isEmpty() && this.geneSketch.containsKey(i)){
+                gene = this.geneSketch.get(i);
                 }
                 if (!gene.isEmpty()) {
                     String allele_A;
@@ -160,11 +144,24 @@ public class GeneSketch {
     }
 
     public int[] getGeneArray(int[] genes) {
-        if (!this.geneSketch.isEmpty() ) {
+        if (!this.geneSketch.isEmpty() && !this.weightedGeneSketches.isEmpty()) {
             int length = genes.length;
             for (int i = 0; i < length; i += 2) {
-                if (this.geneSketch.containsKey(i)) {
-                    String gene = this.geneSketch.get(i);
+                String gene = "";
+                if (this.weightedGeneSketches.containsKey(i)) {
+                    List<Pair<Float, String>> geneOptionsList = this.weightedGeneSketches.get(i);
+                    Collections.shuffle(geneOptionsList);
+                    for (Pair<Float, String> geneOptions : geneOptionsList) {
+                        if (ThreadLocalRandom.current().nextFloat() < geneOptions.getKey()) {
+                            gene = geneOptions.getValue();
+                            break;
+                        }
+                    }
+                }
+                if (gene.isEmpty() && this.geneSketch.containsKey(i)){
+                    gene = this.geneSketch.get(i);
+                }
+                if (!gene.isEmpty()) {
                     String allele_A;
                     String allele_B;
                     if (gene.contains(",")) {
@@ -194,9 +191,9 @@ public class GeneSketch {
         return !this.geneSketch.isEmpty();
     }
 
-//    public Boolean hasRaritySketch() {
-//        return !this.rarityGeneSketches.isEmpty();
-//    }
+    public Boolean hasWeightedSketch() {
+        return !this.weightedGeneSketches.isEmpty();
+    }
 
     public String getSketchAt(int index) {
         return geneSketch.get(index);
@@ -210,9 +207,9 @@ public class GeneSketch {
         return this.geneSketch;
     }
 
-//    private HashMap<Integer, Pair<Float, String>> getRawRaritySketch() {
-//        return this.rarityGeneSketches;
-//    }
+    private HashMap<Integer, List<Pair<Float, String>>> getRawWeightedSketch() {
+        return this.weightedGeneSketches;
+    }
 
     private static int getAllele(String alleleData) {
         if (alleleData.contains("-")) {

@@ -6,14 +6,17 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModelNew;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.SaddleItem;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -420,9 +423,9 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.saddlePad = new EnhancedRendererModelNew(this, 130, 24, "SaddlePad");
         this.saddlePad.addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, -1.0F);
 
-        this.collar = new ModelRenderer(this, 89, 84);
+        this.collar = new ModelRenderer(this, 88, 84);
         this.collar.addBox(-5.0F, -4.5F, -3.0F, 10, 2, 8, 0.0F);
-        this.collar.setTextureOffset(124, 88);
+        this.collar.setTextureOffset(127, 87);
         this.collar.addBox(0.0F, -5.0F, -5.0F, 0, 3, 3, 0.0F);
         this.collar.setTextureOffset(116, 84);
         this.collar.addBox(-1.5F, -2.5F, -5.75F, 3, 3, 3, 0.0F);
@@ -531,7 +534,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                 this.eyeRight.showModel = false;
             }
 
-            if (llamaModelData.bridle.getItem() instanceof CustomizableCollar || llamaModelData.harness.getItem() instanceof CustomizableCollar) {
+            if (llamaModelData.collar) {
                 this.collar.showModel = true;
             } else {
                 this.collar.showModel = false;
@@ -661,7 +664,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                 mapOfScale.put("EnglishSaddle", scalingsForSaddle);
                 mapOfScale.put("SaddlePad", scalingsForPad);
                 this.saddleEnglish.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            } else {
+            } else if (saddle instanceof CustomizableSaddleVanilla || saddle instanceof SaddleItem){
                 this.saddle.showModel = true;
                 mapOfScale.put("Saddle", scalingsForSaddle);
                 mapOfScale.put("SaddlePad", scalingsForPad);
@@ -815,7 +818,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                     this.saddleHorn.rotateAngleX = (float) Math.PI / 4.5F;
                     this.stirrup3DNarrowL.setRotationPoint(7.25F + coatLength, -0.25F, -1.5F);
                     this.stirrup3DNarrowR.setRotationPoint(-7.25F - coatLength, -0.25F, -1.5F);
-                } else {
+                } else if (saddle instanceof CustomizableSaddleVanilla || saddle instanceof SaddleItem){
                     this.saddle.rotationPointY = 2.0F - coatLength;
                     this.stirrup3DNarrowL.setRotationPoint(7.5F + coatLength, 0.0F, 0.0F);
                     this.stirrup3DNarrowR.setRotationPoint(-7.5F - coatLength, 0.0F, 0.0F);
@@ -981,6 +984,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         ItemStack saddle;
         ItemStack bridle;
         ItemStack harness;
+        boolean collar;
     }
 
     private LlamaModelData getLlamaModelData() {
@@ -1018,6 +1022,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.saddle = enhancedLlama.getEnhancedInventory().getStackInSlot(1);
             llamaModelData.bridle = enhancedLlama.getEnhancedInventory().getStackInSlot(3);
             llamaModelData.harness = enhancedLlama.getEnhancedInventory().getStackInSlot(5);
+            llamaModelData.collar = hasCollar(enhancedLlama.getEnhancedInventory());
 
             return llamaModelData;
         } else {
@@ -1035,6 +1040,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.saddle = enhancedLlama.getEnhancedInventory().getStackInSlot(1);
             llamaModelData.bridle = enhancedLlama.getEnhancedInventory().getStackInSlot(3);
             llamaModelData.harness = enhancedLlama.getEnhancedInventory().getStackInSlot(5);
+            llamaModelData.collar = hasCollar(enhancedLlama.getEnhancedInventory());
 
             if(llamaModelData.llamaGenes != null) {
                 llamaModelDataCache.put(enhancedLlama.getEntityId(), llamaModelData);
@@ -1042,6 +1048,15 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
             return llamaModelData;
         }
+    }
+
+    private boolean hasCollar(Inventory inventory) {
+        for (int i = 1; i < 6; i++) {
+            if (inventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

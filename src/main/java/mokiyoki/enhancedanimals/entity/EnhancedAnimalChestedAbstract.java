@@ -4,6 +4,7 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CarpetBlock;
 import net.minecraft.entity.EntityType;
@@ -240,8 +241,8 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     @Override
     protected void updateInventorySlots() {
-        this.setBridle(!this.animalInventory.getStackInSlot(3).isEmpty() && this.canHaveBridle());
-        this.setBlanket(!this.animalInventory.getStackInSlot(4).isEmpty() && this.canHaveBlanket());
+        this.setBridle(this.animalInventory.getStackInSlot(3).getItem() instanceof CustomizableBridle);
+        this.setBlanket(!this.animalInventory.getStackInSlot(4).isEmpty() && !(this.animalInventory.getStackInSlot(4).getItem() instanceof CustomizableCollar));
         super.updateInventorySlots();
     }
 

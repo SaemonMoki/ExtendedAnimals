@@ -836,12 +836,12 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
         } //if genes are not null end bracket
 
-        this.enhancedAnimalTextures.add("d_collar.png");
-            this.texturesIndexes.add(String.valueOf(0));
-        this.enhancedAnimalTextures.add("collar_ringiron.png");
-            this.texturesIndexes.add(String.valueOf(0));
-        this.enhancedAnimalTextures.add("collar_belliron.png");
-            this.texturesIndexes.add(String.valueOf(0));
+//        this.enhancedAnimalTextures.add("d_collar.png");
+//            this.texturesIndexes.add(String.valueOf(0));
+//        this.enhancedAnimalTextures.add("collar_ringiron.png");
+//            this.texturesIndexes.add(String.valueOf(0));
+//        this.enhancedAnimalTextures.add("collar_belliron.png");
+//            this.texturesIndexes.add(String.valueOf(0));
 
     } // setTexturePaths end bracket
 

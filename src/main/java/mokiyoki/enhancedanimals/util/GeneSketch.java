@@ -97,7 +97,7 @@ public class GeneSketch {
     }
 
     public int[] getGeneArray(Float accuracy, int[] genes) {
-        if (!this.geneSketch.isEmpty() && !this.weightedGeneSketches.isEmpty()) {
+        if (!this.geneSketch.isEmpty() || !this.weightedGeneSketches.isEmpty()) {
             int length = genes.length;
             for (int i = 0; i < length; i += 2) {
                 String gene = "";

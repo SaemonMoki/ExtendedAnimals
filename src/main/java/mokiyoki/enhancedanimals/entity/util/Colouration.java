@@ -19,6 +19,7 @@ public class Colouration {
     private int armourColour = -1;
     private int bridleColour = -1;
     private int harnessColour = -1;
+    private int collarColour = -1;
 
 
     public int getDyeColour() {
@@ -93,6 +94,14 @@ public class Colouration {
         this.harnessColour = colour;
     }
 
+    public int getCollarColour() {
+        return collarColour;
+    }
+
+    public void setCollarColour(int colour) {
+        this.collarColour = colour;
+    }
+
     public String getRGBStrings() {
         String rgbString = "";
         if (getDyeColour() != -1) {
@@ -121,6 +130,9 @@ public class Colouration {
         }
         if (getHarnessColour() != -1) {
             rgbString = rgbString + String.valueOf(getHarnessColour());
+        }
+        if (getCollarColour() != -1) {
+            rgbString = rgbString + String.valueOf(getCollarColour());
         }
 
         return rgbString;

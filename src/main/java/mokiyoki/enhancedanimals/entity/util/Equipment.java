@@ -8,6 +8,7 @@ public enum Equipment {
     BRIDLE,
     BLANKET,
     HARNESS,
-    BANNER
+    BANNER,
+    COLLAR
 
 }

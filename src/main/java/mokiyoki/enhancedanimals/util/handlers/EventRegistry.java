@@ -193,24 +193,7 @@ public class EventRegistry {
                 }
             });
         }
-
         //TODO dispensers should be able to turn hay to unbound hay if they contain a sharp tool and are facing a hay block
-
-//        OreDictionary.registerOre("egg", ModItems.Egg_White);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Cream);
-//        OreDictionary.registerOre("egg", ModItems.Egg_CreamDark);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Pink);
-//        OreDictionary.registerOre("egg", ModItems.Egg_PinkDark);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Brown);
-//        OreDictionary.registerOre("egg", ModItems.Egg_BrownDark);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Blue);
-//        OreDictionary.registerOre("egg", ModItems.Egg_GreenLight);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Green);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Grey);
-//        OreDictionary.registerOre("egg", ModItems.Egg_GreyGreen);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Olive);
-//        OreDictionary.registerOre("egg", ModItems.Egg_GreenDark);
-
     }
 
 

@@ -27,7 +27,6 @@ public class EnhancedLayeredTexture extends Texture {
     private static final Logger LOGGER = LogManager.getLogger();
     protected final List<String> layeredTextureNames;
     protected final List<String> maskingTextureNames = new ArrayList<>();
-    //TODO there has to be a better way to do this.
     protected  int dyeRGB = 0;
     protected  int blackRGB = 0;
     protected  int redRGB = 0;
@@ -37,6 +36,7 @@ public class EnhancedLayeredTexture extends Texture {
     protected  int dyeArmourRGB = 0;
     protected  int dyeBridleRGB = 0;
     protected  int dyeHarnessRGB = 0;
+    protected  int dyeCollarRGB = 0;
     //TODO add banner part colouring? will probably need an array
     protected String modLocation = "";
 
@@ -87,6 +87,9 @@ public class EnhancedLayeredTexture extends Texture {
             this.dyeHarnessRGB = colouration.getHarnessColour();
         }
 
+        if (colouration.getCollarColour()!=-1) {
+            this.dyeCollarRGB = colouration.getCollarColour();
+        }
     }
 
     @Override
@@ -150,7 +153,7 @@ public class EnhancedLayeredTexture extends Texture {
                         blendDye(j, i, dyeSaddleRGB, nativeimage);
                     }
                 }
-            } else if(s.startsWith("d_br") && dyeBridleRGB !=0) {
+            } else if(s.startsWith("d_b") && dyeBridleRGB !=0) {
                 for(int i = 0; i < nativeimage.getHeight(); ++i) {
                     for (int j = 0; j < nativeimage.getWidth(); ++j) {
                         blendDye(j, i, dyeSaddleRGB, nativeimage);
@@ -160,6 +163,12 @@ public class EnhancedLayeredTexture extends Texture {
                 for(int i = 0; i < nativeimage.getHeight(); ++i) {
                     for (int j = 0; j < nativeimage.getWidth(); ++j) {
                         blendDye(j, i, dyeSaddleRGB, nativeimage);
+                    }
+                }
+            } else if(s.startsWith("d_c") && dyeCollarRGB !=0) {
+                for(int i = 0; i < nativeimage.getHeight(); ++i) {
+                    for (int j = 0; j < nativeimage.getWidth(); ++j) {
+                        blendDye(j, i, dyeCollarRGB, nativeimage);
                     }
                 }
             }
@@ -224,7 +233,7 @@ public class EnhancedLayeredTexture extends Texture {
                                         blendDye(j, i, dyeArmourRGB, nativeimage1);
                                     }
                                 }
-                            } else if(s1.startsWith("d_br") && dyeBridleRGB !=0) {
+                            } else if(s1.startsWith("d_b") && dyeBridleRGB !=0) {
                                 for(int i = 0; i < nativeimage1.getHeight(); ++i) {
                                     for (int j = 0; j < nativeimage1.getWidth(); ++j) {
                                         blendDye(j, i, dyeBridleRGB, nativeimage1);
@@ -234,6 +243,12 @@ public class EnhancedLayeredTexture extends Texture {
                                 for(int i = 0; i < nativeimage1.getHeight(); ++i) {
                                     for (int j = 0; j < nativeimage1.getWidth(); ++j) {
                                         blendDye(j, i, dyeHarnessRGB, nativeimage1);
+                                    }
+                                }
+                            } else if(s1.startsWith("d_c") && dyeCollarRGB !=0) {
+                                for(int i = 0; i < nativeimage1.getHeight(); ++i) {
+                                    for (int j = 0; j < nativeimage1.getWidth(); ++j) {
+                                        blendDye(j, i, dyeCollarRGB, nativeimage1);
                                     }
                                 }
                             }

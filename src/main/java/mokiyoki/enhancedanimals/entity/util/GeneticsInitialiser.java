@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GeneticsInitialiser {
 
@@ -30,12 +31,11 @@ public class GeneticsInitialiser {
             Random random = new Random(posX+world.getSeed()*posZ);
             Genes trueWildType = new Genes(new int[]{1, 1, 1, 1, 5, 6, 1, 1, 1, 1, 1, 1, 3, 6, 1, 1, 1, 1, 1, 1}, new int[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,3,3,2,2,1,1,2,2,1,1,2,2,1,1,3,3,2,2,1,1,2,2,3,3,2,2,3,3,2,2,2,2,3,3,3,3,2,2,1,1,1,1,2,2,2,2,1,1,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,10,6,6,5,5,5,5,6,6,4,6,5,5,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1});
 //            Genes trueWildType = new Genes(new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}, new int[]{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1});
-            trueWildType = selectBreed(wildGeneticBase, biome, random).generateGenes(trueWildType);
-//            trueWildType = selectBreed(wildGeneticMutations, biome, random).generateGenes(((float)EanimodCommonConfig.COMMON.wildTypeChance.get()/100), trueWildType);
+            trueWildType = ChickenBreeds.ALLMUTATIONS.generateGenes(0.99F, trueWildType);
+            trueWildType = selectBreed(wildGeneticBase, biome, ThreadLocalRandom.current()).generateGenes(trueWildType);
             if (generateBreed) {
-                Breed breed = ChickenBreeds.ALLMUTATIONS;
-//                Breed breed = ChickenBreeds.LEGHORN.editGenes(selectBreed(chickenbreeds, biome, random).getGeneSketches());
-                return breed.generateGenes(0.1F, trueWildType);
+                Breed breed = ChickenBreeds.ROSECOMBLEGHORN.editGenes(selectBreed(chickenbreeds, biome, random).getGeneSketches());
+                return breed.generateGenes(0.99F, trueWildType);
             }
 
             return trueWildType;
@@ -51,6 +51,7 @@ public class GeneticsInitialiser {
             wildGeneticBase.add(ChickenBreeds.PLAINSSUNFLOWERNATIVE);
             wildGeneticBase.add(ChickenBreeds.JUNGLENATIVE);
             wildGeneticBase.add(ChickenBreeds.SAVANNANATIVE);
+            wildGeneticBase.add(ChickenBreeds.SWAMPNATIVE);
             wildGeneticMutations.add(ChickenBreeds.ALLPLAINSMUTATIONS);
             wildGeneticMutations.add(ChickenBreeds.ALLJUNGLEMUTATIONS);
             wildGeneticMutations.add(ChickenBreeds.ALLSAVANNAMUTATIONS);

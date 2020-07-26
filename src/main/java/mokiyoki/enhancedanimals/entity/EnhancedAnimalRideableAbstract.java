@@ -4,6 +4,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
@@ -217,7 +218,8 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     @Override
     protected void updateInventorySlots() {
-        this.setSaddled(!this.animalInventory.getStackInSlot(1).isEmpty() && this.canHaveSaddle());
+        ItemStack saddleStack = this.animalInventory.getStackInSlot(1);
+        this.setSaddled(!saddleStack.isEmpty() && !(saddleStack.getItem() instanceof CustomizableCollar) && this.canHaveSaddle());
         super.updateInventorySlots();
     }
 

@@ -12,6 +12,7 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
@@ -776,6 +777,9 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     protected SoundEvent getJumpSound() {
+        if (!this.isSilent() && this.getBells()) {
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.75F, 2.5F);
+        }
         return SoundEvents.ENTITY_RABBIT_JUMP;
     }
 
@@ -792,6 +796,12 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected SoundEvent getDeathSound()
     {
         return SoundEvents.ENTITY_RABBIT_DEATH;
+    }
+
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
+        if (!this.isSilent() && this.getBells()) {
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 2.5F);
+        }
     }
 
     @Override

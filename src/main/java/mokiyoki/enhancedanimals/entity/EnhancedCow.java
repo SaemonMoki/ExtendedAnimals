@@ -270,7 +270,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.ENTITY_COW_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.world.playSound((PlayerEntity)null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.BLOCK_NOTE_BLOCK_CHIME, this.getSoundCategory(), 1.5F, 0.000000001F);
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 0.1F);
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BELL, 1.0F, 0.1F);
         }
     }
 

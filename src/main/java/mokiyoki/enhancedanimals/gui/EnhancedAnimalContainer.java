@@ -36,8 +36,10 @@ public class EnhancedAnimalContainer extends Container {
         int j = 5; // inv width
         int xShift = 8;
         int yShift = 18;
+        boolean hasEquipment = false;
 
         if (enhancedAnimal.canHaveSaddle()) {
+            hasEquipment = true;
             this.addSlot(new Slot(retrievedInventory, 1, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
@@ -55,6 +57,7 @@ public class EnhancedAnimalContainer extends Container {
         }
 
         if (enhancedAnimal.canHaveBridle()) {
+            hasEquipment = true;
             this.addSlot(new Slot(retrievedInventory, 3, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
@@ -70,6 +73,7 @@ public class EnhancedAnimalContainer extends Container {
         }
 
         if (enhancedAnimal.canHaveArmour()) {
+            hasEquipment = true;
             this.addSlot(new Slot(retrievedInventory, 2, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
@@ -90,6 +94,7 @@ public class EnhancedAnimalContainer extends Container {
         }
 
         if (enhancedAnimal.canHaveBlanket()) {
+            hasEquipment = true;
             this.addSlot(new Slot(retrievedInventory, 4, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
@@ -114,6 +119,7 @@ public class EnhancedAnimalContainer extends Container {
         }
 
         if (enhancedAnimal.canHaveBanner()) {
+            hasEquipment = true;
             this.addSlot(new Slot(retrievedInventory, 6, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
@@ -138,6 +144,7 @@ public class EnhancedAnimalContainer extends Container {
         }
 
         if (enhancedAnimal.canHaveHarness()) {
+            hasEquipment = true;
             this.addSlot(new Slot(retrievedInventory, 5, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
@@ -154,6 +161,21 @@ public class EnhancedAnimalContainer extends Container {
                 yShift = 18;
                 xShift = 80;
             }
+        }
+
+        if (!hasEquipment) {
+            this.addSlot(new Slot(retrievedInventory, 1, xShift, yShift) {
+
+                public boolean isItemValid(ItemStack stack) {
+                    return stack.getItem() instanceof CustomizableCollar;
+                }
+
+                public int getSlotStackLimit() {
+                    return 1;
+                }
+
+            });
+            yShift = yShift + 18;
         }
 
         if (enhancedAnimal.canHaveChest()) {

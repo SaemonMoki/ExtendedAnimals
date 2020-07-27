@@ -3,13 +3,16 @@ package mokiyoki.enhancedanimals.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModelNew;
 import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
@@ -72,6 +75,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
     private final EnhancedRendererModelNew stirrup;
     private final EnhancedRendererModelNew saddleSideR;
     private final EnhancedRendererModelNew saddlePad;
+    private final EnhancedRendererModelNew collar;
 
     private final List<EnhancedRendererModelNew> saddles = new ArrayList<>();
 
@@ -290,6 +294,15 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         this.saddleHorn.addChild(this.saddlePomel);
 
+        this.collar = new EnhancedRendererModelNew(this, 80, 0);
+        this.collar.addBox(-6.0F, -4.5F, -3.0F, 12, 2, 12, 0.0F);
+        this.collar.setTextureOffset(80, 4);
+        this.collar.addBox(0.0F, -5.0F, -5.0F, 0, 3, 3, 0.0F);
+        this.collar.setTextureOffset(116, 6);
+        this.collar.addBox(-1.5F, -5.0F, -6.25F, 3, 3, 3, 0.0F);
+        this.collar.setRotationPoint(0.0F, -1.0F, -7.5F);
+        this.neckBigger.addChild(this.collar);
+
         //western
         this.body.addChild(this.saddleWestern);
         this.saddleWestern.addChild(this.saddleHorn);
@@ -344,6 +357,12 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             this.eyeRight.showModel = false;
         }
 
+        if (pigModelData.collar) {
+            this.collar.showModel = true;
+        } else {
+            this.collar.showModel = false;
+        }
+
         if (true) {
             renderPigandSaddle(pigModelData.saddle, pigModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
@@ -376,7 +395,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
                 List<Float> scalingsForSaddlePad = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
                 mapOfScale.put("SaddlePad", scalingsForSaddlePad);
                 mapOfScale.put("EnglishSaddle", scalingsForSaddle);
-            } else {
+            } else if (!(saddle instanceof CustomizableCollar)) {
                 this.saddle.showModel = true;
                 mapOfScale.put("Saddle", scalingsForSaddle);
             }
@@ -642,7 +661,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
                 this.saddleHorn.rotateAngleX = (float) Math.PI / 4.5F;
                 this.stirrup3DNarrowL.setRotationPoint(8.0F, -0.5F, -1.5F);
                 this.stirrup3DNarrowR.setRotationPoint(-8.0F, -0.5F, -1.5F);
-            } else {
+            } else if (!(saddle instanceof CustomizableCollar)) {
                 this.saddle.rotateAngleX = -((float) Math.PI / 2F);
                 this.saddle.setRotationPoint(0.0F, 4.0F, 10.0F);
                 this.stirrup3DNarrowL.setRotationPoint(8.0F, 0.0F, 0.0F);
@@ -694,6 +713,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         ItemStack saddle;
         ItemStack bridle;
         ItemStack harness;
+        Boolean collar;
     }
 
     private PigModelData getPigModelData() {
@@ -727,6 +747,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             pigModelData.saddle = enhancedPig.getEnhancedInventory().getStackInSlot(1);
             pigModelData.bridle = enhancedPig.getEnhancedInventory().getStackInSlot(3);
             pigModelData.harness = enhancedPig.getEnhancedInventory().getStackInSlot(5);
+            pigModelData.collar = hasCollar(enhancedPig.getEnhancedInventory());
 
 
             return pigModelData;
@@ -742,6 +763,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             pigModelData.saddle = enhancedPig.getEnhancedInventory().getStackInSlot(1);
             pigModelData.bridle = enhancedPig.getEnhancedInventory().getStackInSlot(3);
             pigModelData.harness = enhancedPig.getEnhancedInventory().getStackInSlot(5);
+            pigModelData.collar = hasCollar(enhancedPig.getEnhancedInventory());
 
             if(pigModelData.pigGenes != null) {
                 pigModelDataCache.put(enhancedPig.getEntityId(), pigModelData);
@@ -751,4 +773,12 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         }
     }
 
+    private boolean hasCollar(Inventory inventory) {
+        for (int i = 1; i < 6; i++) {
+            if (inventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

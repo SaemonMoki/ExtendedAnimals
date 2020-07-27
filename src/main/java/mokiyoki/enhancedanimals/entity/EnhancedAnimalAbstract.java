@@ -143,6 +143,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected final List<String> enhancedAnimalAlphaTextures = new ArrayList<>();
     protected final Map<Equipment, List<String>> equipmentTextures = new HashMap<>();
     public Colouration colouration = new Colouration();
+    protected boolean bells;
 
     //Inventory
     protected Inventory animalInventory;
@@ -455,18 +456,23 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
-    //used to set if an animal is wearing bells
-    protected boolean getBells() {
+    protected void setBells() {
         ItemStack collarStack;
+        this.bells = false;
         for (int i = 1; i < 6;i++) {
             collarStack = this.getEnhancedInventory().getStackInSlot(i);
             if (!collarStack.isEmpty()) {
                 if (collarStack.getItem() instanceof CustomizableCollar) {
-                    return true;
+                    this.bells = true;
+                    break;
                 }
             }
         }
-        return false;
+    }
+
+    //used to set if an animal is wearing bells
+    protected boolean getBells() {
+        return this.bells;
     }
 
     /*
@@ -1149,18 +1155,26 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     @Override
     public void onInventoryChanged(IInventory invBasic) {
         boolean flag = this.dataManager.get(HAS_COLLAR);
+        boolean flag2 = this.bells;
         this.updateInventorySlots();
         if (this.ticksExisted > 20 && !flag && this.dataManager.get(HAS_COLLAR)) {
             this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
+            if (!flag2 && this.bells) {
+                this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 0.5F, 1.0F);
+            }
         }
         this.updateInventorySlots();
     }
 
     protected void updateInventorySlots() {
         boolean hasCollar = false;
+        this.bells = false;
         for (int i = 1; i <= 6;i++) {
             if (this.animalInventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
                 hasCollar = true;
+                if (((CustomizableCollar) this.animalInventory.getStackInSlot(i).getItem()).getHasBells()) {
+                    this.bells = true;
+                }
                 break;
             }
         }

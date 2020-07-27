@@ -243,7 +243,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             setMilkAmount(milk);
             return true;
         } else {
-//            entityPlayer.playSound(SoundEvents.ENTITY_SHEEP_HURT, 1.0F, 1.0F);
+            this.playSound(SoundEvents.ENTITY_SHEEP_HURT, 1.0F, 1.0F);
             return false;
         }
     }
@@ -388,6 +388,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.ENTITY_SHEEP_STEP, 0.15F, 1.0F);
+        if (!this.isSilent() && this.getBells()) {
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 1.0F);
+        }
     }
 
     public void eatGrassBonus() {

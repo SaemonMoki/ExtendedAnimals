@@ -14,6 +14,7 @@ import mokiyoki.enhancedanimals.entity.util.GeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -386,7 +387,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
             if (this.fertileTimer > 0) {
-                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setGenes(new Genes(this.genetics).makeChild(!this.getIsFemale(), this.mateGenetics, !this.mateGender, Genes.Species.CHICKEN));
+                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setGenes(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.isFemale, Genes.Species.CHICKEN));
                 CompoundNBT nbtTagCompound = eggItem.serializeNBT();
                 eggItem.deserializeNBT(nbtTagCompound);
             }
@@ -465,6 +466,12 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     @Override
     protected SoundEvent getDeathSound() {
         return SoundEvents.ENTITY_CHICKEN_DEATH;
+    }
+
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
+        if (!this.isSilent() && this.getBells()) {
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 2.0F);
+        }
     }
 
     /**

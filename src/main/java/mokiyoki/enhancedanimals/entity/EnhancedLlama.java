@@ -441,6 +441,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         this.playSound(SoundEvents.ENTITY_LLAMA_STEP, 0.15F, 1.0F);
+        if (!this.isSilent() && this.getBells()) {
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 0.75F);
+        }
     }
 
     protected void playChestEquipSound() {

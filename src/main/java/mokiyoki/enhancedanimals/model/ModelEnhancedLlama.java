@@ -425,7 +425,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         this.collar = new ModelRenderer(this, 88, 84);
         this.collar.addBox(-5.0F, -4.5F, -3.0F, 10, 2, 8, 0.0F);
-        this.collar.setTextureOffset(127, 87);
+        this.collar.setTextureOffset(127, 88);
         this.collar.addBox(0.0F, -5.0F, -5.0F, 0, 3, 3, 0.0F);
         this.collar.setTextureOffset(116, 84);
         this.collar.addBox(-1.5F, -2.5F, -5.75F, 3, 3, 3, 0.0F);

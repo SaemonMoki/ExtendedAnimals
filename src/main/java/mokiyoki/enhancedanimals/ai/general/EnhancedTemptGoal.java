@@ -94,11 +94,11 @@ public class EnhancedTemptGoal extends Goal {
 
     private double getDistanceFromPlayer() {
         if (this.eanimal.getHunger() > VERY_HUNGRY) {
-            return 58.0D;
+            return 24.0D;
         } else if (this.eanimal.getHunger() > REGULAR_HUNGRY) {
             return 36.0D;
         } else {
-            return 24.0D;
+            return 58.0D;
         }
 
     }
@@ -126,7 +126,16 @@ public class EnhancedTemptGoal extends Goal {
         if (this.eanimal.getDistanceSq(this.closestPlayer) < 6.25D) {
             this.eanimal.getNavigator().clearPath();
         } else {
-            this.eanimal.getNavigator().tryMoveToEntityLiving(this.closestPlayer, this.speed);
+            this.eanimal.getNavigator().tryMoveToEntityLiving(this.closestPlayer, getWalkingToPlayerSpeed());
+        }
+
+    }
+
+    private double getWalkingToPlayerSpeed() {
+        if (this.eanimal.getHunger() > REGULAR_HUNGRY) {
+            return this.speed;
+        } else {
+            return this.speed/2;
         }
 
     }

@@ -3,10 +3,12 @@ package mokiyoki.enhancedanimals.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -100,6 +102,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     private final ModelRenderer earTuftHelper;
     private final ModelRenderer eyeLeft;
     private final ModelRenderer eyeRight;
+    private final ModelRenderer collar;
 
     private Integer currentChicken = null;
 
@@ -450,6 +453,17 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.headNakedNeck.addChild(this.eyeRight);
         this.head.addChild(this.eyeLeft);
         this.head.addChild(this.eyeRight);
+
+        this.textureWidth=160;
+        this.textureHeight=160;
+        this.collar = new ModelRenderer(this, 0, 155);
+        this.collar.addBox(-2.5F, -1.0F, -3.0F, 5,  1, 4);
+        this.collar.setTextureOffset(30, 156);
+        this.collar.addBox(0.0F, -1.3333F, -4.0F, 0,  2, 2);
+        this.collar.setTextureOffset(18, 154);
+        this.collar.addBox(-1.5F, -1.0F, -5.0F, 3, 3, 3, -1.0F);
+        this.head.addChild(this.collar);
+        this.headNakedNeck.addChild(this.collar);
     }
 
     private void setRotationOffset(ModelRenderer renderer, float x, float y, float z) {
@@ -714,6 +728,20 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         matrixStackIn.push();
         matrixStackIn.scale(finalChickenSize, finalChickenSize, finalChickenSize);
         matrixStackIn.translate(0.0F, -1.5F + 1.5F/finalChickenSize, 0.0F);
+        if (blink == 0 || blink >= 6) {
+            this.eyeLeft.showModel = true;
+            this.eyeRight.showModel = true;
+        } else {
+            this.eyeLeft.showModel = false;
+            this.eyeRight.showModel = false;
+        }
+
+        if (chickenModelData.collar) {
+            this.collar.showModel = true;
+        } else {
+            this.collar.showModel = false;
+        }
+
         if (nakedNeck) {
             this.headNakedNeck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
@@ -874,15 +902,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }
 
         matrixStackIn.pop();
-
-        if (blink == 0 || blink >= 6) {
-            this.eyeLeft.showModel = true;
-            this.eyeRight.showModel = true;
-        } else {
-            this.eyeLeft.showModel = false;
-            this.eyeRight.showModel = false;
-        }
-
   }
 
 
@@ -1199,6 +1218,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         long clientGameTime = 0;
         List<String> unrenderedModels = new ArrayList<>();
 //        int dataReset = 0;
+        boolean collar;
     }
 
     private ChickenModelData getChickenModelData() {
@@ -1223,6 +1243,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             chickenModelData.lastAccessed = 0;
             chickenModelData.sleeping = enhancedChicken.isRoosting();
             chickenModelData.blink = enhancedChicken.getBlink();
+            chickenModelData.collar = hasCollar(enhancedChicken.getEnhancedInventory());
             chickenModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedChicken.world).getWorldInfo()).getGameTime());
             chickenModelData.unrenderedModels = new ArrayList<>();
 
@@ -1233,6 +1254,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             chickenModelData.sleeping = enhancedChicken.isRoosting();
             chickenModelData.blink = enhancedChicken.getBlink();
             chickenModelData.birthTime = enhancedChicken.getBirthTime();
+            chickenModelData.collar = hasCollar(enhancedChicken.getEnhancedInventory());
             chickenModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedChicken.world).getWorldInfo()).getGameTime());
 
             if(chickenModelData.chickenGenes != null) {
@@ -1244,5 +1266,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         }
     }
 
-
+    private boolean hasCollar(Inventory inventory) {
+        for (int i = 1; i < 6; i++) {
+            if (inventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

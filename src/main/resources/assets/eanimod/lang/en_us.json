@@ -342,5 +342,10 @@
 "eanimod.pregnancy.pregnant" : "The pregnancy is showing well.",
 "eanimod.pregnancy.obviously_pregnant" : "It is obviously very pregnant!",
 "eanimod.pregnancy.near_birth" : "It is showing signs birth is soon!",
-"eanimod.animalinfocontainer" : "Animal Info Container"
+"eanimod.animalinfocontainer" : "Animal Info Container",
+"eanimod.animalinfocontainer.male" : "Male",
+"eanimod.animalinfocontainer.female" : "Female",
+"eanimod.animalinfocontainer.pregnant" : "Pregnant",
+"eanimod.animalinfocontainer.health" : "Current Health",
+"eanimod.animalinfocontainer.hunger" : "Hunger"
 }

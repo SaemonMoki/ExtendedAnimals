@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
@@ -36,13 +37,35 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         setAnimalInfo();
     }
 
-    public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
+    public void render(int mouseX, int mouseY, float p_render_3_) {
         if (!enhancedAnimalInfo.created) {setAnimalInfo();}
         this.renderBackground();
-        this.mousePosx = (float)p_render_1_;
-        this.mousePosY = (float)p_render_2_;
-        super.render(p_render_1_, p_render_2_, p_render_3_);
-        this.renderHoveredToolTip(p_render_1_, p_render_2_);
+        this.mousePosx = (float)mouseX;
+        this.mousePosY = (float)mouseY;
+        super.render(mouseX, mouseY, p_render_3_);
+        this.renderHoveredToolTip(mouseX, mouseY);
+        this.renderInfoToolTip(mouseX, mouseY);
+    }
+
+    private void renderInfoToolTip(int mouseX, int mouseY) {
+        int i = (this.width - this.xSize) / 2;
+        int j = (this.height - this.ySize) / 2;
+        if (this.isPointInRegion(i+3, j-30, 5, 5, (double)mouseX, (double)mouseY)) {
+            if (this.enhancedAnimalInfo.pregnant > 0) {
+                this.renderTooltip(I18n.format("eanimod.animalinfocontainer.pregnant"), mouseX, mouseY);
+            }
+            if (this.enhancedAnimalInfo.isFemale) {
+                this.renderTooltip(I18n.format("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+            } else {
+                this.renderTooltip(I18n.format("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+            }
+        }
+        if (this.isPointInRegion(i+12, j-30, 7, 5, (double)mouseX, (double)mouseY)) {
+            this.renderTooltip(I18n.format("eanimod.animalinfocontainer.health"), mouseX, mouseY);
+        }
+        if (this.isPointInRegion(i+24, j-30, 5, 5, (double)mouseX, (double)mouseY)) {
+            this.renderTooltip(I18n.format("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
+        }
     }
 
     /**

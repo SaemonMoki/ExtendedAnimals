@@ -263,7 +263,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         int adultAge = getAdultAge();
 
         if (age >= (3*adultAge)/4 && (item == Items.SADDLE || item instanceof CustomizableSaddleVanilla || item instanceof CustomizableSaddleWestern || item instanceof CustomizableSaddleEnglish)){
-            return this.saddleAnimal(itemStack, entityPlayer, this);
+            return this.saddleAnimal(itemStack, entityPlayer, hand, this);
         }
 
         if (TEMPTATION_ITEMS.test(itemStack) || BREED_ITEMS.test(itemStack) || item instanceof DebugGenesBook) {
@@ -281,15 +281,21 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         return super.processInteract(entityPlayer, hand);
     }
 
-    public boolean saddleAnimal(ItemStack itemStack, PlayerEntity playerIn, LivingEntity target) {
+    public boolean saddleAnimal(ItemStack itemStack, PlayerEntity player, Hand hand, LivingEntity target) {
         EnhancedAnimalRideableAbstract enhancedAnimal = (EnhancedAnimalRideableAbstract) target;
-        if (enhancedAnimal.isAlive() && !enhancedAnimal.dataManager.get(HAS_SADDLE) && !enhancedAnimal.isChild()) {
-            this.animalInventory.setInventorySlotContents(1, new ItemStack(itemStack.getItem(), 1));
-            this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
-            itemStack.shrink(1);
-            return true;
+        if (enhancedAnimal.isAlive() && !enhancedAnimal.isChild()) {
+            if (!enhancedAnimal.dataManager.get(HAS_SADDLE)) {
+                this.animalInventory.setInventorySlotContents(1, new ItemStack(itemStack.getItem(), 1));
+                this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
+                itemStack.shrink(1);
+            } else {
+                ItemStack otherSaddle = this.getEnhancedInventory().getStackInSlot(1);
+                this.animalInventory.setInventorySlotContents(1, new ItemStack(itemStack.getItem(), 1));
+                this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
+                itemStack.shrink(1);
+                player.setHeldItem(hand, otherSaddle);
+            }
         }
-
         return true;
     }
 

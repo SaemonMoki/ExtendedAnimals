@@ -146,7 +146,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 return true;
             }
             if (this.canHaveBlanket() && isCarpet(itemstack)) {
-                return this.blanketAnimal(itemstack, this);
+                return this.blanketAnimal(itemstack, player, hand, this);
             }
             if (this.canHaveBridle() && item instanceof CustomizableBridle) {
                 return this.bridleAnimal(itemstack, player, hand, this);
@@ -159,13 +159,18 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         return this.getControllingPassenger() instanceof LivingEntity/* && this.isTame()*/ && this.dataManager.get(HAS_BRIDLE);
     }
 
-    public boolean blanketAnimal(ItemStack itemStack, LivingEntity target) {
+    public boolean blanketAnimal(ItemStack itemStack, PlayerEntity player, Hand hand, LivingEntity target) {
         EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
         if (enhancedAnimal.isAlive() && !enhancedAnimal.dataManager.get(HAS_BLANKET)) {
             this.animalInventory.setInventorySlotContents(4, new ItemStack(itemStack.getItem(), 1));
             this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
             itemStack.shrink(1);
-            return true;
+        } else {
+            ItemStack otherCarpet = this.getEnhancedInventory().getStackInSlot(4);
+            this.animalInventory.setInventorySlotContents(4, new ItemStack(itemStack.getItem(), 1));
+            this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
+            itemStack.shrink(1);
+            player.setHeldItem(hand, otherCarpet);
         }
 
         return true;
@@ -178,15 +183,12 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 this.animalInventory.setInventorySlotContents(3, new ItemStack(itemStack.getItem(), 1));
                 this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
                 itemStack.shrink(1);
-                return true;
-            }
-            else {
+            } else {
                 ItemStack otherBridle = this.getEnhancedInventory().getStackInSlot(3);
                 this.animalInventory.setInventorySlotContents(3, new ItemStack(itemStack.getItem(), 1));
                 this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
                 itemStack.shrink(1);
                 player.setHeldItem(hand, otherBridle);
-                return true;
             }
         }
         return true;

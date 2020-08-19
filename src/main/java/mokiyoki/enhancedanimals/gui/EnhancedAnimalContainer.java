@@ -183,17 +183,7 @@ public class EnhancedAnimalContainer extends Container {
             if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
                 for (int k = 0; k < i; ++k) {
                     for (int l = 0; l < j; ++l) {
-                        this.addSlot(new Slot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
-                            boolean enabled = true;
-
-                            @Override
-                            public boolean isEnabled() {
-                                return enabled;
-                            }
-
-                            public void setEnabled(boolean enabled) {
-                                this.enabled = enabled;
-                            }
+                        this.addSlot(new EnhancedSlot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
                         });
                         inventoryShift++;
                     }

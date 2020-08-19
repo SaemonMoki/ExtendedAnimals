@@ -141,7 +141,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             if (this.canHaveChest() && !this.hasChest() && item == Items.CHEST) {
                 this.setChested(true);
                 this.playChestEquipSound();
-                this.animalInventory.setInventorySlotContents(0, itemstack);
+                this.animalInventory.setInventorySlotContents(0, new ItemStack(itemstack.getItem(), 1));
                 this.initInventory();
                 return true;
             }
@@ -162,7 +162,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     public boolean blanketAnimal(ItemStack itemStack, LivingEntity target) {
         EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
         if (enhancedAnimal.isAlive() && !enhancedAnimal.dataManager.get(HAS_BLANKET)) {
-            this.animalInventory.setInventorySlotContents(4, itemStack);
+            this.animalInventory.setInventorySlotContents(4, new ItemStack(itemStack.getItem(), 1));
             this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
             itemStack.shrink(1);
             return true;
@@ -175,14 +175,14 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
         if (enhancedAnimal.isAlive()) {
             if (!enhancedAnimal.dataManager.get(HAS_BRIDLE)) {
-                this.animalInventory.setInventorySlotContents(3, itemStack);
+                this.animalInventory.setInventorySlotContents(3, new ItemStack(itemStack.getItem(), 1));
                 this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
                 itemStack.shrink(1);
                 return true;
             }
             else {
                 ItemStack otherBridle = this.getEnhancedInventory().getStackInSlot(3);
-                this.animalInventory.setInventorySlotContents(3, itemStack);
+                this.animalInventory.setInventorySlotContents(3, new ItemStack(itemStack.getItem(), 1));
                 this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
                 itemStack.shrink(1);
                 player.setHeldItem(hand, otherBridle);
@@ -236,7 +236,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     @Override
     protected int getInventorySize() {
-        return this.hasChest() ? 17 : super.getInventorySize();
+        return this.hasChest() ? 22 : super.getInventorySize();
     }
 
     @Override

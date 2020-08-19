@@ -284,7 +284,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     public boolean saddleAnimal(ItemStack itemStack, PlayerEntity playerIn, LivingEntity target) {
         EnhancedAnimalRideableAbstract enhancedAnimal = (EnhancedAnimalRideableAbstract) target;
         if (enhancedAnimal.isAlive() && !enhancedAnimal.dataManager.get(HAS_SADDLE) && !enhancedAnimal.isChild()) {
-            this.animalInventory.setInventorySlotContents(1, itemStack);
+            this.animalInventory.setInventorySlotContents(1, new ItemStack(itemStack.getItem(), 1));
             this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
             itemStack.shrink(1);
             return true;

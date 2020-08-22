@@ -479,11 +479,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     */
     public boolean getIsFemale() {
         char[] uuidArray = getCachedUniqueIdString().toCharArray();
-        if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
-            return false;
-        } else {
-            return true;
-        }
+        return !Character.isLetter(uuidArray[0]) && uuidArray[0] - 48 < 8;
     }
 
     /*

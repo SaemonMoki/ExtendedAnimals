@@ -629,7 +629,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         } else {
             babyScale = 1.0F;
         }
-        float finalCowSize = ((( 2.0F * age) + 1.0F) / 3.0F)*cowModelData.cowSize;
+        float genderModifier = cowModelData.isFemale? 1.80F : 2.0F;
+        float finalCowSize = (((genderModifier * age) + 1.0F) / 3.0F)*cowModelData.cowSize;
         bodyWidth = finalCowSize + (finalCowSize * bodyWidth);
         bodyLength = finalCowSize + (finalCowSize * bodyLength);
 
@@ -1697,11 +1698,12 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     }
 
     private class CowModelData {
-        boolean isCow;
+        boolean isCow = true;
         int[] cowGenes;
         String birthTime;
         float cowSize = 1.0F;
         char[] uuidArray;
+        boolean isFemale;
         int lastAccessed = 0;
         float bagSize = 1.0F;
         String cowStatus = "";
@@ -1769,6 +1771,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             } else {
                 cowModelData.uuidArray = enhancedCow.getMooshroomUUID().toCharArray();
             }
+            cowModelData.isFemale = !Character.isLetter(cowModelData.uuidArray[0]) && cowModelData.uuidArray[0] - 48 < 8;
             cowModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime());
             cowModelData.saddle = enhancedCow.getEnhancedInventory().getStackInSlot(1);
             cowModelData.bridle = enhancedCow.getEnhancedInventory().getStackInSlot(3);

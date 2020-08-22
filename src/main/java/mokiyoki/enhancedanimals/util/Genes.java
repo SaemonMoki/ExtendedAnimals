@@ -24,7 +24,7 @@ public class Genes {
     }
 
     public Genes (int autosomal) {
-        this.sexlinked = new int[2];
+        this.sexlinked = new int[]{1, 1};
         this.autosomal = autosomal > 2 ? new int[autosomal] : new int[2];
     }
 
@@ -124,6 +124,16 @@ public class Genes {
 
     public void setAutosomalGene(int gene, int allel) {
         this.autosomal[gene] = allel;
+    }
+
+    public void setGeneOfChromosome(boolean isAutosomal, int gene, int allel) {
+        if (allel != 0) {
+            if (isAutosomal) {
+                this.autosomal[gene] = allel;
+            } else {
+                this.sexlinked[gene] = allel;
+            }
+        }
     }
 
     public int[] getSexlinkedGenes() {
@@ -271,8 +281,8 @@ public class Genes {
         return this.getGamite(isDiploid, species);
     }
 
-    public Genes makeChild(Genes donor) {
-        return this.makeChild(true, donor, true, Species.UNIMPORTANT);
+    public Genes makeChild(boolean isDiploid, boolean donorIsDiploid, Genes donor) {
+        return this.makeChild(isDiploid, donor, donorIsDiploid, Species.UNIMPORTANT);
     }
 
     public List<GeneLink> getLinkages(Species species) {

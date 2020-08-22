@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.renderer;
 
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedRabbit;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
@@ -31,10 +32,13 @@ public class RenderEnhancedRabbit extends MobRenderer<EnhancedRabbit, ModelEnhan
      */
     public ResourceLocation getEntityTexture(EnhancedRabbit entity) {
         String s = entity.getRabbitTexture();
+        Colouration colourRGB = entity.getRgb();
 
-        if (s == null || s.isEmpty()) {
+        if (s == null || s.isEmpty() || colourRGB == null) {
             return ERROR_TEXTURE_LOCATION;
         }
+
+        s = s + colourRGB.getRGBStrings();
 
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
@@ -47,7 +51,7 @@ public class RenderEnhancedRabbit extends MobRenderer<EnhancedRabbit, ModelEnhan
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_RABBIT_TEXTURE_LOCATION, textures, null, entity.colouration));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_RABBIT_TEXTURE_LOCATION, textures, null, colourRGB));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

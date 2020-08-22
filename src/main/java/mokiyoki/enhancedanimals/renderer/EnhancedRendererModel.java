@@ -72,7 +72,7 @@ public class EnhancedRendererModel extends ModelRenderer {
 //                        }
 //                        if (this.childModels != null) {
 //                            for(int k = 0; k < this.childModels.size(); ++k) {
-//                                ((EnhancedRendererModel)this.childModels.get(k)).render(scale, mapOfScale, boxesToNotRender, pushPopEntireChain);
+//                                ((EnhancedRendererModel)this.childModels.generate(k)).render(scale, mapOfScale, boxesToNotRender, pushPopEntireChain);
 //                            }
 //                        }
 //                    } else {
@@ -83,7 +83,7 @@ public class EnhancedRendererModel extends ModelRenderer {
 //                        }
 //                        if (this.childModels != null) {
 //                            for(int j = 0; j < this.childModels.size(); ++j) {
-//                                ((EnhancedRendererModel)this.childModels.get(j)).render(scale, mapOfScale, boxesToNotRender, pushPopEntireChain);
+//                                ((EnhancedRendererModel)this.childModels.generate(j)).render(scale, mapOfScale, boxesToNotRender, pushPopEntireChain);
 //                            }
 //                        }
 //
@@ -109,7 +109,7 @@ public class EnhancedRendererModel extends ModelRenderer {
 //                    }
 //                    if (this.childModels != null) {
 //                        for(int i = 0; i < this.childModels.size(); ++i) {
-//                            ((EnhancedRendererModel)this.childModels.get(i)).render(scale, mapOfScale, boxesToNotRender, pushPopEntireChain);
+//                            ((EnhancedRendererModel)this.childModels.generate(i)).render(scale, mapOfScale, boxesToNotRender, pushPopEntireChain);
 //                        }
 //                    }
 //
@@ -131,7 +131,7 @@ public class EnhancedRendererModel extends ModelRenderer {
 //        BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
 //
 //        for (int i = 0; i < this.cubeList.size(); ++i) {
-//            this.cubeList.get(i).render(bufferbuilder, scale);
+//            this.cubeList.generate(i).render(bufferbuilder, scale);
 //        }
 //
 //        GlStateManager.endList();

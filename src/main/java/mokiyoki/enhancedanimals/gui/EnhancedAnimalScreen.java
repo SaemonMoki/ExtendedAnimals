@@ -10,6 +10,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
@@ -28,13 +29,18 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 
     /** temp booleans */
     boolean tabToggle = false;
-
+    boolean chestToggle = false;
 
     public static EnhancedAnimalInfo enhancedAnimalInfo = new EnhancedAnimalInfo();
 
     public EnhancedAnimalScreen(EnhancedAnimalContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
         setAnimalInfo();
+//        for (Slot slot : screenContainer.inventorySlots) {
+//            if (slot instanceof EnhancedSlot) {
+//                ((EnhancedSlot)slot).setEnabled(false);
+//            }
+//        }
     }
 
     public void render(int mouseX, int mouseY, float p_render_3_) {
@@ -67,6 +73,26 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             this.renderTooltip(I18n.format("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
         }
     }
+
+    public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
+        int i = (this.width - this.xSize) / 2;
+        int j = (this.height - this.ySize) / 2;
+
+        double d0 = p_mouseClicked_1_ - (double)(i + 140);
+        double d1 = p_mouseClicked_3_ - (double)(j + 14 + 19);
+        if (d0 >= 0.0D && d1 >= 0.0D && d0 < 108.0D && d1 < 19.0D) {
+            chestToggle = !chestToggle;
+            for (Slot slot : this.container.inventorySlots) {
+                if (slot instanceof EnhancedSlot) {
+                    ((EnhancedSlot)slot).setEnabled(chestToggle);
+                }
+            }
+            return true;
+        }
+
+        return super.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
+    }
+
 
     /**
      * Draw the foreground layer for the GuiContainer (everything in front of the items)
@@ -200,7 +226,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
         }
 
-        if (this.container.enhancedAnimal.canHaveChest() && tabToggle) {
+        if (this.container.enhancedAnimal.canHaveChest() && chestToggle) {
             if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
 
                 if (hasItemsInChest) {

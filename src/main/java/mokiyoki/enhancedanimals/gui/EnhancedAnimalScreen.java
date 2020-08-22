@@ -36,11 +36,11 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     public EnhancedAnimalScreen(EnhancedAnimalContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
         setAnimalInfo();
-//        for (Slot slot : screenContainer.inventorySlots) {
-//            if (slot instanceof EnhancedSlot) {
-//                ((EnhancedSlot)slot).setEnabled(false);
-//            }
-//        }
+        for (Slot slot : screenContainer.inventorySlots) {
+            if (slot instanceof EnhancedSlot) {
+                ((EnhancedSlot)slot).setEnabled(false);
+            }
+        }
     }
 
     public void render(int mouseX, int mouseY, float p_render_3_) {

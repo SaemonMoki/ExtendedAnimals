@@ -157,7 +157,7 @@ public class Breed {
 
     /**
      * meant for small tweaks to a breed, should probably attach rarity to varients instead of this
-     * this only works on the main gene blueprint, varients override main genes
+     * this only works on the main genes blueprint, varients override main genes
      */
     public final Breed editGenes(Pair<GeneSketch, GeneSketch> sketch) {
         this.autosomalGeneSketch.addLayer(sketch.getKey());
@@ -238,12 +238,12 @@ public class Breed {
         }
 
         public Pair<GeneSketch, GeneSketch> getSketchWithVarients(Pair<GeneSketch, GeneSketch> genesketch) {
-            List<Pair<GeneSketch, GeneSketch>> varients = new ArrayList<>();
+            List<Pair<GeneSketch, GeneSketch>> varientSelections = new ArrayList<>();
             for (List<Pair<GeneSketch, GeneSketch>> var : this.varientsToGoThrough) {
-                varients.add(var.get(ThreadLocalRandom.current().nextInt(var.size())));
+                varientSelections.add(var.get(ThreadLocalRandom.current().nextInt(var.size())));
             }
 
-            for (Pair<GeneSketch, GeneSketch> sketch : varients) {
+            for (Pair<GeneSketch, GeneSketch> sketch : varientSelections) {
                 genesketch.getKey().addLayer(sketch.getKey());
                 genesketch.getValue().addLayer(sketch.getValue());
             }

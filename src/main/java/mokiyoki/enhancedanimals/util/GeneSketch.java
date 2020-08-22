@@ -144,7 +144,7 @@ public class GeneSketch {
     }
 
     public int[] getGeneArray(int[] genes) {
-        if (!this.geneSketch.isEmpty() && !this.weightedGeneSketches.isEmpty()) {
+        if (!this.geneSketch.isEmpty() || !this.weightedGeneSketches.isEmpty()) {
             int length = genes.length;
             for (int i = 0; i < length; i += 2) {
                 String gene = "";
@@ -214,11 +214,14 @@ public class GeneSketch {
     private static int getAllele(String alleleData) {
         if (alleleData.contains("-")) {
             String[] splitGene = alleleData.split("-");
-            if (Integer.valueOf(splitGene[0]) > Integer.valueOf(splitGene[1])) {
-                return ThreadLocalRandom.current().nextInt(Integer.valueOf(splitGene[1]), (Integer.valueOf(splitGene[0])));
-            } else {
-                return ThreadLocalRandom.current().nextInt(Integer.valueOf(splitGene[0]), (Integer.valueOf(splitGene[1])));
-            }
+            int start = Integer.valueOf(splitGene[0]);
+            int end = Integer.valueOf(splitGene[1]);
+            return ThreadLocalRandom.current().nextInt(Math.max(start, end)- Math.min(start, end))+Math.min(start, end);
+//            if (Integer.valueOf(splitGene[0]) > Integer.valueOf(splitGene[1])) {
+//                return ThreadLocalRandom.current().nextInt(Integer.valueOf(splitGene[1]), (Integer.valueOf(splitGene[0])));
+//            } else {
+//                return ThreadLocalRandom.current().nextInt(Integer.valueOf(splitGene[0]), (Integer.valueOf(splitGene[1])));
+//            }
         } else if (alleleData.contains("|")) {
             String[] splitGene = alleleData.split("\\|");
             return Integer.valueOf(splitGene[ThreadLocalRandom.current().nextInt((splitGene.length))]);

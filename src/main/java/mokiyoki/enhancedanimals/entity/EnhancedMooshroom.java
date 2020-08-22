@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.ai.general.mooshroom.EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom;
+import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.block.BlockState;
@@ -30,6 +31,8 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -94,11 +97,9 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(mateGenetics);
-
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
         enhancedmooshroom.setMooshroomType(this.setChildMushroomType((enhancedmooshroom)));
         defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -84000);
-
         enhancedmooshroom.setMotherUUID(this.getUniqueID().toString());
         enhancedmooshroom.configureAI();
         this.world.addEntity(enhancedmooshroom);
@@ -361,5 +362,13 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         }
 
         return this.colouration;
+    }
+
+    @Override
+    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+        Genes mooshroomGenetics = new CowGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
+        mooshroomGenetics.setAutosomalGene(118, 2);
+        mooshroomGenetics.setAutosomalGene(119, 2);
+        return mooshroomGenetics;
     }
 }

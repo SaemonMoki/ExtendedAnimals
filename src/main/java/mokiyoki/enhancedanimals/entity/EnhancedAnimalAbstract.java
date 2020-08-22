@@ -199,7 +199,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     //anything extra to run during not idling
     protected abstract void runExtraIdleTimeTick();
 
-    //any lethal gene checks the animal has
+    //any lethal genes checks the animal has
     protected abstract void lethalGenes();
 
     //when the animal wakes up
@@ -297,7 +297,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
-    //TODO cant seem to get the animals to open their eyes when awoken, idk why and i dont want to work on it rn
     @Override
     public void awaken() {
         this.awokenTimer = 200;
@@ -1045,7 +1044,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                 this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
                 this.mateGender = ((EnhancedAnimalAbstract)ageable).getIsFemale();
             }
-        } else if (getIsFemale()) {
+        } else if (this.getIsFemale()) {
            //is female
            this.pregnant = true;
            this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
@@ -1054,7 +1053,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             //is male
             ((EnhancedAnimalAbstract)ageable).pregnant = true;
             ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
-            ((EnhancedAnimalAbstract)ageable).mateGender = false;
+            ((EnhancedAnimalAbstract)ageable).setMateGender(false);
         }
     }
 
@@ -1365,25 +1364,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected void geneFixer() {
-//        if (genes[0] == 0) {
-//            //this.genetics = new GeneticsInitialiser.ChickenGeneticsInitialiser().generateNewChickenGenetics(this.world, new BlockPos(this));
-//            setInitialDefaults();
-//            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (ThreadLocalRandom.current().nextInt(24000, 180000))));
-////            this.setCustomName(new StringTextComponent(selectBreed(this.world)));
-//        } else {
-//            for (int i = 0; i < genes.length; i++) {
-//                if (genes[i] == 0) {
-//                    genes[i] = 1;
-//                }
-//            }
-//            if (mateGenes[0] != 0) {
-//                for (int i = 0; i < mateGenes.length; i++) {
-//                    if (mateGenes[i] == 0) {
-//                        mateGenes[i] = 1;
-//                    }
-//                }
-//            }
-//        }
+        if (this.genetics.getAutosomalGene(0) == 0) {
+            this.genetics = createInitialGenes(this.world, new BlockPos(this), true);
+            setInitialDefaults();
+            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (rand.nextInt(180000-24000) + 24000)));
+        }
     }
 
     public void setMateGenes(Genes genes){
@@ -1406,9 +1391,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         Genes spawnGenes;
 
         if (livingdata instanceof GroupData) {
-            spawnGenes = new Genes(((GroupData)livingdata).groupGenes).makeChild(((GroupData)livingdata).groupGenes);
+            spawnGenes = new Genes(((GroupData)livingdata).groupGenes).makeChild(true, false, ((GroupData)livingdata).groupGenes);
         } else {
-            spawnGenes = createInitialGenes(this.world, new BlockPos(this));
+            spawnGenes = createInitialGenes(this.world, new BlockPos(this), false);
             livingdata = new GroupData(spawnGenes);
         }
 
@@ -1424,7 +1409,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return livingdata;
     }
 
-    protected abstract Genes createInitialGenes(IWorld inWorld, BlockPos pos);
+    protected abstract Genes createInitialGenes(IWorld inWorld, BlockPos pos, boolean isDomestic);
 
     protected void setInitialDefaults() {
         setSharedGenes(this.genetics);

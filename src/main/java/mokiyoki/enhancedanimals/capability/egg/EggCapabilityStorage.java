@@ -46,7 +46,7 @@ public class EggCapabilityStorage implements Capability.IStorage<IEggCapability>
     @Override
     public void readNBT(Capability<IEggCapability> capability, IEggCapability instance, Direction side, INBT nbt) {
         CompoundNBT compound = (CompoundNBT) nbt;
-        Genes genetics = new Genes(Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_GENES_LENGTH);
+        Genes genetics = new Genes(Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH);
         ListNBT geneList = compound.getList("Genes", 10);
         if (geneList.size() > 0) {
             if (geneList.getCompound(0).contains("Sgene") && geneList.getCompound(0).getInt("Sgene") != 0) {

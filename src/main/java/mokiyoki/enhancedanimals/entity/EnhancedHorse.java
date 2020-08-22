@@ -980,7 +980,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     private int[] createInitialGenes(IWorld inWorld) {
         int[] initialGenes = new int[GENES_LENGTH];
 
-        //Health Base gene [ weaker, stronger1, wildtype+, stronger2 ]
+        //Health Base genes [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[0] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -994,7 +994,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[1] = (3);
         }
 
-        //Health Modifier gene [ weaker, stronger1, wildtype+, stronger2 ]
+        //Health Modifier genes [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[2] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -1008,7 +1008,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[3] = (3);
         }
 
-        //Speed Base gene [ weaker, stronger1, wildtype+, stronger2 ]
+        //Speed Base genes [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[4] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -1022,7 +1022,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[5] = (3);
         }
 
-        //Speed Modifier gene [ weaker, stronger1, wildtype+, stronger2 ]
+        //Speed Modifier genes [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[6] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -1036,7 +1036,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[7] = (3);
         }
 
-        //Jump Base gene [ weaker, stronger1, wildtype+, stronger2 ]
+        //Jump Base genes [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[8] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -1050,7 +1050,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[9] = (3);
         }
 
-        //Jump Modifier gene [ weaker, stronger1, wildtype+, stronger2 ]
+        //Jump Modifier genes [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[10] = (ThreadLocalRandom.current().nextInt(4) + 1);
 

@@ -42,7 +42,7 @@ public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends
 //
 //            if (sharedGenes[13] == 1 || sharedGenes[14] == 1) {
 //                //should be polled unless...
-//                //african horn gene
+//                //african horn genes
 //                if (sharedGenes[76] == 1 && sharedGenes[77] == 1) {
 //                    //horned
 //                } else if (sharedGenes[76] == 1 || sharedGenes[77] == 1) {

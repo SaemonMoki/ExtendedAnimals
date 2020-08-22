@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.block.Blocks;
@@ -13,6 +14,8 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.Effect;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -42,7 +45,6 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     /** Stores the UUID of the most recent lightning bolt to strike */
     private UUID lightningUUID;
 
-
     public EnhancedMoobloom(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn);
     }
@@ -65,7 +67,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     @Override
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMoobloom enhancedmoobloom = ENHANCED_MOOBLOOM.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.mateGenetics);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
 //        int[] babyGenes = getCalfGenes(this.mitosisGenes, this.mateMitosisGenes);
 
         defaultCreateAndSpawn(enhancedmoobloom, inWorld, babyGenes, -84000);
@@ -177,5 +179,13 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
         }
 
         return this.colouration;
+    }
+
+    @Override
+    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+        Genes moobloomGenetics = new CowGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
+        moobloomGenetics.setAutosomalGene(118, 2);
+        moobloomGenetics.setAutosomalGene(119, 2);
+        return moobloomGenetics;
     }
 }

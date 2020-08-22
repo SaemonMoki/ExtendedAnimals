@@ -5,11 +5,13 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EntityState;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModelNew;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -29,10 +31,10 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
     private float headRotationAngleX;
     private float f12 = 0F;
 
-    private final ModelRenderer head;
-    private final ModelRenderer eyeLeft;
-    private final ModelRenderer eyeRight;
-    private final ModelRenderer neck;
+    private final EnhancedRendererModelNew head;
+    private final EnhancedRendererModelNew eyeLeft;
+    private final EnhancedRendererModelNew eyeRight;
+    private final EnhancedRendererModelNew neck;
     private final EnhancedRendererModelNew hornBase;
     private final EnhancedRendererModelNew polyHornBase;
     private final EnhancedRendererModelNew polyHornL0;
@@ -75,8 +77,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
     private final EnhancedRendererModelNew hornR7;
     private final EnhancedRendererModelNew hornR8;
     private final EnhancedRendererModelNew hornR9;
-    private final ModelRenderer earRight;
-    private final ModelRenderer earLeft;
+    private final EnhancedRendererModelNew earRight;
+    private final EnhancedRendererModelNew earLeft;
     private final ModelRenderer body;
     private final ModelRenderer wool1;
     private final ModelRenderer wool2;
@@ -93,7 +95,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
     private final ModelRenderer wool13;
     private final ModelRenderer wool14;
     private final ModelRenderer wool15;
-    private final ModelRenderer neckWool1;
+    private final EnhancedRendererModelNew neckWool1;
     private final ModelRenderer neckWool2;
     private final ModelRenderer neckWool3;
     private final ModelRenderer neckWool4;
@@ -127,6 +129,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
     public final ModelRenderer leg2;
     public final ModelRenderer leg3;
     public final ModelRenderer leg4;
+    private final EnhancedRendererModelNew collar;
+    private final EnhancedRendererModelNew collarHardware;
+    private final EnhancedRendererModelNew collarBell;
 
     private Integer currentSheep = null;
 
@@ -140,19 +145,19 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         float xMove = -6.0F;
 
-        this.head = new ModelRenderer(this, 0, 0);
+        this.head = new EnhancedRendererModelNew(this, 0, 0);
         this.head.addBox(-2.5F, 0.0F, -5.0F, 5, 4, 4, 0.0F); //skull
         this.head.setTextureOffset(0, 8);
         this.head.addBox(-2.0F, 0.0F, -8.0F, 4, 3, 3, 0.0F); //nose
         this.head.setRotationPoint(0.0F, -8.0F, 0.0F);
 
-        this.eyeLeft = new ModelRenderer(this, 12, 8);
+        this.eyeLeft = new EnhancedRendererModelNew(this, 12, 8);
         this.eyeLeft.addBox(1.5F, 1.0F, -5.0F, 1, 1, 2, 0.01F);
 
-        this.eyeRight = new ModelRenderer(this, 12, 13);
+        this.eyeRight = new EnhancedRendererModelNew(this, 12, 13);
         this.eyeRight.addBox(-2.5F, 1.0F, -5.0F, 1, 1, 2, 0.01F);
 
-        this.neck = new ModelRenderer(this, 34, 0);
+        this.neck = new EnhancedRendererModelNew(this, 34, 0);
         this.neck.addBox(-2.0F, -7.0F, -4.0F, 4, 9, 4, 0.0F); //neck
         this.neck.setRotationPoint(0.0F, 0.0F, -6.0F);
 
@@ -363,11 +368,11 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.hornR9.setRotationPoint(0.0F, 0.0F, 0.0F);
         sheepRightHorns.add(hornR9);
 
-        this.earLeft = new ModelRenderer(this, 50, 3);
+        this.earLeft = new EnhancedRendererModelNew(this, 50, 3);
         this.earLeft.addBox(0.0F, -2.0F, 0.0F, 3, 2, 1, 0.0F); //ear left
         this.earLeft.setRotationPoint(2.0F, 2.0F, -2.0F);
 
-        this.earRight = new ModelRenderer(this, 50, 0);
+        this.earRight = new EnhancedRendererModelNew(this, 50, 0);
         this.earRight.addBox(-3.0F, -2.0F, 0.0F, 3, 2, 1, 0.0F); //ear right
         this.earRight.setRotationPoint(-2.0F, 2.0F, -2.0F);
 
@@ -420,7 +425,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.wool15 = new ModelRenderer(this, 2, 0);
         this.wool15.addBox(-4.0F, 8.0F, -2.0F, 8, 6, 16, 3.0F);
 
-        this.neckWool1 = new ModelRenderer(this, 34, 0);
+        this.neckWool1 = new EnhancedRendererModelNew(this, 34, 0, "NeckWool");
         this.neckWool1.addBox(-2.0F, -5.6F, -4.0F, 4, 9, 4, 0.4F);
         this.neckWool1.setRotationPoint(0.0F, 0.0F, -6.0F);
 
@@ -562,6 +567,21 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.udder.addChild(nippleL);
         this.udder.addChild(nippleR);
 
+        this.textureHeight = 32;
+        this.textureWidth = 64;
+
+        this.collar = new EnhancedRendererModelNew(this, 27, 0, "Collar");
+        this.collar.addBox(-2.5F, -2.5F, -4.5F, 5, 1, 5, 0.0F);
+
+        this.collarHardware = new EnhancedRendererModelNew(this, 43, 1, "CollarHardware");
+        this.collarHardware.addBox(0.0F, -0.375F, -0.625F, 0, 2, 2, 0.0F);
+        this.collarHardware.setRotationPoint(0.0F, -2.375F, -4.875F);
+        this.collarBell = new EnhancedRendererModelNew(this,47, 0);
+        this.collarBell.addBox(-1.5F, 0.375F, -1.5F, 3, 3, 3, -0.75F);
+        this.collarBell.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.neck.addChild(this.collar);
+        this.collar.addChild(this.collarHardware);
+        this.collarHardware.addChild(this.collarBell);
     }
 
     @Override
@@ -617,7 +637,21 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         matrixStackIn.scale(finalSheepSize, finalSheepSize, finalSheepSize);
         matrixStackIn.translate(0.0F, (-1.5F + 1.5F/finalSheepSize) - d, 0.0F);
 
-        renderAdult(sheepStatus, sheepModelData.horns, hornScale, facewool, sheepModelData.unrenderedModels, coatLength, bagSize, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        if (sheepModelData.blink >= 6) {
+            this.eyeLeft.showModel = true;
+            this.eyeRight.showModel = true;
+        } else {
+            this.eyeLeft.showModel = false;
+            this.eyeRight.showModel = false;
+        }
+
+        if (sheepModelData.collar) {
+            this.collar.showModel = true;
+        } else {
+            this.collar.showModel = false;
+        }
+
+        renderSheep(sheepStatus, sheepModelData.horns, hornScale, facewool, sheepModelData.unrenderedModels, coatLength, bagSize, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         matrixStackIn.pop();
 
@@ -628,23 +662,25 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         renderLegs(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         matrixStackIn.pop();
-//        }
-
-        if (sheepModelData.blink >= 6) {
-            this.eyeLeft.showModel = true;
-            this.eyeRight.showModel = true;
-        } else {
-            this.eyeLeft.showModel = false;
-            this.eyeRight.showModel = false;
-        }
-
     }
 
-    private void renderAdult(String sheepStatus, int horns, float hornScale, int facewool, List<String> unrenderedModels, int coatLength, float bagSize, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        this.neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+    private void renderSheep(String sheepStatus, int horns, float hornScale, int facewool, List<String> unrenderedModels, int coatLength, float bagSize, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        Map<String, List<Float>> mapOfScale = new HashMap<>();
+        if (true) {
+            this.collar.showModel = true;
+            float woolscale =(coatLength+1)/14.5F;
+            List<Float> collarScale = ModelHelper.createScalings(1.0F+woolscale, 1.0F, 1.0F+woolscale, 0.0F, 0.0F, 0.0046F*coatLength);
+            List<Float> hardwareScale = ModelHelper.createScalings(1.0F/(1.0F+woolscale), 1.0F, 1.0F/(1.0F+woolscale), 0.0F, 0.0F, 0.0016F*coatLength);
+            mapOfScale.put("Collar", collarScale);
+            mapOfScale.put("CollarHardware", hardwareScale);
+        } else {
+            this.collar.showModel = false;
+        }
+
+        this.neck.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        renderWool(facewool, coatLength, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        renderWool(facewool, coatLength, matrixStackIn, bufferIn, unrenderedModels, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         if (horns != 0){
             renderHorns(horns, hornScale, unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -696,7 +732,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.hornBase.render(matrixStackIn, bufferIn, mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    private void renderWool(int facewool, int coatLength, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)  {
+    private void renderWool(int facewool, int coatLength, MatrixStack matrixStackIn, IVertexBuilder bufferIn, List<String> unrenderedModels, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)  {
+
         if (coatLength == 1){
             this.wool1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             if (true) {
@@ -839,6 +876,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
 
         this.neck.rotateAngleX = 1F + this.headRotationAngleX;   //might need to merge this with another line
+        this.collarBell.rotateAngleX = -this.neck.rotateAngleX;
 
 
         this.earLeft.rotateAngleY = 0.15F;
@@ -1193,6 +1231,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         int dataReset = 0;
         long clientGameTime = 0;
         int horns = 0;
+        boolean collar;
         List<String> unrenderedModels = new ArrayList<>();
     }
 
@@ -1241,6 +1280,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.sheepStatus = enhancedSheep.getEntityStatus();
             sheepModelData.uuidArray = enhancedSheep.getCachedUniqueIdString().toCharArray();
             sheepModelData.birthTime = enhancedSheep.getBirthTime();
+            sheepModelData.collar = hasCollar(enhancedSheep.getEnhancedInventory());
             sheepModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime());
 
             if(sheepModelData.sheepGenes != null) {
@@ -1251,4 +1291,13 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         }
     }
 
+
+    private boolean hasCollar(Inventory inventory) {
+        for (int i = 1; i < 6; i++) {
+            if (inventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

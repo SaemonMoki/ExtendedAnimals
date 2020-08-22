@@ -255,18 +255,18 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
     }
 
     /**
-     * yellow hue and saturation gene. 20+ that give exact hue is averaged to pick final hue.
-     * yellow brightness gene. ~10 that are averaged to make final brightness of yellow. this can include white
-     * blue colour gene. ~20 alleles that determine hue saturation and brightness of blue. this can include white
-     * saturation modifier gene. changes saturation of both yellow and blue
-     * recessive black abdomen gene. 2 allels. 1 weak, 1 strong. changes abdomen darker if weak, black if strong. strong is most recessive.
-     * stripe number gene. determines how many stripes a bee has
-     * stripe thickener gene. can make stripes thicker or thinner
-     * chocolate stripe gene. reccessive allele makes stripes a dark brown.
-     * cinnamon stripe gene. recessive gene that makes stripes a lighter colour if already brown.
-     * black opacity gene. multipule allels that average to make the black pattern more opaque.
-     * back stripe gene 1. incomplete dominant gene that only works with the second back stripe gene.
-     * back stripe gene 2. incomplete dominant works with the first.
+     * yellow hue and saturation genes. 20+ that give exact hue is averaged to pick final hue.
+     * yellow brightness genes. ~10 that are averaged to make final brightness of yellow. this can include white
+     * blue colour genes. ~20 alleles that determine hue saturation and brightness of blue. this can include white
+     * saturation modifier genes. changes saturation of both yellow and blue
+     * recessive black abdomen genes. 2 allels. 1 weak, 1 strong. changes abdomen darker if weak, black if strong. strong is most recessive.
+     * stripe number genes. determines how many stripes a bee has
+     * stripe thickener genes. can make stripes thicker or thinner
+     * chocolate stripe genes. reccessive allele makes stripes a dark brown.
+     * cinnamon stripe genes. recessive genes that makes stripes a lighter colour if already brown.
+     * black opacity genes. multipule allels that average to make the black pattern more opaque.
+     * back stripe genes 1. incomplete dominant genes that only works with the second back stripe genes.
+     * back stripe genes 2. incomplete dominant works with the first.
      *
      */
 

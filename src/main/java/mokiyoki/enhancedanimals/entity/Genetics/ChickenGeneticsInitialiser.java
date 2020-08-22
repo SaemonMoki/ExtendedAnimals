@@ -1,6 +1,6 @@
-package mokiyoki.enhancedanimals.entity.util;
+package mokiyoki.enhancedanimals.entity.Genetics;
 
-import javafx.util.Pair;
+
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.init.ChickenBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
@@ -8,71 +8,59 @@ import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class GeneticsInitialiser {
+public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
+    List<Breed> breeds = new ArrayList<>();
 
-    public static class ChickenGeneticsInitialiser extends GeneticsInitialiser {
-        List<Breed> chickenbreeds = new ArrayList<>();
+    public ChickenGeneticsInitialiser() {
+        this.breeds.add(ChickenBreeds.LEGHORN);
+//        this.breeds.add(ChickenBreeds.ROSECOMBLEGHORN);
+//        this.breeds.add(ChickenBreeds.LEGBAR);
+//        this.breeds.add(ChickenBreeds.WYANDOTTE);
+//        this.breeds.add(ChickenBreeds.ORPINGTON);
+//        this.breeds.add(ChickenBreeds.RHODEISLANDRED);
+//        this.breeds.add(ChickenBreeds.PLYMOUTHROCK);
+//        this.breeds.add(ChickenBreeds.BELGIUMBANTAM);
+    }
 
-        public ChickenGeneticsInitialiser() {
-            chickenbreeds.add(ChickenBreeds.LEGHORN);
-            chickenbreeds.add(ChickenBreeds.ROSECOMBLEGHORN);
-            chickenbreeds.add(ChickenBreeds.WYANDOTTE);
-            chickenbreeds.add(ChickenBreeds.ORPINGTON);
-            chickenbreeds.add(ChickenBreeds.RHODEISLANDRED);
-            chickenbreeds.add(ChickenBreeds.PLYMOUTHROCK);
-            chickenbreeds.add(ChickenBreeds.BELGIUMBANTAM);
+    public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
+        return super.generateNewGenetics(world, pos, generateBreed, this.breeds);
+    }
+
+    @Override
+    public Genes generateLocalWildGenetics(Biome biome, boolean isFlat) {
+        int[] sexlinkedGenes = new int[Reference.CHICKEN_SEXLINKED_GENES_LENGTH];
+        int[] autosomalGenes = new int[Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH];
+
+        //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
+        int wildType = 0;
+
+        if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
+        {
+            wildType = 1;
+        } else if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() < 0.3F) // hot and dry (savanna)
+        {
+            wildType = 2;
+        } else if (biome.getDefaultTemperature() < 0.3F) // cold (mountains)
+        {
+            wildType = 3;
+        } else if (biome.getDefaultTemperature() >= 0.8F && biome.getDownfall() > 0.8F) {
+            wildType = 4;
         }
 
-        public Genes generateNewChickenGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
-            Biome biome = world.getBiome(pos);
-            Genes localWildType = generateChickenLocalWildGenetics(biome);
-
-            if (generateBreed) {
-                int areaSize = 16; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
-                int posX = (pos.getX()>>4)/areaSize;
-                int posZ = (pos.getZ()>>4)/areaSize;
-                Random random = new Random(posX+world.getSeed()*posZ);
-                Breed breed = ChickenBreeds.ROSECOMBLEGHORN.editGenes(selectBreed(chickenbreeds, biome, random).getGeneSketches());
-                return breed.generateGenes(0.05F, localWildType);
+        if (isFlat) {
+            int randomizeWT = ThreadLocalRandom.current().nextInt(10);
+            if (randomizeWT <= 4) {
+                wildType = randomizeWT;
             }
-
-            return localWildType;
         }
-
-        private Genes generateChickenLocalWildGenetics(Biome biome) {
-//            Genes autosomalGenes = new Genes(Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH);
-            int[] sexlinkedGenes = new int[Reference.CHICKEN_SEXLINKED_GENES_LENGTH];
-            int[] autosomalGenes = new int[Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH];
-            int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
-
-            //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
-            int wildType = 0;
-
-            if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
-            {
-                wildType  = 1;
-            }
-            else if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() < 0.3F) // hot and dry (savanna)
-            {
-                wildType = 2;
-            }
-            else if (biome.getDefaultTemperature() < 0.3F ) // cold (mountains)
-            {
-                wildType = 3;
-            }
-            else if (biome.getDefaultTemperature() >= 0.8F && biome.getDownfall() > 0.8F)
-            {
-                wildType = 4;
-            }
 
 //
 //            /**
@@ -392,7 +380,7 @@ public class GeneticsInitialiser {
 //
 //            // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken ai modifiers
 //
-         /**
+        /**
          * parent linked genes
          */
         //Gold [ gold, silver ]
@@ -537,17 +525,17 @@ public class GeneticsInitialiser {
             sexlinkedGenes[19] = 1;
         }
 
-    /**
-     * unused autosomal genes
-     */
+        /**
+         * unused autosomal genes
+         */
 
         for (int i = 0; i < 20; i++) {
             autosomalGenes[i] = 1;
         }
 
-    /**
-     * autosomal genes
-     */
+        /**
+         * autosomal genes
+         */
 
         //Recessive white [ wild, recessive white, albino ]  //mutation common in temperate areas and swamps
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
@@ -575,12 +563,12 @@ public class GeneticsInitialiser {
 
         //Mottled [ wildtype, mottled ]  // cold biome exclusive
         if (ThreadLocalRandom.current().nextInt(100) > WTC && wildType == 3) {
-            autosomalGenes[22] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[22] = (ThreadLocalRandom.current().nextInt(3) + 1);
         } else {
             autosomalGenes[22] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC && wildType == 3) {
-            autosomalGenes[23] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[23] = (ThreadLocalRandom.current().nextInt(3) + 1);
         } else {
             autosomalGenes[23] = (1);
         }
@@ -1241,16 +1229,16 @@ public class GeneticsInitialiser {
         }
 
         // Scaless [ wildtype, scaleless ]
-    //    if (ThreadLocalRandom.current().nextInt(200) > 199) {
-    //        autosomalGenes[108] = (ThreadLocalRandom.current().nextInt(10) + 1);
-    //        if (autosomalGenes[108] != 2) {
-    //            autosomalGenes[108] = 1;
-    //        }
-    //        autosomalGenes[109] = (1);
-    //    } else {
-            autosomalGenes[108] = (1);
-            autosomalGenes[109] = (1);
-    //    }
+        //    if (ThreadLocalRandom.current().nextInt(200) > 199) {
+        //        autosomalGenes[108] = (ThreadLocalRandom.current().nextInt(10) + 1);
+        //        if (autosomalGenes[108] != 2) {
+        //            autosomalGenes[108] = 1;
+        //        }
+        //        autosomalGenes[109] = (1);
+        //    } else {
+        autosomalGenes[108] = (1);
+        autosomalGenes[109] = (1);
+        //    }
 
         // Adrenaline A [ more alert, moderate alertness ,less alert ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -1811,535 +1799,7 @@ public class GeneticsInitialiser {
             autosomalGenes[183] = (1);
         }
 
-            return new Genes(sexlinkedGenes, autosomalGenes);
-
-        }
-    }
-
-    public static class CowGeneticsInitialiser extends GeneticsInitialiser {
-        List<Breed> wildGenetics = new ArrayList<>();
-        List<Breed> cowbreeds = new ArrayList<>();
-
-
-        public Genes generateNewCowGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
-            Biome biome = world.getBiome(pos);
-            int areaSize = 16; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
-            int posX = (pos.getX() >> 4) / areaSize;
-            int posZ = (pos.getZ() >> 4) / areaSize;
-            Random random = new Random(posX + world.getSeed() + posZ);
-            Genes trueWildType = new Genes(new int[]{2,2}, new int[]{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2});
-            
-            return trueWildType;
-
-        }
-
-        public CowGeneticsInitialiser() {
-
-        }
+        return new Genes(sexlinkedGenes, autosomalGenes);
 
     }
-
-    public static class LlamaGeneticsInitialiser extends GeneticsInitialiser {
-        List<Breed> wildGenetics = new ArrayList<>();
-        List<Breed> llamabreeds = new ArrayList<>();
-
-
-        public Genes generateNewLlamaGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
-            Biome biome = world.getBiome(pos);
-            int areaSize = 16; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
-            int posX = (pos.getX() >> 4) / areaSize;
-            int posZ = (pos.getZ() >> 4) / areaSize;
-            Random random = new Random(posX + world.getSeed() - posZ);
-            Genes trueWildType = new Genes(new int[]{2,2}, new int[]{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2});
-
-            return trueWildType;
-
-        }
-
-        public LlamaGeneticsInitialiser() {
-
-        }
-
-    }
-
-    public static class PigGeneticsInitialiser extends GeneticsInitialiser {
-        List<Breed> pigbreeds = new ArrayList<>();
-
-        public Genes generateNewPigGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
-            Biome biome = world.getBiome(pos);
-            int areaSize = 16; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
-            int posX = (pos.getX() >> 4) / areaSize;
-            int posZ = (pos.getZ() >> 4) / areaSize;
-            Random random = new Random(posX + world.getSeed() - posZ);
-            Genes localWildType = generatePigLocalWildGenetics(biome);
-
-            if (generateBreed) {
-
-            }
-
-            return localWildType;
-        }
-
-        public PigGeneticsInitialiser() {
-
-        }
-
-        private Genes generatePigLocalWildGenetics(Biome biome) {
-            int[] autosomalGenes = new int[Reference.PIG_AUTOSOMAL_GENES_LENGTH];
-            int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
-
-            int wildType = 2;
-            if (biome.getCategory().equals(Biome.Category.PLAINS)) {
-                wildType = 1;
-            }
-
-            //Extension [ Dom.Black, Wildtype+, brindle, red ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-            } else {
-                autosomalGenes[0] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[1] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-            } else {
-                autosomalGenes[1] = (2);
-            }
-
-            //Agouti [ Black Enhancer, brown, wildtype? ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[2] = (ThreadLocalRandom.current().nextInt(1) + 1);
-
-            } else {
-                autosomalGenes[2] = (3);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[3] = (ThreadLocalRandom.current().nextInt(1) + 1);
-
-            } else {
-                autosomalGenes[3] = (3);
-            }
-
-            //Chinchilla [ chinchilla, wildtype ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[4] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[5] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[5] = (2);
-            }
-
-            //Subtle Dilute [ Wildtype+, dilute ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[6] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[7] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[7] = (1);
-            }
-
-            //Blue Dilute [ Dilute, wildtype+ ]
-//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-////                autosomalGenes[8] = (ThreadLocalRandom.current().nextInt(2) + 1);
-//
-//            } else {
-            autosomalGenes[8] = (1);
-//            }
-//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-////                autosomalGenes[9] = (ThreadLocalRandom.current().nextInt(2) + 1);
-//
-//            } else {
-            autosomalGenes[9] = (1);
-//            }
-
-            //this one will combo with agouti I guess
-            //White Spots [ Wildtype+, spotted, roanSpots ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                autosomalGenes[10] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[11] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                autosomalGenes[11] = (1);
-            }
-
-            //Dom.White and Belted [ Dom.White, Belted, wildtype+, Patch, Roan]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(5) + 1);
-                if (wildType == 1) {
-                    autosomalGenes[13] = (1);
-                } else {
-                    autosomalGenes[13] = (3);
-                }
-
-            } else {
-                if (wildType == 1) {
-                    autosomalGenes[12] = (1);
-                    autosomalGenes[13] = (1);
-                } else {
-                    autosomalGenes[12] = (3);
-                    autosomalGenes[13] = (3);
-                }
-            }
-
-            //Berkshire spots [ Wildtype+, tuxedo, berkshire ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[14] = (ThreadLocalRandom.current().nextInt(3) + 1);
-                autosomalGenes[15] = (1);
-
-            } else {
-                autosomalGenes[14] = (1);
-                autosomalGenes[15] = (1);
-            }
-
-            //White Extension [ Over marked, Medium, undermarked+ ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[16] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                autosomalGenes[16] = (3);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[17] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                autosomalGenes[17] = (3);
-            }
-
-            //face squash genes 1 [ Wildtype+, long, medium, short, squashed ]
-            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[18] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
-            } else {
-                autosomalGenes[18] = (1);
-            }
-            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[19] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
-            } else {
-                autosomalGenes[19] = (1);
-            }
-
-            //inbreeding detector A
-            autosomalGenes[20] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            autosomalGenes[21] = (ThreadLocalRandom.current().nextInt(20) + 20);
-
-            //inbreeding detector B
-            autosomalGenes[22] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            autosomalGenes[23] = (ThreadLocalRandom.current().nextInt(20) + 20);
-
-            //inbreeding detector C
-            autosomalGenes[24] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            autosomalGenes[25] = (ThreadLocalRandom.current().nextInt(20) + 20);
-
-            //inbreeding detector D
-            autosomalGenes[26] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            autosomalGenes[27] = (ThreadLocalRandom.current().nextInt(20) + 20);
-
-            //inbreeding detector E
-            autosomalGenes[28] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            autosomalGenes[29] = (ThreadLocalRandom.current().nextInt(20) + 20);
-
-            //inbreeding detector F
-            autosomalGenes[30] = (ThreadLocalRandom.current().nextInt(20) + 1);
-            autosomalGenes[31] = (ThreadLocalRandom.current().nextInt(20) + 20);
-
-
-            //Waddles [ waddles, wildtype ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[32] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[33] = (2);
-            }
-
-            //hair density [ furry, wildtype, sparse ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[34] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                autosomalGenes[34] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[35] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                autosomalGenes[35] = (2);
-            }
-
-            //baldness [ Bald, wildtype ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                if (wildType == 1) {
-                    autosomalGenes[36] = (1);
-                } else {
-                    autosomalGenes[36] = (2);
-                }
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[37] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[37] = (2);
-            }
-
-            //wooly [ wooly, wildtype ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[38] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[39] = (2);
-            }
-
-            //thick hair [ thick hair+, less hair ]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[40] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[41] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[41] = (1);
-            }
-
-            //face squash genes 2 [ longest, normal, short, shortest]
-            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[42] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-            } else {
-                autosomalGenes[42] = (1);
-            }
-            if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[43] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-            } else {
-                autosomalGenes[43] = (1);
-            }
-
-            //potbelly dwarfism [wildtype, dwarfStrong, dwarfWeak]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[44] = (ThreadLocalRandom.current().nextInt(3) + 1);
-                autosomalGenes[45] = (1);
-
-            } else {
-                autosomalGenes[44] = (1);
-                autosomalGenes[45] = (1);
-            }
-
-            //potbelly dwarfism2 [wildtype, dwarf]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[46] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[46] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[47] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                autosomalGenes[47] = (1);
-            }
-
-            //size genes reducer [wildtype, smaller smaller smallest...]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[48] = (ThreadLocalRandom.current().nextInt(16) + 1);
-
-            } else {
-                autosomalGenes[48] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[49] = (ThreadLocalRandom.current().nextInt(16) + 1);
-
-            } else {
-                autosomalGenes[49] = (1);
-            }
-
-            //size genes adder [wildtype, bigger bigger biggest...]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[50] = (ThreadLocalRandom.current().nextInt(16) + 1);
-
-            } else {
-                autosomalGenes[50] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[51] = (ThreadLocalRandom.current().nextInt(16) + 1);
-
-            } else {
-                autosomalGenes[51] = (1);
-            }
-
-            //size genes varient1 [wildtype, smaller, smallest]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[52] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                autosomalGenes[52] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[53] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                autosomalGenes[53] = (1);
-            }
-
-            //size genes varient2 [wildtype, smaller, smallest]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[54] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                autosomalGenes[54] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[55] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                autosomalGenes[55] = (1);
-            }
-
-            //body type [wildtype, smallest to largest] if mod with lard/fat smallest size has least fat, largest has most fat
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[56] = (ThreadLocalRandom.current().nextInt(6) + 1);
-
-            } else {
-                autosomalGenes[56] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[57] = (ThreadLocalRandom.current().nextInt(6) + 1);
-
-            } else {
-                autosomalGenes[57] = (1);
-            }
-
-            //litter size reduction [wildtype (half), weak reduction (2/3), prolific]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[58] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                autosomalGenes[58] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[59] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                autosomalGenes[59] = (1);
-            }
-
-            //ear size [xsmall, small, medium, large, xlarge]
-
-            //ear angle [up, medium, down
-
-            return new Genes(autosomalGenes);
-        }
-    }
-
-    public static class SheepGeneticsInitialiser extends GeneticsInitialiser {
-        List<Breed> wildGenetics = new ArrayList<>();
-        List<Breed> sheepbreeds = new ArrayList<>();
-
-
-        public Genes generateNewSheepGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
-            Biome biome = world.getBiome(pos);
-            int areaSize = 16; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
-            int posX = (pos.getX() >> 4) / areaSize;
-            int posZ = (pos.getZ() >> 4) / areaSize;
-            Random random = new Random(posX + world.getSeed() - posZ);
-            Genes trueWildType = new Genes(new int[]{2,2}, new int[]{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2});
-
-            return trueWildType;
-
-        }
-
-        public SheepGeneticsInitialiser() {
-
-        }
-
-    }
-
-    public static class RabbitGeneticsInitialiser extends GeneticsInitialiser {
-        List<Breed> wildGenetics = new ArrayList<>();
-        List<Breed> rabbitbreeds = new ArrayList<>();
-
-
-        public Genes generateNewRabbitGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
-            Biome biome = world.getBiome(pos);
-            int areaSize = 16; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
-            int posX = (pos.getX() >> 4) / areaSize;
-            int posZ = (pos.getZ() >> 4) / areaSize;
-            Random random = new Random(posX + world.getSeed() - posZ);
-            Genes trueWildType = new Genes(new int[]{2,2}, new int[]{2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2});
-
-            return trueWildType;
-
-        }
-
-        public RabbitGeneticsInitialiser() {
-
-        }
-
-    }
-    
-    public Breed selectBreed(List<Breed> selection, Biome biome, Random random, boolean forTrader) {
-        LinkedList<Pair<Float, Breed>> breedsByChance = new LinkedList();
-
-        breedsByChance.add(new Pair<>(selection.get(0).likelyhood(biome, forTrader), selection.get(0)));
-        for (Breed breed : selection) {
-            float comparison = breedsByChance.getFirst().getKey();
-            float breedLikelyHood = breed.likelyhood(biome, forTrader);
-            if (breedLikelyHood < comparison) {
-                breedsByChance.addFirst(new Pair<>(breedLikelyHood, breed));
-            } else {
-                breedsByChance.addLast(new Pair<>(breedLikelyHood, breed));
-            }
-        }
-
-        for (Pair<Float, Breed> breed : breedsByChance) {
-            if (random.nextFloat() < breed.getKey()) {
-                return breed.getValue();
-            }
-        }
-
-        return breedsByChance.getLast().getValue();
-
-    }
-
-    public Breed selectBreed(List<Breed> selection, Biome biome, Random random) {
-        return selectBreed(selection, biome, random, false);
-    }
-
-    public Breed selectBreed(List<Breed> selection, boolean forTrader) {
-        return selectBreed(selection, Biomes.THE_VOID, new Random(), forTrader);
-    }
-
 }

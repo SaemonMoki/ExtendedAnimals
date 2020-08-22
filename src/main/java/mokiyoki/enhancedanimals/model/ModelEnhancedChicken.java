@@ -371,10 +371,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.leftFeather2.addBox(-3.5F, 7F, -2.5F, 2, 2, 5 + fluffyscale);
 
         this.rightFeather3 = new ModelRenderer(this, 28, 36);
-        this.rightFeather3.mirror = true;
         this.rightFeather3.addBox(3.5F, 8.9F, -2.5F, 4, 1, 5 + fluffyscale);
 
         this.leftFeather3 = new ModelRenderer(this, 28, 36);
+        this.leftFeather3.mirror = true;
         this.leftFeather3.addBox(-7.5F, 8.9F, -2.5F, 4, 1, 5 + fluffyscale);
 
         this.rightVultureHock = new ModelRenderer(this, 33, 32);
@@ -410,18 +410,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         if (!silkie) {
             this.bill.addBox(-1.0F, -4.0F, -4.0F, 2, 2, 2, 0.0F);
             this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
-
             this.billChild.addBox(-1.0F, -4.0F, -3F, 2, 2, 2, 0.0F);
             this.billChild.setRotationPoint(0.0F, 15.0F, -4.0F);
-
             this.smallChin.addBox(-1.0F, -2.0F, -3.0F, 2, 1, 2, 0.0F);
-
             this.chin.addBox(-1.0F, -2.0F, -3.0F, 2, 2, 1, 0.0F);
-
             this.bigChin.addBox(-1.0F, -2.0F, -3.0F, 2, 3, 1, 0.0F);
-
             this.peaChin.addBox(-0.5F, -2.0F, -3.0F, 1, 1, 2, 0.0F);
-
             this.beardChin.addBox(-1.5F, -2.5F, -3.0F, 3, 1, 1, 0.0F);
         }
 
@@ -1058,7 +1052,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                 wingMod = 0.5F;
             }
 
-            //gene variations
+            //genes variations
             if ((sharedGenes[70] == 2 || sharedGenes [71] == 2) && (!nesting && !roosting)) {
 
                 if (sharedGenes[168] == 1 && sharedGenes[169] == 1) {

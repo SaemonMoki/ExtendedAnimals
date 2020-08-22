@@ -1646,7 +1646,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         if(sharedGenes != null) {
             if (sharedGenes[12] == 1 || sharedGenes[13] == 1) {
                 //should be polled unless...
-                //african horn gene
+                //african horn genes
                 if (sharedGenes[76] == 1 && sharedGenes[77] == 1) {
                     //horned
                 } else if (sharedGenes[76] == 1 || sharedGenes[77] == 1) {
@@ -1748,6 +1748,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.saddle = enhancedCow.getEnhancedInventory().getStackInSlot(1);
             cowModelData.bridle = enhancedCow.getEnhancedInventory().getStackInSlot(3);
             cowModelData.harness = enhancedCow.getEnhancedInventory().getStackInSlot(5);
+            cowModelData.collar = hasCollar(enhancedCow.getEnhancedInventory());
             cowModelData.unrenderedModels = new ArrayList<>();
 
             return cowModelData;
@@ -1762,7 +1763,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
             cowModelData.blink = enhancedCow.getBlink();
             cowModelData.birthTime = enhancedCow.getBirthTime();
-            cowModelData.collar = hasCollar(enhancedCow.getEnhancedInventory());
 
             if (enhancedCow.getMooshroomUUID().isEmpty() || enhancedCow.getMooshroomUUID().equals("0")) {
                 cowModelData.uuidArray = enhancedCow.getCachedUniqueIdString().toCharArray();

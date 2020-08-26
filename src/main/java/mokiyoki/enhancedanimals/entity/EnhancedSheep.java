@@ -1344,6 +1344,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         return new SheepGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
 
+    @Override
+    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+        return new SheepGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
 //    private void configureAI() {
 //        if (!aiConfigured) {
 //            Double speed = 1.0D;

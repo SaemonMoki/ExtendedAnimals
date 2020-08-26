@@ -23,6 +23,10 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         return super.generateNewGenetics(world, pos, generateBreed, this.breeds);
     }
 
+    public Genes generateWithBreed(IWorld world, BlockPos pos, String breed) {
+        return super.generateWithBreed(world, pos, this.breeds, breed);
+    }
+
     @Override
     public Genes generateLocalWildGenetics(Biome biome, boolean isFlat) { 
         int[] autosomalGenes = new int[Reference.COW_AUTOSOMAL_GENES_LENGTH];

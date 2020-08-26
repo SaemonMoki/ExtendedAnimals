@@ -11,6 +11,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -21,7 +22,7 @@ public abstract class AbstractGeneticsInitialiser {
 
     protected Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed, List<Breed> breeds) {
         Biome biome = world.getBiome(pos);
-        Genes localWildType = generateLocalWildGenetics(biome, world.getWorldInfo().getGenerator() == WorldType.FLAT);
+        Genes localWildType = generateLocalWildGenetics(biome, world.getWorldInfo().getGenerator() == WorldType.FLAT || biome == Biomes.THE_VOID);
 
         if (generateBreed) {
             int areaSize = 1; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
@@ -29,6 +30,18 @@ public abstract class AbstractGeneticsInitialiser {
             int posZ = (pos.getZ()>>4)/areaSize;
             Random random = new Random(posX+world.getSeed()*(posZ-posX));
             Breed breed = selectBreed(breeds, biome, random);
+            return breed.generateGenes(localWildType);
+        }
+
+        return localWildType;
+    }
+
+    protected Genes generateWithBreed(IWorld world, BlockPos pos, List<Breed> breeds, String breedAsString) {
+        Biome biome = world.getBiome(pos);
+        Genes localWildType = generateLocalWildGenetics(biome, world.getWorldInfo().getGenerator() == WorldType.FLAT);
+
+        if (hasBreed(breeds, breedAsString)) {
+            Breed breed = getBreedFromString(breeds, breedAsString);
             return breed.generateGenes(localWildType);
         }
 
@@ -71,5 +84,24 @@ public abstract class AbstractGeneticsInitialiser {
 
     public Breed selectBreed(List<Breed> selection, boolean forTrader) {
         return selectBreed(selection, Biomes.THE_VOID, new Random(), forTrader);
+    }
+
+    public Boolean hasBreed(List<Breed> listOfBreeds, String selectedBreed) {
+        for (Breed breed : listOfBreeds) {
+            if (breed.getBreedName().toLowerCase().contains(selectedBreed.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Breed getBreedFromString(List<Breed> listOfBreeds, String selectedBreed) {
+        Collections.shuffle(listOfBreeds);
+        for (Breed breed : listOfBreeds) {
+            if (breed.getBreedName().toLowerCase().contains(selectedBreed.toLowerCase())) {
+                return breed;
+            }
+        }
+        return null;
     }
 }

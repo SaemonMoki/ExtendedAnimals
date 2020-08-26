@@ -23,6 +23,10 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         return super.generateNewGenetics(world, pos, generateBreed, this.breeds);
     }
 
+    public Genes generateWithBreed(IWorld world, BlockPos pos, String breed) {
+        return super.generateWithBreed(world, pos, this.breeds, breed);
+    }
+
     @Override
     public Genes generateLocalWildGenetics(Biome biome, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.SHEEP_AUTOSOMAL_GENES_LENGTH];

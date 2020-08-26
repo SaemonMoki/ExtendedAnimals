@@ -1359,4 +1359,9 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
         return new RabbitGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
+
+    @Override
+    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+        return new RabbitGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
 }

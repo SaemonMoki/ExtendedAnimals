@@ -7,7 +7,6 @@ import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
-import mokiyoki.enhancedanimals.entity.util.GeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
@@ -1323,6 +1322,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     @Override
     protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
         return new CowGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
+    }
+
+    @Override
+    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+        return new CowGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 
     protected void configureAI() {

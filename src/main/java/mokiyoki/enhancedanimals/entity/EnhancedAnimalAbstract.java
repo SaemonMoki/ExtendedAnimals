@@ -90,6 +90,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> HAS_COLLAR = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> RESET_TEXTURE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
 
     private final NonNullList<ItemStack> equipmentArray = NonNullList.withSize(7, ItemStack.EMPTY);
 
@@ -104,12 +105,19 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected Ingredient BREED_ITEMS;
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
 
+    //demo mode
+    public boolean runDemoMode = false;
+    protected int demoTimerMax = 60;
+    private int demoTimer = 0;
+
+
     // Genetic Info
     protected Genes genetics;
     protected Genes mateGenetics;
     protected Boolean mateGender;
     protected Genes genesSplitForClient;
     protected static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
+    public String breed = "";
 
     //Hunger
     Map<Item, Integer> foodWeightMap = new HashMap();
@@ -144,6 +152,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected final Map<Equipment, List<String>> equipmentTextures = new HashMap<>();
     public Colouration colouration = new Colouration();
     protected boolean bells;
+    protected Boolean reload = false; //used in a toggle manner
 
     //Inventory
     protected Inventory animalInventory;
@@ -183,6 +192,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             this.dataManager.register(MILK_AMOUNT, 0);
         }
         this.dataManager.register(HAS_COLLAR, false);
+        this.dataManager.register(RESET_TEXTURE, false);
     }
 
     @Override
@@ -195,6 +205,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected abstract String getSpecies();
+
+    protected void setBreed(String breed) {
+        this.breed = breed;
+    }
 
     protected abstract int getAdultAge();
 
@@ -217,6 +231,19 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     //when the animal wakes up
     protected boolean sleepingConditional() {
         return (!this.world.isDaytime() && awokenTimer == 0 && !sleeping);
+    }
+
+    //    public void setReloadTexture(Boolean resetTexture) {
+//        this.dataManager.set(RESET_TEXTURE, resetTexture);
+//    }
+
+    //toggles the reloading
+    protected void toggleReloadTexture() {
+        this.dataManager.set(RESET_TEXTURE, this.getReloadTexture() == true ? false : true);
+    }
+
+    public boolean getReloadTexture() {
+        return this.dataManager.get(RESET_TEXTURE);
     }
 
     //for setting the textures
@@ -501,6 +528,16 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                     }
                     this.equipmentArray.set(invSlot, inventoryItemStack.copy());
                 }
+            }
+        }
+        if (this.runDemoMode) {
+            if (this.demoTimer >= this.demoTimerMax) {
+                this.demoTimer = 0;
+                this.genetics = createInitialGenes(this.world, new BlockPos(this), false);
+                setInitialDefaults();
+                this.toggleReloadTexture();
+            } else {
+                this.demoTimer++;
             }
         }
     }
@@ -996,6 +1033,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             setMaxBagSize();
         }
 
+        this.setBreed(compound.getString("breed"));
+
+        this.runDemoMode = (compound.getBoolean("demo"));
+        if (this.runDemoMode) {
+            this.demoTimerMax = (compound.getInt("demoTimer"));
+            this.setBirthTime(String.valueOf(-100000));
+        }
+
         //from MobEntity parent
         if (compound.contains("Leash", 10)) {
             this.leashNBTTag = compound.getCompound("Leash");
@@ -1007,6 +1052,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         initilizeAnimalSize();
 
         this.setCollar(compound.getBoolean("Collared"));
+
 
         readInventory(compound);
     }
@@ -1427,8 +1473,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return compiledTextures;
     }
 
-    protected void geneFixer() {
-        if (this.genetics.getAutosomalGene(0) == 0) {
+        protected void geneFixer() {
+        if (!this.breed.isEmpty()) {
+            this.genetics = createInitialBreedGenes(this.world, new BlockPos(this), this.breed);
+            setInitialDefaults();
+            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (rand.nextInt(180000-24000) + 24000)));
+        } else if (this.genetics.getAutosomalGene(0) == 0) {
             this.genetics = createInitialGenes(this.world, new BlockPos(this), true);
             setInitialDefaults();
             this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (rand.nextInt(180000-24000) + 24000)));
@@ -1474,6 +1524,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected abstract Genes createInitialGenes(IWorld inWorld, BlockPos pos, boolean isDomestic);
+
+    protected abstract Genes createInitialBreedGenes(IWorld inWorld, BlockPos pos, String breed);
 
     protected void setInitialDefaults() {
         setSharedGenes(this.genetics);

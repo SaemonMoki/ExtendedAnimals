@@ -3,22 +3,30 @@ package mokiyoki.enhancedanimals.init;
 import javafx.util.Pair;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.GeneSketch;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 
 import static mokiyoki.enhancedanimals.util.Breed.createVarientList;
 
 public final class ChickenBreeds {
     public static final Breed LEGHORN = new Breed(new Breed.Properties().setData("Leghorn", Biomes.PLAINS, Breed.Rarity.ORDINARY)
-        .setVarieties(new Breed.VarientHolder(
-                createVarientList(GeneSet.GOLD.with(GeneSet.DUCKWING).get())
-        ))
-        .setGeneSketch(new GeneSketch().add(4, "6").add(8, "2", "2", "6").add(18, "1"),
+        .setGeneSketch(new GeneSketch().add(4, "6", "1", "2", "2", "6").add(18, "1"),
                        new GeneSketch().add(20, "1", "1").add(38, "2").add(44, "2-3", "3", "2", "1").add(52, "2","3","2","3","2").add(70, "1", "1").add(80, "2","1","2","2").add(146, "1", "2").add(152, "10|12","10|12","6|8|10|12","4|6","16|18|20|22|24","16|18|20|22|24","5")));
 
-    public static final Breed ROSECOMBLEGHORN = new Breed(LEGHORN, new Breed.Properties().setName("Rosecomb Leghorn").setRarity(Breed.Rarity.RARE)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(46, "1", "2", "1")));
-    public static final Breed LEGBAR = new Breed(LEGHORN, new Breed.Properties().setName("Legbar").setRarity(Breed.Rarity.RARE)
-            .setGeneSketch(new GeneSketch().add(6, "2"), new GeneSketch()));
+    public static final Breed WHITE_LEGHORN = new Breed(LEGHORN, new Breed.Properties().setData("WhiteLeghorn", Biomes.PLAINS, Breed.Rarity.ORDINARY)
+        .setGeneSketch(GeneSet.LEGHORNWHITE.get()));
+
+    public static final Breed BLACK_LEGHORN = new Breed(LEGHORN, new Breed.Properties().setData("BlackLeghorn", Biomes.PLAINS, Breed.Rarity.COMMON)
+        .setGeneSketch(GeneSet.SOLIDBLACK.get()));
+
+    public static final Breed BLUE_LEGHORN = new Breed(LEGHORN, new Breed.Properties().setData("BlueLeghorn", Biomes.PLAINS, Breed.Rarity.UNCOMMON)
+        .setGeneSketch(GeneSet.SOLIDBLUE.get()));
+
+    public static final Breed GOLD_DUCKWING_LEGHORN = new Breed(LEGHORN, new Breed.Properties().setData("GoldDuckwingLeghorn", Biomes.PLAINS, Breed.Rarity.COMMON)
+        .setGeneSketch(GeneSet.GOLD.with(GeneSet.DUCKWING).get()));
+
+    public static final Breed SILVER_DUCKWING_LEGHORN = new Breed(LEGHORN, new Breed.Properties().setData("SilverDuckwingLeghorn", Biomes.PLAINS, Breed.Rarity.COMMON)
+        .setGeneSketch(GeneSet.SILVER.with(GeneSet.DUCKWING).get()));
 
     public static final Breed WYANDOTTE = new Breed(new Breed.Properties().setData("Wyandotte", Biomes.BIRCH_FOREST, Breed.Rarity.ORDINARY)
             .setVarieties(new Breed.VarientHolder(
@@ -27,17 +35,17 @@ public final class ChickenBreeds {
                     createVarientList(GeneSet.DOMWHITE.get(),GeneSet.BLUE.get(),GeneSet.LAVENDER.get(),GeneSet.SILVER.with(GeneSet.CHOCOLATE).get(),GeneSet.NONE.get()),
                     createVarientList(GeneSet.LACED.get(), GeneSet.LACED.with(GeneSet.MOTTLED).get(), GeneSet.PENCILED.get())
             ))
-            .setGeneSketch(new GeneSketch().add(10, "1", "1"), new GeneSketch().add(20, "1", "1").add(44, "1", "3", "2", "1", "2", "3", "2", "3", "2", "2", "1-3", "1|2", "2", "1", "1", "3").add(78, "2", "1", "2").add(86, "2", "1", "2", "2").add(146, "2", "1", "1", "11", "7", "9", "2", "9", "7", "1", "2", "1")));
+            .setGeneSketch(GeneSet.FLATROSE.with(GeneSet.YELLOWLEGS).get(),new GeneSketch().add(10, "1", "1"), new GeneSketch().add(20, "1", "1").add(44, "1", "3", "2", "1", "2", "3", "2", "3", "2", "2", "1-3", "1|2", "2", "1", "1", "3").add(78, "2", "1", "2").add(86, "2", "1", "2", "2").add(146, "2", "1", "1", "11", "7", "9", "2", "9", "7", "1", "2", "1")));
 
     public static final Breed RHODEISLANDRED = new Breed(new Breed.Properties().setData("RhodeIslandRed", Biomes.FOREST, Breed.Rarity.ORDINARY)
-            .setGeneSketch(new GeneSketch().add(0, "1").add(4, "4-6").add(8, "2", "2", "4-6").add(18, "1"),
+            .setGeneSketch(GeneSet.YELLOWLEGS.get(), new GeneSketch().add(0, "1").add(4, "4-6").add(8, "2", "2", "4-6").add(18, "1"),
                     new GeneSketch().add(20, "1", "1", "3", "2", "2", "2", "3", "1").add(38, "2").add(44, "2-3", "3", "2", "1").add(52, "2","3","2","3","2","2","1|2","1|3","1","1","1").add(80, "2","2","2","2").add(98, "1", "1").add(146, "1","1").add(152, "9|11","9|11","7|9|11","4","15|17|19|21|23","15|17|19|21|23","5").add(168,"1","1")));
 
     public static final Breed PLYMOUTHROCK = new Breed(new Breed.Properties().setData("PlymouthRock", Biomes.TAIGA, Breed.Rarity.ORDINARY)
             .setVarieties(new Breed.VarientHolder(
                     createVarientList(GeneSet.SINGLE.get())
             ))
-            .setGeneSketch(new GeneSketch().add(6, "2", "1", "1", "1", "1"),
+            .setGeneSketch(GeneSet.YELLOWLEGS.get(), new GeneSketch().add(6, "2", "1", "1", "1", "1"),
                     new GeneSketch().add(20, "1", "1", "5").add(38, "2").add(42, "2").add(44, "2", "3", "2", "1", "2", "3", "2", "3", "2", "2", "1|2", "1-3", "2", "1", "1", "3").add(78, "2", "1", "2").add(86, "2", "1", "2", "2").add(146, "2", "1", "1", "11", "7", "9", "2", "9", "7", "1", "1", "1")));
 
     public static final Breed ORPINGTON = new Breed(new Breed.Properties().setData("Orpington", Biomes.SWAMP, Breed.Rarity.ORDINARY)
@@ -50,26 +58,26 @@ public final class ChickenBreeds {
             ))
             .setGeneSketch(new GeneSketch().add(10, "1", "1"), new GeneSketch().add(20, "1", "1").add(44, "1", "3", "2", "1", "2", "3", "2", "3", "2", "2", "1-3", "1|2", "2", "1", "1", "3").add(78, "2", "1", "2").add(86, "2", "1", "2", "2").add(146, "2", "1", "1", "11", "7", "9", "2", "9", "7", "1", "2", "1")));
 
-    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_TAIGA_MOUNTAINS, Breed.Rarity.UNCOMMON)
-            .setVarieties(new Breed.VarientHolder(
-                    createVarientList(GeneSet.FLATROSE.with(GeneSet.BEARDED).with(GeneSet.CRESTLESS).with(GeneSet.CLEANLEGS).get(),
-                            GeneSet.FLUFFYLEGS.with(GeneSet.SINGLE).with(GeneSet.CRESTLESS).with(GeneSet.BEARDED).get(),
-                            GeneSet.FLUFFYLEGS.with(GeneSet.SINGLE).with(GeneSet.CRESTLESS).with(GeneSet.BEARDED).with(GeneSet.RUMPLESS).get(),
-                            GeneSet.RUMPLESS.with(GeneSet.CRESTLESS).with(GeneSet.BEARDED).with(GeneSet.FLATROSE).with(GeneSet.CLEANLEGS).get(),
-                            GeneSet.TRIFIDROSE.with(GeneSet.BEARDED).with(GeneSet.CLEANLEGS).get()),
-                    createVarientList(GeneSet.GOLD.with(GeneSet.SPANGLED).with(GeneSet.MOTTLED).get(),
-                            GeneSet.GOLD.with(GeneSet.SPANGLED).with(GeneSet.MOTTLED).with(GeneSet.LAVENDER).get(),
-                            GeneSet.CUCKOO.get(),
-                            GeneSet.SOLIDBLACK.with(GeneSet.MOTTLED).get(),
-                            GeneSet.SOLIDBLACK.with(GeneSet.MOTTLED).with(GeneSet.LAVENDER).get(),
-                            GeneSet.SOLIDBLACK.get(),
-                            GeneSet.SOLIDBLACK.with(GeneSet.BLUE).get(),
-                            GeneSet.SOLIDBLACK.with(GeneSet.LAVENDER).get(),
-                            GeneSet.QUAIL.get(),
-                            GeneSet.QUAIL.with(GeneSet.LAVENDER).get(),
-                            GeneSet.QUAIL.with(GeneSet.BLUE).get()
-                            )))
-            .setGeneSketch(new GeneSketch().add(14, "2"), new GeneSketch().add(20, "1").add(52, "2").add(68, "2","1","1","1","3","1","1","2","1","1","2|3").add(94, "1-3", "1-3").add(172, "1", "1", "1", "1", "1", "1", "1")));
+//    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_TAIGA_MOUNTAINS, Breed.Rarity.UNCOMMON)
+//            .setVarieties(new Breed.VarientHolder(
+//                    createVarientList(GeneSet.FLATROSE.with(GeneSet.BEARDED).with(GeneSet.CRESTLESS).with(GeneSet.CLEANLEGS).get(),
+//                            GeneSet.FLUFFYLEGS.with(GeneSet.SINGLE).with(GeneSet.CRESTLESS).with(GeneSet.BEARDED).get(),
+//                            GeneSet.FLUFFYLEGS.with(GeneSet.SINGLE).with(GeneSet.CRESTLESS).with(GeneSet.BEARDED).with(GeneSet.RUMPLESS).get(),
+//                            GeneSet.RUMPLESS.with(GeneSet.CRESTLESS).with(GeneSet.BEARDED).with(GeneSet.FLATROSE).with(GeneSet.CLEANLEGS).get(),
+//                            GeneSet.TRIFIDROSE.with(GeneSet.BEARDED).with(GeneSet.CLEANLEGS).get()),
+//                    createVarientList(GeneSet.GOLD.with(GeneSet.SPANGLED).with(GeneSet.MOTTLED).get(),
+//                            GeneSet.GOLD.with(GeneSet.SPANGLED).with(GeneSet.MOTTLED).with(GeneSet.LAVENDER).get(),
+//                            GeneSet.CUCKOO.get(),
+//                            GeneSet.SOLIDBLACK.with(GeneSet.MOTTLED).get(),
+//                            GeneSet.SOLIDBLACK.with(GeneSet.MOTTLED).with(GeneSet.LAVENDER).get(),
+//                            GeneSet.SOLIDBLACK.get(),
+//                            GeneSet.SOLIDBLACK.with(GeneSet.BLUE).get(),
+//                            GeneSet.SOLIDBLACK.with(GeneSet.LAVENDER).get(),
+//                            GeneSet.QUAIL.get(),
+//                            GeneSet.QUAIL.with(GeneSet.LAVENDER).get(),
+//                            GeneSet.QUAIL.with(GeneSet.BLUE).get()
+//                            )))
+//            .setGeneSketch(new GeneSketch().add(14, "2"), new GeneSketch().add(20, "1").add(52, "2").add(68, "2","1","1","1","3","1","1","2","1","1","2|3").add(94, "1-3", "1-3").add(172, "1", "1", "1", "1", "1", "1", "1")));
 
     public enum GeneSet {
         NONE(),

@@ -11,7 +11,6 @@ import mokiyoki.enhancedanimals.ai.general.chicken.EnhancedWaterAvoidingRandomWa
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.Genetics.ChickenGeneticsInitialiser;
-import mokiyoki.enhancedanimals.entity.util.GeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -627,8 +626,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     public String getChickenTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (resetTexture && getAge() > 20000) {
-            resetTexture = false;
+        } else if (this.resetTexture && getAge() > 20000) {
+            this.resetTexture = false;
             this.texturesIndexes.clear();
             this.enhancedAnimalTextures.clear();
             this.setTexturePaths();
@@ -2411,7 +2410,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     @Override
     protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
         return new ChickenGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
-//        return new GeneticsInitialiser.ChickenGeneticsInitialiser().generateNewChickenGenetics(world, pos, isDomestic);
+    }
+
+    @Override
+    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+        return new ChickenGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 
     private Item getEggColour(int eggColourGene){

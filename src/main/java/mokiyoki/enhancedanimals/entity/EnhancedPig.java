@@ -958,4 +958,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
         return new PigGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
+
+    @Override
+    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+        return new PigGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
 }

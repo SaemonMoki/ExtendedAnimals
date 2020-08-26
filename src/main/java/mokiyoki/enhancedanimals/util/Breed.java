@@ -45,13 +45,13 @@ public class Breed {
         this.rain = properties.rain == null ? breedbase.getNativeHumidity() : properties.rain;
         this.rarity = properties.rarity == null ? breedbase.getRarity() : properties.rarity;
         if (breedbase.getSexlinkedGeneSketch().hasSketch()) {
-            this.sexlinkedGeneSketch = breedbase.getSexlinkedGeneSketch();
+            this.sexlinkedGeneSketch = new GeneSketch(breedbase.getSexlinkedGeneSketch());
             this.sexlinkedGeneSketch.addLayer(properties.sexlinkedGeneSketch);
         } else {
             this.sexlinkedGeneSketch = properties.sexlinkedGeneSketch;
         }
         if (breedbase.getAutosomalGeneSketch().hasSketch()) {
-            this.autosomalGeneSketch = breedbase.getAutosomalGeneSketch();
+            this.autosomalGeneSketch = new GeneSketch(breedbase.getAutosomalGeneSketch());
             this.autosomalGeneSketch.addLayer(properties.autosomalGeneSketch);
         } else {
             this.autosomalGeneSketch = properties.autosomalGeneSketch;
@@ -167,6 +167,7 @@ public class Breed {
 
     public static class Properties {
         private String breedName;
+        private String varietyName;
         private Float temperature;
         private Float rain;
         private Rarity rarity;
@@ -183,7 +184,12 @@ public class Breed {
         }
 
         public Breed.Properties setName(String name) {
-            this.breedName = name;
+            this.breedName = name.toLowerCase();
+            return this;
+        }
+
+        public Breed.Properties setVarietyName(String name) {
+            this.varietyName = name.toLowerCase();
             return this;
         }
 
@@ -201,6 +207,20 @@ public class Breed {
         public Breed.Properties setGeneSketch(GeneSketch sexlinkedSketch, GeneSketch autosomalSketch) {
             this.sexlinkedGeneSketch = sexlinkedSketch;
             this.autosomalGeneSketch = autosomalSketch;
+            return this;
+        }
+
+        public Breed.Properties setGeneSketch(Pair<GeneSketch, GeneSketch> geneSketches, GeneSketch sexlinkedSketch, GeneSketch autosomalSketch) {
+            sexlinkedSketch.addLayer(geneSketches.getKey());
+            autosomalSketch.addLayer(geneSketches.getValue());
+            this.sexlinkedGeneSketch = sexlinkedSketch;
+            this.autosomalGeneSketch = autosomalSketch;
+            return this;
+        }
+
+        public Breed.Properties setGeneSketch(Pair<GeneSketch, GeneSketch> geneSketches) {
+            this.sexlinkedGeneSketch = geneSketches.getKey();
+            this.autosomalGeneSketch = geneSketches.getValue();
             return this;
         }
 

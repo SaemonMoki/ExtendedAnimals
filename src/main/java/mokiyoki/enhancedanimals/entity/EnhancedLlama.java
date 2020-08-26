@@ -991,6 +991,11 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return new LlamaGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
 
+    @Override
+    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+        return new LlamaGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
     private void spit(LivingEntity target) {
         EnhancedEntityLlamaSpit entityllamaspit = new EnhancedEntityLlamaSpit(this.world, this);
         double d0 = target.getPosX() - this.getPosX();

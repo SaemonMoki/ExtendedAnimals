@@ -21,17 +21,26 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
     public ChickenGeneticsInitialiser() {
         this.breeds.add(ChickenBreeds.LEGHORN);
+        this.breeds.add(ChickenBreeds.GOLD_DUCKWING_LEGHORN);
+        this.breeds.add(ChickenBreeds.SILVER_DUCKWING_LEGHORN);
+        this.breeds.add(ChickenBreeds.WHITE_LEGHORN);
+        this.breeds.add(ChickenBreeds.BLACK_LEGHORN);
+        this.breeds.add(ChickenBreeds.BLUE_LEGHORN);
 //        this.breeds.add(ChickenBreeds.ROSECOMBLEGHORN);
 //        this.breeds.add(ChickenBreeds.LEGBAR);
-//        this.breeds.add(ChickenBreeds.WYANDOTTE);
-//        this.breeds.add(ChickenBreeds.ORPINGTON);
-//        this.breeds.add(ChickenBreeds.RHODEISLANDRED);
-//        this.breeds.add(ChickenBreeds.PLYMOUTHROCK);
+        this.breeds.add(ChickenBreeds.WYANDOTTE);
+        this.breeds.add(ChickenBreeds.ORPINGTON);
+        this.breeds.add(ChickenBreeds.RHODEISLANDRED);
+        this.breeds.add(ChickenBreeds.PLYMOUTHROCK);
 //        this.breeds.add(ChickenBreeds.BELGIUMBANTAM);
     }
 
     public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
         return super.generateNewGenetics(world, pos, generateBreed, this.breeds);
+    }
+
+    public Genes generateWithBreed(IWorld world, BlockPos pos, String breed) {
+        return super.generateWithBreed(world, pos, this.breeds, breed);
     }
 
     @Override

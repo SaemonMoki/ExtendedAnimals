@@ -34,6 +34,11 @@ public class GeneSketch {
         }
     }
 
+    public GeneSketch(GeneSketch sketch) {
+        this.geneSketch = sketch.getRawSketch();
+        this.weightedGeneSketches = sketch.getRawWeightedSketch();
+    }
+
     public GeneSketch () {
     }
 
@@ -56,6 +61,10 @@ public class GeneSketch {
             }
         }
         return this;
+    }
+
+    private void setGeneSketch(int gene, String sketch) {
+        this.geneSketch.put(gene, sketch);
     }
 
     private void setWeightedGeneSketch(int gene, String sketch) {
@@ -82,14 +91,14 @@ public class GeneSketch {
             if (layer.hasSketch()) {
                 HashMap<Integer, String> overlaySketch = layer.getRawSketch();
                 for (Integer gene : overlaySketch.keySet()) {
-                    this.geneSketch.put(gene, overlaySketch.get(gene));
+                    this.setGeneSketch(gene, overlaySketch.get(gene));
                 }
             }
             if (layer.hasWeightedSketch()) {
                 HashMap<Integer,List<Pair<Float, String>>> overlaySketch = layer.getRawWeightedSketch();
                 for (Integer gene : overlaySketch.keySet()) {
                     for (Pair<Float, String> sketchPairs : overlaySketch.get(gene)) {
-                        setWeightedGeneSketches(gene, sketchPairs.getKey(), sketchPairs.getValue());
+                        this.setWeightedGeneSketches(gene, sketchPairs.getKey(), sketchPairs.getValue());
                     }
                 }
             }

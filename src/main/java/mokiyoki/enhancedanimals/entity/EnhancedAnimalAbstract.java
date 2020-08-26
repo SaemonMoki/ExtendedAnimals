@@ -1029,7 +1029,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         ListNBT listnbt = compound.getList("Items", 10);
 
-        for(int i = 7; i < listnbt.size(); ++i) {
+        for(int i = 0; i < listnbt.size(); ++i) {
             CompoundNBT compoundnbt = listnbt.getCompound(i);
             int j = compoundnbt.getByte("Slot") & 255;
             if (j >= 0 && j < this.animalInventory.getSizeInventory()) {

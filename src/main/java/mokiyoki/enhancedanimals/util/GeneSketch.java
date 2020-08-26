@@ -35,8 +35,10 @@ public class GeneSketch {
     }
 
     public GeneSketch(GeneSketch sketch) {
-        this.geneSketch = sketch.getRawSketch();
-        this.weightedGeneSketches = sketch.getRawWeightedSketch();
+        this.geneSketch = new HashMap<>();
+        this.geneSketch.putAll(sketch.getRawSketch());
+        this.weightedGeneSketches = new HashMap<>();
+        this.weightedGeneSketches.putAll(sketch.getRawWeightedSketch());
     }
 
     public GeneSketch () {

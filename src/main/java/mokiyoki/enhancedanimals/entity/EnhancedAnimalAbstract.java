@@ -1014,9 +1014,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             }
         }
 
-        hunger = compound.getFloat("Hunger");
+        this.hunger = compound.getFloat("Hunger");
 
-        setEntityStatus(compound.getString("Status"));
+        this.setEntityStatus(compound.getString("Status"));
 
         this.setBirthTime(compound.getString("BirthTime"));
 
@@ -1477,7 +1477,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         if (!this.breed.isEmpty()) {
             this.genetics = createInitialBreedGenes(this.world, new BlockPos(this), this.breed);
             setInitialDefaults();
-            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (rand.nextInt(180000-24000) + 24000)));
+//            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (rand.nextInt(180000-24000) + 24000)));
+            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (5000000)));
         } else if (this.genetics.getAutosomalGene(0) == 0) {
             this.genetics = createInitialGenes(this.world, new BlockPos(this), true);
             setInitialDefaults();

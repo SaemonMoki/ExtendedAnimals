@@ -176,9 +176,15 @@ public class Breed {
         private VarientHolder varieties;
 
         public Breed.Properties setData(String name, Biome biome, Breed.Rarity rarity) {
-            this.breedName = name;
+            this.breedName = name.toLowerCase();
             this.temperature = biome.getDefaultTemperature();
             this.rain = biome.getDownfall();
+            this.rarity = rarity;
+            return this;
+        }
+
+        public Breed.Properties setData(String name, Breed.Rarity rarity) {
+            this.breedName = name;
             this.rarity = rarity;
             return this;
         }
@@ -205,22 +211,22 @@ public class Breed {
         }
 
         public Breed.Properties setGeneSketch(GeneSketch sexlinkedSketch, GeneSketch autosomalSketch) {
-            this.sexlinkedGeneSketch = sexlinkedSketch;
-            this.autosomalGeneSketch = autosomalSketch;
+            this.sexlinkedGeneSketch = new GeneSketch(sexlinkedSketch);
+            this.autosomalGeneSketch = new GeneSketch(autosomalSketch);
             return this;
         }
 
         public Breed.Properties setGeneSketch(Pair<GeneSketch, GeneSketch> geneSketches, GeneSketch sexlinkedSketch, GeneSketch autosomalSketch) {
-            sexlinkedSketch.addLayer(geneSketches.getKey());
-            autosomalSketch.addLayer(geneSketches.getValue());
-            this.sexlinkedGeneSketch = sexlinkedSketch;
-            this.autosomalGeneSketch = autosomalSketch;
+            this.sexlinkedGeneSketch = new GeneSketch(sexlinkedSketch);
+            this.autosomalGeneSketch = new GeneSketch(autosomalSketch);
+            this.sexlinkedGeneSketch.addLayer(geneSketches.getKey());
+            this.autosomalGeneSketch.addLayer(geneSketches.getValue());
             return this;
         }
 
         public Breed.Properties setGeneSketch(Pair<GeneSketch, GeneSketch> geneSketches) {
-            this.sexlinkedGeneSketch = geneSketches.getKey();
-            this.autosomalGeneSketch = geneSketches.getValue();
+            this.sexlinkedGeneSketch = new GeneSketch(geneSketches.getKey());
+            this.autosomalGeneSketch = new GeneSketch(geneSketches.getValue());
             return this;
         }
 

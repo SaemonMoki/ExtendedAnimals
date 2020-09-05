@@ -375,7 +375,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     public void handleStatusUpdate(byte id) {
         super.handleStatusUpdate(id);
         if (id == 1) {
-
             this.createRunningParticles();
             this.jumpDuration = 10;
             this.jumpTicks = 0;
@@ -384,8 +383,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     protected void registerAttributes() {
         super.registerAttributes();
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(3.0D);
+        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue((double)0.3F);
     }
 
     public void livingTick() {

@@ -17,6 +17,11 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
     public CowGeneticsInitialiser() {
         this.breeds.add(CowBreeds.HEREFORD);
+        this.breeds.add(CowBreeds.BLACK_ANGUS);
+        this.breeds.add(CowBreeds.RED_ANGUS);
+        this.breeds.add(CowBreeds.HOLSTEIN);
+        this.breeds.add(CowBreeds.JERSEY);
+        this.breeds.add(CowBreeds.TEXAS_LONGHORN);
     }
 
     public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
@@ -976,13 +981,8 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[119] = 1;
 
         //recessive dilution
-        if (wildType == 2) {
-            autosomalGenes[120] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            autosomalGenes[121] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            autosomalGenes[120] = 1;
-            autosomalGenes[121] = 1;
-        }
+        autosomalGenes[120] = 1;
+        autosomalGenes[121] = 1;
 
         return new Genes(autosomalGenes);
     }

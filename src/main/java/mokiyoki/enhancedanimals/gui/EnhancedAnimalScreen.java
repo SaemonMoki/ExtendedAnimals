@@ -148,7 +148,16 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         int countEquipment = 0;
 
         /**
-         *  this.blit(drawFromX, drawFromY, imageX, imageY, sizeX, sizeY)
+         *  screenPlacementFromX : X coordinate of where you want the top left corner of the image to be placed on the screen in game. start with int i and + || - what you need to place it.
+         *  screenPlacementFromY : Y coordinate of where you want the top left corner of the image to be placed on the screen in game. start with int j and + || - what you need to place it.
+         *
+         *  selectImageFromX : X coordinate of where the left most pixel of the image you want in the .png is.
+         *  selectImageFromY : Y coordinate of where the top most pixel of the image you want in the .png is.
+         *
+         *  imageSizeX : how big in pixels the image you are placing is from left to right.
+         *  imageSizeY : how big in pixels the image you are placing is from top to bottom.
+         *
+         *  this.blit(i + screenPlacementFromX, j + screenPlacementFromY, selectImageFromX, selectImageFromY, imageSizeX, imageSizeY)
          */
 
         if (enhancedAnimalInfo.isFemale) {
@@ -226,17 +235,23 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
         }
 
-        if (this.container.enhancedAnimal.canHaveChest() && chestToggle) {
-            if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
-
-                if (hasItemsInChest) {
-                    this.blit(i + 79, j + 17, 0, this.ySize, 18*invSize, 54);
+        if (this.container.enhancedAnimal.canHaveChest()) {
+            if (this.chestToggle) {
+                this.blit(i + 173, j + 13, 209, 16, 31, 28);
+                this.blit(i + 173, j + 41, 177, 44, 30, 28);  //broken image... no idea why or how
+                if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
+                    if (hasItemsInChest) {
+                        this.blit(i + 79, j + 17, 0, this.ySize, 18*invSize, 54);
+                    } else {
+                        this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
+                        this.blit(i + 112, j + 31, 180, this.ySize, 24, 26);
+                    }
                 } else {
                     this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
-                    this.blit(i + 112, j + 31, 180, this.ySize, 24, 26);
                 }
             } else {
-                this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
+                this.blit(i + 173, j + 13, 177, 16, 30, 28);
+                this.blit(i + 173, j + 41, 209, 44, 31, 28);
             }
         }
 

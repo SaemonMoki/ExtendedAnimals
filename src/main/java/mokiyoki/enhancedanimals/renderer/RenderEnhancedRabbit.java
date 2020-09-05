@@ -24,7 +24,7 @@ public class RenderEnhancedRabbit extends MobRenderer<EnhancedRabbit, ModelEnhan
 
     public RenderEnhancedRabbit(EntityRendererManager render)
     {
-        super(render, new ModelEnhancedRabbit<>(), 0.35F);
+        super(render, new ModelEnhancedRabbit<>(), 0.3F);
     }
 
     /**

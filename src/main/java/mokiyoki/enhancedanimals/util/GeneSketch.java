@@ -20,7 +20,7 @@ public class GeneSketch {
         for(Pair<Integer, String> pair : geneSketch) {
             if (pair.getValue().contains("%")) {
                 setWeightedGeneSketch(pair.getKey(), pair.getValue());
-            } else {
+            } else if (!pair.getValue().startsWith("_")){
                 this.geneSketch.put(pair.getKey(), pair.getValue());
             }
         }
@@ -35,9 +35,7 @@ public class GeneSketch {
     }
 
     public GeneSketch(GeneSketch sketch) {
-        this.geneSketch = new HashMap<>();
         this.geneSketch.putAll(sketch.getRawSketch());
-        this.weightedGeneSketches = new HashMap<>();
         this.weightedGeneSketches.putAll(sketch.getRawWeightedSketch());
     }
 
@@ -57,6 +55,8 @@ public class GeneSketch {
         for (String string : sketch) {
             if (string.contains("%")) {
                 setWeightedGeneSketch(gene, string);
+            } else if (string.startsWith("_")) {
+                gene += 2;
             } else {
                 this.geneSketch.put(gene, string);
                 gene += 2;

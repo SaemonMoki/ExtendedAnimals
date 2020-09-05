@@ -1,38 +1,63 @@
 package mokiyoki.enhancedanimals.entity.Genetics;
 
-
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.init.ChickenBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
     List<Breed> breeds = new ArrayList<>();
 
     public ChickenGeneticsInitialiser() {
-        this.breeds.add(ChickenBreeds.LEGHORN);
+//        this.breeds.add(ChickenBreeds.LEGHORN);
         this.breeds.add(ChickenBreeds.GOLD_DUCKWING_LEGHORN);
         this.breeds.add(ChickenBreeds.SILVER_DUCKWING_LEGHORN);
         this.breeds.add(ChickenBreeds.WHITE_LEGHORN);
         this.breeds.add(ChickenBreeds.BLACK_LEGHORN);
         this.breeds.add(ChickenBreeds.BLUE_LEGHORN);
-//        this.breeds.add(ChickenBreeds.ROSECOMBLEGHORN);
-//        this.breeds.add(ChickenBreeds.LEGBAR);
-        this.breeds.add(ChickenBreeds.WYANDOTTE);
-        this.breeds.add(ChickenBreeds.ORPINGTON);
+        this.breeds.add(ChickenBreeds.BUFF_LEGHORN);
+        this.breeds.add(ChickenBreeds.PILE_LEGHORN);
+        this.breeds.add(ChickenBreeds.GOLD_LEGBAR);
+        this.breeds.add(ChickenBreeds.CRESTED_CREAM_LEGBAR);
+        this.breeds.add(ChickenBreeds.WHITE_WYANDOTTE);
+        this.breeds.add(ChickenBreeds.MILLEFLEUR_WYANDOTTE);
+        this.breeds.add(ChickenBreeds.BLUE_LACED_WYANDOTTE);
+        this.breeds.add(ChickenBreeds.BUFF_LACED_WYANDOTTE);
+        this.breeds.add(ChickenBreeds.GOLD_LACED_WYANDOTTE);
+        this.breeds.add(ChickenBreeds.GOLD_PENCILED_WYANDOTTE);
+        this.breeds.add(ChickenBreeds.SILVER_LACED_WYANDOTTE);
+        this.breeds.add(ChickenBreeds.SILVER_PENCILED_WYANDOTTE);
+        this.breeds.add(ChickenBreeds.BUFF_ORPINGTON);
+        this.breeds.add(ChickenBreeds.BLACK_ORPINGTON);
+        this.breeds.add(ChickenBreeds.BLUE_ORPINGTON);
+        this.breeds.add(ChickenBreeds.CHOCOLATE_ORPINGTON);
+        this.breeds.add(ChickenBreeds.GOLD_LACED_ORPINGTON);
+        this.breeds.add(ChickenBreeds.GOLD_PENCILED_ORPINGTON);
+        this.breeds.add(ChickenBreeds.MOTTLED_ORPINGTON);
+        this.breeds.add(ChickenBreeds.LAVENDER_ORPINGTON);
+        this.breeds.add(ChickenBreeds.SILVER_CHOCOLATE_LACED_ORPINGTON);
         this.breeds.add(ChickenBreeds.RHODEISLANDRED);
         this.breeds.add(ChickenBreeds.PLYMOUTHROCK);
-//        this.breeds.add(ChickenBreeds.BELGIUMBANTAM);
+        this.breeds.add(ChickenBreeds.BLACK_D_UCCLE);
+        this.breeds.add(ChickenBreeds.MOTTLED_D_UCCLE);
+        this.breeds.add(ChickenBreeds.MILLEFLEUR_D_UCCLE);
+        this.breeds.add(ChickenBreeds.BLUE_MOTTLED_D_UCCLE);
+        this.breeds.add(ChickenBreeds.LAVENDER_MOTTLED_D_UCCLE);
+        this.breeds.add(ChickenBreeds.LEMON_MILLEFLEUR_D_UCCLE);
+        this.breeds.add(ChickenBreeds.SILVER_MILLEFLEUR_D_UCCLE);
+        this.breeds.add(ChickenBreeds.PORCELAINE_D_UCCLE);
+        this.breeds.add(ChickenBreeds.GOLDNECK_D_UCCLE);
+        this.breeds.add(ChickenBreeds.GOLD_QUAIL_WATERMEAL);
+        this.breeds.add(ChickenBreeds.SILVER_QUAIL_WATERMEAL);
+//        this.breeds.add(ChickenBreeds.SPANISH);
+//        this.breeds.add(ChickenBreeds.CUTIEPIE);
     }
 
     public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {

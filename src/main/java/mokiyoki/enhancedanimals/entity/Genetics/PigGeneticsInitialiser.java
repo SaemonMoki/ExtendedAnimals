@@ -43,7 +43,16 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //Extension [ Dom.Black, Wildtype+, brindle, red ]
+        /**
+         * MC1R - Extension
+         *  E^D1 Dominant Black (European Large Black and Chinese Meishan)
+         *  E^D2 Dominant Black (Hampshire)
+         *  E+ WildType (Wild boar)
+         *  E^p Brindle (Large White, Pietrain, ?Oldspot?) Black spot pattern, Makes black spots on white or red ground colour
+         *  e Red (Duroc, all red breeds) Disables black pigment creation
+         */
+
+        //Extension [ Dom.Black(MCR1), Dominant.Black(MCR2), Wildtype+, brindle(spots), red ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -378,15 +387,15 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[55] = (1);
         }
 
-        //body type [wildtype, smallest to largest] if mod with lard/fat smallest size has least fat, largest has most fat
+        //body type [wildtype(middle), smallest to largest]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[56] = (ThreadLocalRandom.current().nextInt(6) + 1);
+            autosomalGenes[56] = (ThreadLocalRandom.current().nextInt(7) + 1);
 
         } else {
             autosomalGenes[56] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[57] = (ThreadLocalRandom.current().nextInt(6) + 1);
+            autosomalGenes[57] = (ThreadLocalRandom.current().nextInt(7) + 1);
 
         } else {
             autosomalGenes[57] = (1);

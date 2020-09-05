@@ -10,12 +10,10 @@ import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class AbstractGeneticsInitialiser {
     int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
@@ -38,6 +36,7 @@ public abstract class AbstractGeneticsInitialiser {
 
     protected Genes generateWithBreed(IWorld world, BlockPos pos, List<Breed> breeds, String breedAsString) {
         Biome biome = world.getBiome(pos);
+        breedAsString = breedAsString.toLowerCase();
         Genes localWildType = generateLocalWildGenetics(biome, world.getWorldInfo().getGenerator() == WorldType.FLAT);
 
         if (hasBreed(breeds, breedAsString)) {
@@ -88,7 +87,7 @@ public abstract class AbstractGeneticsInitialiser {
 
     public Boolean hasBreed(List<Breed> listOfBreeds, String selectedBreed) {
         for (Breed breed : listOfBreeds) {
-            if (breed.getBreedName().toLowerCase().contains(selectedBreed.toLowerCase())) {
+            if (breed.getBreedName().contains(selectedBreed)) {
                 return true;
             }
         }
@@ -98,7 +97,7 @@ public abstract class AbstractGeneticsInitialiser {
     private Breed getBreedFromString(List<Breed> listOfBreeds, String selectedBreed) {
         Collections.shuffle(listOfBreeds);
         for (Breed breed : listOfBreeds) {
-            if (breed.getBreedName().toLowerCase().contains(selectedBreed.toLowerCase())) {
+            if (breed.getBreedName().contains(selectedBreed)) {
                 return breed;
             }
         }

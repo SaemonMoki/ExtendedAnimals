@@ -39,7 +39,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private float headRotationAngleX;
 
     private final EnhancedRendererModelNew head;
-    private final EnhancedRendererModelNew nose;
+    private final EnhancedRendererModelNew noseMale;
+    private final EnhancedRendererModelNew noseFemale;
     private final EnhancedRendererModelNew eyeLeft;
     private final EnhancedRendererModelNew eyeRight;
     private final EnhancedRendererModelNew mouth;
@@ -137,11 +138,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.head.addBox(-4.0F, 0.0F, -7.0F, 8, 7, 6, 0.0F);
         this.head.setRotationPoint(0.0F, 0.0F, -7.0F);
 
-        this.nose = new EnhancedRendererModelNew(this, 28, 33);
-        this.nose.addBox(-2.0F, 0.1F, -11.0F, 4, 5, 4, 0.0F);
-        this.nose.setTextureOffset(16, 46);
-        this.nose.addBox(-2.5F, 0.2F, -13.0F, 5, 4, 3, 0.0F);
+        this.noseMale = new EnhancedRendererModelNew(this, 28, 33);
+        this.noseMale.addBox(-2.0F, -0.15F, -10.0F, 4, 5, 4, 0.25F);
+        this.noseMale.setTextureOffset(16, 46);
+        this.noseMale.addBox(-2.5F, 0.2F, -13.0F, 5, 4, 3, 0.0F);
 
+        this.noseFemale = new EnhancedRendererModelNew(this, 28, 33);
+        this.noseFemale.addBox(-2.0F, 0.6F, -10.75F, 4, 5, 4, -0.25F);
+        this.noseFemale.setTextureOffset(16, 46);
+        this.noseFemale.addBox(-2.5F, 0.7F, -13.0F, 5, 4, 3, -0.125F);
 
         this.eyeLeft = new EnhancedRendererModelNew(this, 22, 35);
         this.eyeLeft.addBox(0.0F, 0.0F, 0.0F, 1, 2, 2, 0.01F);
@@ -418,7 +423,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.head.addChild(this.earMediumR);
         this.head.addChild(this.earSmallR);
         this.head.addChild(this.earSmallestR);
-        this.head.addChild(this.nose);
+        this.head.addChild(this.noseMale);
+        this.head.addChild(this.noseFemale);
         this.head.addChild(this.mouth);
         this.head.addChild(this.eyeLeft);
         this.head.addChild(this.eyeRight);
@@ -575,7 +581,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float horns = calculateHorns(genes, cowModelData.uuidArray);
 
         boolean dwarf = false;
-        float bodyWidth = -0.165F;
+        float bodyWidth = cowModelData.isFemale? -0.175F : 0.0F;
         float bodyLength = 0.0F;
         int hump = 0;
 
@@ -589,11 +595,12 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 dwarf = true;
             }
 
+            float genderModifier = cowModelData.isFemale? 0.01725F : 0.0825F;
             for (int i = 1; i < genes[54]; i++){
-                bodyWidth = bodyWidth + 0.0825F;
+                bodyWidth = bodyWidth + genderModifier;
             }
             for (int i = 1; i < genes[55]; i++){
-                bodyWidth = bodyWidth + 0.0825F;
+                bodyWidth = bodyWidth + genderModifier;
             }
 
             if (bodyWidth >= 0.0F) {
@@ -644,6 +651,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         } else {
             this.eyeLeft.showModel = false;
             this.eyeRight.showModel = false;
+        }
+
+        if (cowModelData.isFemale) {
+            this.noseMale.showModel = false;
+            this.noseFemale.showModel = true;
+        } else {
+            this.noseMale.showModel = true;
+            this.noseFemale.showModel = false;
         }
 
         if (cowModelData.collar) {
@@ -821,6 +836,12 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         CowModelData cowModelData = getCowModelData();
         ItemStack saddleStack = getCowModelData().saddle;
         List<String> unrenderedModels = new ArrayList<>();
+
+        if (cowModelData.isFemale) {
+            this.neck.rotationPointZ = -10F;
+        } else {
+            this.neck.rotationPointZ = -9F;
+        }
 
         this.neck.rotateAngleX = (headPitch * 0.017453292F);
         this.neck.rotateAngleY = netHeadYaw * 0.017453292F;

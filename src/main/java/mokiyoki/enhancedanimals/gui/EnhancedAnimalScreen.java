@@ -78,19 +78,31 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
 
-        double d0 = p_mouseClicked_1_ - (double)(i + 140);
-        double d1 = p_mouseClicked_3_ - (double)(j + 14 + 19);
-        if (d0 >= 0.0D && d1 >= 0.0D && d0 < 108.0D && d1 < 19.0D) {
-            chestToggle = !chestToggle;
-            for (Slot slot : this.container.inventorySlots) {
-                if (slot instanceof EnhancedSlot) {
-                    ((EnhancedSlot)slot).setEnabled(chestToggle);
-                }
-            }
+        double d0 = p_mouseClicked_1_ - (double)(i + 176);
+        double d1 = p_mouseClicked_3_ - (double)(j + 42);
+        if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestToggle) {
+            this.chestToggle = false;
+            toggleSlots();
+            return true;
+        }
+
+        d0 = p_mouseClicked_1_ - (double)(i + 176);
+        d1 = p_mouseClicked_3_ - (double)(j + 17);
+        if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestToggle) {
+            this.chestToggle = true;
+            toggleSlots();
             return true;
         }
 
         return super.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
+    }
+
+    private void toggleSlots() {
+        for (Slot slot : this.container.inventorySlots) {
+            if (slot instanceof EnhancedSlot) {
+                ((EnhancedSlot)slot).setEnabled(chestToggle);
+            }
+        }
     }
 
 

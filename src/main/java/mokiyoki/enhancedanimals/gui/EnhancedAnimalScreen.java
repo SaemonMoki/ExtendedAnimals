@@ -28,7 +28,6 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     private float mousePosY;
 
     /** temp booleans */
-    boolean tabToggle = false;
     boolean chestToggle = false;
 
     public static EnhancedAnimalInfo enhancedAnimalInfo = new EnhancedAnimalInfo();
@@ -129,9 +128,6 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         this.font.drawString(name, 8.0F, 6.0F, 4210752);
         this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
 
-        if (!tabToggle) {
-            
-        }
         //(health points / max health points * 10) + "/" + "10"
         /**
          * hunger needs a buffer
@@ -213,7 +209,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
             countEquipment++;
         }
-        if (this.container.enhancedAnimal.canHaveBlanket() && (shiftX == 7 || !tabToggle)) {
+        if (this.container.enhancedAnimal.canHaveBlanket() && (shiftX == 7 || !this.chestToggle)) {
             this.blit(i + shiftX, j + shiftY, 54, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -222,7 +218,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
             countEquipment++;
         }
-        if (this.container.enhancedAnimal.canHaveBanner() && (shiftX == 7 || !tabToggle)) {
+        if (this.container.enhancedAnimal.canHaveBanner() && (shiftX == 7 || !this.chestToggle)) {
             this.blit(i + shiftX, j + shiftY, 72, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -231,7 +227,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
             countEquipment++;
         }
-        if (this.container.enhancedAnimal.canHaveHarness() && (shiftX == 7 || !tabToggle)) {
+        if (this.container.enhancedAnimal.canHaveHarness() && (shiftX == 7 || !this.chestToggle)) {
             this.blit(i + shiftX, j + shiftY, 90, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -267,7 +263,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
         }
 
-        if (enhancedAnimalInfo.created) {
+        if (this.enhancedAnimalInfo.created) {
             InventoryScreen.drawEntityOnScreen(i + 51, j + 60, 17, (float)(i + 51) - this.mousePosx, (float)(j + 75 - 50) - this.mousePosY, (LivingEntity) this.container.getAnimal());
         }
     }

@@ -183,11 +183,24 @@ public class EnhancedAnimalContainer extends Container {
             if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
                 for (int k = 0; k < i; ++k) {
                     for (int l = 0; l < j; ++l) {
-                        this.addSlot(new EnhancedSlot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
-                        });
+                        if (k == 2 && l == 1 && !hasItemsInInventory()) {
+                            this.addSlot(new EnhancedSlot(retrievedInventory, 0, 116, 36) {
+                                public int getSlotStackLimit() {
+                                return 1; }
+                            });
+                        } else {
+                            this.addSlot(new EnhancedSlot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
+                            });
+                        }
                         inventoryShift++;
                     }
                 }
+            } else {
+                this.addSlot(new EnhancedSlot(retrievedInventory, 0, 116, 36) {
+                    public int getSlotStackLimit() {
+                        return 1;
+                    }
+                });
             }
         }
 
@@ -256,5 +269,15 @@ public class EnhancedAnimalContainer extends Container {
 
     public EnhancedAnimal getAnimal() {
         return enhancedAnimal;
+    }
+
+    public boolean hasItemsInInventory() {
+        int invSize = this.inventorySlots.size();
+        for (int index = 7; index < invSize; index++) {
+            if (this.inventorySlots.get(index).getHasStack()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

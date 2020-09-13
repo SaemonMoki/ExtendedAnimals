@@ -180,13 +180,18 @@ public class EnhancedAnimalContainer extends Container {
 
         int inventoryShift = 7;
         if (enhancedAnimal.canHaveChest()) {
-            if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
                 for (int k = 0; k < i; ++k) {
                     for (int l = 0; l < j; ++l) {
-                        if (k == 2 && l == 1 && !hasItemsInInventory()) {
+                        if (k == 1 && l == 2) {
                             this.addSlot(new EnhancedSlot(retrievedInventory, 0, 116, 36) {
+                                public boolean isItemValid(ItemStack stack) {
+                                    return stack.getItem() == Items.CHEST;
+                                }
+
                                 public int getSlotStackLimit() {
                                 return 1; }
+                            });
+                            this.addSlot(new EnhancedSlot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
                             });
                         } else {
                             this.addSlot(new EnhancedSlot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
@@ -195,13 +200,6 @@ public class EnhancedAnimalContainer extends Container {
                         inventoryShift++;
                     }
                 }
-            } else {
-                this.addSlot(new EnhancedSlot(retrievedInventory, 0, 116, 36) {
-                    public int getSlotStackLimit() {
-                        return 1;
-                    }
-                });
-            }
         }
 
         //player inventory
@@ -215,7 +213,6 @@ public class EnhancedAnimalContainer extends Container {
         for(int j1 = 0; j1 < 9; ++j1) {
             this.addSlot(new Slot(playerInventoryIn, j1, 8 + j1 * 18, 142));
         }
-        int testBreakpointint = 0;
     }
 
     public boolean canInteractWith(PlayerEntity playerIn) {
@@ -269,15 +266,5 @@ public class EnhancedAnimalContainer extends Container {
 
     public EnhancedAnimal getAnimal() {
         return enhancedAnimal;
-    }
-
-    public boolean hasItemsInInventory() {
-        int invSize = this.inventorySlots.size();
-        for (int index = 7; index < invSize; index++) {
-            if (this.inventorySlots.get(index).getHasStack()) {
-                return true;
-            }
-        }
-        return false;
     }
 }

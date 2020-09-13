@@ -1,7 +1,6 @@
 package mokiyoki.enhancedanimals.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -28,7 +27,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     private float mousePosY;
 
     /** temp booleans */
-    boolean chestToggle = false;
+    boolean chestTabEnabled = false;
 
     public static EnhancedAnimalInfo enhancedAnimalInfo = new EnhancedAnimalInfo();
 
@@ -36,29 +35,20 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         super(screenContainer, inv, titleIn);
         setAnimalInfo();
         if (this.getContainer().getEnhancedAnimalInventory().getStackInSlot(0).getItem() == Items.CHEST) {
-            chestToggle = true;
+            chestTabEnabled = true;
         }
         toggleSlots();
     }
 
     public void render(int mouseX, int mouseY, float p_render_3_) {
         if (!enhancedAnimalInfo.created) {setAnimalInfo();}
-        prework();
+        toggleSlots();
         this.renderBackground();
         this.mousePosx = (float)mouseX;
         this.mousePosY = (float)mouseY;
         super.render(mouseX, mouseY, p_render_3_);
         this.renderHoveredToolTip(mouseX, mouseY);
         this.renderInfoToolTip(mouseX, mouseY);
-    }
-
-    private void prework() {
-        IInventory retrievedInventory = this.container.getEnhancedAnimalInventory();
-
-        if ((retrievedInventory.getStackInSlot(0).getItem() != Items.CHEST && this.chestToggle)
-                || (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST && !this.chestToggle)) {
-            toggleSlots();
-        }
     }
 
     private void renderInfoToolTip(int mouseX, int mouseY) {
@@ -88,16 +78,16 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 
         double d0 = p_mouseClicked_1_ - (double)(i + 176);
         double d1 = p_mouseClicked_3_ - (double)(j + 42);
-        if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestToggle) {
-            this.chestToggle = false;
+        if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestTabEnabled) {
+            this.chestTabEnabled = false;
             toggleSlots();
             return true;
         }
 
         d0 = p_mouseClicked_1_ - (double)(i + 176);
         d1 = p_mouseClicked_3_ - (double)(j + 17);
-        if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestToggle) {
-            this.chestToggle = true;
+        if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestTabEnabled) {
+            this.chestTabEnabled = true;
             toggleSlots();
             return true;
         }
@@ -106,9 +96,34 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     }
 
     private void toggleSlots() {
+        IInventory retrievedInventory = this.container.getEnhancedAnimalInventory();
         for (Slot slot : this.container.inventorySlots) {
             if (slot instanceof EnhancedSlot) {
-                ((EnhancedSlot)slot).setEnabled(chestToggle);
+                if (!chestTabEnabled) {
+                    ((EnhancedSlot)slot).setEnabled(false);
+                } else {
+                    if (slot.getSlotIndex() == 0){
+                        if (!isHasItemsInChest(this.container.getEnhancedAnimalInventory(), getInvIndex())){
+                            ((EnhancedSlot)slot).setEnabled(true);
+                        } else {
+                            ((EnhancedSlot)slot).setEnabled(false);
+                        }
+                    } else {
+                        if (slot.getSlotIndex() == 14) {
+                            if (isHasItemsInChest(this.container.getEnhancedAnimalInventory(), getInvIndex())) {
+                                ((EnhancedSlot)slot).setEnabled(true);
+                            } else {
+                                ((EnhancedSlot)slot).setEnabled(false);
+                            }
+                        } else {
+                            if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
+                                ((EnhancedSlot)slot).setEnabled(true);
+                            } else {
+                                ((EnhancedSlot)slot).setEnabled(false);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -161,7 +176,6 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         int shiftY = 17;
         int shiftX = 7;
         this.blit(i, j, 0, 0, this.xSize, this.ySize);
-        boolean hasItemsInChest = false;
         int countEquipment = 0;
 
         /**
@@ -218,7 +232,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
             countEquipment++;
         }
-        if (this.container.enhancedAnimal.canHaveBlanket() && (shiftX == 7 || !this.chestToggle)) {
+        if (this.container.enhancedAnimal.canHaveBlanket() && (shiftX == 7 || !this.chestTabEnabled)) {
             this.blit(i + shiftX, j + shiftY, 54, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -227,7 +241,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
             countEquipment++;
         }
-        if (this.container.enhancedAnimal.canHaveBanner() && (shiftX == 7 || !this.chestToggle)) {
+        if (this.container.enhancedAnimal.canHaveBanner() && (shiftX == 7 || !this.chestTabEnabled)) {
             this.blit(i + shiftX, j + shiftY, 72, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -236,7 +250,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
             countEquipment++;
         }
-        if (this.container.enhancedAnimal.canHaveHarness() && (shiftX == 7 || !this.chestToggle)) {
+        if (this.container.enhancedAnimal.canHaveHarness() && (shiftX == 7 || !this.chestTabEnabled)) {
             this.blit(i + shiftX, j + shiftY, 90, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -246,14 +260,10 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             countEquipment++;
         }
 
-        for (int a = countEquipment; a <= retrievedInventory.getSizeInventory() && !hasItemsInChest; a++) {
-            if (!retrievedInventory.getStackInSlot(a).isEmpty()) {
-                hasItemsInChest = true;
-            }
-        }
+        boolean hasItemsInChest = isHasItemsInChest(retrievedInventory, countEquipment);
 
         if (this.container.enhancedAnimal.canHaveChest()) {
-            if (this.chestToggle) {
+            if (this.chestTabEnabled) {
                 this.blit(i + 173, j + 13, 209, 16, 31, 28);
                 this.blit(i + 173, j + 41, 177, 44, 30, 28);  //broken image... no idea why or how
                 if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
@@ -275,6 +285,38 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         if (this.enhancedAnimalInfo.created) {
             InventoryScreen.drawEntityOnScreen(i + 51, j + 60, 17, (float)(i + 51) - this.mousePosx, (float)(j + 75 - 50) - this.mousePosY, (LivingEntity) this.container.getAnimal());
         }
+    }
+
+    private boolean isHasItemsInChest(IInventory retrievedInventory, int countEquipment) {
+        for (int a = countEquipment; a <= retrievedInventory.getSizeInventory(); a++) {
+            if (!retrievedInventory.getStackInSlot(a).isEmpty() && !(retrievedInventory.getStackInSlot(a).getItem() == Items.AIR)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int getInvIndex() {
+        int countEquipment = 0;
+        if (this.container.enhancedAnimal.canHaveSaddle()) {
+            countEquipment++;
+        }
+        if (this.container.enhancedAnimal.canHaveBridle()) {
+            countEquipment++;
+        }
+        if (this.container.enhancedAnimal.canHaveArmour()) {
+            countEquipment++;
+        }
+        if (this.container.enhancedAnimal.canHaveBlanket() && !this.chestTabEnabled) {
+            countEquipment++;
+        }
+        if (this.container.enhancedAnimal.canHaveBanner() && !this.chestTabEnabled) {
+            countEquipment++;
+        }
+        if (this.container.enhancedAnimal.canHaveHarness() && !this.chestTabEnabled) {
+            countEquipment++;
+        }
+        return countEquipment;
     }
 
     private void setAnimalInfo() {

@@ -35,21 +35,30 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     public EnhancedAnimalScreen(EnhancedAnimalContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
         setAnimalInfo();
-        for (Slot slot : screenContainer.inventorySlots) {
-            if (slot instanceof EnhancedSlot) {
-                ((EnhancedSlot)slot).setEnabled(false);
-            }
+        if (this.getContainer().getEnhancedAnimalInventory().getStackInSlot(0).getItem() == Items.CHEST) {
+            chestToggle = true;
         }
+        toggleSlots();
     }
 
     public void render(int mouseX, int mouseY, float p_render_3_) {
         if (!enhancedAnimalInfo.created) {setAnimalInfo();}
+        prework();
         this.renderBackground();
         this.mousePosx = (float)mouseX;
         this.mousePosY = (float)mouseY;
         super.render(mouseX, mouseY, p_render_3_);
         this.renderHoveredToolTip(mouseX, mouseY);
         this.renderInfoToolTip(mouseX, mouseY);
+    }
+
+    private void prework() {
+        IInventory retrievedInventory = this.container.getEnhancedAnimalInventory();
+
+        if ((retrievedInventory.getStackInSlot(0).getItem() != Items.CHEST && this.chestToggle)
+                || (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST && !this.chestToggle)) {
+            toggleSlots();
+        }
     }
 
     private void renderInfoToolTip(int mouseX, int mouseY) {

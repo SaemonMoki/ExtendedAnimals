@@ -482,20 +482,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
-    protected void setBells() {
-        ItemStack collarStack;
-        this.bells = false;
-        for (int i = 1; i < 6;i++) {
-            collarStack = this.getEnhancedInventory().getStackInSlot(i);
-            if (!collarStack.isEmpty()) {
-                if (collarStack.getItem() instanceof CustomizableCollar) {
-                    this.bells = true;
-                    break;
-                }
-            }
-        }
-    }
-
     //used to set if an animal is wearing bells
     protected boolean getBells() {
         return this.bells;
@@ -1278,6 +1264,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             }
 
         }
+    }
+
+    protected ItemStack getReplacementItemWithColour(ItemStack itemStack) {
+        ItemStack replacementItem = new ItemStack(itemStack.getItem(), 1);
+        ((CustomizableAnimalEquipment)replacementItem.getItem()).setColor(replacementItem, ((CustomizableAnimalEquipment)itemStack.getItem()).getColor(itemStack));
+        return replacementItem;
     }
 
     protected net.minecraftforge.common.util.LazyOptional<?> itemHandler = null;

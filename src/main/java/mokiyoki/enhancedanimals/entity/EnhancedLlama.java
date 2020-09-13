@@ -615,8 +615,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        int[] genesForText = getSharedGenes().getAutosomalGenes();
-        if (genesForText != null) {
+        if (this.getSharedGenes() != null) {
+            int[] genesForText = getSharedGenes().getAutosomalGenes();
+
             int ground = 0;
             int pattern = 0;
             int roan = 0;

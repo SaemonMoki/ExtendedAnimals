@@ -584,8 +584,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        int[] genesForText = getSharedGenes().getAutosomalGenes();
-        if (genesForText != null) {
+        if (this.getSharedGenes() != null) {
+            int[] genesForText = getSharedGenes().getAutosomalGenes();
 
             int base = 0;
             int red = 1;

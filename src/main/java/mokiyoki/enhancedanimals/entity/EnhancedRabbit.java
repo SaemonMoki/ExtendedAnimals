@@ -871,6 +871,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected void setTexturePaths() {
         if (this.getSharedGenes() != null) {
             int[] genesForText = this.getSharedGenes().getAutosomalGenes();
+
             int under = 0;
             int lower = 0;
             int middle = 0;

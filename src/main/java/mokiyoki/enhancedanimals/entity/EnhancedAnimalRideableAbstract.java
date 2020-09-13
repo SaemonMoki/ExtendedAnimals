@@ -281,18 +281,26 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         return super.processInteract(entityPlayer, hand);
     }
 
-    public boolean saddleAnimal(ItemStack itemStack, PlayerEntity player, Hand hand, LivingEntity target) {
+    public boolean saddleAnimal(ItemStack saddleItemStack, PlayerEntity player, Hand hand, LivingEntity target) {
         EnhancedAnimalRideableAbstract enhancedAnimal = (EnhancedAnimalRideableAbstract) target;
         if (enhancedAnimal.isAlive() && !enhancedAnimal.isChild()) {
             if (!enhancedAnimal.dataManager.get(HAS_SADDLE)) {
-                this.animalInventory.setInventorySlotContents(1, new ItemStack(itemStack.getItem(), 1));
+                if (saddleItemStack.getItem() == Items.SADDLE) {
+                    this.animalInventory.setInventorySlotContents(1, new ItemStack(saddleItemStack.getItem(), 1));
+                } else {
+                    this.animalInventory.setInventorySlotContents(1, getReplacementItemWithColour(saddleItemStack));
+                }
                 this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
-                itemStack.shrink(1);
+                saddleItemStack.shrink(1);
             } else {
                 ItemStack otherSaddle = this.getEnhancedInventory().getStackInSlot(1);
-                this.animalInventory.setInventorySlotContents(1, new ItemStack(itemStack.getItem(), 1));
+                if (saddleItemStack.getItem() == Items.SADDLE) {
+                    this.animalInventory.setInventorySlotContents(1, new ItemStack(saddleItemStack.getItem(), 1));
+                } else {
+                    this.animalInventory.setInventorySlotContents(1, getReplacementItemWithColour(saddleItemStack));
+                }
                 this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
-                itemStack.shrink(1);
+                saddleItemStack.shrink(1);
                 player.setHeldItem(hand, otherSaddle);
             }
         }

@@ -1,17 +1,14 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.CarpetBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -20,12 +17,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -159,35 +153,36 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         return this.getControllingPassenger() instanceof LivingEntity/* && this.isTame()*/ && this.dataManager.get(HAS_BRIDLE);
     }
 
-    public boolean blanketAnimal(ItemStack itemStack, PlayerEntity player, Hand hand, LivingEntity target) {
+    public boolean blanketAnimal(ItemStack blanketItemStack, PlayerEntity player, Hand hand, LivingEntity target) {
         EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
         if (enhancedAnimal.isAlive() && !enhancedAnimal.dataManager.get(HAS_BLANKET)) {
-            this.animalInventory.setInventorySlotContents(4, new ItemStack(itemStack.getItem(), 1));
+            this.animalInventory.setInventorySlotContents(4, new ItemStack(blanketItemStack.getItem(), 1));
             this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
-            itemStack.shrink(1);
+            blanketItemStack.shrink(1);
         } else {
             ItemStack otherCarpet = this.getEnhancedInventory().getStackInSlot(4);
-            this.animalInventory.setInventorySlotContents(4, new ItemStack(itemStack.getItem(), 1));
+            this.animalInventory.setInventorySlotContents(4, new ItemStack(blanketItemStack.getItem(), 1));
             this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
-            itemStack.shrink(1);
+            blanketItemStack.shrink(1);
             player.setHeldItem(hand, otherCarpet);
         }
 
         return true;
     }
 
-    public boolean bridleAnimal(ItemStack itemStack, PlayerEntity player, Hand hand, LivingEntity target) {
+    public boolean bridleAnimal(ItemStack bridleItemStack, PlayerEntity player, Hand hand, LivingEntity target) {
         EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
         if (enhancedAnimal.isAlive()) {
             if (!enhancedAnimal.dataManager.get(HAS_BRIDLE)) {
-                this.animalInventory.setInventorySlotContents(3, new ItemStack(itemStack.getItem(), 1));
+                ItemStack replacementItem = getReplacementItemWithColour(bridleItemStack);
+                this.animalInventory.setInventorySlotContents(3, replacementItem);
                 this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
-                itemStack.shrink(1);
+                bridleItemStack.shrink(1);
             } else {
                 ItemStack otherBridle = this.getEnhancedInventory().getStackInSlot(3);
-                this.animalInventory.setInventorySlotContents(3, new ItemStack(itemStack.getItem(), 1));
+                this.animalInventory.setInventorySlotContents(3, getReplacementItemWithColour(bridleItemStack));
                 this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
-                itemStack.shrink(1);
+                bridleItemStack.shrink(1);
                 player.setHeldItem(hand, otherBridle);
             }
         }

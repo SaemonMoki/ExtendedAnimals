@@ -878,6 +878,10 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         //resets the max so we don't have to store it
         setMaxCoatLength();
 
+        if (!compound.getString("breed").isEmpty()) {
+            this.currentCoatLength = this.maxCoatLength;
+            this.setCoatLength(this.currentCoatLength);
+        }
     }
 
     @Nullable

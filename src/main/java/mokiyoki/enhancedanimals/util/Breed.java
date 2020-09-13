@@ -60,7 +60,7 @@ public class Breed {
     }
 
     public final String getBreedName() {
-        return this.breedName;
+        return this.breedName.toLowerCase();
     }
 
     public final float getNativeTemperature() {
@@ -184,7 +184,7 @@ public class Breed {
         }
 
         public Breed.Properties setData(String name, Breed.Rarity rarity) {
-            this.breedName = name;
+            this.breedName = name.toLowerCase();
             this.rarity = rarity;
             return this;
         }

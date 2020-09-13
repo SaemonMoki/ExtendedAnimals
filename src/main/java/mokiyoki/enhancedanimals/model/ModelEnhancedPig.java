@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
-import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.renderer.EnhancedRendererModelNew;
@@ -32,6 +31,9 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
     private int clearCacheTimer = 0;
     private float headRotationAngleX;
 
+    private final ModelRenderer chest1;
+    private final ModelRenderer chest2;
+
     private final EnhancedRendererModelNew pig;
     private final EnhancedRendererModelNew head;
     private final EnhancedRendererModelNew cheeks;
@@ -47,8 +49,18 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
     private final EnhancedRendererModelNew earMediumR;
     private final EnhancedRendererModelNew neck;
     private final EnhancedRendererModelNew neckBigger;
-    private final EnhancedRendererModelNew body;
-    private final EnhancedRendererModelNew butt;
+    private final EnhancedRendererModelNew neckLong;
+    private final EnhancedRendererModelNew neckBiggerLong;
+    private final EnhancedRendererModelNew wattles;
+    private final EnhancedRendererModelNew body11;
+    private final EnhancedRendererModelNew body12;
+    private final EnhancedRendererModelNew body13;
+    private final EnhancedRendererModelNew body14;
+    private final EnhancedRendererModelNew body15;
+    private final EnhancedRendererModelNew butt5;
+    private final EnhancedRendererModelNew butt6;
+    private final EnhancedRendererModelNew butt7;
+    private final EnhancedRendererModelNew butt8;
     private final EnhancedRendererModelNew tail0;
     private final EnhancedRendererModelNew tail1;
     private final EnhancedRendererModelNew tail2;
@@ -98,8 +110,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.cheeks.setRotationPoint(0.0F, -5.5F, -4.0F);
 
         this.snout = new EnhancedRendererModelNew(this, 49, 22);
-        this.snout.addBox(-2.0F, -5.0F, -3.0F, 4, 7, 3);
-        this.snout.setRotationPoint(0.0F, -5.0F, 0.0F);
+        this.snout.addBox(-2.0F, -5.0F, -3.0F, 4, 6, 3);
+        this.snout.setRotationPoint(0.0F, -6.0F, 0.0F);
 
         this.mouth = new EnhancedRendererModelNew(this, 63, 22);
         this.mouth.addBox(-1.0F, -5.0F, 0.0F, 2, 6, 1);
@@ -143,17 +155,60 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.neck.addBox(-4.5F, -6.75F, -9.0F, 9, 7, 9);
         this.neck.setRotationPoint(0.0F, 0.0F, 9.1F);
 
+        this.neckLong = new EnhancedRendererModelNew(this, 0, 0);
+        this.neckLong.addBox(-4.5F, -6.75F, -9.0F, 9, 8, 9, 1.0F);
+        this.neckLong.setRotationPoint(0.0F, 0.0F, 9.1F);
+
         this.neckBigger = new EnhancedRendererModelNew(this, 0, 0);
-        this.neckBigger.addBox(-4.5F, -5.75F, -9.0F, 9, 7, 9, 1.0F);
+        this.neckBigger.addBox(-4.5F, -5.75F, -9.0F, 9, 7, 9);
         this.neckBigger.setRotationPoint(0.0F, 0.0F, 9.1F);
 
-        this.body = new EnhancedRendererModelNew(this, 0, 23);
-        this.body.addBox(-5.0F, 0.0F, 0.0F, 10, 11, 10);
-        this.body.setRotationPoint(0.0F, 18.1F, -4.0F);
+        this.neckBiggerLong = new EnhancedRendererModelNew(this, 0, 0);
+        this.neckBiggerLong.addBox(-4.5F, -6.75F, -9.0F, 9, 8, 9, 1.0F);
+        this.neckBiggerLong.setRotationPoint(0.0F, 0.0F, 9.1F);
 
-        this.butt = new EnhancedRendererModelNew(this, 0, 53);
-        this.butt.addBox(-4.5F, 0.0F, 0.0F, 9, 5, 9);
-        this.butt.setRotationPoint(0.0F, 18.0F, 5.5F);
+        this.wattles = new EnhancedRendererModelNew(this, 3, 9);
+        this.wattles.addBox(2.5F, 0.0F, -9.0F, 2, 4, 2);
+        this.wattles.setTextureOffset(25,9);
+        this.wattles.addBox(-4.5F, 0.0F, -9.0F, 2, 4, 2);
+        this.wattles.setRotationPoint(0.0F, 2.5F, -9.0F);
+        this.wattles.rotateAngleX = (float)Math.PI/-2.0F;
+
+        this.body11 = new EnhancedRendererModelNew(this, 0, 23);
+        this.body11.addBox(-5.0F, 0.0F, 0.0F, 10, 11, 10);
+        this.body11.setRotationPoint(0.0F, 18.1F, -4.0F);
+
+        this.body12 = new EnhancedRendererModelNew(this, 0, 23);
+        this.body12.addBox(-5.0F, 0.0F, 0.0F, 10, 12, 10);
+        this.body12.setRotationPoint(0.0F, 18.1F, -5.0F);
+
+        this.body13 = new EnhancedRendererModelNew(this, 0, 23);
+        this.body13.addBox(-5.0F, 0.0F, 0.0F, 10, 13, 10);
+        this.body13.setRotationPoint(0.0F, 18.1F, -6.0F);
+
+        this.body14 = new EnhancedRendererModelNew(this, 0, 23);
+        this.body14.addBox(-5.0F, 0.0F, 0.0F, 10, 14, 10);
+        this.body14.setRotationPoint(0.0F, 18.1F, -7.0F);
+
+        this.body15 = new EnhancedRendererModelNew(this, 0, 23);
+        this.body15.addBox(-5.0F, 0.0F, 0.0F, 10, 15, 10);
+        this.body15.setRotationPoint(0.0F, 18.1F, -8.0F);
+
+        this.butt5 = new EnhancedRendererModelNew(this, 0, 53);
+        this.butt5.addBox(-4.5F, 0.0F, 0.0F, 9, 5, 9);
+        this.butt5.setRotationPoint(0.0F, 18.0F, 5.5F);
+
+        this.butt6 = new EnhancedRendererModelNew(this, 0, 53);
+        this.butt6.addBox(-4.5F, 0.0F, 0.0F, 9, 6, 9);
+        this.butt6.setRotationPoint(0.0F, 18.0F, 6.5F);
+
+        this.butt7 = new EnhancedRendererModelNew(this, 0, 53);
+        this.butt7.addBox(-4.5F, 0.0F, 0.0F, 9, 7, 9);
+        this.butt7.setRotationPoint(0.0F, 18.0F, 7.5F);
+
+        this.butt8 = new EnhancedRendererModelNew(this, 0, 53);
+        this.butt8.addBox(-4.5F, 0.0F, 0.0F, 9, 8, 9);
+        this.butt8.setRotationPoint(0.0F, 18.0F, 8.5F);
 
         this.tail0 = new EnhancedRendererModelNew(this, 36, 0);
         this.tail0.addBox(-0.5F, 0.0F, 0.0F, 1, 2, 1, -0.05F);
@@ -181,19 +236,19 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         this.leg1 = new EnhancedRendererModelNew(this, 49, 32);
         this.leg1.addBox(-3.0F, 0.0F, 0.0F, 3, 8, 3);
-        this.leg1.setRotationPoint(-2.0F, 16.0F, -7.0F);
+        this.leg1.setRotationPoint(-2.001F, 16.0F, -7.0F);
 
         this.leg2 = new EnhancedRendererModelNew(this, 61, 32);
         this.leg2.addBox(0.0F, 0.0F, 0.0F, 3, 8, 3);
-        this.leg2.setRotationPoint(2.0F, 16.0F, -7.0F);
+        this.leg2.setRotationPoint(2.001F, 16.0F, -7.0F);
 
         this.leg3 = new EnhancedRendererModelNew(this, 49, 44);
         this.leg3.addBox(-3.0F, 0.0F, 0.0F, 3, 8, 3);
-        this.leg3.setRotationPoint(-2.0F, 16.0F, 7.0F);
+        this.leg3.setRotationPoint(-2.001F, 16.0F, 7.0F);
 
         this.leg4 = new EnhancedRendererModelNew(this, 61, 44);
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 8, 3);
-        this.leg4.setRotationPoint(2.0F, 16.0F, 7.0F);
+        this.leg4.setRotationPoint(2.001F, 16.0F, 7.0F);
 
         this.eyeLeft = new EnhancedRendererModelNew(this, 69, 15);
         this.eyeLeft.addBox(0.0F, 0.0F, 0.0F, 1, 1, 1, 0.01F);
@@ -203,9 +258,19 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.eyeRight.addBox(0.0F, 0.0F, 0.0F, 1, 1, 1, 0.01F);
         this.eyeRight.setRotationPoint(-3.5F, -5.0F, 0.0F);
 
-        this.body.addChild(this.neckBigger);
-//        this.neck.addChild(this.head);
+        this.body11.addChild(this.neckLong);
+        this.body12.addChild(this.neckLong);
+        this.body13.addChild(this.neckLong);
+        this.body14.addChild(this.neckLong);
+        this.body15.addChild(this.neckLong);
+        this.neck.addChild(this.head);
+        this.neck.addChild(this.wattles);
         this.neckBigger.addChild(this.head);
+        this.neckBigger.addChild(this.wattles);
+        this.neckLong.addChild(this.head);
+        this.neckLong.addChild(this.wattles);
+        this.neckBiggerLong.addChild(this.head);
+        this.neckBiggerLong.addChild(this.wattles);
         this.head.addChild(this.cheeks);
         this.head.addChild(this.snout);
         this.snout.addChild(this.tuskTL);
@@ -219,15 +284,25 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.head.addChild(this.earMediumR);
         this.head.addChild(this.eyeLeft);
         this.head.addChild(this.eyeRight);
-        this.butt.addChild(this.tail0);
+        this.butt5.addChild(this.tail0);
+        this.butt6.addChild(this.tail0);
+        this.butt7.addChild(this.tail0);
+        this.butt8.addChild(this.tail0);
         this.tail0.addChild(this.tail1);
         this.tail1.addChild(this.tail2);
         this.tail2.addChild(this.tail3);
         this.tail3.addChild(this.tail4);
         this.tail4.addChild(this.tail5);
 
-        this.pig.addChild(this.body);
-        this.pig.addChild(this.butt);
+        this.pig.addChild(this.body11);
+        this.pig.addChild(this.body12);
+        this.pig.addChild(this.body13);
+        this.pig.addChild(this.body14);
+        this.pig.addChild(this.body15);
+        this.pig.addChild(this.butt5);
+        this.pig.addChild(this.butt6);
+        this.pig.addChild(this.butt7);
+        this.pig.addChild(this.butt8);
         this.pig.addChild(this.leg1);
         this.pig.addChild(this.leg2);
         this.pig.addChild(this.leg3);
@@ -236,6 +311,15 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         /**
          * Equipment stuff
          */
+
+        this.chest1 = new ModelRenderer(this, 80, 0);
+        this.chest1.addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3);
+        this.chest1.setRotationPoint(-8.0F, 8.0F, 3.0F);
+        this.chest1.rotateAngleY = ((float)Math.PI / 2F);
+        this.chest2 = new ModelRenderer(this, 80, 11);
+        this.chest2.addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3);
+        this.chest2.setRotationPoint(5.0F, 8.0F, 3.0F);
+        this.chest2.rotateAngleY = ((float)Math.PI / 2F);
 
         this.saddle = new EnhancedRendererModelNew(this, 0, 0, "Saddle");
 
@@ -304,7 +388,11 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.neckBigger.addChild(this.collar);
 
         //western
-        this.body.addChild(this.saddleWestern);
+        this.body11.addChild(this.saddleWestern);
+        this.body12.addChild(this.saddleWestern);
+        this.body13.addChild(this.saddleWestern);
+        this.body14.addChild(this.saddleWestern);
+        this.body15.addChild(this.saddleWestern);
         this.saddleWestern.addChild(this.saddleHorn);
         this.saddleWestern.addChild(this.saddleSideL);
         this.saddleWestern.addChild(this.saddleSideR);
@@ -314,7 +402,11 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.stirrup2DWideL.addChild(this.stirrup);
         this.stirrup2DWideR.addChild(this.stirrup);
         //english
-        this.body.addChild(this.saddleEnglish);
+        this.body11.addChild(this.saddleEnglish);
+        this.body12.addChild(this.saddleEnglish);
+        this.body13.addChild(this.saddleEnglish);
+        this.body14.addChild(this.saddleEnglish);
+        this.body15.addChild(this.saddleEnglish);
         this.saddleEnglish.addChild(this.saddleHorn);
         this.saddleEnglish.addChild(this.saddleSideL);
         this.saddleEnglish.addChild(this.saddleSideR);
@@ -324,7 +416,11 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.stirrup3DNarrowL.addChild(this.stirrup);
         this.stirrup3DNarrowR.addChild(this.stirrup);
         //vanilla
-        this.body.addChild(this.saddle);
+        this.body11.addChild(this.saddle);
+        this.body12.addChild(this.saddle);
+        this.body13.addChild(this.saddle);
+        this.body14.addChild(this.saddle);
+        this.body15.addChild(this.saddle);
         this.saddle.addChild(this.saddlePad);
         this.saddle.addChild(this.stirrup3DNarrowL);
         this.saddle.addChild(this.stirrup3DNarrowR);
@@ -335,12 +431,28 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         PigModelData pigModelData = getPigModelData();
         float size = pigModelData.size;
+        size = size < 0 ? 0 : size;
+        int[] gene = pigModelData.pigGenes;
+        int shape = 1;
+//        boolean wattles = gene[32] == 1 || gene[33] == 1;
+
+        if (gene[56] != 1 && gene[57] != 1) {
+            if (gene[56] + gene[57] <= 8) {
+                shape = 0;
+            } else if (gene[56] == 5 || gene[57] == 5) {
+                shape = 2;
+            } else if (gene[56] == 6 || gene[57] == 6) {
+                shape = 3;
+            } else if (gene[56] == 7 && gene[57] == 7) {
+
+            }
+        }
 
         float age = 1.0F;
         if (!(pigModelData.birthTime == null) && !pigModelData.birthTime.equals("") && !pigModelData.birthTime.equals("0")) {
             int ageTime = (int)(pigModelData.clientGameTime - Long.parseLong(pigModelData.birthTime));
             if (ageTime <= 108000) {
-                age = ageTime/108000.0F;
+                age = ageTime < 0 ? 0 :  ageTime/108000.0F;
             }
         }
 
@@ -348,6 +460,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         matrixStackIn.push();
         matrixStackIn.scale(finalPigSize, finalPigSize, finalPigSize);
         matrixStackIn.translate(0.0F, -1.5F + 1.5F/finalPigSize, 0.0F);
+
+        this.wattles.showModel = gene[32] == 1 || gene[33] == 1;
 
         if (pigModelData.blink >= 6) {
             this.eyeLeft.showModel = true;
@@ -363,7 +477,39 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             this.collar.showModel = false;
         }
 
-        if (true) {
+        this.chest1.showModel = false;
+        this.chest2.showModel = false;
+        if (pigModelData.hasChest) {
+            this.chest1.showModel = true;
+            this.chest2.showModel = true;
+            this.chest1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.chest2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        }
+
+        this.body11.showModel = false;
+        this.body12.showModel = false;
+        this.body13.showModel = false;
+        this.body14.showModel = false;
+        this.body15.showModel = false;
+        this.butt5.showModel = false;
+        this.butt6.showModel = false;
+        this.butt7.showModel = false;
+        this.butt8.showModel = false;
+        if (false) {
+            this.body11.showModel = true;
+        } else if (false) {
+            this.body12.showModel = true;
+        } else if (false) {
+            this.body13.showModel = true;
+        } else if (false) {
+            this.body14.showModel = true;
+        } else {
+            this.body15.showModel = true;
+        }
+
+        this.butt5.showModel = true;
+
+        if (!(pigModelData.saddle.isEmpty() || pigModelData.saddle.getItem() instanceof CustomizableCollar)) {
             renderPigandSaddle(pigModelData.saddle, pigModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
             this.pig.render(matrixStackIn, bufferIn, null, new ArrayList<>(), false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -423,6 +569,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         }
 
         this.neck.rotationPointZ = onGround - (entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 4.5F;
+        this.neckLong.rotationPointZ = (onGround - (entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 4.5F) + 1;
         this.headRotationAngleX = (entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
 
         //snoutLength
@@ -480,7 +627,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         if (!(pigModelData.birthTime == null) && !pigModelData.birthTime.equals("") && !pigModelData.birthTime.equals("0")) {
             int ageTime = (int) (pigModelData.clientGameTime - Long.parseLong(pigModelData.birthTime));
             if (ageTime < 70000) {
-                float age = ageTime/70000.F;
+                float age = ageTime < 0 ? 0 : ageTime/70000.F;
                 snoutLength = snoutLength * age;
             }
         }
@@ -553,6 +700,66 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             }
         }
 
+        /**
+         * longer body11 adjustments prototype
+         */
+
+        /**
+        this.body14.rotationPointZ = -6.0F; //-4.0F
+        this.tail0.rotationPointY = 9.0F; //  5.0F
+        this.leg1.rotationPointZ = -9.0F; // -7.0F
+        this.leg2.rotationPointZ = -9.0F; // -7.0F
+        this.leg3.rotationPointZ = 10.5F;  // 7.0F
+        this.leg4.rotationPointZ = 10.5F; //  7.0F
+        */
+        if (this.body11.showModel) {
+            this.leg1.rotationPointZ = -7.0F;
+            this.leg2.rotationPointZ = -7.0F;
+        } else if (this.body12.showModel) {
+            this.leg1.rotationPointZ = -8.0F;
+            this.leg2.rotationPointZ = -8.0F;
+        } else if (this.body13.showModel) {
+            this.leg1.rotationPointZ = -9.0F;
+            this.leg2.rotationPointZ = -9.0F;
+        } else if (this.body14.showModel) {
+            this.leg1.rotationPointZ = -10.0F;
+            this.leg2.rotationPointZ = -10.0F;
+        } else if (this.body15.showModel) {
+            this.leg1.rotationPointZ = -11.0F;
+            this.leg2.rotationPointZ = -11.0F;
+        }
+
+        float movebutt = 1F;
+
+        //butt selection probs should have mostly to do with shape?
+        if (this.butt5.showModel) {
+            this.tail0.rotationPointY = 5.0F;
+            this.butt5.rotationPointZ = 6.0F + movebutt;
+            this.leg3.rotationPointZ = 7.0F + movebutt;
+            this.leg4.rotationPointZ = 7.0F + movebutt;
+        } else if (this.butt6.showModel) {
+            this.tail0.rotationPointY = 6.0F;
+            this.butt6.rotationPointZ = 6.0F + movebutt;
+            this.leg3.rotationPointZ = 8.0F + movebutt;
+            this.leg4.rotationPointZ = 8.0F + movebutt;
+        } else if (this.butt7.showModel) {
+            this.tail0.rotationPointY = 7.0F;
+            this.butt7.rotationPointZ = 6.0F + movebutt;
+            this.leg3.rotationPointZ = 9.0F + movebutt;
+            this.leg4.rotationPointZ = 9.0F + movebutt;
+        } else if (this.butt8.showModel) {
+            this.tail0.rotationPointY = 8.0F;
+
+            /**
+             * if body15 butt8 should be from -3 to 1
+             *
+             */
+
+            this.butt8.rotationPointZ = 6.0F + movebutt;
+            this.leg3.rotationPointZ = 10.0F + movebutt;
+            this.leg4.rotationPointZ = 10.0F + movebutt;
+        }
+
     }
 
     @Override
@@ -562,9 +769,20 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         ItemStack saddleStack = pigModelData.saddle;
 //        List<String> unrenderedModels = new ArrayList<>();
 
-        this.neck.rotateAngleX = ((float)Math.PI * 2.0F);
-        this.body.rotateAngleX = ((float)Math.PI / 2F);
-        this.butt.rotateAngleX = ((float)Math.PI / 2F);
+        float twoPi = (float)Math.PI * 2.0F;
+        float halfPi = (float)Math.PI / 2F;
+
+//        this.neck.rotateAngleX = twoPi;
+//        this.neckLong.rotateAngleX = twoPi;
+        this.body11.rotateAngleX = halfPi;
+        this.body12.rotateAngleX = halfPi;
+        this.body13.rotateAngleX = halfPi;
+        this.body14.rotateAngleX = halfPi;
+        this.body15.rotateAngleX = halfPi;
+        this.butt5.rotateAngleX = halfPi;
+        this.butt6.rotateAngleX = halfPi;
+        this.butt7.rotateAngleX = halfPi;
+        this.butt8.rotateAngleX = halfPi;
 
         /**
          * change only earFlopMod for ear effects. If anything is tweaked it needs to be through that.
@@ -610,17 +828,25 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 //        this.earSmallR.rotateAngleY = 0.0F;
 //        this.earSmallR.rotateAngleZ = ((float)Math.PI / -2F);
 
-        ModelHelper.copyModelAngles(earSmallL, earMediumL);
-        ModelHelper.copyModelAngles(earSmallR, earMediumR);
+        ModelHelper.copyModelPositioning(earSmallL, earMediumL);
+        ModelHelper.copyModelPositioning(earSmallR, earMediumR);
 
-
-        this.neck.rotateAngleX = this.neck.rotateAngleX + ((headPitch * 0.017453292F) / 5.0F) + (this.headRotationAngleX / 2.0F);
+/**
+ * these are the cause of the trouble with pigs
+ * netHeadYaw must be getting some unusual numbers when in gui form
+ * try to get a more reasonable set of numbers somehow
+ */
+        this.neck.rotateAngleX = twoPi + ((headPitch * 0.017453292F) / 5.0F) + (this.headRotationAngleX / 2.0F);
         this.head.rotateAngleX = ((headPitch * 0.017453292F)/5.0F)  + (this.headRotationAngleX / 2.0F);
 
-        this.head.rotateAngleZ = -(netHeadYaw * 0.017453292F)/2.0F;
+        float headYaw = netHeadYaw - Math.round(netHeadYaw/180)*180;
+        this.head.rotateAngleZ = headYaw * 0.017453292F * -0.5F;
+
+//        System.out.print(headYaw);
+//        System.out.println();
 
         if (!pigModelData.sleeping) {
-            this.neck.rotateAngleZ = -(netHeadYaw * 0.017453292F)/2.0F;
+            this.neck.rotateAngleZ = headYaw * 0.017453292F * -0.5F;
             this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
             this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
             this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
@@ -635,7 +861,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.tuskBL.rotateAngleZ = 1.5F;
         this.tuskBR.rotateAngleZ = -1.5F;
 
-        ModelHelper.copyModelAngles(neck, neckBigger);
+        ModelHelper.copyModelRotations(this.neck, this.neckLong);
+        ModelHelper.copyModelPositioning(this.neck, neckBigger);
 
         this.tail0.rotateAngleX = -((float)Math.PI / 2F);
 
@@ -714,6 +941,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         ItemStack bridle;
         ItemStack harness;
         Boolean collar;
+        Boolean hasChest;
     }
 
     private PigModelData getPigModelData() {
@@ -748,6 +976,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             pigModelData.bridle = enhancedPig.getEnhancedInventory().getStackInSlot(3);
             pigModelData.harness = enhancedPig.getEnhancedInventory().getStackInSlot(5);
             pigModelData.collar = hasCollar(enhancedPig.getEnhancedInventory());
+            pigModelData.hasChest = !enhancedPig.getEnhancedInventory().getStackInSlot(0).isEmpty();
 
 
             return pigModelData;
@@ -764,6 +993,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             pigModelData.bridle = enhancedPig.getEnhancedInventory().getStackInSlot(3);
             pigModelData.harness = enhancedPig.getEnhancedInventory().getStackInSlot(5);
             pigModelData.collar = hasCollar(enhancedPig.getEnhancedInventory());
+            pigModelData.hasChest = !enhancedPig.getEnhancedInventory().getStackInSlot(0).isEmpty();
 
             if(pigModelData.pigGenes != null) {
                 pigModelDataCache.put(enhancedPig.getEntityId(), pigModelData);

@@ -192,6 +192,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     //TODO put new sheep behaviour here
 
+    @Override
+    public boolean canHaveBlanket() {
+        return false;
+    }
+
     protected void updateAITasks()
     {
         this.animalEatingTimer = this.wanderEatingGoal.getEatingGrassTimer();
@@ -1246,8 +1251,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
 
-        currentCoatLength = compound.getInt("CoatLength");
-        this.setCoatLength(currentCoatLength);
+        this.currentCoatLength = compound.getInt("CoatLength");
+        this.setCoatLength(this.currentCoatLength);
 
         this.setFleeceDyeColour(DyeColor.byId(compound.getByte("Colour")));
 
@@ -1259,6 +1264,10 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 //        this.setBagSize((compound.getInt("milk")*(maxBagSize/3.0F))+(maxBagSize*2.0F/3.0F));
         setMaxCoatLength();
 //        configureAI();
+        if (!compound.getString("breed").isEmpty()) {
+            this.currentCoatLength = this.maxCoatLength;
+            this.setCoatLength(this.currentCoatLength);
+        }
     }
 
     protected void initilizeAnimalSize() {

@@ -16,7 +16,12 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
     List<Breed> breeds = new ArrayList<>();
 
     public SheepGeneticsInitialiser() {
-        this.breeds.add(SheepBreeds.DORSET);
+        this.breeds.add(SheepBreeds.DORSETHORNED);
+        this.breeds.add(SheepBreeds.DORSETPOLLED);
+        this.breeds.add(SheepBreeds.JACOB);
+        this.breeds.add(SheepBreeds.ICELANDIC);
+        this.breeds.add(SheepBreeds.BLACKBELLY);
+        this.breeds.add(SheepBreeds.BABYDOLL);
     }
 
     public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
@@ -78,7 +83,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
          */
 
 
-        //Polled [ no horns, horns, 1/2 chance horns ]
+        //Polled [ no horns, horns, males have horns]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[6] = (ThreadLocalRandom.current().nextInt(3) + 1);
 

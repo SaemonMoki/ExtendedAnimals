@@ -37,7 +37,9 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
     };
 
-    private static final String BRIDLE_TEXTURE = "bridle.png";
+    private static final String BRIDLE_TEXTURE = "d_bridle.png";
+
+    private static final String BRIDLE_LEATHER_TEXTURE = "bridle_leather.png";
 
     private static final String[] BRIDLE_HARDWEAR_TEXTURE = new String[] {
             "bridle_iron.png", "bridle_gold.png", "bridle_diamond.png"
@@ -94,11 +96,11 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
         if(blanketed) {
             if(previousBlanketTextures == null || !previousBlanketTextures.containsAll(newBlanketTextures)){
-                equipmentTextures.put(Equipment.BLANKET, newBlanketTextures);
+                this.equipmentTextures.put(Equipment.BLANKET, newBlanketTextures);
             }
         } else {
             if(previousBlanketTextures != null){
-                equipmentTextures.remove(Equipment.BLANKET);
+                this.equipmentTextures.remove(Equipment.BLANKET);
             }
         }
     }
@@ -311,7 +313,6 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     private boolean isCarpet(ItemStack itemStack) {
         Item item = itemStack.getItem();
-        boolean isVanillaCarpet = false;
         if (item == Items.BLACK_CARPET) {
             return true;
         }
@@ -367,12 +368,26 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         List<String> bridleTextures = new ArrayList<>();
 
         if (this.getEnhancedInventory() != null) {
-            ItemStack blanketSlot = this.animalInventory.getStackInSlot(3);
-            if (blanketSlot != ItemStack.EMPTY) {
-                Item blanketColour = blanketSlot.getItem();
-                if (blanketColour == ModItems.BRIDLE_BASIC_CLOTH) {
-                    bridleTextures.add(BRIDLE_TEXTURE);
-                    bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[0]);
+            ItemStack bridleSlot = this.animalInventory.getStackInSlot(3);
+            if (bridleSlot != ItemStack.EMPTY) {
+                Item bridle = bridleSlot.getItem();
+                bridleTextures.add(BRIDLE_TEXTURE);
+                if (bridleSlot.getItem() instanceof CustomizableBridle) {
+                    if (bridle == ModItems.BRIDLE_BASIC_CLOTH) {
+                        bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[0]);
+                    } else if (bridle == ModItems.BRIDLE_BASIC_LEATHER) {
+                        bridleTextures.add(BRIDLE_LEATHER_TEXTURE);
+                        bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[0]);
+                    } else if (bridle == ModItems.BRIDLE_BASIC_CLOTH_G) {
+                        bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[1]);
+                    } else if (bridle == ModItems.BRIDLE_BASIC_LEATHER_G) {
+                        bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[1]);
+                    } else if (bridle == ModItems.BRIDLE_BASIC_CLOTH_D) {
+                        bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[2]);
+                    } else if (bridle == ModItems.BRIDLE_BASIC_LEATHER_D) {
+                        bridleTextures.add(BRIDLE_LEATHER_TEXTURE);
+                        bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[2]);
+                    }
                 }
             }
         }

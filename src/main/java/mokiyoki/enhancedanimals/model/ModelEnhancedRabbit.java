@@ -342,7 +342,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         if (!(rabbitModelData.birthTime == null) && !rabbitModelData.birthTime.equals("") && !rabbitModelData.birthTime.equals("0")) {
             int ageTime = (int)(rabbitModelData.clientGameTime - Long.parseLong(rabbitModelData.birthTime));
             if (ageTime <= 50000) {
-                age = ageTime/50000.0F;
+                age = ageTime < 0 ? 0 : ageTime/50000.0F;
             }
         }
 
@@ -463,14 +463,14 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
 
         this.headLeft.rotateAngleX = headPitch * 0.017453292F;
         this.headLeft.rotateAngleY = netHeadYaw * 0.017453292F;
-        ModelHelper.copyModelAngles(headLeft, headRight);
-        ModelHelper.copyModelAngles(headLeft, rabbitHeadMuzzle);
-        ModelHelper.copyModelAngles(headLeft, rabbitHeadMuzzleDwarf);
-        ModelHelper.copyModelAngles(headLeft, rabbitLionHeadL);
-        ModelHelper.copyModelAngles(headRight, rabbitLionHeadR);
-        ModelHelper.copyModelAngles(headLeft, rabbitLionHeadL1);
-        ModelHelper.copyModelAngles(headRight, rabbitLionHeadR1);
-        ModelHelper.copyModelAngles(headLeft, rabbitNose);
+        ModelHelper.copyModelPositioning(headLeft, headRight);
+        ModelHelper.copyModelPositioning(headLeft, rabbitHeadMuzzle);
+        ModelHelper.copyModelPositioning(headLeft, rabbitHeadMuzzleDwarf);
+        ModelHelper.copyModelPositioning(headLeft, rabbitLionHeadL);
+        ModelHelper.copyModelPositioning(headRight, rabbitLionHeadR);
+        ModelHelper.copyModelPositioning(headLeft, rabbitLionHeadL1);
+        ModelHelper.copyModelPositioning(headRight, rabbitLionHeadR1);
+        ModelHelper.copyModelPositioning(headLeft, rabbitNose);
 
         this.collar.rotateAngleX = -(this.headLeft.rotateAngleX/2.0F) - ((float)Math.PI/2.0F);
         this.collar.rotateAngleY = -(this.headLeft.rotateAngleY/2.0F);
@@ -543,12 +543,12 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         this.earL.rotateAngleZ = (earRotateZ*(1.0F-lop) + floppyEarRotateZ*(lop));
         this.earR.rotateAngleZ = (-earRotateZ*(1.0F-lop) + floppyEarRotateZ*(lop));
 
-        ModelHelper.copyModelAngles(earL, lionEarL);
-        ModelHelper.copyModelAngles(earR, lionEarR);
-        ModelHelper.copyModelAngles(earL, lionEarL1);
-        ModelHelper.copyModelAngles(earR, lionEarR1);
-        ModelHelper.copyModelAngles(earL, dwarfEarL);
-        ModelHelper.copyModelAngles(earR, dwarfEarR);
+        ModelHelper.copyModelPositioning(earL, lionEarL);
+        ModelHelper.copyModelPositioning(earR, lionEarR);
+        ModelHelper.copyModelPositioning(earL, lionEarL1);
+        ModelHelper.copyModelPositioning(earR, lionEarR1);
+        ModelHelper.copyModelPositioning(earL, dwarfEarL);
+        ModelHelper.copyModelPositioning(earR, dwarfEarR);
 
         //changes some rotation angles
         this.rabbitButtRound.rotationPointZ = 2.5F;
@@ -610,11 +610,11 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         this.rabbitLeftThigh.rotateAngleX = (this.jumpRotation * 50.0F - 21.0F) * ((float)Math.PI / 180F);
         this.rabbitRightThigh.rotateAngleX = (this.jumpRotation * 50.0F - 21.0F) * ((float)Math.PI / 180F);
 
-        ModelHelper.copyModelAngles(rabbitButt, rabbitTail);
+        ModelHelper.copyModelPositioning(rabbitButt, rabbitTail);
 
         this.rabbitNose.rotationPointY = 14.2F + (float)entityIn.getNoseTwitch()/4.0F;
 
-        ModelHelper.copyModelAngles(rabbitNose, rabbitNoseDwarf);
+        ModelHelper.copyModelPositioning(rabbitNose, rabbitNoseDwarf);
     }
 
     private class RabbitModelData {

@@ -38,6 +38,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private int clearCacheTimer = 0;
     private float headRotationAngleX;
 
+    private final ModelRenderer chest1;
+    private final ModelRenderer chest2;
+
     private final EnhancedRendererModelNew head;
     private final EnhancedRendererModelNew noseMale;
     private final EnhancedRendererModelNew noseFemale;
@@ -122,6 +125,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private final EnhancedRendererModelNew saddlePad;
     private final EnhancedRendererModelNew headTassles;
     private final EnhancedRendererModelNew collar;
+    private final EnhancedRendererModelNew bridle;
+    private final EnhancedRendererModelNew bridleMale;
+    private final EnhancedRendererModelNew bridleFemale;
 
     private final List<EnhancedRendererModelNew> leftHorns = new ArrayList<>();
     private final List<EnhancedRendererModelNew> rightHorns = new ArrayList<>();
@@ -473,6 +479,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
          * Equipment stuff
          */
 
+        this.chest1 = new ModelRenderer(this, 80, 0);
+        this.chest1.addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3);
+        this.chest1.setRotationPoint(-8.75F, 3.0F, 6.0F);
+        this.chest1.rotateAngleY = ((float)Math.PI / 2F);
+        this.chest2 = new ModelRenderer(this, 80, 11);
+        this.chest2.addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3);
+        this.chest2.setRotationPoint(5.75F, 3.0F, 6.0F);
+        this.chest2.rotateAngleY = ((float)Math.PI / 2F);
+
         this.saddle = new EnhancedRendererModelNew(this, 0, 0, "Saddle");
 
         this.saddleWestern = new EnhancedRendererModelNew(this, 210, 0, "WesternSaddle");
@@ -572,6 +587,24 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         //blanket deco
         this.head.addChild(this.headTassles);
+
+        //bridle
+        this.textureHeight = 128;
+        this.textureWidth = 128;
+        this.bridle = new EnhancedRendererModelNew(this, 0, 40);
+        this.bridle.addBox(-4.0F, 0.0F, -7.0F, 8, 7, 6, 0.1F);
+
+        this.bridleMale = new EnhancedRendererModelNew(this, 0, 53);
+        this.bridleMale.addBox(-2.0F, -0.15F, -10.0F, 4, 6, 4, 0.35F);
+
+        this.bridleFemale = new EnhancedRendererModelNew(this, 0, 53);
+        this.bridleFemale.addBox(-2.0F, 0.6F, -10.75F, 4, 6, 4, -0.15F);
+
+        this.head.addChild(this.bridle);
+        this.bridle.addChild(this.bridleMale);
+        this.bridle.addChild(this.bridleFemale);
+
+
     }
 
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
@@ -620,6 +653,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float babyScale = 1.0F;
         if (!(cowModelData.birthTime == null) && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
             int ageTime = (int)(cowModelData.clientGameTime - Long.parseLong(cowModelData.birthTime));
+            if (ageTime < 0) {
+                ageTime = 0;
+            }
             if (ageTime <= 108000) {
                 age = ageTime/108000.0F;
                 babyScale = (3.0F - age)/2;
@@ -656,9 +692,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         if (cowModelData.isFemale) {
             this.noseMale.showModel = false;
             this.noseFemale.showModel = true;
+            this.bridleMale.showModel = false;
+            this.bridleFemale.showModel = true;
         } else {
             this.noseMale.showModel = true;
             this.noseFemale.showModel = false;
+            this.bridleMale.showModel = true;
+            this.bridleFemale.showModel = false;
         }
 
         if (cowModelData.collar) {
@@ -672,6 +712,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.mushroomBody1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.mushroomBody2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.mushroomHead.showModel = true;
+        }
+
+        this.chest1.showModel = false;
+        this.chest2.showModel = false;
+        if (cowModelData.hasChest) {
+            this.chest1.showModel = true;
+            this.chest2.showModel = true;
+            this.chest1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.chest2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
         renderHump(hump, cowModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -863,10 +912,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         }
 
-        ModelHelper.copyModelAngles(leg1, shortLeg1);
-        ModelHelper.copyModelAngles(leg2, shortLeg2);
-        ModelHelper.copyModelAngles(leg3, shortLeg3);
-        ModelHelper.copyModelAngles(leg4, shortLeg4);
+        ModelHelper.copyModelPositioning(leg1, shortLeg1);
+        ModelHelper.copyModelPositioning(leg2, shortLeg2);
+        ModelHelper.copyModelPositioning(leg3, shortLeg3);
+        ModelHelper.copyModelPositioning(leg4, shortLeg4);
 
         this.neck.rotateAngleX = this.headRotationAngleX;
         this.head.rotateAngleX = 0.5F;
@@ -964,8 +1013,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.hornNub4.rotateAngleX = ((float)Math.PI / -2F);
         this.hornNub5.rotateAngleX = ((float)Math.PI / -2F);
 
-        ModelHelper.copyModelAngles(neck, hornGranparent);
-        ModelHelper.copyModelAngles(head, hornParent);
+        ModelHelper.copyModelPositioning(neck, hornGranparent);
+        ModelHelper.copyModelPositioning(head, hornParent);
 
 
         float hornBaseHight = -1.0F;
@@ -1100,6 +1149,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
             if (cowModelData.birthTime != null && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
                 int ageTime = (int)(cowModelData.clientGameTime - Long.parseLong(cowModelData.birthTime));
+                if (ageTime < 0) {
+                    ageTime = 0;
+                }
                 if (ageTime < 108000) {
                     int hornAge = 0;
                     if (ageTime > 97200) {
@@ -1737,6 +1789,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         ItemStack bridle;
         ItemStack harness;
         Boolean collar;
+        Boolean hasChest;
     }
 
     private CowModelData getCowModelData() {
@@ -1772,6 +1825,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.bridle = enhancedCow.getEnhancedInventory().getStackInSlot(3);
             cowModelData.harness = enhancedCow.getEnhancedInventory().getStackInSlot(5);
             cowModelData.collar = hasCollar(enhancedCow.getEnhancedInventory());
+            cowModelData.hasChest = !enhancedCow.getEnhancedInventory().getStackInSlot(0).isEmpty();
             cowModelData.unrenderedModels = new ArrayList<>();
 
             return cowModelData;
@@ -1798,6 +1852,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.bridle = enhancedCow.getEnhancedInventory().getStackInSlot(3);
             cowModelData.harness = enhancedCow.getEnhancedInventory().getStackInSlot(5);
             cowModelData.collar = hasCollar(enhancedCow.getEnhancedInventory());
+            cowModelData.hasChest = !enhancedCow.getEnhancedInventory().getStackInSlot(0).isEmpty();
 
             if(cowModelData.cowGenes != null) {
                 cowModelDataCache.put(enhancedCow.getEntityId(), cowModelData);

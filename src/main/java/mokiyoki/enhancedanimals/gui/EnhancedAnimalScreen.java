@@ -103,14 +103,14 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                     ((EnhancedSlot)slot).setEnabled(false);
                 } else {
                     if (slot.getSlotIndex() == 0){
-                        if (!isHasItemsInChest(this.container.getEnhancedAnimalInventory(), getInvIndex())){
+                        if (!isHasItemsInChest(this.container.getEnhancedAnimalInventory())){
                             ((EnhancedSlot)slot).setEnabled(true);
                         } else {
                             ((EnhancedSlot)slot).setEnabled(false);
                         }
                     } else {
                         if (slot.getSlotIndex() == 14) {
-                            if (isHasItemsInChest(this.container.getEnhancedAnimalInventory(), getInvIndex())) {
+                            if (isHasItemsInChest(this.container.getEnhancedAnimalInventory())) {
                                 ((EnhancedSlot)slot).setEnabled(true);
                             } else {
                                 ((EnhancedSlot)slot).setEnabled(false);
@@ -176,7 +176,6 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         int shiftY = 17;
         int shiftX = 7;
         this.blit(i, j, 0, 0, this.xSize, this.ySize);
-        int countEquipment = 0;
 
         /**
          *  screenPlacementFromX : X coordinate of where you want the top left corner of the image to be placed on the screen in game. start with int i and + || - what you need to place it.
@@ -216,12 +215,10 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         if (this.container.enhancedAnimal.canHaveSaddle()) {
             this.blit(i + shiftX, j + shiftY, 0, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
-            countEquipment++;
         }
         if (this.container.enhancedAnimal.canHaveBridle()) {
             this.blit(i + shiftX, j + shiftY, 18, this.ySize + 54, 18, 18);
             shiftY = shiftY + 18;
-            countEquipment++;
         }
         if (this.container.enhancedAnimal.canHaveArmour()) {
             this.blit(i + shiftX, j + shiftY, 36, this.ySize + 54, 18, 18);
@@ -230,7 +227,6 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                 shiftY = 17;
                 shiftX = 79;
             }
-            countEquipment++;
         }
         if (this.container.enhancedAnimal.canHaveBlanket() && (shiftX == 7 || !this.chestTabEnabled)) {
             this.blit(i + shiftX, j + shiftY, 54, this.ySize + 54, 18, 18);
@@ -239,7 +235,6 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                 shiftY = 17;
                 shiftX = 79;
             }
-            countEquipment++;
         }
         if (this.container.enhancedAnimal.canHaveBanner() && (shiftX == 7 || !this.chestTabEnabled)) {
             this.blit(i + shiftX, j + shiftY, 72, this.ySize + 54, 18, 18);
@@ -248,7 +243,6 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                 shiftY = 17;
                 shiftX = 79;
             }
-            countEquipment++;
         }
         if (this.container.enhancedAnimal.canHaveHarness() && (shiftX == 7 || !this.chestTabEnabled)) {
             this.blit(i + shiftX, j + shiftY, 90, this.ySize + 54, 18, 18);
@@ -257,10 +251,9 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                 shiftY = 17;
                 shiftX = 79;
             }
-            countEquipment++;
         }
 
-        boolean hasItemsInChest = isHasItemsInChest(retrievedInventory, countEquipment);
+        boolean hasItemsInChest = isHasItemsInChest(retrievedInventory);
 
         if (this.container.enhancedAnimal.canHaveChest()) {
             if (this.chestTabEnabled) {
@@ -287,36 +280,13 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         }
     }
 
-    private boolean isHasItemsInChest(IInventory retrievedInventory, int countEquipment) {
-        for (int a = countEquipment; a <= retrievedInventory.getSizeInventory(); a++) {
+    private boolean isHasItemsInChest(IInventory retrievedInventory) {
+        for (int a = 7; a <= retrievedInventory.getSizeInventory(); a++) {
             if (!retrievedInventory.getStackInSlot(a).isEmpty() && !(retrievedInventory.getStackInSlot(a).getItem() == Items.AIR)) {
                 return true;
             }
         }
         return false;
-    }
-
-    private int getInvIndex() {
-        int countEquipment = 0;
-        if (this.container.enhancedAnimal.canHaveSaddle()) {
-            countEquipment++;
-        }
-        if (this.container.enhancedAnimal.canHaveBridle()) {
-            countEquipment++;
-        }
-        if (this.container.enhancedAnimal.canHaveArmour()) {
-            countEquipment++;
-        }
-        if (this.container.enhancedAnimal.canHaveBlanket() && !this.chestTabEnabled) {
-            countEquipment++;
-        }
-        if (this.container.enhancedAnimal.canHaveBanner() && !this.chestTabEnabled) {
-            countEquipment++;
-        }
-        if (this.container.enhancedAnimal.canHaveHarness() && !this.chestTabEnabled) {
-            countEquipment++;
-        }
-        return countEquipment;
     }
 
     private void setAnimalInfo() {

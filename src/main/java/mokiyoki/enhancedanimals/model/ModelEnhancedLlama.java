@@ -1083,7 +1083,9 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             return llamaModelData;
         } else {
             LlamaModelData llamaModelData = new LlamaModelData();
-            llamaModelData.llamaGenes = enhancedLlama.getSharedGenes().getAutosomalGenes();
+            if (enhancedLlama.getSharedGenes()!=null) {
+                llamaModelData.llamaGenes = enhancedLlama.getSharedGenes().getAutosomalGenes();
+            }
             llamaModelData.coatlength = enhancedLlama.getCoatLength();
             llamaModelData.maxCoatlength = enhancedLlama.getCoatLength();
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();

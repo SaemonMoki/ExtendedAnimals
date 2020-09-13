@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.gui;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 
 public class EnhancedSlot extends Slot {
 
@@ -18,5 +19,13 @@ public class EnhancedSlot extends Slot {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public ItemStack getStack() {
+        if(this.enabled) {
+            return super.getStack();
+        }
+        return ItemStack.EMPTY;
     }
 }

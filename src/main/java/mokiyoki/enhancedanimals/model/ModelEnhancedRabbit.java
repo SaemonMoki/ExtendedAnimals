@@ -663,7 +663,9 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             return rabbitModelData;
         } else {
             RabbitModelData rabbitModelData = new RabbitModelData();
-            rabbitModelData.rabbitGenes = enhancedRabbit.getSharedGenes().getAutosomalGenes();
+            if (enhancedRabbit.getSharedGenes()!=null) {
+                rabbitModelData.rabbitGenes = enhancedRabbit.getSharedGenes().getAutosomalGenes();
+            }
             rabbitModelData.coatlength = enhancedRabbit.getCoatLength();
             rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
             rabbitModelData.blink = enhancedRabbit.getBlink();

@@ -1244,7 +1244,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             return chickenModelData;
         } else {
             ChickenModelData chickenModelData = new ChickenModelData();
-            chickenModelData.chickenGenes = enhancedChicken.getSharedGenes().getAutosomalGenes();
+            if (enhancedChicken.getSharedGenes()!=null) {
+                chickenModelData.chickenGenes = enhancedChicken.getSharedGenes().getAutosomalGenes();
+            }
             chickenModelData.sleeping = enhancedChicken.isRoosting();
             chickenModelData.blink = enhancedChicken.getBlink();
             chickenModelData.birthTime = enhancedChicken.getBirthTime();

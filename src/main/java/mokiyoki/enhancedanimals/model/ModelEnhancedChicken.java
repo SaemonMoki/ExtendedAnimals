@@ -713,7 +713,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         if (!(chickenModelData.birthTime == null) && !chickenModelData.birthTime.equals("") && !chickenModelData.birthTime.equals("0")) {
             int ageTime = (int)(chickenModelData.clientGameTime - Long.parseLong(chickenModelData.birthTime));
             if (ageTime <= 70000) {
-                age = ageTime/70000.0F;
+                age = ageTime < 0 ? 0 : ageTime/70000.0F;
             }
         }
 
@@ -934,46 +934,46 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
-        ModelHelper.copyModelAngles(head, headNakedNeck);
+        ModelHelper.copyModelPositioning(head, headNakedNeck);
 
-        ModelHelper.copyModelAngles(head, bill);
-        ModelHelper.copyModelAngles(head, billChild);
-        ModelHelper.copyModelAngles(head, smallChin);
-        ModelHelper.copyModelAngles(head, chin);
-        ModelHelper.copyModelAngles(head, bigChin);
-        ModelHelper.copyModelAngles(head, beardChin);
-        ModelHelper.copyModelAngles(head, peaChin);
+        ModelHelper.copyModelPositioning(head, bill);
+        ModelHelper.copyModelPositioning(head, billChild);
+        ModelHelper.copyModelPositioning(head, smallChin);
+        ModelHelper.copyModelPositioning(head, chin);
+        ModelHelper.copyModelPositioning(head, bigChin);
+        ModelHelper.copyModelPositioning(head, beardChin);
+        ModelHelper.copyModelPositioning(head, peaChin);
 
-        ModelHelper.copyModelAngles(head, smallCrest);
-        ModelHelper.copyModelAngles(head, bigCrest);
-        ModelHelper.copyModelAngles(head, forwardCrest);
+        ModelHelper.copyModelPositioning(head, smallCrest);
+        ModelHelper.copyModelPositioning(head, bigCrest);
+        ModelHelper.copyModelPositioning(head, forwardCrest);
 
-        ModelHelper.copyModelAngles(head, combXtraSmallSingle);
-        ModelHelper.copyModelAngles(head, combSmallSingle);
-        ModelHelper.copyModelAngles(head, combSingle);
-        ModelHelper.copyModelAngles(head, combLargeSingle);
-        ModelHelper.copyModelAngles(head, combXtraLargeSingle);
-        ModelHelper.copyModelAngles(head, combSmallRose);
-        ModelHelper.copyModelAngles(head, combRose);
-        ModelHelper.copyModelAngles(head, combLargeRose);
-        ModelHelper.copyModelAngles(head, combSmallRose2);
-        ModelHelper.copyModelAngles(head, combRose2);
-        ModelHelper.copyModelAngles(head, combLargeRose2);
-        ModelHelper.copyModelAngles(head, combSmallPea);
-        ModelHelper.copyModelAngles(head, combPea);
-        ModelHelper.copyModelAngles(head, combLargePea);
-        ModelHelper.copyModelAngles(head, combSmallWalnut);
-        ModelHelper.copyModelAngles(head, combWalnut);
-        ModelHelper.copyModelAngles(head, combLargeWalnut);
-        ModelHelper.copyModelAngles(head, combV);
+        ModelHelper.copyModelPositioning(head, combXtraSmallSingle);
+        ModelHelper.copyModelPositioning(head, combSmallSingle);
+        ModelHelper.copyModelPositioning(head, combSingle);
+        ModelHelper.copyModelPositioning(head, combLargeSingle);
+        ModelHelper.copyModelPositioning(head, combXtraLargeSingle);
+        ModelHelper.copyModelPositioning(head, combSmallRose);
+        ModelHelper.copyModelPositioning(head, combRose);
+        ModelHelper.copyModelPositioning(head, combLargeRose);
+        ModelHelper.copyModelPositioning(head, combSmallRose2);
+        ModelHelper.copyModelPositioning(head, combRose2);
+        ModelHelper.copyModelPositioning(head, combLargeRose2);
+        ModelHelper.copyModelPositioning(head, combSmallPea);
+        ModelHelper.copyModelPositioning(head, combPea);
+        ModelHelper.copyModelPositioning(head, combLargePea);
+        ModelHelper.copyModelPositioning(head, combSmallWalnut);
+        ModelHelper.copyModelPositioning(head, combWalnut);
+        ModelHelper.copyModelPositioning(head, combLargeWalnut);
+        ModelHelper.copyModelPositioning(head, combV);
 
-        ModelHelper.copyModelAngles(head, beard);
-        ModelHelper.copyModelAngles(head, beardNN);
+        ModelHelper.copyModelPositioning(head, beard);
+        ModelHelper.copyModelPositioning(head, beardNN);
 
-        ModelHelper.copyModelAngles(head, earL);
-        ModelHelper.copyModelAngles(head, earR);
+        ModelHelper.copyModelPositioning(head, earL);
+        ModelHelper.copyModelPositioning(head, earR);
 
-        ModelHelper.copyModelAngles(head, earTuftHelper);
+        ModelHelper.copyModelPositioning(head, earTuftHelper);
 
         this.earTuftL.rotateAngleX = 1.4F;
         this.earTuftL.rotateAngleZ = -1.4F;
@@ -985,30 +985,30 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.leftLeg.rotationPointY = 15F;
         this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-        ModelHelper.copyModelAngles(rightLeg, rightFeather1);
-        ModelHelper.copyModelAngles(rightLeg, rightLegExtend);
-        ModelHelper.copyModelAngles(rightLeg, rightFeather1Extend);
-        ModelHelper.copyModelAngles(rightLeg, rightFeather2);
-        ModelHelper.copyModelAngles(rightLeg, rightFeather3);
-        ModelHelper.copyModelAngles(rightLeg, rightVultureHock);
-        ModelHelper.copyModelAngles(leftLeg, leftLegExtend);
-        ModelHelper.copyModelAngles(leftLeg, leftFeather1Extend);
-        ModelHelper.copyModelAngles(leftLeg, leftFeather1);
-        ModelHelper.copyModelAngles(leftLeg, leftFeather2);
-        ModelHelper.copyModelAngles(leftLeg, leftFeather3);
-        ModelHelper.copyModelAngles(leftLeg, leftVultureHock);
+        ModelHelper.copyModelPositioning(rightLeg, rightFeather1);
+        ModelHelper.copyModelPositioning(rightLeg, rightLegExtend);
+        ModelHelper.copyModelPositioning(rightLeg, rightFeather1Extend);
+        ModelHelper.copyModelPositioning(rightLeg, rightFeather2);
+        ModelHelper.copyModelPositioning(rightLeg, rightFeather3);
+        ModelHelper.copyModelPositioning(rightLeg, rightVultureHock);
+        ModelHelper.copyModelPositioning(leftLeg, leftLegExtend);
+        ModelHelper.copyModelPositioning(leftLeg, leftFeather1Extend);
+        ModelHelper.copyModelPositioning(leftLeg, leftFeather1);
+        ModelHelper.copyModelPositioning(leftLeg, leftFeather2);
+        ModelHelper.copyModelPositioning(leftLeg, leftFeather3);
+        ModelHelper.copyModelPositioning(leftLeg, leftVultureHock);
 
         //body angle
 //        this.body.rotateAngleX = -bodyangle;
 
         //tail stuff
-        ModelHelper.copyModelAngles(body, bodyBig);
-        ModelHelper.copyModelAngles(body, bodySmall);
-        ModelHelper.copyModelAngles(body, tail);
-        ModelHelper.copyModelAngles(body, longTail);
-        ModelHelper.copyModelAngles(body, shortTail);
-        ModelHelper.copyModelAngles(body, xtraLongTail);
-        ModelHelper.copyModelAngles(body, xtraShortTail);
+        ModelHelper.copyModelPositioning(body, bodyBig);
+        ModelHelper.copyModelPositioning(body, bodySmall);
+        ModelHelper.copyModelPositioning(body, tail);
+        ModelHelper.copyModelPositioning(body, longTail);
+        ModelHelper.copyModelPositioning(body, shortTail);
+        ModelHelper.copyModelPositioning(body, xtraLongTail);
+        ModelHelper.copyModelPositioning(body, xtraShortTail);
 
         //wing stuff
 

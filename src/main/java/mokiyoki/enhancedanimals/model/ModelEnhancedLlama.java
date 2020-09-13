@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
@@ -110,6 +111,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
     private final EnhancedRendererModelNew saddlePad;
     private final EnhancedRendererModelNew collar;
     private final EnhancedRendererModelNew collarHardware;
+    private final EnhancedRendererModelNew bridle;
+    private final EnhancedRendererModelNew bridleNose;
 
     private Integer currentLlama = null;
 
@@ -458,6 +461,18 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.saddleEnglish.addChild(stirrup3DNarrowR);
         this.stirrup3DNarrowL.addChild(stirrup);
         this.stirrup3DNarrowR.addChild(stirrup);
+
+        this.textureHeight = 128;
+        this.textureWidth = 128;
+        //bridle
+        this.bridle = new EnhancedRendererModelNew(this, 0, 56);
+        this.bridle.addBox(-4.0F, -3.0F, -3.0F, 8, 6, 6, scale+ 0.1F);
+
+        this.bridleNose = new EnhancedRendererModelNew(this, 0, 48);
+        this.bridleNose.addBox(-2.0F, 0.0F, -7.0F, 4, 4, 4, scale + 0.1F);
+        this.bridle.addChild(this.bridleNose);
+
+        this.head.addChild(this.bridle);
     }
 
     @Override
@@ -513,7 +528,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         if (!(llamaModelData.birthTime == null) && !llamaModelData.birthTime.equals("") && !llamaModelData.birthTime.equals("0")) {
             int ageTime = (int)(llamaModelData.clientGameTime - Long.parseLong(llamaModelData.birthTime));
             if (ageTime <= 80000) {
-                age = ageTime/80000.0F;
+                age = ageTime < 0 ? 0 : ageTime/80000.0F;
             }
         }
 
@@ -537,19 +552,35 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             this.eyeRight.showModel = false;
         }
 
+        this.earsTopR.showModel = false;
+        this.earsTopL.showModel = false;
+        this.earsTopBananaR.showModel = false;
+        this.earsTopBananaL.showModel = false;
+
         if (banana){
-            this.earsTopR.showModel = false;
-            this.earsTopL.showModel = false;
+            this.earsTopBananaR.showModel = true;
+            this.earsTopBananaL.showModel = true;
         }else {
-            this.earsTopBananaR.showModel = false;
-            this.earsTopBananaL.showModel = false;
+            this.earsTopR.showModel = true;
+            this.earsTopL.showModel = true;
+        }
+
+        if (llamaModelData.bridle.getItem() instanceof CustomizableBridle) {
+            this.bridle.showModel = true;
+        } else {
+            this.bridle.showModel = false;
         }
 
         renderCollar(llamaModelData.collar, coatlength, llamaModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-        //controlled by flag in rotationAngles
-        this.chest1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.chest2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.chest1.showModel = false;
+        this.chest2.showModel = false;
+        if (llamaModelData.hasChest) {
+            this.chest1.showModel = true;
+            this.chest2.showModel = true;
+            this.chest1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.chest2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        }
 
                 if (coatlength == 0) {
                 ImmutableList.of(this.neckWool0, this.body).forEach((renderer) -> {
@@ -731,10 +762,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         this.neck.rotateAngleY = netHeadYaw * 0.017453292F;
 
-        boolean flag = !entityIn.isChild() && entityIn.hasChest();
-        this.chest1.showModel = flag;
-        this.chest2.showModel = flag;
-
         if (!llamaModelData.sleeping) {
             this.neck.rotateAngleX = headPitch * 0.017453292F;
             this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
@@ -743,19 +770,19 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         }
 
-        ModelHelper.copyModelAngles(neck, neckWool0);
-        ModelHelper.copyModelAngles(neck, neckWool1);
+        ModelHelper.copyModelPositioning(neck, neckWool0);
+        ModelHelper.copyModelPositioning(neck, neckWool1);
 
-        ModelHelper.copyModelAngles(body, bodyShaved);
-        ModelHelper.copyModelAngles(body, body1);
+        ModelHelper.copyModelPositioning(body, bodyShaved);
+        ModelHelper.copyModelPositioning(body, body1);
 
-        ModelHelper.copyModelAngles(leg1, leg1Wool1);
-        ModelHelper.copyModelAngles(leg2, leg2Wool1);
-        ModelHelper.copyModelAngles(leg3, leg3Wool1);
-        ModelHelper.copyModelAngles(leg4, leg4Wool1);
+        ModelHelper.copyModelPositioning(leg1, leg1Wool1);
+        ModelHelper.copyModelPositioning(leg2, leg2Wool1);
+        ModelHelper.copyModelPositioning(leg3, leg3Wool1);
+        ModelHelper.copyModelPositioning(leg4, leg4Wool1);
 
-        ModelHelper.copyModelAngles(body, tail);
-        ModelHelper.copyModelAngles(body, tail1);
+        ModelHelper.copyModelPositioning(body, tail);
+        ModelHelper.copyModelPositioning(body, tail1);
 
         if ( suri && llamaModelData.coatlength >= 0 ) {
             if (llamaModelData.coatlength >= 1) {
@@ -768,54 +795,54 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                 this.leg4Wool1.rotationPointY = this.leg4.rotationPointY + (llamaModelData.coatlength/2.0F);
             }
         }
-        ModelHelper.copyModelAngles(neck, neckBone);
-        ModelHelper.copyModelAngles(neck, neckWool0);
-        ModelHelper.copyModelAngles(neck, neckWool1);
-        ModelHelper.copyModelAngles(neckWool1, neckWool2);
-        ModelHelper.copyModelAngles(neckWool1, neckWool3);
-        ModelHelper.copyModelAngles(neckWool1, neckWool4);
+        ModelHelper.copyModelPositioning(neck, neckBone);
+        ModelHelper.copyModelPositioning(neck, neckWool0);
+        ModelHelper.copyModelPositioning(neck, neckWool1);
+        ModelHelper.copyModelPositioning(neckWool1, neckWool2);
+        ModelHelper.copyModelPositioning(neckWool1, neckWool3);
+        ModelHelper.copyModelPositioning(neckWool1, neckWool4);
 
-//        copyModelAngles(head, earsR);
-//        copyModelAngles(head, earsL);
-//        copyModelAngles(head, earsTopR);
-//        copyModelAngles(head, earsTopL);
-//        copyModelAngles(head, earsTopBananaR);
-//        copyModelAngles(head, earsTopBananaL);
+//        copyModelPositioning(head, earsR);
+//        copyModelPositioning(head, earsL);
+//        copyModelPositioning(head, earsTopR);
+//        copyModelPositioning(head, earsTopL);
+//        copyModelPositioning(head, earsTopBananaR);
+//        copyModelPositioning(head, earsTopBananaL);
 
-        ModelHelper.copyModelAngles(body, body2);
-        ModelHelper.copyModelAngles(body, body3);
-        ModelHelper.copyModelAngles(body, body4);
+        ModelHelper.copyModelPositioning(body, body2);
+        ModelHelper.copyModelPositioning(body, body3);
+        ModelHelper.copyModelPositioning(body, body4);
 
-        ModelHelper.copyModelAngles(tail1, tail2);
-        ModelHelper.copyModelAngles(tail1, tail3);
-        ModelHelper.copyModelAngles(tail1, tail4);
+        ModelHelper.copyModelPositioning(tail1, tail2);
+        ModelHelper.copyModelPositioning(tail1, tail3);
+        ModelHelper.copyModelPositioning(tail1, tail4);
 
         //TODO fix the toes so they angle properly and maintain the angle while they walk
 
-        ModelHelper.copyModelAngles(leg1Wool1, leg1Wool2);
-        ModelHelper.copyModelAngles(leg1Wool1, leg1Wool3);
-        ModelHelper.copyModelAngles(leg1Wool1, leg1Wool4);
-        ModelHelper.copyModelAngles(leg1, toeOuterFrontR);
-        ModelHelper.copyModelAngles(leg1, toeInnerFrontR);
+        ModelHelper.copyModelPositioning(leg1Wool1, leg1Wool2);
+        ModelHelper.copyModelPositioning(leg1Wool1, leg1Wool3);
+        ModelHelper.copyModelPositioning(leg1Wool1, leg1Wool4);
+        ModelHelper.copyModelPositioning(leg1, toeOuterFrontR);
+        ModelHelper.copyModelPositioning(leg1, toeInnerFrontR);
 
 
-        ModelHelper.copyModelAngles(leg2Wool1, leg2Wool2);
-        ModelHelper.copyModelAngles(leg2Wool1, leg2Wool3);
-        ModelHelper.copyModelAngles(leg2Wool1, leg2Wool4);
-        ModelHelper.copyModelAngles(leg2, toeOuterFrontL);
-        ModelHelper.copyModelAngles(leg2, toeInnerFrontL);
+        ModelHelper.copyModelPositioning(leg2Wool1, leg2Wool2);
+        ModelHelper.copyModelPositioning(leg2Wool1, leg2Wool3);
+        ModelHelper.copyModelPositioning(leg2Wool1, leg2Wool4);
+        ModelHelper.copyModelPositioning(leg2, toeOuterFrontL);
+        ModelHelper.copyModelPositioning(leg2, toeInnerFrontL);
 
-        ModelHelper.copyModelAngles(leg3Wool1, leg3Wool2);
-        ModelHelper.copyModelAngles(leg3Wool1, leg3Wool3);
-        ModelHelper.copyModelAngles(leg3Wool1, leg3Wool4);
-        ModelHelper.copyModelAngles(leg3, toeOuterBackR);
-        ModelHelper.copyModelAngles(leg3, toeInnerBackR);
+        ModelHelper.copyModelPositioning(leg3Wool1, leg3Wool2);
+        ModelHelper.copyModelPositioning(leg3Wool1, leg3Wool3);
+        ModelHelper.copyModelPositioning(leg3Wool1, leg3Wool4);
+        ModelHelper.copyModelPositioning(leg3, toeOuterBackR);
+        ModelHelper.copyModelPositioning(leg3, toeInnerBackR);
 
-        ModelHelper.copyModelAngles(leg4Wool1, leg4Wool2);
-        ModelHelper.copyModelAngles(leg4Wool1, leg4Wool3);
-        ModelHelper.copyModelAngles(leg4Wool1, leg4Wool4);
-        ModelHelper.copyModelAngles(leg4, toeOuterBackL);
-        ModelHelper.copyModelAngles(leg4, toeInnerBackL);
+        ModelHelper.copyModelPositioning(leg4Wool1, leg4Wool2);
+        ModelHelper.copyModelPositioning(leg4Wool1, leg4Wool3);
+        ModelHelper.copyModelPositioning(leg4Wool1, leg4Wool4);
+        ModelHelper.copyModelPositioning(leg4, toeOuterBackL);
+        ModelHelper.copyModelPositioning(leg4, toeInnerBackL);
 
         setNoseRotations(sharedGenes, llamaModelData);
 
@@ -851,6 +878,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                     this.stirrup3DNarrowR.setRotationPoint(-7.5F - coatLength, 0.0F, 0.0F);
                 }
             }
+
+            ModelHelper.copyModelPositioning(this.nose, this.bridleNose);
     }
 
     private void setNoseRotations(int[] sharedGenes, LlamaModelData llamaModelData) {
@@ -859,7 +888,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         if (!(llamaModelData.birthTime == null) && !llamaModelData.birthTime.equals("") && !llamaModelData.birthTime.equals("0")) {
             int ageTime = (int)(llamaModelData.clientGameTime - Long.parseLong(llamaModelData.birthTime));
             if (ageTime <= 80000) {
-                age = ageTime/80000.0F;
+                age = ageTime < 0 ? 0 : ageTime/80000.0F;
             }
         }
 
@@ -1012,6 +1041,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         ItemStack bridle;
         ItemStack harness;
         boolean collar;
+        boolean hasChest;
     }
 
     private LlamaModelData getLlamaModelData() {
@@ -1048,6 +1078,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.bridle = enhancedLlama.getEnhancedInventory().getStackInSlot(3);
             llamaModelData.harness = enhancedLlama.getEnhancedInventory().getStackInSlot(5);
             llamaModelData.collar = hasCollar(enhancedLlama.getEnhancedInventory());
+            llamaModelData.hasChest = enhancedLlama.hasChest();
 
             return llamaModelData;
         } else {
@@ -1064,6 +1095,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.bridle = enhancedLlama.getEnhancedInventory().getStackInSlot(3);
             llamaModelData.harness = enhancedLlama.getEnhancedInventory().getStackInSlot(5);
             llamaModelData.collar = hasCollar(enhancedLlama.getEnhancedInventory());
+            llamaModelData.hasChest = enhancedLlama.hasChest();
 
             if(llamaModelData.llamaGenes != null) {
                 llamaModelDataCache.put(enhancedLlama.getEntityId(), llamaModelData);

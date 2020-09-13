@@ -39,7 +39,7 @@ public class ModelHelper {
         dest.rotateAngleZ = source.rotateAngleZ;
     }
 
-    public static void copyModelAngles(ModelRenderer source, ModelRenderer dest) {
+    public static void copyModelPositioning(ModelRenderer source, ModelRenderer dest) {
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
         dest.rotateAngleZ = source.rotateAngleZ;

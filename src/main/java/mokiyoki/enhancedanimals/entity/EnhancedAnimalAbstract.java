@@ -340,7 +340,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     @Override
     public float getHunger(){
-        return hunger;
+        return this.hunger;
     }
 
     public void decreaseHunger(float decrease) {
@@ -363,6 +363,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
             return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
         } else {
+            setBirthTime(String.valueOf(1));
             return 500000;
         }
     }
@@ -490,16 +491,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                     }
                     this.equipmentArray.set(invSlot, inventoryItemStack.copy());
                 }
-            }
-        }
-        if (this.runDemoMode) {
-            if (this.demoTimer >= this.demoTimerMax) {
-                this.demoTimer = 0;
-                this.genetics = createInitialGenes(this.world, new BlockPos(this), false);
-                setInitialDefaults();
-                this.toggleReloadTexture();
-            } else {
-                this.demoTimer++;
             }
         }
     }
@@ -816,6 +807,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         compound.putBoolean("Collared", this.hasCollar());
 
+        compound.putBoolean("demo", this.runDemoMode);
+
         writeInventory(compound);
     }
 
@@ -959,10 +952,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         this.setBreed(compound.getString("breed"));
 
         this.runDemoMode = (compound.getBoolean("demo"));
-        if (this.runDemoMode) {
-            this.demoTimerMax = (compound.getInt("demoTimer"));
-            this.setBirthTime(String.valueOf(-100000));
-        }
 
         geneFixer();
 
@@ -1401,8 +1390,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         if (!this.breed.isEmpty()) {
             this.genetics = createInitialBreedGenes(this.world, new BlockPos(this), this.breed);
             setInitialDefaults();
-//            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (rand.nextInt(180000-24000) + 24000)));
-            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (5000000)));
+            this.setBirthTime(String.valueOf(0));
         } else if (this.genetics.getAutosomalGene(0) == 0) {
             this.genetics = createInitialGenes(this.world, new BlockPos(this), true);
             setInitialDefaults();

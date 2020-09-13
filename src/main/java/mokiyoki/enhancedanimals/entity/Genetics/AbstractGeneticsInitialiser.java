@@ -35,6 +35,9 @@ public abstract class AbstractGeneticsInitialiser {
     }
 
     protected Genes generateWithBreed(IWorld world, BlockPos pos, List<Breed> breeds, String breedAsString) {
+        if (isBiome(breedAsString)) {
+            return generateWithBiome(breedAsString);
+        }
         Biome biome = world.getBiome(pos);
         breedAsString = breedAsString.toLowerCase();
         Genes localWildType = generateLocalWildGenetics(biome, world.getWorldInfo().getGenerator() == WorldType.FLAT);
@@ -45,6 +48,34 @@ public abstract class AbstractGeneticsInitialiser {
         }
 
         return localWildType;
+    }
+
+    protected Genes generateWithBiome(String biome) {
+        biome = biome.toLowerCase();
+
+        if (biome.contains("darkwoods") || biome.equals("darkforest")) {
+            return generateLocalWildGenetics(Biomes.DARK_FOREST, false);
+        } else if (biome.contains("savanna")) {
+            return generateLocalWildGenetics(Biomes.SAVANNA, false);
+        } else if (biome.contains("desert")) {
+            return generateLocalWildGenetics(Biomes.DESERT, false);
+        } else if (biome.contains("tundra") || biome.contains("snowy")) {
+            return generateLocalWildGenetics(Biomes.SNOWY_TUNDRA, false);
+        } else if (biome.contains("mountains")) {
+            return generateLocalWildGenetics(Biomes.MOUNTAINS, false);
+        } else if (biome.contains("sunflower")) {
+            return generateLocalWildGenetics(Biomes.SUNFLOWER_PLAINS, false);
+        } else if (biome.contains("marsh") || biome.equals("swamp")) {
+            return generateLocalWildGenetics(Biomes.SWAMP, false);
+        } else if (biome.contains("jungle")) {
+            return generateLocalWildGenetics(Biomes.JUNGLE, false);
+        } else if (biome.contains("mushroom")) {
+            return generateLocalWildGenetics(Biomes.MUSHROOM_FIELDS, false);
+        } else if (biome.contains("plains")) {
+            return generateLocalWildGenetics(Biomes.PLAINS, false);
+        }
+
+            return generateLocalWildGenetics(Biomes.THE_VOID, true);
     }
 
     protected abstract Genes generateLocalWildGenetics(Biome biome, boolean isFlat);
@@ -86,16 +117,50 @@ public abstract class AbstractGeneticsInitialiser {
     }
 
     public Boolean hasBreed(List<Breed> listOfBreeds, String selectedBreed) {
-        for (Breed breed : listOfBreeds) {
-            if (breed.getBreedName().contains(selectedBreed)) {
+        if (!listOfBreeds.isEmpty()) {
+            if (selectedBreed.equals("true")) {
                 return true;
             }
+            for (Breed breed : listOfBreeds) {
+                if (breed.getBreedName().contains(selectedBreed)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public Boolean isBiome(String biome) {
+        biome = biome.toLowerCase();
+        if (biome.contains("plains")) {
+            return true;
+        } else if (biome.contains("darkwoods") || biome.equals("darkforest")) {
+            return true;
+        } else if (biome.contains("savanna")) {
+            return true;
+        } else if (biome.contains("desert")) {
+            return true;
+        } else if (biome.contains("tundra") || biome.contains("snowy")) {
+            return true;
+        } else if (biome.contains("mountains")) {
+            return true;
+        } else if (biome.contains("sunflower")) {
+            return true;
+        } else if (biome.contains("marsh") || biome.equals("swamp")) {
+            return true;
+        } else if (biome.contains("jungle")) {
+            return true;
+        } else if (biome.contains("mushroom")) {
+            return true;
         }
         return false;
     }
 
     private Breed getBreedFromString(List<Breed> listOfBreeds, String selectedBreed) {
         Collections.shuffle(listOfBreeds);
+        if (selectedBreed.equals("true")) {
+            return listOfBreeds.get(0);
+        }
         for (Breed breed : listOfBreeds) {
             if (breed.getBreedName().contains(selectedBreed)) {
                 return breed;

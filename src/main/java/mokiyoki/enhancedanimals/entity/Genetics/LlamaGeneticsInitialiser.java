@@ -17,6 +17,12 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
 
     public LlamaGeneticsInitialiser() {
         this.breeds.add(LlamaBreeds.SURI);
+        this.breeds.add(LlamaBreeds.BLUEEYEWHITE);
+        this.breeds.add(LlamaBreeds.WHITE);
+        this.breeds.add(LlamaBreeds.GREY);
+        this.breeds.add(LlamaBreeds.BROWN);
+        this.breeds.add(LlamaBreeds.SANDY);
+        this.breeds.add(LlamaBreeds.TUXEDO);
     }
 
     public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
@@ -107,7 +113,7 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[9] = (2);
         }
 
-        //Piebald [ piebald, wildtype ]
+        //Piebald [ wildtype, piebald ]
         if(ThreadLocalRandom.current().nextInt(100)>WTC){
             autosomalGenes[10] = (ThreadLocalRandom.current().nextInt(2)+1);
 

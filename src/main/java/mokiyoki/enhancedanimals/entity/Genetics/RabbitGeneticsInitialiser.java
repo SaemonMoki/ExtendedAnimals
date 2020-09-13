@@ -16,7 +16,21 @@ public class RabbitGeneticsInitialiser extends AbstractGeneticsInitialiser {
     List<Breed> breeds = new ArrayList<>();
 
     public RabbitGeneticsInitialiser() {
-        this.breeds.add(RabbitBreeds.ANGORA);
+        this.breeds.add(RabbitBreeds.ENGLISH_ANGORA);
+        this.breeds.add(RabbitBreeds.FRENCH_ANGORA);
+        this.breeds.add(RabbitBreeds.LOP);
+        this.breeds.add(RabbitBreeds.MINI_LOP);
+        this.breeds.add(RabbitBreeds.LIONHEAD);
+        this.breeds.add(RabbitBreeds.DWARF_LIONHEAD);
+        this.breeds.add(RabbitBreeds.VIENNA);
+        this.breeds.add(RabbitBreeds.NEWZEALAND_WHITE);
+        this.breeds.add(RabbitBreeds.FLEMISH_GIANT);
+        this.breeds.add(RabbitBreeds.HOTOT);
+        this.breeds.add(RabbitBreeds.DUTCH);
+        this.breeds.add(RabbitBreeds.HIMALAYAN);
+        this.breeds.add(RabbitBreeds.NETHERLAND_DWARF);
+        this.breeds.add(RabbitBreeds.RHINELANDER);
+        this.breeds.add(RabbitBreeds.HARLEQUIN);
     }
 
     public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {

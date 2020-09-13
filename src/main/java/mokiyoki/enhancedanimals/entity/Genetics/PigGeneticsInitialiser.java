@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.entity.Genetics;
 
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.init.PigBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -18,6 +17,15 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
     public PigGeneticsInitialiser() {
         this.breeds.add(PigBreeds.LARGEWHITE);
+        this.breeds.add(PigBreeds.KUNEKUNE);
+        this.breeds.add(PigBreeds.PIETRAIN);
+        this.breeds.add(PigBreeds.MULEFOOT);
+        this.breeds.add(PigBreeds.HAMPSHIRE);
+        this.breeds.add(PigBreeds.BERKSHIRE);
+        this.breeds.add(PigBreeds.DUROC);
+        this.breeds.add(PigBreeds.LARGEBLACK);
+        this.breeds.add(PigBreeds.PROTESTPIG);
+        this.breeds.add(PigBreeds.TAMWORTH);
     }
 
     public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
@@ -45,14 +53,14 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         /**
          * MC1R - Extension
-         *  E^D1 Dominant Black (European Large Black and Chinese Meishan)
-         *  E^D2 Dominant Black (Hampshire)
-         *  E+ WildType (Wild boar)
-         *  E^p Brindle (Large White, Pietrain, ?Oldspot?) Black spot pattern, Makes black spots on white or red ground colour
-         *  e Red (Duroc, all red breeds) Disables black pigment creation
+         *  1 : E^D1 Dominant Black (European Large Black and Chinese Meishan)
+         *  5 : E^D2 Dominant Black (Hampshire)
+         *  2 : E+ WildType (Wild boar)
+         *  3 : E^p Brindle (Large White, Pietrain, ?Oldspot?) Black spot pattern, Makes black spots on white or red ground colour
+         *  4 : e Red (Duroc, all red breeds) Disables black pigment creation
          */
 
-        //Extension [ Dom.Black(MCR1), Dominant.Black(MCR2), Wildtype+, brindle(spots), red ]
+        //Extension [ Dom.Black(MCR1), Wildtype+, brindle(spots), red, Dominant.Black(MCR2) ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -81,18 +89,18 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         //Chinchilla [ chinchilla, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//        } else {
             autosomalGenes[4] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[5] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
+//        }
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[5] = (ThreadLocalRandom.current().nextInt(2) + 1);
+//
+//        } else {
             autosomalGenes[5] = (2);
-        }
+//        }
 
         //Subtle Dilute [ Wildtype+, dilute ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -122,22 +130,31 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[9] = (1);
 //            }
 
-        //this one will combo with agouti I guess
         //White Spots [ Wildtype+, spotted, roanSpots ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[10] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//
+//        } else {
             autosomalGenes[10] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[11] = (ThreadLocalRandom.current().nextInt(3) + 1);
+//        }
+//        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//            autosomalGenes[11] = (ThreadLocalRandom.current().nextInt(3) + 1);
 
-        } else {
+//        } else {
             autosomalGenes[11] = (1);
-        }
+//        }
 
-        //Dom.White and Belted [ Dom.White, Belted, wildtype+, Patch, Roan]
+        /**
+         *    1 : I^1  Dominant White : Large White, Belgian Landrace, Landrace
+         *    2 : I^Be Belted : white belt over front legs : Hampshire, Cinta Senese
+         *    3 : i+   wildtype :
+         *    4 : I^P  Patch : black? spots on white background : Pietrain, Large White, Landrace, Belgian Landrace
+         *    5 : I^Rn Roan/dilute : grey, white and coloured hairs mixed : Large White, Landrace, Belgian Landrace
+         *    6 : I^2  Dominant White : Large White, Belgian Landrace, Landrace
+         *    7 : I^3  Dominant White : Large White, Belgian Landrace, Landrace
+         */
+
+        //Dom.White and Belted [ Dom.White, Belted, wildtype+, Patch, Roan, Dom.White2, Dom.White3]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[12] = (ThreadLocalRandom.current().nextInt(5) + 1);
             if (wildType == 1) {
@@ -156,7 +173,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //Berkshire spots [ Wildtype+, tuxedo, berkshire ]
+        //Berkshire spots [ Wildtype+, tuxedo, berkshire, hereford ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[14] = (ThreadLocalRandom.current().nextInt(3) + 1);
             autosomalGenes[15] = (1);
@@ -219,16 +236,14 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[31] = (ThreadLocalRandom.current().nextInt(20) + 20);
 
 
-        //Waddles [ waddles, wildtype ]
+        //Wattles [ wattles, wildtype ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[32] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
         } else {
             autosomalGenes[32] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[33] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
         } else {
             autosomalGenes[33] = (2);
         }
@@ -413,6 +428,52 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         } else {
             autosomalGenes[59] = (1);
+        }
+
+        //mulefoot gene [wildtype, mulefoot]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[60] = ThreadLocalRandom.current().nextInt(2) + 1;
+        } else {
+            autosomalGenes[60] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[61] = ThreadLocalRandom.current().nextInt(2) + 1;
+        } else {
+            autosomalGenes[61] = 1;
+        }
+
+        /**
+         *  needs E^P to express
+         *  dominant gene, negated by OopsAllSpots
+         */
+
+        //Tamsworth gene [wildtype, allred]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[62] = ThreadLocalRandom.current().nextInt(2) + 1;
+        } else {
+            autosomalGenes[62] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[63] = ThreadLocalRandom.current().nextInt(2) + 1;
+        } else {
+            autosomalGenes[63] = 1;
+        }
+
+        /**
+         *  needs homozygous E^P to express
+         *  incomplete dominant at best if E^P homozygous, negated by tamsworth mutation
+         *  makes fur white
+         */
+        //Oops All Spots gene [wildtype, allspots]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[64] = ThreadLocalRandom.current().nextInt(2) + 1;
+        } else {
+            autosomalGenes[64] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[65] = ThreadLocalRandom.current().nextInt(2) + 1;
+        } else {
+            autosomalGenes[65] = 1;
         }
 
         //ear size [xsmall, small, medium, large, xlarge]

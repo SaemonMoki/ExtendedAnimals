@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.entity.Genetics.PigGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.BlockState;
@@ -57,8 +58,13 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
             "", "skin_spots.png", ""
     };
 
+    private static final String[] PIG_TEXTURES_SKINBRINDLE_SPOTS = new String[] {
+            "", "skin_brindleberkshire.png", "skin_brindle.png"
+    };
+
     private static final String[] PIG_TEXTURES_SKINMARKINGS_BELTED = new String[] {
-            "", "skin_pink.png", "skin_belt.png", "skin_patchy.png"
+            "", "skin_pink.png", "skin_belt.png", "skin_patchy.png", "skin_roan.png",
+                "skin_bluebuttbelt.png", "skin_bluebuttbelt", "skin_bluebuttbelt.png"
     };
 
     private static final String[] PIG_TEXTURES_SKINMARKINGS_BERKSHIRE = new String[] {
@@ -66,11 +72,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     };
 
     private static final String[] PIG_TEXTURES_COATRED = new String[] {
-            "pigbase.png", "solid_white.png", "solid_milk.png", "solid_cream.png", "solid_carmel.png", "solid_orange.png", "solid_ginger.png", "solid_red.png", "solid_brown.png"
+            "pigbase.png", "solid_white.png", "solid_milk.png", "solid_cream.png", "solid_carmel.png", "solid_orange.png", "solid_ginger.png", "solid_ginger.png", "solid_red.png", "solid_redbrown.png", "solid_brown.png"
     };
     private static final String[] PIG_TEXTURES_COATBLACK = new String[] {
-            "red", "black_solid.png", "black_wildtype.png", "black_brindle.png", "black_brindlesmall.png",
-                   "choc_solid.png", "choc_wildtype.png", "choc_brindle.png", "choc_brindlesmall.png",
+            "red", "black_solid.png", "black_wildtype.png", "black_berkshirebrindle.png", "black_oopsallspots.png", "black_brindle.png", "black_brindlesmall.png",
+                   "choc_solid.png", "choc_wildtype.png", "choc_berkshirebrindle.png", "choc_oopsallspots.png", "choc_brindle.png", "choc_brindlesmall.png",
                    "lightchoc_wildtype.png"
     };
 
@@ -80,7 +86,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     };
 
     private static final String[] PIG_TEXTURES_SPOT_BELTED = new String[] {
-            "", "spot_white.png", "spot_belt.png", "spot_patchy.png", "spot_roan.png", "spot_roanbelted.png"
+            "", "spot_white.png", "spot_belt.png", "spot_patchy.png", "spot_roan.png", "spot_roanbelted.png", "spot_patchyhetred.png", "spot_patchyhetsilver.png"
     };
 
     private static final String[] PIG_TEXTURES_SPOT_BERKSHIRE = new String[] {
@@ -96,7 +102,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     };
 
     private static final String[] PIG_TEXTURES_HOOVES = new String[] {
-            "hooves_black.png", "hooves_brown.png", "hooves_pink.png"
+            "hooves_black.png", "hoovesmulefoot_black.png"
     };
 
     private static final String[] PIG_TEXTURES_TUSKS = new String[] {
@@ -107,7 +113,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
             "bald", "sparse.png", "medium.png", "furry.png", "wooly.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD, ModItems.COOKEDCHICKEN_DARK, ModItems.COOKEDCHICKEN_DARKBIG, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_PALE, ModItems.COOKEDCHICKEN_PALESMALL, ModItems.COOKEDRABBIT_SMALL);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD, Items.EGG, Items.TURTLE_EGG, ModItems.COOKEDCHICKEN_DARK, ModItems.COOKEDCHICKEN_DARKBIG, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_PALE, ModItems.COOKEDCHICKEN_PALESMALL, ModItems.COOKEDRABBIT_SMALL);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.CARROT, Items.BEETROOT, Items.POTATO);
 
     private static final int SEXLINKED_GENES_LENGTH = 2;
@@ -155,12 +161,14 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
             put(new ItemStack(Items.SUGAR).getItem(), 1500);
             put(new ItemStack(Items.APPLE).getItem(), 1500);
             put(new ItemStack(Items.BREAD).getItem(), 18000);
+            put(new ItemStack(Items.EGG).getItem(), 100);
+            put(new ItemStack(Items.TURTLE_EGG).getItem(), 100);
             put(new ItemStack(Items.WHEAT_SEEDS).getItem(), 100);
             put(new ItemStack(Items.MELON_SEEDS).getItem(), 100);
             put(new ItemStack(Items.PUMPKIN_SEEDS).getItem(), 100);
             put(new ItemStack(Items.BEETROOT_SEEDS).getItem(), 100);
             put(new ItemStack(Items.SWEET_BERRIES).getItem(), 100);
-            put(new ItemStack(Items.ROTTEN_FLESH).getItem(), 500);
+            put(new ItemStack(Items.ROTTEN_FLESH).getItem(), 200);
             put(new ItemStack(Items.BROWN_MUSHROOM).getItem(), 1000);
             put(new ItemStack(Items.OAK_SAPLING).getItem(), 1000);
             put(new ItemStack(Items.DARK_OAK_SAPLING).getItem(), 1000);
@@ -232,16 +240,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
         if (item == Items.NAME_TAG) {
             itemStack.interactWithEntity(entityPlayer, this, hand);
             return true;
+        }else if ((!this.isChild() || !bottleFeedable) && item instanceof EnhancedEgg && hunger >= 6000) {
+            //enhancedegg egg eating
+            decreaseHunger(100);
+            if (!entityPlayer.abilities.isCreativeMode) {
+                itemStack.shrink(1);
+            } else {
+                if (itemStack.getCount() > 1) {
+                    itemStack.shrink(1);
+                }
+            }
         }
-//        else if (this.getSaddled() && !this.isBeingRidden()) {
-//            if (!this.world.isRemote) {
-//                entityPlayer.startRiding(this);
-//            }
-//
-//            return true;
-//        } else if (item == Items.SADDLE){
-//            return this.saddlePig(itemStack, entityPlayer, this);
-//        }
 
         return super.processInteract(entityPlayer, hand);
     }
@@ -657,20 +666,21 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
         int[] genesForText = getSharedGenes().getAutosomalGenes();
         if (genesForText != null) {
             boolean agouti = false;
-            int spotMod = 0;
+            int brindle = 0;
             int eyes = 0;
-            int red = 5;
+            int red = 7;
             int black = 0;
             int spot = 0;
             int belt = 0;
             int berk = 0;
             int coat = 0;
             int skin = 0;
+            int hooves = 0;
             boolean tusks = false;
 
             char[] uuidArry = getCachedUniqueIdString().toCharArray();
 
-            if (genesForText[0] == 1 || genesForText[1] == 1){
+            if (genesForText[0] == 1 || genesForText[1] == 1 || genesForText[0] == 5 || genesForText[1] == 5){
                 //solid black
                 black = 1;
             }else if (genesForText[0] == 2 || genesForText[1] == 2){
@@ -680,20 +690,44 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
                 //red with spots
                 if (genesForText[0] == 3 && genesForText[1] == 3){
                     //big spots
-                    black = 3;
+                    if (genesForText[62] == 2 || genesForText[63] == 2) {
+                        if (genesForText[64] != 2 && genesForText[65] != 2) {
+                            //red pig
+                            black = 0;
+                        } else {
+                            //spots
+                            black = 5;
+                        }
+                    } else if (genesForText[64] == 2 || genesForText[65] == 2) {
+                        if (genesForText[64] == 2 && genesForText[65] == 2) {
+                            //berkshire spots
+                            red = 1;
+                            black = 3;
+                            brindle = 1;
+                        } else {
+                            //big spots
+                            red = ((red-1)/2) + 1;
+                            black = 4;
+                        }
+                    } else {
+                        //spots
+                        red = 5;
+                        black = 5;
+                    }
                 }else{
                     //small spots
-                    black = 4;
+                    red = 6;
+                    black = 6;
                 }
             }
 
             if (agouti){
                 if (genesForText[2] == 1 || genesForText[3] == 1){
                     //shaded black
-                    red = 8;
+                    black = 13;
                 }else if (genesForText[2] == 2 || genesForText[3] == 2){
                     //shaded brown
-                    black = 6;
+                    black = 8;
                 }else if (genesForText[2] == 4 && genesForText[3] == 4) {
                     //recessive black
                     black = 1;
@@ -708,10 +742,10 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
             if (genesForText[6] == 2 && genesForText[7] == 2){
                 //black turns to dark chocolate
                 //reduce red in coat slightly
-                if (black != 6) {
-                    black = black + 4;
-                }else{
-                    black = 9;
+                if (black <= 6 && black != 0) {
+                    black = black + 6;
+                }else if (black == 9){
+                    black = 13;
                 }
                 red = red - 1;
 
@@ -734,18 +768,27 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
                 }
             }
 
-
-            if (genesForText[12] == 1 || genesForText[13] == 1){
-                //dominant white
+            if (genesForText[12] == 1 || genesForText[13] == 1 && (genesForText[12] !=3 && genesForText[13] != 3)) {
                 eyes = 2;
+            }
+
+            if (genesForText[12] == 1 && genesForText[13] == 1){
+                //dominant white
                 belt = 1;
             }else if (genesForText[12] == 2 || genesForText[13] == 2){
                 //belted
                 belt = 2;
             } else if (genesForText[12] == 4 || genesForText[13] == 4) {
                 //patchy
+                if (genesForText[12] == 3 || genesForText[13] == 3) {
+                    red = ((red-1)/2) + 1;
+                } else if (genesForText[12] != 5 && genesForText[13] != 5) {
+                    red = 1;
+                    brindle = 2;
+                }
             } else if (genesForText[12] == 5 || genesForText[13] == 5) {
                 //roan
+                belt = 4;
             }
 
             if (genesForText[14] != 1 && genesForText[15] != 1){
@@ -767,6 +810,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 
             if (belt == 1) {
                 skin = 1;
+            } else if (genesForText[12] != 3 && genesForText[13] != 3) {
+                skin = 2;
             } else if (black == 1 || black == 2) {
                 skin = 3;
             }else{
@@ -804,15 +849,32 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
                 }
             }
 
+            if (genesForText[60] == 2 && genesForText[61] == 2) {
+                hooves = 1;
+            }
+
+            if (red < 1) {
+                red = 1;
+            }
+
             this.enhancedAnimalTextures.add(PIG_TEXTURES_SKINBASE[skin]);
             this.texturesIndexes.add(String.valueOf(skin));
             if (spot == 1) {
                 this.enhancedAnimalTextures.add(PIG_TEXTURES_SKINMARKINGS_SPOTS[spot]);
                 this.texturesIndexes.add(String.valueOf(spot));
             }
+            if (brindle != 0) {
+                this.enhancedAnimalTextures.add(PIG_TEXTURES_SKINBRINDLE_SPOTS[brindle]);
+                this.texturesIndexes.add(String.valueOf(brindle));
+            }
             if (belt != 0) {
-                this.enhancedAnimalTextures.add(PIG_TEXTURES_SKINMARKINGS_BELTED[belt]);
-                this.texturesIndexes.add(String.valueOf(belt));
+                if (belt != 1 && (genesForText[12] == 1 || genesForText[13] == 1)) {
+                    this.enhancedAnimalTextures.add(PIG_TEXTURES_SKINMARKINGS_BELTED[5]);
+                    this.texturesIndexes.add(String.valueOf(5));
+                } else {
+                    this.enhancedAnimalTextures.add(PIG_TEXTURES_SKINMARKINGS_BELTED[belt]);
+                    this.texturesIndexes.add(String.valueOf(belt));
+                }
             }
             if (berk != 0) {
                 this.enhancedAnimalTextures.add(PIG_TEXTURES_SKINMARKINGS_BERKSHIRE[berk]);
@@ -831,6 +893,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
                     this.texturesIndexes.add(String.valueOf(spot));
                 }
                 if (belt != 0) {
+                    if (genesForText[12] == 1 || genesForText[13] == 1) {
+                        belt = 1;
+                    }
                     this.enhancedAnimalTextures.add(PIG_TEXTURES_SPOT_BELTED[belt]);
                     this.texturesIndexes.add(String.valueOf(belt));
                 }
@@ -844,8 +909,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
             }
             this.enhancedAnimalTextures.add(PIG_TEXTURES_EYES[eyes]);
             this.texturesIndexes.add(String.valueOf(eyes));
-            this.enhancedAnimalTextures.add(PIG_TEXTURES_HOOVES[0]);
-            this.texturesIndexes.add(String.valueOf(0));
+            this.enhancedAnimalTextures.add(PIG_TEXTURES_HOOVES[hooves]);
+            this.texturesIndexes.add(String.valueOf(hooves));
             if (tusks){
                 this.enhancedAnimalTextures.add(PIG_TEXTURES_TUSKS[1]);
                 this.texturesIndexes.add(String.valueOf(1));

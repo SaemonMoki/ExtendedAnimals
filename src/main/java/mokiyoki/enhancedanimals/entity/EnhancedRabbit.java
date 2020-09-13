@@ -850,6 +850,11 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
         //resets the max so we don't have to store it
         setMaxCoatLength();
+
+        if (!compound.getString("breed").isEmpty()) {
+            this.currentCoatLength = this.maxCoatLength;
+            this.setCoatLength(this.currentCoatLength);
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

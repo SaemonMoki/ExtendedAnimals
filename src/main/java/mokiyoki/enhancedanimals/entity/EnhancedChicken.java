@@ -12,6 +12,7 @@ import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.Genetics.ChickenGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.BlockState;
@@ -34,6 +35,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -213,7 +215,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         "eyes_albino.png", "eyes_black.png", "eyes_blue.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.TALL_GRASS, Items.GRASS, Items.BREAD);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.TALL_GRASS, Items.GRASS, Items.BREAD, Items.EGG);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
 
     public float wingRotation;
@@ -254,6 +256,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
             put(new ItemStack(Items.DANDELION).getItem(), 1500);
             put(new ItemStack(Items.SPIDER_EYE).getItem(), 1500);
+            put(new ItemStack(Items.EGG).getItem(), 200);
         }};
 
     }
@@ -297,6 +300,26 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     @Override
     protected int gestationConfig() {
         return 24000;
+    }
+
+    @Override
+    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+        Item item = itemStack.getItem();
+
+        if (item instanceof EnhancedEgg && hunger >= 6000) {
+            //enhancedegg egg eating
+            decreaseHunger(200);
+            if (!entityPlayer.abilities.isCreativeMode) {
+                itemStack.shrink(1);
+            } else {
+                if (itemStack.getCount() > 1) {
+                    itemStack.shrink(1);
+                }
+            }
+        }
+
+        return super.processInteract(entityPlayer, hand);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1693,8 +1716,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                     //makes sure its not off the chart
                     if (shanks < 0) {
                         shanks = 0;
-                    } else if (shanks > 6) {
-                        shanks = 6;
+                    } else if (shanks > 5) {
+                        shanks = 5;
                     }
 
 

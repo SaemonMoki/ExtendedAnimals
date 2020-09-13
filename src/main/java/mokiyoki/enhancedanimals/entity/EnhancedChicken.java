@@ -533,8 +533,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     private int resolveEggColour(){
         int eggColour = 0;
 
-        int[] sexlinkedGenes = this.genetics.getSexlinkedGenes();
-        int[] genes = this.genetics.getAutosomalGenes();
+        if (this.genetics!=null) {
+            int[] sexlinkedGenes = this.genetics.getSexlinkedGenes();
+            int[] genes = this.genetics.getAutosomalGenes();
 
         if(sexlinkedGenes[10] == 1 || (!this.getIsFemale() && sexlinkedGenes[11] == 1)) {
 
@@ -642,6 +643,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             eggColour = eggColour + 19;
         }
 
+        }
+
         return eggColour;
     }
 
@@ -662,9 +665,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        int[] sexlinkedGenes = getSharedGenes().getSexlinkedGenes();
-        int[] autosomalGenes = getSharedGenes().getAutosomalGenes();
-        if(autosomalGenes!=null) {
+        if(this.getSharedGenes()!=null) {
+            int[] sexlinkedGenes = getSharedGenes().getSexlinkedGenes();
+            int[] autosomalGenes = getSharedGenes().getAutosomalGenes();
             boolean isFemale = this.getIsFemale();
             if (getAge() >= 20000) {
                 int ground = 0;

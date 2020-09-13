@@ -972,8 +972,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        int[] genesForText = getSharedGenes().getAutosomalGenes();
-        if (genesForText != null) {
+        if (this.getSharedGenes() != null) {
+            int[] genesForText = getSharedGenes().getAutosomalGenes();
+
             int under = 0;
             int pattern = 0;
             int grey = 0;

@@ -663,8 +663,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        int[] genesForText = getSharedGenes().getAutosomalGenes();
-        if (genesForText != null) {
+        if (this.getSharedGenes() != null) {
+            int[] genesForText = getSharedGenes().getAutosomalGenes();
+
             boolean agouti = false;
             int brindle = 0;
             int eyes = 0;

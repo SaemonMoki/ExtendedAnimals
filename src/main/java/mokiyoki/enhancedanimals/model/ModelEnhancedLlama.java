@@ -1078,7 +1078,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.bridle = enhancedLlama.getEnhancedInventory().getStackInSlot(3);
             llamaModelData.harness = enhancedLlama.getEnhancedInventory().getStackInSlot(5);
             llamaModelData.collar = hasCollar(enhancedLlama.getEnhancedInventory());
-            llamaModelData.hasChest = enhancedLlama.hasChest();
+            llamaModelData.hasChest = !enhancedLlama.getEnhancedInventory().getStackInSlot(0).isEmpty();
 
             return llamaModelData;
         } else {
@@ -1095,7 +1095,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.bridle = enhancedLlama.getEnhancedInventory().getStackInSlot(3);
             llamaModelData.harness = enhancedLlama.getEnhancedInventory().getStackInSlot(5);
             llamaModelData.collar = hasCollar(enhancedLlama.getEnhancedInventory());
-            llamaModelData.hasChest = enhancedLlama.hasChest();
+            llamaModelData.hasChest = !enhancedLlama.getEnhancedInventory().getStackInSlot(0).isEmpty();
 
             if(llamaModelData.llamaGenes != null) {
                 llamaModelDataCache.put(enhancedLlama.getEntityId(), llamaModelData);

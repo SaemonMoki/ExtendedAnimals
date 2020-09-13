@@ -451,7 +451,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.textureWidth=160;
         this.textureHeight=160;
         this.collar = new ModelRenderer(this, 0, 155);
-        this.collar.addBox(-2.5F, -1.0F, -3.0F, 5,  1, 4);
+        this.collar.addBox(-2.5F, -1.0F, -3.0F, 5,  1, 4, 0.001F);
         this.collar.setTextureOffset(30, 156);
         this.collar.addBox(0.0F, -1.3333F, -4.0F, 0,  2, 2);
         this.collar.setTextureOffset(18, 154);

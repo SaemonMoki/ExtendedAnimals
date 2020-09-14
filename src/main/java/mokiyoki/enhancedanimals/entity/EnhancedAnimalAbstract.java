@@ -363,6 +363,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
+    protected float getHungerModifier() {
+        return EanimodCommonConfig.COMMON.hungerScaling.get().hungerScalingValue;
+    }
+
     public AIStatus getAIStatus() {
         return this.currentAIStatus;
     }

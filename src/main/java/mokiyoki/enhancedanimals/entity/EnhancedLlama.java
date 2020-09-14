@@ -387,9 +387,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     protected  void incrementHunger() {
         if(sleeping) {
-            hunger = hunger + 0.5F;
+            hunger = hunger + (0.5F*getHungerModifier());
         } else {
-            hunger = hunger + 1.0F;
+            hunger = hunger + (1.0F*getHungerModifier());
         }
     }
 

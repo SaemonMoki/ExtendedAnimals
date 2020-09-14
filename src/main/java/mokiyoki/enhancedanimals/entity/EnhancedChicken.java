@@ -384,9 +384,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     protected void incrementHunger() {
         if (sleeping) {
-            hunger = hunger + 0.25F;
+            hunger = hunger + (0.25F*getHungerModifier());
         } else {
-            hunger = hunger + 0.5F;
+            hunger = hunger + (0.5F*getHungerModifier());
         }
     }
 

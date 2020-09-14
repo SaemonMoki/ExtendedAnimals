@@ -351,6 +351,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
+    protected float getHungerModifier() {
+        return EanimodCommonConfig.COMMON.hungerScaling.get().hungerScalingValue;
+    }
+
     public boolean isTame() {
         return this.dataManager.get(TAMED);
     }

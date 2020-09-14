@@ -866,7 +866,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         this.tail0.rotateAngleX = -((float)Math.PI / 2F);
 
-        if (!saddleStack.isEmpty()) {
+        if (saddleStack!= null && !saddleStack.isEmpty()) {
             Item saddle = saddleStack.getItem();
             if (saddle instanceof CustomizableSaddleWestern) {
                 this.saddleWestern.rotateAngleX = -((float) Math.PI / 2F);

@@ -334,9 +334,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     @Override
     protected void incrementHunger() {
         if(sleeping) {
-            hunger = hunger + 1.0F;
+            hunger = hunger + (1.0F*getHungerModifier());
         } else {
-            hunger = hunger + 2.0F;
+            hunger = hunger + (2.0F*getHungerModifier());
         }
     }
 

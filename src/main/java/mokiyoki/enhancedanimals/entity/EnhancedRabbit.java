@@ -447,9 +447,9 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     @Override
     protected void incrementHunger() {
         if (sleeping) {
-            hunger = hunger + 0.125F;
+            hunger = hunger + (0.125F*getHungerModifier());
         } else {
-            hunger = hunger + 0.25F;
+            hunger = hunger + (0.25F*getHungerModifier());
         }
     }
 

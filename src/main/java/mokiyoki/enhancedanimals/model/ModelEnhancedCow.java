@@ -973,31 +973,34 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     private float getHornScale(int[] genes, float horns) {
         float hornScale = 1.0F;
-        if (horns != 0.0F) {
-            if (horns == -1.0F) {
-                //normal horns
-                for (int i = 86; i <= 89; i++){
-                    if (genes[i] == 2) {
-                        hornScale = hornScale * 1.15F;
+        if(genes != null) {
+            if (horns != 0.0F) {
+                if (horns == -1.0F) {
+                    //normal horns
+                    for (int i = 86; i <= 89; i++){
+                        if (genes[i] == 2) {
+                            hornScale = hornScale * 1.15F;
+                        }
                     }
+                    if (genes[90] == 2) {
+                        hornScale = hornScale * 1.25F;
+                    }
+                    if (genes[91] == 2) {
+                        hornScale = hornScale * 1.25F;
+                    }
+                    if (genes[80] >= 3) {
+                        hornScale = hornScale * 0.95F;
+                    }
+                    if (genes[81] >= 3) {
+                        hornScale = hornScale * 0.95F;
+                    }
+                } else {
+                    //scurs
+                    hornScale = (hornScale + 0.75F) * 0.5F;
                 }
-                if (genes[90] == 2) {
-                    hornScale = hornScale * 1.25F;
-                }
-                if (genes[91] == 2) {
-                    hornScale = hornScale * 1.25F;
-                }
-                if (genes[80] >= 3) {
-                    hornScale = hornScale * 0.95F;
-                }
-                if (genes[81] >= 3) {
-                    hornScale = hornScale * 0.95F;
-                }
-            } else {
-                //scurs
-                hornScale = (hornScale + 0.75F) * 0.5F;
             }
         }
+
         return hornScale;
     }
 

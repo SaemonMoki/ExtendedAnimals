@@ -705,17 +705,19 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.bridleFluffyHead.showModel = false;
         this.bridleNose.showModel = false;
         this.bridleFluffyNose.showModel = false;
-        if (sheepModelData.bridle.getItem() instanceof CustomizableBridle) {
-            if (facewool >= 1) {
-                this.bridleFluffyHead.showModel = true;
-                if (facewool == 3) {
-                    this.bridleFluffyNose.showModel = true;
+        if (sheepModelData.bridle != null) {
+            if (sheepModelData.bridle.getItem() instanceof CustomizableBridle) {
+                if (facewool >= 1) {
+                    this.bridleFluffyHead.showModel = true;
+                    if (facewool == 3) {
+                        this.bridleFluffyNose.showModel = true;
+                    } else {
+                        this.bridleNose.showModel = true;
+                    }
                 } else {
+                    this.bridleHead.showModel = true;
                     this.bridleNose.showModel = true;
                 }
-            } else {
-                this.bridleHead.showModel = true;
-                this.bridleNose.showModel = true;
             }
         }
 

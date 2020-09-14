@@ -19,7 +19,6 @@ import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.AirItem;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -557,77 +556,77 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             ItemStack saddleSlot = this.animalInventory.getStackInSlot(1);
             if (saddleSlot != ItemStack.EMPTY) {
                 Item saddle = saddleSlot.getItem();
-                if (saddle == ModItems.SADDLE_CLOTH) {
+                if (saddle == ModItems.SADDLE_BASIC_CLOTH) {
                     setSaddledTextures(saddleTextures, 0, -1, 0);
-                } else if (saddle == ModItems.SADDLE_CLOTH_G) {
+                } else if (saddle == ModItems.SADDLE_BASIC_CLOTH_GOLD) {
                     setSaddledTextures(saddleTextures, 0, -1, 1);
-                } else if (saddle == ModItems.SADDLE_CLOTH_D) {
+                } else if (saddle == ModItems.SADDLE_BASIC_CLOTH_DIAMOND) {
                     setSaddledTextures(saddleTextures, 0, -1, 2);
-                } else if (saddle == ModItems.SADDLE_CLOTH_W) {
+                } else if (saddle == ModItems.SADDLE_BASIC_CLOTH_WOOD) {
                     setSaddledTextures(saddleTextures, 0, -1, 3);
-                } else if (saddle == ModItems.SADDLE_LEATHER || saddle == Items.SADDLE) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHER || saddle == Items.SADDLE) {
                     setSaddledTextures(saddleTextures,0,0, 0 );
-                } else if (saddle == ModItems.SADDLE_LEATHER_G) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHER_GOLD) {
                     setSaddledTextures(saddleTextures,0,0, 1 );
-                } else if (saddle == ModItems.SADDLE_LEATHER_D) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHER_DIAMOND) {
                     setSaddledTextures(saddleTextures,0,0, 2 );
-                } else if (saddle == ModItems.SADDLE_LEATHER_W) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHER_WOOD) {
                     setSaddledTextures(saddleTextures,0,0, 3 );
-                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT) {
                     setSaddledTextures(saddleTextures,0,3, 0 );
-                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT_G) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_GOLD) {
                     setSaddledTextures(saddleTextures,0,3, 1 );
-                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT_D) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_DIAMOND) {
                     setSaddledTextures(saddleTextures,0,3, 2 );
-                } else if (saddle == ModItems.SADDLE_LEATHERCLOTHSEAT_W) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_WOOD) {
                     setSaddledTextures(saddleTextures,0,3, 3 );
-                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_CLOTH) {
                     setSaddledTextures(saddleTextures, 1, -1, 4);
-                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH_G) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_CLOTH_GOLD) {
                     setSaddledTextures(saddleTextures, 1, -1, 5);
-                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH_D) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_CLOTH_DIAMOND) {
                     setSaddledTextures(saddleTextures, 1, -1, 6);
-                } else if (saddle == ModItems.SADDLE_POMEL_CLOTH_W) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_CLOTH_WOOD) {
                     setSaddledTextures(saddleTextures, 1, -1, 7);
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHER) {
                     setSaddledTextures(saddleTextures,1,1, 4 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER_G) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHER_GOLD) {
                     setSaddledTextures(saddleTextures,1,1, 5 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER_D) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHER_DIAMOND) {
                     setSaddledTextures(saddleTextures,1,1, 6 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHER_W) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHER_WOOD) {
                     setSaddledTextures(saddleTextures,1,1, 7 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT) {
                     setSaddledTextures(saddleTextures,1,4, 4 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_G) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_GOLD) {
                     setSaddledTextures(saddleTextures,1,4, 5 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_D) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_DIAMOND) {
                     setSaddledTextures(saddleTextures,1,4, 6 );
-                } else if (saddle == ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_W) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_WOOD) {
                     setSaddledTextures(saddleTextures,1,4, 7 );
                 }if (saddle == ModItems.SADDLE_ENGLISH_CLOTH) {
                     setSaddledTextures(saddleTextures, 2, -1, 0);
-                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_G) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_GOLD) {
                     setSaddledTextures(saddleTextures, 2, -1, 1);
-                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_D) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_DIAMOND) {
                     setSaddledTextures(saddleTextures, 2, -1, 2);
-                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_W) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_WOOD) {
                     setSaddledTextures(saddleTextures, 2, -1, 3);
                 } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER) {
                     setSaddledTextures(saddleTextures,2,2, 0 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_G) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_GOLD) {
                     setSaddledTextures(saddleTextures,2,2, 1 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_D) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_DIAMOND) {
                     setSaddledTextures(saddleTextures,2,2, 2 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_W) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_WOOD) {
                     setSaddledTextures(saddleTextures,2,2, 3 );
                 } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT) {
                     setSaddledTextures(saddleTextures,2,5, 0 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_G) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_GOLD) {
                     setSaddledTextures(saddleTextures,2,5, 1 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_D) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_DIAMOND) {
                     setSaddledTextures(saddleTextures,2,5, 2 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_W) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_WOOD) {
                     setSaddledTextures(saddleTextures,2,5, 3 );
                 }
 

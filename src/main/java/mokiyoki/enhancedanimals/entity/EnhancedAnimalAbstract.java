@@ -1467,36 +1467,36 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             if (collarSlot != ItemStack.EMPTY) {
                 Item collar = collarSlot.getItem();
                 collarTextures.add(COLLAR);
-                if (collar == ModItems.COLLAR_CLOTH_RING) {
+                if (collar == ModItems.COLLAR_BASIC_CLOTH_IRONRING) {
                     collarTextures.add(COLLAR_HARDWARE[0]);
-                } else if (collar == ModItems.COLLAR_CLOTH_G) {
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_GOLDRING) {
                     collarTextures.add(COLLAR_HARDWARE[1]);
-                } else if (collar == ModItems.COLLAR_CLOTH_D) {
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING) {
                     collarTextures.add(COLLAR_HARDWARE[2]);
-                } else if (collar == ModItems.COLLAR_CLOTH_BELL) {
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_IRONBELL) {
                     collarTextures.add(COLLAR_HARDWARE[3]);
-                } else if (collar == ModItems.COLLAR_CLOTH_GBELL) {
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_GOLDBELL) {
                     collarTextures.add(COLLAR_HARDWARE[4]);
-                } else if (collar == ModItems.COLLAR_CLOTH_DBELL) {
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL) {
                     collarTextures.add(COLLAR_HARDWARE[5]);
-                } else if (collar == ModItems.COLLAR_LEATHER) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER) {
                     collarTextures.add(COLLAR_TEXTURE);
-                } else if (collar == ModItems.COLLAR_LEATHER_RING) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_IRONRING) {
                     collarTextures.add(COLLAR_TEXTURE);
                     collarTextures.add(COLLAR_HARDWARE[0]);
-                } else if (collar == ModItems.COLLAR_LEATHER_G) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_GOLDRING) {
                     collarTextures.add(COLLAR_TEXTURE);
                     collarTextures.add(COLLAR_HARDWARE[1]);
-                } else if (collar == ModItems.COLLAR_LEATHER_D) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING) {
                     collarTextures.add(COLLAR_TEXTURE);
                     collarTextures.add(COLLAR_HARDWARE[2]);
-                } else if (collar == ModItems.COLLAR_LEATHER_BELL) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_IRONBELL) {
                     collarTextures.add(COLLAR_TEXTURE);
                     collarTextures.add(COLLAR_HARDWARE[3]);
-                } else if (collar == ModItems.COLLAR_LEATHER_GBELL) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_GOLDBELL) {
                     collarTextures.add(COLLAR_TEXTURE);
                     collarTextures.add(COLLAR_HARDWARE[4]);
-                } else if (collar == ModItems.COLLAR_LEATHER_DBELL) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL) {
                     collarTextures.add(COLLAR_TEXTURE);
                     collarTextures.add(COLLAR_HARDWARE[5]);
                 }

@@ -17,6 +17,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
@@ -212,7 +213,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     protected String getSpecies() {
-        return "Sheep";
+        return I18n.format("entity.eanimod.enhanced_sheep");
     }
 
     protected int getAdultAge() { return 72000;}
@@ -1028,7 +1029,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             if (genesForText[2] == 2 && genesForText[3] == 2){
                 if (pattern == 0) {
                     under = 2;
-                } else {
+                } else if (pattern!=1 && pattern!=12){
                     pattern = pattern + 1;
                 }
             }

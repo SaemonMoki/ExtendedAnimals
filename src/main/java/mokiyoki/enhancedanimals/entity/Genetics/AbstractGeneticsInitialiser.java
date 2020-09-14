@@ -59,7 +59,7 @@ public abstract class AbstractGeneticsInitialiser {
             return generateLocalWildGenetics(Biomes.SAVANNA, false);
         } else if (biome.contains("desert")) {
             return generateLocalWildGenetics(Biomes.DESERT, false);
-        } else if (biome.contains("tundra") || biome.contains("snowy")) {
+        } else if (biome.contains("tundra") || biome.contains("snow")) {
             return generateLocalWildGenetics(Biomes.SNOWY_TUNDRA, false);
         } else if (biome.contains("mountains")) {
             return generateLocalWildGenetics(Biomes.MOUNTAINS, false);
@@ -73,6 +73,8 @@ public abstract class AbstractGeneticsInitialiser {
             return generateLocalWildGenetics(Biomes.MUSHROOM_FIELDS, false);
         } else if (biome.contains("plains")) {
             return generateLocalWildGenetics(Biomes.PLAINS, false);
+        } else if (biome.contains("flower")) {
+            return generateLocalWildGenetics(Biomes.FLOWER_FOREST, false);
         }
 
             return generateLocalWildGenetics(Biomes.THE_VOID, true);
@@ -117,7 +119,7 @@ public abstract class AbstractGeneticsInitialiser {
     }
 
     public Boolean hasBreed(List<Breed> listOfBreeds, String selectedBreed) {
-        if (!listOfBreeds.isEmpty()) {
+        if (!listOfBreeds.isEmpty() && !selectedBreed.isEmpty()) {
             if (selectedBreed.equals("true")) {
                 return true;
             }
@@ -152,7 +154,10 @@ public abstract class AbstractGeneticsInitialiser {
             return true;
         } else if (biome.contains("mushroom")) {
             return true;
+        } else if (biome.contains("flower")) {
+            return true;
         }
+
         return false;
     }
 

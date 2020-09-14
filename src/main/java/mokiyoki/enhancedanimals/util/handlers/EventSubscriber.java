@@ -212,7 +212,7 @@ public class EventSubscriber {
                 entity.addTag("eanimodTradeless");
                 int i = 1;
                 while (ThreadLocalRandom.current().nextInt(1, 5) >= i) {
-                    ((WanderingTraderEntity)entity).getOffers().add(EanimodVillagerTrades.getEanimodTrade(4));
+                    ((WanderingTraderEntity)entity).getOffers().add(EanimodVillagerTrades.getWanderingEanimodTrade(ThreadLocalRandom.current().nextInt(3)+3));
                     i++;
                 }
             }

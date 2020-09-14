@@ -63,6 +63,14 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     }
 
     @Override
+    public Boolean isAnimalSleeping() {
+        if (this.dataManager.get(HAS_CHEST)) {
+            return false;
+        }
+        return super.isAnimalSleeping();
+    }
+
+    @Override
     public boolean canHaveChest() {
         return true;
     }
@@ -378,13 +386,13 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                     } else if (bridle == ModItems.BRIDLE_BASIC_LEATHER) {
                         bridleTextures.add(BRIDLE_LEATHER_TEXTURE);
                         bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[0]);
-                    } else if (bridle == ModItems.BRIDLE_BASIC_CLOTH_G) {
+                    } else if (bridle == ModItems.BRIDLE_BASIC_CLOTH_GOLD) {
                         bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[1]);
-                    } else if (bridle == ModItems.BRIDLE_BASIC_LEATHER_G) {
+                    } else if (bridle == ModItems.BRIDLE_BASIC_LEATHER_GOLD) {
                         bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[1]);
-                    } else if (bridle == ModItems.BRIDLE_BASIC_CLOTH_D) {
+                    } else if (bridle == ModItems.BRIDLE_BASIC_CLOTH_DIAMOND) {
                         bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[2]);
-                    } else if (bridle == ModItems.BRIDLE_BASIC_LEATHER_D) {
+                    } else if (bridle == ModItems.BRIDLE_BASIC_LEATHER_DIAMOND) {
                         bridleTextures.add(BRIDLE_LEATHER_TEXTURE);
                         bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[2]);
                     }

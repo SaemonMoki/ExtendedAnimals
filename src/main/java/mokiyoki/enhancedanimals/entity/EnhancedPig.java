@@ -14,6 +14,7 @@ import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
@@ -231,7 +232,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     protected String getSpecies() {
-        return "Pig";
+        return I18n.format("entity.eanimod.enhanced_pig");
     }
 
     protected int getAdultAge() { return 60000;}

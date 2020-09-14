@@ -646,7 +646,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         //TODO check that baby pig snoots are short and cute
 //        this.snout.rotateAngleX = -snoutLength;
-        this.snout.rotationPointY = -(2.0F + (5.0F*snoutLength));
+        this.snout.rotationPointY = -(2.0F + (4.75F*snoutLength));
         this.tuskTL.rotationPointY = -(4.5F - (3.5F*snoutLength));
         this.tuskTR.rotationPointY = this.tuskTL.rotationPointY;
         this.tuskBL.rotationPointY = -(5.0F - (3.0F*snoutLength));

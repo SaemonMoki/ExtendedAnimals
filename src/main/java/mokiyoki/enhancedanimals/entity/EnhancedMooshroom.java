@@ -10,6 +10,7 @@ import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerBlock;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.BreedGoal;
@@ -80,7 +81,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     @Override
     protected String getSpecies() {
-        return "Mooshroom";
+        return I18n.format("entity.eanimod.enhanced_mooshroom");
     }
 
     @Override

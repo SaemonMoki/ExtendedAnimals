@@ -52,9 +52,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     }
 
     private void renderInfoToolTip(int mouseX, int mouseY) {
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        if (this.isPointInRegion(i+3, j-30, 5, 5, (double)mouseX, (double)mouseY)) {
+        if (this.isPointInRegion(127, 5, 7, 9, (double)mouseX, (double)mouseY)) {
             if (this.enhancedAnimalInfo.pregnant > 0) {
                 this.renderTooltip(I18n.format("eanimod.animalinfocontainer.pregnant"), mouseX, mouseY);
             }
@@ -64,10 +62,10 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                 this.renderTooltip(I18n.format("eanimod.animalinfocontainer.male"), mouseX, mouseY);
             }
         }
-        if (this.isPointInRegion(i+12, j-30, 7, 5, (double)mouseX, (double)mouseY)) {
+        if (this.isPointInRegion(136, 5, 8, 9, (double)mouseX, (double)mouseY)) {
             this.renderTooltip(I18n.format("eanimod.animalinfocontainer.health"), mouseX, mouseY);
         }
-        if (this.isPointInRegion(i+24, j-30, 5, 5, (double)mouseX, (double)mouseY)) {
+        if (this.isPointInRegion(147, 5, 7, 9, (double)mouseX, (double)mouseY)) {
             this.renderTooltip(I18n.format("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
         }
     }
@@ -213,15 +211,27 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 //        this.blit(i + 158, j + 5 + (10-tameness), 143, this.ySize + 64 + (10-tameness), 10, tameness); // tameness icon
 
         if (this.container.enhancedAnimal.canHaveSaddle()) {
-            this.blit(i + shiftX, j + shiftY, 0, this.ySize + 54, 18, 18);
+            if (retrievedInventory.getStackInSlot(1).isEmpty()) {
+                this.blit(i + shiftX, j + shiftY, 0, this.ySize + 54, 18, 18);
+            } else {
+                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+            }
             shiftY = shiftY + 18;
         }
         if (this.container.enhancedAnimal.canHaveBridle()) {
-            this.blit(i + shiftX, j + shiftY, 18, this.ySize + 54, 18, 18);
+            if (retrievedInventory.getStackInSlot(3).isEmpty()) {
+                this.blit(i + shiftX, j + shiftY, 18, this.ySize + 54, 18, 18);
+            } else {
+                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+            }
             shiftY = shiftY + 18;
         }
         if (this.container.enhancedAnimal.canHaveArmour()) {
-            this.blit(i + shiftX, j + shiftY, 36, this.ySize + 54, 18, 18);
+            if (retrievedInventory.getStackInSlot(2).isEmpty()) {
+                this.blit(i + shiftX, j + shiftY, 36, this.ySize + 54, 18, 18);
+            } else {
+                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+            }
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
                 shiftY = 17;
@@ -229,7 +239,11 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
         }
         if (this.container.enhancedAnimal.canHaveBlanket() && (shiftX == 7 || !this.chestTabEnabled)) {
-            this.blit(i + shiftX, j + shiftY, 54, this.ySize + 54, 18, 18);
+            if (retrievedInventory.getStackInSlot(4).isEmpty()) {
+                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 54, 18, 18);
+            } else {
+                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+            }
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
                 shiftY = 17;
@@ -237,7 +251,11 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
         }
         if (this.container.enhancedAnimal.canHaveBanner() && (shiftX == 7 || !this.chestTabEnabled)) {
-            this.blit(i + shiftX, j + shiftY, 72, this.ySize + 54, 18, 18);
+            if (retrievedInventory.getStackInSlot(6).isEmpty()) {
+                this.blit(i + shiftX, j + shiftY, 72, this.ySize + 54, 18, 18);
+            } else {
+                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+            }
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
                 shiftY = 17;
@@ -245,12 +263,20 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             }
         }
         if (this.container.enhancedAnimal.canHaveHarness() && (shiftX == 7 || !this.chestTabEnabled)) {
-            this.blit(i + shiftX, j + shiftY, 90, this.ySize + 54, 18, 18);
+            if (retrievedInventory.getStackInSlot(5).isEmpty()) {
+                this.blit(i + shiftX, j + shiftY, 90, this.ySize + 54, 18, 18);
+            } else {
+                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+            }
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
                 shiftY = 17;
                 shiftX = 79;
             }
+        }
+
+        if (shiftY==17 && shiftX==7) {
+            this.blit(i + 7, j + 17, 0, this.ySize + 72, 18, 18);
         }
 
         boolean hasItemsInChest = isHasItemsInChest(retrievedInventory);
@@ -264,7 +290,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                         this.blit(i + 79, j + 17, 0, this.ySize, 18*invSize, 54);
                     } else {
                         this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
-                        this.blit(i + 112, j + 31, 180, this.ySize, 24, 26);
+//                        this.blit(i + 112, j + 31, 180, this.ySize, 24, 26);
                     }
                 } else {
                     this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);

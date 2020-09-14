@@ -14,6 +14,7 @@ import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -296,7 +297,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 //        this.dataManager.register(NOSE_WIGGLING, false);
     }
 
-    protected String getSpecies() { return "Rabbit"; }
+    protected String getSpecies() { return I18n.format("entity.eanimod.enhanced_rabbit"); }
 
     protected int getAdultAge() { return 48000;}
 

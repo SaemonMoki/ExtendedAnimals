@@ -4,6 +4,7 @@ import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
@@ -55,7 +56,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
 
     @Override
     protected String getSpecies() {
-        return "Moobloom";
+        return I18n.format("entity.eanimod.enhanced_moobloom");
     }
 
     @Override

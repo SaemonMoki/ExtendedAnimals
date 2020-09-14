@@ -68,8 +68,8 @@ public class ClientProxy implements IProxy {
         ScreenManager.registerFactory(ENHANCED_ANIMAL_CONTAINER, EnhancedAnimalScreen::new);
         ClientRegistry.bindTileEntityRenderer(EGG_CARTON_TILE_ENTITY, EggCartonTileEntityRenderer::new);
 
-        RenderTypeLookup.setRenderLayer(ModBlocks.SPARSE_GRASS_BLOCK, RenderType.getCutoutMipped());
-        RenderTypeLookup.setRenderLayer(ModBlocks.PATCHY_MYCELIUM_BLOCK, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(ModBlocks.SPARSEGRASS_BLOCK, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(ModBlocks.PATCHYMYCELIUM_BLOCK, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.UNBOUNDHAY_BLOCK, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_ALLIUM, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_AZURE_BLUET, RenderType.getCutout());
@@ -81,8 +81,8 @@ public class ClientProxy implements IProxy {
         RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_FERN, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_ROSE_BUSH, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_SUNFLOWER, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_TALLGRASS, RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_LARGEFERN, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_TALL_GRASS, RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_LARGE_FERN, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.POST_ACACIA, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.POST_BIRCH, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.POST_DARK_OAK, RenderType.getCutout());
@@ -99,31 +99,31 @@ public class ClientProxy implements IProxy {
         //Grass Colouring
         blockColours.register((state, world, pos, tintIndex) ->
                 world != null && pos != null ? BiomeColors.getGrassColor(world, pos) : GrassColors.get(0.5D, 1.0D),
-            ModBlocks.SPARSE_GRASS_BLOCK, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_TALLGRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_LARGEFERN);
+            ModBlocks.SPARSEGRASS_BLOCK, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_TALL_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_LARGE_FERN);
 
         //Item Colouring
         itemColours.register((stack, tintIndex) -> {
                 BlockState BlockState = ((BlockItem)stack.getItem()).getBlock().getDefaultState();
                 return blockColours.getColor(BlockState, null, null, tintIndex); },
-            ModBlocks.SPARSE_GRASS_BLOCK, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_TALLGRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_LARGEFERN);
+            ModBlocks.SPARSEGRASS_BLOCK, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_TALL_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_LARGE_FERN);
 
         //Dyeable Item colouring
         //TODO figure out how to use colour map for some items
         itemColours.register((itemStack, tintIndex) -> {
             return tintIndex > 0 ? -1 : ((IDyeableArmorItem)itemStack.getItem()).getColor(itemStack); },
-            ModItems.BRIDLE_BASIC_LEATHER, ModItems.BRIDLE_BASIC_LEATHER_G, ModItems.BRIDLE_BASIC_LEATHER_D,
-                ModItems.BRIDLE_BASIC_CLOTH, ModItems.BRIDLE_BASIC_CLOTH_G, ModItems.BRIDLE_BASIC_CLOTH_D,
-                ModItems.SADDLE_LEATHER, ModItems.SADDLE_LEATHER_D, ModItems.SADDLE_LEATHER_G, ModItems.SADDLE_LEATHER_W,
-                ModItems.SADDLE_CLOTH, ModItems.SADDLE_CLOTH_G, ModItems.SADDLE_CLOTH_D, ModItems.SADDLE_CLOTH_W,
-                ModItems.SADDLE_LEATHERCLOTHSEAT, ModItems.SADDLE_LEATHERCLOTHSEAT_G, ModItems.SADDLE_LEATHERCLOTHSEAT_D, ModItems.SADDLE_LEATHERCLOTHSEAT_W,
-                ModItems.SADDLE_POMEL_LEATHER, ModItems.SADDLE_POMEL_LEATHER_G, ModItems.SADDLE_POMEL_LEATHER_D, ModItems.SADDLE_POMEL_LEATHER_W,
-                ModItems.SADDLE_POMEL_CLOTH, ModItems.SADDLE_POMEL_CLOTH_G, ModItems.SADDLE_POMEL_CLOTH_D, ModItems.SADDLE_POMEL_CLOTH_W,
-                ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT, ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_G, ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_D, ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_W,
-                ModItems.SADDLE_ENGLISH_LEATHER, ModItems.SADDLE_ENGLISH_LEATHER_G, ModItems.SADDLE_ENGLISH_LEATHER_D, ModItems.SADDLE_ENGLISH_LEATHER_W,
-                ModItems.SADDLE_ENGLISH_CLOTH,ModItems.SADDLE_ENGLISH_CLOTH_G, ModItems.SADDLE_ENGLISH_CLOTH_D, ModItems.SADDLE_ENGLISH_CLOTH_W,
-                ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_G, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_D, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_W,
-                ModItems.COLLAR_LEATHER, ModItems.COLLAR_LEATHER_BELL, ModItems.COLLAR_LEATHER_RING, ModItems.COLLAR_LEATHER_GBELL, ModItems.COLLAR_LEATHER_G, ModItems.COLLAR_LEATHER_DBELL, ModItems.COLLAR_LEATHER_D,
-                ModItems.COLLAR_CLOTH, ModItems.COLLAR_CLOTH_BELL, ModItems.COLLAR_CLOTH_RING, ModItems.COLLAR_CLOTH_GBELL, ModItems.COLLAR_CLOTH_G, ModItems.COLLAR_CLOTH_DBELL, ModItems.COLLAR_CLOTH_D);
+            ModItems.BRIDLE_BASIC_LEATHER, ModItems.BRIDLE_BASIC_LEATHER_GOLD, ModItems.BRIDLE_BASIC_LEATHER_DIAMOND,
+                ModItems.BRIDLE_BASIC_CLOTH, ModItems.BRIDLE_BASIC_CLOTH_GOLD, ModItems.BRIDLE_BASIC_CLOTH_DIAMOND,
+                ModItems.SADDLE_BASIC_LEATHER, ModItems.SADDLE_BASIC_LEATHER_DIAMOND, ModItems.SADDLE_BASIC_LEATHER_GOLD, ModItems.SADDLE_BASIC_LEATHER_WOOD,
+                ModItems.SADDLE_BASIC_CLOTH, ModItems.SADDLE_BASIC_CLOTH_GOLD, ModItems.SADDLE_BASIC_CLOTH_DIAMOND, ModItems.SADDLE_BASIC_CLOTH_WOOD,
+                ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT, ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_GOLD, ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_DIAMOND, ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_WOOD,
+                ModItems.SADDLE_BASICPOMEL_LEATHER, ModItems.SADDLE_BASICPOMEL_LEATHER_GOLD, ModItems.SADDLE_BASICPOMEL_LEATHER_DIAMOND, ModItems.SADDLE_BASICPOMEL_LEATHER_WOOD,
+                ModItems.SADDLE_BASICPOMEL_CLOTH, ModItems.SADDLE_BASICPOMEL_CLOTH_GOLD, ModItems.SADDLE_BASICPOMEL_CLOTH_DIAMOND, ModItems.SADDLE_BASICPOMEL_CLOTH_WOOD,
+                ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT, ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_GOLD, ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_DIAMOND, ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_WOOD,
+                ModItems.SADDLE_ENGLISH_LEATHER, ModItems.SADDLE_ENGLISH_LEATHER_GOLD, ModItems.SADDLE_ENGLISH_LEATHER_DIAMOND, ModItems.SADDLE_ENGLISH_LEATHER_WOOD,
+                ModItems.SADDLE_ENGLISH_CLOTH,ModItems.SADDLE_ENGLISH_CLOTH_GOLD, ModItems.SADDLE_ENGLISH_CLOTH_DIAMOND, ModItems.SADDLE_ENGLISH_CLOTH_WOOD,
+                ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_GOLD, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_DIAMOND, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_WOOD,
+                ModItems.COLLAR_BASIC_LEATHER, ModItems.COLLAR_BASIC_LEATHER_IRONBELL, ModItems.COLLAR_BASIC_LEATHER_IRONRING, ModItems.COLLAR_BASIC_LEATHER_GOLDBELL, ModItems.COLLAR_BASIC_LEATHER_GOLDRING, ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL, ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING,
+                ModItems.COLLAR_BASIC_CLOTH, ModItems.COLLAR_BASIC_CLOTH_IRONBELL, ModItems.COLLAR_BASIC_CLOTH_IRONRING, ModItems.COLLAR_BASIC_CLOTH_GOLDBELL, ModItems.COLLAR_BASIC_CLOTH_GOLDRING, ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL, ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING);
 
     }
 

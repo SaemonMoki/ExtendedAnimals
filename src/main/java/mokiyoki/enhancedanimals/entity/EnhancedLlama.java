@@ -15,6 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
@@ -182,7 +183,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     protected String getSpecies() {
-        return "Llama";
+        return I18n.format("entity.eanimod.enhanced_llama");
     }
 
     protected int getAdultAge() { return 120000;}
@@ -229,9 +230,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 //        if (this.animalInventory != null) {
 //            if (!this.animalInventory.getStackInSlot(1).isEmpty()) {
 //                Item saddleType = this.animalInventory.getStackInSlot(1).getItem();
-//                if (saddleType == ModItems.SADDLE_LEATHER) {
+//                if (saddleType == ModItems.SADDLE_BASIC_LEATHER) {
 //                    saddle = 2;
-//                } else if (saddleType == ModItems.SADDLE_CLOTH) {
+//                } else if (saddleType == ModItems.SADDLE_BASIC_CLOTH) {
 //                    saddle = 3;
 //                } else {
 //                    saddle = 1;

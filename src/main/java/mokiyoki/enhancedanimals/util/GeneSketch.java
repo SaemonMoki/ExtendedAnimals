@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.util;
 
-import javafx.util.Pair;
+import com.mojang.datafixers.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,10 +18,10 @@ public class GeneSketch {
 
     public GeneSketch (Pair<Integer, String>... geneSketch ) {
         for(Pair<Integer, String> pair : geneSketch) {
-            if (pair.getValue().contains("%")) {
-                setWeightedGeneSketch(pair.getKey(), pair.getValue());
-            } else if (!pair.getValue().startsWith("_")){
-                this.geneSketch.put(pair.getKey(), pair.getValue());
+            if (pair.getSecond().contains("%")) {
+                setWeightedGeneSketch(pair.getFirst(), pair.getSecond());
+            } else if (!pair.getSecond().startsWith("_")){
+                this.geneSketch.put(pair.getFirst(), pair.getSecond());
             }
         }
     }
@@ -79,7 +79,7 @@ public class GeneSketch {
         List<Pair<Float, String>> removePair = new ArrayList<>();
         if (this.weightedGeneSketches.containsKey(gene)) {
             for (Pair<Float, String> alleleSketch : this.weightedGeneSketches.get(gene)) {
-                if (alleleSketch.getValue().equals(sketch)) {
+                if (alleleSketch.getSecond().equals(sketch)) {
                     removePair.add(alleleSketch);
                 }
             }
@@ -100,7 +100,7 @@ public class GeneSketch {
                 HashMap<Integer,List<Pair<Float, String>>> overlaySketch = layer.getRawWeightedSketch();
                 for (Integer gene : overlaySketch.keySet()) {
                     for (Pair<Float, String> sketchPairs : overlaySketch.get(gene)) {
-                        this.setWeightedGeneSketches(gene, sketchPairs.getKey(), sketchPairs.getValue());
+                        this.setWeightedGeneSketches(gene, sketchPairs.getFirst(), sketchPairs.getSecond());
                     }
                 }
             }
@@ -115,8 +115,8 @@ public class GeneSketch {
                 if (this.weightedGeneSketches.containsKey(i)) {
                     List<Pair<Float, String>> geneOptionsList = this.weightedGeneSketches.get(i);
                     for (Pair<Float, String> geneOptions : geneOptionsList) {
-                        if (ThreadLocalRandom.current().nextFloat() < geneOptions.getKey()) {
-                            gene = geneOptions.getValue();
+                        if (ThreadLocalRandom.current().nextFloat() < geneOptions.getFirst()) {
+                            gene = geneOptions.getSecond();
                             break;
                         }
                     }
@@ -163,8 +163,8 @@ public class GeneSketch {
                     List<Pair<Float, String>> geneOptionsList = this.weightedGeneSketches.get(i);
                     Collections.shuffle(geneOptionsList);
                     for (Pair<Float, String> geneOptions : geneOptionsList) {
-                        if (ThreadLocalRandom.current().nextFloat() < geneOptions.getKey()) {
-                            gene = geneOptions.getValue();
+                        if (ThreadLocalRandom.current().nextFloat() < geneOptions.getFirst()) {
+                            gene = geneOptions.getSecond();
                             break;
                         }
                     }

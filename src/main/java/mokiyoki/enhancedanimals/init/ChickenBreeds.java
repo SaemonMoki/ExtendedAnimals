@@ -1,15 +1,12 @@
 package mokiyoki.enhancedanimals.init;
 
-import javafx.util.Pair;
+import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.GeneSketch;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static mokiyoki.enhancedanimals.util.Breed.createVarientList;
 
 public final class ChickenBreeds {
     List<Breed> breeds = new ArrayList<>();

@@ -509,10 +509,12 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         this.butt5.showModel = true;
 
-        if (!(pigModelData.saddle.isEmpty() || pigModelData.saddle.getItem() instanceof CustomizableCollar)) {
-            renderPigandSaddle(pigModelData.saddle, pigModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        } else {
-            this.pig.render(matrixStackIn, bufferIn, null, new ArrayList<>(), false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        if (pigModelData.saddle!=null) {
+            if (!(pigModelData.saddle.isEmpty() || pigModelData.saddle.getItem() instanceof CustomizableCollar)) {
+                renderPigandSaddle(pigModelData.saddle, pigModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            } else {
+                this.pig.render(matrixStackIn, bufferIn, null, new ArrayList<>(), false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            }
         }
 
         matrixStackIn.pop();
@@ -528,24 +530,26 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             this.saddle.showModel = false;
             this.saddlePomel.showModel = false;
 
-        if (!saddleStack.isEmpty()) {
-            List<Float> scalingsForSaddle = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
-            Item saddle = saddleStack.getItem();
-            if (saddle instanceof CustomizableSaddleWestern) {
-                this.saddleWestern.showModel = true;
-                this.saddlePomel.showModel = true;
-                mapOfScale.put("WesternSaddle", scalingsForSaddle);
-            } else if (saddle instanceof CustomizableSaddleEnglish) {
-                this.saddleEnglish.showModel = true;
-                saddleScale = 1.125F;
-                List<Float> scalingsForSaddlePad = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
-                mapOfScale.put("SaddlePad", scalingsForSaddlePad);
-                mapOfScale.put("EnglishSaddle", scalingsForSaddle);
-            } else if (!(saddle instanceof CustomizableCollar)) {
-                this.saddle.showModel = true;
-                mapOfScale.put("Saddle", scalingsForSaddle);
+            if (saddleStack!=null) {
+                if (!saddleStack.isEmpty()) {
+                    List<Float> scalingsForSaddle = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale * 0.01F, (saddleScale - 1.0F) * 0.04F);
+                    Item saddle = saddleStack.getItem();
+                    if (saddle instanceof CustomizableSaddleWestern) {
+                        this.saddleWestern.showModel = true;
+                        this.saddlePomel.showModel = true;
+                        mapOfScale.put("WesternSaddle", scalingsForSaddle);
+                    } else if (saddle instanceof CustomizableSaddleEnglish) {
+                        this.saddleEnglish.showModel = true;
+                        saddleScale = 1.125F;
+                        List<Float> scalingsForSaddlePad = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale * 0.01F, (saddleScale - 1.0F) * 0.04F);
+                        mapOfScale.put("SaddlePad", scalingsForSaddlePad);
+                        mapOfScale.put("EnglishSaddle", scalingsForSaddle);
+                    } else if (!(saddle instanceof CustomizableCollar)) {
+                        this.saddle.showModel = true;
+                        mapOfScale.put("Saddle", scalingsForSaddle);
+                    }
+                }
             }
-        }
         this.pig.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
@@ -866,36 +870,37 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         this.tail0.rotateAngleX = -((float)Math.PI / 2F);
 
-        if (saddleStack!= null && !saddleStack.isEmpty()) {
-            Item saddle = saddleStack.getItem();
-            if (saddle instanceof CustomizableSaddleWestern) {
-                this.saddleWestern.rotateAngleX = -((float) Math.PI / 2F);
-                this.saddleWestern.setRotationPoint(0.0F, 4.0F, 10.0F);
-                this.saddleSideL.setRotationPoint(5.0F, -1.0F, -5.25F);
-                this.saddleSideR.setRotationPoint(-5.0F, -1.0F, -5.25F);
-                this.saddleHorn.setRotationPoint(0.0F, -2.0F, -2.0F);
-                this.saddleHorn.rotateAngleX = (float) Math.PI / 8.0F;
-                this.saddlePomel.setRotationPoint(0.0F, -1.5F, -0.5F);
-                this.saddlePomel.rotateAngleX = -0.2F;
-                this.stirrup2DWideL.setRotationPoint(7.5F, 0.0F, -3.5F);
-                this.stirrup2DWideR.setRotationPoint(-7.5F, 0.0F, -3.5F);
-            } else if (saddle instanceof CustomizableSaddleEnglish) {
-                this.saddleEnglish.rotateAngleX = -((float) Math.PI / 2F);
-                this.saddleEnglish.setRotationPoint(0.0F, 4.0F, 10.0F);
-                this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
-                this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
-                this.saddleHorn.setRotationPoint(0.0F, -1.0F, -1.0F);
-                this.saddleHorn.rotateAngleX = (float) Math.PI / 4.5F;
-                this.stirrup3DNarrowL.setRotationPoint(8.0F, -0.5F, -1.5F);
-                this.stirrup3DNarrowR.setRotationPoint(-8.0F, -0.5F, -1.5F);
-            } else if (!(saddle instanceof CustomizableCollar)) {
-                this.saddle.rotateAngleX = -((float) Math.PI / 2F);
-                this.saddle.setRotationPoint(0.0F, 4.0F, 10.0F);
-                this.stirrup3DNarrowL.setRotationPoint(8.0F, 0.0F, 0.0F);
-                this.stirrup3DNarrowR.setRotationPoint(-8.0F, 0.0F, 0.0F);
+        if (saddleStack!=null) {
+            if (!saddleStack.isEmpty()) {
+                Item saddle = saddleStack.getItem();
+                if (saddle instanceof CustomizableSaddleWestern) {
+                    this.saddleWestern.rotateAngleX = -((float) Math.PI / 2F);
+                    this.saddleWestern.setRotationPoint(0.0F, 4.0F, 10.0F);
+                    this.saddleSideL.setRotationPoint(5.0F, -1.0F, -5.25F);
+                    this.saddleSideR.setRotationPoint(-5.0F, -1.0F, -5.25F);
+                    this.saddleHorn.setRotationPoint(0.0F, -2.0F, -2.0F);
+                    this.saddleHorn.rotateAngleX = (float) Math.PI / 8.0F;
+                    this.saddlePomel.setRotationPoint(0.0F, -1.5F, -0.5F);
+                    this.saddlePomel.rotateAngleX = -0.2F;
+                    this.stirrup2DWideL.setRotationPoint(7.5F, 0.0F, -3.5F);
+                    this.stirrup2DWideR.setRotationPoint(-7.5F, 0.0F, -3.5F);
+                } else if (saddle instanceof CustomizableSaddleEnglish) {
+                    this.saddleEnglish.rotateAngleX = -((float) Math.PI / 2F);
+                    this.saddleEnglish.setRotationPoint(0.0F, 4.0F, 10.0F);
+                    this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
+                    this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
+                    this.saddleHorn.setRotationPoint(0.0F, -1.0F, -1.0F);
+                    this.saddleHorn.rotateAngleX = (float) Math.PI / 4.5F;
+                    this.stirrup3DNarrowL.setRotationPoint(8.0F, -0.5F, -1.5F);
+                    this.stirrup3DNarrowR.setRotationPoint(-8.0F, -0.5F, -1.5F);
+                } else if (!(saddle instanceof CustomizableCollar)) {
+                    this.saddle.rotateAngleX = -((float) Math.PI / 2F);
+                    this.saddle.setRotationPoint(0.0F, 4.0F, 10.0F);
+                    this.stirrup3DNarrowL.setRotationPoint(8.0F, 0.0F, 0.0F);
+                    this.stirrup3DNarrowR.setRotationPoint(-8.0F, 0.0F, 0.0F);
+                }
             }
         }
-
     }
 
     private float sleepingAnimation() {

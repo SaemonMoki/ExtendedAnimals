@@ -13,6 +13,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 
@@ -55,6 +56,11 @@ public class GrowablePlant extends CropsBlock {
     @Override
     protected IItemProvider getSeedsItem() {
         return this.plantType;
+    }
+
+    @Override
+    protected int getBonemealAgeIncrease(World worldIn) {
+        return 7;
     }
 
     protected void setPlantType(net.minecraft.util.IItemProvider plant) {

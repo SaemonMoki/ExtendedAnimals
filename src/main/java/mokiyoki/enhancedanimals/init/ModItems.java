@@ -371,4 +371,5 @@ public class ModItems {
 
     public static final Item GENETICS_ENCYCLOPEDIA = new GeneticsEncyclopedia(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(Reference.MODID, "genetics_encyclopedia");
     public static final Item DEBUG_GENE_BOOK = new DebugGenesBook(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(Reference.MODID, "debug_gene_book");
+//    public static final Item MIXABLE_MILK = new MixableMilkBucket(new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP).maxStackSize(1)).setRegistryName(Reference.MODID, "mixable_milk");
 }

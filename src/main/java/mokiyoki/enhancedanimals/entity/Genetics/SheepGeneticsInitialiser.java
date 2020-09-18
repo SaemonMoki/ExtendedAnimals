@@ -35,7 +35,11 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
     @Override
     public Genes generateLocalWildGenetics(Biome biome, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.SHEEP_AUTOSOMAL_GENES_LENGTH];
-    
+
+//        if (true) {
+//            return new Genes(new int[]{4, 6, 1, 2, 3, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1});
+//        }
+
         //Agouti? [ Dom.White, Grey, Badgerface, Mouflon+, EnglishBlue, Rec.Black ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(6) + 1);

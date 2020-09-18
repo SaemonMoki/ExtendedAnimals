@@ -487,31 +487,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         float size = 1;
 
         if (genes != null) {
-            if (genes[0] < 3) {
-                size = size - 0.025F;
-                if (genes[0] < 2) {
-                    size = size - 0.025F;
-                }
-            }
-            if (genes[1] < 3) {
-                size = size - 0.025F;
-                if (genes[1] < 2) {
-                    size = size - 0.025F;
-                }
-            }
-            if (genes[2] < 3) {
-                size = size - 0.025F;
-                if (genes[2] < 2) {
-                    size = size - 0.025F;
-                }
-            }
-            if (genes[3] < 3) {
-                size = size - 0.025F;
-                if (genes[3] < 2) {
-                    size = size - 0.025F;
-                }
-            }
-
             // banana ears
             if (genes[18] != 1 && genes[19] != 1) {
                 if (genes[18] == 2 || genes[19] == 2) {
@@ -565,10 +540,12 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             this.earsTopL.showModel = true;
         }
 
-        if (llamaModelData.bridle.getItem() instanceof CustomizableBridle) {
-            this.bridle.showModel = true;
-        } else {
-            this.bridle.showModel = false;
+        if (llamaModelData.bridle!=null) {
+            if (llamaModelData.bridle.getItem() instanceof CustomizableBridle) {
+                this.bridle.showModel = true;
+            } else {
+                this.bridle.showModel = false;
+            }
         }
 
         renderCollar(llamaModelData.collar, coatlength, llamaModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -705,30 +682,32 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             }
         }
 
-        if (!saddleStack.isEmpty()) {
-            Item saddle = saddleStack.getItem();
-            float saddleScale = 0.875F;
-            List<Float> scalingsForSaddle = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
-            List<Float> scalingsForPad = ModelHelper.createScalings(coatMod, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
+        if (saddleStack!=null) {
+            if (!saddleStack.isEmpty()) {
+                Item saddle = saddleStack.getItem();
+                float saddleScale = 0.875F;
+                List<Float> scalingsForSaddle = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale * 0.01F, (saddleScale - 1.0F) * 0.04F);
+                List<Float> scalingsForPad = ModelHelper.createScalings(coatMod, saddleScale, saddleScale, 0.0F, -saddleScale * 0.01F, (saddleScale - 1.0F) * 0.04F);
 
-            if (saddle instanceof CustomizableSaddleWestern) {
-                this.saddleWestern.showModel = true;
-                this.saddlePomel.showModel = true;
-                mapOfScale.put("WesternSaddle", scalingsForSaddle);
-                mapOfScale.put("SaddlePad", scalingsForPad);
-                this.saddleWestern.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            } else if (saddle instanceof CustomizableSaddleEnglish) {
-                this.saddleEnglish.showModel = true;
-                mapOfScale.put("EnglishSaddle", scalingsForSaddle);
-                mapOfScale.put("SaddlePad", scalingsForPad);
-                this.saddleEnglish.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            } else if (saddle instanceof CustomizableSaddleVanilla || saddle instanceof SaddleItem){
-                this.saddle.showModel = true;
-                mapOfScale.put("Saddle", scalingsForSaddle);
-                mapOfScale.put("SaddlePad", scalingsForPad);
+                if (saddle instanceof CustomizableSaddleWestern) {
+                    this.saddleWestern.showModel = true;
+                    this.saddlePomel.showModel = true;
+                    mapOfScale.put("WesternSaddle", scalingsForSaddle);
+                    mapOfScale.put("SaddlePad", scalingsForPad);
+                    this.saddleWestern.render(matrixStackIn, bufferIn, mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                } else if (saddle instanceof CustomizableSaddleEnglish) {
+                    this.saddleEnglish.showModel = true;
+                    mapOfScale.put("EnglishSaddle", scalingsForSaddle);
+                    mapOfScale.put("SaddlePad", scalingsForPad);
+                    this.saddleEnglish.render(matrixStackIn, bufferIn, mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                } else if (saddle instanceof CustomizableSaddleVanilla || saddle instanceof SaddleItem) {
+                    this.saddle.showModel = true;
+                    mapOfScale.put("Saddle", scalingsForSaddle);
+                    mapOfScale.put("SaddlePad", scalingsForPad);
                     this.saddleSideL.showModel = false;
                     this.saddleSideR.showModel = false;
-                this.saddle.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.saddle.render(matrixStackIn, bufferIn, mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                }
             }
         }
     }
@@ -852,6 +831,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         } else if (coatLength == -1) {
             coatLength = -1.25F;
         }
+
+        if (saddleStack!=null) {
             if (!saddleStack.isEmpty()) {
                 Item saddle = saddleStack.getItem();
                 if (saddle instanceof CustomizableSaddleWestern) {
@@ -872,12 +853,13 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
                     this.saddleHorn.rotateAngleX = (float) Math.PI / 4.5F;
                     this.stirrup3DNarrowL.setRotationPoint(7.25F + coatLength, -0.25F, -1.5F);
                     this.stirrup3DNarrowR.setRotationPoint(-7.25F - coatLength, -0.25F, -1.5F);
-                } else if (saddle instanceof CustomizableSaddleVanilla || saddle instanceof SaddleItem){
+                } else if (saddle instanceof CustomizableSaddleVanilla || saddle instanceof SaddleItem) {
                     this.saddle.rotationPointY = 2.0F - coatLength;
                     this.stirrup3DNarrowL.setRotationPoint(7.5F + coatLength, 0.0F, 0.0F);
                     this.stirrup3DNarrowR.setRotationPoint(-7.5F - coatLength, 0.0F, 0.0F);
                 }
             }
+        }
 
             ModelHelper.copyModelPositioning(this.nose, this.bridleNose);
     }

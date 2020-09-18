@@ -10,6 +10,7 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.items.MixableMilkBucket;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.BlockState;
@@ -44,7 +45,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 
@@ -352,10 +352,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
-//        int[] babyGenes = getCalfGenes(this.mitosisGenes, this.mateMitosisGenes);
-
         defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -84000);
-
         enhancedcow.setMotherUUID(this.getUniqueID().toString());
         enhancedcow.configureAI();
 
@@ -1174,15 +1171,33 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
             itemStack.interactWithEntity(entityPlayer, this, hand);
             return true;
         }
-//        else if (this.getSaddled() && !this.isBeingRidden()) {
-//            if (!this.world.isRemote) {
-//                entityPlayer.startRiding(this);
-//            }
-//
-//            return true;
-//        } else if (item == Items.SADDLE){
-//            return this.saddleCow(itemStack, entityPlayer, this);
-//        }
+
+        /**
+        if (item == Items.BUCKET || item instanceof MixableMilkBucket && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
+            int currentMilk = getMilkAmount();
+            int milkColour = 16777215;
+            float milkFat = 0.037F;
+            ItemStack milkbucket = new ItemStack(ModItems.MIXABLE_MILK);
+            int fillamount;
+            if (item instanceof MixableMilkBucket) {
+                fillamount = ((MixableMilkBucket) milkbucket.getItem()).getSpaceLeft();
+                fillamount = currentMilk >= fillamount ? fillamount : currentMilk;
+            } else {
+                fillamount = currentMilk;
+            }
+
+            ((MixableMilkBucket)milkbucket.getItem()).mix(milkbucket, fillamount >= 6 ? 6 : fillamount, milkColour, milkFat, MixableMilkBucket.MilkType.COW, MixableMilkBucket.InoculationType.NONE);
+            setMilkAmount(currentMilk - ((MixableMilkBucket)milkbucket.getItem()).getSpaceLeft());
+
+            entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
+            itemStack.shrink(1);
+            if (itemStack.isEmpty()) {
+                entityPlayer.setHeldItem(hand, milkbucket);
+            } else if (!entityPlayer.inventory.addItemStackToInventory(milkbucket)) {
+                entityPlayer.dropItem(milkbucket, false);
+            }
+        }
+         */
 
         if ((item == Items.BUCKET || item == ModItems.ONESIXTH_MILK_BUCKET || item == ModItems.ONETHIRD_MILK_BUCKET || item == ModItems.HALF_MILK_BUCKET || item == ModItems.TWOTHIRDS_MILK_BUCKET || item == ModItems.FIVESIXTHS_MILK_BUCKET || item == ModItems.HALF_MILK_BOTTLE || item == Items.GLASS_BOTTLE) && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;

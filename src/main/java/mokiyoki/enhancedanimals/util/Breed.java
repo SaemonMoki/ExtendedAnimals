@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.util;
 
-import javafx.util.Pair;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 
@@ -139,7 +139,7 @@ public class Breed {
     public final Genes generateGenes(Float accuracy, Genes genes){
         if (this.varieties != null) {
             Pair<GeneSketch, GeneSketch> sketch = this.varieties.getSketchWithVarients(this.getGeneSketches());
-            return new Genes(sketch.getKey().getGeneArray(accuracy, genes.getSexlinkedGenes()), sketch.getValue().getGeneArray(accuracy, genes.getAutosomalGenes()));
+            return new Genes(sketch.getFirst().getGeneArray(accuracy, genes.getSexlinkedGenes()), sketch.getSecond().getGeneArray(accuracy, genes.getAutosomalGenes()));
         } else {
             return new Genes(this.getSexlinkedGeneSketch().getGeneArray(accuracy, genes.getSexlinkedGenes()), this.getAutosomalGeneSketch().getGeneArray(accuracy, genes.getAutosomalGenes()));
         }
@@ -148,7 +148,7 @@ public class Breed {
     public final Genes generateGenes(Genes genes){
         if (this.varieties != null) {
             Pair<GeneSketch, GeneSketch> sketch = this.varieties.getSketchWithVarients(this.getGeneSketches());
-            return new Genes(sketch.getKey().getGeneArray(genes.getSexlinkedGenes()), sketch.getValue().getGeneArray(genes.getAutosomalGenes()));
+            return new Genes(sketch.getFirst().getGeneArray(genes.getSexlinkedGenes()), sketch.getSecond().getGeneArray(genes.getAutosomalGenes()));
         } else {
             return new Genes(this.getSexlinkedGeneSketch().getGeneArray(genes.getSexlinkedGenes()), this.getAutosomalGeneSketch().getGeneArray(genes.getAutosomalGenes()));
         }
@@ -160,8 +160,8 @@ public class Breed {
      * this only works on the main genes blueprint, varients override main genes
      */
     public final Breed editGenes(Pair<GeneSketch, GeneSketch> sketch) {
-        this.autosomalGeneSketch.addLayer(sketch.getKey());
-        this.sexlinkedGeneSketch.addLayer(sketch.getValue());
+        this.autosomalGeneSketch.addLayer(sketch.getFirst());
+        this.sexlinkedGeneSketch.addLayer(sketch.getSecond());
         return this;
     }
 
@@ -219,14 +219,14 @@ public class Breed {
         public Breed.Properties setGeneSketch(Pair<GeneSketch, GeneSketch> geneSketches, GeneSketch sexlinkedSketch, GeneSketch autosomalSketch) {
             this.sexlinkedGeneSketch = new GeneSketch(sexlinkedSketch);
             this.autosomalGeneSketch = new GeneSketch(autosomalSketch);
-            this.sexlinkedGeneSketch.addLayer(geneSketches.getKey());
-            this.autosomalGeneSketch.addLayer(geneSketches.getValue());
+            this.sexlinkedGeneSketch.addLayer(geneSketches.getFirst());
+            this.autosomalGeneSketch.addLayer(geneSketches.getSecond());
             return this;
         }
 
         public Breed.Properties setGeneSketch(Pair<GeneSketch, GeneSketch> geneSketches) {
-            this.sexlinkedGeneSketch = new GeneSketch(geneSketches.getKey());
-            this.autosomalGeneSketch = new GeneSketch(geneSketches.getValue());
+            this.sexlinkedGeneSketch = new GeneSketch(geneSketches.getFirst());
+            this.autosomalGeneSketch = new GeneSketch(geneSketches.getSecond());
             return this;
         }
 
@@ -270,8 +270,8 @@ public class Breed {
             }
 
             for (Pair<GeneSketch, GeneSketch> sketch : varientSelections) {
-                genesketch.getKey().addLayer(sketch.getKey());
-                genesketch.getValue().addLayer(sketch.getValue());
+                genesketch.getFirst().addLayer(sketch.getFirst());
+                genesketch.getSecond().addLayer(sketch.getSecond());
             }
 
             return genesketch;

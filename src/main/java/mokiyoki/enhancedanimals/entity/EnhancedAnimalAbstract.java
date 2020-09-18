@@ -125,6 +125,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected int healTicks = 0;
     protected boolean bottleFeedable = false;
     protected int animalEatingTimer;
+    public int eatingTicks;
     protected AIStatus currentAIStatus = AIStatus.NONE;
 
     //Sleeping
@@ -719,6 +720,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             setEntityStatus(EntityState.ADULT.toString());
             //TODO remove the child follow mother ai
         }
+    }
+
+    public boolean isPlantEaten() {
+        return this.eatingTicks == 0;
     }
 
     /*

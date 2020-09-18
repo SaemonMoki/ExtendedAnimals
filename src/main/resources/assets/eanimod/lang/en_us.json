@@ -346,6 +346,7 @@
 "block.eanimod.growable_rose_bush": "Growing Rose Bush",
 "block.eanimod.growable_sunflower": "Growing Sunflower",
 "block.eanimod.growable_grass": "Growing Grass",
+"block.eanimod.growable_fern": "Growing Fern",
 "block.eanimod.growable_tall_grass": "Growing Tall Grass",
 "block.eanimod.growable_large_fern": "Growing Large Fern",
 "block.eanimod.egg_carton": "Egg Carton",
@@ -364,15 +365,5 @@
 "eanimod.animalinfocontainer.female" : "Female",
 "eanimod.animalinfocontainer.pregnant" : "Pregnant",
 "eanimod.animalinfocontainer.health" : "Current Health",
-"eanimod.animalinfocontainer.hunger" : "Hunger",
-  "eanimod.hunger.not_hungry" : "It doesn't seem hungry.",
-  "eanimod.hunger.hungry" : "It seems a little hungry.",
-  "eanimod.hunger.very_hunger" : "It seems very hungry.",
-  "eanimod.hunger.starving" : "It seems to be starving!",
-  "eanimod.hunger.dying" : "It is all skin and bones!",
-  "eanimod.pregnancy.not_showing" : "It might be pregnant",
-  "eanimod.pregnancy.only_slightly_showing" : "It seems to be pregnant",
-  "eanimod.pregnancy.pregnant" : "The pregnancy is showing well.",
-  "eanimod.pregnancy.obviously_pregnant" : "It is obviously very pregnant!",
-  "eanimod.pregnancy.near_birth" : "It is showing signs birth is soon!"
+"eanimod.animalinfocontainer.hunger" : "Hunger"
 }

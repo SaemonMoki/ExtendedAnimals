@@ -780,21 +780,23 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         this.saddle.showModel = false;
         this.saddlePomel.showModel = false;
 
-        if (!saddleStack.isEmpty()) {
-            Item saddle = saddleStack.getItem();
-            float saddleScale = 0.875F;
-            List<Float> scalingsForSaddle = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale*0.01F, (saddleScale - 1.0F)*0.04F);
+        if (saddleStack!=null) {
+            if (!saddleStack.isEmpty()) {
+                Item saddle = saddleStack.getItem();
+                float saddleScale = 0.875F;
+                List<Float> scalingsForSaddle = ModelHelper.createScalings(saddleScale, saddleScale, saddleScale, 0.0F, -saddleScale * 0.01F, (saddleScale - 1.0F) * 0.04F);
 
-            if (saddle instanceof CustomizableSaddleWestern) {
-                this.saddleWestern.showModel = true;
-                this.saddlePomel.showModel = true;
-                mapOfScale.put("WesternSaddle", scalingsForSaddle);
-            } else if (saddle instanceof CustomizableSaddleEnglish) {
-                this.saddleEnglish.showModel = true;
-                mapOfScale.put("EnglishSaddle", scalingsForSaddle);
-            } else if (!(saddle instanceof CustomizableCollar)) {
-                this.saddle.showModel = true;
-                mapOfScale.put("Saddle", scalingsForSaddle);
+                if (saddle instanceof CustomizableSaddleWestern) {
+                    this.saddleWestern.showModel = true;
+                    this.saddlePomel.showModel = true;
+                    mapOfScale.put("WesternSaddle", scalingsForSaddle);
+                } else if (saddle instanceof CustomizableSaddleEnglish) {
+                    this.saddleEnglish.showModel = true;
+                    mapOfScale.put("EnglishSaddle", scalingsForSaddle);
+                } else if (!(saddle instanceof CustomizableCollar)) {
+                    this.saddle.showModel = true;
+                    mapOfScale.put("Saddle", scalingsForSaddle);
+                }
             }
         }
 
@@ -941,30 +943,32 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         cowModelData.unrenderedModels.addAll(unrenderedModels);
 
-        if (!saddleStack.isEmpty()) {
-            Item saddle = saddleStack.getItem();
-            if (saddle instanceof CustomizableSaddleWestern) {
-                this.saddleWestern.rotationPointZ = 9.0F;
-                this.saddleSideL.setRotationPoint(5.0F, -1.0F, -5.25F);
-                this.saddleSideR.setRotationPoint(-5.0F, -1.0F, -5.25F);
-                this.saddleHorn.setRotationPoint(0.0F, -2.0F, -2.0F);
-                this.saddleHorn.rotateAngleX = (float) Math.PI / 8.0F;
-                this.saddlePomel.setRotationPoint(0.0F, -1.5F, -0.5F);
-                this.saddlePomel.rotateAngleX = -0.2F;
-                this.stirrup2DWideL.setRotationPoint(7.5F, 0.0F, -3.5F);
-                this.stirrup2DWideR.setRotationPoint(-7.5F, 0.0F, -3.5F);
-            } else if (saddle instanceof CustomizableSaddleEnglish) {
-                this.saddleEnglish.rotationPointZ = 9.0F;
-                this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
-                this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
-                this.saddleHorn.setRotationPoint(0.0F, -1.0F, -1.0F);
-                this.saddleHorn.rotateAngleX = (float) Math.PI / 4.5F;
-                this.stirrup3DNarrowL.setRotationPoint(7.25F, -0.25F, -1.5F);
-                this.stirrup3DNarrowR.setRotationPoint(-7.25F, -0.25F, -1.5F);
-            } else if (!(saddle instanceof CustomizableCollar)) {
-                this.saddle.rotationPointZ = 9.0F;
-                this.stirrup3DNarrowL.setRotationPoint(8.0F, 0.0F, 0.0F);
-                this.stirrup3DNarrowR.setRotationPoint(-8.0F, 0.0F, 0.0F);
+        if (saddleStack!=null) {
+            if (!saddleStack.isEmpty()) {
+                Item saddle = saddleStack.getItem();
+                if (saddle instanceof CustomizableSaddleWestern) {
+                    this.saddleWestern.rotationPointZ = 9.0F;
+                    this.saddleSideL.setRotationPoint(5.0F, -1.0F, -5.25F);
+                    this.saddleSideR.setRotationPoint(-5.0F, -1.0F, -5.25F);
+                    this.saddleHorn.setRotationPoint(0.0F, -2.0F, -2.0F);
+                    this.saddleHorn.rotateAngleX = (float) Math.PI / 8.0F;
+                    this.saddlePomel.setRotationPoint(0.0F, -1.5F, -0.5F);
+                    this.saddlePomel.rotateAngleX = -0.2F;
+                    this.stirrup2DWideL.setRotationPoint(7.5F, 0.0F, -3.5F);
+                    this.stirrup2DWideR.setRotationPoint(-7.5F, 0.0F, -3.5F);
+                } else if (saddle instanceof CustomizableSaddleEnglish) {
+                    this.saddleEnglish.rotationPointZ = 9.0F;
+                    this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
+                    this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
+                    this.saddleHorn.setRotationPoint(0.0F, -1.0F, -1.0F);
+                    this.saddleHorn.rotateAngleX = (float) Math.PI / 4.5F;
+                    this.stirrup3DNarrowL.setRotationPoint(7.25F, -0.25F, -1.5F);
+                    this.stirrup3DNarrowR.setRotationPoint(-7.25F, -0.25F, -1.5F);
+                } else if (!(saddle instanceof CustomizableCollar)) {
+                    this.saddle.rotationPointZ = 9.0F;
+                    this.stirrup3DNarrowL.setRotationPoint(8.0F, 0.0F, 0.0F);
+                    this.stirrup3DNarrowR.setRotationPoint(-8.0F, 0.0F, 0.0F);
+                }
             }
         }
 
@@ -1789,8 +1793,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         long clientGameTime = 0;
         List<String> unrenderedModels = new ArrayList<>();
         ItemStack saddle;
-        ItemStack bridle;
-        ItemStack harness;
+        Boolean bridle;
+        Boolean harness;
         Boolean collar;
         Boolean hasChest;
     }
@@ -1824,10 +1828,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
             cowModelData.blink = enhancedCow.getBlink();
             cowModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime());
-            cowModelData.saddle = enhancedCow.getEnhancedInventory().getStackInSlot(1);
-            cowModelData.bridle = enhancedCow.getEnhancedInventory().getStackInSlot(3);
-            cowModelData.harness = enhancedCow.getEnhancedInventory().getStackInSlot(5);
-            cowModelData.collar = hasCollar(enhancedCow.getEnhancedInventory());
+            int collarSlot = hasCollar(enhancedCow.getEnhancedInventory());
+            cowModelData.collar = collarSlot!=0;
+            cowModelData.saddle = collarSlot!=1 ? enhancedCow.getEnhancedInventory().getStackInSlot(1) : ItemStack.EMPTY;
+            cowModelData.bridle = !enhancedCow.getEnhancedInventory().getStackInSlot(3).isEmpty() && collarSlot!=3;
+            cowModelData.harness = !enhancedCow.getEnhancedInventory().getStackInSlot(5).isEmpty() && collarSlot!=5;
             cowModelData.hasChest = !enhancedCow.getEnhancedInventory().getStackInSlot(0).isEmpty();
             cowModelData.unrenderedModels = new ArrayList<>();
 
@@ -1853,10 +1858,11 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             }
             cowModelData.isFemale = !Character.isLetter(cowModelData.uuidArray[0]) && cowModelData.uuidArray[0] - 48 < 8;
             cowModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime());
-            cowModelData.saddle = enhancedCow.getEnhancedInventory().getStackInSlot(1);
-            cowModelData.bridle = enhancedCow.getEnhancedInventory().getStackInSlot(3);
-            cowModelData.harness = enhancedCow.getEnhancedInventory().getStackInSlot(5);
-            cowModelData.collar = hasCollar(enhancedCow.getEnhancedInventory());
+            int collarSlot = hasCollar(enhancedCow.getEnhancedInventory());
+            cowModelData.collar = collarSlot!=0;
+            cowModelData.saddle = collarSlot!=1 ? enhancedCow.getEnhancedInventory().getStackInSlot(1) : ItemStack.EMPTY;
+            cowModelData.bridle = !enhancedCow.getEnhancedInventory().getStackInSlot(3).isEmpty() && collarSlot!=3;
+            cowModelData.harness = !enhancedCow.getEnhancedInventory().getStackInSlot(5).isEmpty() && collarSlot!=5;
             cowModelData.hasChest = !enhancedCow.getEnhancedInventory().getStackInSlot(0).isEmpty();
 
             if(cowModelData.cowGenes != null) {
@@ -1867,12 +1873,12 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
     }
 
-    private boolean hasCollar(Inventory inventory) {
+    private int hasCollar(Inventory inventory) {
         for (int i = 1; i < 6; i++) {
             if (inventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
-                return true;
+                return i;
             }
         }
-        return false;
+        return 0;
     }
 }

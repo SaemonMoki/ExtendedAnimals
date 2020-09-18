@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
 public class CustomizableAnimalEquipment extends Item implements IDyeableArmorItem {
-
     private int defaultColour;
 
     public CustomizableAnimalEquipment(Properties builder, int originalColour) {

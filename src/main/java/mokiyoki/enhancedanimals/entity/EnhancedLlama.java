@@ -112,7 +112,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT, Items.CARROT, Items.SUGAR_CANE, Items.BEETROOT, Items.GRASS, Items.TALL_GRASS);
-    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK);
+    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, ModBlocks.UNBOUNDHAY_BLOCK);
 
     public float destPos;
 
@@ -416,6 +416,38 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     @Override
     protected boolean canLactate() {
         return false;
+    }
+
+
+    protected void setLlamaSize(){
+        int[] genes = this.genetics.getAutosomalGenes();
+        float size = 1.0F;
+
+        if (genes[0] < 3) {
+            size = size - 0.025F;
+            if (genes[0] < 2) {
+                size = size - 0.025F;
+            }
+        }
+        if (genes[1] < 3) {
+            size = size - 0.025F;
+            if (genes[1] < 2) {
+                size = size - 0.025F;
+            }
+        }
+        if (genes[2] < 3) {
+            size = size - 0.025F;
+            if (genes[2] < 2) {
+                size = size - 0.025F;
+            }
+        }
+        if (genes[3] < 3) {
+            size = size - 0.025F;
+            if (genes[3] < 2) {
+                size = size - 0.025F;
+            }
+        }
+        this.setAnimalSize(size);
     }
 
     @Override
@@ -852,6 +884,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     protected void initilizeAnimalSize() {
+        setLlamaSize();
     }
 
 
@@ -1074,10 +1107,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     protected SoundEvent getAngrySound() {
         return SoundEvents.ENTITY_LLAMA_ANGRY;
-    }
-
-    public boolean canMateWith(AnimalEntity otherAnimal) {
-        return otherAnimal != this && otherAnimal instanceof EnhancedLlama;
     }
 
     /**

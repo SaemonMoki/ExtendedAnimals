@@ -9,7 +9,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
@@ -68,6 +70,24 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         if (this.isPointInRegion(147, 5, 7, 9, (double)mouseX, (double)mouseY)) {
             this.renderTooltip(I18n.format("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
         }
+    }
+
+    protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
+        if (type == ClickType.QUICK_MOVE && slotIn != null && slotIn.getHasStack()) {
+            Item itemIn = slotIn.getStack().getItem();
+            Item chestInSlot = this.container.getEnhancedAnimalInventory().getStackInSlot(0).getItem();
+
+            boolean hasChestEquipped = chestInSlot == Items.CHEST;
+            boolean slotIDIsAnEquipmentSlot = slotId <= this.container.numberOfEquipmentSlots;
+
+            if (slotIDIsAnEquipmentSlot) {
+
+            } else if (!hasChestEquipped && !(itemIn == Items.CHEST) && !this.container.isQuickTransferable(itemIn)) {
+                return;
+            }
+        }
+
+        super.handleMouseClick(slotIn, slotId, mouseButton, type);
     }
 
     public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {

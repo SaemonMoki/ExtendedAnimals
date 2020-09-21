@@ -24,6 +24,7 @@ public class EnhancedAnimalContainer extends Container {
     private IInventory inventory;
     public EnhancedAnimalAbstract enhancedAnimal;
     public EnhancedAnimalInfo animalInfo;
+    public int numberOfEquipmentSlots = 0;
 
     public EnhancedAnimalContainer(int p_i50066_1_, PlayerInventory playerInventoryIn, EnhancedAnimalAbstract enhancedAnimal, EnhancedAnimalInfo animalInfo) {
         super(ENHANCED_ANIMAL_CONTAINER, p_i50066_1_);
@@ -43,9 +44,8 @@ public class EnhancedAnimalContainer extends Container {
             this.addSlot(new Slot(retrievedInventory, 1, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
-                    Item saddle = stack.getItem();
-                    return saddle == Items.SADDLE || saddle instanceof CustomizableSaddleVanilla || saddle instanceof CustomizableSaddleWestern ||
-                            saddle instanceof CustomizableSaddleEnglish || collarCheck(stack.getItem(), 1);
+                    Item item = stack.getItem();
+                    return checkSaddle(item) || collarCheck(item, 1);
                 }
 
                 public int getSlotStackLimit() {
@@ -54,6 +54,7 @@ public class EnhancedAnimalContainer extends Container {
 
             });
             yShift = yShift + 18;
+            numberOfEquipmentSlots++;
         }
 
         if (enhancedAnimal.canHaveBridle()) {
@@ -61,7 +62,7 @@ public class EnhancedAnimalContainer extends Container {
             this.addSlot(new Slot(retrievedInventory, 3, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
-                    return stack.getItem() instanceof CustomizableBridle || collarCheck(stack.getItem(), 3);
+                    return checkBridle(stack.getItem()) || collarCheck(stack.getItem(), 3);
                 }
 
                 public int getSlotStackLimit() {
@@ -70,6 +71,7 @@ public class EnhancedAnimalContainer extends Container {
 
             });
             yShift = yShift + 18;
+            numberOfEquipmentSlots++;
         }
 
         if (enhancedAnimal.canHaveArmour()) {
@@ -77,8 +79,7 @@ public class EnhancedAnimalContainer extends Container {
             this.addSlot(new Slot(retrievedInventory, 2, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
-                    return stack.getItem() == Items.LEATHER_HORSE_ARMOR || stack.getItem() == Items.IRON_HORSE_ARMOR || stack.getItem() == Items.GOLDEN_HORSE_ARMOR ||
-                            stack.getItem() == Items.DIAMOND_HORSE_ARMOR || collarCheck(stack.getItem(), 2);
+                    return checkArmour(stack.getItem()) || collarCheck(stack.getItem(), 2);
                 }
 
                 public int getSlotStackLimit() {
@@ -91,6 +92,7 @@ public class EnhancedAnimalContainer extends Container {
                 yShift = 18;
                 xShift = 80;
             }
+            numberOfEquipmentSlots++;
         }
 
         if (enhancedAnimal.canHaveBlanket()) {
@@ -98,12 +100,7 @@ public class EnhancedAnimalContainer extends Container {
             this.addSlot(new Slot(retrievedInventory, 4, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
-                    return stack.getItem() == Items.BLACK_CARPET || stack.getItem() == Items.WHITE_CARPET || stack.getItem() == Items.BLUE_CARPET ||
-                            stack.getItem() == Items.BROWN_CARPET || stack.getItem() == Items.CYAN_CARPET || stack.getItem() == Items.GRAY_CARPET ||
-                            stack.getItem() == Items.GREEN_CARPET || stack.getItem() == Items.LIGHT_BLUE_CARPET || stack.getItem() == Items.LIGHT_GRAY_CARPET ||
-                            stack.getItem() == Items.LIME_CARPET || stack.getItem() == Items.MAGENTA_CARPET || stack.getItem() == Items.ORANGE_CARPET ||
-                            stack.getItem() == Items.PINK_CARPET || stack.getItem() == Items.PURPLE_CARPET || stack.getItem() == Items.RED_CARPET ||
-                            stack.getItem() == Items.YELLOW_CARPET || collarCheck(stack.getItem(), 4);
+                    return checkBlanket(stack.getItem()) || collarCheck(stack.getItem(), 4);
                 }
 
                 public int getSlotStackLimit() {
@@ -116,6 +113,7 @@ public class EnhancedAnimalContainer extends Container {
                 yShift = 18;
                 xShift = 80;
             }
+            numberOfEquipmentSlots++;
         }
 
         if (enhancedAnimal.canHaveBanner()) {
@@ -123,12 +121,7 @@ public class EnhancedAnimalContainer extends Container {
             this.addSlot(new Slot(retrievedInventory, 6, xShift, yShift) {
 
                 public boolean isItemValid(ItemStack stack) {
-                    return stack.getItem() == Items.BLACK_BANNER || stack.getItem() == Items.WHITE_BANNER || stack.getItem() == Items.BLUE_BANNER ||
-                            stack.getItem() == Items.BROWN_BANNER || stack.getItem() == Items.CYAN_BANNER || stack.getItem() == Items.GRAY_BANNER ||
-                            stack.getItem() == Items.GREEN_BANNER || stack.getItem() == Items.LIGHT_BLUE_BANNER || stack.getItem() == Items.LIGHT_GRAY_BANNER ||
-                            stack.getItem() == Items.LIME_BANNER || stack.getItem() == Items.MAGENTA_BANNER || stack.getItem() == Items.ORANGE_BANNER ||
-                            stack.getItem() == Items.PINK_BANNER || stack.getItem() == Items.PURPLE_BANNER || stack.getItem() == Items.RED_BANNER ||
-                            stack.getItem() == Items.YELLOW_BANNER || collarCheck(stack.getItem(), 6);
+                    return checkBanner(stack.getItem()) || collarCheck(stack.getItem(), 6);
                 }
 
                 public int getSlotStackLimit() {
@@ -141,6 +134,7 @@ public class EnhancedAnimalContainer extends Container {
                 yShift = 18;
                 xShift = 80;
             }
+            numberOfEquipmentSlots++;
         }
 
         if (enhancedAnimal.canHaveHarness()) {
@@ -161,6 +155,7 @@ public class EnhancedAnimalContainer extends Container {
                 yShift = 18;
                 xShift = 80;
             }
+            numberOfEquipmentSlots++;
         }
 
         if (!hasEquipment) {
@@ -176,27 +171,24 @@ public class EnhancedAnimalContainer extends Container {
 
             });
             yShift = yShift + 18;
+            numberOfEquipmentSlots++;
         }
+
+        this.addSlot(new EnhancedSlot(retrievedInventory, 0, 116, 36) {
+            public boolean isItemValid(ItemStack stack) {
+                return stack.getItem() == Items.CHEST;
+            }
+
+            public int getSlotStackLimit() {
+            return 1; }
+        });
 
         int inventoryShift = 7;
         if (enhancedAnimal.canHaveChest()) {
                 for (int k = 0; k < i; ++k) {
                     for (int l = 0; l < j; ++l) {
-                        if (k == 1 && l == 2) {
-                            this.addSlot(new EnhancedSlot(retrievedInventory, 0, 116, 36) {
-                                public boolean isItemValid(ItemStack stack) {
-                                    return stack.getItem() == Items.CHEST;
-                                }
-
-                                public int getSlotStackLimit() {
-                                return 1; }
-                            });
-                            this.addSlot(new EnhancedSlot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
-                            });
-                        } else {
-                            this.addSlot(new EnhancedSlot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
-                            });
-                        }
+                        this.addSlot(new EnhancedSlot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
+                        });
                         inventoryShift++;
                     }
                 }
@@ -215,8 +207,142 @@ public class EnhancedAnimalContainer extends Container {
         }
     }
 
+    public boolean isQuickTransferable(Item item) {
+        if (item instanceof CustomizableCollar) {
+            boolean canEquip = false;
+
+            if (enhancedAnimal.canHaveSaddle()) {
+                if (!equipmentSlotEmpty(1)) {
+                    if (this.inventory.getStackInSlot(1).getStack().getItem() instanceof CustomizableCollar) {
+                        return false;
+                    }
+                } else {
+                    canEquip = true;
+                }
+
+            }
+            if (enhancedAnimal.canHaveBridle()) {
+                if (!equipmentSlotEmpty(3)) {
+                    if (this.inventory.getStackInSlot(3).getStack().getItem() instanceof CustomizableCollar) {
+                        return false;
+                    }
+                } else {
+                    canEquip = true;
+                }
+            }
+
+            if (enhancedAnimal.canHaveArmour()) {
+                if (!equipmentSlotEmpty(2)) {
+                    if (this.inventory.getStackInSlot(2).getStack().getItem() instanceof CustomizableCollar) {
+                        return false;
+                    }
+                } else {
+                    canEquip = true;
+                }
+            }
+
+            if (enhancedAnimal.canHaveBlanket() ) {
+                if (!equipmentSlotEmpty(4)) {
+                    if (this.inventory.getStackInSlot(4).getStack().getItem() instanceof CustomizableCollar) {
+                        return false;
+                    }
+                } else {
+                    canEquip = true;
+                }
+            }
+
+            if (enhancedAnimal.canHaveBanner()) {
+                if (!equipmentSlotEmpty(6)) {
+                    if (this.inventory.getStackInSlot(6).getStack().getItem() instanceof CustomizableCollar) {
+                        return false;
+                    }
+                } else {
+                    canEquip = true;
+                }
+            }
+
+            if (enhancedAnimal.canHaveHarness()) {
+                if (!equipmentSlotEmpty(5)) {
+                    if (this.inventory.getStackInSlot(5).getStack().getItem() instanceof CustomizableCollar) {
+                        return false;
+                    }
+                } else {
+                    canEquip = true;
+                }
+            }
+
+            return canEquip;
+        }
+
+        if (enhancedAnimal.canHaveSaddle()) {
+            if (checkSaddle(item) && equipmentSlotEmpty(1)) return true;
+        }
+        if (enhancedAnimal.canHaveBridle()) {
+            if (checkBridle(item) && equipmentSlotEmpty(3)) return true;
+        }
+
+        if (enhancedAnimal.canHaveArmour()) {
+            if (checkArmour(item) && equipmentSlotEmpty(2)) return true;
+        }
+
+        if (enhancedAnimal.canHaveBlanket() ) {
+            if (checkBlanket(item) && equipmentSlotEmpty(4)) return true;
+        }
+
+        if (enhancedAnimal.canHaveBanner()) {
+            if (checkBanner(item) && equipmentSlotEmpty(6)) return true;
+        }
+
+        if (enhancedAnimal.canHaveHarness()) {
+            if (checkHarness(item) &&  equipmentSlotEmpty(5)) return true;
+        }
+
+        return false;
+
+    }
+
+    private boolean equipmentSlotEmpty(int slotIndex) {
+        return this.inventory.getStackInSlot(slotIndex).getStack().getItem() == Items.AIR;
+    }
+
+    private boolean checkSaddle(Item item) {
+        return item == Items.SADDLE || item instanceof CustomizableSaddleVanilla || item instanceof CustomizableSaddleWestern ||
+                item instanceof CustomizableSaddleEnglish;
+    }
+
+    private boolean checkBridle(Item item) {
+        return item instanceof CustomizableBridle;
+    }
+
+    private boolean checkArmour(Item item) {
+        return item == Items.LEATHER_HORSE_ARMOR || item == Items.IRON_HORSE_ARMOR || item == Items.GOLDEN_HORSE_ARMOR ||
+                item == Items.DIAMOND_HORSE_ARMOR;
+    }
+
+    private boolean checkBlanket(Item item) {
+        return item == Items.BLACK_CARPET || item == Items.WHITE_CARPET || item == Items.BLUE_CARPET ||
+                item == Items.BROWN_CARPET || item == Items.CYAN_CARPET || item == Items.GRAY_CARPET ||
+                item == Items.GREEN_CARPET || item == Items.LIGHT_BLUE_CARPET || item == Items.LIGHT_GRAY_CARPET ||
+                item == Items.LIME_CARPET || item == Items.MAGENTA_CARPET || item == Items.ORANGE_CARPET ||
+                item == Items.PINK_CARPET || item == Items.PURPLE_CARPET || item == Items.RED_CARPET ||
+                item == Items.YELLOW_CARPET;
+    }
+
+    private boolean checkBanner(Item item) {
+        return item == Items.BLACK_BANNER || item == Items.WHITE_BANNER || item == Items.BLUE_BANNER ||
+                item == Items.BROWN_BANNER || item == Items.CYAN_BANNER || item == Items.GRAY_BANNER ||
+                item == Items.GREEN_BANNER || item == Items.LIGHT_BLUE_BANNER || item == Items.LIGHT_GRAY_BANNER ||
+                item == Items.LIME_BANNER || item == Items.MAGENTA_BANNER || item == Items.ORANGE_BANNER ||
+                item == Items.PINK_BANNER || item == Items.PURPLE_BANNER || item == Items.RED_BANNER ||
+                item == Items.YELLOW_BANNER;
+    }
+
     public boolean canInteractWith(PlayerEntity playerIn) {
         return this.inventory.isUsableByPlayer(playerIn);
+    }
+
+    private boolean checkHarness(Item item) {
+        return false;
     }
 
     public boolean collarCheck(Item item, int thisSlot) {

@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 
 public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
 
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+//    public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty BITES = BlockStateProperties.LEVEL_0_8;
 
@@ -127,10 +127,10 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
     }
 
-    @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
-        return state.with(FACING, rot.rotate(state.get(FACING)));
-    }
+//    @Override
+//    public BlockState rotate(BlockState state, Rotation rot) {
+//        return state.with(FACING, rot.rotate(state.get(FACING)));
+//    }
 
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(BITES, WATERLOGGED);

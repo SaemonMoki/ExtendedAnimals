@@ -170,21 +170,21 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.neck.addBox(-2.0F, -7.0F, -4.0F, 4, 9, 4, 0.0F); //neck
         this.neck.setRotationPoint(0.0F, 0.0F, -6.0F);
 
-        this.hornBase = new EnhancedRendererModelNew(this, 0, 36);
+        this.hornBase = new EnhancedRendererModelNew(this, 50, 12);
         this.hornBase.addBox(-1.5F, -8.9F, -4.1F, 3, 3, 3, -1.0F);
         this.hornBase.setRotationPoint(0.0F, 0.0F, -6.0F);
 
-        this.polyHornBase = new EnhancedRendererModelNew(this, 0, 36);
+        this.polyHornBase = new EnhancedRendererModelNew(this, 50, 12);
         this.polyHornBase.addBox(-1.5F, -8.9F, -4.1F, 3, 3, 3, -1.0F);
         this.polyHornBase.setRotationPoint(0.0F, 0.0F, -6.0F);
 
-        this.polyHornL0 = new EnhancedRendererModelNew(this, 0, 36);
-        this.polyHornL0.addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, -0.6F);
-        this.polyHornL0.setRotationPoint(3.0F, -5.0F, -1.0F);
+        this.polyHornL0 = new EnhancedRendererModelNew(this, 50, 12);
+//        this.polyHornL0.addBox(0.0F, -3.0F, -1.5F, 0, 0, 0, -0.6F);
+        this.polyHornL0.setRotationPoint(2.5F, -4.5F, -1.0F);
 
-        this.polyHornR0 = new EnhancedRendererModelNew(this, 0, 36);
-        this.polyHornR0.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.6F);
-        this.polyHornR0.setRotationPoint(-3.0F, -5.0F, -1.0F);
+        this.polyHornR0 = new EnhancedRendererModelNew(this, 50, 12);
+//        this.polyHornR0.addBox(-3.0F, -3.0F, -1.5F, 0, 0, 0, -0.6F);
+        this.polyHornR0.setRotationPoint(-2.5F, -4.5F, -1.0F);
 
         // scale down by 0.1 for each
         this.hornL0 = new EnhancedRendererModelNew(this, 50, 12, "HornL0");
@@ -378,11 +378,11 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         sheepRightHorns.add(hornR9);
 
         this.earLeft = new EnhancedRendererModelNew(this, 50, 3);
-        this.earLeft.addBox(0.0F, -2.0F, 0.0F, 3, 2, 1, 0.0F); //ear left
+        this.earLeft.addBox(0.0F, -2.0F, 0.0F, 3, 2, 1, 0.001F); //ear left
         this.earLeft.setRotationPoint(2.0F, 2.0F, -2.0F);
 
         this.earRight = new EnhancedRendererModelNew(this, 50, 0);
-        this.earRight.addBox(-3.0F, -2.0F, 0.0F, 3, 2, 1, 0.0F); //ear right
+        this.earRight.addBox(-3.0F, -2.0F, 0.0F, 3, 2, 1, 0.001F); //ear right
         this.earRight.setRotationPoint(-2.0F, 2.0F, -2.0F);
 
         this.body = new ModelRenderer(this, 2, 0);

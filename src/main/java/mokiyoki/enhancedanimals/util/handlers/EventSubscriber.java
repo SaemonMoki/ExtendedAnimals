@@ -68,7 +68,14 @@ public class EventSubscriber {
     public void replaceVanillaMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
 
-        if (entity instanceof VillagerEntity || entity instanceof WanderingTraderEntity) {
+        if (entity instanceof WanderingTraderEntity) {
+            Set<String> tags = entity.getTags();
+            if (!tags.contains("eanimodTradeless")) {
+                if (!entity.getTags().contains("eanimodTrader")) {
+                    entity.addTag("eanimodTrader");
+                }
+            }
+        } else if (entity instanceof VillagerEntity) {
             Set<String> tags = entity.getTags();
             if (!tags.contains("eanimodTradeless")) {
                 if (!entity.getTags().contains("eanimodTrader")) {
@@ -136,7 +143,7 @@ public class EventSubscriber {
                         if (!tags.contains("eanimodTrader_1")) {
                             entity.addTag("eanimodTrader_1");
                             if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(EanimodVillagerTrades.getEanimodTrade(1));
+                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(1, Items.LEATHER));
                             }
                         }
                         break;
@@ -144,7 +151,7 @@ public class EventSubscriber {
                         if (!tags.contains("eanimodTrader_2")) {
                             entity.addTag("eanimodTrader_2");
                             if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(EanimodVillagerTrades.getEanimodTrade(2));
+                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(2, Items.LEATHER));
                             }
                         }
                         break;
@@ -152,7 +159,7 @@ public class EventSubscriber {
                         if (!tags.contains("eanimodTrader_3")) {
                             entity.addTag("eanimodTrader_3");
                             if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(EanimodVillagerTrades.getEanimodTrade(3));
+                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(3, Items.LEATHER));
                             }
                         }
                         break;
@@ -160,7 +167,7 @@ public class EventSubscriber {
                         if (!tags.contains("eanimodTrader_4")) {
                             entity.addTag("eanimodTrader_4");
                             if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(EanimodVillagerTrades.getEanimodTrade(4));
+                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(4, Items.LEATHER));
                             }
                         }
                         break;
@@ -168,7 +175,7 @@ public class EventSubscriber {
                         if (!tags.contains("eanimodTrader_5")) {
                             entity.addTag("eanimodTrader_5");
                             if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(EanimodVillagerTrades.getEanimodTrade(5));
+                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(5, Items.LEATHER));
                             }
                         }
                 }
@@ -212,7 +219,7 @@ public class EventSubscriber {
                 entity.addTag("eanimodTradeless");
                 int i = 1;
                 while (ThreadLocalRandom.current().nextInt(1, 5) >= i) {
-                    ((WanderingTraderEntity)entity).getOffers().add(EanimodVillagerTrades.getWanderingEanimodTrade(ThreadLocalRandom.current().nextInt(3)+3));
+                    ((WanderingTraderEntity)entity).getOffers().add(new EanimodVillagerTrades().getWanderingEanimodTrade());
                     i++;
                 }
             }

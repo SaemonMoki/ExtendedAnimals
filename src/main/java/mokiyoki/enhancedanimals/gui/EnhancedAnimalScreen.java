@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -55,13 +56,18 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 
     private void renderInfoToolTip(int mouseX, int mouseY) {
         if (this.isPointInRegion(127, 5, 7, 9, (double)mouseX, (double)mouseY)) {
-            if (this.enhancedAnimalInfo.pregnant > 0) {
-                this.renderTooltip(I18n.format("eanimod.animalinfocontainer.pregnant"), mouseX, mouseY);
-            }
             if (this.enhancedAnimalInfo.isFemale) {
-                this.renderTooltip(I18n.format("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+                if (this.enhancedAnimalInfo.pregnant > 0) {
+                    this.renderTooltip(I18n.format("eanimod.animalinfocontainer.pregnant") + " " + I18n.format("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+                } else {
+                    this.renderTooltip(I18n.format("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+                }
             } else {
-                this.renderTooltip(I18n.format("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+                if (this.enhancedAnimalInfo.pregnant > 0) {
+                    this.renderTooltip( I18n.format("eanimod.animalinfocontainer.pregnant") + " " + I18n.format("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+                } else {
+                    this.renderTooltip(I18n.format("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+                }
             }
         }
         if (this.isPointInRegion(136, 5, 8, 9, (double)mouseX, (double)mouseY)) {
@@ -94,20 +100,38 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
 
-        double d0 = p_mouseClicked_1_ - (double)(i + 176);
-        double d1 = p_mouseClicked_3_ - (double)(j + 42);
-        if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestTabEnabled) {
-            this.chestTabEnabled = false;
-            toggleSlots();
-            return true;
-        }
+        if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
+            double d0 = p_mouseClicked_1_ - (double) (i + 140);
+            double d1 = p_mouseClicked_3_ - (double) (j - 28);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestTabEnabled) {
+                this.chestTabEnabled = false;
+                toggleSlots();
+                return true;
+            }
 
-        d0 = p_mouseClicked_1_ - (double)(i + 176);
-        d1 = p_mouseClicked_3_ - (double)(j + 17);
-        if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestTabEnabled) {
-            this.chestTabEnabled = true;
-            toggleSlots();
-            return true;
+             d0 = p_mouseClicked_1_ - (double) (i + 111);
+             d1 = p_mouseClicked_3_ - (double) (j - 28);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestTabEnabled) {
+                this.chestTabEnabled = true;
+                toggleSlots();
+                return true;
+            }
+        } else {
+            double d0 = p_mouseClicked_1_ - (double) (i + 176);
+            double d1 = p_mouseClicked_3_ - (double) (j + 42);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestTabEnabled) {
+                this.chestTabEnabled = false;
+                toggleSlots();
+                return true;
+            }
+
+            d0 = p_mouseClicked_1_ - (double) (i + 176);
+            d1 = p_mouseClicked_3_ - (double) (j + 17);
+            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestTabEnabled) {
+                this.chestTabEnabled = true;
+                toggleSlots();
+                return true;
+            }
         }
 
         return super.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
@@ -303,8 +327,15 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 
         if (this.container.enhancedAnimal.canHaveChest()) {
             if (this.chestTabEnabled) {
-                this.blit(i + 173, j + 13, 209, 16, 31, 28);
-                this.blit(i + 173, j + 41, 177, 44, 30, 28);  //broken image... no idea why or how
+                if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
+                    this.blit(i + 111, j - 28, 209, 100, 28, 31); //highlight tab
+                    this.blit(i + 140, j - 28, 177, 100, 28, 31); //shadow tab
+                    this.blit(i + 117, j - 19, 217, 23, 15, 14); //highlight chest logo
+                    this.blit(i + 145, j - 17, 182, 52, 18, 10); //shadow info logo
+                } else {
+                    this.blit(i + 173, j + 13, 209, 16, 31, 28); //highlight chest
+                    this.blit(i + 173, j + 41, 177, 44, 30, 28); //shadow info
+                }
                 if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
                     if (hasItemsInChest) {
                         this.blit(i + 79, j + 17, 0, this.ySize, 18*invSize, 54);
@@ -316,8 +347,15 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                     this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
                 }
             } else {
-                this.blit(i + 173, j + 13, 177, 16, 30, 28);
-                this.blit(i + 173, j + 41, 209, 44, 31, 28);
+                if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
+                    this.blit(i + 140, j - 28, 209, 100, 28, 31); //highlight tab
+                    this.blit(i + 111, j - 28, 177, 100, 28, 31); //shadow tab
+                    this.blit(i + 117, j - 18, 184, 23, 15, 14); //shadow chest logo
+                    this.blit(i + 145, j - 18, 215, 52, 18, 10); //highlight info logo
+                } else {
+                    this.blit(i + 173, j + 13, 177, 16, 30, 28); //shadow chest
+                    this.blit(i + 173, j + 41, 209, 52, 31, 28); //highlight info
+                }
             }
         }
 

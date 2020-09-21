@@ -59,6 +59,7 @@ public class EanimodCommonConfig implements IEanimodConfig{
         public final ForgeConfigSpec.IntValue gestationDaysHorse;
         public final ForgeConfigSpec.IntValue gestationDaysCat;
         public final ForgeConfigSpec.EnumValue<HungerConfigEnum> hungerScaling;
+        public final ForgeConfigSpec.BooleanValue tabsOnTop;
 
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
@@ -176,10 +177,13 @@ public class EanimodCommonConfig implements IEanimodConfig{
                     .comment("Number of ticks for cat gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
                     .defineInRange("catGestation.days", 48000, 1000, Integer.MAX_VALUE);
 
-
             hungerScaling = builder
                     .comment("How fast the animals get hungry. Values: RAVENOUS, MORE_HUNGRY, STANDARD, LESS_HUNGRY, NEVER_HUNGRY")
                     .defineEnum("hungerscaling", HungerConfigEnum.STANDARD);
+
+            tabsOnTop = builder
+                    .comment("false keeps the tabs on the animal GUI on the right hand side. true places the tabs on the top of the GUI, true is the recommended setting if you are playing with POI or the like.")
+                    .define("tabsOnTop", true);
 
             builder.pop();
         }

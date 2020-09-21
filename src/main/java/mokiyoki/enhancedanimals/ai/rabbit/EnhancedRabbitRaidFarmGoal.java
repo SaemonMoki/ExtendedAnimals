@@ -10,13 +10,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class EnhancedRaidFarmGoal extends MoveToBlockGoal {
+public class EnhancedRabbitRaidFarmGoal extends MoveToBlockGoal {
 
     private final EnhancedRabbit rabbit;
     private boolean wantsToRaid;
     private boolean canRaid;
 
-    public EnhancedRaidFarmGoal(EnhancedRabbit rabbitIn) {
+    public EnhancedRabbitRaidFarmGoal(EnhancedRabbit rabbitIn) {
         super(rabbitIn, (double)0.7F, 16);
         this.rabbit = rabbitIn;
     }
@@ -80,6 +80,5 @@ public class EnhancedRaidFarmGoal extends MoveToBlockGoal {
 
         return false;
     }
-
 
 }

@@ -658,6 +658,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
             rabbitModelData.collar = hasCollar(enhancedRabbit.getEnhancedInventory());
             rabbitModelData.blink = enhancedRabbit.getBlink();
+            rabbitModelData.birthTime = enhancedRabbit.getBirthTime();
             rabbitModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedRabbit.world).getWorldInfo()).getGameTime());
 
             return rabbitModelData;

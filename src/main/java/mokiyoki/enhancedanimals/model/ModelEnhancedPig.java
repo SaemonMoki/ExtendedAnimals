@@ -976,6 +976,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 //            }
             pigModelData.sleeping = enhancedPig.isAnimalSleeping();
             pigModelData.blink = enhancedPig.getBlink();
+            pigModelData.birthTime = enhancedPig.getBirthTime();
             pigModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedPig.world).getWorldInfo()).getGameTime());
             pigModelData.saddle = enhancedPig.getEnhancedInventory().getStackInSlot(1);
             pigModelData.bridle = enhancedPig.getEnhancedInventory().getStackInSlot(3);

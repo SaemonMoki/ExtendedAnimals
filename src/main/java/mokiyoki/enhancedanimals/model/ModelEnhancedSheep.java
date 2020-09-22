@@ -1339,6 +1339,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.coatlength = enhancedSheep.getCoatLength();
             sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
             sheepModelData.blink = enhancedSheep.getBlink();
+            sheepModelData.birthTime = enhancedSheep.getBirthTime();
             sheepModelData.collar = hasCollar(enhancedSheep.getEnhancedInventory());
             sheepModelData.bridle = enhancedSheep.getEnhancedInventory().getStackInSlot(3);
             sheepModelData.hasChest = !enhancedSheep.getEnhancedInventory().getStackInSlot(0).isEmpty();

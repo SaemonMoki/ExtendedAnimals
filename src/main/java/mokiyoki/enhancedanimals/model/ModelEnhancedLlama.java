@@ -1053,6 +1053,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.coatlength = enhancedLlama.getCoatLength();
             llamaModelData.sleeping = enhancedLlama.isAnimalSleeping();
             llamaModelData.blink = enhancedLlama.getBlink();
+            llamaModelData.birthTime = enhancedLlama.getBirthTime();
             llamaModelData.angry = (enhancedLlama.isAggressive());
             llamaModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedLlama.world).getWorldInfo()).getGameTime());
             llamaModelData.unrenderedModels = new ArrayList<>();

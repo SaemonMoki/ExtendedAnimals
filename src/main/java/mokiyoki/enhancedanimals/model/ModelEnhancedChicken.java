@@ -1237,6 +1237,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             chickenModelData.lastAccessed = 0;
             chickenModelData.sleeping = enhancedChicken.isRoosting();
             chickenModelData.blink = enhancedChicken.getBlink();
+            chickenModelData.birthTime = enhancedChicken.getBirthTime();
             chickenModelData.collar = hasCollar(enhancedChicken.getEnhancedInventory());
             chickenModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedChicken.world).getWorldInfo()).getGameTime());
             chickenModelData.unrenderedModels = new ArrayList<>();

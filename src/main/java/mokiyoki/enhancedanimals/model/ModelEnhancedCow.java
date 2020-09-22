@@ -1827,6 +1827,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.bagSize = enhancedCow.getBagSize();
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
             cowModelData.blink = enhancedCow.getBlink();
+            cowModelData.birthTime = enhancedCow.getBirthTime();
             cowModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime());
             int collarSlot = hasCollar(enhancedCow.getEnhancedInventory());
             cowModelData.collar = collarSlot!=0;

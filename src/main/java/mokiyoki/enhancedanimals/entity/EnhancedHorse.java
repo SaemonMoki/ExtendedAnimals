@@ -334,7 +334,8 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
 
             if(pregnant) {
                 gestationTimer++;
-                int days = EanimodCommonConfig.COMMON.gestationDaysHorse.get();
+//                int days = EanimodCommonConfig.COMMON.gestationDaysHorse.get();
+                int days = 2;
                 if (days/2 < gestationTimer) {
                     setHorseStatus(EntityState.PREGNANT.toString());
                 }
@@ -357,7 +358,8 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             if (this.getIdleTime() < 100) {
                 if (hunger <= 72000) {
                     if (sleeping) {
-                        int days = EanimodCommonConfig.COMMON.gestationDaysHorse.get();
+//                        int days = EanimodCommonConfig.COMMON.gestationDaysHorse.get();
+                        int days = 2;
                         if (hunger <= days*(0.50)) {
                             hunger = hunger++;
                         }

@@ -81,7 +81,7 @@ public class EnhancedAnimals {
     public EnhancedAnimals() {
         instance = this;
         EanimodConfigHelper.registerConfig(ModLoadingContext.get().getActiveContainer(), commonConfig);
-        Path path = FMLPaths.CONFIGDIR.get().resolve("eanimod-common.toml");
+        Path path = FMLPaths.CONFIGDIR.get().resolve("genetic-animals-common.toml");
         loadConfig(EanimodCommonConfig.COMMON_SPEC, path);
 
         // Register the setup method for modloading

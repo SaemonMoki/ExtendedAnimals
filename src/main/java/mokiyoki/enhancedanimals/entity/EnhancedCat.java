@@ -381,7 +381,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
     private ITextComponent getPregnantText() {
         String pregnancyText;
-        int days = EanimodCommonConfig.COMMON.gestationDaysCat.get();
+//        int days = EanimodCommonConfig.COMMON.gestationDaysCat.get();
+        int days = 2;
         if (gestationTimer > (days/5 * 4)) {
             pregnancyText = "eanimod.pregnancy.near_birth";
         } else if (gestationTimer > days/2 ) {
@@ -450,7 +451,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
                 if (hunger <= 72000) {
                     if (sleeping) {
-                        int days = EanimodCommonConfig.COMMON.gestationDaysCat.get();
+//                        int days = EanimodCommonConfig.COMMON.gestationDaysCat.get();
+                        int days = 2;
                         if (hunger <= days * (0.50) && (ticksExisted % 8 == 0)) {
                             hunger = hunger++;
                         }
@@ -508,7 +510,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
             if(pregnant) {
                 gestationTimer++;
-                int days = EanimodCommonConfig.COMMON.gestationDaysCat.get();
+//                int days = EanimodCommonConfig.COMMON.gestationDaysCat.get();
+                int days = 2;
                 if (hunger > days*(0.75) && days !=0) {
                     pregnant = false;
                 }

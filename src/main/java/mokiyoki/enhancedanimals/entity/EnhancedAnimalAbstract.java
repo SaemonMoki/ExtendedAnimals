@@ -681,7 +681,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             }
-            else if ((!this.isChild() || !bottleFeedable) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
+            else if ((!this.isChild() || !bottleFeedable) && TEMPTATION_ITEMS.test(itemStack)) {
+                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
+                    if (hunger < 4000) {
+                        return super.processInteract(entityPlayer, hand);
+                    }
+                }
+
                 if (this.foodWeightMap.containsKey(item)) {
                     decreaseHunger(this.foodWeightMap.get(item));
                 } else {
@@ -694,19 +700,16 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                         itemStack.shrink(1);
                     }
                 }
-            }  else if (this.isChild() && MILK_ITEMS.test(itemStack) && bottleFeedable && hunger >= 6000) {
-                if (item == ModItems.HALF_MILK_BOTTLE) {
-                    decreaseHunger(6000);
-                    if (!entityPlayer.abilities.isCreativeMode) {
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                            entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                        }
+            } else if (this.isChild()) {
+                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
+                    if (hunger < 4000) {
+                        return super.processInteract(entityPlayer, hand);
                     }
-                } else if (item == ModItems.MILK_BOTTLE) {
-                    if (hunger >= 12000) {
-                        decreaseHunger(12000);
+                }
+
+                if (bottleFeedable && MILK_ITEMS.test(itemStack)) {
+                    if (item == ModItems.HALF_MILK_BOTTLE) {
+                        decreaseHunger(6000);
                         if (!entityPlayer.abilities.isCreativeMode) {
                             if (itemStack.isEmpty()) {
                                 entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
@@ -714,15 +717,52 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                                 entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
                             }
                         }
-                    } else {
-                        decreaseHunger(6000);
-                        if (!entityPlayer.abilities.isCreativeMode) {
-                            if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
-                                entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
+                    } else if (item == ModItems.MILK_BOTTLE) {
+                        if (hunger >= 12000) {
+                            decreaseHunger(12000);
+                            if (!entityPlayer.abilities.isCreativeMode) {
+                                if (itemStack.isEmpty()) {
+                                    entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                                    entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                                }
+                            }
+                        } else {
+                            decreaseHunger(6000);
+                            if (!entityPlayer.abilities.isCreativeMode) {
+                                if (itemStack.isEmpty()) {
+                                    entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
+                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
+                                    entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
+                                }
                             }
                         }
+                    }
+                } else {
+                    decreaseHunger(this.foodWeightMap.get(item));
+                    if (!entityPlayer.abilities.isCreativeMode) {
+                        itemStack.shrink(1);
+                    } else {
+                        if (itemStack.getCount() > 1) {
+                            itemStack.shrink(1);
+                        }
+                    }
+                }
+            } else if (BREED_ITEMS.test(itemStack)) {
+                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
+                    if (hunger < 4000) {
+                        return super.processInteract(entityPlayer, hand);
+                    }
+                }
+                if (this.isChild()) {
+                    this.ageUp((int)((float)(-this.getGrowingAge() / 20) * 0.1F), true);
+                }
+                decreaseHunger(this.foodWeightMap.get(item));
+                if (!entityPlayer.abilities.isCreativeMode) {
+                    itemStack.shrink(1);
+                } else {
+                    if (itemStack.getCount() > 1) {
+                        itemStack.shrink(1);
                     }
                 }
             }
@@ -1288,6 +1328,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return "ADULT";
     }
 
+    @Override
+    public boolean isChild() {
+        int age = this.getAge();
+        int adultAge = getAdultAge();
+        return age < adultAge;
+    }
+
     /*
     Client Sided Work
     */
@@ -1418,7 +1465,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     //overriden to prevent aging up when fed
     @Override
     public void ageUp(int growthSeconds, boolean updateForcedAge) {
-        if (!updateForcedAge && EanimodCommonConfig.COMMON.feedGrowth.get()) {
+        if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
+            int newBirthTime = Integer.valueOf(getBirthTime()) - ((int)(getAdultAge()*0.1));
+            this.setBirthTime(String.valueOf(newBirthTime));
             super.ageUp(growthSeconds, updateForcedAge);
         }
     }

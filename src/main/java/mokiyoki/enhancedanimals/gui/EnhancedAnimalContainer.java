@@ -25,6 +25,7 @@ public class EnhancedAnimalContainer extends Container {
     public EnhancedAnimalAbstract enhancedAnimal;
     public EnhancedAnimalInfo animalInfo;
     public int numberOfEquipmentSlots = 0;
+    public int totalNumberOfAnimalSlots = 0;
 
     public EnhancedAnimalContainer(int p_i50066_1_, PlayerInventory playerInventoryIn, EnhancedAnimalAbstract enhancedAnimal, EnhancedAnimalInfo animalInfo) {
         super(ENHANCED_ANIMAL_CONTAINER, p_i50066_1_);
@@ -183,6 +184,8 @@ public class EnhancedAnimalContainer extends Container {
             return 1; }
         });
 
+        totalNumberOfAnimalSlots = numberOfEquipmentSlots;
+
         int inventoryShift = 7;
         if (enhancedAnimal.canHaveChest()) {
                 for (int k = 0; k < i; ++k) {
@@ -190,6 +193,7 @@ public class EnhancedAnimalContainer extends Container {
                         this.addSlot(new EnhancedSlot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
                         });
                         inventoryShift++;
+                        totalNumberOfAnimalSlots++;
                     }
                 }
         }
@@ -363,11 +367,11 @@ public class EnhancedAnimalContainer extends Container {
         if (slot != null && slot.getHasStack()) {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-            if (index < this.inventory.getSizeInventory()) {
-                if (!this.mergeItemStack(itemstack1, this.inventory.getSizeInventory(), this.inventorySlots.size(), true)) {
+            if (index < totalNumberOfAnimalSlots) {
+                if (!this.mergeItemStack(itemstack1, this.inventory.getSizeInventory()-numberOfEquipmentSlots, this.inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, this.inventory.getSizeInventory(), false)) {
+            } else if (!this.mergeItemStack(itemstack1, 0, this.inventory.getSizeInventory()-numberOfEquipmentSlots, false)) {
                 return ItemStack.EMPTY;
             }
 

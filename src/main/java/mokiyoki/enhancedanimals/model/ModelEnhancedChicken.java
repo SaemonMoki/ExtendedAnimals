@@ -103,6 +103,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     private final ModelRenderer eyeLeft;
     private final ModelRenderer eyeRight;
     private final ModelRenderer collar;
+    private final ModelRenderer bell;
 
     private Integer currentChicken = null;
 
@@ -451,11 +452,15 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.textureWidth=160;
         this.textureHeight=160;
         this.collar = new ModelRenderer(this, 0, 155);
-        this.collar.addBox(-2.5F, -1.0F, -3.0F, 5,  1, 4, 0.001F);
+        this.collar.addBox(-2.5F, -1.0F, -1.5F, 5,  1, 4, 0.001F);
         this.collar.setTextureOffset(30, 156);
-        this.collar.addBox(0.0F, -1.3333F, -4.0F, 0,  2, 2);
-        this.collar.setTextureOffset(18, 154);
-        this.collar.addBox(-1.5F, -1.0F, -5.0F, 3, 3, 3, -1.0F);
+        this.collar.addBox(0.0F, -1.3333F, -2.5F, 0,  2, 2);
+        this.collar.rotateAngleX = (float)Math.PI/4.0F;
+        this.bell = new ModelRenderer(this, 18, 154);
+        this.bell.addBox(-1.5F, 0.0F, -1.5F, 3, 3, 3, -1.0F);
+        this.bell.setRotationPoint(0.0F, -1.0F, -1.25F);
+        this.bell.rotateAngleX = -(float)Math.PI/4.0F;
+        this.collar.addChild(this.bell);
         this.head.addChild(this.collar);
         this.headNakedNeck.addChild(this.collar);
     }

@@ -22,13 +22,16 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.Language;
 import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -46,7 +49,9 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -237,6 +242,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     private ECSandBath ecSandBath;
     private String dropMeatType;
+    public boolean chickenJockey;
 
     private boolean resetTexture = true;
 
@@ -361,6 +367,33 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 
+    public void updatePassenger(Entity passenger) {
+        super.updatePassenger(passenger);
+        float f = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
+        float f1 = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
+        float f2 = 0.1F;
+        float f3 = 0.0F;
+        passenger.setPosition(this.getPosX() + (double)(0.1F * f), this.getPosYHeight(0.5D) + passenger.getYOffset() + 0.0D, this.getPosZ() - (double)(0.1F * f1));
+        if (passenger instanceof LivingEntity) {
+            ((LivingEntity)passenger).renderYawOffset = this.renderYawOffset;
+        }
+
+    }
+
+    /**
+     * Determines if this chicken is a jokey with a zombie riding it.
+     */
+    public boolean isChickenJockey() {
+        return this.chickenJockey;
+    }
+
+    /**
+     * Sets whether this chicken is a jockey or not.
+     */
+    public void setChickenJockey(boolean jockey) {
+        this.chickenJockey = jockey;
+    }
+
     @Override
     public void livingTick() {
         super.livingTick();
@@ -415,9 +448,21 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
             if (this.fertileTimer > 0) {
-                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setGenes(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.getIsFemale(), Genes.Species.CHICKEN));
+                String damName = "???";
+                if (this.getCustomName()!=null) {
+                    damName = this.getCustomName().getString();
+                }
+                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.getIsFemale(), Genes.Species.CHICKEN), this.mateName, damName);
                 CompoundNBT nbtTagCompound = eggItem.serializeNBT();
                 eggItem.deserializeNBT(nbtTagCompound);
+                if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
+                    int i = 1;
+                    while (i > 0) {
+                        int j = ExperienceOrbEntity.getXPSplit(i);
+                        i -= j;
+                        this.world.addEntity(new ExperienceOrbEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), j));
+                    }
+                }
             }
             this.entityDropItem(eggItem, 1);
             this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
@@ -523,17 +568,29 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
             this.setFertile();
             this.setMateGender(((EnhancedChicken)ageable).getIsFemale());
+            if (((EnhancedChicken)ageable).hasCustomName()) {
+                this.setMateName(((EnhancedChicken) ageable).getCustomName().getString());
+            }
             ((EnhancedChicken)ageable).setMateGenes(this.genetics);
             ((EnhancedChicken)ageable).setFertile();
             ((EnhancedChicken)ageable).setMateGender(this.getIsFemale());
+            if (this.hasCustomName()) {
+                ((EnhancedChicken)ageable).setMateName(this.getCustomName().getString());
+            }
         } else if (this.getIsFemale()) {
             this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
             this.setFertile();
             this.setMateGender(false);
+            if (((EnhancedChicken)ageable).hasCustomName()) {
+                this.setMateName(((EnhancedChicken) ageable).getCustomName().getString());
+            }
         } else {
             ((EnhancedChicken)ageable).setMateGenes(this.genetics);
             ((EnhancedChicken)ageable).setFertile();
             ((EnhancedChicken)ageable).setMateGender(false);
+            if (this.hasCustomName()) {
+                ((EnhancedAnimalAbstract)ageable).setMateName(this.getCustomName().getString());
+            }
         }
     }
 

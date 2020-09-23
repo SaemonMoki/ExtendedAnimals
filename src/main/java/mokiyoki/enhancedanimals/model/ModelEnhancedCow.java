@@ -653,11 +653,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         float babyScale = 1.0F;
         if (!(cowModelData.birthTime == null) && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
             int ageTime = (int)(cowModelData.clientGameTime - Long.parseLong(cowModelData.birthTime));
-            if (ageTime < 0) {
-                ageTime = 0;
-            }
             if (ageTime <= 108000) {
-                age = ageTime/108000.0F;
+                age = ageTime < 0 ? 0 : ageTime/108000.0F;
                 babyScale = (3.0F - age)/2;
             }
         }
@@ -674,8 +671,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
         float genderModifier = cowModelData.isFemale? 1.80F : 2.0F;
         float finalCowSize = (((genderModifier * age) + 1.0F) / 3.0F)*cowModelData.cowSize;
-        bodyWidth = finalCowSize + (finalCowSize * bodyWidth);
-        bodyLength = finalCowSize + (finalCowSize * bodyLength);
+        bodyWidth = finalCowSize + (finalCowSize * bodyWidth * age);
+        bodyLength = finalCowSize + (finalCowSize * bodyLength * age);
 
         matrixStackIn.push();
         matrixStackIn.scale(bodyWidth, finalCowSize, bodyLength);

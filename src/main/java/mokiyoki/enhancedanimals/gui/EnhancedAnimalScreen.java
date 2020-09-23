@@ -191,8 +191,12 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             name = enhancedAnimalInfo.agePrefix+name;
         }
 
-        this.font.drawString(name, 8.0F, 6.0F, 4210752);
-        this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+        if (name.length() > 20) {
+            name = name.substring(0, 20);
+        }
+
+        this.font.drawString(name, 8.0F, (float)(this.ySize - 160), 4210752);
+        this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 94), 4210752);
 
         //(health points / max health points * 10) + "/" + "10"
         /**
@@ -235,12 +239,12 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         if (enhancedAnimalInfo.isFemale) {
             this.blit(i + 126, j + 5, 117, this.ySize + 54, 8, 10); // female icon
                 int pregnancy = enhancedAnimalInfo.pregnant;
-            this.blit(i + 126, j + 5 + (10-pregnancy) , 117, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
+            this.blit(i + 126, j + 5 + (11-pregnancy) , 117, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
 
         } else {
             this.blit(i + 126, j + 5, 108, this.ySize + 54, 8, 10); // male icon
                 int pregnancy = enhancedAnimalInfo.pregnant;
-            this.blit(i + 126, j + 5 + (10-pregnancy) , 108, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
+            this.blit(i + 126, j + 5 + (11-pregnancy) , 108, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
         }
 
         this.blit(i + 136, j + 5, 125, this.ySize + 54, 9, 10); // health icon
@@ -331,7 +335,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                     this.blit(i + 111, j - 28, 209, 100, 28, 31); //highlight tab
                     this.blit(i + 140, j - 28, 177, 100, 28, 31); //shadow tab
                     this.blit(i + 117, j - 19, 217, 23, 15, 14); //highlight chest logo
-                    this.blit(i + 145, j - 17, 182, 52, 18, 10); //shadow info logo
+                    this.blit(i + 144, j - 17, 182, 51, 18, 14); //shadow info logo
                 } else {
                     this.blit(i + 173, j + 13, 209, 16, 31, 28); //highlight chest
                     this.blit(i + 173, j + 41, 177, 44, 30, 28); //shadow info
@@ -351,16 +355,55 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                     this.blit(i + 140, j - 28, 209, 100, 28, 31); //highlight tab
                     this.blit(i + 111, j - 28, 177, 100, 28, 31); //shadow tab
                     this.blit(i + 117, j - 18, 184, 23, 15, 14); //shadow chest logo
-                    this.blit(i + 145, j - 18, 215, 52, 18, 10); //highlight info logo
+                    this.blit(i + 144, j - 18, 215, 51, 18, 14); //highlight info logo
                 } else {
                     this.blit(i + 173, j + 13, 177, 16, 30, 28); //shadow chest
-                    this.blit(i + 173, j + 41, 209, 52, 31, 28); //highlight info
+                    this.blit(i + 173, j + 41, 209, 44, 31, 28); //highlight info
                 }
             }
         }
 
         if (this.enhancedAnimalInfo.created) {
             InventoryScreen.drawEntityOnScreen(i + 51, j + 60, 17, (float)(i + 51) - this.mousePosx, (float)(j + 75 - 50) - this.mousePosY, (LivingEntity) this.container.getAnimal());
+        }
+
+        if (!this.chestTabEnabled) {
+            Integer ageInt = this.enhancedAnimalInfo.age/24000;
+//            Float ageFloat = ageInt >= 20 ? (float)(ageInt/10) : (float)ageInt/10.0F;
+            String age = "";
+            if (ageInt < 8) {
+                age = ageInt.toString() + "days";
+            } else if (ageInt < 96) {
+                ageInt = ageInt/8;
+                age = ageInt.toString() + "months";
+            } else if (ageInt < 959040) {
+                ageInt = ageInt/96;
+                age = ageInt.toString() + "years";
+            } else {
+                age = "ancient";
+            }
+            this.font.drawString("Age:" + age, i + 99, j + 20, 4210752);
+
+            String sireName = this.enhancedAnimalInfo.sire;
+            String damName = this.enhancedAnimalInfo.dam;
+            if (sireName.length() > 8) {
+                this.font.drawString("Sire:", i + 99, j + 30, 4210752);
+                this.font.drawString(sireName.substring(0, 12), i + 99, j + 40, 4210752);
+                if (damName.length() > 8) {
+                    this.font.drawString("Dam:", i + 99, j + 51, 4210752);
+                    this.font.drawString(damName.substring(0, 12), i + 99, j + 60, 4210752);
+                } else {
+                    this.font.drawString("Dam:" + damName, i + 99, j + 50, 4210752);
+                }
+            } else {
+                this.font.drawString("Sire:" + sireName, i + 99, j + 30, 4210752);
+                if (damName.length() > 8) {
+                    this.font.drawString("Dam:", i + 99, j + 41, 4210752);
+                    this.font.drawString(damName.substring(0, 12), i + 99, j + 50, 4210752);
+                } else {
+                    this.font.drawString("Dam:" + damName, i + 99, j + 40, 4210752);
+                }
+            }
         }
     }
 

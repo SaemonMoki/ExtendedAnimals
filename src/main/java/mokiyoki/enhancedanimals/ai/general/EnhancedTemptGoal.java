@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
+import net.minecraft.block.GrassBlock;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,8 +26,8 @@ public class EnhancedTemptGoal extends Goal {
     private final Ingredient temptItem;
     private final boolean scaredByPlayerMovement;
 
-    private static final int VERY_HUNGRY = 10000; //If above this will follow without tempt item
-    private static final int REGULAR_HUNGRY = 1000; //If above this but below the other, will act as regular minecraft
+    private static final int VERY_HUNGRY = 24000; //If above this will follow without tempt item
+    private static final int REGULAR_HUNGRY = 12000; //If above this but below the other, will act as regular minecraft
 
     protected final EnhancedAnimalAbstract eanimal;
 
@@ -49,6 +50,9 @@ public class EnhancedTemptGoal extends Goal {
             if (this.closestPlayer == null) {
                 return false;
             } else {
+                 if (this.eanimal.world.getBlockState(this.eanimal.getPosition().down()).getBlock() instanceof GrassBlock) {
+                     return this.temptItem.test(this.closestPlayer.getHeldItemMainhand()) || this.temptItem.test(this.closestPlayer.getHeldItemOffhand());
+                }
                 return this.isTempting(this.closestPlayer.getHeldItemMainhand()) || this.isTempting(this.closestPlayer.getHeldItemOffhand());
             }
         }

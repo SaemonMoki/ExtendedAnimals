@@ -39,11 +39,13 @@ public class EnhancedEgg extends Item {
 
         if (!worldIn.isRemote) {
             Genes eggGenes = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes();
+            String sireName = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getSire();
+            String damName = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getDam();
             EnhancedEntityEgg entityegg;
             if (eggGenes != null) {
-                entityegg = new EnhancedEntityEgg(worldIn, playerIn, eggGenes);
+                entityegg = new EnhancedEntityEgg(worldIn, playerIn, eggGenes, sireName, damName);
             } else {
-                entityegg = new EnhancedEntityEgg(worldIn, playerIn, null);
+                entityegg = new EnhancedEntityEgg(worldIn, playerIn, null, null, null);
             }
 
             entityegg.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);

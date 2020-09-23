@@ -10,12 +10,17 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.MixableMilkBucket;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -36,6 +41,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -264,6 +270,29 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
      */
     protected float getSoundVolume() {
         return 0.4F;
+    }
+
+//    @Override
+//    public void updatePassenger(Entity passenger) {
+//        if (this.isPassenger(passenger)) {
+//            float f = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
+//            float f1 = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
+//            float f2 = 0.3F;
+//            passenger.setPosition(this.getPosX() + (double)(0.3F * f1), this.getPosY() + this.getMountedYOffset() + passenger.getYOffset(), this.getPosZ() - (double)(0.3F * f));
+//        }
+//    }
+
+    @Override
+    public double getMountedYOffset() {
+        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
+            return 0.9D;
+        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
+            return 0.9D;
+        } else {
+            return 0.8D;
+        }
+//        return (saddleSlot == ItemStack.EMPTY || saddleSlot.getItem() instanceof CustomizableCollar ? 0.8D : 0.9D);
     }
 
     protected void registerAttributes() {

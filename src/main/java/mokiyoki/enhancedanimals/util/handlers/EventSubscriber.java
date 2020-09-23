@@ -4,6 +4,7 @@ import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
+import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
@@ -56,6 +57,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 
 /**
@@ -68,36 +70,25 @@ public class EventSubscriber {
     public void replaceVanillaMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
 
-        if (entity instanceof WanderingTraderEntity) {
+            if (entity instanceof VillagerEntity) {
             Set<String> tags = entity.getTags();
             if (!tags.contains("eanimodTradeless")) {
                 if (!entity.getTags().contains("eanimodTrader")) {
                     entity.addTag("eanimodTrader");
                 }
             }
-        } else if (entity instanceof VillagerEntity) {
-            Set<String> tags = entity.getTags();
-            if (!tags.contains("eanimodTradeless")) {
-                if (!entity.getTags().contains("eanimodTrader")) {
-                    if (ThreadLocalRandom.current().nextBoolean()) {
-                        entity.addTag("eanimodTrader");
-                    } else {
-                        entity.addTag("eanimodTradeless");
-                    }
-                }
-            }
         }
         //TODO figure out how to not delete named entities and maybe convert them instead.
-//        if (entity instanceof ChickenEntity) {
-//            if(!EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
-//                event.setCanceled(true);
-//            }
-//        }
-//        if (entity instanceof RabbitEntity) {
-//            if(!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
-//                event.setCanceled(true);
-//            }
-//        }
+        if (entity instanceof ChickenEntity) {
+            if(!((ChickenEntity)entity).isChickenJockey() && !EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
+                event.setCanceled(true);
+            }
+        }
+        if (entity instanceof RabbitEntity) {
+            if(!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
+                event.setCanceled(true);
+            }
+        }
         if (entity instanceof LlamaEntity) {
             if (!(entity instanceof TraderLlamaEntity)) {
 //                    if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
@@ -136,22 +127,20 @@ public class EventSubscriber {
         if (entity instanceof VillagerEntity && entity.getTags().contains("eanimodTrader")) {
             VillagerProfession profession = ((VillagerEntity)entity).getVillagerData().getProfession();
             Set<String> tags = entity.getTags();
-            if (profession.equals(VillagerProfession.LEATHERWORKER)) {
+            if (profession.equals(VillagerProfession.LEATHERWORKER) || profession.equals(VillagerProfession.SHEPHERD)) {
                 int level = ((VillagerEntity)entity).getVillagerData().getLevel();
                 switch (level) {
                     case 1 :
                         if (!tags.contains("eanimodTrader_1")) {
                             entity.addTag("eanimodTrader_1");
-                            if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(1, Items.LEATHER));
-                            }
+                            ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession, 1));
                         }
                         break;
                     case 2 :
                         if (!tags.contains("eanimodTrader_2")) {
                             entity.addTag("eanimodTrader_2");
                             if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(2, Items.LEATHER));
+                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession,2));
                             }
                         }
                         break;
@@ -159,7 +148,7 @@ public class EventSubscriber {
                         if (!tags.contains("eanimodTrader_3")) {
                             entity.addTag("eanimodTrader_3");
                             if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(3, Items.LEATHER));
+                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession,3));
                             }
                         }
                         break;
@@ -167,7 +156,7 @@ public class EventSubscriber {
                         if (!tags.contains("eanimodTrader_4")) {
                             entity.addTag("eanimodTrader_4");
                             if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(4, Items.LEATHER));
+                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession,4));
                             }
                         }
                         break;
@@ -175,13 +164,22 @@ public class EventSubscriber {
                         if (!tags.contains("eanimodTrader_5")) {
                             entity.addTag("eanimodTrader_5");
                             if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(5, Items.LEATHER));
+                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession,5));
                             }
                         }
                 }
             } else {
                 if (tags.contains("eanimodTrader_1")) {
                     entity.removeTag("eanimodTrader_1");
+                }
+            }
+        } else if (entity instanceof WanderingTraderEntity) {
+            if (!entity.getTags().contains("eanimodTradeless")) {
+                entity.addTag("eanimodTradeless");
+                int i = 1;
+                while (ThreadLocalRandom.current().nextInt(2, 6) >= i) {
+                    ((WanderingTraderEntity)entity).getOffers().add(new EanimodVillagerTrades().getWanderingEanimodTrade());
+                    i++;
                 }
             }
         }
@@ -212,15 +210,29 @@ public class EventSubscriber {
                 for (int i = 0; i < 2; i++) {
                     BlockPos blockPos = nearbySpawn(world, new BlockPos(entity));
                     EnhancedLlama enhancedLlama = ENHANCED_LLAMA.spawn(world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
-                    enhancedLlama.setLeashHolder(entity, true);
+                    if(enhancedLlama != null) {
+                        enhancedLlama.setLeashHolder(entity, true);
+                    }
                 }
             }
             if (!entity.getTags().contains("eanimodTradeless")) {
                 entity.addTag("eanimodTradeless");
                 int i = 1;
-                while (ThreadLocalRandom.current().nextInt(1, 5) >= i) {
+                while (ThreadLocalRandom.current().nextInt(2, 6) >= i) {
                     ((WanderingTraderEntity)entity).getOffers().add(new EanimodVillagerTrades().getWanderingEanimodTrade());
                     i++;
+                }
+            }
+        } else if (entity instanceof ChickenEntity) {
+            if (((ChickenEntity)entity).isChickenJockey()) {
+                World world = event.getWorld().getWorld();
+                Entity rider = entity.getRidingEntity();
+                entity.remove();
+                BlockPos blockPos = nearbySpawn(world, new BlockPos(entity));
+                EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.spawn(world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
+                if(enhancedChicken != null) {
+                    enhancedChicken.updatePassenger(rider);
+                    enhancedChicken.setChickenJockey(true);
                 }
             }
         }

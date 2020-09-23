@@ -8,6 +8,9 @@ public class EnhancedAnimalInfo {
     public int pregnant = 0;
     public String name = "Animal";
     public String agePrefix = "ADULT";
+    public Integer age = 0;
+    public String sire = "???";
+    public String dam = "???";
 
     public boolean created = false;
 
@@ -22,6 +25,9 @@ public class EnhancedAnimalInfo {
             pregnant = Integer.valueOf(splits[3]);
             name = String.valueOf(splits[4]);
             agePrefix = String.valueOf(splits[5]);
+            age = Integer.valueOf(splits[6]);
+            sire = String.valueOf(splits[7]);
+            dam = String.valueOf(splits[8]);
             created = true;
         }
     }
@@ -34,6 +40,9 @@ public class EnhancedAnimalInfo {
         sb.append(pregnant).append("|");
         sb.append(name).append("|");
         sb.append(agePrefix).append("|");
+        sb.append(age).append("|");
+        sb.append(sire).append("|");
+        sb.append(dam).append("|");
         return sb.toString();
     }
 

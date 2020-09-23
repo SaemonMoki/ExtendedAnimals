@@ -941,33 +941,36 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setAlphaTexturePaths() {
-        int[] genesForText = getSharedGenes().getAutosomalGenes();
-        if (genesForText != null) {
-            int coat = 0;
+        Genes genes = getSharedGenes();
+        if (genes!=null) {
+            int[] genesForText = genes.getAutosomalGenes();
+            if (genesForText != null) {
+                int coat = 0;
 
-            if (genesForText[36] != 1 && genesForText[37] != 1) {
-                if ((genesForText[34] == 1 || genesForText[35] == 1) && (genesForText[34] != 3 && genesForText[35] != 3)) {
-                    //furry
-                    coat = 3;
-                }else if (genesForText[34] == 2 || genesForText[35] == 2) {
-                    //normal
-                    coat = 2;
-                }else{
-                    //sparse
-                    coat = 1;
+                if (genesForText[36] != 1 && genesForText[37] != 1) {
+                    if ((genesForText[34] == 1 || genesForText[35] == 1) && (genesForText[34] != 3 && genesForText[35] != 3)) {
+                        //furry
+                        coat = 3;
+                    } else if (genesForText[34] == 2 || genesForText[35] == 2) {
+                        //normal
+                        coat = 2;
+                    } else {
+                        //sparse
+                        coat = 1;
+                    }
+
+                    if (genesForText[38] == 1 || genesForText[39] == 1) {
+                        coat = coat + 1;
+                    }
                 }
 
-                if (genesForText[38] == 1 || genesForText[39] == 1) {
-                    coat = coat + 1;
+                //todo do the alpha textures
+
+                if (coat != 0) {
+                    this.enhancedAnimalAlphaTextures.add(PIG_TEXTURES_ALPHA[coat]);
                 }
+
             }
-
-            //todo do the alpha textures
-
-            if (coat != 0) {
-                this.enhancedAnimalAlphaTextures.add(PIG_TEXTURES_ALPHA[coat]);
-            }
-
         }
     }
     

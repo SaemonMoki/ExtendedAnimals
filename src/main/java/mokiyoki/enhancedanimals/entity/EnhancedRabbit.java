@@ -1271,7 +1271,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             addTextureToAnimal(RABBIT_TEXTURES_BROKEN, broken, b -> b != 0);
             addTextureToAnimal(RABBIT_TEXTURES_VIENNA, vienna, v -> v != 0);
             addTextureToAnimal(RABBIT_TEXTURES_FUR, fur, f -> f != 0);
-            addTextureToAnimal(RABBIT_TEXTURES_EYES, eyes, e -> e != 0);
+            addTextureToAnimal(RABBIT_TEXTURES_EYES, eyes,null);
             addTextureToAnimal(RABBIT_TEXTURES_VIENNAEYES, vieye, v -> v > 7 && (v <= 17 || v >= 25));
             addTextureToAnimal(RABBIT_TEXTURES_SKIN, skin, null);
 

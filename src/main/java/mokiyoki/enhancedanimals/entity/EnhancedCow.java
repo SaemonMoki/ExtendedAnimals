@@ -272,25 +272,15 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
         return 0.4F;
     }
 
-//    @Override
-//    public void updatePassenger(Entity passenger) {
-//        if (this.isPassenger(passenger)) {
-//            float f = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
-//            float f1 = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
-//            float f2 = 0.3F;
-//            passenger.setPosition(this.getPosX() + (double)(0.3F * f1), this.getPosY() + this.getMountedYOffset() + passenger.getYOffset(), this.getPosZ() - (double)(0.3F * f));
-//        }
-//    }
-
     @Override
     public double getMountedYOffset() {
         ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
         if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
-            return 0.9D;
+            return 1.0D;
         } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
-            return 0.9D;
+            return 1.0D;
         } else {
-            return 0.8D;
+            return 0.9D;
         }
 //        return (saddleSlot == ItemStack.EMPTY || saddleSlot.getItem() instanceof CustomizableCollar ? 0.8D : 0.9D);
     }
@@ -869,43 +859,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
             if(genesForText[26] == 1 || genesForText[27] == 1) {
                 hooves = 1;
             }
-
-//            if (genesForText[12] == 1 || genesForText[13] == 1) {
-//                //should be polled unless...
-//                //african horn genes
-//                if (genesForText[76] == 1 && genesForText[77] == 1) {
-//                    //horned
-//                } else if (genesForText[76] == 1 || genesForText[77] == 1) {
-//                    //sex determined horned
-//                    if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
-//                        //horned if male
-//                    } else {
-//                        //polled if female unless
-//                        if (genesForText[78] == 1 && genesForText[79] == 1) {
-//                            //she is scured
-//                        } else {
-//                            //polled
-//                            horn = 0;
-//                        }
-//                    }
-//                } else {
-//                    //polled
-//                    if (genesForText[78] == 1 && genesForText[79] == 1) {
-//                        //scured
-//                    } else if (genesForText[78] == 1 || genesForText[79] == 1) {
-//                        //sex determined scured
-//                        if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
-//                            //scurred
-//                        } else {
-//                            //polled
-//                            horn = 0;
-//                        }
-//                    } else {
-//                        //polled
-//                        horn = 0;
-//                    }
-//                }
-//            }
 
             if (genesForText[48] == 1 || genesForText[49] == 1){
                 coat = 1;

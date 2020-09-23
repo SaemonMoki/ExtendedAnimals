@@ -1261,49 +1261,18 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             }
             //otherwise rex aka no fur filter
 
-            this.enhancedAnimalTextures.add(RABBIT_TEXTURES_UNDER[under]);
-            this.texturesIndexes.add(String.valueOf(under));
-            if (lower != 0) {
-                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_LOWER[lower]);
-                this.texturesIndexes.add(String.valueOf(lower));
-            }
-            if(middle != 0) {
-                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_MIDDLE[middle]);
-                this.texturesIndexes.add(String.valueOf(middle));
-            }
-            if(higher != 0) {
-                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_HIGHER[higher]);
-                this.texturesIndexes.add(String.valueOf(higher));
-            }
-            if(top != 0) {
-                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_TOP[top]);
-                this.texturesIndexes.add(String.valueOf(top));
-            }
-            if(dutch != 0) {
-                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_DUTCH[dutch]);
-                this.texturesIndexes.add(String.valueOf(dutch));
-            }
-            if(broken != 0) {
-                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_BROKEN[broken]);
-                this.texturesIndexes.add(String.valueOf(broken));
-            }
-            if (vienna != 0){
-                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_VIENNA[vienna]);
-                this.texturesIndexes.add(String.valueOf(vienna));
-            }
-            if (fur != 0) {
-                this.enhancedAnimalTextures.add(RABBIT_TEXTURES_FUR[fur]);
-                this.texturesIndexes.add(String.valueOf(fur));
-            }
-            this.enhancedAnimalTextures.add(RABBIT_TEXTURES_EYES[eyes]);
-            this.texturesIndexes.add(String.valueOf(eyes));
-                if(vieye > 7 && (vieye <= 17 || vieye >= 25)) {
-                    this.enhancedAnimalTextures.add(RABBIT_TEXTURES_VIENNAEYES[vieye]);
-                    this.texturesIndexes.add(String.valueOf(vieye));
-            }
-            this.enhancedAnimalTextures.add(RABBIT_TEXTURES_SKIN[skin]);
-            this.texturesIndexes.add(String.valueOf(skin));
-
+            addTextureToAnimal(RABBIT_TEXTURES_UNDER, under, null);
+            addTextureToAnimal(RABBIT_TEXTURES_LOWER, lower, l -> l != 0);
+            addTextureToAnimal(RABBIT_TEXTURES_MIDDLE, middle, m -> m != 0);
+            addTextureToAnimal(RABBIT_TEXTURES_HIGHER, higher, h -> h != 0);
+            addTextureToAnimal(RABBIT_TEXTURES_TOP, top, t -> t != 0);
+            addTextureToAnimal(RABBIT_TEXTURES_DUTCH, dutch, d -> d != 0);
+            addTextureToAnimal(RABBIT_TEXTURES_BROKEN, broken, b -> b != 0);
+            addTextureToAnimal(RABBIT_TEXTURES_VIENNA, vienna, v -> v != 0);
+            addTextureToAnimal(RABBIT_TEXTURES_FUR, fur, f -> f != 0);
+            addTextureToAnimal(RABBIT_TEXTURES_EYES, eyes, e -> e != 0);
+            addTextureToAnimal(RABBIT_TEXTURES_VIENNAEYES, vieye, v -> v > 7 && (v <= 17 || v >= 25));
+            addTextureToAnimal(RABBIT_TEXTURES_SKIN, skin, null);
 
         } //if genes are not null end bracket
 

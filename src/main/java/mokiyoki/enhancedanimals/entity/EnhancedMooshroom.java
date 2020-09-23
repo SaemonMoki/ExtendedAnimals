@@ -92,7 +92,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             mushroomType = 1;
         }
 
-        this.enhancedAnimalTextures.add(MOOSHROOM_MUSHROOM[mushroomType]);
+        addTextureToAnimal(MOOSHROOM_MUSHROOM, mushroomType, null);
     }
 
     @Override

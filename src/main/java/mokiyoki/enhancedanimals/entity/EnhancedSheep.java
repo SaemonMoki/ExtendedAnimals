@@ -1043,29 +1043,14 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 }
             }
 
-
-         this.enhancedAnimalTextures.add(SHEEP_TEXTURES_UNDER[under]);
-            this.texturesIndexes.add(String.valueOf(under));
-         if (pattern != 0) {
-             this.enhancedAnimalTextures.add(SHEEP_TEXTURES_PATTERN[pattern]);
-             this.texturesIndexes.add(String.valueOf(pattern));
-         }
-         if (grey != 0) {
-             this.enhancedAnimalTextures.add(SHEEP_TEXTURES_GREY[grey]);
-             this.texturesIndexes.add(String.valueOf(grey));
-         }
-            if (spots != 0) {
-                this.enhancedAnimalTextures.add(SHEEP_TEXTURES_SPOTS[spots]);
-                this.texturesIndexes.add(String.valueOf(spots));
-            }
-         this.enhancedAnimalTextures.add(SHEEP_TEXTURES_SKIN[skin]);
-            this.texturesIndexes.add(String.valueOf(skin));
-         this.enhancedAnimalTextures.add(SHEEP_TEXTURES_HOOVES[hooves]);
-            this.texturesIndexes.add(String.valueOf(hooves));
-         this.enhancedAnimalTextures.add(SHEEP_TEXTURES_FUR[fur]);
-            this.texturesIndexes.add(String.valueOf(fur));
-         this.enhancedAnimalTextures.add(SHEEP_TEXTURES_EYES[eyes]);
-            this.texturesIndexes.add(String.valueOf(eyes));
+            addTextureToAnimal(SHEEP_TEXTURES_UNDER, under, null);
+            addTextureToAnimal(SHEEP_TEXTURES_PATTERN, pattern, l -> l != 0);
+            addTextureToAnimal(SHEEP_TEXTURES_GREY, grey, l -> l != 0);
+            addTextureToAnimal(SHEEP_TEXTURES_SPOTS, spots, l -> l != 0);
+            addTextureToAnimal(SHEEP_TEXTURES_SKIN, skin, null);
+            addTextureToAnimal(SHEEP_TEXTURES_HOOVES, hooves, null);
+            addTextureToAnimal(SHEEP_TEXTURES_FUR, fur, null);
+            addTextureToAnimal(SHEEP_TEXTURES_EYES, eyes, null);
         }
     }
 

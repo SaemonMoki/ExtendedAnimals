@@ -731,46 +731,15 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
                 fur = 1;
             }
 
-
-        this.enhancedAnimalTextures.add(LLAMA_TEXTURES_GROUND[ground]);
-            this.texturesIndexes.add(String.valueOf(ground));
-
-        if (pattern != 0) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_PATTERN[pattern]);
-            this.texturesIndexes.add(String.valueOf(pattern));
-        }
-
-        if (roan != 0) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_ROAN[roan]);
-            this.texturesIndexes.add(String.valueOf(roan));
-        }
-
-        if (tux != 0) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_TUXEDO[tux]);
-            this.texturesIndexes.add(String.valueOf(tux));
-        }
-
-        if (piebald != 0) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_PIEBALD[piebald]);
-            this.texturesIndexes.add(String.valueOf(piebald));
-        }
-
-        if (domwhite != 0) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_DOMWHITE[domwhite]);
-            this.texturesIndexes.add(String.valueOf(domwhite));
-        }
-
-        if (fur != 0) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_FUR[fur]);
-            this.texturesIndexes.add(String.valueOf(fur));
-        }
-
-        this.enhancedAnimalTextures.add(LLAMA_TEXTURES_EYES[eyes]);
-            this.texturesIndexes.add(String.valueOf(eyes));
-
-        this.enhancedAnimalTextures.add(LLAMA_TEXTURES_SKIN[skin]);
-            this.texturesIndexes.add(String.valueOf(skin));
-
+            addTextureToAnimal(LLAMA_TEXTURES_GROUND, ground, null);
+            addTextureToAnimal(LLAMA_TEXTURES_PATTERN, pattern, p -> p != 0);
+            addTextureToAnimal(LLAMA_TEXTURES_ROAN, roan, r -> r != 0);
+            addTextureToAnimal(LLAMA_TEXTURES_TUXEDO, tux, t -> t != 0);
+            addTextureToAnimal(LLAMA_TEXTURES_PIEBALD, piebald, p -> p != 0);
+            addTextureToAnimal(LLAMA_TEXTURES_DOMWHITE, domwhite, d -> d != 0);
+            addTextureToAnimal(LLAMA_TEXTURES_FUR, fur, f -> f != 0);
+            addTextureToAnimal(LLAMA_TEXTURES_EYES, eyes, null);
+            addTextureToAnimal(LLAMA_TEXTURES_SKIN, skin, null);
         } //if genes are not null end bracket
     } // setTexturePaths end bracket
 

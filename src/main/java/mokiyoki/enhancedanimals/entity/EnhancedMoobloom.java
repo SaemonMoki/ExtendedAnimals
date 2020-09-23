@@ -69,10 +69,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMoobloom enhancedmoobloom = ENHANCED_MOOBLOOM.create(this.world);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
-//        int[] babyGenes = getCalfGenes(this.mitosisGenes, this.mateMitosisGenes);
-
         defaultCreateAndSpawn(enhancedmoobloom, inWorld, babyGenes, -84000);
-
         enhancedmoobloom.setMotherUUID(this.getUniqueID().toString());
         enhancedmoobloom.configureAI();
         this.world.addEntity(enhancedmoobloom);

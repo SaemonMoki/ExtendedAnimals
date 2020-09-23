@@ -6,6 +6,8 @@ import mokiyoki.enhancedanimals.entity.Genetics.PigGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -223,6 +225,19 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
         super.updateAITasks();
     }
 
+    @Override
+    public double getMountedYOffset() {
+        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
+            return 0.9D;
+        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
+            return 0.9D;
+        } else {
+            return 0.8D;
+        }
+//        return (saddleSlot == ItemStack.EMPTY || saddleSlot.getItem() instanceof CustomizableCollar ? 0.8D : 0.9D);
+    }
+
     protected void registerData() {
         super.registerData();
     }
@@ -369,7 +384,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedPig enhancedpig = ENHANCED_PIG.create(this.world);
-//        int[] babyGenes = getPigletGenes(this.mitosisGenes, this.mateMitosisGenes);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedpig, inWorld, babyGenes, -60000);
 

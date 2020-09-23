@@ -121,12 +121,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         this.textureWidth = 256;
         this.textureHeight = 256;
 
-        float xMove = -6.0F;
         float headAdjust = -2.0F;
-
-//        this.head.setTextureOffset(28, 0);
-//        this.head.addBox(-2.0F, -12.0F, -4.0F, 4, 4, 4, 0.0F); //nose
-//        this.head.setRotationPoint(0, 5, -12.0F);
 
         this.nose = new EnhancedRendererModelNew(this,28, 0);
         this.nose.addBox(-2.0F, 0.0F, -7.0F, 4, 4, 4, scale); //nose
@@ -261,7 +256,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         this.leg2 = new ModelRenderer(this, 12, 68);
         this.leg2.addBox(0.0F, 0.0F, 0.0F, 3, 11, 3, scale);
-        this.leg2.setRotationPoint(2.0F, 12.0F,-1.0F + xMove);
+        this.leg2.setRotationPoint(2.0F, 12.0F,-7.0F);
 
         this.leg2Wool1 = new ModelRenderer(this, 12, 68);
         this.leg2Wool1.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, scale + 0.5F);
@@ -281,7 +276,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         this.leg3 = new ModelRenderer(this, 0, 82);
         this.leg3.addBox(0.0F, 0F, 0.0F, 3, 11, 3, scale);
-        this.leg3.setRotationPoint(-5.0F, 12.0F,12.0F + xMove);
+        this.leg3.setRotationPoint(-5.0F, 12.0F,6.0F);
 
         this.leg3Wool1 = new ModelRenderer(this, 0, 82);
         this.leg3Wool1.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, scale + 0.5F);
@@ -301,7 +296,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
 
         this.leg4 = new ModelRenderer(this, 12, 82);
         this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 11, 3, scale);
-        this.leg4.setRotationPoint(2.0F, 12.0F,12.0F + xMove);
+        this.leg4.setRotationPoint(2.0F, 12.0F,6.0F);
 
         this.leg4Wool1 = new ModelRenderer(this, 12, 82);
         this.leg4Wool1.addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, scale + 0.5F);
@@ -484,8 +479,6 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         int maxCoatlength = llamaModelData.maxCoatlength;
         boolean sleeping = llamaModelData.sleeping;
 
-        float size = 1;
-
         if (genes != null) {
             // banana ears
             if (genes[18] != 1 && genes[19] != 1) {
@@ -507,6 +500,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             }
         }
 
+        float size = llamaModelData.size;
         float finalLlamaSize = (( 2.0F * size * age) + size) / 3.0F;
         float babyScale = 1.0F;
         float d = 0.0F;
@@ -1024,6 +1018,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         ItemStack harness;
         boolean collar;
         boolean hasChest;
+        float size;
     }
 
     private LlamaModelData getLlamaModelData() {
@@ -1081,6 +1076,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.harness = enhancedLlama.getEnhancedInventory().getStackInSlot(5);
             llamaModelData.collar = hasCollar(enhancedLlama.getEnhancedInventory());
             llamaModelData.hasChest = !enhancedLlama.getEnhancedInventory().getStackInSlot(0).isEmpty();
+            llamaModelData.size = enhancedLlama.getAnimalSize();
 
             if(llamaModelData.llamaGenes != null) {
                 llamaModelDataCache.put(enhancedLlama.getEntityId(), llamaModelData);

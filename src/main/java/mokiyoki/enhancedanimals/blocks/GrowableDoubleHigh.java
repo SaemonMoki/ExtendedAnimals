@@ -153,7 +153,7 @@ public class GrowableDoubleHigh extends CropsBlock {
     }
 
     @Override
-    protected IItemProvider getSeedsItem() { return this.plantType; }
+    public IItemProvider getSeedsItem() { return this.plantType; }
 
     protected IItemProvider getPlantType() { return this.plantType; }
 

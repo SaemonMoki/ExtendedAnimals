@@ -7,6 +7,9 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEat
 import mokiyoki.enhancedanimals.entity.Genetics.LlamaGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
@@ -214,114 +217,16 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return this.dataManager.get(COAT_LENGTH);
     }
 
-//    public void onInventoryChanged(IInventory invBasic) {
-//        super.onInventoryChanged(invBasic);
-//        if (this.ticksExisted > 20 && dyecolor1 != 0 && dyecolor1 != dyecolor) {
-//            this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
-//            resetTexture = true;
-//        }
-//    }
-
-//    public int getSaddleNumber() {
-//        int saddle = 0;
-//        if (this.animalInventory != null) {
-//            if (!this.animalInventory.getStackInSlot(1).isEmpty()) {
-//                Item saddleType = this.animalInventory.getStackInSlot(1).getItem();
-//                if (saddleType == ModItems.SADDLE_BASIC_LEATHER) {
-//                    saddle = 2;
-//                } else if (saddleType == ModItems.SADDLE_BASIC_CLOTH) {
-//                    saddle = 3;
-//                } else {
-//                    saddle = 1;
-//                }
-//            }
-//        }
-//        return saddle;
-//    }
-
-//    public int getBridleNumber() {
-//        int bridle = 0;
-//        if (this.animalInventory != null) {
-//            if (!this.animalInventory.getStackInSlot(3).isEmpty()) {
-//                Item saddleType = this.animalInventory.getStackInSlot(3).getItem();
-//                if (saddleType == ModItems.BRIDLE_BASIC_LEATHER) {
-//                    bridle = 1;
-//                } else if (saddleType == ModItems.BRIDLE_BASIC_CLOTH) {
-//                    bridle = 2;
-//                }
-//            }
-//        }
-//        return bridle;
-//    }
-
-//    public int getBlanketNumber() {
-//            int colour = 0;
-//            if (this.animalInventory != null) {
-//                Item blanketColour = this.animalInventory.getStackInSlot(4).getItem();
-//                if (blanketColour == Items.BLACK_CARPET) {
-//                    colour = 1;
-//                } else if (blanketColour == Items.BLUE_CARPET) {
-//                    colour = 2;
-//                } else if (blanketColour == Items.BROWN_CARPET) {
-//                    colour = 3;
-//                } else if (blanketColour == Items.CYAN_CARPET) {
-//                    colour = 4;
-//                } else if (blanketColour == Items.GRAY_CARPET) {
-//                    colour = 5;
-//                } else if (blanketColour == Items.GREEN_CARPET) {
-//                    colour = 6;
-//                } else if (blanketColour == Items.LIGHT_BLUE_CARPET) {
-//                    colour = 7;
-//                } else if (blanketColour == Items.LIGHT_GRAY_CARPET) {
-//                    colour = 8;
-//                } else if (blanketColour == Items.LIME_CARPET) {
-//                    colour = 9;
-//                } else if (blanketColour == Items.MAGENTA_CARPET) {
-//                    colour = 10;
-//                } else if (blanketColour == Items.ORANGE_CARPET) {
-//                    colour = 11;
-//                } else if (blanketColour == Items.PINK_CARPET) {
-//                    colour = 12;
-//                } else if (blanketColour == Items.PURPLE_CARPET) {
-//                    colour = 13;
-//                } else if (blanketColour == Items.RED_CARPET) {
-//                    colour = 14;
-//                } else if (blanketColour == Items.WHITE_CARPET) {
-//                    colour = 15;
-//                } else if (blanketColour == Items.YELLOW_CARPET) {
-//                    colour = 16;
-//                }
-//            }
-//            return colour;
-//        }
-
-//    public int getHarnessNumber() {
-//        int bridle = 0;
-//        if (this.animalInventory != null) {
-//            if (!this.animalInventory.getStackInSlot(5).isEmpty()) {
-//                Item saddleType = this.animalInventory.getStackInSlot(5).getItem();
-//                if (saddleType == ModItems.BRIDLE_BASIC_LEATHER) {
-//                    bridle = 1;
-//                } else if (saddleType == ModItems.BRIDLE_BASIC_CLOTH) {
-//                    bridle = 2;
-//                }
-//            }
-//        }
-//        return bridle;
-//    }
-
     @Override
-    public void updatePassenger(Entity passenger) {
-        if (this.isPassenger(passenger)) {
-            float f = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
-            float f1 = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
-            float f2 = 0.3F;
-            passenger.setPosition(this.getPosX() + (double)(0.3F * f1), this.getPosY() + this.getMountedYOffset() + passenger.getYOffset(), this.getPosZ() - (double)(0.3F * f));
-        }
-    }
-
     public double getMountedYOffset() {
-        return (double)this.getHeight() * 0.67D;
+        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
+            return 0.9D;
+        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
+            return 0.9D;
+        } else {
+            return 0.8D;
+        }
     }
 
     protected boolean isMovementBlocked() {
@@ -444,6 +349,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
                 size = size - 0.025F;
             }
         }
+
         this.setAnimalSize(size);
     }
 
@@ -469,6 +375,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
+        super.playStepSound(pos, blockIn);
         this.playSound(SoundEvents.ENTITY_LLAMA_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
             this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 0.75F);
@@ -865,14 +772,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             this.texturesIndexes.add(String.valueOf(skin));
 
         } //if genes are not null end bracket
-
-//        this.enhancedAnimalTextures.add("d_collar.png");
-//            this.texturesIndexes.add(String.valueOf(0));
-//        this.enhancedAnimalTextures.add("collar_ringiron.png");
-//            this.texturesIndexes.add(String.valueOf(0));
-//        this.enhancedAnimalTextures.add("collar_belliron.png");
-//            this.texturesIndexes.add(String.valueOf(0));
-
     } // setTexturePaths end bracket
 
     @Override

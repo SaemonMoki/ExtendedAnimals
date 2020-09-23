@@ -27,6 +27,7 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -54,6 +55,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -111,6 +113,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected Genes genesSplitForClient;
     protected static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     public String breed = "";
+    protected String mateName = "???";
+    protected String sireName = "???";
+    protected String damName = "???";
 
     //Hunger
     Map<Item, Integer> foodWeightMap = new HashMap();
@@ -191,6 +196,30 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
         this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
+    }
+
+    protected void setMateName(String mateName) {
+        if (mateName!=null && !mateName.equals("")) {
+            this.mateName = mateName;
+        } else {
+            this.mateName = "???";
+        }
+    }
+
+    protected void setSireName(String sireName) {
+        if (sireName!=null && !sireName.equals("")) {
+            this.sireName = sireName;
+        } else {
+            this.sireName = "???";
+        }
+    }
+
+    protected void setDamName(String damName) {
+        if (damName!=null && !damName.equals("")) {
+            this.damName = damName;
+        } else {
+            this.damName = "???";
+        }
     }
 
     protected abstract String getSpecies();
@@ -613,6 +642,15 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 //                    mixMitosisGenes();
                     createAndSpawnEnhancedChild(this.world);
                 }
+
+                if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
+                    int i = 1;
+                    while (i > 0) {
+                        int j = ExperienceOrbEntity.getXPSplit(i);
+                        i -= j;
+                        this.world.addEntity(new ExperienceOrbEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), j));
+                    }
+                }
             }
         }
     }
@@ -755,7 +793,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                     }
                 }
                 if (this.isChild()) {
-                    this.ageUp((int)((float)(-this.getGrowingAge() / 20) * 0.1F), true);
+                    this.ageUp((int)(this.getGrowingAge() * -0.005F), true);
                 }
                 decreaseHunger(this.foodWeightMap.get(item));
                 if (!entityPlayer.abilities.isCreativeMode) {
@@ -841,6 +879,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         compound.putString("Status", getEntityStatus());
 
         compound.putString("BirthTime", this.getBirthTime());
+
+        compound.putString("MateName", this.mateName);
+        compound.putString("SireName", this.sireName);
+        compound.putString("DamName", this.damName);
 
         compound.putBoolean("Tamed", this.isTame());
 
@@ -1009,6 +1051,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         this.setCollar(compound.getBoolean("Collared"));
 
+        this.setMateName(compound.getString("MateName"));
+        this.setSireName(compound.getString("SireName"));
+        this.setDamName(compound.getString("DamName"));
 
         readInventory(compound);
     }
@@ -1076,6 +1121,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         enhancedAnimalChild.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedAnimalChild.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
         enhancedAnimalChild.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
+        enhancedAnimalChild.setSireName(this.mateName);
+        String name = "???";
+        if (this.getCustomName()!=null) {
+            name = this.getCustomName().getString();
+        }
+        enhancedAnimalChild.setDamName(name);
     }
 
     @Override
@@ -1105,21 +1156,33 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                 ((EnhancedAnimalAbstract)ageable).pregnant = true;
                 ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
                 ((EnhancedAnimalAbstract)ageable).setMateGender(this.getIsFemale());
+                if (this.hasCustomName()) {
+                    ((EnhancedAnimalAbstract)ageable).setMateName(this.getCustomName().getString());
+                }
             } else {
                 this.pregnant = true;
                 this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
                 this.mateGender = ((EnhancedAnimalAbstract)ageable).getIsFemale();
+                if (((EnhancedAnimalAbstract)ageable).hasCustomName()) {
+                    this.setMateName(((EnhancedAnimalAbstract) ageable).getCustomName().getString());
+                }
             }
         } else if (this.getIsFemale()) {
            //is female
            this.pregnant = true;
            this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
            this.mateGender = false;
+            if (((EnhancedAnimalAbstract)ageable).hasCustomName()) {
+                this.setMateName(((EnhancedAnimalAbstract) ageable).getCustomName().getString());
+            }
         } else {
             //is male
             ((EnhancedAnimalAbstract)ageable).pregnant = true;
             ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
             ((EnhancedAnimalAbstract)ageable).setMateGender(false);
+            if (this.hasCustomName()) {
+                ((EnhancedAnimalAbstract)ageable).setMateName(this.getCustomName().getString());
+            }
         }
     }
 
@@ -1280,6 +1343,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             animalInfo.pregnant = (10 * this.gestationTimer)/gestationConfig();
             animalInfo.name = this.getAnimalsName(getSpecies());
             animalInfo.agePrefix = this.getAnimalsAgeString();
+            animalInfo.age = this.getAge();
+            animalInfo.sire = this.sireName;
+            animalInfo.dam = this.damName;
 
             if(playerEntity instanceof ServerPlayerEntity) {
                 ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerEntity;

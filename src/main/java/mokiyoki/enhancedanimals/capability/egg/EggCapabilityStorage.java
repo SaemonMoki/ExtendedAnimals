@@ -39,6 +39,16 @@ public class EggCapabilityStorage implements Capability.IStorage<IEggCapability>
             compound.put("Genes", geneList);
         }
 
+        String sireName = instance.getSire();
+        if (sireName!=null) {
+            compound.putString("SireName", sireName);
+        }
+
+        String damName = instance.getDam();
+        if (damName!=null) {
+            compound.putString("DamName", damName);
+        }
+
         return compound;
 
     }
@@ -78,6 +88,19 @@ public class EggCapabilityStorage implements Capability.IStorage<IEggCapability>
                 }
                 instance.setGenes(genetics);
             }
+        }
+
+        String sireName = compound.getString("SireName");
+        if (!sireName.equals("") || sireName!=null) {
+            instance.setSire(sireName);
+        } else {
+            instance.setSire("???");
+        }
+        String damName = compound.getString("DamName");
+        if (!damName.equals("") || damName!=null) {
+            instance.setDam(damName);
+        } else {
+            instance.setDam("???");
         }
     }
 }

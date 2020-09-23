@@ -72,7 +72,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     @Override
     public boolean canHaveChest() {
-        return true;
+        return this.getAge() >= this.getAdultAge();
     }
 
     public boolean hasChest() {
@@ -319,7 +319,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         return blanketTextures;
     }
 
-    private boolean isCarpet(ItemStack itemStack) {
+    protected boolean isCarpet(ItemStack itemStack) {
         Item item = itemStack.getItem();
         if (item == Items.BLACK_CARPET) {
             return true;

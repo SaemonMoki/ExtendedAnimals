@@ -20,7 +20,6 @@ import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.resources.Language;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
@@ -2113,34 +2112,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                 }
 
 //            after finished autosomalGenes
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_GROUND[ground]);
-                this.texturesIndexes.add(String.valueOf(ground));
-                if (pattern <= 350) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_PATTERN[pattern]);
-                    this.texturesIndexes.add(String.valueOf(pattern));
-                }
-                if (moorhead != 0) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_MOORHEAD[moorhead]);
-                    this.texturesIndexes.add(String.valueOf(moorhead));
-                }
-                if (white != 0) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_WHITE[white]);
-                    this.texturesIndexes.add(String.valueOf(white));
-                }
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
-                this.texturesIndexes.add(String.valueOf(shanks));
-                if (face >= 1) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_FACE[face]);
-                    this.texturesIndexes.add(String.valueOf(face));
-                }
-                if (ears >= 1) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_EARS[ears]);
-                    this.texturesIndexes.add(String.valueOf(ears));
-                }
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_COMB[comb]);
-                this.texturesIndexes.add(String.valueOf(comb));
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_EYES[eyes]);
-                this.texturesIndexes.add(String.valueOf(eyes));
+                addTextureToAnimal(CHICKEN_TEXTURES_GROUND, ground, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_PATTERN, pattern, p -> p <= 350);
+                addTextureToAnimal(CHICKEN_TEXTURES_MOORHEAD, moorhead, m -> m != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_WHITE, white, w -> w != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_SHANKS, shanks, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_FACE, face, f -> f >= 1);
+                addTextureToAnimal(CHICKEN_TEXTURES_EARS, ears, e -> e >= 1);
+                addTextureToAnimal(CHICKEN_TEXTURES_COMB, comb, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_EYES, eyes, null);
+
             }else{
                 int shanks = 4;
                 int comb = 2;
@@ -2311,26 +2292,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                     eyes = 2;
                 }
 
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_CHICKBASE[downBase]);
-                this.texturesIndexes.add(String.valueOf(downBase));
-                if (red != 0) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_CHICKRED[red]);
-                    this.texturesIndexes.add(String.valueOf(red));
-                }
-                if (black != 0) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_CHICKBLACK[black]);
-                    this.texturesIndexes.add(String.valueOf(black));
-                }
-                if (white != 0) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_CHICKWHITE[white]);
-                    this.texturesIndexes.add(String.valueOf(white));
-                }
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
-                this.texturesIndexes.add(String.valueOf(shanks));
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_COMB[comb]);
-                this.texturesIndexes.add(String.valueOf(comb));
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_EYES[eyes]);
-                this.texturesIndexes.add(String.valueOf(eyes));
+                addTextureToAnimal(CHICKEN_TEXTURES_CHICKBASE, downBase, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_CHICKRED, red, r -> r != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_CHICKBLACK, black, b -> b != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_CHICKWHITE, white, w -> w != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_SHANKS, shanks, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_COMB, comb, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_EYES, eyes, null);
             }
         }
     }

@@ -79,6 +79,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public abstract class EnhancedAnimalAbstract extends AnimalEntity implements EnhancedAnimal, IInventoryChangedListener {
@@ -95,6 +96,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected static final DataParameter<Boolean> RESET_TEXTURE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
 
     private final NonNullList<ItemStack> equipmentArray = NonNullList.withSize(7, ItemStack.EMPTY);
+
+    protected static final String CACHE_DELIMITER = "-";
 
     private static final String COLLAR = "d_collar.png";
     private static final String COLLAR_TEXTURE = "collar_leather.png";
@@ -700,7 +703,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
                 int numberOfChildren = getNumberOfChildren();
 
-                for (int i = 0; i <= numberOfChildren; i++) {
+                for (int i = 0; i < numberOfChildren; i++) {
 //                    mixMateMitosisGenes();
 //                    mixMitosisGenes();
                     createAndSpawnEnhancedChild(this.world);
@@ -1544,6 +1547,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return this.genesSplitForClient;
     }
 
+    protected void addTextureToAnimal(String[] texture, int geneValue, Predicate<Integer> check) {
+        if(check == null || check.test(geneValue)) {
+            this.enhancedAnimalTextures.add(texture[geneValue]);
+            this.texturesIndexes.add(String.valueOf(geneValue));
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
     @OnlyIn(Dist.CLIENT)
     public String[] getVariantTexturePaths() {
         if (this.enhancedAnimalTextures.isEmpty()) {
@@ -1571,7 +1582,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected String getCompiledTextures(String eanimal) {
-        String compiledTextures = this.texturesIndexes.stream().collect(Collectors.joining("/",eanimal+"/",""));
+        String compiledTextures = this.texturesIndexes.stream().collect(Collectors.joining("",eanimal+"/",""));
         compiledTextures = compiledTextures + this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.joining("/"));
         return compiledTextures;
     }

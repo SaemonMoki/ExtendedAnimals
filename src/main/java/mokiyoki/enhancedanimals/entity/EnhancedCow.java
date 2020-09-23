@@ -919,62 +919,24 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
                 }
             }
 
-
-
             //TODO change white spots to add whitening together
             //TODO add shading under correct conditions
 
-            this.enhancedAnimalTextures.add(COW_TEXTURES_BASE[0]);
-            this.texturesIndexes.add(String.valueOf(0));
-            this.enhancedAnimalTextures.add(COW_TEXTURES_UDDER[skin]);
-            this.texturesIndexes.add(String.valueOf(skin));
-            if (red != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_RED[red]);
-                this.texturesIndexes.add(String.valueOf(red));
-            }
-            if (black != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_BLACK[black]);
-                this.texturesIndexes.add(String.valueOf(black));
-            }
-            this.enhancedAnimalTextures.add(COW_TEXTURES_SKIN[skin]);
-            this.texturesIndexes.add(String.valueOf(skin));
-            if (whiteface != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_WHITEFACE[whiteface]);
-                this.texturesIndexes.add(String.valueOf(whiteface));
-                if (whitefacehead >= 4) {
-                    this.enhancedAnimalTextures.add(COW_TEXTURES_WHITEFACEHEAD[whitefacehead]);
-                    this.texturesIndexes.add(String.valueOf(whitefacehead));
-                }
-            }
-            if (coloursided != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_COLOURSIDED[coloursided]);
-                this.texturesIndexes.add(String.valueOf(coloursided));
-            }
-            if (belted != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_BELTED[belted]);
-                this.texturesIndexes.add(String.valueOf(belted));
-            }
-            if (roan != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_ROAN[roan]);
-                this.texturesIndexes.add(String.valueOf(roan));
-            }
-            if (speckled != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_SPECKLED[speckled]);
-                this.texturesIndexes.add(String.valueOf(speckled));
-            }
-            //TODO add hoof colour genetics
-            this.enhancedAnimalTextures.add(COW_TEXTURES_HOOVES[hooves]);
-            this.texturesIndexes.add(String.valueOf(hooves));
-            //TODO add eye colour genetics
-            this.enhancedAnimalTextures.add(COW_TEXTURES_EYES[0]);
-            this.texturesIndexes.add(String.valueOf(0));
-            //TODO add hoof colour genetics
-            this.enhancedAnimalTextures.add(COW_TEXTURES_HORNS[horn]);
-            this.texturesIndexes.add(String.valueOf(horn));
-            this.enhancedAnimalTextures.add(COW_TEXTURES_COAT[coat]);
-            this.texturesIndexes.add(String.valueOf(coat));
-            this.enhancedAnimalTextures.add("d_collar.png");
-            this.texturesIndexes.add(String.valueOf(0));
+            addTextureToAnimal(COW_TEXTURES_BASE, 0, null);
+            addTextureToAnimal(COW_TEXTURES_UDDER, skin, null);
+            addTextureToAnimal(COW_TEXTURES_RED, red, r -> r != 0);
+            addTextureToAnimal(COW_TEXTURES_BLACK, black, b -> b != 0);
+            addTextureToAnimal(COW_TEXTURES_SKIN, skin, null);
+            addTextureToAnimal(COW_TEXTURES_WHITEFACE, whiteface, w -> w != 0);
+            addTextureToAnimal(COW_TEXTURES_WHITEFACEHEAD, whitefacehead, w -> w >= 4);
+            addTextureToAnimal(COW_TEXTURES_COLOURSIDED, coloursided, c -> c != 0);
+            addTextureToAnimal(COW_TEXTURES_BELTED, belted, b -> b != 0);
+            addTextureToAnimal(COW_TEXTURES_ROAN, roan, r -> r != 0);
+            addTextureToAnimal(COW_TEXTURES_SPECKLED, speckled, r -> r != 0);
+            addTextureToAnimal(COW_TEXTURES_HOOVES, hooves, null);
+            addTextureToAnimal(COW_TEXTURES_EYES, 0, null);
+            addTextureToAnimal(COW_TEXTURES_HORNS, horn, null);
+            addTextureToAnimal(COW_TEXTURES_COAT, coat, null);
         }
     }
 

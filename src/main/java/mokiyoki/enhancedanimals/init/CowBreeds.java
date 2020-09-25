@@ -76,5 +76,7 @@ public class CowBreeds {
                     .add(116, "222-333")/*.add(116, "1-999")*/
             ));
 
+    public static final Breed DEXTER = new Breed(BLACK_ANGUS, new Breed.Properties().setName("Dexter")
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(10, "2").add(26, "1,2")));
 
 }

@@ -299,6 +299,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     }
 
     @Override
+    public EntitySize getSize(Pose poseIn) {
+        return EntitySize.flexible(0.4F, 0.7F);
+    }
+
+    @Override
     protected void registerData() {
         super.registerData();
         this.dataManager.register(ROOSTING, new Boolean(false));

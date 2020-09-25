@@ -17,10 +17,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.HurtByTargetGoal;
@@ -240,7 +242,16 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
             yPos = 0.75D;
         }
 
-        return yPos;
+        float size = this.getAnimalSize();
+        int age = this.getAge() < 108000 ? this.getAge() : 108000;
+        size = (( 3.0F * size * ((float) age/108000.0F)) + size) / 4.0F;
+
+        return yPos*(Math.pow(size, 1.2F));
+    }
+
+    @Override
+    public EntitySize getSize(Pose poseIn) {
+        return EntitySize.flexible(0.9F, 1.2F);
     }
 
     protected void registerData() {

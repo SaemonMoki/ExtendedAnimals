@@ -154,15 +154,16 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         if (i <= 0) {
             return false;
         } else {
-            this.attackEntityFrom(DamageSource.FALL, (float)i);
             if (this.isBeingRidden()) {
                 for(Entity entity : this.getRecursivePassengers()) {
                     entity.attackEntityFrom(DamageSource.FALL, (float)i);
                 }
+            } else {
+                this.attackEntityFrom(DamageSource.FALL, (float)i);
             }
 
             this.playFallSound();
-            return true;
+            return false;
         }
     }
 

@@ -21,8 +21,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
@@ -275,30 +277,36 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     @Override
     public double getMountedYOffset() {
-//        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
-//        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
-//            return 1.0D;
-//        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
-//            return 1.0D;
-//        } else {
-//            return 0.9D;
-//        }
-        int genes[] = this.genetics.getAutosomalGenes();
+        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+        double yPos;
         if (this.getIsFemale()) {
             //female height
-            if (genes[26] == 1 || genes[27] == 1){
-                //dwarf
-                return 0.75D;
-            }
-            return 1.125D;
+                yPos = 1.0D;
         } else {
             //male height
-            if (genes[26] == 1 || genes[27] == 1){
-                //dwarf
-                return 0.75D;
-            }
-            return 1.25D;
+                yPos = 1.1D;
         }
+
+        float size = this.getAnimalSize();
+
+        Genes sharedGenetics = this.getSharedGenes();
+        if (sharedGenetics!=null) {
+            int[] genes = sharedGenetics.getAutosomalGenes();
+            if (genes[26] == 1 || genes[27] == 1) {
+                yPos = yPos - 0.2F;
+            }
+        }
+
+        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
+            yPos = yPos + 0.12D;
+        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
+            yPos = yPos + 0.06D;
+        }
+
+        int age = this.getAge() < 108000 ? this.getAge() : 108000;
+        size = (( 2.0F * size * ((float) age/108000.0F)) + size) / 3.0F;
+
+        return yPos*(Math.pow(size, 1.2F));
     }
 
     protected void registerAttributes() {
@@ -307,19 +315,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
     }
 
-//    @Override
-//    public float getRenderScale() {
-//        int age = getAge();
-//        float size = getSize();
-//        if (age < 108000) {
-//            float ageResult = age/108000.0F;
-//            float finalCowSize = ((( 1.5F * ageResult) + 1.5F) / 3.0F) * size;
-//            return finalCowSize;
-//        } else {
-//            return size;
-//        }
-//        return getSize();
-//    }
+    @Override
+    public EntitySize getSize(Pose poseIn) {
+        return EntitySize.flexible(1.0F, 1.25F);
+    }
 
     public void livingTick() {
         super.livingTick();

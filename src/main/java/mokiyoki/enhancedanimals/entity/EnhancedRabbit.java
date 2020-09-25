@@ -16,8 +16,10 @@ import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.controller.JumpController;
@@ -292,6 +294,11 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     @OnlyIn(Dist.CLIENT)
     public int getNoseTwitch() { return this.noseTwitch[3]; }
+
+    @Override
+    public EntitySize getSize(Pose poseIn) {
+        return EntitySize.flexible(0.4F, 0.5F);
+    }
 
     protected void registerData() {
         super.registerData();

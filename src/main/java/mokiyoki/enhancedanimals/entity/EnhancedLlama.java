@@ -21,10 +21,12 @@ import net.minecraft.block.SoundType;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.Goal;
@@ -222,7 +224,22 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     public double getMountedYOffset() {
-        return 1.25D;
+        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+        double yPos;
+        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
+            yPos = 1.25D;
+        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
+            yPos = 1.2D;
+        } else {
+            yPos = 1.15D;
+        }
+
+        return yPos*(Math.pow(this.getAnimalSize(), 1.2F));
+    }
+
+    @Override
+    public EntitySize getSize(Pose poseIn) {
+        return EntitySize.flexible(0.8F, 1.87F);
     }
 
     protected boolean isMovementBlocked() {
@@ -789,7 +806,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
             this.despawnDelay = 49999;
             this.setBirthTime("");
-            this.animalInventory.setInventorySlotContents(4, Items.BLUE_CARPET.getDefaultInstance().setDisplayName(new StringTextComponent("Trader's Blanket")));
+            this.animalInventory.setInventorySlotContents(4, new ItemStack(Items.BLUE_CARPET).setDisplayName(new StringTextComponent("Trader's Blanket")));
         }
 
         setStrengthAndInventory();

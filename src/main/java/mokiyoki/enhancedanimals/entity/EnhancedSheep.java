@@ -204,6 +204,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         super.updateAITasks();
     }
 
+    @Override
+    public EntitySize getSize(Pose poseIn) {
+        return EntitySize.flexible(0.8F, 1.2F);
+    }
+
     protected void registerData() {
         super.registerData();
         this.dataManager.register(COAT_LENGTH, 0);

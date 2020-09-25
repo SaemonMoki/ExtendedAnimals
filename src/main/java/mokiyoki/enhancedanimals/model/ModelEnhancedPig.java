@@ -454,15 +454,17 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         int shape = 1;
 //        boolean wattles = gene[32] == 1 || gene[33] == 1;
 
-        if (gene[56] != 1 && gene[57] != 1) {
-            if (gene[56] + gene[57] <= 8) {
-                shape = 0;
-            } else if (gene[56] == 5 || gene[57] == 5) {
-                shape = 2;
-            } else if (gene[56] == 6 || gene[57] == 6) {
-                shape = 3;
-            } else if (gene[56] == 7 && gene[57] == 7) {
+        if (gene!=null) {
+            if (gene[56] != 1 && gene[57] != 1) {
+                if (gene[56] + gene[57] <= 8) {
+                    shape = 0;
+                } else if (gene[56] == 5 || gene[57] == 5) {
+                    shape = 2;
+                } else if (gene[56] == 6 || gene[57] == 6) {
+                    shape = 3;
+                } else if (gene[56] == 7 && gene[57] == 7) {
 
+                }
             }
         }
 

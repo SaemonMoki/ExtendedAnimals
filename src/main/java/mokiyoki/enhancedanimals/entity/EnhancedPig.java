@@ -227,15 +227,15 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 
     @Override
     public double getMountedYOffset() {
-        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
-        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
-            return 0.9D;
-        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
-            return 0.9D;
-        } else {
-            return 0.8D;
-        }
-//        return (saddleSlot == ItemStack.EMPTY || saddleSlot.getItem() instanceof CustomizableCollar ? 0.8D : 0.9D);
+//        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+//        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
+//            return 0.9D;
+//        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
+//            return 0.9D;
+//        } else {
+//            return 0.8D;
+//        }
+        return 1.25D;
     }
 
     protected void registerData() {
@@ -300,6 +300,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
+        super.playStepSound(pos, blockIn);
         this.playSound(SoundEvents.ENTITY_PIG_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
             this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 0.5F);

@@ -156,11 +156,11 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.neck.setRotationPoint(0.0F, 0.0F, 9.1F);
 
         this.neckLong = new EnhancedRendererModelNew(this, 0, 0);
-        this.neckLong.addBox(-4.5F, -6.75F, -9.0F, 9, 8, 9, 1.0F);
+        this.neckLong.addBox(-4.5F, -6.75F, -9.0F, 9, 8, 9);
         this.neckLong.setRotationPoint(0.0F, 0.0F, 9.1F);
 
         this.neckBigger = new EnhancedRendererModelNew(this, 0, 0);
-        this.neckBigger.addBox(-4.5F, -5.75F, -9.0F, 9, 7, 9);
+        this.neckBigger.addBox(-4.5F, -5.75F, -9.0F, 9, 7, 9, 1.0F);
         this.neckBigger.setRotationPoint(0.0F, 0.0F, 9.1F);
 
         this.neckBiggerLong = new EnhancedRendererModelNew(this, 0, 0);
@@ -258,11 +258,26 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         this.eyeRight.addBox(0.0F, 0.0F, 0.0F, 1, 1, 1, 0.01F);
         this.eyeRight.setRotationPoint(-3.5F, -5.0F, 0.0F);
 
+        this.body11.addChild(this.neck);
+        this.body11.addChild(this.neckBigger);
         this.body11.addChild(this.neckLong);
+        this.body11.addChild(this.neckBiggerLong);
+        this.body12.addChild(this.neck);
         this.body12.addChild(this.neckLong);
+        this.body12.addChild(this.neckBigger);
+        this.body12.addChild(this.neckBiggerLong);
+        this.body13.addChild(this.neck);
         this.body13.addChild(this.neckLong);
+        this.body13.addChild(this.neckBigger);
+        this.body13.addChild(this.neckBiggerLong);
+        this.body14.addChild(this.neck);
         this.body14.addChild(this.neckLong);
+        this.body14.addChild(this.neckBigger);
+        this.body14.addChild(this.neckBiggerLong);
+        this.body15.addChild(this.neck);
+        this.body15.addChild(this.neckBigger);
         this.body15.addChild(this.neckLong);
+        this.body15.addChild(this.neckBiggerLong);
         this.neck.addChild(this.head);
         this.neck.addChild(this.wattles);
         this.neckBigger.addChild(this.head);
@@ -312,11 +327,11 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
          * Equipment stuff
          */
 
-        this.chest1 = new ModelRenderer(this, 80, 0);
+        this.chest1 = new ModelRenderer(this, 80, 14);
         this.chest1.addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3);
         this.chest1.setRotationPoint(-8.0F, 8.0F, 3.0F);
         this.chest1.rotateAngleY = ((float)Math.PI / 2F);
-        this.chest2 = new ModelRenderer(this, 80, 11);
+        this.chest2 = new ModelRenderer(this, 80, 25);
         this.chest2.addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3);
         this.chest2.setRotationPoint(5.0F, 8.0F, 3.0F);
         this.chest2.rotateAngleY = ((float)Math.PI / 2F);
@@ -378,14 +393,17 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
 
         this.saddleHorn.addChild(this.saddlePomel);
 
-        this.collar = new EnhancedRendererModelNew(this, 80, 0);
-        this.collar.addBox(-6.0F, -4.5F, -3.0F, 12, 2, 12, 0.0F);
+        this.collar = new EnhancedRendererModelNew(this, 80, 1);
+        this.collar.addBox(-5.5F, -5.5F, -3.0F, 11, 2, 11, 0.001F);
         this.collar.setTextureOffset(80, 4);
         this.collar.addBox(0.0F, -5.0F, -5.0F, 0, 3, 3, 0.0F);
         this.collar.setTextureOffset(116, 6);
         this.collar.addBox(-1.5F, -5.0F, -6.25F, 3, 3, 3, 0.0F);
         this.collar.setRotationPoint(0.0F, -1.0F, -7.5F);
+        this.neck.addChild(this.collar);
+        this.neckLong.addChild(this.collar);
         this.neckBigger.addChild(this.collar);
+        this.neckBiggerLong.addChild(this.collar);
 
         //western
         this.body11.addChild(this.saddleWestern);
@@ -506,6 +524,12 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         } else {
             this.body15.showModel = true;
         }
+
+        this.neck.showModel = false;
+        this.neckLong.showModel = false;
+        this.neckBigger.showModel = false;
+        this.neckBiggerLong.showModel = false;
+        this.neck.showModel = true;
 
         this.butt5.showModel = true;
 

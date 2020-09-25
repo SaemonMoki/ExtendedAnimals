@@ -395,25 +395,6 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
     }
 
-    public void updatePassenger(Entity passenger) {
-        super.updatePassenger(passenger);
-        if (passenger instanceof MobEntity) {
-            MobEntity mobentity = (MobEntity)passenger;
-            this.renderYawOffset = mobentity.renderYawOffset;
-        }
-
-        if (this.prevRearingAmount > 0.0F) {
-            float f3 = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
-            float f = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
-            float f1 = 0.7F * this.prevRearingAmount;
-            float f2 = 0.15F * this.prevRearingAmount;
-            passenger.setPosition(this.getPosX() + (double)(f1 * f3), this.getPosY() + this.getMountedYOffset() + passenger.getYOffset() + (double)f2, (this.getPosZ() - (double)(f1 * f))+10.0F);
-            if (passenger instanceof LivingEntity) {
-                ((LivingEntity)passenger).renderYawOffset = this.renderYawOffset;
-            }
-        }
-    }
-
     protected void mountTo(PlayerEntity player) {
         this.setRearing(false);
         if (!this.world.isRemote) {

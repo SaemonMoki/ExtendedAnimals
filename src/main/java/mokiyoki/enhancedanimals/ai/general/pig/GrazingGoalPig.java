@@ -66,7 +66,7 @@ public class GrazingGoalPig extends GrazingGoal {
                             this.eanimal.world.setBlockState(blockpos1, Blocks.FARMLAND.getDefaultState(), 2);
                         }
                         this.eanimal.eatGrassBonus();
-                    } else if (blockDown == ModBlocks.SPARSE_GRASS_BLOCK) {
+                    } else if (blockDown == ModBlocks.SPARSEGRASS_BLOCK) {
                         if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.world, this.eanimal)) {
                             this.eanimal.world.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
                             this.eanimal.world.setBlockState(blockpos1, Blocks.FARMLAND.getDefaultState(), 2);

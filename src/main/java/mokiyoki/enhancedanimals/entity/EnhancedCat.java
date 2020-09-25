@@ -11,8 +11,9 @@ import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
@@ -36,16 +37,19 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -207,7 +211,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         if (!this.collidedHorizontally && (!this.moveController.isUpdating() || !(this.moveController.getY() > this.getPosY() + 0.5D))) {
             Path path = this.navigator.getPath();
             if (path != null && path.getCurrentPathIndex() < path.getCurrentPathLength()) {
-                Vec3d vec3d = path.getPosition(this);
+                Vector3d vec3d = path.getPosition(this);
                 if (vec3d.y > this.getPosY() + 0.5D) {
                     return 0.5F;
                 }
@@ -276,7 +280,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         if (d0 > 0.0D) {
             double d1 = horizontalMag(this.getMotion());
             if (d1 < 0.01D) {
-                this.moveRelative(0.1F, new Vec3d(0.0D, 0.0D, 1.0D));
+                this.moveRelative(0.1F, new Vector3d(0.0D, 0.0D, 1.0D));
             }
         }
 
@@ -306,18 +310,18 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 //    }
 
     @Override
-    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
-                ITextComponent message = getHungerText();
-                entityPlayer.sendMessage(message);
-                if (pregnant) {
-                    message = getPregnantText();
-                    entityPlayer.sendMessage(message);
-                }
+//                ITextComponent message = getHungerText();
+//                entityPlayer.sendMessage(message);
+//                if (pregnant) {
+//                    message = getPregnantText();
+//                    entityPlayer.sendMessage(message);
+//                }
             } else if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             } else if (!getCatStatus().equals(EntityState.CHILD_STAGE_ONE.toString()) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
@@ -360,7 +364,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
                 }
             }
         }
-        return super.processInteract(entityPlayer, hand);
+        return super.func_230254_b_(entityPlayer, hand);
     }
 
     private ITextComponent getHungerText() {
@@ -430,8 +434,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
     protected void registerAttributes() {
         super.registerAttributes();
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(4.0D);
+        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 
     public void livingTick() {
@@ -783,7 +787,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     }
 
     @Override
-    public AgeableEntity createChild(AgeableEntity ageable) {
+    public AgeableEntity func_241840_a(ServerWorld serverWorld, AgeableEntity ageable) {
         if(pregnant) {
             ((EnhancedCat)ageable).pregnant = true;
             ((EnhancedCat)ageable).setMateGenes(this.genes);
@@ -1231,7 +1235,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+    public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
         livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 

@@ -4,7 +4,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 
@@ -31,10 +31,10 @@ public class ECWanderAvoidWater extends RandomWalkingGoal {
     }
 
     @Nullable
-    protected Vec3d getPosition() {
+    protected Vector3d getPosition() {
         if (this.creature.isInWater())
         {
-            Vec3d vec3d = RandomPositionGenerator.getLandPos(this.creature, 15, 7);
+            Vector3d vec3d = RandomPositionGenerator.getLandPos(this.creature, 15, 7);
             return vec3d == null ? super.getPosition() : vec3d;
         }
         else

@@ -22,6 +22,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -406,7 +407,8 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
         return BREED_ITEMS.test(stack);
     }
 
-    public AgeableEntity createChild(AgeableEntity ageable) {
+    @Override
+    public AgeableEntity func_241840_a(ServerWorld serverWorld, AgeableEntity ageable) {
         if(fertilized) {
             ((EnhancedBee)ageable).fertilized = true;
             ((EnhancedBee)ageable).setMateGenes(this.genes);
@@ -523,7 +525,7 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
         this.setBeeSize();
 
         int birthMod = ThreadLocalRandom.current().nextInt(30000, 80000);
-        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
+        this.setBirthTime(String.valueOf(inWorld.getWorldInfo().getGameTime() - birthMod));
         if (birthMod < 60000) {
             this.setGrowingAge(birthMod - 60000);
         }

@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.entity.model.ModelUtils;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -108,7 +107,7 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EntityModel<T> {
         this.antennaRight.rotateAngleX = 0.0F;
         this.body.rotateAngleX = 0.0F;
         this.body.rotationPointY = 19.0F;
-        boolean flag = entityIn.onGround && entityIn.getMotion().lengthSquared() < 1.0E-7D;
+        boolean flag = entityIn.isOnGround() && entityIn.getMotion().lengthSquared() < 1.0E-7D;
         if (flag) {
             this.wingRight.rotateAngleY = -0.2618F;
             this.wingRight.rotateAngleZ = 0.0F;
@@ -190,7 +189,7 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EntityModel<T> {
 //                pigModelData.dataReset = 0;
 //            }
             beeModelData.sleeping = enhancedBee.isAnimalSleeping();
-            beeModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedBee.world).getWorldInfo()).getGameTime());
+            beeModelData.clientGameTime = (((ClientWorld)enhancedBee.world).getWorldInfo()).getGameTime();
 
             return beeModelData;
         } else {
@@ -200,7 +199,7 @@ public class ModelEnhancedBee<T extends EnhancedBee> extends EntityModel<T> {
             beeModelData.sleeping = enhancedBee.isAnimalSleeping();
             beeModelData.uuidArray = enhancedBee.getCachedUniqueIdString().toCharArray();
             beeModelData.birthTime = enhancedBee.getBirthTime();
-            beeModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedBee.world).getWorldInfo()).getGameTime());
+            beeModelData.clientGameTime = (((ClientWorld)enhancedBee.world).getWorldInfo()).getGameTime();
 
             if(beeModelData.beeGenes != null) {
                 beeModelDataCache.put(enhancedBee.getEntityId(), beeModelData);

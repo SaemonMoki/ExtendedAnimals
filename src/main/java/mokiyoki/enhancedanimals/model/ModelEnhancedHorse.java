@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -564,7 +563,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 //                pigModelData.dataReset = 0;
 //            }
             horseModelData.sleeping = enhancedHorse.isAnimalSleeping();
-            horseModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedHorse.world).getWorldInfo()).getGameTime());
+            horseModelData.clientGameTime = (((ClientWorld)enhancedHorse.world).getWorldInfo()).getGameTime();
 
             return horseModelData;
         } else {
@@ -574,7 +573,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
             horseModelData.sleeping = enhancedHorse.isAnimalSleeping();
             horseModelData.uuidArray = enhancedHorse.getCachedUniqueIdString().toCharArray();
             horseModelData.birthTime = enhancedHorse.getBirthTime();
-            horseModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedHorse.world).getWorldInfo()).getGameTime());
+            horseModelData.clientGameTime = (((ClientWorld)enhancedHorse.world).getWorldInfo()).getGameTime();
 
             if(horseModelData.horseGenes != null) {
                 horseModelDataCache.put(enhancedHorse.getEntityId(), horseModelData);

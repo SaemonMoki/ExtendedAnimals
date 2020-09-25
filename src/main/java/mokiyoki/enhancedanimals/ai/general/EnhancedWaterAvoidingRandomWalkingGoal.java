@@ -7,7 +7,7 @@ import net.minecraft.block.pattern.BlockStateMatcher;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.function.Predicate;
 
@@ -51,7 +51,7 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomW
                 }
             }
 
-            Vec3d lvt_1_1_ = this.getPosition();
+            Vector3d lvt_1_1_ = this.getPosition();
             if (lvt_1_1_ == null) {
                 return false;
             } else {
@@ -65,7 +65,7 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomW
     }
 
     private boolean checkForFood() {
-        BlockPos blockpos = new BlockPos(this.creature);
+        BlockPos blockpos = new BlockPos(this.creature.getPosition());
 
         //TODO add the predicate for different blocks to eat based on temperaments and animal type.
 //        if (IS_TALLGRASS.test(this.creature.world.getBlockState(blockpos))) {

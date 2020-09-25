@@ -19,7 +19,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -1833,7 +1832,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
             cowModelData.blink = enhancedCow.getBlink();
             cowModelData.birthTime = enhancedCow.getBirthTime();
-            cowModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime());
+            cowModelData.clientGameTime = (((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime();
             int collarSlot = hasCollar(enhancedCow.getEnhancedInventory());
             cowModelData.collar = collarSlot!=0;
             cowModelData.saddle = collarSlot!=1 ? enhancedCow.getEnhancedInventory().getStackInSlot(1) : ItemStack.EMPTY;
@@ -1863,7 +1862,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 cowModelData.uuidArray = enhancedCow.getMooshroomUUID().toCharArray();
             }
             cowModelData.isFemale = !Character.isLetter(cowModelData.uuidArray[0]) && cowModelData.uuidArray[0] - 48 < 8;
-            cowModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime());
+            cowModelData.clientGameTime = (((ClientWorld)enhancedCow.world).getWorldInfo()).getGameTime();
             int collarSlot = hasCollar(enhancedCow.getEnhancedInventory());
             cowModelData.collar = collarSlot!=0;
             cowModelData.saddle = collarSlot!=1 ? enhancedCow.getEnhancedInventory().getStackInSlot(1) : ItemStack.EMPTY;

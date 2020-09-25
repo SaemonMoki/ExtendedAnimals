@@ -6,8 +6,6 @@ import mokiyoki.enhancedanimals.entity.EnhancedCat;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -575,7 +573,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EntityModel<T> {
                 catModelData.dataReset = 0;
             }
             catModelData.sleeping = enhancedCat.isAnimalSleeping();
-            catModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCat.world).getWorldInfo()).getGameTime());
+            catModelData.clientGameTime = (((ClientWorld)enhancedCat.world).getWorldInfo()).getGameTime();
 
             return catModelData;
         } else {
@@ -584,7 +582,7 @@ public class ModelEnhancedCat<T extends EnhancedCat> extends EntityModel<T> {
 //            catModelData.coatlength = enhancedCat.getCoatLength();
             catModelData.sleeping = enhancedCat.isAnimalSleeping();
 //            catModelData.birthTime = enhancedCat.getBirthTime();
-            catModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedCat.world).getWorldInfo()).getGameTime());
+            catModelData.clientGameTime = (((ClientWorld)enhancedCat.world).getWorldInfo()).getGameTime();
 
             if(catModelData.catGenes != null) {
                 catModelDataCache.put(enhancedCat.getEntityId(), catModelData);

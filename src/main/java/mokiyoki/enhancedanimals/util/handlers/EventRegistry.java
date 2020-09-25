@@ -33,13 +33,14 @@ import net.minecraft.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -186,7 +187,7 @@ public class EventRegistry {
                 /**
                  * Return the projectile entity spawned by this dispense behavior.
                  */
-                protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+                protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
                     EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
                     egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
                     return egg;
@@ -282,7 +283,7 @@ public class EventRegistry {
         for (Biome biome : ForgeRegistries.BIOMES) {
             //Enhanced Rabbit Spawning
             if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get() && (biome.getRegistryName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()))) {
-                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3));
+                biome.getMobSpawnInfo().getSpawners(EntityClassification.CREATURE).add(new MobSpawnInfo.Spawners(ENHANCED_RABBIT, 4, 2, 3));
             }
         }
     }
@@ -292,67 +293,67 @@ public class EventRegistry {
 
         while (biomeIterator.hasNext()) {
             Biome biome = biomeIterator.next();
-            Iterator<Biome.SpawnListEntry> spawns = biome.getSpawns(EntityClassification.CREATURE).iterator();
+            Iterator<MobSpawnInfo.Spawners> spawns = biome.getMobSpawnInfo().getSpawners(EntityClassification.CREATURE).iterator();
 
-            ArrayList<Biome.SpawnListEntry> addSpawns = new ArrayList<Biome.SpawnListEntry>();
-            ArrayList<Biome.SpawnListEntry> removeSpawns = new ArrayList<>();
+            ArrayList<MobSpawnInfo.Spawners> addSpawns = new ArrayList<>();
+            ArrayList<MobSpawnInfo.Spawners> removeSpawns = new ArrayList<>();
             while (spawns.hasNext()) {
-                Biome.SpawnListEntry entry = spawns.next();
+                MobSpawnInfo.Spawners entry = spawns.next();
                 //add and remove pigs
-                if (entry.entityType == EntityType.PIG) {
+                if (entry.type == EntityType.PIG) {
                     if(!EanimodCommonConfig.COMMON.spawnVanillaPigs.get()) {
                         removeSpawns.add(entry);
                     }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_PIG, 6, 2, 3));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_PIG, 6, 2, 3));
                 }
                 //add and remove sheep
-                if (entry.entityType == EntityType.SHEEP) {
+                if (entry.type == EntityType.SHEEP) {
                     if (!EanimodCommonConfig.COMMON.spawnVanillaSheep.get()) {
                         removeSpawns.add(entry);
                     }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_SHEEP, 12, 4, 4));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_SHEEP, 12, 4, 4));
                 }
                 //add and remove cow
-                if (entry.entityType == EntityType.COW) {
+                if (entry.type == EntityType.COW) {
                     if(!EanimodCommonConfig.COMMON.spawnVanillaCows.get()) {
                         removeSpawns.add(entry);
                     }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_COW, 8, 4, 4));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_COW, 8, 4, 4));
                 }
                 //add and remove llama
-                if (entry.entityType == EntityType.LLAMA) {
+                if (entry.type == EntityType.LLAMA) {
                     if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
                         removeSpawns.add(entry);
                     }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_LLAMA, 4, 2, 3));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_LLAMA, 4, 2, 3));
                 }
                 //add and remove chicken
-                if (entry.entityType == EntityType.CHICKEN) {
+                if (entry.type == EntityType.CHICKEN) {
                     if (!EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
                         removeSpawns.add(entry);
                     }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_CHICKEN, 10, 4, 4));
                 }
                 //add and remove rabbit
-                if (entry.entityType == EntityType.RABBIT) {
+                if (entry.type == EntityType.RABBIT) {
                     if (!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
                         removeSpawns.add(entry);
                     }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_RABBIT, 4, 2, 3));
                 }
                 //add and remove mooshroom
-                if (entry.entityType == EntityType.MOOSHROOM) {
+                if (entry.type == EntityType.MOOSHROOM) {
                     if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
                         removeSpawns.add(entry);
                     }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_MOOSHROOM, 8, 4, 4));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_MOOSHROOM, 8, 4, 4));
                 }
             }
             if (!addSpawns.isEmpty()) {
-                biome.getSpawns(EntityClassification.CREATURE).addAll(addSpawns);
+                biome.getMobSpawnInfo().getSpawners(EntityClassification.CREATURE).addAll(addSpawns);
             }
             if (!removeSpawns.isEmpty()) {
-                biome.getSpawns(EntityClassification.CREATURE).removeAll(removeSpawns);
+                biome.getMobSpawnInfo().getSpawners(EntityClassification.CREATURE).removeAll(removeSpawns);
             }
         }
     }

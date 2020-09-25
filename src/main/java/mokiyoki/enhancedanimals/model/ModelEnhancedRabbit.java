@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -659,7 +658,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             rabbitModelData.collar = hasCollar(enhancedRabbit.getEnhancedInventory());
             rabbitModelData.blink = enhancedRabbit.getBlink();
             rabbitModelData.birthTime = enhancedRabbit.getBirthTime();
-            rabbitModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedRabbit.world).getWorldInfo()).getGameTime());
+            rabbitModelData.clientGameTime = (((ClientWorld)enhancedRabbit.world).getWorldInfo()).getGameTime();
 
             return rabbitModelData;
         } else {
@@ -672,7 +671,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             rabbitModelData.blink = enhancedRabbit.getBlink();
             rabbitModelData.birthTime = enhancedRabbit.getBirthTime();
             rabbitModelData.collar = hasCollar(enhancedRabbit.getEnhancedInventory());
-            rabbitModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedRabbit.world).getWorldInfo()).getGameTime());
+            rabbitModelData.clientGameTime = (((ClientWorld)enhancedRabbit.world).getWorldInfo()).getGameTime();
 
             if(rabbitModelData.rabbitGenes != null) {
                 rabbitModelDataCache.put(enhancedRabbit.getEntityId(), rabbitModelData);

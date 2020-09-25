@@ -222,14 +222,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     public double getMountedYOffset() {
-        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
-        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
-            return 0.9D;
-        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
-            return 0.9D;
-        } else {
-            return 0.8D;
-        }
+        return 1.25D;
     }
 
     protected boolean isMovementBlocked() {

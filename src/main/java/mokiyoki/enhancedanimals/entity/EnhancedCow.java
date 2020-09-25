@@ -258,6 +258,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     protected SoundEvent getDeathSound() { return SoundEvents.ENTITY_COW_DEATH; }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
+        super.playStepSound(pos, blockIn);
         this.playSound(SoundEvents.ENTITY_COW_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
             this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 0.1F);
@@ -274,15 +275,15 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     @Override
     public double getMountedYOffset() {
-        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
-        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
-            return 1.0D;
-        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
-            return 1.0D;
-        } else {
-            return 0.9D;
-        }
-//        return (saddleSlot == ItemStack.EMPTY || saddleSlot.getItem() instanceof CustomizableCollar ? 0.8D : 0.9D);
+//        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+//        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
+//            return 1.0D;
+//        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
+//            return 1.0D;
+//        } else {
+//            return 0.9D;
+//        }
+        return 1.25D;
     }
 
     protected void registerAttributes() {

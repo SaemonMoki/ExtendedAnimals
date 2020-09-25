@@ -22,6 +22,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(CowBreeds.HOLSTEIN);
         this.breeds.add(CowBreeds.JERSEY);
         this.breeds.add(CowBreeds.TEXAS_LONGHORN);
+        this.breeds.add(CowBreeds.WILD_HORNS);
     }
 
     public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
@@ -748,12 +749,12 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[84] = (ThreadLocalRandom.current().nextInt(4) + 1);
         } else {
-            autosomalGenes[84] = (1);
+            autosomalGenes[84] = (2);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[85] = (ThreadLocalRandom.current().nextInt(4) + 1);
         } else {
-            autosomalGenes[85] = (1);
+            autosomalGenes[85] = (2);
         }
 
         //cow horn scale 1 [wildtype, 1.25]
@@ -799,13 +800,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[92] = (ThreadLocalRandom.current().nextInt(9999) + 1);
 
         } else {
-            autosomalGenes[92] = (1);
+            autosomalGenes[92] = (1988);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[93] = (ThreadLocalRandom.current().nextInt(9999) + 1);
 
         } else {
-            autosomalGenes[93] = (1);
+            autosomalGenes[93] = (1988);
         }
 
         //cow horn twist ... place matches following horn piece numbers { 4 5 6 7 8 9 }
@@ -813,13 +814,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[94] = (ThreadLocalRandom.current().nextInt(999999) + 1);
 
         } else {
-            autosomalGenes[94] = (1);
+            autosomalGenes[94] = (244349);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[95] = (ThreadLocalRandom.current().nextInt(999999) + 1);
 
         } else {
-            autosomalGenes[95] = (1);
+            autosomalGenes[95] = (244349);
         }
 
         //cow horn base twist  ... place matches following horn piece numbers { *total twist mod* 1 2 3 }
@@ -827,13 +828,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[96] = (ThreadLocalRandom.current().nextInt(9999) + 1);
 
         } else {
-            autosomalGenes[96] = (1);
+            autosomalGenes[96] = (1666);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[97] = (ThreadLocalRandom.current().nextInt(9999) + 1);
 
         } else {
-            autosomalGenes[97] = (1);
+            autosomalGenes[97] = (1666);
         }
 
         // cow horn root
@@ -841,13 +842,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[98] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[98] = (1);
+            autosomalGenes[98] = (206);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[99] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[99] = (1);
+            autosomalGenes[99] = (206);
         }
 
         //cow horn1 X and Z
@@ -855,13 +856,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[100] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[100] = (1);
+            autosomalGenes[100] = (158);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[101] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[101] = (1);
+            autosomalGenes[101] = (158);
         }
 
         //cow horn2 X and Z
@@ -869,13 +870,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[102] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[102] = (1);
+            autosomalGenes[102] = (158);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[103] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[103] = (1);
+            autosomalGenes[103] = (158);
         }
 
         //cow horn3 X and Z
@@ -883,13 +884,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[104] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[104] = (1);
+            autosomalGenes[104] = (165);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[105] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[105] = (1);
+            autosomalGenes[105] = (165);
         };
 
         //cow horn4 X and Z
@@ -897,13 +898,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[106] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[106] = (1);
+            autosomalGenes[106] = (177);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[107] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[107] = (1);
+            autosomalGenes[107] = (177);
         }
 
         //cow horn5 X and Z
@@ -911,13 +912,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[108] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[108] = (1);
+            autosomalGenes[108] = (138);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[109] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[109] = (1);
+            autosomalGenes[109] = (138);
         }
 
         //cow horn6 X and Z
@@ -925,13 +926,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[110] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[110] = (1);
+            autosomalGenes[110] = (144);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[111] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[111] = (1);
+            autosomalGenes[111] = (144);
         }
 
         //cow horn7 X and Z
@@ -939,13 +940,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[112] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[112] = (1);
+            autosomalGenes[112] = (195);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[113] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[113] = (1);
+            autosomalGenes[113] = (195);
         }
 
         //cow horn8 X and Z
@@ -953,13 +954,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[114] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[114] = (1);
+            autosomalGenes[114] = (161);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[115] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[115] = (1);
+            autosomalGenes[115] = (161);
         }
 
         //cow horn9 X and Z
@@ -967,13 +968,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[116] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[116] = (1);
+            autosomalGenes[116] = (190);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[117] = (ThreadLocalRandom.current().nextInt(999) + 1);
 
         } else {
-            autosomalGenes[117] = (1);
+            autosomalGenes[117] = (190);
         }
 
         //parasitic immunity gene
@@ -983,6 +984,17 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //recessive dilution
         autosomalGenes[120] = 1;
         autosomalGenes[121] = 1;
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[122] = ThreadLocalRandom.current().nextInt(5)+1;
+        } else {
+            autosomalGenes[122] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[123] = ThreadLocalRandom.current().nextInt(5)+1;
+        } else {
+            autosomalGenes[123] = 1;
+        }
 
         return new Genes(autosomalGenes);
     }

@@ -17,6 +17,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
@@ -138,7 +139,8 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         }
     }
 
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    @Override
+    public ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
         ItemStack itemstack = player.getHeldItem(hand);
         if (!itemstack.isEmpty()) {
             Item item = itemstack.getItem();
@@ -147,16 +149,16 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 this.playChestEquipSound();
                 this.animalInventory.setInventorySlotContents(0, new ItemStack(itemstack.getItem(), 1));
                 this.initInventory();
-                return true;
+                return ActionResultType.SUCCESS;
             }
             if (this.canHaveBlanket() && isCarpet(itemstack)) {
-                return this.blanketAnimal(itemstack, player, hand, this);
+                return ActionResultType.func_233537_a_(this.blanketAnimal(itemstack, player, hand, this));
             }
             if (this.canHaveBridle() && item instanceof CustomizableBridle) {
-                return this.bridleAnimal(itemstack, player, hand, this);
+                return ActionResultType.func_233537_a_(this.bridleAnimal(itemstack, player, hand, this));
             }
         }
-        return super.processInteract(player, hand);
+        return super.func_230254_b_(player, hand);
     }
 
     public boolean canBeSteered() {

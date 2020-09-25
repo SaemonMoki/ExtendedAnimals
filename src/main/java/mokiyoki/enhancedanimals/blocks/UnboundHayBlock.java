@@ -8,20 +8,18 @@ import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
@@ -63,7 +61,7 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
             if (bites < 8) {
                 world.setBlockState(pos, state.with(BITES, Integer.valueOf(bites + 1)).with(WATERLOGGED, state.get(WATERLOGGED)));
             } else {
-                world.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+                world.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
                 world.removeBlock(pos, false);
             }
         }
@@ -87,14 +85,14 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
             if (i < 8) {
                 worldIn.setBlockState(pos, state.with(BITES, Integer.valueOf(i + 1)), 3);
             } else {
-                worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+                worldIn.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
                 worldIn.removeBlock(pos, false);
             }
     }
 
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        IFluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
+        FluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
 //        if (Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER)){
 //            this.(context.getPos(), true);
 //        }
@@ -104,7 +102,7 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
     @Override
     public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld worldIn, BlockPos pos, BlockPos facingPos) {
         if (state.get(WATERLOGGED)) {
-            worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+            worldIn.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
             worldIn.removeBlock(pos, false);
             worldIn.getPendingFluidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
         }
@@ -123,7 +121,7 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
     }
 
     @Override
-    public IFluidState getFluidState(BlockState state) {
+    public FluidState getFluidState(BlockState state) {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
     }
 
@@ -143,7 +141,7 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
     }
 
     public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-        entityIn.setMotionMultiplier(state, new Vec3d(0.10D, (double)0.10F, 0.10D));
+        entityIn.setMotionMultiplier(state, new Vector3d(0.10D, (double)0.10F, 0.10D));
     }
 
     /**

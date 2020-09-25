@@ -9,7 +9,7 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.EnumSet;
 import java.util.Map;
@@ -63,7 +63,7 @@ public class EnhancedAvoidEntityGoal<T extends LivingEntity> extends Goal {
         if (this.field_75376_d == null) {
             return false;
         } else {
-            Vec3d vec3d = RandomPositionGenerator.findRandomTargetBlockAwayFrom(this.entity, 16, 7, new Vec3d(this.field_75376_d.getPosX(), this.field_75376_d.getPosY(), this.field_75376_d.getPosZ()));
+            Vector3d vec3d = RandomPositionGenerator.findRandomTargetBlockAwayFrom(this.entity, 16, 7, new Vector3d(this.field_75376_d.getPosX(), this.field_75376_d.getPosY(), this.field_75376_d.getPosZ()));
             if (vec3d == null) {
                 return false;
             } else if (this.field_75376_d.getDistanceSq(vec3d.x, vec3d.y, vec3d.z) < this.field_75376_d.getDistanceSq(this.entity)) {

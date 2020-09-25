@@ -21,8 +21,8 @@ import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
@@ -41,6 +41,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -232,8 +233,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     protected void registerAttributes() {
         super.registerAttributes();
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(8.0D);
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(8.0D);
+        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
     }
 
     protected void setMilkAmount(Integer milkAmount) {
@@ -1082,7 +1083,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
@@ -1140,7 +1141,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             switch (resultAmount) {
                 case 0:
                     entityPlayer.playSound(SoundEvents.ENTITY_SHEEP_HURT, 1.0F, 1.0F);
-                    return true;
+                    return ActionResultType.SUCCESS;
                 case 1:
                     if (isBottle) {
                         resultItem = new ItemStack(ModItems.HALF_MILK_BOTTLE);
@@ -1205,7 +1206,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             }
         }
-        return super.processInteract(entityPlayer, hand);
+        return super.func_230254_b_(entityPlayer, hand);
     }
 
     @Override
@@ -1264,7 +1265,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+    public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
         return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 60000, 80000);
     }
 

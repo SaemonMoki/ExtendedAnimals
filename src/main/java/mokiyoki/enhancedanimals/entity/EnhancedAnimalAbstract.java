@@ -51,18 +51,20 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -569,7 +571,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         Entity entity = this.getLeashHolder();
         if (entity != null && entity.world == this.world) {
-            this.setHomePosAndDistance(new BlockPos(entity), 5);
+            this.setHomePosAndDistance(new BlockPos(entity.getPosition()), 5);
             float f = this.getDistance(entity);
 
             this.onLeashDistance(f);
@@ -583,7 +585,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                 this.setMotion(this.getMotion().add(Math.copySign(d0 * d0 * 0.4D, d0), Math.copySign(d1 * d1 * 0.4D, d1), Math.copySign(d2 * d2 * 0.4D, d2)));
             } else if (!ableToMoveWhileLeashed()){
                 this.goalSelector.enableFlag(Goal.Flag.MOVE);
-                Vec3d vec3d = (new Vec3d(entity.getPosX() - this.getPosX(), entity.getPosY() - this.getPosY(), entity.getPosZ() - this.getPosZ())).normalize().scale((double)Math.max(f - 2.0F, 0.0F));
+                Vector3d vec3d = (new Vector3d(entity.getPosX() - this.getPosX(), entity.getPosY() - this.getPosY(), entity.getPosZ() - this.getPosZ())).normalize().scale((double)Math.max(f - 2.0F, 0.0F));
                 this.getNavigator().tryMoveToXYZ(this.getPosX() + vec3d.x, this.getPosY() + vec3d.y, this.getPosZ() + vec3d.z, this.followLeashSpeed());
             }
         }
@@ -790,13 +792,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     */
 
     @Override
-    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
         if (entityPlayer.isSecondaryUseActive()) {
             this.openGUI(entityPlayer);
-            return true;
+            return ActionResultType.func_233537_a_(this.world.isRemote);
         }
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
@@ -806,7 +808,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             else if ((!this.isChild() || !bottleFeedable) && TEMPTATION_ITEMS.test(itemStack)) {
                 if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
                     if (hunger < 4000) {
-                        return super.processInteract(entityPlayer, hand);
+                        return super.func_230254_b_(entityPlayer, hand);
                     }
                 }
 
@@ -825,14 +827,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             } else if (this.isChild() && (TEMPTATION_ITEMS.test(itemStack) || MILK_ITEMS.test(itemStack))) {
                 if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
                     if (hunger < 4000) {
-                        return super.processInteract(entityPlayer, hand);
+                        return super.func_230254_b_(entityPlayer, hand);
                     }
                 }
 
                 if (bottleFeedable && MILK_ITEMS.test(itemStack)) {
                     if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
                         super.ageUp((int)((float)(-this.getGrowingAge() / 20) * 0.1F), true);
-                        return true;
+                        return ActionResultType.SUCCESS;
                     }
                     if (item == ModItems.HALF_MILK_BOTTLE) {
                         decreaseHunger(6000);
@@ -877,7 +879,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             } else if (BREED_ITEMS.test(itemStack)) {
                 if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
                     if (hunger < 4000) {
-                        return super.processInteract(entityPlayer, hand);
+                        return super.func_230254_b_(entityPlayer, hand);
                     }
                 }
                 decreaseHunger(this.foodWeightMap.get(item));
@@ -891,7 +893,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             }
         }
 
-        return super.processInteract(entityPlayer, hand);
+        return super.func_230254_b_(entityPlayer, hand);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1229,7 +1231,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     @Override
-    public AgeableEntity createChild(AgeableEntity ageable) {
+    public AgeableEntity func_241840_a(ServerWorld serverWorld, AgeableEntity ageable) {
         handlePartnerBreeding(ageable);
         this.setGrowingAge(10);
         this.resetInLove();
@@ -1617,15 +1619,15 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     protected void geneFixer() {
         if (!this.breed.isEmpty()) {
-            this.genetics = createInitialBreedGenes(this.world, new BlockPos(this), this.breed);
+            this.genetics = createInitialBreedGenes(this.world, new BlockPos(this.getPosition()), this.breed);
             setInitialDefaults();
             this.setBirthTime(String.valueOf(0));
             this.setGrowingAge(0);
             this.ageUp(0, true);
         } else if (this.genetics.getAutosomalGene(0) == 0) {
-            this.genetics = createInitialGenes(this.world, new BlockPos(this), true);
+            this.genetics = createInitialGenes(this.world, new BlockPos(this.getPosition()), true);
             setInitialDefaults();
-            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (rand.nextInt(180000-24000) + 24000)));
+            this.setBirthTime(String.valueOf(this.world.getGameTime() - (rand.nextInt(180000-24000) + 24000)));
         } else {
             int[] sexlinkedGenes = this.genetics.getSexlinkedGenes();
             int[] autosomalGenes = this.genetics.getAutosomalGenes();
@@ -1673,7 +1675,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         if (livingdata instanceof GroupData) {
             spawnGenes = new Genes(((GroupData)livingdata).groupGenes).makeChild(true, false, ((GroupData)livingdata).groupGenes);
         } else {
-            spawnGenes = createInitialGenes(this.world, new BlockPos(this), false);
+            spawnGenes = createInitialGenes(this.world, new BlockPos(this.getPosition()), false);
             livingdata = new GroupData(spawnGenes);
         }
 
@@ -1681,7 +1683,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         setInitialDefaults();
 
         int birthMod = ThreadLocalRandom.current().nextInt(ageMinimum, ageMaximum);
-        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
+        this.setBirthTime(String.valueOf(inWorld.getWorldInfo().getGameTime() - birthMod));
         if (birthMod < childAge) {
             this.setGrowingAge(birthMod - childAge);
         }

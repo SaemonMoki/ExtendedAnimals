@@ -15,7 +15,7 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorldReader;
 
 import java.util.ArrayList;
@@ -102,10 +102,10 @@ public class GrazingGoal extends Goal {
             return true;
         }
 
-        BlockPos baseBlockPos = new BlockPos(this.eanimal);
+        BlockPos baseBlockPos = new BlockPos(this.eanimal.getPosition());
         BlockPos.Mutable mutableblockpos = new BlockPos.Mutable();
 
-        Vec3d directionVec = getDirectionVec();
+        Vector3d directionVec = getDirectionVec();
 
         int horizontalRange = 10;
         int verticalRange = 3;
@@ -119,7 +119,7 @@ public class GrazingGoal extends Goal {
 
             horizontalRange = 4;
             verticalRange = 2;
-            baseBlockPos = new BlockPos(this.eanimal.getLeashHolder());
+            baseBlockPos = new BlockPos(this.eanimal.getLeashHolder().getPosition());
             randomSelection = true;
         } else {
             allFoundPos.clear();
@@ -167,7 +167,7 @@ public class GrazingGoal extends Goal {
         return false;
     }
 
-    private boolean checkSquaresInFront(BlockPos eanimalBlockPos, BlockPos.Mutable mutableblockpos, Vec3d directionVec) {
+    private boolean checkSquaresInFront(BlockPos eanimalBlockPos, BlockPos.Mutable mutableblockpos, Vector3d directionVec) {
         if (isEdibleBlock(this.eanimal.world, mutableblockpos.setPos(eanimalBlockPos).move((int)(directionVec.x*2)+1, -1, (int)(directionVec.z*2)+1))) {
             this.destinationBlock = mutableblockpos;
             return true;
@@ -199,15 +199,15 @@ public class GrazingGoal extends Goal {
         return false;
     }
 
-    private Vec3d getDirectionVec() {
-        Vec3d lockingVec = this.eanimal.getLookVec().align(EnumSet.of(Direction.Axis.X, Direction.Axis.Z));
+    private Vector3d getDirectionVec() {
+        Vector3d lockingVec = this.eanimal.getLookVec().align(EnumSet.of(Direction.Axis.X, Direction.Axis.Z));
         double x = Math.abs(lockingVec.x);
         double z = Math.abs(lockingVec.z);
 
         if (x > z) {
-            return new Vec3d(lockingVec.x, 0, 0);
+            return new Vector3d(lockingVec.x, 0, 0);
         } else {
-            return new Vec3d(0, 0, lockingVec.z);
+            return new Vector3d(0, 0, lockingVec.z);
         }
     }
 
@@ -321,7 +321,7 @@ public class GrazingGoal extends Goal {
                     ((UnboundHayBlock)blockState.getBlock()).eatFromBlock(this.eanimal.world, blockState, this.destinationBlock);
                 } else {
                     //clean up
-                    this.eanimal.world.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(this.destinationBlock);
+                    this.eanimal.world.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(this.destinationBlock);
                 }
             } else if (this.eatingGrassTimer == 0) {
                 eatingHay = false;
@@ -344,7 +344,7 @@ public class GrazingGoal extends Goal {
     }
 
     protected void eatBlocks() {
-        BlockPos blockpos = new BlockPos(this.eanimal);
+        BlockPos blockpos = new BlockPos(this.eanimal.getPosition());
         if (isInEdibleBlock(blockpos)) {
             if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.world, this.eanimal)) {
                 this.eanimal.world.destroyBlock(blockpos, false);

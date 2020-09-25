@@ -3,7 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -14,7 +14,7 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -23,14 +23,14 @@ import java.util.UUID;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA_SPIT;
 
-public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
+public class EnhancedEntityLlamaSpit extends ProjectileEntity {
     public EnhancedLlama owner;
     private CompoundNBT ownerNbt;
-
 
     public EnhancedEntityLlamaSpit(EntityType<? extends EnhancedEntityLlamaSpit> p_i50162_1_, World p_i50162_2_) {
         super(p_i50162_1_, p_i50162_2_);
     }
+
 
     public EnhancedEntityLlamaSpit(World worldIn, EnhancedLlama p_i47273_2_) {
         this(ENHANCED_LLAMA_SPIT, worldIn);
@@ -60,7 +60,7 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
             this.restoreOwnerFromSave();
         }
 
-        Vec3d vec3d = this.getMotion();
+        Vector3d vec3d = this.getMotion();
         RayTraceResult raytraceresult = ProjectileHelper.rayTrace(this, this.getBoundingBox().expand(vec3d).grow(1.0D), (p_213879_1_) -> {
             return !p_213879_1_.isSpectator() && p_213879_1_ != this.owner;
         }, RayTraceContext.BlockMode.OUTLINE, true);
@@ -129,7 +129,7 @@ public class EnhancedEntityLlamaSpit extends Entity implements IProjectile {
      * Similar to setArrowHeading, it's point the throwable entity to a x, y, z direction.
      */
     public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
-        Vec3d vec3d = (new Vec3d(x, y, z)).normalize().add(this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy).scale((double)velocity);
+        Vector3d vec3d = (new Vector3d(x, y, z)).normalize().add(this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy, this.rand.nextGaussian() * (double)0.0075F * (double)inaccuracy).scale((double)velocity);
         this.setMotion(vec3d);
         float f = MathHelper.sqrt(horizontalMag(vec3d));
         this.rotationYaw = (float)(MathHelper.atan2(vec3d.x, z) * (double)(180F / (float)Math.PI));

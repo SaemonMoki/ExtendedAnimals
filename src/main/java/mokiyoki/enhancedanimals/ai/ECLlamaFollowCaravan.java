@@ -2,7 +2,7 @@ package mokiyoki.enhancedanimals.ai;
 
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -105,7 +105,7 @@ public class ECLlamaFollowCaravan extends Goal {
             EnhancedLlama entityllama = this.llama.getCaravanHead();
             double d0 = (double)this.llama.getDistance(entityllama);
             float f = 2.0F;
-            Vec3d vec3d = (new Vec3d(entityllama.getPosX() - this.llama.getPosX(), entityllama.getPosY() - this.llama.getPosY(), entityllama.getPosZ() - this.llama.getPosZ())).normalize().scale(Math.max(d0 - 2.0D, 0.0D));
+            Vector3d vec3d = (new Vector3d(entityllama.getPosX() - this.llama.getPosX(), entityllama.getPosY() - this.llama.getPosY(), entityllama.getPosZ() - this.llama.getPosZ())).normalize().scale(Math.max(d0 - 2.0D, 0.0D));
             this.llama.getNavigator().tryMoveToXYZ(this.llama.getPosX() + vec3d.x, this.llama.getPosY() + vec3d.y, this.llama.getPosZ() + vec3d.z, this.speedModifier);
         }
     }

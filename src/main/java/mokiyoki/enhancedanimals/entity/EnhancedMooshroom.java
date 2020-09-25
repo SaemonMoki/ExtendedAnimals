@@ -34,6 +34,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
@@ -228,8 +229,9 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         return EnhancedMooshroom.Type.getTypeByName(this.dataManager.get(MOOSHROOM_TYPE));
     }
 
-    public EnhancedMooshroom createChild(AgeableEntity ageable) {
-        super.createChild(ageable);
+    @Override
+    public EnhancedMooshroom func_241840_a(ServerWorld serverWorld, AgeableEntity ageable) {
+        super.func_241840_a(serverWorld, ageable);
         return null;
     }
 

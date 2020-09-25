@@ -13,7 +13,7 @@ import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
@@ -125,7 +125,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                 }
 //            }
 
-            Vec3d lvt_1_1_ = this.getPosition();
+            Vector3d lvt_1_1_ = this.getPosition();
             if (lvt_1_1_ == null) {
                 return false;
             } else {
@@ -155,9 +155,9 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     }
 
     @Nullable
-    protected Vec3d getPosition() {
+    protected Vector3d getPosition() {
         if (this.creature.isInWaterOrBubbleColumn()) {
-            Vec3d vec3d = RandomPositionGenerator.getLandPos(this.creature, 15, 7);
+            Vector3d vec3d = RandomPositionGenerator.getLandPos(this.creature, 15, 7);
             return vec3d == null ? super.getPosition() : vec3d;
         } else {
             return this.creature.getRNG().nextFloat() >= this.probability ? RandomPositionGenerator.getLandPos(this.creature, 5, 5) : super.getPosition();
@@ -238,7 +238,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     }
 
     protected boolean checkForFood() {
-        BlockPos blockpos = new BlockPos(this.creature);
+        BlockPos blockpos = new BlockPos(this.creature.getPosition());
 
         //TODO add the predicate for different blocks to eat based on temperaments and animal type.
         BlockState blockState = this.entityWorld.getBlockState(blockpos);
@@ -309,14 +309,14 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                     ((UnboundHayBlock)blockState.getBlock()).eatFromBlock(this.entityWorld, blockState, this.destinationBlock);
                 } else {
                     //clean up
-                    entityWorld.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(this.destinationBlock);
+                    entityWorld.getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(this.destinationBlock);
                 }
             }
         }
     }
 
     protected void eatBlocks() {
-        BlockPos blockpos = new BlockPos(this.creature);
+        BlockPos blockpos = new BlockPos(this.creature.getPosition());
         if (IS_GRASS.test(this.entityWorld.getBlockState(blockpos)) || IS_TALL_GRASS_BLOCK.test(this.entityWorld.getBlockState(blockpos))) {
             if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
                 this.entityWorld.destroyBlock(blockpos, false);
@@ -356,7 +356,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
             return true;
         }
 
-        BlockPos blockpos = new BlockPos(this.creature);
+        BlockPos blockpos = new BlockPos(this.creature.getPosition());
         BlockPos.Mutable blockpos$mutableblockpos = new BlockPos.Mutable();
 
         for(int k = this.field_203112_e; k <= j; k = k > 0 ? -k : 1 - k) {

@@ -19,7 +19,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SaddleItem;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -1050,7 +1049,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.blink = enhancedLlama.getBlink();
             llamaModelData.birthTime = enhancedLlama.getBirthTime();
             llamaModelData.angry = (enhancedLlama.isAggressive());
-            llamaModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedLlama.world).getWorldInfo()).getGameTime());
+            llamaModelData.clientGameTime = (((ClientWorld)enhancedLlama.world).getWorldInfo()).getGameTime();
             llamaModelData.unrenderedModels = new ArrayList<>();
             llamaModelData.saddle = enhancedLlama.getEnhancedInventory().getStackInSlot(1);
             llamaModelData.bridle = enhancedLlama.getEnhancedInventory().getStackInSlot(3);
@@ -1070,7 +1069,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.blink = enhancedLlama.getBlink();
             llamaModelData.birthTime = enhancedLlama.getBirthTime();
             llamaModelData.angry = (!(enhancedLlama.getRevengeTarget() == null));
-            llamaModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedLlama.world).getWorldInfo()).getGameTime());
+            llamaModelData.clientGameTime = (((ClientWorld)enhancedLlama.world).getWorldInfo()).getGameTime();
             llamaModelData.saddle = enhancedLlama.getEnhancedInventory().getStackInSlot(1);
             llamaModelData.bridle = enhancedLlama.getEnhancedInventory().getStackInSlot(3);
             llamaModelData.harness = enhancedLlama.getEnhancedInventory().getStackInSlot(5);

@@ -17,6 +17,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -96,8 +97,9 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
 //        return EnhancedMoobloom.Type.getTypeByName(this.dataManager.get(MOOBLOOM_TYPE));
 //    }
 
-    public EnhancedMoobloom createChild(AgeableEntity ageable) {
-        super.createChild(ageable);
+    @Override
+    public EnhancedMoobloom func_241840_a(ServerWorld serverWorld, AgeableEntity ageable) {
+        super.func_241840_a(serverWorld, ageable);
         return null;
     }
 

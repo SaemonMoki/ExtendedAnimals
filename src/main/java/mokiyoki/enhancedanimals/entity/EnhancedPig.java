@@ -22,8 +22,9 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
@@ -33,12 +34,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -264,13 +267,13 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     protected int getAdultAge() { return 60000;}
 
     @Override
-    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
         if (item == Items.NAME_TAG) {
             itemStack.interactWithEntity(entityPlayer, this, hand);
-            return true;
+            return ActionResultType.SUCCESS;
         }else if ((!this.isChild() || !bottleFeedable) && item instanceof EnhancedEgg && hunger >= 6000) {
             //enhancedegg egg eating
             decreaseHunger(100);
@@ -283,7 +286,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
             }
         }
 
-        return super.processInteract(entityPlayer, hand);
+        return super.func_230254_b_(entityPlayer, hand);
     }
 
 //    public boolean saddlePig(ItemStack stack, PlayerEntity playerIn, LivingEntity target) {
@@ -326,10 +329,10 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
         return 0.4F;
     }
 
-    protected void registerAttributes() {
+    protected void registerAnimalAttributes() {
         super.registerAttributes();
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D);
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(10.0D);
+        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
         char[] uuidArry = getCachedUniqueIdString().toCharArray();
         double tusks = 2.0D;
         if (!isChild()) {
@@ -338,8 +341,21 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
                 tusks = 3.0D;
             }
         }
-        this.getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(tusks);
+        MobEntity.func_233666_p_().createMutableAttribute(Attributes.ATTACK_DAMAGE);
+        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(tusks);
     }
+
+//    public static AttributeModifierMap.MutableAttribute func_234215_eI_() {
+//        char[] uuidArry = getCachedUniqueIdString().toCharArray();
+//        double tusks = 2.0D;
+//        if (!isChild()) {
+//            if ((Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8)) {
+//                //tusks if "male"
+//                tusks = 3.0D;
+//            }
+//        }
+//        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+//    }
 
     public void livingTick() {
         super.livingTick();
@@ -446,7 +462,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), (float)((int)this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue()));
+        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), (float)((int)this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
         if (flag) {
             this.applyEnchantments(this, entityIn);
         }
@@ -1040,7 +1056,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+    public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+        registerAnimalAttributes();
         return commonInitialSpawnSetup(inWorld, livingdata, 60000, 30000, 80000);
     }
 

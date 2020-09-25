@@ -15,7 +15,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -1005,7 +1004,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             pigModelData.sleeping = enhancedPig.isAnimalSleeping();
             pigModelData.blink = enhancedPig.getBlink();
             pigModelData.birthTime = enhancedPig.getBirthTime();
-            pigModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedPig.world).getWorldInfo()).getGameTime());
+            pigModelData.clientGameTime = (((ClientWorld)enhancedPig.world).getWorldInfo()).getGameTime();
             pigModelData.saddle = enhancedPig.getEnhancedInventory().getStackInSlot(1);
             pigModelData.bridle = enhancedPig.getEnhancedInventory().getStackInSlot(3);
             pigModelData.harness = enhancedPig.getEnhancedInventory().getStackInSlot(5);
@@ -1024,7 +1023,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             pigModelData.blink = enhancedPig.getBlink();
             pigModelData.uuidArray = enhancedPig.getCachedUniqueIdString().toCharArray();
             pigModelData.birthTime = enhancedPig.getBirthTime();
-            pigModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedPig.world).getWorldInfo()).getGameTime());
+            pigModelData.clientGameTime = (((ClientWorld)enhancedPig.world).getWorldInfo()).getGameTime();
             pigModelData.saddle = enhancedPig.getEnhancedInventory().getStackInSlot(1);
             pigModelData.bridle = enhancedPig.getEnhancedInventory().getStackInSlot(3);
             pigModelData.harness = enhancedPig.getEnhancedInventory().getStackInSlot(5);

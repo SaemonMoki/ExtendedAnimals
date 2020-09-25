@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
 
@@ -10,7 +10,7 @@ public class EnhancedDonkey extends EnhancedHorse{
 
     //TODO add texture layers
 
-    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
+    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 32;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
@@ -35,7 +35,7 @@ public class EnhancedDonkey extends EnhancedHorse{
         int[] initialGenes = new int[GENES_LENGTH];
 
 
-        //Health Base gene [ weaker, stronger1, wildtype, stronger2 ]
+        //Health Base genes [ weaker, stronger1, wildtype, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[0] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -49,7 +49,7 @@ public class EnhancedDonkey extends EnhancedHorse{
             initialGenes[1] = (3);
         }
 
-        //Health Modifier gene [ weaker, stronger1, wildtype, stronger2 ]
+        //Health Modifier genes [ weaker, stronger1, wildtype, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[2] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -63,7 +63,7 @@ public class EnhancedDonkey extends EnhancedHorse{
             initialGenes[3] = (3);
         }
 
-        //Speed Base gene [ weaker, stronger1, wildtype, stronger2 ]
+        //Speed Base genes [ weaker, stronger1, wildtype, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[4] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -77,7 +77,7 @@ public class EnhancedDonkey extends EnhancedHorse{
             initialGenes[5] = (3);
         }
 
-        //Speed Modifier gene [ weaker, stronger1, wildtype, stronger2 ]
+        //Speed Modifier genes [ weaker, stronger1, wildtype, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[6] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -91,7 +91,7 @@ public class EnhancedDonkey extends EnhancedHorse{
             initialGenes[7] = (3);
         }
 
-        //Jump Base gene [ weaker, stronger1, wildtype, stronger2 ]
+        //Jump Base genes [ weaker, stronger1, wildtype, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[8] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -105,7 +105,7 @@ public class EnhancedDonkey extends EnhancedHorse{
             initialGenes[9] = (3);
         }
 
-        //Jump Modifier gene [ weaker, stronger1, wildtype, stronger2 ]
+        //Jump Modifier genes [ weaker, stronger1, wildtype, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[10] = (ThreadLocalRandom.current().nextInt(4) + 1);
 

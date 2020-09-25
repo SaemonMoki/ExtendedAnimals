@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.proxy;
 
+import mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen;
+import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;

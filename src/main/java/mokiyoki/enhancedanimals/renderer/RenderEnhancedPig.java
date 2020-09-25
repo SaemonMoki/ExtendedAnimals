@@ -1,9 +1,10 @@
 package mokiyoki.enhancedanimals.renderer;
 
-import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedPig;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
+import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -11,14 +12,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig<EnhancedPig>>
-{
+public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig<EnhancedPig>> {
 
-    private static final Map<String, ResourceLocation> LAYERED_LOCATION_CACHE = Maps.<String, ResourceLocation>newHashMap();
+    private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_PIG_TEXTURE_LOCATION = "eanimod:textures/entities/pig/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/pig/pigbase.png");
 
     public RenderEnhancedPig(EntityRendererManager render)
     {
@@ -30,13 +30,31 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
      */
     public ResourceLocation getEntityTexture(EnhancedPig entity) {
         String s = entity.getPigTexture();
-        ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
+        Colouration colourRGB = entity.getRgb();
 
-        if (resourcelocation == null)
-        {
-            resourcelocation = new ResourceLocation(s);
-            Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_PIG_TEXTURE_LOCATION, null, entity.getVariantTexturePaths(), entity.getVariantAlphaTexturePaths()));
-           LAYERED_LOCATION_CACHE.put(s, resourcelocation);
+        if (s == null || s.isEmpty() || colourRGB == null) {
+            return ERROR_TEXTURE_LOCATION;
+        }
+
+        s = s + colourRGB.getRGBStrings();
+
+        ResourceLocation resourcelocation = textureCache.getFromCache(s);
+
+        if (resourcelocation == null) {
+            String[] textures = entity.getVariantTexturePaths();
+
+            if (textures == null || textures.length == 0) {
+                return ERROR_TEXTURE_LOCATION;
+            }
+
+            try {
+                resourcelocation = new ResourceLocation(s);
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_PIG_TEXTURE_LOCATION, textures, entity.getVariantAlphaTexturePaths(), colourRGB));
+
+                textureCache.putInCache(s, resourcelocation);
+            } catch (IllegalStateException e) {
+                return ERROR_TEXTURE_LOCATION;
+            }
         }
 
         return resourcelocation;

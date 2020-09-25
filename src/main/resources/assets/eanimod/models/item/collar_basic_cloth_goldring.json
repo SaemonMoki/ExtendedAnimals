@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "eanimod:items/collar_basic",
+    "layer1": "eanimod:items/collar_ring_gold"
+  }
+}

@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 
 public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
 
-    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+//    public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty BITES = BlockStateProperties.LEVEL_0_8;
 
@@ -51,15 +51,34 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
         this.setDefaultState(this.stateContainer.getBaseState().with(BITES, Integer.valueOf(0)).with(WATERLOGGED, Boolean.valueOf(false)));
     }
 
-    public void eatFromBlock(World worldIn, BlockState state, BlockPos pos) {
-        int i = state.get(BITES);
-        if (i < 8) {
-            worldIn.setBlockState(pos, state.with(BITES, Integer.valueOf(i + 1)), 3);
+    public void eatFromBlock(World world, BlockState state, BlockPos pos) {
+        passBiteUp(world, state, pos);
+    }
+
+    public void passBiteUp(World world, BlockState state, BlockPos pos) {
+        if (world.getBlockState(pos.up()).getBlock() instanceof UnboundHayBlock) {
+            ((UnboundHayBlock) world.getBlockState(pos.up()).getBlock()).passBiteUp(world, world.getBlockState(pos.up()), pos.up());
         } else {
-            worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
-            worldIn.removeBlock(pos, false);
+            int bites = state.get(BITES);
+            if (bites < 8) {
+                world.setBlockState(pos, state.with(BITES, Integer.valueOf(bites + 1)).with(WATERLOGGED, state.get(WATERLOGGED)));
+            } else {
+                world.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+                world.removeBlock(pos, false);
+            }
         }
     }
+
+//    public void bringBitesUp(World world, BlockState state, BlockPos pos) {
+//        int bites = state.get(BITES);
+//        BlockState blockunder = world.getBlockState(pos.down());
+//        if (blockunder.getBlock() instanceof UnboundHayBlock) {
+//            int underbites = blockunder.get(BITES);
+//
+//
+//
+//        }
+//    }
 
     @Override
     public void fillWithRain(World worldIn, BlockPos pos) {
@@ -83,14 +102,16 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
-        if (stateIn.get(WATERLOGGED)) {
-            worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(currentPos);
-            worldIn.removeBlock(currentPos, false);
-            worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld worldIn, BlockPos pos, BlockPos facingPos) {
+        if (state.get(WATERLOGGED)) {
+            worldIn.getWorld().getCapability(HayCapabilityProvider.HAY_CAP, null).orElse(new HayCapabilityProvider()).removeHayPos(pos);
+            worldIn.removeBlock(pos, false);
+            worldIn.getPendingFluidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
         }
 
-        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        //TODO add way to pass bites up on block update
+
+        return super.updatePostPlacement(state, facing, facingState, worldIn, pos, facingPos);
     }
 
     public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
@@ -106,18 +127,14 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
     }
 
-    @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
-        return state.with(FACING, rot.rotate(state.get(FACING)));
-    }
+//    @Override
+//    public BlockState rotate(BlockState state, Rotation rot) {
+//        return state.with(FACING, rot.rotate(state.get(FACING)));
+//    }
 
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(BITES, WATERLOGGED);
     }
-
-//    public BlockRenderLayer getRenderLayer() {
-//        return BlockRenderLayer.CUTOUT;
-//    }
 
     //TODO add rotation? should adopt RotatedPillarBlock state from hayblock
 
@@ -175,8 +192,14 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
         super.onReplaced(state, worldIn, pos, newState, isMoving);
     }
 
-    //    @Override
-//    public ItemStack getItem(IBlockReader worldIn, BlockPos pos, BlockState state) {
-//
+    //TODO add being able to add loose wheat back to the block
+//    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn) {
+//        int i = state.get(BITES);
+//        if (i > 0 && player.getHeldItem(handIn).getItem() == Items.WHEAT) {
+//            worldIn.setBlockState(pos, state.with(BITES, Integer.valueOf(i - 1)));
+//            worldIn.playSound((PlayerEntity)null, pos, SoundEvents.BLOCK_SWEET_BERRY_BUSH_PLACE, SoundCategory.BLOCKS, 1.0F, 0.8F + worldIn.rand.nextFloat() * 0.4F);
+//            return ActionResultType.SUCCESS;
+//        }
+//        return ActionResultType.PASS;
 //    }
 }

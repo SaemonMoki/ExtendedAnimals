@@ -2,10 +2,9 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingGoal;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
-import mokiyoki.enhancedanimals.util.handlers.ConfigHandler;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.AgeableEntity;
@@ -19,12 +18,12 @@ import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.AirItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -81,7 +80,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     };
 
     private static final String[] CAT_SKINSPOTS = new String[] {
-            "" //this is for the pink spots you might see on a cat's skin, you'll need one for each gene that causes pink spots on the skin (white spots on the fur)
+            "" //this is for the pink spots you might see on a cat's skin, you'll need one for each genes that causes pink spots on the skin (white spots on the fur)
     };
 
     private static final String[] CAT_TOESPOTS = new String[] {
@@ -109,7 +108,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     };
 
     private static final String[] CAT_SPOTS = new String[] {
-            //this is for the white spots you might see on a cat's fur, you'll need one for each gene that causes white spots, tux and locket markings go here
+            //this is for the white spots you might see on a cat's fur, you'll need one for each genes that causes white spots, tux and locket markings go here
             "" //dominant white, white spots, and birman belong here, we can break these up into different body regions
     };
 
@@ -122,7 +121,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     };
 
     private static final String[] CAT_SPOT_SMALL = new String[] {
-            "" //for small markings and toe markings that are thought to be unrelated to the white spotting gene
+            "" //for small markings and toe markings that are thought to be unrelated to the white spotting genes
     };
 
     private static final String[] CAT_EYEL = new String[] {
@@ -142,7 +141,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.CHICKEN, Items.BEEF, Items.MUTTON, Items.RABBIT, Items.TROPICAL_FISH, Items.SALMON, Items.COD);
-    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.Milk_Bottle, ModItems.Half_Milk_Bottle);
+    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.TROPICAL_FISH, Items.SALMON, Items.COD);
 
     Map<Item, Integer> foodWeightMap = new HashMap() {{
@@ -166,14 +165,14 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
     private boolean pregnant = false;
 
     private float[] catColouration = null;
-    private int hunger = 0;
+    private float hunger = 0;
     private int healTicks = 0;
     protected String motherUUID = "";
     protected Boolean sleeping;
     protected Boolean hemizygote = false;
     protected int awokenTimer = 0;
 
-    private static final int WTC = ConfigHandler.COMMON.wildTypeChance.get();
+    private static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
     private static final int GENES_LENGTH = 60;
     private int[] genes = new int[GENES_LENGTH];
     private int[] mateGenes = new int[GENES_LENGTH];
@@ -192,7 +191,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 100);
         this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(2, new BreedGoal(this, 0.8D));
-        this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, false, TEMPTATION_ITEMS));
+//        this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(4, new EnhancedCat.AIAvoidEntity<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(4, new EnhancedCat.AIAvoidEntity<>(this, WolfEntity.class, 10.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(4, new EnhancedCat.AIAvoidEntity<>(this, MonsterEntity.class, 4.0F, 2.2D, 2.2D));
@@ -251,11 +250,16 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         setSleeping(false);
     }
 
-    public int getHunger(){
+    @Override
+    public Inventory getEnhancedInventory() {
+        return null;
+    }
+
+    public float getHunger(){
         return hunger;
     }
 
-    public void decreaseHunger(int decrease) {
+    public void decreaseHunger(float decrease) {
         if (this.hunger - decrease < 0) {
             this.hunger = 0;
         } else {
@@ -328,14 +332,14 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
             } else if (this.isChild() && MILK_ITEMS.test(itemStack) && hunger >= 6000) {
 
                 if (!entityPlayer.abilities.isCreativeMode) {
-                    if (item == ModItems.Half_Milk_Bottle) {
+                    if (item == ModItems.HALF_MILK_BOTTLE) {
                         decreaseHunger(6000);
                         if (itemStack.isEmpty()) {
                             entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
                         } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
                             entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
                         }
-                    } else if (item == ModItems.Milk_Bottle) {
+                    } else if (item == ModItems.MILK_BOTTLE) {
                         if (hunger >= 12000) {
                             decreaseHunger(12000);
                             if (itemStack.isEmpty()) {
@@ -346,9 +350,9 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
                         } else {
                             decreaseHunger(6000);
                             if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.Half_Milk_Bottle));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.Half_Milk_Bottle))) {
-                                entityPlayer.dropItem(new ItemStack(ModItems.Half_Milk_Bottle), false);
+                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
+                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
+                                entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
                             }
                         }
                     }
@@ -377,7 +381,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
     private ITextComponent getPregnantText() {
         String pregnancyText;
-        int days = ConfigHandler.COMMON.gestationDaysCat.get();
+//        int days = EanimodCommonConfig.COMMON.gestationDaysCat.get();
+        int days = 2;
         if (gestationTimer > (days/5 * 4)) {
             pregnancyText = "eanimod.pregnancy.near_birth";
         } else if (gestationTimer > days/2 ) {
@@ -446,7 +451,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
                 if (hunger <= 72000) {
                     if (sleeping) {
-                        int days = ConfigHandler.COMMON.gestationDaysCat.get();
+//                        int days = EanimodCommonConfig.COMMON.gestationDaysCat.get();
+                        int days = 2;
                         if (hunger <= days * (0.50) && (ticksExisted % 8 == 0)) {
                             hunger = hunger++;
                         }
@@ -504,7 +510,8 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
             if(pregnant) {
                 gestationTimer++;
-                int days = ConfigHandler.COMMON.gestationDaysCat.get();
+//                int days = EanimodCommonConfig.COMMON.gestationDaysCat.get();
+                int days = 2;
                 if (hunger > days*(0.75) && days !=0) {
                     pregnant = false;
                 }
@@ -834,7 +841,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         compound.putInt("Gestation", this.gestationTimer);
 
         compound.putString("Status", getCatStatus());
-        compound.putInt("Hunger", hunger);
+        compound.putFloat("Hunger", hunger);
 
         compound.putBoolean("Zygosity", this.getZygosity());
     }
@@ -863,7 +870,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         }
 
         setCatStatus(compound.getString("Status"));
-        hunger = compound.getInt("Hunger");
+        hunger = compound.getFloat("Hunger");
 
         hemizygote = compound.getBoolean("Zygosity");
 
@@ -1324,14 +1331,14 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         /**
          * Example:
          *
-         *         //Name of the gene [ "normal gene goes first", "allele variants go after"]                                   <-- this is just a label, inside the [] write the allel names in order so 1 should be the wildtype, and every number after is a mutation/allele
-         *         if (ThreadLocalRandom.current().nextInt(100) > WTC) {                                                        <-- this line determines the rarity of the gene, don't mess with it for now
+         *         //Name of the genes [ "normal genes goes first", "allele variants go after"]                                   <-- this is just a label, inside the [] write the allel names in order so 1 should be the wildtype, and every number after is a mutation/allele
+         *         if (ThreadLocalRandom.current().nextInt(100) > WTC) {                                                        <-- this line determines the rarity of the genes, don't mess with it for now
          *             initialGenes[0] = (ThreadLocalRandom.current().nextInt("number of allels including the wildtype") + 1);  <-- initialGenes[0] sets the position the allele is on each one needs a different number in order, the first is always even with the second being the odd number following so Agouti is 0 and 1.
          *
          *         } else {
          *             initialGenes[0] = ("the number that wildtype is usually 1");                                             <-- under some cases its easier for wildtype to not be 1 but its not the recommended way to do things.
          *         }
-         *         if (ThreadLocalRandom.current().nextInt(100) > WTC) {                                                        <-- this is the second half of the gene its usually identical to the first.
+         *         if (ThreadLocalRandom.current().nextInt(100) > WTC) {                                                        <-- this is the second half of the genes its usually identical to the first.
          *             initialGenes[1] = (ThreadLocalRandom.current().nextInt(2) + 1);
          *
          *         } else {
@@ -1342,7 +1349,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 
 
         /**
-         * Pattern Genes <-- this is a label just to give you an idea of what sort of things that gene does, obviously some genes blur the lines
+         * Pattern Genes <-- this is a label just to give you an idea of what sort of things that genes does, obviously some genes blur the lines
          */
 
         //Agouti [ Agouti+, self/non agouti, Savanna, Asian Leopard Cat, (and other wild cats) ]
@@ -1359,7 +1366,7 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
             initialGenes[1] = (1);
         }
 
-        //TODO research Tabby Spotted gene
+        //TODO research Tabby Spotted genes
         //Tabby Type [ Mackerel, classic ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[2] = (ThreadLocalRandom.current().nextInt(2) + 1);

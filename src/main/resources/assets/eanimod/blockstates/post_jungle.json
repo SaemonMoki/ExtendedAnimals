@@ -1,10 +1,49 @@
 {
-  "variants": {
-    "facing=down": { "model": "eanimod:block/post_jungle" },
-    "facing=up": { "model": "eanimod:block/post_jungle" },
-    "facing=north": { "model": "eanimod:block/post_jungle", "x": 90 },
-    "facing=south": { "model": "eanimod:block/post_jungle", "x": 90 },
-    "facing=west": { "model": "eanimod:block/post_jungle", "x": 90, "y": 90 },
-    "facing=east": { "model": "eanimod:block/post_jungle", "x": 90, "y": 90 }
-  }
+  "multipart": [
+    {   "when": { "facing": "up" },
+      "apply": { "model": "eanimod:block/post_jungle"}
+    },
+    {   "when": { "facing": "north" },
+      "apply": { "model": "eanimod:block/post_jungle", "x": 90}
+    },
+    {   "when": { "facing": "east" },
+      "apply": { "model": "eanimod:block/post_jungle", "x": 90, "y": 90}
+    },
+    {   "when": { "fencenorth": "true"},
+      "apply": { "model": "eanimod:block/post_fence_jungle", "uvlock": true , "y": 180 }
+    },
+    {   "when": { "fenceeast": "true"},
+      "apply": { "model": "eanimod:block/post_fence_jungle", "uvlock": true , "y": 270 }
+    },
+    {   "when": { "fencesouth": "true"},
+      "apply": { "model": "eanimod:block/post_fence_jungle", "uvlock": true , "y": 0 }
+    },
+    {   "when": { "fencewest": "true"},
+      "apply": { "model": "eanimod:block/post_fence_jungle", "uvlock": true , "y": 90 }
+    },
+    {   "when": { "facing": "north", "north": "true"},
+      "apply": { "model": "eanimod:block/post_extension_jungle", "x": 90 }
+    },
+    {   "when": { "facing": "north", "south": "true"},
+      "apply": { "model": "eanimod:block/post_extension_jungle", "x": 270 }
+    },
+    {   "when": { "facing": "north", "up": "true"},
+      "apply": { "model": "eanimod:block/post_connector_jungle"}
+    },
+    {   "when": { "facing": "north", "down": "true"},
+      "apply": { "model": "eanimod:block/post_connector_jungle", "x": 180 }
+    },
+    {   "when": { "facing": "east", "east": "true"},
+      "apply": { "model": "eanimod:block/post_extension_jungle", "x": 90 , "y": 90 }
+    },
+    {   "when": { "facing": "east", "west": "true"},
+      "apply": { "model": "eanimod:block/post_extension_jungle", "x": 90 , "y": 270 }
+    },
+    {   "when": { "facing": "east", "up": "true"},
+      "apply": { "model": "eanimod:block/post_connector_jungle"}
+    },
+    {   "when": { "facing": "east", "down": "true"},
+      "apply": { "model": "eanimod:block/post_connector_jungle", "x": 180 }
+    }
+  ]
 }

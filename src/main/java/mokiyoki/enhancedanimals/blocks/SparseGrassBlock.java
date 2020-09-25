@@ -1,16 +1,26 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SpreadableSnowyDirtBlock;
 import net.minecraft.block.material.Material;
 //import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.PlantType;
+import net.minecraftforge.common.ToolType;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public class SparseGrassBlock extends SpreadableSnowyDirtBlock {
@@ -43,9 +53,6 @@ public class SparseGrassBlock extends SpreadableSnowyDirtBlock {
         }
     }
 
-
-    //TODO this seems to be what Im supposed to use to make grass/saplings/flowers/ect plantable but nothing calls it
-    //TODO if this does work changes are needed to make it not work for things like cactus and netherwart
     @Override
     public boolean canSustainPlant(BlockState state, IBlockReader world, BlockPos pos, Direction facing, net.minecraftforge.common.IPlantable plantable)
     {
@@ -68,12 +75,9 @@ public class SparseGrassBlock extends SpreadableSnowyDirtBlock {
         return false;
     }
 
-    /**
-     * Gets the render layer this block will render on. SOLID for solid blocks, CUTOUT or CUTOUT_MIPPED for on-off
-     * transparency (glass, reeds), TRANSLUCENT for fully blended transparency (stained glass)
-     */
-//    public BlockRenderLayer getRenderLayer() {
-//        return BlockRenderLayer.CUTOUT_MIPPED;
-//    }
-
+    @Nullable
+    @Override
+    public ToolType getHarvestTool(BlockState p_getHarvestTool_1_) {
+        return ToolType.SHOVEL;
+    }
 }

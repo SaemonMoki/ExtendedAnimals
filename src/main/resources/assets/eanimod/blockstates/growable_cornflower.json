@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "age=0": { "model": "eanimod:block/cornflower0" },
+    "age=1": { "model": "eanimod:block/cornflower1" },
+    "age=2": { "model": "eanimod:block/cornflower2" },
+    "age=3": { "model": "eanimod:block/cornflower3" },
+    "age=4": { "model": "eanimod:block/cornflower4" },
+    "age=5": { "model": "eanimod:block/cornflower5" },
+    "age=6": { "model": "eanimod:block/cornflower6" },
+    "age=7": { "model": "block/cornflower" }
+  }
+}

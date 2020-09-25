@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": [
+      { "model": "eanimod:block/patchymycelium_block" }
+    ]
+  }
+}

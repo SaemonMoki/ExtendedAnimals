@@ -24,7 +24,6 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.IChestLid;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMerger;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -53,7 +52,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.BiPredicate;
-import java.util.function.Supplier;
 
 import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
 
@@ -75,6 +73,11 @@ public class EggCartonBlock extends ContainerBlock {
         return new EggCartonTileEntity();
     }
 
+    @Override
+    public boolean hasTileEntity(BlockState state) {
+        return true;
+    }
+
     public BlockRenderType getRenderType(BlockState state) {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
@@ -93,7 +96,7 @@ public class EggCartonBlock extends ContainerBlock {
                 boolean flag;
                 if (eggCartonTileEntity.getAnimationStatus() == EggCartonTileEntity.AnimationStatus.CLOSED) {
                     AxisAlignedBB axisalignedbb = VoxelShapes.fullCube().getBoundingBox().expand((double)(0.5F * (float)direction.getXOffset()), (double)(0.5F * (float)direction.getYOffset()), (double)(0.5F * (float)direction.getZOffset())).contract((double)direction.getXOffset(), (double)direction.getYOffset(), (double)direction.getZOffset());
-                    flag = worldIn.func_226664_a_(axisalignedbb.offset(pos.offset(direction)));
+                    flag = worldIn.hasNoCollisions(axisalignedbb.offset(pos.offset(direction)));
                 } else {
                     flag = true;
                 }
@@ -182,7 +185,7 @@ public class EggCartonBlock extends ContainerBlock {
         if (tileentity instanceof EggCartonTileEntity) {
             EggCartonTileEntity eggCartonTileEntity = (EggCartonTileEntity)tileentity;
             if (!worldIn.isRemote && player.isCreative() && !eggCartonTileEntity.isEmpty()) {
-                ItemStack itemstack = new ItemStack(ModBlocks.Egg_Carton);
+                ItemStack itemstack = new ItemStack(ModBlocks.EGG_CARTON);
                 CompoundNBT compoundnbt = eggCartonTileEntity.saveToNbt(new CompoundNBT());
                 if (!compoundnbt.isEmpty()) {
                     itemstack.setTagInfo("BlockEntityTag", compoundnbt);

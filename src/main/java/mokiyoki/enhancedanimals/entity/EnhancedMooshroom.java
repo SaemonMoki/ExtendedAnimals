@@ -1,23 +1,28 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
+import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
-import mokiyoki.enhancedanimals.ai.general.mooshroom.EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom;
+import mokiyoki.enhancedanimals.ai.general.mooshroom.GrazingGoalMooshroom;
+import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
+import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerBlock;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
-import net.minecraft.entity.ai.goal.TemptGoal;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.SuspiciousStewItem;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -28,6 +33,8 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -45,14 +52,15 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             "red_mushroom.png", "brown_mushroom.png", "yellow_flower.png"
     };
 
+    protected EnhancedMooshroom.Type mateMushroomType;
     private Effect hasStewEffect;
     private int effectDuration;
     /** Stores the UUID of the most recent lightning bolt to strike */
     private UUID lightningUUID;
-    private float[] cowColouration = null;
 
     public EnhancedMooshroom(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn);
+        this.mateMushroomType = Type.RED;
     }
 
     public void onStruckByLightning(LightningBoltEntity lightningBolt) {
@@ -72,32 +80,28 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
+    protected String getSpecies() {
+        return I18n.format("entity.eanimod.enhanced_mooshroom");
+    }
+
+    @Override
     protected void setTexturePaths() {
         super.setTexturePaths();
         int mushroomType = 0;
 
         if (getMooshroomType().name.equals("brown")) {
             mushroomType = 1;
-        } else if (getMooshroomType().name.equals("yellow")) {
-            mushroomType = 2;
         }
-        this.cowColouration = null;
 
-        this.cowTextures.add(MOOSHROOM_MUSHROOM[mushroomType]);
+        addTextureToAnimal(MOOSHROOM_MUSHROOM, mushroomType, null);
     }
 
     @Override
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
-        int[] babyGenes = getCalfGenes(this.mitosisGenes, this.mateMitosisGenes);
-        enhancedmooshroom.setGenes(babyGenes);
-        enhancedmooshroom.setSharedGenes(babyGenes);
-        enhancedmooshroom.setCowSize();
-        enhancedmooshroom.setGrowingAge(-84000);
-
-        enhancedmooshroom.setBirthTime(String.valueOf(inWorld.getGameTime()));
-        enhancedmooshroom.setCowStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedmooshroom.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
+        enhancedmooshroom.setMooshroomType(this.setChildMushroomType((enhancedmooshroom)));
+        defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -84000);
         enhancedmooshroom.setMotherUUID(this.getUniqueID().toString());
         enhancedmooshroom.configureAI();
         this.world.addEntity(enhancedmooshroom);
@@ -105,7 +109,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemstack = entityPlayer.getHeldItem(hand);
-        if (itemstack.getItem() == Items.BOWL && this.getGrowingAge() >= 0 && !entityPlayer.abilities.isCreativeMode && getCowStatus().equals(EntityState.MOTHER.toString())) {
+        if (itemstack.getItem() == Items.BOWL && this.getGrowingAge() >= 0 && !entityPlayer.abilities.isCreativeMode && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int milk = getMilkAmount();
             if (milk <= 3) {
                 entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
@@ -170,6 +174,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
         compound.putString("Type", this.getMooshroomType().name);
+        compound.putString("MateType", this.mateMushroomType.name);
         if (this.hasStewEffect != null) {
             compound.putByte("EffectId", (byte)Effect.getId(this.hasStewEffect));
             compound.putInt("EffectDuration", this.effectDuration);
@@ -184,6 +189,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
         this.setMooshroomType(EnhancedMooshroom.Type.getTypeByName(compound.getString("Type")));
+        this.mateMushroomType = (EnhancedMooshroom.Type.getTypeByName(compound.getString("MateType")));
         if (compound.contains("EffectId", 1)) {
             this.hasStewEffect = Effect.get(compound.getByte("EffectId"));
         }
@@ -200,11 +206,13 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             Double speed = 1.0D;
             this.goalSelector.addGoal(1, new PanicGoal(this, speed*1.5D));
             this.goalSelector.addGoal(2, new BreedGoal(this, speed));
+            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed*1.25D, false, Ingredient.fromItems(Items.CARROT_ON_A_STICK)));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed*1.25D,false, TEMPTATION_ITEMS));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
             this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
-            wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom(this, speed, 7, 0.001F, 120, 2, 20);
-            this.goalSelector.addGoal(6, wanderEatingGoal);
+//            grazingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom(this, speed, 7, 0.001F, 120, 2, 20);
+            grazingGoal = new GrazingGoalMooshroom(this, speed);
+            this.goalSelector.addGoal(6, grazingGoal);
         }
         aiConfigured = true;
     }
@@ -225,14 +233,12 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     public EnhancedMooshroom createChild(AgeableEntity ageable) {
         super.createChild(ageable);
-//        EnhancedMooshroom EnhancedMooshroom = ENHANCED_MOOSHROOM.create(this.world);
-//        EnhancedMooshroom.setMooshroomType(this.func_213445_a((EnhancedMooshroom)ageable));
         return null;
     }
 
-    private EnhancedMooshroom.Type func_213445_a(EnhancedMooshroom p_213445_1_) {
+    private EnhancedMooshroom.Type setChildMushroomType(EnhancedMooshroom fatherMooshroom) {
         EnhancedMooshroom.Type EnhancedMooshroom$type = this.getMooshroomType();
-        EnhancedMooshroom.Type EnhancedMooshroom$type1 = p_213445_1_.getMooshroomType();
+        EnhancedMooshroom.Type EnhancedMooshroom$type1 = fatherMooshroom.getMooshroomType();
         EnhancedMooshroom.Type EnhancedMooshroom$type2;
         if (EnhancedMooshroom$type == EnhancedMooshroom$type1 && this.rand.nextInt(1024) == 0) {
             EnhancedMooshroom$type2 = EnhancedMooshroom$type == EnhancedMooshroom.Type.BROWN ? EnhancedMooshroom.Type.RED : EnhancedMooshroom.Type.BROWN;
@@ -263,7 +269,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             enhancedcow.setSharedGenes(this.getGenes());
             enhancedcow.setCowSize();
             enhancedcow.setGrowingAge(this.growingAge);
-            enhancedcow.setCowStatus(this.getCowStatus());
+            enhancedcow.setEntityStatus(this.getEntityStatus());
             enhancedcow.configureAI();
             enhancedcow.setMooshroomUUID(this.getCachedUniqueIdString());
 
@@ -318,225 +324,58 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     
     @OnlyIn(Dist.CLIENT)
     @Override
-    public float[] getRgb() {
-        if (cowColouration == null) {
-            cowColouration = new float[6];
-            int[] genesForText = getSharedGenes();
+    public Colouration getRgb() {
+        if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
+            this.colouration = super.getRgb();
 
-            float blackR = 148.0F;
-            float blackG = 14.0F;
-            float blackB = 15.0F;
+            if(this.colouration == null) {
+                return null;
+            }
 
-            float redR = 126.0F;
-            float redG = 96.0F;
-            float redB = 96.0F;
+            float[] melanin = Colouration.getHSBFromABGR(this.colouration.getMelaninColour());
+            float[] pheomelanin = Colouration.getHSBFromABGR(this.colouration.getPheomelaninColour());
 
-            if (getMooshroomType().name.equals("red")) {
+            if (getMooshroomType() == Type.RED) {
+                melanin[0] = 0;
+                melanin[1] = 1.0F;
 
-                int tint;
-
-                if ((genesForText[6] == 1 || genesForText[7] == 1) || (genesForText[0] == 3 && genesForText[1] == 3)){
-                    //red
-                    tint = 4;
-                }else {
-                    if (genesForText[0] == 1 || genesForText[1] == 1) {
-                        //black
-                        tint = 2;
-                    } else {
-                        //wildtype
-                        tint = 3;
-                    }
-                }
-
-                //standard dilution
-                if (genesForText[2] == 2 || genesForText[3] == 2) {
-//            if (true) {
-                    if (genesForText[2] == 2 && genesForText[3] == 2) {
-//                if (false) {
-
-                        blackR = (blackR + (255F * tint)) / (tint+1);
-                        blackG = (blackG + (245F * tint)) / (tint+1);
-                        blackB = (blackB + (235F * tint)) / (tint+1);
-
-                        if (tint != 2) {
-                            redR = (redR + (255F * tint)) / (tint + 1);
-                            redG = (redG + (255F * tint)) / (tint + 1);
-                            redB = (redB + (255F * tint)) / (tint + 1);
-                        }
-                    }else{
-                        if (tint == 3) {
-                            //wildtype
-                            redR = 126.0F;
-                            // 160.5
-                            redG = 96.0F;
-                            // 119
-                            redB = 96.0F;
-                            // 67
-
-                            if (genesForText[4] == 1 || genesForText[5] == 1) {
-                                if (genesForText[4] == 1 && genesForText[5] == 1) {
-                                    blackR = 236.0F;
-                                    blackG = 6.0F;
-                                    blackB = 6.0F;
-                                } else {
-                                    blackR = 236.0F;
-                                    blackG = 6.0F;
-                                    blackB = 6.0F;
-                                }
-                            } else if (genesForText[4] == 4 && genesForText[5] == 4) {
-                                blackR = 185.0F;
-                                blackG = 40.0F;
-                                blackB = 40.0F;
-                            }
-
-                        } else if (tint == 4){
-                            //red
-                            redR = (redR*0.5F) + (187.0F*0.5F);
-                            redG = (redG*0.5F) + (180.0F*0.5F);
-                            redB = (redB*0.5F) + (166.0F*0.5F);
-                        }else {
-                            //black
-                            blackR = 236.0F;
-                            blackG = 6.0F;
-                            blackB = 6.0F;
-                        }
-                    }
-                }
-
+                pheomelanin[0] = (pheomelanin[0] - 0.05F) * 0.5F;
+                pheomelanin[1] = pheomelanin[1] + 0.25F;
             } else {
+                melanin[1] = melanin[1] + 0.25F;
+                melanin[2] = melanin[2] + 0.1F;
 
-                blackR = 106.0F;
-                blackG = 78.0F;
-                blackB = 59.0F;
+                pheomelanin[1] = pheomelanin[1] * 0.75F;
+                pheomelanin[2] = pheomelanin[2] + 0.1F;
+            }
 
-                redR = 204.0F;
-                redG = 153.0F;
-                redB = 120.0F;
-
-                int tint;
-
-                if ((genesForText[6] == 1 || genesForText[7] == 1) || (genesForText[0] == 3 && genesForText[1] == 3)){
-                    //red
-                    tint = 4;
-                }else {
-                    if (genesForText[0] == 1 || genesForText[1] == 1) {
-                        //black
-                        tint = 2;
-                    } else {
-                        //wildtype
-                        tint = 3;
-                    }
+            //checks that numbers are within the valid range
+            for (int i = 0; i <= 2; i++) {
+                if (melanin[i] > 1.0F) {
+                    melanin[i] = 1.0F;
+                } else if (melanin[i] < 0.0F) {
+                    melanin[i] = 0.0F;
                 }
-
-                //standard dilution
-                if (genesForText[2] == 2 || genesForText[3] == 2) {
-//            if (true) {
-                    if (genesForText[2] == 2 && genesForText[3] == 2) {
-//                if (false) {
-
-                        blackR = (blackR + (255F * tint)) / (tint+1);
-                        blackG = (blackG + (245F * tint)) / (tint+1);
-                        blackB = (blackB + (235F * tint)) / (tint+1);
-
-                        if (tint != 2) {
-                            redR = (redR + (255F * tint)) / (tint + 1);
-                            redG = (redG + (255F * tint)) / (tint + 1);
-                            redB = (redB + (255F * tint)) / (tint + 1);
-                        }
-                    }else{
-                        if (tint == 3) {
-                            //wildtype
-                            redR = 170.5F;
-                            // 160.5
-                            redG = 140.0F;
-                            // 119
-                            redB = 132.0F;
-                            // 67
-
-                            if (genesForText[4] == 1 || genesForText[5] == 1) {
-                                if (genesForText[4] == 1 && genesForText[5] == 1) {
-                                    blackR = 236.0F;
-                                    blackG = 6.0F;
-                                    blackB = 6.0F;
-                                } else {
-                                    blackR = 236.0F;
-                                    blackG = 6.0F;
-                                    blackB = 6.0F;
-                                }
-                            } else if (genesForText[4] == 4 && genesForText[5] == 4) {
-                                blackR = 185.0F;
-                                blackG = 40.0F;
-                                blackB = 40.0F;
-                            }
-
-                        } else if (tint == 4){
-                            //red
-                            redR = (redR*0.5F) + (187.0F*0.5F);
-                            redG = (redG*0.5F) + (180.0F*0.5F);
-                            redB = (redB*0.5F) + (166.0F*0.5F);
-                        }else {
-                            //black
-                            blackR = 236.0F;
-                            blackG = 6.0F;
-                            blackB = 6.0F;
-                        }
-                    }
-                }
-
-            }
-
-            if (genesForText[4] == 3 || genesForText[5] == 3) {
-                redR = (redR + 245F) / 2;
-                redG = (redG + 237F) / 2;
-                redB = (redB + 222F) / 2;
-            }
-
-            //chocolate
-            if (genesForText[10] == 2 && genesForText[11] == 2){
-                blackR = blackR + 25F;
-                blackG = blackG + 15F;
-                blackB = blackB + 9F;
-
-                redR = redR + 25F;
-                redG = redG + 15F;
-                redB = redB + 9F;
-            }
-
-            if (this.isChild()) {
-                if (getCowStatus().equals(EntityState.CHILD_STAGE_ONE.toString())) {
-                    blackR = redR;
-                    blackG = redG;
-                    blackB = redB;
-                }else if (getCowStatus().equals(EntityState.CHILD_STAGE_TWO.toString())) {
-                    blackR = (blackR + redR)/2F;
-                    blackG = (blackG + redG)/2F;
-                    blackB = (blackB + redB)/2F;
-                } else {
-                    blackR = blackR*0.75F + redR*0.25F;
-                    blackG = blackG*0.75F + redG*0.25F;
-                    blackB = blackB*0.75F + redB*0.25F;
+                if (pheomelanin[i] > 1.0F) {
+                    pheomelanin[i] = 1.0F;
+                } else if (pheomelanin[i] < 0.0F) {
+                    pheomelanin[i] = 0.0F;
                 }
             }
 
-            //TODO TEMP AF
-            //black
-            cowColouration[0] = blackR;
-            cowColouration[1] = blackG;
-            cowColouration[2] = blackB;
-
-            //red
-            cowColouration[3] = redR;
-            cowColouration[4] = redG;
-            cowColouration[5] = redB;
-
-            for (int i = 0; i <= 5; i++) {
-                if (cowColouration[i] > 255.0F) {
-                    cowColouration[i] = 255.0F;
-                }
-                cowColouration[i] = cowColouration[i] / 255.0F;
-            }
+            this.colouration.setMelaninColour(Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]));
+            this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
 
         }
-        return cowColouration;
+
+        return this.colouration;
+    }
+
+    @Override
+    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+        Genes mooshroomGenetics = new CowGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
+        mooshroomGenetics.setAutosomalGene(118, 2);
+        mooshroomGenetics.setAutosomalGene(119, 2);
+        return mooshroomGenetics;
     }
 }

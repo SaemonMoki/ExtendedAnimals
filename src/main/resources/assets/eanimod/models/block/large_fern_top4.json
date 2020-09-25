@@ -1,0 +1,6 @@
+{
+  "parent": "block/tinted_cross",
+  "textures": {
+    "cross": "eanimod:block/large_fern_top4"
+  }
+}

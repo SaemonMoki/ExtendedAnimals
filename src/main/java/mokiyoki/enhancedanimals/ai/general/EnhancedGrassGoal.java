@@ -40,11 +40,11 @@ public class EnhancedGrassGoal extends Goal {
      */
     public boolean shouldExecute() {
         //TODO make the amount needed before 'hungry' using temperaments
-        if (grassEaterEntity instanceof EnhancedCow && ((EnhancedCow)grassEaterEntity).getCowStatus().equals(EntityState.CHILD_STAGE_ONE)) {
+        if (grassEaterEntity instanceof EnhancedCow && ((EnhancedCow)grassEaterEntity).getEntityStatus().equals(EntityState.CHILD_STAGE_ONE)) {
             //first stage babies should NOT eat grass
             return false;
         }
-        int eatingModifier = ((EnhancedAnimal)grassEaterEntity).getHunger()/50;
+        int eatingModifier = Math.round(((EnhancedAnimal)grassEaterEntity).getHunger()/50);
 
         if (((EnhancedAnimal)grassEaterEntity).getHunger() > 12000) {
             eatingModifier = 999;
@@ -130,11 +130,11 @@ public class EnhancedGrassGoal extends Goal {
                     if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
                         this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
 //                        this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);
-                        this.entityWorld.setBlockState(blockpos1, ModBlocks.SparseGrass_Block.getDefaultState(), 2);
+                        this.entityWorld.setBlockState(blockpos1, ModBlocks.SPARSEGRASS_BLOCK.getDefaultState(), 2);
                     }
 
                     this.grassEaterEntity.eatGrassBonus();
-                } else if (this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SparseGrass_Block) {
+                } else if (this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SPARSEGRASS_BLOCK) {
                     if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
                         this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
                         this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);

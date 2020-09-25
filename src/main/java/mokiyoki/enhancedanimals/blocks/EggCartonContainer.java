@@ -8,6 +8,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.PacketBuffer;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
@@ -37,9 +38,7 @@ public class EggCartonContainer extends Container {
                     /**
                      * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
                      */
-                    public boolean isItemValid(ItemStack stack) {
-                        return (stack.getItem() instanceof EnhancedEgg);
-                    }
+                    public boolean isItemValid(ItemStack stack) { return ((stack.getItem() instanceof EnhancedEgg) || stack.getItem() == Items.TURTLE_EGG); }
 
                     public int getSlotStackLimit() {
                         return 1;

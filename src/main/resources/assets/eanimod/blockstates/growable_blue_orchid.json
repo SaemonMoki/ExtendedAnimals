@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "age=0": { "model": "eanimod:block/blue_orchid0" },
+    "age=1": { "model": "eanimod:block/blue_orchid1" },
+    "age=2": { "model": "eanimod:block/blue_orchid2" },
+    "age=3": { "model": "eanimod:block/blue_orchid3" },
+    "age=4": { "model": "eanimod:block/blue_orchid4" },
+    "age=5": { "model": "eanimod:block/blue_orchid5" },
+    "age=6": { "model": "eanimod:block/blue_orchid6" },
+    "age=7": { "model": "block/blue_orchid" }
+  }
+}

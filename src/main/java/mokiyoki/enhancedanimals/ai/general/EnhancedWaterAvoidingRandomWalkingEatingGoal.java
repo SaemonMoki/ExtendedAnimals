@@ -18,10 +18,8 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -64,7 +62,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
     protected static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
     protected static final Predicate<BlockState> IS_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.GRASS_BLOCK);
-    protected static final Predicate<BlockState> IS_SPARSE_GRASS_BLOCK = BlockStateMatcher.forBlock(ModBlocks.SparseGrass_Block);
+    protected static final Predicate<BlockState> IS_SPARSE_GRASS_BLOCK = BlockStateMatcher.forBlock(ModBlocks.SPARSEGRASS_BLOCK);
     protected static final Predicate<BlockState> IS_TALL_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
 
     public EnhancedWaterAvoidingRandomWalkingEatingGoal(CreatureEntity creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth, int hungerModifier) {
@@ -107,16 +105,16 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                     return eatingRoute();
                 }
 
-                int eatingModifier = createEatingModifier(((EnhancedAnimal)creature).getHunger());
+                float eatingModifier = createEatingModifier(((EnhancedAnimal)creature).getHunger());
 
-                int chanceToEat = 1000 - eatingModifier;
+                float chanceToEat = 1000 - eatingModifier;
 
                 if (chanceToEat < 1) {
                     chanceToEat = 1;
                 }
 
 
-                if (this.creature.getRNG().nextInt(chanceToEat) == 0) {
+                if (this.creature.getRNG().nextInt(Math.round(chanceToEat)) == 0) {
                     return eatingRoute();
                 }
 
@@ -141,8 +139,8 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         }
     }
 
-    private int createEatingModifier(int hunger) {
-        int modifier = hunger / this.hungerModifier;
+    private float createEatingModifier(float hunger) {
+        float modifier = hunger / this.hungerModifier;
         return modifier;
     }
 
@@ -239,7 +237,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         this.wanderExecutionChance = newchance;
     }
 
-    private boolean checkForFood() {
+    protected boolean checkForFood() {
         BlockPos blockpos = new BlockPos(this.creature);
 
         //TODO add the predicate for different blocks to eat based on temperaments and animal type.
@@ -248,13 +246,13 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
             return true;
         } else {
             BlockState blockStateDown = this.entityWorld.getBlockState(blockpos.down());
-            return blockStateDown.getBlock() == Blocks.GRASS_BLOCK || blockStateDown.getBlock() == ModBlocks.SparseGrass_Block;
+            return blockStateDown.getBlock() == Blocks.GRASS_BLOCK || blockStateDown.getBlock() == ModBlocks.SPARSEGRASS_BLOCK;
         }
     }
 
 
     protected int getEatDelay(CreatureEntity creatureIn) {
-        int delayInt = 300 + creatureIn.getRNG().nextInt(300) - ((EnhancedAnimal)creatureIn).getHunger()/50;
+        int delayInt = 300 + creatureIn.getRNG().nextInt(300) - Math.round(((EnhancedAnimal)creatureIn).getHunger()/50);
         if (delayInt < 0) {
             delayInt = 0;
         }
@@ -323,21 +321,20 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
             if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
                 this.entityWorld.destroyBlock(blockpos, false);
             }
-
             this.creature.eatGrassBonus();
         } else {
-            BlockPos blockpos1 = blockpos.down();
-            if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.GRASS_BLOCK) {
+            BlockPos blockposDown = blockpos.down();
+            if (this.entityWorld.getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
-                    this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                    this.entityWorld.setBlockState(blockpos1, ModBlocks.SparseGrass_Block.getDefaultState(), 2);
+                    this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
+                    this.entityWorld.setBlockState(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.getDefaultState(), 2);
                 }
 
                 this.creature.eatGrassBonus();
-            } else if (this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SparseGrass_Block) {
+            } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
-                    this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                    this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);
+                    this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
+                    this.entityWorld.setBlockState(blockposDown, Blocks.DIRT.getDefaultState(), 2);
                 }
 
                 this.creature.eatGrassBonus();

@@ -1,8 +1,6 @@
 {
   "parent": "block/cube_all",
-  "textures": {
-    "all": "block/birch_planks"
-  },
+  "textures": {"all": "block/birch_planks"},
   "elements": [
     {
       "from": [ 6.00, 0.00, 6.00 ],

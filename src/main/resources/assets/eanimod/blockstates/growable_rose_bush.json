@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "half=lower,age=0": { "model": "eanimod:block/rose_bush_bottom0" },
+    "half=lower,age=1": { "model": "eanimod:block/rose_bush_bottom1" },
+    "half=lower,age=2": { "model": "eanimod:block/rose_bush_bottom2" },
+    "half=lower,age=3": { "model": "eanimod:block/rose_bush_bottom3" },
+    "half=lower,age=4": { "model": "eanimod:block/rose_bush_bottom4" },
+    "half=lower,age=5": { "model": "eanimod:block/rose_bush_bottom5" },
+    "half=lower,age=6": { "model": "eanimod:block/rose_bush_bottom6" },
+    "half=lower,age=7": { "model": "block/rose_bush_bottom" },
+    "half=upper,age=0": { "model": "eanimod:block/rose_bush_top0" },
+    "half=upper,age=1": { "model": "eanimod:block/rose_bush_top1" },
+    "half=upper,age=2": { "model": "eanimod:block/rose_bush_top2" },
+    "half=upper,age=3": { "model": "eanimod:block/rose_bush_top3" },
+    "half=upper,age=4": { "model": "eanimod:block/rose_bush_top4" },
+    "half=upper,age=5": { "model": "eanimod:block/rose_bush_top5" },
+    "half=upper,age=6": { "model": "eanimod:block/rose_bush_top6" },
+    "half=upper,age=7": { "model": "block/rose_bush_top" }
+  }
+}

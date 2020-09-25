@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.items;
 
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -37,12 +38,14 @@ public class EnhancedEgg extends Item {
         worldIn.playSound((PlayerEntity)null, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.ENTITY_EGG_THROW, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 
         if (!worldIn.isRemote) {
-            int[] eggGenes = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes();
+            Genes eggGenes = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes();
+            String sireName = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getSire();
+            String damName = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getDam();
             EnhancedEntityEgg entityegg;
             if (eggGenes != null) {
-                entityegg = new EnhancedEntityEgg(worldIn, playerIn, eggGenes);
+                entityegg = new EnhancedEntityEgg(worldIn, playerIn, eggGenes, sireName, damName);
             } else {
-                entityegg = new EnhancedEntityEgg(worldIn, playerIn, null);
+                entityegg = new EnhancedEntityEgg(worldIn, playerIn, null, null, null);
             }
 
             entityegg.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);

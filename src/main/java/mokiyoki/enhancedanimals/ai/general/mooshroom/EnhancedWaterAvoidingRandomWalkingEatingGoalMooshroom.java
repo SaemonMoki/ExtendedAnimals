@@ -14,12 +14,67 @@ import java.util.function.Predicate;
 
 public class EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom extends EnhancedWaterAvoidingRandomWalkingEatingGoal {
 
-    protected static final Predicate<BlockState> IS_MYCELIUM = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
+    protected static final Predicate<BlockState> IS_MYCELIUM = BlockStateMatcher.forBlock(Blocks.MYCELIUM);
     protected static final Predicate<BlockState> IS_BROWN_MUSHROOM = BlockStateMatcher.forBlock(Blocks.BROWN_MUSHROOM);
     protected static final Predicate<BlockState> IS_RED_MUSHROOM = BlockStateMatcher.forBlock(Blocks.RED_MUSHROOM);
 
     public EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom(CreatureEntity creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth, int hungerModifier) {
         super(creature, speedIn, length, probabilityIn, wanderExecutionChance, depth, hungerModifier);
+    }
+
+    @Override
+    protected boolean checkForFood() {
+        BlockPos blockpos = new BlockPos(this.creature);
+
+        //TODO add the predicate for different blocks to eat based on temperaments and animal type.
+        BlockState blockState = this.entityWorld.getBlockState(blockpos);
+        if (IS_GRASS.test(this.entityWorld.getBlockState(blockpos)) || IS_TALL_GRASS_BLOCK.test(this.entityWorld.getBlockState(blockpos)) || IS_BROWN_MUSHROOM.test(this.entityWorld.getBlockState(blockpos)) || IS_RED_MUSHROOM.test(this.entityWorld.getBlockState(blockpos))) {
+            return true;
+        } else {
+            BlockState blockStateDown = this.entityWorld.getBlockState(blockpos.down());
+            return blockStateDown.getBlock() == Blocks.GRASS_BLOCK || blockStateDown.getBlock() == ModBlocks.SPARSEGRASS_BLOCK || blockStateDown.getBlock() == Blocks.MYCELIUM || blockStateDown.getBlock() == ModBlocks.PATCHYMYCELIUM_BLOCK;
+        }
+    }
+
+    @Override
+    protected void eatBlocks() {
+        BlockPos blockpos = new BlockPos(this.creature);
+        if (IS_GRASS.test(this.entityWorld.getBlockState(blockpos)) || IS_TALL_GRASS_BLOCK.test(this.entityWorld.getBlockState(blockpos)) || IS_BROWN_MUSHROOM.test(this.entityWorld.getBlockState(blockpos)) || IS_RED_MUSHROOM.test(this.entityWorld.getBlockState(blockpos))) {
+            if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+                this.entityWorld.destroyBlock(blockpos, false);
+            }
+            this.creature.eatGrassBonus();
+        } else {
+            BlockPos blockposDown = blockpos.down();
+            if (this.entityWorld.getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+                    this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
+                    this.entityWorld.setBlockState(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.getDefaultState(), 2);
+                }
+                this.creature.eatGrassBonus();
+            }else if (this.entityWorld.getBlockState(blockposDown).getBlock() == Blocks.MYCELIUM) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+                    this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.MYCELIUM.getDefaultState()));
+                    this.entityWorld.setBlockState(blockposDown, ModBlocks.PATCHYMYCELIUM_BLOCK.getDefaultState(), 2);
+                }
+                this.creature.eatGrassBonus();
+            } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+                    this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
+                    this.entityWorld.setBlockState(blockposDown, Blocks.DIRT.getDefaultState(), 2);
+                }
+
+                this.creature.eatGrassBonus();
+            } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.PATCHYMYCELIUM_BLOCK) {
+                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
+                    this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.MYCELIUM.getDefaultState()));
+                    this.entityWorld.setBlockState(blockposDown, Blocks.DIRT.getDefaultState(), 2);
+                }
+
+                this.creature.eatGrassBonus();
+            }
+        }
+
     }
 
     @Override
@@ -31,34 +86,4 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom extends Enhan
         return false;
     }
 
-    @Override
-    protected void eatBlocks() {
-            BlockPos blockpos = new BlockPos(this.creature);
-            BlockState blockState = this.entityWorld.getBlockState(blockpos);
-            if (IS_GRASS.test(blockState) || IS_TALL_GRASS_BLOCK.test(blockState) || IS_BROWN_MUSHROOM.test(blockState) || IS_RED_MUSHROOM.test(blockState)) {
-                if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
-                    this.entityWorld.destroyBlock(blockpos, false);
-                }
-                this.creature.eatGrassBonus();
-            } else {
-                BlockPos blockposDown = blockpos.down();
-                BlockState blockStateDown = this.entityWorld.getBlockState(blockposDown);
-                if (blockStateDown.getBlock() == Blocks.GRASS_BLOCK) {
-                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
-                        this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                        this.entityWorld.setBlockState(blockposDown, ModBlocks.SparseGrass_Block.getDefaultState(), 2);
-                    }
-
-                    this.creature.eatGrassBonus();
-                } else if (blockStateDown.getBlock() == ModBlocks.SparseGrass_Block || blockStateDown.getBlock() == Blocks.MYCELIUM) {
-                    if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
-                        this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                        this.entityWorld.setBlockState(blockposDown, Blocks.DIRT.getDefaultState(), 2);
-                    }
-
-                    this.creature.eatGrassBonus();
-                }
-            }
-
-    }
 }

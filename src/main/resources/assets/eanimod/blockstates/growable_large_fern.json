@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "half=lower,age=0": { "model": "eanimod:block/fern0" },
+    "half=lower,age=1": { "model": "eanimod:block/fern2" },
+    "half=lower,age=2": { "model": "eanimod:block/fern4" },
+    "half=lower,age=3": { "model": "eanimod:block/fern6" },
+    "half=lower,age=4": { "model": "block/fern" },
+    "half=lower,age=5": { "model": "block/large_fern_bottom" },
+    "half=lower,age=6": { "model": "block/large_fern_bottom" },
+    "half=lower,age=7": { "model": "block/large_fern_bottom" },
+    "half=upper,age=0": { "model": "eanimod:block/fern0" },
+    "half=upper,age=1": { "model": "eanimod:block/large_fern_top1" },
+    "half=upper,age=2": { "model": "eanimod:block/large_fern_top2" },
+    "half=upper,age=3": { "model": "eanimod:block/large_fern_top3" },
+    "half=upper,age=4": { "model": "eanimod:block/large_fern_top4" },
+    "half=upper,age=5": { "model": "eanimod:block/large_fern_top5" },
+    "half=upper,age=6": { "model": "eanimod:block/large_fern_top6" },
+    "half=upper,age=7": { "model": "block/large_fern_top" }
+  }
+}

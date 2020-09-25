@@ -36,7 +36,7 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomW
                     return false;
                 }
 
-                int hungerModifier = ((EnhancedAnimal)this.creature).getHunger()/100;
+                float hungerModifier = ((EnhancedAnimal)this.creature).getHunger()/100;
                 if (hungerModifier >= this.executionChance) {
                     hungerModifier = this.executionChance - 1;
                 }
@@ -46,7 +46,7 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomW
                     return false;
                 }
 
-                if (this.creature.getRNG().nextInt(this.executionChance - hungerModifier) != 0) {
+                if (this.creature.getRNG().nextInt(this.executionChance - Math.round(hungerModifier)) != 0) {
                     return false;
                 }
             }

@@ -283,7 +283,22 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 //        } else {
 //            return 0.9D;
 //        }
-        return 1.25D;
+        int genes[] = this.genetics.getAutosomalGenes();
+        if (this.getIsFemale()) {
+            //female height
+            if (genes[26] == 1 || genes[27] == 1){
+                //dwarf
+                return 0.75D;
+            }
+            return 1.125D;
+        } else {
+            //male height
+            if (genes[26] == 1 || genes[27] == 1){
+                //dwarf
+                return 0.75D;
+            }
+            return 1.25D;
+        }
     }
 
     protected void registerAttributes() {

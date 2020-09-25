@@ -59,7 +59,7 @@ public class GrazingGoal extends Goal {
     protected static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
 
     protected static final Predicate<BlockState> IS_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.GRASS_BLOCK);
-    protected static final Predicate<BlockState> IS_SPARSE_GRASS_BLOCK = BlockStateMatcher.forBlock(ModBlocks.SPARSE_GRASS_BLOCK);
+    protected static final Predicate<BlockState> IS_SPARSE_GRASS_BLOCK = BlockStateMatcher.forBlock(ModBlocks.SPARSEGRASS_BLOCK);
     protected static final Predicate<BlockState> IS_TALL_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
 
     @Override
@@ -352,11 +352,11 @@ public class GrazingGoal extends Goal {
             if (this.eanimal.world.getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.world, this.eanimal)) {
                     this.eanimal.world.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                    this.eanimal.world.setBlockState(blockposDown, ModBlocks.SPARSE_GRASS_BLOCK.getDefaultState(), 2);
+                    this.eanimal.world.setBlockState(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.getDefaultState(), 2);
                 }
 
                 this.eanimal.eatGrassBonus();
-            } else if (this.eanimal.world.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSE_GRASS_BLOCK) {
+            } else if (this.eanimal.world.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.world, this.eanimal)) {
                     this.eanimal.world.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
                     this.eanimal.world.setBlockState(blockposDown, Blocks.DIRT.getDefaultState(), 2);

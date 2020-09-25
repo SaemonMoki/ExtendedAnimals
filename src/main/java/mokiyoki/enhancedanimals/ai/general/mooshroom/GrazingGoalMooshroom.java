@@ -35,23 +35,23 @@ public class GrazingGoalMooshroom extends GrazingGoal {
             if (this.eanimal.world.getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.world, this.eanimal)) {
                     this.eanimal.world.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                    this.eanimal.world.setBlockState(blockposDown, ModBlocks.SPARSE_GRASS_BLOCK.getDefaultState(), 2);
+                    this.eanimal.world.setBlockState(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.getDefaultState(), 2);
                 }
                 this.eanimal.eatGrassBonus();
             }else if (this.eanimal.world.getBlockState(blockposDown).getBlock() == Blocks.MYCELIUM) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.world, this.eanimal)) {
                     this.eanimal.world.playEvent(2001, blockposDown, Block.getStateId(Blocks.MYCELIUM.getDefaultState()));
-                    this.eanimal.world.setBlockState(blockposDown, ModBlocks.PATCHY_MYCELIUM_BLOCK.getDefaultState(), 2);
+                    this.eanimal.world.setBlockState(blockposDown, ModBlocks.PATCHYMYCELIUM_BLOCK.getDefaultState(), 2);
                 }
                 this.eanimal.eatGrassBonus();
-            } else if (this.eanimal.world.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSE_GRASS_BLOCK) {
+            } else if (this.eanimal.world.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.world, this.eanimal)) {
                     this.eanimal.world.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
                     this.eanimal.world.setBlockState(blockposDown, Blocks.DIRT.getDefaultState(), 2);
                 }
 
                 this.eanimal.eatGrassBonus();
-            } else if (this.eanimal.world.getBlockState(blockposDown).getBlock() == ModBlocks.PATCHY_MYCELIUM_BLOCK) {
+            } else if (this.eanimal.world.getBlockState(blockposDown).getBlock() == ModBlocks.PATCHYMYCELIUM_BLOCK) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.world, this.eanimal)) {
                     this.eanimal.world.playEvent(2001, blockposDown, Block.getStateId(Blocks.MYCELIUM.getDefaultState()));
                     this.eanimal.world.setBlockState(blockposDown, Blocks.DIRT.getDefaultState(), 2);

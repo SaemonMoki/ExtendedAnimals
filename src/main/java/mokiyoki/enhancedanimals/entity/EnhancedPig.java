@@ -230,15 +230,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 
     @Override
     public double getMountedYOffset() {
-//        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
-//        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
-//            return 0.9D;
-//        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
-//            return 0.9D;
-//        } else {
-//            return 0.8D;
-//        }
-        return 1.25D;
+        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+        double yPos;
+        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
+            yPos = 0.87D;
+        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
+            yPos = 0.81D;
+        } else {
+            yPos = 0.75D;
+        }
+
+        return yPos;
     }
 
     protected void registerData() {

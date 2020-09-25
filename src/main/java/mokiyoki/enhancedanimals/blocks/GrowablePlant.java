@@ -13,6 +13,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 
@@ -22,6 +23,7 @@ public class GrowablePlant extends CropsBlock {
     private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[]{Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 2.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 4.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 5.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 6.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 7.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 8.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 9.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D)};
     private IItemProvider plantType;
     private boolean onlyGrowsOnGrass;
+
     public GrowablePlant(Block.Properties properties, net.minecraft.util.IItemProvider plant, boolean growsOnDirt) {
         super(properties);
         setPlantType(plant);
@@ -53,8 +55,13 @@ public class GrowablePlant extends CropsBlock {
     }
 
     @Override
-    protected IItemProvider getSeedsItem() {
+    public IItemProvider getSeedsItem() {
         return this.plantType;
+    }
+
+    @Override
+    protected int getBonemealAgeIncrease(World worldIn) {
+        return 7;
     }
 
     protected void setPlantType(net.minecraft.util.IItemProvider plant) {

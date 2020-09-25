@@ -5,13 +5,20 @@ import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.entity.Genetics.LlamaGeneticsInitialiser;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
+import mokiyoki.enhancedanimals.util.Genes;
+import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
@@ -54,7 +61,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 
@@ -108,12 +114,12 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT, Items.CARROT, Items.SUGAR_CANE, Items.BEETROOT, Items.GRASS, Items.TALL_GRASS);
-    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT, Items.CARROT, Items.SUGAR_CANE, Items.BEETROOT, Items.GRASS, Items.TALL_GRASS, Items.APPLE);
+    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, ModBlocks.UNBOUNDHAY_BLOCK);
 
     public float destPos;
 
-    private static final int GENES_LENGTH = 34;
+    private static final int SEXLINKED_GENES_LENGTH = 2;
 
     private int maxCoatLength;
     private int currentCoatLength;
@@ -134,7 +140,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     private EnhancedLlama caravanTail;
 
     public EnhancedLlama(EntityType<? extends EnhancedLlama> entityType, World worldIn) {
-        super(entityType, worldIn, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.LLAMA_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
     }
 
@@ -180,7 +186,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     protected String getSpecies() {
-        return "Llama";
+        return I18n.format("entity.eanimod.enhanced_llama");
     }
 
     protected int getAdultAge() { return 120000;}
@@ -214,114 +220,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return this.dataManager.get(COAT_LENGTH);
     }
 
-//    public void onInventoryChanged(IInventory invBasic) {
-//        super.onInventoryChanged(invBasic);
-//        if (this.ticksExisted > 20 && dyecolor1 != 0 && dyecolor1 != dyecolor) {
-//            this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
-//            resetTexture = true;
-//        }
-//    }
-
-//    public int getSaddleNumber() {
-//        int saddle = 0;
-//        if (this.animalInventory != null) {
-//            if (!this.animalInventory.getStackInSlot(1).isEmpty()) {
-//                Item saddleType = this.animalInventory.getStackInSlot(1).getItem();
-//                if (saddleType == ModItems.SADDLE_LEATHER) {
-//                    saddle = 2;
-//                } else if (saddleType == ModItems.SADDLE_CLOTH) {
-//                    saddle = 3;
-//                } else {
-//                    saddle = 1;
-//                }
-//            }
-//        }
-//        return saddle;
-//    }
-
-//    public int getBridleNumber() {
-//        int bridle = 0;
-//        if (this.animalInventory != null) {
-//            if (!this.animalInventory.getStackInSlot(3).isEmpty()) {
-//                Item saddleType = this.animalInventory.getStackInSlot(3).getItem();
-//                if (saddleType == ModItems.BRIDLE_BASIC_LEATHER) {
-//                    bridle = 1;
-//                } else if (saddleType == ModItems.BRIDLE_BASIC_CLOTH) {
-//                    bridle = 2;
-//                }
-//            }
-//        }
-//        return bridle;
-//    }
-
-//    public int getBlanketNumber() {
-//            int colour = 0;
-//            if (this.animalInventory != null) {
-//                Item blanketColour = this.animalInventory.getStackInSlot(4).getItem();
-//                if (blanketColour == Items.BLACK_CARPET) {
-//                    colour = 1;
-//                } else if (blanketColour == Items.BLUE_CARPET) {
-//                    colour = 2;
-//                } else if (blanketColour == Items.BROWN_CARPET) {
-//                    colour = 3;
-//                } else if (blanketColour == Items.CYAN_CARPET) {
-//                    colour = 4;
-//                } else if (blanketColour == Items.GRAY_CARPET) {
-//                    colour = 5;
-//                } else if (blanketColour == Items.GREEN_CARPET) {
-//                    colour = 6;
-//                } else if (blanketColour == Items.LIGHT_BLUE_CARPET) {
-//                    colour = 7;
-//                } else if (blanketColour == Items.LIGHT_GRAY_CARPET) {
-//                    colour = 8;
-//                } else if (blanketColour == Items.LIME_CARPET) {
-//                    colour = 9;
-//                } else if (blanketColour == Items.MAGENTA_CARPET) {
-//                    colour = 10;
-//                } else if (blanketColour == Items.ORANGE_CARPET) {
-//                    colour = 11;
-//                } else if (blanketColour == Items.PINK_CARPET) {
-//                    colour = 12;
-//                } else if (blanketColour == Items.PURPLE_CARPET) {
-//                    colour = 13;
-//                } else if (blanketColour == Items.RED_CARPET) {
-//                    colour = 14;
-//                } else if (blanketColour == Items.WHITE_CARPET) {
-//                    colour = 15;
-//                } else if (blanketColour == Items.YELLOW_CARPET) {
-//                    colour = 16;
-//                }
-//            }
-//            return colour;
-//        }
-
-//    public int getHarnessNumber() {
-//        int bridle = 0;
-//        if (this.animalInventory != null) {
-//            if (!this.animalInventory.getStackInSlot(5).isEmpty()) {
-//                Item saddleType = this.animalInventory.getStackInSlot(5).getItem();
-//                if (saddleType == ModItems.BRIDLE_BASIC_LEATHER) {
-//                    bridle = 1;
-//                } else if (saddleType == ModItems.BRIDLE_BASIC_CLOTH) {
-//                    bridle = 2;
-//                }
-//            }
-//        }
-//        return bridle;
-//    }
-
     @Override
-    public void updatePassenger(Entity passenger) {
-        if (this.isPassenger(passenger)) {
-            float f = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
-            float f1 = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
-            float f2 = 0.3F;
-            passenger.setPosition(this.getPosX() + (double)(0.3F * f1), this.getPosY() + this.getMountedYOffset() + passenger.getYOffset(), this.getPosZ() - (double)(0.3F * f));
-        }
-    }
-
     public double getMountedYOffset() {
-        return (double)this.getHeight() * 0.67D;
+        return 1.25D;
     }
 
     protected boolean isMovementBlocked() {
@@ -387,18 +288,16 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     protected  void incrementHunger() {
         if(sleeping) {
-            hunger = hunger + 0.5F;
+            hunger = hunger + (0.5F*getHungerModifier());
         } else {
-            hunger = hunger + 1.0F;
+            hunger = hunger + (1.0F*getHungerModifier());
         }
     }
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedLlama enhancedllama = ENHANCED_LLAMA.create(this.world);
-        int[] babyGenes = getCriaGenes(this.mitosisGenes, this.mateMitosisGenes);
-
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedllama, inWorld, babyGenes, -120000);
-
         enhancedllama.setStrengthAndInventory();
         enhancedllama.setMaxCoatLength();
         enhancedllama.currentCoatLength = enhancedllama.maxCoatLength;
@@ -415,6 +314,39 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     @Override
     protected boolean canLactate() {
         return false;
+    }
+
+
+    protected void setLlamaSize(){
+        int[] genes = this.genetics.getAutosomalGenes();
+        float size = 1.0F;
+
+        if (genes[0] < 3) {
+            size = size - 0.025F;
+            if (genes[0] < 2) {
+                size = size - 0.025F;
+            }
+        }
+        if (genes[1] < 3) {
+            size = size - 0.025F;
+            if (genes[1] < 2) {
+                size = size - 0.025F;
+            }
+        }
+        if (genes[2] < 3) {
+            size = size - 0.025F;
+            if (genes[2] < 2) {
+                size = size - 0.025F;
+            }
+        }
+        if (genes[3] < 3) {
+            size = size - 0.025F;
+            if (genes[3] < 2) {
+                size = size - 0.025F;
+            }
+        }
+
+        this.setAnimalSize(size);
     }
 
     @Override
@@ -439,7 +371,11 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
+        super.playStepSound(pos, blockIn);
         this.playSound(SoundEvents.ENTITY_LLAMA_STEP, 0.15F, 1.0F);
+        if (!this.isSilent() && this.getBells()) {
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 0.75F);
+        }
     }
 
     protected void playChestEquipSound() {
@@ -457,24 +393,25 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     @Override
     public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IWorld world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
+        int[] genes = this.genetics.getAutosomalGenes();
         if (!this.world.isRemote && !isChild()) {
             if (currentCoatLength == 1) {
                 int i = this.rand.nextInt(4);
                 if (i>3){
-                    ret.add(new ItemStack(getWoolBlocks()));
+                    ret.add(new ItemStack(getWoolBlocks(genes)));
                 }
             } else if (currentCoatLength == 2) {
                 int i = this.rand.nextInt(2);
                 if (i>0){
-                    ret.add(new ItemStack(getWoolBlocks()));
+                    ret.add(new ItemStack(getWoolBlocks(genes)));
                 }
             } else if (currentCoatLength == 3) {
                 int i = this.rand.nextInt(4);
                 if (i>0){
-                    ret.add(new ItemStack(getWoolBlocks()));
+                    ret.add(new ItemStack(getWoolBlocks(genes)));
                 }
             } else if (currentCoatLength == 4) {
-                ret.add(new ItemStack(getWoolBlocks()));
+                ret.add(new ItemStack(getWoolBlocks(genes)));
             }
 
         }
@@ -483,7 +420,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return ret;
     }
 
-    private Block getWoolBlocks () {
+    private Block getWoolBlocks (int[] genes) {
         Block returnBlocks;
 
             if (genes[6] == 1 || genes[7] == 1) {
@@ -532,6 +469,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
+        int[] genes = this.genetics.getAutosomalGenes();
         int age = this.getAge();
         boolean woolDrop = false;
         int lootCount = 0;
@@ -562,7 +500,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             }
 
             if (woolDrop) {
-                ItemStack fleeceStack = new ItemStack(getWoolBlocks(), lootCount);
+                ItemStack fleeceStack = new ItemStack(getWoolBlocks(genes), lootCount);
                 this.entityDropItem(fleeceStack);
             } else {
                 ItemStack leatherStack = new ItemStack(Items.LEATHER, lootCount);
@@ -610,8 +548,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        int[] genesForText = getSharedGenes();
-        if (genesForText != null) {
+        if (this.getSharedGenes() != null) {
+            int[] genesForText = getSharedGenes().getAutosomalGenes();
+
             int ground = 0;
             int pattern = 0;
             int roan = 0;
@@ -788,55 +727,16 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
                 fur = 1;
             }
 
-
-        this.enhancedAnimalTextures.add(LLAMA_TEXTURES_GROUND[ground]);
-            this.texturesIndexes.add(String.valueOf(ground));
-
-        if (pattern != 0) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_PATTERN[pattern]);
-            this.texturesIndexes.add(String.valueOf(pattern));
-        }
-
-        if (roan != 0) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_ROAN[roan]);
-            this.texturesIndexes.add(String.valueOf(roan));
-        }
-
-        if (tux != 0) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_TUXEDO[tux]);
-            this.texturesIndexes.add(String.valueOf(tux));
-        }
-
-        if (piebald != 0) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_PIEBALD[piebald]);
-            this.texturesIndexes.add(String.valueOf(piebald));
-        }
-
-        if (domwhite != 0) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_DOMWHITE[domwhite]);
-            this.texturesIndexes.add(String.valueOf(domwhite));
-        }
-
-        if (fur != 0) {
-            this.enhancedAnimalTextures.add(LLAMA_TEXTURES_FUR[fur]);
-            this.texturesIndexes.add(String.valueOf(fur));
-        }
-
-        this.enhancedAnimalTextures.add(LLAMA_TEXTURES_EYES[eyes]);
-            this.texturesIndexes.add(String.valueOf(eyes));
-
-        this.enhancedAnimalTextures.add(LLAMA_TEXTURES_SKIN[skin]);
-            this.texturesIndexes.add(String.valueOf(skin));
-
+            addTextureToAnimal(LLAMA_TEXTURES_GROUND, ground, null);
+            addTextureToAnimal(LLAMA_TEXTURES_PATTERN, pattern, p -> p != 0);
+            addTextureToAnimal(LLAMA_TEXTURES_ROAN, roan, r -> r != 0);
+            addTextureToAnimal(LLAMA_TEXTURES_TUXEDO, tux, t -> t != 0);
+            addTextureToAnimal(LLAMA_TEXTURES_PIEBALD, piebald, p -> p != 0);
+            addTextureToAnimal(LLAMA_TEXTURES_DOMWHITE, domwhite, d -> d != 0);
+            addTextureToAnimal(LLAMA_TEXTURES_FUR, fur, f -> f != 0);
+            addTextureToAnimal(LLAMA_TEXTURES_EYES, eyes, null);
+            addTextureToAnimal(LLAMA_TEXTURES_SKIN, skin, null);
         } //if genes are not null end bracket
-
-        this.enhancedAnimalTextures.add("d_collar.png");
-            this.texturesIndexes.add(String.valueOf(0));
-        this.enhancedAnimalTextures.add("collar_ringiron.png");
-            this.texturesIndexes.add(String.valueOf(0));
-        this.enhancedAnimalTextures.add("collar_belliron.png");
-            this.texturesIndexes.add(String.valueOf(0));
-
     } // setTexturePaths end bracket
 
     @Override
@@ -845,6 +745,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     protected void initilizeAnimalSize() {
+        setLlamaSize();
     }
 
 
@@ -873,30 +774,16 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         //resets the max so we don't have to store it
         setMaxCoatLength();
 
-    }
-
-    public int[] getCriaGenes(int[] mitosis, int[] mateMitosis) {
-        Random rand = new Random();
-        int[] criaGenes = new int[GENES_LENGTH];
-
-        for (int i = 0; i < genes.length; i = (i + 2)) {
-            boolean thisOrMate = rand.nextBoolean();
-            if (thisOrMate) {
-                criaGenes[i] = mitosis[i];
-                criaGenes[i+1] = mateMitosis[i+1];
-            } else {
-                criaGenes[i] = mateMitosis[i];
-                criaGenes[i+1] = mitosis[i+1];
-            }
+        if (!compound.getString("breed").isEmpty()) {
+            this.currentCoatLength = this.maxCoatLength;
+            this.setCoatLength(this.currentCoatLength);
         }
-
-        return criaGenes;
     }
 
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata =  commonInitialSpawnSetup(inWorld, livingdata, 0, GENES_LENGTH, 120000, 20000, 500000);
+        livingdata =  commonInitialSpawnSetup(inWorld, livingdata, 120000, 20000, 500000);
 
         if (spawnReason == SpawnReason.EVENT) {
             this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
@@ -913,12 +800,13 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return livingdata;
     }
 
-    @Override
-    protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
-        return getCriaGenes(mitosis, mateMitosis);
-    }
+//    @Override
+//    protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
+//        return getCriaGenes(mitosis, mateMitosis);
+//    }
 
     private void setStrengthAndInventory() {
+        int[] genes = this.genetics.getAutosomalGenes();
         int inv = 1;
         int str = 1;
         if (genes[2] != 1 &&  genes[3] !=1) {
@@ -956,6 +844,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     private void setMaxCoatLength() {
+        int[] genes = this.genetics.getAutosomalGenes();
         float maxCoatLength = 0.0F;
 
         if ( !this.isChild() && (genes[22] >= 2 || genes[23] >= 2) ){
@@ -1000,270 +889,14 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     }
 
-    protected int[] createInitialGenes(IWorld inWorld) {
-        int[] initialGenes = new int[GENES_LENGTH];
-        //TODO create biome WTC variable [hot and dry biomes, cold biomes ] WTC is neutral biomes "all others"
+    @Override
+    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+        return new LlamaGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
+    }
 
-
-        //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
-//        int wildType = 0;
-//        Biome biome = this.world.getBiome(new BlockPos(this));
-
-//        if (biome.getDefaultTemperature() >= 0.9F && biome.getRainfall() > 0.8F) // hot and wet (jungle)
-//        {
-//            wildType = 1;
-//        }
-
-
-/**
- * Genes List
- */
-
-        /**
-         * Colour Genes
-         */
-
-        //Endurance gene [ wildtype, stronger1, stronger2]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[0] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[0] = (1);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[1] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[1] = (1);
-        }
-
-
-        //Strength gene [ wildtype, stronger1, stronger2]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[2] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[2] = (1);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[3] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[3] = (1);
-        }
-
-        //Attack gene [ wildtype, stronger1, stronger2]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[4] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[4] = (1);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[5] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[5] = (1);
-        }
-
-        //Dominant White [ dominant white, wildtype ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[6] = (ThreadLocalRandom.current().nextInt(2)+1);
-
-        } else {
-            initialGenes[6] = (2);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[7] = (ThreadLocalRandom.current().nextInt(2)+1);
-
-        } else {
-            initialGenes[7] = (2);
-        }
-
-        //Roan [ roan, wildtype ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[8] = (ThreadLocalRandom.current().nextInt(2)+1);
-
-        } else {
-            initialGenes[8] = (2);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[9] = (ThreadLocalRandom.current().nextInt(2)+1);
-
-        } else {
-            initialGenes[9] = (2);
-        }
-
-        //Piebald [ piebald, wildtype ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2)+1);
-
-        } else {
-            initialGenes[10] = (1);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2)+1);
-
-        } else {
-            initialGenes[11] = (1);
-        }
-
-        //Tuxedo [ tuxedo, wildtype ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[12] = (ThreadLocalRandom.current().nextInt(2)+1);
-        } else {
-            initialGenes[12] = (2);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[13] = (ThreadLocalRandom.current().nextInt(2)+1);
-
-        } else {
-            initialGenes[13] = (2);
-        }
-
-        //Extention [ black, wildtype, self ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[14] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[14] = (2);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[15] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[15] = (2);
-        }
-
-        //Agouti [ PaleShaded, Shaded, RedTrimmedBlack, Bay, Mahogany, BlackTan, rBlack]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[16] = (ThreadLocalRandom.current().nextInt(7)+1);
-
-        } else {
-            initialGenes[16] = (2);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[17] = (ThreadLocalRandom.current().nextInt(7)+1);
-
-        } else {
-            initialGenes[17] = (2);
-        }
-
-        //Banana Ears genes [ no banana, banana, bananaless ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[18] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[18] = (2);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[19] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[19] = (2);
-        }
-
-        //Suri coat genes [ normal, suri ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[20] = (ThreadLocalRandom.current().nextInt(2)+1);
-
-        } else {
-            initialGenes[20] = (1);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[21] = (ThreadLocalRandom.current().nextInt(2)+1);
-
-        } else {
-            initialGenes[21] = (1);
-        }
-
-        //Coat Length genes [ normal, Longer, Longest ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[22] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[22] = (1);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[23] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[23] = (1);
-        }
-
-        //Coat Length suppressor [ normal, shorter ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[24] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[24] = (1);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[25] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[25] = (1);
-        }
-
-        //Coat Length amplifier [ normal, double ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[26] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[26] = (1);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[27] = (ThreadLocalRandom.current().nextInt(3)+1);
-
-        } else {
-            initialGenes[27] = (1);
-        }
-
-        //nose placement genes [ +0.1, +0.15/+0.05, 0, -0.1 ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[28] = (ThreadLocalRandom.current().nextInt(4)+1);
-
-        } else {
-            initialGenes[28] = (2);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[29] = (ThreadLocalRandom.current().nextInt(4)+1);
-
-        } else {
-            initialGenes[29] = (2);
-        }
-
-        //nose placement genes [ +0.1, +0.15/0.05, 0, -0.1 ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[30] = (ThreadLocalRandom.current().nextInt(4)+1);
-
-        } else {
-            initialGenes[30] = (1);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[31] = (ThreadLocalRandom.current().nextInt(4)+1);
-
-        } else {
-            initialGenes[31] = (1);
-        }
-
-        //nose placement genes [ +0.2, +0.15, 0, -0.15, -0.2 ]
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[32] = (ThreadLocalRandom.current().nextInt(5)+1);
-
-        } else {
-            initialGenes[32] = (1);
-        }
-        if(ThreadLocalRandom.current().nextInt(100)>WTC){
-            initialGenes[33] = (ThreadLocalRandom.current().nextInt(5)+1);
-
-        } else {
-            initialGenes[33] = (1);
-        }
-
-
-
-        return initialGenes;
+    @Override
+    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+        return new LlamaGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 
     private void spit(LivingEntity target) {
@@ -1335,10 +968,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     protected SoundEvent getAngrySound() {
         return SoundEvents.ENTITY_LLAMA_ANGRY;
-    }
-
-    public boolean canMateWith(AnimalEntity otherAnimal) {
-        return otherAnimal != this && otherAnimal instanceof EnhancedLlama;
     }
 
     /**

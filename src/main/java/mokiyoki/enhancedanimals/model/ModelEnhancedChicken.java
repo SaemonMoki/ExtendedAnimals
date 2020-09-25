@@ -3,10 +3,12 @@ package mokiyoki.enhancedanimals.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -100,6 +102,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     private final ModelRenderer earTuftHelper;
     private final ModelRenderer eyeLeft;
     private final ModelRenderer eyeRight;
+    private final ModelRenderer collar;
+    private final ModelRenderer bell;
 
     private Integer currentChicken = null;
 
@@ -368,10 +372,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.leftFeather2.addBox(-3.5F, 7F, -2.5F, 2, 2, 5 + fluffyscale);
 
         this.rightFeather3 = new ModelRenderer(this, 28, 36);
-        this.rightFeather3.mirror = true;
         this.rightFeather3.addBox(3.5F, 8.9F, -2.5F, 4, 1, 5 + fluffyscale);
 
         this.leftFeather3 = new ModelRenderer(this, 28, 36);
+        this.leftFeather3.mirror = true;
         this.leftFeather3.addBox(-7.5F, 8.9F, -2.5F, 4, 1, 5 + fluffyscale);
 
         this.rightVultureHock = new ModelRenderer(this, 33, 32);
@@ -407,18 +411,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         if (!silkie) {
             this.bill.addBox(-1.0F, -4.0F, -4.0F, 2, 2, 2, 0.0F);
             this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
-
             this.billChild.addBox(-1.0F, -4.0F, -3F, 2, 2, 2, 0.0F);
             this.billChild.setRotationPoint(0.0F, 15.0F, -4.0F);
-
             this.smallChin.addBox(-1.0F, -2.0F, -3.0F, 2, 1, 2, 0.0F);
-
             this.chin.addBox(-1.0F, -2.0F, -3.0F, 2, 2, 1, 0.0F);
-
             this.bigChin.addBox(-1.0F, -2.0F, -3.0F, 2, 3, 1, 0.0F);
-
             this.peaChin.addBox(-0.5F, -2.0F, -3.0F, 1, 1, 2, 0.0F);
-
             this.beardChin.addBox(-1.5F, -2.5F, -3.0F, 3, 1, 1, 0.0F);
         }
 
@@ -450,6 +448,21 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.headNakedNeck.addChild(this.eyeRight);
         this.head.addChild(this.eyeLeft);
         this.head.addChild(this.eyeRight);
+
+        this.textureWidth=160;
+        this.textureHeight=160;
+        this.collar = new ModelRenderer(this, 0, 155);
+        this.collar.addBox(-2.5F, -1.0F, -1.5F, 5,  1, 4, 0.001F);
+        this.collar.setTextureOffset(30, 156);
+        this.collar.addBox(0.0F, -1.3333F, -2.5F, 0,  2, 2);
+        this.collar.rotateAngleX = (float)Math.PI/4.0F;
+        this.bell = new ModelRenderer(this, 18, 154);
+        this.bell.addBox(-1.5F, 0.0F, -1.5F, 3, 3, 3, -1.0F);
+        this.bell.setRotationPoint(0.0F, -1.0F, -1.25F);
+        this.bell.rotateAngleX = -(float)Math.PI/4.0F;
+        this.collar.addChild(this.bell);
+        this.head.addChild(this.collar);
+        this.headNakedNeck.addChild(this.collar);
     }
 
     private void setRotationOffset(ModelRenderer renderer, float x, float y, float z) {
@@ -705,7 +718,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         if (!(chickenModelData.birthTime == null) && !chickenModelData.birthTime.equals("") && !chickenModelData.birthTime.equals("0")) {
             int ageTime = (int)(chickenModelData.clientGameTime - Long.parseLong(chickenModelData.birthTime));
             if (ageTime <= 70000) {
-                age = ageTime/70000.0F;
+                age = ageTime < 0 ? 0 : ageTime/70000.0F;
             }
         }
 
@@ -714,6 +727,20 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         matrixStackIn.push();
         matrixStackIn.scale(finalChickenSize, finalChickenSize, finalChickenSize);
         matrixStackIn.translate(0.0F, -1.5F + 1.5F/finalChickenSize, 0.0F);
+        if (blink == 0 || blink >= 6) {
+            this.eyeLeft.showModel = true;
+            this.eyeRight.showModel = true;
+        } else {
+            this.eyeLeft.showModel = false;
+            this.eyeRight.showModel = false;
+        }
+
+        if (chickenModelData.collar) {
+            this.collar.showModel = true;
+        } else {
+            this.collar.showModel = false;
+        }
+
         if (nakedNeck) {
             this.headNakedNeck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
@@ -726,7 +753,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             this.beardNN.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
-        if (!isChild) {
+        if (age > 0.3F) {
 
             if ((wSize == 2 || wSize == 3 || wSize == 4)) {
 
@@ -804,7 +831,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
             }
 
-            if(crest == 1 || (crest != 0 && isChild)){
+            if(crest == 1 || (crest != 0 && age > 0.5F)){
                 this.smallCrest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }else if(crest == 2){
                 this.forwardCrest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -813,7 +840,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }
 
             if (genes != null) {
-                if ((!isChild || age >= 0.3333F) && (genes[72] == 1 && genes[73] == 1)) {
+                if ((age > 0.15F || age >= 0.3333F) && (genes[72] == 1 && genes[73] == 1)) {
                     this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
             }
@@ -874,16 +901,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }
 
         matrixStackIn.pop();
-//        }
-
-        if (blink == 0 || blink >= 6) {
-            this.eyeLeft.showModel = true;
-            this.eyeRight.showModel = true;
-        } else {
-            this.eyeLeft.showModel = false;
-            this.eyeRight.showModel = false;
-        }
-
   }
 
 
@@ -922,46 +939,46 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.head.rotateAngleX = headPitch * 0.017453292F;
         this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
-        ModelHelper.copyModelAngles(head, headNakedNeck);
+        ModelHelper.copyModelPositioning(head, headNakedNeck);
 
-        ModelHelper.copyModelAngles(head, bill);
-        ModelHelper.copyModelAngles(head, billChild);
-        ModelHelper.copyModelAngles(head, smallChin);
-        ModelHelper.copyModelAngles(head, chin);
-        ModelHelper.copyModelAngles(head, bigChin);
-        ModelHelper.copyModelAngles(head, beardChin);
-        ModelHelper.copyModelAngles(head, peaChin);
+        ModelHelper.copyModelPositioning(head, bill);
+        ModelHelper.copyModelPositioning(head, billChild);
+        ModelHelper.copyModelPositioning(head, smallChin);
+        ModelHelper.copyModelPositioning(head, chin);
+        ModelHelper.copyModelPositioning(head, bigChin);
+        ModelHelper.copyModelPositioning(head, beardChin);
+        ModelHelper.copyModelPositioning(head, peaChin);
 
-        ModelHelper.copyModelAngles(head, smallCrest);
-        ModelHelper.copyModelAngles(head, bigCrest);
-        ModelHelper.copyModelAngles(head, forwardCrest);
+        ModelHelper.copyModelPositioning(head, smallCrest);
+        ModelHelper.copyModelPositioning(head, bigCrest);
+        ModelHelper.copyModelPositioning(head, forwardCrest);
 
-        ModelHelper.copyModelAngles(head, combXtraSmallSingle);
-        ModelHelper.copyModelAngles(head, combSmallSingle);
-        ModelHelper.copyModelAngles(head, combSingle);
-        ModelHelper.copyModelAngles(head, combLargeSingle);
-        ModelHelper.copyModelAngles(head, combXtraLargeSingle);
-        ModelHelper.copyModelAngles(head, combSmallRose);
-        ModelHelper.copyModelAngles(head, combRose);
-        ModelHelper.copyModelAngles(head, combLargeRose);
-        ModelHelper.copyModelAngles(head, combSmallRose2);
-        ModelHelper.copyModelAngles(head, combRose2);
-        ModelHelper.copyModelAngles(head, combLargeRose2);
-        ModelHelper.copyModelAngles(head, combSmallPea);
-        ModelHelper.copyModelAngles(head, combPea);
-        ModelHelper.copyModelAngles(head, combLargePea);
-        ModelHelper.copyModelAngles(head, combSmallWalnut);
-        ModelHelper.copyModelAngles(head, combWalnut);
-        ModelHelper.copyModelAngles(head, combLargeWalnut);
-        ModelHelper.copyModelAngles(head, combV);
+        ModelHelper.copyModelPositioning(head, combXtraSmallSingle);
+        ModelHelper.copyModelPositioning(head, combSmallSingle);
+        ModelHelper.copyModelPositioning(head, combSingle);
+        ModelHelper.copyModelPositioning(head, combLargeSingle);
+        ModelHelper.copyModelPositioning(head, combXtraLargeSingle);
+        ModelHelper.copyModelPositioning(head, combSmallRose);
+        ModelHelper.copyModelPositioning(head, combRose);
+        ModelHelper.copyModelPositioning(head, combLargeRose);
+        ModelHelper.copyModelPositioning(head, combSmallRose2);
+        ModelHelper.copyModelPositioning(head, combRose2);
+        ModelHelper.copyModelPositioning(head, combLargeRose2);
+        ModelHelper.copyModelPositioning(head, combSmallPea);
+        ModelHelper.copyModelPositioning(head, combPea);
+        ModelHelper.copyModelPositioning(head, combLargePea);
+        ModelHelper.copyModelPositioning(head, combSmallWalnut);
+        ModelHelper.copyModelPositioning(head, combWalnut);
+        ModelHelper.copyModelPositioning(head, combLargeWalnut);
+        ModelHelper.copyModelPositioning(head, combV);
 
-        ModelHelper.copyModelAngles(head, beard);
-        ModelHelper.copyModelAngles(head, beardNN);
+        ModelHelper.copyModelPositioning(head, beard);
+        ModelHelper.copyModelPositioning(head, beardNN);
 
-        ModelHelper.copyModelAngles(head, earL);
-        ModelHelper.copyModelAngles(head, earR);
+        ModelHelper.copyModelPositioning(head, earL);
+        ModelHelper.copyModelPositioning(head, earR);
 
-        ModelHelper.copyModelAngles(head, earTuftHelper);
+        ModelHelper.copyModelPositioning(head, earTuftHelper);
 
         this.earTuftL.rotateAngleX = 1.4F;
         this.earTuftL.rotateAngleZ = -1.4F;
@@ -973,30 +990,30 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.leftLeg.rotationPointY = 15F;
         this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
         this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-        ModelHelper.copyModelAngles(rightLeg, rightFeather1);
-        ModelHelper.copyModelAngles(rightLeg, rightLegExtend);
-        ModelHelper.copyModelAngles(rightLeg, rightFeather1Extend);
-        ModelHelper.copyModelAngles(rightLeg, rightFeather2);
-        ModelHelper.copyModelAngles(rightLeg, rightFeather3);
-        ModelHelper.copyModelAngles(rightLeg, rightVultureHock);
-        ModelHelper.copyModelAngles(leftLeg, leftLegExtend);
-        ModelHelper.copyModelAngles(leftLeg, leftFeather1Extend);
-        ModelHelper.copyModelAngles(leftLeg, leftFeather1);
-        ModelHelper.copyModelAngles(leftLeg, leftFeather2);
-        ModelHelper.copyModelAngles(leftLeg, leftFeather3);
-        ModelHelper.copyModelAngles(leftLeg, leftVultureHock);
+        ModelHelper.copyModelPositioning(rightLeg, rightFeather1);
+        ModelHelper.copyModelPositioning(rightLeg, rightLegExtend);
+        ModelHelper.copyModelPositioning(rightLeg, rightFeather1Extend);
+        ModelHelper.copyModelPositioning(rightLeg, rightFeather2);
+        ModelHelper.copyModelPositioning(rightLeg, rightFeather3);
+        ModelHelper.copyModelPositioning(rightLeg, rightVultureHock);
+        ModelHelper.copyModelPositioning(leftLeg, leftLegExtend);
+        ModelHelper.copyModelPositioning(leftLeg, leftFeather1Extend);
+        ModelHelper.copyModelPositioning(leftLeg, leftFeather1);
+        ModelHelper.copyModelPositioning(leftLeg, leftFeather2);
+        ModelHelper.copyModelPositioning(leftLeg, leftFeather3);
+        ModelHelper.copyModelPositioning(leftLeg, leftVultureHock);
 
         //body angle
 //        this.body.rotateAngleX = -bodyangle;
 
         //tail stuff
-        ModelHelper.copyModelAngles(body, bodyBig);
-        ModelHelper.copyModelAngles(body, bodySmall);
-        ModelHelper.copyModelAngles(body, tail);
-        ModelHelper.copyModelAngles(body, longTail);
-        ModelHelper.copyModelAngles(body, shortTail);
-        ModelHelper.copyModelAngles(body, xtraLongTail);
-        ModelHelper.copyModelAngles(body, xtraShortTail);
+        ModelHelper.copyModelPositioning(body, bodyBig);
+        ModelHelper.copyModelPositioning(body, bodySmall);
+        ModelHelper.copyModelPositioning(body, tail);
+        ModelHelper.copyModelPositioning(body, longTail);
+        ModelHelper.copyModelPositioning(body, shortTail);
+        ModelHelper.copyModelPositioning(body, xtraLongTail);
+        ModelHelper.copyModelPositioning(body, xtraShortTail);
 
         //wing stuff
 
@@ -1040,7 +1057,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                 wingMod = 0.5F;
             }
 
-            //gene variations
+            //genes variations
             if ((sharedGenes[70] == 2 || sharedGenes [71] == 2) && (!nesting && !roosting)) {
 
                 if (sharedGenes[168] == 1 && sharedGenes[169] == 1) {
@@ -1200,6 +1217,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         long clientGameTime = 0;
         List<String> unrenderedModels = new ArrayList<>();
 //        int dataReset = 0;
+        boolean collar;
     }
 
     private ChickenModelData getChickenModelData() {
@@ -1224,16 +1242,21 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             chickenModelData.lastAccessed = 0;
             chickenModelData.sleeping = enhancedChicken.isRoosting();
             chickenModelData.blink = enhancedChicken.getBlink();
+            chickenModelData.birthTime = enhancedChicken.getBirthTime();
+            chickenModelData.collar = hasCollar(enhancedChicken.getEnhancedInventory());
             chickenModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedChicken.world).getWorldInfo()).getGameTime());
             chickenModelData.unrenderedModels = new ArrayList<>();
 
             return chickenModelData;
         } else {
             ChickenModelData chickenModelData = new ChickenModelData();
-            chickenModelData.chickenGenes = enhancedChicken.getSharedGenes();
+            if (enhancedChicken.getSharedGenes()!=null) {
+                chickenModelData.chickenGenes = enhancedChicken.getSharedGenes().getAutosomalGenes();
+            }
             chickenModelData.sleeping = enhancedChicken.isRoosting();
             chickenModelData.blink = enhancedChicken.getBlink();
             chickenModelData.birthTime = enhancedChicken.getBirthTime();
+            chickenModelData.collar = hasCollar(enhancedChicken.getEnhancedInventory());
             chickenModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedChicken.world).getWorldInfo()).getGameTime());
 
             if(chickenModelData.chickenGenes != null) {
@@ -1245,5 +1268,12 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         }
     }
 
-
+    private boolean hasCollar(Inventory inventory) {
+        for (int i = 1; i < 6; i++) {
+            if (inventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -5,12 +5,22 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
+import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
+import mokiyoki.enhancedanimals.items.MixableMilkBucket;
+import mokiyoki.enhancedanimals.util.Genes;
+import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -31,18 +41,16 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 
@@ -132,7 +140,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     protected boolean resetTexture = true;
 
-    private static final int GENES_LENGTH = 122;
+    private static final int SEXLINKED_GENES_LENGTH = 2;
 
     protected boolean aiConfigured = false;
 
@@ -149,7 +157,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     protected Boolean reload = false; //used in a toggle manner
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
-        super(entityType, worldIn, GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
         // cowsize from .7 to 1.5 max bag size is 1 to 1.5
         //large cows make from 30 to 12 milk points per day, small cows make up to 1/4
         this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - maxBagSize)*2400)) * (getAnimalSize()/1.5F)) - 300;
@@ -196,7 +204,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     protected String getSpecies() {
-        return "Cow";
+        return I18n.format("entity.eanimod.enhanced_cow");
     }
 
     protected int getAdultAge() { return 84000;}
@@ -205,21 +213,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     protected int gestationConfig() {
         return EanimodCommonConfig.COMMON.gestationDaysCow.get();
     }
-
-//    @Nullable
-//    public Entity getControllingPassenger() {
-//        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
-//    }
-
-//    public boolean canBeSteered() {
-//        Entity entity = this.getControllingPassenger();
-//        if (!(entity instanceof PlayerEntity)) {
-//            return false;
-//        } else {
-//            PlayerEntity playerentity = (PlayerEntity)entity;
-//            return playerentity.getHeldItemMainhand().getItem() == Items.CARROT_ON_A_STICK || playerentity.getHeldItemOffhand().getItem() == Items.CARROT_ON_A_STICK;
-//        }
-//    }
 
     protected void setMooshroomUUID(String status) {
         if (!status.equals("")) {
@@ -265,9 +258,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     protected SoundEvent getDeathSound() { return SoundEvents.ENTITY_COW_DEATH; }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
+        super.playStepSound(pos, blockIn);
         this.playSound(SoundEvents.ENTITY_COW_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.world.playSound((PlayerEntity)null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.BLOCK_NOTE_BLOCK_CHIME, this.getSoundCategory(), 1.5F, 0.000000001F);
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 0.1F);
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BELL, 1.0F, 0.1F);
         }
     }
 
@@ -276,6 +271,19 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
      */
     protected float getSoundVolume() {
         return 0.4F;
+    }
+
+    @Override
+    public double getMountedYOffset() {
+//        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+//        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
+//            return 1.0D;
+//        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
+//            return 1.0D;
+//        } else {
+//            return 0.9D;
+//        }
+        return 1.25D;
     }
 
     protected void registerAttributes() {
@@ -350,9 +358,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     @Override
     protected void incrementHunger() {
         if(sleeping) {
-            hunger = hunger + 1.0F;
+            hunger = hunger + (1.0F*getHungerModifier());
         } else {
-            hunger = hunger + 2.0F;
+            hunger = hunger + (2.0F*getHungerModifier());
         }
     }
 
@@ -360,12 +368,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     protected void runExtraIdleTimeTick() {
     }
 
+
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
-        int[] babyGenes = getCalfGenes(this.mitosisGenes, this.mateMitosisGenes);
-
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -84000);
-
         enhancedcow.setMotherUUID(this.getUniqueID().toString());
         enhancedcow.configureAI();
 
@@ -373,6 +380,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     protected void setCowSize(){
+        int[] genes = this.genetics.getAutosomalGenes();
         float size = 1.0F;
 
         //[ 1 to 15 ] max - is 0.3F
@@ -426,6 +434,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     public void lethalGenes(){
+        int[] genes = this.genetics.getAutosomalGenes();
         if(genes[26] == 1 && genes[27] == 1) {
             this.remove();
         }
@@ -444,6 +453,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
+        int[] genes = this.genetics.getAutosomalGenes();
         this.isBurning();
         float cowSize = this.getAnimalSize();
         float age = this.getAge();
@@ -592,8 +602,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        int[] genesForText = getSharedGenes();
-        if (genesForText != null) {
+        if (this.getSharedGenes() != null) {
+            int[] genesForText = getSharedGenes().getAutosomalGenes();
 
             int base = 0;
             int red = 1;
@@ -721,7 +731,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
                     whiteface = 1;
                 }
             }else if (genesForText[16] == 2 || genesForText[17] == 2){
-                //border spots (Pinzgauer) this gene might be incomplete dominant with wildtype but I dont see it
+                //border spots (Pinzgauer) this genes might be incomplete dominant with wildtype but I dont see it
                     whiteface = 3;
             }else if (genesForText[16] == 4 && genesForText[17] == 4){
                 //piebald
@@ -851,43 +861,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
                 hooves = 1;
             }
 
-//            if (genesForText[12] == 1 || genesForText[13] == 1) {
-//                //should be polled unless...
-//                //african horn gene
-//                if (genesForText[76] == 1 && genesForText[77] == 1) {
-//                    //horned
-//                } else if (genesForText[76] == 1 || genesForText[77] == 1) {
-//                    //sex determined horned
-//                    if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
-//                        //horned if male
-//                    } else {
-//                        //polled if female unless
-//                        if (genesForText[78] == 1 && genesForText[79] == 1) {
-//                            //she is scured
-//                        } else {
-//                            //polled
-//                            horn = 0;
-//                        }
-//                    }
-//                } else {
-//                    //polled
-//                    if (genesForText[78] == 1 && genesForText[79] == 1) {
-//                        //scured
-//                    } else if (genesForText[78] == 1 || genesForText[79] == 1) {
-//                        //sex determined scured
-//                        if (Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8) {
-//                            //scurred
-//                        } else {
-//                            //polled
-//                            horn = 0;
-//                        }
-//                    } else {
-//                        //polled
-//                        horn = 0;
-//                    }
-//                }
-//            }
-
             if (genesForText[48] == 1 || genesForText[49] == 1){
                 coat = 1;
             }else{
@@ -900,62 +873,24 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
                 }
             }
 
-
-
             //TODO change white spots to add whitening together
             //TODO add shading under correct conditions
 
-            this.enhancedAnimalTextures.add(COW_TEXTURES_BASE[0]);
-            this.texturesIndexes.add(String.valueOf(0));
-            this.enhancedAnimalTextures.add(COW_TEXTURES_UDDER[skin]);
-            this.texturesIndexes.add(String.valueOf(skin));
-            if (red != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_RED[red]);
-                this.texturesIndexes.add(String.valueOf(red));
-            }
-            if (black != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_BLACK[black]);
-                this.texturesIndexes.add(String.valueOf(black));
-            }
-            this.enhancedAnimalTextures.add(COW_TEXTURES_SKIN[skin]);
-            this.texturesIndexes.add(String.valueOf(skin));
-            if (whiteface != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_WHITEFACE[whiteface]);
-                this.texturesIndexes.add(String.valueOf(whiteface));
-                if (whitefacehead >= 4) {
-                    this.enhancedAnimalTextures.add(COW_TEXTURES_WHITEFACEHEAD[whitefacehead]);
-                    this.texturesIndexes.add(String.valueOf(whitefacehead));
-                }
-            }
-            if (coloursided != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_COLOURSIDED[coloursided]);
-                this.texturesIndexes.add(String.valueOf(coloursided));
-            }
-            if (belted != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_BELTED[belted]);
-                this.texturesIndexes.add(String.valueOf(belted));
-            }
-            if (roan != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_ROAN[roan]);
-                this.texturesIndexes.add(String.valueOf(roan));
-            }
-            if (speckled != 0){
-                this.enhancedAnimalTextures.add(COW_TEXTURES_SPECKLED[speckled]);
-                this.texturesIndexes.add(String.valueOf(speckled));
-            }
-            //TODO add hoof colour genetics
-            this.enhancedAnimalTextures.add(COW_TEXTURES_HOOVES[hooves]);
-            this.texturesIndexes.add(String.valueOf(hooves));
-            //TODO add eye colour genetics
-            this.enhancedAnimalTextures.add(COW_TEXTURES_EYES[0]);
-            this.texturesIndexes.add(String.valueOf(0));
-            //TODO add hoof colour genetics
-            this.enhancedAnimalTextures.add(COW_TEXTURES_HORNS[horn]);
-            this.texturesIndexes.add(String.valueOf(horn));
-            this.enhancedAnimalTextures.add(COW_TEXTURES_COAT[coat]);
-            this.texturesIndexes.add(String.valueOf(coat));
-            this.enhancedAnimalTextures.add("d_collar.png");
-            this.texturesIndexes.add(String.valueOf(0));
+            addTextureToAnimal(COW_TEXTURES_BASE, 0, null);
+            addTextureToAnimal(COW_TEXTURES_UDDER, skin, null);
+            addTextureToAnimal(COW_TEXTURES_RED, red, r -> r != 0);
+            addTextureToAnimal(COW_TEXTURES_BLACK, black, b -> b != 0);
+            addTextureToAnimal(COW_TEXTURES_SKIN, skin, null);
+            addTextureToAnimal(COW_TEXTURES_WHITEFACE, whiteface, w -> w != 0);
+            addTextureToAnimal(COW_TEXTURES_WHITEFACEHEAD, whitefacehead, w -> w >= 4);
+            addTextureToAnimal(COW_TEXTURES_COLOURSIDED, coloursided, c -> c != 0);
+            addTextureToAnimal(COW_TEXTURES_BELTED, belted, b -> b != 0);
+            addTextureToAnimal(COW_TEXTURES_ROAN, roan, r -> r != 0);
+            addTextureToAnimal(COW_TEXTURES_SPECKLED, speckled, r -> r != 0);
+            addTextureToAnimal(COW_TEXTURES_HOOVES, hooves, null);
+            addTextureToAnimal(COW_TEXTURES_EYES, 0, null);
+            addTextureToAnimal(COW_TEXTURES_HORNS, horn, null);
+            addTextureToAnimal(COW_TEXTURES_COAT, coat, null);
         }
     }
 
@@ -972,121 +907,120 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     public Colouration getRgb() {
         this.colouration = super.getRgb();
         if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
-            int[] genesForText = getSharedGenes();
-            String extention = "wildtype";
+            Genes genes = getSharedGenes();
+            if (genes != null) {
+                int[] genesForText = genes.getAutosomalGenes();
+                String extention = "wildtype";
 
-            if (genesForText == null || genesForText[0] == 0) {
-                return null;
-            }
+                float blackHue = 0.0F;
+                float blackSaturation = 0.05F;
+                float blackBrightness = 0.05F;
 
-            float blackHue = 0.0F;
-            float blackSaturation = 0.05F;
-            float blackBrightness = 0.05F;
+                float redHue = 0.05F;
+                float redSaturation = 0.57F;
+                float redBrightness = 0.55F;
 
-            float redHue = 0.05F;
-            float redSaturation = 0.57F;
-            float redBrightness = 0.55F;
-
-            if (genesForText[0] == 1 || genesForText[1] == 1) {
-                //black cow
-                redHue = blackHue;
-                redSaturation = blackSaturation;
-                redBrightness = blackBrightness;
-                extention = "black";
-            } else if (genesForText[0] != 2 && genesForText[1] != 2){
-                if (genesForText[0] == 3 || genesForText[1] == 3) {
-                    if (genesForText[0] != 4 && genesForText[1] != 4) {
-                        //red cow as in red angus, red hereford
-                        blackHue = Colouration.mixColours(redHue, 0.0F, 0.5F);
-                        blackSaturation = Colouration.mixColours(redSaturation, 1.0F, 0.5F);
-                        blackBrightness = Colouration.mixColours(redBrightness, blackBrightness, 0.75F);
-                        extention = "red";
-                    } //else red and black wildtype colouration
-                } else if (genesForText[0] == 4 || genesForText[1] == 4) {
-                    //cow is grey as in brahman, guzerat, and probably hungarian grey
-                    redHue = 0.1F;
-                    redSaturation = 0.075F;
-                    redBrightness = 0.9F;
+                if (genesForText[0] == 1 || genesForText[1] == 1) {
+                    //black cow
+                    redHue = blackHue;
+                    redSaturation = blackSaturation;
+                    redBrightness = blackBrightness;
+                    extention = "black";
+                } else if (genesForText[0] != 2 && genesForText[1] != 2) {
+                    if (genesForText[0] == 3 || genesForText[1] == 3) {
+                        if (genesForText[0] != 4 && genesForText[1] != 4) {
+                            //red cow as in red angus, red hereford
+                            blackHue = Colouration.mixColours(redHue, 0.0F, 0.5F);
+                            blackSaturation = Colouration.mixColours(redSaturation, 1.0F, 0.5F);
+                            blackBrightness = Colouration.mixColours(redBrightness, blackBrightness, 0.75F);
+                            extention = "red";
+                        } //else red and black wildtype colouration
+                    } else if (genesForText[0] == 4 || genesForText[1] == 4) {
+                        //cow is grey as in brahman, guzerat, and probably hungarian grey
+                        redHue = 0.1F;
+                        redSaturation = 0.075F;
+                        redBrightness = 0.9F;
 //                    if (genesForText[0] == 4 && genesForText[1] == 4) {
 //                        //cow is indus white
 //                        blackSaturation = redSaturation;
 //                        blackBrightness = mixColours(redBrightness, blackBrightness, 0.25F);
 //                        //TODO homozygous indus white needs to restrict the spread of black pigment to tips.
 //                    }
-                    //else its "blue" possibly carrot top..
-                    //TODO do something about carrot top
-                } else if (genesForText[0] == 5 && genesForText[1] == 5) {
-                    //red cow as in red brahman and red gyr, indistinguishable from taros red
-                    blackHue = Colouration.mixColours(redHue, 0.0F, 0.5F);
-                    blackSaturation = Colouration.mixColours(redSaturation, 1.0F, 0.5F);
-                    blackBrightness = Colouration.mixColours(redBrightness, blackBrightness, 0.75F);
-                    extention = "red";
-                }
-            } //else red and black wildtype colouration
+                        //else its "blue" possibly carrot top..
+                        //TODO do something about carrot top
+                    } else if (genesForText[0] == 5 && genesForText[1] == 5) {
+                        //red cow as in red brahman and red gyr, indistinguishable from taros red
+                        blackHue = Colouration.mixColours(redHue, 0.0F, 0.5F);
+                        blackSaturation = Colouration.mixColours(redSaturation, 1.0F, 0.5F);
+                        blackBrightness = Colouration.mixColours(redBrightness, blackBrightness, 0.75F);
+                        extention = "red";
+                    }
+                } //else red and black wildtype colouration
 
-            if (genesForText[120] == 2 || genesForText[121] == 2) {
-                //indus dilution
-                blackHue = redHue;
-                blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
-                redHue = redHue + 0.01F;
-                redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.48F);
-                redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.55F);
-                blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.25F);
-            }
-
-            if (genesForText[2] == 2 && genesForText[3] == 2) {
-                //typical bos taros dilution in murray grey and highland cattle
-
-            } else if (genesForText[2] == 2 || genesForText[3] == 2) {
-                //typical bos taros dilution in murray grey and highland cattle
-                if (extention.equals("black")) {
-                    redHue = Colouration.mixColours(redHue, 0.1F, 0.75F);
-                    redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.1F);
-                    redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.4F);
-                    blackHue = Colouration.mixColours(blackHue, redHue, 0.5F);
-                    blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
-                    blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.45F);
-                } else if (!extention.equals("red")) {
-                    redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.1F);
-                    redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.4F);
+                if (genesForText[120] == 2 || genesForText[121] == 2) {
+                    //indus dilution
                     blackHue = redHue;
-                    redHue = Colouration.mixColours(redHue, 0.1F, 0.75F);
-                    blackSaturation = redSaturation;
+                    blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
+                    redHue = redHue + 0.01F;
+                    redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.48F);
+                    redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.55F);
                     blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.25F);
-                } else {
+                }
+
+                if (genesForText[2] == 2 && genesForText[3] == 2) {
+                    //typical bos taros dilution in murray grey and highland cattle
+
+                } else if (genesForText[2] == 2 || genesForText[3] == 2) {
+                    //typical bos taros dilution in murray grey and highland cattle
+                    if (extention.equals("black")) {
+                        redHue = Colouration.mixColours(redHue, 0.1F, 0.75F);
+                        redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.1F);
+                        redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.4F);
+                        blackHue = Colouration.mixColours(blackHue, redHue, 0.5F);
+                        blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
+                        blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.45F);
+                    } else if (!extention.equals("red")) {
+                        redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.1F);
+                        redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.4F);
+                        blackHue = redHue;
+                        redHue = Colouration.mixColours(redHue, 0.1F, 0.75F);
+                        blackSaturation = redSaturation;
+                        blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.25F);
+                    } else {
 //                    blackHue = mixColours(blackHue, redHue, 0.5F);
 //                    blackSaturation = mixColours(blackSaturation, redSaturation, 0.5F);
-                    redHue = Colouration.mixColours(redHue, 0.1F, 0.80F);
-                    redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.1F);
-                    redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.4F);
-                    blackHue = Colouration.mixColours(blackHue, redHue, 0.6F);
-                    blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
-                    blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.4F);
+                        redHue = Colouration.mixColours(redHue, 0.1F, 0.80F);
+                        redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.1F);
+                        redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.4F);
+                        blackHue = Colouration.mixColours(blackHue, redHue, 0.6F);
+                        blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
+                        blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.4F);
+                    }
                 }
+
+
+                //puts final values into array for processing
+                float[] melanin = {blackHue, blackSaturation, blackBrightness};
+                float[] pheomelanin = {redHue, redSaturation, redBrightness};
+
+                //checks that numbers are within the valid range
+                for (int i = 0; i <= 2; i++) {
+                    if (melanin[i] > 1.0F) {
+                        melanin[i] = 1.0F;
+                    } else if (melanin[i] < 0.0F) {
+                        melanin[i] = 0.0F;
+                    }
+                    if (pheomelanin[i] > 1.0F) {
+                        pheomelanin[i] = 1.0F;
+                    } else if (pheomelanin[i] < 0.0F) {
+                        pheomelanin[i] = 0.0F;
+                    }
+                }
+
+                this.colouration.setMelaninColour(Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]));
+                this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
+
             }
-
-
-            //puts final values into array for processing
-            float[] melanin = {blackHue, blackSaturation, blackBrightness};
-            float[] pheomelanin = {redHue, redSaturation, redBrightness};
-
-            //checks that numbers are within the valid range
-            for (int i = 0; i <= 2; i++) {
-                if (melanin[i] > 1.0F) {
-                    melanin[i] = 1.0F;
-                } else if (melanin[i] < 0.0F) {
-                    melanin[i] = 0.0F;
-                }
-                if (pheomelanin[i] > 1.0F) {
-                    pheomelanin[i] = 1.0F;
-                } else if (pheomelanin[i] < 0.0F) {
-                    pheomelanin[i] = 0.0F;
-                }
-            }
-
-            this.colouration.setMelaninColour(Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]));
-            this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
-
         }
 
         return this.colouration;
@@ -1094,6 +1028,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     @Override
     protected void setMaxBagSize(){
+        int[] genes = this.genetics.getAutosomalGenes();
         float maxBagSize = 0.0F;
 
         if (!this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())){
@@ -1180,15 +1115,33 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
             itemStack.interactWithEntity(entityPlayer, this, hand);
             return true;
         }
-//        else if (this.getSaddled() && !this.isBeingRidden()) {
-//            if (!this.world.isRemote) {
-//                entityPlayer.startRiding(this);
-//            }
-//
-//            return true;
-//        } else if (item == Items.SADDLE){
-//            return this.saddleCow(itemStack, entityPlayer, this);
-//        }
+
+        /**
+        if (item == Items.BUCKET || item instanceof MixableMilkBucket && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
+            int currentMilk = getMilkAmount();
+            int milkColour = 16777215;
+            float milkFat = 0.037F;
+            ItemStack milkbucket = new ItemStack(ModItems.MIXABLE_MILK);
+            int fillamount;
+            if (item instanceof MixableMilkBucket) {
+                fillamount = ((MixableMilkBucket) milkbucket.getItem()).getSpaceLeft();
+                fillamount = currentMilk >= fillamount ? fillamount : currentMilk;
+            } else {
+                fillamount = currentMilk;
+            }
+
+            ((MixableMilkBucket)milkbucket.getItem()).mix(milkbucket, fillamount >= 6 ? 6 : fillamount, milkColour, milkFat, MixableMilkBucket.MilkType.COW, MixableMilkBucket.InoculationType.NONE);
+            setMilkAmount(currentMilk - ((MixableMilkBucket)milkbucket.getItem()).getSpaceLeft());
+
+            entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
+            itemStack.shrink(1);
+            if (itemStack.isEmpty()) {
+                entityPlayer.setHeldItem(hand, milkbucket);
+            } else if (!entityPlayer.inventory.addItemStackToInventory(milkbucket)) {
+                entityPlayer.dropItem(milkbucket, false);
+            }
+        }
+         */
 
         if ((item == Items.BUCKET || item == ModItems.ONESIXTH_MILK_BUCKET || item == ModItems.ONETHIRD_MILK_BUCKET || item == ModItems.HALF_MILK_BUCKET || item == ModItems.TWOTHIRDS_MILK_BUCKET || item == ModItems.FIVESIXTHS_MILK_BUCKET || item == ModItems.HALF_MILK_BOTTLE || item == Items.GLASS_BOTTLE) && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;
@@ -1283,93 +1236,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
         return super.processInteract(entityPlayer, hand);
     }
 
-
-//    public boolean saddleCow(ItemStack stack, PlayerEntity playerIn, LivingEntity target) {
-//        EnhancedCow entity = (EnhancedCow)target;
-//        if (entity.isAlive() && !entity.getSaddled() && !entity.isChild()) {
-//            entity.setSaddled(true);
-//            entity.world.playSound(playerIn, entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_PIG_SADDLE, SoundCategory.NEUTRAL, 0.5F, 1.0F);
-//            stack.shrink(1);
-//            return true;
-//        }
-//
-//        return false;
-//    }
-
     protected void dropInventory() {
         super.dropInventory();
     }
-
-//    public boolean getSaddled() {
-//        return this.dataManager.get(SADDLED);
-//    }
-//
-//    public void setSaddled(boolean saddled) {
-//        if (saddled) {
-//            this.dataManager.set(SADDLED, true);
-//        } else {
-//            this.dataManager.set(SADDLED, false);
-//        }
-//    }
-//
-//    public void travel(Vec3d p_213352_1_) {
-//        if (this.isAlive()) {
-//            Entity entity = this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
-//            if (this.isBeingRidden() && this.canBeSteered()) {
-//                this.rotationYaw = entity.rotationYaw;
-//                this.prevRotationYaw = this.rotationYaw;
-//                this.rotationPitch = entity.rotationPitch * 0.5F;
-//                this.setRotation(this.rotationYaw, this.rotationPitch);
-//                this.renderYawOffset = this.rotationYaw;
-//                this.rotationYawHead = this.rotationYaw;
-//                this.stepHeight = 1.0F;
-//                this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
-//                if (this.boosting && this.boostTime++ > this.totalBoostTime) {
-//                    this.boosting = false;
-//                }
-//
-//                if (this.canPassengerSteer()) {
-//                    float f = (float)this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * 0.225F;
-//                    if (this.boosting) {
-//                        f += f * 1.15F * MathHelper.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
-//                    }
-//
-//                    this.setAIMoveSpeed(f);
-//                    super.travel(new Vec3d(0.0D, 0.0D, 1.0D));
-//                    this.newPosRotationIncrements = 0;
-//                } else {
-//                    this.setMotion(Vec3d.ZERO);
-//                }
-//
-//                this.prevLimbSwingAmount = this.limbSwingAmount;
-//                double d1 = this.getPosX() - this.prevPosX;
-//                double d0 = this.getPosZ() - this.prevPosZ;
-//                float f1 = MathHelper.sqrt(d1 * d1 + d0 * d0) * 4.0F;
-//                if (f1 > 1.0F) {
-//                    f1 = 1.0F;
-//                }
-//
-//                this.limbSwingAmount += (f1 - this.limbSwingAmount) * 0.4F;
-//                this.limbSwing += this.limbSwingAmount;
-//            } else {
-//                this.stepHeight = 0.5F;
-//                this.jumpMovementFactor = 0.02F;
-//                super.travel(p_213352_1_);
-//            }
-//        }
-//    }
-//
-//    public boolean boost() {
-//        if (this.boosting) {
-//            return false;
-//        } else {
-//            this.boosting = true;
-//            this.boostTime = 0;
-//            this.totalBoostTime = this.getRNG().nextInt(841) + 140;
-//            this.getDataManager().set(BOOST_TIME, this.totalBoostTime);
-//            return true;
-//        }
-//    }
 
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
@@ -1393,43 +1262,15 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
         this.motherUUID = compound.getString("MotherUUID");
 
-        if (genes[82] == 0) {
-            generateHornGenes(genes);
-        }
-
 //        this.setSaddled(compound.getBoolean("Saddle"));
 
         configureAI();
     }
 
-    public int[] getCalfGenes(int[] mitosis, int[] mateMitosis) {
-        Random rand = new Random();
-        int[] calfGenes = new int[GENES_LENGTH];
-
-        for (int i = 0; i < genes.length; i = (i + 2)) {
-            boolean thisOrMate = rand.nextBoolean();
-            if (thisOrMate) {
-                calfGenes[i] = mitosis[i];
-                calfGenes[i+1] = mateMitosis[i+1];
-            } else {
-                calfGenes[i] = mateMitosis[i];
-                calfGenes[i+1] = mitosis[i+1];
-            }
-        }
-
-        return calfGenes;
-    }
-
-
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, 0, GENES_LENGTH, getAdultAge(), 64800, 108000);
-    }
-
-    @Override
-    protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
-        return getCalfGenes(mitosis, mateMitosis);
+        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 64800, 108000);
     }
 
     @Override
@@ -1438,977 +1279,14 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
         configureAI();
     }
 
-    protected int[] createInitialGenes(IWorld inWorld) {
-        int[] initialGenes = new int[GENES_LENGTH];
-        //TODO create biome WTC variable [hot and dry biomes, hot and wet biomes, cold biomes] WTC is all others
-        int wildType = 2;
-        Biome biome = inWorld.getBiome(new BlockPos(this));
-
-        if (biome.getDefaultTemperature() >= 0.9F) // hot
-        {
-            wildType = 1;
-        }else if (biome.getCategory().equals(Biome.Category.PLAINS)) {
-            wildType = 3;
-        } else if (biome.getCategory().equals(Biome.Category.MUSHROOM)) {
-            wildType = 4;
-        }
-
-
-        if (false) {
-            //THE DNA PRINTER-5069 !!!!!
-            return new int[]{2, 1, 1, 1, 2, 3, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 4, 5, 3, 3, 5, 5, 2, 2, 3, 3, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 2, 1, 1, 2, 2, 7821, 5728, 49761, 705117, 5995, 5995, 411, 411, 143, 627, 610, 162, 459, 314, 64, 30, 642, 309, 471, 957, 708, 708, 182, 963, 422, 422, 1, 1, 1, 1
-            };
-        }
-
-        //Extension [ Dom.Black, Wildtype+, red, indusWhite, indusRed ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[0] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
-        } else {
-            initialGenes[0] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[1] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
-        } else {
-            initialGenes[1] = (2);
-        }
-
-        //Dilution [ wildtype, dilute]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[2] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[3] = (1);
-
-        } else {
-            initialGenes[2] = (1);
-            initialGenes[3] = (1);
-        }
-
-        //Agouti [ Black enhancer, Wildtype+, white-bellied fawn, brindle ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[4] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[4] = (2);
-            }else {
-                initialGenes[4] = (2);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[5] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[5] = (3);
-            }else {
-                initialGenes[5] = (2);
-            }
-        }
-
-        //Dominant Red *rare gene [ Dom.red, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[6] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[7] = (2);
-
-        } else {
-            initialGenes[6] = (2);
-            initialGenes[7] = (2);
-        }
-
-        //Roan [wildtype, white roan] random sterility in 'females' with 2 mutations
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[8] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[8] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[9] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[9] = (1);
-        }
-
-        //Chocoalte [wildtype, chocolate] as in dexter cattle
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[10] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[11] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[11] = (1);
-        }
-
-        //Horns [polled, horned]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[12] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[12] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[13] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[13] = (2);
-        }
-
-
-        //Speckled Spots [speckled, wildtype+]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[14] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[14] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[15] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[15] = (2);
-        }
-
-        //White face and other spots [whiteface1, border spotted, wildtype+, piebald]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[16] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            if (wildType == 3) {
-                initialGenes[16] = (4);
-            } else {
-                initialGenes[16] = (3);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[17] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            if (wildType == 3) {
-                initialGenes[17] = (4);
-            } else {
-                initialGenes[17] = (3);
-            }
-        }
-
-        //belted [belted, blaze, brockling, wildtype]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[18] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            initialGenes[18] = (4);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[19] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            initialGenes[19] = (4);
-        }
-
-        //colour sided [colour sided, wildtype]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[20] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[21] = (2);
-        }
-
-        //whiteface gene expression controller [+spots, normal, -spots, +backstripe]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[22] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            initialGenes[22] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[23] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            initialGenes[23] = (2);
-        }
-
-        //shading (white nose ring) [no nose ring, wildtype, extended mealy]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[24] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[24] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[25] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[25] = (2);
-        }
-
-        //bulldog dwarfism [dwarf, wildtype]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[27] = (2);
-
-        } else {
-            initialGenes[26] = (2);
-            initialGenes[27] = (2);
-        }
-
-        //proportionate dwarfism [wildtype, dwarf]
-        if (wildType == 1){
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[28] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[29] = (1);
-            }
-        }else {
-            initialGenes[28] = (1);
-            initialGenes[29] = (1);
-        }
-
-        //size genes reducer [wildtype, smaller smaller smallest...] adds milk fat [none to most]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[30] = (ThreadLocalRandom.current().nextInt(15) + 1);
-
-        } else {
-            initialGenes[30] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[31] = (ThreadLocalRandom.current().nextInt(15) + 1);
-
-        } else {
-            initialGenes[31] = (1);
-        }
-
-        //size genes adder [wildtype, bigger bigger biggest...]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[32] = (ThreadLocalRandom.current().nextInt(15) + 1);
-
-        } else {
-            initialGenes[32] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[33] = (ThreadLocalRandom.current().nextInt(15) + 1);
-
-        } else {
-            initialGenes[33] = (1);
-        }
-
-        //size genes varient1 [wildtype, smaller, smallest] suppresses milk fat [none to most]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[34] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[34] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[35] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[35] = (1);
-        }
-
-        //size genes varient2 [smallest, smaller, wildtype] suppresses milk fat [none to most]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[36] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[36] = (3);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[37] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[37] = (3);
-        }
-
-        //hump size [none, smallest, smaller, medium, bigger, biggest]  reduces milk production [ biggest sizes only]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            if (wildType == 1){
-                initialGenes[38] = (ThreadLocalRandom.current().nextInt(3) + 4);
-            }else{
-                initialGenes[38] = (ThreadLocalRandom.current().nextInt(3) + 1);
-            }
-        } else {
-            if (wildType == 1){
-                initialGenes[38] = (4);
-            }else {
-                initialGenes[38] = (1);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            if (wildType == 1){
-                initialGenes[39] = (ThreadLocalRandom.current().nextInt(4) + 3);
-            }else{
-                initialGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            }
-        } else {
-            if (wildType == 1){
-                initialGenes[39] = (5);
-            }else{
-                initialGenes[39] = (1);
-            }
-        }
-
-        //hump height [tallest, tall, medium, short] reduces milk production [tall sizes only]
-        if (wildType == 1) {
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[40] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-            } else {
-                initialGenes[40] = (3);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[41] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-            } else {
-                initialGenes[41] = (3);
-            }
-        }else{
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 3);
-
-            } else {
-                initialGenes[40] = (4);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[41] = (ThreadLocalRandom.current().nextInt(2) + 3);
-
-            } else {
-                initialGenes[41] = (4);
-            }
-        }
-
-        //ear size [smallest, smaller, normal, long, longest]
-        if (wildType == 1){
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[42] = (ThreadLocalRandom.current().nextInt(3) + 3);
-
-            } else {
-                initialGenes[42] = (5);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[43] = (ThreadLocalRandom.current().nextInt(3) + 3);
-
-            } else {
-                initialGenes[43] = (5);
-            }
-        }else{
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[42] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[42] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[43] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-            } else {
-                initialGenes[43] = (2);
-            }
-        }
-
-        //ear size suppressor [smaller ears, longer ears]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[44] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[44] = (2);
-            }else{
-                initialGenes[44] = (1);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[45] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[45] = (2);
-            }else{
-                initialGenes[45] = (1);
-            }
-        }
-
-        //ear floppiness [stiffer, normal, floppier, floppiest]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[46] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[46] = (3);
-            }else{
-                initialGenes[46] = (2);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[47] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[47] = (3);
-            }else{
-                initialGenes[47] = (2);
-            }
-        }
-
-        //coat smoothness [smooth, normal] (this gives a slick coat like brahma and suppresses furry coat genes)
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[48] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[48] = (1);
-            }else{
-                initialGenes[48] = (2);
-            }
-
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[49] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[49] = (1);
-            }else{
-                initialGenes[49] = (2);
-            }
-        }
-
-        //Furry coat 1 [normal, furry] reduces milk production [least to most]
-        if (wildType == 1){
-            initialGenes[50] = (1);
-            initialGenes[51] = (1);
-            initialGenes[52] = (1);
-            initialGenes[53] = (1);
-        }else {
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[50] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[50] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[51] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[51] = (1);
-            }
-
-            //furry coat 2 [normal, furry] reduces milk production [least to most]
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[52] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[52] = (1);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[53] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[53] = (1);
-            }
-        }
-
-        //body type [smallest to largest] reduces milk production and fat harshly [least to most] increases meat drops proportionally
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[54] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[54] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[55] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[55] = (2);
-        }
-
-        //A1 vs A2 milk cause why not [A1, A2]
-            initialGenes[56] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[57] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        //Golden Milk 1[white, white, gold]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[58] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[58] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[59] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[59] = (2);
-        }
-
-        //Golden Milk 2[white, cream, gold]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[60] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[60] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[61] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[61] = (2);
-        }
-
-        //Milk Production Base 1[smallest to largest]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[62] = (ThreadLocalRandom.current().nextInt(10) + 1);
-
-        } else {
-            initialGenes[62] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[63] = (ThreadLocalRandom.current().nextInt(10) + 1);
-
-        } else {
-            initialGenes[63] = (2);
-        }
-
-        //Milk Production Base 2[smallest to largest] reduces milk fat [least to most]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[64] = (ThreadLocalRandom.current().nextInt(10) + 1);
-
-        } else {
-            initialGenes[64] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[65] = (ThreadLocalRandom.current().nextInt(10) + 1);
-
-        } else {
-            initialGenes[65] = (2);
-        }
-
-        //Milk Fat Base 1 [low fat to high fat] increases production inversely [high production to low production]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[66] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
-        } else {
-            initialGenes[66] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[67] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
-        } else {
-            initialGenes[67] = (2);
-        }
-
-        //Milk Fat Base 2
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[68] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
-        } else {
-            initialGenes[68] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[69] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
-        } else {
-            initialGenes[69] = (2);
-        }
-
-        //horn nub controller 1 [taurus, indus]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[70] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[70] = (2);
-            }else{
-                initialGenes[70] = (1);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[71] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[71] = (2);
-            }else{
-                initialGenes[71] = (1);
-            }
-        }
-
-        //horn nub controller 2 [taurus, medium, indus]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[72] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[72] = (3);
-            }else{
-                initialGenes[72] = (1);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[73] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[73] = (3);
-            }else{
-                initialGenes[73] = (1);
-            }
-        }
-
-        //horn nub controller 3 [indus, taurus]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[74] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[74] = (1);
-            }else{
-                initialGenes[74] = (2);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[75] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[75] = (1);
-            }else{
-                initialGenes[75] = (2);
-            }
-        }
-
-        //african horn gene [african horned, wildtype]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[76] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[76] = (1);
-            }else {
-                initialGenes[76] = (2);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[77] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 1){
-                initialGenes[77] = (1);
-            }else {
-                initialGenes[77] = (2);
-            }
-        }
-
-        //scur gene [scurs, wildtype]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[78] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[78] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[79] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[79] = (1);
-        }
-
-        //cow horn length modifier [wildtype, longer horns 1, shorter horns 2, shorter horns 3]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[80] = (ThreadLocalRandom.current().nextInt(4) + 1);
-        } else {
-            initialGenes[80] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[81] = (ThreadLocalRandom.current().nextInt(4) + 1);
-
-        } else {
-            initialGenes[81] = (1);
-        }
-
-        generateHornGenes(initialGenes);
-
-        //parasitic immunity gene
-        if (wildType == 4) {
-            initialGenes[118] = 2;
-            initialGenes[119] = 2;
-        } else {
-            initialGenes[118] = 1;
-            initialGenes[119] = 1;
-        }
-
-        //recessive dilution
-        if (wildType == 2) {
-            initialGenes[120] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[121] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[120] = 1;
-            initialGenes[121] = 1;
-        }
-
-        return initialGenes;
+    @Override
+    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+        return new CowGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
 
-    private void generateHornGenes(int[] genesArray) {
-        //horn shortener [wildtype, shorter horns]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[82] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            genesArray[82] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[83] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            genesArray[83] = (2);
-        }
-
-        //modifier [wildtype, ...]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[84] = (ThreadLocalRandom.current().nextInt(4) + 1);
-        } else {
-            genesArray[84] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[85] = (ThreadLocalRandom.current().nextInt(4) + 1);
-        } else {
-            genesArray[85] = (1);
-        }
-
-        //cow horn scale 1 [wildtype, 1.25]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[86] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            genesArray[86] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[87] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            genesArray[87] = (1);
-        }
-
-        //cow horn scale 2 [wildtype, 1.25]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[88] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            genesArray[88] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[89] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            genesArray[89] = (1);
-        }
-
-        // horn scale 3 [wildtype, 2.0]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[90] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            genesArray[90] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[91] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            genesArray[91] = (1);
-        }
-
-        //cow horn smoother
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[92] = (ThreadLocalRandom.current().nextInt(9999) + 1);
-
-        } else {
-            genesArray[92] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[93] = (ThreadLocalRandom.current().nextInt(9999) + 1);
-
-        } else {
-            genesArray[93] = (1);
-        }
-
-        //cow horn twist ... place matches following horn piece numbers { 4 5 6 7 8 9 }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[94] = (ThreadLocalRandom.current().nextInt(999999) + 1);
-
-        } else {
-            genesArray[94] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[95] = (ThreadLocalRandom.current().nextInt(999999) + 1);
-
-        } else {
-            genesArray[95] = (1);
-        }
-
-        //cow horn base twist  ... place matches following horn piece numbers { *total twist mod* 1 2 3 }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[96] = (ThreadLocalRandom.current().nextInt(9999) + 1);
-
-        } else {
-            genesArray[96] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[97] = (ThreadLocalRandom.current().nextInt(9999) + 1);
-
-        } else {
-            genesArray[97] = (1);
-        }
-
-        // cow horn root
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[98] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[98] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[99] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[99] = (1);
-        }
-
-        //cow horn1 X and Z
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[100] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[100] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[101] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[101] = (1);
-        }
-
-        //cow horn2 X and Z
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[102] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[102] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[103] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[103] = (1);
-        }
-
-        //cow horn3 X and Z
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[104] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[104] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[105] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[105] = (1);
-        };
-
-        //cow horn4 X and Z
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[106] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[106] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[107] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[107] = (1);
-        }
-
-        //cow horn5 X and Z
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[108] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[108] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[109] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[109] = (1);
-        }
-
-        //cow horn6 X and Z
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[110] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[110] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[111] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[111] = (1);
-        }
-
-        //cow horn7 X and Z
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[112] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[112] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[113] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[113] = (1);
-        }
-
-        //cow horn8 X and Z
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[114] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[114] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[115] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[115] = (1);
-        }
-
-        //cow horn9 X and Z
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[116] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[116] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            genesArray[117] = (ThreadLocalRandom.current().nextInt(999) + 1);
-
-        } else {
-            genesArray[117] = (1);
-        }
+    @Override
+    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+        return new CowGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 
     protected void configureAI() {

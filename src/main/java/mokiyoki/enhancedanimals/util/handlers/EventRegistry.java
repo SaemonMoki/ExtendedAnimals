@@ -92,7 +92,7 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK, ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSE_GRASS_BLOCK, ModBlocks.PATCHY_MYCELIUM_BLOCK, EGG_CARTON, ModBlocks.GROWABLE_ALLIUM, ModBlocks.GROWABLE_AZURE_BLUET, ModBlocks.GROWABLE_BLUE_ORCHID, ModBlocks.GROWABLE_CORNFLOWER, ModBlocks.GROWABLE_DANDELION, ModBlocks.GROWABLE_OXEYE_DAISY, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_ROSE_BUSH, ModBlocks.GROWABLE_SUNFLOWER, ModBlocks.GROWABLE_TALLGRASS, ModBlocks.GROWABLE_LARGEFERN
+        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK, ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSEGRASS_BLOCK, ModBlocks.PATCHYMYCELIUM_BLOCK, EGG_CARTON, ModBlocks.GROWABLE_ALLIUM, ModBlocks.GROWABLE_AZURE_BLUET, ModBlocks.GROWABLE_BLUE_ORCHID, ModBlocks.GROWABLE_CORNFLOWER, ModBlocks.GROWABLE_DANDELION, ModBlocks.GROWABLE_OXEYE_DAISY, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_ROSE_BUSH, ModBlocks.GROWABLE_SUNFLOWER, ModBlocks.GROWABLE_TALL_GRASS, ModBlocks.GROWABLE_LARGE_FERN
         };
             event.getRegistry().registerAll(blocks);
     }
@@ -100,39 +100,39 @@ public class EventRegistry {
     @SubscribeEvent
     public static void onRegisterItems(final RegistryEvent.Register<Item> event) {
         final Item[] itemEggs = {ModItems.Egg_White, ModItems.Egg_CreamLight, ModItems.Egg_Cream, ModItems.Egg_CreamDark, ModItems.Egg_CreamDarkest, ModItems.Egg_CarmelDark, ModItems.Egg_Garnet, ModItems.Egg_PinkLight, ModItems.Egg_Pink, ModItems.Egg_PinkDark, ModItems.Egg_PinkDarkest, ModItems.Egg_CherryDark, ModItems.Egg_Plum, ModItems.Egg_BrownLight, ModItems.Egg_Brown, ModItems.Egg_BrownDark, ModItems.Egg_Chocolate, ModItems.Egg_ChocolateDark, ModItems.Egg_ChocolateCosmos,
-                                 ModItems.Egg_Blue, ModItems.Egg_GreenLight, ModItems.Egg_GreenYellow, ModItems.Egg_OliveLight, ModItems.Egg_Olive, ModItems.Egg_OliveDark, ModItems.Egg_Army, ModItems.Egg_Mint, ModItems.Egg_Green, ModItems.Egg_GreenDark, ModItems.Egg_Pine, ModItems.Egg_PineDark, ModItems.Egg_PineBlack, ModItems.Egg_BlueGrey, ModItems.Egg_Grey, ModItems.Egg_GreyGreen, ModItems.Egg_Avocado, ModItems.Egg_AvocadoDark, ModItems.Egg_Feldgrau,
-                                 ModItems.Egg_PowderBlue, ModItems.Egg_Tea, ModItems.Egg_Matcha, ModItems.Egg_MatchaDark, ModItems.Egg_Moss, ModItems.Egg_MossDark, ModItems.Egg_GreenUmber, ModItems.Egg_Celadon, ModItems.Egg_Fern, ModItems.Egg_Asparagus, ModItems.Egg_Hunter, ModItems.Egg_HunterDark, ModItems.Egg_TreeDark, ModItems.EGG_GREYBLUE, ModItems.Egg_GreyNeutral, ModItems.Egg_Laurel, ModItems.Egg_Reseda, ModItems.Egg_GreenPewter, ModItems.Egg_GreyDark,
-                                 ModItems.EGG_PALEBLUE, ModItems.EGG_HONEYDEW, ModItems.Egg_Earth, ModItems.Egg_Khaki, ModItems.Egg_Grullo, ModItems.Egg_KhakiDark, ModItems.Egg_Carob, ModItems.Egg_Jade, ModItems.Egg_Pistachio, ModItems.Egg_Sage, ModItems.Egg_Rosemary, ModItems.Egg_GreenBrown, ModItems.Egg_Umber, ModItems.EGG_COOLGREY, ModItems.Egg_PinkGrey, ModItems.Egg_WarmGrey, ModItems.Egg_Artichoke, ModItems.Egg_MyrtleGrey, ModItems.Egg_Rifle,
-                                 ModItems.Egg_Cream_Spot, ModItems.Egg_CreamDark_Spot, ModItems.Egg_Carmel_Spot, ModItems.Egg_CarmelDark_Spot, ModItems.Egg_Garnet_Spot, ModItems.Egg_Pink_Spot, ModItems.Egg_PinkDark_Spot, ModItems.Egg_Cherry_Spot, ModItems.Egg_CherryDark_Spot, ModItems.Egg_Plum_Spot, ModItems.Egg_BrownLight_Spot, ModItems.Egg_Brown_Spot, ModItems.Egg_BrownDark_Spot, ModItems.Egg_Chocolate_Spot, ModItems.Egg_ChocolateDark_Spot,
-                                 ModItems.Egg_GreenYellow_Spot, ModItems.Egg_OliveLight_Spot, ModItems.Egg_Olive_Spot, ModItems.Egg_OliveDark_Spot, ModItems.Egg_Army_Spot, ModItems.Egg_Mint_Spot, ModItems.Egg_Green_Spot, ModItems.Egg_GreenDark_Spot, ModItems.Egg_Pine_Spot, ModItems.Egg_PineDark_Spot, ModItems.Egg_PineBlack_Spot, ModItems.Egg_Grey_Spot, ModItems.Egg_GreyGreen_Spot, ModItems.Egg_Avocado_Spot, ModItems.Egg_AvocadoDark_Spot, ModItems.Egg_Feldgrau_Spot,
-                                 ModItems.Egg_Matcha_Spot, ModItems.Egg_MatchaDark_Spot, ModItems.EGG_MOSS_SPOT, ModItems.EGG_MOSSDARK_SPOT, ModItems.EGG_GREENUMBER_SPOT, ModItems.EGG_CELADON_SPOT, ModItems.EGG_FERN_SPOT, ModItems.EGG_ASPARAGUS_SPOT, ModItems.EGG_HUNTER_SPOT, ModItems.EGG_HUNTERDARK_SPOT, ModItems.EGG_TREEDARK_SPOT, ModItems.EGG_GREYNEUTRAL_SPOT, ModItems.EGG_LAUREL_SPOT, ModItems.EGG_RESEDA_SPOT, ModItems.EGG_GREENPEWTER_SPOT, ModItems.EGG_GREYDARK_SPOT,
-                                 ModItems.EGG_EARTH_SPOT, ModItems.EGG_KHAKI_SPOT, ModItems.EGG_GRULLO_SPOT, ModItems.EGG_KHAKIDARK_SPOT, ModItems.EGG_CAROB_SPOT, ModItems.EGG_JADE_SPOT, ModItems.EGG_PISTACHIO_SPOT, ModItems.EGG_SAGE_SPOT, ModItems.EGG_ROSEMARY_SPOT, ModItems.EGG_GREENBROWN_SPOT, ModItems.EGG_UMBER_SPOT, ModItems.EGG_PINKGREY_SPOT, ModItems.EGG_WARMGREY_SPOT, ModItems.EGG_ARTICHOKE_SPOT, ModItems.EGG_MYRTLEGREY_SPOT, ModItems.EGG_RIFLE_SPOT,
-                                 ModItems.Egg_Cream_Speckle, ModItems.Egg_CreamDark_Speckle, ModItems.Egg_Carmel_Speckle, ModItems.Egg_CarmelDark_Speckle, ModItems.Egg_Garnet_Speckle, ModItems.Egg_Pink_Speckle, ModItems.Egg_PinkDark_Speckle, ModItems.Egg_Cherry_Speckle, ModItems.Egg_CherryDark_Speckle, ModItems.Egg_Plum_Speckle, ModItems.Egg_BrownLight_Speckle, ModItems.Egg_Brown_Speckle, ModItems.Egg_BrownDark_Speckle, ModItems.Egg_Chocolate_Speckle, ModItems.Egg_ChocolateDark_Speckle,
-                                 ModItems.Egg_GreenYellow_Speckle, ModItems.Egg_OliveLight_Speckle, ModItems.Egg_Olive_Speckle, ModItems.Egg_OliveDark_Speckle, ModItems.Egg_Army_Speckle, ModItems.Egg_Mint_Speckle, ModItems.Egg_Green_Speckle, ModItems.Egg_GreenDark_Speckle, ModItems.Egg_Pine_Speckle, ModItems.Egg_PineDark_Speckle, ModItems.Egg_PineBlack_Speckle, ModItems.Egg_Grey_Speckle, ModItems.Egg_GreyGreen_Speckle, ModItems.Egg_Avocado_Speckle, ModItems.Egg_AvocadoDark_Speckle, ModItems.Egg_Feldgrau_Speckle,
-                                 ModItems.Egg_Matcha_Speckle, ModItems.Egg_MatchaDark_Speckle, ModItems.Egg_Moss_Speckle, ModItems.Egg_MossDark_Speckle, ModItems.Egg_GreenUmber_Speckle, ModItems.Egg_Celadon_Speckle, ModItems.Egg_Fern_Speckle, ModItems.Egg_Asparagus_Speckle, ModItems.Egg_Hunter_Speckle, ModItems.Egg_HunterDark_Speckle, ModItems.Egg_TreeDark_Speckle, ModItems.Egg_GreyNeutral_Speckle, ModItems.Egg_Laurel_Speckle, ModItems.Egg_Reseda_Speckle, ModItems.Egg_GreenPewter_Speckle, ModItems.Egg_GreyDark_Speckle,
-                                 ModItems.Egg_Earth_Speckle, ModItems.Egg_Khaki_Speckle, ModItems.Egg_Grullo_Speckle, ModItems.Egg_KhakiDark_Speckle, ModItems.Egg_Carob_Speckle, ModItems.Egg_Jade_Speckle, ModItems.Egg_Pistachio_Speckle, ModItems.Egg_Sage_Speckle, ModItems.Egg_Rosemary_Speckle, ModItems.Egg_GreenBrown_Speckle, ModItems.Egg_Umber_Speckle, ModItems.Egg_PinkGrey_Speckle, ModItems.Egg_WarmGrey_Speckle, ModItems.Egg_Artichoke_Speckle, ModItems.Egg_MyrtleGrey_Speckle, ModItems.Egg_Rifle_Speckle,
-                                 ModItems.Egg_Cream_Spatter, ModItems.Egg_CreamDark_Spatter, ModItems.Egg_Carmel_Spatter, ModItems.Egg_CarmelDark_Spatter, ModItems.Egg_Garnet_Spatter, ModItems.Egg_Pink_Spatter, ModItems.Egg_PinkDark_Spatter, ModItems.Egg_Cherry_Spatter, ModItems.Egg_CherryDark_Spatter, ModItems.Egg_Plum_Spatter, ModItems.Egg_BrownLight_Spatter, ModItems.Egg_Brown_Spatter, ModItems.Egg_BrownDark_Spatter, ModItems.Egg_Chocolate_Spatter, ModItems.Egg_ChocolateDark_Spatter,
-                                 ModItems.Egg_GreenYellow_Spatter, ModItems.Egg_OliveLight_Spatter, ModItems.Egg_Olive_Spatter, ModItems.Egg_OliveDark_Spatter, ModItems.Egg_Army_Spatter, ModItems.Egg_Mint_Spatter, ModItems.Egg_Green_Spatter, ModItems.Egg_GreenDark_Spatter, ModItems.Egg_Pine_Spatter, ModItems.Egg_PineDark_Spatter, ModItems.Egg_PineBlack_Spatter, ModItems.Egg_Grey_Spatter, ModItems.Egg_GreyGreen_Spatter, ModItems.Egg_Avocado_Spatter, ModItems.Egg_AvocadoDark_Spatter, ModItems.Egg_Feldgrau_Spatter,
-                                 ModItems.Egg_Matcha_Spatter, ModItems.Egg_MatchaDark_Spatter, ModItems.Egg_Moss_Spatter, ModItems.Egg_MossDark_Spatter, ModItems.Egg_GreenUmber_Spatter, ModItems.Egg_Celadon_Spatter, ModItems.Egg_Fern_Spatter, ModItems.Egg_Asparagus_Spatter, ModItems.Egg_Hunter_Spatter, ModItems.Egg_HunterDark_Spatter, ModItems.Egg_TreeDark_Spatter, ModItems.Egg_GreyNeutral_Spatter, ModItems.Egg_Laurel_Spatter, ModItems.Egg_Reseda_Spatter, ModItems.Egg_GreenPewter_Spatter, ModItems.Egg_GreyDark_Spatter,
-                                 ModItems.Egg_Earth_Spatter, ModItems.Egg_Khaki_Spatter, ModItems.Egg_Grullo_Spatter, ModItems.Egg_KhakiDark_Spatter, ModItems.Egg_Carob_Spatter, ModItems.Egg_Jade_Spatter, ModItems.Egg_Pistachio_Spatter, ModItems.Egg_Sage_Spatter, ModItems.Egg_Rosemary_Spatter, ModItems.Egg_GreenBrown_Spatter, ModItems.Egg_Umber_Spatter, ModItems.Egg_PinkGrey_Spatter, ModItems.Egg_WarmGrey_Spatter, ModItems.Egg_Artichoke_Spatter, ModItems.Egg_MyrtleGrey_Spatter, ModItems.Egg_Rifle_Spatter};
+                 ModItems.Egg_Blue, ModItems.Egg_GreenLight, ModItems.Egg_GreenYellow, ModItems.Egg_OliveLight, ModItems.Egg_Olive, ModItems.Egg_OliveDark, ModItems.Egg_Army, ModItems.Egg_Mint, ModItems.Egg_Green, ModItems.Egg_GreenDark, ModItems.Egg_Pine, ModItems.Egg_PineDark, ModItems.Egg_PineBlack, ModItems.Egg_BlueGrey, ModItems.Egg_Grey, ModItems.Egg_GreyGreen, ModItems.Egg_Avocado, ModItems.Egg_AvocadoDark, ModItems.Egg_Feldgrau,
+                 ModItems.Egg_PowderBlue, ModItems.Egg_Tea, ModItems.Egg_Matcha, ModItems.Egg_MatchaDark, ModItems.Egg_Moss, ModItems.Egg_MossDark, ModItems.Egg_GreenUmber, ModItems.Egg_Celadon, ModItems.Egg_Fern, ModItems.Egg_Asparagus, ModItems.Egg_Hunter, ModItems.Egg_HunterDark, ModItems.Egg_TreeDark, ModItems.EGG_GREYBLUE, ModItems.Egg_GreyNeutral, ModItems.Egg_Laurel, ModItems.Egg_Reseda, ModItems.Egg_GreenPewter, ModItems.Egg_GreyDark,
+                 ModItems.EGG_PALEBLUE, ModItems.EGG_HONEYDEW, ModItems.Egg_Earth, ModItems.Egg_Khaki, ModItems.Egg_Grullo, ModItems.Egg_KhakiDark, ModItems.Egg_Carob, ModItems.Egg_Jade, ModItems.Egg_Pistachio, ModItems.Egg_Sage, ModItems.Egg_Rosemary, ModItems.Egg_GreenBrown, ModItems.Egg_Umber, ModItems.EGG_COOLGREY, ModItems.Egg_PinkGrey, ModItems.Egg_WarmGrey, ModItems.Egg_Artichoke, ModItems.Egg_MyrtleGrey, ModItems.Egg_Rifle,
+                 ModItems.Egg_Cream_Spot, ModItems.Egg_CreamDark_Spot, ModItems.Egg_Carmel_Spot, ModItems.Egg_CarmelDark_Spot, ModItems.Egg_Garnet_Spot, ModItems.Egg_Pink_Spot, ModItems.Egg_PinkDark_Spot, ModItems.Egg_Cherry_Spot, ModItems.Egg_CherryDark_Spot, ModItems.Egg_Plum_Spot, ModItems.Egg_BrownLight_Spot, ModItems.Egg_Brown_Spot, ModItems.Egg_BrownDark_Spot, ModItems.Egg_Chocolate_Spot, ModItems.Egg_ChocolateDark_Spot,
+                 ModItems.Egg_GreenYellow_Spot, ModItems.Egg_OliveLight_Spot, ModItems.Egg_Olive_Spot, ModItems.Egg_OliveDark_Spot, ModItems.Egg_Army_Spot, ModItems.Egg_Mint_Spot, ModItems.Egg_Green_Spot, ModItems.Egg_GreenDark_Spot, ModItems.Egg_Pine_Spot, ModItems.Egg_PineDark_Spot, ModItems.Egg_PineBlack_Spot, ModItems.Egg_Grey_Spot, ModItems.Egg_GreyGreen_Spot, ModItems.Egg_Avocado_Spot, ModItems.Egg_AvocadoDark_Spot, ModItems.Egg_Feldgrau_Spot,
+                 ModItems.Egg_Matcha_Spot, ModItems.Egg_MatchaDark_Spot, ModItems.EGG_MOSS_SPOT, ModItems.EGG_MOSSDARK_SPOT, ModItems.EGG_GREENUMBER_SPOT, ModItems.EGG_CELADON_SPOT, ModItems.EGG_FERN_SPOT, ModItems.EGG_ASPARAGUS_SPOT, ModItems.EGG_HUNTER_SPOT, ModItems.EGG_HUNTERDARK_SPOT, ModItems.EGG_TREEDARK_SPOT, ModItems.EGG_GREYNEUTRAL_SPOT, ModItems.EGG_LAUREL_SPOT, ModItems.EGG_RESEDA_SPOT, ModItems.EGG_GREENPEWTER_SPOT, ModItems.EGG_GREYDARK_SPOT,
+                 ModItems.EGG_EARTH_SPOT, ModItems.EGG_KHAKI_SPOT, ModItems.EGG_GRULLO_SPOT, ModItems.EGG_KHAKIDARK_SPOT, ModItems.EGG_CAROB_SPOT, ModItems.EGG_JADE_SPOT, ModItems.EGG_PISTACHIO_SPOT, ModItems.EGG_SAGE_SPOT, ModItems.EGG_ROSEMARY_SPOT, ModItems.EGG_GREENBROWN_SPOT, ModItems.EGG_UMBER_SPOT, ModItems.EGG_PINKGREY_SPOT, ModItems.EGG_WARMGREY_SPOT, ModItems.EGG_ARTICHOKE_SPOT, ModItems.EGG_MYRTLEGREY_SPOT, ModItems.EGG_RIFLE_SPOT,
+                 ModItems.Egg_Cream_Speckle, ModItems.Egg_CreamDark_Speckle, ModItems.Egg_Carmel_Speckle, ModItems.Egg_CarmelDark_Speckle, ModItems.Egg_Garnet_Speckle, ModItems.Egg_Pink_Speckle, ModItems.Egg_PinkDark_Speckle, ModItems.Egg_Cherry_Speckle, ModItems.Egg_CherryDark_Speckle, ModItems.Egg_Plum_Speckle, ModItems.Egg_BrownLight_Speckle, ModItems.Egg_Brown_Speckle, ModItems.Egg_BrownDark_Speckle, ModItems.Egg_Chocolate_Speckle, ModItems.Egg_ChocolateDark_Speckle,
+                 ModItems.Egg_GreenYellow_Speckle, ModItems.Egg_OliveLight_Speckle, ModItems.Egg_Olive_Speckle, ModItems.Egg_OliveDark_Speckle, ModItems.Egg_Army_Speckle, ModItems.Egg_Mint_Speckle, ModItems.Egg_Green_Speckle, ModItems.Egg_GreenDark_Speckle, ModItems.Egg_Pine_Speckle, ModItems.Egg_PineDark_Speckle, ModItems.Egg_PineBlack_Speckle, ModItems.Egg_Grey_Speckle, ModItems.Egg_GreyGreen_Speckle, ModItems.Egg_Avocado_Speckle, ModItems.Egg_AvocadoDark_Speckle, ModItems.Egg_Feldgrau_Speckle,
+                 ModItems.EGG_MATCHA_SPECKLE, ModItems.EGG_MATCHADARK_SPECKLE, ModItems.EGG_MOSS_SPECKLE, ModItems.EGG_MOSSDARK_SPECKLE, ModItems.EGG_GREENUMBER_SPECKLE, ModItems.EGG_CELADON_SPECKLE, ModItems.EGG_FERN_SPECKLE, ModItems.EGG_ASPARAGUS_SPECKLE, ModItems.EGG_HUNTER_SPECKLE, ModItems.EGG_HUNTERDARK_SPECKLE, ModItems.EGG_TREEDARK_SPECKLE, ModItems.EGG_GREYNEUTRAL_SPECKLE, ModItems.EGG_LAUREL_SPECKLE, ModItems.EGG_RESEDA_SPECKLE, ModItems.EGG_GREENPEWTER_SPECKLE, ModItems.EGG_GREYDARK_SPECKLE,
+                 ModItems.EGG_EARTH_SPECKLE, ModItems.EGG_KHAKI_SPECKLE, ModItems.EGG_GRULLO_SPECKLE, ModItems.EGG_KHAKIDARK_SPECKLE, ModItems.EGG_CAROB_SPECKLE, ModItems.EGG_JADE_SPECKLE, ModItems.EGG_PISTACHIO_SPECKLE, ModItems.EGG_SAGE_SPECKLE, ModItems.EGG_ROSEMARY_SPECKLE, ModItems.EGG_GREENBROWN_SPECKLE, ModItems.EGG_UMBER_SPECKLE, ModItems.EGG_PINKGREY_SPECKLE, ModItems.EGG_WARMGREY_SPECKLE, ModItems.EGG_ARTICHOKE_SPECKLE, ModItems.EGG_MYRTLEGREY_SPECKLE, ModItems.EGG_RIFLE_SPECKLE,
+                 ModItems.Egg_Cream_Spatter, ModItems.Egg_CreamDark_Spatter, ModItems.Egg_Carmel_Spatter, ModItems.Egg_CarmelDark_Spatter, ModItems.Egg_Garnet_Spatter, ModItems.Egg_Pink_Spatter, ModItems.Egg_PinkDark_Spatter, ModItems.Egg_Cherry_Spatter, ModItems.Egg_CherryDark_Spatter, ModItems.Egg_Plum_Spatter, ModItems.Egg_BrownLight_Spatter, ModItems.Egg_Brown_Spatter, ModItems.Egg_BrownDark_Spatter, ModItems.Egg_Chocolate_Spatter, ModItems.Egg_ChocolateDark_Spatter,
+                 ModItems.Egg_GreenYellow_Spatter, ModItems.Egg_OliveLight_Spatter, ModItems.Egg_Olive_Spatter, ModItems.Egg_OliveDark_Spatter, ModItems.Egg_Army_Spatter, ModItems.Egg_Mint_Spatter, ModItems.Egg_Green_Spatter, ModItems.Egg_GreenDark_Spatter, ModItems.Egg_Pine_Spatter, ModItems.Egg_PineDark_Spatter, ModItems.Egg_PineBlack_Spatter, ModItems.Egg_Grey_Spatter, ModItems.Egg_GreyGreen_Spatter, ModItems.Egg_Avocado_Spatter, ModItems.Egg_AvocadoDark_Spatter, ModItems.Egg_Feldgrau_Spatter,
+                 ModItems.EGG_MATCHA_SPATTER, ModItems.EGG_MATCHADARK_SPATTER, ModItems.EGG_MOSS_SPATTER, ModItems.EGG_MOSSDARK_SPATTER, ModItems.EGG_GREENUMBER_SPATTER, ModItems.EGG_CELADON_SPATTER, ModItems.EGG_FERN_SPATTER, ModItems.EGG_ASPARAGUS_SPATTER, ModItems.EGG_HUNTER_SPATTER, ModItems.EGG_HUNTERDARK_SPATTER, ModItems.EGG_TREEDARK_SPATTER, ModItems.EGG_GREYNEUTRAL_SPATTER, ModItems.EGG_LAUREL_SPATTER, ModItems.EGG_RESEDA_SPATTER, ModItems.EGG_GREENPEWTER_SPATTER, ModItems.EGG_GREYDARK_SPATTER,
+                 ModItems.EGG_EARTH_SPATTER, ModItems.EGG_KHAKI_SPATTER, ModItems.EGG_GRULLO_SPATTER, ModItems.EGG_KHAKIDARK_SPATTER, ModItems.EGG_CAROB_SPATTER, ModItems.EGG_JADE_SPATTER, ModItems.EGG_PISTACHIO_SPATTER, ModItems.EGG_SAGE_SPATTER, ModItems.EGG_ROSEMARY_SPATTER, ModItems.EGG_GREENBROWN_SPATTER, ModItems.EGG_UMBER_SPATTER, ModItems.EGG_PINKGREY_SPATTER, ModItems.EGG_WARMGREY_SPATTER, ModItems.EGG_ARTICHOKE_SPATTER, ModItems.EGG_MYRTLEGREY_SPATTER, ModItems.EGG_RIFLE_SPATTER};
 
         final Item[] items = {ModItems.RAWCHICKEN_DARKSMALL, ModItems.RAWCHICKEN_DARK, ModItems.RAWCHICKEN_DARKBIG, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_DARK,
                 ModItems.COOKEDCHICKEN_DARKBIG, ModItems.RAWCHICKEN_PALESMALL, ModItems.RAWCHICKEN_PALE, ModItems.COOKEDCHICKEN_PALESMALL, ModItems.COOKEDCHICKEN_PALE,
                 ModItems.RAWRABBIT_SMALL, ModItems.COOKEDRABBIT_SMALL, ModItems.RABBITSTEW_WEAK, ModItems.HALF_MILK_BOTTLE, ModItems.MILK_BOTTLE, ModItems.ONESIXTH_MILK_BUCKET,
                 ModItems.ONETHIRD_MILK_BUCKET, ModItems.HALF_MILK_BUCKET, ModItems.TWOTHIRDS_MILK_BUCKET, ModItems.FIVESIXTHS_MILK_BUCKET,
-                ModItems.BRIDLE_BASIC_LEATHER, ModItems.BRIDLE_BASIC_LEATHER_G, ModItems.BRIDLE_BASIC_LEATHER_D,
-                ModItems.BRIDLE_BASIC_CLOTH, ModItems.BRIDLE_BASIC_CLOTH_G, ModItems.BRIDLE_BASIC_CLOTH_D,
-                ModItems.SADDLE_LEATHER, ModItems.SADDLE_LEATHER_D, ModItems.SADDLE_LEATHER_G, ModItems.SADDLE_LEATHER_W,
-                ModItems.SADDLE_CLOTH, ModItems.SADDLE_CLOTH_G, ModItems.SADDLE_CLOTH_D, ModItems.SADDLE_CLOTH_W,
-                ModItems.SADDLE_LEATHERCLOTHSEAT, ModItems.SADDLE_LEATHERCLOTHSEAT_G, ModItems.SADDLE_LEATHERCLOTHSEAT_D, ModItems.SADDLE_LEATHERCLOTHSEAT_W,
-                ModItems.SADDLE_POMEL_LEATHER, ModItems.SADDLE_POMEL_LEATHER_G, ModItems.SADDLE_POMEL_LEATHER_D, ModItems.SADDLE_POMEL_LEATHER_W,
-                ModItems.SADDLE_POMEL_CLOTH, ModItems.SADDLE_POMEL_CLOTH_G, ModItems.SADDLE_POMEL_CLOTH_D, ModItems.SADDLE_POMEL_CLOTH_W,
-                ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT, ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_G, ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_D, ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_W,
-                ModItems.SADDLE_ENGLISH_LEATHER, ModItems.SADDLE_ENGLISH_LEATHER_G, ModItems.SADDLE_ENGLISH_LEATHER_D, ModItems.SADDLE_ENGLISH_LEATHER_W,
-                ModItems.SADDLE_ENGLISH_CLOTH,ModItems.SADDLE_ENGLISH_CLOTH_G, ModItems.SADDLE_ENGLISH_CLOTH_D, ModItems.SADDLE_ENGLISH_CLOTH_W,
-                ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_G, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_D, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_W,
-                ModItems.COLLAR_LEATHER, ModItems.COLLAR_LEATHER_BELL, ModItems.COLLAR_LEATHER_RING, ModItems.COLLAR_LEATHER_GBELL, ModItems.COLLAR_LEATHER_G, ModItems.COLLAR_LEATHER_DBELL, ModItems.COLLAR_LEATHER_D,
-                ModItems.COLLAR_CLOTH, ModItems.COLLAR_CLOTH_BELL, ModItems.COLLAR_CLOTH_RING, ModItems.COLLAR_CLOTH_GBELL, ModItems.COLLAR_CLOTH_G, ModItems.COLLAR_CLOTH_DBELL, ModItems.COLLAR_CLOTH_D, ModItems.DEBUG_GENE_BOOK};
+                ModItems.BRIDLE_BASIC_LEATHER, ModItems.BRIDLE_BASIC_LEATHER_GOLD, ModItems.BRIDLE_BASIC_LEATHER_DIAMOND,
+                ModItems.BRIDLE_BASIC_CLOTH, ModItems.BRIDLE_BASIC_CLOTH_GOLD, ModItems.BRIDLE_BASIC_CLOTH_DIAMOND,
+                ModItems.SADDLE_BASIC_LEATHER, ModItems.SADDLE_BASIC_LEATHER_DIAMOND, ModItems.SADDLE_BASIC_LEATHER_GOLD, ModItems.SADDLE_BASIC_LEATHER_WOOD,
+                ModItems.SADDLE_BASIC_CLOTH, ModItems.SADDLE_BASIC_CLOTH_GOLD, ModItems.SADDLE_BASIC_CLOTH_DIAMOND, ModItems.SADDLE_BASIC_CLOTH_WOOD,
+                ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT, ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_GOLD, ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_DIAMOND, ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_WOOD,
+                ModItems.SADDLE_BASICPOMEL_LEATHER, ModItems.SADDLE_BASICPOMEL_LEATHER_GOLD, ModItems.SADDLE_BASICPOMEL_LEATHER_DIAMOND, ModItems.SADDLE_BASICPOMEL_LEATHER_WOOD,
+                ModItems.SADDLE_BASICPOMEL_CLOTH, ModItems.SADDLE_BASICPOMEL_CLOTH_GOLD, ModItems.SADDLE_BASICPOMEL_CLOTH_DIAMOND, ModItems.SADDLE_BASICPOMEL_CLOTH_WOOD,
+                ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT, ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_GOLD, ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_DIAMOND, ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_WOOD,
+                ModItems.SADDLE_ENGLISH_LEATHER, ModItems.SADDLE_ENGLISH_LEATHER_GOLD, ModItems.SADDLE_ENGLISH_LEATHER_DIAMOND, ModItems.SADDLE_ENGLISH_LEATHER_WOOD,
+                ModItems.SADDLE_ENGLISH_CLOTH,ModItems.SADDLE_ENGLISH_CLOTH_GOLD, ModItems.SADDLE_ENGLISH_CLOTH_DIAMOND, ModItems.SADDLE_ENGLISH_CLOTH_WOOD,
+                ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_GOLD, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_DIAMOND, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_WOOD,
+                ModItems.COLLAR_BASIC_LEATHER, ModItems.COLLAR_BASIC_LEATHER_IRONBELL, ModItems.COLLAR_BASIC_LEATHER_IRONRING, ModItems.COLLAR_BASIC_LEATHER_GOLDBELL, ModItems.COLLAR_BASIC_LEATHER_GOLDRING, ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL, ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING,
+                ModItems.COLLAR_BASIC_CLOTH, ModItems.COLLAR_BASIC_CLOTH_IRONBELL, ModItems.COLLAR_BASIC_CLOTH_IRONRING, ModItems.COLLAR_BASIC_CLOTH_GOLDBELL, ModItems.COLLAR_BASIC_CLOTH_GOLDRING, ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL, ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING, ModItems.DEBUG_GENE_BOOK};
 
         final Item[] itemBlocks = {
                 new BlockItem(ModBlocks.POST_ACACIA, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_ACACIA.getRegistryName()),
@@ -142,8 +142,8 @@ public class EventRegistry {
                 new BlockItem(ModBlocks.POST_OAK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_OAK.getRegistryName()),
                 new BlockItem(ModBlocks.POST_SPRUCE, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_SPRUCE.getRegistryName()),
                 new BlockItem(ModBlocks.UNBOUNDHAY_BLOCK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.UNBOUNDHAY_BLOCK.getRegistryName()),
-                new BlockItem(ModBlocks.SPARSE_GRASS_BLOCK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.SPARSE_GRASS_BLOCK.getRegistryName()),
-                new BlockItem(ModBlocks.PATCHY_MYCELIUM_BLOCK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.PATCHY_MYCELIUM_BLOCK.getRegistryName()),
+                new BlockItem(ModBlocks.SPARSEGRASS_BLOCK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.SPARSEGRASS_BLOCK.getRegistryName()),
+                new BlockItem(ModBlocks.PATCHYMYCELIUM_BLOCK, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.PATCHYMYCELIUM_BLOCK.getRegistryName()),
                 new BlockItem(ModBlocks.GROWABLE_ALLIUM, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_ALLIUM.getRegistryName()),
                 new BlockItem(ModBlocks.GROWABLE_AZURE_BLUET, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_AZURE_BLUET.getRegistryName()),
                 new BlockItem(ModBlocks.GROWABLE_BLUE_ORCHID, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_BLUE_ORCHID.getRegistryName()),
@@ -154,8 +154,8 @@ public class EventRegistry {
                 new BlockItem(ModBlocks.GROWABLE_FERN, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_FERN.getRegistryName()),
                 new BlockItem(ModBlocks.GROWABLE_ROSE_BUSH, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_ROSE_BUSH.getRegistryName()),
                 new BlockItem(ModBlocks.GROWABLE_SUNFLOWER, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_SUNFLOWER.getRegistryName()),
-                new BlockItem(ModBlocks.GROWABLE_TALLGRASS, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_TALLGRASS.getRegistryName()),
-                new BlockItem(ModBlocks.GROWABLE_LARGEFERN, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_LARGEFERN.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_TALL_GRASS, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_TALL_GRASS.getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_LARGE_FERN, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_LARGE_FERN.getRegistryName()),
                 new BlockItem(EGG_CARTON, new Item.Properties().maxStackSize(1).group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(EGG_CARTON.getRegistryName()),
         };
 
@@ -193,24 +193,7 @@ public class EventRegistry {
                 }
             });
         }
-
         //TODO dispensers should be able to turn hay to unbound hay if they contain a sharp tool and are facing a hay block
-
-//        OreDictionary.registerOre("egg", ModItems.Egg_White);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Cream);
-//        OreDictionary.registerOre("egg", ModItems.Egg_CreamDark);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Pink);
-//        OreDictionary.registerOre("egg", ModItems.Egg_PinkDark);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Brown);
-//        OreDictionary.registerOre("egg", ModItems.Egg_BrownDark);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Blue);
-//        OreDictionary.registerOre("egg", ModItems.Egg_GreenLight);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Green);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Grey);
-//        OreDictionary.registerOre("egg", ModItems.Egg_GreyGreen);
-//        OreDictionary.registerOre("egg", ModItems.Egg_Olive);
-//        OreDictionary.registerOre("egg", ModItems.Egg_GreenDark);
-
     }
 
 
@@ -218,7 +201,7 @@ public class EventRegistry {
 //    public static void registerBlockColourHandlers(final ColorHandlerEvent.Block event) {
 //        final BlockColors blockColors = event.getBlockColors();
 //
-//        blockColors.register(new SparseGrassBlockColour(), ModBlocks.SPARSE_GRASS_BLOCK);
+//        blockColors.register(new SparseGrassBlockColour(), ModBlocks.SPARSEGRASS_BLOCK);
 //    }
 
 
@@ -226,7 +209,7 @@ public class EventRegistry {
 //    public static void registerItemColourHandlers(final ColorHandlerEvent.Item event) {
 //        final ItemColors itemColors = event.getItemColors();
 //
-//        itemColors.register(new SparseGrassItemColour(), ModBlocks.SPARSE_GRASS_BLOCK);
+//        itemColors.register(new SparseGrassItemColour(), ModBlocks.SPARSEGRASS_BLOCK);
 //    }
 
 
@@ -293,7 +276,7 @@ public class EventRegistry {
     }
 
     @SubscribeEvent
-    public static void onLoadComplete(FMLCommonSetupEvent event) {
+    public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
         removeVanillaFromBiomes(ForgeRegistries.BIOMES);
 
         for (Biome biome : ForgeRegistries.BIOMES) {
@@ -312,62 +295,64 @@ public class EventRegistry {
             Iterator<Biome.SpawnListEntry> spawns = biome.getSpawns(EntityClassification.CREATURE).iterator();
 
             ArrayList<Biome.SpawnListEntry> addSpawns = new ArrayList<Biome.SpawnListEntry>();
+            ArrayList<Biome.SpawnListEntry> removeSpawns = new ArrayList<>();
             while (spawns.hasNext()) {
                 Biome.SpawnListEntry entry = spawns.next();
                 //add and remove pigs
                 if (entry.entityType == EntityType.PIG) {
                     if(!EanimodCommonConfig.COMMON.spawnVanillaPigs.get()) {
-                        eventLogger.info("Removed Pigs from Spawn of biome");
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_PIG, 6, 2, 3));
                 }
                 //add and remove sheep
                 if (entry.entityType == EntityType.SHEEP) {
                     if (!EanimodCommonConfig.COMMON.spawnVanillaSheep.get()) {
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_SHEEP, 12, 4, 4));
                 }
                 //add and remove cow
                 if (entry.entityType == EntityType.COW) {
                     if(!EanimodCommonConfig.COMMON.spawnVanillaCows.get()) {
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_COW, 8, 4, 4));
                 }
                 //add and remove llama
                 if (entry.entityType == EntityType.LLAMA) {
                     if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_LLAMA, 4, 2, 3));
                 }
                 //add and remove chicken
                 if (entry.entityType == EntityType.CHICKEN) {
                     if (!EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
-                        eventLogger.info("Removed Chickens from Spawn of biome");
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
                 }
                 //add and remove rabbit
                 if (entry.entityType == EntityType.RABBIT) {
                     if (!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3));
                 }
                 //add and remove mooshroom
                 if (entry.entityType == EntityType.MOOSHROOM) {
                     if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
-                        spawns.remove();
+                        removeSpawns.add(entry);
                     }
                     addSpawns.add(new Biome.SpawnListEntry(ENHANCED_MOOSHROOM, 8, 4, 4));
                 }
             }
             if (!addSpawns.isEmpty()) {
                 biome.getSpawns(EntityClassification.CREATURE).addAll(addSpawns);
+            }
+            if (!removeSpawns.isEmpty()) {
+                biome.getSpawns(EntityClassification.CREATURE).removeAll(removeSpawns);
             }
         }
     }

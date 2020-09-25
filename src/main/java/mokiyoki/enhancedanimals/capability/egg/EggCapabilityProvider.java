@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.capability.egg;
 
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -22,16 +23,52 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
 
     private final LazyOptional<IEggCapability> holder = LazyOptional.of(() -> this);
 
-    private int[] genes;
+    private Genes genes;
+
     @Override
-    public int[] getGenes() {
+    public Genes getGenes() {
         return this.genes;
     }
 
     @Override
-    public void setGenes(int[] genes) {
-        this.genes = genes;
+    public void setGenes(Genes chickGenes) {
+        this.genes = chickGenes;
     }
+
+    private String sireName;
+
+    @Override
+    public String getSire() { return this.sireName; }
+
+    public void setSire(String name) {
+        if (name!=null && !name.equals("")) {
+            this.sireName = name;
+        } else {
+            this.sireName = "???";
+        }
+    }
+
+    private String damName;
+
+    @Override
+    public String getDam() { return this.damName; }
+
+    @Override
+    public void setDam(String name) {
+        if (name!= null && !name.equals("")) {
+            this.damName = name;
+        } else {
+            this.damName = "???";
+        }
+    }
+
+    @Override
+    public void setEggData(Genes chickgenes, String sireName, String damName) {
+        setGenes(chickgenes);
+        setSire(sireName);
+        setDam(damName);
+    }
+
 
     @Nullable
     @Override

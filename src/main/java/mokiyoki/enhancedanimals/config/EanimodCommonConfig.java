@@ -17,7 +17,7 @@ public class EanimodCommonConfig implements IEanimodConfig{
 
     @Override
     public String getFileName() {
-        return "eanimod-common";
+        return "genetic-animals-common";
     }
 
     @Override
@@ -31,148 +31,109 @@ public class EanimodCommonConfig implements IEanimodConfig{
     }
 
     public static class CommonConfig {
-        public final ForgeConfigSpec.BooleanValue spawnVanillaChickens;
-        public final ForgeConfigSpec.BooleanValue spawnVanillaRabbits;
-        public final ForgeConfigSpec.BooleanValue spawnVanillaSheep;
-        public final ForgeConfigSpec.BooleanValue spawnVanillaLlamas;
+        public final ForgeConfigSpec.BooleanValue omnigenders;
+        public final ForgeConfigSpec.BooleanValue feedGrowth;
+        public final ForgeConfigSpec.BooleanValue onlyEatsWhenHungry;
+        public final ForgeConfigSpec.EnumValue<HungerConfigEnum> hungerScaling;
+        public final ForgeConfigSpec.IntValue wildTypeChance;
+        public final ForgeConfigSpec.BooleanValue tabsOnTop;
+
+        public final ForgeConfigSpec.BooleanValue spawnVanillaPigs;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticPigs;
+        public final ForgeConfigSpec.IntValue gestationDaysPig;
+
         public final ForgeConfigSpec.BooleanValue spawnVanillaCows;
         public final ForgeConfigSpec.BooleanValue spawnVanillaMooshroom;
-        public final ForgeConfigSpec.BooleanValue spawnVanillaPigs;
-        public final ForgeConfigSpec.BooleanValue spawnVanillaHorses;
-        public final ForgeConfigSpec.BooleanValue spawnVanillaCats;
-        public final ForgeConfigSpec.BooleanValue spawnGeneticChickens;
-        public final ForgeConfigSpec.BooleanValue spawnGeneticRabbits;
-        public final ForgeConfigSpec.BooleanValue spawnGeneticSheep;
-        public final ForgeConfigSpec.BooleanValue spawnGeneticLlamas;
         public final ForgeConfigSpec.BooleanValue spawnGeneticCows;
         public final ForgeConfigSpec.BooleanValue spawnGeneticMooshroom;
-        public final ForgeConfigSpec.BooleanValue spawnGeneticPigs;
-        public final ForgeConfigSpec.IntValue wildTypeChance;
-//        public final ForgeConfigSpec.IntValue incubationDaysChicken;
-        public final ForgeConfigSpec.IntValue gestationDaysRabbit;
         public final ForgeConfigSpec.IntValue gestationDaysCow;
-        public final ForgeConfigSpec.IntValue gestationDaysSheep;
+
+        public final ForgeConfigSpec.BooleanValue spawnVanillaLlamas;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticLlamas;
         public final ForgeConfigSpec.IntValue gestationDaysLlama;
-        public final ForgeConfigSpec.IntValue gestationDaysPig;
-        public final ForgeConfigSpec.IntValue gestationDaysHorse;
-        public final ForgeConfigSpec.IntValue gestationDaysCat;
-        public final ForgeConfigSpec.EnumValue<HungerConfigEnum> hungerScaling;
+
+        public final ForgeConfigSpec.BooleanValue spawnVanillaSheep;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticSheep;
+        public final ForgeConfigSpec.IntValue gestationDaysSheep;
+
+        public final ForgeConfigSpec.BooleanValue spawnVanillaChickens;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticChickens;
+
+        public final ForgeConfigSpec.BooleanValue spawnVanillaRabbits;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticRabbits;
+        public final ForgeConfigSpec.IntValue gestationDaysRabbit;
 
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
-            spawnVanillaChickens = builder
-                    .comment("Set this to true to allow vanilla minecraft chickens to continue to spawn/exist. False will prevent vanilla chicken spawning and delete existing ones from the world.")
-                    .define("spawnVanillaChickens.enabled", false);
-
-            spawnVanillaRabbits = builder
-                    .comment("Set this to true to allow vanilla minecraft rabbits to continue to spawn/exist. False will prevent vanilla rabbit spawning and delete existing ones from the world.")
-                    .define("spawnVanillaRabbits.enabled", false);
-
-            spawnVanillaSheep = builder
-                    .comment("Set this to true to allow vanilla minecraft sheep to continue to spawn/exist. False will prevent vanilla sheep spawning and delete existing ones from the world.")
-                    .define("spawnVanillaSheep.enabled", false);
-
-            spawnVanillaLlamas = builder
-                    .comment("Set this to true to allow vanilla minecraft llamas to continue to spawn/exist. False will prevent vanilla llama spawning and delete existing ones from the world, except for trader llamas")
-                    .define("spawnVanillaLlamas.enabled", false);
-
-            spawnVanillaCows = builder
-                    .comment("Set this to true to allow vanilla minecraft cows to continue to spawn/exist. False will prevent vanilla cow spawning and delete existing ones from the world.")
-                    .define("spawnVanillaCows.enabled", false);
-
-            spawnVanillaMooshroom = builder
-                    .comment("Set this to true to allow vanilla minecraft mooshroom to continue to spawn/exist. False will prevent vanilla mooshroom spawning and delete existing ones from the world.")
-                    .define("spawnVanillaMooshroom.enabled", false);
-
-            spawnVanillaPigs = builder
-                    .comment("Set this to true to allow vanilla minecraft pigs to continue to spawn/exist. False will prevent vanilla pig spawning and delete existing ones from the world.")
-                    .define("spawnVanillaPigs.enabled", false);
-
-            spawnVanillaHorses = builder
-                    .comment("Set this to true to allow vanilla minecraft horse to continue to spawn/exist. False will prevent vanilla horse spawning and delete existing ones from the world.")
-                    .define("spawnVanillaHorse.enabled", true);
-
-            spawnVanillaCats = builder
-                    .comment("Set this to true to allow vanilla minecraft cats to continue to spawn/exist. False will prevent vanilla cat spawning and delete existing ones from the world.")
-                    .define("spawnVanillaCats.enabled", true);
-
-            spawnGeneticChickens = builder
-                    .comment("Set this to true to allow genetic minecraft chickens to continue to spawn/exist. False will prevent genetic chicken spawning and delete existing ones from the world.")
-                    .define("spawnGeneticChickens.enabled", true);
-
-            spawnGeneticRabbits = builder
-                    .comment("Set this to true to allow genetic minecraft rabbits to continue to spawn/exist. False will prevent genetic rabbit spawning and delete existing ones from the world.")
-                    .define("spawnGeneticRabbits.enabled", true);
-
-            spawnGeneticSheep = builder
-                    .comment("Set this to true to allow genetic minecraft sheep to continue to spawn/exist. False will prevent genetic sheep spawning and delete existing ones from the world.")
-                    .define("spawnGeneticSheep.enabled", true);
-
-            spawnGeneticLlamas = builder
-                    .comment("Set this to true to allow genetic minecraft llamas to continue to spawn/exist. False will prevent genetic llama spawning and delete existing ones from the world.")
-                    .define("spawnGeneticLlamas.enabled", true);
-
-            spawnGeneticCows = builder
-                    .comment("Set this to true to allow genetic minecraft cows to continue to spawn/exist. False will prevent genetic cow spawning and delete existing ones from the world, if this is false genetic mooshroom will disappear when sheared")
-                    .define("spawnGeneticCows.enabled", true);
-
-            spawnGeneticMooshroom = builder
-                    .comment("Set this to true to allow genetic minecraft mooshroom to continue to spawn/exist. False will prevent genetic mooshroom spawning and delete existing ones from the world.")
-                    .define("spawnGeneticMooshroom.enabled", true);
-
-            spawnGeneticPigs = builder
-                    .comment("Set this to true to allow genetic minecraft pigs to continue to spawn/exist. False will prevent genetic pig spawning and delete existing ones from the world.")
-                    .define("spawnGeneticPigs.enabled", true);
-
-//            spawnGeneticHorses = builder
-//                    .comment("Set this to true to allow genetic minecraft horse to continue to spawn/exist. False will prevent genetic horse spawning and delete existing ones from the world.")
-//                    .define("spawnGeneticHorses.enabled", false);
-//
-//            spawnGeneticCats = builder
-//                    .comment("Set this to true to allow genetic minecraft cats to continue to spawn/exist. False will prevent genetic cat spawning and delete existing ones from the world.")
-//                    .define("spawnGeneticCats.enabled", false);
-
-            wildTypeChance = builder
-                    .comment(" 100 will make all animals spawn as wildtype for their biome, some mutations may be impossible to get. 0 makes animals spawn with almost completely random genes. higher numbers are best since you only need a few mutations to make a big difference")
-                    .defineInRange("wildType.chance", 90, 0, 100);
-
-//            incubationDaysChicken = builder
-//                    .comment("Number of ticks for chickens to hatch, does nothing yet. 24000 = 1 Minecraft Day")
-//                    .defineInRange("gestation.days", 24000, 1, Integer.MAX_VALUE);
-
-            gestationDaysRabbit = builder
-                    .comment("Number of ticks for rabbit gestation. Minimum time is 50 seconds. 24000 = 1 Minecraft Day")
-                    .defineInRange("rabbitGestation.days", 24000, 1000, Integer.MAX_VALUE);
-
-            gestationDaysCow = builder
-                    .comment("Number of ticks for cow and mooshroom gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
-                    .defineInRange("cowGestation.days", 48000, 1000, Integer.MAX_VALUE);
-
-            gestationDaysSheep = builder
-                    .comment("Number of ticks for sheep gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Daysy")
-                    .defineInRange("sheepGestation.days", 48000, 1000, Integer.MAX_VALUE);
-
-            gestationDaysLlama = builder
-                    .comment("Number of ticks for llama gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
-                    .defineInRange("llamaGestation.days", 48000, 1000, Integer.MAX_VALUE);
-
-            gestationDaysPig = builder
-                    .comment("Number of ticks for pig gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
-                    .defineInRange("pigGestation.days", 48000, 1000, Integer.MAX_VALUE);
-
-            gestationDaysHorse = builder
-                    .comment("Number of ticks for horse gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
-                    .defineInRange("horseGestation.days", 48000, 1000, Integer.MAX_VALUE);
-
-            gestationDaysCat = builder
-                    .comment("Number of ticks for cat gestation. Minimum time is 50 seconds. 48000 = 2 Minecraft Days")
-                    .defineInRange("catGestation.days", 48000, 1000, Integer.MAX_VALUE);
-
-
+            omnigenders = builder
+                    .comment("Set this to true to enable omnigenders, meaning the gender of the animal is irrelevant to who can fall pregnant, lay eggs, milk or sire young. False results in gendered animals. Visually nothing changes.")
+                    .define("Allow Omnigenders:", false);
+            feedGrowth = builder
+                    .define("Allow feeding to age/grow animals:", false);
+            onlyEatsWhenHungry = builder
+                    .define("Animals only eat from players when hungry:", true);
             hungerScaling = builder
-                    .comment("How fast the animals get hungry. Values: RAVENOUS, MORE_HUNGRY, STANDARD, LESS_HUNGRY, NEVER_HUNGRY")
-                    .defineEnum("hungerscaling", HungerConfigEnum.STANDARD);
+                    .defineEnum("How fast the animals get hungry, Values: RAVENOUS, MORE_HUNGRY, STANDARD, LESS_HUNGRY, NEVER_HUNGRY", HungerConfigEnum.STANDARD);
+            wildTypeChance = builder
+                    .defineInRange("How random the genes should be, 100 is all wildtype animals, 0 is completely random:", 90, 0, 100);
+            tabsOnTop = builder
+                    .define("Animal inventory tabs will be on the top instead of side:", true);
+            builder.pop();
 
+            builder.push("pig");
+            gestationDaysPig = builder
+                .defineInRange("How many ticks it takes for a Pig to give birth, 24000 = 1 Minecraft Day:", 48000, 1000, Integer.MAX_VALUE);
+            spawnVanillaPigs = builder
+                .define("Allow vanilla minecraft Pigs to spawn/exist:", false);
+            spawnGeneticPigs = builder
+                .define("Allow Genetic Pigs to continue to spawn/exist:", true);
+            builder.pop();
+
+            builder.push("cow");
+            gestationDaysCow = builder
+                .defineInRange("How many ticks it takes for a Cow to give birth, 24000 = 1 Minecraft Day:", 48000, 1000, Integer.MAX_VALUE);
+            spawnVanillaCows = builder
+                .define("Allow vanilla minecraft Cows to spawn/exist:", false);
+            spawnGeneticCows = builder
+                .define("Allow Genetic Cows to continue to spawn/exist:", true);
+            spawnVanillaMooshroom = builder
+                .define("Allow vanilla minecraft Mooshrooms to spawn/exist:", false);
+            spawnGeneticMooshroom = builder
+                .define("Allow Genetic Mooshrooms to continue to spawn/exist:", true);
+            builder.pop();
+
+            builder.push("llama");
+            gestationDaysLlama = builder
+                    .defineInRange("How many ticks it takes for a Llama to give birth, 24000 = 1 Minecraft Day:", 48000, 1000, Integer.MAX_VALUE);
+            spawnVanillaLlamas = builder
+                    .define("Allow vanilla minecraft Llamas to spawn/exist:", false);
+            spawnGeneticLlamas = builder
+                    .define("Allow Genetic Llamas to continue to spawn/exist:", true);
+            builder.pop();
+
+            builder.push("sheep");
+            gestationDaysSheep = builder
+                    .defineInRange("How many ticks it takes for a Rabbit to give birth, 24000 = 1 Minecraft Day:", 48000, 1000, Integer.MAX_VALUE);
+            spawnVanillaSheep = builder
+                    .define("Allow vanilla minecraft Sheep to spawn/exist:", false);
+            spawnGeneticSheep = builder
+                    .define("Allow Genetic Sheep to continue to spawn/exist:", true);
+            builder.pop();
+
+            builder.push("chicken");
+            spawnVanillaChickens = builder
+                    .define("Allow vanilla minecraft Chickens to spawn/exist:", false);
+            spawnGeneticChickens = builder
+                    .define("Allow Genetic Chickens to continue to spawn/exist:", true);
+            builder.pop();
+
+            builder.push("rabbit");
+            gestationDaysRabbit = builder
+                    .defineInRange("How many ticks it takes for a rabbit to give birth, 24000 = 1 Minecraft Day:", 24000, 1000, Integer.MAX_VALUE);
+            spawnVanillaRabbits = builder
+                    .define("Allow vanilla minecraft Rabbits to spawn/exist:", false);
+            spawnGeneticRabbits = builder
+                    .define("Allow Genetic Rabbits to continue to spawn/exist:", true);
             builder.pop();
         }
     }

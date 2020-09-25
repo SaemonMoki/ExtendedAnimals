@@ -7,10 +7,14 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
-import mokiyoki.enhancedanimals.entity.util.GeneticsInitialiser;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
+import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
@@ -26,6 +30,7 @@ import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.LeashKnotEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.TameableEntity;
@@ -50,15 +55,14 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.Region;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -74,9 +78,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public abstract class EnhancedAnimalAbstract extends AnimalEntity implements EnhancedAnimal, IInventoryChangedListener {
@@ -89,21 +92,40 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     private static final DataParameter<String> ENTITY_STATUS = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.VARINT);
+    private static final DataParameter<Boolean> HAS_COLLAR = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> RESET_TEXTURE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
 
     private final NonNullList<ItemStack> equipmentArray = NonNullList.withSize(7, ItemStack.EMPTY);
+
+    protected static final String CACHE_DELIMITER = "-";
+
+    private static final String COLLAR = "d_collar.png";
+    private static final String COLLAR_TEXTURE = "collar_leather.png";
+    private static final String[] COLLAR_HARDWARE = new String[] {
+            "collar_ringiron.png", "collar_ringgold.png", "collar_ringdiamond.png",
+            "collar_belliron.png", "collar_bellgold.png", "collar_belldiamond.png"
+    };
 
     protected Ingredient TEMPTATION_ITEMS;
     protected Ingredient BREED_ITEMS;
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
 
+    //demo mode
+    public boolean runDemoMode = false;
+    protected int demoTimerMax = 60;
+    private int demoTimer = 0;
+
+
     // Genetic Info
     protected Genes genetics;
-    protected int[] genes;
-    protected int[] genesSplitForClient;
-    protected int[] mateGenes;
-    protected int[] mitosisGenes;
-    protected int[] mateMitosisGenes;
+    protected Genes mateGenetics;
+    protected Boolean mateGender;
+    protected Genes genesSplitForClient;
     protected static final int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
+    public String breed = "";
+    protected String mateName = "???";
+    protected String sireName = "???";
+    protected String damName = "???";
 
     //Hunger
     Map<Item, Integer> foodWeightMap = new HashMap();
@@ -111,6 +133,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected int healTicks = 0;
     protected boolean bottleFeedable = false;
     protected int animalEatingTimer;
+    public int eatingTicks;
     protected AIStatus currentAIStatus = AIStatus.NONE;
 
     //Sleeping
@@ -137,6 +160,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected final List<String> enhancedAnimalAlphaTextures = new ArrayList<>();
     protected final Map<Equipment, List<String>> equipmentTextures = new HashMap<>();
     public Colouration colouration = new Colouration();
+    protected boolean bells;
+    protected Boolean reload = false; //used in a toggle manner
 
     //Inventory
     protected Inventory animalInventory;
@@ -149,12 +174,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     Entity Construction
     */
 
-    protected EnhancedAnimalAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int genesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
+    protected EnhancedAnimalAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
         super(type, worldIn);
-        this.genes = new int[genesSize];
-        this.mateGenes = new int[genesSize];
-        this.mitosisGenes = new int[genesSize];
-        this.mateMitosisGenes = new int[genesSize];
+        this.genetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
+        this.mateGenetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
+        this.mateGender = false;
         this.TEMPTATION_ITEMS = temptationItems;
         this.BREED_ITEMS = breedItems;
         this.foodWeightMap = foodWeightMap;
@@ -176,6 +200,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             this.dataManager.register(BAG_SIZE, 0.0F);
             this.dataManager.register(MILK_AMOUNT, 0);
         }
+        this.dataManager.register(HAS_COLLAR, false);
+        this.dataManager.register(RESET_TEXTURE, false);
     }
 
     @Override
@@ -187,7 +213,35 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
     }
 
+    protected void setMateName(String mateName) {
+        if (mateName!=null && !mateName.equals("")) {
+            this.mateName = mateName;
+        } else {
+            this.mateName = "???";
+        }
+    }
+
+    protected void setSireName(String sireName) {
+        if (sireName!=null && !sireName.equals("")) {
+            this.sireName = sireName;
+        } else {
+            this.sireName = "???";
+        }
+    }
+
+    protected void setDamName(String damName) {
+        if (damName!=null && !damName.equals("")) {
+            this.damName = damName;
+        } else {
+            this.damName = "???";
+        }
+    }
+
     protected abstract String getSpecies();
+
+    protected void setBreed(String breed) {
+        this.breed = breed;
+    }
 
     protected abstract int getAdultAge();
 
@@ -204,12 +258,25 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     //anything extra to run during not idling
     protected abstract void runExtraIdleTimeTick();
 
-    //any lethal gene checks the animal has
+    //any lethal genes checks the animal has
     protected abstract void lethalGenes();
 
     //when the animal wakes up
     protected boolean sleepingConditional() {
         return (!this.world.isDaytime() && awokenTimer == 0 && !sleeping);
+    }
+
+    //    public void setReloadTexture(Boolean resetTexture) {
+//        this.dataManager.set(RESET_TEXTURE, resetTexture);
+//    }
+
+    //toggles the reloading
+    protected void toggleReloadTexture() {
+        this.dataManager.set(RESET_TEXTURE, this.getReloadTexture() == true ? false : true);
+    }
+
+    public boolean getReloadTexture() {
+        return this.dataManager.get(RESET_TEXTURE);
     }
 
     //for setting the textures
@@ -302,7 +369,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
-    //TODO cant seem to get the animals to open their eyes when awoken, idk why and i dont want to work on it rn
     @Override
     public void awaken() {
         this.awokenTimer = 200;
@@ -319,7 +385,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     @Override
     public float getHunger(){
-        return hunger;
+        return this.hunger;
     }
 
     public void decreaseHunger(float decrease) {
@@ -328,6 +394,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         } else {
             this.hunger = this.hunger - decrease;
         }
+    }
+
+    protected float getHungerModifier() {
+        return EanimodCommonConfig.COMMON.hungerScaling.get().hungerScalingValue;
     }
 
     public AIStatus getAIStatus() {
@@ -354,6 +424,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
             return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
         } else {
+            setBirthTime(String.valueOf(1));
             return 500000;
         }
     }
@@ -384,12 +455,16 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     protected void setMaxBagSize(){ }
 
-    public void setGenes(int[] genes) {
-        this.genes = genes;
+    public void setGenes(int[] sgenes, int[] agenes) {
+        this.genetics.setGenes(sgenes, agenes);
     }
 
-    public int[] getGenes(){
-        return this.genes;
+    public void setGenes(Genes genes) {
+        this.genetics.setGenes(genes);
+    }
+
+    public Genes getGenes(){
+        return this.genetics;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -425,35 +500,37 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     }
 
+    public boolean hasCollar() {
+        return this.dataManager.get(HAS_COLLAR);
+    }
+
+    public void setCollar(boolean collared) {
+        this.dataManager.set(HAS_COLLAR, collared);
+        List<String> previousCollarTextures = this.equipmentTextures.get(Equipment.COLLAR);
+        List<String> newCollarTextures = getCollarTextures();
+
+        if(collared) {
+            if(previousCollarTextures == null || !previousCollarTextures.containsAll(newCollarTextures)){
+                this.equipmentTextures.put(Equipment.COLLAR, newCollarTextures);
+            }
+        } else {
+            if(previousCollarTextures != null){
+                this.equipmentTextures.remove(Equipment.COLLAR);
+            }
+        }
+    }
+
     //used to set if an animal is wearing bells
     protected boolean getBells() {
-        ItemStack bridleStack = this.getEnhancedInventory().getStackInSlot(3);
-        if (!bridleStack.isEmpty()) {
-            if (bridleStack.getItem() instanceof CustomizableCollar) {
-                if (((CustomizableCollar) bridleStack.getItem()).getHasBells()) {
-                    return true;
-                }
-            }
-        }
-        ItemStack harnessStack = this.getEnhancedInventory().getStackInSlot(5);
-        if (!harnessStack.isEmpty()) {
-            if (harnessStack.getItem() instanceof CustomizableCollar) {
-                return ((CustomizableCollar) harnessStack.getItem()).getHasBells();
-            }
-        }
-        return false;
+        return this.bells;
     }
 
     /*
     General Info
     */
-    protected boolean getGender() {
+    public boolean getIsFemale() {
         char[] uuidArray = getCachedUniqueIdString().toCharArray();
-        if (Character.isLetter(uuidArray[0]) || uuidArray[0] - 48 >= 8) {
-            return false;
-        } else {
-            return true;
-        }
+        return !Character.isLetter(uuidArray[0]) && uuidArray[0] - 48 < 8;
     }
 
     /*
@@ -528,8 +605,26 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         //run client-sided tick stuff
         if (this.world.isRemote) {
             runLivingTickClient();
+
+            if (this.serializeNBT().contains("OpenEnhancedAnimalRidenGUI")) {
+                if (this.isBeingRidden()) {
+                    if (this.getRidingEntity() instanceof PlayerEntity) {
+                        this.openGUI((PlayerEntity)this.getRidingEntity());
+                        this.removeTag("OpenEnhancedAnimalRidenGUI");
+                    }
+                }
+            }
         } else {
             //run server-sided tick stuff
+            if (this.serializeNBT().contains("OpenEnhancedAnimalRidenGUI")) {
+                if (this.isBeingRidden()) {
+                    if (this.getRidingEntity() instanceof PlayerEntity) {
+                        this.openGUI((PlayerEntity)this.getRidingEntity());
+                        this.removeTag("OpenEnhancedAnimalRidenGUI");
+                    }
+                }
+            }
+
             if (sleepingConditional()) {
                 setSleeping(true);
                 healTicks = 0;
@@ -601,21 +696,23 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected void runPregnancyTick() {
-        if(pregnant) {
-
-            gestationTimer++;
+        if(this.pregnant) {
+            this.gestationTimer++;
             int days = gestationConfig();
-            if (days/2 < gestationTimer) {
+            if (this.gestationTimer > days + 1200) {
+                this.setGrowingAge(600);
+            }
+            if (days/2 < this.gestationTimer) {
                 setEntityStatus(EntityState.PREGNANT.toString());
             }
-            if (hunger > getPregnancyHungerLimit() && days !=0) {
-                pregnant = false;
-                gestationTimer = 0;
-                setEntityStatus(EntityState.ADULT.toString());
-            }
-            if (gestationTimer >= days) {
-                pregnant = false;
-                gestationTimer = 0;
+//            if (this.hunger > getPregnancyHungerLimit() && days !=0) {
+//                this.pregnant = false;
+//                this.gestationTimer = 0;
+//                setEntityStatus(EntityState.ADULT.toString());
+//            }
+            if (this.gestationTimer >= days) {
+                this.pregnant = false;
+                this.gestationTimer = 0;
                 setEntityStatus(EntityState.MOTHER.toString());
 
                 if (canLactate()) {
@@ -624,10 +721,19 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
                 int numberOfChildren = getNumberOfChildren();
 
-                for (int i = 0; i <= numberOfChildren; i++) {
-                    mixMateMitosisGenes();
-                    mixMitosisGenes();
+                for (int i = 0; i < numberOfChildren; i++) {
+//                    mixMateMitosisGenes();
+//                    mixMitosisGenes();
                     createAndSpawnEnhancedChild(this.world);
+                }
+
+                if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
+                    int i = 1;
+                    while (i > 0) {
+                        int j = ExperienceOrbEntity.getXPSplit(i);
+                        i -= j;
+                        this.world.addEntity(new ExperienceOrbEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), j));
+                    }
                 }
             }
         }
@@ -675,6 +781,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
+    public boolean isPlantEaten() {
+        return this.eatingTicks == 0;
+    }
+
     /*
     Animal interaction from player and other entities
     */
@@ -693,7 +803,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             }
-            else if ((!this.isChild() || !bottleFeedable) && TEMPTATION_ITEMS.test(itemStack) && hunger >= 6000) {
+            else if ((!this.isChild() || !bottleFeedable) && TEMPTATION_ITEMS.test(itemStack)) {
+                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
+                    if (hunger < 4000) {
+                        return super.processInteract(entityPlayer, hand);
+                    }
+                }
+
                 if (this.foodWeightMap.containsKey(item)) {
                     decreaseHunger(this.foodWeightMap.get(item));
                 } else {
@@ -706,19 +822,16 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                         itemStack.shrink(1);
                     }
                 }
-            }  else if (this.isChild() && MILK_ITEMS.test(itemStack) && bottleFeedable && hunger >= 6000) {
-                if (item == ModItems.HALF_MILK_BOTTLE) {
-                    decreaseHunger(6000);
-                    if (!entityPlayer.abilities.isCreativeMode) {
-                        if (itemStack.isEmpty()) {
-                            entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                        } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                            entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                        }
+            } else if (this.isChild()) {
+                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
+                    if (hunger < 4000) {
+                        return super.processInteract(entityPlayer, hand);
                     }
-                } else if (item == ModItems.MILK_BOTTLE) {
-                    if (hunger >= 12000) {
-                        decreaseHunger(12000);
+                }
+
+                if (bottleFeedable && MILK_ITEMS.test(itemStack)) {
+                    if (item == ModItems.HALF_MILK_BOTTLE) {
+                        decreaseHunger(6000);
                         if (!entityPlayer.abilities.isCreativeMode) {
                             if (itemStack.isEmpty()) {
                                 entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
@@ -726,21 +839,82 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                                 entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
                             }
                         }
-                    } else {
-                        decreaseHunger(6000);
-                        if (!entityPlayer.abilities.isCreativeMode) {
-                            if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
-                                entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
+                    } else if (item == ModItems.MILK_BOTTLE) {
+                        if (hunger >= 12000) {
+                            decreaseHunger(12000);
+                            if (!entityPlayer.abilities.isCreativeMode) {
+                                if (itemStack.isEmpty()) {
+                                    entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                                    entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                                }
+                            }
+                        } else {
+                            decreaseHunger(6000);
+                            if (!entityPlayer.abilities.isCreativeMode) {
+                                if (itemStack.isEmpty()) {
+                                    entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
+                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
+                                    entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
+                                }
                             }
                         }
+                    }
+                } else {
+                    decreaseHunger(this.foodWeightMap.get(item));
+                    if (!entityPlayer.abilities.isCreativeMode) {
+                        itemStack.shrink(1);
+                    } else {
+                        if (itemStack.getCount() > 1) {
+                            itemStack.shrink(1);
+                        }
+                    }
+                }
+            } else if (BREED_ITEMS.test(itemStack)) {
+                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
+                    if (hunger < 4000) {
+                        return super.processInteract(entityPlayer, hand);
+                    }
+                }
+                if (this.isChild()) {
+                    this.ageUp((int)(this.getGrowingAge() * -0.005F), true);
+                }
+                decreaseHunger(this.foodWeightMap.get(item));
+                if (!entityPlayer.abilities.isCreativeMode) {
+                    itemStack.shrink(1);
+                } else {
+                    if (itemStack.getCount() > 1) {
+                        itemStack.shrink(1);
                     }
                 }
             }
         }
 
         return super.processInteract(entityPlayer, hand);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public Colouration getRgb() {
+        for (int i = 1; i <= 6;i++) {
+            Item item = this.getEnhancedInventory().getStackInSlot(i).getItem();
+            if (item instanceof CustomizableAnimalEquipment) {
+                setColourToSlot(item, i);
+            }
+        }
+
+        return this.colouration;
+    }
+
+    protected void setColourToSlot(Item item, int i) {
+        if (item instanceof CustomizableSaddleEnglish || item instanceof CustomizableSaddleWestern || item instanceof CustomizableSaddleVanilla) {
+            this.colouration.setSaddleColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(i)));
+        } else if (item instanceof CustomizableBridle) {
+            this.colouration.setBridleColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(i)));
+        } else if (item instanceof CustomizableCollar) {
+            this.colouration.setCollarColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(i)));
+        } else if (item instanceof CustomizableAnimalEquipment) {
+            this.colouration.setHarnessColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(i)));
+        }
     }
 
     /*
@@ -750,20 +924,36 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
-        //store this animal's genes
         ListNBT geneList = new ListNBT();
-        for(int i = 0; i< genes.length; i++){
+        int length = this.genetics.getNumberOfSexlinkedGenes();
+        int[] sexlinked = this.genetics.getSexlinkedGenes();
+        int[] autosomal = this.genetics.getAutosomalGenes();
+        for(int i = 0; i< length; i++){
             CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Gene", genes[i]);
+            nbttagcompound.putInt("Sgene", sexlinked[i]);
+            geneList.add(nbttagcompound);
+        }
+        length = this.genetics.getNumberOfAutosomalGenes();
+        for(int i = 0; i< length; i++){
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Agene", autosomal[i]);
             geneList.add(nbttagcompound);
         }
         compound.put("Genes", geneList);
 
-        //store this animal's mate's genes
         ListNBT mateGeneList = new ListNBT();
-        for(int i = 0; i< mateGenes.length; i++){
+            length = this.genetics.getNumberOfSexlinkedGenes();
+            sexlinked = this.mateGenetics.getSexlinkedGenes();
+            autosomal = this.mateGenetics.getAutosomalGenes();
+        for(int i = 0; i< length; i++){
             CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Gene", mateGenes[i]);
+            nbttagcompound.putInt("Sgene", sexlinked[i]);
+            mateGeneList.add(nbttagcompound);
+        }
+            length = this.genetics.getNumberOfAutosomalGenes();
+        for(int i = 0; i< length; i++){
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Agene", autosomal[i]);
             mateGeneList.add(nbttagcompound);
         }
         compound.put("FatherGenes", mateGeneList);
@@ -773,6 +963,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         compound.putString("Status", getEntityStatus());
 
         compound.putString("BirthTime", this.getBirthTime());
+
+        compound.putString("MateName", this.mateName);
+        compound.putString("SireName", this.sireName);
+        compound.putString("DamName", this.damName);
 
         compound.putBoolean("Tamed", this.isTame());
 
@@ -785,6 +979,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             compound.putInt("Lactation", this.lactationTimer);
             compound.putInt("milk", getMilkAmount());
         }
+
+        compound.putBoolean("Collared", this.hasCollar());
+
+        compound.putBoolean("demo", this.runDemoMode);
 
         writeInventory(compound);
     }
@@ -838,22 +1036,78 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         super.readAdditional(compound);
 
         ListNBT geneList = compound.getList("Genes", 10);
-        for (int i = 0; i < geneList.size(); ++i) {
-            CompoundNBT nbttagcompound = geneList.getCompound(i);
-            int gene = nbttagcompound.getInt("Gene");
-            genes[i] = gene;
+        if (geneList.getCompound(0).contains("Sgene")) {
+            int sexlinkedlength = this.genetics.getNumberOfSexlinkedGenes();
+            for (int i = 0; i < sexlinkedlength; i++) {
+                this.genetics.setSexlinkedGene(i, geneList.getCompound(i).getInt("Sgene"));
+            }
+
+            int length = this.genetics.getNumberOfAutosomalGenes();
+            for (int i = 0; i < length; i++) {
+                this.genetics.setAutosomalGene(i, geneList.getCompound(i+sexlinkedlength).getInt("Agene"));
+            }
+        } else {
+            if (this instanceof EnhancedChicken) {
+                for (int i = 0; i < 10; ++i) {
+                    int gene = geneList.getCompound(i).getInt("Gene");
+                    this.genetics.setSexlinkedGene(i*2, gene);
+                    this.genetics.setSexlinkedGene((i*2)+1, gene);
+                }
+            } else {
+                int length = this.genetics.getNumberOfSexlinkedGenes();
+                for (int i = 0; i < length; i++) {
+                    this.genetics.setSexlinkedGene(i, 1);
+                }
+            }
+
+            for (int i = 0; i < geneList.size(); ++i) {
+                if (i < 20 && this instanceof EnhancedChicken) {
+                    this.genetics.setAutosomalGene(i, 1);
+                } else {
+                    this.genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
+                }
+            }
         }
 
-        ListNBT mateGeneList = compound.getList("FatherGenes", 10);
-        for (int i = 0; i < mateGeneList.size(); ++i) {
-            CompoundNBT nbttagcompound = mateGeneList.getCompound(i);
-            int gene = nbttagcompound.getInt("Gene");
-            mateGenes[i] = gene;
+            geneList = compound.getList("FatherGenes", 10);
+        if (geneList.getCompound(0).contains("Sgene")) {
+            int sexlinkedlength = this.genetics.getNumberOfSexlinkedGenes();
+            for (int i = 0; i < sexlinkedlength; i++) {
+                this.mateGenetics.setSexlinkedGene(i, geneList.getCompound(i).getInt("Sgene"));
+            }
+
+            int length = this.genetics.getNumberOfAutosomalGenes();
+            for (int i = 0; i < length; i++) {
+                this.mateGenetics.setAutosomalGene(i, geneList.getCompound(i+sexlinkedlength).getInt("Agene"));
+            }
+        } else {
+            if (this instanceof EnhancedChicken) {
+                for (int i = 0; i < 9; ++i) {
+                    int gene = geneList.getCompound(i).getInt("Gene");
+                    if (gene == 10) {
+                        break;
+                    }
+                    this.mateGenetics.setSexlinkedGene(i*2, gene);
+                    this.mateGenetics.setSexlinkedGene((i*2)+1, gene);
+                }
+            } else {
+                int length = this.genetics.getNumberOfSexlinkedGenes();
+                for (int i = 0; i < length; i++) {
+                    this.mateGenetics.setSexlinkedGene(i, 1);
+                }
+            }
+
+            for (int i = 0; i < geneList.size(); ++i) {
+                if (i < 20 && this instanceof EnhancedChicken) {
+                    this.mateGenetics.setAutosomalGene(i, 1);
+                }
+                this.mateGenetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
+            }
         }
 
-        hunger = compound.getFloat("Hunger");
+        this.hunger = compound.getFloat("Hunger");
 
-        setEntityStatus(compound.getString("Status"));
+        this.setEntityStatus(compound.getString("Status"));
 
         this.setBirthTime(compound.getString("BirthTime"));
 
@@ -870,6 +1124,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             setMaxBagSize();
         }
 
+        this.setBreed(compound.getString("breed"));
+
+        this.runDemoMode = (compound.getBoolean("demo"));
+
         //from MobEntity parent
         if (compound.contains("Leash", 10)) {
             this.leashNBTTag = compound.getCompound("Leash");
@@ -877,8 +1135,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         geneFixer();
 
-        setSharedGenes(genes);
+        setSharedGenes(this.genetics);
         initilizeAnimalSize();
+
+        this.setCollar(compound.getBoolean("Collared"));
+
+        this.setMateName(compound.getString("MateName"));
+        this.setSireName(compound.getString("SireName"));
+        this.setDamName(compound.getString("DamName"));
 
         readInventory(compound);
     }
@@ -923,7 +1187,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         ListNBT listnbt = compound.getList("Items", 10);
 
-        for(int i = 7; i < listnbt.size(); ++i) {
+        for(int i = 0; i < listnbt.size(); ++i) {
             CompoundNBT compoundnbt = listnbt.getCompound(i);
             int j = compoundnbt.getByte("Slot") & 255;
             if (j >= 0 && j < this.animalInventory.getSizeInventory()) {
@@ -938,7 +1202,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     Entity Creation
     */
 
-    protected void defaultCreateAndSpawn(EnhancedAnimalAbstract enhancedAnimalChild, World inWorld, int[] babyGenes, int childAge) {
+    protected void defaultCreateAndSpawn(EnhancedAnimalAbstract enhancedAnimalChild, World inWorld, Genes babyGenes, int childAge) {
         enhancedAnimalChild.setGenes(babyGenes);
         enhancedAnimalChild.setSharedGenes(babyGenes);
         enhancedAnimalChild.initilizeAnimalSize();
@@ -946,12 +1210,17 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         enhancedAnimalChild.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedAnimalChild.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
         enhancedAnimalChild.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
+        enhancedAnimalChild.setSireName(this.mateName);
+        String name = "???";
+        if (this.getCustomName()!=null) {
+            name = this.getCustomName().getString();
+        }
+        enhancedAnimalChild.setDamName(name);
     }
 
     @Override
     public AgeableEntity createChild(AgeableEntity ageable) {
         handlePartnerBreeding(ageable);
-
         this.setGrowingAge(10);
         this.resetInLove();
         ageable.setGrowingAge(10);
@@ -971,16 +1240,55 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected void handlePartnerBreeding(AgeableEntity ageable) {
-        if(pregnant) {
-            ((EnhancedAnimalAbstract)ageable).pregnant = true;
-            ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genes);
-            ((EnhancedAnimalAbstract)ageable).mixMateMitosisGenes();
-            ((EnhancedAnimalAbstract)ageable).mixMitosisGenes();
+        if (EanimodCommonConfig.COMMON.omnigenders.get()) {
+            if(pregnant) {
+                ((EnhancedAnimalAbstract)ageable).pregnant = true;
+                ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
+                ((EnhancedAnimalAbstract)ageable).setMateGender(this.getIsFemale());
+                if (this.hasCustomName()) {
+                    ((EnhancedAnimalAbstract)ageable).setMateName(this.getCustomName().getString());
+                }
+            } else {
+                this.pregnant = true;
+                this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
+                this.mateGender = ((EnhancedAnimalAbstract)ageable).getIsFemale();
+                if (((EnhancedAnimalAbstract)ageable).hasCustomName()) {
+                    this.setMateName(((EnhancedAnimalAbstract) ageable).getCustomName().getString());
+                }
+            }
+        } else if (this.getIsFemale()) {
+           //is female
+           this.pregnant = true;
+           this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
+           this.mateGender = false;
+            if (((EnhancedAnimalAbstract)ageable).hasCustomName()) {
+                this.setMateName(((EnhancedAnimalAbstract) ageable).getCustomName().getString());
+            }
         } else {
-            pregnant = true;
-            this.mateGenes = ((EnhancedAnimalAbstract) ageable).getGenes();
-            mixMateMitosisGenes();
-            mixMitosisGenes();
+            //is male
+            ((EnhancedAnimalAbstract)ageable).pregnant = true;
+            ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
+            ((EnhancedAnimalAbstract)ageable).setMateGender(false);
+            if (this.hasCustomName()) {
+                ((EnhancedAnimalAbstract)ageable).setMateName(this.getCustomName().getString());
+            }
+        }
+    }
+
+    /**
+     * Returns true if the mob is currently able to mate with the specified mob.
+     */
+    @Override
+    public boolean canMateWith(AnimalEntity otherAnimal) {
+        if (otherAnimal == this) {
+            return false;
+        } else if (otherAnimal.getClass() != this.getClass()) {
+            return false;
+        } else {
+            if (EanimodCommonConfig.COMMON.omnigenders.get() || (this.getIsFemale() ^ ((EnhancedAnimalAbstract)otherAnimal).getIsFemale())) {
+                return this.isInLove() && otherAnimal.isInLove();
+            }
+            return false;
         }
     }
 
@@ -995,13 +1303,32 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     @Override
     public void onInventoryChanged(IInventory invBasic) {
+        boolean flag = this.dataManager.get(HAS_COLLAR);
+        boolean flag2 = this.bells;
+        this.updateInventorySlots();
+        if (this.ticksExisted > 20 && !flag && this.dataManager.get(HAS_COLLAR)) {
+            this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
+            if (!flag2 && this.bells) {
+                this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 0.5F, 1.0F);
+            }
+        }
         this.updateInventorySlots();
     }
 
     protected void updateInventorySlots() {
+        boolean hasCollar = false;
+        this.bells = false;
+        for (int i = 1; i <= 6;i++) {
+            if (this.animalInventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                hasCollar = true;
+                if (((CustomizableCollar) this.animalInventory.getStackInSlot(i).getItem()).getHasBells()) {
+                    this.bells = true;
+                }
+                break;
+            }
+        }
+        this.setCollar(hasCollar);
         if (!this.world.isRemote) {
-//            if ()
-//            this.setHorseSaddled(!this.horseChest.getStackInSlot(0).isEmpty() && this.canBeSaddled());
         }
     }
 
@@ -1061,6 +1388,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
+    protected ItemStack getReplacementItemWithColour(ItemStack itemStack) {
+        ItemStack replacementItem = new ItemStack(itemStack.getItem(), 1);
+        ((CustomizableAnimalEquipment)replacementItem.getItem()).setColor(replacementItem, ((CustomizableAnimalEquipment)itemStack.getItem()).getColor(itemStack));
+        return replacementItem;
+    }
+
     protected net.minecraftforge.common.util.LazyOptional<?> itemHandler = null;
 
     @Override
@@ -1090,18 +1423,18 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     public void openInfoInventory(EnhancedAnimalAbstract enhancedAnimal, IInventory inventoryIn, PlayerEntity playerEntity) {
-//        if (this.openContainer != this.container) {
-//            this.closeScreen();
-//        }
         if(!playerEntity.world.isRemote) {
 
             EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
             animalInfo.health = (int)(10 * (this.getHealth() / this.getMaxHealth()));
             animalInfo.hunger = (int)(this.getHunger() / 7200);
-            animalInfo.isFemale = this.getGender();
+            animalInfo.isFemale = this.getIsFemale();
             animalInfo.pregnant = (10 * this.gestationTimer)/gestationConfig();
             animalInfo.name = this.getAnimalsName(getSpecies());
             animalInfo.agePrefix = this.getAnimalsAgeString();
+            animalInfo.age = this.getAge();
+            animalInfo.sire = this.sireName;
+            animalInfo.dam = this.damName;
 
             if(playerEntity instanceof ServerPlayerEntity) {
                 ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerEntity;
@@ -1150,6 +1483,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return "ADULT";
     }
 
+    @Override
+    public boolean isChild() {
+        int age = this.getAge();
+        int adultAge = getAdultAge();
+        return age < adultAge;
+    }
+
     /*
     Client Sided Work
     */
@@ -1188,6 +1528,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     //------------
 
     public boolean setTamedBy(PlayerEntity player) {
+        //TODO save player's name to be displayed in GUI
 //        this.setOwnerUniqueId(player.getUniqueID());
         this.setTame(true);
         if (player instanceof ServerPlayerEntity) {
@@ -1204,36 +1545,32 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return this.BREED_ITEMS.test(stack);
     }
 
-    public void setSharedGenes(int[] genes) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < genes.length; i++){
-            sb.append(genes[i]);
-            if (i != genes.length -1){
-                sb.append(",");
-            }
-        }
-        this.dataManager.set(SHARED_GENES, sb.toString());
+    public void setSharedGenes(Genes genes) {
+        this.dataManager.set(SHARED_GENES, genes.getGenesAsString());
     }
 
     @OnlyIn(Dist.CLIENT)
-    public int[] getSharedGenes() {
+    public Genes getSharedGenes() {
         if(this.genesSplitForClient==null) {
-            String sharedGenes = ((String) this.dataManager.get(SHARED_GENES)).toString();
+            String sharedGenes = this.dataManager.get(SHARED_GENES);
             if (sharedGenes.isEmpty()) {
                 return null;
             }
-            String[] genesToSplit = sharedGenes.split(",");
-            int[] sharedGenesArray = new int[genesToSplit.length];
 
-            for (int i = 0; i < sharedGenesArray.length; i++) {
-                //parse and store each value into int[] to be returned
-                sharedGenesArray[i] = Integer.parseInt(genesToSplit[i]);
-            }
+            Genes genes = new Genes(sharedGenes);
 
-            this.genesSplitForClient = sharedGenesArray;
-            return sharedGenesArray;
+            this.genesSplitForClient = genes;
+            return genes;
         }
         return this.genesSplitForClient;
+    }
+
+    protected void addTextureToAnimal(String[] texture, int geneValue, Predicate<Integer> check) {
+        if(check == null || check.test(geneValue)) {
+            this.enhancedAnimalTextures.add(texture[geneValue]);
+            this.texturesIndexes.add(String.valueOf(geneValue));
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1263,135 +1600,52 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected String getCompiledTextures(String eanimal) {
-        String compiledTextures = this.texturesIndexes.stream().collect(Collectors.joining("/",eanimal+"/",""));
+        String compiledTextures = this.texturesIndexes.stream().collect(Collectors.joining("",eanimal+"/",""));
         compiledTextures = compiledTextures + this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.joining("/"));
         return compiledTextures;
     }
 
-    protected void geneFixer() {
-        if (genes[0] == 0) {
-//            this.genetics = new GeneticsInitialiser.ChickenGeneticsInitialiser().generateNewChickenGenetics(this.world, new BlockPos(this));
-            this.genes = createInitialGenes(this.world);
+        protected void geneFixer() {
+        if (!this.breed.isEmpty()) {
+            this.genetics = createInitialBreedGenes(this.world, new BlockPos(this), this.breed);
             setInitialDefaults();
-            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (ThreadLocalRandom.current().nextInt(24000, 180000))));
-//            this.setCustomName(new StringTextComponent(selectBreed(this.world)));
-        } else {
-            for (int i = 0; i < genes.length; i++) {
-                if (genes[i] == 0) {
-                    genes[i] = 1;
-                }
-            }
-            if (mateGenes[0] != 0) {
-                for (int i = 0; i < mateGenes.length; i++) {
-                    if (mateGenes[i] == 0) {
-                        mateGenes[i] = 1;
-                    }
-                }
-            }
+            this.setBirthTime(String.valueOf(0));
+        } else if (this.genetics.getAutosomalGene(0) == 0) {
+            this.genetics = createInitialGenes(this.world, new BlockPos(this), true);
+            setInitialDefaults();
+            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (rand.nextInt(180000-24000) + 24000)));
         }
     }
 
-//    public String selectBreed(IWorld world) {
-//        int areaSize = 16; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
-//        BlockPos pos = new BlockPos(this);
-//        int posX = (pos.getX()>>4)/areaSize;
-//        int posZ = (pos.getZ()>>4)/areaSize;
-//
-//        Random randomBreed = new Random(posX+world.getSeed()+posZ);
-//
-//        String[] breeds;
-//        switch (getSpecies()) {
-//            case "Chicken":
-//                breeds = new String[]{"WYANDOTTE", "RHODE_ISLAND_RED", "PLYMOUTH_ROCK", "Orpington", "Leghorn",
-//                        "Silkie", "BelgianD'Uccle", "Polish", "WhiteFaceSpanish", "Lakenvelder", "Araucana",
-//                        "JapaneseBantam", "FrenchMarans", "Australorp", "Sussex", "Delaware", "Fayoumi", "Faverolles", "Hamburg", "TransylvanianNakedNeck"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//            case "Pig":
-//                breeds = new String[]{"Duroc", "Hampshire", "LargeBlack", "LargeWhite", "OldSpot", "Yorkshire", "Meishan"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//            case "Cow":
-//            case "Mooshroom":
-//            case "Moobloom":
-//                breeds = new String[]{"Angus", "Hereford", "TexasLonghorn", "Holstein", "Friesian", "Highland", "Brahman", "Nadudana", "Jersey", "Guernsey"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//            case "Sheep":
-//                breeds = new String[]{"Dorper", "Dorset", "Freisian", "Merino", "Jacob", "Suffolk"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//            case "Rabbit":
-//                breeds = new String[]{"Dutch", "DwarfLop", "DwarfHotot", "EnglishLop", "EnglishSpot", "FrenchAngora", "Havana", "Himalayan", "HollandLop",
-//                        "Lionhead", "Netherland Dwarf"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//            case "Llama":
-//                breeds = new String[]{"Ccara", "Argentine", "Suri"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//            case "Horse":
-//                breeds = new String[]{"Arabian", "Thoroughbred", "Appaloosa", "Morgan", "ShetlandPony", "Clydesdale", "Shire", "BelgianDraft", "Percheron",
-//                        "Fjord", "Fallabella", "HackneyPony"};
-//                return breeds[randomBreed.nextInt(breeds.length)];
-//        }
-//
-//        return "LocalWildType";
-//    }
-
-    public void setMateGenes(int[] mateGenes){
-        this.mateGenes = mateGenes;
+    public void setMateGenes(Genes genes){
+        this.mateGenetics = genes;
     }
 
-    public void mixMateMitosisGenes() {
-        punnetSquare(0, mateMitosisGenes, mateGenes);
+    public void setMateGender(Boolean gender){
+        this.mateGender = gender;
     }
-
-    public void mixMitosisGenes() {
-        punnetSquare(0, mitosisGenes, genes);
-    }
-
-    public void punnetSquare(int startIndex, int[] mitosis, int[] parentGenes) {
-        mixGenes(startIndex, mitosis, parentGenes, 2);
-
-        extraMixingOverrides(mitosis, parentGenes);
-    }
-
-    protected void mixGenes(int startIndex, int[] mitosis, int[] parentGenes, int increaseAmount) {
-        for (int i = startIndex; i < genes.length; i = (i + increaseAmount)) {
-            boolean mateOddOrEven = this.rand.nextBoolean();
-            if (mateOddOrEven) {
-                mitosis[i] = parentGenes[i + 1];
-                mitosis[i + 1] = parentGenes[i];
-            } else {
-                mitosis[i] = parentGenes[i];
-                mitosis[i + 1] = parentGenes[i + 1];
-            }
-        }
-    }
-
-    protected void extraMixingOverrides(int[] mitosis, int[] parentGenes){}
 
     //overriden to prevent aging up when fed
     @Override
     public void ageUp(int growthSeconds, boolean updateForcedAge) {
-        if (!updateForcedAge) {
+        if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
+            int newBirthTime = Integer.valueOf(getBirthTime()) - ((int)(getAdultAge()*0.1));
+            this.setBirthTime(String.valueOf(newBirthTime));
             super.ageUp(growthSeconds, updateForcedAge);
         }
     }
 
-    protected ILivingEntityData commonInitialSpawnSetup(IWorld inWorld, @Nullable ILivingEntityData livingdata, int geneStartIndex, int geneLength, int childAge, int ageMinimum, int ageMaximum) {
-        int[] spawnGenes;
+    protected ILivingEntityData commonInitialSpawnSetup(IWorld inWorld, @Nullable ILivingEntityData livingdata, int childAge, int ageMinimum, int ageMaximum) {
+        Genes spawnGenes;
 
         if (livingdata instanceof GroupData) {
-            int[] spawnGenes1 = ((GroupData) livingdata).groupGenes;
-            int[] mitosis = new int[geneLength];
-            punnetSquare(geneStartIndex, mitosis, spawnGenes1);
-
-            int[] spawnGenes2 = ((GroupData) livingdata).groupGenes;
-            int[] mateMitosis = new int[geneLength];
-            punnetSquare(geneStartIndex, mateMitosis, spawnGenes2);
-            spawnGenes = createInitialSpawnChildGenes(spawnGenes1, spawnGenes2, mitosis, mateMitosis);
+            spawnGenes = new Genes(((GroupData)livingdata).groupGenes).makeChild(true, false, ((GroupData)livingdata).groupGenes);
         } else {
-            spawnGenes = createInitialGenes(inWorld);
+            spawnGenes = createInitialGenes(this.world, new BlockPos(this), false);
             livingdata = new GroupData(spawnGenes);
         }
 
-        this.genes = spawnGenes;
+        this.genetics = spawnGenes;
         setInitialDefaults();
 
         int birthMod = ThreadLocalRandom.current().nextInt(ageMinimum, ageMaximum);
@@ -1403,22 +1657,73 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return livingdata;
     }
 
-    protected abstract int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis);
+    protected abstract Genes createInitialGenes(IWorld inWorld, BlockPos pos, boolean isDomestic);
 
-    protected abstract int[] createInitialGenes(IWorld inWorld);
+    protected abstract Genes createInitialBreedGenes(IWorld inWorld, BlockPos pos, String breed);
 
     protected void setInitialDefaults() {
-        setSharedGenes(this.genes);
+        setSharedGenes(this.genetics);
         initilizeAnimalSize();
     }
 
     public static class GroupData implements ILivingEntityData {
-        public int[] groupGenes;
+        public Genes groupGenes;
 
-        public GroupData(int[] groupGenes) {
+        public GroupData(Genes groupGenes) {
             this.groupGenes = groupGenes;
         }
     }
 
+    private List<String> getCollarTextures() {
+        List<String> collarTextures = new ArrayList<>();
 
+        if (this.getEnhancedInventory() != null) {
+            ItemStack collarSlot = ItemStack.EMPTY;
+            for (int i = 1; i <= 6;i++) {
+                if (this.animalInventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                    collarSlot = this.animalInventory.getStackInSlot(i);
+                    break;
+                }
+            }
+            if (collarSlot != ItemStack.EMPTY) {
+                Item collar = collarSlot.getItem();
+                collarTextures.add(COLLAR);
+                if (collar == ModItems.COLLAR_BASIC_CLOTH_IRONRING) {
+                    collarTextures.add(COLLAR_HARDWARE[0]);
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_GOLDRING) {
+                    collarTextures.add(COLLAR_HARDWARE[1]);
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING) {
+                    collarTextures.add(COLLAR_HARDWARE[2]);
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_IRONBELL) {
+                    collarTextures.add(COLLAR_HARDWARE[3]);
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_GOLDBELL) {
+                    collarTextures.add(COLLAR_HARDWARE[4]);
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL) {
+                    collarTextures.add(COLLAR_HARDWARE[5]);
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_IRONRING) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                    collarTextures.add(COLLAR_HARDWARE[0]);
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_GOLDRING) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                    collarTextures.add(COLLAR_HARDWARE[1]);
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                    collarTextures.add(COLLAR_HARDWARE[2]);
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_IRONBELL) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                    collarTextures.add(COLLAR_HARDWARE[3]);
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_GOLDBELL) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                    collarTextures.add(COLLAR_HARDWARE[4]);
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL) {
+                    collarTextures.add(COLLAR_TEXTURE);
+                    collarTextures.add(COLLAR_HARDWARE[5]);
+                }
+            }
+        }
+
+        return collarTextures;
+    }
 }

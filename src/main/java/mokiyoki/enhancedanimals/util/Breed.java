@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.util;
 
-import javafx.util.Pair;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 
@@ -44,13 +44,23 @@ public class Breed {
         this.temperature = properties.temperature == null ? breedbase.getNativeTemperature() : properties.temperature;
         this.rain = properties.rain == null ? breedbase.getNativeHumidity() : properties.rain;
         this.rarity = properties.rarity == null ? breedbase.getRarity() : properties.rarity;
-        this.sexlinkedGeneSketch = properties.sexlinkedGeneSketch == null ? breedbase.getSexlinkedGeneSketch() : properties.sexlinkedGeneSketch;
-        this.autosomalGeneSketch = properties.autosomalGeneSketch == null ? breedbase.getAutosomalGeneSketch() : properties.autosomalGeneSketch;
-        this.varieties = properties.varieties == null ? breedbase.getVarieties() : properties.varieties;
+        if (breedbase.getSexlinkedGeneSketch().hasSketch()) {
+            this.sexlinkedGeneSketch = new GeneSketch(breedbase.getSexlinkedGeneSketch());
+            this.sexlinkedGeneSketch.addLayer(properties.sexlinkedGeneSketch);
+        } else {
+            this.sexlinkedGeneSketch = properties.sexlinkedGeneSketch;
+        }
+        if (breedbase.getAutosomalGeneSketch().hasSketch()) {
+            this.autosomalGeneSketch = new GeneSketch(breedbase.getAutosomalGeneSketch());
+            this.autosomalGeneSketch.addLayer(properties.autosomalGeneSketch);
+        } else {
+            this.autosomalGeneSketch = properties.autosomalGeneSketch;
+        }
+        this.varieties = properties.varieties == null ? breedbase.getVarieties() : properties.varieties.addVarients(breedbase.getVarieties());
     }
 
     public final String getBreedName() {
-        return this.breedName;
+        return this.breedName.toLowerCase();
     }
 
     public final float getNativeTemperature() {
@@ -70,11 +80,19 @@ public class Breed {
     }
 
     public final GeneSketch getSexlinkedGeneSketch() {
-        return this.sexlinkedGeneSketch;
+        if (this.sexlinkedGeneSketch != null) {
+            return this.sexlinkedGeneSketch;
+        } else {
+            return new GeneSketch();
+        }
     }
 
-    public final GeneSketch getAutosomalGeneSketch() {
-        return this.autosomalGeneSketch;
+    public GeneSketch getAutosomalGeneSketch() {
+        if (this.autosomalGeneSketch != null) {
+            return this.autosomalGeneSketch;
+        } else {
+            return new GeneSketch();
+        }
     }
 
     public final VarientHolder getVarieties() {
@@ -118,36 +136,38 @@ public class Breed {
         return likelyhood(Biomes.THE_VOID, true);
     }
 
-    public final Genes generateGenes(Genes genes) {
-        Pair<GeneSketch, GeneSketch> sketch = this.varieties.getSketchWithVarients(new Pair<>(this.sexlinkedGeneSketch, this.autosomalGeneSketch));
-        return new Genes().setGenes(sketch.getKey().getGeneArray(genes.getSexlinkedGenes()), sketch.getValue().getGeneArray(genes.getAutosomalGenes()));
+    public final Genes generateGenes(Float accuracy, Genes genes){
+        if (this.varieties != null) {
+            Pair<GeneSketch, GeneSketch> sketch = this.varieties.getSketchWithVarients(this.getGeneSketches());
+            return new Genes(sketch.getFirst().getGeneArray(accuracy, genes.getSexlinkedGenes()), sketch.getSecond().getGeneArray(accuracy, genes.getAutosomalGenes()));
+        } else {
+            return new Genes(this.getSexlinkedGeneSketch().getGeneArray(accuracy, genes.getSexlinkedGenes()), this.getAutosomalGeneSketch().getGeneArray(accuracy, genes.getAutosomalGenes()));
+        }
+    }
+
+    public final Genes generateGenes(Genes genes){
+        if (this.varieties != null) {
+            Pair<GeneSketch, GeneSketch> sketch = this.varieties.getSketchWithVarients(this.getGeneSketches());
+            return new Genes(sketch.getFirst().getGeneArray(genes.getSexlinkedGenes()), sketch.getSecond().getGeneArray(genes.getAutosomalGenes()));
+        } else {
+            return new Genes(this.getSexlinkedGeneSketch().getGeneArray(genes.getSexlinkedGenes()), this.getAutosomalGeneSketch().getGeneArray(genes.getAutosomalGenes()));
+        }
     }
 
 
     /**
      * meant for small tweaks to a breed, should probably attach rarity to varients instead of this
-     * this only works on the main gene blueprint, varients override main genes
+     * this only works on the main genes blueprint, varients override main genes
      */
     public final Breed editGenes(Pair<GeneSketch, GeneSketch> sketch) {
-        this.autosomalGeneSketch.addLayer(sketch.getKey());
-        this.sexlinkedGeneSketch.addLayer(sketch.getValue());
-        return this;
-    }
-
-    public final Breed editGenes(Pair<GeneSketch, GeneSketch> sketch, Float rarity) {
-        this.autosomalGeneSketch.addLayer(sketch.getKey(), rarity);
-        this.sexlinkedGeneSketch.addLayer(sketch.getValue(), rarity);
-        return this;
-    }
-
-    public final Breed editGenes(Pair<GeneSketch, GeneSketch> sketch, Breed.Rarity rarity) {
-        this.autosomalGeneSketch.addLayer(sketch.getKey(), rarity);
-        this.sexlinkedGeneSketch.addLayer(sketch.getValue(), rarity);
+        this.autosomalGeneSketch.addLayer(sketch.getFirst());
+        this.sexlinkedGeneSketch.addLayer(sketch.getSecond());
         return this;
     }
 
     public static class Properties {
         private String breedName;
+        private String varietyName;
         private Float temperature;
         private Float rain;
         private Rarity rarity;
@@ -156,15 +176,26 @@ public class Breed {
         private VarientHolder varieties;
 
         public Breed.Properties setData(String name, Biome biome, Breed.Rarity rarity) {
-            this.breedName = name;
+            this.breedName = name.toLowerCase();
             this.temperature = biome.getDefaultTemperature();
             this.rain = biome.getDownfall();
             this.rarity = rarity;
             return this;
         }
 
+        public Breed.Properties setData(String name, Breed.Rarity rarity) {
+            this.breedName = name.toLowerCase();
+            this.rarity = rarity;
+            return this;
+        }
+
         public Breed.Properties setName(String name) {
-            this.breedName = name;
+            this.breedName = name.toLowerCase();
+            return this;
+        }
+
+        public Breed.Properties setVarietyName(String name) {
+            this.varietyName = name.toLowerCase();
             return this;
         }
 
@@ -180,8 +211,22 @@ public class Breed {
         }
 
         public Breed.Properties setGeneSketch(GeneSketch sexlinkedSketch, GeneSketch autosomalSketch) {
-            this.sexlinkedGeneSketch = sexlinkedSketch;
-            this.autosomalGeneSketch = autosomalSketch;
+            this.sexlinkedGeneSketch = new GeneSketch(sexlinkedSketch);
+            this.autosomalGeneSketch = new GeneSketch(autosomalSketch);
+            return this;
+        }
+
+        public Breed.Properties setGeneSketch(Pair<GeneSketch, GeneSketch> geneSketches, GeneSketch sexlinkedSketch, GeneSketch autosomalSketch) {
+            this.sexlinkedGeneSketch = new GeneSketch(sexlinkedSketch);
+            this.autosomalGeneSketch = new GeneSketch(autosomalSketch);
+            this.sexlinkedGeneSketch.addLayer(geneSketches.getFirst());
+            this.autosomalGeneSketch.addLayer(geneSketches.getSecond());
+            return this;
+        }
+
+        public Breed.Properties setGeneSketch(Pair<GeneSketch, GeneSketch> geneSketches) {
+            this.sexlinkedGeneSketch = new GeneSketch(geneSketches.getFirst());
+            this.autosomalGeneSketch = new GeneSketch(geneSketches.getSecond());
             return this;
         }
 
@@ -211,25 +256,34 @@ public class Breed {
             this.varientsToGoThrough.addAll(Arrays.asList(varientsToGoThrough));
         }
 
+        public VarientHolder addVarients(VarientHolder additionalVarients) {
+            if (additionalVarients != null) {
+                this.varientsToGoThrough.addAll(additionalVarients.getVarientList());
+            }
+            return this;
+        }
+
         public Pair<GeneSketch, GeneSketch> getSketchWithVarients(Pair<GeneSketch, GeneSketch> genesketch) {
-            List<Pair<GeneSketch, GeneSketch>> varients = new ArrayList<>();
+            List<Pair<GeneSketch, GeneSketch>> varientSelections = new ArrayList<>();
             for (List<Pair<GeneSketch, GeneSketch>> var : this.varientsToGoThrough) {
-                varients.add(var.get(ThreadLocalRandom.current().nextInt(var.size())));
+                varientSelections.add(var.get(ThreadLocalRandom.current().nextInt(var.size())));
             }
 
-            for (Pair<GeneSketch, GeneSketch> sketch : varients) {
-                genesketch.getKey().addLayer(sketch.getKey());
-                genesketch.getValue().addLayer(sketch.getValue());
+            for (Pair<GeneSketch, GeneSketch> sketch : varientSelections) {
+                genesketch.getFirst().addLayer(sketch.getFirst());
+                genesketch.getSecond().addLayer(sketch.getSecond());
             }
 
             return genesketch;
         }
+
+        private List<List<Pair<GeneSketch, GeneSketch>>> getVarientList() {
+            return this.varientsToGoThrough;
+        }
     }
 
     public static List<Pair<GeneSketch, GeneSketch>> createVarientList(Pair<GeneSketch, GeneSketch>... varients) {
-        List<Pair<GeneSketch,GeneSketch>> varientList = new ArrayList<>();
-        varientList.addAll(Arrays.asList(varients));
-        return varientList;
+        return new ArrayList<>(Arrays.asList(varients));
     }
 
 }

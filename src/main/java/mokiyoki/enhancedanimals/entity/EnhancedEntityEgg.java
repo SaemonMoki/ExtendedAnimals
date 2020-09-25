@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,6 +28,8 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ENTI
 public class EnhancedEntityEgg extends ProjectileItemEntity {
 
     private static final DataParameter<String> GENES = EntityDataManager.<String>createKey(EnhancedEntityEgg.class, DataSerializers.STRING);
+    private static final DataParameter<String> SIRE = EntityDataManager.<String>createKey(EnhancedEntityEgg.class, DataSerializers.STRING);
+    private static final DataParameter<String> DAM = EntityDataManager.<String>createKey(EnhancedEntityEgg.class, DataSerializers.STRING);
 
     public EnhancedEntityEgg(EntityType<? extends EnhancedEntityEgg> entityIn, World worldIn) {
         super(entityIn, worldIn);
@@ -42,34 +45,67 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         super(ENHANCED_ENTITY_EGG_ENTITY_TYPE, x, y, z,worldIn);
     }
 
-    public EnhancedEntityEgg(World worldIn, PlayerEntity playerIn, int[] eggGenes) {
+    public EnhancedEntityEgg(World worldIn, PlayerEntity playerIn, Genes eggGenes, String sireName, String damName) {
         super(ENHANCED_ENTITY_EGG_ENTITY_TYPE, playerIn, worldIn);
         this.setGenes(eggGenes);
+        this.setParentNames(sireName, damName);
     }
 
     protected void registerData() {
         this.getDataManager().register(GENES, new String());
+        this.getDataManager().register(SIRE, new String());
+        this.getDataManager().register(DAM, new String());
     }
 
-    public void setGenes(int[] eggGenes) {
+    public void setGenes(Genes eggGenes) {
+//        if (eggGenes != null) {
+//            StringBuilder sb = new StringBuilder();
+//            for (int i = 0; i < eggGenes.length; i++){
+//                sb.append(eggGenes[i]);
+//                if (i != eggGenes.length -1){
+//                    sb.append(",");
+//                }
+//            }
+//            this.getDataManager().set(GENES, sb.toString());
+//        } else {
+//            this.getDataManager().set(GENES, "INFERTILE");
+//        }
         if (eggGenes != null) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < eggGenes.length; i++){
-                sb.append(eggGenes[i]);
-                if (i != eggGenes.length -1){
-                    sb.append(",");
-                }
-            }
-            this.getDataManager().set(GENES, sb.toString());
+            this.getDataManager().set(GENES, eggGenes.getGenesAsString());
         } else {
             this.getDataManager().set(GENES, "INFERTILE");
         }
-
     }
 
     public String getGenes() {
-        String genes = ((String)this.dataManager.get(GENES)).toString();
-        return genes;
+        return this.dataManager.get(GENES);
+    }
+
+    public void setParentNames(String sireName, String damName) {
+        if (sireName!=null && !sireName.equals("")) {
+            this.getDataManager().set(SIRE, sireName);
+        }
+        if (damName!=null && !damName.equals("")) {
+            this.getDataManager().set(DAM, damName);
+        }
+    }
+
+    public String getSire() {
+        String sireName = this.dataManager.get(SIRE);
+        if (sireName!=null && !sireName.equals("")) {
+            return sireName;
+        } else {
+            return "???";
+        }
+    }
+
+    public String getDam() {
+        String damName = this.dataManager.get(DAM);
+        if (damName!=null && !damName.equals("")) {
+            return damName;
+        } else {
+            return "???";
+        }
     }
 
     /**
@@ -81,7 +117,7 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
             double d0 = 0.08D;
 
             for (int i = 0; i < 8; ++i) {
-                this.world.addParticle(new ItemParticleData(ParticleTypes.ITEM, new ItemStack(ModItems.Egg_White)), this.getPosX(), this.getPosY(), this.getPosZ(), ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D);
+                this.world.addParticle(new ItemParticleData(ParticleTypes.ITEM, this.getItem()), this.getPosX(), this.getPosY(), this.getPosZ(), ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D);
             }
         }
     }
@@ -108,6 +144,8 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
                 enhancedchicken.setGrowingAge(-60000);
                 enhancedchicken.setBirthTime(String.valueOf(this.world.getGameTime()));
                 enhancedchicken.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
+                enhancedchicken.setSireName(getSire());
+                enhancedchicken.setDamName(getDam());
                 this.world.addEntity(enhancedchicken);
 //                }
 //            }
@@ -122,6 +160,8 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         super.readAdditional(compound);
         String genes = compound.getString("genes");
         this.getDataManager().set(GENES, genes);
+        this.getDataManager().set(SIRE, compound.getString("SireName"));
+        this.getDataManager().set(DAM, compound.getString("DamName"));
 
     }
 
@@ -132,6 +172,9 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         if (!genes.isEmpty()) {
             compound.putString("genes", genes);
         }
+        compound.putString("SireName", this.getSire());
+        compound.putString("DamName", this.getDam());
+
 
     }
 

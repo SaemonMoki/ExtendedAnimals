@@ -494,10 +494,10 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.hock4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
         this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
 
-        ModelHelper.copyModelAngles(leg1, hoof1);
-        ModelHelper.copyModelAngles(leg2, hoof2);
-        ModelHelper.copyModelAngles(leg3, hoof3);
-        ModelHelper.copyModelAngles(leg4, hoof4);
+        ModelHelper.copyModelPositioning(leg1, hoof1);
+        ModelHelper.copyModelPositioning(leg2, hoof2);
+        ModelHelper.copyModelPositioning(leg3, hoof3);
+        ModelHelper.copyModelPositioning(leg4, hoof4);
 
         this.earL.rotateAngleZ = -0.15F;
         this.earR.rotateAngleZ = 0.15F;

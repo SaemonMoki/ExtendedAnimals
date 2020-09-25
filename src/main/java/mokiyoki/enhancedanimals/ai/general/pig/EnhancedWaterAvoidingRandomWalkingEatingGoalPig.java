@@ -63,7 +63,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoalPig extends EnhancedWat
                             this.entityWorld.setBlockState(blockpos1, Blocks.FARMLAND.getDefaultState(), 2);
                         }
                         this.creature.eatGrassBonus();
-                    } else if (blockDown == ModBlocks.SPARSE_GRASS_BLOCK) {
+                    } else if (blockDown == ModBlocks.SPARSEGRASS_BLOCK) {
                         if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
                             this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
                             this.entityWorld.setBlockState(blockpos1, Blocks.FARMLAND.getDefaultState(), 2);

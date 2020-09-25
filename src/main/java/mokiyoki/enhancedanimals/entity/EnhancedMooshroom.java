@@ -4,10 +4,13 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.ai.general.mooshroom.GrazingGoalMooshroom;
+import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerBlock;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.BreedGoal;
@@ -30,6 +33,8 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -76,7 +81,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     @Override
     protected String getSpecies() {
-        return "Mooshroom";
+        return I18n.format("entity.eanimod.enhanced_mooshroom");
     }
 
     @Override
@@ -88,18 +93,15 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             mushroomType = 1;
         }
 
-        this.enhancedAnimalTextures.add(MOOSHROOM_MUSHROOM[mushroomType]);
+        addTextureToAnimal(MOOSHROOM_MUSHROOM, mushroomType, null);
     }
 
     @Override
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
-        int[] babyGenes = getCalfGenes(this.mitosisGenes, this.mateMitosisGenes);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
+        enhancedmooshroom.setMooshroomType(this.setChildMushroomType((enhancedmooshroom)));
         defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -84000);
-
-        EnhancedMooshroom EnhancedMooshroom = ENHANCED_MOOSHROOM.create(this.world);
-        EnhancedMooshroom.setMooshroomType(this.setChildMushroomType((EnhancedMooshroom)));
-
         enhancedmooshroom.setMotherUUID(this.getUniqueID().toString());
         enhancedmooshroom.configureAI();
         this.world.addEntity(enhancedmooshroom);
@@ -367,5 +369,13 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         }
 
         return this.colouration;
+    }
+
+    @Override
+    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+        Genes mooshroomGenetics = new CowGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
+        mooshroomGenetics.setAutosomalGene(118, 2);
+        mooshroomGenetics.setAutosomalGene(119, 2);
+        return mooshroomGenetics;
     }
 }

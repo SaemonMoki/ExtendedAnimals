@@ -334,7 +334,8 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
 
             if(pregnant) {
                 gestationTimer++;
-                int days = EanimodCommonConfig.COMMON.gestationDaysHorse.get();
+//                int days = EanimodCommonConfig.COMMON.gestationDaysHorse.get();
+                int days = 2;
                 if (days/2 < gestationTimer) {
                     setHorseStatus(EntityState.PREGNANT.toString());
                 }
@@ -357,7 +358,8 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             if (this.getIdleTime() < 100) {
                 if (hunger <= 72000) {
                     if (sleeping) {
-                        int days = EanimodCommonConfig.COMMON.gestationDaysHorse.get();
+//                        int days = EanimodCommonConfig.COMMON.gestationDaysHorse.get();
+                        int days = 2;
                         if (hunger <= days*(0.50)) {
                             hunger = hunger++;
                         }
@@ -980,7 +982,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
     private int[] createInitialGenes(IWorld inWorld) {
         int[] initialGenes = new int[GENES_LENGTH];
 
-        //Health Base gene [ weaker, stronger1, wildtype+, stronger2 ]
+        //Health Base genes [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[0] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -994,7 +996,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[1] = (3);
         }
 
-        //Health Modifier gene [ weaker, stronger1, wildtype+, stronger2 ]
+        //Health Modifier genes [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[2] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -1008,7 +1010,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[3] = (3);
         }
 
-        //Speed Base gene [ weaker, stronger1, wildtype+, stronger2 ]
+        //Speed Base genes [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[4] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -1022,7 +1024,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[5] = (3);
         }
 
-        //Speed Modifier gene [ weaker, stronger1, wildtype+, stronger2 ]
+        //Speed Modifier genes [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[6] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -1036,7 +1038,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[7] = (3);
         }
 
-        //Jump Base gene [ weaker, stronger1, wildtype+, stronger2 ]
+        //Jump Base genes [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[8] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -1050,7 +1052,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
             initialGenes[9] = (3);
         }
 
-        //Jump Modifier gene [ weaker, stronger1, wildtype+, stronger2 ]
+        //Jump Modifier genes [ weaker, stronger1, wildtype+, stronger2 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             initialGenes[10] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -1493,7 +1495,7 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
 
             this.goalSelector.addGoal(1, new PanicGoal(this, 1.5D));
             this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
-            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.25D, false, TEMPTATION_ITEMS));
+//            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.25D, false, TEMPTATION_ITEMS));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25D));
             this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, 1.25D));
             wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 20);

@@ -54,7 +54,7 @@
 //    protected ResourceLocation getLayeredTexture(EnhancedSheep entity)
 //    {
 //        String s = entity.getSheepFleeceTexture();
-//        ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.get(s);
+//        ResourceLocation resourcelocation = LAYERED_LOCATION_CACHE.generate(s);
 //
 //        if (resourcelocation == null)
 //        {

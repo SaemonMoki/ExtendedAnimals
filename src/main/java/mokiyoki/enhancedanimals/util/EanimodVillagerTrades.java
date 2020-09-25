@@ -1,32 +1,137 @@
 package mokiyoki.enhancedanimals.util;
 
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
+import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.item.DyeColor;
-import net.minecraft.item.IDyeableArmorItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.item.MerchantOffers;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static net.minecraft.entity.merchant.villager.VillagerProfession.FARMER;
+import static net.minecraft.entity.merchant.villager.VillagerProfession.LEATHERWORKER;
+import static net.minecraft.entity.merchant.villager.VillagerProfession.SHEPHERD;
+
 public class EanimodVillagerTrades extends MerchantOffers {
-    private static int itemType = -1; //TODO make this an ENUM probably
+    private static LinkedList<SaleItemHolder> LeatherWorkerTrades = new LinkedList<>();
+    private static LinkedList<SaleItemHolder> ShepardTrades = new LinkedList<>();
+//    private static LinkedList<SaleItemHolder> FarmerTrades = new LinkedList<>();
 
-    public static MerchantOffer getEanimodTrade(int level) {
-        int maxTradeNumber = ThreadLocalRandom.current().nextInt(1, 13);
-        ItemStack primarypayment = getPaymentItems();
-        ItemStack saleitem = getLeveledSaleItem(level);
+    public EanimodVillagerTrades() {
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH, 1, 2, 1, 1, true, Items.LEATHER));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH, 1, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER, 1, 2, 1, 1, true, Items.LEATHER));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_IRONRING, 1, 3, 1, 1, true, Items.LEATHER));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_IRONRING, 1, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER_IRONRING, 1, 3, 1, 1, true, Items.LEATHER));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_GOLDRING, 1, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.LEATHER));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_GOLDRING, 1, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER_GOLDRING, 1, 3, 1, 1, true, Items.LEATHER));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING, 1, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.LEATHER));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING, 1, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING, 1, 3, 1, 1, true, Items.LEATHER));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_IRONBELL, 2, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.LEATHER, Items.FLINT));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_IRONBELL, 2, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.FLINT));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER_IRONBELL, 2, 3, 1, 1, true, Items.LEATHER, Items.FLINT));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_GOLDBELL, 2, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.LEATHER, Items.FLINT));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_GOLDBELL, 2, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.FLINT));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER_GOLDBELL, 2, 3, 1, 1, true, Items.LEATHER, Items.FLINT));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL, 2, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.LEATHER, Items.FLINT));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL, 2, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.FLINT));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL, 2, 3, 1, 1, true, Items.LEATHER, Items.FLINT));
+        LeatherWorkerTrades.add(new SaleItemHolder(Items.SADDLE, 3, 5, 1, 1, false, ModItems.SADDLE_BASIC_LEATHER));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_CLOTH, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_CLOTH_GOLD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_CLOTH_DIAMOND, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_CLOTH_WOOD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_LEATHER, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_LEATHER_GOLD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_LEATHER_DIAMOND, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_LEATHER_WOOD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_GOLD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_DIAMOND, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_WOOD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_ENGLISH_CLOTH, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_ENGLISH_CLOTH_GOLD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_ENGLISH_CLOTH_DIAMOND, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_ENGLISH_CLOTH_WOOD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_ENGLISH_LEATHER, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_ENGLISH_LEATHER_GOLD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_ENGLISH_LEATHER_DIAMOND, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_ENGLISH_LEATHER_WOOD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_GOLD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_DIAMOND, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_WOOD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASICPOMEL_CLOTH, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASICPOMEL_CLOTH_GOLD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASICPOMEL_CLOTH_DIAMOND, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASICPOMEL_CLOTH_WOOD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASICPOMEL_LEATHER, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASICPOMEL_LEATHER_GOLD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASICPOMEL_LEATHER_DIAMOND, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASICPOMEL_LEATHER_WOOD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_GOLD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_DIAMOND, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_WOOD, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.BRIDLE_BASIC_CLOTH, 1, 4, 2, 4, true, Items.FLINT, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.BRIDLE_BASIC_CLOTH_GOLD, 1, 4, 2, 4, true, Items.FLINT, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.BRIDLE_BASIC_CLOTH_DIAMOND, 1, 4, 2, 4, true, Items.FLINT, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.BRIDLE_BASIC_LEATHER, 1, 4, 2, 4, true, Items.FLINT, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.BRIDLE_BASIC_LEATHER_GOLD, 1, 4, 2, 4, true, Items.FLINT, Items.LEATHER, Items.EMERALD));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.BRIDLE_BASIC_LEATHER_DIAMOND, 1, 4, 2, 4, true, Items.FLINT, Items.LEATHER, Items.EMERALD));
+        ShepardTrades.add(new SaleItemHolder(ModItems.BRIDLE_BASIC_CLOTH, 1, 4, 2, 4, true, Items.FLINT, Items.EMERALD));
+        ShepardTrades.add(new SaleItemHolder(ModItems.BRIDLE_BASIC_CLOTH_GOLD, 1, 4, 2, 4, true, Items.FLINT, Items.EMERALD));
+        ShepardTrades.add(new SaleItemHolder(ModItems.BRIDLE_BASIC_CLOTH_DIAMOND, 1, 4, 2, 4, true, Items.FLINT, Items.EMERALD));
 
-        if (ThreadLocalRandom.current().nextBoolean()) {
-            return new MerchantOffer(primarypayment, saleitem, maxTradeNumber, 0, 0.2F);
+//        FarmerTrades.add(new SaleItemHolder(fertilized_eggs, 1, 4, 2, 4, true, Items.FLINT, Items.EMERALD));
+
+    }
+
+    public static MerchantOffer getEanimodTrade(VillagerProfession profession, int level) {
+        LinkedList<SaleItemHolder> selectedTradeType = new LinkedList<>();
+        Item prefferedPayment = Items.EMERALD;
+        if (profession.equals(LEATHERWORKER)) {
+            selectedTradeType.addAll(LeatherWorkerTrades);
+            prefferedPayment = Items.LEATHER;
+
+        } else if (profession.equals(SHEPHERD)) {
+            selectedTradeType.addAll(ShepardTrades);
+            prefferedPayment = ThreadLocalRandom.current().nextBoolean()? Items.LIGHT_GRAY_WOOL : Items.BLACK_WOOL;
+
         }
+//        else if (profession.equals(FARMER)) {
+//            prefferedPayment = Items.WHEAT;
+//        }
 
-        if (primarypayment.getItem() != Items.EMERALD && ThreadLocalRandom.current().nextInt(5) == 0) {
-            setItemType(-1);
+        int numberOfTrades = selectedTradeType.size();
+        if (numberOfTrades!=0) {
+            Collections.shuffle(selectedTradeType);
+            for (int i = 0; i <= numberOfTrades; i++) {
+                if (selectedTradeType.get(i).getLevel(level)) {
+                    return selectedTradeType.get(i).getSale(level, prefferedPayment, false);
+                }
+            }
         }
-        return new MerchantOffer(primarypayment, getSecondaryPaymentItems(getItemType()), getRandomDye(saleitem), maxTradeNumber, 0, 0.2F);
+        return new MerchantOffer(new ItemStack(Items.EMERALD), new ItemStack(ModItems.COLLAR_BASIC_CLOTH), ThreadLocalRandom.current().nextInt(level)+10, level*level, 0.2F);
+    }
+
+    public static MerchantOffer getWanderingEanimodTrade() {
+        LinkedList<SaleItemHolder> selectedTradeType = new LinkedList<>();
+        selectedTradeType.addAll(LeatherWorkerTrades);
+        selectedTradeType.addAll(ShepardTrades);
+        int numberOfTrades = selectedTradeType.size();
+        return numberOfTrades!= 0 ? selectedTradeType.get(ThreadLocalRandom.current().nextInt(numberOfTrades)).getSale(ThreadLocalRandom.current().nextInt(8)+2, Items.EMERALD, true) : new MerchantOffer(new ItemStack(Items.EMERALD), new ItemStack(ModItems.COLLAR_BASIC_CLOTH), ThreadLocalRandom.current().nextInt(5)+10, 0, 0.2F);
     }
 
     private static ItemStack getRandomDye(ItemStack itemStack) {
@@ -37,275 +142,135 @@ public class EanimodVillagerTrades extends MerchantOffers {
         return itemStack;
     }
 
-    private static void setItemType(int type) {
-        // type [ 0=iron, 1=gold, 2=diamond, 3=wood, 4=emerald, 5=redstone, 6=lapis ]
-        itemType = type;
-    }
+    public class SaleItemHolder {
+        int minLevel;
+        int maxLevel;
+        Item saleItem;
+        LinkedList<Item> types = new LinkedList<>();
+        int minValue;
+        int maxValue;
+        boolean dyeable = false;
 
-    private static int getItemType() {
-        return itemType;
-    }
-
-    private static ItemStack getPaymentItems() {
-        ItemStack payment;
-        switch (ThreadLocalRandom.current().nextInt(12)) {
-            case 0:
-                return new ItemStack(Items.LEATHER, ThreadLocalRandom.current().nextInt(4, 13));
-            case 1:
-                return new ItemStack(Items.RABBIT_HIDE, ThreadLocalRandom.current().nextInt(1, 6) * 4);
-            case 2:
-                return new ItemStack(Items.SADDLE, 1);
-            case 3:
-                return new ItemStack(Items.LEATHER_HORSE_ARMOR, 1);
-            default:
-                return new ItemStack(Items.EMERALD, ThreadLocalRandom.current().nextInt(4, 9));
+        public SaleItemHolder(Item saleItem, int minLevel, int maxLevel, int minValue, int maxValue, boolean dyeable, Item... types) {
+            this.minLevel = minLevel;
+            this.maxLevel = maxLevel;
+            this.saleItem = saleItem;
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+            this.dyeable = dyeable;
+            this.types.addAll(Arrays.asList(types));
         }
-    }
 
-    private static ItemStack getSecondaryPaymentItems(int type) {
-        // type [ 0=iron, 1=gold, 2=diamond, 3=wood, 4=emerald, 5=redstone, 6=lapis ]
-        ItemStack payment;
-        switch (type) {
-            case -1:
-                return new ItemStack(Items.EMERALD, ThreadLocalRandom.current().nextInt(1, 7));
-            case 0:
-                return new ItemStack(Items.IRON_INGOT, ThreadLocalRandom.current().nextInt(1, 7));
-            case 1:
-                return new ItemStack(Items.GOLD_INGOT, ThreadLocalRandom.current().nextInt(1, 7));
-            case 2:
-                return new ItemStack(Items.DIAMOND, ThreadLocalRandom.current().nextInt(1, 5));
-            case 3:
-                return new ItemStack(Items.STICK, 16);
-            case 4:
-                return new ItemStack(Items.EMERALD, 6);
-            case 5:
-                return new ItemStack(Items.REDSTONE, ThreadLocalRandom.current().nextInt(1, 9));
-            case 6:
-                return new ItemStack(Items.LAPIS_LAZULI, ThreadLocalRandom.current().nextInt(1, 9));
-            default:
-                return new ItemStack(Items.EMERALD, 1);
+        public boolean getLevel(int villagerLevel) {
+            return villagerLevel <= this.maxLevel && villagerLevel >= this.minLevel;
         }
-    }
 
-    private static ItemStack getLeveledSaleItem(int level) {
-        switch (level) {
-            case 1 :
-                return getCollarItem();
-            case 2 :
-                if (ThreadLocalRandom.current().nextBoolean()) {
-                    return getCollarItem();
-                } else {
-                    return getBridleItem();
+        public MerchantOffer getSale(int villagerLevel, Item prefferedPayment, boolean isTrader) {
+            ItemStack payment = ItemStack.EMPTY;
+            if (this.saleItem == Items.SADDLE) {
+                int rand = ThreadLocalRandom.current().nextInt(36);
+                switch (rand) {
+                    case 0 : payment = new ItemStack(ModItems.SADDLE_BASIC_CLOTH);
+                        break;
+                    case 1 : payment = new ItemStack(ModItems.SADDLE_BASIC_CLOTH_GOLD);
+                        break;
+                    case 2 : payment = new ItemStack(ModItems.SADDLE_BASIC_CLOTH_DIAMOND);
+                        break;
+                    case 3 : payment = new ItemStack(ModItems.SADDLE_BASIC_CLOTH_WOOD);
+                        break;
+                    case 4 : payment = new ItemStack(ModItems.SADDLE_BASIC_LEATHER);
+                        break;
+                    case 5 : payment = new ItemStack(ModItems.SADDLE_BASIC_LEATHER_GOLD);
+                        break;
+                    case 6 : payment = new ItemStack(ModItems.SADDLE_BASIC_LEATHER_DIAMOND);
+                        break;
+                    case 7 : payment = new ItemStack(ModItems.SADDLE_BASIC_LEATHER_WOOD);
+                        break;
+                    case 8 : payment = new ItemStack(ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT);
+                        break;
+                    case 9 : payment = new ItemStack(ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_GOLD);
+                        break;
+                    case 10 : payment = new ItemStack(ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_DIAMOND);
+                        break;
+                    case 11 : payment = new ItemStack(ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_WOOD);
+                        break;
+                    case 12 : payment = new ItemStack(ModItems.SADDLE_BASICPOMEL_CLOTH);
+                        break;
+                    case 13 : payment = new ItemStack(ModItems.SADDLE_BASICPOMEL_CLOTH_GOLD);
+                        break;
+                    case 14 : payment = new ItemStack(ModItems.SADDLE_BASICPOMEL_CLOTH_DIAMOND);
+                        break;
+                    case 15 : payment = new ItemStack(ModItems.SADDLE_BASICPOMEL_CLOTH_WOOD);
+                        break;
+                    case 16 : payment = new ItemStack(ModItems.SADDLE_BASICPOMEL_LEATHER);
+                        break;
+                    case 17 : payment = new ItemStack(ModItems.SADDLE_BASICPOMEL_LEATHER_GOLD);
+                        break;
+                    case 18 : payment = new ItemStack(ModItems.SADDLE_BASICPOMEL_LEATHER_DIAMOND);
+                        break;
+                    case 19 : payment = new ItemStack(ModItems.SADDLE_BASICPOMEL_LEATHER_WOOD);
+                        break;
+                    case 20 : payment = new ItemStack(ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT);
+                        break;
+                    case 21 : payment = new ItemStack(ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_GOLD);
+                        break;
+                    case 22 : payment = new ItemStack(ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_DIAMOND);
+                        break;
+                    case 23 : payment = new ItemStack(ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_WOOD);
+                        break;
+                    case 24 : payment = new ItemStack(ModItems.SADDLE_ENGLISH_CLOTH);
+                        break;
+                    case 25 : payment = new ItemStack(ModItems.SADDLE_ENGLISH_CLOTH_GOLD);
+                        break;
+                    case 26 : payment = new ItemStack(ModItems.SADDLE_ENGLISH_CLOTH_DIAMOND);
+                        break;
+                    case 27 : payment = new ItemStack(ModItems.SADDLE_ENGLISH_CLOTH_WOOD);
+                        break;
+                    case 28 : payment = new ItemStack(ModItems.SADDLE_ENGLISH_LEATHER);
+                        break;
+                    case 29 : payment = new ItemStack(ModItems.SADDLE_ENGLISH_LEATHER_GOLD);
+                        break;
+                    case 30 : payment = new ItemStack(ModItems.SADDLE_ENGLISH_LEATHER_DIAMOND);
+                        break;
+                    case 31 : payment = new ItemStack(ModItems.SADDLE_ENGLISH_LEATHER_WOOD);
+                        break;
+                    case 32 : payment = new ItemStack(ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT);
+                        break;
+                    case 33 : payment = new ItemStack(ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_GOLD);
+                        break;
+                    case 34 : payment = new ItemStack(ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_DIAMOND);
+                        break;
+                    case 35 : payment = new ItemStack(ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_WOOD);
+                        break;
                 }
-            case 3 :
-                if (ThreadLocalRandom.current().nextBoolean()) {
-                    return getCollarItem();
-                } else {
-                    if (ThreadLocalRandom.current().nextBoolean()) {
-                        return getSaddleItem();
+            } else if (ThreadLocalRandom.current().nextInt(4)==0 && !isTrader) {
+                Collections.shuffle(this.types);
+                Item paymentItem = ThreadLocalRandom.current().nextBoolean() ? this.types.getFirst() : prefferedPayment;
+                payment = new ItemStack(paymentItem);
+                if (payment.isStackable()) {
+                    if (this.minValue == this.maxValue) {
+                        payment.grow(this.minValue);
                     } else {
-                        return getBridleItem();
+                        payment.grow(ThreadLocalRandom.current().nextInt(this.minValue, this.maxValue));
                     }
                 }
-            case 4 :
-                switch (ThreadLocalRandom.current().nextInt(3)) {
-                    case 0 : return getCollarItem();
-                    case 1 : return getBridleItem();
-                    case 2 : return getSaddleItem();
+            } else {
+                if (this.minValue == this.maxValue) {
+                    payment = new ItemStack(Items.EMERALD);
+                } else {
+                    int a = ThreadLocalRandom.current().nextInt(this.minValue, this.maxValue);
+                    int b = ThreadLocalRandom.current().nextInt(this.minValue, this.maxValue);
+                    payment = new ItemStack(Items.EMERALD, a <= b ? a : b);
                 }
-            case 5 :
-            default:
-                if (ThreadLocalRandom.current().nextBoolean()) {
-                    return getBridleItem();
-                }
-        }
-        return getSaddleItem();
-    }
-
-
-    private static ItemStack getSaddleItem() {
-        setItemType(0); //iron
-        switch (ThreadLocalRandom.current().nextInt(13)) {
-            case 0:
-                return new ItemStack(ModItems.SADDLE_CLOTH, 1);
-            case 1:
-                return new ItemStack(ModItems.SADDLE_ENGLISH_CLOTH, 1);
-            case 2:
-                return new ItemStack(ModItems.SADDLE_POMEL_CLOTH, 1);
-            case 3:
-                return new ItemStack(ModItems.SADDLE_LEATHER, 1);
-            case 4:
-                return new ItemStack(ModItems.SADDLE_ENGLISH_LEATHER, 1);
-            case 5:
-                return new ItemStack(ModItems.SADDLE_POMEL_LEATHER, 1);
-            case 6:
-                return new ItemStack(ModItems.SADDLE_LEATHERCLOTHSEAT, 1);
-            case 7:
-                return new ItemStack(ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT, 1);
-            case 8:
-                return new ItemStack(ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT, 1);
-            case 9:
-                return new ItemStack(ModItems.SADDLE_CLOTH, 1);
-            case 10:
-                return new ItemStack(ModItems.SADDLE_LEATHER, 1);
-            case 11:
-                return new ItemStack(ModItems.SADDLE_LEATHERCLOTHSEAT, 1);
-        }
-        if (ThreadLocalRandom.current().nextBoolean()) {
-            setItemType(1); //gold
-            switch (ThreadLocalRandom.current().nextInt(13)) {
-                case 0:
-                    return new ItemStack(ModItems.SADDLE_CLOTH_G, 1);
-                case 1:
-                    return new ItemStack(ModItems.SADDLE_ENGLISH_CLOTH_G, 1);
-                case 2:
-                    return new ItemStack(ModItems.SADDLE_POMEL_CLOTH_G, 1);
-                case 3:
-                    return new ItemStack(ModItems.SADDLE_LEATHER_G, 1);
-                case 4:
-                    return new ItemStack(ModItems.SADDLE_ENGLISH_LEATHER_G, 1);
-                case 5:
-                    return new ItemStack(ModItems.SADDLE_POMEL_LEATHER_G, 1);
-                case 6:
-                    return new ItemStack(ModItems.SADDLE_LEATHERCLOTHSEAT_G, 1);
-                case 7:
-                    return new ItemStack(ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_G, 1);
-                case 8:
-                    return new ItemStack(ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_G, 1);
-                case 9:
-                    return new ItemStack(ModItems.SADDLE_CLOTH_G, 1);
-                case 10:
-                    return new ItemStack(ModItems.SADDLE_LEATHER_G, 1);
-                case 11:
-                    return new ItemStack(ModItems.SADDLE_LEATHERCLOTHSEAT_G, 1);
             }
-        } else {
-            setItemType(3); //wood
-            switch (ThreadLocalRandom.current().nextInt(13)) {
-                case 0:
-                    return new ItemStack(ModItems.SADDLE_CLOTH_W, 1);
-                case 1:
-                    return new ItemStack(ModItems.SADDLE_ENGLISH_CLOTH_W, 1);
-                case 2:
-                    return new ItemStack(ModItems.SADDLE_POMEL_CLOTH_W, 1);
-                case 3:
-                    return new ItemStack(ModItems.SADDLE_LEATHER_W, 1);
-                case 4:
-                    return new ItemStack(ModItems.SADDLE_ENGLISH_LEATHER_W, 1);
-                case 5:
-                    return new ItemStack(ModItems.SADDLE_POMEL_LEATHER_W, 1);
-                case 6:
-                    return new ItemStack(ModItems.SADDLE_LEATHERCLOTHSEAT_W, 1);
-                case 7:
-                    return new ItemStack(ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_W, 1);
-                case 8:
-                    return new ItemStack(ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_W, 1);
-                case 9:
-                    return new ItemStack(ModItems.SADDLE_CLOTH_W, 1);
-                case 10:
-                    return new ItemStack(ModItems.SADDLE_LEATHER_W, 1);
-                case 11:
-                    return new ItemStack(ModItems.SADDLE_LEATHERCLOTHSEAT_W, 1);
+
+            int experience = this.minLevel >= villagerLevel? villagerLevel*villagerLevel : ThreadLocalRandom.current().nextInt(this.minLevel, villagerLevel) * ThreadLocalRandom.current().nextInt(this.minLevel, villagerLevel);
+
+            if (this.dyeable) {
+                return new MerchantOffer(payment, ThreadLocalRandom.current().nextInt(4)==0 ? getRandomDye(new ItemStack(this.saleItem)) : new ItemStack(this.saleItem), ThreadLocalRandom.current().nextInt(villagerLevel)+10, experience, 0.2F);
+            } else {
+                return new MerchantOffer(payment, new ItemStack(this.saleItem), ThreadLocalRandom.current().nextInt(villagerLevel)+10, experience, 0.2F);
             }
-        }
-        setItemType(2); //diamond
-        switch (ThreadLocalRandom.current().nextInt(12)) {
-            case 0:
-                return new ItemStack(ModItems.SADDLE_CLOTH_D, 1);
-            case 1:
-                return new ItemStack(ModItems.SADDLE_ENGLISH_CLOTH_D, 1);
-            case 2:
-                return new ItemStack(ModItems.SADDLE_POMEL_CLOTH_D, 1);
-            case 3:
-                return new ItemStack(ModItems.SADDLE_LEATHER_D, 1);
-            case 4:
-                return new ItemStack(ModItems.SADDLE_ENGLISH_LEATHER_D, 1);
-            case 5:
-                return new ItemStack(ModItems.SADDLE_POMEL_LEATHER_D, 1);
-            case 6:
-                return new ItemStack(ModItems.SADDLE_LEATHERCLOTHSEAT_D, 1);
-            case 7:
-                return new ItemStack(ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_D, 1);
-            case 8:
-                return new ItemStack(ModItems.SADDLE_POMEL_LEATHERCLOTHSEAT_D, 1);
-            case 9:
-                return new ItemStack(ModItems.SADDLE_CLOTH_D, 1);
-            case 10:
-                return new ItemStack(ModItems.SADDLE_LEATHER_D, 1);
-            case 11:
-            default:
-                return new ItemStack(ModItems.SADDLE_LEATHERCLOTHSEAT_D, 1);
-        }
-    }
-
-    private static ItemStack getCollarItem() {
-        setItemType(0);
-        switch (ThreadLocalRandom.current().nextInt(9)) {
-            case 0 :
-                return new ItemStack(ModItems.COLLAR_CLOTH);
-            case 1 :
-                return new ItemStack(ModItems.COLLAR_LEATHER);
-            case 2 :
-                return new ItemStack(ModItems.COLLAR_CLOTH_RING);
-            case 3 :
-                return new ItemStack(ModItems.COLLAR_LEATHER_RING);
-            case 4 :
-                return new ItemStack(ModItems.COLLAR_CLOTH_BELL);
-            case 5 :
-                return new ItemStack(ModItems.COLLAR_LEATHER_BELL);
-            case 6 :
-                return new ItemStack(ModItems.COLLAR_CLOTH);
-            case 7 :
-                return new ItemStack(ModItems.COLLAR_LEATHER);
-        }
-        setItemType(1);
-        switch (ThreadLocalRandom.current().nextInt(5)) {
-            case 0:
-                return new ItemStack(ModItems.COLLAR_CLOTH_G);
-            case 1:
-                return new ItemStack(ModItems.COLLAR_LEATHER_G);
-            case 2:
-                return new ItemStack(ModItems.COLLAR_CLOTH_GBELL);
-            case 3:
-                return new ItemStack(ModItems.COLLAR_LEATHER_GBELL);
-        }
-        setItemType(2);
-        switch (ThreadLocalRandom.current().nextInt(4)) {
-            case 0:
-                return new ItemStack(ModItems.COLLAR_CLOTH_D);
-            case 1:
-                return new ItemStack(ModItems.COLLAR_LEATHER_D);
-            case 2:
-                return new ItemStack(ModItems.COLLAR_CLOTH_DBELL);
-            default:
-                return new ItemStack(ModItems.COLLAR_LEATHER_DBELL);
-        }
-    }
-
-    private static ItemStack getBridleItem() {
-        setItemType(0);
-        switch (ThreadLocalRandom.current().nextInt(4)) {
-            case 0 :
-                return new ItemStack(ModItems.BRIDLE_BASIC_CLOTH);
-            case 1 :
-                return new ItemStack(ModItems.BRIDLE_BASIC_LEATHER);
-            case 2 :
-                return new ItemStack(ModItems.BRIDLE_BASIC_CLOTH);
-            case 3 :
-                return new ItemStack(ModItems.BRIDLE_BASIC_LEATHER);
-        }
-        setItemType(1);
-        switch (ThreadLocalRandom.current().nextInt(3)) {
-            case 0:
-                return new ItemStack(ModItems.BRIDLE_BASIC_CLOTH_G);
-            case 1:
-                return new ItemStack(ModItems.BRIDLE_BASIC_LEATHER_G);
-        }
-        setItemType(2);
-        if (ThreadLocalRandom.current().nextBoolean()) {
-            return new ItemStack(ModItems.BRIDLE_BASIC_CLOTH_D);
-        } else {
-            return new ItemStack(ModItems.BRIDLE_BASIC_LEATHER_D);
         }
     }
 }

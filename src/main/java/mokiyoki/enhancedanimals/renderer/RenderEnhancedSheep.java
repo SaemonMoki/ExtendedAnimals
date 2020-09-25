@@ -31,8 +31,8 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
      */
     public ResourceLocation getEntityTexture(EnhancedSheep entity) {
         String s = entity.getSheepTexture();
-        entity.colouration.setDyeColour(EnhancedSheep.getDyeRgb(entity.getFleeceDyeColour()));
-        Colouration colourRGB = entity.colouration;
+        Colouration colourRGB = entity.getRgb();
+        colourRGB.setDyeColour(EnhancedSheep.getDyeRgb(entity.getFleeceDyeColour()));
 
         if (s == null || s.isEmpty() || colourRGB == null) {
             return ERROR_TEXTURE_LOCATION;
@@ -52,7 +52,7 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_SHEEP_TEXTURE_LOCATION, textures, null, entity.colouration));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_SHEEP_TEXTURE_LOCATION, textures, null, colourRGB));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

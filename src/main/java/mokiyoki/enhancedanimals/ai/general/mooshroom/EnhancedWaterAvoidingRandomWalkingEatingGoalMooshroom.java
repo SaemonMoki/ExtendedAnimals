@@ -32,7 +32,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom extends Enhan
             return true;
         } else {
             BlockState blockStateDown = this.entityWorld.getBlockState(blockpos.down());
-            return blockStateDown.getBlock() == Blocks.GRASS_BLOCK || blockStateDown.getBlock() == ModBlocks.SPARSE_GRASS_BLOCK || blockStateDown.getBlock() == Blocks.MYCELIUM || blockStateDown.getBlock() == ModBlocks.PATCHY_MYCELIUM_BLOCK;
+            return blockStateDown.getBlock() == Blocks.GRASS_BLOCK || blockStateDown.getBlock() == ModBlocks.SPARSEGRASS_BLOCK || blockStateDown.getBlock() == Blocks.MYCELIUM || blockStateDown.getBlock() == ModBlocks.PATCHYMYCELIUM_BLOCK;
         }
     }
 
@@ -49,23 +49,23 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom extends Enhan
             if (this.entityWorld.getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
                     this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                    this.entityWorld.setBlockState(blockposDown, ModBlocks.SPARSE_GRASS_BLOCK.getDefaultState(), 2);
+                    this.entityWorld.setBlockState(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.getDefaultState(), 2);
                 }
                 this.creature.eatGrassBonus();
             }else if (this.entityWorld.getBlockState(blockposDown).getBlock() == Blocks.MYCELIUM) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
                     this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.MYCELIUM.getDefaultState()));
-                    this.entityWorld.setBlockState(blockposDown, ModBlocks.PATCHY_MYCELIUM_BLOCK.getDefaultState(), 2);
+                    this.entityWorld.setBlockState(blockposDown, ModBlocks.PATCHYMYCELIUM_BLOCK.getDefaultState(), 2);
                 }
                 this.creature.eatGrassBonus();
-            } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSE_GRASS_BLOCK) {
+            } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
                     this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
                     this.entityWorld.setBlockState(blockposDown, Blocks.DIRT.getDefaultState(), 2);
                 }
 
                 this.creature.eatGrassBonus();
-            } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.PATCHY_MYCELIUM_BLOCK) {
+            } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.PATCHYMYCELIUM_BLOCK) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
                     this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.MYCELIUM.getDefaultState()));
                     this.entityWorld.setBlockState(blockposDown, Blocks.DIRT.getDefaultState(), 2);

@@ -3,7 +3,7 @@ Statues
 Inventory
 0: Chest
 1: Saddle   colourable
-2: Armour   colourable
+2: Armour   clourable
 3: Bridle   colourable
 4: Blanket
 5: Harness  colourable

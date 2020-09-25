@@ -12,16 +12,25 @@ import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.ai.general.chicken.EnhancedWaterAvoidingRandomWalkingEatingGoalChicken;
 import mokiyoki.enhancedanimals.ai.general.chicken.GrazingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.entity.Genetics.ChickenGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.AgeableEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -33,22 +42,22 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by saemon and moki on 30/08/2018.
@@ -154,7 +163,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             "moorhead_splashchoc.png", "moorhead_lav.png", "moorhead_white.png", "moorhead_dun.png",    "moorhead_choc.png",
     };
     private static final String[] CHICKEN_TEXTURES_WHITE = new String[] {
-        "","white_barred.png","white_mottles.png","white_crested.png"
+        "","white_darkbarred.png","white_barred.png","white_crested.png","white_mottles.png", "white_crestedmottled.png"
     };
 
     private static final String[] CHICKEN_TEXTURES_CHICKBASE = new String[] {
@@ -176,8 +185,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     };
 
     private static final String[] CHICKEN_TEXTURES_SHANKS = new String[] {
-        "shanks_horn.png","shanks_lightyellow.png","shanks_yellow.png","shanks_darkyellow.png","shanks_willow.png","shanks_black.png",
         "shanks_verywhite.png","shanks_lightwhite.png","shanks_white.png","shanks_grey.png", "shanks_slate.png", "shanks_black.png",
+        "shanks_horn.png","shanks_lightyellow.png","shanks_yellow.png","shanks_darkyellow.png","shanks_willow.png","shanks_black.png",
         "shanks_superhorn.png", "shanks_lightsuperyellow.png", "shanks_superyellow.png", "shanks_darksuperyellow.png","shanks_superwillow.png","shanks_black.png"
     };
     private static final String[] CHICKEN_TEXTURES_COMB = new String[] {
@@ -212,13 +221,12 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     };
     private static final String[] CHICKEN_TEXTURES_EYES = new String[] {
-        "eyes_albino.png", "eyes_black.png"
+        "eyes_albino.png", "eyes_black.png", "eyes_blue.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.TALL_GRASS, Items.GRASS, Items.BREAD);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.TALL_GRASS, Items.GRASS, Items.BREAD, Items.EGG);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
 
-    public boolean isFemale = true;
     public float wingRotation;
     public float destPos;
     public float oFlapSpeed;
@@ -233,15 +241,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     private ECSandBath ecSandBath;
     private String dropMeatType;
+    public boolean chickenJockey;
 
     private boolean resetTexture = true;
-
-    private int broodingCount;
 
     private float chickenSize = 0.0F;
 
     public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, World worldIn) {
-        super(entityType, worldIn, Reference.CHICKEN_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), false);
+        super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), false);
         this.setChickenSize();
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
         this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
@@ -261,6 +268,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
             put(new ItemStack(Items.DANDELION).getItem(), 1500);
             put(new ItemStack(Items.SPIDER_EYE).getItem(), 1500);
+            put(new ItemStack(Items.EGG).getItem(), 200);
         }};
 
     }
@@ -297,7 +305,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     }
 
     protected String getSpecies() {
-        return "Chicken";
+        return I18n.format("entity.eanimod.enhanced_chicken");
     }
 
     protected int getAdultAge() { return 60000;}
@@ -305,6 +313,26 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     @Override
     protected int gestationConfig() {
         return 24000;
+    }
+
+    @Override
+    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+        Item item = itemStack.getItem();
+
+        if (item instanceof EnhancedEgg && hunger >= 6000) {
+            //enhancedegg egg eating
+            decreaseHunger(200);
+            if (!entityPlayer.abilities.isCreativeMode) {
+                itemStack.shrink(1);
+            } else {
+                if (itemStack.getCount() > 1) {
+                    itemStack.shrink(1);
+                }
+            }
+        }
+
+        return super.processInteract(entityPlayer, hand);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -338,6 +366,33 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
     }
 
+    public void updatePassenger(Entity passenger) {
+        super.updatePassenger(passenger);
+        float f = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
+        float f1 = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
+        float f2 = 0.1F;
+        float f3 = 0.0F;
+        passenger.setPosition(this.getPosX() + (double)(0.1F * f), this.getPosYHeight(0.5D) + passenger.getYOffset() + 0.0D, this.getPosZ() - (double)(0.1F * f1));
+        if (passenger instanceof LivingEntity) {
+            ((LivingEntity)passenger).renderYawOffset = this.renderYawOffset;
+        }
+
+    }
+
+    /**
+     * Determines if this chicken is a jokey with a zombie riding it.
+     */
+    public boolean isChickenJockey() {
+        return this.chickenJockey;
+    }
+
+    /**
+     * Sets whether this chicken is a jockey or not.
+     */
+    public void setChickenJockey(boolean jockey) {
+        this.chickenJockey = jockey;
+    }
+
     @Override
     public void livingTick() {
         super.livingTick();
@@ -367,20 +422,22 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     protected void incrementHunger() {
         if (sleeping) {
-            hunger = hunger + 0.25F;
+            hunger = hunger + (0.25F*getHungerModifier());
         } else {
-            hunger = hunger + 0.5F;
+            hunger = hunger + (0.5F*getHungerModifier());
         }
     }
 
     @Override
     protected void runExtraIdleTimeTick() {
-        --this.fertileTimer;
+        if (EanimodCommonConfig.COMMON.omnigenders.get() || this.getIsFemale()) {
+            --this.fertileTimer;
 
-        if (hunger <= 24000) {
-            --this.timeUntilNextEgg;
-        } else if (hunger >= 48000) {
-            this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
+            if (hunger <= 24000) {
+                --this.timeUntilNextEgg;
+            } else if (hunger >= 48000) {
+                this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
+            }
         }
     }
 
@@ -388,13 +445,23 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     protected void runPregnancyTick() {
         if (!this.isChild() && this.timeUntilNextEgg <= 0) {
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
-            mixMateMitosisGenes();
-            mixMitosisGenes();
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
-            if (fertileTimer > 0) {
-                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setGenes(getEggGenes(this.genes, this.mateGenes, this.mitosisGenes, this.mateMitosisGenes, false));
+            if (this.fertileTimer > 0) {
+                String damName = "???";
+                if (this.getCustomName()!=null) {
+                    damName = this.getCustomName().getString();
+                }
+                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.getIsFemale(), Genes.Species.CHICKEN), this.mateName, damName);
                 CompoundNBT nbtTagCompound = eggItem.serializeNBT();
                 eggItem.deserializeNBT(nbtTagCompound);
+                if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
+                    int i = 1;
+                    while (i > 0) {
+                        int j = ExperienceOrbEntity.getXPSplit(i);
+                        i -= j;
+                        this.world.addEntity(new ExperienceOrbEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), j));
+                    }
+                }
             }
             this.entityDropItem(eggItem, 1);
             this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
@@ -402,9 +469,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     }
 
     private void setChickenSize(){
-
         float size = 1.0F;
 
+        int[] genes = this.genetics.getAutosomalGenes();
         if(genes[74] == 1){
             size = size - 0.05F;
         }else if(genes[74] == 2){
@@ -445,6 +512,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     @Override
     protected void lethalGenes() {
+        int[] genes = this.genetics.getAutosomalGenes();
         if(genes[70] == 2 && genes[71] == 2) {
                 this.remove();
         } else if(genes[72] == 2 && genes[73] == 2){
@@ -472,6 +540,12 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         return SoundEvents.ENTITY_CHICKEN_DEATH;
     }
 
+    protected void playStepSound(BlockPos pos, BlockState blockIn) {
+        if (!this.isSilent() && this.getBells()) {
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 2.0F);
+        }
+    }
+
     /**
      * Chicken grass eating and sand bathing
     */
@@ -489,106 +563,136 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     @Override
     protected void handlePartnerBreeding(AgeableEntity ageable) {
-        this.mateGenes = ((EnhancedChicken)ageable).getGenes();
-        mixMateMitosisGenes();
-        mixMitosisGenes();
-        ((EnhancedChicken)ageable).setMateGenes(this.genes);
-        ((EnhancedChicken)ageable).mixMateMitosisGenes();
-        ((EnhancedChicken)ageable).mixMitosisGenes();
-
-
-        this.setFertile();
-        ((EnhancedChicken)ageable).setFertile();
+        if (EanimodCommonConfig.COMMON.omnigenders.get()) {
+            this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
+            this.setFertile();
+            this.setMateGender(((EnhancedChicken)ageable).getIsFemale());
+            if (((EnhancedChicken)ageable).hasCustomName()) {
+                this.setMateName(((EnhancedChicken) ageable).getCustomName().getString());
+            }
+            ((EnhancedChicken)ageable).setMateGenes(this.genetics);
+            ((EnhancedChicken)ageable).setFertile();
+            ((EnhancedChicken)ageable).setMateGender(this.getIsFemale());
+            if (this.hasCustomName()) {
+                ((EnhancedChicken)ageable).setMateName(this.getCustomName().getString());
+            }
+        } else if (this.getIsFemale()) {
+            this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
+            this.setFertile();
+            this.setMateGender(false);
+            if (((EnhancedChicken)ageable).hasCustomName()) {
+                this.setMateName(((EnhancedChicken) ageable).getCustomName().getString());
+            }
+        } else {
+            ((EnhancedChicken)ageable).setMateGenes(this.genetics);
+            ((EnhancedChicken)ageable).setFertile();
+            ((EnhancedChicken)ageable).setMateGender(false);
+            if (this.hasCustomName()) {
+                ((EnhancedAnimalAbstract)ageable).setMateName(this.getCustomName().getString());
+            }
+        }
     }
 
 
     private int resolveEggColour(){
         int eggColour = 0;
 
-        if(genes[5] == 1){
+        if (this.genetics!=null) {
+            int[] sexlinkedGenes = this.genetics.getSexlinkedGenes();
+            int[] genes = this.genetics.getAutosomalGenes();
 
-            if(genes[64] == 1 || genes[65] == 1 || genes[66] == 1 || genes[67] == 1){
+        if(sexlinkedGenes[10] == 1 || (!this.getIsFemale() && sexlinkedGenes[11] == 1)) {
+
+            if (genes[64] == 1 || genes[65] == 1 || genes[66] == 1 || genes[67] == 1) {
                 //egg is brown
                 eggColour = 13;
-            }else if((genes[64] == 2 || genes[65] == 2) && (genes[66] == 2 || genes[67] == 2)){
+            } else if ((genes[64] == 2 || genes[65] == 2) && (genes[66] == 2 || genes[67] == 2)) {
                 //egg is brown
                 eggColour = 13;
-            }else if(genes[66] == 2 || genes[67] == 2){
+            } else if (genes[66] == 2 || genes[67] == 2) {
                 //egg is cream
                 eggColour = 1;
-            }else if(genes[64] == 2 || genes[65] == 2){
+            } else if (genes[64] == 2 || genes[65] == 2) {
                 //egg is pink
                 eggColour = 7;
-            }else if(genes[64] == 3 || genes[65] == 3 || genes[66] == 3 || genes[67] == 3){
+            } else if (genes[64] == 3 || genes[65] == 3 || genes[66] == 3 || genes[67] == 3) {
                 //egg is white
                 eggColour = 0;
             }
 
-        }
+            int shade = 0;
+            int markings = 0;
 
-        int shade = 0;
-        int markings = 0;
-
-        //darkens egg if already brown shade
-        if(genes[68] == 1 || genes[69] == 1){
-            if (eggColour != 0) {
-                shade =+ 1;
+            //darkens egg if already brown shade
+            if (genes[68] == 1 || genes[69] == 1) {
+                if (eggColour != 0) {
+                    shade = +1;
+                }
             }
-        }
 
-        if (genes[172] == 2 || genes[173] == 2) {
-            //darkens egg by 1
-            shade =+ 1;
-        }
+            if (genes[172] == 2 || genes[173] == 2) {
+                //darkens egg by 1
+                shade = +1;
+            }
 
-        if ((eggColour != 3 && eggColour != 7 && eggColour != 11) && genes[174] == 2 || genes[175] == 2) {
-            //darkens egg by 1
-            shade =+ 1;
-        }
+            if ((eggColour != 3 && eggColour != 7 && eggColour != 11) && genes[174] == 2 || genes[175] == 2) {
+                //darkens egg by 1
+                shade = +1;
+            }
 
-        if (genes[176] == 3 || genes[177] == 3) {
-            //darkens egg by 1
-            shade =+ 1;
-        } else if ((eggColour != 3 && eggColour != 7 && eggColour != 11) && genes[176] == 2 || genes[177] == 2) {
-            //darkens egg by 1
-            shade =+ 1;
-        }
+            if (genes[176] == 3 || genes[177] == 3) {
+                //darkens egg by 1
+                shade = +1;
+            } else if ((eggColour != 3 && eggColour != 7 && eggColour != 11) && genes[176] == 2 || genes[177] == 2) {
+                //darkens egg by 1
+                shade = +1;
+            }
 
-        if (genes[178] == 2 || genes[179] == 2) {
-            //has speckles
-            shade =- 1;
-            markings = 1;
-        } else if (genes[178] == 3 || genes[179] == 3) {
-            markings = 1;
-        }
+            if (genes[178] == 2 || genes[179] == 2) {
+                //has speckles
+                shade = -1;
+                markings = 1;
+            } else if (genes[178] == 3 || genes[179] == 3) {
+                markings = 1;
+            }
 
-        if (genes[180] == 2 && genes[181] == 2) {
-            if (markings == 1) {
-                markings = 2;
+            if (genes[180] == 2 && genes[181] == 2) {
+                if (markings == 1) {
+                    markings = 2;
+                } else {
+                    shade = +1;
+                }
+            }
+
+            if (genes[182] == 2 || genes[183] == 2) {
+                if (markings == 1) {
+                    markings = 3;
+                } else if (markings == 2) {
+                    shade = +1;
+                }
+            }
+
+            if (shade > 6) {
+                shade = 6;
+            } else if (shade < 0) {
+                shade = 0;
+            }
+
+            if (eggColour == 0 && shade != 0) {
+                //gives egg a brown tint if its white
+                eggColour = shade + 13 - 1;
             } else {
-                shade =+ 1;
+                eggColour = eggColour + shade;
             }
-        }
 
-        if (genes[182] == 2 || genes[183] == 2) {
             if (markings == 1) {
-                markings = 3;
+                eggColour = eggColour + 76;
             } else if (markings == 2) {
-                shade =+ 1;
+                eggColour = eggColour + 152;
+            } else if (markings == 3) {
+                eggColour = eggColour + 228;
             }
-        }
 
-        if (shade > 6) {
-            shade = 6;
-        } else if (shade < 0) {
-            shade = 0;
-        }
-
-        if (eggColour == 0 && shade != 0) {
-            //gives egg a brown tint if its white
-            eggColour = shade + 13 - 1;
-        } else {
-            eggColour = eggColour + shade;
         }
 
         //toggles blue egg version
@@ -603,12 +707,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             eggColour = eggColour + 19;
         }
 
-        if (markings == 1) {
-            eggColour = eggColour + 76;
-        } else if (markings == 2) {
-            eggColour = eggColour + 152;
-        } else if (markings == 3) {
-            eggColour = eggColour + 228;
         }
 
         return eggColour;
@@ -618,8 +716,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     public String getChickenTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (resetTexture && getAge() > 20000) {
-            resetTexture = false;
+        } else if (this.resetTexture && getAge() > 20000) {
+            this.resetTexture = false;
             this.texturesIndexes.clear();
             this.enhancedAnimalTextures.clear();
             this.setTexturePaths();
@@ -631,8 +729,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
-        int[] genesForText = getSharedGenes();
-        if(genesForText!=null) {
+        if(this.getSharedGenes()!=null) {
+            int[] sexlinkedGenes = getSharedGenes().getSexlinkedGenes();
+            int[] autosomalGenes = getSharedGenes().getAutosomalGenes();
+            boolean isFemale = this.getIsFemale();
             if (getAge() >= 20000) {
                 int ground = 0;
                 int pattern = 0;
@@ -656,8 +756,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
                 boolean isAlbino = false;
 
-                if (genesForText[20] != 1 && genesForText[21] != 1) {                                                                       //checks if not wildtype
-                    if (genesForText[20] == 2 || genesForText[21] == 2) {                                                                   //sets recessive white or albino
+                if (autosomalGenes[20] != 1 && autosomalGenes[21] != 1) {                                                                       //checks if not wildtype
+                    if (autosomalGenes[20] == 2 || autosomalGenes[21] == 2) {                                                                   //sets recessive white or albino
                         //recessive white
                         ground = 15;
                         pattern = 361;
@@ -672,10 +772,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                         isAlbino = true;
                     }
                 } else {
-                    if (genesForText[24] == 5 || genesForText[25] == 5) {
+                    if (autosomalGenes[24] == 5 || autosomalGenes[25] == 5) {
                         //extended black tree
-                        if (genesForText[24] == 5 && genesForText[25] == 5) {
-                            if (genesForText[28] == 1 && genesForText[29] == 1 && genesForText[98] == 1 && genesForText[99] == 1) {
+                        if (autosomalGenes[24] == 5 && autosomalGenes[25] == 5) {
+                            if (autosomalGenes[28] == 1 && autosomalGenes[29] == 1 && autosomalGenes[98] == 1 && autosomalGenes[99] == 1) {
                                 //xtradark birchen
                                 pattern = 17;
                                 ground = 0;
@@ -684,12 +784,12 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                 pattern = 0;
                                 ground = 15;
                             }
-                        } else if (genesForText[24] == 1 || genesForText[25] == 1) {
+                        } else if (autosomalGenes[24] == 1 || autosomalGenes[25] == 1) {
                             //xtradark birchen
                             pattern = 17;
                             ground = 0;
                         } else {
-                            if (genesForText[28] == 1 && genesForText[29] == 1 && genesForText[98] == 1 && genesForText[99] == 1) {
+                            if (autosomalGenes[28] == 1 && autosomalGenes[29] == 1 && autosomalGenes[98] == 1 && autosomalGenes[99] == 1) {
                                 //leaky black
                                 pattern = 18;
                                 ground = 0;
@@ -699,13 +799,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                 ground = 0;
                             }
                         }
-                    } else if (genesForText[24] == 1 || genesForText[25] == 1) {
+                    } else if (autosomalGenes[24] == 1 || autosomalGenes[25] == 1) {
                         //birchen tree
-                        if (genesForText[28] == 1 && genesForText[29] == 1) {
-                            if (genesForText[98] == 1 && genesForText[99] == 1) {
-                                if (genesForText[30] == 1 && genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                        if (autosomalGenes[28] == 1 && autosomalGenes[29] == 1) {
+                            if (autosomalGenes[98] == 1 && autosomalGenes[99] == 1) {
+                                if (autosomalGenes[30] == 1 && autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //xtra dark birchen single lace
                                             pattern = 19;
                                             ground = 15;
@@ -719,9 +819,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         pattern = 5;
                                         ground = 15;
                                     }
-                                } else if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                } else if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //moorhead doublehalfspangled
                                             pattern = 20;
                                             ground = 15;
@@ -733,7 +833,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         }
 
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //overly dark columbian
                                             pattern = 5;
                                             ground = 15;
@@ -745,8 +845,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         }
                                     }
                                 } else {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //moorhead doublehalfspangled
                                             pattern = 20;
                                             ground = 15;
@@ -758,7 +858,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         }
 
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //moorhead transverse penciled
                                             pattern = 34;
                                             ground = 15;
@@ -770,9 +870,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         }
                                     }
                                 }
-                            } else if (genesForText[98] == 1 || genesForText[99] == 1) {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
+                            } else if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
                                         //dark doublehalfspangle
                                         pattern = 21;
                                         ground = 15;
@@ -782,8 +882,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 15;
                                     }
                                 } else {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //dark transverse penciled
                                             //TODO what are the different qualities of transverse penciled
                                             pattern = 34;
@@ -803,8 +903,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
                                 }
                             } else {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[100] == 2 || genesForText[101] == 2) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[100] == 2 || autosomalGenes[101] == 2) {
                                         //solid black
                                         pattern = 0;
                                         ground = 15;
@@ -814,7 +914,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 0;
                                     }
                                 } else {
-                                    if (genesForText[100] == 1 && genesForText[101] == 1) {
+                                    if (autosomalGenes[100] == 1 && autosomalGenes[101] == 1) {
                                         //leaky black
                                         pattern = 18;
                                         ground = 5;
@@ -825,11 +925,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                     }
                                 }
                             }
-                        } else if (genesForText[28] == 1 || genesForText[29] == 1) {
-                            if (genesForText[98] == 1 || genesForText[99] == 1) {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                        } else if (autosomalGenes[28] == 1 || autosomalGenes[29] == 1) {
+                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //extended patterned halfspangle
                                             //TODO what is this pattern really?
                                             pattern = 16;
@@ -846,8 +946,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 15;
                                     }
                                 } else {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //extended patterned transverse penciled
                                             pattern = 34;
                                             ground = 15;
@@ -865,8 +965,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                     }
                                 }
                             } else {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                         //solid black
                                         pattern = 0;
                                         ground = 15;
@@ -876,7 +976,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 15;
                                     }
                                 } else {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                         //leaky black
                                         pattern = 18;
                                         ground = 15;
@@ -888,10 +988,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                 }
                             }
                         } else {
-                            if (genesForText[98] == 1 || genesForText[99] == 1) {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //extended patterned spangled
                                             pattern = 14;
                                             ground = 15;
@@ -901,7 +1001,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                             ground = 15;
                                         }
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //extended patterned incomplete quail
                                             pattern = 24;
                                             ground = 15;
@@ -912,8 +1012,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         }
                                     }
                                 } else {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //extended traverse penciled
                                             pattern = 34;
                                             ground = 15;
@@ -924,7 +1024,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                             ground = 5;
                                         }
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //extended patterned incomplete quail
                                             pattern = 24;
                                             ground = 5;
@@ -937,12 +1037,12 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                     }
                                 }
                             } else {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
                                     //solid black
                                     pattern = 0;
                                     ground = 15;
                                 } else {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                         //leaky black
                                         pattern = 18;
                                         ground = 5;
@@ -955,13 +1055,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                             }
                         }
 
-                    } else if (genesForText[24] == 2 || genesForText[25] == 2) {
+                    } else if (autosomalGenes[24] == 2 || autosomalGenes[25] == 2) {
                         //duckwing tree
-                        if (genesForText[28] == 1 || genesForText[29] == 1) {
-                            if (genesForText[98] == 1 || genesForText[99] == 1) {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                        if (autosomalGenes[28] == 1 || autosomalGenes[29] == 1) {
+                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned halfspangled
                                             pattern = 16;
                                             ground = 0;
@@ -977,7 +1077,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
                                     }
                                 } else {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                         //  moorhead columbian w/ less hackle markings
                                         pattern = 6;
                                         ground = 0;
@@ -989,9 +1089,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                     }
                                 }
                             } else {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned incomplete laced
                                             pattern = 27;
                                             ground = 5;
@@ -1007,8 +1107,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 5;
                                     }
                                 } else {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned incomplete laced?
                                             pattern = 27;
                                             ground = 15;
@@ -1019,7 +1119,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                             ground = 15;
                                         }
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //  incomplete quail
                                             pattern = 29;
                                             ground = 15;
@@ -1032,10 +1132,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                 }
                             }
                         } else {
-                            if (genesForText[98] == 1 || genesForText[99] == 1) {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned spangled
                                             pattern = 14;
                                             ground = 15;
@@ -1050,8 +1150,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 15;
                                     }
                                 } else {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned transverse pencilled
                                             pattern = 34;
                                             ground = 5;
@@ -1061,7 +1161,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                             ground = 5;
                                         }
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //  incomplete quail
                                             pattern = 29;
                                             ground = 15;
@@ -1074,9 +1174,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                     }
                                 }
                             } else {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned incomplete doublelaced
                                             pattern = 21;
                                             ground = 5;
@@ -1093,8 +1193,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
                                     }
                                 } else {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned multiple laced duckwing
                                             pattern = 26;
                                             ground = 0;
@@ -1105,7 +1205,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                             ground = 0;
                                         }
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             //  incomplete quail
                                             pattern = 29;
                                             ground = 0;
@@ -1120,13 +1220,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                         }
 
 
-                    } else if (genesForText[24] == 3 || genesForText[25] == 3) {
+                    } else if (autosomalGenes[24] == 3 || autosomalGenes[25] == 3) {
                         //wheaten tree
-                        if (genesForText[28] == 1 || genesForText[29] == 1) {
-                            if (genesForText[98] == 1 || genesForText[99] == 1) {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                        if (autosomalGenes[28] == 1 || autosomalGenes[29] == 1) {
+                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned halfspangled
                                             pattern = 25;
                                             ground = 5;
@@ -1141,8 +1241,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 15;
                                     }
                                 } else {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // moorhead incomplete columbian w/ less hackle markings
                                             pattern = 361;
                                             ground = 15;
@@ -1153,7 +1253,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                             ground = 15;
                                         }
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // moorhead incomplete columbian w/ less hackle markings
                                             pattern = 8;
                                             ground = 15;
@@ -1165,9 +1265,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                     }
                                 }
                             } else {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned incomplete laced
                                             pattern = 20;
                                             ground = 5;
@@ -1182,8 +1282,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 5;
                                     }
                                 } else {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned incomplete laced
                                             pattern = 20;
                                             ground = 5;
@@ -1193,7 +1293,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                             ground = 15;
                                         }
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned columbian
                                             pattern = 5;
                                             ground = 15;
@@ -1207,10 +1307,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                 }
                             }
                         } else {
-                            if (genesForText[98] == 1 || genesForText[99] == 1) {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned spangled
                                             pattern = 14;
                                             ground = 15;
@@ -1225,7 +1325,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 15;
                                     }
                                 } else {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                         // extended patterned incomplete columbian w/ less hackle markings
                                         pattern = 30;
                                         ground = 15;
@@ -1236,9 +1336,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                     }
                                 }
                             } else {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned doublelaced
                                             pattern = 13;
                                             ground = 15;
@@ -1254,7 +1354,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 10;
                                     }
                                 } else {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                         // extended patterned wheaten
                                         pattern = 28;
                                         ground = 10;
@@ -1267,13 +1367,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                             }
                         }
 
-                    } else if (genesForText[24] == 4 || genesForText[25] == 4) {
+                    } else if (autosomalGenes[24] == 4 || autosomalGenes[25] == 4) {
                         //partidge tree
-                        if (genesForText[28] == 1 || genesForText[29] == 1) {
-                            if (genesForText[98] == 1 || genesForText[99] == 1) {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                        if (autosomalGenes[28] == 1 || autosomalGenes[29] == 1) {
+                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterened halfspangled
                                             pattern = 16;
                                             ground = 15;
@@ -1289,7 +1389,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 5;
                                     }
                                 } else {
-                                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                         // moorhead
                                         pattern = 8;
                                         ground = 15;
@@ -1300,9 +1400,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                     }
                                 }
                             } else {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned single laced
                                             pattern = 33;
                                             ground = 15;
@@ -1318,8 +1418,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 5;
                                     }
                                 } else {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned incomplete single laced
                                             pattern = 32;
                                             ground = 15;
@@ -1329,7 +1429,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                             ground = 15;
                                         }
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // lakenvelder
                                             pattern = 7;
                                             ground = 15;
@@ -1342,10 +1442,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                 }
                             }
                         } else {
-                            if (genesForText[98] == 1 || genesForText[99] == 1) {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                            if (autosomalGenes[98] == 1 || autosomalGenes[99] == 1) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned spangled
                                             pattern = 14;
                                             ground = 15;
@@ -1360,8 +1460,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         ground = 15;
                                     }
                                 } else {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned transverse penciled
                                             pattern = 34;
                                             ground = 5;
@@ -1371,7 +1471,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                             ground = 5;
                                         }
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // incomplete quail
                                             pattern = 29;
                                             ground = 15;
@@ -1384,9 +1484,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                     }
                                 }
                             } else {
-                                if (genesForText[30] == 1 || genesForText[31] == 1) {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned doublelaced
                                             pattern = 13;
                                             ground = 15;
@@ -1397,7 +1497,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                             ground = 15;
                                         }
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned partridge/brown halfspangled/laced? but darker head?
                                             pattern = 20;
                                             ground = 5;
@@ -1409,8 +1509,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                         }
                                     }
                                 } else {
-                                    if (genesForText[26] == 1 || genesForText[27] == 1) {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                    if (autosomalGenes[26] == 1 || autosomalGenes[27] == 1) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned multiple laced partridge
                                             pattern = 26;
                                             ground = 5;
@@ -1421,7 +1521,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                             ground = 5;
                                         }
                                     } else {
-                                        if (genesForText[100] == 2 && genesForText[101] == 2) {
+                                        if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                                             // extended patterned partridge
                                             pattern = 35;
                                             ground = 5;
@@ -1443,19 +1543,29 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
                     int groundMod = 0;
                     //ground colour tint
-                    if (genesForText[0] == 1) {
-                        //gold
-                        groundMod = groundMod + 2;
+                    if (isFemale) {
+                        if (sexlinkedGenes[0] == 1){
+                            //gold
+                            groundMod = groundMod + 2;
+                        }
+                    } else {
+                        if (sexlinkedGenes[0] == 1 && sexlinkedGenes[1] == 1) {
+                            //gold
+                            groundMod = groundMod + 2;
+                        } else if (sexlinkedGenes[0] == 1 || sexlinkedGenes[1] == 1) {
+                            //lemon
+                            groundMod = groundMod + 1;
+                        }
                     }
-                    if (genesForText[0] == 1 && (genesForText[32] == 3 && genesForText[33] == 3)) {
+                    if (groundMod != 0 && (autosomalGenes[32] == 3 && autosomalGenes[33] == 3)) {
                         //lemon or cream but backwards
                         groundMod = groundMod + 1;
                     }
-                    if (genesForText[34] == 1 || genesForText[35] == 1) {
+                    if (autosomalGenes[34] == 1 || autosomalGenes[35] == 1) {
                         //mahogany or lemon cream counter
                         groundMod = groundMod + 1;
                     }
-                    if (genesForText[36] == 2 && genesForText[37] == 2) {
+                    if (autosomalGenes[36] == 2 && autosomalGenes[37] == 2) {
                         groundMod = groundMod - 1;
                     }
 
@@ -1474,22 +1584,22 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                         //black pattern shade genes
                         //sets pattern to correct positioning pre:variation
                         pattern = (pattern * ptrncolours);
-                        if (genesForText[38] == 1 && genesForText[39] == 1) {
+                        if (autosomalGenes[38] == 1 && autosomalGenes[39] == 1) {
                             //domwhite
                             pattern = pattern + 7;
                             moorhead = 8;
-                        } else if (genesForText[38] == 1 || genesForText[39] == 1) {
+                        } else if (autosomalGenes[38] == 1 || autosomalGenes[39] == 1) {
                             // spotted domwhite
                             pattern = pattern + 7;
                             moorhead = 8;
                         } else {
                             //if chocolate
-                            if (genesForText[1] == 2) {
+                            if (sexlinkedGenes[2] == 2 && (getIsFemale() || sexlinkedGenes[3] == 2)) {
                                 //if lavender
-                                if (genesForText[36] == 2 && genesForText[37] == 2) {
+                                if (autosomalGenes[36] == 2 && autosomalGenes[37] == 2) {
                                     //is a dun variety
                                     //if it is splash
-                                    if (genesForText[40] == 2 && genesForText[41] == 2) {
+                                    if (autosomalGenes[40] == 2 && autosomalGenes[41] == 2) {
                                         //splash dun
                                         pattern = pattern + 4;
                                         moorhead = 5;
@@ -1500,11 +1610,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                     }
                                 } else {
                                     //is a chocolate variety
-                                    if (genesForText[40] == 2 && genesForText[41] == 2) {
+                                    if (autosomalGenes[40] == 2 && autosomalGenes[41] == 2) {
                                         //splash choc
                                         pattern = pattern + 5;
                                         moorhead = 6;
-                                    } else if (genesForText[40] != 1 || genesForText[41] != 1) {
+                                    } else if (autosomalGenes[40] != 1 || autosomalGenes[41] != 1) {
                                         //dun
                                         pattern = pattern + 8;
                                         moorhead = 9;
@@ -1516,10 +1626,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                 }
                             } else {
                                 //if lavender
-                                if (genesForText[36] == 2 && genesForText[37] == 2) {
+                                if (autosomalGenes[36] == 2 && autosomalGenes[37] == 2) {
                                     //is a lavender variety
                                     //if it is splash
-                                    if (genesForText[40] == 2 && genesForText[41] == 2) {
+                                    if (autosomalGenes[40] == 2 && autosomalGenes[41] == 2) {
                                         //splash lavender
                                         pattern = pattern + 3;
                                         moorhead = 4;
@@ -1530,17 +1640,17 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                     }
                                 } else {
                                     //is a black variety
-                                    if (genesForText[40] == 2 && genesForText[41] == 2) {
+                                    if (autosomalGenes[40] == 2 && autosomalGenes[41] == 2) {
                                         //splash
                                         pattern = pattern + 2;
                                         moorhead = 3;
-                                    } else if (genesForText[40] == 2 || genesForText[41] == 2) {
+                                    } else if (autosomalGenes[40] == 2 || autosomalGenes[41] == 2) {
                                         //blue
-                                        if ((genesForText[26] == 1 || genesForText[27] == 1) && (genesForText[24] == 5 || genesForText[25] == 5)) {
-                                            //blue laced ... super special gene combo for blue andalusian type pattern
+                                        if ((autosomalGenes[26] == 1 || autosomalGenes[27] == 1) && (autosomalGenes[24] == 5 || autosomalGenes[25] == 5)) {
+                                            //blue laced ... super special genes combo for blue andalusian type pattern
                                             pattern = 360;
-                                            if (genesForText[100] == 2 && genesForText[101] == 2) {
-                                                if (genesForText[30] == 1 || genesForText[31] == 1) {
+                                            if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
+                                                if (autosomalGenes[30] == 1 || autosomalGenes[31] == 1) {
                                                     moorhead = 1;
                                                 }
                                             } else {
@@ -1562,18 +1672,29 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                     }
                 }
 
-                //white marking genesForText
-                if (genesForText[3] == 2) {
-                    //Barred
+                //white marking autosomalGenes
+                if ((sexlinkedGenes[6] == 2 ^ sexlinkedGenes[7] == 2)) {
+                    //Dark Barred
                     white = 1;
-                } else {
-                    if (genesForText[22] == 2 && genesForText[23] == 2) {
-                        //mottled
-                        white = 2;
+                } else if (sexlinkedGenes[6] == 2 && sexlinkedGenes[7] == 2){
+                    if (getIsFemale()) {
+                        //Dark Barred
+                        white = 1;
                     } else {
-                        if (pattern < 10 && Melanin != 2 && (genesForText[54] != 3 && genesForText[55] != 3) && genesForText[6] == 2) {
+                        //Light Barred
+                        white = 2;
+                    }
+                }else {
+                    if (autosomalGenes[22] >= 2 && autosomalGenes[23] >= 2) {
+                        if (autosomalGenes[22] == 2 && autosomalGenes[23] == 2) {
+                            //mottled
+                            white = 4;
+                        } else if (autosomalGenes[22] == 3 && autosomalGenes[23] == 3) {
                             //white crest
                             white = 3;
+                        } else {
+                            //mottled and white crest
+                            white = 5;
                         }
                     }
                 }
@@ -1581,28 +1702,28 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                 // figures out the shank, comb, and skin colour if its not albino
                 if (!isAlbino) {
                     //gets comb colour
-                    if (genesForText[4] == 1 && (genesForText[42] == 1 || genesForText[43] == 1)) {
+                    if (((isFemale && sexlinkedGenes[8] == 1) || (!isFemale && (sexlinkedGenes[8] == 1 || sexlinkedGenes[9] == 1))) && (autosomalGenes[42] == 1 || autosomalGenes[43] == 1)) {
                         //comb and shanks are fibro black
                         comb = -1;
                         shanks = 6;
                     } else {
                         comb = 5;
                     }
-                    if (genesForText[24] == 5 || genesForText[25] == 5) {
+                    if (autosomalGenes[24] == 5 || autosomalGenes[25] == 5) {
                         shanks = 5;
 //                        if (comb != 0) {
 //                            comb = 5;
 //                        }
 //                        // makes mulbery comb
-//                        if (genesForText[30] == 2) {
+//                        if (autosomalGenes[30] == 2) {
 //                            comb = comb + 1;
 //                        }
-                    } else if (genesForText[24] == 1 && genesForText[25] == 1) {
+                    } else if (autosomalGenes[24] == 1 && autosomalGenes[25] == 1) {
                         shanks = 5;
 //                        if (comb != 0) {
 //                            comb = 5;
 //                        }
-                    } else if (genesForText[24] == 1 || genesForText[25] == 1) {
+                    } else if (autosomalGenes[24] == 1 || autosomalGenes[25] == 1) {
                         shanks = 5;
 //                        if (comb != 0) {
 //                            comb = 5;
@@ -1612,30 +1733,30 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
                     if (shanks > 2) {
                         // if splash or blue lighten by 1 shade
-                        if (genesForText[40] == 2 || genesForText[41] == 2) {
+                        if (autosomalGenes[40] == 2 || autosomalGenes[41] == 2) {
                             shanks--;
                         }
                     }
                     if (shanks > 2) {
                         //if barred or mottled lighten by 1 shade
-                        if (genesForText[3] == 2 || (genesForText[22] == 2 && genesForText[23] == 2)) {
+                        if ((autosomalGenes[22] == 2 && autosomalGenes[23] == 2) || (sexlinkedGenes[6] == 2 || (!isFemale && sexlinkedGenes[7] == 2))) {
                             shanks--;
                         }
                     }
                     if (shanks > 2) {
                         //if lavender lighten by 1 shade
-                        if ((genesForText[36] == 1 && genesForText[37] == 1)) {
+                        if ((autosomalGenes[36] == 1 && autosomalGenes[37] == 1)) {
                             shanks--;
                         }
                     }
 
                     // if Dilute is Dilute and the shanks arnt darkened by extened black lighten by 1 shade
-                    if ((genesForText[24] != 5 && genesForText[25] != 5) && (genesForText[32] == 1 || genesForText[33] == 1)) {
+                    if ((autosomalGenes[24] != 5 && autosomalGenes[25] != 5) && (autosomalGenes[32] == 1 || autosomalGenes[33] == 1)) {
                         shanks--;
                     }
 
                     // if dominant white lighten by 1 shade
-                    if (genesForText[38] == 1 && genesForText[39] == 1) {
+                    if (autosomalGenes[38] == 1 && autosomalGenes[39] == 1) {
                         shanks--;
                         if (comb != 2) {
                             comb++;
@@ -1643,7 +1764,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                     }
 
                     //if its charcoal
-                    if (genesForText[100] == 2 && genesForText[101] == 2) {
+                    if (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) {
                         shanks++;
                         if (comb != 3)
                         comb--;
@@ -1654,7 +1775,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                         comb = comb + 1;
                     }
 
-                    if (genesForText[166] == 2 && genesForText[167] == 2) {
+                    if (autosomalGenes[166] == 2 && autosomalGenes[167] == 2) {
                         //ressesive dark shanks
                         shanks = shanks + 2;
                     }
@@ -1662,8 +1783,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                     //makes sure its not off the chart
                     if (shanks < 0) {
                         shanks = 0;
-                    } else if (shanks > 6) {
-                        shanks = 6;
+                    } else if (shanks > 5) {
+                        shanks = 5;
                     }
 
 
@@ -1675,60 +1796,68 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                     }
 
                     //makes the shanks and beak their white or yellow varient
-                    if (genesForText[44] == 1 || genesForText[45] == 1) {
-                        shanks = shanks + 5;
-                    } else if (genesForText[44] == 3 && genesForText[45] == 3) {
+                    if (autosomalGenes[44] == 3 && autosomalGenes[45] == 3) {
                         shanks = shanks + 11;
+                    } else if (autosomalGenes[44] != 1 && autosomalGenes[45] != 1) {
+                        shanks = shanks + 5;
                     }
 
                 }
 
                 //face and ear size stuff
-                if (genesForText[2] >= 2) {
-                    ears = 1;
+                if (isFemale) {
+                    if (sexlinkedGenes[4] >= 2) {
+                        ears = 1;
+                    } else {
+                        ears = -1;
+                    }
                 } else {
-                    ears = -1;
+                    if (sexlinkedGenes[4] >= 2 && sexlinkedGenes[5] >= 2) {
+                        ears = 1;
+                    } else {
+                        ears = -1;
+                    }
                 }
 
-                if (genesForText[162] == 163){
-                    if (genesForText[162] >= 9 && genesForText[162] <=16) {
+                if (autosomalGenes[162] == 163){
+                    if (autosomalGenes[162] >= 9 && autosomalGenes[162] <=16) {
                         ears = ears +1;
-                    } else if (genesForText[162] >= 17 && genesForText[162] <=24) {
+                    } else if (autosomalGenes[162] >= 17 && autosomalGenes[162] <=24) {
                         ears = ears + 2;
                     }
-                    if ((genesForText[162] & 1) == 0) {
+                    if ((autosomalGenes[162] & 1) == 0) {
                         earsW = earsW + 2;
                     }
                 } else {
 //                    ears = ears - 1;
-                    if ((genesForText[162] & 1) == 0) {
-                        if ((genesForText[163] & 1) == 0) {
+                    if ((autosomalGenes[162] & 1) == 0) {
+                        if ((autosomalGenes[163] & 1) == 0) {
                             earsW = earsW + 1;
                         }
-                    } else if ((genesForText[163] & 1) != 0) {
+                    } else if ((autosomalGenes[163] & 1) != 0) {
                         earsW = earsW - 1;
                     }
                 }
 
-                if (genesForText[152] <= 4 || genesForText[153] <= 4) {
+                if (autosomalGenes[152] <= 4 || autosomalGenes[153] <= 4) {
 //                    ears = ears - 1;
                 } else {
-                    if (genesForText[152] == genesForText[153]) {
-                        if (genesForText[152] >= 9 || genesForText[153] >= 9) {
+                    if (autosomalGenes[152] == autosomalGenes[153]) {
+                        if (autosomalGenes[152] >= 9 || autosomalGenes[153] >= 9) {
                             ears = ears + 1;
                         }
                     } else {
 //                        ears = ears - 1;
                     }
 
-                    if ((genesForText[152] & 1) == 0) {
+                    if ((autosomalGenes[152] & 1) == 0) {
                         earsW = earsW + 1;
                     }
                 }
 
-                if (genesForText[160] == genesForText[161]) {
-                    if (genesForText[160] >= 9) {
-                        if (genesForText[160] >= 17) {
+                if (autosomalGenes[160] == autosomalGenes[161]) {
+                    if (autosomalGenes[160] >= 9) {
+                        if (autosomalGenes[160] >= 17) {
                             ears = ears + 2;
                         } else {
                             ears = ears + 1;
@@ -1737,49 +1866,49 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                     }
                 }
 
-                if (((genesForText[160] & 1) == 0) && ((genesForText[161] & 1) == 0)) {
-                    if (genesForText[160] == genesForText[161]) {
+                if (((autosomalGenes[160] & 1) == 0) && ((autosomalGenes[161] & 1) == 0)) {
+                    if (autosomalGenes[160] == autosomalGenes[161]) {
                         earsW = earsW + 2;
                     } else {
                         earsW = earsW + 1;
                     }
                 }
 
-                if (genesForText[82] == 1) {
+                if (autosomalGenes[82] == 1) {
                     ears = ears + 1;
                 }
-                if (genesForText[83] == 1) {
+                if (autosomalGenes[83] == 1) {
                     ears = ears + 1;
                 }
 
-                if (genesForText[48] == 1) {
+                if (autosomalGenes[48] == 1) {
                     ears = ears - 3;
                 }
-                if (genesForText[49] == 1) {
+                if (autosomalGenes[49] == 1) {
                     ears = ears - 3;
                 }
 
-                if (genesForText[56] == 1 || genesForText[57] == 1) {
+                if (autosomalGenes[56] == 1 || autosomalGenes[57] == 1) {
                     ears = ears - 2;
                 }
 
-                if (genesForText[80] == 1 || genesForText[81] == 1) {
+                if (autosomalGenes[80] == 1 || autosomalGenes[81] == 1) {
                     ears = ears - 1;
                 }
 
-                if (genesForText[158] == 1 || genesForText[159] == 1) {
+                if (autosomalGenes[158] == 1 || autosomalGenes[159] == 1) {
 //                    ears = ears - 1;
                     earsW = earsW - 1;
-                } else if (genesForText[158] == 2 || genesForText[159] == 2) {
+                } else if (autosomalGenes[158] == 2 || autosomalGenes[159] == 2) {
 //                    ears = ears - 1;
-                } else if (genesForText[158] == 3 || genesForText[159] == 3) {
-                    if (genesForText[158] == 4 || genesForText[159] == 4) {
+                } else if (autosomalGenes[158] == 3 || autosomalGenes[159] == 3) {
+                    if (autosomalGenes[158] == 4 || autosomalGenes[159] == 4) {
                         ears = ears + 1;
                         earsW = earsW + 1;
                     } else {
                         ears = ears + 1;
                     }
-                } else if (genesForText[158] == 4 || genesForText[159] == 4) {
+                } else if (autosomalGenes[158] == 4 || autosomalGenes[159] == 4) {
                     earsW = earsW + 1;
                 } else {
                     ears = ears + 1;
@@ -1788,11 +1917,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
 
                 //at max adds 2 if less than 8
-                if (genesForText[154] <= 3 || genesForText[155] <= 3) {
+                if (autosomalGenes[154] <= 3 || autosomalGenes[155] <= 3) {
                     ears = ears - 1;
-                } else if (genesForText[154] == genesForText[155]) {
-                    if (genesForText[154] >= 7) {
-                        if (genesForText[154] >= 10) {
+                } else if (autosomalGenes[154] == autosomalGenes[155]) {
+                    if (autosomalGenes[154] >= 7) {
+                        if (autosomalGenes[154] >= 10) {
                             if (ears <= 7) {
                                 ears = ears + 2;
                             } else {
@@ -1807,9 +1936,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
 
                 //at max adds 2 if less than 8
-                if (!(genesForText[156] <= 3 || genesForText[157] <= 3) && (genesForText[156] == genesForText[157])) {
-                    if (genesForText[156] >= 6) {
-                        if (genesForText[156] >= 10) {
+                if (!(autosomalGenes[156] <= 3 || autosomalGenes[157] <= 3) && (autosomalGenes[156] == autosomalGenes[157])) {
+                    if (autosomalGenes[156] >= 6) {
+                        if (autosomalGenes[156] >= 10) {
                             if (ears <= 7) {
                                 ears = ears + 2;
                             } else {
@@ -1821,43 +1950,55 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                     }
                 }
 
-                if (genesForText[84] == 1 || genesForText[85] == 1) {
+                if (autosomalGenes[84] == 1 || autosomalGenes[85] == 1) {
                     ears = ears/2;
                 }
 
 
-                if ((genesForText[154] & 1) == 0 && (genesForText[155]) == 0) {
+                if ((autosomalGenes[154] & 1) == 0 && (autosomalGenes[155]) == 0) {
                     earsW = earsW + 1;
-                } else if ((genesForText[154] & 1) != 0 && (genesForText[155]) != 0) {
+                } else if ((autosomalGenes[154] & 1) != 0 && (autosomalGenes[155]) != 0) {
                     earsW = earsW - 1;
                 }
 
-                if (genesForText[164] == 1 || genesForText[165] == 1) {
+                if (autosomalGenes[164] == 1 || autosomalGenes[165] == 1) {
                     earsW = earsW - 3;
-                } else if (genesForText[164] == 2 || genesForText[165] == 2) {
-                    if (genesForText[164] >= 4 || genesForText[165] >= 4) {
+                } else if (autosomalGenes[164] == 2 || autosomalGenes[165] == 2) {
+                    if (autosomalGenes[164] >= 4 || autosomalGenes[165] >= 4) {
                         earsW = earsW - 1;
                     }
-                } else if (genesForText[164] == 4 || genesForText[165] == 4) {
-                    if (genesForText[164] >= 5 || genesForText[165] >= 5) {
+                } else if (autosomalGenes[164] == 4 || autosomalGenes[165] == 4) {
+                    if (autosomalGenes[164] >= 5 || autosomalGenes[165] >= 5) {
                         earsW = earsW + 1;
                     }
-                } else if (genesForText[164] == genesForText[165]) {
+                } else if (autosomalGenes[164] == autosomalGenes[165]) {
                     earsW = earsW + 2;
                 }
 
-                if (genesForText[9] == 2) {
+                if (sexlinkedGenes[18] == 2 || (!isFemale && sexlinkedGenes[19] == 2)) {
                     earsW = earsW/2;
                 }
 
-                if (genesForText[6] == 5) {
-                    if (earsW <= 3) {
+                if (isFemale) {
+                    if (sexlinkedGenes[12] == 5) {
+                        if (earsW <= 3) {
+                            earsW = earsW + 1;
+                        } else if (earsW >= 5) {
+                            earsW = earsW - 1;
+                        }
+                    } else if (sexlinkedGenes[12] == 6) {
                         earsW = earsW + 1;
-                    } else if (earsW >=5) {
-                        earsW = earsW - 1;
                     }
-                } else if (genesForText[6] == 6) {
-                    earsW = earsW + 1;
+                } else {
+                    if (sexlinkedGenes[12] >= 5 && sexlinkedGenes[13] >= 5) {
+                        earsW = earsW + 1;
+                    } else if (sexlinkedGenes[12] >= 4 && sexlinkedGenes[13] >= 4) {
+                        if (earsW <= 3) {
+                            earsW = earsW + 1;
+                        } else if (earsW >= 5) {
+                            earsW = earsW - 1;
+                        }
+                    }
                 }
 
                 // this sets ear whiteness to actual value
@@ -1888,7 +2029,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                         }
                         if (earsW == 2) {
                             //blue
-                            if ((genesForText[44] != 1 && genesForText[45] != 1) && (genesForText[44] == 3 || genesForText[45] == 3)) {
+                            if ((autosomalGenes[44] != 1 && autosomalGenes[45] != 1) && (autosomalGenes[44] == 3 || autosomalGenes[45] == 3)) {
                                 //green
                                 ears = ears + 110;
                             } else {
@@ -1906,7 +2047,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                         //face is moorish
                         face = 7;
                         if (earsW == 2) {
-                            if ((genesForText[44] != 1 && genesForText[45] != 1) && (genesForText[44] == 3 || genesForText[45] == 3)) {
+                            if ((autosomalGenes[44] != 1 && autosomalGenes[45] != 1) && (autosomalGenes[44] == 3 || autosomalGenes[45] == 3)) {
                                 //yellow
                                 ears = ears + 90;
                             } else {
@@ -1925,8 +2066,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                         face = 4;
                         if (earsW == 2) {
                             //ear is white
-                            if ((genesForText[4] == 1) && (genesForText[42] == 1 || genesForText[43] == 1)) {
-                                if ((genesForText[44] != 1 && genesForText[45] != 1) && (genesForText[44] == 3 || genesForText[45] == 3)) {
+                            if (((isFemale && sexlinkedGenes[8] == 1) || (!isFemale && (sexlinkedGenes[8] == 1 || sexlinkedGenes[9] == 1))) && (autosomalGenes[42] == 1 || autosomalGenes[43] == 1)) {
+                                if ((autosomalGenes[44] != 1 && autosomalGenes[45] != 1) && (autosomalGenes[44] == 3 || autosomalGenes[45] == 3)) {
                                     //light green
                                     ears = ears + 100;
                                 } else {
@@ -1934,7 +2075,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                                     ears = ears + 70;
                                 }
                             } else {
-                                if ((genesForText[44] != 1 && genesForText[45] != 1) && (genesForText[44] == 3 || genesForText[45] == 3)) {
+                                if ((autosomalGenes[44] != 1 && autosomalGenes[45] != 1) && (autosomalGenes[44] == 3 || autosomalGenes[45] == 3)) {
                                     //yellow
                                     ears = ears + 90;
                                 } else {
@@ -1952,7 +2093,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                         //face is red
                         face = 1;
                         if (earsW == 2) {
-                            if ((genesForText[44] != 1 && genesForText[45] != 1) && (genesForText[44] == 3 || genesForText[45] == 3)) {
+                            if ((autosomalGenes[44] != 1 && autosomalGenes[45] != 1) && (autosomalGenes[44] == 3 || autosomalGenes[45] == 3)) {
                                 //yellow
                                 ears = ears + 90;
                             } else {
@@ -1966,35 +2107,21 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                     }
                 }
 
-//            after finished genesForText
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_GROUND[ground]);
-                this.texturesIndexes.add(String.valueOf(ground));
-                if (pattern <= 350) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_PATTERN[pattern]);
-                    this.texturesIndexes.add(String.valueOf(pattern));
+                if (autosomalGenes[0] == 2) {
+                    eyes = 2;
                 }
-                if (moorhead != 0) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_MOORHEAD[moorhead]);
-                    this.texturesIndexes.add(String.valueOf(moorhead));
-                }
-                if (white != 0) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_WHITE[white]);
-                    this.texturesIndexes.add(String.valueOf(white));
-                }
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
-                this.texturesIndexes.add(String.valueOf(shanks));
-                if (face >= 1) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_FACE[face]);
-                    this.texturesIndexes.add(String.valueOf(face));
-                }
-                if (ears >= 1) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_EARS[ears]);
-                    this.texturesIndexes.add(String.valueOf(ears));
-                }
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_COMB[comb]);
-                this.texturesIndexes.add(String.valueOf(comb));
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_EYES[eyes]);
-                this.texturesIndexes.add(String.valueOf(eyes));
+
+//            after finished autosomalGenes
+                addTextureToAnimal(CHICKEN_TEXTURES_GROUND, ground, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_PATTERN, pattern, p -> p <= 350);
+                addTextureToAnimal(CHICKEN_TEXTURES_MOORHEAD, moorhead, m -> m != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_WHITE, white, w -> w != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_SHANKS, shanks, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_FACE, face, f -> f >= 1);
+                addTextureToAnimal(CHICKEN_TEXTURES_EARS, ears, e -> e >= 1);
+                addTextureToAnimal(CHICKEN_TEXTURES_COMB, comb, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_EYES, eyes, null);
+
             }else{
                 int shanks = 4;
                 int comb = 2;
@@ -2007,9 +2134,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
                 boolean isAlbino = false;
 
-                if (genesForText[20] != 1 && genesForText[21] != 1) {
+                if (autosomalGenes[20] != 1 && autosomalGenes[21] != 1) {
                     downBase = 0;
-                    if (genesForText[20] == 3 && genesForText[21] == 3) {
+                    if (autosomalGenes[20] == 3 && autosomalGenes[21] == 3) {
                         //albino
                         shanks = 6;
                         comb = 2;
@@ -2021,36 +2148,36 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                 // figures out the shank, comb, and skin colour if its not albino
                 if (!isAlbino) {
                     //gets comb colour
-                    if (genesForText[24] == 1 && genesForText[25] == 1) {
+                    if (autosomalGenes[24] == 1 && autosomalGenes[25] == 1) {
                         shanks = 3;
                         // makes mulbery comb
-                        if (genesForText[30] == 2) {
+                        if (autosomalGenes[30] == 2) {
                             comb = 1;
                         }
                     }
-                    if (genesForText[4] == 1 && (genesForText[42] == 1 || genesForText[43] == 1)) {
+                    if (((isFemale && sexlinkedGenes[8] == 1) || (!isFemale && (sexlinkedGenes[8] == 1 || sexlinkedGenes[9] == 1))) && (autosomalGenes[42] == 1 || autosomalGenes[43] == 1)) {
                         //comb and shanks are black
                         comb = 0;
                         shanks = 3;
                     }
                     //shanks starts at 3 btw
                     // if Dilute is Dilute and the shanks arnt darkened by extened black lighten by 1 shade
-                    if ((genesForText[24] != 1 && genesForText[25] != 1) && (genesForText[32] == 1 || genesForText[33] == 1)) {
+                    if ((autosomalGenes[24] != 1 && autosomalGenes[25] != 1) && (autosomalGenes[32] == 1 || autosomalGenes[33] == 1)) {
                         shanks--;
                     }
 
                     //if barred or mottled lighten by 1 shade
-                    if (genesForText[3] == 2 || (genesForText[22] == 2 && genesForText[23] == 2)) {
+                    if ((autosomalGenes[22] == 2 && autosomalGenes[23] == 2) || (sexlinkedGenes[6] == 2 || (!isFemale && sexlinkedGenes[7] == 2))) {
                         shanks--;
                     }
 
                     // if dominant white or lavender lighten by 1 shade
-                    if ((genesForText[38] == 1 && genesForText[39] == 1) || (genesForText[36] == 1 && genesForText[37] == 1)) {
+                    if ((autosomalGenes[38] == 1 && autosomalGenes[39] == 1) || (autosomalGenes[36] == 1 && autosomalGenes[37] == 1)) {
                         shanks--;
                     }
 
                     // if splash or blue lighten by 1 shade
-                    if (genesForText[40] == 2 || genesForText[41] == 2) {
+                    if (autosomalGenes[40] == 2 || autosomalGenes[41] == 2) {
                         shanks--;
                     }
 
@@ -2059,7 +2186,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 //                        shanks++;
 //                    }
 
-                    if (genesForText[166] == 2 && genesForText[167] == 2) {
+                    if (autosomalGenes[166] == 2 && autosomalGenes[167] == 2) {
                         shanks++;
                     }
 
@@ -2076,40 +2203,40 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                     }
 
                     //makes the shanks and beak their white or yellow varient
-                    if (genesForText[44] == 1 || genesForText[45] == 1) {
-                        shanks = shanks + 4;
+                    if (autosomalGenes[44] != 1 && autosomalGenes[45] != 1) {
+                        shanks = shanks + 5;
                     }
 
                     if (downBase != 0) {
 
-                        if (genesForText[0] == 2) {
+                        if (sexlinkedGenes[0] == 2 && (isFemale || (!isFemale && sexlinkedGenes[1] == 2))) {
                             downBase = 0;
                         }
 
-                        if (genesForText[24] == 5 || genesForText[25] == 5) {
+                        if (autosomalGenes[24] == 5 || autosomalGenes[25] == 5) {
                             // is black
-                            if ((genesForText[30] == 1 || genesForText[31] == 1) && (genesForText[100] == 2 && genesForText[101] == 2) && (genesForText[28] != 1 && genesForText[28] != 1)) {
+                            if ((autosomalGenes[30] == 1 || autosomalGenes[31] == 1) && (autosomalGenes[100] == 2 && autosomalGenes[101] == 2) && (autosomalGenes[28] != 1 && autosomalGenes[28] != 1)) {
                                 black = 13;
                             } else {
                                 black = 7;
                             }
 
-                        } else if (genesForText[24] == 1 || genesForText[25] == 1) {
+                        } else if (autosomalGenes[24] == 1 || autosomalGenes[25] == 1) {
                             //is birchen
-                            if (((genesForText[30] == 1 || genesForText[31] == 1) || (genesForText[100] == 2 && genesForText[101] == 2)) && (genesForText[28] != 1 && genesForText[28] != 1)) {
+                            if (((autosomalGenes[30] == 1 || autosomalGenes[31] == 1) || (autosomalGenes[100] == 2 && autosomalGenes[101] == 2)) && (autosomalGenes[28] != 1 && autosomalGenes[28] != 1)) {
                                 black = 13;
                             } else {
                                 black = 7;
                             }
-                        } else if (genesForText[24] == 2 || genesForText[25] == 2) {
+                        } else if (autosomalGenes[24] == 2 || autosomalGenes[25] == 2) {
                             //is duckwing
                             red = 3;
                             black = 1;
-                        } else if (genesForText[24] == 3 || genesForText[25] == 3) {
+                        } else if (autosomalGenes[24] == 3 || autosomalGenes[25] == 3) {
                             //is wheaten
-                            if (genesForText[34] == 1 && genesForText[35] == 1) {
+                            if (autosomalGenes[34] == 1 && autosomalGenes[35] == 1) {
                                 red = 1;
-                            } else if (genesForText[34] == 1 || genesForText[35] == 1) {
+                            } else if (autosomalGenes[34] == 1 || autosomalGenes[35] == 1) {
                                 red = 2;
                             }
                         } else {
@@ -2118,38 +2245,41 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                             black = 1;
                         }
 
-                        //white marking genesForText
-                        if (genesForText[3] == 2) {
+                        //white marking genes
+                        if (sexlinkedGenes[6] == 2 || (!isFemale && sexlinkedGenes[7] == 2)) {
                             //Barred
                             white = 2;
+                            if (!isFemale && sexlinkedGenes[6] == 2 && sexlinkedGenes[7] == 2) {
+                                white = 2;
+                            }
                         } else {
-                            if (genesForText[22] == 2 && genesForText[23] == 2) {
+                            if (autosomalGenes[22] == 2 && autosomalGenes[23] == 2) {
                                 //mottled
                                 white = 1;
                             }
                         }
 
                         if (black != 0) {
-                            if ((genesForText[38] == 1 || genesForText[39] == 1) || (genesForText[40] == 2 && genesForText[41] == 2)) {
+                            if ((autosomalGenes[38] == 1 || autosomalGenes[39] == 1) || (autosomalGenes[40] == 2 && autosomalGenes[41] == 2)) {
                                 //white or splash
                                 black = black + 1;
-                            } else if (genesForText[36] == 2 && genesForText[37] == 2) {
-                                if (genesForText[1] == 2) {
+                            } else if (autosomalGenes[36] == 2 && autosomalGenes[37] == 2) {
+                                if (sexlinkedGenes[2] == 2 && (isFemale || (!isFemale && sexlinkedGenes[3] == 2))) {
                                     //dun
                                     black = black + 5;
                                 } else {
                                     //lav
                                     black = black + 2;
                                 }
-                            } else if (genesForText[40] == 2 || genesForText[41] == 2) {
-                                if (genesForText[1] == 2) {
+                            } else if (autosomalGenes[40] == 2 || autosomalGenes[41] == 2) {
+                                if (sexlinkedGenes[2] == 2 && (isFemale || (!isFemale && sexlinkedGenes[3] == 2))) {
                                     //dun
                                     black = black + 5;
                                 } else {
                                     //blue
                                     black = black + 3;
                                 }
-                            } else if (genesForText[1] == 2) {
+                            } else if (sexlinkedGenes[2] == 2 && (isFemale || (!isFemale && sexlinkedGenes[3] == 2))) {
                                 //choc
                                 black = black + 4;
                             }
@@ -2158,26 +2288,17 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                     }
                 }
 
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_CHICKBASE[downBase]);
-                this.texturesIndexes.add(String.valueOf(downBase));
-                if (red != 0) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_CHICKRED[red]);
-                    this.texturesIndexes.add(String.valueOf(red));
+                if (autosomalGenes[0] == 2) {
+                    eyes = 2;
                 }
-                if (black != 0) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_CHICKBLACK[black]);
-                    this.texturesIndexes.add(String.valueOf(black));
-                }
-                if (white != 0) {
-                    this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_CHICKWHITE[white]);
-                    this.texturesIndexes.add(String.valueOf(white));
-                }
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_SHANKS[shanks]);
-                this.texturesIndexes.add(String.valueOf(shanks));
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_COMB[comb]);
-                this.texturesIndexes.add(String.valueOf(comb));
-                this.enhancedAnimalTextures.add(CHICKEN_TEXTURES_EYES[eyes]);
-                this.texturesIndexes.add(String.valueOf(eyes));
+
+                addTextureToAnimal(CHICKEN_TEXTURES_CHICKBASE, downBase, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_CHICKRED, red, r -> r != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_CHICKBLACK, black, b -> b != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_CHICKWHITE, white, w -> w != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_SHANKS, shanks, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_COMB, comb, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_EYES, eyes, null);
             }
         }
     }
@@ -2197,6 +2318,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
+        int[] genes = this.genetics.getAutosomalGenes();
         int age = this.getAge();
         int bodyType;
         int meatSize;
@@ -2303,86 +2425,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     }
 
     @Override
-    @Nullable
-    protected ResourceLocation getLootTable() {
-
-        if (!this.world.isRemote) {
-
-            int age = getAge();
-            int bodyType;
-            int meatSize;
-
-                if (genes[146] == 2 && genes[147] == 2) {
-                    if (genes[148] == 2 && genes[149] == 2) {
-                        //normal body
-                        bodyType = 0;
-                    } else {
-                        //big body
-                        bodyType = 1;
-                    }
-                } else if (genes[148] == 2 && genes[149] == 2) {
-                    if (genes[146] == 2 || genes[147] == 2) {
-                        //normal body
-                        bodyType = 0;
-                    } else {
-                        //small body
-                        bodyType = -1;
-                    }
-                } else {
-                    //normal body
-                    bodyType = 0;
-                }
-
-                if (age < 60000) {
-                    if (age > 40000) {
-                        bodyType = bodyType - 2;
-                    } else {
-                        bodyType = bodyType - 1;
-                    }
-                }
-
-                // size is [ 0.5076 - 1.0F]
-                if (chickenSize < 0.67) {
-                    meatSize = bodyType + 1;
-                } else if (chickenSize < 0.89) {
-                    meatSize = bodyType + 2;
-                } else {
-                    meatSize = bodyType + 3;
-                }
-
-                if (meatSize > 0) {
-                    if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
-
-                        if (meatSize == 1) {
-                            dropMeatType = "rawchicken_darksmall";
-                        } else if (meatSize == 2) {
-                            dropMeatType = "rawchicken_darkbig";
-                        } else {
-                            dropMeatType = "rawchicken_dark";
-                        }
-
-                    } else {
-
-                        if (meatSize == 1) {
-                            dropMeatType = "rawchicken_palesmall";
-                        } else if (meatSize == 2) {
-                            dropMeatType = "rawchicken";
-                        } else {
-                            dropMeatType = "rawchicken_pale";
-                        }
-                    }
-                }
-        }
-
-        return new ResourceLocation(Reference.MODID, "enhanced_chicken");
-    }
-
-    public String getDropMeatType() {
-        return dropMeatType;
-    }
-
-
-    @Override
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
     }
@@ -2397,9 +2439,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild(World world) {
-
-    }
+    protected void createAndSpawnEnhancedChild(World world) {}
 
     @Override
     protected boolean canBePregnant() {
@@ -2411,1511 +2451,30 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         return false;
     }
 
-    @Override
-    public void mixMitosisGenes() {
-        punnetSquare(20, mitosisGenes, genes);
-    }
-
-    @Override
-    public void mixMateMitosisGenes(){
-        punnetSquare(20, mateMitosisGenes, mateGenes);
-    }
-
-    @Override
-    protected void extraMixingOverrides(int[] mitosis, int[] parentGenes) {
-        if (this.rand.nextInt(100) <= 97) {
-            boolean mateOddOrEven = rand.nextBoolean();
-            if (mateOddOrEven) {
-                mitosis[48] = parentGenes[49];
-                mitosis[49] = parentGenes[48];
-                mitosis[62] = parentGenes[63];
-                mitosis[63] = parentGenes[62];
-            } else {
-                mitosis[48] = parentGenes[48];
-                mitosis[49] = parentGenes[49];
-                mitosis[62] = parentGenes[62];
-                mitosis[63] = parentGenes[63];
-            }
-        }
-    }
-
-
-    public int[] getEggGenes(int[] parentGenes, int[] mateParentGenes, int[] mitosis, int[] mateMitosis, boolean ignoreInfertility){
-        if (!infertile() || ignoreInfertility) {
-            Random rand = new Random();
-            int[] eggGenes = new int[Reference.CHICKEN_GENES_LENGTH];
-
-            for(int i =0; i< 20; i++) {
-                boolean thisOrMate = rand.nextBoolean();
-                if (thisOrMate){
-                    eggGenes[i] = parentGenes[i];
-                } else {
-                    eggGenes[i] = mateParentGenes[i];
-                }
-            }
-
-            for(int i =20; i< genes.length; i = (i+2)) {
-                boolean thisOrMate = rand.nextBoolean();
-                if (thisOrMate){
-                    eggGenes[i] = mitosis[i];
-                    eggGenes[i+1] = mateMitosis[i+1];
-                } else {
-                    eggGenes[i] = mateMitosis[i];
-                    eggGenes[i+1] = mitosis[i+1];
-                }
-            }
-
-            //part two of attaching pea comb and blue eggs
-            if (this.rand.nextInt(100) <= 97) {
-                boolean thisOrMate = rand.nextBoolean();
-                if (thisOrMate){
-                    eggGenes[48] = mitosis[48];
-                    eggGenes[62] = mitosis[62];
-                    eggGenes[49] = mateMitosis[49];
-                    eggGenes[63] = mateMitosis[63];
-                } else {
-                    eggGenes[48] = mateMitosis[48];
-                    eggGenes[62] = mateMitosis[62];
-                    eggGenes[49] = mitosis[49];
-                    eggGenes[63] = mitosis[63];
-                }
-            }
-
-            return eggGenes;
-        } else {
-            return null;
-        }
-    }
-
-    private boolean infertile() {
-        if (mateGenes == null || mateGenes.length == 0) {
-            return true;
-        }
-        for (int i = 0; i< mateGenes.length; i++) {
-            if (mateGenes[i] == 0) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    @Override
+//    protected void geneFixer() {
+//        if (this.genetics.getAutosomalGenes()[0] == 0) {
+//            this.setGenes(new GeneticsInitialiser.ChickenGeneticsInitialiser().generateNewChickenGenetics(this.world, new BlockPos(this), true));
+//            setInitialDefaults();
+//            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (rand.nextInt(180000-24000) + 24000)));
+//        }
+//    }
 
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, 20, Reference.CHICKEN_GENES_LENGTH, getAdultAge(), 10000, 120000);
+        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000);
     }
 
     @Override
-    protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
-        return getEggGenes(spawnGenes1, spawnGenes2, mitosis, mateMitosis, true);
+    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+        return new ChickenGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
 
     @Override
-    protected int[] createInitialGenes(IWorld inWorld) {
-
-//        return CHICKEN_GENETICS.generateNewChickenGenetics("thebiome")
-
-        int[] initialGenes = new int[Reference.CHICKEN_GENES_LENGTH];
-
-//        String pureBreed = "false";
-
-            //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
-            int wildType = 0;
-            Biome biome = inWorld.getBiome(new BlockPos(this));
-
-            if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
-            {
-                wildType  = 1;
-            }
-            else if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() < 0.3F) // hot and dry (savanna)
-            {
-                wildType = 2;
-            }
-            else if (biome.getDefaultTemperature() < 0.3F ) // cold (mountains)
-            {
-                wildType = 3;
-            }
-            else if (biome.getDefaultTemperature() >= 0.8F && biome.getDownfall() > 0.8F)
-            {
-                wildType = 4;
-            }
-
-//    if (false){
-//        //THE DNA PRINTER-5069 !!!!!
-//        return new int[] {2,1,6,1,1,2,6,1,1,1,10,10,10,10,10,10,10,10,10,10,1,1,2,2,5,5,2,2,2,2,1,1,3,3,2,2,2,2,2,2,1,1,1,1,1,1,3,3,2,2,1,1,2,2,3,3,1,1,2,2,1,1,1,1,3,3,3,3,2,2,1,1,1,1,2,2,2,2,1,1,2,2,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,12,12,12,12,12,12,6,6,20,20,20,20,5,5,2,2,1,1,2,2,1,1,1,1,1,1
-//        };
-        /**
-         * parent linked genes
-         */
-        //Gold [ gold, silver ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[0] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 3) {
-                //cold biome silver variation
-                initialGenes[0] = (2);
-            } else {
-                initialGenes[0] = (1);
-            }
-        }
-
-        //Chocolate [ wildtype, chocolate ]
-        if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 1.2))) {
-            initialGenes[1] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[1] = (1);
-        }
-
-        //ear size setting gene
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[2] = (ThreadLocalRandom.current().nextInt(6) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[2] = (6);
-            } else {
-                initialGenes[2] = (1);
-            }
-        }
-
-        //Barred [ wildtype, barred ] //exclusive to savanna
-        if (ThreadLocalRandom.current().nextInt(100) > WTC && wildType == 2) {
-            initialGenes[3] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[3] = (1);
-        }
-
-        //Fibromelanin Suppressor [ wildtype, suppressor ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[4] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[4] = (1);
-        }
-
-        //Brown egg gene suppressor [ wildtype, suppressor ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[5] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[5] = (1);
-        }
-
-        //white face
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[6] = (ThreadLocalRandom.current().nextInt(6) + 1);
-
-        } else {
-            initialGenes[6] = (6);
-        }
-
-        //dwarf [ normal, slight dwarf ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[7] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[7] = (1);
-        }
-
-        //dwarf 2 [ normal, very dwarf ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[8] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[8] = (1);
-        }
-
-        //large ear inhibitor [ no inhibitor, halving inhibitor ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[9] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[9] = (1);
-        }
-
-    /**
-     * unused parent linked genes
-     */
-
-        for (int i = 10; i < 20; i++) {
-            initialGenes[i] = (10);
-        }
-
-    /**
-     * normal genes start with 20
-     */
-
-        //Recessive white [ wild, recessive white, albino ]  //mutation common in temperate areas and swamps
-        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
-            if (ThreadLocalRandom.current().nextInt(200) == 199) {
-                initialGenes[20] = (3);
-            } else {
-                initialGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            }
-        } else {
-            if (wildType == 0) {
-                initialGenes[20] = (2);
-            } else {
-                initialGenes[20] = (1);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
-            initialGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            if (wildType == 0) {
-                initialGenes[21] = (2);
-            } else {
-                initialGenes[21] = (1);
-            }
-        }
-
-        //Mottled [ wildtype, mottled ]  // cold biome exclusive
-        if (ThreadLocalRandom.current().nextInt(100) > WTC && wildType == 3) {
-            initialGenes[22] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[22] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC && wildType == 3) {
-            initialGenes[23] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[23] = (1);
-        }
-
-        //Dlocus [ birchen, duckwing, wheaten, partridge, extended black ]
-        //swamps have random Dlocus genes
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[24] = (ThreadLocalRandom.current().nextInt(5) + 1);
-        } else {
-            // swamps have a mixture but no black
-            if (wildType == 4) {
-                initialGenes[24] = (ThreadLocalRandom.current().nextInt(3) + 2);
-            }
-            // partridge is savanna wild type
-            else if (wildType == 2) {
-                initialGenes[24] = (4);
-                // birchen and extended black is cold biome wildtype
-            } else if (wildType == 3) {
-                if (ThreadLocalRandom.current().nextInt(3) == 0) {
-                    initialGenes[24] = (5);
-                } else {
-                    initialGenes[24] = (1);
-                }
-                // duckwing is jungle "true" wildtype
-            } else {
-                initialGenes[24] = (2);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[25] = (ThreadLocalRandom.current().nextInt(4) + 1);
-        } else {
-            // swamps have a mixture but no black
-            if (wildType == 4) {
-                initialGenes[25] = (ThreadLocalRandom.current().nextInt(3) + 2);
-            }
-            // partridge is savanna wild type
-            else if (wildType == 2) {
-                initialGenes[25] = (4);
-                // birchen is cold biome wildtype
-            } else if (wildType == 3) {
-                if (ThreadLocalRandom.current().nextInt(3) == 0) {
-                    initialGenes[25] = (5);
-                } else {
-                    initialGenes[25] = (1);
-                }
-                // duckwing is jungle "true" wildtype
-            } else {
-                initialGenes[25] = (2);
-            }
-        }
-
-        //Pattern Gene [ pattern, wildtype ] pattern gene is common in savannas
-        if (wildType == 2) {
-            if (ThreadLocalRandom.current().nextInt(100) > (WTC / 2)) {
-                initialGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            } else {
-                initialGenes[26] = (2);
-            }
-        } else {
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[26] = (2);
-            }
-        }
-        if (wildType == 2) {
-            if (ThreadLocalRandom.current().nextInt(100) > (WTC / 2)) {
-                initialGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            } else {
-                initialGenes[27] = (2);
-            }
-        } else {
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            } else {
-                initialGenes[27] = (2);
-            }
-        }
-
-
-        //Colombian [ colombian, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 3) {
-            initialGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[28] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[29] = (2);
-        }
-
-        //Melanized [melanized, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[30] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[30] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[31] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[31] = (2);
-        }
-
-        //Dilute [ dilute, cream, wildtype ] // more common in swamps
-        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
-            initialGenes[32] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[32] = (3);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
-            initialGenes[33] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[33] = (3);
-        }
-
-        //Mahogany [ mahogany, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[34] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 2) {
-                initialGenes[34] = (1);
-            } else {
-                initialGenes[34] = (2);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[35] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[35] = (2);
-        }
-
-        //Lavender [ wildtype, lavender ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[36] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[36] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[37] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[37] = (1);
-        }
-
-        //Dominant White [ dominant white, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC || (wildType == 3)) {
-            initialGenes[38] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[38] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC || (wildType == 3)) {
-            initialGenes[39] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[39] = (2);
-        }
-
-        //Splash [ black, splash ]
-        if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2))) {
-            initialGenes[40] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[40] = (1);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2))) {
-            initialGenes[41] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[41] = (1);
-        }
-
-        //Fibromelanin [ fibromelanin, wildtype ] // fibro is more common in savannas but still rare
-        if (wildType == 2) {
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[42] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            } else {
-                initialGenes[42] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[43] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            } else {
-                initialGenes[43] = (2);
-            }
-        } else {
-            if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 1.1))) {
-                initialGenes[42] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            } else {
-                initialGenes[42] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 1.1))) {
-                initialGenes[43] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            } else {
-                initialGenes[43] = (2);
-            }
-        }
-
-        //yellow shanks [ white, yellow, superyellow ]
-        if ((ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2)) && wildType != 0) || wildType == 4) {
-            initialGenes[44] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            if (wildType == 1) {
-                initialGenes[44] = (1);
-            } else {
-                initialGenes[44] = (2);
-            }
-        }       //homozygous white legs only in jungle
-        if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2))) {
-            if (wildType == 1) {
-                initialGenes[45] = (ThreadLocalRandom.current().nextInt(3) + 1);
-            } else {
-                initialGenes[45] = (ThreadLocalRandom.current().nextInt(2) + 2);
-            }
-        } else {
-            if (wildType == 1) {
-                initialGenes[45] = (1);
-            } else {
-                initialGenes[45] = (2);
-            }
-        }
-
-        //Rose [ rose, rose2, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[46] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            initialGenes[46] = (3);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[47] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[47] = (3);
-        }
-
-        //Pea [ pea, wildtype ]
-        if ((ThreadLocalRandom.current().nextInt(100) > WTC && (wildType == 0 || wildType == 3))) {
-            initialGenes[48] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            if (wildType == 3) {
-                initialGenes[48] = (1);
-            } else {
-                initialGenes[48] = (2);
-            }
-        }
-        if ((ThreadLocalRandom.current().nextInt(100) > WTC && (wildType == 0 || wildType == 3))) {
-            initialGenes[49] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            if (wildType == 3) {
-                initialGenes[49] = (1);
-            } else {
-                initialGenes[49] = (2);
-            }
-        }
-
-        //Duplex comb or v comb [ wildtype, duplexV, duplexC ]   // reversed dominance, cold biome exclusive
-        if ((ThreadLocalRandom.current().nextInt(100) > WTC) && wildType == 3) {
-            initialGenes[50] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[50] = (1);
-        }
-        if ((ThreadLocalRandom.current().nextInt(100) > WTC) && wildType == 3) {
-            initialGenes[51] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[51] = (1);
-        }
-
-        //Naked neck [ naked neck, wildtype ] // savanna exclusive
-        if (ThreadLocalRandom.current().nextInt(100) > WTC && wildType == 2) {
-            initialGenes[52] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[52] = (2);
-        }
-        //no wild homozygous naked neck
-        initialGenes[53] = (2);
-
-
-        //Crest [ normal crest, forward crest, wildtype ]
-        if (wildType == 3 && ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[54] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[54] = (3);
-        }
-        if (wildType == 3 && ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[55] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[55] = (3);
-        }
-
-        //beard [ beard, wildtype ]
-        if (wildType == 3 && ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[56] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[56] = (2);
-        }
-        if (wildType == 3 && ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[57] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[57] = (2);
-        }
-
-        //Foot feather 1 [ small foot feather, big foot feather, wildtype ]
-        if (wildType == 3 && ThreadLocalRandom.current().nextInt(100) > (WTC / 2)) {
-            initialGenes[58] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[58] = (3);
-        }
-        if (wildType == 3 && ThreadLocalRandom.current().nextInt(100) > (WTC / 2)) {
-            initialGenes[59] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[59] = (3);
-        }
-
-        //Foot feather enhancer [ enhancer, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 3) {
-            initialGenes[60] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[60] = (2);
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 3) {
-            initialGenes[61] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-        } else {
-            initialGenes[61] = (2);
-        }
-
-        //Blue eggs [ blueSaturated, wildtype, blueMedium, blueLight ] // swamp exclusive
-        if (wildType == 4) {
-            if (ThreadLocalRandom.current().nextBoolean()) {
-                initialGenes[62] = (2);
-            } else if (ThreadLocalRandom.current().nextBoolean()) {
-                initialGenes[62] = (4);
-            } else  if (ThreadLocalRandom.current().nextBoolean()) {
-                initialGenes[62] = (3);
-            } else {
-                initialGenes[62] = (1);
-            }
-
-        } else {
-            initialGenes[62] = (2);
-        }
-        if (wildType == 4) {
-            if (ThreadLocalRandom.current().nextBoolean()) {
-                initialGenes[63] = (2);
-            } else if (ThreadLocalRandom.current().nextBoolean()) {
-                initialGenes[63] = (4);
-            } else  if (ThreadLocalRandom.current().nextBoolean()) {
-                initialGenes[63] = (3);
-            } else {
-                initialGenes[63] = (1);
-            }
-
-        } else {
-            initialGenes[63] = (2);
-        }
-
-        //Brown Pink eggs [ brown, pink, wildtype ] //pink more likely in savanna
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[64] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            if (wildType == 2) {
-                initialGenes[64] = (2);
-            } else {
-                initialGenes[64] = (3);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[65] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            if (wildType == 2) {
-                initialGenes[65] = (2);
-            } else {
-                initialGenes[65] = (3);
-            }
-        }
-
-        //Brown Cream eggs [ brown, cream, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
-            initialGenes[66] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            if (wildType == 1 || wildType == 2) {
-                initialGenes[66] = (3);
-            } else {
-                initialGenes[66] = (2);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[67] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
-        } else {
-            if (wildType == 1) {
-                initialGenes[67] = (3);
-            } else {
-                initialGenes[67] = (2);
-            }
-        }
-
-        //Darker eggs [ darker, wildtype ] // darker is more probable in swamps but still rare
-        if (wildType == 4) {
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[68] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            } else {
-                initialGenes[68] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                initialGenes[69] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            } else {
-                initialGenes[69] = (2);
-            }
-        } else {
-            if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2))) {
-                initialGenes[68] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[68] = (2);
-            }
-            if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2))) {
-                initialGenes[69] = (ThreadLocalRandom.current().nextInt(2) + 1);
-
-            } else {
-                initialGenes[69] = (2);
-            }
-        }
-
-        //creeper gene [ wildtype, creeper ] (short legs not exploding bushes)
-        if (ThreadLocalRandom.current().nextInt(100) > (WTC + ((100 - WTC) / 2))) {
-            initialGenes[70] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[71] = (1);
-        } else {
-            initialGenes[70] = (1);
-            initialGenes[71] = (1);
-        }
-
-        //rumpless [ wildtype, rumpless ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[72] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[73] = (1);
-        } else {
-            initialGenes[72] = (1);
-            initialGenes[73] = (1);
-        }
-
-        //base size [ smaller, wildtype, larger ] incomplete dominant
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 4) {
-            initialGenes[74] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[74] = (2);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[75] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[75] = (2);
-        }
-
-        //Size subtraction [ smaller, normal+, smallest ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[76] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[76] = (2);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[77] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[77] = (2);
-        }
-
-        //Size multiplier [ normal+, larger ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[78] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[79] = (1);
-        } else {
-            initialGenes[78] = (1);
-            initialGenes[79] = (1);
-        }
-
-        //small comb [ small, normal+ ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[80] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[81] = (2);
-        } else {
-            initialGenes[80] = (2);
-            initialGenes[81] = (2);
-        }
-
-        //large comb [ large, normal+ ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[82] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[83] = (2);
-        } else {
-            initialGenes[82] = (2);
-            initialGenes[83] = (2);
-        }
-
-        //waddle reducer [ small, normal+ ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[84] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[85] = (2);
-        } else {
-            initialGenes[84] = (2);
-            initialGenes[85] = (2);
-        }
-
-        //wing placement near back [ centered+, up on back, centered2 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[86] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[86] = (1);
-            } else if (wildType == 2) {
-                initialGenes[86] = (3);
-            } else {
-                initialGenes[86] = (2);
-            }
-        }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[87] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[87] = (1);
-            } else if (wildType == 2) {
-                initialGenes[87] = (3);
-            } else {
-                initialGenes[87] = (2);
-            }
-        }
-
-        //wings down [ centered+, tilted down, pointed down ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[88] = (ThreadLocalRandom.current().nextInt(3) + 1);
-            initialGenes[89] = (1);
-        } else {
-            initialGenes[88] = (1);
-            initialGenes[89] = (1);
-        }
-
-        //wing length [ normal+, 5 short ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[90] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[91] = (1);
-        } else {
-            initialGenes[90] = (1);
-            initialGenes[91] = (1);
-        }
-
-        //wing thickness [ normal+, 3 wide ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[92] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[93] = (1);
-        } else {
-            initialGenes[92] = (1);
-            initialGenes[93] = (1);
-        }
-
-        //wing angle multiplier [none+, 1.1, 1.5]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[94] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[94] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[95] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[95] = (1);
-        }
-
-        //wing angle multiplier 2 [none+, 1.1, 1.5]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[96] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[96] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[97] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[97] = (1);
-        }
-
-        // Darkbrown [ darkbrown, wildtype ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[98] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[98] = (2);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[99] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[99] = (2);
-        }
-
-        // Charcoal [ wildtype, charcoal ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[100] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[100] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[101] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[101] = (1);
-        }
-
-        // Vulture Hocks [ wildtype, vulture hocks ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[102] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[102] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[103] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[103] = (1);
-        }
-
-        // Frizzle [ wildtype, frizzle ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[104] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[105] = (1);
-        } else {
-            initialGenes[104] = (1);
-            initialGenes[105] = (1);
-        }
-
-        // Silkie [ wildtype, silkie ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[106] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[106] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[107] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[107] = (1);
-        }
-
-        // Scaless [ wildtype, scaleless ]
-    //    if (ThreadLocalRandom.current().nextInt(200) > 199) {
-    //        initialGenes[108] = (ThreadLocalRandom.current().nextInt(10) + 1);
-    //        if (initialGenes[108] != 2) {
-    //            initialGenes[108] = 1;
-    //        }
-    //        initialGenes[109] = (1);
-    //    } else {
-            initialGenes[108] = (1);
-            initialGenes[109] = (1);
-    //    }
-
-        // Adrenaline A [ more alert, moderate alertness ,less alert ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[110] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[110] = (2);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[111] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[111] = (2);
-        }
-
-        // Adrenaline B [ more alert, moderate alertness ,less alert ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[112] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[112] = (2);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[113] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[113] = (2);
-        }
-
-        // Adrenaline C [ more alert, moderate alertness ,less alert ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[114] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[114] = (2);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[115] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[115] = (2);
-        }
-
-        // The Dumb [ Dom.Dumb, dumb, normal ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[116] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[116] = (3);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[117] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[117] = (3);
-        }
-
-        // The Clever [ normal, clever, rec. clever ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[118] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[118] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[119] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[119] = (1);
-        }
-
-        // Anger A [ neutral, grouchy, aggressive ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[120] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[120] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[121] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[121] = (1);
-        }
-
-        // Anger B [ flighty, neutral, aggressive ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[122] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[122] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[123] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[123] = (1);
-        }
-
-        // Flightiness A [ flighty, neutral, shit scared(erratic booster) ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[124] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[124] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[125] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[125] = (1);
-        }
-
-        // Flightiness B [ very flighty, nervous, neutral ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[126] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[126] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[127] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[127] = (1);
-        }
-
-        // Wildness [ chaotic, wild, moderate, semi-predictable, predictable ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[128] = (ThreadLocalRandom.current().nextInt(5) + 1);
-        } else {
-            initialGenes[128] = (2);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[129] = (ThreadLocalRandom.current().nextInt(5) + 1);
-        } else {
-            initialGenes[129] = (2);
-        }
-
-        // selfishness [ selfish, selfless, normal ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[130] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[130] = (3);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[131] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[131] = (3);
-        }
-
-        // protectiveness [ protective - neutral ] //ups the fear/aggression if self,herd or baby is attacked
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[132] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
-            initialGenes[132] = (3);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[133] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
-            initialGenes[133] = (3);
-        }
-
-        // curiosity [ curious - neutral ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[132] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
-            initialGenes[132] = (3);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[133] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
-            initialGenes[133] = (3);
-        }
-
-        // sociable [ sociable - neutral ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[132] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
-            initialGenes[132] = (3);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[133] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
-            initialGenes[133] = (3);
-        }
-
-        // empathetic/mothering [ mothering - neutral ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[134] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
-            initialGenes[134] = (3);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[135] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
-            initialGenes[135] = (3);
-        }
-
-        // confidence [ neutral - confidence] (in the logic it should be partially negated by fearful attributes for some behaviours)
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[136] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
-            initialGenes[136] = (3);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[137] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
-            initialGenes[137] = (3);
-        }
-
-        // playfulness [ playful - neutral ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[138] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
-            initialGenes[138] = (3);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[139] = (ThreadLocalRandom.current().nextInt(7) + 1);
-        } else {
-            initialGenes[139] = (3);
-        }
-
-        // food drive A [ loves food - neutral ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[140] = (ThreadLocalRandom.current().nextInt(6) + 1);
-        } else {
-            initialGenes[140] = (3);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[141] = (ThreadLocalRandom.current().nextInt(6) + 1);
-        } else {
-            initialGenes[141] = (3);
-        }
-
-        // food drive B [ eats to live - neutral ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[142] = (ThreadLocalRandom.current().nextInt(6) + 1);
-        } else {
-            initialGenes[142] = (3);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[143] = (ThreadLocalRandom.current().nextInt(6) + 1);
-        } else {
-            initialGenes[143] = (3);
-        }
-
-        // food drive C [ Always hungry, neutral, under eats ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[144] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[144] = (2);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[145] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[145] = (2);
-        }
-
-        //BodyBig [normal, big]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[146] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[146] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[147] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[147] = (1);
-        }
-
-        //BodySmall [normal, small]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[148] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[148] = (2);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[149] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[149] = (2);
-        }
-
-        //EarTuft [normal, Eartuft]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC + ((100-WTC)/2)) {
-            initialGenes[150] = (ThreadLocalRandom.current().nextInt(2) + 1);
-            initialGenes[151] = (1);
-        } else {
-            initialGenes[150] = (1);
-            initialGenes[151] = (1);
-        }
-
-        //ear size 1 [1-4 = -1 , 5-8 = 0, 9-12 = +1]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[152] = (ThreadLocalRandom.current().nextInt(6) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[152] = (10);
-            } else {
-                initialGenes[152] = (1);
-            }
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[153] = (ThreadLocalRandom.current().nextInt(6) + 7);
-        } else {
-            if (wildType == 1) {
-                initialGenes[153] = (10);
-            } else {
-                initialGenes[153] = (7);
-            }
-        }
-
-        //ear size 2 [1-4 = -1 , 5-8 = 0, 9-12 = +1]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[154] = (ThreadLocalRandom.current().nextInt(6) + 1);
-        } else {
-            initialGenes[154] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[155] = (ThreadLocalRandom.current().nextInt(6) + 7);
-        } else {
-            initialGenes[155] = (7);
-        }
-
-        //ear size 3 [1-4 = -1 , 5 = 0, 6-10 = +1 , 10-12 = +1 || +2]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[156] = (ThreadLocalRandom.current().nextInt(6) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[156] = (4);
-            } else {
-                initialGenes[156] = (1);
-            }
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[157] = (ThreadLocalRandom.current().nextInt(6) + 7);
-        } else {
-            if (wildType == 1) {
-                initialGenes[157] = (4);
-            } else {
-                initialGenes[157] = (7);
-            }
-        }
-
-        //ear size 4 and whitener [reducer, nuetral, adds size, adds white, adds white+ and size]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[158] = (ThreadLocalRandom.current().nextInt(5) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[158] = (5);
-            } else {
-                initialGenes[158] = (1);
-            }
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[159] = (ThreadLocalRandom.current().nextInt(5) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[159] = (5);
-            } else {
-                initialGenes[159] = (1);
-            }
-        }
-
-        //ear size 5 [1-4 = -1 , 5 = 0, 6-10 = +1 , 10-12 = +1 || +2]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[160] = (ThreadLocalRandom.current().nextInt(12) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[160] = (6);
-            } else {
-                initialGenes[160] = (1);
-            }
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[161] = (ThreadLocalRandom.current().nextInt(12) + 13);
-        } else {
-            if (wildType == 1) {
-                initialGenes[161] = (6);
-            } else {
-                initialGenes[161] = (7);
-            }
-        }
-
-        //ear size 6 [1-4 = -1 , 5 = 0, 6-10 = +1 , 10-12 = +1 || +2]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[162] = (ThreadLocalRandom.current().nextInt(12) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[162] = (6);
-            } else {
-                initialGenes[162] = (1);
-            }
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[163] = (ThreadLocalRandom.current().nextInt(12) + 13);
-        } else {
-            if (wildType == 1) {
-                initialGenes[163] = (4);
-            } else {
-                initialGenes[163] = (7);
-            }
-        }
-
-        //ear redness
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[164] = (ThreadLocalRandom.current().nextInt(5) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[164] = (5);
-            } else {
-                initialGenes[164] = (1);
-            }
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[165] = (ThreadLocalRandom.current().nextInt(5) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[165] = (5);
-            } else {
-                initialGenes[165] = (1);
-            }
-        }
-
-        //recessive black shanks [normal, blacker shanks]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[166] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[166] = (2);
-            } else {
-                initialGenes[166] = (1);
-            }
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[167] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            if (wildType == 1) {
-                initialGenes[167] = (2);
-            } else {
-                initialGenes[167] = (1);
-            }
-        }
-
-        //long legs [normal, long legs]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[168] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[168] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[169] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[169] = (1);
-        }
-
-        //Autosomal Red [Red+, red inhibitor]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[170] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[170] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[171] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[171] = (1);
-        }
-
-        //Egg Tinter [wildtype, browner egg]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[172] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[172] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[173] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[173] = (1);
-        }
-
-        //Egg Tinter 2 [wildtype, browner egg]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[174] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[174] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[175] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[175] = (1);
-        }
-
-        //Egg Tinter 3 [wildtype, browner egg, brownest egg]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[176] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[176] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[177] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[177] = (1);
-        }
-
-        //Egg Speckle [wildtype, speckle lighter, speckle ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[178] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[178] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[179] = (ThreadLocalRandom.current().nextInt(3) + 1);
-        } else {
-            initialGenes[179] = (1);
-        }
-
-        //Egg marking darkener [wildtype, darker spots ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[180] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[180] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[181] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[181] = (1);
-        }
-
-        //Egg marking smudger [wildtype, smudger ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[182] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[182] = (1);
-        }
-
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            initialGenes[183] = (ThreadLocalRandom.current().nextInt(2) + 1);
-        } else {
-            initialGenes[183] = (1);
-        }
-
-        //Quirk ideas:
-        //favourite flavours/foods
-        //phobias: heights, certain mobs, swords/sticks/axes in hand, fire/lava, things bigger than them running
-        //loves: heights, warm places, food,
-
-    // TODO here: genes for egg hatch chance when thrown, egg laying rate, and chicken ai modifiers
-
-    return initialGenes;
-}
+    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+        return new ChickenGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
 
     private Item getEggColour(int eggColourGene){
 
@@ -4155,77 +2714,77 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             case 115:
                 return ModItems.Egg_Tea;
             case 116:
-                return ModItems.Egg_Matcha_Speckle;
+                return ModItems.EGG_MATCHA_SPECKLE;
             case 117:
-                return ModItems.Egg_MatchaDark_Speckle;
+                return ModItems.EGG_MATCHADARK_SPECKLE;
             case 118:
-                return ModItems.Egg_Moss_Speckle;
+                return ModItems.EGG_MOSS_SPECKLE;
             case 119:
-                return ModItems.Egg_MossDark_Speckle;
+                return ModItems.EGG_MOSSDARK_SPECKLE;
             case 120:
-                return ModItems.Egg_GreenUmber_Speckle;
+                return ModItems.EGG_GREENUMBER_SPECKLE;
             case 121:
                 return ModItems.EGG_GREYBLUE;
             case 122:
-                return ModItems.Egg_GreyNeutral_Speckle;
+                return ModItems.EGG_GREYNEUTRAL_SPECKLE;
             case 123:
-                return ModItems.Egg_Laurel_Speckle;
+                return ModItems.EGG_LAUREL_SPECKLE;
             case 124:
-                return ModItems.Egg_Reseda_Speckle;
+                return ModItems.EGG_RESEDA_SPECKLE;
             case 125:
-                return ModItems.Egg_GreenPewter_Speckle;
+                return ModItems.EGG_GREENPEWTER_SPECKLE;
             case 126:
-                return ModItems.Egg_GreyDark_Speckle;
+                return ModItems.EGG_GREYDARK_SPECKLE;
             case 127:
-                return ModItems.Egg_Celadon_Speckle;
+                return ModItems.EGG_CELADON_SPECKLE;
             case 128:
-                return ModItems.Egg_Fern_Speckle;
+                return ModItems.EGG_FERN_SPECKLE;
             case 129:
-                return ModItems.Egg_Asparagus_Speckle;
+                return ModItems.EGG_ASPARAGUS_SPECKLE;
             case 130:
-                return ModItems.Egg_Hunter_Speckle;
+                return ModItems.EGG_HUNTER_SPECKLE;
             case 131:
-                return ModItems.Egg_HunterDark_Speckle;
+                return ModItems.EGG_HUNTERDARK_SPECKLE;
             case 132:
-                return ModItems.Egg_TreeDark_Speckle;
+                return ModItems.EGG_TREEDARK_SPECKLE;
             case 133:
                 return ModItems.EGG_PALEBLUE;
             case 134:
                 return ModItems.EGG_HONEYDEW;
             case 135:
-                return ModItems.Egg_Earth_Speckle;
+                return ModItems.EGG_EARTH_SPECKLE;
             case 136:
-                return ModItems.Egg_Khaki_Speckle;
+                return ModItems.EGG_KHAKI_SPECKLE;
             case 137:
-                return ModItems.Egg_Grullo_Speckle;
+                return ModItems.EGG_GRULLO_SPECKLE;
             case 138:
-                return ModItems.Egg_KhakiDark_Speckle;
+                return ModItems.EGG_KHAKIDARK_SPECKLE;
             case 139:
-                return ModItems.Egg_Carob_Speckle;
+                return ModItems.EGG_CAROB_SPECKLE;
             case 140:
                 return ModItems.EGG_COOLGREY;
             case 141:
-                return ModItems.Egg_PinkGrey_Speckle;
+                return ModItems.EGG_PINKGREY_SPECKLE;
             case 142:
-                return ModItems.Egg_WarmGrey_Speckle;
+                return ModItems.EGG_WARMGREY_SPECKLE;
             case 143:
-                return ModItems.Egg_Artichoke_Speckle;
+                return ModItems.EGG_ARTICHOKE_SPECKLE;
             case 144:
-                return ModItems.Egg_MyrtleGrey_Speckle;
+                return ModItems.EGG_MYRTLEGREY_SPECKLE;
             case 145:
-                return ModItems.Egg_Rifle_Speckle;
+                return ModItems.EGG_RIFLE_SPECKLE;
             case 146:
-                return ModItems.Egg_Jade_Speckle;
+                return ModItems.EGG_JADE_SPECKLE;
             case 147:
-                return ModItems.Egg_Pistachio_Speckle;
+                return ModItems.EGG_PISTACHIO_SPECKLE;
             case 148:
-                return ModItems.Egg_Sage_Speckle;
+                return ModItems.EGG_SAGE_SPECKLE;
             case 149:
-                return ModItems.Egg_Rosemary_Speckle;
+                return ModItems.EGG_ROSEMARY_SPECKLE;
             case 150:
-                return ModItems.Egg_GreenBrown_Speckle;
+                return ModItems.EGG_GREENBROWN_SPECKLE;
             case 151:
-                return ModItems.Egg_Umber_Speckle;
+                return ModItems.EGG_UMBER_SPECKLE;
             case 152:
                 return ModItems.Egg_White;
             case 153:
@@ -4307,77 +2866,77 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             case 191:
                 return ModItems.Egg_Tea;
             case 192:
-                return ModItems.Egg_Matcha_Spatter;
+                return ModItems.EGG_MATCHA_SPATTER;
             case 193:
-                return ModItems.Egg_MatchaDark_Spatter;
+                return ModItems.EGG_MATCHADARK_SPATTER;
             case 194:
-                return ModItems.Egg_Moss_Spatter;
+                return ModItems.EGG_MOSS_SPATTER;
             case 195:
-                return ModItems.Egg_MossDark_Spatter;
+                return ModItems.EGG_MOSSDARK_SPATTER;
             case 196:
-                return ModItems.Egg_GreenUmber_Spatter;
+                return ModItems.EGG_GREENUMBER_SPATTER;
             case 197:
                 return ModItems.EGG_GREYBLUE;
             case 198:
-                return ModItems.Egg_GreyNeutral_Spatter;
+                return ModItems.EGG_GREYNEUTRAL_SPATTER;
             case 199:
-                return ModItems.Egg_Laurel_Spatter;
+                return ModItems.EGG_LAUREL_SPATTER;
             case 200:
-                return ModItems.Egg_Reseda_Spatter;
+                return ModItems.EGG_RESEDA_SPATTER;
             case 201:
-                return ModItems.Egg_GreenPewter_Spatter;
+                return ModItems.EGG_GREENPEWTER_SPATTER;
             case 202:
-                return ModItems.Egg_GreyDark_Spatter;
+                return ModItems.EGG_GREYDARK_SPATTER;
             case 203:
-                return ModItems.Egg_Celadon_Spatter;
+                return ModItems.EGG_CELADON_SPATTER;
             case 204:
-                return ModItems.Egg_Fern_Spatter;
+                return ModItems.EGG_FERN_SPATTER;
             case 205:
-                return ModItems.Egg_Asparagus_Spatter;
+                return ModItems.EGG_ASPARAGUS_SPATTER;
             case 206:
-                return ModItems.Egg_Hunter_Spatter;
+                return ModItems.EGG_HUNTER_SPATTER;
             case 207:
-                return ModItems.Egg_HunterDark_Spatter;
+                return ModItems.EGG_HUNTERDARK_SPATTER;
             case 208:
-                return ModItems.Egg_TreeDark_Spatter;
+                return ModItems.EGG_TREEDARK_SPATTER;
             case 209:
                 return ModItems.EGG_PALEBLUE;
             case 210:
                 return ModItems.EGG_HONEYDEW;
             case 211:
-                return ModItems.Egg_Earth_Spatter;
+                return ModItems.EGG_EARTH_SPATTER;
             case 212:
-                return ModItems.Egg_Khaki_Spatter;
+                return ModItems.EGG_KHAKI_SPATTER;
             case 213:
-                return ModItems.Egg_Grullo_Spatter;
+                return ModItems.EGG_GRULLO_SPATTER;
             case 214:
-                return ModItems.Egg_KhakiDark_Spatter;
+                return ModItems.EGG_KHAKIDARK_SPATTER;
             case 215:
-                return ModItems.Egg_Carob_Spatter;
+                return ModItems.EGG_CAROB_SPATTER;
             case 216:
                 return ModItems.EGG_COOLGREY;
             case 217:
-                return ModItems.Egg_PinkGrey_Spatter;
+                return ModItems.EGG_PINKGREY_SPATTER;
             case 218:
-                return ModItems.Egg_WarmGrey_Spatter;
+                return ModItems.EGG_WARMGREY_SPATTER;
             case 219:
-                return ModItems.Egg_Artichoke_Spatter;
+                return ModItems.EGG_ARTICHOKE_SPATTER;
             case 220:
-                return ModItems.Egg_MyrtleGrey_Spatter;
+                return ModItems.EGG_MYRTLEGREY_SPATTER;
             case 221:
-                return ModItems.Egg_Rifle_Spatter;
+                return ModItems.EGG_RIFLE_SPATTER;
             case 222:
-                return ModItems.Egg_Jade_Spatter;
+                return ModItems.EGG_JADE_SPATTER;
             case 223:
-                return ModItems.Egg_Pistachio_Spatter;
+                return ModItems.EGG_PISTACHIO_SPATTER;
             case 224:
-                return ModItems.Egg_Sage_Spatter;
+                return ModItems.EGG_SAGE_SPATTER;
             case 225:
-                return ModItems.Egg_Rosemary_Spatter;
+                return ModItems.EGG_ROSEMARY_SPATTER;
             case 226:
-                return ModItems.Egg_GreenBrown_Spatter;
+                return ModItems.EGG_GREENBROWN_SPATTER;
             case 227:
-                return ModItems.Egg_Umber_Spatter;
+                return ModItems.EGG_UMBER_SPATTER;
             case 228:
                 return ModItems.Egg_White;
             case 229:
@@ -4532,7 +3091,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                 return ModItems.EGG_UMBER_SPOT;
         }
 
-        //TODO set up exception handling and put an exception here we should NEVER get here.
+        //TODO set up exception handling and put an exception here we should NEVER generate here.
         return null;
     }
 

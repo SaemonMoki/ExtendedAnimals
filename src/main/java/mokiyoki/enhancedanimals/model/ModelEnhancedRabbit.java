@@ -3,10 +3,12 @@ package mokiyoki.enhancedanimals.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
@@ -57,19 +59,17 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     private final ModelRenderer rabbitLionHeadR;
     private final ModelRenderer rabbitLionHeadL1;
     private final ModelRenderer rabbitLionHeadR1;
-    private final ModelRenderer LionEarParent;
-    private final ModelRenderer LionEarL;
-    private final ModelRenderer LionEarR;
-    private final ModelRenderer LionEarParent1;
-    private final ModelRenderer LionEarL1;
-    private final ModelRenderer LionEarR1;
-    private final ModelRenderer EarParent;
-    private final ModelRenderer EarL;
-    private final ModelRenderer EarR;
-    private final ModelRenderer DwarfParent;
-    private final ModelRenderer DwarfEarL;
-    private final ModelRenderer DwarfEarR;
+    private final ModelRenderer earHelper;
+    private final ModelRenderer lionEarL;
+    private final ModelRenderer lionEarR;
+    private final ModelRenderer lionEarL1;
+    private final ModelRenderer lionEarR1;
+    private final ModelRenderer earL;
+    private final ModelRenderer earR;
+    private final ModelRenderer dwarfEarL;
+    private final ModelRenderer dwarfEarR;
     private final ModelRenderer rabbitTail;
+    private final ModelRenderer collar;
     private float jumpRotation;
 
     private Integer currentRabbit = null;
@@ -188,76 +188,67 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         this.setRotationOffset(this.rightArm, -1.6F, 0.0F, 0.0F);
 
         this.headLeft = new ModelRenderer(this, 0, 24);
-        this.headLeft.addBox(0.0F, 0.0F, 0.0F, 3, 6, 6);
-        this.headLeft.setRotationPoint(0.0F, 14.0F, -11.0F);
+        this.headLeft.addBox(0.0F, 0.0F, -6.0F, 3, 6, 6);
+        this.headLeft.setRotationPoint(0.0F, 14.0F, -7.0F);
 
         this.headRight = new ModelRenderer(this, 18, 24);
-        this.headRight.addBox(-3.0F, 0F, 0F, 3, 6, 6);
-        this.headRight.setRotationPoint(0.0F, 14.0F, -9.0F + xMove);
+        this.headRight.addBox(-3.0F, 0F, -6.0F, 3, 6, 6);
+        this.headRight.setRotationPoint(0.0F, 14.0F, -7.0F);
 
         this.eyeLeft = new ModelRenderer(this, 0, 16);
-        this.eyeLeft.addBox(2.0F, 2.0F, 1.0F, 1, 2, 2, 0.01F);
+        this.eyeLeft.addBox(2.0F, 2.0F, -4.0F, 1, 2, 2, 0.01F);
 
         this.eyeRight = new ModelRenderer(this, 0, 20);
-        this.eyeRight.addBox(-3.0F, 2.0F, 1.0F, 1, 2, 2, 0.01F);
+        this.eyeRight.addBox(-3.0F, 2.0F, -4.0F, 1, 2, 2, 0.01F);
 
         this.rabbitHeadMuzzle = new ModelRenderer(this, 0, 8);
-        this.rabbitHeadMuzzle.addBox(-2F, 1.5F, -2F, 4, 4, 4);
+        this.rabbitHeadMuzzle.addBox(-2F, 1.5F, -8F, 4, 4, 4);
         this.rabbitHeadMuzzle.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
         this.rabbitNose = new ModelRenderer(this, 0, 8);
-        this.rabbitNose.addBox(-0.5F, 1.6F, -2.1F, 1, 1, 1);
+        this.rabbitNose.addBox(-0.5F, 1.6F, -8.1F, 1, 1, 1);
 
         this.rabbitHeadMuzzleDwarf = new ModelRenderer(this, 0, 8);
-        this.rabbitHeadMuzzleDwarf.addBox(-2F, 1.5F, -1F, 4, 4, 4);
+        this.rabbitHeadMuzzleDwarf.addBox(-2F, 1.5F, -7F, 4, 4, 4);
         this.rabbitHeadMuzzleDwarf.setRotationPoint(0.0F, 0.0F, 0.0F + xMove);
 
         this.rabbitNoseDwarf = new ModelRenderer(this, 0, 8);
-        this.rabbitNoseDwarf.addBox(-0.5F, 1.6F, -1.1F, 1, 1, 1);
+        this.rabbitNoseDwarf.addBox(-0.5F, 1.6F, -7.1F, 1, 1, 1);
 
         this.rabbitLionHeadL = new ModelRenderer(this, 33, 30);
-        this.rabbitLionHeadL.addBox(0.0F, 0.0F, 0.0F, 3, 6, 6, 0.5F);
+        this.rabbitLionHeadL.addBox(0.0F, 0.0F, -6.0F, 3, 6, 6, 0.5F);
 
         this.rabbitLionHeadR = new ModelRenderer(this, 33, 18);
-        this.rabbitLionHeadR.addBox(-3.0F, 0.0F, 0.0F, 3, 6, 6, 0.5F);
+        this.rabbitLionHeadR.addBox(-3.0F, 0.0F, -6.0F, 3, 6, 6, 0.5F);
 
         this.rabbitLionHeadL1 = new ModelRenderer(this, 33, 30);
-        this.rabbitLionHeadL1.addBox(0.0F, 0.0F, 0.0F, 3, 6, 6, 1.1F);
+        this.rabbitLionHeadL1.addBox(0.0F, 0.0F, -6.0F, 3, 6, 6, 1.1F);
 
         this.rabbitLionHeadR1 = new ModelRenderer(this, 33, 18);
-        this.rabbitLionHeadR1.addBox(-3.0F, 0.0F, 0.0F, 3, 6, 6, 1.1F);
+        this.rabbitLionHeadR1.addBox(-3.0F, 0.0F, -6.0F, 3, 6, 6, 1.1F);
 
-        this.LionEarParent = new ModelRenderer(this, 60, 62);
-        this.LionEarL = new ModelRenderer(this, 50, 46);
-        this.LionEarL.addBox(-3.0F, -7.0F, -0.5F, 4, 7, 1, 0.4F);
-        this.LionEarR = new ModelRenderer(this, 40, 46);
-        this.LionEarR.addBox(-1.0F, -7.0F, -0.5F, 4, 7, 1, 0.4F);
-        this.LionEarParent.addChild(LionEarL);
-        this.LionEarParent.addChild(LionEarR);
+        this.earHelper = new ModelRenderer(this, 0, 0);
+        this.earHelper.setRotationPoint(0.0F, 0.0F, -6.0F);
 
-        this.LionEarParent1 = new ModelRenderer(this, 60, 62);
-        this.LionEarL1 = new ModelRenderer(this, 50, 46);
-        this.LionEarL1.addBox(-3.0F, -7.0F, -0.5F, 4, 7, 1, 0.5F);
-        this.LionEarR1 = new ModelRenderer(this, 40, 46);
-        this.LionEarR1.addBox(-1.0F, -7.0F, -0.5F, 4, 7, 1, 0.5F);
-        this.LionEarParent1.addChild(LionEarL1);
-        this.LionEarParent1.addChild(LionEarR1);
+        this.lionEarL = new ModelRenderer(this, 50, 46);
+        this.lionEarL.addBox(-3.0F, -7.0F, -0.5F, 4, 7, 1, 0.4F);
+        this.lionEarR = new ModelRenderer(this, 40, 46);
+        this.lionEarR.addBox(-1.0F, -7.0F, -0.5F, 4, 7, 1, 0.4F);
 
-        this.EarParent = new ModelRenderer(this, 60, 62);
-        this.EarL = new ModelRenderer(this, 10, 0);
-        this.EarL.addBox(-3.0F, -7.0F, -0.5F, 4, 7, 1);
-        this.EarR = new ModelRenderer(this, 0, 0);
-        this.EarR.addBox(-1.0F, -7.0F, -0.5F, 4, 7, 1);
-        this.EarParent.addChild(EarL);
-        this.EarParent.addChild(EarR);
+        this.lionEarL1 = new ModelRenderer(this, 50, 46);
+        this.lionEarL1.addBox(-3.0F, -7.0F, -0.5F, 4, 7, 1, 0.5F);
+        this.lionEarR1 = new ModelRenderer(this, 40, 46);
+        this.lionEarR1.addBox(-1.0F, -7.0F, -0.5F, 4, 7, 1, 0.5F);
 
-        this.DwarfParent = new ModelRenderer(this, 60, 62);
-        this.DwarfEarL = new ModelRenderer(this, 10, 0);
-        this.DwarfEarL.addBox(-3.0F, -5.0F, -0.5F, 4, 5, 1);
-        this.DwarfEarR = new ModelRenderer(this, 0, 0);
-        this.DwarfEarR.addBox(-1.0F, -5.0F, -0.5F, 4, 5, 1);
-        this.DwarfParent.addChild(DwarfEarL);
-        this.DwarfParent.addChild(DwarfEarR);
+        this.earL = new ModelRenderer(this, 10, 0);
+        this.earL.addBox(-3.0F, -7.0F, -0.5F, 4, 7, 1);
+        this.earR = new ModelRenderer(this, 0, 0);
+        this.earR.addBox(-1.0F, -7.0F, -0.5F, 4, 7, 1);
+
+        this.dwarfEarL = new ModelRenderer(this, 10, 0);
+        this.dwarfEarL.addBox(-3.0F, -5.0F, -0.5F, 4, 5, 1);
+        this.dwarfEarR = new ModelRenderer(this, 0, 0);
+        this.dwarfEarR.addBox(-1.0F, -5.0F, -0.5F, 4, 5, 1);
 
         this.rabbitTail = new ModelRenderer(this, 20, 0);
         this.rabbitTail.addBox(-1.5F, 2.0F, 8.0F, 3, 4, 2);
@@ -265,6 +256,24 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
 
         this.headLeft.addChild(this.eyeLeft);
         this.headRight.addChild(this.eyeRight);
+        this.headLeft.addChild(this.earHelper);
+
+        this.earHelper.addChild(this.earL);
+        this.earHelper.addChild(this.earR);
+        this.earHelper.addChild(this.lionEarL);
+        this.earHelper.addChild(this.lionEarR);
+        this.earHelper.addChild(this.lionEarL1);
+        this.earHelper.addChild(this.lionEarR1);
+        this.earHelper.addChild(this.dwarfEarL);
+        this.earHelper.addChild(this.dwarfEarR);
+
+        this.collar = new ModelRenderer(this, 36, 55);
+        this.collar.addBox(-3.5F, -1.0F, -0.5F, 7, 2, 7);
+        this.collar.setTextureOffset(35, 51);
+        this.collar.addBox(0.0F, -1.5F, 5.5F, 0,  3, 3);
+        this.collar.setTextureOffset(12, 37);
+        this.collar.addBox(-1.5F, -1.5F, 7.0F, 3, 3, 3, -0.5F);
+        this.headLeft.addChild(this.collar);
     }
 
     private void setRotationOffset(ModelRenderer renderer, float x, float y, float z) {
@@ -333,7 +342,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         if (!(rabbitModelData.birthTime == null) && !rabbitModelData.birthTime.equals("") && !rabbitModelData.birthTime.equals("0")) {
             int ageTime = (int)(rabbitModelData.clientGameTime - Long.parseLong(rabbitModelData.birthTime));
             if (ageTime <= 50000) {
-                age = ageTime/50000.0F;
+                age = ageTime < 0 ? 0 : ageTime/50000.0F;
             }
         }
 
@@ -342,27 +351,52 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         matrixStackIn.push();
         matrixStackIn.scale(finalRabbitSize, finalRabbitSize, finalRabbitSize);
         matrixStackIn.translate(0.0F, -1.45F + 1.45F/finalRabbitSize, 0.0F);
-            this.headLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            this.headRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            if (genes != null) {
+        if (rabbitModelData.blink >= 6) {
+            this.eyeLeft.showModel = true;
+            this.eyeRight.showModel = true;
+        } else {
+            this.eyeLeft.showModel = false;
+            this.eyeRight.showModel = false;
+        }
+
+        this.earL.showModel = false;
+        this.earR.showModel = false;
+        this.lionEarL1.showModel = false;
+        this.lionEarR1.showModel = false;
+        this.lionEarL.showModel = false;
+        this.lionEarR.showModel = false;
+        this.dwarfEarL.showModel = false;
+        this.dwarfEarR.showModel = false;
+
+        if (genes != null) {
+//            if (false) {
                 if (genes[24] == 2 && genes[25] == 2){
+                    this.lionEarL1.showModel = true;
+                    this.lionEarR1.showModel = true;
                     this.rabbitLionHeadL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     this.rabbitLionHeadR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    this.LionEarParent1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }else if (genes[24] == 2 || genes[25] == 2){
+                    this.lionEarL.showModel = true;
+                    this.lionEarR.showModel = true;
                     this.rabbitLionHeadL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     this.rabbitLionHeadR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    this.LionEarParent.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
+                this.earL.showModel = true;
+                this.earR.showModel = true;
+                this.headLeft.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.headRight.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
             if (rabbitModelData.dwarf){
+//            if (false){
                 this.rabbitHeadMuzzleDwarf.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 this.rabbitNoseDwarf.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                this.DwarfParent.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.dwarfEarL.showModel = true;
+                this.dwarfEarR.showModel = true;
             }else{
                 this.rabbitHeadMuzzle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 this.rabbitNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                this.EarParent.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.earL.showModel = true;
+                this.earR.showModel = true;
             }
 
             if (coatLength == 0){
@@ -399,14 +433,6 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             this.rabbitTail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         matrixStackIn.pop();
 //        }
-
-        if (rabbitModelData.blink >= 6) {
-            this.eyeLeft.showModel = true;
-            this.eyeRight.showModel = true;
-        } else {
-            this.eyeLeft.showModel = false;
-            this.eyeRight.showModel = false;
-        }
     }
 
     /**
@@ -437,23 +463,21 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
 
         this.headLeft.rotateAngleX = headPitch * 0.017453292F;
         this.headLeft.rotateAngleY = netHeadYaw * 0.017453292F;
-        ModelHelper.copyModelAngles(headLeft, headRight);
-        ModelHelper.copyModelAngles(headLeft, rabbitHeadMuzzle);
-        ModelHelper.copyModelAngles(headLeft, rabbitHeadMuzzleDwarf);
-        ModelHelper.copyModelAngles(headLeft, rabbitLionHeadL);
-        ModelHelper.copyModelAngles(headRight, rabbitLionHeadR);
-        ModelHelper.copyModelAngles(headLeft, rabbitLionHeadL1);
-        ModelHelper.copyModelAngles(headRight, rabbitLionHeadR1);
-        ModelHelper.copyModelAngles(headLeft, rabbitNose);
+        ModelHelper.copyModelPositioning(headLeft, headRight);
+        ModelHelper.copyModelPositioning(headLeft, rabbitHeadMuzzle);
+        ModelHelper.copyModelPositioning(headLeft, rabbitHeadMuzzleDwarf);
+        ModelHelper.copyModelPositioning(headLeft, rabbitLionHeadL);
+        ModelHelper.copyModelPositioning(headRight, rabbitLionHeadR);
+        ModelHelper.copyModelPositioning(headLeft, rabbitLionHeadL1);
+        ModelHelper.copyModelPositioning(headRight, rabbitLionHeadR1);
+        ModelHelper.copyModelPositioning(headLeft, rabbitNose);
 
-        ModelHelper.copyModelAngles(headLeft, EarParent);
-        ModelHelper.copyModelAngles(headLeft, LionEarParent);
-        ModelHelper.copyModelAngles(headLeft, LionEarParent1);
-        ModelHelper.copyModelAngles(headLeft, DwarfParent);
+        this.collar.rotateAngleX = -(this.headLeft.rotateAngleX/2.0F) - ((float)Math.PI/2.0F);
+        this.collar.rotateAngleY = -(this.headLeft.rotateAngleY/2.0F);
 
 //        this.rabbitNose.rotateAngleY = netHeadYaw * 0.017453292F;
-//        this.EarL.rotateAngleY = Math.abs(this.rabbitNose.rotateAngleY) * 1.0F;
-//        this.EarR.rotateAngleY = -Math.abs(this.rabbitNose.rotateAngleY) * 1.0F;
+//        this.earL.rotateAngleY = Math.abs(this.rabbitNose.rotateAngleY) * 1.0F;
+//        this.earR.rotateAngleY = -Math.abs(this.rabbitNose.rotateAngleY) * 1.0F;
 
         float lop = 0;
 
@@ -509,22 +533,22 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         earPointY = (earPointY*(1.0F-lop) + floppyEarPointY*(lop));
         earPointZ = (earPointZ*(1.0F-lop) + floppyEarPointZ*(lop));
 
-        this.EarL.setRotationPoint(-earPointX, earPointY, earPointZ);
-        this.EarR.setRotationPoint(earPointX, earPointY, earPointZ);
+        this.earL.setRotationPoint(-earPointX, earPointY, earPointZ);
+        this.earR.setRotationPoint(earPointX, earPointY, earPointZ);
 
-        this.EarL.rotateAngleX = (earRotateX*(1.0F-lop) + floppyEarRotateX*(-lop));
-        this.EarR.rotateAngleX = (earRotateX*(1.0F-lop) + floppyEarRotateX*(-lop));
-        this.EarL.rotateAngleY = (earRotateY*(1.0F-lop) + floppyEarRotateY*(lop));
-        this.EarR.rotateAngleY = (earRotateY*(1.0F-lop) + (floppyEarRotateY)*(-lop));
-        this.EarL.rotateAngleZ = (earRotateZ*(1.0F-lop) + floppyEarRotateZ*(lop));
-        this.EarR.rotateAngleZ = (-earRotateZ*(1.0F-lop) + floppyEarRotateZ*(lop));
+        this.earL.rotateAngleX = (earRotateX*(1.0F-lop) + floppyEarRotateX*(-lop));
+        this.earR.rotateAngleX = (earRotateX*(1.0F-lop) + floppyEarRotateX*(-lop));
+        this.earL.rotateAngleY = (earRotateY*(1.0F-lop) + floppyEarRotateY*(lop));
+        this.earR.rotateAngleY = (earRotateY*(1.0F-lop) + (floppyEarRotateY)*(-lop));
+        this.earL.rotateAngleZ = (earRotateZ*(1.0F-lop) + floppyEarRotateZ*(lop));
+        this.earR.rotateAngleZ = (-earRotateZ*(1.0F-lop) + floppyEarRotateZ*(lop));
 
-        ModelHelper.copyModelAngles(EarL, LionEarL);
-        ModelHelper.copyModelAngles(EarR, LionEarR);
-        ModelHelper.copyModelAngles(EarL, LionEarL1);
-        ModelHelper.copyModelAngles(EarR, LionEarR1);
-        ModelHelper.copyModelAngles(EarL, DwarfEarL);
-        ModelHelper.copyModelAngles(EarR, DwarfEarR);
+        ModelHelper.copyModelPositioning(earL, lionEarL);
+        ModelHelper.copyModelPositioning(earR, lionEarR);
+        ModelHelper.copyModelPositioning(earL, lionEarL1);
+        ModelHelper.copyModelPositioning(earR, lionEarR1);
+        ModelHelper.copyModelPositioning(earL, dwarfEarL);
+        ModelHelper.copyModelPositioning(earR, dwarfEarR);
 
         //changes some rotation angles
         this.rabbitButtRound.rotationPointZ = 2.5F;
@@ -546,10 +570,10 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             this.leftArm.rotateAngleX = -1.6F;
             this.rightArm.rotateAngleX = -1.6F;
             this.rabbitBody.rotateAngleX = 0.0F;
-            this.EarParent.rotateAngleX = this.headLeft.rotateAngleX + 0.4F;
-            this.LionEarParent.rotateAngleX = this.headLeft.rotateAngleX + 0.4F;
-            this.LionEarParent1.rotateAngleX = this.headLeft.rotateAngleX + 0.4F;
-            this.DwarfParent.rotateAngleX = this.headLeft.rotateAngleX + 0.4F;
+            this.earHelper.rotateAngleX = this.headLeft.rotateAngleX + 0.4F;
+//            this.LionEarParent.rotateAngleX = this.headLeft.rotateAngleX + 0.4F;
+//            this.LionEarParent1.rotateAngleX = this.headLeft.rotateAngleX + 0.4F;
+//            this.DwarfParent.rotateAngleX = this.headLeft.rotateAngleX + 0.4F;
             this.rabbitBodyAngora1.rotateAngleX = 0.0F;
             this.rabbitBodyAngora2.rotateAngleX = 0.0F;
             this.rabbitBodyAngora3.rotateAngleX = 0.0F;
@@ -574,10 +598,10 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             this.rabbitButtAngora3.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
             this.buttAngora4.rotateAngleX = (this.jumpRotation * +30.0F) * ((float)Math.PI / 180F);
             this.rabbitBody.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
-            this.EarParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.headLeft.rotateAngleX + 0.4F;
-            this.LionEarParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.headLeft.rotateAngleX + 0.4F;
-            this.LionEarParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.headLeft.rotateAngleX + 0.4F;
-            this.DwarfParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.headLeft.rotateAngleX + 0.4F;
+            this.earHelper.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.headLeft.rotateAngleX + 0.4F;
+//            this.LionEarParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.headLeft.rotateAngleX + 0.4F;
+//            this.LionEarParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.headLeft.rotateAngleX + 0.4F;
+//            this.DwarfParent.rotateAngleX = ((this.jumpRotation * +15.0F) * ((float)Math.PI / 180F)) + this.headLeft.rotateAngleX + 0.4F;
             this.rabbitBodyAngora1.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
             this.rabbitBodyAngora2.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
             this.rabbitBodyAngora3.rotateAngleX = (this.jumpRotation * +15.0F) * ((float)Math.PI / 180F);
@@ -586,11 +610,11 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         this.rabbitLeftThigh.rotateAngleX = (this.jumpRotation * 50.0F - 21.0F) * ((float)Math.PI / 180F);
         this.rabbitRightThigh.rotateAngleX = (this.jumpRotation * 50.0F - 21.0F) * ((float)Math.PI / 180F);
 
-        ModelHelper.copyModelAngles(rabbitButt, rabbitTail);
+        ModelHelper.copyModelPositioning(rabbitButt, rabbitTail);
 
         this.rabbitNose.rotationPointY = 14.2F + (float)entityIn.getNoseTwitch()/4.0F;
 
-        ModelHelper.copyModelAngles(rabbitNose, rabbitNoseDwarf);
+        ModelHelper.copyModelPositioning(rabbitNose, rabbitNoseDwarf);
     }
 
     private class RabbitModelData {
@@ -600,6 +624,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         boolean dwarf = false;
         boolean sleeping = false;
         int blink = 0;
+        boolean collar;
         int lastAccessed = 0;
         int dataReset = 0;
         long clientGameTime = 0;
@@ -631,17 +656,22 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
                 rabbitModelData.dataReset = 0;
             }
             rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
+            rabbitModelData.collar = hasCollar(enhancedRabbit.getEnhancedInventory());
             rabbitModelData.blink = enhancedRabbit.getBlink();
+            rabbitModelData.birthTime = enhancedRabbit.getBirthTime();
             rabbitModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedRabbit.world).getWorldInfo()).getGameTime());
 
             return rabbitModelData;
         } else {
             RabbitModelData rabbitModelData = new RabbitModelData();
-            rabbitModelData.rabbitGenes = enhancedRabbit.getSharedGenes();
+            if (enhancedRabbit.getSharedGenes()!=null) {
+                rabbitModelData.rabbitGenes = enhancedRabbit.getSharedGenes().getAutosomalGenes();
+            }
             rabbitModelData.coatlength = enhancedRabbit.getCoatLength();
             rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
             rabbitModelData.blink = enhancedRabbit.getBlink();
             rabbitModelData.birthTime = enhancedRabbit.getBirthTime();
+            rabbitModelData.collar = hasCollar(enhancedRabbit.getEnhancedInventory());
             rabbitModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedRabbit.world).getWorldInfo()).getGameTime());
 
             if(rabbitModelData.rabbitGenes != null) {
@@ -652,4 +682,12 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         }
     }
 
+    private boolean hasCollar(Inventory inventory) {
+        for (int i = 1; i < 6; i++) {
+            if (inventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

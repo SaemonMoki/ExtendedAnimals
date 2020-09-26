@@ -448,7 +448,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                     }
 
                     if (this.jumpPower > 0.0F && !this.isAnimalJumping() && this.onGround) {
-                        double d0 = this.getJumpStrength() * (double) this.jumpPower * (double) this.getJumpFactor();
+                        double d0 = this.getJumpHeight() * (double) this.jumpPower * (double) this.getJumpFactor();
                         double d1;
                         if (this.isPotionActive(Effects.JUMP_BOOST)) {
                             d1 = d0 + (double) ((float) (this.getActivePotionEffect(Effects.JUMP_BOOST).getAmplifier() + 1) * 0.1F);
@@ -536,6 +536,10 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                 super.travel(p_213352_1_);
             }
         }
+    }
+
+    protected float getJumpHeight() {
+        return 1F;
     }
 
     protected float getJumpFactorModifier() {

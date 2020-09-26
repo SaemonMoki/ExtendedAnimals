@@ -550,6 +550,32 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     @Override
+    protected float getJumpHeight() {
+        return 0.4F;
+    }
+
+    protected float getJumpFactorModifier() {
+        return 0.05F;
+    }
+
+    @Override
+    protected float getMovementFactorModifier() {
+        float speedMod = 1.0F;
+        float size = this.getAnimalSize();
+        if (size > 1.05F) {
+            speedMod = speedMod/size;
+        }
+
+        float chestMod = 0.0F;
+        ItemStack chestSlot = this.getEnhancedInventory().getStackInSlot(0);
+        if (chestSlot.getItem() == Items.CHEST) {
+            chestMod = (1.0F-((size-0.7F)*1.25F)) * 0.4F;
+        }
+
+        return 0.4F + (speedMod * 0.6F) - chestMod;
+    }
+
+    @Override
     protected boolean canDropLoot() { return true; }
 
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {

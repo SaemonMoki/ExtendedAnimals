@@ -669,7 +669,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         } else {
             babyScale = 1.0F;
         }
-        float genderModifier = cowModelData.isFemale? 1.80F : 2.0F;
+
+        float genderModifier = cowModelData.isFemale? 1.8F : 2.0F;
         float finalCowSize = (((genderModifier * age) + 1.0F) / 3.0F)*cowModelData.cowSize;
         bodyWidth = finalCowSize + (finalCowSize * bodyWidth * age);
         bodyLength = finalCowSize + (finalCowSize * bodyLength * age);
@@ -1687,6 +1688,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.leg3.setRotationPoint(-6.0F, 16.5F, 9.0F);
             this.leg4.setRotationPoint(3.0F, 16.5F, 9.0F);
 
+            this.chest1.setRotationPoint(-8.75F, 6.0F, 6.0F);
+            this.chest2.setRotationPoint(5.75F, 6.0F, 6.0F);
+
         } else {
             onGround = 2.75F;
             this.body.rotationPointY = 2.5F;
@@ -1698,6 +1702,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.leg2.setRotationPoint(3.0F, 13.5F, -10.0F);
             this.leg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
             this.leg4.setRotationPoint(3.0F, 13.5F, 9.0F);
+
+            this.chest1.setRotationPoint(-8.75F, 3.0F, 6.0F);
+            this.chest2.setRotationPoint(5.75F, 3.0F, 6.0F);
         }
 
         return onGround;

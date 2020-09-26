@@ -19,6 +19,7 @@ import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
@@ -311,10 +312,52 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
         return yPos*(Math.pow(size, 1.2F));
     }
 
+    @Override
+    protected float getJumpHeight() {
+        if (this.dwarf > 0 || this.getEnhancedInventory().getStackInSlot(0).getItem() == Items.CHEST) {
+            return 0.45F;
+        } else {
+            float jump = 0.48F;
+            float size = this.getAnimalSize();
+            if (size < 0.9F) {
+                return jump + (((size - 0.9F) / 0.2F) * 0.1F);
+            }
+            return jump;
+        }
+    }
+
+    @Override
+    protected float getJumpFactorModifier() {
+        return 0.25F;
+    }
+
+    @Override
+    protected float getMovementFactorModifier() {
+        float speedMod = 1.0F;
+        float size = this.getAnimalSize();
+        if (size > 1.05F) {
+            speedMod = 1.05F/size;
+        } else if (size < 1.0F) {
+            speedMod = size/1.0F;
+        }
+
+        if (this.dwarf > 0) {
+            speedMod = speedMod * 0.25F;
+        }
+
+        float chestMod = 0.0F;
+        ItemStack chestSlot = this.getEnhancedInventory().getStackInSlot(0);
+        if (chestSlot.getItem() == Items.CHEST) {
+            chestMod = (1.0F-((size-0.7F)*1.25F)) * 0.4F;
+        }
+
+        return 0.4F + (speedMod * 0.4F) - chestMod;
+    }
+
     protected void registerAttributes() {
         super.registerAttributes();
         this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(8.0D);
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
+        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.2D);
     }
 
     @Override

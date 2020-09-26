@@ -367,6 +367,37 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     @Override
+    protected float getJumpHeight() {
+        if (this.getEnhancedInventory().getStackInSlot(0).getItem() == Items.CHEST) {
+            return 0.48F;
+        } else {
+            float size = this.getAnimalSize();
+            return 0.48F + (((size - 0.8F) / 0.2F) * 0.1F);
+        }
+    }
+
+    protected float getJumpFactorModifier() {
+        return 0.1F;
+    }
+
+    @Override
+    protected float getMovementFactorModifier() {
+        float speedMod = 1.0F;
+        float size = this.getAnimalSize();
+        if (size < 1.0F) {
+            speedMod = speedMod * size * size;
+        }
+
+        float chestMod = 0.0F;
+        ItemStack chestSlot = this.getEnhancedInventory().getStackInSlot(0);
+        if (chestSlot.getItem() == Items.CHEST) {
+            chestMod = (1.0F-((size-0.7F)*1.25F)) * 0.4F;
+        }
+
+        return 0.4F + (speedMod * 0.4F) - chestMod;
+    }
+
+    @Override
     @Nullable
     protected ResourceLocation getLootTable() {
         return null;

@@ -624,7 +624,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         boolean dwarf = false;
         boolean sleeping = false;
         int blink = 0;
-        boolean collar;
+        boolean collar = false;
         int lastAccessed = 0;
         int dataReset = 0;
         long clientGameTime = 0;

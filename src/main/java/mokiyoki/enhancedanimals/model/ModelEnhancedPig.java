@@ -971,8 +971,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         ItemStack saddle;
         ItemStack bridle;
         ItemStack harness;
-        Boolean collar;
-        Boolean hasChest;
+        boolean collar = false;
+        boolean hasChest = false;
     }
 
     private PigModelData getPigModelData() {

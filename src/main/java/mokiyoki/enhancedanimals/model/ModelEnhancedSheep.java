@@ -1304,9 +1304,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         int dataReset = 0;
         long clientGameTime = 0;
         int horns = 0;
-        boolean collar;
+        boolean collar = false;
         ItemStack bridle;
-        boolean hasChest;
+        boolean hasChest = false;
         List<String> unrenderedModels = new ArrayList<>();
     }
 

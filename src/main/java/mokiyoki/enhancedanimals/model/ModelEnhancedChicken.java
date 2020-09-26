@@ -1217,7 +1217,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         long clientGameTime = 0;
         List<String> unrenderedModels = new ArrayList<>();
 //        int dataReset = 0;
-        boolean collar;
+        boolean collar = false;
     }
 
     private ChickenModelData getChickenModelData() {

@@ -1798,10 +1798,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         long clientGameTime = 0;
         List<String> unrenderedModels = new ArrayList<>();
         ItemStack saddle;
-        Boolean bridle;
-        Boolean harness;
-        Boolean collar;
-        Boolean hasChest;
+        boolean bridle = false;
+        boolean harness = false;
+        boolean collar = false;
+        boolean hasChest = false;
     }
 
     private CowModelData getCowModelData() {

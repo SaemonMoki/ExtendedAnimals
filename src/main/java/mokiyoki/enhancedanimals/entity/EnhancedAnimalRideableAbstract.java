@@ -470,9 +470,9 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                         this.jumpPower = 0.0F;
                     }
 
-                    this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
+                    this.jumpMovementFactor = this.getAIMoveSpeed() * getJumpFactorModifier();
                     if (this.canPassengerSteer()) {
-                        this.setAIMoveSpeed((float) this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue());
+                        this.setAIMoveSpeed((float) this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * getMovementFactorModifier());
                         super.travel(new Vec3d((double) f, p_213352_1_.y, (double) f1));
                     } else if (livingentity instanceof PlayerEntity) {
                         this.setMotion(Vec3d.ZERO);
@@ -501,13 +501,13 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                     this.renderYawOffset = this.rotationYaw;
                     this.rotationYawHead = this.rotationYaw;
                     this.stepHeight = 1.1F;
-                    this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
+                    this.jumpMovementFactor = this.getAIMoveSpeed() * getJumpFactorModifier();
                     if (this.boosting && this.boostTime++ > this.totalBoostTime) {
                         this.boosting = false;
                     }
 
                     if (this.canPassengerSteer()) {
-                        float f = (float)this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * 0.225F;
+                        float f = (float)this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * getMovementFactorModifier() * 0.225F;
                         if (this.boosting) {
                             f += f * 1.15F * MathHelper.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
                         }
@@ -538,7 +538,15 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         }
     }
 
-        public boolean boost() {
+    protected float getJumpFactorModifier() {
+        return 0.1F;
+    }
+
+    protected float getMovementFactorModifier() {
+        return 1F;
+    }
+
+    public boolean boost() {
         if (this.boosting) {
             return false;
         } else {

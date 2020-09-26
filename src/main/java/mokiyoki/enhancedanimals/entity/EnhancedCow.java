@@ -35,6 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -289,12 +290,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
         float size = this.getAnimalSize();
 
-        Genes sharedGenetics = this.getSharedGenes();
-        if (sharedGenetics!=null) {
-            int[] genes = sharedGenetics.getAutosomalGenes();
-            if (genes[26] == 1 || genes[27] == 1) {
-                yPos = yPos - 0.2F;
-            }
+        if (this.dwarf == -1.0F) {
+            Genes sharedGenetics = new Genes(this.dataManager.get(SHARED_GENES));
+            this.dwarf = (sharedGenetics.getAutosomalGene(26) == 1 || sharedGenetics.getAutosomalGene(27) == 1) ? 0.2F : 0.0F;
+        }
+
+        if (this.dwarf>0) {
+            yPos = yPos - this.dwarf;
         }
 
         if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
@@ -1271,12 +1273,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
 
-
         setMooshroomUUID(compound.getString("MooshroomID"));
 
         this.motherUUID = compound.getString("MotherUUID");
 
-//        this.setSaddled(compound.getBoolean("Saddle"));
+        ListNBT geneList = compound.getList("Genes", 10);
+
+        this.dwarf = (geneList.getCompound(2+26).getInt("Agene") == 1 || geneList.getCompound(2+27).getInt("Agene") == 1) ? 0.2F : 0.0F;
 
         configureAI();
     }

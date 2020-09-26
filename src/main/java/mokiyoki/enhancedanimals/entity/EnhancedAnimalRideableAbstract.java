@@ -31,6 +31,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.MilkBucketItem;
 import net.minecraft.item.SaddleItem;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -87,6 +88,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     private int totalBoostTime;
     private int maxRideTime;
     private int rideTime;
+    protected float dwarf = -1.0F;
 
     protected int temper;
 

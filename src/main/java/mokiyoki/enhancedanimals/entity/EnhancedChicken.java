@@ -310,7 +310,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     }
 
     protected String getSpecies() {
-        return I18n.format("entity.eanimod.enhanced_chicken");
+        return "entity.eanimod.enhanced_chicken";
     }
 
     protected int getAdultAge() { return 60000;}

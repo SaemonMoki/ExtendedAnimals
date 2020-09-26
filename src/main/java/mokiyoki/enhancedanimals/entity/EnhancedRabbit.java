@@ -306,7 +306,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 //        this.dataManager.register(NOSE_WIGGLING, false);
     }
 
-    protected String getSpecies() { return I18n.format("entity.eanimod.enhanced_rabbit"); }
+    protected String getSpecies() { return "entity.eanimod.enhanced_rabbit"; }
 
     protected int getAdultAge() { return 48000;}
 

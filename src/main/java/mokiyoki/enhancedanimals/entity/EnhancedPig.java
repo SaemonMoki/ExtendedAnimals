@@ -259,7 +259,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     protected String getSpecies() {
-        return I18n.format("entity.eanimod.enhanced_pig");
+        return "entity.eanimod.enhanced_pig";
     }
 
     protected int getAdultAge() { return 60000;}

@@ -81,7 +81,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     @Override
     protected String getSpecies() {
-        return I18n.format("entity.eanimod.enhanced_mooshroom");
+        return "entity.eanimod.enhanced_mooshroom";
     }
 
     @Override

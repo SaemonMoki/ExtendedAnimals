@@ -218,7 +218,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     protected String getSpecies() {
-        return I18n.format("entity.eanimod.enhanced_sheep");
+        return "entity.eanimod.enhanced_sheep";
     }
 
     protected int getAdultAge() { return 72000;}

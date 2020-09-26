@@ -56,7 +56,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
 
     @Override
     protected String getSpecies() {
-        return I18n.format("entity.eanimod.enhanced_moobloom");
+        return "entity.eanimod.enhanced_moobloom";
     }
 
     @Override

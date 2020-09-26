@@ -188,7 +188,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     protected String getSpecies() {
-        return I18n.format("entity.eanimod.enhanced_llama");
+        return "entity.eanimod.enhanced_llama";
     }
 
     protected int getAdultAge() { return 120000;}

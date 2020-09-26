@@ -206,7 +206,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     protected String getSpecies() {
-        return I18n.format("entity.eanimod.enhanced_cow");
+        return "entity.eanimod.enhanced_cow";
     }
 
     protected int getAdultAge() { return 84000;}

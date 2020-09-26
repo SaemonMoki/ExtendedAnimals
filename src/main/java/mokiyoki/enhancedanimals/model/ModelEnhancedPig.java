@@ -481,7 +481,9 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         matrixStackIn.scale(finalPigSize, finalPigSize, finalPigSize);
         matrixStackIn.translate(0.0F, -1.5F + 1.5F/finalPigSize, 0.0F);
 
-        this.wattles.showModel = gene[32] == 1 || gene[33] == 1;
+        if (gene != null) {
+            this.wattles.showModel = gene[32] == 1 || gene[33] == 1;
+        }
 
         if (pigModelData.blink >= 6) {
             this.eyeLeft.showModel = true;

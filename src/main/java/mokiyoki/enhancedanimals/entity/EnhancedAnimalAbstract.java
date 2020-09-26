@@ -773,10 +773,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                 }
             } else if (entityState.equals(EntityState.CHILD_STAGE_THREE.toString())) {
                 setEntityStatus(EntityState.ADULT.toString());
+                this.setGrowingAge(0);
                 //TODO remove the child follow mother ai
             }
         } else if (entityState.equals(EntityState.CHILD_STAGE_THREE.toString())) {
             setEntityStatus(EntityState.ADULT.toString());
+            this.setGrowingAge(0);
             //TODO remove the child follow mother ai
         }
     }
@@ -1632,6 +1634,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             int newBirthTime = Integer.valueOf(getBirthTime()) - ((int)(getAdultAge()*0.1));
             this.setBirthTime(String.valueOf(newBirthTime));
             super.ageUp(growthSeconds, updateForcedAge);
+            if (!this.isChild() && getGrowingAge() <= -1) {
+                this.setGrowingAge(0);
+            }
         }
     }
 

@@ -45,6 +45,7 @@ import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -53,6 +54,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
 
@@ -349,13 +351,45 @@ public class EventRegistry {
                     addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_MOOSHROOM, 8, 4, 4));
                 }
             }
-            if (!addSpawns.isEmpty()) {
-                biome.getMobSpawnInfo().getSpawners(EntityClassification.CREATURE).addAll(addSpawns);
+
+            editSpawns(biome, addSpawns, removeSpawns);
+        }
+    }
+
+    private static void editSpawns(Biome biome, ArrayList<MobSpawnInfo.Spawners> addSpawns, ArrayList<MobSpawnInfo.Spawners> removeSpawns) {
+        MobSpawnInfo mobSpawnInfo = biome.getMobSpawnInfo();
+        List<MobSpawnInfo.Spawners> originalSpawns = mobSpawnInfo.getSpawners(EntityClassification.CREATURE);
+
+        List<MobSpawnInfo.Spawners> revisedSpawns = new ArrayList(originalSpawns);
+
+        if (!addSpawns.isEmpty()) {
+            revisedSpawns.addAll(addSpawns);
+        }
+        if (!removeSpawns.isEmpty()) {
+            revisedSpawns.removeAll(removeSpawns);
+        }
+
+        MobSpawnInfo.Builder builder = new MobSpawnInfo.Builder();
+        for (EntityClassification classification : EntityClassification.values()) {
+            List<MobSpawnInfo.Spawners> spawners;
+            if (classification == EntityClassification.CREATURE) {
+                spawners = revisedSpawns;
             }
-            if (!removeSpawns.isEmpty()) {
-                biome.getMobSpawnInfo().getSpawners(EntityClassification.CREATURE).removeAll(removeSpawns);
+            else {
+                spawners = mobSpawnInfo.getSpawners(classification);
+            }
+            for (MobSpawnInfo.Spawners mobSpawn : spawners) {
+                builder.withSpawner(classification, mobSpawn);
             }
         }
+        builder.withCreatureSpawnProbability(mobSpawnInfo.getCreatureSpawnProbability());
+
+        if (mobSpawnInfo.isValidSpawnBiomeForPlayer()) {
+            builder.isValidSpawnBiomeForPlayer();
+        }
+        MobSpawnInfo finalSpawnInfo = builder.copy();
+        // Fuck this. FUCK IT SOOOO HARD
+        ObfuscationReflectionHelper.setPrivateValue(Biome.class, biome, finalSpawnInfo, "field_242425_l");
     }
 
 }

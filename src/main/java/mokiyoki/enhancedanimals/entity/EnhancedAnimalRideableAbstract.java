@@ -102,8 +102,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         this.stepHeight = 1.1F;
     }
 
-    protected void registerAnimalAttributes() {
-        super.registerAttributes();
+    protected static void registerAnimalAttributes() {
         MobEntity.func_233666_p_().createMutableAttribute(JUMP_STRENGTH);
     }
 

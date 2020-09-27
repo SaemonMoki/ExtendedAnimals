@@ -23,8 +23,10 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
@@ -244,10 +246,11 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return this.getHealth() <= 0.0F;
     }
 
-    protected void registerAttributes() {
-        super.registerAttributes();
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.175F);
+    public static AttributeModifierMap.MutableAttribute prepareAttributes() {
+        return MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 4.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.175D)
+                .createMutableAttribute(JUMP_STRENGTH);
     }
 
     @Override

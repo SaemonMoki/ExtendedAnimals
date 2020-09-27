@@ -319,20 +319,20 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         return 0.4F;
     }
 
-    protected void registerAnimalAttributes() {
-        super.registerAttributes();
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(10.0D);
-        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-        char[] uuidArry = getCachedUniqueIdString().toCharArray();
-        double tusks = 2.0D;
-        if (!isChild()) {
-            if ((Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8)) {
-                //tusks if "male"
-                tusks = 3.0D;
-            }
-        }
-        MobEntity.func_233666_p_().createMutableAttribute(Attributes.ATTACK_DAMAGE);
-        this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(tusks);
+    public static AttributeModifierMap.MutableAttribute prepareAttributes() {
+//        char[] uuidArry = getCachedUniqueIdString().toCharArray();
+//        double tusks = 2.0D;
+//        if (!isChild()) {
+//            if ((Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8)) {
+//                //tusks if "male"
+//                tusks = 3.0D;
+//            }
+//        }
+        return MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 10.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D)
+                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.0D)
+                .createMutableAttribute(JUMP_STRENGTH);
     }
 
 //    public static AttributeModifierMap.MutableAttribute func_234215_eI_() {

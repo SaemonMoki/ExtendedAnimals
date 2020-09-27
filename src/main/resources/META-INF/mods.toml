@@ -1,5 +1,7 @@
 modLoader="javafml" #mandatory
-loaderVersion="[25,)" #mandatory (24 is current forge version)
+loaderVersion="[34,)" #mandatory (24 is current forge version)
+
+license="All rights reserved"
 
 [[mods]] #mandatory
 modId="eanimod" #mandatory

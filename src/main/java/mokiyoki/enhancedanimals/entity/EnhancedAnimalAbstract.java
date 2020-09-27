@@ -604,24 +604,24 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         if (this.world.isRemote) {
             runLivingTickClient();
 
-            if (this.serializeNBT().contains("OpenEnhancedAnimalRidenGUI")) {
-                if (this.isBeingRidden()) {
-                    if (this.getRidingEntity() instanceof PlayerEntity) {
-                        this.openGUI((PlayerEntity)this.getRidingEntity());
-                        this.removeTag("OpenEnhancedAnimalRidenGUI");
-                    }
-                }
-            }
+//            if (this.serializeNBT().contains("OpenEnhancedAnimalRidenGUI")) {
+//                if (this.isBeingRidden()) {
+//                    if (this.getRidingEntity() instanceof PlayerEntity) {
+//                        this.openGUI((PlayerEntity)this.getRidingEntity());
+//                        this.removeTag("OpenEnhancedAnimalRidenGUI");
+//                    }
+//                }
+//            }
         } else {
             //run server-sided tick stuff
-            if (this.serializeNBT().contains("OpenEnhancedAnimalRidenGUI")) {
-                if (this.isBeingRidden()) {
-                    if (this.getRidingEntity() instanceof PlayerEntity) {
-                        this.openGUI((PlayerEntity)this.getRidingEntity());
-                        this.removeTag("OpenEnhancedAnimalRidenGUI");
-                    }
-                }
-            }
+//            if (this.serializeNBT().contains("OpenEnhancedAnimalRidenGUI")) {
+//                if (this.isBeingRidden()) {
+//                    if (this.getRidingEntity() instanceof PlayerEntity) {
+//                        this.openGUI((PlayerEntity)this.getRidingEntity());
+//                        this.removeTag("OpenEnhancedAnimalRidenGUI");
+//                    }
+//                }
+//            }
 
             if (sleepingConditional()) {
                 setSleeping(true);

@@ -1,7 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
-import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.ai.general.mooshroom.GrazingGoalMooshroom;
 import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
@@ -30,6 +29,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.Effect;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
@@ -64,7 +64,8 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         this.mateMushroomType = Type.RED;
     }
 
-    public void onStruckByLightning(LightningBoltEntity lightningBolt) {
+    @Override
+    public void func_241841_a(ServerWorld serverWorld, LightningBoltEntity lightningBolt) {
         UUID uuid = lightningBolt.getUniqueID();
         if (!uuid.equals(this.lightningUUID)) {
             this.setMooshroomType(this.getMooshroomType() == EnhancedMooshroom.Type.RED ? EnhancedMooshroom.Type.BROWN : EnhancedMooshroom.Type.RED);
@@ -108,7 +109,8 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         this.world.addEntity(enhancedmooshroom);
     }
 
-    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+    @Override
+    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemstack = entityPlayer.getHeldItem(hand);
         if (itemstack.getItem() == Items.BOWL && this.getGrowingAge() >= 0 && !entityPlayer.abilities.isCreativeMode && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int milk = getMilkAmount();
@@ -143,7 +145,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
                 }
                 this.playSound(soundevent, 1.0F, 1.0F);
             }
-                return true;
+                return ActionResultType.SUCCESS;
 
         } else {
             if (this.getMooshroomType() == EnhancedMooshroom.Type.BROWN && itemstack.getItem().isIn(ItemTags.SMALL_FLOWERS)) {
@@ -167,7 +169,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
                 }
             }
 
-            return super.processInteract(entityPlayer, hand);
+            return super.func_230254_b_(entityPlayer, hand);
         }
     }
 

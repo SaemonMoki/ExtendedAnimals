@@ -11,17 +11,24 @@ import mokiyoki.enhancedanimals.capability.hay.IHayCapability;
 import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
-import mokiyoki.enhancedanimals.config.EanimodConfig;
 import mokiyoki.enhancedanimals.config.EanimodConfigHelper;
+import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.entity.EnhancedCow;
+import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
+import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
+import mokiyoki.enhancedanimals.entity.EnhancedPig;
+import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
+import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.proxy.ClientProxy;
 import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.proxy.ServerProxy;
-import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
+import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -44,6 +51,14 @@ import org.apache.logging.log4j.Logger;
 import java.nio.file.Path;
 
 import static mokiyoki.enhancedanimals.util.Reference.MODID;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOBLOOM;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOSHROOM;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
 
 /**
  * Created by moki on 24/08/2018.
@@ -112,6 +127,15 @@ public class EnhancedAnimals {
 
         int messageNumber = 0;
         channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumer(EAEquipmentPacket::processPacket).add();
+
+        GlobalEntityTypeAttributes.put(ENHANCED_CHICKEN, EnhancedChicken.prepareAttributes().create());
+        GlobalEntityTypeAttributes.put(ENHANCED_RABBIT, EnhancedRabbit.prepareAttributes().create());
+        GlobalEntityTypeAttributes.put(ENHANCED_SHEEP, EnhancedSheep.prepareAttributes().create());
+        GlobalEntityTypeAttributes.put(ENHANCED_LLAMA, EnhancedLlama.prepareAttributes().create());
+        GlobalEntityTypeAttributes.put(ENHANCED_COW, EnhancedCow.prepareAttributes().create());
+        GlobalEntityTypeAttributes.put(ENHANCED_MOOSHROOM, EnhancedMooshroom.prepareAttributes().create());
+        GlobalEntityTypeAttributes.put(ENHANCED_MOOBLOOM, EnhancedMoobloom.prepareAttributes().create());
+        GlobalEntityTypeAttributes.put(ENHANCED_PIG, EnhancedPig.prepareAttributes().create());
 
 //        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
 //        LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());

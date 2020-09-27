@@ -23,7 +23,7 @@ public abstract class AbstractGeneticsInitialiser {
     protected Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed, List<Breed> breeds) {
         Biome biome = world.getBiome(pos);
 
-        Genes localWildType = generateLocalWildGenetics(biome, world.getWorldInfo().getGenerator() == WorldType.FLAT || biome == ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.getLocation()));
+        Genes localWildType = generateLocalWildGenetics(biome, /*world.getWorldInfo().getGenerator() == WorldType.FLAT ||*/ biome == ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.getLocation()));
 
         if (generateBreed) {
             int areaSize = 1; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1
@@ -43,7 +43,7 @@ public abstract class AbstractGeneticsInitialiser {
         }
         Biome biome = world.getBiome(pos);
         breedAsString = breedAsString.toLowerCase();
-        Genes localWildType = generateLocalWildGenetics(biome, world.getWorldInfo().getGenerator() == WorldType.FLAT);
+        Genes localWildType = generateLocalWildGenetics(biome, false/*world.getWorldInfo().getGenerator() == WorldType.FLAT*/);
 
         if (hasBreed(breeds, breedAsString)) {
             Breed breed = getBreedFromString(breeds, breedAsString);

@@ -17,7 +17,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
@@ -264,25 +263,25 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 if (hunger <= 24000) {
                     if (--this.timeUntilNextMilk <= 0) {
                         int milk = getMilkAmount();
-                        if (milk < (6*maxBagSize)) {
+                        if (milk < (6*this.maxBagSize)) {
                             milk++;
                             setMilkAmount(milk);
                             this.timeUntilNextMilk = this.rand.nextInt(this.rand.nextInt(8000) + 4000);
 
-                            float milkBagSize = milk / (6*maxBagSize);
+                            float milkBagSize = milk / (6*this.maxBagSize);
 
-                            this.setBagSize((milkBagSize*(maxBagSize/3.0F))+(maxBagSize*2.0F/3.0F));
+                            this.setBagSize((milkBagSize*(this.maxBagSize/3.0F))+(this.maxBagSize*2.0F/3.0F));
                         }
                     }
                 }
 
-                if (timeUntilNextMilk == 0) {
-                    lactationTimer++;
-                } else if (getMilkAmount() <= (6*maxBagSize) && lactationTimer >= -36000) {
-                    lactationTimer--;
+                if (this.timeUntilNextMilk == 0) {
+                    this.lactationTimer++;
+                } else if (getMilkAmount() <= (6*this.maxBagSize) && this.lactationTimer >= -36000) {
+                    this.lactationTimer--;
                 }
 
-                if (lactationTimer >= 0) {
+                if (this.lactationTimer >= 0) {
                     setEntityStatus(EntityState.ADULT.toString());
                 }
             }
@@ -358,7 +357,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedsheep, inWorld, babyGenes, -72000);
         enhancedsheep.setMaxCoatLength();
         enhancedsheep.currentCoatLength = enhancedsheep.maxCoatLength;
@@ -1248,12 +1247,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         this.setFleeceDyeColour(DyeColor.byId(compound.getByte("Colour")));
 
-        this.lactationTimer = compound.getInt("Lactation");
+        float milkBagSize = this.getMilkAmount() / (6*this.maxBagSize);
+        this.setBagSize((milkBagSize*(this.maxBagSize/3.0F))+(this.maxBagSize*2.0F/3.0F));
 
-        setMilkAmount(compound.getInt("milk"));
-        //resets the max so we don't have to store it
-        setMaxBagSize();
-//        this.setBagSize((compound.getInt("milk")*(maxBagSize/3.0F))+(maxBagSize*2.0F/3.0F));
         setMaxCoatLength();
 //        configureAI();
         if (!compound.getString("breed").isEmpty()) {

@@ -4,7 +4,6 @@ import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
@@ -68,7 +67,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     @Override
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMoobloom enhancedmoobloom = ENHANCED_MOOBLOOM.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedmoobloom, inWorld, babyGenes, -84000);
         enhancedmoobloom.setMotherUUID(this.getUniqueID().toString());
         enhancedmoobloom.configureAI();

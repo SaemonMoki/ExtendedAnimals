@@ -3,9 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
-import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitPanicGoal;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitRaidFarmGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.RabbitGeneticsInitialiser;
@@ -15,7 +13,6 @@ import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
@@ -547,7 +544,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedrabbit, inWorld, babyGenes, -48000);
         enhancedrabbit.setMaxCoatLength();
         enhancedrabbit.currentCoatLength = enhancedrabbit.maxCoatLength;

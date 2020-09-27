@@ -15,7 +15,6 @@ import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
@@ -356,7 +355,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     protected  void incrementHunger() {
-        if(sleeping) {
+        if(this.sleeping) {
             hunger = hunger + (1.0F*getHungerModifier());
         } else {
             hunger = hunger + (2.0F*getHungerModifier());
@@ -401,7 +400,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedPig enhancedpig = ENHANCED_PIG.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedpig, inWorld, babyGenes, -60000);
 
         this.world.addEntity(enhancedpig);

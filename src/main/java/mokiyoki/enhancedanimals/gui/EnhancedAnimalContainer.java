@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.gui;
 
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;

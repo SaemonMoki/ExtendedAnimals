@@ -270,8 +270,8 @@ public class EggCartonTileEntity extends LockableLootTileEntity implements ISide
         return new TranslationTextComponent("Egg Carton");
     }
 
-    public void read(CompoundNBT compound) {
-        super.read(compound);
+    public void read(BlockState state, CompoundNBT compound) {
+        super.read(state, compound);
         this.loadFromNbt(compound);
     }
 

@@ -18,6 +18,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static net.minecraft.client.renderer.texture.NativeImage.getAlpha;
+import static net.minecraft.client.renderer.texture.NativeImage.getCombined;
+import static net.minecraft.client.renderer.texture.NativeImage.getGreen;
+import static net.minecraft.client.renderer.texture.NativeImage.getBlue;
+import static net.minecraft.client.renderer.texture.NativeImage.getRed;
+
 /**
  * Created by saemon on 8/09/2018.
  */
@@ -255,7 +261,7 @@ public class EnhancedLayeredTexture extends Texture {
 
                             for(int i = 0; i < nativeimage1.getHeight(); ++i) {
                                 for(int j = 0; j < nativeimage1.getWidth(); ++j) {
-                                    nativeimage.blendPixel(j, i, nativeimage1.getPixelRGBA(j, i));
+                                    blendPixel(nativeimage, j, i, nativeimage1.getPixelRGBA(j, i));
                                 }
                             }
                         }
@@ -320,7 +326,7 @@ public class EnhancedLayeredTexture extends Texture {
                             }
                             for (int i = 0; i < firstGroupImage.getHeight(); ++i) {
                                 for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
-                                    baseImage.blendPixel(j, i, firstGroupImage.getPixelRGBA(j, i));
+                                    blendPixel(baseImage, j, i, firstGroupImage.getPixelRGBA(j, i));
                                 }
                             }
 
@@ -368,7 +374,7 @@ public class EnhancedLayeredTexture extends Texture {
 
                                 for (int i = 0; i < nativeimage1.getHeight(); ++i) {
                                     for (int j = 0; j < nativeimage1.getWidth(); ++j) {
-                                        firstGroupImage.blendPixel(j, i, nativeimage1.getPixelRGBA(j, i));
+                                        blendPixel(firstGroupImage, j, i, nativeimage1.getPixelRGBA(j, i));
                                     }
                                 }
                             }
@@ -404,7 +410,7 @@ public class EnhancedLayeredTexture extends Texture {
                     ) {
                         for(int i = 0; i < nativeimage1.getHeight(); ++i) {
                             for(int j = 0; j < nativeimage1.getWidth(); ++j) {
-                                nativeimage.blendPixel(j, i, nativeimage1.getPixelRGBA(j, i));
+                                blendPixel(nativeimage, j, i, nativeimage1.getPixelRGBA(j, i));
                             }
                         }
                     }
@@ -456,6 +462,44 @@ public class EnhancedLayeredTexture extends Texture {
 
             nativeImage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
         }
+    }
+
+    public void blendPixel(NativeImage baseImage, int xIn, int yIn, int colIn) {
+        int i = baseImage.getPixelRGBA(xIn, yIn);
+        float f = (float)getAlpha(colIn) / 255.0F;
+        float f1 = (float)getBlue(colIn) / 255.0F;
+        float f2 = (float)getGreen(colIn) / 255.0F;
+        float f3 = (float)getRed(colIn) / 255.0F;
+        float f4 = (float)getAlpha(i) / 255.0F;
+        float f5 = (float)getBlue(i) / 255.0F;
+        float f6 = (float)getGreen(i) / 255.0F;
+        float f7 = (float)getRed(i) / 255.0F;
+        float f8 = 1.0F - f;
+        float f9 = f * f + f4 * f8;
+        float f10 = f1 * f + f5 * f8;
+        float f11 = f2 * f + f6 * f8;
+        float f12 = f3 * f + f7 * f8;
+        if (f9 > 1.0F) {
+            f9 = 1.0F;
+        }
+
+        if (f10 > 1.0F) {
+            f10 = 1.0F;
+        }
+
+        if (f11 > 1.0F) {
+            f11 = 1.0F;
+        }
+
+        if (f12 > 1.0F) {
+            f12 = 1.0F;
+        }
+
+        int j = (int)(f9 * 255.0F);
+        int k = (int)(f10 * 255.0F);
+        int l = (int)(f11 * 255.0F);
+        int i1 = (int)(f12 * 255.0F);
+        baseImage.setPixelRGBA(xIn, yIn, getCombined(j, k, l, i1));
     }
 
 }

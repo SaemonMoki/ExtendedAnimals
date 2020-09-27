@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.ai.general;
 
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.LookAtGoal;
@@ -12,7 +12,7 @@ public class EnhancedLookAtGoal extends LookAtGoal {
     }
 
     public boolean shouldExecute() {
-        if(((EnhancedAnimal)entity).isAnimalSleeping()) {
+        if(((EnhancedAnimalAbstract)entity).isAnimalSleeping()) {
             return false;
         }
 

@@ -30,7 +30,7 @@ public class GrazingGoalPig extends GrazingGoal {
 
     @Override
     protected void eatBlocks() {
-        BlockPos blockpos = new BlockPos(this.eanimal);
+        BlockPos blockpos = new BlockPos(this.eanimal.getPosition());
         BlockState blockType = this.eanimal.world.getBlockState(blockpos);
         if (IS_CARROT.test(this.eanimal.world.getBlockState(blockpos)) || IS_BEETROOT.test(blockType) || IS_POTATO.test(blockType) || IS_WHEAT.test(blockType) || IS_MELON.test(blockType) || IS_PUMPKIN.test(blockType) || IS_HONEY.test(blockType)) {
             if (IS_MELON.test(blockType) || IS_PUMPKIN.test(blockType) || IS_HONEY.test(blockType)) {

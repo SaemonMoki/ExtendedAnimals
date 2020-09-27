@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.util;
 
-import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
@@ -16,7 +15,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static net.minecraft.entity.merchant.villager.VillagerProfession.FARMER;
 import static net.minecraft.entity.merchant.villager.VillagerProfession.LEATHERWORKER;
 import static net.minecraft.entity.merchant.villager.VillagerProfession.SHEPHERD;
 

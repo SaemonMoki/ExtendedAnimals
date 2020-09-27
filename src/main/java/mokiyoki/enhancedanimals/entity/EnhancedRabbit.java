@@ -57,7 +57,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
 
-public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecraftforge.common.IShearable, EnhancedAnimal {
+public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecraftforge.common.IForgeShearable {
 
     //avalible UUID spaces : [ S X X X X X 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
@@ -383,7 +383,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     public void handleStatusUpdate(byte id) {
         super.handleStatusUpdate(id);
         if (id == 1) {
-            this.createRunningParticles();
+            this.func_233569_aL_();
             this.jumpDuration = 10;
             this.jumpTicks = 0;
         }
@@ -796,7 +796,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     @Override
-    public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, BlockPos pos) {
+    public boolean isShearable(ItemStack item, World world, BlockPos pos) {
         if (!this.world.isRemote && currentCoatLength >=1) {
             return true;
         }
@@ -804,7 +804,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     @Override
-    public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IWorld world, BlockPos pos, int fortune) {
+    public java.util.List<ItemStack> onSheared(PlayerEntity player, ItemStack item, World world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         if (!this.world.isRemote) {
             if (currentCoatLength == 1) {

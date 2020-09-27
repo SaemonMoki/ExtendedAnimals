@@ -10,10 +10,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.tileentity.DualBrightnessCallback;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -84,9 +86,8 @@ public class EggCartonTileEntityRenderer<T extends TileEntity & IChestLid> exten
         f1 = 1.0F - f1 * f1 * f1;
         int i = iCallbackWrapper.apply(new DualBrightnessCallback<>()).applyAsInt(combinedLightIn);
 
-        Material material = new Material(Atlases.CHEST_ATLAS, EGG_CARTON_TEXTURE);
-        IVertexBuilder ivertexbuilder = material.getBuffer(bufferIn, RenderType::getEntityCutout);
-
+        RenderMaterial rendermaterial = new RenderMaterial(Atlases.CHEST_ATLAS, EGG_CARTON_TEXTURE);
+        IVertexBuilder ivertexbuilder = rendermaterial.getBuffer(bufferIn, RenderType::getEntityCutoutNoCull);
         this.handleModelRender(matrixStackIn, ivertexbuilder, f1, i, combinedOverlayIn);
 
         matrixStackIn.pop();

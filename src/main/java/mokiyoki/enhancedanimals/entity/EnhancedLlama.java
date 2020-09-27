@@ -43,6 +43,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -63,7 +64,7 @@ import java.util.*;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 
-public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRangedAttackMob, net.minecraftforge.common.IShearable, EnhancedAnimal {
+public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRangedAttackMob, net.minecraftforge.common.IForgeShearable {
 
     //avalible UUID spaces : [ S X X 3 X 5 X 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
@@ -250,17 +251,17 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     @Override
-    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
         if (this.isBeingRidden()) {
-            return super.processInteract(entityPlayer, hand);
+            return super.func_230254_b_(entityPlayer, hand);
         }
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof ShearsItem) {
-                List<ItemStack> woolToDrop = onSheared(itemStack, null, null, 0);
+                List<ItemStack> woolToDrop = onSheared(entityPlayer, itemStack, null, null, 0);
                 java.util.Random rand = new java.util.Random();
                 woolToDrop.forEach(d -> {
                     net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
@@ -268,7 +269,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
                 });
             }
         }
-        return super.processInteract(entityPlayer, hand);
+        return super.func_230254_b_(entityPlayer, hand);
     }
 
     public void livingTick() {
@@ -428,7 +429,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     @Override
-    public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, BlockPos pos) {
+    public boolean isShearable(ItemStack item, World world, BlockPos pos) {
         if (!this.world.isRemote && currentCoatLength >=0 && !isChild()) {
             return true;
         }
@@ -436,7 +437,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     @Override
-    public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IWorld world, BlockPos pos, int fortune) {
+    public java.util.List<ItemStack> onSheared(PlayerEntity player, ItemStack item, World world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         int[] genes = this.genetics.getAutosomalGenes();
         if (!this.world.isRemote && !isChild()) {

@@ -41,7 +41,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         int wildType = 2;
         if (biome.getCategory().equals(Biome.Category.PLAINS)) {
             wildType = 3;
-        } else if (biome.getDefaultTemperature() >= 0.9F){
+        } else if (biome.getTemperature() >= 0.9F){
             wildType = 1;
         }
 

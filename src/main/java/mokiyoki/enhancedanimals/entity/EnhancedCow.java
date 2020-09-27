@@ -34,6 +34,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
@@ -52,7 +53,7 @@ import java.util.Map;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 
-public class EnhancedCow extends EnhancedAnimalRideableAbstract implements EnhancedAnimal {
+public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     //avalible UUID spaces : [ S X X X X 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
@@ -1162,13 +1163,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     @Override
-    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
         if (item == Items.NAME_TAG) {
             itemStack.interactWithEntity(entityPlayer, this, hand);
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         /**
@@ -1248,7 +1249,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
             switch (resultAmount) {
                 case 0:
                     entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
-                    return true;
+                    return ActionResultType.SUCCESS;
                 case 1:
                     if (isBottle) {
                         resultItem = new ItemStack(ModItems.HALF_MILK_BOTTLE);
@@ -1285,10 +1286,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
                 entityPlayer.dropItem(resultItem, false);
             }
 
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
-        return super.processInteract(entityPlayer, hand);
+        return super.func_230254_b_(entityPlayer, hand);
     }
 
     protected void dropInventory() {

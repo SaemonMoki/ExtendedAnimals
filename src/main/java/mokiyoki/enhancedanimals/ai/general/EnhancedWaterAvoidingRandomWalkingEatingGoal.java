@@ -2,7 +2,7 @@ package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.blocks.UnboundHayBlock;
 import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -81,7 +81,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
     @Override
     public boolean shouldExecute() {
-        if (this.creature.isBeingRidden() || ((EnhancedAnimal)this.creature).isAnimalSleeping()) {
+        if (this.creature.isBeingRidden() || ((EnhancedAnimalAbstract)this.creature).isAnimalSleeping()) {
             return false;
         } else {
 
@@ -101,11 +101,11 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
             }
 //            if (!this.mustUpdate) {
                 //Todo make this use Temperaments
-                if(((EnhancedAnimal)this.creature).getHunger() > 12000) {
+                if(((EnhancedAnimalAbstract)this.creature).getHunger() > 12000) {
                     return eatingRoute();
                 }
 
-                float eatingModifier = createEatingModifier(((EnhancedAnimal)creature).getHunger());
+                float eatingModifier = createEatingModifier(((EnhancedAnimalAbstract)creature).getHunger());
 
                 float chanceToEat = 1000 - eatingModifier;
 
@@ -181,7 +181,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                     eatingHay = true;
                     searchHay = false;
                     eatingSearch = false;
-                    ((EnhancedAnimal)this.creature).decreaseHunger(hayHungerRestore);
+                    ((EnhancedAnimalAbstract)this.creature).decreaseHunger(hayHungerRestore);
                     this.eatingGrassTimer = 40;
                     this.entityWorld.setEntityState(this.creature, (byte)10);
                     this.creature.getNavigator().clearPath();
@@ -193,7 +193,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                 //stop looking for food and start eating
                 eating = true;
                 eatingSearch = false;
-                ((EnhancedAnimal)this.creature).decreaseHunger(otherHungerRestore);
+                ((EnhancedAnimalAbstract)this.creature).decreaseHunger(otherHungerRestore);
                 this.eatingGrassTimer = 40;
                 this.entityWorld.setEntityState(this.creature, (byte)10);
                 this.creature.getNavigator().clearPath();
@@ -252,7 +252,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
 
     protected int getEatDelay(CreatureEntity creatureIn) {
-        int delayInt = 300 + creatureIn.getRNG().nextInt(300) - Math.round(((EnhancedAnimal)creatureIn).getHunger()/50);
+        int delayInt = 300 + creatureIn.getRNG().nextInt(300) - Math.round(((EnhancedAnimalAbstract)creatureIn).getHunger()/50);
         if (delayInt < 0) {
             delayInt = 0;
         }

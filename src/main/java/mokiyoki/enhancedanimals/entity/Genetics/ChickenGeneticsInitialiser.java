@@ -83,16 +83,16 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
         int wildType = 0;
 
-        if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
+        if (biome.getTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
         {
             wildType = 1;
-        } else if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() < 0.3F) // hot and dry (savanna)
+        } else if (biome.getTemperature() >= 0.9F && biome.getDownfall() < 0.3F) // hot and dry (savanna)
         {
             wildType = 2;
-        } else if (biome.getDefaultTemperature() < 0.3F) // cold (mountains)
+        } else if (biome.getTemperature() < 0.3F) // cold (mountains)
         {
             wildType = 3;
-        } else if (biome.getDefaultTemperature() >= 0.8F && biome.getDownfall() > 0.8F) {
+        } else if (biome.getTemperature() >= 0.8F && biome.getDownfall() > 0.8F) {
             wildType = 4;
         }
 

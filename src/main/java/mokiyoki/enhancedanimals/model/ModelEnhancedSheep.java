@@ -15,7 +15,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -924,7 +923,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         float age = 1.0F;
         if (!(sheepModelData.birthTime == null) && !sheepModelData.birthTime.equals("") && !sheepModelData.birthTime.equals("0")) {
-            int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(sheepModelData.birthTime));
+            int ageTime = (int)(((ClientWorld)entityIn.world).getWorldInfo().getGameTime() - Long.parseLong(sheepModelData.birthTime));
             if (ageTime <= 75000) {
                 age = ageTime < 0 ? 0 : ageTime/75000.0F;
             }
@@ -1311,7 +1310,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.collar = hasCollar(enhancedSheep.getEnhancedInventory());
             sheepModelData.bridle = enhancedSheep.getEnhancedInventory().getStackInSlot(3);
             sheepModelData.hasChest = !enhancedSheep.getEnhancedInventory().getStackInSlot(0).isEmpty();
-            sheepModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime());
+            sheepModelData.clientGameTime = (((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime();
 
             sheepModelData.unrenderedModels = new ArrayList<>();
 
@@ -1332,7 +1331,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.collar = hasCollar(enhancedSheep.getEnhancedInventory());
             sheepModelData.bridle = enhancedSheep.getEnhancedInventory().getStackInSlot(3);
             sheepModelData.hasChest = !enhancedSheep.getEnhancedInventory().getStackInSlot(0).isEmpty();
-            sheepModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime());
+            sheepModelData.clientGameTime = (((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime();
 
             if(sheepModelData.sheepGenes != null) {
                 sheepModelDataCache.put(enhancedSheep.getEntityId(), sheepModelData);

@@ -48,7 +48,7 @@ public class EnhancedEgg extends Item {
                 entityegg = new EnhancedEntityEgg(worldIn, playerIn, null, null, null);
             }
 
-            entityegg.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
+            entityegg.func_234612_a_(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
             worldIn.addEntity(entityegg);
         }
 

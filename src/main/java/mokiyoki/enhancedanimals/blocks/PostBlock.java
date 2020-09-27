@@ -263,7 +263,7 @@ public class PostBlock extends Block implements IWaterLoggable {
             ItemStack itemstack = player.getHeldItem(handIn);
             return itemstack.getItem() == Items.LEAD ? ActionResultType.SUCCESS : ActionResultType.PASS;
         } else {
-            return LeadItem.func_226641_a_(player, worldIn, pos);
+            return LeadItem.bindPlayerMobs(player, worldIn, pos);
         }
     }
 
@@ -297,21 +297,14 @@ public class PostBlock extends Block implements IWaterLoggable {
         }
     }
 
-
-    //TODO add facing check to removing POST_CAP
-    @Override
-    public void onPlayerDestroy(IWorld worldIn, BlockPos pos, BlockState state) {
-        worldIn.getWorld().getCapability(PostCapabilityProvider.POST_CAP, null).orElse(new PostCapabilityProvider()).removePostPos(pos);
-    }
-
     @Override
     public void onExplosionDestroy(World worldIn, BlockPos pos, Explosion explosionIn) {
-        worldIn.getWorld().getCapability(PostCapabilityProvider.POST_CAP, null).orElse(new PostCapabilityProvider()).removePostPos(pos);
+        worldIn.getCapability(PostCapabilityProvider.POST_CAP, null).orElse(new PostCapabilityProvider()).removePostPos(pos);
     }
 
     @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-        worldIn.getWorld().getCapability(PostCapabilityProvider.POST_CAP, null).orElse(new PostCapabilityProvider()).removePostPos(pos);
+        worldIn.getCapability(PostCapabilityProvider.POST_CAP, null).orElse(new PostCapabilityProvider()).removePostPos(pos);
         super.onBlockHarvested(worldIn, pos, state, player);
     }
 

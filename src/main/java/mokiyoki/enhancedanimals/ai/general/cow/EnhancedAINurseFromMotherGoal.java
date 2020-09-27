@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.ai.general.cow;
 
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import net.minecraft.entity.ai.goal.Goal;
@@ -27,7 +27,7 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
     public boolean shouldExecute() {
         if (this.childEntity.getGrowingAge() >= 0 || this.childEntity.getIdleTime() >= 100) {
             return false;
-        } else if (((EnhancedAnimal)this.childEntity).getHunger() > 1000) {
+        } else if (((EnhancedAnimalAbstract)this.childEntity).getHunger() > 1000) {
             List<AnimalEntity> list = this.childEntity.world.getEntitiesWithinAABB(this.childEntity.getClass(), this.childEntity.getBoundingBox().grow(8.0D, 4.0D, 8.0D));
             AnimalEntity animalentity = null;
             double d0 = Double.MAX_VALUE;
@@ -69,14 +69,14 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
             if (!shouldContinue) {
                 if (motherEntity instanceof EnhancedCow) {
                     if (((EnhancedCow)motherEntity).decreaseMilk(2)) {
-                        ((EnhancedAnimal)childEntity).decreaseHunger(6000);
+                        ((EnhancedAnimalAbstract)childEntity).decreaseHunger(6000);
                     }
                 } else if (motherEntity instanceof EnhancedSheep) {
                     if (((EnhancedSheep)motherEntity).decreaseMilk(1)) {
-                        ((EnhancedAnimal)childEntity).decreaseHunger(6000);
+                        ((EnhancedAnimalAbstract)childEntity).decreaseHunger(6000);
                     }
                 } else {
-                    ((EnhancedAnimal)childEntity).decreaseHunger(6000);
+                    ((EnhancedAnimalAbstract)childEntity).decreaseHunger(6000);
                 }
             }
 

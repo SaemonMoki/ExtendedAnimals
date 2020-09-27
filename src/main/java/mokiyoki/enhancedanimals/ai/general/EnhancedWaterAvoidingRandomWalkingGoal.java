@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.ai.general;
 
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.pattern.BlockStateMatcher;
@@ -32,11 +32,11 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomW
         } else {
             if (!this.mustUpdate) {
                 //Todo make this use Temperaments\
-                if(((EnhancedAnimal)this.creature).getHunger() > 12000 && checkForFood()) {
+                if(((EnhancedAnimalAbstract)this.creature).getHunger() > 12000 && checkForFood()) {
                     return false;
                 }
 
-                float hungerModifier = ((EnhancedAnimal)this.creature).getHunger()/100;
+                float hungerModifier = ((EnhancedAnimalAbstract)this.creature).getHunger()/100;
                 if (hungerModifier >= this.executionChance) {
                     hungerModifier = this.executionChance - 1;
                 }

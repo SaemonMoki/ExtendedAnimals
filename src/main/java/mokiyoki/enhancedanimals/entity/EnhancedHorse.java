@@ -63,7 +63,7 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
 
-public class EnhancedHorse extends AbstractChestedHorseEntity implements EnhancedAnimal {
+public class EnhancedHorse extends AbstractChestedHorseEntity {
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedHorse.class, DataSerializers.STRING);
     private static final DataParameter<Float> HORSE_SIZE = EntityDataManager.createKey(EnhancedHorse.class, DataSerializers.FLOAT);
     protected static final DataParameter<String> HORSE_STATUS = EntityDataManager.createKey(EnhancedHorse.class, DataSerializers.STRING);
@@ -241,7 +241,6 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         this.sleeping = sleeping;
         this.dataManager.set(SLEEPING, sleeping); }
 
-    @Override
     public Boolean isAnimalSleeping() {
         if (this.sleeping == null) {
             return false;
@@ -251,13 +250,12 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         }
     }
 
-    @Override
     public void awaken() {
         this.awokenTimer = 200;
         setSleeping(false);
     }
 
-    @Override
+
     public Inventory getEnhancedInventory() {
         return null;
     }
@@ -312,11 +310,11 @@ public class EnhancedHorse extends AbstractChestedHorseEntity implements Enhance
         return 0.4F;
     }
 
-    protected void registerAttributes() {
-        super.registerAttributes();
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(8.0D);
-        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
-    }
+//    protected void registerAttributes() {
+//        super.registerAttributes();
+//        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(8.0D);
+//        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
+//    }
 
     public void livingTick() {
         super.livingTick();

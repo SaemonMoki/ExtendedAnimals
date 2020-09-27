@@ -83,7 +83,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class EnhancedAnimalAbstract extends AnimalEntity implements EnhancedAnimal, IInventoryChangedListener {
+public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IInventoryChangedListener {
 
     protected static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
@@ -360,7 +360,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         this.sleeping = sleeping;
         this.dataManager.set(SLEEPING, sleeping); }
 
-    @Override
     public Boolean isAnimalSleeping() {
         if (this.sleeping == null) {
             return false;
@@ -370,7 +369,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
-    @Override
     public void awaken() {
         this.awokenTimer = 200;
         setSleeping(false);
@@ -384,7 +382,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return this.dataManager.get(ANIMAL_SIZE);
     }
 
-    @Override
     public float getHunger(){
         return this.hunger;
     }
@@ -1297,7 +1294,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     Inventory
     */
 
-    @Override
     public Inventory getEnhancedInventory() {
         return this.animalInventory;
     }

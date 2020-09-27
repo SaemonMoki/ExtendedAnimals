@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
@@ -17,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -43,38 +46,38 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         toggleSlots();
     }
 
-    public void render(int mouseX, int mouseY, float p_render_3_) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float p_render_3_) {
         if (!enhancedAnimalInfo.created) {setAnimalInfo();}
         toggleSlots();
-        this.renderBackground();
+        this.renderBackground(matrixStack);
         this.mousePosx = (float)mouseX;
         this.mousePosY = (float)mouseY;
-        super.render(mouseX, mouseY, p_render_3_);
-        this.renderHoveredToolTip(mouseX, mouseY);
-        this.renderInfoToolTip(mouseX, mouseY);
+        super.render(matrixStack, mouseX, mouseY, p_render_3_);
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        this.renderInfoToolTip(matrixStack, mouseX, mouseY);
     }
 
-    private void renderInfoToolTip(int mouseX, int mouseY) {
+    private void renderInfoToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
         if (this.isPointInRegion(127, 5, 7, 9, (double)mouseX, (double)mouseY)) {
             if (this.enhancedAnimalInfo.isFemale) {
                 if (this.enhancedAnimalInfo.pregnant > 0) {
-                    this.renderTooltip(I18n.format("eanimod.animalinfocontainer.pregnant") + " " + I18n.format("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.pregnant").appendString(" ").append(new TranslationTextComponent("eanimod.animalinfocontainer.female")), mouseX, mouseY);
                 } else {
-                    this.renderTooltip(I18n.format("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.female"), mouseX, mouseY);
                 }
             } else {
                 if (this.enhancedAnimalInfo.pregnant > 0) {
-                    this.renderTooltip( I18n.format("eanimod.animalinfocontainer.pregnant") + " " + I18n.format("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.pregnant").appendString(" ").append(new TranslationTextComponent("eanimod.animalinfocontainer.male")), mouseX, mouseY);
                 } else {
-                    this.renderTooltip(I18n.format("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
                 }
             }
         }
         if (this.isPointInRegion(136, 5, 8, 9, (double)mouseX, (double)mouseY)) {
-            this.renderTooltip(I18n.format("eanimod.animalinfocontainer.health"), mouseX, mouseY);
+            this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.health"), mouseX, mouseY);
         }
         if (this.isPointInRegion(147, 5, 7, 9, (double)mouseX, (double)mouseY)) {
-            this.renderTooltip(I18n.format("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
+            this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
         }
     }
 
@@ -174,7 +177,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     /**
      * Draw the foreground layer for the GuiContainer (everything in front of the items)
      */
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
         IInventory retrievedInventory = this.container.getEnhancedAnimalInventory();
         int collarSlot = getCollarSlot(retrievedInventory);
         String name = enhancedAnimalInfo.name;
@@ -195,8 +198,8 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             name = name.substring(0, 20);
         }
 
-        this.font.drawString(name, 8.0F, (float)(this.ySize - 160), 4210752);
-        this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 94), 4210752);
+        this.font.drawString(matrixStack, name, 8.0F, (float)(this.ySize - 160), 4210752);
+        this.font.drawString(matrixStack, this.playerInventory.getDisplayName().getString(), 8.0F, (float)(this.ySize - 94), 4210752);
 
         //(health points / max health points * 10) + "/" + "10"
         /**
@@ -212,8 +215,8 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
         IInventory retrievedInventory = this.container.getEnhancedAnimalInventory();
         int i = (this.width - this.xSize) / 2;
@@ -221,7 +224,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         int invSize = 5;
         int shiftY = 17;
         int shiftX = 7;
-        this.blit(i, j, 0, 0, this.xSize, this.ySize);
+        this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
 
         /**
          *  screenPlacementFromX : X coordinate of where you want the top left corner of the image to be placed on the screen in game. start with int i and + || - what you need to place it.
@@ -237,48 +240,48 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
          */
 
         if (enhancedAnimalInfo.isFemale) {
-            this.blit(i + 126, j + 5, 117, this.ySize + 54, 8, 10); // female icon
+            this.blit(matrixStack, i + 126, j + 5, 117, this.ySize + 54, 8, 10); // female icon
                 int pregnancy = enhancedAnimalInfo.pregnant;
-            this.blit(i + 126, j + 5 + (11-pregnancy) , 117, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
+            this.blit(matrixStack, i + 126, j + 5 + (11-pregnancy) , 117, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
 
         } else {
-            this.blit(i + 126, j + 5, 108, this.ySize + 54, 8, 10); // male icon
+            this.blit(matrixStack, i + 126, j + 5, 108, this.ySize + 54, 8, 10); // male icon
                 int pregnancy = enhancedAnimalInfo.pregnant;
-            this.blit(i + 126, j + 5 + (11-pregnancy) , 108, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
+            this.blit(matrixStack, i + 126, j + 5 + (11-pregnancy) , 108, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
         }
 
-        this.blit(i + 136, j + 5, 125, this.ySize + 54, 9, 10); // health icon
-        this.blit(i + 147, j + 5, 134, this.ySize + 54, 9, 10); // hunger icon
-        this.blit(i + 158, j + 5, 143, this.ySize + 54, 10, 10); // tameness icon
+        this.blit(matrixStack, i + 136, j + 5, 125, this.ySize + 54, 9, 10); // health icon
+        this.blit(matrixStack, i + 147, j + 5, 134, this.ySize + 54, 9, 10); // hunger icon
+        this.blit(matrixStack, i + 158, j + 5, 143, this.ySize + 54, 10, 10); // tameness icon
 
         int health = enhancedAnimalInfo.health;
         int hunger = 10 - enhancedAnimalInfo.hunger;
 //        int tameness = enhancedAnimalInfo.tameness;
-        this.blit(i + 136, j + 5 + (10-health), 125, this.ySize + 64 + (10-health), 9, health); // health icon
-        this.blit(i + 147, j + 5 + (10-hunger), 134, this.ySize + 64 + (10-hunger), 9, hunger); // hunger icon
+        this.blit(matrixStack, i + 136, j + 5 + (10-health), 125, this.ySize + 64 + (10-health), 9, health); // health icon
+        this.blit(matrixStack, i + 147, j + 5 + (10-hunger), 134, this.ySize + 64 + (10-hunger), 9, hunger); // hunger icon
 //        this.blit(i + 158, j + 5 + (10-tameness), 143, this.ySize + 64 + (10-tameness), 10, tameness); // tameness icon
 
         if (this.container.enhancedAnimal.canHaveSaddle()) {
             if (retrievedInventory.getStackInSlot(1).isEmpty()) {
-                this.blit(i + shiftX, j + shiftY, 0, this.ySize + 54, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 0, this.ySize + 54, 18, 18);
             } else {
-                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
             }
             shiftY = shiftY + 18;
         }
         if (this.container.enhancedAnimal.canHaveBridle()) {
             if (retrievedInventory.getStackInSlot(3).isEmpty()) {
-                this.blit(i + shiftX, j + shiftY, 18, this.ySize + 54, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 18, this.ySize + 54, 18, 18);
             } else {
-                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
             }
             shiftY = shiftY + 18;
         }
         if (this.container.enhancedAnimal.canHaveArmour()) {
             if (retrievedInventory.getStackInSlot(2).isEmpty()) {
-                this.blit(i + shiftX, j + shiftY, 36, this.ySize + 54, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 36, this.ySize + 54, 18, 18);
             } else {
-                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
             }
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -288,9 +291,9 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         }
         if (this.container.enhancedAnimal.canHaveBlanket() && (shiftX == 7 || !this.chestTabEnabled)) {
             if (retrievedInventory.getStackInSlot(4).isEmpty()) {
-                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 54, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 54, 18, 18);
             } else {
-                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
             }
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -300,9 +303,9 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         }
         if (this.container.enhancedAnimal.canHaveBanner() && (shiftX == 7 || !this.chestTabEnabled)) {
             if (retrievedInventory.getStackInSlot(6).isEmpty()) {
-                this.blit(i + shiftX, j + shiftY, 72, this.ySize + 54, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 72, this.ySize + 54, 18, 18);
             } else {
-                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
             }
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -312,9 +315,9 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         }
         if (this.container.enhancedAnimal.canHaveHarness() && (shiftX == 7 || !this.chestTabEnabled)) {
             if (retrievedInventory.getStackInSlot(5).isEmpty()) {
-                this.blit(i + shiftX, j + shiftY, 90, this.ySize + 54, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 90, this.ySize + 54, 18, 18);
             } else {
-                this.blit(i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
             }
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -324,7 +327,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         }
 
         if (shiftY==17 && shiftX==7) {
-            this.blit(i + 7, j + 17, 0, this.ySize + 72, 18, 18);
+            this.blit(matrixStack, i + 7, j + 17, 0, this.ySize + 72, 18, 18);
         }
 
         boolean hasItemsInChest = isHasItemsInChest(retrievedInventory);
@@ -332,33 +335,33 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         if (this.container.enhancedAnimal.canHaveChest()) {
             if (this.chestTabEnabled) {
                 if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
-                    this.blit(i + 111, j - 28, 209, 100, 28, 31); //highlight tab
-                    this.blit(i + 140, j - 28, 177, 100, 28, 31); //shadow tab
-                    this.blit(i + 117, j - 19, 217, 23, 15, 14); //highlight chest logo
-                    this.blit(i + 144, j - 17, 182, 51, 18, 14); //shadow info logo
+                    this.blit(matrixStack, i + 111, j - 28, 209, 100, 28, 31); //highlight tab
+                    this.blit(matrixStack, i + 140, j - 28, 177, 100, 28, 31); //shadow tab
+                    this.blit(matrixStack, i + 117, j - 19, 217, 23, 15, 14); //highlight chest logo
+                    this.blit(matrixStack, i + 144, j - 17, 182, 51, 18, 14); //shadow info logo
                 } else {
-                    this.blit(i + 173, j + 13, 209, 16, 31, 28); //highlight chest
-                    this.blit(i + 173, j + 41, 177, 44, 30, 28); //shadow info
+                    this.blit(matrixStack, i + 173, j + 13, 209, 16, 31, 28); //highlight chest
+                    this.blit(matrixStack, i + 173, j + 41, 177, 44, 30, 28); //shadow info
                 }
                 if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
                     if (hasItemsInChest) {
-                        this.blit(i + 79, j + 17, 0, this.ySize, 18*invSize, 54);
+                        this.blit(matrixStack, i + 79, j + 17, 0, this.ySize, 18*invSize, 54);
                     } else {
-                        this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
-//                        this.blit(i + 112, j + 31, 180, this.ySize, 24, 26);
+                        this.blit(matrixStack, i + 79, j + 17, 90, this.ySize, 90, 54);
+//                        this.blit(matrixStack, i + 112, j + 31, 180, this.ySize, 24, 26);
                     }
                 } else {
-                    this.blit(i + 79, j + 17, 90, this.ySize, 90, 54);
+                    this.blit(matrixStack, i + 79, j + 17, 90, this.ySize, 90, 54);
                 }
             } else {
                 if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
-                    this.blit(i + 140, j - 28, 209, 100, 28, 31); //highlight tab
-                    this.blit(i + 111, j - 28, 177, 100, 28, 31); //shadow tab
-                    this.blit(i + 117, j - 18, 184, 23, 15, 14); //shadow chest logo
-                    this.blit(i + 144, j - 18, 215, 51, 18, 14); //highlight info logo
+                    this.blit(matrixStack, i + 140, j - 28, 209, 100, 28, 31); //highlight tab
+                    this.blit(matrixStack, i + 111, j - 28, 177, 100, 28, 31); //shadow tab
+                    this.blit(matrixStack, i + 117, j - 18, 184, 23, 15, 14); //shadow chest logo
+                    this.blit(matrixStack, i + 144, j - 18, 215, 51, 18, 14); //highlight info logo
                 } else {
-                    this.blit(i + 173, j + 13, 177, 16, 30, 28); //shadow chest
-                    this.blit(i + 173, j + 41, 209, 44, 31, 28); //highlight info
+                    this.blit(matrixStack, i + 173, j + 13, 177, 16, 30, 28); //shadow chest
+                    this.blit(matrixStack, i + 173, j + 41, 209, 44, 31, 28); //highlight info
                 }
             }
         }
@@ -382,26 +385,26 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             } else {
                 age = "ancient";
             }
-            this.font.drawString("Age:" + age, i + 99, j + 20, 4210752);
+            this.font.drawString(matrixStack, "Age:" + age, i + 99, j + 20, 4210752);
 
             String sireName = this.enhancedAnimalInfo.sire;
             String damName = this.enhancedAnimalInfo.dam;
             if (sireName.length() > 8) {
-                this.font.drawString("Sire:", i + 99, j + 30, 4210752);
-                this.font.drawString(sireName.substring(0, 12), i + 99, j + 40, 4210752);
+                this.font.drawString(matrixStack, "Sire:", i + 99, j + 30, 4210752);
+                this.font.drawString(matrixStack, sireName.substring(0, 12), i + 99, j + 40, 4210752);
                 if (damName.length() > 8) {
-                    this.font.drawString("Dam:", i + 99, j + 51, 4210752);
-                    this.font.drawString(damName.substring(0, 12), i + 99, j + 60, 4210752);
+                    this.font.drawString(matrixStack, "Dam:", i + 99, j + 51, 4210752);
+                    this.font.drawString(matrixStack, damName.substring(0, 12), i + 99, j + 60, 4210752);
                 } else {
-                    this.font.drawString("Dam:" + damName, i + 99, j + 50, 4210752);
+                    this.font.drawString(matrixStack, "Dam:" + damName, i + 99, j + 50, 4210752);
                 }
             } else {
-                this.font.drawString("Sire:" + sireName, i + 99, j + 30, 4210752);
+                this.font.drawString(matrixStack, "Sire:" + sireName, i + 99, j + 30, 4210752);
                 if (damName.length() > 8) {
-                    this.font.drawString("Dam:", i + 99, j + 41, 4210752);
-                    this.font.drawString(damName.substring(0, 12), i + 99, j + 50, 4210752);
+                    this.font.drawString(matrixStack, "Dam:", i + 99, j + 41, 4210752);
+                    this.font.drawString(matrixStack, damName.substring(0, 12), i + 99, j + 50, 4210752);
                 } else {
-                    this.font.drawString("Dam:" + damName, i + 99, j + 40, 4210752);
+                    this.font.drawString(matrixStack, "Dam:" + damName, i + 99, j + 40, 4210752);
                 }
             }
         }

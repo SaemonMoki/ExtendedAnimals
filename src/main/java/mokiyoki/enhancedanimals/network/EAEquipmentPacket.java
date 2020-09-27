@@ -1,15 +1,11 @@
 package mokiyoki.enhancedanimals.network;
 
-import net.minecraft.client.network.play.IClientPlayNetHandler;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.io.IOException;
 import java.util.function.Supplier;
 
 public class EAEquipmentPacket {

@@ -53,6 +53,7 @@ import net.minecraft.item.ShearsItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
@@ -227,15 +228,18 @@ public class EventSubscriber {
         if (entity instanceof WanderingTraderEntity) {
             if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
                 ((WanderingTraderEntity)entity).setDespawnDelay(48000);
-                World world = event.getWorld().getWorld();
+                IWorld world = event.getWorld();
 
-                for (int i = 0; i < 2; i++) {
-                    BlockPos blockPos = nearbySpawn(world, new BlockPos(entity));
-                    EnhancedLlama enhancedLlama = ENHANCED_LLAMA.spawn(world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
-                    if(enhancedLlama != null) {
-                        enhancedLlama.setLeashHolder(entity, true);
+                if(world instanceof ServerWorld) {
+                    for (int i = 0; i < 2; i++) {
+                        BlockPos blockPos = nearbySpawn(((ServerWorld)world), new BlockPos(entity.getPosition()));
+                        EnhancedLlama enhancedLlama = ENHANCED_LLAMA.spawn((ServerWorld)world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
+                        if(enhancedLlama != null) {
+                            enhancedLlama.setLeashHolder(entity, true);
+                        }
                     }
                 }
+
             }
             if (!entity.getTags().contains("eanimodTradeless")) {
                 entity.addTag("eanimodTradeless");
@@ -247,14 +251,17 @@ public class EventSubscriber {
             }
         } else if (entity instanceof ChickenEntity) {
             if (((ChickenEntity)entity).isChickenJockey()) {
-                World world = event.getWorld().getWorld();
+                IWorld world = event.getWorld();
                 Entity rider = entity.getRidingEntity();
                 entity.remove();
-                BlockPos blockPos = nearbySpawn(world, new BlockPos(entity));
-                EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.spawn(world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
-                if(enhancedChicken != null) {
-                    enhancedChicken.updatePassenger(rider);
-                    enhancedChicken.setChickenJockey(true);
+
+                if(world instanceof ServerWorld) {
+                    BlockPos blockPos = nearbySpawn((ServerWorld)world, new BlockPos(entity.getPosition()));
+                    EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.spawn((ServerWorld)world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
+                    if(enhancedChicken != null) {
+                        enhancedChicken.updatePassenger(rider);
+                        enhancedChicken.setChickenJockey(true);
+                    }
                 }
             }
         }

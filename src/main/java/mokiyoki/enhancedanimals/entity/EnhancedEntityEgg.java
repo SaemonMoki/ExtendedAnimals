@@ -1,13 +1,11 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileItemEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -15,8 +13,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,7 +30,6 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
     public EnhancedEntityEgg(EntityType<? extends EnhancedEntityEgg> entityIn, World worldIn) {
         super(entityIn, worldIn);
     }
-
 
     //TODO return the right default egg colour type... personal note: FUUUUUUUCCCCCKKKKKK!!!!!
     protected Item getDefaultItem() {
@@ -126,10 +121,7 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
      * Called when this EntityThrowable hits a block or entity.
      */
     protected void onImpact(RayTraceResult result) {
-        if (result.getType() == RayTraceResult.Type.ENTITY) {
-            ((EntityRayTraceResult)result).getEntity().attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 0.0F);
-        }
-
+        super.onImpact(result);
         if (!this.world.isRemote) {
             if (!getGenes().equals("INFERTILE")) {
                 //            if (this.rand.nextInt(8) == 0) {

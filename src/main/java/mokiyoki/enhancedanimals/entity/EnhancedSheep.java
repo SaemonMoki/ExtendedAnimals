@@ -54,7 +54,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
 
-public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.minecraftforge.common.IShearable, EnhancedAnimal{
+public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.minecraftforge.common.IForgeShearable {
 
     //avalible UUID spaces : [ S X X 3 X 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
@@ -401,7 +401,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, BlockPos pos) {
+    public boolean isShearable(ItemStack item, World world, BlockPos pos) {
         if (!this.world.isRemote && currentCoatLength >=1) {
             return true;
         }
@@ -409,7 +409,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IWorld world, BlockPos pos, int fortune) {
+    public java.util.List<ItemStack> onSheared(PlayerEntity player, ItemStack item, World world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         if (!this.world.isRemote) {
             int woolCount = 0;
@@ -1180,12 +1180,12 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             if (item instanceof AirItem) {
                 int[] genes = this.genetics.getAutosomalGenes();
                 if (!this.isChild() && (genes[46] == 1 || genes[47] == 1) && currentCoatLength == maxCoatLength) {
-                        List<ItemStack> woolToDrop = onSheared(null, this.world, getPosition(), 0);
+                        List<ItemStack> woolToDrop = onSheared(entityPlayer,null, this.world, getPosition(), 0);
                         woolToDrop.forEach(d -> {
                             net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
                             ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
                         });
-                        onSheared(ItemStack.EMPTY, this.world, getPosition(), 0);
+                        onSheared(entityPlayer, ItemStack.EMPTY, this.world, getPosition(), 0);
                 }
 
             } else if (item == Items.WATER_BUCKET) {

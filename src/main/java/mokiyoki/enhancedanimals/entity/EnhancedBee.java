@@ -20,6 +20,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_BEE;
 
-public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
+public class EnhancedBee extends AnimalEntity {
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedBee.class, DataSerializers.STRING);
     private static final DataParameter<Float> BEE_SIZE = EntityDataManager.createKey(EnhancedBee.class, DataSerializers.FLOAT);
@@ -141,7 +142,6 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
         this.sleeping = sleeping;
         this.dataManager.set(SLEEPING, sleeping); }
 
-    @Override
     public Boolean isAnimalSleeping() {
         if (this.sleeping == null) {
             return false;
@@ -151,13 +151,11 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
         }
     }
 
-    @Override
     public void awaken() {
         this.awokenTimer = 200;
         setSleeping(false);
     }
 
-    @Override
     public Inventory getEnhancedInventory() {
         return null;
     }
@@ -503,7 +501,7 @@ public class EnhancedBee extends AnimalEntity implements EnhancedAnimal {
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+    public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
 //        livingdata = super.onInitialSpawn(inWorld, difficulty, spawnReason, livingdata, itemNbt);
         int[] spawnGenes;
 

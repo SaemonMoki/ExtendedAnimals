@@ -46,7 +46,7 @@ import java.util.UUID;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOSHROOM;
 
-public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge.common.IShearable {
+public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge.common.IForgeShearable {
     private static final DataParameter<String> MOOSHROOM_TYPE = EntityDataManager.createKey(EnhancedMooshroom.class, DataSerializers.STRING);
 
     private static final String[] MOOSHROOM_MUSHROOM = new String[] {
@@ -252,12 +252,12 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
-    public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, net.minecraft.util.math.BlockPos pos) {
+    public boolean isShearable(ItemStack item, World world, net.minecraft.util.math.BlockPos pos) {
         return this.getGrowingAge() >= 0;
     }
 
     @Override
-    public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IWorld world, net.minecraft.util.math.BlockPos pos, int fortune) {
+    public java.util.List<ItemStack> onSheared(PlayerEntity playerEntity, ItemStack item, World world, net.minecraft.util.math.BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         this.world.addParticle(ParticleTypes.EXPLOSION, this.getPosX(), this.getPosY() + (double)(this.getHeight() / 2.0F), this.getPosZ(), 0.0D, 0.0D, 0.0D);
         if (!this.world.isRemote) {

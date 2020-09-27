@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CAT;
 
-public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
+public class EnhancedCat extends AnimalEntity {
 
     private static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedCat.class, DataSerializers.STRING);
     protected static final DataParameter<String> CAT_STATUS = EntityDataManager.createKey(EnhancedCat.class, DataSerializers.STRING);
@@ -238,7 +238,6 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         this.sleeping = sleeping;
         this.dataManager.set(SLEEPING, sleeping); }
 
-    @Override
     public Boolean isAnimalSleeping() {
         if (this.sleeping == null) {
             return false;
@@ -248,13 +247,11 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
         }
     }
 
-    @Override
     public void awaken() {
         this.awokenTimer = 200;
         setSleeping(false);
     }
 
-    @Override
     public Inventory getEnhancedInventory() {
         return null;
     }
@@ -432,11 +429,11 @@ public class EnhancedCat extends AnimalEntity implements EnhancedAnimal {
 //        return this.height;
 //    }
 
-    protected void registerAttributes() {
-        super.registerAttributes();
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(4.0D);
-        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
-    }
+//    protected void registerAttributes() {
+//        super.registerAttributes();
+//        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(4.0D);
+//        this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+//    }
 
     public void livingTick() {
         super.livingTick();

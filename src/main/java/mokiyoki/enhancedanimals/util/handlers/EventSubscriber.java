@@ -271,22 +271,22 @@ public class EventSubscriber {
         }
     }
 
-    @SubscribeEvent
-    public void openInventoryEvent(GuiOpenEvent event) {
-        if (event.getGui() instanceof InventoryScreen) {
-                PlayerEntity player = Minecraft.getInstance().player;
-            if (player!= null) {
-                if (player.world.isRemote()) {
-                    Entity riddenAnimal = player.getRidingEntity();
-                    if (riddenAnimal instanceof EnhancedAnimalRideableAbstract) {
-                        if (!riddenAnimal.getTags().contains("OpenEnhancedAnimalRidenGUI")) {
-                            riddenAnimal.addTag("OpenEnhancedAnimalRidenGUI");
-                        }
-                        event.setCanceled(true);
-                    }
-                }
-            }
-        }
+//    @SubscribeEvent
+//    public void openInventoryEvent(GuiOpenEvent event) {
+//        if (event.getGui() instanceof InventoryScreen) {
+//                PlayerEntity player = Minecraft.getInstance().player;
+//            if (player!= null) {
+//                if (player.world.isRemote()) {
+//                    Entity riddenAnimal = player.getRidingEntity();
+//                    if (riddenAnimal instanceof EnhancedAnimalRideableAbstract) {
+//                        if (!riddenAnimal.getTags().contains("OpenEnhancedAnimalRidenGUI")) {
+//                            riddenAnimal.addTag("OpenEnhancedAnimalRidenGUI");
+//                        }
+//                        event.setCanceled(true);
+//                    }
+//                }
+//            }
+//        }
 
 
 //        if (event instanceof PlayerContainerEvent.Open && player.getRidingEntity() instanceof EnhancedAnimalRideableAbstract) {
@@ -295,7 +295,7 @@ public class EventSubscriber {
 //            event.setCanceled(true);
 //            ((EnhancedAnimalRideableAbstract)ridingAnimal).openInfoInventory(((EnhancedAnimalRideableAbstract) ridingAnimal), ((EnhancedAnimalRideableAbstract) ridingAnimal).getEnhancedInventory(), player);
 //        }
-    }
+//    }
 
 
     private BlockPos nearbySpawn(World world, BlockPos blockPosOfEntity) {

@@ -20,7 +20,7 @@ public class CowBreeds {
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "1","1","2").add(6, "5%1","2").add(8, "1","1","1","2","4").add(18,"15%2","4","2").add(24,"1","2","1","1-5","10-5","1","3","1","4","2|3").add(50, "1","1","1").add(62, "10", "10", "1").add(70, "1","1","2","2","2").add(120, "1")));
 
     public static final Breed JERSEY = new Breed(new Breed.Properties().setData("Jersey", Biomes.DARK_FOREST, Breed.Rarity.COMMON)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2","1","2","2","1","1").add(14, "2","3","4","2").add(24,"2").add(30, "15","10","3","1","1","4","1-3").add(48, "2","1","1","1","1|2","1|2","1|2","10","1","5","5","1","1","2","2","2")
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2","1","2","2","1","1").add(14, "2","3","4","2").add(24,"2").add(30, "15","10","3","1","1","4","1-3").add(48, "2","1","1","1","1|2","1|2","1|2","10","1","5","5","1","1","2","2","2").add(62, "10")
                     .add(84, "2-4")
                     .add(92,"1988")/*.add(92,"1-9999")*/  //170-199, 1091, 2091,
                     .add(94, "244349")/*.add(94, "1-999999")*/
@@ -76,5 +76,7 @@ public class CowBreeds {
                     .add(116, "222-333")/*.add(116, "1-999")*/
             ));
 
+    public static final Breed DEXTER = new Breed(BLACK_ANGUS, new Breed.Properties().setName("Dexter")
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(10, "2").add(26, "1,2")));
 
 }

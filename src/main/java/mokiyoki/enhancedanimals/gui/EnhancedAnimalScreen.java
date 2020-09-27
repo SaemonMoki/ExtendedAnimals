@@ -178,13 +178,19 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         IInventory retrievedInventory = this.container.getEnhancedAnimalInventory();
         int collarSlot = getCollarSlot(retrievedInventory);
         String name = enhancedAnimalInfo.name;
+        boolean flag = true;
 
         if (collarSlot != 0) {
             ItemStack collarStack = retrievedInventory.getStackInSlot(collarSlot);
             String collarName = ((CustomizableCollar)collarStack.getItem()).getCollarName(collarStack);
             if (!collarName.equals("")) {
                 name = collarName;
+                flag = false;
             }
+        }
+
+        if (flag && name.startsWith("entity.eanimod")) {
+            name = I18n.format(name);
         }
 
         if (!enhancedAnimalInfo.agePrefix.equals("ADULT")) {

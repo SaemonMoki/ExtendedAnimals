@@ -747,6 +747,12 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             this.collar.showModel = false;
         }
 
+        if (sheepStatus.equals(EntityState.PREGNANT.toString()) || sheepStatus.equals(EntityState.MOTHER.toString())) {
+            this.udder.showModel = true;
+        } else {
+            this.udder.showModel = false;
+        }
+
         this.neck.render(matrixStackIn, bufferIn , mapOfScale, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
@@ -773,13 +779,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         matrixStackIn.push();
         matrixStackIn.scale(bagSize, bagSize, bagSize);
         matrixStackIn.translate(0.0F, (1.0F-bagSize) * 1.5F, (1.0F-bagSize)*0.8F);
-
         this.udder.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        if (sheepStatus.equals(EntityState.PREGNANT.toString()) || sheepStatus.equals(EntityState.MOTHER.toString())) {
-            this.udder.showModel = true;
-        } else {
-            this.udder.showModel = false;
-        }
         matrixStackIn.pop();
     }
 
@@ -1068,44 +1068,12 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             if (ageTime < 0) {
                 ageTime = 0;
             }
-            if (ageTime > 744000) {
-                hornGrowth = 0;
-            } else if (ageTime > 552000) {
-                hornGrowth = 1;
-            } else if (ageTime > 360000) {
-                hornGrowth = 2;
-            } else if (ageTime > 276000) {
-                hornGrowth = 3;
-            } else if (ageTime > 234000) {
-                hornGrowth = 4;
-            } else if (ageTime > 192000) {
-                hornGrowth = 5;
-            } else if (ageTime > 168000) {
-                hornGrowth = 6;
-            } else if (ageTime > 144000) {
-                hornGrowth = 7;
-            } else if (ageTime > 120000) {
-                hornGrowth = 8;
-            } else if (ageTime > 96000) {
-                hornGrowth = 9;
-            } else if (ageTime > 72000) {
-                hornGrowth = 10;
-            } else if (ageTime > 60000) {
-                hornGrowth = 11;
-            } else if (ageTime > 48000) {
-                hornGrowth = 12;
-            } else if (ageTime > 36000) {
-                hornGrowth = 13;
-            } else if (ageTime > 30000) {
-                hornGrowth = 14;
-            } else if (ageTime > 27000) {
-                hornGrowth = 15;
-            } else if (ageTime > 24000) {
-                hornGrowth = 16;
-            } else if (ageTime > 21000) {
-                hornGrowth = 17;
-            } else {
-                hornGrowth = 18;
+
+            if (ageTime < 108000) {
+                //this grows the horns from nothing to their adult size
+                float age = (float)ageTime/108000.0F;
+                lengthL = lengthL + ((int)((20-lengthL) * (1.0F-(age*age))));
+                lengthR = lengthR + ((int)((20-lengthR) * (1.0F-(age*age))));
             }
         }
 
@@ -1304,9 +1272,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         int dataReset = 0;
         long clientGameTime = 0;
         int horns = 0;
-        boolean collar;
+        boolean collar = false;
         ItemStack bridle;
-        boolean hasChest;
+        boolean hasChest = false;
         List<String> unrenderedModels = new ArrayList<>();
     }
 

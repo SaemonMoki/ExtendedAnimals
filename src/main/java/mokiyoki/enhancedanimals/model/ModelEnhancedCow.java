@@ -669,7 +669,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         } else {
             babyScale = 1.0F;
         }
-        float genderModifier = cowModelData.isFemale? 1.80F : 2.0F;
+
+        float genderModifier = cowModelData.isFemale? 1.8F : 2.0F;
         float finalCowSize = (((genderModifier * age) + 1.0F) / 3.0F)*cowModelData.cowSize;
         bodyWidth = finalCowSize + (finalCowSize * bodyWidth * age);
         bodyLength = finalCowSize + (finalCowSize * bodyLength * age);
@@ -762,7 +763,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     private void renderBodySaddleAndUdder(ItemStack saddleStack, String cowStatus, float bagSize, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         float nipScale = 1.5F/(0.5F+bagSize);
         Map<String, List<Float>> mapOfScale = new HashMap<>();
-        List<Float> scalingsForUdder = ModelHelper.createScalings(bagSize, bagSize, bagSize, 0.0F, -(bagSize-1.0F)*0.4F, -(bagSize-1.0F)*0.85F);
+        List<Float> scalingsForUdder = ModelHelper.createScalings(bagSize, bagSize, bagSize, 0.0F, 0.0F/*-(bagSize-1.0F)*0.4F*/, 0.0F/*-(bagSize-1.0F)*0.85F*/);
         List<Float> scalingsForNipples = ModelHelper.createScalings(nipScale, nipScale, nipScale, 0.0F, (bagSize-1.0F)*0.05F, 0.0F);
         mapOfScale.put("Udder", scalingsForUdder);
         mapOfScale.put("Nipples", scalingsForNipples);
@@ -999,9 +1000,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                     //scurs
                     hornScale = (hornScale + 0.75F) * 0.5F;
                 }
-//                if (genes[122] != 1 || genes[123] != 1) {
-//                    hornScale = hornScale * (((2.0F / (float)(genes[122] + genes[123]))+3.0F)/4.0F);
-//                }
+                hornScale = hornScale * (((2.0F / (float)(genes[122] + genes[123]))+1.5F)/2.5F);
             }
         }
 
@@ -1051,9 +1050,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
 
         this.hornParent.rotationPointY = hornBaseHight;
-
-//        this.hornL0.setRotationPoint(0.0F, 0.0F, -2.25F);
-//        this.hornR0.setRotationPoint(0.0F, 0.0F, -2.25F);
 
         this.hornL0.setRotationPoint(0.0F, -2.6F, 0.0F);
         this.hornR0.setRotationPoint(0.0F, -2.6F, 0.0F);
@@ -1157,47 +1153,21 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 lengthR = 9;
             }
 
-//            if (cowModelData.birthTime != null && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
-//                int ageTime = (int)(cowModelData.clientGameTime - Long.parseLong(cowModelData.birthTime));
-//                if (ageTime < 0) {
-//                    ageTime = 0;
-//                }
-//                if (ageTime < 108000) {
-//                    int hornAge = 0;
-//                    if (ageTime > 97200) {
-//                        lengthL = 1 + (8*(lengthL/9));
-//                        lengthR = 1 + (8*(lengthR/9));
-//                    } else if (ageTime > 86400) {
-//                        hornAge = 2;
-//                    } else if (ageTime > 75600) {
-//                        hornAge = 3;
-//                    } else if (ageTime > 60800) {
-//                        hornAge = 4;
-//                    } else if (ageTime > 40000) {
-//                        hornAge = 5;
-//                    } else if (ageTime > 30200) {
-//                        hornAge = 6;
-//                    } else if (ageTime > 24000) {
-//                        hornAge = 7;
-//                    } else if (ageTime > 9000) {
-//                        hornAge = 8;
-//                    } else if (ageTime > 6000) {
-//                        hornAge = 9;
-//                    } else {
-//                        hornAge = 10;
-//                    }
-//
-//                    //this grows the horns from nothing to their adult size
-//                    lengthL = hornAge + (8*(lengthL/9));
-//                    lengthR = hornAge + (8*(lengthR/9));
-//
-//                }
-//            }
 
 
+            if (cowModelData.birthTime != null && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
+                int ageTime = (int)(cowModelData.clientGameTime - Long.parseLong(cowModelData.birthTime));
+                if (ageTime < 0) {
+                    ageTime = 0;
+                }
+                if (ageTime < 108000) {
+                    //this grows the horns from nothing to their adult size
+                    float age = (float)ageTime/108000.0F;
+                    lengthL = lengthL + ((int)((12-lengthL) * (1.0F-(age))));
+                    lengthR = lengthR + ((int)((12-lengthR) * (1.0F-(age))));
 
-//            lengthL = hornLengthTest;
-//            lengthR = hornLengthTest;
+                }
+            }
 
             /*
                 creates horn model of correct length
@@ -1687,6 +1657,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.leg3.setRotationPoint(-6.0F, 16.5F, 9.0F);
             this.leg4.setRotationPoint(3.0F, 16.5F, 9.0F);
 
+            this.chest1.setRotationPoint(-8.75F, 6.0F, 6.0F);
+            this.chest2.setRotationPoint(5.75F, 6.0F, 6.0F);
+
         } else {
             onGround = 2.75F;
             this.body.rotationPointY = 2.5F;
@@ -1698,6 +1671,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.leg2.setRotationPoint(3.0F, 13.5F, -10.0F);
             this.leg3.setRotationPoint(-6.0F, 13.5F, 9.0F);
             this.leg4.setRotationPoint(3.0F, 13.5F, 9.0F);
+
+            this.chest1.setRotationPoint(-8.75F, 3.0F, 6.0F);
+            this.chest2.setRotationPoint(5.75F, 3.0F, 6.0F);
         }
 
         return onGround;
@@ -1798,10 +1774,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         long clientGameTime = 0;
         List<String> unrenderedModels = new ArrayList<>();
         ItemStack saddle;
-        Boolean bridle;
-        Boolean harness;
-        Boolean collar;
-        Boolean hasChest;
+        boolean bridle = false;
+        boolean harness = false;
+        boolean collar = false;
+        boolean hasChest = false;
     }
 
     private CowModelData getCowModelData() {

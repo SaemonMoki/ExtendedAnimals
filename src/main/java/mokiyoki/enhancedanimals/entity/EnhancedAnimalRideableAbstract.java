@@ -11,6 +11,7 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
+import mokiyoki.enhancedanimals.items.MilkBottleHalf;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
@@ -29,8 +30,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MilkBucketItem;
+import net.minecraft.item.NameTagItem;
 import net.minecraft.item.SaddleItem;
+import net.minecraft.item.ShootableItem;
+import net.minecraft.item.TieredItem;
+import net.minecraft.item.ToolItem;
+import net.minecraft.item.TridentItem;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -87,6 +94,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     private int totalBoostTime;
     private int maxRideTime;
     private int rideTime;
+    protected float dwarf = -1.0F;
 
     protected int temper;
 
@@ -154,15 +162,16 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         if (i <= 0) {
             return false;
         } else {
-            this.attackEntityFrom(DamageSource.FALL, (float)i);
             if (this.isBeingRidden()) {
                 for(Entity entity : this.getRecursivePassengers()) {
                     entity.attackEntityFrom(DamageSource.FALL, (float)i);
                 }
+            } else {
+                this.attackEntityFrom(DamageSource.FALL, (float)i);
             }
 
             this.playFallSound();
-            return true;
+            return false;
         }
     }
 
@@ -325,14 +334,13 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             return this.saddleAnimal(itemStack, entityPlayer, hand, this);
         }
 
-        if (TEMPTATION_ITEMS.test(itemStack) || BREED_ITEMS.test(itemStack) || item instanceof DebugGenesBook) {
+        if (TEMPTATION_ITEMS.test(itemStack) || BREED_ITEMS.test(itemStack) || item instanceof DebugGenesBook || (this.canHaveBridle() && item instanceof CustomizableBridle) || (this.canHaveBlanket() && isCarpet(itemStack)) || item instanceof CustomizableCollar) {
             return super.processInteract(entityPlayer, hand);
         }
 
         if (this.isBeingRidden()) {
             return super.processInteract(entityPlayer, hand);
-        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge && !((this.canHaveBridle() && item instanceof CustomizableBridle) || (this.canHaveBlanket() && isCarpet(itemStack)) || item instanceof CustomizableCollar || item instanceof BucketItem || item instanceof MilkBucketItem || TEMPTATION_ITEMS.test(itemStack) || BREED_ITEMS.test(itemStack) || item instanceof DebugGenesBook || hand.equals(Hand.OFF_HAND))) {
-//        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge) {
+        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge && !(hand.equals(Hand.OFF_HAND)) && (itemStack == ItemStack.EMPTY || item instanceof TieredItem || item instanceof TridentItem || item instanceof ShootableItem)) {
             this.mountTo(entityPlayer);
             return true;
         }
@@ -445,7 +453,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                     }
 
                     if (this.jumpPower > 0.0F && !this.isAnimalJumping() && this.onGround) {
-                        double d0 = this.getJumpStrength() * (double) this.jumpPower * (double) this.getJumpFactor();
+                        double d0 = this.getJumpHeight() * (double) this.jumpPower * (double) this.getJumpFactor();
                         double d1;
                         if (this.isPotionActive(Effects.JUMP_BOOST)) {
                             d1 = d0 + (double) ((float) (this.getActivePotionEffect(Effects.JUMP_BOOST).getAmplifier() + 1) * 0.1F);
@@ -467,9 +475,9 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                         this.jumpPower = 0.0F;
                     }
 
-                    this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
+                    this.jumpMovementFactor = this.getAIMoveSpeed() * getJumpFactorModifier();
                     if (this.canPassengerSteer()) {
-                        this.setAIMoveSpeed((float) this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue());
+                        this.setAIMoveSpeed((float) this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * getMovementFactorModifier());
                         super.travel(new Vec3d((double) f, p_213352_1_.y, (double) f1));
                     } else if (livingentity instanceof PlayerEntity) {
                         this.setMotion(Vec3d.ZERO);
@@ -498,13 +506,13 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                     this.renderYawOffset = this.rotationYaw;
                     this.rotationYawHead = this.rotationYaw;
                     this.stepHeight = 1.1F;
-                    this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
+                    this.jumpMovementFactor = this.getAIMoveSpeed() * getJumpFactorModifier();
                     if (this.boosting && this.boostTime++ > this.totalBoostTime) {
                         this.boosting = false;
                     }
 
                     if (this.canPassengerSteer()) {
-                        float f = (float)this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * 0.225F;
+                        float f = (float)this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue() * getMovementFactorModifier() * 0.225F;
                         if (this.boosting) {
                             f += f * 1.15F * MathHelper.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
                         }
@@ -535,7 +543,19 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         }
     }
 
-        public boolean boost() {
+    protected float getJumpHeight() {
+        return 1F;
+    }
+
+    protected float getJumpFactorModifier() {
+        return 0.1F;
+    }
+
+    protected float getMovementFactorModifier() {
+        return 1F;
+    }
+
+    public boolean boost() {
         if (this.boosting) {
             return false;
         } else {

@@ -156,8 +156,11 @@ public class GrazingGoal extends Goal {
         }
 
         if (randomSelection) {
-            this.destinationBlock = allFoundPos.get(ThreadLocalRandom.current().nextInt(0, allFoundPos.size()));
-            return true;
+            int range = allFoundPos.size();
+            if (range > 0) {
+                this.destinationBlock = allFoundPos.get(ThreadLocalRandom.current().nextInt(0, range));
+                return true;
+            }
         }
 
         this.waitingTimer = 500;

@@ -15,12 +15,13 @@ import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.HurtByTargetGoal;
@@ -240,7 +241,16 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
             yPos = 0.75D;
         }
 
-        return yPos;
+        float size = this.getAnimalSize();
+        int age = this.getAge() < 108000 ? this.getAge() : 108000;
+        size = (( 3.0F * size * ((float) age/108000.0F)) + size) / 4.0F;
+
+        return yPos*(Math.pow(size, 1.2F));
+    }
+
+    @Override
+    public EntitySize getSize(Pose poseIn) {
+        return EntitySize.flexible(0.9F, 1.2F);
     }
 
     protected void registerData() {
@@ -248,7 +258,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     protected String getSpecies() {
-        return I18n.format("entity.eanimod.enhanced_pig");
+        return "entity.eanimod.enhanced_pig";
     }
 
     protected int getAdultAge() { return 60000;}
@@ -345,7 +355,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     protected  void incrementHunger() {
-        if(sleeping) {
+        if(this.sleeping) {
             hunger = hunger + (1.0F*getHungerModifier());
         } else {
             hunger = hunger + (2.0F*getHungerModifier());
@@ -390,7 +400,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedPig enhancedpig = ENHANCED_PIG.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedpig, inWorld, babyGenes, -60000);
 
         this.world.addEntity(enhancedpig);
@@ -536,6 +546,32 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract implements Enhan
 
         //        0.7F <= size <= 1.5F
         this.setAnimalSize(size);
+    }
+
+    @Override
+    protected float getJumpHeight() {
+        return 0.4F;
+    }
+
+    protected float getJumpFactorModifier() {
+        return 0.05F;
+    }
+
+    @Override
+    protected float getMovementFactorModifier() {
+        float speedMod = 1.0F;
+        float size = this.getAnimalSize();
+        if (size > 1.05F) {
+            speedMod = speedMod/size;
+        }
+
+        float chestMod = 0.0F;
+        ItemStack chestSlot = this.getEnhancedInventory().getStackInSlot(0);
+        if (chestSlot.getItem() == Items.CHEST) {
+            chestMod = (1.0F-((size-0.7F)*1.25F)) * 0.4F;
+        }
+
+        return 0.4F + (speedMod * 0.6F) - chestMod;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
-import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.ai.general.mooshroom.GrazingGoalMooshroom;
 import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
@@ -10,7 +9,6 @@ import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerBlock;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.BreedGoal;
@@ -71,7 +69,6 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             this.playSound(SoundEvents.ENTITY_MOOSHROOM_CONVERT, 2.0F, 1.0F);
             this.toggleReloadTexture();
         }
-
     }
 
     protected void registerData() {
@@ -81,7 +78,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     @Override
     protected String getSpecies() {
-        return I18n.format("entity.eanimod.enhanced_mooshroom");
+        return "entity.eanimod.enhanced_mooshroom";
     }
 
     @Override
@@ -99,7 +96,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         enhancedmooshroom.setMooshroomType(this.setChildMushroomType((enhancedmooshroom)));
         defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -84000);
         enhancedmooshroom.setMotherUUID(this.getUniqueID().toString());

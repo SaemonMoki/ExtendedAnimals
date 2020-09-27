@@ -4,12 +4,10 @@ import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.LlamaGeneticsInitialiser;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
-import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -18,13 +16,14 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.Goal;
@@ -32,7 +31,6 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.merchant.villager.WanderingTraderEntity;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -186,7 +184,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     protected String getSpecies() {
-        return I18n.format("entity.eanimod.enhanced_llama");
+        return "entity.eanimod.enhanced_llama";
     }
 
     protected int getAdultAge() { return 120000;}
@@ -222,7 +220,22 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     public double getMountedYOffset() {
-        return 1.25D;
+        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+        double yPos;
+        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
+            yPos = 1.25D;
+        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
+            yPos = 1.2D;
+        } else {
+            yPos = 1.15D;
+        }
+
+        return yPos*(Math.pow(this.getAnimalSize(), 1.2F));
+    }
+
+    @Override
+    public EntitySize getSize(Pose poseIn) {
+        return EntitySize.flexible(0.8F, 1.87F);
     }
 
     protected boolean isMovementBlocked() {
@@ -296,7 +309,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedLlama enhancedllama = ENHANCED_LLAMA.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedllama, inWorld, babyGenes, -120000);
         enhancedllama.setStrengthAndInventory();
         enhancedllama.setMaxCoatLength();
@@ -347,6 +360,37 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         }
 
         this.setAnimalSize(size);
+    }
+
+    @Override
+    protected float getJumpHeight() {
+        if (this.getEnhancedInventory().getStackInSlot(0).getItem() == Items.CHEST) {
+            return 0.48F;
+        } else {
+            float size = this.getAnimalSize();
+            return 0.48F + (((size - 0.8F) / 0.2F) * 0.1F);
+        }
+    }
+
+    protected float getJumpFactorModifier() {
+        return 0.1F;
+    }
+
+    @Override
+    protected float getMovementFactorModifier() {
+        float speedMod = 1.0F;
+        float size = this.getAnimalSize();
+        if (size < 1.0F) {
+            speedMod = speedMod * size * size;
+        }
+
+        float chestMod = 0.0F;
+        ItemStack chestSlot = this.getEnhancedInventory().getStackInSlot(0);
+        if (chestSlot.getItem() == Items.CHEST) {
+            chestMod = (1.0F-((size-0.7F)*1.25F)) * 0.4F;
+        }
+
+        return 0.4F + (speedMod * 0.4F) - chestMod;
     }
 
     @Override
@@ -789,7 +833,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
             this.despawnDelay = 49999;
             this.setBirthTime("");
-            this.animalInventory.setInventorySlotContents(4, Items.BLUE_CARPET.getDefaultInstance().setDisplayName(new StringTextComponent("Trader's Blanket")));
+            this.animalInventory.setInventorySlotContents(4, new ItemStack(Items.BLUE_CARPET).setDisplayName(new StringTextComponent("Trader's Blanket")));
         }
 
         setStrengthAndInventory();

@@ -1016,8 +1016,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         ItemStack saddle;
         ItemStack bridle;
         ItemStack harness;
-        boolean collar;
-        boolean hasChest;
+        boolean collar = false;
+        boolean hasChest = false;
         float size;
     }
 

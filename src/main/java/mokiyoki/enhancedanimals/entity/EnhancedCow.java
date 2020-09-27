@@ -10,19 +10,16 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
-import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
-import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
-import mokiyoki.enhancedanimals.items.MixableMilkBucket;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
@@ -33,6 +30,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -41,7 +39,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -204,7 +201,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     }
 
     protected String getSpecies() {
-        return I18n.format("entity.eanimod.enhanced_cow");
+        return "entity.eanimod.enhanced_cow";
     }
 
     protected int getAdultAge() { return 84000;}
@@ -228,13 +225,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 //    }
 
     //toggles the reloading
-    protected void toggleReloadTexture() {
-        this.dataManager.set(RESET_TEXTURE, this.getReloadTexture() == true ? false : true);
-    }
-
-    public boolean getReloadTexture() {
-            return this.dataManager.get(RESET_TEXTURE);
-    }
+//    protected void toggleReloadTexture() {
+//        this.dataManager.set(RESET_TEXTURE, this.getReloadTexture() ? false : true);
+//    }
+//
+//    public boolean getReloadTexture() {
+//            return this.dataManager.get(RESET_TEXTURE);
+//    }
 
     @Override
     protected boolean canBePregnant() {
@@ -246,10 +243,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
         return true;
     }
 
-    @Override
-    protected boolean ableToMoveWhileLeashed() {
-        return this.grazingGoal.isSearching();
-    }
+//    @Override
+//    protected boolean ableToMoveWhileLeashed() {
+//        return this.grazingGoal.isSearching();
+//    }
 
     protected SoundEvent getAmbientSound() { return SoundEvents.ENTITY_COW_AMBIENT; }
 
@@ -275,51 +272,91 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     @Override
     public double getMountedYOffset() {
-//        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
-//        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
-//            return 1.0D;
-//        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
-//            return 1.0D;
-//        } else {
-//            return 0.9D;
-//        }
-        int genes[] = this.genetics.getAutosomalGenes();
-        if (this.getIsFemale()) {
+        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+        double yPos;
+        if (this.isFemale()) {
             //female height
-            if (genes[26] == 1 || genes[27] == 1){
-                //dwarf
-                return 0.75D;
-            }
-            return 1.125D;
+                yPos = 1.0D;
         } else {
             //male height
-            if (genes[26] == 1 || genes[27] == 1){
-                //dwarf
-                return 0.75D;
-            }
-            return 1.25D;
+                yPos = 1.1D;
         }
+
+        float size = this.getAnimalSize();
+
+        if (this.dwarf == -1.0F) {
+            Genes sharedGenetics = new Genes(this.dataManager.get(SHARED_GENES));
+            this.dwarf = (sharedGenetics.getAutosomalGene(26) == 1 || sharedGenetics.getAutosomalGene(27) == 1) ? 0.2F : 0.0F;
+        }
+
+        if (this.dwarf>0) {
+            yPos = yPos - this.dwarf;
+        }
+
+        if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
+            yPos = yPos + 0.12D;
+        } else if (saddleSlot.getItem() instanceof CustomizableSaddleEnglish) {
+            yPos = yPos + 0.06D;
+        }
+
+        int age = this.getAge() < 108000 ? this.getAge() : 108000;
+        size = (( 2.0F * size * ((float) age/108000.0F)) + size) / 3.0F;
+
+        return yPos*(Math.pow(size, 1.2F));
+    }
+
+    @Override
+    protected float getJumpHeight() {
+        if (this.dwarf > 0 || this.getEnhancedInventory().getStackInSlot(0).getItem() == Items.CHEST) {
+            return 0.45F;
+        } else {
+            float jump = 0.48F;
+            float size = this.getAnimalSize();
+            if (size < 0.9F) {
+                return jump + (((size - 0.9F) / 0.2F) * 0.1F);
+            }
+            return jump;
+        }
+    }
+
+    @Override
+    protected float getJumpFactorModifier() {
+        return 0.25F;
+    }
+
+    @Override
+    protected float getMovementFactorModifier() {
+        float speedMod = 1.0F;
+        float size = this.getAnimalSize();
+        if (size > 1.05F) {
+            speedMod = 1.05F/size;
+        } else if (size < 1.0F) {
+            speedMod = size/1.0F;
+        }
+
+        if (this.dwarf > 0) {
+            speedMod = speedMod * 0.25F;
+        }
+
+        float chestMod = 0.0F;
+        ItemStack chestSlot = this.getEnhancedInventory().getStackInSlot(0);
+        if (chestSlot.getItem() == Items.CHEST) {
+            chestMod = (1.0F-((size-0.7F)*1.25F)) * 0.4F;
+        }
+
+        return 0.4F + (speedMod * 0.4F) - chestMod;
     }
 
     protected void registerAttributes() {
         super.registerAttributes();
         this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(8.0D);
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
+        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.2D);
     }
 
-//    @Override
-//    public float getRenderScale() {
-//        int age = getAge();
-//        float size = getSize();
-//        if (age < 108000) {
-//            float ageResult = age/108000.0F;
-//            float finalCowSize = ((( 1.5F * ageResult) + 1.5F) / 3.0F) * size;
-//            return finalCowSize;
-//        } else {
-//            return size;
-//        }
-//        return getSize();
-//    }
+    @Override
+    public EntitySize getSize(Pose poseIn) {
+        return EntitySize.flexible(1.0F, 1.25F);
+    }
 
     public void livingTick() {
         super.livingTick();
@@ -328,24 +365,24 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
                 if (hunger <= 24000) {
                     if (--this.timeUntilNextMilk <= 0) {
                         int milk = getMilkAmount();
-                        if (milk < (30*(getAnimalSize()/1.5F))*(maxBagSize/1.5F)) {
+                        if (milk < (30*(getAnimalSize()/1.5F))*(this.maxBagSize/1.5F)) {
                             milk++;
                             setMilkAmount(milk);
-                            this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - maxBagSize)*1200)) * (getAnimalSize()/1.5F)) - 300;
+                            this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*1200)) * (getAnimalSize()/1.5F)) - 300;
 
                             //this takes the number of milk points a cow has over the number possible to make a number between 0 and 1.
-                            float milkBagSize = milk / (30*(getAnimalSize()/1.5F)*(maxBagSize/1.5F));
+                            float milkBagSize = milk / (30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F));
 
-                            this.setBagSize((1.1F*milkBagSize*(maxBagSize-1.0F))+1.0F);
+                            this.setBagSize((1.1F*milkBagSize*(this.maxBagSize-1.0F))+1.0F);
 
                         }
                     }
                 }
 
-                if (timeUntilNextMilk <= 0) {
-                    lactationTimer++;
-                } else if (getMilkAmount() <= 5 && lactationTimer >= -36000) {
-                    lactationTimer--;
+                if (this.timeUntilNextMilk <= 0) {
+                    this.lactationTimer++;
+                } else if (getMilkAmount() <= 5 && this.lactationTimer >= -36000) {
+                    this.lactationTimer--;
                 }
 
                 if (lactationTimer == 0) {
@@ -386,7 +423,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -84000);
         enhancedcow.setMotherUUID(this.getUniqueID().toString());
         enhancedcow.configureAI();
@@ -609,6 +646,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
             this.enhancedAnimalTextures.clear();
             this.setTexturePaths();
             this.reload = (this.reload == true ? false : true);
+            this.colouration.setMelaninColour(-1);
+            this.colouration.setPheomelaninColour(-1);
         }
 
         return getCompiledTextures("enhanced_cow");
@@ -1196,9 +1235,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
                 int resultingMilkAmount = currentMilk - refillAmount;
                 this.setMilkAmount(resultingMilkAmount);
 
-                float milkBagSize = resultingMilkAmount / (30*(getAnimalSize()/1.5F)*(maxBagSize/1.5F));
+                float milkBagSize = resultingMilkAmount / (30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F));
 
-                this.setBagSize((1.1F*milkBagSize*(maxBagSize-1.0F))+1.0F);
+                this.setBagSize((1.1F*milkBagSize*(this.maxBagSize-1.0F))+1.0F);
             }
 
             int resultAmount = bucketSize - maxRefill + refillAmount;
@@ -1272,12 +1311,17 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract implements Enhan
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
 
-
         setMooshroomUUID(compound.getString("MooshroomID"));
 
         this.motherUUID = compound.getString("MotherUUID");
 
-//        this.setSaddled(compound.getBoolean("Saddle"));
+        //this takes the number of milk points a cow has over the number possible to make a number between 0 and 1.
+        float milkBagSize = this.getMilkAmount() / (30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F));
+        this.setBagSize((1.1F*milkBagSize*(this.maxBagSize-1.0F))+1.0F);
+
+        ListNBT geneList = compound.getList("Genes", 10);
+
+        this.dwarf = (geneList.getCompound(2+26).getInt("Agene") == 1 || geneList.getCompound(2+27).getInt("Agene") == 1) ? 0.2F : 0.0F;
 
         configureAI();
     }

@@ -32,15 +32,15 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CO
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIMAL_CONTAINER;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOSHROOM;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOBLOOM;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CAT;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_BEE;
+//import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
+//import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CAT;
+//import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_BEE;
 
 /**
  * Created by moki on 24/08/2018.
@@ -58,9 +58,9 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_LLAMA, RenderEnhancedLlama::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_COW, RenderEnhancedCow::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_PIG, RenderEnhancedPig::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_HORSE, RenderEnhancedHorse::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_CAT, RenderEnhancedCat::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_BEE, RenderEnhancedBee::new);
+//        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_HORSE, RenderEnhancedHorse::new);
+//        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_CAT, RenderEnhancedCat::new);
+//        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_BEE, RenderEnhancedBee::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOSHROOM, RenderEnhancedMooshroom::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOBLOOM, RenderEnhancedMoobloom::new);
 

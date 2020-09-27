@@ -3,9 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
-import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitPanicGoal;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitRaidFarmGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.RabbitGeneticsInitialiser;
@@ -15,9 +13,10 @@ import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.controller.JumpController;
@@ -293,13 +292,18 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     @OnlyIn(Dist.CLIENT)
     public int getNoseTwitch() { return this.noseTwitch[3]; }
 
+    @Override
+    public EntitySize getSize(Pose poseIn) {
+        return EntitySize.flexible(0.4F, 0.5F);
+    }
+
     protected void registerData() {
         super.registerData();
         this.dataManager.register(COAT_LENGTH, 0);
 //        this.dataManager.register(NOSE_WIGGLING, false);
     }
 
-    protected String getSpecies() { return I18n.format("entity.eanimod.enhanced_rabbit"); }
+    protected String getSpecies() { return "entity.eanimod.enhanced_rabbit"; }
 
     protected int getAdultAge() { return 48000;}
 
@@ -540,7 +544,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getIsFemale(), this.mateGender, this.mateGenetics);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedrabbit, inWorld, babyGenes, -48000);
         enhancedrabbit.setMaxCoatLength();
         enhancedrabbit.currentCoatLength = enhancedrabbit.maxCoatLength;

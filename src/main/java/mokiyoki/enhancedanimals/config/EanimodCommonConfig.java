@@ -37,6 +37,7 @@ public class EanimodCommonConfig implements IEanimodConfig{
         public final ForgeConfigSpec.EnumValue<HungerConfigEnum> hungerScaling;
         public final ForgeConfigSpec.IntValue wildTypeChance;
         public final ForgeConfigSpec.BooleanValue tabsOnTop;
+        public final ForgeConfigSpec.BooleanValue spawnWithRandomBiome;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaPigs;
         public final ForgeConfigSpec.BooleanValue spawnGeneticPigs;
@@ -63,6 +64,10 @@ public class EanimodCommonConfig implements IEanimodConfig{
         public final ForgeConfigSpec.BooleanValue spawnGeneticRabbits;
         public final ForgeConfigSpec.IntValue gestationDaysRabbit;
 
+        public final ForgeConfigSpec.BooleanValue spawnVanillaHorses;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticHorses;
+        public final ForgeConfigSpec.IntValue gestationDaysHorse;
+
         public CommonConfig(ForgeConfigSpec.Builder builder) {
             builder.push("general");
             omnigenders = builder
@@ -78,6 +83,8 @@ public class EanimodCommonConfig implements IEanimodConfig{
                     .defineInRange("How random the genes should be, 100 is all wildtype animals, 0 is completely random:", 90, 0, 100);
             tabsOnTop = builder
                     .define("Animal inventory tabs will be on the top instead of side:", true);
+            spawnWithRandomBiome = builder
+                    .define("Animals will spawn with random biome type", false);
             builder.pop();
 
             builder.push("pig");
@@ -133,6 +140,15 @@ public class EanimodCommonConfig implements IEanimodConfig{
             spawnVanillaRabbits = builder
                     .define("Allow vanilla minecraft Rabbits to spawn/exist:", false);
             spawnGeneticRabbits = builder
+                    .define("Allow Genetic Rabbits to continue to spawn/exist:", true);
+            builder.pop();
+
+            builder.push("horse");
+            gestationDaysHorse = builder
+                    .defineInRange("How many ticks it takes for a rabbit to give birth, 24000 = 1 Minecraft Day:", 24000, 1000, Integer.MAX_VALUE);
+            spawnVanillaHorses = builder
+                    .define("Allow vanilla minecraft Rabbits to spawn/exist:", false);
+            spawnGeneticHorses = builder
                     .define("Allow Genetic Rabbits to continue to spawn/exist:", true);
             builder.pop();
         }

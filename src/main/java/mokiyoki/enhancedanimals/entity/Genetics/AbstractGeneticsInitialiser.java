@@ -9,6 +9,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.gen.carver.WorldCarver;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -23,7 +24,7 @@ public abstract class AbstractGeneticsInitialiser {
     protected Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed, List<Breed> breeds) {
         Biome biome = world.getBiome(pos);
 
-        Genes localWildType = generateLocalWildGenetics(biome, /*world.getWorldInfo().getGenerator() == WorldType.FLAT ||*/ biome == ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.getLocation()));
+        Genes localWildType = generateLocalWildGenetics(biome,biome == ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.getLocation()) || EanimodCommonConfig.COMMON.spawnWithRandomBiome.get());
 
         if (generateBreed) {
             int areaSize = 1; // stand-in for config option 1 gives 1 breed per chunk has to be at least 1

@@ -137,6 +137,8 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     public Boolean isAnimalSleeping() {
         if (this.dataManager.get(HAS_SADDLE)) {
             return false;
+        } else if (this.isBeingRidden()) {
+            return false;
         }
             return super.isAnimalSleeping();
     }

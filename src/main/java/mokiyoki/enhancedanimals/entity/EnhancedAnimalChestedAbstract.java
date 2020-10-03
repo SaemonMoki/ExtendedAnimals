@@ -65,7 +65,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     @Override
     public Boolean isAnimalSleeping() {
-        if (this.dataManager.get(HAS_CHEST)) {
+        if (this.hasChest()) {
             return false;
         }
         return super.isAnimalSleeping();
@@ -77,17 +77,20 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     }
 
     public boolean hasChest() {
-        return this.dataManager.get(HAS_CHEST);
+        if (this.animalInventory!=null) {
+            return this.animalInventory.getStackInSlot(0).getItem() == Items.CHEST;
+        }
+        return false;
     }
 
-    public void setChested(boolean chested) {
-        this.dataManager.set(HAS_CHEST,chested);
-        if (chested && !this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
-            this.enhancedAnimalTextures.add(CHEST_TEXTURE);
-        } else if (!chested && this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
-            this.enhancedAnimalTextures.remove(CHEST_TEXTURE);
-        }
-    }
+//    public void setChested(boolean chested) {
+//        this.dataManager.set(HAS_CHEST,chested);
+//        if (chested && !this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
+//            this.enhancedAnimalTextures.add(CHEST_TEXTURE);
+//        } else if (!chested && this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
+//            this.enhancedAnimalTextures.remove(CHEST_TEXTURE);
+//        }
+//    }
 
     @Override
     public boolean canHaveBlanket() {
@@ -110,6 +113,21 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         } else {
             if(previousBlanketTextures != null){
                 this.equipmentTextures.remove(Equipment.BLANKET);
+            }
+        }
+    }
+
+    public void setChest(boolean chested) {
+        List<String> previousChestTexture = equipmentTextures.get(Equipment.CHEST);
+        List<String> newChestTexture = getChestTexture();
+
+        if(chested) {
+            if(previousChestTexture == null || !previousChestTexture.containsAll(newChestTexture)){
+                this.equipmentTextures.put(Equipment.CHEST, newChestTexture);
+            }
+        } else {
+            if(previousChestTexture != null){
+                this.equipmentTextures.remove(Equipment.CHEST);
             }
         }
     }
@@ -145,7 +163,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         if (!itemstack.isEmpty()) {
             Item item = itemstack.getItem();
             if (this.canHaveChest() && !this.hasChest() && item == Items.CHEST) {
-                this.setChested(true);
+                this.setChest(true);
                 this.playChestEquipSound();
                 this.animalInventory.setInventorySlotContents(0, new ItemStack(itemstack.getItem(), 1));
                 this.initInventory();
@@ -211,19 +229,20 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     protected void playChestEquipSound() {
         this.playSound(SoundEvents.ENTITY_DONKEY_CHEST, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+
     }
 
     @Override
     public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
         if (inventorySlot == 499) {
             if (this.hasChest() && itemStackIn.isEmpty()) {
-                this.setChested(false);
+//                this.setChested(false);
                 this.initInventory();
                 return true;
             }
 
             if (!this.hasChest() && itemStackIn.getItem() == Blocks.CHEST.asItem()) {
-                this.setChested(true);
+//                this.setChested(true);
                 this.initInventory();
                 return true;
             }
@@ -257,14 +276,14 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
-        compound.putBoolean("Chested", this.hasChest());
+//        compound.putBoolean("Chested", this.hasChest());
         compound.putBoolean("Bridled", this.hasBridle());
     }
 
 
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
-        this.setChested(compound.getBoolean("Chested"));
+//        this.setChested(compound.getBoolean("Chested"));
         this.setBridle(compound.getBoolean("Bridled"));
     }
 
@@ -404,4 +423,19 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
         return bridleTextures;
     }
+
+    private List<String> getChestTexture() {
+        List<String> chestTexture = new ArrayList<>();
+
+        if (this.getEnhancedInventory() != null) {
+            ItemStack chestSlot = this.animalInventory.getStackInSlot(0);
+            if (chestSlot != ItemStack.EMPTY) {
+                chestTexture.add(CHEST_TEXTURE);
+            }
+        }
+
+        return chestTexture;
+    }
+
+
 }

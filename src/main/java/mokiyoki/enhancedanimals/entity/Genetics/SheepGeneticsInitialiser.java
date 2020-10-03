@@ -521,6 +521,6 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[67] = (1);
         }
 
-        return new Genes(autosomalGenes);
+        return new Genes("1,1+4,4,2,1,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,2,1,1,2,1,2,1,2,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,3,1,1");
     }
 }

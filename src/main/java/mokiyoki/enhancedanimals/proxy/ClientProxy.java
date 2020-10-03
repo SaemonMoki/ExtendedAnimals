@@ -38,7 +38,7 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOB
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
-//import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
 //import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CAT;
 //import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_BEE;
 
@@ -58,7 +58,7 @@ public class ClientProxy implements IProxy {
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_LLAMA, RenderEnhancedLlama::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_COW, RenderEnhancedCow::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_PIG, RenderEnhancedPig::new);
-//        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_HORSE, RenderEnhancedHorse::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_HORSE, RenderEnhancedHorse::new);
 //        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_CAT, RenderEnhancedCat::new);
 //        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_BEE, RenderEnhancedBee::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOSHROOM, RenderEnhancedMooshroom::new);

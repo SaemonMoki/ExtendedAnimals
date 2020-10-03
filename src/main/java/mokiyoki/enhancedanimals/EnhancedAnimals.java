@@ -14,6 +14,7 @@ import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
 import mokiyoki.enhancedanimals.config.EanimodConfigHelper;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
+import mokiyoki.enhancedanimals.entity.EnhancedHorse;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
 import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
@@ -53,6 +54,7 @@ import java.nio.file.Path;
 import static mokiyoki.enhancedanimals.util.Reference.MODID;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOBLOOM;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOSHROOM;
@@ -136,6 +138,7 @@ public class EnhancedAnimals {
         GlobalEntityTypeAttributes.put(ENHANCED_MOOSHROOM, EnhancedMooshroom.prepareAttributes().create());
         GlobalEntityTypeAttributes.put(ENHANCED_MOOBLOOM, EnhancedMoobloom.prepareAttributes().create());
         GlobalEntityTypeAttributes.put(ENHANCED_PIG, EnhancedPig.prepareAttributes().create());
+        GlobalEntityTypeAttributes.put(ENHANCED_HORSE, EnhancedHorse.prepareAttributes().create());
 
 //        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
 //        LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());

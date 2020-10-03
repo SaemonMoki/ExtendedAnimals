@@ -13,6 +13,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityLlamaSpit;
 //import mokiyoki.enhancedanimals.entity.EnhancedHorse;
+import mokiyoki.enhancedanimals.entity.EnhancedHorse;
 import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
 import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
@@ -77,7 +78,7 @@ public class EventRegistry {
     public static final EntityType<EnhancedMooshroom> ENHANCED_MOOSHROOM = EntityType.Builder.create(EnhancedMooshroom::new, EntityClassification.CREATURE).size(1.0F, 1.5F).build(Reference.MODID + ":enhanced_mooshroom");
     public static final EntityType<EnhancedMoobloom> ENHANCED_MOOBLOOM = EntityType.Builder.create(EnhancedMoobloom::new, EntityClassification.CREATURE).size(1.0F, 1.5F).build(Reference.MODID + ":enhanced_moobloom");
     public static final EntityType<EnhancedPig> ENHANCED_PIG = EntityType.Builder.create(EnhancedPig::new, EntityClassification.CREATURE).size(0.9F, 0.9F).build(Reference.MODID + ":enhanced_pig");
-//    public static final EntityType<EnhancedHorse> ENHANCED_HORSE = EntityType.Builder.create(EnhancedHorse::new, EntityClassification.CREATURE).size(1.0F, 1.6F).build(Reference.MODID + ":enhanced_horse");
+    public static final EntityType<EnhancedHorse> ENHANCED_HORSE = EntityType.Builder.create(EnhancedHorse::new, EntityClassification.CREATURE).size(1.0F, 1.6F).build(Reference.MODID + ":enhanced_horse");
 //    public static final EntityType<EnhancedCat> ENHANCED_CAT = EntityType.Builder.create(EnhancedCat::new, EntityClassification.CREATURE).size(0.6F, 0.7F).build(Reference.MODID + ":enhanced_cat");
 //    public static final EntityType<EnhancedBee> ENHANCED_BEE = EntityType.Builder.create(EnhancedBee::new, EntityClassification.CREATURE).size(0.4F, 0.4F).build(Reference.MODID + ":enhanced_bee");
 
@@ -265,7 +266,7 @@ public class EventRegistry {
         event.getRegistry().register(ENHANCED_MOOSHROOM.setRegistryName("enhanced_mooshroom"));
         event.getRegistry().register(ENHANCED_MOOBLOOM.setRegistryName("enhanced_moobloom"));
         event.getRegistry().register(ENHANCED_PIG.setRegistryName("enhanced_pig"));
-//        event.getRegistry().register(ENHANCED_HORSE.setRegistryName("enhanced_horse"));
+        event.getRegistry().register(ENHANCED_HORSE.setRegistryName("enhanced_horse"));
 //        event.getRegistry().register(ENHANCED_CAT.setRegistryName("enhanced_cat"));
         event.getRegistry().register(ENHANCED_ENTITY_EGG_ENTITY_TYPE.setRegistryName("enhanced_entity_egg"));
         event.getRegistry().register(ENHANCED_LLAMA_SPIT.setRegistryName("enhanced_entity_llama_spit"));

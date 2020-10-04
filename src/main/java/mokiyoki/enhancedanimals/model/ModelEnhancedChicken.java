@@ -487,7 +487,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         int comb = 0;  // [0, 1, 2, 3, 4, 5, 6] [none, single, rose, rose2, pea, walnut, v]
 //        int chin = 0;  // [0, 1, 2, 3]    [none, waddles, peacomb waddles, beard waddles]
         int beard = 0; // [0, 1, 2 ]            [none, beard, naked neck beard]
-        float size = 1;  // [] [
+        float size = chickenModelData.isFemale ? chickenModelData.size*0.975F : chickenModelData.size*1.025F;  // [] [
         int cSize = 0; // [0, 1, 2, 3, 4]
         int wSize = 0; // [0, 1, 2, 3, 4]
         int wingSize = 0; // [0, 1, 2]
@@ -569,34 +569,34 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }
 
             //chicken size [ 0.5 to 1 ] genes 74-79 & 7 & 8
-            if(genes[74] == 1){
-                size = size - 0.05F;
-            }else if(genes[74] == 2){
-                size = size - 0.025F;
-            }
-            if(genes[75] == 1){
-                size = size - 0.05F;
-            }else if(genes[75] == 2){
-                size = size - 0.025F;
-            }
-
-            if(genes[76] == 1 || genes[77] == 1){
-                size = size - 0.05F;
-            }else if(genes[76] == 3 && genes[77] == 3){
-                size = size - 0.1F;
-            }
-
-            if(genes[78] == 1 || genes[79] == 1){
-                size = size * 0.94F;
-            }
-
-            if(genes[7] == 2){
-                size = size * 0.9F;
-            }
-
-            if(genes[8] == 2){
-                size = size * 0.75F;
-            }
+//            if(genes[74] == 1){
+//                size = size - 0.05F;
+//            }else if(genes[74] == 2){
+//                size = size - 0.025F;
+//            }
+//            if(genes[75] == 1){
+//                size = size - 0.05F;
+//            }else if(genes[75] == 2){
+//                size = size - 0.025F;
+//            }
+//
+//            if(genes[76] == 1 || genes[77] == 1){
+//                size = size - 0.05F;
+//            }else if(genes[76] == 3 && genes[77] == 3){
+//                size = size - 0.1F;
+//            }
+//
+//            if(genes[78] == 1 || genes[79] == 1){
+//                size = size * 0.94F;
+//            }
+//
+//            if(genes[7] == 2){
+//                size = size * 0.9F;
+//            }
+//
+//            if(genes[8] == 2){
+//                size = size * 0.75F;
+//            }
 
             //comb size [80 and 81 small / 82 and 83 large]
             if (genes[80] == 2) {
@@ -1215,6 +1215,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         int blink = 0;
         int lastAccessed = 0;
         long clientGameTime = 0;
+        float size = 1.0F;
+        boolean isFemale = true;
         List<String> unrenderedModels = new ArrayList<>();
 //        int dataReset = 0;
         boolean collar = false;
@@ -1257,6 +1259,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             chickenModelData.blink = enhancedChicken.getBlink();
             chickenModelData.birthTime = enhancedChicken.getBirthTime();
             chickenModelData.collar = hasCollar(enhancedChicken.getEnhancedInventory());
+            chickenModelData.size = enhancedChicken.getAnimalSize();
+            chickenModelData.isFemale = enhancedChicken.isFemale();
             chickenModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedChicken.world).getWorldInfo()).getGameTime());
 
             if(chickenModelData.chickenGenes != null) {

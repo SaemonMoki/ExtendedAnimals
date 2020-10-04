@@ -242,11 +242,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     private boolean resetTexture = true;
 
-    private float chickenSize = 0.0F;
-
     public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, World worldIn) {
         super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), false);
-        this.setChickenSize();
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
         this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
         this.setPathPriority(PathNodeType.WATER, 0.0F);
@@ -470,7 +467,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         }
     }
 
-    private void setChickenSize(){
+    @Override
+    protected void initilizeAnimalSize(){
         float size = 1.0F;
 
         int[] genes = this.genetics.getAutosomalGenes();
@@ -525,7 +523,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
 
         // size is [ 0.5076 - 1.0F]
-        this.chickenSize = size;
         this.setAnimalSize(size);
     }
 
@@ -767,7 +764,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                 int ptrncolours = 10; //number of pattern colours
 
                 int moorheadtoggle = 0;
-                int Melanin = 0;
+                int melanin = 0;
 
                 int face = 0;
                 int ears = 0;
@@ -2382,9 +2379,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         }
 
         // size is [ 0.5076 - 1.0F]
-        if (chickenSize < 0.67) {
+        if (this.getAnimalSize() < 0.67) {
             meatSize = bodyType + 1;
-        } else if (chickenSize < 0.89) {
+        } else if (this.getAnimalSize() < 0.89) {
             meatSize = bodyType + 2;
         } else {
             meatSize = bodyType + 3;
@@ -2455,10 +2452,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     @Override
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
-    }
-
-    protected void initilizeAnimalSize() {
-        setChickenSize();
     }
 
     @Override

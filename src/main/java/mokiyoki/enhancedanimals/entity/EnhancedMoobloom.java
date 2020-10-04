@@ -119,7 +119,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
 
             enhancedcow.setGenes(this.getGenes());
             enhancedcow.setSharedGenes(this.getGenes());
-            enhancedcow.setCowSize();
+            enhancedcow.initilizeAnimalSize();
             enhancedcow.setGrowingAge(this.growingAge);
             enhancedcow.setEntityStatus(this.getEntityStatus());
             enhancedcow.configureAI();

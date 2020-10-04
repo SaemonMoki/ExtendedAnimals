@@ -1620,8 +1620,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             this.genetics = createInitialBreedGenes(this.world, new BlockPos(this), this.breed);
             setInitialDefaults();
             this.setBirthTime(String.valueOf(0));
-            this.setGrowingAge(0);
-            this.ageUp(0, true);
+            if (this.growingAge < 0) {
+                this.setGrowingAge(0);
+                this.ageUp(0, true);
+            }
         } else if (this.genetics.getAutosomalGene(0) == 0) {
             this.genetics = createInitialGenes(this.world, new BlockPos(this), true);
             setInitialDefaults();

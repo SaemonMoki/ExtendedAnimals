@@ -391,21 +391,23 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             this.font.drawString("Age:" + age, i + 99, j + 20, 4210752);
 
             String sireName = this.enhancedAnimalInfo.sire;
+            int s = sireName.length();
             String damName = this.enhancedAnimalInfo.dam;
-            if (sireName.length() > 8) {
+            int d = damName.length();
+            if (s > 8) {
                 this.font.drawString("Sire:", i + 99, j + 30, 4210752);
-                this.font.drawString(sireName.substring(0, 12), i + 99, j + 40, 4210752);
-                if (damName.length() > 8) {
+                this.font.drawString(s > 12 ? sireName.substring(0, 12) : sireName, i + 99, j + 40, 4210752);
+                if (d > 8) {
                     this.font.drawString("Dam:", i + 99, j + 51, 4210752);
-                    this.font.drawString(damName.substring(0, 12), i + 99, j + 60, 4210752);
+                    this.font.drawString(d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 60, 4210752);
                 } else {
                     this.font.drawString("Dam:" + damName, i + 99, j + 50, 4210752);
                 }
             } else {
                 this.font.drawString("Sire:" + sireName, i + 99, j + 30, 4210752);
-                if (damName.length() > 8) {
+                if (d > 8) {
                     this.font.drawString("Dam:", i + 99, j + 41, 4210752);
-                    this.font.drawString(damName.substring(0, 12), i + 99, j + 50, 4210752);
+                    this.font.drawString( d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 50, 4210752);
                 } else {
                     this.font.drawString("Dam:" + damName, i + 99, j + 40, 4210752);
                 }

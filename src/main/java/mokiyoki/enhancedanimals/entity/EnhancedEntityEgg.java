@@ -134,6 +134,7 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
                 enhancedchicken.setGenes(new Genes(getGenes()));
                 enhancedchicken.setSharedGenesFromEntityEgg(getGenes());
                 enhancedchicken.setGrowingAge(-60000);
+                enhancedchicken.initilizeAnimalSize();
                 enhancedchicken.setBirthTime(String.valueOf(this.world.getGameTime()));
                 enhancedchicken.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
                 enhancedchicken.setSireName(getSire());

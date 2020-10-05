@@ -111,9 +111,6 @@ public class EnhancedRendererModelNew extends ModelRenderer {
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender, Boolean pushPopEntireChain, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (this.showModel) {
             if (!this.cubeList.isEmpty() || !this.childModels.isEmpty()) {
-//                if (pushPopEntireChain) {
-//                    matrixStackIn.push();
-//                }
 
                 matrixStackIn.push();
 
@@ -122,14 +119,6 @@ public class EnhancedRendererModelNew extends ModelRenderer {
                 if (mapOfScale != null) {
                     if (mapOfScale.containsKey(this.boxName)) {
                         List<Float> scaleAmounts = mapOfScale.get(this.boxName);
-//                        Float scaling = scaleAmounts.get(0);
-//                        if (scaling != null) {
-//                            if (scaling == 2.0F) {
-//                                matrixStackIn.scale(0.8F, scaling, 2.0F);
-//                            } else {
-//                                matrixStackIn.scale(scaling, scaling, scaling);
-//                            }
-//                        }
                         if (scaleAmounts.get(0) != null && scaleAmounts.get(1) != null && scaleAmounts.get(2) != null) {
                             matrixStackIn.scale(scaleAmounts.get(0), scaleAmounts.get(1), scaleAmounts.get(2));
                         }
@@ -149,10 +138,6 @@ public class EnhancedRendererModelNew extends ModelRenderer {
                 }
 
                 matrixStackIn.pop();
-
-//                if (pushPopEntireChain) {
-//                    matrixStackIn.pop();
-//                }
             }
         }
     }

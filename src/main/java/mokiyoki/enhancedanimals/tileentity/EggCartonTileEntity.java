@@ -41,6 +41,10 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.IntStream;
 
+@OnlyIn(
+        value = Dist.CLIENT,
+        _interface = IChestLid.class
+)
 public class EggCartonTileEntity extends LockableLootTileEntity implements ISidedInventory, IChestLid, ITickableTileEntity {
     private static final int[] SLOTS = IntStream.range(0, 16).toArray();
     private NonNullList<ItemStack> items = NonNullList.withSize(16, ItemStack.EMPTY);

@@ -52,7 +52,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //Extension [ Dom.Black, Wildtype+, red, indusWhite, indusRed ]
+        //Extension [ Dom.Black, Wildtype+, red, IndusWildtype+, indusRed ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
@@ -76,9 +76,19 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[3] = (1);
         }
 
-        //Agouti [ Black enhancer, Wildtype+, white-bellied fawn, brindle ]
+        /**
+         *  Agouti for the most part requires E+/E+ or E+/e to express
+         *  4 : Br/_ : brindle is most dominant agouti allele
+         *  1 : black patterned makes a dark version of the wildtype pattern
+         *  2 : wildtype : black bulls with eel stripe and mostly red cows with darker points
+         *  3 : white-bellied agouti : cows are a sort of light grey/brown version of fawn, bulls are similar in colour with black being mostly on the shoulder
+         *  4 : fawn : lighter coloured cattle with much lighter bellies, cows are almost all red, bulls have similar colour to that of A+/A+ cows
+         *  5 :
+         */
+
+        //Agouti [ Black enhancer, Wildtype+, white-bellied fawn, brindle, recessive black ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
             if (wildType == 1){

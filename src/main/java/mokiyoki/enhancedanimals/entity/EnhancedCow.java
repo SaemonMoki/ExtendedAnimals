@@ -59,11 +59,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     //avalible UUID spaces : [ S X X X X 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
-//    private static final DataParameter<Boolean> SADDLED = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
-//    private static final DataParameter<Integer> BOOST_TIME = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
     protected static final DataParameter<Boolean> RESET_TEXTURE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> MOOSHROOM_UUID = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
-//    private static final DataParameter<String> HORN_ALTERATION = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
 
     private static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
@@ -139,23 +136,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UNBOUNDHAY_BLOCK);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
-    protected boolean resetTexture = true;
-
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     protected boolean aiConfigured = false;
-
     private String mooshroomUUID = "0";
-
     protected String motherUUID = "";
-
     protected GrazingGoal grazingGoal;
-
-//    private boolean boosting;
-//    private int boostTime;
-//    private int totalBoostTime;
-
-    protected Boolean reload = false; //used in a toggle manner
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
@@ -224,19 +210,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     public String getMooshroomUUID() { return mooshroomUUID; }
 
-//    public void setReloadTexture(Boolean resetTexture) {
-//        this.dataManager.set(RESET_TEXTURE, resetTexture);
-//    }
-
-    //toggles the reloading
-//    protected void toggleReloadTexture() {
-//        this.dataManager.set(RESET_TEXTURE, this.getReloadTexture() ? false : true);
-//    }
-//
-//    public boolean getReloadTexture() {
-//            return this.dataManager.get(RESET_TEXTURE);
-//    }
-
     @Override
     protected boolean canBePregnant() {
         return true;
@@ -246,11 +219,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     protected boolean canLactate() {
         return true;
     }
-
-//    @Override
-//    protected boolean ableToMoveWhileLeashed() {
-//        return this.grazingGoal.isSearching();
-//    }
 
     protected SoundEvent getAmbientSound() { return SoundEvents.ENTITY_COW_AMBIENT; }
 
@@ -367,7 +335,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         super.livingTick();
         if (!this.world.isRemote) {
             if (getEntityStatus().equals(EntityState.MOTHER.toString())) {
-                if (hunger <= 24000) {
+                if (this.hunger <= 24000) {
                     if (--this.timeUntilNextMilk <= 0) {
                         int milk = getMilkAmount();
                         if (milk < (30*(getAnimalSize()/1.5F))*(this.maxBagSize/1.5F)) {
@@ -399,7 +367,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected boolean sleepingConditional() {
-        return (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && awokenTimer == 0 && !sleeping);
+        return (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && this.awokenTimer == 0 && !this.sleeping);
     }
 
     protected void initialMilk() {
@@ -435,8 +403,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
         this.world.addEntity(enhancedcow);
     }
-
-    protected void setCowSize(){
+    @Override
+    protected void initilizeAnimalSize() {
         int[] genes = this.genetics.getAutosomalGenes();
         float size = 1.0F;
 
@@ -662,8 +630,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getSharedGenes() != null) {
-            int[] genesForText = getSharedGenes().getAutosomalGenes();
+            int[] gene = getSharedGenes().getAutosomalGenes();
 
+            boolean isFemale = this.isFemale();
             int base = 0;
             int red = 1;
             int black = 0;
@@ -687,6 +656,31 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 uuidArry = mooshroomUUIDForTexture.toCharArray();
             }
 
+            if (gene[6] == 2 || gene[7] == 2) {
+                //dominant red
+            } else if (gene[0] == 1 || gene[1] == 1) {
+                //black
+            } else if (gene[0] == 2 || gene[1] == 2) {
+                //red and black
+                if (gene[4] == 4 || gene[5] == 4) {
+                    //brindle
+                } else if (gene[4] == 1 || gene[5] == 1) {
+                    //black patterned wildtype
+                } else if (gene[4] == 2 || gene[5] == 2) {
+                    //wildtype patterning
+                    if (isFemale) {
+                        //redish patterning
+                    } else {
+                        //black pattern with eel stripe
+                    }
+                } else if (gene[4] == 3 || gene[5] == 3) {
+                    //white-bellied agouti
+
+                }
+            }
+
+
+/**
             //dominant red
             if (genesForText[6] == 1 || genesForText[7] == 1){
                 //make red instead maybe flip dominant red toggle?
@@ -699,7 +693,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //                    red = 2;
 
                     //Agouti
-                    if (genesForText[4] == 1 || genesForText[5] == 1) {
+                    if ((genesForText[4] == 4 || genesForText[5] == 4) && genesForText[0] == 2 && genesForText[1] == 2) {
+                        //brindle
+                        black = 6;
+                    } else if (genesForText[4] == 1 || genesForText[5] == 1) {
                         if (genesForText[4] == 2 || genesForText[5] == 2) {
                             //darker wildtype
                             //or other incomplete dominance
@@ -711,15 +708,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     } else if (genesForText[4] == 2 || genesForText[5] == 2) {
                         //wildtype
                         black = 2;
-                    } else if (genesForText[4] == 3 || genesForText[5] == 3) {
+                    } else {
                         //white bellied fawn (i believe this is like silver)
                         black = 2;
 //                        red = 0;
                         base = 2;
                         //TODO set up something here to dilute the colour of red to a cream or white
-                    } else {
-                        //brindle (there might be a recessive black but no one seems to know lol)
-                        black = 6;
                     }
 
                 } else {
@@ -915,19 +909,21 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 }
             }
 
+ */
+
             //these alter texture to fit model changes
-            if(genesForText[26] == 1 || genesForText[27] == 1) {
+            if(gene[26] == 1 || gene[27] == 1) {
                 hooves = 1;
             }
 
-            if (genesForText[48] == 1 || genesForText[49] == 1){
+            if (gene[48] == 1 || gene[49] == 1){
                 coat = 1;
             }else{
-                if (genesForText[50] == 2 && genesForText[51] == 2) {
+                if (gene[50] == 2 && gene[51] == 2) {
                     coat = 2;
-                } else if (genesForText[52] == 2 && genesForText[53] == 2) {
+                } else if (gene[52] == 2 && gene[53] == 2) {
                     coat = 2;
-                }else if ((genesForText[50] == 2 || genesForText[51] == 2) && (genesForText[52] == 2 || genesForText[53] == 2)){
+                }else if ((gene[50] == 2 || gene[51] == 2) && (gene[52] == 2 || gene[53] == 2)){
                     coat = 2;
                 }
             }
@@ -957,18 +953,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     protected void setAlphaTexturePaths() {
     }
 
-    @Override
-    protected void initilizeAnimalSize() {
-        setCowSize();
-    }
-
     @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
         this.colouration = super.getRgb();
         if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
             Genes genes = getSharedGenes();
             if (genes != null) {
-                int[] genesForText = genes.getAutosomalGenes();
+                int[] gene = genes.getAutosomalGenes();
                 String extention = "wildtype";
 
                 float blackHue = 0.0F;
@@ -979,22 +970,22 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 float redSaturation = 0.57F;
                 float redBrightness = 0.55F;
 
-                if (genesForText[0] == 1 || genesForText[1] == 1) {
+                if (gene[0] == 1 || gene[1] == 1) {
                     //black cow
                     redHue = blackHue;
                     redSaturation = blackSaturation;
                     redBrightness = blackBrightness;
                     extention = "black";
-                } else if (genesForText[0] != 2 && genesForText[1] != 2) {
-                    if (genesForText[0] == 3 || genesForText[1] == 3) {
-                        if (genesForText[0] != 4 && genesForText[1] != 4) {
+                } else if (gene[0] != 2 && gene[1] != 2) {
+                    if (gene[0] == 3 || gene[1] == 3) {
+                        if (gene[0] != 4 && gene[1] != 4) {
                             //red cow as in red angus, red hereford
                             blackHue = Colouration.mixColours(redHue, 0.0F, 0.5F);
                             blackSaturation = Colouration.mixColours(redSaturation, 1.0F, 0.5F);
                             blackBrightness = Colouration.mixColours(redBrightness, blackBrightness, 0.75F);
                             extention = "red";
                         } //else red and black wildtype colouration
-                    } else if (genesForText[0] == 4 || genesForText[1] == 4) {
+                    } else if (gene[0] == 4 || gene[1] == 4) {
                         //cow is grey as in brahman, guzerat, and probably hungarian grey
                         redHue = 0.1F;
                         redSaturation = 0.075F;
@@ -1007,7 +998,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //                    }
                         //else its "blue" possibly carrot top..
                         //TODO do something about carrot top
-                    } else if (genesForText[0] == 5 && genesForText[1] == 5) {
+                    } else if (gene[0] == 5 && gene[1] == 5) {
                         //red cow as in red brahman and red gyr, indistinguishable from taros red
                         blackHue = Colouration.mixColours(redHue, 0.0F, 0.5F);
                         blackSaturation = Colouration.mixColours(redSaturation, 1.0F, 0.5F);
@@ -1016,7 +1007,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     }
                 } //else red and black wildtype colouration
 
-                if (genesForText[120] == 2 || genesForText[121] == 2) {
+                if (gene[120] == 2 || gene[121] == 2) {
                     //indus dilution
                     blackHue = redHue;
                     blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
@@ -1026,10 +1017,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.25F);
                 }
 
-                if (genesForText[2] == 2 && genesForText[3] == 2) {
+                if (gene[2] == 2 && gene[3] == 2) {
                     //typical bos taros dilution in murray grey and highland cattle
 
-                } else if (genesForText[2] == 2 || genesForText[3] == 2) {
+                } else if (gene[2] == 2 || gene[3] == 2) {
                     //typical bos taros dilution in murray grey and highland cattle
                     if (extention.equals("black")) {
                         redHue = Colouration.mixColours(redHue, 0.1F, 0.75F);
@@ -1170,10 +1161,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
-        if (item == Items.NAME_TAG) {
-            itemStack.interactWithEntity(entityPlayer, this, hand);
-            return ActionResultType.SUCCESS;
-        }
+//        if (item == Items.NAME_TAG) {
+//            itemStack.interactWithEntity(entityPlayer, this, hand);
+//            return ActionResultType.SUCCESS;
+//        }
 
         /**
         if (item == Items.BUCKET || item instanceof MixableMilkBucket && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
@@ -1354,7 +1345,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     protected void configureAI() {
-        if (!aiConfigured) {
+        if (!this.aiConfigured) {
             Double speed = 1.0D;
 
 //            if (this.cowSize > 1.2F) {

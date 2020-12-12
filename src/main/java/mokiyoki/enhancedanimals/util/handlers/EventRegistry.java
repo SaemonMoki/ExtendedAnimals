@@ -93,10 +93,9 @@ public class EventRegistry {
         }
     });
 
-
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK, ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSEGRASS_BLOCK, ModBlocks.PATCHYMYCELIUM_BLOCK, EGG_CARTON, ModBlocks.GROWABLE_ALLIUM, ModBlocks.GROWABLE_AZURE_BLUET, ModBlocks.GROWABLE_BLUE_ORCHID, ModBlocks.GROWABLE_CORNFLOWER, ModBlocks.GROWABLE_DANDELION, ModBlocks.GROWABLE_OXEYE_DAISY, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_ROSE_BUSH, ModBlocks.GROWABLE_SUNFLOWER, ModBlocks.GROWABLE_TALL_GRASS, ModBlocks.GROWABLE_LARGE_FERN
+        final Block[] blocks = {/*ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK, ModBlocks.POST_SPRUCE,*/ ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSEGRASS_BLOCK, ModBlocks.PATCHYMYCELIUM_BLOCK, EGG_CARTON, ModBlocks.GROWABLE_ALLIUM, ModBlocks.GROWABLE_AZURE_BLUET, ModBlocks.GROWABLE_BLUE_ORCHID, ModBlocks.GROWABLE_CORNFLOWER, ModBlocks.GROWABLE_DANDELION, ModBlocks.GROWABLE_OXEYE_DAISY, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_ROSE_BUSH, ModBlocks.GROWABLE_SUNFLOWER, ModBlocks.GROWABLE_TALL_GRASS, ModBlocks.GROWABLE_LARGE_FERN
         };
             event.getRegistry().registerAll(blocks);
     }

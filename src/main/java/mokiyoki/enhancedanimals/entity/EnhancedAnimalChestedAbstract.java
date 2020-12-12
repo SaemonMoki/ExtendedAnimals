@@ -167,6 +167,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 this.playChestEquipSound();
                 this.animalInventory.setInventorySlotContents(0, new ItemStack(itemstack.getItem(), 1));
                 this.initInventory();
+                itemstack.shrink(1);
                 return ActionResultType.SUCCESS;
             }
             if (this.canHaveBlanket() && isCarpet(itemstack)) {

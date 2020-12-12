@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitPanicGoal;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitRaidFarmGoal;
@@ -229,6 +230,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         this.goalSelector.addGoal(5, new EnhancedRabbitRaidFarmGoal(this));
 //        this.goalSelector.addGoal(5, new EnhancedRabbitEatPlantsGoal(this));
 //        this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 0.6D));
+        this.goalSelector.addGoal(7, new EnhancedWanderingGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 10.0F));
         this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
     }
@@ -385,7 +387,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     public void handleStatusUpdate(byte id) {
         super.handleStatusUpdate(id);
         if (id == 1) {
-            this.func_233569_aL_();
+            this.handleRunningEffect();
             this.jumpDuration = 10;
             this.jumpTicks = 0;
         }
@@ -540,6 +542,10 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             if (genes[58] == 2 && genes[59] == 2){
                 kitRange--;
             }
+        }
+
+        if (kitRange<1) {
+            kitRange = 1;
         }
 
         return ThreadLocalRandom.current().nextInt(kitRange)+kitAverage;

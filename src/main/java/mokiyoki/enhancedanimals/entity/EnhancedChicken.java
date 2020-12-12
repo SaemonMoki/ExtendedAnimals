@@ -2810,19 +2810,19 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             case 153:
                 return ModItems.Egg_CreamLight;
             case 154:
-                return ModItems.Egg_Cream_Spatter;
+                return ModItems.EGG_CREAM_SPATTER;
             case 155:
-                return ModItems.Egg_CreamDark_Spatter;
+                return ModItems.EGG_CREAMDARK_SPATTER;
             case 156:
-                return ModItems.Egg_Carmel_Spatter;
+                return ModItems.EGG_CARMEL_SPATTER;
             case 157:
-                return ModItems.Egg_CarmelDark_Spatter;
+                return ModItems.EGG_CARMELDARK_SPATTER;
             case 158:
-                return ModItems.Egg_Garnet_Spatter;
+                return ModItems.EGG_GARNET_SPATTER;
             case 159:
                 return ModItems.Egg_PinkLight;
             case 160:
-                return ModItems.Egg_Pink_Spatter;
+                return ModItems.EGG_PINK_SPATTER;
             case 161:
                 return ModItems.Egg_PinkDark_Spatter;
             case 162:
@@ -2848,15 +2848,15 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             case 172:
                 return ModItems.Egg_GreenLight;
             case 173:
-                return ModItems.Egg_GreenYellow_Spatter;
+                return ModItems.EGG_GREENYELLOW_SPATTER;
             case 174:
-                return ModItems.Egg_OliveLight_Spatter;
+                return ModItems.EGG_OLIVELIGHT_SPATTER;
             case 175:
-                return ModItems.Egg_Olive_Spatter;
+                return ModItems.EGG_OLIVE_SPATTER;
             case 176:
-                return ModItems.Egg_OliveDark_Spatter;
+                return ModItems.EGG_OLIVEDARK_SPATTER;
             case 177:
-                return ModItems.Egg_Army_Spatter;
+                return ModItems.EGG_ARMY_SPATTER;
             case 178:
                 return ModItems.Egg_BlueGrey;
             case 179:

@@ -184,8 +184,9 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     @Override
     protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
         Genes moobloomGenetics = new CowGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
-        moobloomGenetics.setAutosomalGene(118, 2);
-        moobloomGenetics.setAutosomalGene(119, 2);
+        //gives cow a weakness to flower parasitism only
+        moobloomGenetics.setAutosomalGene(118, 3);
+        moobloomGenetics.setAutosomalGene(119, 3);
         return moobloomGenetics;
     }
 }

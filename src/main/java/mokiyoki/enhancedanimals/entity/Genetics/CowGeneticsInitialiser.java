@@ -996,6 +996,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[120] = 1;
         autosomalGenes[121] = 1;
 
+        //horn modifier
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[122] = ThreadLocalRandom.current().nextInt(5)+1;
         } else {

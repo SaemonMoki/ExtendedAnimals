@@ -376,6 +376,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
         Genes mooshroomGenetics = new CowGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
+        //gives cow a weakness to mushroom or flower parasitism. Dominant to the flower only version.
         mooshroomGenetics.setAutosomalGene(118, 2);
         mooshroomGenetics.setAutosomalGene(119, 2);
         return mooshroomGenetics;

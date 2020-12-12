@@ -198,8 +198,8 @@ public class Genes {
          * this does not make a half get of genes like you may expect but instead scrambles the genes
          * this is to allow male/female or omnisexual breedings to work on 1 system
          */
-        Genes gamiteGenes = new Genes(this.sexlinked.length, this.autosomal.length);
-        int length = this.sexlinked.length;
+        Genes gamiteGenes = new Genes(this.getNumberOfSexlinkedGenes(), this.getNumberOfAutosomalGenes());
+        int length = this.getNumberOfSexlinkedGenes();
             if (isDiploid) {
                 for (int i = 0; i < length;i+=2) {
                     if (ThreadLocalRandom.current().nextBoolean()) {
@@ -217,7 +217,7 @@ public class Genes {
                 }
             }
 
-        length = this.autosomal.length;
+        length = this.getNumberOfAutosomalGenes();
             for (int i = 0; i < length;i+=2) {
                 if (ThreadLocalRandom.current().nextBoolean()) {
                     gamiteGenes.setAutosomalGene(i, this.autosomal[i]);
@@ -229,7 +229,7 @@ public class Genes {
             }
 
             List<GeneLink> linkages = getLinkages(species);
-            if (linkages.get(0).isNotBlank()) {
+            if (!linkages.isEmpty()) {
                 for (GeneLink linkage : linkages) {
                     gamiteGenes = linkage.getLinkedGenes(this, gamiteGenes, isDiploid);
                 }
@@ -289,8 +289,6 @@ public class Genes {
         List<GeneLink> linkages = new ArrayList<>();
         if (species == Species.CHICKEN) {
             linkages.add(new GeneLink(48, 62, 0.97F));
-        } else {
-            linkages.add(new GeneLink(0, 0, 0.0F));
         }
         return linkages;
     }

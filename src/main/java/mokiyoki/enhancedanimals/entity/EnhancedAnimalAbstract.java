@@ -1250,7 +1250,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     protected void handlePartnerBreeding(AgeableEntity ageable) {
         if (EanimodCommonConfig.COMMON.omnigenders.get()) {
-            if(pregnant) {
+            if(this.pregnant) {
                 ((EnhancedAnimalAbstract)ageable).pregnant = true;
                 ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
                 ((EnhancedAnimalAbstract)ageable).setMateGender(this.isFemale());

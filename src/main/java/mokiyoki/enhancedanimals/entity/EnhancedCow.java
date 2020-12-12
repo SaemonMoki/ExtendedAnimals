@@ -393,16 +393,21 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     protected void runExtraIdleTimeTick() {
     }
 
+    @Override
+    protected int getNumberOfChildren() {
+        return 1;
+    }
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
+        Genes babyGenes = this.genetics.makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -84000);
         enhancedcow.setMotherUUID(this.getUniqueID().toString());
         enhancedcow.configureAI();
 
         this.world.addEntity(enhancedcow);
     }
+
     @Override
     protected void initilizeAnimalSize() {
         int[] genes = this.genetics.getAutosomalGenes();
@@ -1017,9 +1022,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.25F);
                 }
 
-                if (gene[2] == 2 && gene[3] == 2) {
+                if (gene[2] == 1 && gene[3] == 1) {
                     //typical bos taros dilution in murray grey and highland cattle
-
+                    redHue = redHue + 0.01F;
+                    redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.48F);
+                    redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.55F);
+                    blackBrightness = Colouration.mixColours(blackBrightness, 1.0F, 0.25F);
                 } else if (gene[2] == 2 || gene[3] == 2) {
                     //typical bos taros dilution in murray grey and highland cattle
                     if (extention.equals("black")) {
@@ -1167,21 +1175,21 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //        }
 
         /**
-        if (item == Items.BUCKET || item instanceof MixableMilkBucket && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
+        if (item == Items.BUCKET || item instanceof MixableMilk && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int currentMilk = getMilkAmount();
             int milkColour = 16777215;
             float milkFat = 0.037F;
             ItemStack milkbucket = new ItemStack(ModItems.MIXABLE_MILK);
             int fillamount;
-            if (item instanceof MixableMilkBucket) {
-                fillamount = ((MixableMilkBucket) milkbucket.getItem()).getSpaceLeft();
+            if (item instanceof MixableMilk) {
+                fillamount = ((MixableMilk) milkbucket.getItem()).getSpaceLeft();
                 fillamount = currentMilk >= fillamount ? fillamount : currentMilk;
             } else {
                 fillamount = currentMilk;
             }
 
-            ((MixableMilkBucket)milkbucket.getItem()).mix(milkbucket, fillamount >= 6 ? 6 : fillamount, milkColour, milkFat, MixableMilkBucket.MilkType.COW, MixableMilkBucket.InoculationType.NONE);
-            setMilkAmount(currentMilk - ((MixableMilkBucket)milkbucket.getItem()).getSpaceLeft());
+            ((MixableMilk)milkbucket.getItem()).mix(milkbucket, fillamount >= 6 ? 6 : fillamount, milkColour, milkFat, MixableMilk.MilkType.COW, MixableMilk.InoculationType.NONE);
+            setMilkAmount(currentMilk - ((MixableMilk)milkbucket.getItem()).getSpaceLeft());
 
             entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
             itemStack.shrink(1);

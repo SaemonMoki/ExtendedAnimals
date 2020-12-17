@@ -302,7 +302,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         if ((maxcoat) > 0) {
             int[] genes = this.genetics.getAutosomalGenes();
-            if (!this.isChild() && currentCoatLength == maxcoat && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= 24000) {
+            //first check is for self shearing sheep
+            if (currentCoatLength == maxcoat && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= 24000) {
                 timeForGrowth = 0;
                 currentCoatLength = rand.nextInt(maxcoat/2);
             } else if (timeForGrowth >= (24000 / maxcoat)) {

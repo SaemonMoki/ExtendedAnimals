@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import com.google.common.collect.ImmutableMap;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -19,6 +20,7 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -35,6 +37,9 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by moki on 25/08/2018.
@@ -49,10 +54,6 @@ public class PostBlock extends Block implements IWaterLoggable {
     public static final BooleanProperty WEST = SixWayBlock.WEST;
     public static final BooleanProperty UP = SixWayBlock.UP;
     public static final BooleanProperty DOWN = SixWayBlock.DOWN;
-    public static final BooleanProperty FENCENORTH = BooleanProperty.create("fencenorth");
-    public static final BooleanProperty FENCESOUTH = BooleanProperty.create("fencesouth");
-    public static final BooleanProperty FENCEEAST = BooleanProperty.create("fenceeast");
-    public static final BooleanProperty FENCEWEST = BooleanProperty.create("fencewest");
 
     private static final VoxelShape PILLAR = Block.makeCuboidShape(6D, 0.0D, 6D, 10D, 16D, 10D);
     private static final VoxelShape EASTWEST = Block.makeCuboidShape(0.0D, 6D, 6D, 16D, 10D, 10D);
@@ -73,6 +74,9 @@ public class PostBlock extends Block implements IWaterLoggable {
     private static final VoxelShape UPCONNECTOR = Block.makeCuboidShape(6D, 10D, 6D, 10D, 16D, 10D);
     private static final VoxelShape DOWNCONNECTOR = Block.makeCuboidShape(6D, 0D, 6D, 10D, 6D, 10D);
 
+    private final Map<BlockState, VoxelShape> stateToShapeMap;
+    private final Map<BlockState, VoxelShape> stateToCollisionMap;
+
     public PostBlock(Properties properties) {
         super(properties);
         this.setDefaultState(this.stateContainer.getBaseState()
@@ -83,91 +87,114 @@ public class PostBlock extends Block implements IWaterLoggable {
                 .with(SOUTH, Boolean.valueOf(false))
                 .with(WEST, Boolean.valueOf(false))
                 .with(UP, Boolean.valueOf(false))
-                .with(DOWN, Boolean.valueOf(false))
-                .with(FENCENORTH, Boolean.valueOf(false))
-                .with(FENCEEAST, Boolean.valueOf(false))
-                .with(FENCEWEST, Boolean.valueOf(false))
-                .with(FENCESOUTH, Boolean.valueOf(false)));
+                .with(DOWN, Boolean.valueOf(false)));
+        this.stateToShapeMap = ImmutableMap.copyOf(this.stateContainer.getValidStates().stream().collect(Collectors.toMap(Function.identity(), PostBlock::getShapeForState)));
+        this.stateToCollisionMap = ImmutableMap.copyOf(this.stateContainer.getValidStates().stream().collect(Collectors.toMap(Function.identity(), PostBlock::getCollisionForState)));
     }
 
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        VoxelShape postShape;
-            Direction facing = state.get(FACING);
+    private static VoxelShape getShapeForState(BlockState state) {
+        VoxelShape voxelshape = VoxelShapes.empty();
+        Direction facing = state.get(FACING);
+
+        if (facing == Direction.UP) {
+            voxelshape = PILLAR;
+
+            if (state.get(NORTH)) {
+                voxelshape = VoxelShapes.or(voxelshape, NORTHFENCE);
+            }
+
+            if (state.get(SOUTH)) {
+                voxelshape = VoxelShapes.or(voxelshape, SOUTHFENCE);
+            }
+
+            if (state.get(EAST)) {
+                voxelshape = VoxelShapes.or(voxelshape, EASTFENCE);
+            }
+
+            if (state.get(WEST)) {
+                voxelshape = VoxelShapes.or(voxelshape, WESTFENCE);
+            }
+
+        } else {
+            if (state.get(UP)) {
+                voxelshape = VoxelShapes.or(voxelshape, UPCONNECTOR);
+            }
+
+            if (state.get(DOWN)) {
+                voxelshape = VoxelShapes.or(voxelshape, DOWNCONNECTOR);
+            }
+
             if (facing == Direction.NORTH) {
-                postShape = NORTHSOUTH;
+                voxelshape = NORTHSOUTH;
+
                 if (state.get(NORTH)) {
-                    postShape = VoxelShapes.combineAndSimplify(postShape, NORTHEXTENSION, IBooleanFunction.OR);
+                    voxelshape = VoxelShapes.or(voxelshape, NORTHEXTENSION);
                 }
+
                 if (state.get(SOUTH)) {
-                    postShape = VoxelShapes.combine(postShape, SOUTHEXTENSION, IBooleanFunction.OR);
+                    voxelshape = VoxelShapes.or(voxelshape, SOUTHEXTENSION);
                 }
-                if (state.get(UP)) {
-                    postShape = VoxelShapes.combine(postShape, UPCONNECTOR, IBooleanFunction.OR);
-                }
-                if (state.get(DOWN)) {
-                    postShape = VoxelShapes.combine(postShape, DOWNCONNECTOR, IBooleanFunction.OR);
-                }
+
             } else if (facing == Direction.EAST) {
-                postShape = EASTWEST;
+                voxelshape = EASTWEST;
+
                 if (state.get(EAST)) {
-                    postShape = VoxelShapes.combine(postShape, EASTEXTENSION, IBooleanFunction.OR);
+                    voxelshape = VoxelShapes.or(voxelshape, EASTEXTENSION);
                 }
+
                 if (state.get(WEST)) {
-                    postShape = VoxelShapes.combine(postShape, WESTEXTENSION, IBooleanFunction.OR);
-                }
-                if (state.get(UP)) {
-                    postShape = VoxelShapes.combine(postShape, UPCONNECTOR, IBooleanFunction.OR);
-                }
-                if (state.get(DOWN)) {
-                    postShape = VoxelShapes.combine(postShape, DOWNCONNECTOR, IBooleanFunction.OR);
-                }
-            } else {
-                postShape = PILLAR;
-                if (state.get(FENCENORTH)) {
-                    postShape = VoxelShapes.combine(postShape, NORTHFENCE, IBooleanFunction.OR);
-                }
-                if (state.get(FENCESOUTH)) {
-                    postShape = VoxelShapes.combine(postShape, SOUTHFENCE, IBooleanFunction.OR);
-                }
-                if (state.get(FENCEEAST)) {
-                    postShape = VoxelShapes.combine(postShape, EASTFENCE, IBooleanFunction.OR);
-                }
-                if (state.get(FENCEWEST)) {
-                    postShape = VoxelShapes.combine(postShape, WESTFENCE, IBooleanFunction.OR);
+                    voxelshape = VoxelShapes.or(voxelshape, WESTEXTENSION);
                 }
             }
 
-        return postShape;
+        }
+
+        return voxelshape;
+    }
+
+    private static VoxelShape getCollisionForState(BlockState state) {
+        VoxelShape voxelshape = VoxelShapes.empty();
+        Direction facing = state.get(FACING);
+
+        if (facing == Direction.UP) {
+            voxelshape = PILLAR;
+
+            if (state.get(NORTH)) {
+                voxelshape = VoxelShapes.or(voxelshape, NORTHFENCECOLLISION);
+            }
+
+            if (state.get(SOUTH)) {
+                voxelshape = VoxelShapes.or(voxelshape, SOUTHFENCECOLLISION);
+            }
+
+            if (state.get(EAST)) {
+                voxelshape = VoxelShapes.or(voxelshape, EASTFENCECOLLISION);
+            }
+
+            if (state.get(WEST)) {
+                voxelshape = VoxelShapes.or(voxelshape, WESTFENCECOLLISION);
+            }
+        } else {
+            return getShapeForState(state);
+        }
+
+        return voxelshape;
+    }
+
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        return this.stateToShapeMap.get(state);
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        Direction Orientation = state.get(FACING);
-        if (Orientation == Direction.UP) {
-            VoxelShape fenceConnected = PILLAR;
-            if (state.get(FENCENORTH)) {
-                fenceConnected = VoxelShapes.combine(fenceConnected, NORTHFENCECOLLISION, IBooleanFunction.OR);
-            }
-            if (state.get(FENCESOUTH)) {
-                fenceConnected = VoxelShapes.combine(fenceConnected, SOUTHFENCECOLLISION, IBooleanFunction.OR);
-            }
-            if (state.get(FENCEEAST)) {
-                fenceConnected = VoxelShapes.combine(fenceConnected, EASTFENCECOLLISION, IBooleanFunction.OR);
-            }
-            if (state.get(FENCEWEST)) {
-                fenceConnected = VoxelShapes.combine(fenceConnected, WESTFENCECOLLISION, IBooleanFunction.OR);
-            }
-            return fenceConnected;
-        } else {
-            return getShape(state, worldIn, pos, context);
-        }
+        return this.stateToCollisionMap.get(state);
     }
 
     @Nullable
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         IBlockReader iblockreader = context.getWorld();
         BlockPos blockpos = context.getPos();
-        FluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
+        FluidState fluidstate = context.getWorld().getFluidState(context.getPos());
         Direction thisFacing = context.getFace();
         if (thisFacing == Direction.SOUTH) {
             thisFacing = Direction.NORTH;
@@ -176,18 +203,43 @@ public class PostBlock extends Block implements IWaterLoggable {
         } else if (thisFacing == Direction.DOWN) {
             thisFacing = Direction.UP;
         }
-        return this.getDefaultState().with(FACING, thisFacing)
-                .with(WATERLOGGED, ifluidstate.getFluid() == Fluids.WATER)
-                .with(NORTH, this.shouldConnectTo(iblockreader.getBlockState(blockpos.north()), Direction.NORTH, thisFacing, false))
-                .with(SOUTH, this.shouldConnectTo(iblockreader.getBlockState(blockpos.south()), Direction.SOUTH, thisFacing, false))
-                .with(EAST, this.shouldConnectTo(iblockreader.getBlockState(blockpos.east()), Direction.EAST, thisFacing, false))
-                .with(WEST, this.shouldConnectTo(iblockreader.getBlockState(blockpos.west()), Direction.WEST, thisFacing, false))
-                .with(UP, this.shouldConnectTo(iblockreader.getBlockState(blockpos.up()), Direction.UP, thisFacing, false))
-                .with(DOWN, this.shouldConnectTo(iblockreader.getBlockState(blockpos.down()), Direction.DOWN, thisFacing, false))
-                .with(FENCENORTH, this.shouldConnectTo(iblockreader.getBlockState(blockpos.north()), Direction.NORTH, thisFacing, true))
-                .with(FENCESOUTH, this.shouldConnectTo(iblockreader.getBlockState(blockpos.south()), Direction.SOUTH, thisFacing, true))
-                .with(FENCEEAST, this.shouldConnectTo(iblockreader.getBlockState(blockpos.east()), Direction.EAST, thisFacing, true))
-                .with(FENCEWEST, this.shouldConnectTo(iblockreader.getBlockState(blockpos.west()), Direction.WEST, thisFacing, true));
+
+        BlockPos blockpos1 = blockpos.north();
+        BlockPos blockpos2 = blockpos.east();
+        BlockPos blockpos3 = blockpos.south();
+        BlockPos blockpos4 = blockpos.west();
+        BlockPos blockpos5 = blockpos.up();
+        BlockPos blockpos6 = blockpos.down();
+        BlockState blockstate1 = iblockreader.getBlockState(blockpos1);
+        BlockState blockstate2 = iblockreader.getBlockState(blockpos2);
+        BlockState blockstate3 = iblockreader.getBlockState(blockpos3);
+        BlockState blockstate4 = iblockreader.getBlockState(blockpos4);
+        BlockState blockstate5 = iblockreader.getBlockState(blockpos5);
+        BlockState blockstate6 = iblockreader.getBlockState(blockpos6);
+
+        return super.getStateForPlacement(context)
+                .with(FACING, thisFacing)
+                .with(NORTH, thisFacing != Direction.EAST && this.canConnect(blockstate1, thisFacing))
+                .with(EAST, thisFacing != Direction.NORTH && this.canConnect(blockstate2, thisFacing))
+                .with(WEST, thisFacing != Direction.NORTH && this.canConnect(blockstate4, thisFacing))
+                .with(SOUTH, thisFacing != Direction.EAST && this.canConnect(blockstate3, thisFacing))
+                .with(UP, thisFacing != Direction.UP && this.canConnect(blockstate5, thisFacing))
+                .with(DOWN, thisFacing != Direction.UP && this.canConnect(blockstate6, thisFacing))
+                .with(WATERLOGGED, Boolean.valueOf(fluidstate.getFluid() == Fluids.WATER));
+    }
+
+    public boolean canConnect(BlockState state, Direction facing) {
+        Block block = state.getBlock();
+        if (facing == Direction.UP) {
+            return this.isFence(block);
+        } else if (block instanceof PostBlock) {
+            return state.get(FACING) != facing;
+        }
+            return this.isFence(block);
+    }
+
+    private boolean isFence(Block block) {
+        return block.isIn(BlockTags.FENCES) || block.isIn(BlockTags.WALLS);
     }
 
     @Override
@@ -199,63 +251,19 @@ public class PostBlock extends Block implements IWaterLoggable {
             Direction orientation = state.get(FACING);
             switch (facing) {
                 case NORTH:
-                    return state.with(NORTH, shouldConnectTo(facingState, facing, orientation, false))
-                            .with(FENCENORTH, shouldConnectTo(facingState, facing, orientation, true));
+                    return state.with(NORTH, orientation != Direction.EAST && canConnect(facingState, orientation));
                 case SOUTH:
-                    return state.with(SOUTH, shouldConnectTo(facingState, facing, orientation, false))
-                            .with(FENCESOUTH, shouldConnectTo(facingState, facing, orientation, true));
+                    return state.with(SOUTH, orientation != Direction.EAST && canConnect(facingState, orientation));
                 case EAST:
-                    return state.with(EAST, shouldConnectTo(facingState, facing, orientation, false))
-                            .with(FENCEEAST, shouldConnectTo(facingState, facing, orientation, true));
+                    return state.with(EAST, orientation != Direction.NORTH && canConnect(facingState, orientation));
                 case WEST:
-                    return state.with(WEST, shouldConnectTo(facingState, facing, orientation, false))
-                            .with(FENCEWEST, shouldConnectTo(facingState, facing, orientation, true));
+                    return state.with(WEST, orientation != Direction.NORTH && canConnect(facingState, orientation));
                 case UP:
-                    return state.with(UP, shouldConnectTo(facingState, facing, orientation, false));
+                    return state.with(UP, orientation != Direction.UP && canConnect(facingState, orientation));
                 case DOWN:
-                    return state.with(DOWN, shouldConnectTo(facingState, facing, orientation, false));
+                    return state.with(DOWN, orientation != Direction.UP && canConnect(facingState, orientation));
             }
             return state;
-    }
-
-    public boolean shouldConnectTo(BlockState thatBlocksState, Direction thatBlocksDirection, Direction thisBlocksOrientation, Boolean fenceConnection) {
-        Block thatBlock = thatBlocksState.getBlock();
-        boolean isConnectable = thatBlock instanceof FenceBlock || thatBlock instanceof PostBlock;
-        if (isConnectable) {
-            if (thisBlocksOrientation == Direction.UP || thisBlocksOrientation == Direction.DOWN) {
-                if (fenceConnection && thatBlock instanceof FenceBlock && thatBlocksDirection != Direction.UP && thatBlocksDirection != Direction.DOWN) {
-                    return true;
-                }
-            } else if (!fenceConnection){
-                isConnectable = thatBlock instanceof FenceBlock;
-                if ((thisBlocksOrientation == Direction.NORTH || thisBlocksOrientation == Direction.SOUTH) && thatBlocksDirection != Direction.EAST && thatBlocksDirection != Direction.WEST ) {
-                    if (isConnectable) {
-                        return true;
-                    }
-                    Direction thatBlocksFacing = thatBlocksState.get(FACING);
-                    if (thatBlocksDirection == Direction.UP || thatBlocksDirection == Direction.DOWN) {
-                        if (thatBlocksFacing == Direction.UP || thatBlocksFacing == Direction.DOWN) {
-                            return true;
-                        }
-                    } else if (thatBlocksFacing != Direction.NORTH && thatBlocksFacing != Direction.SOUTH) {
-                        return true;
-                    }
-                } else if ((thisBlocksOrientation == Direction.EAST || thisBlocksOrientation == Direction.WEST) && thatBlocksDirection != Direction.NORTH && thatBlocksDirection != Direction.SOUTH ) {
-                    if (isConnectable) {
-                        return true;
-                    }
-                    Direction thatBlocksFacing = thatBlocksState.get(FACING);
-                    if (thatBlocksDirection == Direction.UP || thatBlocksDirection == Direction.DOWN) {
-                        if (thatBlocksFacing == Direction.UP || thatBlocksFacing == Direction.DOWN) {
-                            return true;
-                        }
-                    } else if (thatBlocksFacing != Direction.EAST && thatBlocksFacing != Direction.WEST) {
-                        return true;
-                    }
-                }
-            }
-        }
-            return false;
     }
 
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
@@ -265,11 +273,6 @@ public class PostBlock extends Block implements IWaterLoggable {
         } else {
             return LeadItem.bindPlayerMobs(player, worldIn, pos);
         }
-    }
-
-    @Override
-    public BlockState rotate(BlockState state, Rotation rot) {
-        return state.with(FACING, rot.rotate(state.get(FACING)));
     }
 
     @Override
@@ -283,7 +286,7 @@ public class PostBlock extends Block implements IWaterLoggable {
     }
 
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(FACING, WATERLOGGED, NORTH, SOUTH, EAST, WEST, UP, DOWN, FENCENORTH, FENCESOUTH, FENCEEAST, FENCEWEST);
+        builder.add(FACING, WATERLOGGED, NORTH, SOUTH, EAST, WEST, UP, DOWN);
     }
 
     public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type) {

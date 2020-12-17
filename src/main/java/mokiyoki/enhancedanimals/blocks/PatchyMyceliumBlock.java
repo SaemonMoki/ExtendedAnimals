@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SpreadableSnowyDirtBlock;
@@ -23,13 +24,13 @@ import static net.minecraftforge.common.PlantType.WATER;
 
 public class PatchyMyceliumBlock extends SpreadableSnowyDirtBlock {
 
-    public PatchyMyceliumBlock(Properties properties) {
+    public PatchyMyceliumBlock(AbstractBlock.Properties properties) {
         super(properties);
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
-        super.tick(state, worldIn, pos, random);
+    public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
+        super.randomTick(state, worldIn, pos, random);
         if (!worldIn.isRemote) {
             if (!worldIn.isAreaLoaded(pos, 3))
                 return; // Forge: prevent loading unloaded chunks when checking neighbor's light and spreading

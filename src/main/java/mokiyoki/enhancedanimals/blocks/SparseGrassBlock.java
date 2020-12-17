@@ -38,8 +38,8 @@ public class SparseGrassBlock extends SpreadableSnowyDirtBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
-        super.tick(state, worldIn, pos, random);
+    public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
+        super.randomTick(state, worldIn, pos, random);
         if (!worldIn.isRemote) {
             if (!worldIn.isAreaLoaded(pos, 3))
                 return; // Forge: prevent loading unloaded chunks when checking neighbor's light and spreading

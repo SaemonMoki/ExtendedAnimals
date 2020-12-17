@@ -35,6 +35,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.item.SwordItem;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -244,7 +246,8 @@ public class EventSubscriber {
         Item item = event.getItemStack().getItem();
         Block block = event.getWorld().getBlockState(event.getPos()).getBlock();
         if (block instanceof HayBlock && (item instanceof AxeItem || item instanceof SwordItem || item instanceof ShearsItem)) {
-            event.getWorld().setBlockState(event.getPos(), ModBlocks.UNBOUNDHAY_BLOCK.getDefaultState(), 11);
+            Direction.Axis axis = event.getWorld().getBlockState(event.getPos()).get(BlockStateProperties.AXIS);
+            event.getWorld().setBlockState(event.getPos(), ModBlocks.UNBOUNDHAY_BLOCK.getDefaultState().with(BlockStateProperties.AXIS, axis), 11);
         } else if (block instanceof SparseGrassBlock && (item instanceof HoeItem)) {
             event.getWorld().setBlockState(event.getPos(), Blocks.FARMLAND.getDefaultState(), 11);
         }

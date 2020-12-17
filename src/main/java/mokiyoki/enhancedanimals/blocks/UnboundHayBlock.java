@@ -23,6 +23,7 @@ import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
@@ -55,7 +56,6 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
     private static final VoxelShape HAY_GREEN = Block.makeCuboidShape(0D, 0D, 11D, 5D, 16D, 16D);
     private static final VoxelShape HAY_RED = Block.makeCuboidShape(5D, 0D, 11D, 11D, 16D, 16D);
     private static final VoxelShape HAY_BLUE = Block.makeCuboidShape(11D, 0D, 11D, 16D, 16D, 16D);
-    protected static final VoxelShape[] Y_AXIS = {HAY_BLACK, HAY_GREY, HAY_WHITE, HAY_YELLOW, HAY_FUSHIA, HAY_CYAN, HAY_GREEN, HAY_RED, HAY_BLUE};
 
     private static final VoxelShape X_HAY_BLACK = Block.makeCuboidShape(0D, 0D, 0D, 16D, 5D, 5D);
     private static final VoxelShape X_HAY_GREY = Block.makeCuboidShape(0D, 5D, 0D, 16D, 11D, 5D);
@@ -66,18 +66,16 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
     private static final VoxelShape X_HAY_GREEN = Block.makeCuboidShape(0D, 0D, 11D, 16D, 5D, 16D);
     private static final VoxelShape X_HAY_RED = Block.makeCuboidShape(0D, 5D, 11D, 16D, 11D, 16D);
     private static final VoxelShape X_HAY_BLUE = Block.makeCuboidShape(0D, 11D, 11D, 16D, 16D, 16D);
-    protected static final VoxelShape[] X_AXIS = {X_HAY_BLACK, X_HAY_GREY, X_HAY_WHITE, X_HAY_YELLOW, X_HAY_FUSHIA, X_HAY_CYAN, X_HAY_GREEN, X_HAY_RED, X_HAY_BLUE};
 
-    private static final VoxelShape Z_HAY_BLACK = Block.makeCuboidShape(0D, 0D, 0D, 5D, 5D, 0D);
-    private static final VoxelShape Z_HAY_GREY = Block.makeCuboidShape(5D, 0D, 0D, 11D, 5D, 0D);
-    private static final VoxelShape Z_HAY_WHITE = Block.makeCuboidShape(11D, 0D, 0D, 16D, 5D, 0D);
-    private static final VoxelShape Z_HAY_YELLOW = Block.makeCuboidShape(0D, 5D, 0D, 5D, 11D, 0D);
-    private static final VoxelShape Z_HAY_FUSHIA = Block.makeCuboidShape(5D, 5D, 0D, 11D, 11D, 0D);
-    private static final VoxelShape Z_HAY_CYAN = Block.makeCuboidShape(11D, 5D, 0D, 16D, 11D, 0D);
-    private static final VoxelShape Z_HAY_GREEN = Block.makeCuboidShape(0D, 11D, 0D, 5D, 16D, 0D);
-    private static final VoxelShape Z_HAY_RED = Block.makeCuboidShape(5D, 11D, 0D, 11D, 16D, 0D);
-    private static final VoxelShape Z_HAY_BLUE = Block.makeCuboidShape(11D, 11D, 0D, 16D, 16D, 0D);
-    protected static final VoxelShape[] Z_AXIS = {Z_HAY_BLACK, Z_HAY_GREY, Z_HAY_WHITE, Z_HAY_YELLOW, Z_HAY_FUSHIA, Z_HAY_CYAN, Z_HAY_GREEN, Z_HAY_RED, Z_HAY_BLUE};
+    private static final VoxelShape Z_HAY_BLACK = Block.makeCuboidShape(0D, 0D, 0D, 5D, 5D, 16D);
+    private static final VoxelShape Z_HAY_GREY = Block.makeCuboidShape(5D, 0D, 0D, 11D, 5D, 16D);
+    private static final VoxelShape Z_HAY_WHITE = Block.makeCuboidShape(11D, 0D, 0D, 16D, 5D, 16D);
+    private static final VoxelShape Z_HAY_YELLOW = Block.makeCuboidShape(0D, 5D, 0D, 5D, 11D, 16D);
+    private static final VoxelShape Z_HAY_FUSHIA = Block.makeCuboidShape(5D, 5D, 0D, 11D, 11D, 16D);
+    private static final VoxelShape Z_HAY_CYAN = Block.makeCuboidShape(11D, 5D, 0D, 16D, 11D, 16D);
+    private static final VoxelShape Z_HAY_GREEN = Block.makeCuboidShape(0D, 11D, 0D, 5D, 16D, 16D);
+    private static final VoxelShape Z_HAY_RED = Block.makeCuboidShape(5D, 11D, 0D, 11D, 16D, 16D);
+    private static final VoxelShape Z_HAY_BLUE = Block.makeCuboidShape(11D, 11D, 0D, 16D, 16D, 16D);
     
     private final Map<BlockState, VoxelShape> stateToShapeMap;
 
@@ -96,42 +94,42 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
             case X:
             default:
                 if (bites > 0) {
-                    voxelshape = X_HAY_GREEN;
+                    voxelshape = X_HAY_BLACK;
                 }
                 if (bites > 1) {
-                    voxelshape = VoxelShapes.or(voxelshape, X_HAY_RED);
+                    voxelshape = VoxelShapes.or(voxelshape, X_HAY_YELLOW);
                 }
                 if (bites > 2) {
-                    voxelshape = VoxelShapes.or(voxelshape, X_HAY_BLUE);
+                    voxelshape = VoxelShapes.or(voxelshape, X_HAY_GREEN);
                 }
                 if (bites > 3) {
                     voxelshape = VoxelShapes.or(voxelshape, X_HAY_FUSHIA);
                 }
                 if (bites > 4) {
-                    voxelshape = VoxelShapes.or(voxelshape, X_HAY_CYAN);
+                    voxelshape = VoxelShapes.or(voxelshape, X_HAY_RED);
                 }
                 if (bites > 5) {
-                    voxelshape = VoxelShapes.or(voxelshape, X_HAY_YELLOW);
-                }
-                if (bites > 6) {
                     voxelshape = VoxelShapes.or(voxelshape, X_HAY_GREY);
                 }
+                if (bites > 6) {
+                    voxelshape = VoxelShapes.or(voxelshape, X_HAY_CYAN);
+                }
                 if (bites > 7) {
-                    voxelshape = VoxelShapes.or(voxelshape, X_HAY_BLACK);
+                    voxelshape = VoxelShapes.or(voxelshape, X_HAY_WHITE);
                 }
                 if (bites > 8) {
-                    voxelshape = VoxelShapes.or(voxelshape, X_HAY_WHITE);
+                    voxelshape = VoxelShapes.or(voxelshape, X_HAY_BLUE);
                 }
                 break;
             case Z:
                 if (bites > 0) {
-                    voxelshape = Z_HAY_GREEN;
+                    voxelshape = Z_HAY_BLACK;
                 }
                 if (bites > 1) {
-                    voxelshape = VoxelShapes.or(voxelshape, Z_HAY_RED);
+                    voxelshape = VoxelShapes.or(voxelshape, Z_HAY_GREY);
                 }
                 if (bites > 2) {
-                    voxelshape = VoxelShapes.or(voxelshape, Z_HAY_BLUE);
+                    voxelshape = VoxelShapes.or(voxelshape, Z_HAY_WHITE);
                 }
                 if (bites > 3) {
                     voxelshape = VoxelShapes.or(voxelshape, Z_HAY_FUSHIA);
@@ -143,13 +141,13 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
                     voxelshape = VoxelShapes.or(voxelshape, Z_HAY_YELLOW);
                 }
                 if (bites > 6) {
-                    voxelshape = VoxelShapes.or(voxelshape, Z_HAY_GREY);
+                    voxelshape = VoxelShapes.or(voxelshape, Z_HAY_RED);
                 }
                 if (bites > 7) {
-                    voxelshape = VoxelShapes.or(voxelshape, Z_HAY_BLACK);
+                    voxelshape = VoxelShapes.or(voxelshape, Z_HAY_GREEN);
                 }
                 if (bites > 8) {
-                    voxelshape = VoxelShapes.or(voxelshape, Z_HAY_WHITE);
+                    voxelshape = VoxelShapes.or(voxelshape, Z_HAY_BLUE);
                 }
                 break;
             case Y:
@@ -190,8 +188,7 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
         return this.stateToShapeMap.get(state);
     }
 
-    @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(BlockState state) {
         return this.stateToShapeMap.get(state);
     }
 
@@ -300,8 +297,18 @@ public class UnboundHayBlock extends FallingBlock implements IWaterLoggable {
 
 
     public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
-        entityIn.setMotionMultiplier(state, new Vector3d(0.10D, (double)0.10F, 0.10D));
-        super.onEntityCollision(state, worldIn, pos, entityIn);
+        entityIn.setOnGround(true);
+
+        double entityx = entityIn.getPosX() - pos.getX();
+        double entityy = entityIn.getPosY() - pos.getY();
+        double entityz = entityIn.getPosZ() - pos.getZ();
+
+        AxisAlignedBB box = this.getShape(state).getBoundingBox();
+
+        if (box.contains(entityx, entityy, entityz)) {
+            entityIn.setMotionMultiplier(state, new Vector3d(0.9D, (double) 0.05F, 0.9D));
+            super.onEntityCollision(state, worldIn, pos, entityIn);
+        }
     }
 
     /**

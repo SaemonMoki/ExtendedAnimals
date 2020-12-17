@@ -1678,7 +1678,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
 
         this.genetics = spawnGenes;
-        setInitialDefaults();
 
         int birthMod = ThreadLocalRandom.current().nextInt(ageMinimum, ageMaximum);
         this.setBirthTime(String.valueOf(inWorld.getWorldInfo().getGameTime() - birthMod));
@@ -1686,6 +1685,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             this.setGrowingAge(birthMod - childAge);
         }
 
+        setInitialDefaults();
         return livingdata;
     }
 

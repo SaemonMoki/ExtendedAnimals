@@ -1279,7 +1279,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     protected void setInitialDefaults() {
         super.setInitialDefaults();
         this.setMaxCoatLength();
-        this.currentCoatLength = this.maxCoatLength;
+        this.currentCoatLength = (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
         this.setCoatLength(this.currentCoatLength);
 
         //"White" is considered no dye
@@ -1290,53 +1290,50 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         int[] genes = this.genetics.getAutosomalGenes();
         int maxCoatLength = 0;
 
-        if ( !this.isChild() ) {
-            if (genes[20] == 2){
-                maxCoatLength = 1;
-            }
-            if (genes[21] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[22] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[23] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[24] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[25] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[26] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[27] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[28] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[29] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[30] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[31] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[32] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[33] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[34] == 2 && genes[35] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-
+        if (genes[20] == 2){
+            maxCoatLength = 1;
+        }
+        if (genes[21] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[22] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[23] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[24] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[25] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[26] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[27] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[28] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[29] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[30] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[31] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[32] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[33] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[34] == 2 && genes[35] == 2){
+            maxCoatLength = maxCoatLength + 1;
         }
 
         this.maxCoatLength = maxCoatLength;

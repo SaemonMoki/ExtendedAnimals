@@ -190,13 +190,13 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         //added wool length 1 [ wildtype, wool1 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             autosomalGenes[20] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
@@ -204,13 +204,13 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         //added wool length 2 [ wildtype, wool2 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[22] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             autosomalGenes[22] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[23] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
@@ -218,13 +218,13 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         //added wool length 3 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[24] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             autosomalGenes[24] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[25] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
@@ -232,13 +232,13 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         //added wool length 4 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             autosomalGenes[26] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 4) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[27] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
@@ -246,13 +246,13 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         //added wool length 5 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 2) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[28] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             autosomalGenes[28] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 2) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[29] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
@@ -260,13 +260,13 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         //added wool length 6 [ wildtype, wool3 ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 2) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[30] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
             autosomalGenes[30] = (1);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC / 2) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[31] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {

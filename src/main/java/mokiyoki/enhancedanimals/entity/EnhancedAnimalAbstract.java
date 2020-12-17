@@ -1481,11 +1481,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         int adultAge = getAdultAge();
         if (age < adultAge) {
             if (age > (adultAge*3)/4) {
-                return "Young ";
+                return "YOUNG";
             } else if (age > adultAge/3) {
-                return "Baby ";
+                return "BABY";
             } else {
-                return "Newborn ";
+                return "NEWBORN";
             }
         }
         return "ADULT";

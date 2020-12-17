@@ -61,13 +61,13 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         if (this.isPointInRegion(127, 5, 7, 9, (double)mouseX, (double)mouseY)) {
             if (this.enhancedAnimalInfo.isFemale) {
                 if (this.enhancedAnimalInfo.pregnant > 0) {
-                    this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.pregnant").appendString(" ").append(new TranslationTextComponent("eanimod.animalinfocontainer.female")), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
                 } else {
                     this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.female"), mouseX, mouseY);
                 }
             } else {
                 if (this.enhancedAnimalInfo.pregnant > 0) {
-                    this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.pregnant").appendString(" ").append(new TranslationTextComponent("eanimod.animalinfocontainer.male")), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
                 } else {
                     this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
                 }
@@ -197,7 +197,15 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         }
 
         if (!enhancedAnimalInfo.agePrefix.equals("ADULT")) {
-            name = enhancedAnimalInfo.agePrefix+name;
+            String age = enhancedAnimalInfo.agePrefix;
+            if (age.equals("YOUNG")) {
+                age = new TranslationTextComponent("eanimod.animalinfocontainer.young").getString();
+            } else if (age.equals("BABY")) {
+                age = new TranslationTextComponent("eanimod.animalinfocontainer.baby").getString();
+            } else {
+                age = new TranslationTextComponent("eanimod.animalinfocontainer.newborn").getString();
+            }
+            name = age+" "+name;
         }
 
         if (name.length() > 20) {
@@ -381,38 +389,38 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 //            Float ageFloat = ageInt >= 20 ? (float)(ageInt/10) : (float)ageInt/10.0F;
             String age = "";
             if (ageInt < 8) {
-                age = ageInt.toString() + "days";
+                age = ageInt.toString() + (new TranslationTextComponent("eanimod.animalinfocontainer.days").getString());
             } else if (ageInt < 96) {
                 ageInt = ageInt/8;
-                age = ageInt.toString() + "months";
+                age = ageInt.toString() + (new TranslationTextComponent("eanimod.animalinfocontainer.months").getString());
             } else if (ageInt < 959040) {
                 ageInt = ageInt/96;
-                age = ageInt.toString() + "years";
+                age = ageInt.toString() + (new TranslationTextComponent("eanimod.animalinfocontainer.years").getString());
             } else {
-                age = "ancient";
+                age = new TranslationTextComponent("eanimod.animalinfocontainer.ancient").getString();
             }
-            this.font.drawString(matrixStack, "Age:" + age, i + 99, j + 20, 4210752);
+            this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.age").getString() + ":" + age, i + 99, j + 20, 4210752);
 
             String sireName = this.enhancedAnimalInfo.sire;
             int s = sireName.length();
             String damName = this.enhancedAnimalInfo.dam;
             int d = damName.length();
             if (s > 8) {
-                this.font.drawString(matrixStack, "Sire:", i + 99, j + 30, 4210752);
+                this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.sire").getString()+":", i + 99, j + 30, 4210752);
                 this.font.drawString(matrixStack, s > 12 ? sireName.substring(0, 12) : sireName, i + 99, j + 40, 4210752);
                 if (d > 8) {
-                    this.font.drawString(matrixStack, "Dam:", i + 99, j + 51, 4210752);
+                    this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 51, 4210752);
                     this.font.drawString(matrixStack, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 60, 4210752);
                 } else {
-                    this.font.drawString(matrixStack, "Dam:" + damName, i + 99, j + 50, 4210752);
+                    this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 50, 4210752);
                 }
             } else {
-                this.font.drawString(matrixStack, "Sire:" + sireName, i + 99, j + 30, 4210752);
+                this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.sire").getString()+":" + sireName, i + 99, j + 30, 4210752);
                 if (d > 8) {
-                    this.font.drawString(matrixStack, "Dam:", i + 99, j + 41, 4210752);
+                    this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 41, 4210752);
                     this.font.drawString(matrixStack, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 50, 4210752);
                 } else {
-                    this.font.drawString(matrixStack, "Dam:" + damName, i + 99, j + 40, 4210752);
+                    this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 40, 4210752);
                 }
             }
         }

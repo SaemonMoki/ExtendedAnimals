@@ -297,14 +297,17 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         if (hunger <= 36000) {
             timeForGrowth++;
         }
-        if (maxCoatLength > 0) {
+
+        int maxcoat = (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+
+        if ((maxcoat) > 0) {
             int[] genes = this.genetics.getAutosomalGenes();
-            if (!this.isChild() && currentCoatLength == maxCoatLength && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= 24000) {
+            if (!this.isChild() && currentCoatLength == maxcoat && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= 24000) {
                 timeForGrowth = 0;
-                currentCoatLength = rand.nextInt(maxCoatLength/2);
-            } else if (timeForGrowth >= (24000 / maxCoatLength)) {
+                currentCoatLength = rand.nextInt(maxcoat/2);
+            } else if (timeForGrowth >= (24000 / maxcoat)) {
                 timeForGrowth = 0;
-                if (maxCoatLength > currentCoatLength) {
+                if (maxcoat > currentCoatLength) {
                     currentCoatLength++;
                     setCoatLength(currentCoatLength);
                 }

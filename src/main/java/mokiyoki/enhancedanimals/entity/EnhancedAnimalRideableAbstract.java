@@ -355,23 +355,15 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     public boolean saddleAnimal(ItemStack saddleItemStack, PlayerEntity player, Hand hand, LivingEntity target) {
         EnhancedAnimalRideableAbstract enhancedAnimal = (EnhancedAnimalRideableAbstract) target;
         if (enhancedAnimal.isAlive() && !enhancedAnimal.isChild()) {
-            if (!enhancedAnimal.dataManager.get(HAS_SADDLE)) {
-                if (saddleItemStack.getItem() == Items.SADDLE) {
-                    this.animalInventory.setInventorySlotContents(1, new ItemStack(saddleItemStack.getItem(), 1));
-                } else {
-                    this.animalInventory.setInventorySlotContents(1, getReplacementItemWithColour(saddleItemStack));
-                }
-                this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
-                saddleItemStack.shrink(1);
+            ItemStack otherSaddle = this.getEnhancedInventory().getStackInSlot(1);
+            if (saddleItemStack.getItem() == Items.SADDLE) {
+                this.animalInventory.setInventorySlotContents(1, new ItemStack(saddleItemStack.getItem(), 1));
             } else {
-                ItemStack otherSaddle = this.getEnhancedInventory().getStackInSlot(1);
-                if (saddleItemStack.getItem() == Items.SADDLE) {
-                    this.animalInventory.setInventorySlotContents(1, new ItemStack(saddleItemStack.getItem(), 1));
-                } else {
-                    this.animalInventory.setInventorySlotContents(1, getReplacementItemWithColour(saddleItemStack));
-                }
-                this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
-                saddleItemStack.shrink(1);
+                this.animalInventory.setInventorySlotContents(1, getReplacementItemWithColour(saddleItemStack));
+            }
+            this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
+            saddleItemStack.shrink(1);
+            if (!otherSaddle.isEmpty()) {
                 player.setHeldItem(hand, otherSaddle);
             }
         }

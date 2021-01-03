@@ -186,16 +186,14 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     public boolean blanketAnimal(ItemStack blanketItemStack, PlayerEntity player, Hand hand, LivingEntity target) {
         EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
-        if (enhancedAnimal.isAlive() && !enhancedAnimal.dataManager.get(HAS_BLANKET)) {
-            this.animalInventory.setInventorySlotContents(4, new ItemStack(blanketItemStack.getItem(), 1));
-            this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
-            blanketItemStack.shrink(1);
-        } else {
+        if (enhancedAnimal.isAlive()) {
             ItemStack otherCarpet = this.getEnhancedInventory().getStackInSlot(4);
             this.animalInventory.setInventorySlotContents(4, new ItemStack(blanketItemStack.getItem(), 1));
             this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
             blanketItemStack.shrink(1);
-            player.setHeldItem(hand, otherCarpet);
+            if (!otherCarpet.isEmpty()) {
+                player.setHeldItem(hand, otherCarpet);
+            }
         }
 
         return true;
@@ -204,16 +202,11 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     public boolean bridleAnimal(ItemStack bridleItemStack, PlayerEntity player, Hand hand, LivingEntity target) {
         EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
         if (enhancedAnimal.isAlive()) {
-            if (!enhancedAnimal.dataManager.get(HAS_BRIDLE)) {
-                ItemStack replacementItem = getReplacementItemWithColour(bridleItemStack);
-                this.animalInventory.setInventorySlotContents(3, replacementItem);
-                this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
-                bridleItemStack.shrink(1);
-            } else {
-                ItemStack otherBridle = this.getEnhancedInventory().getStackInSlot(3);
-                this.animalInventory.setInventorySlotContents(3, getReplacementItemWithColour(bridleItemStack));
-                this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
-                bridleItemStack.shrink(1);
+            ItemStack otherBridle = this.getEnhancedInventory().getStackInSlot(3);
+            this.animalInventory.setInventorySlotContents(3, getReplacementItemWithColour(bridleItemStack));
+            this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
+            bridleItemStack.shrink(1);
+            if (!otherBridle.isEmpty()) {
                 player.setHeldItem(hand, otherBridle);
             }
         }

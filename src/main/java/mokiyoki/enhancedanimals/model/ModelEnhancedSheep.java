@@ -873,7 +873,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             if (true) {
                 this.neckWool7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
-        }else if (coatLength == 15){
+        }else if (coatLength >= 15){
             this.wool15.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             if (true) {
                 this.neckWool7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

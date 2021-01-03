@@ -163,8 +163,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         "", "moorhead_black.png", "moorhead_blue.png", "moorhead_splash.png", "moorhead_splashlav.png", "moorhead_splashdun.png",
             "moorhead_splashchoc.png", "moorhead_lav.png", "moorhead_white.png", "moorhead_dun.png",    "moorhead_choc.png",
     };
+
     private static final String[] CHICKEN_TEXTURES_WHITE = new String[] {
         "","white_darkbarred.png","white_barred.png","white_crested.png","white_mottles.png", "white_crestedmottled.png"
+    };
+
+    private static final String[] CHICKEN_TEXTURES_MOTTLEMARKINGS = new String[] {
+            "", "pattern_mottles.png", "pattern_mottles_blue.png", "pattern_mottles_splash.png", "pattern_mottles_splashlav.png", "pattern_mottles_splashdun.png",
+            "pattern_mottles_splashchoc.png",  "pattern_mottles_lav.png", "pattern_mottles_white.png", "pattern_mottles_dun.png", "pattern_mottles_choc.png"
     };
 
     private static final String[] CHICKEN_TEXTURES_CHICKBASE = new String[] {
@@ -762,6 +768,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 int pattern = 0;
                 int moorhead = 0;
                 int white = 0;
+                int mottles = 0;
                 int shanks = 3;
                 int comb = 2;
                 int eyes = 1;
@@ -1691,6 +1698,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                             }
                         }
                     }
+                    mottles = moorhead == 0 ? 1 : moorhead;
                     if (moorheadtoggle == 0) {
                         moorhead = 0;
                     }
@@ -2139,6 +2147,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 addTextureToAnimal(CHICKEN_TEXTURES_GROUND, ground, null);
                 addTextureToAnimal(CHICKEN_TEXTURES_PATTERN, pattern, p -> p <= 350);
                 addTextureToAnimal(CHICKEN_TEXTURES_MOORHEAD, moorhead, m -> m != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_MOTTLEMARKINGS, mottles, m -> m != 0);
                 addTextureToAnimal(CHICKEN_TEXTURES_WHITE, white, w -> w != 0);
                 addTextureToAnimal(CHICKEN_TEXTURES_SHANKS, shanks, null);
                 addTextureToAnimal(CHICKEN_TEXTURES_FACE, face, f -> f >= 1);

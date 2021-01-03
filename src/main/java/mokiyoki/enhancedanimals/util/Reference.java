@@ -14,7 +14,7 @@ public class Reference {
     public static final int CHICKEN_SEXLINKED_GENES_LENGTH = 20;
     public static final int CHICKEN_AUTOSOMAL_GENES_LENGTH = 184;
     public static final int PIG_AUTOSOMAL_GENES_LENGTH = 66;
-    public static final int COW_AUTOSOMAL_GENES_LENGTH = 124;
+    public static final int COW_AUTOSOMAL_GENES_LENGTH = 128;
     public static final int LLAMA_AUTOSOMAL_GENES_LENGTH = 34;
     public static final int RABBIT_AUTOSOMAL_GENES_LENGTH = 60;
     public static final int SHEEP_AUTOSOMAL_GENES_LENGTH = 68;

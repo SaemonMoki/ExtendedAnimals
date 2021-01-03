@@ -191,8 +191,10 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[19] = (1);
         }
 
-        int[] woolmod = {1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 7, 7, 10};
-        Collections.shuffle(Arrays.asList(woolmod));
+        Integer[] woolmod = {1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 7, 7, 8, 10, 10};
+        List<Integer> woolShuffle = Arrays.asList(woolmod);
+        Collections.shuffle(woolShuffle);
+        woolShuffle.toArray(woolmod);
 
         //added wool length 1 [ wildtype, wool1 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC / woolmod[0]) {

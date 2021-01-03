@@ -399,7 +399,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             } else {
                 age = new TranslationTextComponent("eanimod.animalinfocontainer.ancient").getString();
             }
-            this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.age").getString() + ":" + age, i + 99, j + 20, 4210752);
+            this.font.drawString(matrixStack, (new TranslationTextComponent("eanimod.animalinfocontainer.age").getString()) + ":" + age, i + 99, j + 20, 4210752);
 
             String sireName = this.enhancedAnimalInfo.sire;
             int s = sireName.length();

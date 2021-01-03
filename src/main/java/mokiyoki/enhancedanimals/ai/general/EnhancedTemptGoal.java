@@ -15,6 +15,7 @@ public class EnhancedTemptGoal extends Goal {
     private static final EntityPredicate REGULAR_ENTITY_PREDICATE = (new EntityPredicate()).setDistance(10.0D).allowInvulnerable().allowFriendlyFire().setSkipAttackChecks().setLineOfSiteRequired();
 
     private final double speed;
+    private final double fastspeed;
     private double targetX;
     private double targetY;
     private double targetZ;
@@ -31,9 +32,10 @@ public class EnhancedTemptGoal extends Goal {
 
     protected final EnhancedAnimalAbstract eanimal;
 
-    public EnhancedTemptGoal(EnhancedAnimalAbstract eanimal, double speedIn, boolean scaredByPlayerMovementIn, Ingredient temptItemsIn) {
+    public EnhancedTemptGoal(EnhancedAnimalAbstract eanimal, double walkspeed, double fastspeed, boolean scaredByPlayerMovementIn, Ingredient temptItemsIn) {
         this.eanimal = eanimal;
-        this.speed = speedIn;
+        this.speed = walkspeed;
+        this.fastspeed = fastspeed;
         this.temptItem = temptItemsIn;
         this.scaredByPlayerMovement = scaredByPlayerMovementIn;
         this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
@@ -137,9 +139,9 @@ public class EnhancedTemptGoal extends Goal {
 
     private double getWalkingToPlayerSpeed() {
         if (this.eanimal.getHunger() > REGULAR_HUNGRY) {
-            return this.speed;
+            return this.fastspeed;
         } else {
-            return this.speed/2;
+            return (this.fastspeed + this.speed )/2;
         }
 
     }

@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
@@ -221,7 +222,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         this.grazingGoal = new GrazingGoal(this, 1.0D);
         this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedRabbitPanicGoal(this, 2.2D));
-        this.goalSelector.addGoal(2, new BreedGoal(this, 0.8D));
+        this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, 0.8D));
         this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(4, new AvoidEntityGoal<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D));
         this.goalSelector.addGoal(4, new AvoidEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2D, 2.2D));

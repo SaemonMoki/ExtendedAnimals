@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
@@ -1384,7 +1385,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //            }
 
             this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
-            this.goalSelector.addGoal(2, new BreedGoal(this, speed));
+            this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, speed));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D, false, Ingredient.fromItems(Items.CARROT_ON_A_STICK)));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed,speed*1.25D, false, TEMPTATION_ITEMS));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));

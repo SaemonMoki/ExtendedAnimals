@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.ai.general.mooshroom.GrazingGoalMooshroom;
@@ -206,7 +207,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         if (!aiConfigured) {
             Double speed = 1.0D;
             this.goalSelector.addGoal(1, new PanicGoal(this, speed*1.5D));
-            this.goalSelector.addGoal(2, new BreedGoal(this, speed));
+            this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, speed));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D, false, Ingredient.fromItems(Items.CARROT_ON_A_STICK)));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D,false, TEMPTATION_ITEMS));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));

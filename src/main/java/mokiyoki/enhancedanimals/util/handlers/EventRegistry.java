@@ -5,7 +5,6 @@ import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 //import mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 //import mokiyoki.enhancedanimals.entity.EnhancedBee;
 //import mokiyoki.enhancedanimals.entity.EnhancedCat;
@@ -33,29 +32,22 @@ import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.biome.MobSpawnInfo;
+import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
 
@@ -64,7 +56,7 @@ import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
 /**
  * Created by moki on 24/08/2018.
  */
-@Mod.EventBusSubscriber(bus= Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Reference.MODID, bus= Mod.EventBusSubscriber.Bus.MOD)
 public class EventRegistry {
     private static final Logger eventLogger = LogManager.getLogger();
 
@@ -270,126 +262,14 @@ public class EventRegistry {
         event.getRegistry().register(ENHANCED_ENTITY_EGG_ENTITY_TYPE.setRegistryName("enhanced_entity_egg"));
         event.getRegistry().register(ENHANCED_LLAMA_SPIT.setRegistryName("enhanced_entity_llama_spit"));
 
-//        EntitySpawnPlacementRegistry.register(ENHANCED_CHICKEN, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_RABBIT, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_SHEEP, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_COW, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_PIG, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
-    }
+        EntitySpawnPlacementRegistry.register(ENHANCED_PIG, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_SHEEP, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_COW, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_CHICKEN, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_RABBIT, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_MOOSHROOM, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
 
-    @SubscribeEvent
-    public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
-        removeVanillaFromBiomes(ForgeRegistries.BIOMES);
-
-        for (Biome biome : ForgeRegistries.BIOMES) {
-            //Enhanced Rabbit Spawning
-            if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get() && (biome.getRegistryName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()))) {
-                biome.getMobSpawnInfo().getSpawners(EntityClassification.CREATURE).add(new MobSpawnInfo.Spawners(ENHANCED_RABBIT, 4, 2, 3));
-            }
-        }
-    }
-
-    private static void removeVanillaFromBiomes(IForgeRegistry<Biome> biomes) {
-        Iterator<Biome> biomeIterator = biomes.iterator();
-
-        while (biomeIterator.hasNext()) {
-            Biome biome = biomeIterator.next();
-            Iterator<MobSpawnInfo.Spawners> spawns = biome.getMobSpawnInfo().getSpawners(EntityClassification.CREATURE).iterator();
-
-            ArrayList<MobSpawnInfo.Spawners> addSpawns = new ArrayList<>();
-            ArrayList<MobSpawnInfo.Spawners> removeSpawns = new ArrayList<>();
-            while (spawns.hasNext()) {
-                MobSpawnInfo.Spawners entry = spawns.next();
-                //add and remove pigs
-                if (entry.type == EntityType.PIG) {
-                    if(!EanimodCommonConfig.COMMON.spawnVanillaPigs.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_PIG, 6, 2, 3));
-                }
-                //add and remove sheep
-                if (entry.type == EntityType.SHEEP) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaSheep.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_SHEEP, 12, 4, 4));
-                }
-                //add and remove cow
-                if (entry.type == EntityType.COW) {
-                    if(!EanimodCommonConfig.COMMON.spawnVanillaCows.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_COW, 8, 4, 4));
-                }
-                //add and remove llama
-                if (entry.type == EntityType.LLAMA) {
-                    if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_LLAMA, 4, 2, 3));
-                }
-                //add and remove chicken
-                if (entry.type == EntityType.CHICKEN) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_CHICKEN, 10, 4, 4));
-                }
-                //add and remove rabbit
-                if (entry.type == EntityType.RABBIT) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_RABBIT, 4, 2, 3));
-                }
-                //add and remove mooshroom
-                if (entry.type == EntityType.MOOSHROOM) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_MOOSHROOM, 8, 4, 4));
-                }
-            }
-
-            editSpawns(biome, addSpawns, removeSpawns);
-        }
-    }
-
-    private static void editSpawns(Biome biome, ArrayList<MobSpawnInfo.Spawners> addSpawns, ArrayList<MobSpawnInfo.Spawners> removeSpawns) {
-        MobSpawnInfo mobSpawnInfo = biome.getMobSpawnInfo();
-        List<MobSpawnInfo.Spawners> originalSpawns = mobSpawnInfo.getSpawners(EntityClassification.CREATURE);
-
-        List<MobSpawnInfo.Spawners> revisedSpawns = new ArrayList(originalSpawns);
-
-        if (!addSpawns.isEmpty()) {
-            revisedSpawns.addAll(addSpawns);
-        }
-        if (!removeSpawns.isEmpty()) {
-            revisedSpawns.removeAll(removeSpawns);
-        }
-
-        MobSpawnInfo.Builder builder = new MobSpawnInfo.Builder();
-        for (EntityClassification classification : EntityClassification.values()) {
-            List<MobSpawnInfo.Spawners> spawners;
-            if (classification == EntityClassification.CREATURE) {
-                spawners = revisedSpawns;
-            }
-            else {
-                spawners = mobSpawnInfo.getSpawners(classification);
-            }
-            for (MobSpawnInfo.Spawners mobSpawn : spawners) {
-                builder.withSpawner(classification, mobSpawn);
-            }
-        }
-        builder.withCreatureSpawnProbability(mobSpawnInfo.getCreatureSpawnProbability());
-
-        if (mobSpawnInfo.isValidSpawnBiomeForPlayer()) {
-            builder.isValidSpawnBiomeForPlayer();
-        }
-        MobSpawnInfo finalSpawnInfo = builder.copy();
-        // Fuck this. FUCK IT SOOOO HARD
-        ObfuscationReflectionHelper.setPrivateValue(Biome.class, biome, finalSpawnInfo, "field_242425_l");
     }
 
 }

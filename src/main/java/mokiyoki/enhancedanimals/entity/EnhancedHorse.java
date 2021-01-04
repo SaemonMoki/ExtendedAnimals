@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
@@ -636,7 +637,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         if (!aiConfigured) {
 
             this.goalSelector.addGoal(1, new PanicGoal(this, 1.5D));
-            this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
+            this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, 1.0D));
 //            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.25D, false, TEMPTATION_ITEMS));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25D));
 //            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, 1.25D));

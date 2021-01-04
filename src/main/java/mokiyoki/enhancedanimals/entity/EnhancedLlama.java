@@ -169,7 +169,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         this.goalSelector.addGoal(2, new ECLlamaFollowCaravan(this, (double)2.1F));
         this.goalSelector.addGoal(3, new RangedAttackGoal(this, 1.25D, 40, 20.0F));
         this.goalSelector.addGoal(3, new EnhancedPanicGoal(this, 1.2D));
-//        this.goalSelector.addGoal(4, new BreedGoal(this, 1.0D));
+//        this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
         this.goalSelector.addGoal(5, this.grazingGoal);
         this.goalSelector.addGoal(6, new EnhancedWanderingGoal(this, 1.0D));
 //        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.0D));

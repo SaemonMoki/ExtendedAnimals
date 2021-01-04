@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
@@ -185,7 +186,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.25D));
-        this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, 1.0D));
         this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(5, this.wanderEatingGoal);
@@ -1355,7 +1356,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 //            Double speed = 1.0D;
 //
 //            this.goalSelector.addGoal(1, new PanicGoal(this, speed*1.25D));
-//            this.goalSelector.addGoal(2, new BreedGoal(this, speed));
+//            this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, speed));
 //            this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.1D, TEMPTATION_ITEMS, false));
 //            this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
 //            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.1D));

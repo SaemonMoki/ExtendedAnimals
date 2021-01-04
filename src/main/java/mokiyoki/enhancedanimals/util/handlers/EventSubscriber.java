@@ -44,6 +44,7 @@ import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -51,6 +52,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
+
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -116,6 +118,13 @@ public class EventSubscriber {
             }
         }
 
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public void babyEntitySpawnEvent(BabyEntitySpawnEvent event) {
+        if (event.getParentA() instanceof EnhancedAnimalAbstract && event.getChild() == null) {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

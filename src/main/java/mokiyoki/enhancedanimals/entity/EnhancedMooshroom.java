@@ -12,6 +12,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
@@ -41,6 +42,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Random;
 import java.util.UUID;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
@@ -62,6 +64,10 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     public EnhancedMooshroom(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn);
         this.mateMushroomType = Type.RED;
+    }
+
+    public static boolean canMooshroomSpawn(EntityType<EnhancedMooshroom> entityType, IWorld world, SpawnReason reason, BlockPos blockPos, Random random) {
+        return world.getBlockState(blockPos.down()).isIn(Blocks.MYCELIUM) && world.getLightSubtracted(blockPos, 0) > 8;
     }
 
     @Override

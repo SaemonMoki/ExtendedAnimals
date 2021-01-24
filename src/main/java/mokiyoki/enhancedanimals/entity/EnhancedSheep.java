@@ -301,12 +301,12 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         int maxcoat = (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
 
-        if ((maxcoat) > 0) {
+        if (maxcoat > 0) {
             int[] genes = this.genetics.getAutosomalGenes();
             //first check is for self shearing sheep
             if (currentCoatLength == maxcoat && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= 24000) {
                 timeForGrowth = 0;
-                currentCoatLength = rand.nextInt(maxcoat/2);
+                currentCoatLength = maxcoat >= 2 ? rand.nextInt(maxcoat/2) : 0;
             } else if (timeForGrowth >= (24000 / maxcoat)) {
                 timeForGrowth = 0;
                 if (maxcoat > currentCoatLength) {
@@ -384,6 +384,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     protected SoundEvent getAmbientSound() {
+        if (isAnimalSleeping()) {
+            return null;
+        }
         return SoundEvents.ENTITY_SHEEP_AMBIENT;
     }
 

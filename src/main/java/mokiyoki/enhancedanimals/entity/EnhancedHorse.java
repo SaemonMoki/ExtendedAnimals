@@ -263,7 +263,12 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         return 0.4F + (speedMod * 0.4F) - chestMod;
     }
 
-    protected SoundEvent getAmbientSound() { return SoundEvents.ENTITY_HORSE_AMBIENT; }
+    protected SoundEvent getAmbientSound() {
+        if (isAnimalSleeping()) {
+            return null;
+        }
+        return SoundEvents.ENTITY_HORSE_AMBIENT;
+    }
 
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) { return SoundEvents.ENTITY_HORSE_HURT; }
 

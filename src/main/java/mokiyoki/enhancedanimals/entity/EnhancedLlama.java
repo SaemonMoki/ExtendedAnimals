@@ -404,8 +404,10 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return null;
     }
 
-    protected SoundEvent getAmbientSound()
-    {
+    protected SoundEvent getAmbientSound() {
+        if (isAnimalSleeping()) {
+            return null;
+        }
         return SoundEvents.ENTITY_LLAMA_AMBIENT;
     }
 

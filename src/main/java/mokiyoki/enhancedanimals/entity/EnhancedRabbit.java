@@ -783,8 +783,10 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         return SoundEvents.ENTITY_RABBIT_JUMP;
     }
 
-    protected SoundEvent getAmbientSound()
-    {
+    protected SoundEvent getAmbientSound() {
+        if (isAnimalSleeping()) {
+            return null;
+        }
         return SoundEvents.ENTITY_RABBIT_AMBIENT;
     }
 

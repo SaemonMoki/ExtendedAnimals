@@ -9,13 +9,13 @@ import net.minecraft.entity.passive.AnimalEntity;
 import java.util.List;
 
 public class EnhancedAINurseFromMotherGoal extends Goal {
-    private final AnimalEntity childEntity;
-    private AnimalEntity motherEntity;
+    private final EnhancedAnimalAbstract childEntity;
+    private EnhancedAnimalAbstract motherEntity;
     private String motherUUID;
     private final double moveSpeed;
     private int delayCounter;
 
-    public EnhancedAINurseFromMotherGoal(AnimalEntity child, String motherUUID, double speed) {
+    public EnhancedAINurseFromMotherGoal(EnhancedAnimalAbstract child, String motherUUID, double speed) {
         this.childEntity = child;
         this.motherUUID = motherUUID;
         this.moveSpeed = speed;
@@ -25,6 +25,10 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
      * Returns whether the EntityAIBase should begin execution.
      */
     public boolean shouldExecute() {
+        if (this.childEntity.isBeingRidden() || this.childEntity.isAnimalSleeping()) {
+            return false;
+        }
+
         if (this.childEntity.getGrowingAge() >= 0 || this.childEntity.getIdleTime() >= 100) {
             return false;
         } else if (((EnhancedAnimalAbstract)this.childEntity).getHunger() > 1000) {
@@ -47,8 +51,11 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
             } else if (d0 < 2.0D) {
                 return false;
             } else {
-                this.motherEntity = animalentity;
-                return true;
+                if (animalentity instanceof EnhancedAnimalAbstract) {
+                    this.motherEntity = (EnhancedAnimalAbstract)animalentity;
+                    return true;
+                }
+                return false;
             }
         }
 

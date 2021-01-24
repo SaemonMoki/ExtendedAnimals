@@ -306,6 +306,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     protected SoundEvent getAmbientSound() {
+        if (isAnimalSleeping()) {
+            return null;
+        }
         return SoundEvents.ENTITY_PIG_AMBIENT;
     }
 

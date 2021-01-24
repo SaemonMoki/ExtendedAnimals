@@ -630,6 +630,10 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         int[] genes = sheepModelData.sheepGenes;
         int coatLength = sheepModelData.coatlength;
+        if (coatLength > 15) {
+            coatLength = 15;
+        }
+
         String sheepStatus = sheepModelData.sheepStatus;
         boolean sleeping = sheepModelData.sleeping;
         float size = sheepModelData.size;
@@ -761,7 +765,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             renderHorns(horns, hornScale, unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
-        float woolLength = ((coatLength-1)*0.025F) + 1.0F;
+        float woolLength = (((coatLength > 15 ? 15 : coatLength)-1)*0.025F) + 1.0F;
 
 //            GlStateManager.pushMatrix();
 //            GlStateManager.scalef(woolLength, woolLength, woolLength);

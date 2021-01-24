@@ -558,6 +558,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected SoundEvent getAmbientSound() {
+        if (isAnimalSleeping()) {
+            return null;
+        }
         return SoundEvents.ENTITY_CHICKEN_AMBIENT;
     }
 

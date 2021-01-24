@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedFollowParentGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
@@ -25,8 +26,6 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.BreedGoal;
-import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -253,7 +252,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //        return this.grazingGoal.isSearching();
 //    }
 
-    protected SoundEvent getAmbientSound() { return SoundEvents.ENTITY_COW_AMBIENT; }
+    protected SoundEvent getAmbientSound() {
+        if (isAnimalSleeping()) {
+            return null;
+        }
+        return SoundEvents.ENTITY_COW_AMBIENT;
+    }
 
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) { return SoundEvents.ENTITY_COW_HURT; }
 
@@ -1388,7 +1392,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, speed));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D, false, Ingredient.fromItems(Items.CARROT_ON_A_STICK)));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed,speed*1.25D, false, TEMPTATION_ITEMS));
-            this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
+            this.goalSelector.addGoal(4, new EnhancedFollowParentGoal(this, speed*1.25D));
             this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
 //            grazingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);
             grazingGoal = new GrazingGoal(this, speed);

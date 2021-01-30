@@ -5,6 +5,8 @@ import mokiyoki.enhancedanimals.ai.general.AIStatus;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
+import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
+import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
@@ -32,6 +34,7 @@ import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ExperienceOrbEntity;
+import net.minecraft.entity.item.LeashKnotEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -206,7 +209,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     @Override
     protected void registerGoals() {
+        int napmod = this.rand.nextInt(1000);
         this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(2, new StayShelteredGoal(this, 5723, 7000, napmod));
+        this.goalSelector.addGoal(3, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
         this.goalSelector.addGoal(3, new EnhancedBreedGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
@@ -262,8 +268,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     protected abstract void lethalGenes();
 
     //when the animal wakes up
-    protected boolean sleepingConditional() {
-        return (!this.world.isDaytime() && awokenTimer == 0 && !sleeping);
+    public boolean sleepingConditional() {
+        return (!this.world.isDaytime() && this.awokenTimer == 0 && !this.sleeping);
     }
 
     //    public void setReloadTexture(Boolean resetTexture) {
@@ -288,7 +294,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     protected abstract void setAlphaTexturePaths();
 
     //called during construction to set up the animal size
-    protected abstract void initilizeAnimalSize();
+    public abstract void initilizeAnimalSize();
 
     //method to create the new child
     protected abstract void createAndSpawnEnhancedChild(World world);
@@ -339,6 +345,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     Getters and Setters for variables and datamanagers
     */
 
+    public void setBirthTime(World world, int age) {
+        this.setBirthTime(String.valueOf(world.getWorldInfo().getGameTime() + age));
+    }
+
     public void setBirthTime(String birthTime) {
         this.dataManager.set(BIRTH_TIME, birthTime);
     }
@@ -359,8 +369,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         this.sleeping = sleeping;
         this.dataManager.set(SLEEPING, sleeping); }
 
+
     public Boolean isAnimalSleeping() {
         if (this.sleeping == null) {
+            return false;
+        } else if (this.isWet()) {
+            return false;
+        } else if (!(this.getLeashHolder() instanceof LeashKnotEntity) && this.getLeashHolder() != null) {
             return false;
         } else {
             sleeping = this.dataManager.get(SLEEPING);
@@ -801,69 +816,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
-            }
-            else if ((!this.isChild() || !bottleFeedable) && TEMPTATION_ITEMS.test(itemStack)) {
-                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
-                    if (hunger < 4000) {
-                        return super.func_230254_b_(entityPlayer, hand);
-                    }
-                }
-
-                if (this.foodWeightMap.containsKey(item)) {
-                    decreaseHunger(this.foodWeightMap.get(item));
-                } else {
-                    decreaseHunger(6000);
-                }
-                if (!entityPlayer.abilities.isCreativeMode) {
-                    itemStack.shrink(1);
-                } else {
-                    if (itemStack.getCount() > 1) {
-                        itemStack.shrink(1);
-                    }
-                }
-            } else if (this.isChild() && (TEMPTATION_ITEMS.test(itemStack) || MILK_ITEMS.test(itemStack))) {
-                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
-                    if (hunger < 4000) {
-                        return super.func_230254_b_(entityPlayer, hand);
-                    }
-                }
-
-                if (bottleFeedable && MILK_ITEMS.test(itemStack)) {
-                    if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
-                        super.ageUp((int)((float)(-this.getGrowingAge() / 20) * 0.1F), true);
-                        return ActionResultType.SUCCESS;
-                    }
-                    if (item == ModItems.HALF_MILK_BOTTLE) {
-                        decreaseHunger(6000);
-                        if (!entityPlayer.abilities.isCreativeMode) {
-                            if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                                entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                            }
-                        }
-                    } else if (item == ModItems.MILK_BOTTLE) {
-                        if (hunger >= 12000) {
-                            decreaseHunger(12000);
-                            if (!entityPlayer.abilities.isCreativeMode) {
-                                if (itemStack.isEmpty()) {
-                                    entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                                    entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                                }
-                            }
-                        } else {
-                            decreaseHunger(6000);
-                            if (!entityPlayer.abilities.isCreativeMode) {
-                                if (itemStack.isEmpty()) {
-                                    entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
-                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
-                                    entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
-                                }
-                            }
-                        }
-                    }
-                } else {
+            } else if (!this.isChild() && BREED_ITEMS.test(itemStack)) {
+                int i = this.getGrowingAge();
+                if (this.hunger >= 4000 || (!this.pregnant && i == 0 && this.canFallInLove())) {
                     decreaseHunger(this.foodWeightMap.get(item));
                     if (!entityPlayer.abilities.isCreativeMode) {
                         itemStack.shrink(1);
@@ -872,25 +827,184 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
                             itemStack.shrink(1);
                         }
                     }
-                }
-            } else if (BREED_ITEMS.test(itemStack)) {
-                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
-                    if (hunger < 4000) {
-                        return super.func_230254_b_(entityPlayer, hand);
-                    }
-                }
-                decreaseHunger(this.foodWeightMap.get(item));
-                if (!entityPlayer.abilities.isCreativeMode) {
-                    itemStack.shrink(1);
                 } else {
-                    if (itemStack.getCount() > 1) {
-                        itemStack.shrink(1);
+                    return ActionResultType.PASS;
+                }
+                if (!this.world.isRemote && i == 0 && this.canFallInLove()) {
+                    this.setInLove(entityPlayer);
+                    return ActionResultType.SUCCESS;
+                }
+            } else if (this.isChild() && (BREED_ITEMS.test(itemStack) || (this.bottleFeedable && MILK_ITEMS.test(itemStack)))) {
+                if (this.hunger >= 4000 || EanimodCommonConfig.COMMON.feedGrowth.get()) {
+                    boolean isHungry = this.hunger >= 4000;
+                    if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
+                        this.ageUp((int) ((float) (-this.getGrowingAge() / 20) * 0.1F), true);
                     }
+                    if (MILK_ITEMS.test(itemStack)) {
+                        if (item == ModItems.HALF_MILK_BOTTLE) {
+                            if (isHungry) {
+                                decreaseHunger(6000);
+                            }
+                            if (!entityPlayer.abilities.isCreativeMode) {
+                                if (itemStack.isEmpty()) {
+                                    entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                                    entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                                }
+                            }
+                        } else if (item == ModItems.MILK_BOTTLE) {
+                            if (hunger >= 12000) {
+                                decreaseHunger(12000);
+                                if (!entityPlayer.abilities.isCreativeMode) {
+                                    if (itemStack.isEmpty()) {
+                                        entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+                                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+                                        entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                                    }
+                                }
+                            } else {
+                                if (isHungry) {
+                                    decreaseHunger(6000);
+                                }
+                                if (!entityPlayer.abilities.isCreativeMode) {
+                                    if (itemStack.isEmpty()) {
+                                        entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
+                                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
+                                        entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (isHungry) {
+                            decreaseHunger(this.foodWeightMap.get(item));
+                        }
+                        if (!entityPlayer.abilities.isCreativeMode) {
+                            itemStack.shrink(1);
+                        } else {
+                            if (itemStack.getCount() > 1) {
+                                itemStack.shrink(1);
+                            }
+                        }
+                    }
+                } else {
+                    return ActionResultType.PASS;
+                }
+            } else if (TEMPTATION_ITEMS.test(itemStack)) {
+                if (hunger >= 4000) {
+                    decreaseHunger(this.foodWeightMap.get(item));
+                    if (!entityPlayer.abilities.isCreativeMode) {
+                        itemStack.shrink(1);
+                    } else {
+                        if (itemStack.getCount() > 1) {
+                            itemStack.shrink(1);
+                        }
+                    }
+                } else {
+                    return ActionResultType.PASS;
                 }
             }
+//
+//            else if ((!this.isChild() || !bottleFeedable) && TEMPTATION_ITEMS.test(itemStack)) {
+//                if (hunger < 4000) {
+//                    return ActionResultType.PASS;
+//                } else {
+//                    if (this.foodWeightMap.containsKey(item)) {
+//                        decreaseHunger(this.foodWeightMap.get(item));
+//                    } else {
+//                        decreaseHunger(6000);
+//                    }
+//                    if (!entityPlayer.abilities.isCreativeMode) {
+//                        itemStack.shrink(1);
+//                    } else {
+//                        if (itemStack.getCount() > 1) {
+//                            itemStack.shrink(1);
+//                        }
+//                    }
+//                }
+//            } else if (this.isChild() && (TEMPTATION_ITEMS.test(itemStack) || MILK_ITEMS.test(itemStack))) {
+//                if (this.hunger >= 4000 || (EanimodCommonConfig.COMMON.feedGrowth.get() && this.growingAge < 0)) {
+//                    if (this.bottleFeedable && MILK_ITEMS.test(itemStack)) {
+//                        if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
+//                            super.ageUp((int) ((float) (-this.getGrowingAge() / 20) * 0.1F), true);
+//                            return ActionResultType.SUCCESS;
+//                        }
+//                        if (item == ModItems.HALF_MILK_BOTTLE) {
+//                            decreaseHunger(6000);
+//                            if (!entityPlayer.abilities.isCreativeMode) {
+//                                if (itemStack.isEmpty()) {
+//                                    entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+//                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+//                                    entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+//                                }
+//                            }
+//                        } else if (item == ModItems.MILK_BOTTLE) {
+//                            if (hunger >= 12000) {
+//                                decreaseHunger(12000);
+//                                if (!entityPlayer.abilities.isCreativeMode) {
+//                                    if (itemStack.isEmpty()) {
+//                                        entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
+//                                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
+//                                        entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+//                                    }
+//                                }
+//                            } else {
+//                                decreaseHunger(6000);
+//                                if (!entityPlayer.abilities.isCreativeMode) {
+//                                    if (itemStack.isEmpty()) {
+//                                        entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
+//                                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
+//                                        entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    } else if (BREED_ITEMS.test(itemStack)){
+//                        if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
+//                            super.ageUp((int) ((float) (-this.getGrowingAge() / 20) * 0.1F), true);
+//                            return ActionResultType.SUCCESS;
+//                        }
+//                        decreaseHunger(this.foodWeightMap.get(item));
+//                        if (!entityPlayer.abilities.isCreativeMode) {
+//                            itemStack.shrink(1);
+//                        } else {
+//                            if (itemStack.getCount() > 1) {
+//                                itemStack.shrink(1);
+//                            }
+//                        }
+//                    } else {
+//                        decreaseHunger(this.foodWeightMap.get(item));
+//                        if (!entityPlayer.abilities.isCreativeMode) {
+//                            itemStack.shrink(1);
+//                        } else {
+//                            if (itemStack.getCount() > 1) {
+//                                itemStack.shrink(1);
+//                            }
+//                        }
+//                    }
+//                }
+//            } else if (BREED_ITEMS.test(itemStack)) {
+////                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
+////                    if (hunger < 4000) {
+////                        return ActionResultType.PASS;
+////                    }
+////                }
+//                if (hunger >= 4000 || (!this.pregnant && this.growingAge == 0)) {
+//                    decreaseHunger(this.foodWeightMap.get(item));
+//                    if (!entityPlayer.abilities.isCreativeMode) {
+//                        itemStack.shrink(1);
+//                    } else {
+//                        if (itemStack.getCount() > 1) {
+//                            itemStack.shrink(1);
+//                        }
+//                    }
+//                } else {
+//                    return ActionResultType.PASS;
+//                }
+//            }
         }
 
-        return super.func_230254_b_(entityPlayer, hand);
+        return ActionResultType.PASS;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1229,20 +1343,22 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     @Override
     public AgeableEntity func_241840_a(ServerWorld serverWorld, AgeableEntity ageable) {
-        handlePartnerBreeding(ageable);
-        this.setGrowingAge(10);
-        this.resetInLove();
-        ageable.setGrowingAge(10);
-        ((EnhancedAnimalAbstract)ageable).resetInLove();
+        if (this.getAdultAge() <= this.getAge()) {
+            handlePartnerBreeding(ageable);
+            this.setGrowingAge(10);
+            this.resetInLove();
+            ageable.setGrowingAge(10);
+            ((EnhancedAnimalAbstract) ageable).resetInLove();
 
-        ServerPlayerEntity entityplayermp = this.getLoveCause();
-        if (entityplayermp == null && ((EnhancedAnimalAbstract)ageable).getLoveCause() != null) {
-            entityplayermp = ((EnhancedAnimalAbstract)ageable).getLoveCause();
-        }
+            ServerPlayerEntity entityplayermp = this.getLoveCause();
+            if (entityplayermp == null && ((EnhancedAnimalAbstract) ageable).getLoveCause() != null) {
+                entityplayermp = ((EnhancedAnimalAbstract) ageable).getLoveCause();
+            }
 
-        if (entityplayermp != null) {
-            entityplayermp.addStat(Stats.ANIMALS_BRED);
-            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedAnimalAbstract)ageable), (AgeableEntity)null);
+            if (entityplayermp != null) {
+                entityplayermp.addStat(Stats.ANIMALS_BRED);
+                CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedAnimalAbstract) ageable), (AgeableEntity) null);
+            }
         }
 
         return null;
@@ -1657,13 +1773,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     //overriden to prevent aging up when fed
     @Override
     public void ageUp(int growthSeconds, boolean updateForcedAge) {
-        if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
-            int newBirthTime = Integer.valueOf(getBirthTime()) - ((int)(getAdultAge()*0.1));
-            this.setBirthTime(String.valueOf(newBirthTime));
-            super.ageUp(growthSeconds, updateForcedAge);
-            if (!this.isChild() && getGrowingAge() <= -1) {
-                this.setGrowingAge(0);
-            }
+        int newBirthTime = Integer.valueOf(getBirthTime()) - ((int)(getAdultAge()*0.1));
+        this.setBirthTime(String.valueOf(newBirthTime));
+        super.ageUp(growthSeconds, updateForcedAge);
+        if (!this.isChild() && getGrowingAge() <= -1) {
+            this.setGrowingAge(0);
         }
     }
 
@@ -1674,6 +1788,28 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             spawnGenes = new Genes(((GroupData)livingdata).groupGenes).makeChild(true, false, ((GroupData)livingdata).groupGenes);
         } else {
             spawnGenes = createInitialGenes(this.world, new BlockPos(this.getPosition()), false);
+            livingdata = new GroupData(spawnGenes);
+        }
+
+        this.genetics = spawnGenes;
+
+        int birthMod = ThreadLocalRandom.current().nextInt(ageMinimum, ageMaximum);
+        this.setBirthTime(String.valueOf(inWorld.getWorldInfo().getGameTime() - birthMod));
+        if (birthMod < childAge) {
+            this.setGrowingAge(birthMod - childAge);
+        }
+
+        setInitialDefaults();
+        return livingdata;
+    }
+
+    protected ILivingEntityData tradersInitialSpawnSetup(IWorld inWorld, @Nullable ILivingEntityData livingdata, int childAge, int ageMinimum, int ageMaximum) {
+        Genes spawnGenes;
+
+        if (livingdata instanceof GroupData) {
+            spawnGenes = new Genes(((GroupData)livingdata).groupGenes).makeChild(true, false, ((GroupData)livingdata).groupGenes);
+        } else {
+            spawnGenes = createInitialGenes(this.world, new BlockPos(this.getPosition()), true);
             livingdata = new GroupData(spawnGenes);
         }
 

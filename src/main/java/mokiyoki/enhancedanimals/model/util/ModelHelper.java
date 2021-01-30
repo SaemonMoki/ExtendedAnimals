@@ -39,6 +39,14 @@ public class ModelHelper {
         dest.rotateAngleZ = source.rotateAngleZ;
     }
 
+    public static void copyModelRotations(ModelRenderer source, ModelRenderer ... dest) {
+        for (ModelRenderer destination : dest) {
+            destination.rotateAngleX = source.rotateAngleX;
+            destination.rotateAngleY = source.rotateAngleY;
+            destination.rotateAngleZ = source.rotateAngleZ;
+        }
+    }
+
     public static void copyModelPositioning(ModelRenderer source, ModelRenderer dest) {
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
@@ -46,6 +54,17 @@ public class ModelHelper {
         dest.rotationPointX = source.rotationPointX;
         dest.rotationPointY = source.rotationPointY;
         dest.rotationPointZ = source.rotationPointZ;
+    }
+
+    public static void copyModelPositioning(ModelRenderer source, ModelRenderer ... dest) {
+        for (ModelRenderer destination : dest) {
+            destination.rotateAngleX = source.rotateAngleX;
+            destination.rotateAngleY = source.rotateAngleY;
+            destination.rotateAngleZ = source.rotateAngleZ;
+            destination.rotationPointX = source.rotationPointX;
+            destination.rotationPointY = source.rotationPointY;
+            destination.rotationPointZ = source.rotationPointZ;
+        }
     }
 
 }

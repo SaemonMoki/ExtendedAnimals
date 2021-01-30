@@ -182,6 +182,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             put(new ItemStack(Items.OAK_SAPLING).getItem(), 1000);
             put(new ItemStack(Items.DARK_OAK_SAPLING).getItem(), 1000);
             put(new ItemStack(Items.MILK_BUCKET).getItem(), 1500);
+            put(new ItemStack(Items.MELON_SLICE).getItem(), 1000);
             put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
         }};
     }
@@ -1052,7 +1053,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
     }
 
-    protected void initilizeAnimalSize() {
+    public void initilizeAnimalSize() {
         setPigSize();
     }
 
@@ -1091,7 +1092,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
         return new PigGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 }

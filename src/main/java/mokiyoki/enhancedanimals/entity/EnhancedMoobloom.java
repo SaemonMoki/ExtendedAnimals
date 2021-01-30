@@ -153,10 +153,10 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
             float[] melanin = Colouration.getHSBFromABGR(this.colouration.getMelaninColour());
             float[] pheomelanin = Colouration.getHSBFromABGR(this.colouration.getPheomelaninColour());
 
-                melanin[0] = Colouration.mixColours(melanin[0], 0.22F, 0.5F);
+                melanin[0] = Colouration.mixColourComponent(melanin[0], 0.22F, 0.5F);
                 melanin[1] = 1.0F;
 
-                pheomelanin[0] = Colouration.mixColours(pheomelanin[0], 0.20F, 0.5F);
+                pheomelanin[0] = Colouration.mixColourComponent(pheomelanin[0], 0.20F, 0.5F);
                 pheomelanin[1] = pheomelanin[1] + 0.25F;
 
             //checks that numbers are within the valid range

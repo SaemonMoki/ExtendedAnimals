@@ -42,7 +42,14 @@ public abstract class AbstractGeneticsInitialiser {
         if (isBiome(breedAsString)) {
             return generateWithBiome(breedAsString);
         }
+
         Biome biome = world.getBiome(pos);
+
+        if (breedAsString.equals("WanderingTrader")) {
+            Collections.shuffle(breeds);
+            return breeds.get(0).generateGenes(generateLocalWildGenetics(biome, true));
+        }
+
         breedAsString = breedAsString.toLowerCase();
         Genes localWildType = generateLocalWildGenetics(biome, false/*world.getWorldInfo().getGenerator() == WorldType.FLAT*/);
 
@@ -79,6 +86,8 @@ public abstract class AbstractGeneticsInitialiser {
             return generateLocalWildGenetics(ForgeRegistries.BIOMES.getValue(Biomes.PLAINS.getLocation()), false);
         } else if (biome.contains("flower")) {
             return generateLocalWildGenetics(ForgeRegistries.BIOMES.getValue(Biomes.FLOWER_FOREST.getLocation()), false);
+        } else if (biome.contains("woods") || biome.contains("forest")) {
+            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getValue(Biomes.FOREST.getLocation()), false);
         }
 
             return generateLocalWildGenetics(ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.getLocation()), true);

@@ -256,12 +256,12 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         if (enhancedAnimalInfo.isFemale) {
             this.blit(matrixStack, i + 126, j + 5, 117, this.ySize + 54, 8, 10); // female icon
                 int pregnancy = enhancedAnimalInfo.pregnant;
-            this.blit(matrixStack, i + 126, j + 5 + (11-pregnancy) , 117, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
+            this.blit(matrixStack, i + 126, j + 4 + (11-pregnancy) , 117, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
 
         } else {
             this.blit(matrixStack, i + 126, j + 5, 108, this.ySize + 54, 8, 10); // male icon
                 int pregnancy = enhancedAnimalInfo.pregnant;
-            this.blit(matrixStack, i + 126, j + 5 + (11-pregnancy) , 108, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
+            this.blit(matrixStack, i + 126, j + 4 + (11-pregnancy) , 108, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
         }
 
         this.blit(matrixStack, i + 136, j + 5, 125, this.ySize + 54, 9, 10); // health icon

@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.ai.general;
 
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.Temperament;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityPredicate;
@@ -28,7 +29,6 @@ public class EnhancedAvoidEntityGoal<T extends LivingEntity> extends Goal {
     protected final Predicate<LivingEntity> field_203784_k;
     private final EntityPredicate field_220872_k;
     Map<Temperament, Integer> temperaments;
-
 
     public EnhancedAvoidEntityGoal(CreatureEntity entityIn, Class<T> classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn, Map<Temperament, Integer> temperaments) {
         this(entityIn, classToAvoidIn, (p_200828_0_) -> {
@@ -69,6 +69,7 @@ public class EnhancedAvoidEntityGoal<T extends LivingEntity> extends Goal {
             } else if (this.field_75376_d.getDistanceSq(vec3d.x, vec3d.y, vec3d.z) < this.field_75376_d.getDistanceSq(this.entity)) {
                 return false;
             } else {
+                ((EnhancedAnimalAbstract)this.entity).awaken();
                 this.path = this.navigation.getPathToPos(vec3d.x, vec3d.y, vec3d.z, 0);
                 return this.path != null;
             }

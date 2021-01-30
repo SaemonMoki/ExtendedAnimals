@@ -136,7 +136,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             "coat_normal.png", "coat_smooth.png", "coat_furry.png"
     };
 
-    protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UNBOUNDHAY_BLOCK);
+    protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UNBOUNDHAY_BLOCK, Items.MELON_SLICE);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     protected boolean resetTexture = true;
@@ -176,8 +176,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             put(new ItemStack(Blocks.DARK_OAK_LEAVES).getItem(), 1000);
             put(new ItemStack(Items.CARROT).getItem(), 1500);
             put(new ItemStack(Items.WHEAT).getItem(), 6000);
-            put(new ItemStack(Items.SUGAR).getItem(), 1500);
+            put(new ItemStack(Items.SUGAR).getItem(), 500);
             put(new ItemStack(Items.APPLE).getItem(), 1500);
+            put(new ItemStack(Items.MELON_SLICE).getItem(), 1100);
             put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
         }};
     }
@@ -403,7 +404,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected boolean sleepingConditional() {
+    public boolean sleepingConditional() {
         return (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && awokenTimer == 0 && !sleeping);
     }
 
@@ -629,12 +630,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             }
         }
 
-        if (leatherDrop < 0) {
-            leatherDrop = 0;
-        }
-        if (meatDrop < 0) {
-            meatDrop = 0;
-        }
+        leatherDrop = leatherDrop < 0 ? 0 : leatherDrop;
+
+        meatDrop = meatDrop < 0 ? 0 : meatDrop;
+
+        leatherDrop = (leatherDrop > 5) ? 5 : 0;
 
         if (this.isBurning()){
             ItemStack cookedBeefStack = new ItemStack(Items.COOKED_BEEF, meatDrop);
@@ -963,7 +963,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected void initilizeAnimalSize() {
+    public void initilizeAnimalSize() {
         setCowSize();
     }
 
@@ -994,9 +994,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     if (genesForText[0] == 3 || genesForText[1] == 3) {
                         if (genesForText[0] != 4 && genesForText[1] != 4) {
                             //red cow as in red angus, red hereford
-                            blackHue = Colouration.mixColours(redHue, 0.0F, 0.5F);
-                            blackSaturation = Colouration.mixColours(redSaturation, 1.0F, 0.5F);
-                            blackBrightness = Colouration.mixColours(redBrightness, blackBrightness, 0.75F);
+                            blackHue = Colouration.mixColourComponent(redHue, 0.0F, 0.5F);
+                            blackSaturation = Colouration.mixColourComponent(redSaturation, 1.0F, 0.5F);
+                            blackBrightness = Colouration.mixColourComponent(redBrightness, blackBrightness, 0.75F);
                             extention = "red";
                         } //else red and black wildtype colouration
                     } else if (genesForText[0] == 4 || genesForText[1] == 4) {
@@ -1007,16 +1007,16 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //                    if (genesForText[0] == 4 && genesForText[1] == 4) {
 //                        //cow is indus white
 //                        blackSaturation = redSaturation;
-//                        blackBrightness = mixColours(redBrightness, blackBrightness, 0.25F);
+//                        blackBrightness = mixColourComponent(redBrightness, blackBrightness, 0.25F);
 //                        //TODO homozygous indus white needs to restrict the spread of black pigment to tips.
 //                    }
                         //else its "blue" possibly carrot top..
                         //TODO do something about carrot top
                     } else if (genesForText[0] == 5 && genesForText[1] == 5) {
                         //red cow as in red brahman and red gyr, indistinguishable from taros red
-                        blackHue = Colouration.mixColours(redHue, 0.0F, 0.5F);
-                        blackSaturation = Colouration.mixColours(redSaturation, 1.0F, 0.5F);
-                        blackBrightness = Colouration.mixColours(redBrightness, blackBrightness, 0.75F);
+                        blackHue = Colouration.mixColourComponent(redHue, 0.0F, 0.5F);
+                        blackSaturation = Colouration.mixColourComponent(redSaturation, 1.0F, 0.5F);
+                        blackBrightness = Colouration.mixColourComponent(redBrightness, blackBrightness, 0.75F);
                         extention = "red";
                     }
                 } //else red and black wildtype colouration
@@ -1024,11 +1024,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 if (genesForText[120] == 2 || genesForText[121] == 2) {
                     //indus dilution
                     blackHue = redHue;
-                    blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
+                    blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
                     redHue = redHue + 0.01F;
-                    redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.48F);
-                    redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.55F);
-                    blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.25F);
+                    redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.48F);
+                    redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.55F);
+                    blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.25F);
                 }
 
                 if (genesForText[2] == 2 && genesForText[3] == 2) {
@@ -1037,28 +1037,28 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 } else if (genesForText[2] == 2 || genesForText[3] == 2) {
                     //typical bos taros dilution in murray grey and highland cattle
                     if (extention.equals("black")) {
-                        redHue = Colouration.mixColours(redHue, 0.1F, 0.75F);
-                        redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.1F);
-                        redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.4F);
-                        blackHue = Colouration.mixColours(blackHue, redHue, 0.5F);
-                        blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
-                        blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.45F);
+                        redHue = Colouration.mixColourComponent(redHue, 0.1F, 0.75F);
+                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
+                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
+                        blackHue = Colouration.mixColourComponent(blackHue, redHue, 0.5F);
+                        blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
+                        blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.45F);
                     } else if (!extention.equals("red")) {
-                        redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.1F);
-                        redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.4F);
+                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
+                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
                         blackHue = redHue;
-                        redHue = Colouration.mixColours(redHue, 0.1F, 0.75F);
+                        redHue = Colouration.mixColourComponent(redHue, 0.1F, 0.75F);
                         blackSaturation = redSaturation;
-                        blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.25F);
+                        blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.25F);
                     } else {
-//                    blackHue = mixColours(blackHue, redHue, 0.5F);
-//                    blackSaturation = mixColours(blackSaturation, redSaturation, 0.5F);
-                        redHue = Colouration.mixColours(redHue, 0.1F, 0.80F);
-                        redSaturation = Colouration.mixColours(redSaturation, 0.0F, 0.1F);
-                        redBrightness = Colouration.mixColours(redBrightness, 1.0F, 0.4F);
-                        blackHue = Colouration.mixColours(blackHue, redHue, 0.6F);
-                        blackSaturation = Colouration.mixColours(blackSaturation, redSaturation, 0.5F);
-                        blackBrightness = Colouration.mixColours(blackBrightness, redBrightness, 0.4F);
+//                    blackHue = mixColourComponent(blackHue, redHue, 0.5F);
+//                    blackSaturation = mixColourComponent(blackSaturation, redSaturation, 0.5F);
+                        redHue = Colouration.mixColourComponent(redHue, 0.1F, 0.80F);
+                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
+                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
+                        blackHue = Colouration.mixColourComponent(blackHue, redHue, 0.6F);
+                        blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
+                        blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.4F);
                     }
                 }
 
@@ -1081,7 +1081,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     }
                 }
 
-                this.colouration.setMelaninColour(Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]));
+                float random = this.rand.nextFloat() * 0.1F;
+                this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], this.isFemale()? 0.4F + random : random + 0.6F));
                 this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
 
             }
@@ -1354,7 +1355,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
         return new CowGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 

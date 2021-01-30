@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -20,6 +21,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -184,11 +186,38 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         return this.getControllingPassenger() instanceof LivingEntity/* && this.isTame()*/ && this.dataManager.get(HAS_BRIDLE);
     }
 
+    public void equipAnimal(boolean hasChest, DyeColor blanketColour) {
+        if (hasChest) {
+            this.setChest(true);
+            this.animalInventory.setInventorySlotContents(0, new ItemStack(Items.CHEST, 1));
+            this.initInventory();
+        }
+        if (blanketColour != null) {
+            ItemStack equipedBlanket = new ItemStack(this.getCarpetByColour(blanketColour), 1);
+            this.animalInventory.setInventorySlotContents(4, equipedBlanket);
+        }
+    }
+
+    public void equipTraderAnimal(boolean hasChest) {
+        if (hasChest) {
+            this.setChest(true);
+            this.animalInventory.setInventorySlotContents(0, new ItemStack(Items.CHEST, 1));
+            this.initInventory();
+        }
+        ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setDisplayName(new StringTextComponent("Trader's Blanket"));
+        traderBlanket.getOrCreateChildTag("tradersblanket");
+        this.animalInventory.setInventorySlotContents(4, traderBlanket);
+    }
+
     public boolean blanketAnimal(ItemStack blanketItemStack, PlayerEntity player, Hand hand, LivingEntity target) {
         EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
         if (enhancedAnimal.isAlive()) {
             ItemStack otherCarpet = this.getEnhancedInventory().getStackInSlot(4);
-            this.animalInventory.setInventorySlotContents(4, new ItemStack(blanketItemStack.getItem(), 1));
+            ItemStack equipedBlanket = new ItemStack(blanketItemStack.getItem(), 1).setDisplayName(blanketItemStack.getDisplayName());
+            if (blanketItemStack.getChildTag("tradersblanket") != null) {
+                equipedBlanket.getOrCreateChildTag("tradersblanket");
+            }
+            this.animalInventory.setInventorySlotContents(4, equipedBlanket);
             this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
             blanketItemStack.shrink(1);
             if (!otherCarpet.isEmpty()) {
@@ -292,8 +321,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                     blanketTextures.add(BLANKET_TEXTURE[1]);
                 } else if (blanket == Items.BLUE_CARPET) {
                     if (blanketSlot.hasDisplayName()) {
-                        if (blanketSlot.getDisplayName().getString().equals("Trader's Blanket")) {
-                            //TODO maybe make this so it checks "ownership" instead?
+                        if (blanketSlot.getChildTag("tradersblanket") != null) {
                             blanketTextures.add(BLANKET_TEXTURE[0]);
                             return blanketTextures;
                         }
@@ -332,6 +360,45 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             }
         }
         return blanketTextures;
+    }
+
+    protected Item getCarpetByColour(DyeColor color) {
+        switch (color) {
+            case WHITE:
+                return Items.WHITE_CARPET;
+            case RED:
+                return Items.RED_CARPET;
+            case BROWN:
+                return Items.BROWN_CARPET;
+            case BLACK:
+                return Items.BLACK_CARPET;
+            case LIGHT_GRAY:
+                return Items.LIGHT_GRAY_WOOL;
+            case GRAY:
+                return Items.GRAY_CARPET;
+
+            case BLUE:
+                return Items.BLUE_CARPET;
+            case CYAN:
+                return Items.CYAN_CARPET;
+            case LIME:
+                return Items.LIME_CARPET;
+            case PINK:
+                return Items.PINK_CARPET;
+            case GREEN:
+                return Items.GREEN_CARPET;
+            case ORANGE:
+                return Items.ORANGE_CARPET;
+            case PURPLE:
+                return Items.PURPLE_CARPET;
+            case YELLOW:
+                return Items.YELLOW_CARPET;
+            case MAGENTA:
+                return Items.MAGENTA_CARPET;
+            case LIGHT_BLUE:
+            default:
+                return Items.LIGHT_BLUE_CARPET;
+        }
     }
 
     protected boolean isCarpet(ItemStack itemStack) {

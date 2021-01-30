@@ -1307,7 +1307,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                 sheepModelData.dataReset = 0;
             }
             sheepModelData.bagSize = enhancedSheep.getBagSize();
-            sheepModelData.coatlength = enhancedSheep.getCoatLength();
+            sheepModelData.coatlength = enhancedSheep.getCoatLength() > 15 ? 15 : enhancedSheep.getCoatLength();
             sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
             sheepModelData.blink = enhancedSheep.getBlink();
             sheepModelData.birthTime = enhancedSheep.getBirthTime();

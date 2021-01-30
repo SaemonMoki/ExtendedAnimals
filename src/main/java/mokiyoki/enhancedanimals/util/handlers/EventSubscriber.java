@@ -5,10 +5,16 @@ import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
+import mokiyoki.enhancedanimals.entity.EnhancedPig;
+import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
+import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.HayBlock;
@@ -25,6 +31,7 @@ import net.minecraft.entity.passive.MooshroomEntity;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.entity.passive.horse.AbstractChestedHorseEntity;
 import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.entity.passive.horse.TraderLlamaEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,11 +40,15 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.item.SwordItem;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
@@ -57,7 +68,12 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOSHROOM;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
 
 /**
  * Created by saemon on 8/09/2018.
@@ -78,45 +94,49 @@ public class EventSubscriber {
             }
         }
         //TODO figure out how to not delete named entities and maybe convert them instead.
-        if (entity instanceof ChickenEntity) {
-            if(!((ChickenEntity)entity).isChickenJockey() && !EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
-                event.setCanceled(true);
-            }
-        }
-        if (entity instanceof RabbitEntity) {
-            if(!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
-                event.setCanceled(true);
-            }
-        }
-        if (entity instanceof LlamaEntity) {
-            if (!(entity instanceof TraderLlamaEntity)) {
-//                    if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
-//                        event.setCanceled(true);
-//                    }
-                } else if (EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
-                    event.setCanceled(true);
-                }
-        }
-        if (entity instanceof SheepEntity) {
-            if(!EanimodCommonConfig.COMMON.spawnVanillaSheep.get()) {
-                event.setCanceled(true);
-            }
-        }
-        if (entity instanceof CowEntity && !(entity instanceof MooshroomEntity)) {
-            if(!EanimodCommonConfig.COMMON.spawnVanillaCows.get()) {
-                event.setCanceled(true);
-            }
-        }
-        if (entity instanceof MooshroomEntity) {
-            if(!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
-                event.setCanceled(true);
-            }
-        }
-        if (entity instanceof PigEntity) {
-            if(!EanimodCommonConfig.COMMON.spawnVanillaPigs.get()) {
-                event.setCanceled(true);
-            }
-        }
+//        if (entity instanceof ChickenEntity) {
+//            if(!((ChickenEntity)entity).isChickenJockey() && !EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
+//                event.setCanceled(true);
+//            }
+//        }
+//        if (entity instanceof RabbitEntity) {
+//            if(!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
+//                event.setCanceled(true);
+//            }
+//        }
+//        if (entity instanceof LlamaEntity) {
+//            if (!(entity instanceof TraderLlamaEntity)) {
+////                    if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
+////                        event.setCanceled(true);
+////                    }
+//                } else if (EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
+//                    event.setCanceled(true);
+//                }
+//        }
+//        if (entity instanceof SheepEntity) {
+//            if(!EanimodCommonConfig.COMMON.spawnVanillaSheep.get() && EanimodCommonConfig.COMMON.spawnGeneticSheep.get()) {
+//                EnhancedSheep enhancedSheep = ENHANCED_SHEEP.create(event.getWorld());
+//                enhancedSheep.setLocationAndAngles(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.rotationYaw, entity.rotationPitch);
+//                event.getWorld().addEntity(enhancedSheep);
+//                entity.remove();
+//                event.setCanceled(true);
+//            }
+//        }
+//        if (entity instanceof CowEntity && !(entity instanceof MooshroomEntity)) {
+//            if(!EanimodCommonConfig.COMMON.spawnVanillaCows.get()) {
+//                event.setCanceled(true);
+//            }
+//        }
+//        if (entity instanceof MooshroomEntity) {
+//            if(!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
+//                event.setCanceled(true);
+//            }
+//        }
+//        if (entity instanceof PigEntity) {
+//            if(!EanimodCommonConfig.COMMON.spawnVanillaPigs.get()) {
+//                event.setCanceled(true);
+//            }
+//        }
 
     }
 
@@ -188,6 +208,234 @@ public class EventSubscriber {
                     i++;
                 }
             }
+        } else if (!entity.getEntityWorld().isRemote()) {
+            if (entity instanceof SheepEntity) {
+                if (!EanimodCommonConfig.COMMON.spawnVanillaSheep.get() && EanimodCommonConfig.COMMON.spawnGeneticSheep.get()) {
+                    EnhancedSheep enhancedSheep = ENHANCED_SHEEP.spawn((ServerWorld) entity.getEntityWorld(), null, null, null, entity.getPosition(), SpawnReason.NATURAL, false, false);
+                    if (enhancedSheep != null) {
+                        enhancedSheep.setFleeceDyeColour(((SheepEntity) entity).getFleeceColor());
+                        if (entity.hasCustomName()) {
+                            enhancedSheep.setCustomName(entity.getCustomName());
+                        }
+                        if (((SheepEntity) entity).isChild()) {
+                            int age = ((SheepEntity) entity).getGrowingAge();
+                            enhancedSheep.setGrowingAge(age);
+                            enhancedSheep.setBirthTime(entity.getEntityWorld(), (-age/24000)*72000);
+                        } else {
+                            enhancedSheep.setGrowingAge(0);
+                            enhancedSheep.setBirthTime(entity.getEntityWorld(), -500000);
+                        }
+                        if (((SheepEntity) entity).getLeashed()) {
+                            enhancedSheep.setLeashHolder(((SheepEntity) entity).getLeashHolder(), true);
+                        }
+                    }
+                    entity.remove();
+                }
+            } else if (entity instanceof ChickenEntity) {
+                if (!EanimodCommonConfig.COMMON.spawnVanillaChickens.get() && EanimodCommonConfig.COMMON.spawnGeneticChickens.get()) {
+                    EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.spawn((ServerWorld) entity.getEntityWorld(), null, null, null, entity.getPosition(), SpawnReason.NATURAL, false, false);
+                    if (enhancedChicken != null) {
+                        if (entity.hasCustomName()) {
+                            enhancedChicken.setCustomName(entity.getCustomName());
+                        }
+                        if (((ChickenEntity) entity).isChild()) {
+                            int age = ((ChickenEntity) entity).getGrowingAge();
+                            enhancedChicken.setGrowingAge(age);
+                            enhancedChicken.setBirthTime(entity.getEntityWorld(), (-age/24000)*60000);
+                        } else {
+                            enhancedChicken.setGrowingAge(0);
+                            enhancedChicken.setBirthTime(entity.getEntityWorld(), -500000);
+                        }
+                        if (((ChickenEntity) entity).getLeashed()) {
+                            enhancedChicken.setLeashHolder(((ChickenEntity) entity).getLeashHolder(), true);
+                        }
+                    }
+                    entity.remove();
+                }
+            } else if (entity instanceof PigEntity) {
+                if (!EanimodCommonConfig.COMMON.spawnVanillaPigs.get() && EanimodCommonConfig.COMMON.spawnGeneticPigs.get()) {
+                    EnhancedPig enhancedPig = ENHANCED_PIG.spawn((ServerWorld) entity.getEntityWorld(), null, null, null, entity.getPosition(), SpawnReason.NATURAL, false, false);
+                    if (enhancedPig != null) {
+                        if (entity.hasCustomName()) {
+                            enhancedPig.setCustomName(entity.getCustomName());
+                        }
+                        if (((PigEntity) entity).isChild()) {
+                            int age = ((PigEntity) entity).getGrowingAge();
+                            enhancedPig.setGrowingAge(age);
+                            enhancedPig.setBirthTime(entity.getEntityWorld(), (-age/24000)*60000);
+                        } else {
+                            enhancedPig.setGrowingAge(0);
+                            enhancedPig.setBirthTime(entity.getEntityWorld(), -500000);
+                        }
+                        if (((PigEntity) entity).isHorseSaddled()) {
+                            enhancedPig.equipAnimal(false, true, null);
+                        }
+                        if (((PigEntity) entity).getLeashed()) {
+                            enhancedPig.setLeashHolder(((PigEntity) entity).getLeashHolder(), true);
+                        }
+                    }
+                    entity.remove();
+                    event.setCanceled(true);
+                }
+            } else if (entity instanceof MooshroomEntity) {
+                if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get() && EanimodCommonConfig.COMMON.spawnGeneticMooshroom.get()) {
+                    EnhancedMooshroom enhancedMooshroom = ENHANCED_MOOSHROOM.spawn((ServerWorld) entity.getEntityWorld(), null, null, null, entity.getPosition(), SpawnReason.NATURAL, false, false);
+                    if (enhancedMooshroom != null) {
+                        if (entity.hasCustomName()) {
+                            enhancedMooshroom.setCustomName(entity.getCustomName());
+                        }
+                        if (((MooshroomEntity) entity).isChild()) {
+                            int age = ((MooshroomEntity) entity).getGrowingAge();
+                            enhancedMooshroom.setGrowingAge(age);
+                            enhancedMooshroom.setBirthTime(entity.getEntityWorld(), (-age/24000)*84000);
+                        } else {
+                            enhancedMooshroom.setGrowingAge(0);
+                            enhancedMooshroom.setBirthTime(entity.getEntityWorld(), -500000);
+                        }
+                        enhancedMooshroom.setMooshroomType(EnhancedMooshroom.Type.valueOf(((MooshroomEntity) entity).getMooshroomType().name()));
+                        if (((MooshroomEntity) entity).getLeashed()) {
+                            enhancedMooshroom.setLeashHolder(((MooshroomEntity) entity).getLeashHolder(), true);
+                        }
+                    }
+                    entity.remove();
+                    event.setCanceled(true);
+                }
+            } else if (entity instanceof CowEntity) {
+                if (!EanimodCommonConfig.COMMON.spawnVanillaCows.get() && EanimodCommonConfig.COMMON.spawnGeneticCows.get()) {
+                    EnhancedCow enhancedCow = ENHANCED_COW.spawn((ServerWorld) entity.getEntityWorld(), null, null, null, entity.getPosition(), SpawnReason.NATURAL, false, false);
+                    if (enhancedCow != null) {
+                        if (entity.hasCustomName()) {
+                            enhancedCow.setCustomName(entity.getCustomName());
+                        }
+                        if (((CowEntity) entity).isChild()) {
+                            int age = ((CowEntity) entity).getGrowingAge();
+                            enhancedCow.setGrowingAge(age);
+                            enhancedCow.setBirthTime(entity.getEntityWorld(), (-age/24000)*84000);
+                        } else {
+                            enhancedCow.setGrowingAge(0);
+                            enhancedCow.setBirthTime(entity.getEntityWorld(), -500000);
+                        }
+                        if (((CowEntity) entity).getLeashed()) {
+                            enhancedCow.setLeashHolder(((CowEntity) entity).getLeashHolder(), true);
+                        }
+                    }
+                    entity.remove();
+                    event.setCanceled(true);
+                }
+            } else if (entity instanceof LlamaEntity) {
+                if (!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get() && EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
+                    if (!(((LlamaEntity) entity).getLeashHolder() instanceof WanderingTraderEntity)) {
+                    EnhancedLlama enhancedLlama = ENHANCED_LLAMA.create(entity.getEntityWorld());
+                    enhancedLlama.setLocationAndAngles(entity.getPosX(), entity.getPosY(), entity.getPosZ(), (entity.rotationYaw), entity.rotationPitch);
+                    enhancedLlama.renderYawOffset = ((LlamaEntity) entity).renderYawOffset;
+                    String breed = "";
+                    switch (((LlamaEntity) entity).getVariant()) {
+                        case 0 :
+                            breed = "cream";
+                            break;
+                        case 1 :
+                            breed = "white";
+                            break;
+                        case 2 :
+                            breed = "brown";
+                            break;
+                        case 3 :
+                        default:
+                            breed = "gray";
+                    }
+                    Genes llamaGenes = enhancedLlama.createInitialBreedGenes(entity.getEntityWorld(), entity.getPosition(), breed);
+                    enhancedLlama.setGenes(llamaGenes);
+                    enhancedLlama.setSharedGenes(llamaGenes);
+                    enhancedLlama.initilizeAnimalSize();
+                    enhancedLlama.setInitialCoat();
+                    enhancedLlama.getReloadTexture();
+                    enhancedLlama.setTame(((LlamaEntity) entity).isTame());
+
+                        if (enhancedLlama != null) {
+                            if (entity.hasCustomName()) {
+                                enhancedLlama.setCustomName(entity.getCustomName());
+                            }
+                            if (((LlamaEntity) entity).isChild()) {
+                                int age = ((LlamaEntity) entity).getGrowingAge();
+                                enhancedLlama.setGrowingAge(age);
+                                enhancedLlama.setBirthTime(entity.getEntityWorld(), (-age / 24000) * 120000);
+                                if (entity instanceof TraderLlamaEntity) {
+                                    enhancedLlama.equipTraderAnimal(false);
+                                } else {
+                                    enhancedLlama.equipAnimal(false, ((LlamaEntity) entity).getColor());
+                                }
+                            } else {
+                                enhancedLlama.setGrowingAge(0);
+                                enhancedLlama.setBirthTime(entity.getEntityWorld(), -500000);
+                                if (entity instanceof TraderLlamaEntity) {
+                                    enhancedLlama.equipTraderAnimal(((LlamaEntity) entity).hasChest());
+                                } else {
+                                    enhancedLlama.equipAnimal(((LlamaEntity) entity).hasChest(), ((LlamaEntity) entity).getColor());
+                                }
+                                if (((LlamaEntity) entity).hasChest()) {
+                                    CompoundNBT nbt = entity.serializeNBT();
+                                    ListNBT listnbt = nbt.getList("Items", 10);
+
+                                    for (int i = 0; i < listnbt.size(); ++i) {
+                                        CompoundNBT compoundnbt = listnbt.getCompound(i);
+                                        int j = compoundnbt.getByte("Slot") & 255;
+                                        if (j >= 2 && j + 5 < enhancedLlama.getEnhancedInventory().getSizeInventory()) {
+                                            enhancedLlama.getEnhancedInventory().setInventorySlotContents(j + 5, ItemStack.read(compoundnbt));
+                                        }
+                                    }
+                                }
+                            }
+                            entity.getEntityWorld().addEntity(enhancedLlama);
+                            if (((LlamaEntity) entity).getLeashed()) {
+                                enhancedLlama.setLeashHolder(((LlamaEntity) entity).getLeashHolder(), true);
+                            }
+                        }
+                    }
+                    entity.remove();
+                    event.setCanceled(true);
+                }
+            } else if (entity instanceof RabbitEntity) {
+                if (!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get() && EanimodCommonConfig.COMMON.spawnGeneticRabbits.get()) {
+                    EnhancedRabbit enhancedRabbit = ENHANCED_RABBIT.create(entity.getEntityWorld());
+                    if (enhancedRabbit != null) {
+                        enhancedRabbit.setLocationAndAngles(entity.getPosX(), entity.getPosY(), entity.getPosZ(), (entity.rotationYaw), entity.rotationPitch);
+                        enhancedRabbit.renderYawOffset = ((RabbitEntity) entity).renderYawOffset;
+                        String breed = "";
+                        switch (((RabbitEntity) entity).getRabbitType()) {
+                            case 1:
+                            case 3 :
+                                breed = "snow";
+                                break;
+                            case 4 :
+                                breed = "desert";
+                                break;
+                            default:
+                                breed = "forest";
+                        }
+                        Genes rabbitGenes = enhancedRabbit.createInitialBreedGenes(entity.getEntityWorld(), entity.getPosition(), breed);
+                        enhancedRabbit.setGenes(rabbitGenes);
+                        enhancedRabbit.setSharedGenes(rabbitGenes);
+                        enhancedRabbit.setRabbitSize();
+                        enhancedRabbit.setInitialCoat();
+                        enhancedRabbit.getReloadTexture();
+
+                        if (entity.hasCustomName()) {
+                            enhancedRabbit.setCustomName(entity.getCustomName());
+                        }
+                        if (((RabbitEntity) entity).isChild()) {
+                            int age = ((RabbitEntity) entity).getGrowingAge();
+                            enhancedRabbit.setGrowingAge(age);
+                            enhancedRabbit.setBirthTime(entity.getEntityWorld(), (-age/24000)*48000);
+                        } else {
+                            enhancedRabbit.setGrowingAge(0);
+                            enhancedRabbit.setBirthTime(entity.getEntityWorld(), -500000);
+                        }
+                        entity.getEntityWorld().addEntity(enhancedRabbit);
+                    }
+                    entity.remove();
+                    event.setCanceled(true);
+                }
+            }
         }
     }
 
@@ -209,21 +457,125 @@ public class EventSubscriber {
     public void livingspawnEvent(LivingSpawnEvent.SpecialSpawn event) {
         Entity entity = event.getEntity();
         if (entity instanceof WanderingTraderEntity) {
-            if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
-                ((WanderingTraderEntity)entity).setDespawnDelay(48000);
-                IWorld world = event.getWorld();
-
-                if(world instanceof ServerWorld) {
+            IWorld world = event.getWorld();
+            ((WanderingTraderEntity)entity).setDespawnDelay(48000);
+            if(world instanceof ServerWorld) {
+                if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
                     for (int i = 0; i < 2; i++) {
                         BlockPos blockPos = nearbySpawn(((ServerWorld)world), new BlockPos(entity.getPosition()));
                         EnhancedLlama enhancedLlama = ENHANCED_LLAMA.spawn((ServerWorld)world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
                         if(enhancedLlama != null) {
                             enhancedLlama.setLeashHolder(entity, true);
+                            enhancedLlama.setDespawnDelay(48000, true);
                         }
                     }
                 }
 
+                if (ThreadLocalRandom.current().nextInt(5) == 0) {
+                    int r = ThreadLocalRandom.current().nextInt(2) + 1;
+                    switch (ThreadLocalRandom.current().nextInt(6)) {
+                        default:
+                        case 0:
+                            if (EanimodCommonConfig.COMMON.spawnGeneticCows.get()) {
+                                for (int i = 0; i < r; i++) {
+                                    BlockPos blockPos = nearbySpawn(((ServerWorld) world), new BlockPos(entity.getPosition()));
+                                    EnhancedCow enhancedCow = ENHANCED_COW.spawn((ServerWorld) world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
+                                    if (enhancedCow != null) {
+                                        Genes cowGenes = enhancedCow.createInitialBreedGenes(entity.getEntityWorld(), entity.getPosition(), "WanderingTrader");
+                                        enhancedCow.setGenes(cowGenes);
+                                        enhancedCow.setSharedGenes(cowGenes);
+                                        enhancedCow.initilizeAnimalSize();
+                                        enhancedCow.getReloadTexture();
+                                        enhancedCow.setLeashHolder(entity, true);
+                                    }
+                                }
+                            }
+                            break;
+                        case 1:
+                            if (EanimodCommonConfig.COMMON.spawnGeneticSheep.get()) {
+                                for (int i = 0; i < r; i++) {
+                                    BlockPos blockPos = nearbySpawn(((ServerWorld) world), new BlockPos(entity.getPosition()));
+                                    EnhancedSheep enhancedSheep = ENHANCED_SHEEP.spawn((ServerWorld) world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
+                                    if (enhancedSheep != null) {
+                                        Genes sheepGenes = enhancedSheep.createInitialBreedGenes(entity.getEntityWorld(), entity.getPosition(), "WanderingTrader");
+                                        enhancedSheep.setGenes(sheepGenes);
+                                        enhancedSheep.setSharedGenes(sheepGenes);
+                                        enhancedSheep.initilizeAnimalSize();
+                                        enhancedSheep.setInitialCoat();
+                                        enhancedSheep.getReloadTexture();
+                                        enhancedSheep.setLeashHolder(entity, true);
+                                    }
+                                }
+                            }
+                            break;
+                        case 2:
+                            if (EanimodCommonConfig.COMMON.spawnGeneticChickens.get()) {
+                                for (int i = 0; i < r; i++) {
+                                    BlockPos blockPos = nearbySpawn(((ServerWorld) world), new BlockPos(entity.getPosition()));
+                                    EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.spawn((ServerWorld) world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
+                                    if (enhancedChicken != null) {
+                                        Genes chickenGenes = enhancedChicken.createInitialBreedGenes(entity.getEntityWorld(), entity.getPosition(), "WanderingTrader");
+                                        enhancedChicken.setGenes(chickenGenes);
+                                        enhancedChicken.setSharedGenes(chickenGenes);
+                                        enhancedChicken.initilizeAnimalSize();
+                                        enhancedChicken.getReloadTexture();
+                                        enhancedChicken.setLeashHolder(entity, true);
+                                    }
+                                }
+                            }
+                            break;
+                        case 3:
+                            if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get()) {
+                                for (int i = 0; i < r; i++) {
+                                    BlockPos blockPos = nearbySpawn(((ServerWorld) world), new BlockPos(entity.getPosition()));
+                                    EnhancedRabbit enhancedRabbit = ENHANCED_RABBIT.spawn((ServerWorld) world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
+                                    if (enhancedRabbit != null) {
+                                        Genes rabbitGenes = enhancedRabbit.createInitialBreedGenes(entity.getEntityWorld(), entity.getPosition(), "WanderingTrader");
+                                        enhancedRabbit.setGenes(rabbitGenes);
+                                        enhancedRabbit.setSharedGenes(rabbitGenes);
+                                        enhancedRabbit.initilizeAnimalSize();
+                                        enhancedRabbit.getReloadTexture();
+                                        enhancedRabbit.setLeashHolder(entity, true);
+                                    }
+                                }
+                            }
+                            break;
+                        case 4:
+                            if (EanimodCommonConfig.COMMON.spawnGeneticPigs.get()) {
+                                for (int i = 0; i < r; i++) {
+                                    BlockPos blockPos = nearbySpawn(((ServerWorld) world), new BlockPos(entity.getPosition()));
+                                    EnhancedPig enhancedPig = ENHANCED_PIG.spawn((ServerWorld) world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
+                                    if (enhancedPig != null) {
+                                        Genes pigGenes = enhancedPig.createInitialBreedGenes(entity.getEntityWorld(), entity.getPosition(), "WanderingTrader");
+                                        enhancedPig.setGenes(pigGenes);
+                                        enhancedPig.setSharedGenes(pigGenes);
+                                        enhancedPig.initilizeAnimalSize();
+                                        enhancedPig.getReloadTexture();
+                                        enhancedPig.setLeashHolder(entity, true);
+                                    }
+                                }
+                            }
+                            break;
+                        case 5:
+                            if (EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
+                                BlockPos blockPos = nearbySpawn(((ServerWorld) world), new BlockPos(entity.getPosition()));
+                                EnhancedLlama enhancedLlama = ENHANCED_LLAMA.spawn((ServerWorld) world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
+                                if (enhancedLlama != null) {
+                                    Genes llamaGenes = enhancedLlama.createInitialBreedGenes(entity.getEntityWorld(), entity.getPosition(), "WanderingTrader");
+                                    enhancedLlama.setGenes(llamaGenes);
+                                    enhancedLlama.setSharedGenes(llamaGenes);
+                                    enhancedLlama.initilizeAnimalSize();
+                                    enhancedLlama.setInitialCoat();
+                                    enhancedLlama.getReloadTexture();
+                                    enhancedLlama.setLeashHolder(entity, true);
+                                    enhancedLlama.setDespawnDelay(48000, false);
+                                }
+                            }
+                            break;
+                    }
+                }
             }
+
             if (!entity.getTags().contains("eanimodTradeless")) {
                 entity.addTag("eanimodTradeless");
                 int i = 1;

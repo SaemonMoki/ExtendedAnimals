@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECRoost;
 import mokiyoki.enhancedanimals.ai.ECSandBath;
+import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
@@ -9,6 +10,8 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
+import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
+import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.ai.general.chicken.GrazingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
@@ -32,6 +35,10 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.item.ExperienceOrbEntity;
+import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.passive.ChickenEntity;
+import net.minecraft.entity.passive.FoxEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -50,6 +57,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IServerWorld;
@@ -232,7 +240,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         "eyes_albino.png", "eyes_black.png", "eyes_blue.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.TALL_GRASS, Items.GRASS, Items.BREAD, Items.EGG);
+    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.MELON_SLICE, Items.TALL_GRASS, Items.GRASS, Items.BREAD, Items.EGG);
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
 
     public float wingRotation;
@@ -270,6 +278,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             put(new ItemStack(Items.MELON_SEEDS).getItem(), 4000);
             put(new ItemStack(Items.PUMPKIN_SEEDS).getItem(), 4000);
             put(new ItemStack(Items.BEETROOT_SEEDS).getItem(), 4000);
+            put(new ItemStack(Items.MELON_SLICE).getItem(), 2000);
             put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
             put(new ItemStack(Items.DANDELION).getItem(), 1500);
             put(new ItemStack(Items.SPIDER_EYE).getItem(), 1500);
@@ -281,19 +290,27 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @Override
     protected void registerGoals() {
         //TODO add temperaments
+        int napmod = this.rand.nextInt(1200);
         this.grazingGoal = new GrazingGoalChicken(this, 1.0D);
         this.ecSandBath = new ECSandBath(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
-        this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, TEMPTATION_ITEMS));
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(5, new ECWanderAvoidWater(this, 1.0D));
-        this.goalSelector.addGoal(6, this.grazingGoal);
-        this.goalSelector.addGoal(7, new EnhancedWanderingGoal(this, 1.0D));
-        this.goalSelector.addGoal(8, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(9, new EnhancedLookRandomlyGoal(this));
-        this.goalSelector.addGoal(10, new ECRoost(this));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, WolfEntity.class, 10.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, FoxEntity.class, 10.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 4.0F, 1.0D, 1.8D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, MonsterEntity.class, 4.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(7, new StayShelteredGoal(this, 6000, 7500, napmod));
+        this.goalSelector.addGoal(8, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
+        this.goalSelector.addGoal(9, new ECWanderAvoidWater(this, 1.0D));
+        this.goalSelector.addGoal(10, this.grazingGoal);
+        this.goalSelector.addGoal(11, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, ChickenEntity.class, 6.0F));
+        this.goalSelector.addGoal(13, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(14, new ECRoost(this));
 
     }
 
@@ -479,7 +496,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected void initilizeAnimalSize(){
+    public void initilizeAnimalSize(){
         float size = 1.0F;
 
         int[] genes = this.genetics.getAutosomalGenes();
@@ -2147,6 +2164,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                     eyes = 2;
                 }
 
+                if (!(white == 3 || white == 5)) {
+                    mottles = 0;
+                }
+
 //            after finished autosomalGenes
                 addTextureToAnimal(CHICKEN_TEXTURES_GROUND, ground, null);
                 addTextureToAnimal(CHICKEN_TEXTURES_PATTERN, pattern, p -> p <= 350);
@@ -2505,7 +2526,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
         return new ChickenGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 

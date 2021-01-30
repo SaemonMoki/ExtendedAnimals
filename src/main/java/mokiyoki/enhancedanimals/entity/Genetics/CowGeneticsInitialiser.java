@@ -24,6 +24,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(CowBreeds.TEXAS_LONGHORN);
         this.breeds.add(CowBreeds.WILD_HORNS);
         this.breeds.add(CowBreeds.DEXTER);
+        this.breeds.add(CowBreeds.SPANISH);
     }
 
     public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
@@ -88,13 +89,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         /**
          *  A^BR    Brindle
-         *  A^W     White-Belly Agouti (Reduced black patterning enhanced white belly)
-         *  A^F     Fawn (Reduced black patterning)
-         *  A+      Agouti
          *  a^b     Dark Agouti
+         *  A+      Agouti
+         *  A^W     White-Belly Agouti (Reduced black patterning black is spread thinly, reduced red, enhanced white belly)
+         *  A^F     Fawn (Reduced black patterning, removal of red from belly)
          *  a       Recessive Black
          */
-        //Agouti [ Black enhancer, Wildtype+, white-bellied fawn, brindle, recessive black ]
+        //Agouti [ Dark Agouti, Wildtype+, white-bellied agouti, brindle, fawn, recessive black ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(4) + 1);
 

@@ -27,19 +27,26 @@ import java.util.Map;
 public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T> {
     private Map<Integer, HorseModelData> horseModelDataCache = new HashMap<>();
 
-    int heightMod = 6;
-
     private int clearCacheTimer = 0;
 
     private final ModelRenderer chest1;
     private final ModelRenderer chest2;
 
     private final ModelRenderer head;
+    private final ModelRenderer noseArch0;
+    private final ModelRenderer noseArch1;
+    private final ModelRenderer noseArch2;
+    private final ModelRenderer nose0;
+    private final ModelRenderer nose1;
+    private final ModelRenderer nose2;
     private final ModelRenderer eyeLeft;
     private final ModelRenderer eyeRight;
     private final ModelRenderer earL;
     private final ModelRenderer earR;
-    private final ModelRenderer jaw;
+    private final ModelRenderer jaw0;
+    private final ModelRenderer jaw1;
+    private final ModelRenderer jaw2;
+    private final ModelRenderer tongue;
     private final ModelRenderer maneJoiner;
     private final ModelRenderer neck;
     private final EnhancedRendererModelNew body;
@@ -74,15 +81,32 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     private Integer currentHorse = null;
 
     public ModelEnhancedHorse() {
+        HorseModelData horseModelData = getHorseModelData();
+        int heightMod = horseModelData.heightMod;
         this.textureWidth = 256;
         this.textureHeight = 256;
 
         this.head = new ModelRenderer(this, 0, 35);
         this.head.addBox(-3.5F, -0.5F, -6.51F, 7, 7, 7, -0.5F);
-        this.head.setTextureOffset(28, 35);
-        this.head.addBox(-2.5F, -0.5F, -9.5F, 5, 4, 4, -0.5F);
-        this.head.setTextureOffset(28, 43);
-        this.head.addBox(-2.5F, -0.4F, -12.5F, 5, 4, 4, -0.4F);
+
+        this.noseArch0 = new ModelRenderer(this, 45, 0);
+        this.noseArch0.addBox(-2.5F, -3.5F, -3.5F, 5, 4, 4, -0.5F);
+
+        this.noseArch1 = new ModelRenderer(this, 45, 0);
+        this.noseArch1.addBox(-2.5F, -4.5F, -3.5F, 5, 5, 4, -0.5F);
+
+        this.noseArch2 = new ModelRenderer(this, 45, 0);
+        this.noseArch2.addBox(-2.5F, -5.5F, -3.5F, 5, 6, 4, -0.5F);
+
+        this.nose0 = new ModelRenderer(this, 45, 10);
+        this.nose0.addBox(-2.5F, -3.6F, -3.6F, 5, 4, 4, -0.4F);
+
+        this.nose1 = new ModelRenderer(this, 45, 10);
+        this.nose1.addBox(-2.5F, -4.6F, -3.6F, 5, 5, 4, -0.4F);
+
+        this.nose2 = new ModelRenderer(this, 45, 10);
+        this.nose2.addBox(-2.5F, -5.6F, -3.6F, 5, 6, 4, -0.4F);
+
 //        this.head.setTextureOffset(0, 0);
 //        this.head.addBox(-4.01F, 0.0F, -6.0F, 3, 4, 4, -1.0F);
 //        this.head.addBox(1.01F, 0.0F, -6.0F, 3, 4, 4, -1.0F);
@@ -105,11 +129,18 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.earR.addBox(0.0F, -3.0F, -0.5F, 2, 3, 1);
         this.earR.setRotationPoint(1.0F, 0.0F, -1.0F);
 
-        this.jaw = new ModelRenderer(this, 69,0);
-        this.jaw.addBox(-2.0F, 0.0F, -9.0F, 4, 4, 7, -0.1F);
-        this.jaw.setTextureOffset(0, 15);
-        this.jaw.addBox(-2.0F, 2.25F, -9.0F, 4, 1, 7, -0.11F);
-        this.jaw.setRotationPoint(0.0F, 2.5F, -2.0F);
+        this.jaw0 = new ModelRenderer(this, 72,0);
+        this.jaw0.addBox(-2.0F, -9.0F, -6.0F, 4, 7, 4, -0.1F);
+
+        this.jaw1 = new ModelRenderer(this, 72,0);
+        this.jaw1.addBox(-2.0F, -10.0F, -6.0F, 4, 8, 4, -0.1F);
+
+        this.jaw2 = new ModelRenderer(this, 72,0);
+        this.jaw2.addBox(-2.0F, -11.0F, -6.0F, 4, 9, 4, -0.1F);
+
+        this.tongue = new ModelRenderer(this, 0, 15);
+        this.tongue.addBox(-2.0F, 2.25F, -9.0F, 4, 1, 7, -0.11F);
+        this.tongue.setRotationPoint(0.0F, 2.5F, -2.0F);
 
         this.maneJoiner = new ModelRenderer(this, 98, 9);
         this.maneJoiner.addBox(-1.5F, -1.49F, -0.49F, 3, 2, 2, -0.51F); //mane piece 2
@@ -169,7 +200,10 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.neck.addChild(maneJoiner);
         this.head.addChild(earL);
         this.head.addChild(earR);
-        this.head.addChild(jaw);
+        this.head.addChild(jaw0);
+        this.head.addChild(jaw1);
+        this.head.addChild(jaw2);
+        this.head.addChild(tongue);
         this.head.addChild(eyeLeft);
         this.head.addChild(eyeRight);
 
@@ -276,6 +310,18 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.bridle.setTextureOffset(0, 40);
         this.bridle.addBox(-2.5F, -0.0F, -10.0F, 5, 6, 5, 0.05F);
         this.head.addChild(this.bridle);
+        this.head.addChild(this.noseArch0);
+        this.head.addChild(this.noseArch1);
+        this.head.addChild(this.noseArch2);
+        this.noseArch0.addChild(this.nose0);
+        this.noseArch0.addChild(this.nose1);
+        this.noseArch0.addChild(this.nose2);
+        this.noseArch1.addChild(this.nose0);
+        this.noseArch1.addChild(this.nose1);
+        this.noseArch1.addChild(this.nose2);
+        this.noseArch2.addChild(this.nose0);
+        this.noseArch2.addChild(this.nose1);
+        this.noseArch2.addChild(this.nose2);
     }
 
     @Override
@@ -288,6 +334,51 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         } else {
             this.eyeLeft.showModel = true;
             this.eyeRight.showModel = true;
+        }
+
+        this.noseArch0.showModel = false;
+        this.noseArch1.showModel = false;
+        this.noseArch2.showModel = false;
+        this.nose0.showModel = false;
+        this.nose1.showModel = false;
+        this.nose2.showModel = false;
+        this.jaw0.showModel = false;
+        this.jaw1.showModel = false;
+        this.jaw2.showModel = false;
+        if (horseModelData.faceShape >= 0) {
+            switch (horseModelData.faceLength) {
+                case 0:
+                    this.noseArch0.showModel = true;
+                    this.jaw0.showModel = true;
+                    break;
+                case 1:
+                    this.noseArch1.showModel = true;
+                    this.jaw1.showModel = true;
+                    break;
+                default:
+                case 2:
+                    this.noseArch2.showModel = true;
+                    this.jaw2.showModel = true;
+                    break;
+            }
+            this.nose0.showModel = true;
+        } else {
+            switch (horseModelData.faceLength) {
+                case 0:
+                    this.nose0.showModel = true;
+                    this.jaw0.showModel = true;
+                    break;
+                case 1:
+                    this.nose1.showModel = true;
+                    this.jaw1.showModel = true;
+                    break;
+                default:
+                case 2:
+                    this.nose2.showModel = true;
+                    this.jaw2.showModel = true;
+                    break;
+            }
+            this.noseArch0.showModel = true;
         }
 
         this.chest1.showModel = false;
@@ -351,6 +442,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     public void setLivingAnimations(T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTickTime) {
         HorseModelData horseModelData = getCreateHorseModelData(entitylivingbaseIn);
         this.currentHorse = entitylivingbaseIn.getEntityId();
+        int heightMod = horseModelData.heightMod;
 
         char[] uuidArry = horseModelData.uuidArray;
 
@@ -513,7 +605,55 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         }
 
         /**
-            experimental size variations
+         *  experimental head variations
+         */
+
+        float noseAngle = horseModelData.faceShape; // dish-roman [-0.175, 0.075]
+
+        this.noseArch0.setRotationPoint(0,0, -6.0F);
+//        this.nose0.rotationPointZ = noseAngle < 0 ? (-3.0F - (noseAngle * 5.0F)) : -3.0F;
+
+        this.noseArch0.rotateAngleX = (float)Math.PI/2.0F + (float)Math.PI * (Math.abs(noseAngle));
+        this.nose0.rotateAngleX = ((float)Math.PI * (noseAngle < 0 ? (3.0F*noseAngle/2.0F) : (2.0F*noseAngle/3.0F)));
+        this.tongue.rotateAngleX = -0.175F + (noseAngle < 0 ? noseAngle/2.0F : ((float)Math.PI * (2.0F*noseAngle/3.0F)));
+        this.jaw0.rotateAngleX = this.tongue.rotateAngleX + (float)Math.PI/2.0F;
+
+        ModelHelper.copyModelRotations(noseArch0, noseArch1, noseArch2);
+        ModelHelper.copyModelRotations(nose0, nose1, nose2);
+
+        this.noseArch1.rotationPointZ = this.noseArch0.rotationPointZ;
+        this.noseArch2.rotationPointZ = this.noseArch0.rotationPointZ;
+
+        if (noseAngle >= 0) {
+            this.nose0.rotationPointY = -3.0F + -horseModelData.faceLength;
+        } else {
+            this.nose0.rotationPointY = -3.0F + (-noseAngle * 5.0F);
+        }
+
+        this.nose1.setRotationPoint(0.0F, this.nose0.rotationPointY, 0);
+        this.nose2.setRotationPoint(0.0F, this.nose0.rotationPointY, 0);
+        this.jaw1.rotateAngleX = this.jaw0.rotateAngleX;
+        this.jaw2.rotateAngleX = this.jaw0.rotateAngleX;
+
+        switch (horseModelData.faceLength) {
+            case 0 :
+                this.tongue.rotationPointZ = -2.0F - (noseAngle >= 0 ? noseAngle * -2.0F : noseAngle * 2.75F);
+                this.jaw0.setRotationPoint(0.0F, 0.70F - (noseAngle >= 0 ? 0.0F : noseAngle), this.tongue.rotationPointZ);
+                break;
+            case 1 :
+                this.tongue.rotationPointZ = -3.0F - (noseAngle >= 0 ? 0.0F : noseAngle * 2.75F);
+                this.jaw1.setRotationPoint(0.0F, 0.70F - (noseAngle >= 0 ? 0.0F : noseAngle), this.tongue.rotationPointZ);
+                break;
+            default:
+            case 2 :
+                this.tongue.rotationPointZ = -4.0F - (noseAngle >= 0 ? 0.0F : noseAngle * 2.75F);
+                this.jaw2.setRotationPoint(0.0F, 0.70F - (noseAngle >= 0 ? 0.0F : noseAngle), this.tongue.rotationPointZ);
+                break;
+
+        }
+
+        /**
+         *  experimental size variations
          */
 
         this.body.rotationPointY = 1.0F + heightMod;
@@ -533,6 +673,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        HorseModelData horseModelData = getHorseModelData();
+        int heightMod = horseModelData.heightMod;
         this.neck.rotateAngleX = headPitch * 0.017453292F + 0.8F;
         this.neck.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.40F);
         this.head.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.14F);
@@ -559,7 +701,6 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
         this.earL.rotateAngleZ = -0.15F;
         this.earR.rotateAngleZ = 0.15F;
-        this.jaw.rotateAngleX = -0.175F;
 
         if (getHorseModelData().saddle.getItem() instanceof CustomizableSaddleWestern) {
             this.saddleSideL.setRotationPoint(5.0F, -1.0F, -5.25F);
@@ -600,6 +741,9 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         boolean harness = false;
         boolean collar = false;
         boolean hasChest = false;
+        int heightMod = 0; //[-2 to 5]
+        float faceShape = 0.0F;
+        int faceLength = 0;
     }
 
     private HorseModelData getHorseModelData() {
@@ -655,7 +799,9 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
             horseModelData.bridle = !enhancedHorse.getEnhancedInventory().getStackInSlot(3).isEmpty() && collarSlot!=3;
             horseModelData.harness = !enhancedHorse.getEnhancedInventory().getStackInSlot(5).isEmpty() && collarSlot!=5;
             horseModelData.hasChest = !enhancedHorse.getEnhancedInventory().getStackInSlot(0).isEmpty();
-
+            horseModelData.heightMod = enhancedHorse.getShape();
+            horseModelData.faceShape = enhancedHorse.getFaceShape();
+            horseModelData.faceLength = enhancedHorse.getFaceLength();
 
             if(horseModelData.horseGenes != null) {
                 horseModelDataCache.put(enhancedHorse.getEntityId(), horseModelData);

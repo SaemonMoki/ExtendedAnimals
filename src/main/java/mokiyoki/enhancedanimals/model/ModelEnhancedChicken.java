@@ -1241,7 +1241,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         if (chickenModelDataCache.containsKey(enhancedChicken.getEntityId())) {
             ChickenModelData chickenModelData = chickenModelDataCache.get(enhancedChicken.getEntityId());
             chickenModelData.lastAccessed = 0;
-            chickenModelData.sleeping = enhancedChicken.isRoosting();
+            chickenModelData.sleeping = enhancedChicken.isAnimalSleeping();
             chickenModelData.blink = enhancedChicken.getBlink();
             chickenModelData.birthTime = enhancedChicken.getBirthTime();
             chickenModelData.collar = hasCollar(enhancedChicken.getEnhancedInventory());
@@ -1254,7 +1254,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             if (enhancedChicken.getSharedGenes()!=null) {
                 chickenModelData.chickenGenes = enhancedChicken.getSharedGenes().getAutosomalGenes();
             }
-            chickenModelData.sleeping = enhancedChicken.isRoosting();
+            chickenModelData.sleeping = enhancedChicken.isAnimalSleeping();
             chickenModelData.blink = enhancedChicken.getBlink();
             chickenModelData.birthTime = enhancedChicken.getBirthTime();
             chickenModelData.collar = hasCollar(enhancedChicken.getEnhancedInventory());

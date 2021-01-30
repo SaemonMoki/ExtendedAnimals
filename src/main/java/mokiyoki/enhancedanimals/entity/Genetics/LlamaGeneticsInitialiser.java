@@ -38,10 +38,6 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
         int[] autosomalGenes = new int[Reference.LLAMA_AUTOSOMAL_GENES_LENGTH];
         //TODO create biome WTC variable [hot and dry biomes, cold biomes ] WTC is neutral biomes "all others"
 
-        /**
-         * Colour Genes
-         */
-
         //Endurance genes [ wildtype, stronger1, stronger2]
         if(ThreadLocalRandom.current().nextInt(100)>WTC){
             autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(3)+1);
@@ -55,7 +51,6 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
         } else {
             autosomalGenes[1] = (1);
         }
-
 
         //Strength genes [ wildtype, stronger1, stronger2]
         if(ThreadLocalRandom.current().nextInt(100)>WTC){
@@ -84,6 +79,10 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
         } else {
             autosomalGenes[5] = (1);
         }
+
+        /**
+         * Colour Genes
+         */
 
         //Dominant White [ dominant white, wildtype ]
         if(ThreadLocalRandom.current().nextInt(100)>WTC){

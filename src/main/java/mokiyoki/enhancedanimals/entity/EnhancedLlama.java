@@ -193,13 +193,13 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     protected int getAdultAge() { return 120000;}
 
-    @Override
-    public Boolean isAnimalSleeping() {
-        if (isLeashedToTrader()) {
-            return false;
-        }
-        return super.isAnimalSleeping();
-    }
+//    @Override
+//    public Boolean isAnimalSleeping() {
+//        if (isLeashedToTrader()) {
+//            return false;
+//        }
+//        return super.isAnimalSleeping();
+//    }
 
     @Override
     protected int gestationConfig() {
@@ -560,6 +560,17 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         }
     }
 
+    public void setDespawnDelay(int delay, boolean traderLlama) {
+        this.despawnDelay = delay;
+        if (traderLlama) {
+            this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
+            this.setBirthTime("");
+            ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setDisplayName(new StringTextComponent("Trader's Blanket"));
+            traderBlanket.getOrCreateChildTag("tradersblanket");
+            this.animalInventory.setInventorySlotContents(4, traderBlanket);
+        }
+    }
+
     private void tryDespawn() {
         if (this.canDespawn()) {
             this.despawnDelay = this.isLeashedToTrader() ? ((WanderingTraderEntity)this.getLeashHolder()).getDespawnDelay() - 1 : this.despawnDelay - 1;
@@ -795,7 +806,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     @Override
-    protected void initilizeAnimalSize() {
+    public void initilizeAnimalSize() {
         setLlamaSize();
     }
 
@@ -836,17 +847,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
         livingdata =  commonInitialSpawnSetup(inWorld, livingdata, 120000, 20000, 500000);
 
-        if (spawnReason == SpawnReason.EVENT) {
-            this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
-            this.despawnDelay = 49999;
-            this.setBirthTime("");
-            this.animalInventory.setInventorySlotContents(4, new ItemStack(Items.BLUE_CARPET).setDisplayName(new StringTextComponent("Trader's Blanket")));
-        }
-
         setStrengthAndInventory();
-        setMaxCoatLength();
-        this.currentCoatLength = this.maxCoatLength;
-        setCoatLength(this.currentCoatLength);
+        setInitialCoat();
 
         return livingdata;
     }
@@ -855,6 +857,44 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 //    protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
 //        return getCriaGenes(mitosis, mateMitosis);
 //    }
+
+    private void setHealth() {
+        int[] genes = this.genetics.getAutosomalGenes();
+        int inv = 1;
+        int str = 1;
+        if (genes[2] != 1 &&  genes[3] !=1) {
+            if (genes[2] == 2 && genes[3] == 2) {
+                inv = inv + 1;
+            } else if (genes[2] == 3 && genes[3] == 3) {
+                inv = inv + 1;
+            } else {
+                inv = inv + 2;
+            }
+        }
+
+        if (genes[4] == 1 && genes[5] ==1) {
+            str = inv;
+        }else if (genes[4] == 2 && genes[5] == 2) {
+            str = inv + 1;
+        } else if (genes[4] == 3 && genes[5] == 3) {
+            str = inv + 1;
+        } else {
+            str = inv + 2;
+        }
+
+
+        if (genes[0] != 1 && genes[1] !=1) {
+            if (genes[0] == 2 && genes[1] == 2){
+                inv = inv + 1;
+            } else if (genes[0] == 3 && genes[1] == 3){
+                inv = inv + 1;
+            } else {
+                inv = inv + 2;
+            }
+        }
+
+        setStrength(str);
+    }
 
     private void setStrengthAndInventory() {
         int[] genes = this.genetics.getAutosomalGenes();
@@ -946,8 +986,14 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     @Override
-    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
         return new LlamaGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
+    public void setInitialCoat() {
+        setMaxCoatLength();
+        this.currentCoatLength = this.maxCoatLength;
+        setCoatLength(this.currentCoatLength);
     }
 
     private void spit(LivingEntity target) {

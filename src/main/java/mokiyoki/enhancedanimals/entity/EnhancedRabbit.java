@@ -1,11 +1,14 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
+import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
+import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitPanicGoal;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitRaidFarmGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.RabbitGeneticsInitialiser;
@@ -29,6 +32,7 @@ import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.passive.FoxEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -219,21 +223,26 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     @Override
     protected void registerGoals() {
+        int napmod = this.rand.nextInt(1200);
         this.grazingGoal = new GrazingGoal(this, 1.0D);
         this.goalSelector.addGoal(1, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new EnhancedRabbitPanicGoal(this, 2.2D));
-        this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, 0.8D));
-        this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
-        this.goalSelector.addGoal(4, new AvoidEntityGoal<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D));
-        this.goalSelector.addGoal(4, new AvoidEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2D, 2.2D));
-        this.goalSelector.addGoal(4, new AvoidEntityGoal<>(this, MonsterEntity.class, 4.0F, 2.2D, 2.2D));
-        this.goalSelector.addGoal(5, this.grazingGoal);
-        this.goalSelector.addGoal(5, new EnhancedRabbitRaidFarmGoal(this));
+        this.goalSelector.addGoal(2, new EnhancedRabbitPanicGoal(this, 2.2D));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2D, 2.2D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, FoxEntity.class, 10.0F, 2.2D, 2.2D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 6.0F, 2.2D, 2.2D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, MonsterEntity.class, 4.0F, 2.2D, 2.2D, null));
+        this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 0.8D));
+        this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(6, new EnhancedAvoidEntityGoal<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D, null));
+        this.goalSelector.addGoal(7, new StayShelteredGoal(this, 4000, 7500, napmod));
+        this.goalSelector.addGoal(8, new SeekShelterGoal(this, 1.0D, 4000, 7500, napmod));
+        this.goalSelector.addGoal(9, new EnhancedRabbitRaidFarmGoal(this));
+        this.goalSelector.addGoal(10, this.grazingGoal);
 //        this.goalSelector.addGoal(5, new EnhancedRabbitEatPlantsGoal(this));
 //        this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 0.6D));
-        this.goalSelector.addGoal(7, new EnhancedWanderingGoal(this, 1.0D));
-        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 10.0F));
-        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(11, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, PlayerEntity.class, 10.0F));
+        this.goalSelector.addGoal(13, new EnhancedLookRandomlyGoal(this));
     }
 
     protected float getJumpUpwardsMotion() {
@@ -1300,7 +1309,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     @Override
-    protected void initilizeAnimalSize() {
+    public void initilizeAnimalSize() {
         setRabbitSize();
     }
 
@@ -1309,9 +1318,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
         livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 30000, 80000);
 
-        setMaxCoatLength();
-        this.currentCoatLength = this.maxCoatLength;
-        setCoatLength(this.currentCoatLength);
+        setInitialCoat();
 
         return livingdata;
     }
@@ -1354,7 +1361,13 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     @Override
-    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
         return new RabbitGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
+    public void setInitialCoat() {
+        setMaxCoatLength();
+        this.currentCoatLength = this.maxCoatLength;
+        setCoatLength(this.currentCoatLength);
     }
 }

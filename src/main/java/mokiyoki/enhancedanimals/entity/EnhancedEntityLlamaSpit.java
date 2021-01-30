@@ -12,15 +12,14 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAM
 
 public class EnhancedEntityLlamaSpit extends LlamaSpitEntity {
 
-    public EnhancedEntityLlamaSpit(EntityType<? extends EnhancedEntityLlamaSpit> p_i50162_1_, World p_i50162_2_) {
-        super(p_i50162_1_, p_i50162_2_);
+    public EnhancedEntityLlamaSpit(EntityType<? extends EnhancedEntityLlamaSpit> llama, World world) {
+        super(llama, world);
     }
 
-
-    public EnhancedEntityLlamaSpit(World worldIn, EnhancedLlama p_i47273_2_) {
+    public EnhancedEntityLlamaSpit(World worldIn, EnhancedLlama llama) {
         this(ENHANCED_LLAMA_SPIT, worldIn);
-        super.setShooter(p_i47273_2_);
-        this.setPosition(p_i47273_2_.getPosX() - (double)(p_i47273_2_.getWidth() + 1.0F) * 0.5D * (double)MathHelper.sin(p_i47273_2_.renderYawOffset * ((float)Math.PI / 180F)), p_i47273_2_.getPosY() + (double)p_i47273_2_.getEyeHeight() - (double)0.1F, p_i47273_2_.getPosZ() + (double)(p_i47273_2_.getWidth() + 1.0F) * 0.5D * (double)MathHelper.cos(p_i47273_2_.renderYawOffset * ((float)Math.PI / 180F)));
+        super.setShooter(llama);
+        this.setPosition(llama.getPosX() - (double)(llama.getWidth() + 1.0F) * 0.5D * (double)MathHelper.sin(llama.renderYawOffset * ((float)Math.PI / 180F)), llama.getPosY() + (double)llama.getEyeHeight() - (double)0.1F, llama.getPosZ() + (double)(llama.getWidth() + 1.0F) * 0.5D * (double)MathHelper.cos(llama.renderYawOffset * ((float)Math.PI / 180F)));
     }
 
     @OnlyIn(Dist.CLIENT)

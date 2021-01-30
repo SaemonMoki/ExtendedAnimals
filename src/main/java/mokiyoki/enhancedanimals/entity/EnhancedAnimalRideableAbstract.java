@@ -25,6 +25,7 @@ import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BucketItem;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -350,6 +351,14 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         }
 
         return super.func_230254_b_(entityPlayer, hand);
+    }
+
+    public void equipAnimal(boolean hasChest, boolean hasSaddle, DyeColor blanketColour) {
+        if (hasSaddle) {
+            this.animalInventory.setInventorySlotContents(1, new ItemStack(Items.SADDLE, 1));
+            this.setSaddled(true);
+        }
+        super.equipAnimal(hasChest, blanketColour);
     }
 
     public boolean saddleAnimal(ItemStack saddleItemStack, PlayerEntity player, Hand hand, LivingEntity target) {

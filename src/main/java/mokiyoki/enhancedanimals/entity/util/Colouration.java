@@ -31,7 +31,7 @@ public class Colouration {
     }
 
     public int getPheomelaninColour() {
-        return pheomelaninColour;
+        return this.pheomelaninColour;
     }
 
     public void setPheomelaninColour(int colour) {
@@ -39,7 +39,7 @@ public class Colouration {
     }
 
     public int getMelaninColour() {
-        return melaninColour;
+        return this.melaninColour;
     }
 
     public void setMelaninColour(int colour) {
@@ -47,7 +47,7 @@ public class Colouration {
     }
 
     public int getLeftEyeColour() {
-        return leftEyeColour;
+        return this.leftEyeColour;
     }
 
     public void setLeftEyeColour(int colour) {
@@ -55,7 +55,7 @@ public class Colouration {
     }
 
     public int getRightEyeColour() {
-        return rightEyeColour;
+        return this.rightEyeColour;
     }
 
     public void setRightEyeColour(int colour) {
@@ -63,7 +63,7 @@ public class Colouration {
     }
 
     public int getSaddleColour() {
-        return saddleColour;
+        return this.saddleColour;
     }
 
     public void setSaddleColour(int colour) {
@@ -71,7 +71,7 @@ public class Colouration {
     }
 
     public int getArmourColour() {
-        return armourColour;
+        return this.armourColour;
     }
 
     public void setArmourColour(int colour) {
@@ -79,7 +79,7 @@ public class Colouration {
     }
 
     public int getBridleColour() {
-        return bridleColour;
+        return this.bridleColour;
     }
 
     public void setBridleColour(int colour) {
@@ -87,7 +87,7 @@ public class Colouration {
     }
 
     public int getHarnessColour() {
-        return harnessColour;
+        return this.harnessColour;
     }
 
     public void setHarnessColour(int colour) {
@@ -95,7 +95,7 @@ public class Colouration {
     }
 
     public int getCollarColour() {
-        return collarColour;
+        return this.collarColour;
     }
 
     public void setCollarColour(int colour) {
@@ -138,12 +138,16 @@ public class Colouration {
         return rgbString;
     }
 
-    public static float mixColours(float colour1, float colour2, float percentage) {
+    public static float mixColourComponent(float colour1, float colour2, float percentage) {
         colour1 = (colour1 * (1.0F - percentage)) + (colour2 * percentage);
         return colour1;
     }
 
     public static int HSBtoABGR(float hue, float saturation, float brightness) {
+        return HSBAtoABGR(hue,saturation,brightness, 0.5F);
+    }
+
+    public static int HSBAtoABGR(float hue, float saturation, float brightness, float alpha) {
         int r = 0, g = 0, b = 0;
         if (saturation == 0) {
             r = g = b = (int) (brightness * 255.0f + 0.5f);
@@ -186,7 +190,10 @@ public class Colouration {
                     break;
             }
         }
-        return 0xff000000 | (102 << 24) | (b << 16) | (g << 8) | (r);
+
+        int a = (int)(alpha * 255.0f);
+
+        return a << 24 | b << 16 | g << 8 | r;
     }
 
     public static float[] getHSBFromABGR(int colourABGR) {
@@ -202,6 +209,16 @@ public class Colouration {
         colour[0] = colourABGR & 255;
         colour[1] = colourABGR >> 8 & 255;
         colour[2] = colourABGR >> 16 & 255;
+
+        return colour;
+    }
+
+    private static int[] getRGBAFromABGR(int colourABGR) {
+        int[] colour = {0,0,0,0};
+        colour[0] = colourABGR & 255;
+        colour[1] = colourABGR >> 8 & 255;
+        colour[2] = colourABGR >> 16 & 255;
+        colour[3] = colourABGR >> 24 & 255;
 
         return colour;
     }
@@ -232,5 +249,4 @@ public class Colouration {
 
         return a << 24 | b << 16 | g << 8 | r;
     }
-
 }

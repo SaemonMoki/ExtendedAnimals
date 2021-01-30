@@ -231,7 +231,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         return Pair.of(flowerblock.getStewEffect(), flowerblock.getStewEffectDuration());
     }
 
-    private void setMooshroomType(EnhancedMooshroom.Type typeIn) {
+    public void setMooshroomType(EnhancedMooshroom.Type typeIn) {
         this.dataManager.set(MOOSHROOM_TYPE, typeIn.name);
     }
 
@@ -334,13 +334,14 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @OnlyIn(Dist.CLIENT)
     @Override
     public Colouration getRgb() {
-        if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
-            this.colouration = super.getRgb();
+        boolean flag = this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1;
+        this.colouration = super.getRgb();
 
-            if(this.colouration == null) {
-                return null;
-            }
+        if(this.colouration == null) {
+            return null;
+        }
 
+        if (flag) {
             float[] melanin = Colouration.getHSBFromABGR(this.colouration.getMelaninColour());
             float[] pheomelanin = Colouration.getHSBFromABGR(this.colouration.getPheomelaninColour());
 
@@ -374,7 +375,6 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
             this.colouration.setMelaninColour(Colouration.HSBtoABGR(melanin[0], melanin[1], melanin[2]));
             this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
-
         }
 
         return this.colouration;

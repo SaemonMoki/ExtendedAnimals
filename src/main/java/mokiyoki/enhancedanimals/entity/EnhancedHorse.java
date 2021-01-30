@@ -116,6 +116,10 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
             "silver_mask.png"
     };
 
+    private static final String[] HORSE_TEXTURES_MOUTH = new String[]  {
+            "mouth.png"
+    };
+
     private static final String[] HORSE_TEXTURES_SCLERA = new String[]  {
             "sclera_black.png", "sclera_white.png"
     };
@@ -214,6 +218,24 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         return true;
     }
 
+    public int getShape() {
+//        return this.rand.nextInt(8) - 2;
+        return 0;
+    }
+
+    public float getFaceShape() {
+//        if (this.rand.nextBoolean()) {
+//            return this.rand.nextFloat() * -0.25F;
+//        } else {
+//            return this.rand.nextFloat() * 0.075F;
+//        }
+        return 0.075F;
+    }
+
+    public int getFaceLength() {
+        return this.rand.nextInt(3);
+    }
+
     /**
      * Returns the Y offset from the entity's position for any entity riding this one.
      */
@@ -298,7 +320,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected boolean sleepingConditional() {
+    public boolean sleepingConditional() {
         return (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && awokenTimer == 0 && !sleeping);
     }
 
@@ -325,7 +347,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected void initilizeAnimalSize() {
+    public void initilizeAnimalSize() {
 //        int[] genes = this.genetics.getAutosomalGenes();
         float size = 1.0F;
 
@@ -502,6 +524,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
                 addTextureToAnimal(HORSE_TEXTURES_EYES, 1, null);
                 addTextureToAnimal(HORSE_TEXTURES_SCLERA, sclera, null);
                 addTextureToAnimal(HORSE_TEXTURES_HOOVES, 0, null);
+                addTextureToAnimal(HORSE_TEXTURES_MOUTH, 0, null);
 
 //                this.horseTextures.add(HORSE_TEXTURES_TESTNUMBER[number]);
 //                this.horseTextures.add(HORSE_TEXTURES_TESTLETTER[letter]);

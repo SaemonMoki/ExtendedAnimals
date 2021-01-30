@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.BiomeManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -195,6 +196,12 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         List<Integer> woolShuffle = Arrays.asList(woolmod);
         Collections.shuffle(woolShuffle);
         woolShuffle.toArray(woolmod);
+
+        if (biome.getCategory() == Biome.Category.PLAINS || biome.getPrecipitation() == Biome.RainType.SNOW ) {
+            for (int i = 0; i < woolmod.length; i++) {
+                woolmod[i] = woolmod[i] * 2;
+            }
+        }
 
         //added wool length 1 [ wildtype, wool1 ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC / woolmod[0]) {

@@ -1,11 +1,14 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
+import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.SheepGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -26,9 +29,10 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
+import net.minecraft.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AirItem;
 import net.minecraft.item.DyeColor;
@@ -136,6 +140,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             put(new ItemStack(Items.ROSE_BUSH).getItem(), 1500);
             put(new ItemStack(Items.SUGAR).getItem(), 1500);
             put(new ItemStack(Items.APPLE).getItem(), 1500);
+            put(new ItemStack(Items.MELON_SLICE).getItem(), 1000);
             put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
         }};
 
@@ -183,15 +188,19 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @Override
     protected void registerGoals() {
         //Todo add the temperamants
+        int napmod = this.rand.nextInt(1000);
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.25D));
-        this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(5, this.wanderEatingGoal);
-        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(2, new EnhancedAvoidEntityGoal<>(this, WolfEntity.class, 10.0F, 1.25D, 1.25D, null));
+        this.goalSelector.addGoal(3, new EnhancedBreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(6, new StayShelteredGoal(this, 5723, 7000, napmod));
+        this.goalSelector.addGoal(7, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
+        this.goalSelector.addGoal(8, this.wanderEatingGoal);
+        this.goalSelector.addGoal(9, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(10, new EnhancedLookRandomlyGoal(this));
     }
 
     //TODO put new sheep behaviour here
@@ -299,7 +308,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             timeForGrowth++;
         }
 
-        int maxcoat = (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+        int maxcoat = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
 
         if (maxcoat > 0) {
             int[] genes = this.genetics.getAutosomalGenes();
@@ -427,72 +436,72 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         if (!this.world.isRemote) {
             int woolCount = 0;
-            if (currentCoatLength == 1) {
+            if (this.currentCoatLength == 1) {
                 int i = this.rand.nextInt(5);
                 if (i>3){
                     woolCount++;
                 }
-            } else if (currentCoatLength == 2) {
+            } else if (this.currentCoatLength == 2) {
                 int i = this.rand.nextInt(5);
                 if (i>2){
                     woolCount++;
                 }
-            } else if (currentCoatLength == 3) {
+            } else if (this.currentCoatLength == 3) {
                 int i = this.rand.nextInt(5);
                 if (i>1){
                     woolCount++;
                 }
-            } else if (currentCoatLength == 4) {
+            } else if (this.currentCoatLength == 4) {
                 int i = this.rand.nextInt(5);
                 if (i>0) {
                     woolCount++;
                 }
-            } else if (currentCoatLength >= 5) {
+            } else if (this.currentCoatLength >= 5) {
                 woolCount++;
 
-                if (currentCoatLength == 6) {
+                if (this.currentCoatLength == 6) {
                     int i = this.rand.nextInt(5);
                     if (i>3){
                         woolCount++;
                     }
-                } else if (currentCoatLength == 7) {
+                } else if (this.currentCoatLength == 7) {
                     int i = this.rand.nextInt(5);
                     if (i>2){
                         woolCount++;
                     }
-                } else if (currentCoatLength == 8) {
+                } else if (this.currentCoatLength == 8) {
                     int i = this.rand.nextInt(5);
                     if (i>1){
                         woolCount++;
                     }
-                } else if (currentCoatLength == 9) {
+                } else if (this.currentCoatLength == 9) {
                     int i = this.rand.nextInt(5);
                     if (i>0) {
                         woolCount++;
                     }
-                } else if (currentCoatLength >= 10) {
+                } else if (this.currentCoatLength >= 10) {
                     woolCount++;
-                    if (currentCoatLength == 11) {
+                    if (this.currentCoatLength == 11) {
                         int i = this.rand.nextInt(5);
                         if (i>3){
                             woolCount++;
                         }
-                    } else if (currentCoatLength == 12) {
+                    } else if (this.currentCoatLength == 12) {
                         int i = this.rand.nextInt(5);
                         if (i>2){
                             woolCount++;
                         }
-                    } else if (currentCoatLength == 13) {
+                    } else if (this.currentCoatLength == 13) {
                         int i = this.rand.nextInt(5);
                         if (i>1){
                             woolCount++;
                         }
-                    } else if (currentCoatLength == 14) {
+                    } else if (this.currentCoatLength == 14) {
                         int i = this.rand.nextInt(5);
                         if (i>0) {
                             woolCount++;
                         }
-                    } else if (currentCoatLength >= 15) {
+                    } else if (this.currentCoatLength >= 15) {
                         woolCount++;
                     }
                 }
@@ -555,8 +564,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 }
             }
         }
-        currentCoatLength = 0;
-        setCoatLength(currentCoatLength);
+        this.currentCoatLength = 0;
+        setCoatLength(this.currentCoatLength);
         return ret;
     }
 
@@ -861,20 +870,22 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         boolean leatherDrop = false;
         int meatChanceMod;
 
-        if (currentCoatLength == maxCoatLength && maxCoatLength >= 1) {
-            if (currentCoatLength >= 5) {
+        if (this.currentCoatLength >= 5) {
+            woolDrop = true;
+        } else if (this.currentCoatLength == this.maxCoatLength && this.maxCoatLength >= 1) {
+            if (this.currentCoatLength >= 5) {
                     woolDrop = true;
-            } else if (currentCoatLength == 1) {
+            } else if (this.currentCoatLength == 1) {
                 int i = this.rand.nextInt(5);
                 if (i>3){
                     woolDrop = true;
                 }
-            } else if (currentCoatLength == 2) {
+            } else if (this.currentCoatLength == 2) {
                 int i = this.rand.nextInt(5);
                 if (i>2){
                     woolDrop = true;
                 }
-            } else if (currentCoatLength == 3) {
+            } else if (this.currentCoatLength == 3) {
                 int i = this.rand.nextInt(5);
                 if (i>1){
                     woolDrop = true;
@@ -887,26 +898,26 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             }
         }
 
-        if (maxCoatLength < 5 && !woolDrop) {
+        if (this.maxCoatLength < 5 && !woolDrop) {
             int i = this.rand.nextInt(3);
             // 2 out of 3 times
             if (i != 0) {
-                if (currentCoatLength == 0) {
+                if (this.currentCoatLength == 0) {
                     // 5 out of 5 times
                     leatherDrop = true;
-                } else if (currentCoatLength == 1) {
+                } else if (this.currentCoatLength == 1) {
                     // 4 out of 5 times
                     i = this.rand.nextInt(5);
                     if (i != 0) {
                         leatherDrop = true;
                     }
-                } else if (currentCoatLength == 2) {
+                } else if (this.currentCoatLength == 2) {
                     // 3 out of 5 times
                     i = this.rand.nextInt(5);
                     if (i <= 2) {
                         leatherDrop = true;
                     }
-                } else if (currentCoatLength == 3) {
+                } else if (this.currentCoatLength == 3) {
                     // 2 out of 5 times
                     i = this.rand.nextInt(5);
                     if (i <= 1) {
@@ -1193,7 +1204,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
                 int[] genes = this.genetics.getAutosomalGenes();
-                if (!this.isChild() && (genes[46] == 1 || genes[47] == 1) && currentCoatLength == maxCoatLength) {
+                if (!this.isChild() && (genes[46] == 1 || genes[47] == 1) && this.currentCoatLength == this.maxCoatLength) {
                         List<ItemStack> woolToDrop = onSheared(entityPlayer,null, this.world, getPosition(), 0);
                         woolToDrop.forEach(d -> {
                             net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
@@ -1269,7 +1280,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         }
     }
 
-    protected void initilizeAnimalSize() {
+    public void initilizeAnimalSize() {
         setSheepSize();
     }
 
@@ -1340,7 +1351,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             maxCoatLength = maxCoatLength + 1;
         }
 
-        this.maxCoatLength = maxCoatLength;
+
+        this.maxCoatLength = maxCoatLength > 15 ? 15 : maxCoatLength;
 
     }
 
@@ -1350,8 +1362,14 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
         return new SheepGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
+    public void setInitialCoat() {
+        setMaxCoatLength();
+        this.currentCoatLength = this.maxCoatLength;
+        setCoatLength(this.currentCoatLength);
     }
 
 //    private void configureAI() {

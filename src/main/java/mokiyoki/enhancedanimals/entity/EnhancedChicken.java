@@ -495,65 +495,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
     }
 
-    @Override
-    public void initilizeAnimalSize(){
-        float size = 1.0F;
-
-        int[] genes = this.genetics.getAutosomalGenes();
-        if(genes[74] == 1){
-            size = size - 0.05F;
-        }else if(genes[74] == 2){
-            size = size - 0.025F;
-        }
-        if(genes[75] == 1){
-            size = size - 0.05F;
-        }else if(genes[75] == 2){
-            size = size - 0.025F;
-        }
-
-        if(genes[76] == 1 || genes[77] == 1){
-            size = size - 0.05F;
-        }else if(genes[76] == 3 && genes[77] == 3){
-            size = size - 0.1F;
-        }
-
-        if(genes[78] == 1 || genes[79] == 1){
-            size = size * 0.94F;
-        }
-
-
-        genes = this.genetics.getSexlinkedGenes();
-        if (this.isFemale()) {
-            if(genes[14] == 2){
-                size = size * 0.9F;
-            }
-
-            if(genes[16] == 2){
-                size = size * 0.75F;
-            }
-        } else {
-            if (genes[14] == 2 || genes[15] == 2) {
-                if (genes[14] == 2 && genes[15] == 2) {
-                    size = size * 0.9F;
-                } else {
-                    size = size * 0.99F;
-                }
-            }
-
-            if (genes[16] == 2 || genes[17] == 2) {
-                if (genes[16] == 2 && genes[17] == 2) {
-                    size = size * 0.75F;
-                } else {
-                    size = size * 0.99F;
-                }
-            }
-        }
-
-
-        // size is [ 0.5076 - 1.0F]
-        this.setAnimalSize(size);
-    }
-
     public boolean onLivingFall(float distance, float damageMultiplier) {
         return false;
     }
@@ -2505,19 +2446,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         return false;
     }
 
-//    @Override
-//    protected void geneFixer() {
-//        if (this.genetics.getAutosomalGenes()[0] == 0) {
-//            this.setGenes(new GeneticsInitialiser.ChickenGeneticsInitialiser().generateNewChickenGenetics(this.world, new BlockPos(this), true));
-//            setInitialDefaults();
-//            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (rand.nextInt(180000-24000) + 24000)));
-//        }
-//    }
-
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000);
+        livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000);
+        if (this.mateGenetics != null) {
+            this.setFertile();
+        }
+        return livingdata;
     }
 
     @Override
@@ -2528,6 +2464,77 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @Override
     public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
         return new ChickenGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
+    @Override
+    protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {
+        int[] genes = animal.genetics.getAutosomalGenes();
+        if (genes[54] != 3 && genes[55] != 3 && genes[184] == 2 && genes[185] == 2) {
+            health = 0.5F;
+        } else {
+            health = (2.0F * animal.getAnimalSize()) + 2.0F;
+        }
+
+        super.initializeHealth(animal, health);
+    }
+
+    @Override
+    public void initilizeAnimalSize(){
+        float size = 1.0F;
+
+        int[] genes = this.genetics.getAutosomalGenes();
+        if(genes[74] == 1){
+            size = size - 0.05F;
+        }else if(genes[74] == 2){
+            size = size - 0.025F;
+        }
+        if(genes[75] == 1){
+            size = size - 0.05F;
+        }else if(genes[75] == 2){
+            size = size - 0.025F;
+        }
+
+        if(genes[76] == 1 || genes[77] == 1){
+            size = size - 0.05F;
+        }else if(genes[76] == 3 && genes[77] == 3){
+            size = size - 0.1F;
+        }
+
+        if(genes[78] == 1 || genes[79] == 1){
+            size = size * 0.94F;
+        }
+
+
+        genes = this.genetics.getSexlinkedGenes();
+        if (this.isFemale()) {
+            if(genes[14] == 2){
+                size = size * 0.9F;
+            }
+
+            if(genes[16] == 2){
+                size = size * 0.75F;
+            }
+        } else {
+            if (genes[14] == 2 || genes[15] == 2) {
+                if (genes[14] == 2 && genes[15] == 2) {
+                    size = size * 0.9F;
+                } else {
+                    size = size * 0.99F;
+                }
+            }
+
+            if (genes[16] == 2 || genes[17] == 2) {
+                if (genes[16] == 2 && genes[17] == 2) {
+                    size = size * 0.75F;
+                } else {
+                    size = size * 0.99F;
+                }
+            }
+        }
+
+
+        // size is [ 0.5076 - 1.0F]
+        this.setAnimalSize(size);
     }
 
     private Item getEggColour(int eggColourGene){

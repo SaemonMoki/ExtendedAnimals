@@ -71,6 +71,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     //avalible UUID spaces : [ S X X 3 X 5 X 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
     private static final DataParameter<Integer> DATA_STRENGTH_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> DATA_INVENTORY_SIZE = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
 
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
@@ -184,6 +185,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     protected void registerData() {
         super.registerData();
         this.dataManager.register(DATA_STRENGTH_ID, 0);
+        this.dataManager.register(DATA_INVENTORY_SIZE, 0);
         this.dataManager.register(COAT_LENGTH, -1);
     }
 
@@ -213,6 +215,23 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     public int getStrength() {
         return this.dataManager.get(DATA_STRENGTH_ID);
     }
+
+    private void setInventorySizeData(int invSizeIn) {
+        this.dataManager.set(DATA_INVENTORY_SIZE, invSizeIn);
+    }
+
+    public int getInventorySizeData() {
+        return this.dataManager.get(DATA_INVENTORY_SIZE);
+    }
+
+//    @Override
+//    public int getInventorySize() {
+//        if (this.getInventorySizeData() == 0 && this.hasChest()) {
+//            this.setStrengthAndInventory();
+//            this.initInventory();
+//        }
+//        return !this.hasChest() || this.genetics == null  ? 7 : 7 + (3 * this.getInventorySizeData());
+//    }
 
     private void setCoatLength(int coatLength) {
         this.dataManager.set(COAT_LENGTH, coatLength);
@@ -292,7 +311,10 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         }
         if (timeForGrowth >= 24000) {
             timeForGrowth = 0;
-            if (maxCoatLength > currentCoatLength) {
+
+            int maxcoat = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+
+            if (maxcoat > currentCoatLength) {
                 currentCoatLength++;
                 setCoatLength(currentCoatLength);
             }
@@ -318,8 +340,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         defaultCreateAndSpawn(enhancedllama, inWorld, babyGenes, -120000);
         enhancedllama.setStrengthAndInventory();
         enhancedllama.setMaxCoatLength();
-        enhancedllama.currentCoatLength = enhancedllama.maxCoatLength;
-        enhancedllama.setCoatLength(enhancedllama.currentCoatLength);
+        enhancedllama.currentCoatLength = 0;
+        enhancedllama.setCoatLength(0);
 
         this.world.addEntity(enhancedllama);
     }
@@ -332,39 +354,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     @Override
     protected boolean canLactate() {
         return false;
-    }
-
-
-    protected void setLlamaSize(){
-        int[] genes = this.genetics.getAutosomalGenes();
-        float size = 1.0F;
-
-        if (genes[0] < 3) {
-            size = size - 0.025F;
-            if (genes[0] < 2) {
-                size = size - 0.025F;
-            }
-        }
-        if (genes[1] < 3) {
-            size = size - 0.025F;
-            if (genes[1] < 2) {
-                size = size - 0.025F;
-            }
-        }
-        if (genes[2] < 3) {
-            size = size - 0.025F;
-            if (genes[2] < 2) {
-                size = size - 0.025F;
-            }
-        }
-        if (genes[3] < 3) {
-            size = size - 0.025F;
-            if (genes[3] < 2) {
-                size = size - 0.025F;
-            }
-        }
-
-        this.setAnimalSize(size);
     }
 
     @Override
@@ -435,7 +424,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     public boolean isShearable(ItemStack item, World world, BlockPos pos) {
-        if (!this.world.isRemote && currentCoatLength >=0 && !isChild()) {
+        if (!this.world.isRemote && this.currentCoatLength >=0 && !isChild()) {
             return true;
         }
         return false;
@@ -564,11 +553,12 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         this.despawnDelay = delay;
         if (traderLlama) {
             this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
-            this.setBirthTime("");
             ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setDisplayName(new StringTextComponent("Trader's Blanket"));
             traderBlanket.getOrCreateChildTag("tradersblanket");
             this.animalInventory.setInventorySlotContents(4, traderBlanket);
         }
+        this.setHealth(1.0F);
+        this.setStrengthAndInventory();
     }
 
     private void tryDespawn() {
@@ -807,7 +797,35 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     public void initilizeAnimalSize() {
-        setLlamaSize();
+        int[] genes = this.genetics.getAutosomalGenes();
+        float size = 1.0F;
+
+        if (genes[0] < 3) {
+            size = size - 0.025F;
+            if (genes[0] < 2) {
+                size = size - 0.025F;
+            }
+        }
+        if (genes[1] < 3) {
+            size = size - 0.025F;
+            if (genes[1] < 2) {
+                size = size - 0.025F;
+            }
+        }
+        if (genes[2] < 3) {
+            size = size - 0.025F;
+            if (genes[2] < 2) {
+                size = size - 0.025F;
+            }
+        }
+        if (genes[3] < 3) {
+            size = size - 0.025F;
+            if (genes[3] < 2) {
+                size = size - 0.025F;
+            }
+        }
+
+        this.setAnimalSize(size);
     }
 
 
@@ -815,6 +833,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         super.writeAdditional(compound);
 
         compound.putInt("Strength", this.getStrength());
+        compound.putInt("InventorySize", this.getInventorySizeData());
         compound.putFloat("CoatLength", this.getCoatLength());
 
         if (this.despawnDelay != -1) {
@@ -826,6 +845,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
         this.setStrength(compound.getInt("Strength"));
+        this.setInventorySizeData(compound.getInt("InventorySize"));
         currentCoatLength = compound.getInt("CoatLength");
         this.setCoatLength(currentCoatLength);
 
@@ -837,7 +857,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         setMaxCoatLength();
 
         if (!compound.getString("breed").isEmpty()) {
-            this.currentCoatLength = this.maxCoatLength;
+            this.currentCoatLength = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
         }
     }
@@ -858,87 +878,126 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 //        return getCriaGenes(mitosis, mateMitosis);
 //    }
 
-    private void setHealth() {
+    @Override
+    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+        return new LlamaGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
+    }
+
+    @Override
+    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+        return new LlamaGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
+    @Override
+    protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {
         int[] genes = this.genetics.getAutosomalGenes();
-        int inv = 1;
-        int str = 1;
-        if (genes[2] != 1 &&  genes[3] !=1) {
-            if (genes[2] == 2 && genes[3] == 2) {
-                inv = inv + 1;
-            } else if (genes[2] == 3 && genes[3] == 3) {
-                inv = inv + 1;
+        health = 0;
+
+        if (genes[34] != 4 && genes[35] != 4) {
+            if (genes[34] == 1 || genes[35] == 1) {
+                health += 2.0F;
+            } else if (genes[34] == genes[35]) {
+                health = 3.0F;
             } else {
-                inv = inv + 2;
+                health = 4.0F;
+            }
+        } else if (genes[34] != genes[35]) {
+            if (genes[34] == 1 || genes[35] == 1) {
+                health += 2.0F;
+            } else {
+                health += 3.0F;
             }
         }
 
-        if (genes[4] == 1 && genes[5] ==1) {
-            str = inv;
-        }else if (genes[4] == 2 && genes[5] == 2) {
-            str = inv + 1;
-        } else if (genes[4] == 3 && genes[5] == 3) {
-            str = inv + 1;
-        } else {
-            str = inv + 2;
-        }
-
-
-        if (genes[0] != 1 && genes[1] !=1) {
-            if (genes[0] == 2 && genes[1] == 2){
-                inv = inv + 1;
-            } else if (genes[0] == 3 && genes[1] == 3){
-                inv = inv + 1;
+        if (genes[36] != 4 && genes[37] != 4) {
+            if (genes[36] == 1 || genes[37] == 1) {
+                health += 2.0F;
+            } else if (genes[36] == genes[37]) {
+                health = 3.0F;
             } else {
-                inv = inv + 2;
+                health = 4.0F;
+            }
+        } else if (genes[36] != genes[37]) {
+            if (genes[36] == 1 || genes[37] == 1) {
+                health += 2.0F;
+            } else {
+                health += 3.0F;
             }
         }
 
-        setStrength(str);
+        if (genes[38] != 4 && genes[39] != 4) {
+            if (genes[38] == 1 || genes[39] == 1) {
+                health += 2.0F;
+            } else if (genes[38] == genes[39]) {
+                health = 3.0F;
+            } else {
+                health = 4.0F;
+            }
+        } else if (genes[38] != genes[39]) {
+            if (genes[38] == 1 || genes[39] == 1) {
+                health += 2.0F;
+            } else {
+                health += 3.0F;
+            }
+        }
+
+        if (genes[0] != 1 && genes[1] != 1) {
+            if (genes[0] == 2 && genes[1] == 2) {
+                health += 1.0F;
+            } else if (genes[0] == 3 && genes[1] == 3) {
+                health += 2.0F;
+            } else {
+                health += 3.0F;
+            }
+        }
+
+        float sizeMod = animal.getAnimalSize();
+        if (sizeMod > 1.0F) {
+            sizeMod = 1.0F;
+        }
+
+        super.initializeHealth(animal, (health + 15F) * sizeMod);
     }
 
     private void setStrengthAndInventory() {
         int[] genes = this.genetics.getAutosomalGenes();
         int inv = 1;
-        int str = 1;
-        if (genes[2] != 1 &&  genes[3] !=1) {
-            if (genes[2] == 2 && genes[3] == 2) {
-                inv = inv + 1;
-            } else if (genes[2] == 3 && genes[3] == 3) {
+        int str;
+        if (genes[2] != 1 && genes[3] != 1) {
+            if (genes[2] == genes[3]) {
                 inv = inv + 1;
             } else {
                 inv = inv + 2;
             }
         }
 
-        if (genes[4] == 1 && genes[5] ==1) {
+        if (genes[4] == 1 || genes[5] == 1) {
             str = inv;
-        }else if (genes[4] == 2 && genes[5] == 2) {
-            str = inv + 1;
-        } else if (genes[4] == 3 && genes[5] == 3) {
+        }else if (genes[4] == genes[5]) {
             str = inv + 1;
         } else {
             str = inv + 2;
         }
 
-
-        if (genes[0] != 1 && genes[1] !=1) {
-            if (genes[0] == 2 && genes[1] == 2){
-                inv = inv + 1;
-            } else if (genes[0] == 3 && genes[1] == 3){
-                inv = inv + 1;
-            } else {
-                inv = inv + 2;
-            }
-        }
-
         setStrength(str);
+
+        if (this.hasChest()) {
+            if (genes[0] != 1 && genes[1] != 1) {
+                if (genes[0] == genes[1]) {
+                    inv = inv + 1;
+                } else {
+                    inv = inv + 2;
+                }
+            }
+            setInventorySizeData(inv);
+        }
     }
 
     private void setMaxCoatLength() {
         int[] genes = this.genetics.getAutosomalGenes();
         float maxCoatLength = 0.0F;
 
-        if ( !this.isChild() && (genes[22] >= 2 || genes[23] >= 2) ){
+        if (genes[22] >= 2 || genes[23] >= 2){
             if (genes[22] == 3 && genes[23] == 3){
                 maxCoatLength = 1.25F;
             }else if (genes[22] == 3 || genes[23] == 3) {
@@ -980,19 +1039,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     }
 
-    @Override
-    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
-        return new LlamaGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
-    }
-
-    @Override
-    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
-        return new LlamaGeneticsInitialiser().generateWithBreed(world, pos, breed);
-    }
-
     public void setInitialCoat() {
         setMaxCoatLength();
-        this.currentCoatLength = this.maxCoatLength;
+        this.currentCoatLength = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }
 

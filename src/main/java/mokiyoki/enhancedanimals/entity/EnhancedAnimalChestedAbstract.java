@@ -286,7 +286,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     }
 
     @Override
-    protected int getInventorySize() {
+    public int getInventorySize() {
         return this.hasChest() ? 22 : super.getInventorySize();
     }
 
@@ -471,6 +471,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                     } else if (bridle == ModItems.BRIDLE_BASIC_CLOTH_GOLD) {
                         bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[1]);
                     } else if (bridle == ModItems.BRIDLE_BASIC_LEATHER_GOLD) {
+                        bridleTextures.add(BRIDLE_LEATHER_TEXTURE);
                         bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[1]);
                     } else if (bridle == ModItems.BRIDLE_BASIC_CLOTH_DIAMOND) {
                         bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[2]);

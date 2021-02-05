@@ -1840,6 +1840,19 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[183] = (1);
         }
 
+        //Vault [wildtype, vault ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[184] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[184] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[185] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[185] = (1);
+        }
+
         return new Genes(sexlinkedGenes, autosomalGenes);
 
     }

@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.client.renderer.entity.LlamaSpitRenderer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.IDyeableArmorItem;
 import net.minecraft.item.ItemStack;
@@ -33,6 +34,7 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIM
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA_SPIT;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOSHROOM;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOBLOOM;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
@@ -63,6 +65,7 @@ public class ClientProxy implements IProxy {
 //        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_BEE, RenderEnhancedBee::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOSHROOM, RenderEnhancedMooshroom::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOBLOOM, RenderEnhancedMoobloom::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_LLAMA_SPIT, LlamaSpitRenderer::new);
 
         ScreenManager.registerFactory(EGG_CARTON_CONTAINER, EggCartonScreen::new);
         ScreenManager.registerFactory(ENHANCED_ANIMAL_CONTAINER, EnhancedAnimalScreen::new);

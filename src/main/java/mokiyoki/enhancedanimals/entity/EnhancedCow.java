@@ -6,6 +6,8 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
+import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
+import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
@@ -442,60 +444,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         this.world.addEntity(enhancedcow);
     }
 
-    protected void setCowSize(){
-        int[] genes = this.genetics.getAutosomalGenes();
-        float size = 1.0F;
-
-        //[ 1 to 15 ] max - is 0.3F
-        for (int i = 1; i < genes[30]; i++){
-            size = size - 0.01F;
-        }
-        //[ 1 to 15 ]
-        for (int i = 1; i < genes[31]; i++){
-            //this variation is here on purpose
-            size = size - 0.012F;
-        }
-
-        //[ 1 to 15 ]  max + is 0.3F
-        for (int i = 1; i < genes[32]; i++){
-            size = size + 0.016F;
-        }
-        //[ 1 to 15 ]
-        for (int i = 1; i < genes[33]; i++){
-            size = size + 0.016F;
-        }
-
-        //[ 1 to 3 ] max - is 0.04F
-        if (genes[34] >= 2 || genes[35] >= 2){
-            if (genes[34] == 3 && genes[35] == 3){
-                size = size - 0.02F;
-            }else{
-                size = size - 0.01F;
-            }
-        }
-        //[ 1 to 3 ]
-        if (genes[34] == 1 || genes[35] == 1){
-            size = size - 0.02F;
-        }else if (genes[34] == 2 || genes[35] == 2){
-            size = size - 0.01F;
-        }
-
-        if (genes[26] == 1 || genes[27] == 1){
-            //dwarf
-            size = size/1.05F;
-        }
-        if (genes[28] == 2 && genes[29] == 2){
-            //miniature
-            size = size/1.1F;
-        }
-
-        if (size < 0.7F){
-            size = 0.7F;
-        }
-
-        this.setAnimalSize(size);
-    }
-
     public void lethalGenes(){
         int[] genes = this.genetics.getAutosomalGenes();
         if(genes[26] == 1 && genes[27] == 1) {
@@ -634,7 +582,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
         meatDrop = meatDrop < 0 ? 0 : meatDrop;
 
-        leatherDrop = (leatherDrop > 5) ? 5 : 0;
+        leatherDrop = (leatherDrop > 5) ? 5 : leatherDrop;
 
         if (this.isBurning()){
             ItemStack cookedBeefStack = new ItemStack(Items.COOKED_BEEF, meatDrop);
@@ -960,11 +908,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected void setAlphaTexturePaths() {
-    }
-
-    @Override
-    public void initilizeAnimalSize() {
-        setCowSize();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1359,6 +1302,68 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         return new CowGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 
+    @Override
+    protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {
+        float sizeVar = 1.0F - (Math.abs(1F - animal.getAnimalSize()));
+        health = 10 * sizeVar;
+        super.initializeHealth(animal, health);
+    }
+
+    @Override
+    public void initilizeAnimalSize() {
+        int[] genes = this.genetics.getAutosomalGenes();
+        float size = 1.0F;
+
+        //[ 1 to 15 ] max - is 0.3F
+        for (int i = 1; i < genes[30]; i++){
+            size = size - 0.01F;
+        }
+        //[ 1 to 15 ]
+        for (int i = 1; i < genes[31]; i++){
+            //this variation is here on purpose
+            size = size - 0.012F;
+        }
+
+        //[ 1 to 15 ]  max + is 0.3F
+        for (int i = 1; i < genes[32]; i++){
+            size = size + 0.016F;
+        }
+        //[ 1 to 15 ]
+        for (int i = 1; i < genes[33]; i++){
+            size = size + 0.016F;
+        }
+
+        //[ 1 to 3 ] max - is 0.04F
+        if (genes[34] >= 2 || genes[35] >= 2){
+            if (genes[34] == 3 && genes[35] == 3){
+                size = size - 0.02F;
+            }else{
+                size = size - 0.01F;
+            }
+        }
+        //[ 1 to 3 ]
+        if (genes[34] == 1 || genes[35] == 1){
+            size = size - 0.02F;
+        }else if (genes[34] == 2 || genes[35] == 2){
+            size = size - 0.01F;
+        }
+
+        if (genes[26] == 1 || genes[27] == 1){
+            //dwarf
+            size = size/1.05F;
+        }
+        if (genes[28] == 2 && genes[29] == 2){
+            //miniature
+            size = size/1.1F;
+        }
+
+        if (size < 0.7F){
+            size = 0.7F;
+        }
+
+        this.setAnimalSize(size);
+    }
+
     protected void configureAI() {
         if (!aiConfigured) {
             Double speed = 1.0D;
@@ -1395,10 +1400,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed,speed*1.25D, false, TEMPTATION_ITEMS));
             this.goalSelector.addGoal(4, new EnhancedFollowParentGoal(this, speed*1.25D));
             this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
+            this.goalSelector.addGoal(5, new StayShelteredGoal(this, 5723, 7000, 0));
+            this.goalSelector.addGoal(6, new SeekShelterGoal(this, 1.0D, 5723, 7000, 0));
 //            grazingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);
             grazingGoal = new GrazingGoal(this, speed);
-            this.goalSelector.addGoal(6, grazingGoal);
-            this.goalSelector.addGoal(7, new EnhancedWanderingGoal(this, speed));
+            this.goalSelector.addGoal(7, grazingGoal);
+            this.goalSelector.addGoal(8, new EnhancedWanderingGoal(this, speed));
         }
         aiConfigured = true;
     }

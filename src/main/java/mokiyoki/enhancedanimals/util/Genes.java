@@ -126,6 +126,12 @@ public class Genes {
         this.autosomal[gene] = allel;
     }
 
+    public void setAutosomalGene(int gene, int ... allels) {
+        for (int allel : allels) {
+            this.autosomal[gene++] = allel;
+        }
+    }
+
     public void setGeneOfChromosome(boolean isAutosomal, int gene, int allel) {
         if (allel != 0) {
             if (isAutosomal) {

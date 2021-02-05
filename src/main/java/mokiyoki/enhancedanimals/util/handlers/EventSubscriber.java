@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
+import mokiyoki.enhancedanimals.blocks.PostBlock;
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
@@ -31,7 +32,6 @@ import net.minecraft.entity.passive.MooshroomEntity;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.entity.passive.horse.AbstractChestedHorseEntity;
 import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.entity.passive.horse.TraderLlamaEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,15 +40,14 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.ShearsItem;
+import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
@@ -93,51 +92,6 @@ public class EventSubscriber {
                 }
             }
         }
-        //TODO figure out how to not delete named entities and maybe convert them instead.
-//        if (entity instanceof ChickenEntity) {
-//            if(!((ChickenEntity)entity).isChickenJockey() && !EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
-//                event.setCanceled(true);
-//            }
-//        }
-//        if (entity instanceof RabbitEntity) {
-//            if(!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
-//                event.setCanceled(true);
-//            }
-//        }
-//        if (entity instanceof LlamaEntity) {
-//            if (!(entity instanceof TraderLlamaEntity)) {
-////                    if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
-////                        event.setCanceled(true);
-////                    }
-//                } else if (EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
-//                    event.setCanceled(true);
-//                }
-//        }
-//        if (entity instanceof SheepEntity) {
-//            if(!EanimodCommonConfig.COMMON.spawnVanillaSheep.get() && EanimodCommonConfig.COMMON.spawnGeneticSheep.get()) {
-//                EnhancedSheep enhancedSheep = ENHANCED_SHEEP.create(event.getWorld());
-//                enhancedSheep.setLocationAndAngles(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.rotationYaw, entity.rotationPitch);
-//                event.getWorld().addEntity(enhancedSheep);
-//                entity.remove();
-//                event.setCanceled(true);
-//            }
-//        }
-//        if (entity instanceof CowEntity && !(entity instanceof MooshroomEntity)) {
-//            if(!EanimodCommonConfig.COMMON.spawnVanillaCows.get()) {
-//                event.setCanceled(true);
-//            }
-//        }
-//        if (entity instanceof MooshroomEntity) {
-//            if(!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
-//                event.setCanceled(true);
-//            }
-//        }
-//        if (entity instanceof PigEntity) {
-//            if(!EanimodCommonConfig.COMMON.spawnVanillaPigs.get()) {
-//                event.setCanceled(true);
-//            }
-//        }
-
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -369,6 +323,7 @@ public class EventSubscriber {
                                 enhancedLlama.setBirthTime(entity.getEntityWorld(), -500000);
                                 if (entity instanceof TraderLlamaEntity) {
                                     enhancedLlama.equipTraderAnimal(((LlamaEntity) entity).hasChest());
+                                    enhancedLlama.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
                                 } else {
                                     enhancedLlama.equipAnimal(((LlamaEntity) entity).hasChest(), ((LlamaEntity) entity).getColor());
                                 }
@@ -465,8 +420,11 @@ public class EventSubscriber {
                         BlockPos blockPos = nearbySpawn(((ServerWorld)world), new BlockPos(entity.getPosition()));
                         EnhancedLlama enhancedLlama = ENHANCED_LLAMA.spawn((ServerWorld)world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
                         if(enhancedLlama != null) {
+                            enhancedLlama.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
                             enhancedLlama.setLeashHolder(entity, true);
                             enhancedLlama.setDespawnDelay(48000, true);
+                            enhancedLlama.setGrowingAge(0);
+                            enhancedLlama.setBirthTime(entity.getEntityWorld(), -((ThreadLocalRandom.current().nextInt(25)*500000) + 10000000));
                         }
                     }
                 }
@@ -611,6 +569,8 @@ public class EventSubscriber {
             event.getWorld().setBlockState(event.getPos(), ModBlocks.UNBOUNDHAY_BLOCK.getDefaultState().with(BlockStateProperties.AXIS, axis), 11);
         } else if (block instanceof SparseGrassBlock && (item instanceof HoeItem)) {
             event.getWorld().setBlockState(event.getPos(), Blocks.FARMLAND.getDefaultState(), 11);
+        } else if (block instanceof SparseGrassBlock && (item instanceof ShovelItem)) {
+            event.getWorld().setBlockState(event.getPos(), Blocks.GRASS_PATH.getDefaultState(), 11);
         }
     }
 
@@ -640,6 +600,16 @@ public class EventSubscriber {
 //        }
 //    }
 
+//    @SubscribeEvent
+//    public void onLootTableLoad(LootTableLoadEvent event) {
+//        ResourceLocation name = event.getName();
+//        String path = event.getName().getPath();
+//       if (path.startsWith("chests/")) {
+//            if (name.equals(LootTables.CHESTS_WOODLAND_MANSION)) {
+//                event.getTable().addPool();
+//            }
+//       }
+//    }
 
     private BlockPos nearbySpawn(World world, BlockPos blockPosOfEntity) {
         BlockPos blockpos = null;
@@ -657,5 +627,4 @@ public class EventSubscriber {
 
         return blockpos;
     }
-
 }

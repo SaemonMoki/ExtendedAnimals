@@ -120,7 +120,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     public EnhancedSheep(EntityType<? extends EnhancedSheep> entityType, World worldIn) {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.SHEEP_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
-        this.setSheepSize();
+        this.initilizeAnimalSize();
         this.timeUntilNextMilk = this.rand.nextInt(this.rand.nextInt(8000) + 4000);
     }
 
@@ -304,8 +304,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void runExtraIdleTimeTick() {
-        if (hunger <= 36000) {
-            timeForGrowth++;
+        if (this.hunger <= 36000) {
+            this.timeForGrowth++;
         }
 
         int maxcoat = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
@@ -313,14 +313,14 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         if (maxcoat > 0) {
             int[] genes = this.genetics.getAutosomalGenes();
             //first check is for self shearing sheep
-            if (currentCoatLength == maxcoat && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= 24000) {
-                timeForGrowth = 0;
-                currentCoatLength = maxcoat >= 2 ? rand.nextInt(maxcoat/2) : 0;
-            } else if (timeForGrowth >= (24000 / maxcoat)) {
-                timeForGrowth = 0;
-                if (maxcoat > currentCoatLength) {
-                    currentCoatLength++;
-                    setCoatLength(currentCoatLength);
+            if (this.currentCoatLength == maxcoat && (genes[46] == 1 || genes[47] == 1) && this.timeForGrowth >= 24000) {
+                this.timeForGrowth = 0;
+                this.currentCoatLength = maxcoat >= 2 ? this.rand.nextInt(maxcoat/2) : 0;
+            } else if (this.timeForGrowth >= (24000 / maxcoat)) {
+                this.timeForGrowth = 0;
+                if (maxcoat > this.currentCoatLength) {
+                    this.currentCoatLength++;
+                    setCoatLength(this.currentCoatLength);
                 }
             }
 
@@ -365,10 +365,10 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void incrementHunger() {
-        if(sleeping) {
-            hunger = hunger + (0.5F*getHungerModifier());
+        if(this.sleeping) {
+            this.hunger = this.hunger + (0.5F*getHungerModifier());
         } else {
-            hunger = hunger + (1.0F*getHungerModifier());
+            this.hunger = this.hunger + (1.0F*getHungerModifier());
         }
     }
 
@@ -377,8 +377,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedsheep, inWorld, babyGenes, -72000);
         enhancedsheep.setMaxCoatLength();
-        enhancedsheep.currentCoatLength = enhancedsheep.maxCoatLength;
-        enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
+        enhancedsheep.currentCoatLength = 0;
+        enhancedsheep.setCoatLength(0);
         this.world.addEntity(enhancedsheep);
     }
 
@@ -811,53 +811,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         return returnBlocks;
     }
 
-    private void setSheepSize() {
-        int[] genes = this.genetics.getAutosomalGenes();
-        float size = 0.4F;
-
-        //(56/57) 1-2 minature [wildtype, minature]
-        //(58/59) 1-16 size genes reducer [wildtype, smaller smaller smallest...] adds milk fat [none to most]
-        //(60/61) 1-16 size genes adder [wildtype, bigger bigger biggest...]
-        //(62/63) 1-3 size genes varient1 [wildtype, smaller, smallest]
-        //(64/65) 1-3 size genes varient2 [wildtype, smaller, smallest]
-
-        size = size - (genes[58] - 1)*0.01F;
-        size = size - (genes[59] - 1)*0.01F;
-        size = size + (genes[60] - 1)*0.0075F;
-        size = size + (genes[61] - 1)*0.0075F;
-
-        if (genes[56] == 2 || genes[57] == 2) {
-            if (genes[56] == 2 && genes[57] == 2) {
-                size = size * 0.8F;
-            } else {
-                size = size * 0.9F;
-            }
-        }
-
-        if (genes[62] == 2 || genes[63] == 2) {
-            size = size * 0.975F;
-        } else if (genes[62] == 3 || genes[63] == 3) {
-            size = size * 0.925F;
-        } else {
-            size = size * 1.025F;
-        }
-
-        if (genes[64] == 2 || genes[65] == 2) {
-            size = size * 1.05F;
-        } else if (genes[64] == 3 || genes[65] == 3) {
-            size = size * 1.1F;
-        }
-
-        if (size > 0.6F) {
-            size = 0.6F;
-        }
-
-        size = size + 0.43F;
-
-        // [ 0.52325 - 1.1 ]
-        this.setAnimalSize(size);
-    }
-
     @Override
     protected boolean canDropLoot() { return true; }
 
@@ -1280,10 +1233,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         }
     }
 
-    public void initilizeAnimalSize() {
-        setSheepSize();
-    }
-
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
@@ -1294,11 +1243,84 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     protected void setInitialDefaults() {
         super.setInitialDefaults();
         this.setMaxCoatLength();
-        this.currentCoatLength = (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+        this.currentCoatLength = (int)(this.maxCoatLength*(this.getAge() >= this.getAdultAge() ? 1 : ((float)this.getAge()/(float)this.getAdultAge())));
         this.setCoatLength(this.currentCoatLength);
 
         //"White" is considered no dye
         this.setFleeceDyeColour(DyeColor.WHITE);
+    }
+
+    @Override
+    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+        return new SheepGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
+    }
+
+    @Override
+    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+        return new SheepGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
+    public void setInitialCoat() {
+        setMaxCoatLength();
+        this.currentCoatLength = this.maxCoatLength;
+        setCoatLength(this.currentCoatLength);
+    }
+
+    @Override
+    protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {
+//        int[] genes = animal.genetics.getAutosomalGenes();
+
+        health = 8.0F;
+
+        super.initializeHealth(animal, health);
+    }
+
+    @Override
+    public void initilizeAnimalSize() {
+        int[] genes = this.genetics.getAutosomalGenes();
+        float size = 0.4F;
+
+        //(56/57) 1-2 minature [wildtype, minature]
+        //(58/59) 1-16 size genes reducer [wildtype, smaller smaller smallest...] adds milk fat [none to most]
+        //(60/61) 1-16 size genes adder [wildtype, bigger bigger biggest...]
+        //(62/63) 1-3 size genes varient1 [wildtype, smaller, smallest]
+        //(64/65) 1-3 size genes varient2 [wildtype, smaller, smallest]
+
+        size = size - (genes[58] - 1)*0.01F;
+        size = size - (genes[59] - 1)*0.01F;
+        size = size + (genes[60] - 1)*0.0075F;
+        size = size + (genes[61] - 1)*0.0075F;
+
+        if (genes[56] == 2 || genes[57] == 2) {
+            if (genes[56] == 2 && genes[57] == 2) {
+                size = size * 0.8F;
+            } else {
+                size = size * 0.9F;
+            }
+        }
+
+        if (genes[62] == 2 || genes[63] == 2) {
+            size = size * 0.975F;
+        } else if (genes[62] == 3 || genes[63] == 3) {
+            size = size * 0.925F;
+        } else {
+            size = size * 1.025F;
+        }
+
+        if (genes[64] == 2 || genes[65] == 2) {
+            size = size * 1.05F;
+        } else if (genes[64] == 3 || genes[65] == 3) {
+            size = size * 1.1F;
+        }
+
+        if (size > 0.6F) {
+            size = 0.6F;
+        }
+
+        size = size + 0.43F;
+
+        // [ 0.52325 - 1.1 ]
+        this.setAnimalSize(size);
     }
 
     private void setMaxCoatLength() {
@@ -1354,22 +1376,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
         this.maxCoatLength = maxCoatLength > 15 ? 15 : maxCoatLength;
 
-    }
-
-    @Override
-    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
-        return new SheepGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
-    }
-
-    @Override
-    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
-        return new SheepGeneticsInitialiser().generateWithBreed(world, pos, breed);
-    }
-
-    public void setInitialCoat() {
-        setMaxCoatLength();
-        this.currentCoatLength = this.maxCoatLength;
-        setCoatLength(this.currentCoatLength);
     }
 
 //    private void configureAI() {

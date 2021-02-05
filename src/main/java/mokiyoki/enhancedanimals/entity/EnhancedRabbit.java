@@ -480,34 +480,37 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         if (hunger <= 36000) {
             timeForGrowth++;
         }
-        if (maxCoatLength == 1){
+
+        int maxcoat = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+
+        if (maxcoat == 1){
             if (timeForGrowth >= 48000) {
                 timeForGrowth = 0;
-                if (maxCoatLength > currentCoatLength) {
+                if (maxcoat > currentCoatLength) {
                     currentCoatLength++;
                     setCoatLength(currentCoatLength);
                 }
             }
-        }else if (maxCoatLength == 2){
+        }else if (maxcoat == 2){
             if (timeForGrowth >= 24000) {
                 timeForGrowth = 0;
-                if (maxCoatLength > currentCoatLength) {
+                if (maxcoat > currentCoatLength) {
                     currentCoatLength++;
                     setCoatLength(currentCoatLength);
                 }
             }
-        }else if (maxCoatLength == 3){
+        }else if (maxcoat == 3){
             if (timeForGrowth >= 16000) {
                 timeForGrowth = 0;
-                if (maxCoatLength > currentCoatLength) {
+                if (maxcoat > currentCoatLength) {
                     currentCoatLength++;
                     setCoatLength(currentCoatLength);
                 }
             }
-        }else if (maxCoatLength == 4){
+        }else if (maxcoat == 4){
             if (timeForGrowth >= 12000) {
                 timeForGrowth = 0;
-                if (maxCoatLength > currentCoatLength) {
+                if (maxcoat > currentCoatLength) {
                     currentCoatLength++;
                     setCoatLength(currentCoatLength);
                 }
@@ -566,8 +569,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedrabbit, inWorld, babyGenes, -48000);
         enhancedrabbit.setMaxCoatLength();
-        enhancedrabbit.currentCoatLength = enhancedrabbit.maxCoatLength;
-        enhancedrabbit.setCoatLength(enhancedrabbit.currentCoatLength);
+        enhancedrabbit.currentCoatLength = 0;
+        enhancedrabbit.setCoatLength(0);
 
         this.world.addEntity(enhancedrabbit);
     }
@@ -881,7 +884,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         setMaxCoatLength();
 
         if (!compound.getString("breed").isEmpty()) {
-            this.currentCoatLength = this.maxCoatLength;
+            this.currentCoatLength = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
         }
     }
@@ -1323,6 +1326,15 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         return livingdata;
     }
 
+    @Override
+    protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {
+//        int[] genes = animal.genetics.getAutosomalGenes();
+
+        health = 3.0F;
+
+        super.initializeHealth(animal, health);
+    }
+
     private void setMaxCoatLength() {
         int[] genes = this.genetics.getAutosomalGenes();
         int angora = 0;
@@ -1367,7 +1379,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     public void setInitialCoat() {
         setMaxCoatLength();
-        this.currentCoatLength = this.maxCoatLength;
+        this.currentCoatLength = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }
 }

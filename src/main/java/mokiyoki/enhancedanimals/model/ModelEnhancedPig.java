@@ -618,6 +618,14 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
                 snoutLength2 = snoutLength2 - 0.1F;
             }
 
+            for (int i = 1; i < sharedGenes[66];i++){
+                snoutLength1 = snoutLength1 - 0.1F;
+            }
+
+            for (int i = 1; i < sharedGenes[67];i++){
+                snoutLength2 = snoutLength2 - 0.1F;
+            }
+
             //causes partial dominance of longer nose over shorter nose.
             if (snoutLength1 > snoutLength2){
                 snoutLength = (snoutLength1*0.75F) + (snoutLength2*0.25F);
@@ -643,7 +651,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             }
 
             if (sharedGenes[46] == 2 && sharedGenes[47] == 2) {
-                snoutLength = snoutLength * 0.75F;
+                snoutLength = snoutLength * 0.6F;
             }
 
         }

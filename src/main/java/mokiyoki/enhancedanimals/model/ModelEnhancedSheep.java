@@ -178,12 +178,12 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.polyHornBase.setRotationPoint(0.0F, 0.0F, -6.0F);
 
         this.polyHornL0 = new EnhancedRendererModelNew(this, 50, 12);
-//        this.polyHornL0.addBox(0.0F, -3.0F, -1.5F, 0, 0, 0, -0.6F);
-        this.polyHornL0.setRotationPoint(2.5F, -4.5F, -1.0F);
+//        this.polyHornL0.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.7F);
+//        sheepLeftHorns.add(polyHornL0);
 
         this.polyHornR0 = new EnhancedRendererModelNew(this, 50, 12);
-//        this.polyHornR0.addBox(-3.0F, -3.0F, -1.5F, 0, 0, 0, -0.6F);
-        this.polyHornR0.setRotationPoint(-2.5F, -4.5F, -1.0F);
+//        this.polyHornR0.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.7F);
+//        sheepRightHorns.add(polyHornR0);
 
         // scale down by 0.1 for each
         this.hornL0 = new EnhancedRendererModelNew(this, 50, 12, "HornL0");
@@ -558,9 +558,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.hornR8.addChild(hornR9);
 
         this.polyHornBase.addChild(polyHornL0);
-        this.polyHornL0.addChild(hornL3);
+        this.polyHornL0.addChild(hornL2);
         this.polyHornBase.addChild(polyHornR0);
-        this.polyHornR0.addChild(hornR3);
+        this.polyHornR0.addChild(hornR2);
 
         this.neck.addChild(head);
         this.head.addChild(this.eyeLeft);
@@ -1134,15 +1134,15 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             }
         }
 
-        this.polyHornL0.rotateAngleX = this.polyHornL0.rotateAngleX + 0.001F;
-        this.polyHornR0.rotateAngleX = this.polyHornR0.rotateAngleX - 0.001F;
+        this.polyHornL0.setRotationPoint(-0.5F, -5.75F, 0.0F);
+        this.polyHornR0.setRotationPoint(0.5F, -5.75F, 0.0F);
 
-        this.polyHornL0.rotateAngleX = -1.0F;
-        this.polyHornR0.rotateAngleX = -1.0F;
-        this.polyHornL0.rotateAngleY = 2.6F;
-        this.polyHornR0.rotateAngleY = -2.6F;
-        this.polyHornL0.rotateAngleZ = 1.6F;
-        this.polyHornR0.rotateAngleZ = -1.6F;
+        this.polyHornL0.rotateAngleX = -(float)Math.PI * 0.1F;
+        this.polyHornR0.rotateAngleX = -(float)Math.PI * 0.1F;
+        this.polyHornL0.rotateAngleY = (float)Math.PI * 0.9F;
+        this.polyHornR0.rotateAngleY = -(float)Math.PI * 0.9F;
+        this.polyHornL0.rotateAngleZ = (float)Math.PI * 0.6F;
+        this.polyHornR0.rotateAngleZ = -(float)Math.PI * 0.6F;
 
         //horn shape controllers
 //        if (horns != 0) {

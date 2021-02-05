@@ -32,13 +32,13 @@ public class StayShelteredGoal extends Goal {
 
     @Override
     public void startExecuting() {
-        ((EnhancedGroundPathNavigator)this.creature.getNavigator()).setSeekShelter(true);
+        ((EnhancedGroundPathNavigator)this.creature.getNavigator()).setSeekShelter(true, this.isHot);
     }
 
     @Override
     public void resetTask() {
-        if (this.creature.getNavigator() instanceof EnhancedGroundPathNavigator) {
-            ((EnhancedGroundPathNavigator)this.creature.getNavigator()).setSeekShelter(true);
+        if (this.creature.getNavigator() instanceof EnhancedGroundPathNavigator && !this.isHungry) {
+            ((EnhancedGroundPathNavigator)this.creature.getNavigator()).setSeekShelter(true, this.isHot);
         }
     }
 
@@ -46,11 +46,11 @@ public class StayShelteredGoal extends Goal {
         Biome biome = this.world.getBiome(animal.getPosition());
         this.isRaining = this.world.isRaining() && biome.getPrecipitation() == Biome.RainType.RAIN && biome.getTemperature(animal.getPosition()) >= 0.15F;
         if (this.world.isDaytime()) {
-            this.isHungry = ((EnhancedAnimalAbstract)animal).getHunger() > 4000;
+            this.isHungry = ((EnhancedAnimalAbstract)animal).getHunger() > 6000;
+            float temperature = this.world.getBiome(animal.getPosition()).getTemperature(animal.getPosition());
+            this.isHot = temperature > 0.4F && this.world.getDayTime() >= this.start - (1500 * (temperature - 0.7F)) && this.world.getDayTime() <= this.end + (1500 * (temperature - 0.8F));
         } else {
             this.isHungry = ((EnhancedAnimalAbstract)animal).getHunger() > 12000;
         }
-        float temperature = this.world.getBiome(animal.getPosition()).getTemperature(animal.getPosition());
-        this.isHot = temperature > 0.4F && this.world.getDayTime() >= this.start - (1500 * (temperature - 0.7F)) && this.world.getDayTime() <= this.end + (1500 * (temperature - 0.8F));
     }
 }

@@ -35,46 +35,48 @@ public class SpawnRegistry {
         while (currentSpawns.hasNext()) {
             MobSpawnInfo.Spawners entry = currentSpawns.next();
 
+            EanimodCommonConfig.CommonConfig config = EanimodCommonConfig.COMMON;
+
             //add pigs
             if (entry.type == EntityType.PIG) {
-                if(EanimodCommonConfig.COMMON.spawnGeneticPigs.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_PIG, 6, 2, 3));
+                if(config.spawnGeneticPigs.get()) {
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_PIG, config.spawnWeightPigs.get(), config.minimumPigGroup.get(), config.maximumPigGroup.get()));
                 }
             }
             //add sheep
             if (entry.type == EntityType.SHEEP) {
                 if (EanimodCommonConfig.COMMON.spawnGeneticSheep.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_SHEEP, 12, 4, 4));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_SHEEP, config.spawnWeightSheep.get(), config.minimumSheepGroup.get(), config.maximumSheepGroup.get()));
                 }
             }
             //add cow
             if (entry.type == EntityType.COW) {
                 if(EanimodCommonConfig.COMMON.spawnGeneticCows.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_COW, 8, 4, 4));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_COW,config.spawnWeightCows.get(), config.minimumCowGroup.get(), config.maximumCowGroup.get()));
                 }
             }
             //add llama
             if (entry.type == EntityType.LLAMA) {
                 if(EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_LLAMA, 4, 2, 3));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_LLAMA, config.spawnWeightLlamas.get(), config.minimumLlamaGroup.get(), config.maximumLlamaGroup.get()));
                 }
             }
             //add chicken
             if (entry.type == EntityType.CHICKEN) {
                 if (EanimodCommonConfig.COMMON.spawnGeneticChickens.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_CHICKEN, 10, 4, 4));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_CHICKEN, config.spawnWeightChickens.get(), config.minimumChickenGroup.get(), config.maximumChickenGroup.get()));
                 }
             }
             //add rabbit
             if (entry.type == EntityType.RABBIT) {
                 if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_RABBIT, 4, 2, 3));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_RABBIT, config.spawnWeightRabbits.get(), config.minimumRabbitGroup.get(), config.maximumRabbitGroup.get()));
                 }
             }
             //add mooshroom
             if (entry.type == EntityType.MOOSHROOM) {
                 if (EanimodCommonConfig.COMMON.spawnGeneticMooshroom.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_MOOSHROOM, 8, 4, 4));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_MOOSHROOM, config.spawnWeightMooshrooms.get(), config.minimumPigGroup.get(), config.maximumPigGroup.get()));
                 }
             }
         }
@@ -89,7 +91,7 @@ public class SpawnRegistry {
         //documentation says this miiiiight be null on super rare occurances
         if (event.getName() != null) {
             if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get() && (event.getName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || event.getName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || event.getName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || event.getName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || event.getName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || event.getName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()))) {
-                spawns.add(new MobSpawnInfo.Spawners(ENHANCED_RABBIT, 4, 2, 3));
+                spawns.add(new MobSpawnInfo.Spawners(ENHANCED_RABBIT, EanimodCommonConfig.COMMON.spawnWeightRabbits.get(), EanimodCommonConfig.COMMON.minimumRabbitGroup.get(), EanimodCommonConfig.COMMON.maximumRabbitGroup.get()));
             }
         }
 

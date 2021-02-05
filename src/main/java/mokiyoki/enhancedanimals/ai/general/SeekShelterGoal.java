@@ -55,13 +55,13 @@ public class SeekShelterGoal extends FleeSunGoal {
         this.isLeashedToEntity = !(animal.getLeashHolder() instanceof LeashKnotEntity) && animal.getLeashHolder() != null;
         if (!this.isLeashedToEntity) {
             this.isBeingRainedOn = this.world.isRaining() && biome.getPrecipitation() == Biome.RainType.RAIN && biome.getTemperature(animal.getPosition()) >= 0.15F;
-            if (this.world.isDaytime()) {
+            if (this.world.isDaytime() && !this.isBeingRainedOn) {
                 this.isHungry = ((EnhancedAnimalAbstract) animal).getHunger() > 6000;
+                float temperature = this.world.getBiome(animal.getPosition()).getTemperature(animal.getPosition());
+                this.isHot = temperature > 0.4F && this.world.getDayTime() >= this.start - (1500 * (temperature - 0.7F)) && this.world.getDayTime() <= this.end + (1500 * (temperature - 0.8F));
             } else {
                 this.isHungry = ((EnhancedAnimalAbstract) animal).getHunger() > 12000;
             }
-            float temperature = this.world.getBiome(animal.getPosition()).getTemperature(animal.getPosition());
-            this.isHot = temperature > 0.4F && this.world.getDayTime() >= this.start - (1500 * (temperature - 0.7F)) && this.world.getDayTime() <= this.end + (1500 * (temperature - 0.8F));
         }
     }
 
@@ -73,7 +73,7 @@ public class SeekShelterGoal extends FleeSunGoal {
 
         for(int i = 0; i < 10; ++i) {
             BlockPos blockpos1 = blockpos.add(random.nextInt(20) - 10, random.nextInt(6) - 3, random.nextInt(20) - 10);
-            if (!this.world.canBlockSeeSky(blockpos1) && !this.world.hasWater(blockpos) && this.creature.getBlockPathWeight(blockpos1) < 0.0F) {
+            if (!this.world.canBlockSeeSky(blockpos1) && (this.isHot || !this.world.hasWater(blockpos)) && this.creature.getBlockPathWeight(blockpos1) < 0.0F) {
                 return Vector3d.copyCenteredHorizontally(blockpos1);
             }
         }

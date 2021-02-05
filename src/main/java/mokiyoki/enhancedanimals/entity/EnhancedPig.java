@@ -138,7 +138,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
     public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.PIG_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
-        this.setPigSize();
+        this.initilizeAnimalSize();
     }
 
     private static Map<Item, Integer> createFoodMap() {
@@ -513,59 +513,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
     private boolean isAngry() {
         return this.angerLevel > 0;
-    }
-
-    private void setPigSize() {
-        int[] genes = this.genetics.getAutosomalGenes();
-        float size = 0.4F;
-
-            // [44/45] (1-3) potbelly dwarfism [wildtype, dwarfStrong, dwarfWeak]
-            // [46/47] (1-2) potbelly dwarfism2 [wildtype, dwarf]
-            // [48/49] (1-15) size genes reducer [wildtype, smaller smaller smallest...]
-            // [50/51] (1-15) size genes adder [wildtype, bigger bigger biggest...]
-            // [52/53] (1-3) size genes varient1 [wildtype, smaller, smallest]
-            // [54/55] (1-3) size genes varient2 [wildtype, larger, largest]
-
-        size = size - (genes[48] - 1)*0.0125F;
-        size = size - (genes[49] - 1)*0.0125F;
-        size = size + (genes[50] - 1)*0.0125F;
-        size = size + (genes[51] - 1)*0.0125F;
-
-        if (genes[44] != 1 && genes[45] != 1) {
-            if (genes[44] == 2 || genes[45] == 2) {
-                //smaller rounder
-                size = size * 0.9F;
-            } else {
-                //smaller roundest
-                size = size * 0.8F;
-            }
-        }
-
-        if (genes[46] == 2 && genes[47] == 2) {
-            //smaller rounder
-            size = size * 0.9F;
-        }
-
-        if (genes[52] == 2 || genes[53] == 2) {
-            size = size * 0.975F;
-        } else if (genes[52] == 3 || genes[53] == 3) {
-            size = size * 0.925F;
-        }
-
-        if (genes[54] == 2 || genes[55] == 2) {
-            size = size * 1.025F;
-        } else if (genes[54] == 3 || genes[55] == 3) {
-            size = size * 1.075F;
-        }
-
-        if (size > 0.8F) {
-            size = 0.8F;
-        }
-
-        size = size + 0.7F;
-
-        //        0.7F <= size <= 1.5F
-        this.setAnimalSize(size);
     }
 
     @Override
@@ -1053,10 +1000,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
     }
 
-    public void initilizeAnimalSize() {
-        setPigSize();
-    }
-
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
@@ -1064,11 +1007,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         return commonInitialSpawnSetup(inWorld, livingdata, 60000, 30000, 80000);
     }
 
+
 //    @Override
 //    protected int[] createInitialSpawnChildGenes(int[] spawnGenes1, int[] spawnGenes2, int[] mitosis, int[] mateMitosis) {
 //        return replaceGenes(getPigletGenes(mitosis, mateMitosis), spawnGenes1);
 //    }
-
     private int[] replaceGenes(int[] resultGenes, int[] groupGenes) {
         resultGenes[20] = groupGenes[20];
         resultGenes[21] = groupGenes[21];
@@ -1094,5 +1037,70 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
         return new PigGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
+    @Override
+    protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {
+//        int[] genes = animal.genetics.getAutosomalGenes();
+
+        health = 5.0F + (5.0F * (this.getAnimalSize()));
+        if (health > 10.0F) {
+            health = 10.0F;
+        }
+
+        super.initializeHealth(animal, health);
+    }
+
+    public void initilizeAnimalSize() {
+        int[] genes = this.genetics.getAutosomalGenes();
+        float size = 0.4F;
+
+        // [44/45] (1-3) potbelly dwarfism [wildtype, dwarfStrong, dwarfWeak]
+        // [46/47] (1-2) potbelly dwarfism2 [wildtype, dwarf]
+        // [48/49] (1-15) size genes reducer [wildtype, smaller smaller smallest...]
+        // [50/51] (1-15) size genes adder [wildtype, bigger bigger biggest...]
+        // [52/53] (1-3) size genes varient1 [wildtype, smaller, smallest]
+        // [54/55] (1-3) size genes varient2 [wildtype, larger, largest]
+
+        size = size - (genes[48] - 1)*0.0125F;
+        size = size - (genes[49] - 1)*0.0125F;
+        size = size + (genes[50] - 1)*0.0125F;
+        size = size + (genes[51] - 1)*0.0125F;
+
+        if (genes[44] != 1 && genes[45] != 1) {
+            if (genes[44] == 2 || genes[45] == 2) {
+                //smaller rounder
+                size = size * 0.9F;
+            } else {
+                //smaller roundest
+                size = size * 0.8F;
+            }
+        }
+
+        if (genes[46] == 2 && genes[47] == 2) {
+            //smaller rounder
+            size = size * 0.9F;
+        }
+
+        if (genes[52] == 2 || genes[53] == 2) {
+            size = size * 0.975F;
+        } else if (genes[52] == 3 || genes[53] == 3) {
+            size = size * 0.925F;
+        }
+
+        if (genes[54] == 2 || genes[55] == 2) {
+            size = size * 1.025F;
+        } else if (genes[54] == 3 || genes[55] == 3) {
+            size = size * 1.075F;
+        }
+
+        if (size > 0.8F) {
+            size = 0.8F;
+        }
+
+        size = size + 0.7F;
+
+        //        0.7F <= size <= 1.5F
+        this.setAnimalSize(size);
     }
 }

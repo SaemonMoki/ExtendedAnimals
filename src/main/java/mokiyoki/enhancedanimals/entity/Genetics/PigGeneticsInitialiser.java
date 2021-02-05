@@ -200,13 +200,11 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //face squash genes 1 [ Wildtype+, long, medium, short, squashed ]
         if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[18] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
         } else {
             autosomalGenes[18] = (1);
         }
         if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[19] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
         } else {
             autosomalGenes[19] = (1);
         }
@@ -474,6 +472,18 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[65] = ThreadLocalRandom.current().nextInt(2) + 1;
         } else {
             autosomalGenes[65] = 1;
+        }
+
+        //face squash genes 3 [ Wildtype+, long, medium, short, squashed ]
+        if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[66] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[66] = (1);
+        }
+        if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[67] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[67] = (1);
         }
 
         //ear size [xsmall, small, medium, large, xlarge]

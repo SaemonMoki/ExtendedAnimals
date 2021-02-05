@@ -187,8 +187,15 @@ public class EnhancedAnimalContainer extends Container {
 
         int inventoryShift = 7;
         if (enhancedAnimal.canHaveChest()) {
+            int limit = enhancedAnimal.getInventorySize();
                 for (int k = 0; k < i; ++k) {
+                    if (inventoryShift >= limit) {
+                        break;
+                    }
                     for (int l = 0; l < j; ++l) {
+                        if (inventoryShift >= limit) {
+                            break;
+                        }
                         this.addSlot(new EnhancedSlot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
                         });
                         inventoryShift++;

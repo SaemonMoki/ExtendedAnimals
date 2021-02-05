@@ -650,10 +650,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             RabbitModelData rabbitModelData = rabbitModelDataCache.get(enhancedRabbit.getEntityId());
             rabbitModelData.lastAccessed = 0;
             rabbitModelData.dataReset++;
-            if (rabbitModelData.dataReset > 5000) {
-                rabbitModelData.coatlength = enhancedRabbit.getCoatLength();
-                rabbitModelData.dataReset = 0;
-            }
+            rabbitModelData.coatlength = enhancedRabbit.getCoatLength();
             rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
             rabbitModelData.collar = hasCollar(enhancedRabbit.getEnhancedInventory());
             rabbitModelData.blink = enhancedRabbit.getBlink();

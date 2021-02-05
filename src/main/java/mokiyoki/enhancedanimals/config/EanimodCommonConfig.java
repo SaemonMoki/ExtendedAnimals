@@ -42,27 +42,48 @@ public class EanimodCommonConfig implements IEanimodConfig{
         public final ForgeConfigSpec.BooleanValue spawnVanillaPigs;
         public final ForgeConfigSpec.BooleanValue spawnGeneticPigs;
         public final ForgeConfigSpec.IntValue gestationDaysPig;
+        public final ForgeConfigSpec.IntValue spawnWeightPigs;
+        public final ForgeConfigSpec.IntValue minimumPigGroup;
+        public final ForgeConfigSpec.IntValue maximumPigGroup;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaCows;
         public final ForgeConfigSpec.BooleanValue spawnVanillaMooshroom;
         public final ForgeConfigSpec.BooleanValue spawnGeneticCows;
         public final ForgeConfigSpec.BooleanValue spawnGeneticMooshroom;
         public final ForgeConfigSpec.IntValue gestationDaysCow;
+        public final ForgeConfigSpec.IntValue spawnWeightCows;
+        public final ForgeConfigSpec.IntValue minimumCowGroup;
+        public final ForgeConfigSpec.IntValue maximumCowGroup;
+        public final ForgeConfigSpec.IntValue spawnWeightMooshrooms;
+        public final ForgeConfigSpec.IntValue minimumMooshroomGroup;
+        public final ForgeConfigSpec.IntValue maximumMooshroomGroup;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaLlamas;
         public final ForgeConfigSpec.BooleanValue spawnGeneticLlamas;
         public final ForgeConfigSpec.IntValue gestationDaysLlama;
+        public final ForgeConfigSpec.IntValue spawnWeightLlamas;
+        public final ForgeConfigSpec.IntValue minimumLlamaGroup;
+        public final ForgeConfigSpec.IntValue maximumLlamaGroup;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaSheep;
         public final ForgeConfigSpec.BooleanValue spawnGeneticSheep;
         public final ForgeConfigSpec.IntValue gestationDaysSheep;
+        public final ForgeConfigSpec.IntValue spawnWeightSheep;
+        public final ForgeConfigSpec.IntValue minimumSheepGroup;
+        public final ForgeConfigSpec.IntValue maximumSheepGroup;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaChickens;
         public final ForgeConfigSpec.BooleanValue spawnGeneticChickens;
+        public final ForgeConfigSpec.IntValue spawnWeightChickens;
+        public final ForgeConfigSpec.IntValue minimumChickenGroup;
+        public final ForgeConfigSpec.IntValue maximumChickenGroup;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaRabbits;
         public final ForgeConfigSpec.BooleanValue spawnGeneticRabbits;
         public final ForgeConfigSpec.IntValue gestationDaysRabbit;
+        public final ForgeConfigSpec.IntValue spawnWeightRabbits;
+        public final ForgeConfigSpec.IntValue minimumRabbitGroup;
+        public final ForgeConfigSpec.IntValue maximumRabbitGroup;
 
         public final ForgeConfigSpec.BooleanValue spawnVanillaHorses;
         public final ForgeConfigSpec.BooleanValue spawnGeneticHorses;
@@ -94,6 +115,12 @@ public class EanimodCommonConfig implements IEanimodConfig{
                 .define("Allow vanilla minecraft Pigs to spawn/exist:", false);
             spawnGeneticPigs = builder
                 .define("Allow Genetic Pigs to continue to spawn/exist:", true);
+            spawnWeightPigs = builder
+                    .defineInRange("How highly pig spawning is weighted, larger numbers spawn more. Default is 6", 6, 1, 20);
+            minimumPigGroup = builder
+                    .defineInRange("The minimum number of pigs you want to find in a group at spawn. Default is 2", 2, 1, 60);
+            maximumPigGroup = builder
+                    .defineInRange("The maximum number of pigs you want to find in a group at spawn. Default is 3", 3, 1, 60);
             builder.pop();
 
             builder.push("cow");
@@ -107,6 +134,18 @@ public class EanimodCommonConfig implements IEanimodConfig{
                 .define("Allow vanilla minecraft Mooshrooms to spawn/exist:", false);
             spawnGeneticMooshroom = builder
                 .define("Allow Genetic Mooshrooms to continue to spawn/exist:", true);
+            spawnWeightCows = builder
+                    .defineInRange("How highly cow spawning is weighted, larger numbers spawn more. Default is 6", 8, 1, 20);
+            minimumCowGroup = builder
+                    .defineInRange("The minimum number of cows you want to find in a group at spawn. Default is 2", 4, 1, 60);
+            maximumCowGroup = builder
+                    .defineInRange("The maximum number of cows you want to find in a group at spawn. Default is 3", 4, 1, 60);
+            spawnWeightMooshrooms = builder
+                    .defineInRange("How highly mooshroom spawning is weighted, larger numbers spawn more. Default is 6", 8, 1, 20);
+            minimumMooshroomGroup = builder
+                    .defineInRange("The minimum number of mooshrooms you want to find in a group at spawn. Default is 2", 4, 1, 60);
+            maximumMooshroomGroup = builder
+                    .defineInRange("The maximum number of mooshrooms you want to find in a group at spawn. Default is 3", 4, 1, 60);
             builder.pop();
 
             builder.push("llama");
@@ -116,6 +155,12 @@ public class EanimodCommonConfig implements IEanimodConfig{
                     .define("Allow vanilla minecraft Llamas to spawn/exist:", false);
             spawnGeneticLlamas = builder
                     .define("Allow Genetic Llamas to continue to spawn/exist:", true);
+            spawnWeightLlamas = builder
+                    .defineInRange("How highly llama spawning is weighted, larger numbers spawn more. Default is 6", 4, 1, 20);
+            minimumLlamaGroup = builder
+                    .defineInRange("The minimum number of llamas you want to find in a group at spawn. Default is 2", 2, 1, 60);
+            maximumLlamaGroup = builder
+                    .defineInRange("The maximum number of llamas you want to find in a group at spawn. Default is 3", 3, 1, 60);
             builder.pop();
 
             builder.push("sheep");
@@ -125,6 +170,12 @@ public class EanimodCommonConfig implements IEanimodConfig{
                     .define("Allow vanilla minecraft Sheep to spawn/exist:", false);
             spawnGeneticSheep = builder
                     .define("Allow Genetic Sheep to continue to spawn/exist:", true);
+            spawnWeightSheep = builder
+                    .defineInRange("How highly sheep spawning is weighted, larger numbers spawn more. Default is 6", 12, 1, 20);
+            minimumSheepGroup = builder
+                    .defineInRange("The minimum number of sheep you want to find in a group at spawn. Default is 2", 4, 1, 60);
+            maximumSheepGroup = builder
+                    .defineInRange("The maximum number of sheep you want to find in a group at spawn. Default is 3", 4, 1, 60);
             builder.pop();
 
             builder.push("chicken");
@@ -132,6 +183,12 @@ public class EanimodCommonConfig implements IEanimodConfig{
                     .define("Allow vanilla minecraft Chickens to spawn/exist:", false);
             spawnGeneticChickens = builder
                     .define("Allow Genetic Chickens to continue to spawn/exist:", true);
+            spawnWeightChickens = builder
+                    .defineInRange("How highly chicken spawning is weighted, larger numbers spawn more. Default is 6", 10, 1, 20);
+            minimumChickenGroup = builder
+                    .defineInRange("The minimum number of chickens you want to find in a group at spawn. Default is 2", 4, 1, 60);
+            maximumChickenGroup = builder
+                    .defineInRange("The maximum number of chickens you want to find in a group at spawn. Default is 3", 4, 1, 60);
             builder.pop();
 
             builder.push("rabbit");
@@ -141,15 +198,21 @@ public class EanimodCommonConfig implements IEanimodConfig{
                     .define("Allow vanilla minecraft Rabbits to spawn/exist:", false);
             spawnGeneticRabbits = builder
                     .define("Allow Genetic Rabbits to continue to spawn/exist:", true);
+            spawnWeightRabbits = builder
+                    .defineInRange("How highly rabbit spawning is weighted, larger numbers spawn more. Default is 6", 4, 1, 20);
+            minimumRabbitGroup = builder
+                    .defineInRange("The minimum number of rabbits you want to find in a group at spawn. Default is 2", 2, 1, 60);
+            maximumRabbitGroup = builder
+                    .defineInRange("The maximum number of rabbits you want to find in a group at spawn. Default is 3", 3, 1, 60);
             builder.pop();
 
             builder.push("horse");
             gestationDaysHorse = builder
-                    .defineInRange("How many ticks it takes for a rabbit to give birth, 24000 = 1 Minecraft Day:", 24000, 1000, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a horse to give birth, 24000 = 1 Minecraft Day:", 24000, 1000, Integer.MAX_VALUE);
             spawnVanillaHorses = builder
-                    .define("Allow vanilla minecraft Rabbits to spawn/exist:", false);
+                    .define("Allow vanilla minecraft Horses to spawn/exist:", false);
             spawnGeneticHorses = builder
-                    .define("Allow Genetic Rabbits to continue to spawn/exist:", true);
+                    .define("Allow Genetic horses to continue to spawn/exist:", true);
             builder.pop();
         }
     }

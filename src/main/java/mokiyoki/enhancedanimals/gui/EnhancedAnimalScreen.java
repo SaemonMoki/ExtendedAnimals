@@ -23,6 +23,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 @OnlyIn(Dist.CLIENT)
 public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContainer> {
     private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("eanimod:textures/gui/genetic_animal_gui.png");
@@ -34,6 +36,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 
     /** temp booleans */
     boolean chestTabEnabled = false;
+    boolean omniToggle = false;
 
     public static EnhancedAnimalInfo enhancedAnimalInfo = new EnhancedAnimalInfo();
 
@@ -59,7 +62,21 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 
     private void renderInfoToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
         if (this.isPointInRegion(127, 5, 7, 9, (double)mouseX, (double)mouseY)) {
-            if (this.enhancedAnimalInfo.isFemale) {
+            if (EanimodCommonConfig.COMMON.omnigenders.get()) {
+                if (this.enhancedAnimalInfo.pregnant > 0) {
+                    if (this.omniToggle) {
+                        this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
+                    } else {
+                        this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
+                    }
+                } else {
+                    if (this.omniToggle) {
+                        this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+                    } else {
+                        this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+                    }
+                }
+            } else if (this.enhancedAnimalInfo.isFemale) {
                 if (this.enhancedAnimalInfo.pregnant > 0) {
                     this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
                 } else {
@@ -72,6 +89,8 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                     this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
                 }
             }
+        } else {
+            this.omniToggle = !this.omniToggle;
         }
         if (this.isPointInRegion(136, 5, 8, 9, (double)mouseX, (double)mouseY)) {
             this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.health"), mouseX, mouseY);
@@ -253,15 +272,20 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
          *  this.blit(i + screenPlacementFromX, j + screenPlacementFromY, selectImageFromX, selectImageFromY, imageSizeX, imageSizeY)
          */
 
-        if (enhancedAnimalInfo.isFemale) {
-            this.blit(matrixStack, i + 126, j + 5, 117, this.ySize + 54, 8, 10); // female icon
-                int pregnancy = enhancedAnimalInfo.pregnant;
-            this.blit(matrixStack, i + 126, j + 4 + (11-pregnancy) , 117, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
-
+        if (EanimodCommonConfig.COMMON.omnigenders.get()) {
+            this.blit(matrixStack, i + 126, j + 5, 125, this.ySize + 74, 8, 10); // pregnancy icon
+            int pregnancy = enhancedAnimalInfo.pregnant;
+            this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 133, this.ySize + 74 + (10 - pregnancy), 8, pregnancy); // pregnancy icon
         } else {
-            this.blit(matrixStack, i + 126, j + 5, 108, this.ySize + 54, 8, 10); // male icon
+            if (enhancedAnimalInfo.isFemale) {
+                this.blit(matrixStack, i + 126, j + 5, 117, this.ySize + 54, 8, 10); // female icon
                 int pregnancy = enhancedAnimalInfo.pregnant;
-            this.blit(matrixStack, i + 126, j + 4 + (11-pregnancy) , 108, this.ySize + 64 + (10-pregnancy), 8, pregnancy); // female icon
+                this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 117, this.ySize + 64 + (10 - pregnancy), 8, pregnancy); // female icon
+            } else {
+                this.blit(matrixStack, i + 126, j + 5, 108, this.ySize + 54, 8, 10); // male icon
+                int pregnancy = enhancedAnimalInfo.pregnant;
+                this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 108, this.ySize + 64 + (10 - pregnancy), 8, pregnancy); // male icon
+            }
         }
 
         this.blit(matrixStack, i + 136, j + 5, 125, this.ySize + 54, 9, 10); // health icon

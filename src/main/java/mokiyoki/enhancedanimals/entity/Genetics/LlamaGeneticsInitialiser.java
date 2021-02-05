@@ -279,6 +279,48 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
             autosomalGenes[33] = (1);
         }
 
+        //Health genes A [ wildtype, healthier1, healthier2, unhealthy]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            autosomalGenes[34] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            autosomalGenes[34] = (1);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            autosomalGenes[35] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            autosomalGenes[35] = (1);
+        }
+
+        //Health genes B [ wildtype, healthier1, healthier2, unhealthy]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            autosomalGenes[36] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            autosomalGenes[36] = (1);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            autosomalGenes[37] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            autosomalGenes[37] = (1);
+        }
+
+        //Health genes C [ wildtype, healthier1, healthier2, unhealthy]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            autosomalGenes[38] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            autosomalGenes[38] = (1);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            autosomalGenes[39] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            autosomalGenes[39] = (1);
+        }
+
         return new Genes(autosomalGenes);
     }
 }

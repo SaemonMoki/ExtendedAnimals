@@ -128,7 +128,8 @@ public class Genes {
 
     public void setAutosomalGene(int gene, int ... allels) {
         for (int allel : allels) {
-            this.autosomal[gene++] = allel;
+            this.autosomal[gene] = allel;
+            gene++;
         }
     }
 
@@ -289,6 +290,16 @@ public class Genes {
 
     public Genes makeChild(boolean isDiploid, boolean donorIsDiploid, Genes donor) {
         return this.makeChild(isDiploid, donor, donorIsDiploid, Species.UNIMPORTANT);
+    }
+
+    public boolean testGenes(int gene, int type, int check) {
+        switch (type) {
+            case 0:
+            default:
+                return this.autosomal[gene] == check || this.autosomal[gene+1] == check;
+            case 1:
+                return this.autosomal[gene] == check && this.autosomal[gene+1] == check;
+        }
     }
 
     public List<GeneLink> getLinkages(Species species) {

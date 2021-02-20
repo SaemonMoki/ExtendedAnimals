@@ -295,9 +295,18 @@ public class EnhancedLayeredTexture extends Texture {
                         }
                     }
                 } else if (s.startsWith("b_") && blackRGB != 0) {
-                    for (int i = 0; i < firstGroupImage.getHeight(); ++i) {
-                        for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
-                            shadeMelanin(j, i, blackRGB, firstGroupImage);
+                    if (dyeRGB != 0) {
+                        for (int i = 0; i < firstGroupImage.getHeight(); ++i) {
+                            for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
+                                shadeMelanin(j, i, blackRGB, firstGroupImage);
+                                blendDye(j, i, dyeRGB, firstGroupImage);
+                            }
+                        }
+                    } else {
+                        for (int i = 0; i < firstGroupImage.getHeight(); ++i) {
+                            for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
+                                shadeMelanin(j, i, blackRGB, firstGroupImage);
+                            }
                         }
                     }
                 }
@@ -499,12 +508,12 @@ public class EnhancedLayeredTexture extends Texture {
 
         if (originalAlpha != 0.0F) {
 
-            float mod = 0.2F;
+            float mod = 0.125F;
             float inverse = 1F - mod;
             if (layerAlpha > originalAlpha) {
-                originalAlpha = layerAlpha*inverse > originalAlpha ? 0 : 0.5F*(1-((layerAlpha-originalAlpha)/mod));
+                originalAlpha = layerAlpha*inverse > originalAlpha ? 0F : 0.5F*(1-((layerAlpha-originalAlpha)/mod));
             } else {
-                originalAlpha = originalAlpha*inverse > layerAlpha ? 1 : 0.5F + (0.5F*((originalAlpha-layerAlpha)/mod));
+                originalAlpha = originalAlpha*inverse > layerAlpha ? 1F : 0.5F + (0.5F*((originalAlpha-layerAlpha)/mod));
             }
 
             originalAlpha = originalAlpha > 1.0F ? 1.0F : originalAlpha;

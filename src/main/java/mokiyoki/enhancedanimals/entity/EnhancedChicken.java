@@ -38,6 +38,7 @@ import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.passive.FoxEntity;
+import net.minecraft.entity.passive.OcelotEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -297,6 +298,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, WolfEntity.class, 10.0F, 1.0D, 2.0D, null));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, FoxEntity.class, 10.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, OcelotEntity.class, 10.0F, 1.0D, 2.0D, null));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 4.0F, 1.0D, 1.8D, null));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, MonsterEntity.class, 4.0F, 1.0D, 2.0D, null));
         this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
@@ -2449,8 +2451,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000);
-        if (this.mateGenetics != null) {
+        livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000, spawnReason);
+        if (this.mateGenetics != null && this.mateGenetics.getSexlinkedGene(0) != 0) {
             this.setFertile();
         }
         return livingdata;

@@ -642,7 +642,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 30000, 108000);
+        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 30000, 108000, spawnReason);
     }
 
     @Override

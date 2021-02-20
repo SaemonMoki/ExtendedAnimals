@@ -1004,7 +1004,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
         registerAnimalAttributes();
-        return commonInitialSpawnSetup(inWorld, livingdata, 60000, 30000, 80000);
+        return commonInitialSpawnSetup(inWorld, livingdata, 60000, 30000, 80000, spawnReason);
     }
 
 

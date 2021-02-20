@@ -586,7 +586,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
                 autosomalGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
             }
         } else {
-            if (wildType == 0) {
+            if (biome.getCategory() == Biome.Category.PLAINS) {
                 autosomalGenes[20] = (2);
             } else {
                 autosomalGenes[20] = (1);
@@ -595,7 +595,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
             autosomalGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            if (wildType == 0) {
+            if (biome.getCategory() == Biome.Category.PLAINS) {
                 autosomalGenes[21] = (2);
             } else {
                 autosomalGenes[21] = (1);
@@ -876,14 +876,24 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //Duplex comb or v comb [ wildtype, duplexV, duplexC ]   // reversed dominance, cold biome exclusive
-        if ((ThreadLocalRandom.current().nextInt(100) > WTC) && wildType == 3) {
-            autosomalGenes[50] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        //Duplex comb or v comb [ wildtype, duplexV, duplexC ]   // cold biome exclusive
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            int i = ThreadLocalRandom.current().nextInt(2) + 1;
+            if (i == 2) {
+                autosomalGenes[50] = wildType == 3 ? 2 : 3;
+            } else {
+                autosomalGenes[50] = 1;
+            }
         } else {
             autosomalGenes[50] = (1);
         }
-        if ((ThreadLocalRandom.current().nextInt(100) > WTC) && wildType == 3) {
-            autosomalGenes[51] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            int i = ThreadLocalRandom.current().nextInt(2) + 1;
+            if (i == 2) {
+                autosomalGenes[51] = wildType == 3 ? 2 : 3;
+            } else {
+                autosomalGenes[51] = 1;
+            }
         } else {
             autosomalGenes[51] = (1);
         }

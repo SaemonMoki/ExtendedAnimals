@@ -59,7 +59,7 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 
 public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
-    //avalible UUID spaces : [ S X X X X 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+    //avalible UUID spaces : [ S X X X X X 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
 //    private static final DataParameter<Boolean> SADDLED = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
 //    private static final DataParameter<Integer> BOOST_TIME = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
@@ -80,7 +80,15 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     };
 
     private static final String[] COW_TEXTURES_BLACK = new String[] {
-            "", "b_shoulders.png", "b_wildtype.png", "b_wildtype_darker1.png", "b_wildtype_dark.png", "b_solid.png", "b_brindle.png"
+            "", "b_shoulders.png", "b_agoutiwildtype.png", "b_wildtype_darker1.png", "b_wildtype_dark.png", "b_solid.png", "b_brindle0.png", "b_whitebelly.png", "b_fawn.png", "b_gloucester1.png", "b_mask.png"
+    };
+
+    private static final String[] COW_TEXTURES_EELSTRIPE = new String[] {
+            "", "r_eelstripe.png"
+    };
+
+    private static final String[] COW_TEXTURES_MEALY = new String[] {
+            "", "mealy0.png", "mealy1.png", "mealy2.png"
     };
 
     private static final String[] COW_TEXTURES_SKIN = new String[] {
@@ -615,7 +623,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getSharedGenes() != null) {
-            int[] genesForText = getSharedGenes().getAutosomalGenes();
+            int[] gene = getSharedGenes().getAutosomalGenes();
 
             int base = 0;
             int red = 1;
@@ -630,6 +638,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             int hooves = 0;
             int horn = 1;
             int coat = 0;
+            int eelstripe = 0;
+            int mealy = 0;
             char[] uuidArry;
 
             String mooshroomUUIDForTexture = this.dataManager.get(MOOSHROOM_UUID);
@@ -641,72 +651,96 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             }
 
             //dominant red
-            if (genesForText[6] == 1 || genesForText[7] == 1){
+            if (gene[6] == 1 || gene[7] == 1){
                 //make red instead maybe flip dominant red toggle?
 //                red = 1;
                 skin = 1;
             }else {
-                if (genesForText[0] == 1 || genesForText[1] == 1) {
+                if (gene[0] == 1 || gene[1] == 1) {
+                    //dominant black
                     black = 5;
-                } else if (genesForText[0] == 2 || genesForText[1] == 2) {
-//                    red = 2;
-
+                } else if (gene[0] == 4 || gene[1] == 4) {
+                    if ((gene[4] == 3 || gene[4] == 5) && (gene[5] == 3 || gene[5] == 5)) {
+                        black = 9;
+                    } else {
+                        black = 5;
+                    }
+                } else if (gene[0] == 3 && gene[1] == 3) {
+                    // red
+                    black = 0;
+                } else {
                     //Agouti
-                    if (genesForText[4] == 1 || genesForText[5] == 1) {
-                        if (genesForText[4] == 2 || genesForText[5] == 2) {
+                    if (gene[4] == 4 || gene[5] == 4) {
+                        //brindle
+                        black = 6;
+                    } else if (gene[4] == 1 || gene[5] == 1) {
+                        if (gene[4] == 2 || gene[5] == 2) {
                             //darker wildtype
                             //or other incomplete dominance
-                            black = 3;
+                            black = 4;
                         } else {
                             //complete dominance of black enhancer
                             black = 4;
                         }
-                    } else if (genesForText[4] == 2 || genesForText[5] == 2) {
+                    } else if (gene[4] == 2 || gene[5] == 2) {
                         //wildtype
                         black = 2;
-                    } else if (genesForText[4] == 3 || genesForText[5] == 3) {
-                        //white bellied fawn (i believe this is like silver)
-                        black = 2;
-//                        red = 0;
-                        base = 2;
+                    } else if (gene[4] == 3 || gene[5] == 3) {
+                        //white bellied fawn more blured markings?
+                        if (gene[0] == 5 || gene[1] == 5) {
+                            black = 10;
+                        } else {
+                            black = 7;
+                        }
+                        red = 2;
                         //TODO set up something here to dilute the colour of red to a cream or white
+                    } else if (gene[4] == 5 || gene[5] == 5){
+                        //fawn
+                        red = 3;
+                        if (gene[0] == 5 || gene[1] == 5) {
+                            black = 10;
+                        } else {
+                            black = 8;
+                        }
                     } else {
-                        //brindle (there might be a recessive black but no one seems to know lol)
-                        black = 6;
+                        //recessive black
+                        black = 5;
                     }
-
-                } else {
-//                    red = 1;
-                    skin = 1;
                 }
             }
 
             //mealy
-            if (genesForText[24] !=1 && genesForText[25] != 1) {
-                if (genesForText[24] == 2 || genesForText[25] == 2) {
-                    red = 2;
-                } else {
-                    red = 3;
+            if (gene[0] != 1 && gene[1] != 1) {
+                if (gene[24] != 1 && gene[25] != 1) {
+                    if (!this.isFemale() || gene[24] == 2 || gene[25] == 2) {
+                        mealy = 2;
+                        if (red < 3) {
+                            red++;
+                        }
+                    } else {
+                        mealy = 1;
+                        if (red < 3) {
+                            red++;
+                        }
+                    }
+                    if (gene[120] == 1 && gene[121] == 1) {
+                        eelstripe = 1;
+                    }
                 }
             }
 
             //standard dilution
-            if (genesForText[2] == 2 || genesForText[3] == 2){
-                if (genesForText[2] == 2 && genesForText[3] == 2){
+            if (gene[2] == 2 || gene[3] == 2){
+                if (gene[2] == 2 && gene[3] == 2){
                     //full dilute
                     skin = 2;
-                }else{
-                    //semi dilute
-                    if (black != 0 && black <= 3) {
-                        black--;
-                    }
                 }
             } //not dilute
 
             //roan
-            if (genesForText[8] == 2 || genesForText[9] == 2){
+            if (gene[8] == 2 || gene[9] == 2){
                 //is roan
-                if (genesForText[8] == 2 && genesForText[9] == 2) {
+                if (gene[8] == 2 && gene[9] == 2) {
                     //white roan
                     roan = 2;
 //                if ( uuidArry[0]-48 == 0){
@@ -718,8 +752,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             }
 
             ///speckled
-            if (genesForText[14] == 1 || genesForText[15] == 1){
-                if (genesForText[14] == 1 && genesForText[15] == 1){
+            if (gene[14] == 1 || gene[15] == 1){
+                if (gene[14] == 1 && gene[15] == 1){
                     speckled = 2;
                     //pointed white
                 }else{
@@ -729,36 +763,36 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             } //not speckled
 
             //colour sided
-            if (genesForText[20] == 1 || genesForText[21] == 1){
+            if (gene[20] == 1 || gene[21] == 1){
                 //coloursided
                 coloursided = 1;
             }
 
-            if (genesForText[16] == 1 || genesForText[17] == 1){
-                if (genesForText[16] == 2 || genesForText[17] == 2){
+            if (gene[16] == 1 || gene[17] == 1){
+                if (gene[16] == 2 || gene[17] == 2){
                     //white face with border spots(Pinzgauer)
                     whiteface = 2;
                 }else{
                     //whiteface
                     whiteface = 1;
                 }
-            }else if (genesForText[16] == 2 || genesForText[17] == 2){
+            }else if (gene[16] == 2 || gene[17] == 2){
                 //border spots (Pinzgauer) this genes might be incomplete dominant with wildtype but I dont see it
                     whiteface = 3;
-            }else if (genesForText[16] == 4 && genesForText[17] == 4){
+            }else if (gene[16] == 4 && gene[17] == 4){
                 //piebald
                     whiteface = 4;
 
             }
 
             //TODO figure out how these work when heterozygous
-            if (genesForText[18] == 1 || genesForText[19] == 1){
+            if (gene[18] == 1 || gene[19] == 1){
                 //belted
                 belted = 1;
-            }else if (genesForText[18] == 2 || genesForText[19] == 2){
+            }else if (gene[18] == 2 || gene[19] == 2){
                 //blaze
                 belted = 17;
-            }else if (genesForText[18] == 3 || genesForText[19] == 3){
+            }else if (gene[18] == 3 || gene[19] == 3){
                 if (whiteface != 0 || coloursided != 0) {
                     if (black == 4 || black == 5 || black == 6 || black == 10 || black == 11 || black == 12){
                         //brockling
@@ -869,18 +903,18 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             }
 
             //these alter texture to fit model changes
-            if(genesForText[26] == 1 || genesForText[27] == 1) {
+            if(gene[26] == 1 || gene[27] == 1) {
                 hooves = 1;
             }
 
-            if (genesForText[48] == 1 || genesForText[49] == 1){
+            if (gene[48] == 1 || gene[49] == 1){
                 coat = 1;
             }else{
-                if (genesForText[50] == 2 && genesForText[51] == 2) {
+                if (gene[50] == 2 && gene[51] == 2) {
                     coat = 2;
-                } else if (genesForText[52] == 2 && genesForText[53] == 2) {
+                } else if (gene[52] == 2 && gene[53] == 2) {
                     coat = 2;
-                }else if ((genesForText[50] == 2 || genesForText[51] == 2) && (genesForText[52] == 2 || genesForText[53] == 2)){
+                }else if ((gene[50] == 2 || gene[51] == 2) && (gene[52] == 2 || gene[53] == 2)){
                     coat = 2;
                 }
             }
@@ -892,6 +926,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             addTextureToAnimal(COW_TEXTURES_UDDER, skin, null);
             addTextureToAnimal(COW_TEXTURES_RED, red, r -> r != 0);
             addTextureToAnimal(COW_TEXTURES_BLACK, black, b -> b != 0);
+            addTextureToAnimal(COW_TEXTURES_MEALY, mealy, m -> m != 0);
+            addTextureToAnimal(COW_TEXTURES_EELSTRIPE, eelstripe, e -> e != 0);
             addTextureToAnimal(COW_TEXTURES_SKIN, skin, null);
             addTextureToAnimal(COW_TEXTURES_WHITEFACE, whiteface, w -> w != 0);
             addTextureToAnimal(COW_TEXTURES_WHITEFACEHEAD, whitefacehead, w -> w >= 4);
@@ -916,8 +952,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
             Genes genes = getSharedGenes();
             if (genes != null) {
-                int[] genesForText = genes.getAutosomalGenes();
-                String extention = "wildtype";
+                int[] gene = genes.getAutosomalGenes();
 
                 float blackHue = 0.0F;
                 float blackSaturation = 0.05F;
@@ -927,84 +962,155 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 float redSaturation = 0.57F;
                 float redBrightness = 0.55F;
 
-                if (genesForText[0] == 1 || genesForText[1] == 1) {
-                    //black cow
-                    redHue = blackHue;
-                    redSaturation = blackSaturation;
-                    redBrightness = blackBrightness;
-                    extention = "black";
-                } else if (genesForText[0] != 2 && genesForText[1] != 2) {
-                    if (genesForText[0] == 3 || genesForText[1] == 3) {
-                        if (genesForText[0] != 4 && genesForText[1] != 4) {
-                            //red cow as in red angus, red hereford
-                            blackHue = Colouration.mixColourComponent(redHue, 0.0F, 0.5F);
-                            blackSaturation = Colouration.mixColourComponent(redSaturation, 1.0F, 0.5F);
-                            blackBrightness = Colouration.mixColourComponent(redBrightness, blackBrightness, 0.75F);
-                            extention = "red";
-                        } //else red and black wildtype colouration
-                    } else if (genesForText[0] == 4 || genesForText[1] == 4) {
-                        //cow is grey as in brahman, guzerat, and probably hungarian grey
-                        redHue = 0.1F;
-                        redSaturation = 0.075F;
-                        redBrightness = 0.9F;
-//                    if (genesForText[0] == 4 && genesForText[1] == 4) {
-//                        //cow is indus white
-//                        blackSaturation = redSaturation;
-//                        blackBrightness = mixColourComponent(redBrightness, blackBrightness, 0.25F);
-//                        //TODO homozygous indus white needs to restrict the spread of black pigment to tips.
-//                    }
-                        //else its "blue" possibly carrot top..
-                        //TODO do something about carrot top
-                    } else if (genesForText[0] == 5 && genesForText[1] == 5) {
-                        //red cow as in red brahman and red gyr, indistinguishable from taros red
-                        blackHue = Colouration.mixColourComponent(redHue, 0.0F, 0.5F);
-                        blackSaturation = Colouration.mixColourComponent(redSaturation, 1.0F, 0.5F);
-                        blackBrightness = Colouration.mixColourComponent(redBrightness, blackBrightness, 0.75F);
-                        extention = "red";
-                    }
-                } //else red and black wildtype colouration
-
-                if (genesForText[120] == 2 || genesForText[121] == 2) {
-                    //indus dilution
+                if (gene[0] == 3 && gene[1] == 3) {
+                    //cow is red
                     blackHue = redHue;
-                    blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
-                    redHue = redHue + 0.01F;
-                    redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.48F);
-                    redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.55F);
-                    blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.25F);
+                    blackSaturation = redSaturation;
+                    blackBrightness = (redBrightness + blackBrightness) * 0.5F;
                 }
 
-                if (genesForText[2] == 2 && genesForText[3] == 2) {
-                    //typical bos taros dilution in murray grey and highland cattle
+                for (int i = 130; i < 150; i++) {
+                    if (gene[i] == 2) {
+                        redHue = redHue + ((0.1F - redHue) * 0.05F);
+                        redBrightness = redBrightness + 0.01F;
+                    }
+                }
 
-                } else if (genesForText[2] == 2 || genesForText[3] == 2) {
-                    //typical bos taros dilution in murray grey and highland cattle
-                    if (extention.equals("black")) {
-                        redHue = Colouration.mixColourComponent(redHue, 0.1F, 0.75F);
-                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
-                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
-                        blackHue = Colouration.mixColourComponent(blackHue, redHue, 0.5F);
-                        blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
-                        blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.45F);
-                    } else if (!extention.equals("red")) {
-                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
-                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
-                        blackHue = redHue;
-                        redHue = Colouration.mixColourComponent(redHue, 0.1F, 0.75F);
-                        blackSaturation = redSaturation;
-                        blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.25F);
+                for (int i = 150; i < 170; i++) {
+                    if (gene[i] == 2) {
+                        redHue = redHue - 0.00225F;
+                        if (redHue <= 0.0F) {
+                            redHue = 1.0F + redHue;
+                        }
+                        redSaturation = redSaturation + 0.00175F;
+                        redBrightness = redBrightness - 0.0155F;
+
+                        blackHue = blackHue - 0.00225F;
+                        if (blackHue <= 0.0F) {
+                            blackHue = 1.0F + blackHue;
+                        }
+                        blackHue = blackHue + 0.002F;
+                    }
+                }
+
+                float shadeIntensity = 0.5F;
+                for (int i = 170; i < 185; i++) {
+                    if (gene[i] == 2) {
+                        redBrightness = redBrightness + 0.005F;
+                        shadeIntensity = shadeIntensity - 0.005F;
+                    }
+                }
+
+                for (int i = 185; i < 200; i++) {
+                    if (gene[i] == 2) {
+                        redBrightness = redBrightness - 0.005F;
+                        shadeIntensity = shadeIntensity + 0.005F;
+                    }
+                }
+
+                for (int i = 200; i < 225; i++) {
+                    if (gene[i] == 2) {
+                        shadeIntensity = shadeIntensity - 0.015F;
+                    }
+                }
+
+                for (int i = 225; i < 250; i++) {
+                    if (gene[i] == 2) {
+                        shadeIntensity = shadeIntensity + 0.02F;
+                    }
+                }
+
+                /**
+                 *  Dun - Mostly effects red pigment. Looks like what I would call silver. Responsible for grey brahmans, guzerat, and hungarian grey.
+                 */
+                if (gene[128] == 2 || gene[129] == 2) {
+                    if (gene[128] == 2 && gene[129] == 2) {
+                        //homo dun
+                        redSaturation = 0.0F;
+                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.9F);
+                        blackSaturation = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.2F);
+                        blackBrightness = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.05F);
                     } else {
+                        //het dun
+                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.1F);
+                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.45F);
+                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.35F);
+                    }
+                }
+
+                /**
+                 *  Dexter Dun - chocolate
+                 */
+                if (gene[10] == 2 && gene[11] == 2) {
+                    blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.3F);
+                    blackSaturation = blackSaturation + ((1.0F - blackSaturation) * 0.45F);
+                    blackBrightness = blackBrightness + ((1.0F - blackBrightness) * 0.25F);
+                }
+
+                /**
+                 *  Dilution. What you usually see in highlands, murrey grey, simmental and other such dun/yellow/grey cattle
+                 */
+                if (gene[2] == 2 || gene[3] == 2) {
+                    // simmental or highland dilution
+                    if (gene[2] == 2 && gene[3] == 2) {
+                        //homo highland dun
+                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.85F);
+                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.9F);
+                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.6F);
+                        blackHue = Colouration.mixHueComponent(redHue, 0.1F, 0.9F);
+                        blackSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.9F);
+                        blackBrightness = Colouration.mixColourComponent(redBrightness * blackBrightness, 1.0F, 0.6F);
+                    } else if (gene[2] == 1 || gene[3] == 1){
+                        //het dun
+                        if (gene[0] == 1 || gene[1] == 1) {
+                            redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.75F);
+                            redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
+                            redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
+                            blackHue = Colouration.mixHueComponent(blackHue, redHue, 0.5F);
+                            blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
+                            blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.45F);
+                        } else if (gene[0] == 3 || gene[1] == 3) {
+                            redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
+                            redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
+                            blackHue = redHue;
+                            redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.75F);
+                            blackSaturation = redSaturation;
+                            blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.25F);
+                        } else {
 //                    blackHue = mixColourComponent(blackHue, redHue, 0.5F);
 //                    blackSaturation = mixColourComponent(blackSaturation, redSaturation, 0.5F);
-                        redHue = Colouration.mixColourComponent(redHue, 0.1F, 0.80F);
-                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
-                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
-                        blackHue = Colouration.mixColourComponent(blackHue, redHue, 0.6F);
-                        blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
-                        blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.4F);
+                            redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.8F);
+                            redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
+                            redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
+                            blackHue = Colouration.mixHueComponent(blackHue, redHue, 0.6F);
+                            blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
+                            blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.4F);
+                        }
+                    } else {
+                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.85F);
+                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.85F);
+                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.84F);
+//                        blackSaturation = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.1F);
+                        blackBrightness = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.75F);
+                    }
+                } else if (gene[2] == 3 || gene[3] == 3) {
+                    //charolais dilution very harsh
+                    if (gene[2] == 3 && gene[3] == 3) {
+                        redHue = 0.1F;
+                        redSaturation = 0.0F;
+                        redBrightness = 1.0F;
+                        blackHue = 0.1F;
+                        blackSaturation = 0.0F;
+                        blackBrightness = 1.0F;
+                    } else {
+                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.80F);
+                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.25F);
+                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.8F);
+                        blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.80F);
+                        blackSaturation = Colouration.mixColourComponent(blackBrightness, 0.0F, 0.2F);
+                        blackBrightness = Colouration.mixColourComponent(blackBrightness, 1.0F, 0.8F);
                     }
                 }
-
 
                 //puts final values into array for processing
                 float[] melanin = {blackHue, blackSaturation, blackBrightness};
@@ -1024,8 +1130,17 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     }
                 }
 
-                float random = this.rand.nextFloat() * 0.1F;
-                this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], this.isFemale()? 0.4F + random : random + 0.6F));
+                if (!this.isFemale()) {
+                    shadeIntensity = 0.5F * (shadeIntensity + 1.0F);
+                }
+
+                if (shadeIntensity <= 0.0F) {
+                    shadeIntensity = 0.00001F;
+                } else if (shadeIntensity >= 1.0F) {
+                    shadeIntensity = 0.99999F;
+                }
+
+                this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], shadeIntensity));
                 this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
 
             }
@@ -1283,7 +1398,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 64800, 108000);
+        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 64800, 108000, spawnReason);
     }
 
     @Override

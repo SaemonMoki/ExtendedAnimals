@@ -130,7 +130,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     private final List<EnhancedRendererModelNew> leftHorns = new ArrayList<>();
     private final List<EnhancedRendererModelNew> rightHorns = new ArrayList<>();
-    private final List<EnhancedRendererModelNew> saddles = new ArrayList<>();
 
     private Integer currentCow = null;
 

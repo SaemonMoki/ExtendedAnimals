@@ -825,6 +825,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             }
         }
 
+        // 0.8F - 1F
         this.setAnimalSize(size);
     }
 
@@ -865,7 +866,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata =  commonInitialSpawnSetup(inWorld, livingdata, 120000, 20000, 500000);
+        livingdata =  commonInitialSpawnSetup(inWorld, livingdata, 120000, 20000, 500000, spawnReason);
 
         setStrengthAndInventory();
         setInitialCoat();

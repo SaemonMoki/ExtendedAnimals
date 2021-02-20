@@ -117,6 +117,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
             this.remove();
             EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
             enhancedcow.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), (this.rotationYaw), this.rotationPitch);
+            enhancedcow.initializeHealth(this, 0.0F);
             enhancedcow.setHealth(this.getHealth());
             enhancedcow.renderYawOffset = this.renderYawOffset;
 
@@ -127,6 +128,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
             enhancedcow.setEntityStatus(this.getEntityStatus());
             enhancedcow.configureAI();
             enhancedcow.setMooshroomUUID(this.getCachedUniqueIdString());
+            enhancedcow.setBirthTime(this.getBirthTime());
 
             if (this.hasCustomName()) {
                 enhancedcow.setCustomName(this.getCustomName());
@@ -143,21 +145,47 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
         }
         return ret;
     }
-    
+
     @OnlyIn(Dist.CLIENT)
     @Override
     public Colouration getRgb() {
-        if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
-            this.colouration = super.getRgb();
+        boolean flag = this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1;
+        this.colouration = super.getRgb();
 
+        if(this.colouration == null) {
+            return null;
+        }
+
+        if (flag) {
             float[] melanin = Colouration.getHSBFromABGR(this.colouration.getMelaninColour());
             float[] pheomelanin = Colouration.getHSBFromABGR(this.colouration.getPheomelaninColour());
 
-                melanin[0] = Colouration.mixColourComponent(melanin[0], 0.22F, 0.5F);
-                melanin[1] = 1.0F;
+            if (melanin[0] > 0.1F) {
+                melanin[0] = melanin[0] - 1.0F;
+            }
+                melanin[0] = 0.4F - melanin[0];
+            melanin[1] = Colouration.mixColourComponent(melanin[1], 0.75F, 0.8F);
+            melanin[2] = Colouration.mixColourComponent(melanin[2], pheomelanin[2], 0.25F);
 
-                pheomelanin[0] = Colouration.mixColourComponent(pheomelanin[0], 0.20F, 0.5F);
-                pheomelanin[1] = pheomelanin[1] + 0.25F;
+            pheomelanin[0] = pheomelanin[0] + 0.1F;
+            pheomelanin[2] = Colouration.mixColourComponent(pheomelanin[2]*pheomelanin[1], 1.0F, 0.75F);
+            pheomelanin[1] = Colouration.mixColourComponent(pheomelanin[1], 1.0F, 0.75F);
+
+            if (melanin[0] > 1.0F) {
+                melanin[0] = 1.0F - melanin[0];
+            } else if (melanin[0] < 0.0F) {
+                melanin[0] = melanin[0] + 1.0F;
+            }
+            if (melanin[0] < 0.15F) {
+                melanin[0] = 0.15F;
+            }
+
+            if (pheomelanin[0] > 1.0F) {
+                pheomelanin[0] = pheomelanin[0] - 1.0F;
+            }
+            if (pheomelanin[0] > 0.1375F) {
+                pheomelanin[0] = 0.1375F;
+            }
 
             //checks that numbers are within the valid range
             for (int i = 0; i <= 2; i++) {

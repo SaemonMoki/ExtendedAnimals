@@ -30,6 +30,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.Goal;
@@ -1706,7 +1707,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
     }
 
-    protected ILivingEntityData commonInitialSpawnSetup(IWorld inWorld, @Nullable ILivingEntityData livingdata, int childAge, int ageMinimum, int ageMaximum) {
+    protected ILivingEntityData commonInitialSpawnSetup(IWorld inWorld, @Nullable ILivingEntityData livingdata, int childAge, int ageMinimum, int ageMaximum, SpawnReason spawnReason) {
         Genes spawnGenes;
 
         if (livingdata instanceof GroupData) {
@@ -1731,7 +1732,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
                 this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 100000) + childAge));
             }
 
-            canBePregnant = EanimodCommonConfig.COMMON.omnigenders.get() ? this.rand.nextInt(50) == 0 : this.isFemale() && this.rand.nextInt(25) == 0;
+            if (spawnReason.equals(SpawnReason.CHUNK_GENERATION)) {
+                canBePregnant = EanimodCommonConfig.COMMON.omnigenders.get() ? this.rand.nextInt(50) == 0 : this.isFemale() && this.rand.nextInt(25) == 0;
+            }
         }
 
         setInitialDefaults();

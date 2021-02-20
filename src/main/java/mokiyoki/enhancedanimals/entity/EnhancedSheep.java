@@ -75,7 +75,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     };
 
     private static final String[] SHEEP_TEXTURES_PATTERN = new String[] {
-            "", "c_solid_white.png", "c_badger_black.png", "c_badger_choc.png", "c_mouflonbadger_black.png", "c_mouflonbadger_choc.png", "c_mouflon_black.png", "c_mouflon_choc.png", "c_blue_black.png", "c_blue_choc.png", "c_solid_black.png", "c_solid_choc.png",
+            "", "c_solid_white.png", "c_badger_black.png", "c_badger_choc.png", "c_mouflonbadger_black.png", "c_mouflonbadger_choc.png", "b_mouflon_black.png", "c_mouflon_choc.png", "c_blue_black.png", "c_blue_choc.png", "c_solid_black.png", "c_solid_choc.png",
                 "c_solid_white.png", "c_badger_black_red.png", "c_badger_choc_red.png", "c_mouflonbadger_black_red.png", "c_mouflonbadger_choc_red.png", "c_mouflon_black_red.png", "c_mouflon_choc_red.png", "c_blue_black_red.png", "c_blue_choc_red.png", "c_solid_black_red.png", "c_solid_choc_red.png"
     };
 
@@ -1038,6 +1038,28 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
+    public Colouration getRgb() {
+        boolean flag = this.colouration.getMelaninColour() == -1;
+        this.colouration = super.getRgb();
+
+        if(this.colouration == null) {
+            return null;
+        }
+
+        if (flag) {
+            float[] melanin = Colouration.getHSBFromABGR(this.colouration.getMelaninColour());
+
+            melanin[0] = 0.02F;
+            melanin[1] = 0.5F;
+            melanin[2] = 0.02F;
+
+            this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], 1F));
+        }
+
+        return this.colouration;
+    }
+
+    @Override
     protected void setMaxBagSize(){
         float maxBagSize = 1.0F;
 
@@ -1236,7 +1258,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 60000, 80000);
+        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 60000, 80000, spawnReason);
     }
 
     @Override

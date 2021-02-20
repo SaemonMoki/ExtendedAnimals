@@ -1,7 +1,6 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
-import mokiyoki.enhancedanimals.blocks.PostBlock;
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
@@ -22,16 +21,23 @@ import net.minecraft.block.HayBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.NonTamedTargetGoal;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
 import net.minecraft.entity.merchant.villager.WanderingTraderEntity;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.passive.FoxEntity;
 import net.minecraft.entity.passive.MooshroomEntity;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.entity.passive.SheepEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.passive.horse.LlamaEntity;
 import net.minecraft.entity.passive.horse.TraderLlamaEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -65,10 +71,12 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Predicate;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOBLOOM;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOSHROOM;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
@@ -81,15 +89,31 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEE
 public class EventSubscriber {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void replaceVanillaMobs(EntityJoinWorldEvent event) {
+    public void editMobs(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
 
-            if (entity instanceof VillagerEntity) {
+        if (entity instanceof VillagerEntity) {
             Set<String> tags = entity.getTags();
             if (!tags.contains("eanimodTradeless")) {
                 if (!entity.getTags().contains("eanimodTrader")) {
                     entity.addTag("eanimodTrader");
                 }
+            }
+        } else if (entity instanceof WolfEntity) {
+            final Predicate<LivingEntity> TARGETS = (targetEntity) -> {
+                return targetEntity instanceof EnhancedSheep || targetEntity instanceof EnhancedRabbit || ((targetEntity instanceof EnhancedPig || targetEntity instanceof EnhancedCow) && targetEntity.isChild()) ;
+            };
+            ((WolfEntity) entity).targetSelector.addGoal(3, new AvoidEntityGoal<>((WolfEntity) entity, EnhancedLlama.class, 24.0F, 1.5D, 1.5D));
+            ((WolfEntity) entity).targetSelector.addGoal(5, new NonTamedTargetGoal<>((WolfEntity) entity, AnimalEntity.class, false, TARGETS));
+        } else if (entity instanceof FoxEntity) {
+            if (((FoxEntity) entity).getVariantType() == FoxEntity.Type.RED) {
+                ((FoxEntity) entity).targetSelector.addGoal(4, new NearestAttackableTargetGoal<>((FoxEntity) entity, AnimalEntity.class, 10, false, false, (targetEntity) -> {
+                    return targetEntity instanceof EnhancedChicken || targetEntity instanceof EnhancedRabbit;
+                }));
+            } else {
+                ((FoxEntity) entity).targetSelector.addGoal(6, new NearestAttackableTargetGoal<>((FoxEntity) entity, AnimalEntity.class, 10, false, false, (targetEntity) -> {
+                    return targetEntity instanceof EnhancedChicken || targetEntity instanceof EnhancedRabbit;
+                }));
             }
         }
     }
@@ -256,25 +280,39 @@ public class EventSubscriber {
                 }
             } else if (entity instanceof CowEntity) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaCows.get() && EanimodCommonConfig.COMMON.spawnGeneticCows.get()) {
-                    EnhancedCow enhancedCow = ENHANCED_COW.spawn((ServerWorld) entity.getEntityWorld(), null, null, null, entity.getPosition(), SpawnReason.NATURAL, false, false);
-                    if (enhancedCow != null) {
-                        if (entity.hasCustomName()) {
-                            enhancedCow.setCustomName(entity.getCustomName());
-                        }
-                        if (((CowEntity) entity).isChild()) {
-                            int age = ((CowEntity) entity).getGrowingAge();
-                            enhancedCow.setGrowingAge(age);
-                            enhancedCow.setBirthTime(entity.getEntityWorld(), (-age/24000)*84000);
+                    EnhancedCow enhancedCow;
+                    boolean flag = true;
+                    if (entity.getClass().getName().toLowerCase().contains("moobloom")) {
+                        if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get()) {
+                            enhancedCow = ENHANCED_MOOBLOOM.spawn((ServerWorld) entity.getEntityWorld(), null, null, null, entity.getPosition(), SpawnReason.NATURAL, false, false);
                         } else {
-                            enhancedCow.setGrowingAge(0);
-                            enhancedCow.setBirthTime(entity.getEntityWorld(), -500000);
+                            enhancedCow = null;
+                            flag = false;
                         }
-                        if (((CowEntity) entity).getLeashed()) {
-                            enhancedCow.setLeashHolder(((CowEntity) entity).getLeashHolder(), true);
-                        }
+                    } else {
+                        enhancedCow = ENHANCED_COW.spawn((ServerWorld) entity.getEntityWorld(), null, null, null, entity.getPosition(), SpawnReason.NATURAL, false, false);
                     }
-                    entity.remove();
-                    event.setCanceled(true);
+
+                    if (flag) {
+                        if (enhancedCow != null) {
+                            if (entity.hasCustomName()) {
+                                enhancedCow.setCustomName(entity.getCustomName());
+                            }
+                            if (((CowEntity) entity).isChild()) {
+                                int age = ((CowEntity) entity).getGrowingAge();
+                                enhancedCow.setGrowingAge(age);
+                                enhancedCow.setBirthTime(entity.getEntityWorld(), (-age / 24000) * 84000);
+                            } else {
+                                enhancedCow.setGrowingAge(0);
+                                enhancedCow.setBirthTime(entity.getEntityWorld(), -500000);
+                            }
+                            if (((CowEntity) entity).getLeashed()) {
+                                enhancedCow.setLeashHolder(((CowEntity) entity).getLeashHolder(), true);
+                            }
+                        }
+                        entity.remove();
+                        event.setCanceled(true);
+                    }
                 }
             } else if (entity instanceof LlamaEntity) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get() && EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
@@ -432,7 +470,6 @@ public class EventSubscriber {
                 if (ThreadLocalRandom.current().nextInt(5) == 0) {
                     int r = ThreadLocalRandom.current().nextInt(2) + 1;
                     switch (ThreadLocalRandom.current().nextInt(6)) {
-                        default:
                         case 0:
                             if (EanimodCommonConfig.COMMON.spawnGeneticCows.get()) {
                                 for (int i = 0; i < r; i++) {
@@ -515,6 +552,7 @@ public class EventSubscriber {
                             }
                             break;
                         case 5:
+                        default:
                             if (EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
                                 BlockPos blockPos = nearbySpawn(((ServerWorld) world), new BlockPos(entity.getPosition()));
                                 EnhancedLlama enhancedLlama = ENHANCED_LLAMA.spawn((ServerWorld) world, null, null, null, blockPos, SpawnReason.EVENT, false, false);

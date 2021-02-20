@@ -271,6 +271,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             this.remove();
             EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
             enhancedcow.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), (this.rotationYaw), this.rotationPitch);
+            enhancedcow.initializeHealth(this, 0.0F);
             enhancedcow.setHealth(this.getHealth());
             enhancedcow.renderYawOffset = this.renderYawOffset;
 
@@ -281,6 +282,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             enhancedcow.setEntityStatus(this.getEntityStatus());
             enhancedcow.configureAI();
             enhancedcow.setMooshroomUUID(this.getCachedUniqueIdString());
+            enhancedcow.setBirthTime(this.getBirthTime());
 
             if (this.hasCustomName()) {
                 enhancedcow.setCustomName(this.getCustomName());

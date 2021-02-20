@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:acacia_fence"
+    }
+  ],
+  "result":
+  {
+    "item": "eanimod:post_acacia",
+    "count": 3
+  }
+}

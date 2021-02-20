@@ -1319,7 +1319,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     @Nullable
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 30000, 80000);
+        livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 30000, 80000, spawnReason);
 
         setInitialCoat();
 

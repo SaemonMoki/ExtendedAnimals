@@ -18,6 +18,7 @@ import java.util.List;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOBLOOM;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOSHROOM;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
@@ -76,7 +77,12 @@ public class SpawnRegistry {
             //add mooshroom
             if (entry.type == EntityType.MOOSHROOM) {
                 if (EanimodCommonConfig.COMMON.spawnGeneticMooshroom.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_MOOSHROOM, config.spawnWeightMooshrooms.get(), config.minimumPigGroup.get(), config.maximumPigGroup.get()));
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_MOOSHROOM, config.spawnWeightMooshrooms.get(), config.minimumMooshroomGroup.get(), config.maximumMooshroomGroup.get()));
+                }
+            }
+            if (entry.type.toString().contains("moobloom")) {
+                if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get()) {
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_MOOBLOOM, entry.minCount, entry.maxCount, entry.itemWeight));
                 }
             }
         }
@@ -145,6 +151,12 @@ public class SpawnRegistry {
             //remove vanilla mooshroom
             if (entry.type == EntityType.MOOSHROOM) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
+                    removeSpawns.add(entry);
+                }
+            }
+            //remove modded mooblooms?
+            if (entry.type.toString().contains("moobloom")) {
+                if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get()) {
                     removeSpawns.add(entry);
                 }
             }

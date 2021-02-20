@@ -101,6 +101,9 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     }
 
     protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
+        /**
+         *  slotIn.slotNumber = slotId
+         */
         if (type == ClickType.QUICK_MOVE && slotIn != null && slotIn.getHasStack()) {
             Item itemIn = slotIn.getStack().getItem();
             Item chestInSlot = this.container.getEnhancedAnimalInventory().getStackInSlot(0).getItem();
@@ -119,40 +122,42 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     }
 
     public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
+        if (this.container.enhancedAnimal.canHaveChest()) {
+            int i = (this.width - this.xSize) / 2;
+            int j = (this.height - this.ySize) / 2;
 
-        if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
-            double d0 = p_mouseClicked_1_ - (double) (i + 140);
-            double d1 = p_mouseClicked_3_ - (double) (j - 28);
-            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestTabEnabled) {
-                this.chestTabEnabled = false;
-                toggleSlots();
-                return true;
-            }
+            if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
+                double d0 = p_mouseClicked_1_ - (double) (i + 140);
+                double d1 = p_mouseClicked_3_ - (double) (j - 28);
+                if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestTabEnabled) {
+                    this.chestTabEnabled = false;
+                    toggleSlots();
+                    return true;
+                }
 
-             d0 = p_mouseClicked_1_ - (double) (i + 111);
-             d1 = p_mouseClicked_3_ - (double) (j - 28);
-            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestTabEnabled) {
-                this.chestTabEnabled = true;
-                toggleSlots();
-                return true;
-            }
-        } else {
-            double d0 = p_mouseClicked_1_ - (double) (i + 176);
-            double d1 = p_mouseClicked_3_ - (double) (j + 42);
-            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestTabEnabled) {
-                this.chestTabEnabled = false;
-                toggleSlots();
-                return true;
-            }
+                d0 = p_mouseClicked_1_ - (double) (i + 111);
+                d1 = p_mouseClicked_3_ - (double) (j - 28);
+                if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestTabEnabled) {
+                    this.chestTabEnabled = true;
+                    toggleSlots();
+                    return true;
+                }
+            } else {
+                double d0 = p_mouseClicked_1_ - (double) (i + 176);
+                double d1 = p_mouseClicked_3_ - (double) (j + 42);
+                if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && chestTabEnabled) {
+                    this.chestTabEnabled = false;
+                    toggleSlots();
+                    return true;
+                }
 
-            d0 = p_mouseClicked_1_ - (double) (i + 176);
-            d1 = p_mouseClicked_3_ - (double) (j + 17);
-            if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestTabEnabled) {
-                this.chestTabEnabled = true;
-                toggleSlots();
-                return true;
+                d0 = p_mouseClicked_1_ - (double) (i + 176);
+                d1 = p_mouseClicked_3_ - (double) (j + 17);
+                if (d0 >= 0.0D && d1 >= 0.0D && d0 < 27.0D && d1 < 27.0D && !chestTabEnabled) {
+                    this.chestTabEnabled = true;
+                    toggleSlots();
+                    return true;
+                }
             }
         }
 

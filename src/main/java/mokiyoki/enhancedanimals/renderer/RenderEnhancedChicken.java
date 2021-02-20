@@ -27,7 +27,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
 
     public RenderEnhancedChicken(EntityRendererManager render)
     {
-        super(render, new ModelEnhancedChicken<>(0.0F, false), 0.5F);
+        super(render, new ModelEnhancedChicken<>(), 0.5F);
 //        this.addLayer(new SilkieChickenLayer(this));
     }
 
@@ -38,6 +38,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
         entity.getEntityWorld().getProfiler().startSection("ChickenRenderer");
         String s = entity.getChickenTexture();
         Colouration colourRGB = entity.getRgb();
+        boolean silkie = entity.getSharedGenes().testGenes(106, 1, 2);
 
         if (s == null || s.isEmpty() || colourRGB == null) {
             return ERROR_TEXTURE_LOCATION;
@@ -57,7 +58,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
             try {
                 resourcelocation = new ResourceLocation(s);
 
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, textures, null, entity.colouration));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(silkie ? ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION : ENHANCED_CHICKEN_TEXTURE_LOCATION, textures, null, entity.colouration));
 //                if (genes[106] == 1 || genes[107] == 1) {
 //                    Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, textures, null));
 //                } else {

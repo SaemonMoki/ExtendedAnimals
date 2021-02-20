@@ -50,6 +50,7 @@ public class EanimodCommonConfig implements IEanimodConfig{
         public final ForgeConfigSpec.BooleanValue spawnVanillaMooshroom;
         public final ForgeConfigSpec.BooleanValue spawnGeneticCows;
         public final ForgeConfigSpec.BooleanValue spawnGeneticMooshroom;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticMoobloom;
         public final ForgeConfigSpec.IntValue gestationDaysCow;
         public final ForgeConfigSpec.IntValue spawnWeightCows;
         public final ForgeConfigSpec.IntValue minimumCowGroup;
@@ -134,6 +135,8 @@ public class EanimodCommonConfig implements IEanimodConfig{
                 .define("Allow vanilla minecraft Mooshrooms to spawn/exist:", false);
             spawnGeneticMooshroom = builder
                 .define("Allow Genetic Mooshrooms to continue to spawn/exist:", true);
+            spawnGeneticMoobloom = builder
+                    .define("Allow Genetic Mooblooms to replace Mooblooms added by other mods", false);
             spawnWeightCows = builder
                     .defineInRange("How highly cow spawning is weighted, larger numbers spawn more. Default is 6", 8, 1, 20);
             minimumCowGroup = builder

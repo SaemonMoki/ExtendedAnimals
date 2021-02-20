@@ -139,7 +139,32 @@ public class Colouration {
     }
 
     public static float mixColourComponent(float colour1, float colour2, float percentage) {
-        colour1 = (colour1 * (1.0F - percentage)) + (colour2 * percentage);
+        colour1 = (colour1 * (1F-percentage)) + (colour2*percentage);
+        return colour1;
+    }
+
+    public static float mixHueComponent(float colour1, float colour2, float percentage) {
+        if (colour2 > colour1) {
+            if (colour2 > 0.1F) {
+                colour1 = (colour1 * (1F - percentage)) + ((colour2 - 1F) * percentage);
+            } else {
+                colour1 = (colour1 * (1F - percentage)) + (colour2 * percentage);
+            }
+        } else {
+            if (colour1 > 0.1F && !(colour2 > 0.1F)) {
+                colour1 = ((colour1 - 1F) * (1F - percentage)) + (colour2 * percentage);
+            } else {
+                colour1 = (colour1 * (1F - percentage)) + (colour2 * percentage);
+            }
+        }
+
+        if (colour1 < 0.0F) {
+            colour1 = 1.0F + colour1;
+        } else if (colour1 > 1.0F) {
+            colour1 = colour1 - 1.0F;
+        }
+
+
         return colour1;
     }
 

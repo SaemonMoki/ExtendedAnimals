@@ -176,6 +176,7 @@ public class EnhancedAnimalContainer extends Container {
 
         this.addSlot(new EnhancedSlot(retrievedInventory, 0, 116, 36) {
             public boolean isItemValid(ItemStack stack) {
+                //TODO add option for item to be in forge:chests/wooden
                 return stack.getItem() == Items.CHEST;
             }
 

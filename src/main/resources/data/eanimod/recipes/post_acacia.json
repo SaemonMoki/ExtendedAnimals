@@ -1,23 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
-
   "pattern":
   [
-    " S ",
-    " S ",
-    " S "
+    "X X",
+    "X X"
   ],
-
   "key":
   {
-    "S":
+    "X":
     {
-      "item": "minecraft:acacia_slab"
+      "item": "minecraft:acacia_planks"
     }
   },
   "result":
   {
     "item": "eanimod:post_acacia",
-    "count": 3
+    "count": 8
   }
 }

@@ -376,11 +376,11 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.hornR9.setRotationPoint(0.0F, 0.0F, 0.0F);
         sheepRightHorns.add(hornR9);
 
-        this.earLeft = new EnhancedRendererModelNew(this, 50, 3);
+        this.earLeft = new EnhancedRendererModelNew(this, 57, 4);
         this.earLeft.addBox(0.0F, -2.0F, 0.0F, 3, 2, 1, 0.001F); //ear left
         this.earLeft.setRotationPoint(2.0F, 2.0F, -2.0F);
 
-        this.earRight = new EnhancedRendererModelNew(this, 50, 0);
+        this.earRight = new EnhancedRendererModelNew(this, 50, 4);
         this.earRight.addBox(-3.0F, -2.0F, 0.0F, 3, 2, 1, 0.001F); //ear right
         this.earRight.setRotationPoint(-2.0F, 2.0F, -2.0F);
 
@@ -489,15 +489,15 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.nippleL.setRotationPoint(-1.0F, 2.5F, 1.0F);
         this.nippleR.setRotationPoint(1.0F, 2.5F, 1.0F);
 
-        this.tailBase = new ModelRenderer(this, 50, 6);
+        this.tailBase = new ModelRenderer(this, 50, 0);
         this.tailBase.addBox(-1.0F, 0.0F, 0.0F, 2, 3, 1);
         this.tailBase.setRotationPoint(0.0F, 9.0F, 8.0F);
 
-        this.tailMiddle = new ModelRenderer(this, 56, 6);
+        this.tailMiddle = new ModelRenderer(this, 56, 0);
         this.tailMiddle.addBox(-0.5F, 0.0F, 0.0F, 1, 3, 1);
         this.tailMiddle.setRotationPoint(0.0F, 3.0F, 0.0F);
 
-        this.tailTip = new ModelRenderer(this, 60, 6);
+        this.tailTip = new ModelRenderer(this, 60, 0);
         this.tailTip.addBox(-0.5F, 0.0F, 0.0F, 1, 3, 1);
         this.tailTip.setRotationPoint(0.0F, 3.0F, 0.0F);
 

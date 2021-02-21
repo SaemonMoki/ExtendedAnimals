@@ -164,6 +164,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     protected final List<String> texturesIndexes = new ArrayList<>();
     protected String compiledTexture;
     protected final List<String> enhancedAnimalAlphaTextures = new ArrayList<>();
+    protected String compiledAlphaTexture;
     protected final Map<Equipment, List<String>> equipmentTextures = new HashMap<>();
     protected String compiledEquipmentTexture;
     public Colouration colouration = new Colouration();
@@ -1623,7 +1624,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             this.setAlphaTexturePaths();
         }
 
-        //todo this is only temporarity until we have alpha textures
+        //todo this is only temporary until we have alpha textures
         if (this.enhancedAnimalAlphaTextures.isEmpty()) {
             return null;
         }
@@ -1635,10 +1636,15 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         if (this.compiledTexture == null) {
             this.compiledTexture = this.texturesIndexes.stream().collect(Collectors.joining("",eanimal+"/",""));
         }
+
+        if (this.compiledAlphaTexture == null) {
+            this.compiledAlphaTexture = this.enhancedAnimalAlphaTextures.stream().collect(Collectors.joining("/"));
+        }
+
         if (this.compiledEquipmentTexture == null) {
             this.compiledEquipmentTexture = this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.joining("/"));
         }
-        return this.compiledTexture + compiledEquipmentTexture;
+        return this.compiledTexture + compiledAlphaTexture + compiledEquipmentTexture;
     }
 
     protected void geneFixer() {

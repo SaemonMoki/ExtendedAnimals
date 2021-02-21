@@ -162,7 +162,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
         this.mouth = new EnhancedRendererModelNew(this, 25, 46);
         this.mouth.addBox(-1.5F, 1.0F, -10.0F, 3, 3, 7, 0.1F);
-        this.mouth.setTextureOffset(37, 46);
+        this.mouth.setTextureOffset(38, 46);
         this.mouth.addBox(-1.5F, 3.0F, -10.0F, 3, 1, 6, -0.1F);
         this.mouth.setRotationPoint(0.0F, 4.0F, -2.0F);
 

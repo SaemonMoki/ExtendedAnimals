@@ -684,7 +684,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                         }
                     } else if (gene[4] == 2 || gene[5] == 2) {
                         //wildtype
-                        black = 2;
+                        if (this.isFemale()) {
+                            black = 2;
+                        } else {
+                            black = 4;
+                        }
                     } else if (gene[4] == 3 || gene[5] == 3) {
                         //white bellied fawn more blured markings?
                         if (gene[0] == 5 || gene[1] == 5) {

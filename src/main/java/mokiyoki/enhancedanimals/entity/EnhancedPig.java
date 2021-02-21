@@ -933,15 +933,15 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     protected void setAlphaTexturePaths() {
         Genes genes = getSharedGenes();
         if (genes!=null) {
-            int[] genesForText = genes.getAutosomalGenes();
-            if (genesForText != null) {
+            int[] gene = genes.getAutosomalGenes();
+            if (gene != null) {
                 int coat = 0;
 
-                if (genesForText[36] != 1 && genesForText[37] != 1) {
-                    if ((genesForText[34] == 1 || genesForText[35] == 1) && (genesForText[34] != 3 && genesForText[35] != 3)) {
+                if (gene[36] != 1 && gene[37] != 1) {
+                    if ((gene[34] == 1 || gene[35] == 1) && (gene[34] != 3 && gene[35] != 3)) {
                         //furry
                         coat = 3;
-                    } else if (genesForText[34] == 2 || genesForText[35] == 2) {
+                    } else if (gene[34] == 2 || gene[35] == 2) {
                         //normal
                         coat = 2;
                     } else {
@@ -949,7 +949,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                         coat = 1;
                     }
 
-                    if (genesForText[38] == 1 || genesForText[39] == 1) {
+                    if (gene[38] == 1 || gene[39] == 1) {
                         coat = coat + 1;
                     }
                 }

@@ -75,7 +75,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     };
 
     private static final String[] SHEEP_TEXTURES_PATTERN = new String[] {
-            "", "c_solid_white.png", "c_badger_black.png", "c_badger_choc.png", "c_mouflonbadger_black.png", "c_mouflonbadger_choc.png", "b_mouflon_black.png", "c_mouflon_choc.png", "c_blue_black.png", "c_blue_choc.png", "c_solid_black.png", "c_solid_choc.png",
+            "", "c_solid_white.png", "c_badger_black.png", "c_badger_choc.png", "c_mouflonbadger_black.png", "c_mouflonbadger_choc.png", "c_mouflon_black.png", "c_mouflon_choc.png", "c_blue_black.png", "c_blue_choc.png", "c_solid_black.png", "c_solid_choc.png",
                 "c_solid_white.png", "c_badger_black_red.png", "c_badger_choc_red.png", "c_mouflonbadger_black_red.png", "c_mouflonbadger_choc_red.png", "c_mouflon_black_red.png", "c_mouflon_choc_red.png", "c_blue_black_red.png", "c_blue_choc_red.png", "c_solid_black_red.png", "c_solid_choc_red.png"
     };
 
@@ -88,7 +88,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     };
 
     private static final String[] SHEEP_TEXTURES_PIGMENTEDHEAD = new String[] {
-            "", "c_afghan_pied.png", "c_turkish.png", "c_turkish_speckled.png", "c_pigmented_head.png"
+            "", "c_solid_white.png", "c_afghan_pied.png", "c_turkish.png", "c_turkish_speckled.png", "c_turkish_pigmented_head.png", "c_pigmented_head.png"
     };
 
     private static final String[] SHEEP_TEXTURES_TICKED = new String[] {
@@ -122,6 +122,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     private int maxCoatLength;
     private int currentCoatLength;
     private int timeForGrowth = 0;
+
+    private boolean resetTexture = true;
 
 //    protected boolean aiConfigured = false;
     private String motherUUID = "";
@@ -337,6 +339,10 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void lethalGenes() {
+        int[] genes = this.genetics.getAutosomalGenes();
+        if(genes[68] == 2 && genes[69] == 2) {
+            this.remove();
+        }
     }
 
     @Override
@@ -952,6 +958,13 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     public String getSheepTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
+            this.setAlphaTexturePaths();
+        } else if (this.resetTexture && !this.isChild()) {
+            this.resetTexture = false;
+            this.texturesIndexes.clear();
+            this.enhancedAnimalTextures.clear();
+            this.compiledTexture = null;
+            this.setTexturePaths();
         }
 
         return getCompiledTextures("enhanced_sheep");
@@ -961,12 +974,13 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getSharedGenes() != null) {
-            int[] genesForText = getSharedGenes().getAutosomalGenes();
+            int[] gene = getSharedGenes().getAutosomalGenes();
 
             int under = 0;
             int pattern = 0;
             int grey = 0;
             int spots = 0;
+            int pigmentedHead = 0;
             int skin = 0;
             int hooves = 0;
             int fur = 0;
@@ -974,31 +988,31 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             char[] uuidArry = getCachedUniqueIdString().toCharArray();
 
-            if (genesForText[4] == 1 || genesForText[5] ==1){
+            if (gene[4] == 1 || gene[5] ==1){
                 //black sheep
                 under = 1;
             }else {
-                if (genesForText[0] == 1 || genesForText[1] == 1) {
+                if (gene[0] == 1 || gene[1] == 1) {
                     //white sheep
                     pattern = 1;
-                }else if (genesForText[0] == 2 || genesForText[1] == 2){
+                }else if (gene[0] == 2 || gene[1] == 2){
                     grey = 1;
-                    if (genesForText[0] == 3 || genesForText[1] == 3){
+                    if (gene[0] == 3 || gene[1] == 3){
                         pattern = 2;
-                    }else if (genesForText[0] == 4 || genesForText[1] == 4){
+                    }else if (gene[0] == 4 || gene[1] == 4){
                         pattern = 6;
                     }else{
                         pattern = 10;
                     }
-                }else if(genesForText[0] == 3 || genesForText[1] == 3){
-                    if(genesForText[0] == 4 || genesForText[1] == 4){
+                }else if(gene[0] == 3 || gene[1] == 3){
+                    if(gene[0] == 4 || gene[1] == 4){
                         pattern = 4;
                     }else{
                         pattern = 2;
                     }
-                }else if (genesForText[0] == 4 || genesForText[1] == 4){
+                }else if (gene[0] == 4 || gene[1] == 4){
                     pattern = 6;
-                }else if (genesForText[0] == 5 || genesForText[1] == 5){
+                }else if (gene[0] == 5 || gene[1] == 5){
                     pattern = 8;
                     under = 3;
                 }else{
@@ -1006,14 +1020,14 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 }
 
                 //red variant
-                if (genesForText[4] == 3 && genesForText[5] == 3){
+                if (gene[4] == 3 && gene[5] == 3){
                     under = under + 4;
                     pattern = pattern + 11;
                 }
             }
 
             //chocolate variant
-            if (genesForText[2] == 2 && genesForText[3] == 2){
+            if (gene[2] == 2 && gene[3] == 2){
                 if (pattern == 0) {
                     under = 2;
                 } else if (pattern!=1 && pattern!=12){
@@ -1022,7 +1036,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             }
 
             //basic spots
-            if (genesForText[8] == 2 && genesForText[9] == 2){
+            if (gene[8] == 2 && gene[9] == 2){
                 if (Character.isDigit(uuidArry[1])){
                     spots = 2;
                 }else {
@@ -1030,10 +1044,44 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 }
             }
 
+            //pigmented head
+            if (gene[68] == 2 || gene[69] == 2) {
+                if (gene[68] == 1 || gene[69] == 1) {
+                    //het afghan
+                    pigmentedHead = 2;
+                } else {
+                    //white afghan
+                    pigmentedHead = 1;
+                }
+            } else if (gene[68] == 3 || gene[69] == 3) {
+                if (gene[68] == gene[69]) {
+                    //homozygous turkish
+                    pigmentedHead = 3;
+                } else if (gene[68] == 4 || gene[69] == 4) {
+                    //het turkish/pigmented head
+                    pigmentedHead = 5;
+                } else {
+                    //het turkish (speckled)
+                    pigmentedHead = 4;
+                }
+            } else if (gene[68] == 4 || gene[69] == 4) {
+                // pigmented head
+                pigmentedHead = 6;
+            }
+
+            boolean ticked = !this.isChild() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHead != 0);
+
             addTextureToAnimal(SHEEP_TEXTURES_UNDER, under, null);
             addTextureToAnimal(SHEEP_TEXTURES_PATTERN, pattern, l -> l != 0);
             addTextureToAnimal(SHEEP_TEXTURES_GREY, grey, l -> l != 0);
+            if (ticked) {
+                this.enhancedAnimalTextures.add("alpha_group_start");
+            }
             addTextureToAnimal(SHEEP_TEXTURES_SPOTS, spots, l -> l != 0);
+            addTextureToAnimal(SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHead, l -> l != 0);
+            if (ticked) {
+                this.enhancedAnimalTextures.add("alpha_group_end");
+            }
             addTextureToAnimal(SHEEP_TEXTURES_SKIN, skin, null);
             addTextureToAnimal(SHEEP_TEXTURES_HOOVES, hooves, null);
             addTextureToAnimal(SHEEP_TEXTURES_FUR, fur, null);
@@ -1043,6 +1091,15 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void setAlphaTexturePaths() {
+        Genes genes = getSharedGenes();
+        if (genes != null) {
+            int[] gene = genes.getAutosomalGenes();
+            if (gene != null) {
+                if (!this.isChild() && (gene[70] == 2 || gene[71] == 2)) {
+                    this.enhancedAnimalAlphaTextures.add(SHEEP_TEXTURES_TICKED[1]);
+                }
+            }
+        }
     }
 
     @Override

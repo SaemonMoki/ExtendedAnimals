@@ -535,6 +535,26 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[67] = (1);
         }
 
+        /**
+         *  Afghan lethal - seems similar to lethal white in horses. het have pigment on parts of head and legs
+         *  Turkish       - homozygotes have pigment on nose, eyes, ears, and lower legs. het are speckled
+         *  Persian       - homozygotes have a white body and pigmented head
+         *  wildtype      - no white spots
+         */
+        //Pigmented Head [wildtype, afghan lethal, turkish, persian]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[68] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            autosomalGenes[68] = (1);
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[69] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            autosomalGenes[69] = (1);
+        }
+
         return new Genes(autosomalGenes);
     }
 }

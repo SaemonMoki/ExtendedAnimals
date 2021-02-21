@@ -876,127 +876,73 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         ChickenModelData chickenModelData = getChickenModelData();
 
-        this.comb.rotateAngleZ = chickenModelData.phenotype.butterCup ? -(float)Math.PI * 0.15F : 0F;
+        Phenotype chicken = chickenModelData.phenotype;
+
+        if (chicken != null) {
+            this.comb.rotateAngleZ = chicken.butterCup ? -(float) Math.PI * 0.15F : 0F;
 
 //        float bodyangle = 0.5F;
 //        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
 
-//        if(this.pose == 1){
-//            this.head.rotationPointY = 22F;
-//        } else if (this.pose == 2){
-//            this.head.rotationPointY = 21F;
-//        } else{
-//            if(this.mutation == 1){
-//                this.head.rotationPointY = 18F;
-//            } else if(this.mutation == 2){
-//                this.head.rotationPointY = 17.5F;
-//            } else if(this.mutation == 3){
-//                this.head.rotationPointY = 17F;
-//            } else if(this.mutation == 4){
-//                this.head.rotationPointY = 14F;
-//            } else if(this.mutation == 5){
-//                this.head.rotationPointY = 13F;
-//            } else{
-//                this.head.rotationPointY = 15F;
-//            }
-//        }
+            this.head.rotationPointY = -3.5F;
+            this.head.rotationPointZ = -3.5F;
+            this.head.rotateAngleX = headPitch * 0.017453292F;
+            this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
-        this.head.rotationPointY = -3.5F;
-        this.head.rotationPointZ = -3.5F;
-        this.head.rotateAngleX = headPitch * 0.017453292F;
-        this.head.rotateAngleY = netHeadYaw * 0.017453292F;
+            ModelHelper.copyModelPositioning(head, headNakedNeck);
 
-        ModelHelper.copyModelPositioning(head, headNakedNeck);
+            this.earTuftL.rotateAngleX = 1.4F;
+            this.earTuftL.rotateAngleZ = -1.4F;
+            this.earTuftR.rotateAngleX = 1.4F;
+            this.earTuftR.rotateAngleZ = 1.4F;
 
-//        ModelHelper.copyModelPositioning(head, billChild);
-//        ModelHelper.copyModelPositioning(head, smallChin);
-//        ModelHelper.copyModelPositioning(head, chin);
-//        ModelHelper.copyModelPositioning(head, bigChin);
-//        ModelHelper.copyModelPositioning(head, beardChin);
-//        ModelHelper.copyModelPositioning(head, peaChin);
+            //leg stuff
+            this.rightLeg.rotationPointY = 15F;
+            this.leftLeg.rotationPointY = 15F;
+            this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+            this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+            ModelHelper.copyModelPositioning(rightLeg, rightFeather1);
+            ModelHelper.copyModelPositioning(rightLeg, rightLegExtend);
+            ModelHelper.copyModelPositioning(rightLeg, rightFeather1Extend);
+            ModelHelper.copyModelPositioning(rightLeg, rightFeather2);
+            ModelHelper.copyModelPositioning(rightLeg, rightFeather3);
+            ModelHelper.copyModelPositioning(rightLeg, rightVultureHock);
+            ModelHelper.copyModelPositioning(leftLeg, leftLegExtend);
+            ModelHelper.copyModelPositioning(leftLeg, leftFeather1Extend);
+            ModelHelper.copyModelPositioning(leftLeg, leftFeather1);
+            ModelHelper.copyModelPositioning(leftLeg, leftFeather2);
+            ModelHelper.copyModelPositioning(leftLeg, leftFeather3);
+            ModelHelper.copyModelPositioning(leftLeg, leftVultureHock);
 
-//        ModelHelper.copyModelPositioning(head, smallCrest);
-//        ModelHelper.copyModelPositioning(head, bigCrest);
-//        ModelHelper.copyModelPositioning(head, forwardCrest);
-
-//        ModelHelper.copyModelPositioning(head, combXtraSmallSingle);
-//        ModelHelper.copyModelPositioning(head, combSmallSingle);
-//        ModelHelper.copyModelPositioning(head, combSingle);
-//        ModelHelper.copyModelPositioning(head, combLargeSingle);
-//        ModelHelper.copyModelPositioning(head, combXtraLargeSingle);
-//        ModelHelper.copyModelPositioning(head, combSmallRose);
-//        ModelHelper.copyModelPositioning(head, combRose);
-//        ModelHelper.copyModelPositioning(head, combLargeRose);
-//        ModelHelper.copyModelPositioning(head, combSmallRose2);
-//        ModelHelper.copyModelPositioning(head, combRose2);
-//        ModelHelper.copyModelPositioning(head, combLargeRose2);
-//        ModelHelper.copyModelPositioning(head, combSmallPea);
-//        ModelHelper.copyModelPositioning(head, combPea);
-//        ModelHelper.copyModelPositioning(head, combLargePea);
-//        ModelHelper.copyModelPositioning(head, combSmallWalnut);
-//        ModelHelper.copyModelPositioning(head, combWalnut);
-//        ModelHelper.copyModelPositioning(head, combLargeWalnut);
-//        ModelHelper.copyModelPositioning(head, combV);
-
-//        ModelHelper.copyModelPositioning(head, beard);
-//        ModelHelper.copyModelPositioning(head, beardNN);
-
-//        ModelHelper.copyModelPositioning(head, earL);
-//        ModelHelper.copyModelPositioning(head, earR);
-
-//        ModelHelper.copyModelPositioning(head, earTuftHelper);
-
-        this.earTuftL.rotateAngleX = 1.4F;
-        this.earTuftL.rotateAngleZ = -1.4F;
-        this.earTuftR.rotateAngleX = 1.4F;
-        this.earTuftR.rotateAngleZ = 1.4F;
-
-        //leg stuff
-        this.rightLeg.rotationPointY = 15F;
-        this.leftLeg.rotationPointY = 15F;
-        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-        ModelHelper.copyModelPositioning(rightLeg, rightFeather1);
-        ModelHelper.copyModelPositioning(rightLeg, rightLegExtend);
-        ModelHelper.copyModelPositioning(rightLeg, rightFeather1Extend);
-        ModelHelper.copyModelPositioning(rightLeg, rightFeather2);
-        ModelHelper.copyModelPositioning(rightLeg, rightFeather3);
-        ModelHelper.copyModelPositioning(rightLeg, rightVultureHock);
-        ModelHelper.copyModelPositioning(leftLeg, leftLegExtend);
-        ModelHelper.copyModelPositioning(leftLeg, leftFeather1Extend);
-        ModelHelper.copyModelPositioning(leftLeg, leftFeather1);
-        ModelHelper.copyModelPositioning(leftLeg, leftFeather2);
-        ModelHelper.copyModelPositioning(leftLeg, leftFeather3);
-        ModelHelper.copyModelPositioning(leftLeg, leftVultureHock);
-
-        //body angle
+            //body angle
 //        this.body.rotateAngleX = -bodyangle;
 
-        //tail stuff
-        ModelHelper.copyModelPositioning(body, bodyBig);
-        ModelHelper.copyModelPositioning(body, bodySmall);
+            //tail stuff
+            ModelHelper.copyModelPositioning(body, bodyBig);
+            ModelHelper.copyModelPositioning(body, bodySmall);
 //        ModelHelper.copyModelPositioning(body, tail);
-        ModelHelper.copyModelPositioning(body, longTail);
-        ModelHelper.copyModelPositioning(body, shortTail);
-        ModelHelper.copyModelPositioning(body, xtraLongTail);
-        ModelHelper.copyModelPositioning(body, xtraShortTail);
+            ModelHelper.copyModelPositioning(body, longTail);
+            ModelHelper.copyModelPositioning(body, shortTail);
+            ModelHelper.copyModelPositioning(body, xtraLongTail);
+            ModelHelper.copyModelPositioning(body, xtraShortTail);
 
-        //wing stuff
+            //wing stuff
 
 //        this.rightWing.rotationPointZ = -1;
 //        this.leftWing.rotationPointZ = -1;
 //        this.rightWing.rotationPointY = 13;
 //        this.leftWing.rotationPointY = 13;
 
-        this.rightWing.rotateAngleZ = ageInTicks;
-        this.leftWing.rotateAngleZ = -ageInTicks;
-        this.rightWingSmall.rotateAngleZ = ageInTicks;
-        this.leftWingSmall.rotateAngleZ = -ageInTicks;
+            this.rightWing.rotateAngleZ = ageInTicks;
+            this.leftWing.rotateAngleZ = -ageInTicks;
+            this.rightWingSmall.rotateAngleZ = ageInTicks;
+            this.leftWingSmall.rotateAngleZ = -ageInTicks;
 
 //        this.rightWing.rotateAngleX = -wingAngle - bodyangle ;
 //        this.leftWing.rotateAngleX = -wingAngle - bodyangle;
 //        this.rightWingSmall.rotateAngleX = -wingAngle - bodyangle;
 //        this.leftWingSmall.rotateAngleX = -wingAngle - bodyangle;
+        }
     }
 
     @Override
@@ -1048,111 +994,109 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
                         this.rightWingSmall.rotationPointY = 15.0F + wingMod;
                         this.leftWingSmall.rotationPointY = 15.0F + wingMod;
                         break;
+                    }
+                } else {
+                    switch (chicken.longLegs) {
+                        case 0:
+                        default:
+                            this.body.rotationPointY = 0F + point;
+                            this.rightWing.rotationPointY = 13.0F + wingMod;
+                            this.leftWing.rotationPointY = 13.0F + wingMod;
+                            this.rightWingSmall.rotationPointY = 13.0F + wingMod;
+                            this.leftWingSmall.rotationPointY = 13.0F + wingMod;
+                            break;
+                        case 1:
+                            this.body.rotationPointY = -1F + point;
+                            this.rightWing.rotationPointY = 12.0F + wingMod;
+                            this.leftWing.rotationPointY = 12.0F + wingMod;
+                            this.rightWingSmall.rotationPointY = 12.0F + wingMod;
+                            this.leftWingSmall.rotationPointY = 12.0F + wingMod;
+                            break;
+                        case 2:
+                            this.body.rotationPointY = -2F + point;
+                            this.rightWing.rotationPointY = 11.0F + wingMod;
+                            this.leftWing.rotationPointY = 11.0F + wingMod;
+                            this.rightWingSmall.rotationPointY = 11.0F + wingMod;
+                            this.leftWingSmall.rotationPointY = 11.0F + wingMod;
+                            break;
+                    }
                 }
-            } else {
-                switch (chicken.longLegs) {
+
+
+                //behaviour animations
+                //nesting "moves legs together to remove clipping"
+                if (nesting) {
+                    this.body.rotationPointY = 4.9F + point;
+                    this.rightLeg.rotationPointX = this.rightLeg.rotationPointX - 0.1F;
+                    this.leftLeg.rotationPointX = this.leftLeg.rotationPointX + 0.1F;
+
+                    this.rightWing.rotationPointY = 19F + wingMod;
+                    this.leftWing.rotationPointY = 19F + wingMod;
+                    this.rightWingSmall.rotationPointY = 19F + wingMod;
+                    this.leftWingSmall.rotationPointY = 19F + wingMod;
+                } else {
+                    if (roosting) {
+                        this.body.rotationPointY = 4.9F + point;
+                        this.rightLeg.rotationPointY = 1F;
+                        this.leftLeg.rotationPointY = 1F;
+                        this.rightLeg.rotationPointX = this.rightLeg.rotationPointX - 0.1F;
+                        this.leftLeg.rotationPointX = this.leftLeg.rotationPointX + 0.1F;
+
+                        this.rightWing.rotationPointY = 18F + wingMod;
+                        this.leftWing.rotationPointY = 18F + wingMod;
+                        this.rightWingSmall.rotationPointY = 18F + wingMod;
+                        this.leftWingSmall.rotationPointY = 18F + wingMod;
+                    }
+                }
+                //pecking ground
+
+                //scratching (eating grass)
+
+                //crowing
+
+                /** wing position variants */
+                switch (chicken.wingPlacement) {
                     case 0:
                     default:
-                        this.body.rotationPointY = 0F + point;
-                        this.rightWing.rotationPointY = 13.0F + wingMod;
-                        this.leftWing.rotationPointY = 13.0F + wingMod;
-                        this.rightWingSmall.rotationPointY = 13.0F + wingMod;
-                        this.leftWingSmall.rotationPointY = 13.0F + wingMod;
                         break;
                     case 1:
-                        this.body.rotationPointY = -1F + point;
-                        this.rightWing.rotationPointY = 12.0F + wingMod;
-                        this.leftWing.rotationPointY = 12.0F + wingMod;
-                        this.rightWingSmall.rotationPointY = 12.0F + wingMod;
-                        this.leftWingSmall.rotationPointY = 12.0F + wingMod;
+                        this.rightWing.rotationPointY = this.rightWing.rotationPointY + 0.5F - (wingMod / 2);
+                        this.leftWing.rotationPointY = this.leftWing.rotationPointY + 0.5F - (wingMod / 2);
+                        this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY - 0.5F - (wingMod / 2);
+                        this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY - 0.5F - (wingMod / 2);
                         break;
                     case 2:
-                        this.body.rotationPointY = -2F + point;
-                        this.rightWing.rotationPointY = 11.0F + wingMod;
-                        this.leftWing.rotationPointY = 11.0F + wingMod;
-                        this.rightWingSmall.rotationPointY = 11.0F + wingMod;
-                        this.leftWingSmall.rotationPointY = 11.0F + wingMod;
+                        this.rightWing.rotationPointY = this.rightWing.rotationPointY + 1F - wingMod;
+                        this.leftWing.rotationPointY = this.leftWing.rotationPointY + 1F - wingMod;
+                        this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + 1F - wingMod;
+                        this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + 1F - wingMod;
                         break;
                 }
-            }
+
+    //            this.rightWing.rotationPointY = this.rightWing.rotationPointY + wingAngle* 2.2F;
+    //            this.leftWing.rotationPointY = this.leftWing.rotationPointY + wingAngle * 2.2F;
+    //            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + wingAngle * 2.2F;
+    //            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + wingAngle * 2.2F;
+
+                switch (chicken.bodyType) {
+                    case -1:
+                        this.rightWing.rotationPointX = -3.5F;
+                        this.leftWing.rotationPointX = 3.5F;
+                        break;
+                    case 0:
+                    default:
+                        this.rightWing.rotationPointX = -4.0F;
+                        this.leftWing.rotationPointX = 4.0F;
+                        break;
+                    case 2:
+                        this.rightWing.rotationPointX = -4.5F;
+                        this.leftWing.rotationPointX = 4.5F;
+                        break;
+                }
+
+            this.head.rotationPointY = (9.0F + ((EnhancedChicken) entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F);
+            this.headRotationAngleX = ((EnhancedChicken) entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
         }
-
-
-        //behaviour animations
-        //nesting "moves legs together to remove clipping"
-        if(nesting){
-            this.body.rotationPointY = 4.9F + point;
-            this.rightLeg.rotationPointX = this.rightLeg.rotationPointX - 0.1F;
-            this.leftLeg.rotationPointX = this.leftLeg.rotationPointX + 0.1F;
-
-            this.rightWing.rotationPointY = 19F + wingMod;
-            this.leftWing.rotationPointY = 19F + wingMod;
-            this.rightWingSmall.rotationPointY = 19F + wingMod;
-            this.leftWingSmall.rotationPointY = 19F + wingMod;
-        } else {
-            if(roosting){
-                this.body.rotationPointY = 4.9F + point;
-                this.rightLeg.rotationPointY = 1F;
-                this.leftLeg.rotationPointY = 1F;
-                this.rightLeg.rotationPointX = this.rightLeg.rotationPointX - 0.1F;
-                this.leftLeg.rotationPointX = this.leftLeg.rotationPointX + 0.1F;
-
-                this.rightWing.rotationPointY = 18F + wingMod;
-                this.leftWing.rotationPointY = 18F + wingMod;
-                this.rightWingSmall.rotationPointY = 18F + wingMod;
-                this.leftWingSmall.rotationPointY = 18F + wingMod;
-            }
-        }
-        //pecking ground
-
-        //scratching (eating grass)
-
-        //crowing
-
-        /** wing position variants */
-        if (chicken != null) {
-            switch (chicken.wingPlacement) {
-                case 0:
-                default:
-                    break;
-                case 1:
-                    this.rightWing.rotationPointY = this.rightWing.rotationPointY + 0.5F - (wingMod/2);
-                    this.leftWing.rotationPointY = this.leftWing.rotationPointY + 0.5F - (wingMod/2);
-                    this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY - 0.5F - (wingMod/2);
-                    this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY - 0.5F - (wingMod/2);
-                    break;
-                case 2:
-                    this.rightWing.rotationPointY = this.rightWing.rotationPointY + 1F - wingMod;
-                    this.leftWing.rotationPointY = this.leftWing.rotationPointY + 1F - wingMod;
-                    this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + 1F - wingMod;
-                    this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + 1F - wingMod;
-                    break;
-            }
-
-//            this.rightWing.rotationPointY = this.rightWing.rotationPointY + wingAngle* 2.2F;
-//            this.leftWing.rotationPointY = this.leftWing.rotationPointY + wingAngle * 2.2F;
-//            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + wingAngle * 2.2F;
-//            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + wingAngle * 2.2F;
-
-            switch (chicken.bodyType) {
-                case -1:
-                    this.rightWing.rotationPointX = -3.5F;
-                    this.leftWing.rotationPointX = 3.5F;
-                    break;
-                case 0:
-                default:
-                    this.rightWing.rotationPointX = -4.0F;
-                    this.leftWing.rotationPointX = 4.0F;
-                    break;
-                case 2:
-                    this.rightWing.rotationPointX = -4.5F;
-                    this.leftWing.rotationPointX = 4.5F;
-                    break;
-            }
-        }
-
-        this.head.rotationPointY = (9.0F + ((EnhancedChicken)entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F);
-        this.headRotationAngleX = ((EnhancedChicken)entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
 
     }
 

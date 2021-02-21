@@ -46,6 +46,8 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
 
         s = s + colourRGB.getRGBStrings();
 
+        s = silkie ? s + "1" : s + "-";
+
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {

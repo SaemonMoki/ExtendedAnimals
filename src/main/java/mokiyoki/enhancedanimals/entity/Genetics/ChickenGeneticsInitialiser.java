@@ -663,7 +663,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         //Pattern Gene [ pattern, wildtype ] pattern genes is common in savannas
         if (wildType == 2) {
-            if (ThreadLocalRandom.current().nextInt(100) > (WTC / 2)) {
+            if (ThreadLocalRandom.current().nextInt(100) > (WTC * 0.5)) {
                 autosomalGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
             } else {
                 autosomalGenes[26] = (2);

@@ -162,8 +162,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     //Texture
     protected final List<String> enhancedAnimalTextures = new ArrayList<>();
     protected final List<String> texturesIndexes = new ArrayList<>();
+    protected String compiledTexture;
     protected final List<String> enhancedAnimalAlphaTextures = new ArrayList<>();
     protected final Map<Equipment, List<String>> equipmentTextures = new HashMap<>();
+    protected String compiledEquipmentTexture;
     public Colouration colouration = new Colouration();
     protected boolean bells;
     protected Boolean reload = false; //used in a toggle manner
@@ -531,6 +533,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
                 this.equipmentTextures.remove(Equipment.COLLAR);
             }
         }
+        this.compiledEquipmentTexture = null; //reset compiled string
     }
 
     //used to set if an animal is wearing bells
@@ -1627,9 +1630,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     protected String getCompiledTextures(String eanimal) {
-        String compiledTextures = this.texturesIndexes.stream().collect(Collectors.joining("",eanimal+"/",""));
-        compiledTextures = compiledTextures + this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.joining("/"));
-        return compiledTextures;
+        if (this.compiledTexture == null) {
+            this.compiledTexture = this.texturesIndexes.stream().collect(Collectors.joining("",eanimal+"/",""));
+        }
+        if (this.compiledEquipmentTexture == null) {
+            this.compiledEquipmentTexture = this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.joining("/"));
+        }
+        return this.compiledTexture + compiledEquipmentTexture;
     }
 
     protected void geneFixer() {

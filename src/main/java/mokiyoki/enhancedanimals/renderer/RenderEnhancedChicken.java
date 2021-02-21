@@ -35,7 +35,6 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
     public ResourceLocation getEntityTexture(EnhancedChicken entity) {
-        entity.getEntityWorld().getProfiler().startSection("ChickenRenderer");
         String s = entity.getChickenTexture();
         Colouration colourRGB = entity.getRgb();
         boolean silkie = entity.getSharedGenes().testGenes(106, 1, 2);

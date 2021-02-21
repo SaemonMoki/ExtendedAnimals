@@ -117,6 +117,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 this.equipmentTextures.remove(Equipment.BLANKET);
             }
         }
+        this.compiledEquipmentTexture = null; //reset compiled string
     }
 
     public void setChest(boolean chested) {
@@ -132,6 +133,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 this.equipmentTextures.remove(Equipment.CHEST);
             }
         }
+        this.compiledEquipmentTexture = null; //reset compiled string
     }
 
     @Override
@@ -157,6 +159,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                 equipmentTextures.remove(Equipment.BRIDLE);
             }
         }
+        this.compiledEquipmentTexture = null; //reset compiled string
     }
 
     @Override

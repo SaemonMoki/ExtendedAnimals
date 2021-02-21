@@ -287,6 +287,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                 equipmentTextures.remove(Equipment.SADDLE);
             }
         }
+        this.compiledEquipmentTexture = null; //reset compiled string
     }
 
     @Override

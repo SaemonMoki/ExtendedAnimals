@@ -717,6 +717,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             this.resetTexture = false;
             this.texturesIndexes.clear();
             this.enhancedAnimalTextures.clear();
+            this.compiledTexture = null;
             this.setTexturePaths();
         }
 

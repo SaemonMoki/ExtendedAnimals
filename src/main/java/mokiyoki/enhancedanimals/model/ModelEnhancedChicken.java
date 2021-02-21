@@ -88,7 +88,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     private final ModelRenderer leftWing;
     private final ModelRenderer leftWingSmall;
     private final EnhancedRendererModelNew beak;
-    private final EnhancedRendererModelNew billChild;
     private final EnhancedRendererModelNew smallChin;
     private final EnhancedRendererModelNew chin;
     private final EnhancedRendererModelNew bigChin;
@@ -265,11 +264,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.combV.addBox(-1F, -2.0F, (-5.25F + combRz), 1, 1, 1, -0.2F);
         this.combV.addBox(.1F, -2.3F, (-5F + combRz), 1, 1, 1, -0.3F);
         this.combV.addBox(-1.1F, -2.3F, (-5F + combRz), 1, 1, 1, -0.3F);
-        
-        this.comb = new EnhancedRendererModelNew(this, 0, 0, "Comb");
+
+        this.comb = new EnhancedRendererModelNew(this, 0, 0, "Comb", false);
         this.comb.setRotationPoint(0.0F, -5.0F, 0.0F);
 
-        this.butterCup = new EnhancedRendererModelNew(this, 0, 0, "ButterCup");
+        this.butterCup = new EnhancedRendererModelNew(this, 0, 0, "ButterCup", false);
         this.butterCup.setRotationPoint(0.0F, -5.0F, 0.0F);
         this.butterCup.rotateAngleZ = (float)Math.PI * 0.15F;
 
@@ -405,10 +404,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.beak.addBox(-1.0F, 0.0F, -2.0F, 2, 2, 2, 0.0F);
         this.beak.setRotationPoint(0.0F, -4.0F, -2.0F);
 
-        this.billChild = new EnhancedRendererModelNew(this, 0, 18, "BabyBeak");
-        this.billChild.addBox(-1.0F, -4.0F, -3F, 2, 2, 2, 0.0F);
-        this.billChild.setRotationPoint(0.0F, 15.0F, -4.0F);
-
         this.chin = new EnhancedRendererModelNew(this, 14, 10, "Waddles");
         this.chin.addBox(-1.0F, -2.0F, -3.0F, 2, 2, 1, 0.0F);
 
@@ -537,10 +532,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-
         ChickenModelData chickenModelData = getChickenModelData();
 
-        Boolean roosting = chickenModelData.sleeping;
+        resetAllCubes();
+        
         int blink = chickenModelData.blink;
 
         Phenotype chicken = chickenModelData.phenotype;
@@ -550,7 +545,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
         boolean longLegs = false;
 
-        if (!roosting) {
+        if (!chickenModelData.sleeping) {
             //long legs
             longLegs = chicken.hasLongLegs();
         }
@@ -622,159 +617,126 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             this.eyeRight.showModel = false;
         }
 
-        if (!chickenModelData.collar) {
-            unrenderedModels.add("Collar");
-            unrenderedModels.add("Bell");
+        if (chickenModelData.collar) {
+            this.collar.showModel = true;
         }
 
         unrenderedModels.add(chicken.isNakedNeck ? "Head" : "NNHead");
 
         switch (chicken.beard) {
             case BIG_BEARD:
-                unrenderedModels.add("NNBeard");
+                this.beard.showModel = true;
                 break;
             case NN_BEARD:
-                unrenderedModels.add("Beard");
-                break;
-            case NONE:
-                unrenderedModels.add("Beard");
-                unrenderedModels.add("NNBeard");
+                this.beardNN.showModel = true;
                 break;
         }
 
-        unrenderedModels.add("XSSingleComb");
-        unrenderedModels.add("SSingleComb");
-        unrenderedModels.add("SingleComb");
-        unrenderedModels.add("LSingleComb");
-        unrenderedModels.add("XLSingleComb");
-        unrenderedModels.add("SRoseComb");
-        unrenderedModels.add("RoseComb");
-        unrenderedModels.add("LRoseComb");
-        unrenderedModels.add("SRoseTwo");
-        unrenderedModels.add("RoseTwo");
-        unrenderedModels.add("LRoseTwo");
-        unrenderedModels.add("SPeaComb");
-        unrenderedModels.add("PeaComb");
-        unrenderedModels.add("LPeaComb");
-        unrenderedModels.add("SWalnutComb");
-        unrenderedModels.add("WalnutComb");
-        unrenderedModels.add("LWalnut");
-        unrenderedModels.add("VComb");
-        this.comb.showModel = false;
-        this.butterCup.showModel = false;
-
-        unrenderedModels.add("Waddles");
-        unrenderedModels.add("BigWaddles");
-        unrenderedModels.add("SmallWaddles");
-        unrenderedModels.add("PeaCombWaddles");
-        unrenderedModels.add("BeardWaddles");
-
         if (age <= 0.3F) {
-            unrenderedModels.add("LeftEar");
-            unrenderedModels.add("RightEar");
-            this.comb.showModel = false;
+            this.earL.showModel = false;
+            this.earR.showModel = false;
         } else if (chicken.isCombed()){
             this.comb.showModel = true;
 
             if (chicken.waddleSize >= 2) {
                 if (chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
-                    unrenderedModels.remove("BeardWaddles");
+                    this.beardChin.showModel = true;
                 }
                 if (!chicken.isBearded()) {
                     if (chicken.comb.hasPeaComb()) {
-                        unrenderedModels.remove("PeaCombWaddles");
+                        this.peaChin.showModel = true;
                     }
                 }
             }
             if (!chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
                 if (chicken.waddleSize >= 3) {
-                    unrenderedModels.remove("BigWaddles");
+                    this.bigChin.showModel = true;
                 } else if (chicken.waddleSize >= 1) {
-                    unrenderedModels.remove("Waddles");
+                    this.chin.showModel = true;
                 } else {
-                    unrenderedModels.remove("SmallWaddles");
+                    this.smallChin.showModel = true;
                 }
             }
             if (chicken.comb == Comb.SINGLE && (chicken.crestType == Crested.NONE || chicken.combSize >= 3)) {
                 switch (chicken.combSize) {
                     case 0:
-                        unrenderedModels.remove("XSSingleComb");
+                        this.combXtraSmallSingle.showModel = true;
                         break;
                     case 1:
-                        unrenderedModels.remove("SSingleComb");
+                        this.combSmallSingle.showModel = true;
                         break;
                     case 2:
-                        unrenderedModels.remove("SingleComb");
+                        this.combSingle.showModel = true;
                         break;
                     case 3:
-                        unrenderedModels.remove("LSingleComb");
+                        this.combLargeSingle.showModel = true;
                         break;
                     case 4:
                     default:
-                        unrenderedModels.remove("XLSingleComb");
+                        this.combXtraLargeSingle.showModel = true;
                         break;
 
                 }
             } else if (chicken.comb == Comb.ROSE_ONE && chicken.crestType == Crested.NONE) {
                 switch (chicken.combSize) {
                     case 0:
-                        unrenderedModels.remove("SRoseComb");
+                        this.combSmallRose.showModel = true;
                         break;
                     case 1:
                     case 2:
                     case 3:
-                        unrenderedModels.remove("RoseComb");
+                        this.combRose.showModel = true;
                         break;
                     case 4:
                     default:
-                        unrenderedModels.remove("LRoseComb");
+                        this.combLargeRose.showModel = true;
                         break;
                 }
             } else if (chicken.comb == Comb.ROSE_TWO) {
                 switch (chicken.combSize) {
                     case 0:
-                        unrenderedModels.remove("SRoseTwo");
+                        this.combSmallRose2.showModel = true;
                         break;
                     case 1:
                     case 2:
                     case 3:
-                        unrenderedModels.remove("RoseTwo");
+                        this.combRose2.showModel = true;
                         break;
                     case 4:
                     default:
-                        unrenderedModels.remove("LRoseTwo");
+                        this.combLargeRose2.showModel = true;
                         break;
                 }
             } else if (chicken.comb == Comb.PEA || (chicken.comb == Comb.SINGLE && chicken.crestType != Crested.NONE)) {
                 switch (chicken.combSize) {
                     case 1:
                     case 2:
-                        unrenderedModels.remove("SPeaComb");
+                        this.combSmallPea.showModel = true;
                         break;
                     case 3:
-                        unrenderedModels.remove("PeaComb");
+                        this.combPea.showModel = true;
                         break;
                     case 4:
                     default:
-                        unrenderedModels.remove("LPeaComb");
+                        this.combLargePea.showModel = true;
                         break;
                 }
             } else if (chicken.comb == Comb.WALNUT || ((chicken.comb == Comb.ROSE_ONE || chicken.comb == Comb.ROSE_TWO) && chicken.crestType != Crested.NONE)) {
                 switch (chicken.combSize) {
                     case 1:
                     case 2:
-                        unrenderedModels.remove("SWalnutComb");
+                        this.combSmallWalnut.showModel = true;
                         break;
                     case 3:
-                        unrenderedModels.remove("WalnutComb");
+                        this.combWalnut.showModel = true;
                         break;
                     case 4:
                     default:
-                        unrenderedModels.remove("LWalnut");
+                        this.combLargeWalnut.showModel = true;
                         break;
                 }
             } else if (chicken.comb == Comb.V) {
-                unrenderedModels.remove("VComb");
+                this.combV.showModel = true;
             }
 
             if (chicken.butterCup) {
@@ -782,26 +744,26 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             }
         }
 
-        unrenderedModels.add("SmallCrest");
-        unrenderedModels.add("ForwardCrest");
-        unrenderedModels.add("BigCrest");
-
         if (chicken.crestType == Crested.SMALL_CREST || (chicken.crestType != Crested.NONE && age > 0.5F)) {
-            unrenderedModels.remove("SmallCrest");
+            this.smallCrest.showModel = true;
         } else if (chicken.crestType == Crested.SMALL_FORWARDCREST || chicken.crestType == Crested.BIG_FORWARDCREST) {
-            unrenderedModels.remove("ForwardCrest");
+            this.forwardCrest.showModel = true;
         } else if (chicken.crestType == Crested.BIG_CREST) {
-            unrenderedModels.remove("BigCrest");
+            this.bigCrest.showModel = true;
         }
 
         if (chicken.rumpless || age < 0.15F) {
-            unrenderedModels.add("NormalTail");
+            this.tail.showModel = false;
         }
 
         if (chicken.wingSize == 2) {
+            this.rightWing.showModel = true;
+            this.leftWing.showModel = true;
             this.rightWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.leftWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         } else {
+            this.rightWingSmall.showModel = true;
+            this.leftWingSmall.showModel = true;
             this.rightWingSmall.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.leftWingSmall.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
@@ -810,6 +772,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         this.leftLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         if (longLegs) {
+            this.leftLegExtend.showModel = true;
+            this.rightLegExtend.showModel = true;
             this.leftLegExtend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.rightLegExtend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
@@ -817,22 +781,32 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         switch (chicken.footFeatherType) {
             case BIG_TOEFEATHERS:
             case TOEFEATHERS:
+                this.leftFeather3.showModel = true;
+                this.rightFeather3.showModel = true;
                 this.leftFeather3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 this.rightFeather3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             case FOOTFEATHERS:
+                this.leftFeather2.showModel = true;
+                this.rightFeather2.showModel = true;
                 this.leftFeather2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 this.rightFeather2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             case LEGFEATHERS:
-                if (!roosting && !nesting) {
+                if (!chickenModelData.sleeping && !nesting) {
+                    this.leftFeather1.showModel = true;
+                    this.rightFeather1.showModel = true;
                     this.leftFeather1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     this.rightFeather1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     if (chicken.longHockFeathers || longLegs) {
+                        this.leftFeather1Extend.showModel = true;
+                        this.rightFeather1Extend.showModel = true;
                         this.leftFeather1Extend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                         this.rightFeather1Extend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     }
                 }
 
                 if (chicken.isVultureHocked) {
+                    this.leftVultureHock.showModel = true;
+                    this.rightVultureHock.showModel = true;
                     this.leftVultureHock.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     this.rightVultureHock.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
@@ -840,9 +814,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         }
 
 
-            if (!chicken.earTufts) {
-                unrenderedModels.add("LeftEarTuft");
-                unrenderedModels.add("RightEarTuft");
+            if (chicken.earTufts) {
+                this.earTuftL.showModel = true;
+                this.earTuftR.showModel = true;
             }
 
             switch (chicken.bodyType) {
@@ -865,6 +839,69 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         matrixStackIn.pop();
     }
   }
+
+    private void resetAllCubes() {
+        this.bigCrest.showModel = false;
+        this.smallCrest.showModel = false;
+        this.forwardCrest.showModel = false;
+        this.combXtraSmallSingle.showModel = false;
+        this.combSmallSingle.showModel = false;
+        this.combSingle.showModel = false;
+        this.combLargeSingle.showModel = false;
+        this.combXtraLargeSingle.showModel = false;
+        this.combSmallRose.showModel = false;
+        this.combRose.showModel = false;
+        this.combLargeRose.showModel = false;
+        this.combSmallRose2.showModel = false;
+        this.combRose2.showModel = false;
+        this.combLargeRose2.showModel = false;
+        this.combSmallPea.showModel = false;
+        this.combPea.showModel = false;
+        this.combLargePea.showModel = false;
+        this.combSmallWalnut.showModel = false;
+        this.combWalnut.showModel = false;
+        this.combLargeWalnut.showModel = false;
+        this.combV.showModel = false;
+        this.comb.showModel = false;
+        this.butterCup.showModel = false;
+        this.xtraShortTail.showModel = false;
+        this.shortTail.showModel = false;
+        this.tail.showModel = true;
+        this.longTail.showModel = false;
+        this.xtraLongTail.showModel = false;
+        this.rightLegExtend.showModel = false;
+        this.rightFeather1.showModel = false;
+        this.rightFeather1Extend.showModel = false;
+//     rightFeatherTall1;
+        this.rightFeather2.showModel = false;
+        this.rightFeather3.showModel = false;
+        this.leftLegExtend.showModel = false;
+        this.leftFeather1.showModel = false;
+        this.leftFeather1Extend.showModel = false;
+//     leftFeatherTall1;
+        this.leftFeather2.showModel = false;
+        this.leftFeather3.showModel = false;
+        this.leftVultureHock.showModel = false;
+        this.rightVultureHock.showModel = false;
+        this.rightWing.showModel = false;
+        this.rightWingSmall.showModel = false;
+        this.leftWing.showModel = false;
+        this.leftWingSmall.showModel = false;
+        this.smallChin.showModel = false;
+        this.chin.showModel = false;
+        this.bigChin.showModel = false;
+        this.beardChin.showModel = false;
+        this.peaChin.showModel = false;
+        this.beard.showModel = false;
+        this.beardNN.showModel = false;
+        this.earL.showModel = true;
+        this.earR.showModel = true;
+        this.earTuftL.showModel = false;
+        this.earTuftR.showModel = false;
+        this.eyeLeft.showModel = false;
+        this.eyeRight.showModel = false;
+        this.collar.showModel = false;
+    }
 
 
     /**

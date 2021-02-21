@@ -11,7 +11,6 @@ import mokiyoki.enhancedanimals.capability.hay.IHayCapability;
 import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
-import mokiyoki.enhancedanimals.config.EanimodConfigHelper;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedHorse;
@@ -39,11 +38,11 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
@@ -97,9 +96,7 @@ public class EnhancedAnimals {
 
     public EnhancedAnimals() {
         instance = this;
-        EanimodConfigHelper.registerConfig(ModLoadingContext.get().getActiveContainer(), commonConfig);
-        Path path = FMLPaths.CONFIGDIR.get().resolve("genetic-animals-common.toml");
-        loadConfig(EanimodCommonConfig.COMMON_SPEC, path);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EanimodCommonConfig.getConfigSpecForLoader(), EanimodCommonConfig.getFileNameForLoader());
 
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -110,13 +107,8 @@ public class EnhancedAnimals {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new EventSubscriber());
-//        MinecraftForge.EVENT_BUS.register(new EventRegistry());
         MinecraftForge.EVENT_BUS.register(new CapabilityEvents());
         MinecraftForge.EVENT_BUS.register(instance);
-
-//        ModLoadingContext.get().registerConfig(EanimodConfig.Type.SERVER, EanimodCommonConfig.COMMON_SPEC);
-//        Path path = FMLPaths.CONFIGDIR.get().resolve("eanimod-common.toml");
-//        loadConfig(EanimodCommonConfig.COMMON_SPEC, path);
 
     }
 
@@ -157,18 +149,6 @@ public class EnhancedAnimals {
 
     private void loadComplete(final FMLLoadCompleteEvent event) {
         proxy.initLoadComplete(event);
-    }
-
-    public static void loadConfig(ForgeConfigSpec spec, Path path) {
-
-        final CommentedFileConfig configData = CommentedFileConfig.builder(path)
-                .sync()
-                .autosave()
-                .writingMode(WritingMode.REPLACE)
-                .build();
-
-        configData.load();
-        spec.setConfig(configData);
     }
 
 }

@@ -437,7 +437,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.wingRotDelta = (float)((double)this.wingRotDelta * 0.9D);
         Vector3d vec3d = this.getMotion();
         if (!this.onGround && vec3d.y < 0.0D) {
-            this.setMotion(vec3d.mul(1.0D, this.getSharedGenes().testGenes(106, 1, 2) ? 1.0D : 0.6D, 1.0D));
+            this.setMotion(vec3d.mul(1.0D, this.genetics.testGenes(106, 1, 2) ? 1.0D : 0.6D, 1.0D));
         }
 
         this.wingRotation += this.wingRotDelta * 2.0F;
@@ -498,7 +498,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     public boolean onLivingFall(float distance, float damageMultiplier) {
-        if (this.getSharedGenes().testGenes(106, 1, 2)) {
+        if (this.genetics.testGenes(106, 1, 2)) {
             return super.onLivingFall(distance, damageMultiplier);
         }
             return false;

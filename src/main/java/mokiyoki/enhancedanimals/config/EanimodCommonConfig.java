@@ -5,7 +5,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 
 
-public class EanimodCommonConfig implements IEanimodConfig{
+public class EanimodCommonConfig {
 
     public static final CommonConfig COMMON;
     public static final ForgeConfigSpec COMMON_SPEC;
@@ -15,19 +15,12 @@ public class EanimodCommonConfig implements IEanimodConfig{
         COMMON = specPair.getLeft();
     }
 
-    @Override
-    public String getFileName() {
-        return "genetic-animals-common";
+    public static String getFileNameForLoader() {
+        return "genetic-animals-common.toml";
     }
 
-    @Override
-    public ForgeConfigSpec getConfigSpec() {
+    public static ForgeConfigSpec getConfigSpecForLoader() {
         return COMMON_SPEC;
-    }
-
-    @Override
-    public ModConfig.Type getConfigType() {
-        return ModConfig.Type.SERVER;
     }
 
     public static class CommonConfig {

@@ -87,6 +87,14 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             "", "c_spot0.png",  "c_spot1.png",  "c_spot2.png", "c_spot3.png",  "c_spot4.png",  "c_spot5.png", "c_spot6.png",  "c_spot7.png",  "c_spot8.png", "c_spot9.png",  "c_spota.png",  "c_spotb.png", "c_spotc.png",  "c_spotd.png",  "c_spote.png",  "c_spotf.png"
     };
 
+    private static final String[] SHEEP_TEXTURES_PIGMENTEDHEAD = new String[] {
+            "", "c_afghan_pied.png", "c_turkish.png", "c_turkish_speckled.png", "c_pigmented_head.png"
+    };
+
+    private static final String[] SHEEP_TEXTURES_TICKED = new String[] {
+            "", "ticking.png"
+    };
+
     private static final String[] SHEEP_TEXTURES_SKIN = new String[] {
             "skin_pink.png"
     };

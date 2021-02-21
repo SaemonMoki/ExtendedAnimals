@@ -1420,7 +1420,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     protected ItemStack getReplacementItemWithColour(ItemStack itemStack) {
         ItemStack replacementItem = new ItemStack(itemStack.getItem(), 1);
-        ((CustomizableAnimalEquipment)replacementItem.getItem()).setColor(replacementItem, ((CustomizableAnimalEquipment)itemStack.getItem()).getColor(itemStack));
+        if (((CustomizableAnimalEquipment)itemStack.getItem()).hasColor(itemStack)) {
+            ((CustomizableAnimalEquipment)replacementItem.getItem()).setColor(replacementItem, ((CustomizableAnimalEquipment)itemStack.getItem()).getColor(itemStack));
+        }
         return replacementItem;
     }
 

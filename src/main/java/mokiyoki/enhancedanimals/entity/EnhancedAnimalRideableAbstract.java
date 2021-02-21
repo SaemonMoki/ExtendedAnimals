@@ -279,9 +279,9 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         List<String> newSaddleTextures = getSaddleTextures();
 
         if(saddled) {
-            if(previousSaddleTextures == null || !previousSaddleTextures.containsAll(newSaddleTextures)){
+//            if(previousSaddleTextures == null || !previousSaddleTextures.containsAll(newSaddleTextures)){
                 equipmentTextures.put(Equipment.SADDLE, newSaddleTextures);
-            }
+//            }
         } else {
             if(previousSaddleTextures != null){
                 equipmentTextures.remove(Equipment.SADDLE);

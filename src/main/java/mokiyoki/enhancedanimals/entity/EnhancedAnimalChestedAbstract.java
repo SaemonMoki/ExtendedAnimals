@@ -109,9 +109,9 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         List<String> newBlanketTextures = getBlanket();
 
         if(blanketed) {
-            if(previousBlanketTextures == null || !previousBlanketTextures.containsAll(newBlanketTextures)){
+//            if(previousBlanketTextures == null || !previousBlanketTextures.containsAll(newBlanketTextures)){
                 this.equipmentTextures.put(Equipment.BLANKET, newBlanketTextures);
-            }
+//            }
         } else {
             if(previousBlanketTextures != null){
                 this.equipmentTextures.remove(Equipment.BLANKET);
@@ -125,9 +125,9 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         List<String> newChestTexture = getChestTexture();
 
         if(chested) {
-            if(previousChestTexture == null || !previousChestTexture.containsAll(newChestTexture)){
+//            if(previousChestTexture == null || !previousChestTexture.containsAll(newChestTexture)){
                 this.equipmentTextures.put(Equipment.CHEST, newChestTexture);
-            }
+//            }
         } else {
             if(previousChestTexture != null){
                 this.equipmentTextures.remove(Equipment.CHEST);
@@ -151,9 +151,9 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         List<String> newBridleTextures = getBridleTextures();
 
         if(bridled) {
-            if(previousBridleTextures == null || !previousBridleTextures.containsAll(newBridleTextures)){
+//            if(previousBridleTextures == null || !previousBridleTextures.containsAll(newBridleTextures)){
                 equipmentTextures.put(Equipment.BRIDLE, newBridleTextures);
-            }
+//            }
         } else {
             if(previousBridleTextures != null){
                 equipmentTextures.remove(Equipment.BRIDLE);
@@ -236,6 +236,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         if (enhancedAnimal.isAlive()) {
             ItemStack otherBridle = this.getEnhancedInventory().getStackInSlot(3);
             this.animalInventory.setInventorySlotContents(3, getReplacementItemWithColour(bridleItemStack));
+//            this.animalInventory.setInventorySlotContents(3, bridleItemStack);
             this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
             bridleItemStack.shrink(1);
             if (!otherBridle.isEmpty()) {

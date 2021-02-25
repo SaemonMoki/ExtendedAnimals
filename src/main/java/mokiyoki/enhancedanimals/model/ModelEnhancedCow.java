@@ -608,6 +608,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         CowModelData cowModelData = getCowModelData();
 
+        resetAllCubes();
+
         int[] genes = cowModelData.cowGenes;
         float horns = calculateHorns(genes, cowModelData.uuidArray);
 
@@ -686,21 +688,15 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         }
 
         if (cowModelData.isFemale) {
-            this.noseMale.showModel = false;
             this.noseFemale.showModel = true;
-            this.bridleMale.showModel = false;
             this.bridleFemale.showModel = true;
         } else {
             this.noseMale.showModel = true;
-            this.noseFemale.showModel = false;
             this.bridleMale.showModel = true;
-            this.bridleFemale.showModel = false;
         }
 
         if (cowModelData.collar) {
             this.collar.showModel = true;
-        } else {
-            this.collar.showModel = false;
         }
 
         this.mushroomHead.showModel = false;
@@ -710,8 +706,6 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.mushroomHead.showModel = true;
         }
 
-        this.chest1.showModel = false;
-        this.chest2.showModel = false;
         if (cowModelData.hasChest) {
             this.chest1.showModel = true;
             this.chest2.showModel = true;
@@ -757,6 +751,41 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
 
     }
 
+    private void resetAllCubes() {
+        this.earSmallestL.showModel = false;
+        this.earSmallL.showModel = false;
+        this.earMediumL.showModel = false;
+        this.earLongL.showModel = false;
+        this.earLongestL.showModel = false;
+        this.earSmallestR.showModel = false;
+        this.earSmallR.showModel = false;
+        this.earMediumR.showModel = false;
+        this.earLongR.showModel = false;
+        this.earLongestR.showModel = false;
+        this.udder.showModel = false;
+        this.humpXSmall.showModel = false;
+        this.humpSmall.showModel = false;
+        this.humpSmallish.showModel = false;
+        this.humpMedium.showModel = false;
+        this.humpLargeish.showModel = false;
+        this.humpLarge.showModel = false;
+        this.humpXLarge.showModel = false;
+        this.mushroomHead.showModel = false;
+        this.saddle.showModel = false;
+        this.saddleWestern.showModel = false;
+        this.saddleEnglish.showModel = false;
+        this.saddlePomel.showModel = false;
+        this.headTassles.showModel = false;
+        this.collar.showModel = false;
+        this.bridle.showModel = false;
+        this.bridleMale.showModel = false;
+        this.noseMale.showModel = false;
+        this.bridleFemale.showModel = false;
+        this.noseFemale.showModel = false;
+        this.chest1.showModel = false;
+        this.chest2.showModel = false;
+    }
+
 
     private void renderBodySaddleAndUdder(ItemStack saddleStack, String cowStatus, float bagSize, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         float nipScale = 1.5F/(0.5F+bagSize);
@@ -766,15 +795,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         mapOfScale.put("Udder", scalingsForUdder);
         mapOfScale.put("Nipples", scalingsForNipples);
 
-        if ((!cowStatus.equals(EntityState.PREGNANT.toString()) && !cowStatus.equals(EntityState.MOTHER.toString()))) {
-            unrenderedModels.add("Udder");
-            unrenderedModels.add("Nipples");
+        if ((cowStatus.equals(EntityState.PREGNANT.toString()) && cowStatus.equals(EntityState.MOTHER.toString()))) {
+            this.udder.showModel = true;
         }
-
-        this.saddleWestern.showModel = false;
-        this.saddleEnglish.showModel = false;
-        this.saddle.showModel = false;
-        this.saddlePomel.showModel = false;
 
         if (saddleStack!=null) {
             if (!saddleStack.isEmpty()) {
@@ -822,28 +845,20 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     }
 
     private void renderHump(int hump, List<String> unrenderedModels, MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        unrenderedModels.add("HumpXXS");
-        unrenderedModels.add("HumpXS");
-        unrenderedModels.add("HumpS");
-        unrenderedModels.add("Hump");
-        unrenderedModels.add("HumpL");
-        unrenderedModels.add("HumpXL");
-        unrenderedModels.add("HumpXXL");
-
         if(hump == 12){
-            unrenderedModels.remove("HumpXXL");
+            this.humpXLarge.showModel = true;
         }else if (hump >= 10){
-            unrenderedModels.remove("HumpXL");
+            this.humpLarge.showModel = true;
         }else if (hump >= 8){
-            unrenderedModels.remove("HumpL");
+            this.humpLargeish.showModel = true;
         }else if (hump >= 6){
-            unrenderedModels.remove("Hump");
+            this.humpMedium.showModel = true;
         }else if (hump >= 4){
-            unrenderedModels.remove("HumpS");
+            this.humpSmallish.showModel = true;
         }else if (hump >= 2){
-            unrenderedModels.remove("HumpXS");
+            this.humpSmall.showModel = true;
         }else if (hump == 1){
-            unrenderedModels.remove("HumpXXS");
+            this.humpXSmall.showModel = true;
         }
     }
 
@@ -1455,45 +1470,31 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.hornR3.rotateAngleY = -hornCalculationsY[3] * hornGrowthR[3] * flip;
             this.hornR2.rotateAngleY = -hornCalculationsY[2] * hornGrowthR[2] * flip;
             this.hornR1.rotateAngleY = (-hornCalculationsY[1] * hornGrowthR[1]) * flip;
-
-
-
         }
     }
 
     private void setEarRotations(int[] sharedGenes, List<String> unrenderedModels) {
-        this.earSmallestL.setRotationPoint(-3.9F, 4.0F, -2.5F);
-        this.earSmallL.setRotationPoint(-3.9F, 4.0F, -2.5F);
-        this.earMediumL.setRotationPoint(-3.9F, 4.0F, -2.5F);
-        this.earLongL.setRotationPoint(-3.5F, 4.0F, -2.5F);
-        this.earLongestL.setRotationPoint(-3.5F, 4.0F, -2.5F);
-        this.earSmallestR.setRotationPoint(-3.9F, 4.0F, -2.5F);
-        this.earSmallR.setRotationPoint(-3.9F, 4.0F, -2.5F);
-        this.earMediumR.setRotationPoint(-3.9F, 4.0F, -2.5F);
-        this.earLongR.setRotationPoint(-3.5F, 4.0F, -2.5F);
-        this.earLongestR.setRotationPoint(-3.5F, 4.0F, -2.5F);
-
-        this.earSmallestL.rotateAngleZ = ((float) Math.PI / 2F);
-        this.earSmallL.rotateAngleZ = ((float) Math.PI / 2F);
-        this.earMediumL.rotateAngleZ = ((float) Math.PI / 2F);
-        this.earLongL.rotateAngleZ = ((float) Math.PI / 2F);
-        this.earLongestL.rotateAngleZ = ((float) Math.PI / 2F);
-        this.earSmallestR.rotateAngleZ = ((float) Math.PI / 2F);
-        this.earSmallR.rotateAngleZ = ((float) Math.PI / 2F);
-        this.earMediumR.rotateAngleZ = ((float) Math.PI / 2F);
-        this.earLongR.rotateAngleZ = ((float) Math.PI / 2F);
-        this.earLongestR.rotateAngleZ = ((float) Math.PI / 2F);
-
-        unrenderedModels.add("SmallestL");
-        unrenderedModels.add("SmallL");
-        unrenderedModels.add("MediumL");
-        unrenderedModels.add("LongL");
-        unrenderedModels.add("LongestL");
-        unrenderedModels.add("SmallestR");
-        unrenderedModels.add("SmallR");
-        unrenderedModels.add("MediumR");
-        unrenderedModels.add("LongR");
-        unrenderedModels.add("LongestR");
+//        this.earSmallestL.setRotationPoint(-3.9F, 4.0F, -2.5F);
+//        this.earSmallL.setRotationPoint(-3.9F, 4.0F, -2.5F);
+//        this.earMediumL.setRotationPoint(-3.9F, 4.0F, -2.5F);
+//        this.earLongL.setRotationPoint(-3.5F, 4.0F, -2.5F);
+//        this.earLongestL.setRotationPoint(-3.5F, 4.0F, -2.5F);
+//        this.earSmallestR.setRotationPoint(-3.9F, 4.0F, -2.5F);
+//        this.earSmallR.setRotationPoint(-3.9F, 4.0F, -2.5F);
+//        this.earMediumR.setRotationPoint(-3.9F, 4.0F, -2.5F);
+//        this.earLongR.setRotationPoint(-3.5F, 4.0F, -2.5F);
+//        this.earLongestR.setRotationPoint(-3.5F, 4.0F, -2.5F);
+//
+//        this.earSmallestL.rotateAngleZ = ((float) Math.PI / 2F);
+//        this.earSmallL.rotateAngleZ = ((float) Math.PI / 2F);
+//        this.earMediumL.rotateAngleZ = ((float) Math.PI / 2F);
+//        this.earLongL.rotateAngleZ = ((float) Math.PI / 2F);
+//        this.earLongestL.rotateAngleZ = ((float) Math.PI / 2F);
+//        this.earSmallestR.rotateAngleZ = ((float) Math.PI / 2F);
+//        this.earSmallR.rotateAngleZ = ((float) Math.PI / 2F);
+//        this.earMediumR.rotateAngleZ = ((float) Math.PI / 2F);
+//        this.earLongR.rotateAngleZ = ((float) Math.PI / 2F);
+//        this.earLongestR.rotateAngleZ = ((float) Math.PI / 2F);
 
         if(sharedGenes != null) {
             if (sharedGenes[46] == 2 && sharedGenes[47] == 2) {
@@ -1519,36 +1520,36 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                     this.earSmallestL.rotateAngleZ = 1.1F;
                     this.earSmallestR.setRotationPoint(-3.0F, 0.5F, -2.5F);
                     this.earSmallestR.rotateAngleZ = -1.1F;
-                    unrenderedModels.remove("SmallestL");
-                    unrenderedModels.remove("SmallestR");
+                    this.earSmallestL.showModel = true;
+                    this.earSmallestR.showModel = true;
                 } else if (earSize <= 3) {
                     this.earSmallL.setRotationPoint(3.0F, 0.75F, -2.5F);
                     this.earSmallL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                     this.earSmallR.setRotationPoint(-3.0F, 0.75F, -2.5F);
                     this.earSmallR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
-                    unrenderedModels.remove("SmallL");
-                    unrenderedModels.remove("SmallR");
+                    this.earSmallL.showModel = true;
+                    this.earSmallR.showModel = true;
                 } else if (earSize <= 5) {
                     this.earMediumL.setRotationPoint(3.0F + (floppiness / 3), 1.0F, -2.5F);
                     this.earMediumL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                     this.earMediumR.setRotationPoint(-(3.0F + (floppiness / 3)), 1.0F, -2.5F);
                     this.earMediumR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
-                    unrenderedModels.remove("MediumL");
-                    unrenderedModels.remove("MediumR");
+                    this.earMediumL.showModel = true;
+                    this.earMediumR.showModel = true;
                 } else if (earSize <= 7) {
                     this.earLongL.setRotationPoint(3.0F + (floppiness / 2), 1.0F, -2.5F);
                     this.earLongL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                     this.earLongR.setRotationPoint(-(3.0F + (floppiness / 2)), 1.0F, -2.5F);
                     this.earLongR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
-                    unrenderedModels.remove("LongL");
-                    unrenderedModels.remove("LongR");
+                    this.earLongL.showModel = true;
+                    this.earLongR.showModel = true;
                 } else {
                     this.earLongestL.setRotationPoint(3.0F + floppiness, 1.0F, -2.5F);
                     this.earLongestL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                     this.earLongestR.setRotationPoint(-(3.0F + floppiness), 1.0F, -2.5F);
                     this.earLongestR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
-                    unrenderedModels.remove("LongestL");
-                    unrenderedModels.remove("LongestR");
+                    this.earLongestL.showModel = true;
+                    this.earLongestR.showModel = true;
                 }
 
             } else {
@@ -1583,36 +1584,36 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                     this.earSmallestL.rotateAngleZ = floppiness;
                     this.earSmallestR.setRotationPoint(-3.0F, 0.5F, -2.5F);
                     this.earSmallestR.rotateAngleZ = -floppiness;
-                    unrenderedModels.remove("SmallestL");
-                    unrenderedModels.remove("SmallestR");
+                    this.earSmallestL.showModel = true;
+                    this.earSmallestR.showModel = true;
                 } else if (earSize <= 3) {
                     this.earSmallL.setRotationPoint(3.0F, 0.75F, -2.5F);
                     this.earSmallL.rotateAngleZ = floppiness;
                     this.earSmallR.setRotationPoint(-3.0F, 0.75F, -2.5F);
                     this.earSmallR.rotateAngleZ = -floppiness;
-                    unrenderedModels.remove("SmallL");
-                    unrenderedModels.remove("SmallR");
+                    this.earSmallL.showModel = true;
+                    this.earSmallR.showModel = true;
                 } else if (earSize <= 5) {
                     this.earMediumL.setRotationPoint(3.0F + (floppiness / 3), 1.0F, -2.5F);
                     this.earMediumL.rotateAngleZ = floppiness;
                     this.earMediumR.setRotationPoint(-(3.0F + (floppiness / 3)), 1.0F, -2.5F);
                     this.earMediumR.rotateAngleZ = -floppiness;
-                    unrenderedModels.remove("MediumL");
-                    unrenderedModels.remove("MediumR");
+                    this.earMediumL.showModel = true;
+                    this.earMediumR.showModel = true;
                 } else if (earSize <= 7) {
                     this.earLongL.setRotationPoint(3.0F + (floppiness / 2), 1.0F, -2.5F);
                     this.earLongL.rotateAngleZ = floppiness;
                     this.earLongR.setRotationPoint(-(3.0F + (floppiness / 2)), 1.0F, -2.5F);
                     this.earLongR.rotateAngleZ = -floppiness;
-                    unrenderedModels.remove("LongL");
-                    unrenderedModels.remove("LongR");
+                    this.earLongL.showModel = true;
+                    this.earLongR.showModel = true;
                 } else {
                     this.earLongestL.setRotationPoint(3.0F + floppiness, 1.0F, -2.5F);
                     this.earLongestL.rotateAngleZ = floppiness;
                     this.earLongestR.setRotationPoint(-(3.0F + floppiness), 1.0F, -2.5F);
                     this.earLongestR.rotateAngleZ = -floppiness;
-                    unrenderedModels.remove("LongestL");
-                    unrenderedModels.remove("LongestR");
+                    this.earLongestL.showModel = true;
+                    this.earLongestR.showModel = true;
                 }
 
             }

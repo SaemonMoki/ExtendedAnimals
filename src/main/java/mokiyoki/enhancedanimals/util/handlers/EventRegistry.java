@@ -28,19 +28,31 @@ import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.dispenser.BeehiveDispenseBehavior;
+import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
+import net.minecraft.dispenser.OptionalDispenseBehavior;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.IEquipable;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.EntityPredicates;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -48,6 +60,9 @@ import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
 
@@ -188,6 +203,9 @@ public class EventRegistry {
                 }
             });
         }
+
+        DispenserBlock.registerDispenseBehavior(Items.SHEARS.asItem(), new GeneticShearDispenseBehavior());
+
         //TODO dispensers should be able to turn hay to unbound hay if they contain a sharp tool and are facing a hay block
     }
 
@@ -269,6 +287,45 @@ public class EventRegistry {
         EntitySpawnPlacementRegistry.register(ENHANCED_CHICKEN, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
         EntitySpawnPlacementRegistry.register(ENHANCED_RABBIT, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
         EntitySpawnPlacementRegistry.register(ENHANCED_MOOSHROOM, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EnhancedMooshroom::canMooshroomSpawn);
+
+    }
+
+    private static class GeneticShearDispenseBehavior extends BeehiveDispenseBehavior {
+
+        @Override
+        protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+            World world = source.getWorld();
+            if (!world.isRemote()) {
+                BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
+                this.setSuccessful(shearGeneticAnimals((ServerWorld)world, blockpos));
+                if (this.isSuccessful() && stack.attemptDamageItem(1, world.getRandom(), (ServerPlayerEntity)null)) {
+                    stack.setCount(0);
+                }
+                if (this.isSuccessful()) {
+                    return stack;
+                }
+            }
+
+            return super.dispenseStack(source, stack);
+        }
+
+        private boolean shearGeneticAnimals(ServerWorld world, BlockPos pos) {
+            for(LivingEntity livingentity : world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pos), EntityPredicates.NOT_SPECTATING)) {
+                if (livingentity instanceof EnhancedAnimalAbstract && livingentity instanceof IForgeShearable) {
+                    IForgeShearable ishearable = (IForgeShearable)livingentity;
+                    if (ishearable.isShearable(ItemStack.EMPTY, world, pos)) {
+                        List<ItemStack> wool = ishearable.onSheared(null, ItemStack.EMPTY, world, pos, 0);
+                        wool.forEach(d -> {
+                            net.minecraft.entity.item.ItemEntity ent = livingentity.entityDropItem(d, 1.0F);
+                            ent.setMotion(ent.getMotion().add((double)(ThreadLocalRandom.current().nextFloat() * 0.1F), (double)(ThreadLocalRandom.current().nextFloat() * 0.05F), (double)((ThreadLocalRandom.current().nextFloat()) * 0.1F)));
+                        });
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
 
     }
 

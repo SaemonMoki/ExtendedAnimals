@@ -4,12 +4,17 @@ import mokiyoki.enhancedanimals.blocks.GrowableDoubleHigh;
 import mokiyoki.enhancedanimals.blocks.GrowablePlant;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.init.ModBlocks;
+import net.minecraft.block.BeetrootBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.BushBlock;
+import net.minecraft.block.CactusBlock;
 import net.minecraft.block.CropsBlock;
+import net.minecraft.block.DoublePlantBlock;
 import net.minecraft.block.FlowerBlock;
+import net.minecraft.block.MelonBlock;
+import net.minecraft.block.PumpkinBlock;
 import net.minecraft.block.SweetBerryBushBlock;
 import net.minecraft.block.TallFlowerBlock;
 import net.minecraft.block.TallGrassBlock;
@@ -21,35 +26,23 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static mokiyoki.enhancedanimals.blocks.GrowableDoubleHigh.HALF;
 
 public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
 
     private final EnhancedAnimalAbstract animal;
     private boolean wantsToEat;
     private boolean canEat;
-    protected boolean eaterIsShort = false;
-    protected Map<Block, EatValues> ediblePlants = new HashMap<>();
+    protected Map<Block, EatValues> ediblePlants;
 
-    public EnhancedEatPlantsGoal(EnhancedAnimalAbstract animalIn) {
+    public EnhancedEatPlantsGoal(EnhancedAnimalAbstract animalIn, Map<Block, EatValues> foods) {
         super(animalIn, (double)0.7F, 16);
         this.animal = animalIn;
-        this.setEdiblePlants();
-    }
-
-    protected void setEdiblePlants(){
-        this.ediblePlants.put(Blocks.CARROTS, new EatValues(4, 1, 750));
-        this.ediblePlants.put(Blocks.BEETROOTS, new EatValues(2, 1, 750));
-        this.ediblePlants.put(Blocks.WHEAT, new EatValues(2, 1, 750));
-        this.ediblePlants.put(Blocks.AZURE_BLUET, new EatValues(3, 2, 750));
-        this.ediblePlants.put(Blocks.BLUE_ORCHID, new EatValues(7, 2, 375));
-        this.ediblePlants.put(Blocks.CORNFLOWER, new EatValues(7, 2, 375));
-        this.ediblePlants.put(Blocks.DANDELION, new EatValues(3, 2, 750));
-        this.ediblePlants.put(Blocks.OXEYE_DAISY, new EatValues(7, 2, 750));
-        this.ediblePlants.put(Blocks.ROSE_BUSH, new EatValues(3, 2, 375));
-        this.ediblePlants.put(Blocks.SWEET_BERRY_BUSH, new EatValues(1, 1, 1000));
-        this.ediblePlants.put(Blocks.CACTUS, new EatValues(1, 1, 1000));
+        this.ediblePlants = foods;
     }
 
     public boolean shouldExecute() {
@@ -59,11 +52,10 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
             }
 
             this.canEat = false;
-            this.wantsToEat = this.animal.isPlantEaten();
             this.wantsToEat = true;
         }
 
-        return super.shouldExecute();
+        return animal.getHunger() > 3000 && !animal.isAnimalSleeping() && super.shouldExecute();
     }
 
     public boolean shouldContinueExecuting() {
@@ -77,26 +69,56 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
             World world = this.animal.world;
             BlockPos blockpos = this.destinationBlock.up();
             if (this.canEat && isEdible(world, blockpos)) {
-                if (!this.eaterIsShort && isEdible(world, blockpos.up())) {
-                    blockpos = blockpos.up();
+                BlockState blockState = world.getBlockState(blockpos);
+                Block block = blockState.getBlock();
+                EatValues blockValues = this.ediblePlants.get(block);
+                if (blockValues != null) {
+                    Integer integer = getPlantAge(blockState);
+                    this.animal.decreaseHunger(blockValues.getHungerPoints(integer, getPlantMaxAge(block)));
+                    if (block instanceof MelonBlock || block instanceof PumpkinBlock) {
+                        world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 2);
+                        world.destroyBlock(blockpos, false);
+                    } else {
+                        setNewPlantBlockState(world, blockpos, blockState, block, integer);
+                        world.playEvent(2001, blockpos, Block.getStateId(blockState));
+                    }
+                    this.animal.eatingTicks = ThreadLocalRandom.current().nextInt(30) + 40;
+                    this.canEat = false;
+                    this.runDelay = 20;
                 }
-                BlockState iblockstate = world.getBlockState(blockpos);
-                Block block = iblockstate.getBlock();
-                Integer integer = getPlantAge(iblockstate);
-                this.animal.decreaseHunger(this.ediblePlants.get(block).getHungerPoints(integer, getPlantMaxAge(block)));
-                if (integer == 0) {
-                    while (world.getBlockState(blockpos).getBlock() == Blocks.CACTUS) { blockpos = blockpos.up(); }
-                    world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 2);
-                    world.destroyBlock(blockpos, true);
-                } else {
-                    setNewPlantBlockState(world, blockpos, iblockstate, block, integer);
-                    world.playEvent(2001, blockpos, Block.getStateId(iblockstate));
-                }
-                this.animal.eatingTicks = ThreadLocalRandom.current().nextInt(30)+40;
             }
-
-            this.canEat = false;
-            this.runDelay = 10;
+        } else if (this.destinationBlock.withinDistance(this.animal.getPosition(), 2.0D)) {
+            World world = this.animal.world;
+            BlockPos blockpos = this.destinationBlock.up();
+            BlockState blockState = world.getBlockState(blockpos);
+            Block block = blockState.getBlock();
+            int cactusSize = 0;
+            while (world.getBlockState(blockpos.up()).getBlock() == Blocks.CACTUS) {
+                blockpos = blockpos.up();
+                cactusSize++;
+            }
+            if ((block instanceof CactusBlock && cactusSize != 0) || block instanceof MelonBlock || block instanceof PumpkinBlock) {
+                EatValues blockValues = this.ediblePlants.get(block);
+                if (blockValues != null) {
+                    this.animal.decreaseHunger(blockValues.hungerPoints);
+                    world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 2);
+                    world.destroyBlock(blockpos, false);
+                    this.animal.eatingTicks = ThreadLocalRandom.current().nextInt(30) + 40;
+                    this.canEat = false;
+                    this.runDelay = 20;
+                }
+            } else if (block instanceof SweetBerryBushBlock) {
+                EatValues blockValues = this.ediblePlants.get(block);
+                if (blockValues != null) {
+                    Integer integer = getPlantAge(blockState);
+                    this.animal.decreaseHunger(blockValues.getHungerPoints(integer, getPlantMaxAge(block)));
+                    setNewPlantBlockState(world, blockpos, blockState, block, integer);
+                    world.playEvent(2001, blockpos, Block.getStateId(blockState));
+                    this.animal.eatingTicks = ThreadLocalRandom.current().nextInt(30) + 40;
+                    this.canEat = false;
+                    this.runDelay = 20;
+                }
+            }
         }
 
     }
@@ -117,23 +139,26 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
             if (block instanceof SweetBerryBushBlock) {
                 return this.ediblePlants.get(block).isRipeEnough(blockState.get(SweetBerryBushBlock.AGE));
             } else if (block instanceof CropsBlock) {
+                if (block instanceof GrowableDoubleHigh) {
+                    if (blockState.get(HALF) == DoubleBlockHalf.UPPER) {
+                        return blockState.get(CropsBlock.AGE) != 0;
+                    }
+                } else if (block instanceof BeetrootBlock) {
+                    return this.ediblePlants.get(block).isRipeEnough(blockState.get(BeetrootBlock.BEETROOT_AGE));
+                }
                 return this.ediblePlants.get(block).isRipeEnough(blockState.get(CropsBlock.AGE));
             } else {
                 return true;
             }
-        } else if (block instanceof GrowablePlant) {
-            block = Block.getBlockFromItem(((GrowablePlant) block).getSeedsItem().asItem());
-            return this.ediblePlants.get(block).isRipeEnough(blockState.get(GrowableDoubleHigh.AGE));
-        } else if (block instanceof GrowableDoubleHigh) {
-            block = Block.getBlockFromItem(((GrowableDoubleHigh)block).getSeedsItem().asItem());
-            return this.ediblePlants.get(block).isRipeEnough(blockState.get(GrowableDoubleHigh.AGE));
         }
         return false;
     }
 
     protected Integer getPlantAge(BlockState plant) {
         Block plantBlock = plant.getBlock();
-        if (plantBlock instanceof CropsBlock) {
+        if (plantBlock instanceof BeetrootBlock) {
+            return plant.get(BeetrootBlock.BEETROOT_AGE);
+        } else if (plantBlock instanceof CropsBlock) {
             return plant.get(CropsBlock.AGE);
         } else if (plantBlock instanceof SweetBerryBushBlock) {
             return plant.get(SweetBerryBushBlock.AGE);
@@ -154,9 +179,28 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
         }
     }
 
-    protected void setNewPlantBlockState(World world, BlockPos blockpos, BlockState blockstate,Block block, Integer integer) {
+    protected void setNewPlantBlockState(World world, BlockPos blockpos, BlockState blockstate, Block block, Integer integer) {
         if (block instanceof CropsBlock) {
-            world.setBlockState(blockpos, blockstate.with(CropsBlock.AGE, this.ediblePlants.get(block).takeBite(getPlantMaxAge(block))), 2);
+            if (block instanceof GrowableDoubleHigh) {
+                BlockState topBlockstate = world.getBlockState(blockpos.up());
+                if (topBlockstate.getBlock() instanceof GrowableDoubleHigh) {
+                    int topAge = topBlockstate.get(CropsBlock.AGE);
+                    int bottomAge = blockstate.get(CropsBlock.AGE);
+                    if (topAge != 0) {
+                        world.setBlockState(blockpos.up(), block.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(topAge)).with(HALF, DoubleBlockHalf.UPPER), 2);
+                    } else {
+                        world.setBlockState(blockpos, block.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(bottomAge)).with(HALF, DoubleBlockHalf.LOWER), 2);
+                    }
+                }
+            } else {
+                if (block instanceof BeetrootBlock) {
+                    int beetrootAge = blockstate.get(BeetrootBlock.BEETROOT_AGE);
+                    world.setBlockState(blockpos, blockstate.with(BeetrootBlock.BEETROOT_AGE, this.ediblePlants.get(block).takeBite(beetrootAge)), 2);
+                } else {
+                    int currentAge = blockstate.get(CropsBlock.AGE);
+                    world.setBlockState(blockpos, blockstate.with(CropsBlock.AGE, this.ediblePlants.get(block).takeBite(currentAge)), 2);
+                }
+            }
         } else if (block instanceof SweetBerryBushBlock) {
             world.setBlockState(blockpos, blockstate.with(SweetBerryBushBlock.AGE, integer - 1), 2);
         } else if (block instanceof BushBlock) {
@@ -176,49 +220,35 @@ public class EnhancedEatPlantsGoal extends MoveToBlockGoal {
                 }
             } else if (block instanceof TallFlowerBlock) {
                 if (block == Blocks.ROSE_BUSH) {
-                    if (world.getBlockState(blockpos.up()).getBlock() == Blocks.ROSE_BUSH) {
-                        world.setBlockState(blockpos, ModBlocks.GROWABLE_ROSE_BUSH.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.LOWER), 2);
-                        world.setBlockState(blockpos.up(), ModBlocks.GROWABLE_ROSE_BUSH.getDefaultState().with(GrowableDoubleHigh.AGE, 7).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.UPPER), 2);
-                    } else {
-                        world.setBlockState(blockpos, ModBlocks.GROWABLE_ROSE_BUSH.getDefaultState().with(GrowableDoubleHigh.AGE, 7).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.LOWER), 2);
-                        world.setBlockState(blockpos.up(), ModBlocks.GROWABLE_ROSE_BUSH.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.UPPER), 2);
-                    }
+                    world.setBlockState(blockpos, ModBlocks.GROWABLE_ROSE_BUSH.getDefaultState().with(GrowableDoubleHigh.AGE, 7).with(HALF, DoubleBlockHalf.LOWER), 2);
+                    world.setBlockState(blockpos.up(), ModBlocks.GROWABLE_ROSE_BUSH.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).with(HALF, DoubleBlockHalf.UPPER), 2);
                 } else if (block == Blocks.SUNFLOWER) {
-                    if (world.getBlockState(blockpos.up()).getBlock() == Blocks.SUNFLOWER) {
-                        world.setBlockState(blockpos, ModBlocks.GROWABLE_SUNFLOWER.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.LOWER), 2);
-                        world.setBlockState(blockpos.up(), ModBlocks.GROWABLE_SUNFLOWER.getDefaultState().with(GrowableDoubleHigh.AGE, 7).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.UPPER), 2);
-                    } else {
-                        world.setBlockState(blockpos, ModBlocks.GROWABLE_SUNFLOWER.getDefaultState().with(GrowableDoubleHigh.AGE, 7).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.LOWER), 2);
-                        world.setBlockState(blockpos.up(), ModBlocks.GROWABLE_SUNFLOWER.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.UPPER), 2);
-                    }
+                    world.setBlockState(blockpos, ModBlocks.GROWABLE_SUNFLOWER.getDefaultState().with(GrowableDoubleHigh.AGE, 7).with(HALF, DoubleBlockHalf.LOWER), 2);
+                    world.setBlockState(blockpos.up(), ModBlocks.GROWABLE_SUNFLOWER.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).with(HALF, DoubleBlockHalf.UPPER), 2);
                 }
             } else if (block instanceof TallGrassBlock) {
+                if (block == Blocks.GRASS) {
+                    world.setBlockState(blockpos, ModBlocks.GROWABLE_GRASS.getDefaultState().with(GrowablePlant.AGE, this.ediblePlants.get(block).takeBite(7)), 2);
+                } else if (block == Blocks.FERN) {
+                    world.setBlockState(blockpos, ModBlocks.GROWABLE_FERN.getDefaultState().with(GrowablePlant.AGE, this.ediblePlants.get(block).takeBite(7)), 2);
+                }
+            } else if (block instanceof DoublePlantBlock) {
                 if (block == Blocks.TALL_GRASS) {
                     if (world.getBlockState(blockpos.up()).getBlock() == Blocks.TALL_GRASS) {
-                        world.setBlockState(blockpos, ModBlocks.GROWABLE_TALL_GRASS.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.LOWER), 2);
-                        world.setBlockState(blockpos.up(), ModBlocks.GROWABLE_TALL_GRASS.getDefaultState().with(GrowableDoubleHigh.AGE, 7).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.UPPER), 2);
-                    } else {
-                        world.setBlockState(blockpos, ModBlocks.GROWABLE_TALL_GRASS.getDefaultState().with(GrowableDoubleHigh.AGE, 7).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.LOWER), 2);
-                        world.setBlockState(blockpos.up(), ModBlocks.GROWABLE_TALL_GRASS.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.UPPER), 2);
+                        world.setBlockState(blockpos, ModBlocks.GROWABLE_TALL_GRASS.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).with(HALF, DoubleBlockHalf.LOWER), 2);
+                        world.setBlockState(blockpos.up(), ModBlocks.GROWABLE_TALL_GRASS.getDefaultState().with(GrowableDoubleHigh.AGE, 7).with(HALF, DoubleBlockHalf.UPPER), 2);
                     }
                 } else if (block == Blocks.LARGE_FERN) {
                     if (world.getBlockState(blockpos.up()).getBlock() == Blocks.LARGE_FERN) {
-                        world.setBlockState(blockpos, ModBlocks.GROWABLE_LARGE_FERN.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.LOWER), 2);
-                        world.setBlockState(blockpos.up(), ModBlocks.GROWABLE_LARGE_FERN.getDefaultState().with(GrowableDoubleHigh.AGE, 7).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.UPPER), 2);
-                    } else {
-                        world.setBlockState(blockpos, ModBlocks.GROWABLE_LARGE_FERN.getDefaultState().with(GrowableDoubleHigh.AGE, 7).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.LOWER), 2);
-                        world.setBlockState(blockpos.up(), ModBlocks.GROWABLE_LARGE_FERN.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).with(GrowableDoubleHigh.HALF, DoubleBlockHalf.UPPER), 2);
+                        world.setBlockState(blockpos, ModBlocks.GROWABLE_LARGE_FERN.getDefaultState().with(GrowableDoubleHigh.AGE, this.ediblePlants.get(block).takeBite(7)).with(HALF, DoubleBlockHalf.LOWER), 2);
+                        world.setBlockState(blockpos.up(), ModBlocks.GROWABLE_LARGE_FERN.getDefaultState().with(GrowableDoubleHigh.AGE, 7).with(HALF, DoubleBlockHalf.UPPER), 2);
                     }
                 }
-            } else if (block == Blocks.GRASS) {
-                world.setBlockState(blockpos, ModBlocks.GROWABLE_GRASS.getDefaultState().with(GrowablePlant.AGE, this.ediblePlants.get(block).takeBite(7)), 2);
-            } else if (block == Blocks.FERN) {
-                world.setBlockState(blockpos, ModBlocks.GROWABLE_FERN.getDefaultState().with(GrowablePlant.AGE, this.ediblePlants.get(block).takeBite(7)), 2);
             }
         }
     }
 
-    protected class EatValues{
+    public static class EatValues{
         private int edibleAt = 0;
         private int biteSize = 0;
         private int hungerPoints = 0;

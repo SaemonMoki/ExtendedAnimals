@@ -53,18 +53,6 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
     }
 
     public void setGenes(Genes eggGenes) {
-//        if (eggGenes != null) {
-//            StringBuilder sb = new StringBuilder();
-//            for (int i = 0; i < eggGenes.length; i++){
-//                sb.append(eggGenes[i]);
-//                if (i != eggGenes.length -1){
-//                    sb.append(",");
-//                }
-//            }
-//            this.getDataManager().set(GENES, sb.toString());
-//        } else {
-//            this.getDataManager().set(GENES, "INFERTILE");
-//        }
         if (eggGenes != null) {
             this.getDataManager().set(GENES, eggGenes.getGenesAsString());
         } else {
@@ -124,24 +112,22 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         super.onImpact(result);
         if (!this.world.isRemote) {
             if (!getGenes().equals("INFERTILE")) {
-                //            if (this.rand.nextInt(8) == 0) {
-//                int i = 1;
-//                if (this.rand.nextInt(32) == 0) {
-//                    i = 4;
-//                }
-//                for (int j = 0; j < i; ++j) {
-                EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.create(this.world);
-                enhancedchicken.setGenes(new Genes(getGenes()));
-                enhancedchicken.setSharedGenesFromEntityEgg(getGenes());
-                enhancedchicken.setGrowingAge(-60000);
-                enhancedchicken.initilizeAnimalSize();
-                enhancedchicken.setBirthTime(String.valueOf(this.world.getGameTime()));
-                enhancedchicken.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
-                enhancedchicken.setSireName(getSire());
-                enhancedchicken.setDamName(getDam());
-                this.world.addEntity(enhancedchicken);
-//                }
-//            }
+                Genes genetics = new Genes(getGenes());
+
+                if (genetics.testGenes(70, 1, 2)) {
+
+                } else {
+                    EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.create(this.world);
+                    enhancedchicken.setGenes(new Genes(getGenes()));
+                    enhancedchicken.setSharedGenesFromEntityEgg(getGenes());
+                    enhancedchicken.setGrowingAge(-60000);
+                    enhancedchicken.initilizeAnimalSize();
+                    enhancedchicken.setBirthTime(String.valueOf(this.world.getGameTime()));
+                    enhancedchicken.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
+                    enhancedchicken.setSireName(getSire());
+                    enhancedchicken.setDamName(getDam());
+                    this.world.addEntity(enhancedchicken);
+                }
             }
             this.world.setEntityState(this, (byte)3);
             this.remove();

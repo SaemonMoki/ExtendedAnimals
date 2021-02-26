@@ -408,7 +408,7 @@ public class EventSubscriber {
                         Genes rabbitGenes = enhancedRabbit.createInitialBreedGenes(entity.getEntityWorld(), entity.getPosition(), breed);
                         enhancedRabbit.setGenes(rabbitGenes);
                         enhancedRabbit.setSharedGenes(rabbitGenes);
-                        enhancedRabbit.setRabbitSize();
+                        enhancedRabbit.initilizeAnimalSize();
                         enhancedRabbit.setInitialCoat();
                         enhancedRabbit.getReloadTexture();
 

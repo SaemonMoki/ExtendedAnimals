@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
@@ -24,6 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.IShearable;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
@@ -32,6 +34,7 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AirItem;
@@ -156,6 +159,33 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     }
 
+    private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
+        Map<Block, EnhancedEatPlantsGoal.EatValues> ediblePlants = new HashMap<>();
+        ediblePlants.put(Blocks.CARROTS, new EnhancedEatPlantsGoal.EatValues(4, 2, 750));
+        ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(2, 2, 750));
+        ediblePlants.put(Blocks.ALLIUM, new EnhancedEatPlantsGoal.EatValues(8, 3, 750));
+        ediblePlants.put(Blocks.AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(Blocks.BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(Blocks.CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(Blocks.DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(Blocks.OXEYE_DAISY, new EnhancedEatPlantsGoal.EatValues(7, 3, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_OXEYE_DAISY, new EnhancedEatPlantsGoal.EatValues(7, 2, 750));
+        ediblePlants.put(Blocks.GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+
+        return ediblePlants;
+    }
+
 //    private int sheepTimer;
 //    private EnhancedWaterAvoidingRandomWalkingEatingGoal grazingGoal;
 
@@ -208,9 +238,10 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(6, new StayShelteredGoal(this, 5723, 7000, napmod));
         this.goalSelector.addGoal(7, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
-        this.goalSelector.addGoal(8, this.wanderEatingGoal);
-        this.goalSelector.addGoal(9, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(10, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(8, new EnhancedEatPlantsGoal(this, createGrazingMap()));
+        this.goalSelector.addGoal(9, this.wanderEatingGoal);
+        this.goalSelector.addGoal(10, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(11, new EnhancedLookRandomlyGoal(this));
     }
 
     //TODO put new sheep behaviour here
@@ -439,10 +470,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     public boolean isShearable(ItemStack item, World world, BlockPos pos) {
-        if (!this.world.isRemote && currentCoatLength >=1) {
-            return true;
-        }
-        return false;
+        return !this.world.isRemote && currentCoatLength >= 1;
     }
 
     @Override
@@ -584,61 +612,78 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     private DyeColor getWoolColour() {
-        int[] genes = this.genetics.getAutosomalGenes();
+        int[] gene = this.genetics.getAutosomalGenes();
         int spots = 0;
         DyeColor returnDye;
 
-        if ((genes[0] == 1 || genes[1] == 1) && !(genes[4] == 1 || genes[5] == 1)) {
+        if (((gene[0] == 1 || gene[1] == 1) && !(gene[4] == 1 || gene[5] == 1)) || gene[68] == 2 || gene[69] == 2 || (gene[68] >= 3 && gene[68] == gene[69])) {
             //sheep is white
             spots = 2;
-        } else if (genes[8] == 2 && genes[9] == 2){
+        } else if (gene[8] == 2 && gene[9] == 2){
             // 1 out of 3 chance to drop white wool instead
-            spots = this.rand.nextInt(3);
+            spots = this.rand.nextInt(3) == 0 ? 1 : 0;
+            if (spots == 0 && (gene[68] == 3 || gene[69] == 3)) {
+                if (gene[68] == 4 || gene[69] == 4) {
+                    // 2 out of 3 chance to drop white wool
+                    spots = this.rand.nextInt(3) == 0 ? 1 : 0;
+                } else if (gene[68] == 1 || gene[69] == 1) {
+                    // 1 out of 2 chance to drop white wool
+                    spots = this.rand.nextInt(2);
+                }
+            }
+        } else if (gene[68] == 3 || gene[69] == 3) {
+            if (gene[68] == 4 || gene[69] == 4) {
+                // 2 out of 3 chance to drop white wool
+                spots = this.rand.nextInt(3);
+            } else if (gene[68] == 1 || gene[69] == 1) {
+                // 1 out of 2 chance to drop white wool
+                spots = this.rand.nextInt(2);
+            }
         }
 
-        if (spots != 2) {
-            if (genes[4] == 1 || genes[5] == 1) {
+        if (spots == 0) {
+            if (gene[4] == 1 || gene[5] == 1) {
                 //sheep is dominant black
-                if (genes[2] == 1 || genes[3] == 1){
+                if (gene[2] == 1 || gene[3] == 1){
                     //is not chocolate
                     returnDye = DyeColor.BLACK;
                 }else{
                     //is chocolate
                     returnDye = DyeColor.BROWN;
                 }
-            } else if (genes[4] == 3 && genes[5] == 3) {
+            } else if (gene[4] == 3 && gene[5] == 3) {
                 //red sheep
-                if (genes[0] == 2 || genes[1] == 2 || genes[0] == 3 || genes[1] == 3) {
+                if (gene[0] == 2 || gene[1] == 2 || gene[0] == 3 || gene[1] == 3) {
                     returnDye = DyeColor.WHITE;
                 } else {
-                    if ((genes[0] >= 5 && genes[1] >= 5) && (genes[0] == 5 || genes[1] == 5)) {
+                    if ((gene[0] >= 5 && gene[1] >= 5) && (gene[0] == 5 || gene[1] == 5)) {
                         returnDye = DyeColor.LIGHT_GRAY;
                     } else {
                         returnDye = DyeColor.BROWN;
                     }
                 }
-            } else if (genes[0] >= 3 && genes[1] >= 3){
-                if (genes[0] == 3 || genes[1] == 3) {
+            } else if (gene[0] >= 3 && gene[1] >= 3){
+                if (gene[0] == 3 || gene[1] == 3) {
                     //badgerface or badgerface mix brown sheep
                     returnDye = DyeColor.BROWN;
-                } else if (genes[0] == 4 || genes[1] == 4) {
+                } else if (gene[0] == 4 || gene[1] == 4) {
                     //mouflon black or black mix with blue
-                    if (genes[2] == 1 || genes[3] == 1){
+                    if (gene[2] == 1 || gene[3] == 1){
                         //is not chocolate
                         returnDye = DyeColor.BLACK;
                     }else{
                         //is chocolate
                         returnDye = DyeColor.BROWN;
                     }
-                } else if (genes[0] == 5 || genes[1] == 5) {
+                } else if (gene[0] == 5 || gene[1] == 5) {
                     //blue
-                    if (genes[2] == 1 || genes[3] == 1) {
+                    if (gene[2] == 1 || gene[3] == 1) {
                         returnDye = DyeColor.GRAY;
                     } else {
                         returnDye = DyeColor.BROWN;
                     }
                 } else {
-                    if (genes[2] == 1 || genes[3] == 1){
+                    if (gene[2] == 1 || gene[3] == 1){
                         //is not chocolate
                         returnDye = DyeColor.BLACK;
                     }else{
@@ -646,7 +691,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                         returnDye = DyeColor.BROWN;
                     }
                 }
-            }else if ((genes[0] == 2 || genes[1] == 2) && !(genes[0] == 3 || genes[1] == 3)) {
+            }else if ((gene[0] == 2 || gene[1] == 2) && !(gene[0] == 3 || gene[1] == 3)) {
                 returnDye = DyeColor.LIGHT_GRAY;
             } else {
                 returnDye = DyeColor.WHITE;
@@ -1064,7 +1109,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                     //het turkish (speckled)
                     pigmentedHead = 4;
                 }
-            } else if (gene[68] == 4 || gene[69] == 4) {
+            } else if (gene[68] == 4 && gene[69] == 4) {
                 // pigmented head
                 pigmentedHead = 6;
             }

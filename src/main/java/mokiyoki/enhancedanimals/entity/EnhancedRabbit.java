@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
@@ -12,15 +13,18 @@ import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitPanicGoal;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitRaidFarmGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.RabbitGeneticsInitialiser;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.IShearable;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
@@ -31,6 +35,7 @@ import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.FoxEntity;
 import net.minecraft.entity.passive.WolfEntity;
@@ -46,6 +51,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -57,9 +63,11 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.IForgeShearable;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -195,8 +203,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     private int currentCoatLength;
     private int timeForGrowth = 0;
 
-    private float rabbitSize = 0.0F;
-
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     private GrazingGoal grazingGoal;
@@ -221,6 +227,43 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         }};
     }
 
+    private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
+        Map<Block, EnhancedEatPlantsGoal.EatValues> ediblePlants = new HashMap<>();
+        ediblePlants.put(Blocks.CARROTS, new EnhancedEatPlantsGoal.EatValues(4, 1, 750));
+        ediblePlants.put(Blocks.BEETROOTS, new EnhancedEatPlantsGoal.EatValues(3, 1, 750));
+        ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(2, 1, 750));
+        ediblePlants.put(Blocks.AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+//        ediblePlants.put(Blocks.ALLIUM, new EnhancedEatPlantsGoal.EatValues(3, 3, 750));
+//        ediblePlants.put(ModBlocks.GROWABLE_ALLIUM, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(Blocks.BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(Blocks.CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(Blocks.DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(Blocks.OXEYE_DAISY, new EnhancedEatPlantsGoal.EatValues(7, 3, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_OXEYE_DAISY, new EnhancedEatPlantsGoal.EatValues(7, 2, 750));
+        ediblePlants.put(Blocks.ROSE_BUSH, new EnhancedEatPlantsGoal.EatValues(4, 3, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_ROSE_BUSH, new EnhancedEatPlantsGoal.EatValues(4, 2, 375));
+        ediblePlants.put(Blocks.SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(4, 3, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(4, 2, 375));
+        ediblePlants.put(Blocks.GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.SWEET_BERRY_BUSH, new EnhancedEatPlantsGoal.EatValues(1, 1, 1000));
+        ediblePlants.put(Blocks.CACTUS, new EnhancedEatPlantsGoal.EatValues(1, 1, 3000));
+//        ediblePlants.put(Blocks.PUMPKIN, new EnhancedEatPlantsGoal.EatValues(1, 1, 3000));
+//        ediblePlants.put(Blocks.MELON, new EnhancedEatPlantsGoal.EatValues(1, 1, 3000));
+
+        return ediblePlants;
+    }
+
     @Override
     protected void registerGoals() {
         int napmod = this.rand.nextInt(1200);
@@ -236,7 +279,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         this.goalSelector.addGoal(6, new EnhancedAvoidEntityGoal<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D, null));
         this.goalSelector.addGoal(7, new StayShelteredGoal(this, 4000, 7500, napmod));
         this.goalSelector.addGoal(8, new SeekShelterGoal(this, 1.0D, 4000, 7500, napmod));
-        this.goalSelector.addGoal(9, new EnhancedRabbitRaidFarmGoal(this));
+//        this.goalSelector.addGoal(9, new EnhancedRabbitRaidFarmGoal(this));
+        this.goalSelector.addGoal(9, new EnhancedEatPlantsGoal(this, createGrazingMap()));
         this.goalSelector.addGoal(10, this.grazingGoal);
 //        this.goalSelector.addGoal(5, new EnhancedRabbitEatPlantsGoal(this));
 //        this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 0.6D));
@@ -521,25 +565,26 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     @Override
     protected int getNumberOfChildren() {
         int[] genes = this.genetics.getAutosomalGenes();
+        float size = this.getAnimalSize();
         int kitAverage = 1;
         int kitRange = 2;
 
-        if (rabbitSize <= 0.4 ){
+        if (size <= 0.4 ){
 //                        kitAverage = 1;
             kitRange = 1;
-        }else if (rabbitSize <= 0.5 ){
+        }else if (size <= 0.5 ){
             kitAverage = 2;
             kitRange = 1;
-        }else if (rabbitSize <= 0.6 ){
+        }else if (size <= 0.6 ){
             kitAverage = 4;
 //                        kitRange = 2;
-        }else if (rabbitSize <= 0.7 ){
+        }else if (size <= 0.7 ){
             kitAverage = 5;
 //                        kitRange = 2;
-        }else if (rabbitSize <= 0.8 ){
+        }else if (size <= 0.8 ){
             kitAverage = 6;
             kitRange = 3;
-        }else if (rabbitSize <= 0.9 ){
+        }else if (size <= 0.9 ){
             kitAverage = 7;
             kitRange = 3;
         }else{
@@ -657,49 +702,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         }
     }
 
-    public float setRabbitSize(){
-        int[] genes = this.genetics.getAutosomalGenes();
-        float size = 1F; // [minimum size = 0.3 maximum size = 1]
-
-        if (genes[46] < 5){
-            size = size - 0.07F;
-            if (genes[46] < 4){
-                size = size - 0.07F;
-                if (genes[46] < 3){
-                    size = size - 0.07F;
-                    if (genes[46] < 2){
-                        size = size - 0.03F;
-                    }
-                }
-            }
-        }
-        if (genes[46] < 5){
-            size = size - 0.07F;
-            if (genes[46] < 4){
-                size = size - 0.07F;
-                if (genes[46] < 3){
-                    size = size - 0.07F;
-                    if (genes[46] < 2){
-                        size = size - 0.03F;
-                    }
-                }
-            }
-        }
-        if (genes[48] == 3 && genes[49] == 3){
-            size = size - 0.075F;
-        }else if (genes[48] == 2 && genes[49] == 2){
-            size = size - 0.05F;
-        }else if (genes[48] == 2 || genes[49] == 2){
-            size = size - 0.025F;
-        }
-
-        if (genes[34] == 2 || genes[35] == 2){
-            size = 0.3F + ((size - 0.3F)/2F);
-        }
-
-        return size;
-    }
-
     @Override
     protected boolean canDropLoot() {
         int i = rand.nextInt(100);
@@ -713,7 +715,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropSpecialItems(source, looting, recentlyHitIn);
         int age = this.getAge();
-        float size = setRabbitSize();
+        float size = getAnimalSize();
 
         if ((((size-0.3F) * 71.4286F) + 25) > rand.nextInt(100)) {
             ItemStack meatStack = new ItemStack(Items.RABBIT, 1 + looting);
@@ -766,12 +768,11 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected ResourceLocation getLootTable() {
 
         if (!this.world.isRemote) {
-
-                if (this.rabbitSize <= 0.8F || getAge() < 48000) {
-                    dropMeatType = "rawrabbit_small";
-                } else {
-                    dropMeatType = "rawrabbit";
-                }
+            if (this.getAnimalSize() <= 0.8F || getAge() < 48000) {
+                dropMeatType = "rawrabbit_small";
+            } else {
+                dropMeatType = "rawrabbit";
+            }
         }
 
         return new ResourceLocation(Reference.MODID, "enhanced_rabbit");
@@ -820,10 +821,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     @Override
     public boolean isShearable(ItemStack item, World world, BlockPos pos) {
-        if (!this.world.isRemote && currentCoatLength >=1) {
-            return true;
-        }
-        return false;
+        return !this.world.isRemote && currentCoatLength >= 1;
     }
 
     @Override
@@ -1313,7 +1311,46 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     @Override
     public void initilizeAnimalSize() {
-        setRabbitSize();
+        int[] genes = this.genetics.getAutosomalGenes();
+        float size = 1F; // [minimum size = 0.3 maximum size = 1]
+
+        if (genes[46] < 5){
+            size = size - 0.07F;
+            if (genes[46] < 4){
+                size = size - 0.07F;
+                if (genes[46] < 3){
+                    size = size - 0.07F;
+                    if (genes[46] < 2){
+                        size = size - 0.03F;
+                    }
+                }
+            }
+        }
+        if (genes[46] < 5){
+            size = size - 0.07F;
+            if (genes[46] < 4){
+                size = size - 0.07F;
+                if (genes[46] < 3){
+                    size = size - 0.07F;
+                    if (genes[46] < 2){
+                        size = size - 0.03F;
+                    }
+                }
+            }
+        }
+        if (genes[48] == 3 && genes[49] == 3){
+            size = size - 0.075F;
+        }else if (genes[48] == 2 && genes[49] == 2){
+            size = size - 0.05F;
+        }else if (genes[48] == 2 || genes[49] == 2){
+            size = size - 0.025F;
+        }
+
+        if (genes[34] == 2 || genes[35] == 2){
+            size = 0.3F + ((size - 0.3F)/2F);
+        }
+
+        this.setAnimalSize(size);
     }
 
     @Nullable

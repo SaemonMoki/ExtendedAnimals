@@ -57,7 +57,6 @@ public class GrazingGoal extends Goal {
     }
 
     protected static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
-
     protected static final Predicate<BlockState> IS_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.GRASS_BLOCK);
     protected static final Predicate<BlockState> IS_SPARSE_GRASS_BLOCK = BlockStateMatcher.forBlock(ModBlocks.SPARSEGRASS_BLOCK);
     protected static final Predicate<BlockState> IS_TALL_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
@@ -213,7 +212,7 @@ public class GrazingGoal extends Goal {
 
     protected boolean isEdibleBlock(IWorldReader worldIn, BlockPos pos) {
         BlockState blockstate = worldIn.getBlockState(pos);
-        if (IS_GRASS_BLOCK.test(blockstate) || IS_GRASS.test(blockstate) || IS_SPARSE_GRASS_BLOCK.test(blockstate) || IS_TALL_GRASS_BLOCK.test(blockstate)) {
+        if (IS_GRASS_BLOCK.test(blockstate) /*|| IS_GRASS.test(blockstate) || IS_SPARSE_GRASS_BLOCK.test(blockstate) || IS_TALL_GRASS_BLOCK.test(blockstate)*/) {
             return true;
         }
         return false;

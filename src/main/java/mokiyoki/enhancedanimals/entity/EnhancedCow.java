@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedFollowParentGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
@@ -18,6 +19,7 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntitySize;
@@ -119,11 +121,17 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 "spot_pibald_head0.png", "spot_pibald_head1.png", "spot_pibald_head2.png", "spot_pibald_head3.png", "spot_pibald_head4.png","spot_pibald_head5.png", "spot_pibald_head6.png", "spot_pibald_head7.png", "spot_pibald_head8.png", "spot_pibald_head9.png","spot_pibald_heada.png", "spot_pibald_headb.png", "spot_pibald_headc.png", "spot_pibald_headd.png", "spot_pibald_heade.png", "spot_pibald_headf.png",
     };
 
+    private static final String[] COW_TEXTURES_BROCKLING = new String[] {
+            "", "b_spot_brockling0.png", "r_spot_brockling0.png"
+    };
+
     private static final String[] COW_TEXTURES_BELTED = new String[] {
-            "", "spot_belt0.png", "spot_belt1.png", "spot_belt2.png", "spot_belt3.png", "spot_belt4.png", "spot_belt5.png", "spot_belt6.png", "spot_belt7.png", "spot_belt8.png", "spot_belt9.png", "spot_belta.png", "spot_beltb.png", "spot_beltc.png", "spot_beltd.png", "spot_belte.png", "spot_beltf.png",
-                "spot_blaze0.png",
-                "b_spot_brockling0.png",
-                "r_spot_brockling0.png"
+            "", "spot_belt0.png", "spot_belt1.png", "spot_belt2.png", "spot_belt3.png", "spot_belt4.png", "spot_belt5.png", "spot_belt6.png", "spot_belt7.png", "spot_belt8.png", "spot_belt9.png", "spot_belta.png", "spot_beltb.png", "spot_beltc.png", "spot_beltd.png", "spot_belte.png", "spot_beltf.png"
+    };
+
+    private static final String[] COW_TEXTURES_BLAZE = new String[] {
+            "", "spot_doubleblaze0.png", "spot_doubleblaze1.png", "spot_doubleblaze2.png", "spot_doubleblaze0.png", "spot_doubleblaze1.png", "spot_doubleblaze2.png", "spot_doubleblaze0.png", "spot_doubleblaze1.png", "spot_doubleblaze2.png", "spot_doubleblaze0.png", "spot_doubleblaze1.png", "spot_doubleblaze2.png", "spot_doubleblaze0.png", "spot_doubleblaze1.png", "spot_doubleblaze2.png", "spot_doubleblaze2.png",
+                "spot_blaze0.png", "spot_blaze1.png", "spot_blaze2.png", "spot_blaze3.png", "spot_blaze4.png", "spot_blaze5.png", "spot_blaze6.png", "spot_blaze0.png", "spot_blaze1.png", "spot_blaze2.png", "spot_blaze3.png", "spot_blaze4.png", "spot_blaze5.png", "spot_blaze6.png", "spot_blaze5.png", "spot_blaze6.png"
     };
 
     private static final String[] COW_TEXTURES_COLOURSIDED = new String[] {
@@ -150,6 +158,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     protected boolean resetTexture = true;
+    protected String cacheTexture;
 
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
@@ -164,8 +173,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //    private boolean boosting;
 //    private int boostTime;
 //    private int totalBoostTime;
-
-    protected Boolean reload = false; //used in a toggle manner
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
@@ -191,6 +198,33 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             put(new ItemStack(Items.MELON_SLICE).getItem(), 1100);
             put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
         }};
+    }
+
+    private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
+        Map<Block, EnhancedEatPlantsGoal.EatValues> ediblePlants = new HashMap<>();
+        ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(7, 2, 750));
+        ediblePlants.put(Blocks.BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
+        ediblePlants.put(Blocks.CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 7, 375));
+        ediblePlants.put(Blocks.DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
+        ediblePlants.put(Blocks.GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.FERN, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_FERN, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.PUMPKIN, new EnhancedEatPlantsGoal.EatValues(1, 1, 10000));
+        ediblePlants.put(Blocks.MELON, new EnhancedEatPlantsGoal.EatValues(1, 1, 10000));
+
+        return ediblePlants;
     }
 
 //    @Override
@@ -235,19 +269,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     public String getMooshroomUUID() { return mooshroomUUID; }
 
-//    public void setReloadTexture(Boolean resetTexture) {
-//        this.dataManager.set(RESET_TEXTURE, resetTexture);
-//    }
-
-    //toggles the reloading
-//    protected void toggleReloadTexture() {
-//        this.dataManager.set(RESET_TEXTURE, this.getReloadTexture() ? false : true);
-//    }
-//
-//    public boolean getReloadTexture() {
-//            return this.dataManager.get(RESET_TEXTURE);
-//    }
-
     @Override
     protected boolean canBePregnant() {
         return true;
@@ -257,11 +278,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     protected boolean canLactate() {
         return true;
     }
-
-//    @Override
-//    protected boolean ableToMoveWhileLeashed() {
-//        return this.grazingGoal.isSearching();
-//    }
 
     protected SoundEvent getAmbientSound() {
         if (isAnimalSleeping()) {
@@ -604,14 +620,24 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @OnlyIn(Dist.CLIENT)
+    public String updateCashe(String current) {
+        if (!current.equals(this.cacheTexture)) {
+            String old = this.cacheTexture;
+            this.cacheTexture = current;
+            return old;
+        }
+        return "";
+    }
+
+    @OnlyIn(Dist.CLIENT)
     public String getCowTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (!this.reload && getReloadTexture() || this.reload && !getReloadTexture()) {
+        } else if (this.resetTexture) {
+            this.resetTexture = false;
             this.texturesIndexes.clear();
             this.enhancedAnimalTextures.clear();
             this.setTexturePaths();
-            this.reload = (this.reload == true ? false : true);
             this.colouration.setMelaninColour(-1);
             this.colouration.setPheomelaninColour(-1);
         }
@@ -632,7 +658,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             int speckled = 0;
             int whiteface = 0;
             int whitefacehead = 0;
+            int brockling = 0;
             int belted = 0;
+            int blaze = 0;
             int coloursided = 0;
             int skin = 0;
             int hooves = 0;
@@ -789,24 +817,45 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
             }
 
-            //TODO figure out how these work when heterozygous
+            // Legacy belt/blaze
+            // Brockling gene
             if (gene[18] == 1 || gene[19] == 1){
                 //belted
-                belted = 1;
+                brockling = -1;
             }else if (gene[18] == 2 || gene[19] == 2){
                 //blaze
-                belted = 17;
-            }else if (gene[18] == 3 || gene[19] == 3){
-                if (whiteface != 0 || coloursided != 0) {
-                    if (black == 4 || black == 5 || black == 6 || black == 10 || black == 11 || black == 12){
-                        //brockling
-                        belted = 18;
-                    } else {
-                        belted = 19;
-                    }
+                brockling = -2;
+            }
 
+            //Belted
+            if (brockling == -1) {
+                belted = -1;
+                brockling = 0;
+            } else if (gene[250] == 2 || gene[251] == 2) {
+                belted = 1;
+            }
+
+            //Blaze
+            if (brockling == -2) {
+                blaze = -1;
+                brockling = 0;
+            } else if (gene[252] == 2 || gene[253] == 2) {
+                if (gene[252] == 2 && gene[253] == 2) {
+                    blaze = 1;
+                } else {
+                    blaze = 2;
                 }
+            }
 
+            if (gene[18] == 3 || gene[19] == 3){
+                if (whiteface != 0 || coloursided != 0 || blaze != 0) {
+                    if (black == 4 || black == 5 || black == 6 || black == 10 || black == 11 || black == 12) {
+                        //brockling
+                        brockling = 1;
+                    } else {
+                        brockling = 2;
+                    }
+                }
             }
 
             //TODO make randomizers for the textures
@@ -840,6 +889,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                             whiteface = 1;
                     }
                 }
+
                 //selects face piebalding texture
                 if (uuidArry[0] != uuidArry[1]) {
                     whitefacehead = 4;
@@ -875,7 +925,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 
             }
 
-            if (belted == 1) {
+            //belt picker belt==-1 is legacy belt==1 is updated
+            if (belted != 0) {
+                belted = 1;
                 if (Character.isDigit(uuidArry[3])) {
                     belted = belted + (1 + (uuidArry[3] - 48));
                 } else {
@@ -899,6 +951,41 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                             break;
                         case 'f':
                             belted = belted + 15;
+                            break;
+                        default:
+                            belted = 0;
+                    }
+                }
+            }
+
+            //blaze variations
+            if (blaze != 0) {
+                if (blaze != 1) {
+                    blaze = 17;
+                }
+                if (Character.isDigit(uuidArry[3])) {
+                    blaze = blaze + (1 + (uuidArry[3] - 48));
+                } else {
+                    char d = uuidArry[3];
+
+                    switch (d) {
+                        case 'a':
+                            blaze = blaze + 0;
+                            break;
+                        case 'b':
+                            blaze = blaze + 1;
+                            break;
+                        case 'c':
+                            blaze = blaze + 2;
+                            break;
+                        case 'd':
+                            blaze = blaze + 3;
+                            break;
+                        case 'e':
+                            blaze = blaze + 4;
+                            break;
+                        case 'f':
+                            blaze = blaze + 5;
                             break;
                         default:
                             belted = 0;
@@ -936,7 +1023,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             addTextureToAnimal(COW_TEXTURES_WHITEFACE, whiteface, w -> w != 0);
             addTextureToAnimal(COW_TEXTURES_WHITEFACEHEAD, whitefacehead, w -> w >= 4);
             addTextureToAnimal(COW_TEXTURES_COLOURSIDED, coloursided, c -> c != 0);
+            addTextureToAnimal(COW_TEXTURES_BROCKLING, brockling, b -> b != 0);
             addTextureToAnimal(COW_TEXTURES_BELTED, belted, b -> b != 0);
+            addTextureToAnimal(COW_TEXTURES_BLAZE, blaze, b -> b != 0);
             addTextureToAnimal(COW_TEXTURES_ROAN, roan, r -> r != 0);
             addTextureToAnimal(COW_TEXTURES_SPECKLED, speckled, r -> r != 0);
             addTextureToAnimal(COW_TEXTURES_HOOVES, hooves, null);
@@ -953,9 +1042,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
         this.colouration = super.getRgb();
-        if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
-            Genes genes = getSharedGenes();
-            if (genes != null) {
+        Genes genes = getSharedGenes();
+        if (genes != null) {
+            if (this.colouration.getPheomelaninColour() == -1 || this.colouration.getMelaninColour() == -1) {
                 int[] gene = genes.getAutosomalGenes();
 
                 float blackHue = 0.0F;
@@ -1064,7 +1153,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                         blackHue = Colouration.mixHueComponent(redHue, 0.1F, 0.9F);
                         blackSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.9F);
                         blackBrightness = Colouration.mixColourComponent(redBrightness * blackBrightness, 1.0F, 0.6F);
-                    } else if (gene[2] == 1 || gene[3] == 1){
+                    } else if (gene[2] == 1 || gene[3] == 1) {
                         //het dun
                         if (gene[0] == 1 || gene[1] == 1) {
                             redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.75F);
@@ -1147,6 +1236,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], shadeIntensity));
                 this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
 
+            } else if (this.isChild() && !(genes.testGenes(0, 1, 0))) {
+                this.colouration.setBabyAlpha((float) this.getAge() / (float) this.getAdultAge());
             }
         }
 
@@ -1522,9 +1613,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             this.goalSelector.addGoal(5, new StayShelteredGoal(this, 5723, 7000, 0));
             this.goalSelector.addGoal(6, new SeekShelterGoal(this, 1.0D, 5723, 7000, 0));
 //            grazingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);
+            this.goalSelector.addGoal(7, new EnhancedEatPlantsGoal(this, createGrazingMap()));
             grazingGoal = new GrazingGoal(this, speed);
-            this.goalSelector.addGoal(7, grazingGoal);
-            this.goalSelector.addGoal(8, new EnhancedWanderingGoal(this, speed));
+            this.goalSelector.addGoal(8, grazingGoal);
+            this.goalSelector.addGoal(9, new EnhancedWanderingGoal(this, speed));
         }
         aiConfigured = true;
     }

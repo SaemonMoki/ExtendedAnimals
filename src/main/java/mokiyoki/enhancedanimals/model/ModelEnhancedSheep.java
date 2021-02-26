@@ -1065,7 +1065,6 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         Float[] hornGrowthL = {0.0F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.8F, -1.4F, -1.1F, -0.9F, -0.7876F, -0.675F, -0.5376F, -0.4F};
         Float[] hornGrowthR = {0.0F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.8F, -1.4F, -1.1F, -0.9F, -0.7876F, -0.675F, -0.5376F, -0.4F};
 
-        int hornGrowth = 0;
         if (!(sheepModelData.birthTime == null) && !sheepModelData.birthTime.equals("") && !sheepModelData.birthTime.equals("0")) {
             int ageTime = (int)(sheepModelData.clientGameTime - Long.parseLong(sheepModelData.birthTime));
             if (ageTime < 0) {
@@ -1087,8 +1086,10 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             lengthR = 18;
         }
 
-        lengthL = lengthL + hornGrowth;
-        lengthR = lengthR + hornGrowth;
+        if (sheepModelData.isFemale) {
+            lengthL = 18 - (int)((18 - lengthL) * 0.5F);
+            lengthR = 18 - (int)((18 - lengthR) * 0.5F);
+        }
 
         if (lengthL != 0 || lengthR != 0) {
             for (int i = 0; i <= 18; i++) {
@@ -1278,6 +1279,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         boolean collar = false;
         ItemStack bridle;
         boolean hasChest = false;
+        boolean isFemale = false;
         List<String> unrenderedModels = new ArrayList<>();
     }
 
@@ -1335,6 +1337,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.collar = hasCollar(enhancedSheep.getEnhancedInventory());
             sheepModelData.bridle = enhancedSheep.getEnhancedInventory().getStackInSlot(3);
             sheepModelData.hasChest = !enhancedSheep.getEnhancedInventory().getStackInSlot(0).isEmpty();
+            sheepModelData.isFemale = enhancedSheep.isFemale();
             sheepModelData.clientGameTime = (((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime();
 
             if(sheepModelData.sheepGenes != null) {

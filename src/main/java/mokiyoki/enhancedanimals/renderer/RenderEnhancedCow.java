@@ -36,6 +36,8 @@ public class RenderEnhancedCow extends MobRenderer<EnhancedCow, ModelEnhancedCow
 
         s = s + colourRGB.getRGBStrings();
 
+        textureCache.removeFromCache(entity.updateCashe(s));
+
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {

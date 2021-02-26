@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -115,21 +116,34 @@ public class GrowableDoubleHigh extends CropsBlock {
                     int topAge = getAge(worldIn.getBlockState(pos.up()));
                     if (topAge < 5) {
                         super.tick(worldIn.getBlockState(pos.up()), worldIn, pos.up(), rand);
-                        int ageUpdate = getAge(worldIn.getBlockState(pos.up()));
-                        if (topAge != ageUpdate) {
-                            this.setHalfToUpper(worldIn, pos, ageUpdate);
-                        }
+//                        int ageUpdate = getAge(worldIn.getBlockState(pos.up()));
+//                        if (topAge != ageUpdate) {
+//                            this.setHalfToUpper(worldIn, pos, ageUpdate);
+//                        }
                     } else if (topAge >= 7 && bottomAge >= 7) {
                         worldIn.setBlockState(pos.up(), getBlockFromItem(getPlantType().asItem()).getDefaultState().with(HALF, DoubleBlockHalf.UPPER));
                         worldIn.setBlockState(pos, getBlockFromItem(getPlantType().asItem()).getDefaultState().with(HALF, DoubleBlockHalf.LOWER));
                     } else {
                         super.tick(worldIn.getBlockState(pos.up()), worldIn, pos.up(), rand);
-                        int ageUpdate = getAge(worldIn.getBlockState(pos.up()));
-                        if (topAge != ageUpdate) {
-                            this.setHalfToUpper(worldIn, pos, ageUpdate);
-                        }
+//                        int ageUpdate = getAge(worldIn.getBlockState(pos.up()));
+//                        if (topAge != ageUpdate) {
+//                            this.setHalfToUpper(worldIn, pos, ageUpdate);
+//                        }
                         super.tick(state, worldIn, pos, rand);
                     }
+                }
+            }
+        } else {
+            int age = state.get(AGE);
+            if (age != 0) {
+                BlockState bottomState = worldIn.getBlockState(pos.down());
+                Block bottomBlock = bottomState.getBlock();
+                if (bottomBlock instanceof GrowableDoubleHigh && bottomState.get(AGE) < 7) {
+                    int bottomAge = bottomState.get(AGE);
+                    age = bottomAge + age;
+                    worldIn.setBlockState(pos.down(), this.getDefaultState().with(HALF, DoubleBlockHalf.LOWER).with(AGE, age > 7 ? 7 : age));
+                    age = age - 7;
+                    worldIn.setBlockState(pos, this.getDefaultState().with(HALF, DoubleBlockHalf.UPPER).with(AGE, age < 0 ? 0 : age));
                 }
             }
         }
@@ -172,7 +186,7 @@ public class GrowableDoubleHigh extends CropsBlock {
     @Override
     protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
         Block block = state.getBlock();
-        return block == Blocks.GRASS_BLOCK || block == Blocks.DIRT || block == Blocks.COARSE_DIRT || block == Blocks.PODZOL || block == Blocks.FARMLAND;
+        return block == Blocks.GRASS_BLOCK || block == Blocks.DIRT || block == Blocks.COARSE_DIRT || block == Blocks.PODZOL || block == Blocks.FARMLAND || block == ModBlocks.SPARSEGRASS_BLOCK;
     }
 
     @Override

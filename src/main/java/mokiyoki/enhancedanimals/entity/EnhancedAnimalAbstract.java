@@ -214,14 +214,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     @Override
     protected void registerGoals() {
-        int napmod = this.rand.nextInt(1000);
-        this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(2, new StayShelteredGoal(this, 5723, 7000, napmod));
-        this.goalSelector.addGoal(3, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
-        this.goalSelector.addGoal(3, new EnhancedBreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
+//        int napmod = this.rand.nextInt(1000);
+//        this.goalSelector.addGoal(0, new SwimGoal(this));
+//        this.goalSelector.addGoal(2, new StayShelteredGoal(this, 5723, 7000, napmod));
+//        this.goalSelector.addGoal(3, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
+//        this.goalSelector.addGoal(3, new EnhancedBreedGoal(this, 1.0D));
+//        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
+//        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+//        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
     }
 
     protected void setMateName(String mateName) {

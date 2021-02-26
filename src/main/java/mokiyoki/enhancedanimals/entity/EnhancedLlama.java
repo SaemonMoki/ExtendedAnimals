@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
+import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.LlamaGeneticsInitialiser;
@@ -22,6 +23,7 @@ import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.IRangedAttackMob;
+import net.minecraft.entity.IShearable;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
@@ -49,6 +51,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
@@ -160,6 +163,32 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         }};
     }
 
+    private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
+        Map<Block, EnhancedEatPlantsGoal.EatValues> ediblePlants = new HashMap<>();
+        ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(7, 2, 750));
+        ediblePlants.put(Blocks.BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
+        ediblePlants.put(Blocks.CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 7, 375));
+        ediblePlants.put(Blocks.DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
+        ediblePlants.put(Blocks.GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.FERN, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_FERN, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(Blocks.CACTUS, new EnhancedEatPlantsGoal.EatValues(1, 1, 3000));
+
+        return ediblePlants;
+    }
+
     @Override
     protected void registerGoals() {
         super.registerGoals();
@@ -171,8 +200,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         this.goalSelector.addGoal(3, new RangedAttackGoal(this, 1.25D, 40, 20.0F));
         this.goalSelector.addGoal(3, new EnhancedPanicGoal(this, 1.2D));
 //        this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, this.grazingGoal);
-        this.goalSelector.addGoal(6, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new EnhancedEatPlantsGoal(this, createGrazingMap()));
+        this.goalSelector.addGoal(6, this.grazingGoal);
+        this.goalSelector.addGoal(7, new EnhancedWanderingGoal(this, 1.0D));
 //        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.0D));
 //        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.7D));
 //        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
@@ -424,10 +454,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     public boolean isShearable(ItemStack item, World world, BlockPos pos) {
-        if (!this.world.isRemote && this.currentCoatLength >=0 && !isChild()) {
-            return true;
-        }
-        return false;
+        return !this.world.isRemote && this.currentCoatLength >= 0 && !isChild();
     }
 
     @Override

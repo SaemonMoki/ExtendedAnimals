@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECRoost;
 import mokiyoki.enhancedanimals.ai.ECSandBath;
+import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
@@ -17,11 +18,14 @@ import mokiyoki.enhancedanimals.ai.general.chicken.GrazingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.Genetics.ChickenGeneticsInitialiser;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
@@ -288,6 +292,39 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     }
 
+    private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
+        Map<Block, EnhancedEatPlantsGoal.EatValues> ediblePlants = new HashMap<>();
+        ediblePlants.put(Blocks.CARROTS, new EnhancedEatPlantsGoal.EatValues(7, 1, 750));
+        ediblePlants.put(Blocks.BEETROOTS, new EnhancedEatPlantsGoal.EatValues(3, 1, 750));
+        ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(2, 1, 750));
+        ediblePlants.put(Blocks.AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(Blocks.ALLIUM, new EnhancedEatPlantsGoal.EatValues(3, 3, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_ALLIUM, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(Blocks.BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(Blocks.CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(Blocks.DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(Blocks.ROSE_BUSH, new EnhancedEatPlantsGoal.EatValues(4, 3, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_ROSE_BUSH, new EnhancedEatPlantsGoal.EatValues(4, 2, 375));
+        ediblePlants.put(Blocks.SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(4, 3, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(4, 2, 375));
+        ediblePlants.put(Blocks.GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.SWEET_BERRY_BUSH, new EnhancedEatPlantsGoal.EatValues(1, 1, 1000));
+        ediblePlants.put(Blocks.CACTUS, new EnhancedEatPlantsGoal.EatValues(1, 1, 3000));
+
+        return ediblePlants;
+    }
+
     @Override
     protected void registerGoals() {
         //TODO add temperaments
@@ -304,15 +341,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
         this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(7, new StayShelteredGoal(this, 6000, 7500, napmod));
-        this.goalSelector.addGoal(8, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
-        this.goalSelector.addGoal(9, new ECWanderAvoidWater(this, 1.0D));
-        this.goalSelector.addGoal(10, this.grazingGoal);
-        this.goalSelector.addGoal(11, new EnhancedWanderingGoal(this, 1.0D));
-        this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, ChickenEntity.class, 6.0F));
-        this.goalSelector.addGoal(13, new EnhancedLookRandomlyGoal(this));
-        this.goalSelector.addGoal(14, new ECRoost(this));
+        this.goalSelector.addGoal(7, new ECRoost(this));
+        this.goalSelector.addGoal(8, new StayShelteredGoal(this, 6000, 7500, napmod));
+        this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
+        this.goalSelector.addGoal(10, new ECWanderAvoidWater(this, 1.0D));
+        this.goalSelector.addGoal(11, new EnhancedEatPlantsGoal(this, createGrazingMap()));
+        this.goalSelector.addGoal(12, this.grazingGoal);
+        this.goalSelector.addGoal(13, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(14, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(14, new EnhancedLookAtGoal(this, ChickenEntity.class, 6.0F));
+        this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
 
     }
 
@@ -1673,18 +1711,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 }
 
                 //white marking autosomalGenes
-                if ((sexlinkedGenes[6] == 2 ^ sexlinkedGenes[7] == 2)) {
+                if (!this.isFemale() && sexlinkedGenes[6] == 2 && sexlinkedGenes[7] == 2) {
+                    //Light Barred
+                    white = 2;
+                } else if ((this.isFemale() && sexlinkedGenes[6] == 2) || (!this.isFemale() && (sexlinkedGenes[6] == 2 ^ sexlinkedGenes[7] == 2))) {
                     //Dark Barred
                     white = 1;
-                } else if (sexlinkedGenes[6] == 2 && sexlinkedGenes[7] == 2){
-                    if (isFemale()) {
-                        //Dark Barred
-                        white = 1;
-                    } else {
-                        //Light Barred
-                        white = 2;
-                    }
-                }else {
+                } else {
                     if (autosomalGenes[22] >= 2 && autosomalGenes[23] >= 2) {
                         if (autosomalGenes[22] == 2 && autosomalGenes[23] == 2) {
                             //mottled
@@ -2111,11 +2144,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                     eyes = 2;
                 }
 
-                if (!(white == 3 || white == 5)) {
+                if (!(white == 3 || white == 5) || (autosomalGenes[106] == 2 && autosomalGenes[107] == 2)) {
                     mottles = 0;
                 }
 
-//            after finished autosomalGenes
+                //after finished autosomalGenes
                 addTextureToAnimal(CHICKEN_TEXTURES_GROUND, ground, null);
                 addTextureToAnimal(CHICKEN_TEXTURES_PATTERN, pattern, p -> p <= 350);
                 addTextureToAnimal(CHICKEN_TEXTURES_MOORHEAD, moorhead, m -> m != 0);

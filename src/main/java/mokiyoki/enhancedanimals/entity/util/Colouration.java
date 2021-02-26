@@ -1,10 +1,8 @@
 package mokiyoki.enhancedanimals.entity.util;
 
-import com.sun.javafx.css.converters.ColorConverter;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.client.event.RenderTooltipEvent;
 
 import java.awt.*;
 
@@ -20,6 +18,7 @@ public class Colouration {
     private int bridleColour = -1;
     private int harnessColour = -1;
     private int collarColour = -1;
+    private int alphaMelanin = -1;
 
 
     public int getDyeColour() {
@@ -44,6 +43,18 @@ public class Colouration {
 
     public void setMelaninColour(int colour) {
         this.melaninColour = colour;
+    }
+
+    public void setBabyAlpha(float shadeIntensity) {
+        if (this.alphaMelanin == -1) {
+            this.alphaMelanin = this.melaninColour >> 24 & 0xFF;
+        }
+        int a = (int)((this.alphaMelanin) * shadeIntensity);
+        int b = this.melaninColour >> 16 & 0xFF;
+        int g = this.melaninColour >> 8 & 0xFF;
+        int r = this.melaninColour & 0xFF;
+
+        this.melaninColour = a << 24 | b << 16 | g << 8 | r;
     }
 
     public int getLeftEyeColour() {

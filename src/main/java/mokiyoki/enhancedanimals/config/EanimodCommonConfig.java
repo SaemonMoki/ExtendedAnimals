@@ -26,7 +26,6 @@ public class EanimodCommonConfig {
     public static class CommonConfig {
         public final ForgeConfigSpec.BooleanValue omnigenders;
         public final ForgeConfigSpec.BooleanValue feedGrowth;
-        public final ForgeConfigSpec.BooleanValue onlyEatsWhenHungry;
         public final ForgeConfigSpec.EnumValue<HungerConfigEnum> hungerScaling;
         public final ForgeConfigSpec.IntValue wildTypeChance;
         public final ForgeConfigSpec.BooleanValue tabsOnTop;
@@ -90,8 +89,6 @@ public class EanimodCommonConfig {
                     .define("Allow Omnigenders:", false);
             feedGrowth = builder
                     .define("Allow feeding to age/grow animals:", false);
-            onlyEatsWhenHungry = builder
-                    .define("Animals only eat from players when hungry:", true);
             hungerScaling = builder
                     .defineEnum("How fast the animals get hungry, Values: RAVENOUS, MORE_HUNGRY, STANDARD, LESS_HUNGRY, NEVER_HUNGRY", HungerConfigEnum.STANDARD);
             wildTypeChance = builder

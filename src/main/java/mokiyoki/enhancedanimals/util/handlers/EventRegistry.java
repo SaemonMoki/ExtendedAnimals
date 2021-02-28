@@ -197,9 +197,9 @@ public class EventRegistry {
                  * Return the projectile entity spawned by this dispense behavior.
                  */
                 protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                    EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                    egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                    return egg;
+                    EnhancedEntityEgg eggItem = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ(), egg);
+                    eggItem.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                    return eggItem;
                 }
             });
         }

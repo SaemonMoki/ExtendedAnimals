@@ -314,7 +314,7 @@ public class EventSubscriber {
                         event.setCanceled(true);
                     }
                 }
-            } else if (entity instanceof LlamaEntity) {
+            } else if (entity instanceof LlamaEntity && entity.getClass().getName().toLowerCase().contains("llama")) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get() && EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
                     if (!(((LlamaEntity) entity).getLeashHolder() instanceof WanderingTraderEntity)) {
                     EnhancedLlama enhancedLlama = ENHANCED_LLAMA.create(entity.getEntityWorld());

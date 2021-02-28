@@ -37,7 +37,10 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
     public ResourceLocation getEntityTexture(EnhancedChicken entity) {
         String s = entity.getChickenTexture();
         Colouration colourRGB = entity.getRgb();
-        boolean silkie = entity.getSharedGenes().testGenes(106, 1, 2);
+        boolean silkie = false;
+        if (entity.getSharedGenes() != null) {
+            silkie = entity.getSharedGenes().testGenes(106, 1, 2);
+        }
 
         if (s == null || s.isEmpty() || colourRGB == null) {
             return ERROR_TEXTURE_LOCATION;

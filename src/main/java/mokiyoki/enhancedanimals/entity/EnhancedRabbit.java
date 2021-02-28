@@ -829,18 +829,18 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         if (!this.world.isRemote) {
             if (currentCoatLength == 1) {
-                int i = this.rand.nextInt(3);
-                if (i>2){
+                int i = this.rand.nextInt(4);
+                if (i==0){
                     ret.add(new ItemStack(Blocks.WHITE_WOOL));
                 }
             } else if (currentCoatLength == 2) {
-                int i = this.rand.nextInt(1);
-                if (i>0){
+                int i = this.rand.nextInt(2);
+                if (i==0){
                     ret.add(new ItemStack(Blocks.WHITE_WOOL));
                 }
             } else if (currentCoatLength == 3) {
-                int i = this.rand.nextInt(3);
-                if (i>0){
+                int i = this.rand.nextInt(4);
+                if (i!=0){
                     ret.add(new ItemStack(Blocks.WHITE_WOOL));
                 }
             } else if (currentCoatLength == 4) {

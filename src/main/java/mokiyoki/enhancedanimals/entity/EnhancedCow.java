@@ -267,7 +267,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         }
     }
 
-    public String getMooshroomUUID() { return mooshroomUUID; }
+    public String getMooshroomUUID() { return this.mooshroomUUID; }
 
     @Override
     protected boolean canBePregnant() {
@@ -393,6 +393,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @Override
     public EntitySize getSize(Pose poseIn) {
         return EntitySize.flexible(1.0F, 1.25F);
+    }
+
+    @Override
+    public boolean isFemale() {
+        char[] uuidArray = (this.mooshroomUUID != null ? this.mooshroomUUID : getCachedUniqueIdString()).toCharArray();
+        return !Character.isLetter(uuidArray[0]) && uuidArray[0] - 48 < 8;
     }
 
     public void livingTick() {

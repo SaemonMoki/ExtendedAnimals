@@ -181,6 +181,8 @@ public final class ChickenBreeds {
             .setGeneSketch(new GeneSketch().add(0, "2","25%2","1", "6", "1", "1", "1", "6", "1-2", "1-2", "1"),
                     new GeneSketch().add(20, "2","1","5").add(38, "2").add(42, "1").add(44, "1", "1", "1", "1").add(52, "2","1","1","2","1","2").add(70, "1", "1").add(80, "2","1","1","2").add(102, "1","1","2,1|2").add(146, "2", "1").add(152, "12","12","12","6","24","24","5","2","1","2")));
 
+    public static final Breed SCOTS_DUMPY = new Breed(new Breed.Properties().setData("ScotsDumpy", Biomes.TAIGA_MOUNTAINS, Breed.Rarity.EXOTIC)
+            .setGeneSketch(new NewGeneSet(GeneSet.BARRED, GeneSet.SOLIDBLACK, GeneSet.CLEANLEGS, GeneSet.GREYLEGS, GeneSet.SINGLE, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS, GeneSet.CREEPER, GeneSet.BIG_COMB).get()));
 
 //    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_TAIGA_MOUNTAINS, Breed.Rarity.UNCOMMON)
 //            .setVarieties(new Breed.VarientHolder(
@@ -213,6 +215,7 @@ public final class ChickenBreeds {
         FLATROSE("empty", new GeneSketch().add(46, "2", "2", "1")),
         PEA("empty", new GeneSketch().add(46, "3", "1", "1")),
         TRIFIDROSE("empty", new GeneSketch().add(46, "1", "2", "1").add(54, "1")),
+        BIG_COMB(new GeneSketch().add(4, "6").add(12, "6").add(18, "1"), new GeneSketch().add(80, "2", "1")),
         CUCKOO(new GeneSketch().add(12, "2"), new GeneSketch().add(24, "5")),
         SOLIDBLACK("empty", new GeneSketch().add(24, "5")),
         SOLIDBLUE("empty", new GeneSketch().add(24, "5").add(40, "1|2")),
@@ -233,6 +236,7 @@ public final class ChickenBreeds {
         BLUEEGGER(new GeneSketch().add(10, "1"), new GeneSketch().add(62, "1|3|4,1|3|4","3","3","1")),
         EASTEREGGER(new GeneSketch().add(10, "1"), new GeneSketch().add(62, "1|2|3|4,2|3|4", "1|3", "1|3")),
         MAHOGANY("empty", new GeneSketch().add(34, "1").add(170, "1")),
+        GREYLEGS("empty", new GeneSketch().add(44, "1").add(166, "1")),
         YELLOWLEGS("empty", new GeneSketch().add(44, "2").add(166, "1")),
         GOLDENLEGS("empty", new GeneSketch().add(44, "3").add(166, "1")),
         RUMPLESS("empty", new GeneSketch().add(72, "1,2")),
@@ -242,7 +246,8 @@ public final class ChickenBreeds {
         CRESTED("empty", new GeneSketch().add(54, "1")),
         CRESTLESS("empty", new GeneSketch().add(54, "3")),
         CLEANLEGS("empty", new GeneSketch().add(58, "3", "2")),
-        FLUFFYLEGS("empty", new GeneSketch().add(58, "2", "1").add(102, "2"))
+        FLUFFYLEGS("empty", new GeneSketch().add(58, "2", "1").add(102, "2")),
+        CREEPER("empty", new GeneSketch().add(70, "1,2"))
         ;
 
         public final GeneSketch sexlinked;

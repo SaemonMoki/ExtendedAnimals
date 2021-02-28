@@ -43,9 +43,9 @@ public class EnhancedEgg extends Item {
             String damName = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getDam();
             EnhancedEntityEgg entityegg;
             if (eggGenes != null) {
-                entityegg = new EnhancedEntityEgg(worldIn, playerIn, eggGenes, sireName, damName);
+                entityegg = new EnhancedEntityEgg(worldIn, playerIn, eggGenes, sireName, damName, this.getItem());
             } else {
-                entityegg = new EnhancedEntityEgg(worldIn, playerIn, null, null, null);
+                entityegg = new EnhancedEntityEgg(worldIn, playerIn, null, null, null, this.getItem());
             }
 
             entityegg.func_234612_a_(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);

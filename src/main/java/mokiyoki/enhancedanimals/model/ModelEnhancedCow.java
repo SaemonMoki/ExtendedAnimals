@@ -665,6 +665,23 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.bridleMale.showModel = true;
             }
 
+            if (cow.earSize <= 1) {
+                this.earSmallestL.showModel = true;
+                this.earSmallestR.showModel = true;
+            } else if (cow.earSize <= 3) {
+                this.earSmallL.showModel = true;
+                this.earSmallR.showModel = true;
+            } else if (cow.earSize <= 5) {
+                this.earMediumL.showModel = true;
+                this.earMediumR.showModel = true;
+            } else if (cow.earSize <= 7) {
+                this.earLongL.showModel = true;
+                this.earLongR.showModel = true;
+            } else {
+                this.earLongestL.showModel = true;
+                this.earLongestR.showModel = true;
+            }
+
             if (cowModelData.collar) {
                 this.collar.showModel = true;
             }
@@ -1232,63 +1249,32 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     }
 
     private void setEarRotations(float floppiness, float earSize, boolean averageEars) {
-//        this.earSmallestL.setRotationPoint(-3.9F, 4.0F, -2.5F);
-//        this.earSmallL.setRotationPoint(-3.9F, 4.0F, -2.5F);
-//        this.earMediumL.setRotationPoint(-3.9F, 4.0F, -2.5F);
-//        this.earLongL.setRotationPoint(-3.5F, 4.0F, -2.5F);
-//        this.earLongestL.setRotationPoint(-3.5F, 4.0F, -2.5F);
-//        this.earSmallestR.setRotationPoint(-3.9F, 4.0F, -2.5F);
-//        this.earSmallR.setRotationPoint(-3.9F, 4.0F, -2.5F);
-//        this.earMediumR.setRotationPoint(-3.9F, 4.0F, -2.5F);
-//        this.earLongR.setRotationPoint(-3.5F, 4.0F, -2.5F);
-//        this.earLongestR.setRotationPoint(-3.5F, 4.0F, -2.5F);
-//
-//        this.earSmallestL.rotateAngleZ = ((float) Math.PI / 2F);
-//        this.earSmallL.rotateAngleZ = ((float) Math.PI / 2F);
-//        this.earMediumL.rotateAngleZ = ((float) Math.PI / 2F);
-//        this.earLongL.rotateAngleZ = ((float) Math.PI / 2F);
-//        this.earLongestL.rotateAngleZ = ((float) Math.PI / 2F);
-//        this.earSmallestR.rotateAngleZ = ((float) Math.PI / 2F);
-//        this.earSmallR.rotateAngleZ = ((float) Math.PI / 2F);
-//        this.earMediumR.rotateAngleZ = ((float) Math.PI / 2F);
-//        this.earLongR.rotateAngleZ = ((float) Math.PI / 2F);
-//        this.earLongestR.rotateAngleZ = ((float) Math.PI / 2F);
         if (averageEars) {
             if (earSize <= 1) {
                 this.earSmallestL.setRotationPoint(3.0F, 0.5F, -2.5F);
                 this.earSmallestL.rotateAngleZ = 1.1F;
                 this.earSmallestR.setRotationPoint(-3.0F, 0.5F, -2.5F);
                 this.earSmallestR.rotateAngleZ = -1.1F;
-                this.earSmallestL.showModel = true;
-                this.earSmallestR.showModel = true;
             } else if (earSize <= 3) {
                 this.earSmallL.setRotationPoint(3.0F, 0.75F, -2.5F);
                 this.earSmallL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                 this.earSmallR.setRotationPoint(-3.0F, 0.75F, -2.5F);
                 this.earSmallR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
-                this.earSmallL.showModel = true;
-                this.earSmallR.showModel = true;
             } else if (earSize <= 5) {
                 this.earMediumL.setRotationPoint(3.0F + (floppiness / 3), 1.0F, -2.5F);
                 this.earMediumL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                 this.earMediumR.setRotationPoint(-(3.0F + (floppiness / 3)), 1.0F, -2.5F);
                 this.earMediumR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
-                this.earMediumL.showModel = true;
-                this.earMediumR.showModel = true;
             } else if (earSize <= 7) {
                 this.earLongL.setRotationPoint(3.0F + (floppiness / 2), 1.0F, -2.5F);
                 this.earLongL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                 this.earLongR.setRotationPoint(-(3.0F + (floppiness / 2)), 1.0F, -2.5F);
                 this.earLongR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
-                this.earLongL.showModel = true;
-                this.earLongR.showModel = true;
             } else {
                 this.earLongestL.setRotationPoint(3.0F + floppiness, 1.0F, -2.5F);
                 this.earLongestL.rotateAngleZ = 1.1F + (earSize / 6.25F);
                 this.earLongestR.setRotationPoint(-(3.0F + floppiness), 1.0F, -2.5F);
                 this.earLongestR.rotateAngleZ = -(1.1F + (earSize / 6.25F));
-                this.earLongestL.showModel = true;
-                this.earLongestR.showModel = true;
             }
         } else {
             if (earSize <= 1) {
@@ -1296,36 +1282,26 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.earSmallestL.rotateAngleZ = floppiness;
                 this.earSmallestR.setRotationPoint(-3.0F, 0.5F, -2.5F);
                 this.earSmallestR.rotateAngleZ = -floppiness;
-                this.earSmallestL.showModel = true;
-                this.earSmallestR.showModel = true;
             } else if (earSize <= 3) {
                 this.earSmallL.setRotationPoint(3.0F, 0.75F, -2.5F);
                 this.earSmallL.rotateAngleZ = floppiness;
                 this.earSmallR.setRotationPoint(-3.0F, 0.75F, -2.5F);
                 this.earSmallR.rotateAngleZ = -floppiness;
-                this.earSmallL.showModel = true;
-                this.earSmallR.showModel = true;
             } else if (earSize <= 5) {
                 this.earMediumL.setRotationPoint(3.0F + (floppiness / 3), 1.0F, -2.5F);
                 this.earMediumL.rotateAngleZ = floppiness;
                 this.earMediumR.setRotationPoint(-(3.0F + (floppiness / 3)), 1.0F, -2.5F);
                 this.earMediumR.rotateAngleZ = -floppiness;
-                this.earMediumL.showModel = true;
-                this.earMediumR.showModel = true;
             } else if (earSize <= 7) {
                 this.earLongL.setRotationPoint(3.0F + (floppiness / 2), 1.0F, -2.5F);
                 this.earLongL.rotateAngleZ = floppiness;
                 this.earLongR.setRotationPoint(-(3.0F + (floppiness / 2)), 1.0F, -2.5F);
                 this.earLongR.rotateAngleZ = -floppiness;
-                this.earLongL.showModel = true;
-                this.earLongR.showModel = true;
             } else {
                 this.earLongestL.setRotationPoint(3.0F + floppiness, 1.0F, -2.5F);
                 this.earLongestL.rotateAngleZ = floppiness;
                 this.earLongestR.setRotationPoint(-(3.0F + floppiness), 1.0F, -2.5F);
                 this.earLongestR.rotateAngleZ = -floppiness;
-                this.earLongestL.showModel = true;
-                this.earLongestR.showModel = true;
             }
 
         }

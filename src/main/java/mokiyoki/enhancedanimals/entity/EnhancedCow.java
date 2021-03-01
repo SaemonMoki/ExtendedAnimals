@@ -397,7 +397,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     public boolean isFemale() {
-        char[] uuidArray = (this.mooshroomUUID != null ? this.mooshroomUUID : getCachedUniqueIdString()).toCharArray();
+        char[] uuidArray = (this.mooshroomUUID.equals("0") ? getCachedUniqueIdString() : this.mooshroomUUID).toCharArray();
         return !Character.isLetter(uuidArray[0]) && uuidArray[0] - 48 < 8;
     }
 

@@ -150,6 +150,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     private int earTwitchTicker = 0;
     private int earTwitch = 0;
 
+    //Parent
+//    protected EnhancedAnimalAbstract parent = null;
+    protected String motherUUID = "";
+
     //Pregnancy
     protected int gestationTimer = 0;
     protected boolean pregnant = false;
@@ -361,6 +365,39 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     public String getBirthTime() {
         return this.dataManager.get(BIRTH_TIME);
     }
+
+//    private void setParent(String motherUUID) {
+//        if (this.isChild()) {
+//            List<EnhancedAnimalAbstract> list = this.world.getEntitiesWithinAABB(this.getClass(), this.getBoundingBox().grow(8.0D, 4.0D, 8.0D));
+//            EnhancedAnimalAbstract animalentity = null;
+//            double d0 = Double.MAX_VALUE;
+//
+//            for (EnhancedAnimalAbstract animalentity1 : list) {
+//                if (animalentity1.getUniqueID().equals(motherUUID)) {
+//                    double d1 = this.getDistanceSq(animalentity1);
+//                    if (!(d1 > d0)) {
+//                        d0 = d1;
+//                        animalentity = animalentity1;
+//                    }
+//                }
+//            }
+//
+//            if (!(animalentity == null || d0 < 2.0D)) {
+//                if (animalentity instanceof EnhancedAnimalAbstract) {
+//                    this.parent = (EnhancedAnimalAbstract) animalentity;
+//                }
+//            }
+//        }
+//    }
+
+    protected void setParent(String parentUUID) {
+//        this.parent = parent;
+        this.motherUUID = parentUUID;
+    }
+
+//    private EnhancedAnimalAbstract getParent() {
+//        return this.parent;
+//    }
 
     protected void setEntityStatus(String status) {
         this.dataManager.set(ENTITY_STATUS, status);
@@ -644,25 +681,25 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
             if (sleepingConditional()) {
                 setSleeping(true);
-                healTicks = 0;
+                this.healTicks = 0;
             } else if (awokenTimer > 0) {
-                awokenTimer--;
-            } else if (this.world.isDaytime() && sleeping) {
+                this.awokenTimer--;
+            } else if (this.world.isDaytime() && this.sleeping) {
                 setSleeping(false);
             }
 
             //not outside AI processing distance
             if (this.getIdleTime() < 100) {
-                if (hunger <= 72000) {
-                    if (sleeping) {
-                        if ((hunger <= (gestationConfig()/2))) {
+                if (this.hunger <= 72000) {
+                    if (this.sleeping) {
+                        if ((this.hunger <= (gestationConfig()/2))) {
                             incrementHunger();
                         }
-                        healTicks++;
-                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
+                        this.healTicks++;
+                        if (this.healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
                             this.heal(2.0F);
-                            hunger = hunger + 1000;
-                            healTicks = 0;
+                            this.hunger = this.hunger + 1000;
+                            this.healTicks = 0;
                         }
                     } else {
                         incrementHunger();
@@ -991,10 +1028,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
         compound.putBoolean("Tamed", this.isTame());
 
+        compound.putString("MotherUUID", this.motherUUID);
+
         if (canBePregnant()) {
             compound.putBoolean("Pregnant", this.pregnant);
-            compound.putInt("Gestation", this.gestationTimer);
         }
+        compound.putInt("Gestation", this.gestationTimer);
 
         if (canLactate()) {
             compound.putInt("Lactation", this.lactationTimer);
@@ -1134,10 +1173,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
         this.setTame(compound.getBoolean("Tamed"));
 
+        this.motherUUID = compound.getString("MotherUUID");
+
+//        this.setParent(this.motherUUID);
+
         if (canBePregnant()) {
             this.pregnant = compound.getBoolean("Pregnant");
-            this.gestationTimer = compound.getInt("Gestation");
         }
+        this.gestationTimer = compound.getInt("Gestation");
 
         if (canLactate()) {
             this.lactationTimer = compound.getInt("Lactation");
@@ -1231,6 +1274,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         enhancedAnimalChild.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedAnimalChild.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
         enhancedAnimalChild.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
+        enhancedAnimalChild.setParent(this.getUniqueID().toString());
         enhancedAnimalChild.setSireName(this.mateName);
         String name = "???";
         if (this.getCustomName()!=null) {

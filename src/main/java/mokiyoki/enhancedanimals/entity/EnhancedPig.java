@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.PigGeneticsInitialiser;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
@@ -27,9 +28,11 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.HurtByTargetGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -221,14 +224,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     protected void registerGoals() {
         super.registerGoals();
         this.grazingGoal = new GrazingGoalPig(this, 1.0D);
-        this.targetSelector.addGoal(1, new EnhancedPig.HurtByAggressorGoal(this));
-        this.targetSelector.addGoal(2, new EnhancedPig.TargetAggressorGoal(this));
-        this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
-        this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 1.0D));
+        this.targetSelector.addGoal(2, new EnhancedPig.HurtByAggressorGoal(this));
+        this.targetSelector.addGoal(3, new EnhancedPig.TargetAggressorGoal(this));
+        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
 //        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
-        this.goalSelector.addGoal(5, new EnhancedEatPlantsGoal(this, createGrazingMap()));
-        this.goalSelector.addGoal(6, this.grazingGoal);
-        this.goalSelector.addGoal(7, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(7, new EnhancedEatPlantsGoal(this, createGrazingMap()));
+        this.goalSelector.addGoal(8, this.grazingGoal);
+        this.goalSelector.addGoal(9, new EnhancedWanderingGoal(this, 1.0D));
     }
 
     @Override
@@ -925,6 +931,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                     this.enhancedAnimalTextures.add(PIG_TEXTURES_SKINMARKINGS_BELTED[belt]);
                     this.texturesIndexes.add(String.valueOf(belt));
                 }
+            } else {
+                this.texturesIndexes.add(CACHE_DELIMITER);
             }
             this.texturesIndexes.add(CACHE_DELIMITER);
 
@@ -951,7 +959,10 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
                     addTextureToAnimal(PIG_TEXTURES_COAT, coat, null);
                 this.enhancedAnimalTextures.add("alpha_group_end");
+            } else {
+                this.texturesIndexes.add(CACHE_DELIMITER);
             }
+            this.texturesIndexes.add(CACHE_DELIMITER);
 
             addTextureToAnimal(PIG_TEXTURES_EYES, eyes, null);
             addTextureToAnimal(PIG_TEXTURES_HOOVES, hooves, null);

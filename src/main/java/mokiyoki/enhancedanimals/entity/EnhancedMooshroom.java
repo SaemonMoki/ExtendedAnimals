@@ -1,8 +1,10 @@
 package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
-import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
+import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
+import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.ai.general.mooshroom.GrazingGoalMooshroom;
 import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
@@ -16,6 +18,7 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.PanicGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -109,7 +112,6 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         enhancedmooshroom.setMooshroomType(this.setChildMushroomType((enhancedmooshroom)));
         defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -84000);
-        enhancedmooshroom.setMotherUUID(this.getUniqueID().toString());
         enhancedmooshroom.configureAI();
         this.world.addEntity(enhancedmooshroom);
     }
@@ -212,12 +214,16 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     protected void configureAI() {
         if (!aiConfigured) {
             Double speed = 1.0D;
-            this.goalSelector.addGoal(1, new PanicGoal(this, speed*1.5D));
+            this.goalSelector.addGoal(0, new SwimGoal(this));
+            this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
             this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, speed));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D, false, Ingredient.fromItems(Items.CARROT_ON_A_STICK)));
-            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D,false, TEMPTATION_ITEMS));
-            this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
-            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
+            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed,speed*1.25D, false, TEMPTATION_ITEMS));
+            this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
+//            this.goalSelector.addGoal(4, new EnhancedFollowParentGoal(this, this.parent,speed*1.25D));
+//            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, this.parent, speed*1.25D));
+            this.goalSelector.addGoal(5, new StayShelteredGoal(this, 5723, 7000, 0));
+            this.goalSelector.addGoal(6, new SeekShelterGoal(this, 1.0D, 5723, 7000, 0));
 //            grazingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom(this, speed, 7, 0.001F, 120, 2, 20);
             grazingGoal = new GrazingGoalMooshroom(this, speed);
             this.goalSelector.addGoal(6, grazingGoal);

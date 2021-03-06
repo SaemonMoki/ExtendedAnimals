@@ -486,9 +486,16 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[67] = (1);
         }
 
-        //ear size [xsmall, small, medium, large, xlarge]
+        //ear angle recessive floppy
+        for (int i = 68; i < 80; i++) {
+            autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? 2 : 1;
+        }
 
-        //ear angle [up, medium, down
+        for (int i = 80; i < 120; i++) {
+            autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(4)+1 : 1;
+        }
+
+        //ear size [xsmall, small, medium, large, xlarge]
 
         return new Genes(autosomalGenes);
     }

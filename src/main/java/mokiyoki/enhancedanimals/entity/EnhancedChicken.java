@@ -256,7 +256,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     private int timeUntilNextEgg;
     private int grassTimer;
     private int sandBathTimer;
-    private int fertileTimer = 0;
 
     protected GrazingGoal grazingGoal;
 
@@ -498,7 +497,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @Override
     protected void runExtraIdleTimeTick() {
         if (EanimodCommonConfig.COMMON.omnigenders.get() || this.isFemale()) {
-            --this.fertileTimer;
+            if (this.gestationTimer > 0) {
+                --this.gestationTimer;
+            }
 
             if (hunger <= 24000) {
                 --this.timeUntilNextEgg;
@@ -513,7 +514,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (!this.isChild() && this.timeUntilNextEgg <= 0) {
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
-            if (this.fertileTimer > 0) {
+            if (this.gestationTimer > 0) {
                 String damName = "???";
                 if (this.getCustomName()!=null) {
                     damName = this.getCustomName().getString();
@@ -3196,7 +3197,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     public void setFertile(){
-        this.fertileTimer = 96000;
+        this.gestationTimer = 96000;
     }
 
 }

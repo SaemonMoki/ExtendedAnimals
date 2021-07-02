@@ -156,8 +156,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.body.addBox(-5.5F, -0.5F, -10.5F, 11, 11, 23, -0.5F);
         this.body.setRotationPoint(0.0F, 1.0F, 0.0F);
 
-        this.tail = new ModelRenderer(this, 97, 34);
-        this.tail.addBox(-2.0F, 0.0F, -4.0F, 4, 15, 4, 0.0F);
+        this.tail = new ModelRenderer(this, 29, 15);
+        this.tail.addBox(-0.5F, 0.0F, -1.0F, 1, 4, 1, 0.0F);
         this.tail.setRotationPoint(0.0F, 0.0F, 12.0F);
 
         this.leg1 = new ModelRenderer(this, 6, 53);

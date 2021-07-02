@@ -258,6 +258,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                     this.angerLevel = this.angerAmount();
                 }
             }
+            this.awaken();
         }
 
         if (this.isAngry() && this.angerTargetUUID != null && livingentity == null) {

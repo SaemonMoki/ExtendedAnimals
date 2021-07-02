@@ -1506,7 +1506,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             animalInfo.health = (int)(10 * (this.getHealth() / this.getMaxHealth()));
             animalInfo.hunger = (int)(this.getHunger() / 7200);
             animalInfo.isFemale = this.isFemale();
-            animalInfo.pregnant = (10 * this.gestationTimer)/gestationConfig();
+            animalInfo.pregnant = this.canBePregnant() ? (10 * this.gestationTimer)/gestationConfig() : 0;
             animalInfo.name = this.getAnimalsName(getSpecies());
             animalInfo.agePrefix = this.getAnimalsAgeString();
             animalInfo.age = this.getAge();
@@ -1693,7 +1693,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     protected void geneFixer() {
         if (!this.breed.isEmpty()) {
-            this.genetics = createInitialBreedGenes(this.world, new BlockPos(this.getPosition()), this.breed);
+            this.genetics = this.breed.equals("village") ? this.genetics = createInitialGenes(this.world, new BlockPos(this.getPosition()), true) : createInitialBreedGenes(this.world, new BlockPos(this.getPosition()), this.breed);
             setInitialDefaults();
             int childAge = this.getAdultAge();
             if (this.rand.nextInt(20) == 0) {
@@ -1769,7 +1769,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     protected ILivingEntityData commonInitialSpawnSetup(IWorld inWorld, @Nullable ILivingEntityData livingdata, int childAge, int ageMinimum, int ageMaximum, SpawnReason spawnReason) {
         Genes spawnGenes;
 
-        if (livingdata instanceof GroupData) {
+        if (spawnReason.equals(SpawnReason.STRUCTURE)) {
+            spawnGenes = createInitialGenes(this.world, new BlockPos(this.getPosition()), true);
+        } else if (livingdata instanceof GroupData) {
             spawnGenes = new Genes(((GroupData)livingdata).groupGenes).makeChild(true, false, ((GroupData)livingdata).groupGenes);
         } else {
             spawnGenes = createInitialGenes(this.world, new BlockPos(this.getPosition()), false);

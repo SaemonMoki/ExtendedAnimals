@@ -233,7 +233,8 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     public int getFaceLength() {
-        return this.rand.nextInt(3);
+//        return this.rand.nextInt(3);
+        return 0;
     }
 
     /**

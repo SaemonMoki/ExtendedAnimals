@@ -227,8 +227,16 @@ public class EventSubscriber {
                         if (((ChickenEntity) entity).getLeashed()) {
                             enhancedChicken.setLeashHolder(((ChickenEntity) entity).getLeashHolder(), true);
                         }
+                        if (entity.isBeingRidden()) {
+                            Entity rider = entity.getRidingEntity();
+                            if (rider != null) {
+                                enhancedChicken.updatePassenger(rider);
+                                enhancedChicken.setChickenJockey(true);
+                            }
+                        }
                     }
                     entity.remove();
+                    event.setCanceled(true);
                 }
             } else if (entity instanceof PigEntity) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaPigs.get() && EanimodCommonConfig.COMMON.spawnGeneticPigs.get()) {
@@ -578,21 +586,6 @@ public class EventSubscriber {
                 while (ThreadLocalRandom.current().nextInt(2, 6) >= i) {
                     ((WanderingTraderEntity)entity).getOffers().add(new EanimodVillagerTrades().getWanderingEanimodTrade());
                     i++;
-                }
-            }
-        } else if (entity instanceof ChickenEntity) {
-            if (((ChickenEntity)entity).isChickenJockey()) {
-                IWorld world = event.getWorld();
-                Entity rider = entity.getRidingEntity();
-                entity.remove();
-
-                if(world instanceof ServerWorld) {
-                    BlockPos blockPos = nearbySpawn((ServerWorld)world, new BlockPos(entity.getPosition()));
-                    EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.spawn((ServerWorld)world, null, null, null, blockPos, SpawnReason.EVENT, false, false);
-                    if(enhancedChicken != null) {
-                        enhancedChicken.updatePassenger(rider);
-                        enhancedChicken.setChickenJockey(true);
-                    }
                 }
             }
         }

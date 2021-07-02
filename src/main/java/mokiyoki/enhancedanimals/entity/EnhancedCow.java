@@ -426,7 +426,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     this.lactationTimer--;
                 }
 
-                if (lactationTimer == 0) {
+                if (this.lactationTimer == 0) {
                     setEntityStatus(EntityState.ADULT.toString());
                 }
             }
@@ -435,25 +435,25 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     public boolean sleepingConditional() {
-        return (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && awokenTimer == 0 && !sleeping);
+        return (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && this.awokenTimer == 0 && !this.sleeping);
     }
 
     protected void initialMilk() {
-        lactationTimer = -48000;
+        this.lactationTimer = -48000;
         //sets milk amount at first milk
-        Integer milk = Math.round((30*(getAnimalSize()/1.5F)*(maxBagSize/1.5F)) * 0.75F);
+        Integer milk = Math.round((30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F)) * 0.75F);
         setMilkAmount(milk);
 
-        float milkBagSize = milk / (30*(getAnimalSize()/1.5F)*(maxBagSize/1.5F));
-        this.setBagSize((1.1F*milkBagSize*(maxBagSize-1.0F))+1.0F);
+        float milkBagSize = milk / (30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F));
+        this.setBagSize((1.1F*milkBagSize*(this.maxBagSize-1.0F))+1.0F);
     }
 
     @Override
     protected void incrementHunger() {
-        if(sleeping) {
-            hunger = hunger + (1.0F*getHungerModifier());
+        if(this.sleeping) {
+            this.hunger = this.hunger + (1.0F*getHungerModifier());
         } else {
-            hunger = hunger + (2.0F*getHungerModifier());
+            this.hunger = this.hunger + (2.0F*getHungerModifier());
         }
     }
 

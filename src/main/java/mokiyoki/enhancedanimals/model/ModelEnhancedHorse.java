@@ -50,7 +50,9 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     private final ModelRenderer maneJoiner;
     private final ModelRenderer neck;
     private final EnhancedRendererModelNew body;
-    private final ModelRenderer tail;
+    private final ModelRenderer tail0;
+    private final ModelRenderer tail1;
+    private final ModelRenderer tail2;
     private final ModelRenderer leg1;
     private final ModelRenderer leg2;
     private final ModelRenderer leg3;
@@ -156,9 +158,17 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.body.addBox(-5.5F, -0.5F, -10.5F, 11, 11, 23, -0.5F);
         this.body.setRotationPoint(0.0F, 1.0F, 0.0F);
 
-        this.tail = new ModelRenderer(this, 29, 15);
-        this.tail.addBox(-0.5F, 0.0F, -1.0F, 1, 4, 1, 0.0F);
-        this.tail.setRotationPoint(0.0F, 0.0F, 12.0F);
+        this.tail0 = new ModelRenderer(this, 29, 15);
+        this.tail0.addBox(-0.5F, 0.0F, -1.0F, 1, 3, 1, 0.0F);
+        this.tail0.setRotationPoint(0.0F, 1.5F, 12.0F);
+
+        this.tail1 = new ModelRenderer(this, 29, 15);
+        this.tail1.addBox(-0.5F, 0.0F, -1.0F, 1, 4, 1, 0.0F);
+        this.tail1.setRotationPoint(0.0F, 3.0F, 0.0F);
+
+        this.tail2 = new ModelRenderer(this, 29, 15);
+        this.tail2.addBox(-0.5F, 0.0F, -1.0F, 1, 5, 1, 0.0F);
+        this.tail2.setRotationPoint(0.0F, 4.0F, 0.0F);
 
         this.leg1 = new ModelRenderer(this, 6, 53);
         this.leg1.addBox(0.0F, 0.5F, 0.0F, 5, 13 - heightMod, 5, -1.0F);  //13
@@ -208,6 +218,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.jaw2.addChild(tongue);
         this.head.addChild(eyeLeft);
         this.head.addChild(eyeRight);
+        this.tail0.addChild(this.tail1);
+        this.tail1.addChild(this.tail2);
 
             /**
              * Equipment stuff
@@ -397,7 +409,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 //        this.head.render(scale);
         this.neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         renderBodyandSaddle(horseModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.tail0.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.leg1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.leg2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.leg3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -612,7 +624,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
          *  experimental head variations
          */
 
-        float noseAngle = horseModelData.faceShape; // dish-roman [-0.175, 0.075]
+        float noseAngle = -0.175F; // dish-roman [-0.175, 0.075]
 
         this.noseArch0.setRotationPoint(0,0, -6.0F);
 //        this.nose0.rotationPointZ = noseAngle < 0 ? (-3.0F - (noseAngle * 5.0F)) : -3.0F;
@@ -662,6 +674,33 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 //        }
 
         /**
+         *  experimental tail variations
+         */
+
+        // minCarriage = .2
+        // maxCarriage = .80
+        // normalCarriage = .35
+
+        // tailCarriage * 3
+
+        float tailCarriage = 1.0F;
+
+        this.tail0.rotateAngleX = ((float) Math.PI * 0.35F) * tailCarriage;
+        this.tail1.rotateAngleX = ((float) Math.PI * -0.20F) * tailCarriage;
+        this.tail2.rotateAngleX = ((float) Math.PI * -0.50F) * tailCarriage;
+
+        /**
+         *  experimental ear heights
+         */
+        // havent started
+
+        /**
+         *  experimental ear shapes
+         */
+        // havent started
+
+
+        /**
          *  experimental size variations
          */
 
@@ -670,7 +709,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.neck.rotationPointZ = -5.0F  + (int)(heightMod/2);
         this.hock3.rotationPointY = 9.5F + heightMod;
         this.hock4.rotationPointY = 9.5F + heightMod;
-        this.tail.rotationPointY = 0.0F + heightMod;
+        this.tail0.rotationPointY = 1.0F + heightMod;
         this.leg1.rotationPointY = 9.5F + heightMod;
         this.leg2.rotationPointY = 9.5F + heightMod;
         this.leg3.rotationPointY = 9.5F + heightMod;
@@ -689,7 +728,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.head.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.14F);
         this.maneJoiner.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.07F);
 
-        this.tail.rotateAngleX = 0.6F;
+        //this.tail.rotateAngleX = 0.6F;
 
         this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
         this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;

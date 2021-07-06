@@ -5,15 +5,15 @@ import net.minecraft.entity.ai.goal.FollowParentGoal;
 
 public class EnhancedFollowParentGoal extends FollowParentGoal {
 
-    private final EnhancedAnimalAbstract enhanchedChild;
+    private final EnhancedAnimalAbstract enhancedChild;
 
     public EnhancedFollowParentGoal(EnhancedAnimalAbstract animal, double speed) {
         super(animal, speed);
-        this.enhanchedChild = animal;
+        this.enhancedChild = animal;
     }
 
     public boolean shouldExecute() {
-        if (this.enhanchedChild.isBeingRidden() || this.enhanchedChild.isAnimalSleeping()) {
+        if (this.enhancedChild.isBeingRidden() || this.enhancedChild.isAnimalSleeping()) {
             return false;
         }
 

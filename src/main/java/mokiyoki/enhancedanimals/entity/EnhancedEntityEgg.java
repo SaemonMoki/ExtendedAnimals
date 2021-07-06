@@ -41,7 +41,6 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         super(entityIn, worldIn);
     }
 
-    //TODO return the right default egg colour type... personal note: FUUUUUUUCCCCCKKKKKK!!!!!
     protected Item getDefaultItem() {
         return Items.EGG;
     }

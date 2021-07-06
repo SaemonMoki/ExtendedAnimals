@@ -720,7 +720,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                             black = 7;
                         }
                         red = 2;
-                        //TODO set up something here to dilute the colour of red to a cream or white
                     } else if (gene[4] == 5 || gene[5] == 5){
                         //fawn
                         red = 3;
@@ -853,7 +852,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 }
             }
 
-            //TODO make randomizers for the textures
             if (whiteface == 4){
                 //selects body piebalding texture
                 if (Character.isDigit(uuidArry[1])) {
@@ -1004,9 +1002,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     coat = 2;
                 }
             }
-
-            //TODO change white spots to add whitening together
-            //TODO add shading under correct conditions
 
             addTextureToAnimal(COW_TEXTURES_BASE, 0, null);
             addTextureToAnimal(COW_TEXTURES_UDDER, skin, null);

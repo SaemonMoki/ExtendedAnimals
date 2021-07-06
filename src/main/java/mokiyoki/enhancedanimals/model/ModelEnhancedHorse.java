@@ -681,11 +681,10 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         // maxCarriage = .80
         // normalCarriage = .35
 
-        // tailCarriage * 3
+        float tailCarriage = 1.0F; // [ -1.0 to 1.0 ]
 
-        float tailCarriage = 1.0F;
+        this.tail0.rotateAngleX = (float)Math.PI * (tailCarriage < 0 ? 0.2F + (0.15F * tailCarriage) : 0.35F + (0.45F * tailCarriage));
 
-        this.tail0.rotateAngleX = ((float) Math.PI * 0.8F) * tailCarriage;
         this.tail1.rotateAngleX = ((float) Math.PI * -0.20F) * tailCarriage;
         this.tail2.rotateAngleX = ((float) Math.PI * -0.1F) * tailCarriage;
 

@@ -685,15 +685,14 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
         float tailCarriage = 1.0F;
 
-        this.tail0.rotateAngleX = ((float) Math.PI * 0.35F) * tailCarriage;
+        this.tail0.rotateAngleX = ((float) Math.PI * 0.8F) * tailCarriage;
         this.tail1.rotateAngleX = ((float) Math.PI * -0.20F) * tailCarriage;
-        this.tail2.rotateAngleX = ((float) Math.PI * -0.50F) * tailCarriage;
+        this.tail2.rotateAngleX = ((float) Math.PI * -0.1F) * tailCarriage;
 
         /**
          *  experimental ear heights
          */
         // havent started
-
         /**
          *  experimental ear shapes
          */

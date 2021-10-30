@@ -262,7 +262,7 @@ public class GrazingGoal extends Goal {
 
     @Override
     public boolean shouldContinueExecuting() {
-        if (this.timeoutCounter > this.maxTicks) {
+        if (this.timeoutCounter > this.maxTicks || this.eanimal.isAnimalSleeping()) {
             return false;
         }
 

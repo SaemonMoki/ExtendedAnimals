@@ -131,50 +131,52 @@ public class EventSubscriber {
         if (entity instanceof VillagerEntity && entity.getTags().contains("eanimodTrader")) {
             VillagerProfession profession = ((VillagerEntity)entity).getVillagerData().getProfession();
             Set<String> tags = entity.getTags();
-            if (profession.equals(VillagerProfession.LEATHERWORKER) || profession.equals(VillagerProfession.SHEPHERD)) {
-                int level = ((VillagerEntity)entity).getVillagerData().getLevel();
-                switch (level) {
-                    case 1 :
-                        if (!tags.contains("eanimodTrader_1")) {
-                            entity.addTag("eanimodTrader_1");
-                            ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession, 1));
-                        }
-                        break;
-                    case 2 :
-                        if (!tags.contains("eanimodTrader_2")) {
-                            entity.addTag("eanimodTrader_2");
-                            if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession,2));
+            if (profession != null) {
+                if (profession.equals(VillagerProfession.LEATHERWORKER) || profession.equals(VillagerProfession.SHEPHERD)) {
+                    int level = ((VillagerEntity)entity).getVillagerData().getLevel();
+                    switch (level) {
+                        case 1 :
+                            if (!tags.contains("eanimodTrader_1")) {
+                                entity.addTag("eanimodTrader_1");
+                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession, 1));
                             }
-                        }
-                        break;
-                    case 3 :
-                        if (!tags.contains("eanimodTrader_3")) {
-                            entity.addTag("eanimodTrader_3");
-                            if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession,3));
+                            break;
+                        case 2 :
+                            if (!tags.contains("eanimodTrader_2")) {
+                                entity.addTag("eanimodTrader_2");
+                                if (ThreadLocalRandom.current().nextBoolean()) {
+                                    ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession,2));
+                                }
                             }
-                        }
-                        break;
-                    case 4 :
-                        if (!tags.contains("eanimodTrader_4")) {
-                            entity.addTag("eanimodTrader_4");
-                            if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession,4));
+                            break;
+                        case 3 :
+                            if (!tags.contains("eanimodTrader_3")) {
+                                entity.addTag("eanimodTrader_3");
+                                if (ThreadLocalRandom.current().nextBoolean()) {
+                                    ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession,3));
+                                }
                             }
-                        }
-                        break;
-                    case 5 :
-                        if (!tags.contains("eanimodTrader_5")) {
-                            entity.addTag("eanimodTrader_5");
-                            if (ThreadLocalRandom.current().nextBoolean()) {
-                                ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession,5));
+                            break;
+                        case 4 :
+                            if (!tags.contains("eanimodTrader_4")) {
+                                entity.addTag("eanimodTrader_4");
+                                if (ThreadLocalRandom.current().nextBoolean()) {
+                                    ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession,4));
+                                }
                             }
-                        }
-                }
-            } else {
-                if (tags.contains("eanimodTrader_1")) {
-                    entity.removeTag("eanimodTrader_1");
+                            break;
+                        case 5 :
+                            if (!tags.contains("eanimodTrader_5")) {
+                                entity.addTag("eanimodTrader_5");
+                                if (ThreadLocalRandom.current().nextBoolean()) {
+                                    ((VillagerEntity)entity).getOffers().add(new EanimodVillagerTrades().getEanimodTrade(profession,5));
+                                }
+                            }
+                    }
+                } else {
+                    if (tags.contains("eanimodTrader_1")) {
+                        entity.removeTag("eanimodTrader_1");
+                    }
                 }
             }
         } else if (entity instanceof WanderingTraderEntity) {

@@ -686,6 +686,10 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.collar.showModel = true;
             }
 
+            if (cowModelData.bridle) {
+                this.bridle.showModel = true;
+            }
+
             this.mushroomHead.showModel = false;
             if (!this.isChild) {
                 this.mushroomBody1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);

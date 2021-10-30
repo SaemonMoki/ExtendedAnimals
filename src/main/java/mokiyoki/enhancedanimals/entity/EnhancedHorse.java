@@ -233,7 +233,8 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     public int getFaceLength() {
-        return this.rand.nextInt(3);
+//        return this.rand.nextInt(3);
+        return 0;
     }
 
     /**
@@ -341,7 +342,6 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         EnhancedHorse enhancedhorse = ENHANCED_HORSE.create(this.world);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedhorse, inWorld, babyGenes, -84000);
-        enhancedhorse.setMotherUUID(this.getUniqueID().toString());
         enhancedhorse.configureAI();
         this.world.addEntity(enhancedhorse);
     }

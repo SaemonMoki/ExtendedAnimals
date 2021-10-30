@@ -2,14 +2,12 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedFollowParentGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
 import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
-import mokiyoki.enhancedanimals.ai.general.cow.EnhancedAINurseFromMotherGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -30,6 +28,8 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.FollowParentGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -165,8 +165,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     protected boolean aiConfigured = false;
 
     private String mooshroomUUID = "0";
-
-    protected String motherUUID = "";
 
     protected GrazingGoal grazingGoal;
 
@@ -428,7 +426,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     this.lactationTimer--;
                 }
 
-                if (lactationTimer == 0) {
+                if (this.lactationTimer == 0) {
                     setEntityStatus(EntityState.ADULT.toString());
                 }
             }
@@ -437,25 +435,25 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     public boolean sleepingConditional() {
-        return (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && awokenTimer == 0 && !sleeping);
+        return (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && this.awokenTimer == 0 && !this.sleeping);
     }
 
     protected void initialMilk() {
-        lactationTimer = -48000;
+        this.lactationTimer = -48000;
         //sets milk amount at first milk
-        Integer milk = Math.round((30*(getAnimalSize()/1.5F)*(maxBagSize/1.5F)) * 0.75F);
+        Integer milk = Math.round((30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F)) * 0.75F);
         setMilkAmount(milk);
 
-        float milkBagSize = milk / (30*(getAnimalSize()/1.5F)*(maxBagSize/1.5F));
-        this.setBagSize((1.1F*milkBagSize*(maxBagSize-1.0F))+1.0F);
+        float milkBagSize = milk / (30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F));
+        this.setBagSize((1.1F*milkBagSize*(this.maxBagSize-1.0F))+1.0F);
     }
 
     @Override
     protected void incrementHunger() {
-        if(sleeping) {
-            hunger = hunger + (1.0F*getHungerModifier());
+        if(this.sleeping) {
+            this.hunger = this.hunger + (1.0F*getHungerModifier());
         } else {
-            hunger = hunger + (2.0F*getHungerModifier());
+            this.hunger = this.hunger + (2.0F*getHungerModifier());
         }
     }
 
@@ -468,7 +466,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -84000);
-        enhancedcow.setMotherUUID(this.getUniqueID().toString());
         enhancedcow.configureAI();
 
         this.world.addEntity(enhancedcow);
@@ -479,14 +476,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         if(genes[26] == 1 && genes[27] == 1) {
             this.remove();
         }
-    }
-
-    public void setMotherUUID(String motherUUID) {
-        this.motherUUID = motherUUID;
-    }
-
-    public String getMotherUUID() {
-        return this.motherUUID;
     }
 
     @Override
@@ -731,7 +720,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                             black = 7;
                         }
                         red = 2;
-                        //TODO set up something here to dilute the colour of red to a cream or white
                     } else if (gene[4] == 5 || gene[5] == 5){
                         //fawn
                         red = 3;
@@ -864,7 +852,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 }
             }
 
-            //TODO make randomizers for the textures
             if (whiteface == 4){
                 //selects body piebalding texture
                 if (Character.isDigit(uuidArry[1])) {
@@ -1015,9 +1002,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     coat = 2;
                 }
             }
-
-            //TODO change white spots to add whitening together
-            //TODO add shading under correct conditions
 
             addTextureToAnimal(COW_TEXTURES_BASE, 0, null);
             addTextureToAnimal(COW_TEXTURES_UDDER, skin, null);
@@ -1469,8 +1453,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
         compound.putString("MooshroomID", getMooshroomUUID());
 
-        compound.putString("MotherUUID", this.motherUUID);
-
 //        compound.putBoolean("Saddle", this.getSaddled());
 
     }
@@ -1482,8 +1464,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         super.readAdditional(compound);
 
         setMooshroomUUID(compound.getString("MooshroomID"));
-
-        this.motherUUID = compound.getString("MotherUUID");
 
         //this takes the number of milk points a cow has over the number possible to make a number between 0 and 1.
         float milkBagSize = this.getMilkAmount() / (30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F));
@@ -1610,12 +1590,14 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //                speed = speed - 0.1;
 //            }
 
+            this.goalSelector.addGoal(0, new SwimGoal(this));
             this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
             this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, speed));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D, false, Ingredient.fromItems(Items.CARROT_ON_A_STICK)));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed,speed*1.25D, false, TEMPTATION_ITEMS));
-            this.goalSelector.addGoal(4, new EnhancedFollowParentGoal(this, speed*1.25D));
-            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.25D));
+//            this.goalSelector.addGoal(4, new EnhancedFollowParentGoal(this, this.parent,speed*1.25D));
+//            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, this.parent, speed*1.25D));
+            this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
             this.goalSelector.addGoal(5, new StayShelteredGoal(this, 5723, 7000, 0));
             this.goalSelector.addGoal(6, new SeekShelterGoal(this, 1.0D, 5723, 7000, 0));
 //            grazingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);

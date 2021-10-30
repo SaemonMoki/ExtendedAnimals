@@ -1,13 +1,12 @@
 package mokiyoki.enhancedanimals.entity.Genetics;
 
-import mokiyoki.enhancedanimals.init.SheepBreeds;
+import mokiyoki.enhancedanimals.init.breeds.SheepBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;

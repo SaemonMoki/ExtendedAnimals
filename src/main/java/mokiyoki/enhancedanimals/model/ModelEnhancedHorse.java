@@ -51,7 +51,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     private final ModelRenderer neck;
     private final EnhancedRendererModelNew body;
     private final ModelRenderer tail;
-    private final ModelRenderer leg1;
+    private final ModelRenderer leg1A;
+    private final ModelRenderer leg1B;
     private final ModelRenderer leg2;
     private final ModelRenderer leg3;
     private final ModelRenderer leg4;
@@ -116,10 +117,10 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.head.setRotationPoint(0.0F, -14.0F, -1.0F);
 
         this.eyeLeft = new ModelRenderer(this, 0, 0);
-        this.eyeLeft.addBox(2.01F, 0.0F, -6.0F, 0, 4, 4, -1.0F);
+        this.eyeLeft.addBox(2.01F, 0.0F, -7.01F, 0, 4, 4, -1.0F);
 
         this.eyeRight = new ModelRenderer(this, 3, 0);
-        this.eyeRight.addBox(-2.01F, 0.0F, -6.0F, 0, 4, 4, -1.0F);
+        this.eyeRight.addBox(-2.01F, 0.0F, -7.01F, 0, 4, 4, -1.0F);
 
         this.earL = new ModelRenderer(this, 6, 0);
         this.earL.addBox(-2.0F, -3.0F, -0.5F, 2, 3, 1);
@@ -140,7 +141,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
         this.tongue = new ModelRenderer(this, 0, 15);
         this.tongue.addBox(-2.0F, 2.25F, -9.0F, 4, 1, 7, -0.11F);
-        this.tongue.setRotationPoint(0.0F, 2.5F, -2.0F);
+        this.tongue.setRotationPoint(0.0F, 0.0F, -1.5F);
 
         this.maneJoiner = new ModelRenderer(this, 98, 9);
         this.maneJoiner.addBox(-1.5F, -1.49F, -0.49F, 3, 2, 2, -0.51F); //mane piece 2
@@ -156,13 +157,17 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.body.addBox(-5.5F, -0.5F, -10.5F, 11, 11, 23, -0.5F);
         this.body.setRotationPoint(0.0F, 1.0F, 0.0F);
 
-        this.tail = new ModelRenderer(this, 97, 34);
-        this.tail.addBox(-2.0F, 0.0F, -4.0F, 4, 15, 4, 0.0F);
+        this.tail = new ModelRenderer(this, 29, 15);
+        this.tail.addBox(-0.5F, 0.0F, -1.0F, 1, 4, 1, 0.0F);
         this.tail.setRotationPoint(0.0F, 0.0F, 12.0F);
 
-        this.leg1 = new ModelRenderer(this, 6, 53);
-        this.leg1.addBox(0.0F, 0.5F, 0.0F, 5, 13 - heightMod, 5, -1.0F);  //13
-        this.leg1.setRotationPoint(-6.0F, 9.5F, -9.0F);
+        this.leg1A = new ModelRenderer(this, 6, 53);
+        this.leg1A.addBox(0.0F, 0.5F, 0.0F, 5, 8, 5, -1.0F);  //13
+        this.leg1A.setRotationPoint(-6.0F, 9.5F, -9.0F);
+
+        this.leg1B = new ModelRenderer(this, 6, 53);
+        this.leg1B.addBox(0.0F, -1.0F, -2.0F, 5, 7, 5, -1.001F);  //13
+        this.leg1B.setRotationPoint(0.0F, 7.5F, 2.0F);
 
         this.leg2 = new ModelRenderer(this, 26, 53);
         this.leg2.addBox(0.0F, 0.5F, 0.0F, 5, 13 - heightMod, 5, -1.0F);
@@ -185,7 +190,8 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.hock4.setRotationPoint(1.0F, 9.5F, 8.0F);
 
         this.hoof1 = new ModelRenderer(this, 6, 71);
-        this.hoof1.addBox(0.0F, 11.75F, 0.1F, 5, 3, 4, -0.5F);
+        this.hoof1.addBox(0.0F, -0.5F, -2.4F, 5, 3, 4, -0.5F);
+        this.hoof1.setRotationPoint(0.0F, 4.75F, 0.5F);
 
         this.hoof2 = new ModelRenderer(this, 26, 71);
         this.hoof2.addBox(0.0F, 11.75F, 0.1F, 5, 3, 4, -0.5F);
@@ -203,9 +209,13 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.head.addChild(jaw0);
         this.head.addChild(jaw1);
         this.head.addChild(jaw2);
-        this.head.addChild(tongue);
+        this.jaw0.addChild(tongue);
+        this.jaw1.addChild(tongue);
+        this.jaw2.addChild(tongue);
         this.head.addChild(eyeLeft);
         this.head.addChild(eyeRight);
+        this.leg1A.addChild(this.leg1B);
+        this.leg1B.addChild(this.hoof1);
 
             /**
              * Equipment stuff
@@ -396,13 +406,13 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.neck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         renderBodyandSaddle(horseModelData.unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.leg1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.leg1A.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.leg2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.leg3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.leg4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.hock3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.hock4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.hoof1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+//        this.hoof1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.hoof2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.hoof3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.hoof4.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -604,19 +614,29 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
             }
         }
 
+        this.tongue.rotateAngleX = (float)Math.PI * -0.5F;
+
+        /**
+         * other
+         */
+
+        this.leg1B.rotateAngleX = (float)Math.PI * 0.4F;
+        this.hoof1.rotateAngleX = (float)Math.PI * 0.2F;
+
         /**
          *  experimental head variations
          */
 
-        float noseAngle = horseModelData.faceShape; // dish-roman [-0.175, 0.075]
+//        float noseAngle = horseModelData.faceShape; // dish-roman [-0.175, 0.075]
+        float noseAngle = 0.0F; // dish-roman [-0.175, 0.075]
+
 
         this.noseArch0.setRotationPoint(0,0, -6.0F);
 //        this.nose0.rotationPointZ = noseAngle < 0 ? (-3.0F - (noseAngle * 5.0F)) : -3.0F;
 
         this.noseArch0.rotateAngleX = (float)Math.PI/2.0F + (float)Math.PI * (Math.abs(noseAngle));
         this.nose0.rotateAngleX = ((float)Math.PI * (noseAngle < 0 ? (3.0F*noseAngle/2.0F) : (2.0F*noseAngle/3.0F)));
-        this.tongue.rotateAngleX = -0.175F + (noseAngle < 0 ? noseAngle/2.0F : ((float)Math.PI * (2.0F*noseAngle/3.0F)));
-        this.jaw0.rotateAngleX = this.tongue.rotateAngleX + (float)Math.PI/2.0F;
+//        this.jaw0.rotateAngleX = (-0.175F + (noseAngle < 0 ? noseAngle/2.0F : ((float)Math.PI * (2.0F*noseAngle/3.0F)))) + (float)Math.PI/2.0F;
 
         ModelHelper.copyModelRotations(noseArch0, noseArch1, noseArch2);
         ModelHelper.copyModelRotations(nose0, nose1, nose2);
@@ -632,25 +652,37 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
         this.nose1.setRotationPoint(0.0F, this.nose0.rotationPointY, 0);
         this.nose2.setRotationPoint(0.0F, this.nose0.rotationPointY, 0);
+
+        this.jaw0.rotateAngleX = (float)Math.PI * 0.45F;
+//        this.jaw0.rotateAngleX = (float)Math.PI * 0.41F;
+//        this.jaw0.rotationPointZ = -1.25F;
+        this.jaw0.rotationPointZ = -2.0F;
+
+        this.jaw1.rotationPointZ = this.jaw0.rotationPointZ;
+        this.jaw2.rotationPointZ = this.jaw0.rotationPointZ;
         this.jaw1.rotateAngleX = this.jaw0.rotateAngleX;
         this.jaw2.rotateAngleX = this.jaw0.rotateAngleX;
 
-        switch (horseModelData.faceLength) {
-            case 0 :
-                this.tongue.rotationPointZ = -2.0F - (noseAngle >= 0 ? noseAngle * -2.0F : noseAngle * 2.75F);
-                this.jaw0.setRotationPoint(0.0F, 0.70F - (noseAngle >= 0 ? 0.0F : noseAngle), this.tongue.rotationPointZ);
-                break;
-            case 1 :
-                this.tongue.rotationPointZ = -3.0F - (noseAngle >= 0 ? 0.0F : noseAngle * 2.75F);
-                this.jaw1.setRotationPoint(0.0F, 0.70F - (noseAngle >= 0 ? 0.0F : noseAngle), this.tongue.rotationPointZ);
-                break;
-            default:
-            case 2 :
-                this.tongue.rotationPointZ = -4.0F - (noseAngle >= 0 ? 0.0F : noseAngle * 2.75F);
-                this.jaw2.setRotationPoint(0.0F, 0.70F - (noseAngle >= 0 ? 0.0F : noseAngle), this.tongue.rotationPointZ);
-                break;
-
-        }
+//        int jawLengthMod = horseModelData.faceShape > 0 ? (int)(2.9999F*(-horseModelData.faceShape)/0.175F) : 0;
+//
+//        jawLengthMod = horseModelData.faceLength - jawLengthMod;
+//
+//        switch (jawLengthMod) {
+//            default:
+//            case 0 :
+//                this.tongue.rotationPointZ = -2.0F - (noseAngle >= 0 ? noseAngle * -2.0F : noseAngle * 2.75F);
+//                this.jaw0.setRotationPoint(0.0F, 0.70F - (noseAngle >= 0 ? 0.0F : noseAngle), this.tongue.rotationPointZ);
+//                break;
+//            case 1 :
+//                this.tongue.rotationPointZ = -3.0F - (noseAngle >= 0 ? 0.0F : noseAngle * 2.75F);
+//                this.jaw1.setRotationPoint(0.0F, 0.70F - (noseAngle >= 0 ? 0.0F : noseAngle), this.tongue.rotationPointZ);
+//                break;
+//            case 2 :
+//                this.tongue.rotationPointZ = -4.0F - (noseAngle >= 0 ? 0.0F : noseAngle * 2.75F);
+//                this.jaw2.setRotationPoint(0.0F, 0.70F - (noseAngle >= 0 ? 0.0F : noseAngle), this.tongue.rotationPointZ);
+//                break;
+//
+//        }
 
         /**
          *  experimental size variations
@@ -662,7 +694,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         this.hock3.rotationPointY = 9.5F + heightMod;
         this.hock4.rotationPointY = 9.5F + heightMod;
         this.tail.rotationPointY = 0.0F + heightMod;
-        this.leg1.rotationPointY = 9.5F + heightMod;
+        this.leg1A.rotationPointY = 9.5F + heightMod;
         this.leg2.rotationPointY = 9.5F + heightMod;
         this.leg3.rotationPointY = 9.5F + heightMod;
         this.leg4.rotationPointY = 9.5F + heightMod;
@@ -682,14 +714,14 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
 
         this.tail.rotateAngleX = 0.6F;
 
-        this.leg1.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
+        this.leg1A.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
         this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
         this.hock3.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
         this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
         this.hock4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
         this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
 
-        ModelHelper.copyModelPositioning(leg1, hoof1);
+//        ModelHelper.copyModelPositioning(leg1A, hoof1);
         ModelHelper.copyModelPositioning(leg2, hoof2);
         ModelHelper.copyModelPositioning(leg3, hoof3);
         ModelHelper.copyModelPositioning(leg4, hoof4);
@@ -818,6 +850,12 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
             }
         }
         return 0;
+    }
+
+    private class Phenotype {
+        float faceShape;
+        float faceLength;
+
     }
 
 }

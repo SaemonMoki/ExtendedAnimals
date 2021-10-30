@@ -789,7 +789,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         mapOfScale.put("Udder", scalingsForUdder);
         mapOfScale.put("Nipples", scalingsForNipples);
 
-        if ((cowStatus.equals(EntityState.PREGNANT.toString()) && cowStatus.equals(EntityState.MOTHER.toString()))) {
+        if ((cowStatus.equals(EntityState.PREGNANT.toString()) || cowStatus.equals(EntityState.MOTHER.toString()))) {
             this.udder.showModel = true;
         }
 
@@ -1416,10 +1416,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             CowModelData cowModelData = cowModelDataCache.get(enhancedCow.getEntityId());
             cowModelData.lastAccessed = 0;
             cowModelData.dataReset++;
-            if (cowModelData.dataReset > 5000) {
-                cowModelData.cowStatus = enhancedCow.getEntityStatus();
-                cowModelData.dataReset = 0;
-            }
+            cowModelData.cowStatus = enhancedCow.getEntityStatus();
             cowModelData.bagSize = enhancedCow.getBagSize();
             cowModelData.sleeping = enhancedCow.isAnimalSleeping();
             cowModelData.blink = enhancedCow.getBlink();

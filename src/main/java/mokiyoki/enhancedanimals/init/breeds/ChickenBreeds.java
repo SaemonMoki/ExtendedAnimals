@@ -1,4 +1,4 @@
-package mokiyoki.enhancedanimals.init;
+package mokiyoki.enhancedanimals.init.breeds;
 
 import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.util.Breed;

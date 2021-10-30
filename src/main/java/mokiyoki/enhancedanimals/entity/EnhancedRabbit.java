@@ -34,6 +34,7 @@ import net.minecraft.entity.ai.controller.JumpController;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.MonsterEntity;
@@ -268,6 +269,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected void registerGoals() {
         int napmod = this.rand.nextInt(1200);
         this.grazingGoal = new GrazingGoal(this, 1.0D);
+        this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new SwimGoal(this));
         this.goalSelector.addGoal(2, new EnhancedRabbitPanicGoal(this, 2.2D));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, WolfEntity.class, 10.0F, 2.2D, 2.2D, null));
@@ -277,16 +279,17 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 0.8D));
         this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(6, new EnhancedAvoidEntityGoal<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D, null));
-        this.goalSelector.addGoal(7, new StayShelteredGoal(this, 4000, 7500, napmod));
-        this.goalSelector.addGoal(8, new SeekShelterGoal(this, 1.0D, 4000, 7500, napmod));
+        this.goalSelector.addGoal(7, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(8, new StayShelteredGoal(this, 4000, 7500, napmod));
+        this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 4000, 7500, napmod));
 //        this.goalSelector.addGoal(9, new EnhancedRabbitRaidFarmGoal(this));
-        this.goalSelector.addGoal(9, new EnhancedEatPlantsGoal(this, createGrazingMap()));
-        this.goalSelector.addGoal(10, this.grazingGoal);
+        this.goalSelector.addGoal(10, new EnhancedEatPlantsGoal(this, createGrazingMap()));
+        this.goalSelector.addGoal(11, this.grazingGoal);
 //        this.goalSelector.addGoal(5, new EnhancedRabbitEatPlantsGoal(this));
 //        this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 0.6D));
-        this.goalSelector.addGoal(11, new EnhancedWanderingGoal(this, 1.0D));
-        this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, PlayerEntity.class, 10.0F));
-        this.goalSelector.addGoal(13, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(12, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, PlayerEntity.class, 10.0F));
+        this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
     }
 
     protected float getJumpUpwardsMotion() {

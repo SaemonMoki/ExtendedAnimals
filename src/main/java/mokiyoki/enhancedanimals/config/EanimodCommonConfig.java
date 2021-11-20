@@ -158,7 +158,7 @@ public class EanimodCommonConfig {
 
             builder.push("sheep");
             gestationDaysSheep = builder
-                    .defineInRange("How many ticks it takes for a Rabbit to give birth, 24000 = 1 Minecraft Day:", 48000, 1000, Integer.MAX_VALUE);
+                    .defineInRange("How many ticks it takes for a Sheep to give birth, 24000 = 1 Minecraft Day:", 48000, 1000, Integer.MAX_VALUE);
             spawnVanillaSheep = builder
                     .define("Allow vanilla minecraft Sheep to spawn/exist:", false);
             spawnGeneticSheep = builder

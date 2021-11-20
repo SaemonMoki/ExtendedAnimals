@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.capability.egg;
 
+import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -67,6 +68,10 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
         setGenes(chickgenes);
         setSire(sireName);
         setDam(damName);
+    }
+
+    public EggHolder getEggHolder() {
+        return new EggHolder(this.sireName, this.damName, this.genes);
     }
 
 

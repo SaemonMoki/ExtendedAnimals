@@ -109,6 +109,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     private static final String[] COW_TEXTURES_WHITEFACE = new String[] {
             "", "spot_whiteface0.png",
+                "spot_hetwhiteface0.png",
                 "spot_wfcoloursided0.png",
                 "spot_coloursided0.png",
                 "spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png", "spot_pibald3.png", "spot_pibald4.png", "spot_pibald5.png", "spot_pibald6.png", "spot_pibald7.png", "spot_pibald8.png", "spot_pibald9.png","spot_pibalda.png", "spot_pibaldb.png", "spot_pibaldc.png", "spot_pibaldd.png", "spot_pibalde.png", "spot_pibaldf.png",
@@ -176,7 +177,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
         // cowsize from .7 to 1.5 max bag size is 1 to 1.5
         //large cows make from 30 to 12 milk points per day, small cows make up to 1/4
-        this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - maxBagSize)*2400)) * (getAnimalSize()/1.5F)) - 300;
+        this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*2400)) * (getAnimalSize()/1.5F)) - 300;
     }
 
     private static Map<Item, Integer> createFoodMap() {
@@ -390,7 +391,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(1.0F, 1.25F);
+        return EntitySize.flexible(1.0F, 1.25F).scale(this.getRenderScale());
     }
 
     @Override
@@ -684,13 +685,14 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     black = 5;
                 } else if (gene[0] == 4 || gene[1] == 4) {
                     if ((gene[4] == 3 || gene[4] == 5) && (gene[5] == 3 || gene[5] == 5)) {
-                        black = 9;
+                        black = this.isFemale() ? 9 : 5;
                     } else {
                         black = 5;
                     }
                 } else if (gene[0] == 3 && gene[1] == 3) {
                     // red
                     black = 0;
+                    skin=1;
                 } else {
                     //Agouti
                     if (gene[4] == 4 || gene[5] == 4) {
@@ -700,33 +702,29 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                         if (gene[4] == 2 || gene[5] == 2) {
                             //darker wildtype
                             //or other incomplete dominance
-                            black = 4;
+                            black = this.isFemale() ? 4 : 5;
                         } else {
                             //complete dominance of black enhancer
-                            black = 4;
+                            black = this.isFemale() ? 4 : 5;
                         }
                     } else if (gene[4] == 2 || gene[5] == 2) {
                         //wildtype
-                        if (this.isFemale()) {
-                            black = 2;
-                        } else {
-                            black = 4;
-                        }
+                            black = this.isFemale() ? 2 : 4;
                     } else if (gene[4] == 3 || gene[5] == 3) {
                         //white bellied fawn more blured markings?
                         if (gene[0] == 5 || gene[1] == 5) {
-                            black = 10;
+                            black = this.isFemale() ? 7 : 2;
                         } else {
-                            black = 7;
+                            black = this.isFemale() ? 8 : 1;
                         }
                         red = 2;
                     } else if (gene[4] == 5 || gene[5] == 5){
                         //fawn
                         red = 3;
                         if (gene[0] == 5 || gene[1] == 5) {
-                            black = 10;
+                            black = this.isFemale() ? 10 : 3;
                         } else {
-                            black = 8;
+                            black = this.isFemale() ? 8 : 2;
                         }
                     } else {
                         //recessive black
@@ -797,17 +795,20 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             if (gene[16] == 1 || gene[17] == 1){
                 if (gene[16] == 2 || gene[17] == 2){
                     //white face with border spots(Pinzgauer)
-                    whiteface = 2;
-                }else{
+                    whiteface = 3;
+                } else if (gene[16] == gene[17]){
                     //whiteface
                     whiteface = 1;
+                } else {
+                    //het whiteface
+                    whiteface = 2;
                 }
             }else if (gene[16] == 2 || gene[17] == 2){
                 //border spots (Pinzgauer) this genes might be incomplete dominant with wildtype but I dont see it
-                    whiteface = 3;
+                    whiteface = 4;
             }else if (gene[16] == 4 && gene[17] == 4){
                 //piebald
-                    whiteface = 4;
+                    whiteface = 5;
 
             }
 
@@ -852,7 +853,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 }
             }
 
-            if (whiteface == 4){
+            if (whiteface == 5){
                 //selects body piebalding texture
                 if (Character.isDigit(uuidArry[1])) {
                     whiteface = whiteface + (1 + (uuidArry[1] - 48));
@@ -879,7 +880,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                             whiteface = whiteface + 15;
                             break;
                         default:
-                            whiteface = 1;
+                            whiteface = 5;
                     }
                 }
 
@@ -1091,13 +1092,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     }
                 }
 
-                for (int i = 200; i < 225; i++) {
+                for (int i = 200; i <= 224; i++) {
                     if (gene[i] == 2) {
                         shadeIntensity = shadeIntensity - 0.015F;
                     }
                 }
 
-                for (int i = 225; i < 250; i++) {
+                for (int i = 226; i < 250; i++) {
                     if (gene[i] == 2) {
                         shadeIntensity = shadeIntensity + 0.02F;
                     }
@@ -1137,19 +1138,31 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     // simmental or highland dilution
                     if (gene[2] == 2 && gene[3] == 2) {
                         //homo highland dun
-                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.85F);
-                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.9F);
-                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.6F);
-                        blackHue = Colouration.mixHueComponent(redHue, 0.1F, 0.9F);
-                        blackSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.9F);
-                        blackBrightness = Colouration.mixColourComponent(redBrightness * blackBrightness, 1.0F, 0.6F);
+//                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.85F);
+//                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.9F);
+//                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.6F);
+//                        blackHue = Colouration.mixHueComponent(redHue, 0.1F, 0.9F);
+//                        blackSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.9F);
+//                        blackBrightness = Colouration.mixColourComponent(redBrightness * blackBrightness, 1.0F, 0.6F);
+                        blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.3F);
+                        blackSaturation = blackSaturation + ((1.0F - blackSaturation) * 0.45F);
+                        blackBrightness = blackBrightness + ((1.0F - blackBrightness) * 0.25F);
+                        redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.8F);
+                        redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.5F);
+                        redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.5F);
+                        blackHue = Colouration.mixHueComponent(redHue, 0.0F, 0.5F);
+                        blackSaturation = Colouration.mixColourComponent(blackSaturation*0.65F, redSaturation*0.25F, 0.4F);
+                        blackBrightness = Colouration.mixColourComponent(redBrightness * blackBrightness, 1.0F, 0.45F);
                     } else if (gene[2] == 1 || gene[3] == 1) {
                         //het dun
                         if (gene[0] == 1 || gene[1] == 1) {
-                            redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.75F);
-                            redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.1F);
+                            blackHue = Colouration.mixHueComponent(blackHue, 0.1F, 0.15F);
+                            blackSaturation = blackSaturation + ((1.0F - blackSaturation) * 0.225F);
+                            blackBrightness = blackBrightness + ((1.0F - blackBrightness) * 0.125F);
+                            redHue = Colouration.mixHueComponent(redHue, 0.1F, 0.7F);
+                            redSaturation = Colouration.mixColourComponent(redSaturation, 0.0F, 0.5F);
                             redBrightness = Colouration.mixColourComponent(redBrightness, 1.0F, 0.4F);
-                            blackHue = Colouration.mixHueComponent(blackHue, redHue, 0.5F);
+//                            blackHue = Colouration.mixHueComponent(blackHue, redHue, 0.5F);
                             blackSaturation = Colouration.mixColourComponent(blackSaturation, redSaturation, 0.5F);
                             blackBrightness = Colouration.mixColourComponent(blackBrightness, redBrightness, 0.45F);
                         } else if (gene[0] == 3 || gene[1] == 3) {
@@ -1239,7 +1252,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         int[] genes = this.genetics.getAutosomalGenes();
         float maxBagSize = 0.0F;
 
-        if (!this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())){
+        if (this.isFemale() || EanimodCommonConfig.COMMON.omnigenders.get()){
             for (int i = 1; i < genes[62]; i++){
                 maxBagSize = maxBagSize + 0.01F;
             }

@@ -50,6 +50,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -361,7 +362,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(0.4F, 0.7F);
+        return EntitySize.flexible(0.4F, 0.7F).scale(this.getRenderScale());
     }
 
     @Override
@@ -2464,13 +2465,20 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-    }
+    protected void readLegacyGenes(ListNBT geneList) {
+        for (int i = 0; i < 10; ++i) {
+            int gene = geneList.getCompound(i).getInt("Gene");
+            this.genetics.setSexlinkedGene(i*2, gene);
+            this.genetics.setSexlinkedGene((i*2)+1, gene);
+        }
 
-    @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+        for (int i = 0; i < geneList.size(); ++i) {
+            if (i < 20) {
+                this.genetics.setAutosomalGene(i, 1);
+            } else {
+                this.genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
+            }
+        }
     }
 
     @Override

@@ -323,9 +323,4 @@ public class EggCartonBlock extends ContainerBlock {
         return Container.calcRedstoneFromInventory((IInventory)worldIn.getTileEntity(pos));
     }
 
-    //TODO make it so it will break when moved by piston
-//    @Override
-//    public PushReaction getPushReaction(BlockState state) {
-//        return PushReaction.DESTROY;
-//    }
 }

@@ -292,7 +292,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
     @Override
     public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(0.9F, 1.2F);
+        return EntitySize.flexible(0.9F, 1.2F).scale(this.getRenderScale());
     }
 
     protected void registerData() {

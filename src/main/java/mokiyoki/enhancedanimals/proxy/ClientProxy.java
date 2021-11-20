@@ -43,6 +43,7 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_TURTLE;
 //import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CAT;
 //import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_BEE;
 
@@ -67,6 +68,7 @@ public class ClientProxy implements IProxy {
 //        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_BEE, RenderEnhancedBee::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOSHROOM, RenderEnhancedMooshroom::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOBLOOM, RenderEnhancedMoobloom::new);
+        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_TURTLE, RenderEnhancedTurtle::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_LLAMA_SPIT, EnhancedLlamaSpitRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(ENHANCED_ENTITY_EGG_ENTITY_TYPE, renderManager -> new SpriteRenderer(renderManager, Minecraft.getInstance().getItemRenderer()));
 
@@ -76,6 +78,7 @@ public class ClientProxy implements IProxy {
 
         RenderTypeLookup.setRenderLayer(ModBlocks.SPARSEGRASS_BLOCK, RenderType.getCutoutMipped());
         RenderTypeLookup.setRenderLayer(ModBlocks.PATCHYMYCELIUM_BLOCK, RenderType.getCutoutMipped());
+        RenderTypeLookup.setRenderLayer(ModBlocks.TURTLE_EGG, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.UNBOUNDHAY_BLOCK, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_ALLIUM, RenderType.getCutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.GROWABLE_AZURE_BLUET, RenderType.getCutout());

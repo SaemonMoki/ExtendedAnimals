@@ -2,11 +2,6 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.ai.general.AIStatus;
-import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
-import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
-import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
@@ -32,9 +27,7 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.LeashKnotEntity;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -67,6 +60,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -236,7 +230,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
     }
 
-    protected void setSireName(String sireName) {
+    public void setSireName(String sireName) {
         if (sireName!=null && !sireName.equals("")) {
             this.sireName = sireName;
         } else {
@@ -244,7 +238,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
     }
 
-    protected void setDamName(String damName) {
+    public void setDamName(String damName) {
         if (damName!=null && !damName.equals("")) {
             this.damName = damName;
         } else {
@@ -982,39 +976,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
-        ListNBT geneList = new ListNBT();
-        int length = this.genetics.getNumberOfSexlinkedGenes();
-        int[] sexlinked = this.genetics.getSexlinkedGenes();
-        int[] autosomal = this.genetics.getAutosomalGenes();
-        for(int i = 0; i< length; i++){
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Sgene", sexlinked[i]);
-            geneList.add(nbttagcompound);
-        }
-        length = this.genetics.getNumberOfAutosomalGenes();
-        for(int i = 0; i< length; i++){
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Agene", autosomal[i]);
-            geneList.add(nbttagcompound);
-        }
-        compound.put("Genes", geneList);
-
-        ListNBT mateGeneList = new ListNBT();
-            length = this.genetics.getNumberOfSexlinkedGenes();
-            sexlinked = this.mateGenetics.getSexlinkedGenes();
-            autosomal = this.mateGenetics.getAutosomalGenes();
-        for(int i = 0; i< length; i++){
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Sgene", sexlinked[i]);
-            mateGeneList.add(nbttagcompound);
-        }
-            length = this.genetics.getNumberOfAutosomalGenes();
-        for(int i = 0; i< length; i++){
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Agene", autosomal[i]);
-            mateGeneList.add(nbttagcompound);
-        }
-        compound.put("FatherGenes", mateGeneList);
+        this.writeNBTGenes("Genes", compound);
+        this.writeNBTGenes("FatherGenes", compound);
 
         compound.putFloat("Hunger", hunger);
 
@@ -1095,75 +1058,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
 
-        ListNBT geneList = compound.getList("Genes", 10);
-        if (geneList.getCompound(0).contains("Sgene")) {
-            int sexlinkedlength = this.genetics.getNumberOfSexlinkedGenes();
-            for (int i = 0; i < sexlinkedlength; i++) {
-                this.genetics.setSexlinkedGene(i, geneList.getCompound(i).getInt("Sgene"));
-            }
-
-            int length = this.genetics.getNumberOfAutosomalGenes();
-            for (int i = 0; i < length; i++) {
-                this.genetics.setAutosomalGene(i, geneList.getCompound(i+sexlinkedlength).getInt("Agene"));
-            }
-        } else {
-            if (this instanceof EnhancedChicken) {
-                for (int i = 0; i < 10; ++i) {
-                    int gene = geneList.getCompound(i).getInt("Gene");
-                    this.genetics.setSexlinkedGene(i*2, gene);
-                    this.genetics.setSexlinkedGene((i*2)+1, gene);
-                }
-            } else {
-                int length = this.genetics.getNumberOfSexlinkedGenes();
-                for (int i = 0; i < length; i++) {
-                    this.genetics.setSexlinkedGene(i, 1);
-                }
-            }
-
-            for (int i = 0; i < geneList.size(); ++i) {
-                if (i < 20 && this instanceof EnhancedChicken) {
-                    this.genetics.setAutosomalGene(i, 1);
-                } else {
-                    this.genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
-                }
-            }
-        }
-
-            geneList = compound.getList("FatherGenes", 10);
-        if (geneList.getCompound(0).contains("Sgene")) {
-            int sexlinkedlength = this.genetics.getNumberOfSexlinkedGenes();
-            for (int i = 0; i < sexlinkedlength; i++) {
-                this.mateGenetics.setSexlinkedGene(i, geneList.getCompound(i).getInt("Sgene"));
-            }
-
-            int length = this.genetics.getNumberOfAutosomalGenes();
-            for (int i = 0; i < length; i++) {
-                this.mateGenetics.setAutosomalGene(i, geneList.getCompound(i+sexlinkedlength).getInt("Agene"));
-            }
-        } else {
-            if (this instanceof EnhancedChicken) {
-                for (int i = 0; i < 9; ++i) {
-                    int gene = geneList.getCompound(i).getInt("Gene");
-                    if (gene == 10) {
-                        break;
-                    }
-                    this.mateGenetics.setSexlinkedGene(i*2, gene);
-                    this.mateGenetics.setSexlinkedGene((i*2)+1, gene);
-                }
-            } else {
-                int length = this.genetics.getNumberOfSexlinkedGenes();
-                for (int i = 0; i < length; i++) {
-                    this.mateGenetics.setSexlinkedGene(i, 1);
-                }
-            }
-
-            for (int i = 0; i < geneList.size(); ++i) {
-                if (i < 20 && this instanceof EnhancedChicken) {
-                    this.mateGenetics.setAutosomalGene(i, 1);
-                }
-                this.mateGenetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
-            }
-        }
+        this.readNBTGenes(compound.getList("Genes", 10));
+        this.readNBTGenes(compound.getList("FatherGenes", 10));
 
         this.hunger = compound.getFloat("Hunger");
 
@@ -1182,15 +1078,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
         this.gestationTimer = compound.getInt("Gestation");
 
-        if (canLactate()) {
-            this.lactationTimer = compound.getInt("Lactation");
-            this.setMilkAmount(compound.getInt("milk"));
-            this.setMaxBagSize();
-        }
-
         this.setBreed(compound.getString("breed"));
-
-        this.runDemoMode = (compound.getBoolean("demo"));
 
         //from MobEntity parent
         if (compound.contains("Leash", 10)) {
@@ -1202,6 +1090,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         setSharedGenes(this.genetics);
         initilizeAnimalSize();
 
+        if (canLactate()) {
+            this.lactationTimer = compound.getInt("Lactation");
+            this.setMilkAmount(compound.getInt("milk"));
+            this.setMaxBagSize();
+        }
+
         this.setCollar(compound.getBoolean("Collared"));
 
         this.setMateName(compound.getString("MateName"));
@@ -1209,6 +1103,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         this.setDamName(compound.getString("DamName"));
 
         readInventory(compound);
+        this.recalculateSize();
     }
 
     private void readInventory(CompoundNBT compound) {
@@ -1260,6 +1155,52 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
 
         this.updateInventorySlots();
+    }
+
+    protected void writeNBTGenes(String name, CompoundNBT compound) {
+        ListNBT geneList = new ListNBT();
+        int length = this.genetics.getNumberOfSexlinkedGenes();
+        int[] sexlinked = this.genetics.getSexlinkedGenes();
+        int[] autosomal = this.genetics.getAutosomalGenes();
+        for(int i = 0; i< length; i++){
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Sgene", sexlinked[i]);
+            geneList.add(nbttagcompound);
+        }
+        length = this.genetics.getNumberOfAutosomalGenes();
+        for(int i = 0; i< length; i++){
+            CompoundNBT nbttagcompound = new CompoundNBT();
+            nbttagcompound.putInt("Agene", autosomal[i]);
+            geneList.add(nbttagcompound);
+        }
+        compound.put(name, geneList);
+    }
+
+    protected void readNBTGenes(ListNBT geneList) {
+        if (geneList.getCompound(0).contains("Sgene")) {
+            int sexlinkedlength = this.genetics.getNumberOfSexlinkedGenes();
+            for (int i = 0; i < sexlinkedlength; i++) {
+                this.genetics.setSexlinkedGene(i, geneList.getCompound(i).getInt("Sgene"));
+            }
+
+            int length = this.genetics.getNumberOfAutosomalGenes();
+            for (int i = 0; i < length; i++) {
+                this.genetics.setAutosomalGene(i, geneList.getCompound(i+sexlinkedlength).getInt("Agene"));
+            }
+        } else {
+            this.readLegacyGenes(geneList);
+        }
+    }
+
+    protected void readLegacyGenes(ListNBT geneList) {
+        int length = this.genetics.getNumberOfSexlinkedGenes();
+        for (int i = 0; i < length; i++) {
+            this.genetics.setSexlinkedGene(i, 1);
+        }
+
+        for (int i = 0; i < geneList.size(); ++i) {
+            this.genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
+        }
     }
 
     /*
@@ -1317,7 +1258,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     protected void handlePartnerBreeding(AgeableEntity ageable) {
         if (EanimodCommonConfig.COMMON.omnigenders.get()) {
-            if(pregnant) {
+            if(this.pregnant) {
                 ((EnhancedAnimalAbstract)ageable).pregnant = true;
                 ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
                 ((EnhancedAnimalAbstract)ageable).setMateGender(this.isFemale());
@@ -1328,8 +1269,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
                 this.pregnant = true;
                 this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
                 this.mateGender = ((EnhancedAnimalAbstract)ageable).isFemale();
-                if (((EnhancedAnimalAbstract)ageable).hasCustomName()) {
-                    this.setMateName(((EnhancedAnimalAbstract) ageable).getCustomName().getString());
+                if (ageable.hasCustomName()) {
+                    this.setMateName(ageable.getCustomName().getString());
                 }
             }
         } else if (this.isFemale()) {
@@ -1337,8 +1278,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
            this.pregnant = true;
            this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
            this.mateGender = false;
-            if (((EnhancedAnimalAbstract)ageable).hasCustomName()) {
-                this.setMateName(((EnhancedAnimalAbstract) ageable).getCustomName().getString());
+            if (ageable.hasCustomName()) {
+                this.setMateName(ageable.getCustomName().getString());
             }
         } else {
             //is male
@@ -1506,7 +1447,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             animalInfo.health = (int)(10 * (this.getHealth() / this.getMaxHealth()));
             animalInfo.hunger = (int)(this.getHunger() / 7200);
             animalInfo.isFemale = this.isFemale();
-            animalInfo.pregnant = this.canBePregnant() ? (10 * this.gestationTimer)/gestationConfig() : 0;
+            animalInfo.pregnant = getPregnancyProgression();
             animalInfo.name = this.getAnimalsName(getSpecies());
             animalInfo.agePrefix = this.getAnimalsAgeString();
             animalInfo.age = this.getAge();
@@ -1531,6 +1472,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
                 });
             }
         }
+    }
+
+    protected int getPregnancyProgression() {
+        return this.canBePregnant() ? (10 * this.gestationTimer)/gestationConfig() : 0;
     }
 
     protected String getAnimalsName(String species) {
@@ -1566,6 +1511,15 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         int adultAge = getAdultAge();
         return age < adultAge;
     }
+
+    public void notifyDataManagerChange(DataParameter<?> key) {
+        if (BIRTH_TIME.equals(key) && this.world.isRemote) {
+            this.recalculateSize();
+        }
+
+        super.notifyDataManagerChange(key);
+    }
+
 
     /*
     Client Sided Work
@@ -1752,12 +1706,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         this.mateGender = gender;
     }
 
+    public void setGrowingAge() {
+        super.setGrowingAge(-this.getAdultAge());
+    }
+
     //overriden to prevent aging up when fed
     @Override
     public void ageUp(int growthSeconds, boolean updateForcedAge) {
-//        int remainingGrowth = Integer.valueOf(this.getBirthTime()) - this.getAge();
-//        int newBirthTime = growthSeconds >= (remainingGrowth) ? (Integer.valueOf(getBirthTime()) - ((int)(remainingGrowth))) : (Integer.valueOf(getBirthTime()) - ((int)(growthSeconds)));
-
         int newBirthTime = Integer.valueOf(getBirthTime()) - ((int)(getAdultAge()*0.1));
         this.setBirthTime(String.valueOf(newBirthTime));
         super.ageUp(growthSeconds, updateForcedAge);

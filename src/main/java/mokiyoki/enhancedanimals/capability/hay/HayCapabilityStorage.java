@@ -49,8 +49,8 @@ public class HayCapabilityStorage implements IStorage<IHayCapability> {
 
         for (int i = 0; i < nbttaglist.size(); ++i) {
             CompoundNBT nbttagcompound = nbttaglist.getCompound(i);
-            BlockPos blockPosOfPost = new BlockPos(nbttagcompound.getInt("X"), nbttagcompound.getInt("Y"), nbttagcompound.getInt("Z"));
-            allHayBlockPos.add(blockPosOfPost);
+            BlockPos blockPosOfHay = new BlockPos(nbttagcompound.getInt("X"), nbttagcompound.getInt("Y"), nbttagcompound.getInt("Z"));
+            allHayBlockPos.add(blockPosOfHay);
         }
 
         instance.setAllHayPos(allHayBlockPos);

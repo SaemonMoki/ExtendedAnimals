@@ -356,7 +356,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     @Override
     public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(0.4F, 0.5F);
+        return EntitySize.flexible(0.4F, 0.5F).scale(this.getRenderScale());
     }
 
     protected void registerData() {

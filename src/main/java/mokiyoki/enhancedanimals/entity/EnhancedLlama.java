@@ -292,7 +292,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(0.8F, 1.87F);
+        return EntitySize.flexible(0.8F, 1.87F).scale(this.getRenderScale());
     }
 
     protected boolean isMovementBlocked() {
@@ -588,7 +588,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             traderBlanket.getOrCreateChildTag("tradersblanket");
             this.animalInventory.setInventorySlotContents(4, traderBlanket);
         }
-        this.setHealth(1.0F);
         this.setStrengthAndInventory();
     }
 
@@ -619,8 +618,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     public String getLlamaTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (resetTexture) {
-            resetTexture = false;
+        } else if (this.resetTexture) {
+            this.resetTexture = false;
             this.texturesIndexes.clear();
             this.enhancedAnimalTextures.clear();
             this.setTexturePaths();

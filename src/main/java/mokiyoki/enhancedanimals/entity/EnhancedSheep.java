@@ -259,7 +259,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(0.8F, 1.2F);
+        return EntitySize.flexible(0.8F, 1.2F).scale(this.getRenderScale());
     }
 
     protected void registerData() {

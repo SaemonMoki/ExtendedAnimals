@@ -1,7 +1,5 @@
 package mokiyoki.enhancedanimals;
 
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityStorage;
 import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
@@ -11,6 +9,9 @@ import mokiyoki.enhancedanimals.capability.hay.IHayCapability;
 import mokiyoki.enhancedanimals.capability.post.IPostCapability;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityStorage;
+import mokiyoki.enhancedanimals.capability.turtleegg.INestEggCapability;
+import mokiyoki.enhancedanimals.capability.turtleegg.NestCapabilityProvider;
+import mokiyoki.enhancedanimals.capability.turtleegg.NestEggCapabilityStorage;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedHorse;
@@ -20,6 +21,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
+import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.proxy.ClientProxy;
@@ -32,7 +34,6 @@ import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.DistExecutor;
@@ -48,8 +49,6 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.nio.file.Path;
-
 import static mokiyoki.enhancedanimals.util.Reference.MODID;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
@@ -60,6 +59,7 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOS
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_TURTLE;
 
 /**
  * Created by moki on 24/08/2018.
@@ -118,6 +118,7 @@ public class EnhancedAnimals {
         CapabilityManager.INSTANCE.register(IPostCapability.class, new PostCapabilityStorage(), PostCapabilityProvider::new);
         CapabilityManager.INSTANCE.register(IHayCapability.class, new HayCapabilityStorage(), HayCapabilityProvider::new);
         CapabilityManager.INSTANCE.register(IEggCapability.class, new EggCapabilityStorage(), EggCapabilityProvider::new);
+        CapabilityManager.INSTANCE.register(INestEggCapability.class, new NestEggCapabilityStorage(), NestCapabilityProvider::new);
 
         int messageNumber = 0;
         channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumer(EAEquipmentPacket::processPacket).add();
@@ -131,6 +132,7 @@ public class EnhancedAnimals {
         GlobalEntityTypeAttributes.put(ENHANCED_MOOBLOOM, EnhancedMoobloom.prepareAttributes().create());
         GlobalEntityTypeAttributes.put(ENHANCED_PIG, EnhancedPig.prepareAttributes().create());
         GlobalEntityTypeAttributes.put(ENHANCED_HORSE, EnhancedHorse.prepareAttributes().create());
+        GlobalEntityTypeAttributes.put(ENHANCED_TURTLE, EnhancedTurtle.prepareAttributes().create());
 
 //        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
 //        LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());

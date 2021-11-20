@@ -26,6 +26,9 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(CowBreeds.DEXTER);
         this.breeds.add(CowBreeds.SPANISH);
         this.breeds.add(CowBreeds.MURREY_GREY);
+        this.breeds.add(CowBreeds.GLOUCESTER);
+        this.breeds.add(CowBreeds.HUNGARIAN_GREY);
+        this.breeds.add(CowBreeds.BROWN_SWISS);
     }
 
     public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {

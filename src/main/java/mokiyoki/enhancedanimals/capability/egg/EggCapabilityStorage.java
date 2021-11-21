@@ -52,7 +52,7 @@ public class EggCapabilityStorage implements Capability.IStorage<IEggCapability>
             ListNBT geneList = compound.getList("Genes", 10);
             if (geneList.size() > 0) {
                 if (geneList.getCompound(0).contains("Sgene") && geneList.getCompound(0).getInt("Sgene") != 0) {
-                    Genes genetics = new Genes(geneList.getCompound(0).getInt("Sgene"), Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH);
+                    Genes genetics = new Genes(Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH);
                     int sexlinkedlength = genetics.getNumberOfSexlinkedGenes();
                     for (int i = 0; i < sexlinkedlength; i++) {
                         genetics.setSexlinkedGene(i, geneList.getCompound(i).getInt("Sgene"));

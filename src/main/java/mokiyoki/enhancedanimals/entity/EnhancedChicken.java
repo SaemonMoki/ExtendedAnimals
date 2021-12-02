@@ -18,6 +18,7 @@ import mokiyoki.enhancedanimals.ai.general.chicken.GrazingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.Genetics.ChickenGeneticsInitialiser;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
@@ -74,6 +75,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.*;
+
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
 
 /**
  * Created by saemon and moki on 30/08/2018.
@@ -267,29 +270,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     private boolean resetTexture = true;
 
     public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, World worldIn) {
-        super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), false);
+        super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, false);
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
         this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
         this.setPathPriority(PathNodeType.WATER, 0.0F);
-    }
-
-    private static Map<Item, Integer> createFoodMap() {
-        return new HashMap() {{
-            put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-            put(new ItemStack(Items.GRASS).getItem(), 3000);
-            put(new ItemStack(Items.WHEAT).getItem(), 6000);
-            put(new ItemStack(Items.BREAD).getItem(), 18000);
-            put(new ItemStack(Items.WHEAT_SEEDS).getItem(), 4000);
-            put(new ItemStack(Items.MELON_SEEDS).getItem(), 4000);
-            put(new ItemStack(Items.PUMPKIN_SEEDS).getItem(), 4000);
-            put(new ItemStack(Items.BEETROOT_SEEDS).getItem(), 4000);
-            put(new ItemStack(Items.MELON_SLICE).getItem(), 2000);
-            put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
-            put(new ItemStack(Items.DANDELION).getItem(), 1500);
-            put(new ItemStack(Items.SPIDER_EYE).getItem(), 1500);
-            put(new ItemStack(Items.EGG).getItem(), 200);
-        }};
-
     }
 
     private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
@@ -358,6 +342,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.grassTimer = this.grazingGoal.getEatingGrassTimer();
         this.sandBathTimer = this.ecSandBath.getSandBathTimer();
         super.updateAITasks();
+    }
+
+    @Override
+    protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
+        return chickenFoodMap;
     }
 
     @Override

@@ -12,6 +12,7 @@ import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
 import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.SheepGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
@@ -61,6 +62,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.sheepFoodMap;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
 
 public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.minecraftforge.common.IForgeShearable {
@@ -115,7 +117,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.TALL_GRASS, Items.VINE, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.ROSE_BUSH, Items.DANDELION, Items.SUGAR, Items.APPLE, ModBlocks.UNBOUNDHAY_BLOCK);
-    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     private final List<String> sheepFleeceTextures = new ArrayList<>();
     private static final int SEXLINKED_GENES_LENGTH = 2;
@@ -132,31 +133,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     private String motherUUID = "";
 
     public EnhancedSheep(EntityType<? extends EnhancedSheep> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.SHEEP_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.SHEEP_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, true);
         this.initilizeAnimalSize();
         this.timeUntilNextMilk = this.rand.nextInt(this.rand.nextInt(8000) + 4000);
-    }
-
-    private static Map<Item, Integer> createFoodMap() {
-        return new HashMap() {{
-            put(new ItemStack(Blocks.MELON).getItem(), 10000);
-            put(new ItemStack(Blocks.PUMPKIN).getItem(), 10000);
-            put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-            put(new ItemStack(Items.GRASS).getItem(), 3000);
-            put(new ItemStack(Items.VINE).getItem(), 3000);
-            put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
-            put(new ItemStack(Items.WHEAT).getItem(), 6000);
-            put(new ItemStack(Items.CARROT).getItem(), 3000);
-            put(new ItemStack(Items.GOLDEN_CARROT).getItem(), 12000);
-            put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
-            put(new ItemStack(Items.DANDELION).getItem(), 1500);
-            put(new ItemStack(Items.ROSE_BUSH).getItem(), 1500);
-            put(new ItemStack(Items.SUGAR).getItem(), 1500);
-            put(new ItemStack(Items.APPLE).getItem(), 1500);
-            put(new ItemStack(Items.MELON_SLICE).getItem(), 1000);
-            put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
-        }};
-
     }
 
     private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
@@ -184,6 +163,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
 
         return ediblePlants;
+    }
+
+    @Override
+    protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
+        return sheepFoodMap;
     }
 
 //    private int sheepTimer;

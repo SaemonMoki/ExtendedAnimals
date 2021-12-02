@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
@@ -60,7 +61,6 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -83,10 +83,10 @@ import java.util.stream.Collectors;
 
 public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IInventoryChangedListener {
 
-    protected static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
+    protected static final DataParameter<String> SHARED_GENES = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Boolean> TAMED = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
+    protected static final DataParameter<String> BIRTH_TIME = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     private static final DataParameter<Float> ANIMAL_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
     private static final DataParameter<String> ENTITY_STATUS = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
@@ -106,13 +106,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     };
 
     protected Ingredient TEMPTATION_ITEMS;
-    protected Ingredient BREED_ITEMS;
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
-
-    //demo mode
-    public boolean runDemoMode = false;
-    protected int demoTimerMax = 60;
-    private int demoTimer = 0;
 
 
     // Genetic Info
@@ -127,7 +121,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     protected String damName = "???";
 
     //Hunger
-    Map<Item, Integer> foodWeightMap = new HashMap();
     protected float hunger = 0F;
     protected int healTicks = 0;
     protected boolean bottleFeedable = false;
@@ -180,14 +173,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     Entity Construction
     */
 
-    protected EnhancedAnimalAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
+    protected EnhancedAnimalAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, Ingredient temptationItems, boolean bottleFeedable) {
         super(type, worldIn);
         this.genetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
         this.mateGenetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
         this.mateGender = false;
         this.TEMPTATION_ITEMS = temptationItems;
-        this.BREED_ITEMS = breedItems;
-        this.foodWeightMap = foodWeightMap;
         this.bottleFeedable = bottleFeedable;
 
         initInventory();
@@ -347,6 +338,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     /*
     Getters and Setters for variables and datamanagers
     */
+
+    protected abstract FoodSerialiser.AnimalFoodMap getAnimalFoodType();
 
     public void setBirthTime(World world, int age) {
         this.setBirthTime(String.valueOf(world.getWorldInfo().getGameTime() + age));
@@ -567,15 +560,15 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
         this.compiledEquipmentTexture = null; //reset compiled string
     }
-
     //used to set if an animal is wearing bells
+
     protected boolean getBells() {
         return this.bells;
     }
-
     /*
     General Info
     */
+
     public boolean isFemale() {
         char[] uuidArray = getCachedUniqueIdString().toCharArray();
         return !Character.isLetter(uuidArray[0]) && uuidArray[0] - 48 < 8;
@@ -843,7 +836,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
-
         if (entityPlayer.isSecondaryUseActive()) {
             this.openGUI(entityPlayer);
             return ActionResultType.func_233537_a_(this.world.isRemote);
@@ -852,17 +844,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
-            } else if (!this.isChild() && BREED_ITEMS.test(itemStack)) {
+            } else if (!this.isChild() && isBreedingItem(itemStack)) {
                 int i = this.getGrowingAge();
                 if (this.hunger >= 4000 || (!this.pregnant && i == 0 && this.canFallInLove())) {
-                    decreaseHunger(this.foodWeightMap.get(item));
-                    if (!entityPlayer.abilities.isCreativeMode) {
-                        itemStack.shrink(1);
-                    } else {
-                        if (itemStack.getCount() > 1) {
-                            itemStack.shrink(1);
-                        }
-                    }
+                    decreaseHunger(getHungerRestored(itemStack));
+                    shrinkItemStack(entityPlayer, itemStack);
                 } else {
                     return ActionResultType.PASS;
                 }
@@ -870,7 +856,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
                     this.setInLove(entityPlayer);
                     return ActionResultType.SUCCESS;
                 }
-            } else if (this.isChild() && (BREED_ITEMS.test(itemStack) || (this.bottleFeedable && MILK_ITEMS.test(itemStack)))) {
+            } else if (this.isChild() && (isBreedingItem(itemStack)) || (this.bottleFeedable && MILK_ITEMS.test(itemStack))) {
                 if (this.hunger >= 4000 || EanimodCommonConfig.COMMON.feedGrowth.get()) {
                     boolean isHungry = this.hunger >= 4000;
                     if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
@@ -881,61 +867,31 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
                             if (isHungry) {
                                 decreaseHunger(6000);
                             }
-                            if (!entityPlayer.abilities.isCreativeMode) {
-                                if (itemStack.isEmpty()) {
-                                    entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                                    entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                                }
-                            }
+                            swapItemStack(entityPlayer, hand, itemStack, Items.GLASS_BOTTLE);
                         } else if (item == ModItems.MILK_BOTTLE) {
                             if (hunger >= 12000) {
                                 decreaseHunger(12000);
-                                if (!entityPlayer.abilities.isCreativeMode) {
-                                    if (itemStack.isEmpty()) {
-                                        entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                                        entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                                    }
-                                }
+                                swapItemStack(entityPlayer, hand, itemStack, Items.GLASS_BOTTLE);
                             } else {
                                 if (isHungry) {
                                     decreaseHunger(6000);
                                 }
-                                if (!entityPlayer.abilities.isCreativeMode) {
-                                    if (itemStack.isEmpty()) {
-                                        entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
-                                    } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
-                                        entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
-                                    }
-                                }
+                                swapItemStack(entityPlayer, hand, itemStack, ModItems.HALF_MILK_BOTTLE);
                             }
                         }
                     } else {
                         if (isHungry) {
-                            decreaseHunger(this.foodWeightMap.get(item));
+                            decreaseHunger(getHungerRestored(itemStack));
                         }
-                        if (!entityPlayer.abilities.isCreativeMode) {
-                            itemStack.shrink(1);
-                        } else {
-                            if (itemStack.getCount() > 1) {
-                                itemStack.shrink(1);
-                            }
-                        }
+                        shrinkItemStack(entityPlayer, itemStack);
                     }
                 } else {
                     return ActionResultType.PASS;
                 }
-            } else if (TEMPTATION_ITEMS.test(itemStack)) {
+            } else if (isFoodItem(itemStack)) {
                 if (hunger >= 4000) {
-                    decreaseHunger(this.foodWeightMap.get(item));
-                    if (!entityPlayer.abilities.isCreativeMode) {
-                        itemStack.shrink(1);
-                    } else {
-                        if (itemStack.getCount() > 1) {
-                            itemStack.shrink(1);
-                        }
-                    }
+                    decreaseHunger(getHungerRestored(itemStack));
+                    shrinkItemStack(entityPlayer, itemStack);
                 } else {
                     return ActionResultType.PASS;
                 }
@@ -943,6 +899,26 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
 
         return ActionResultType.PASS;
+    }
+
+    private void shrinkItemStack(PlayerEntity entityPlayer, ItemStack itemStack) {
+        if (!entityPlayer.abilities.isCreativeMode) {
+            itemStack.shrink(1);
+        } else {
+            if (itemStack.getCount() > 1) {
+                itemStack.shrink(1);
+            }
+        }
+    }
+
+    private void swapItemStack(PlayerEntity entityPlayer, Hand hand, ItemStack itemStack, Item swapItem) {
+        if (!entityPlayer.abilities.isCreativeMode) {
+            if (itemStack.isEmpty()) {
+                entityPlayer.setHeldItem(hand, new ItemStack(swapItem));
+            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(swapItem))) {
+                entityPlayer.dropItem(new ItemStack(swapItem), false);
+            }
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1004,8 +980,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
 
         compound.putBoolean("Collared", this.hasCollar());
-
-        compound.putBoolean("demo", this.runDemoMode);
 
         writeInventory(compound);
     }
@@ -1572,8 +1546,15 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     @Override
     public boolean isBreedingItem(ItemStack stack) {
-        //TODO set this to a separate item or type of item for force breeding
-        return this.BREED_ITEMS.test(stack);
+        return getAnimalFoodType().isBreedingItem(stack.getItem());
+    }
+
+    public boolean isFoodItem(ItemStack stack) {
+        return getAnimalFoodType().isFoodItem(stack.getItem());
+    }
+
+    public int getHungerRestored(ItemStack stack) {
+        return getAnimalFoodType().getHungerRestored(stack.getItem());
     }
 
     public void setSharedGenes(Genes genes) {

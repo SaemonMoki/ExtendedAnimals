@@ -8,6 +8,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.LlamaGeneticsInitialiser;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
@@ -70,6 +71,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.llamaFoodMap;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 
 public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRangedAttackMob, net.minecraftforge.common.IForgeShearable {
@@ -124,7 +127,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     };
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT, Items.CARROT, Items.SUGAR_CANE, Items.BEETROOT, Items.GRASS, Items.TALL_GRASS, Items.APPLE);
-    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, ModBlocks.UNBOUNDHAY_BLOCK);
 
     public float destPos;
 
@@ -149,21 +151,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     private EnhancedLlama caravanTail;
 
     public EnhancedLlama(EntityType<? extends EnhancedLlama> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.LLAMA_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.LLAMA_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, true);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
-    }
-
-    private static Map<Item, Integer> createFoodMap() {
-        return new HashMap() {{
-            put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-            put(new ItemStack(Items.GRASS).getItem(), 3000);
-            put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
-            put(new ItemStack(Items.CARROT).getItem(), 1500);
-            put(new ItemStack(Items.WHEAT).getItem(), 6000);
-            put(new ItemStack(Items.SUGAR).getItem(), 1500);
-            put(new ItemStack(Items.APPLE).getItem(), 1500);
-            put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
-        }};
     }
 
     private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
@@ -225,6 +214,11 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     protected String getSpecies() {
         return "entity.eanimod.enhanced_llama";
+    }
+
+    @Override
+    protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
+        return llamaFoodMap;
     }
 
     protected int getAdultAge() { return 120000;}

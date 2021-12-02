@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import mokiyoki.enhancedanimals.blocks.EnhancedTurtleEggBlock;
 import mokiyoki.enhancedanimals.capability.turtleegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.Genetics.TurtleGeneticsInitialiser;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -73,6 +74,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.cowFoodMap;
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.turtleFoodMap;
+
 public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     private static final DataParameter<BlockPos> HOME_POS = EntityDataManager.createKey(EnhancedTurtle.class, DataSerializers.BLOCK_POS);
@@ -104,16 +108,10 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     private boolean homePosFixer = false;
 
     public EnhancedTurtle(EntityType<? extends EnhancedTurtle> type, World worldIn) {
-        super(type, worldIn, 2, Reference.TURTLE_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), false);
+        super(type, worldIn, 2, Reference.TURTLE_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, false);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
         this.moveController = new EnhancedTurtle.MoveHelperController(this);
         this.stepHeight = 1.0F;
-    }
-
-    private static Map<Item, Integer> createFoodMap() {
-        return new HashMap() {{
-            put(new ItemStack(Blocks.SEAGRASS).getItem(), 6000);
-        }};
     }
 
     protected void registerGoals() {
@@ -233,6 +231,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             this.sleepTimer = this.rand.nextInt(6000)+1200;
         }
         return (this.sleepTimer > 0) && this.awokenTimer == 0 && !this.sleeping;
+    }
+
+    @Override
+    protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
+        return turtleFoodMap;
     }
 
     @Override

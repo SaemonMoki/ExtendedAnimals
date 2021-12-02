@@ -98,8 +98,8 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     protected int temper;
 
-    protected EnhancedAnimalRideableAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
-        super(type, worldIn, SgenesSize, AgenesSize, temptationItems, breedItems, foodWeightMap, bottleFeedable);
+    protected EnhancedAnimalRideableAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, Ingredient temptationItems, boolean bottleFeedable) {
+        super(type, worldIn, SgenesSize, AgenesSize, temptationItems, bottleFeedable);
         this.stepHeight = 1.1F;
     }
 
@@ -340,7 +340,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             return ActionResultType.func_233537_a_(this.saddleAnimal(itemStack, entityPlayer, hand, this));
         }
 
-        if (TEMPTATION_ITEMS.test(itemStack) || BREED_ITEMS.test(itemStack) || item instanceof DebugGenesBook || (this.canHaveBridle() && item instanceof CustomizableBridle) || (this.canHaveBlanket() && isCarpet(itemStack)) || item instanceof CustomizableCollar) {
+        if (TEMPTATION_ITEMS.test(itemStack) || isBreedingItem(itemStack) || item instanceof DebugGenesBook || (this.canHaveBridle() && item instanceof CustomizableBridle) || (this.canHaveBlanket() && isCarpet(itemStack)) || item instanceof CustomizableCollar) {
             return super.func_230254_b_(entityPlayer, hand);
         }
 

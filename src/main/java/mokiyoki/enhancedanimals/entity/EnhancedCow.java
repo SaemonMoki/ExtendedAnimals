@@ -10,6 +10,7 @@ import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
 import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
@@ -57,6 +58,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.cowFoodMap;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 
 public class EnhancedCow extends EnhancedAnimalRideableAbstract {
@@ -174,29 +176,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //    private int totalBoostTime;
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, true);
         // cowsize from .7 to 1.5 max bag size is 1 to 1.5
         //large cows make from 30 to 12 milk points per day, small cows make up to 1/4
         this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*2400)) * (getAnimalSize()/1.5F)) - 300;
-    }
-
-    private static Map<Item, Integer> createFoodMap() {
-        return new HashMap() {{
-            put(new ItemStack(Blocks.MELON).getItem(), 10000);
-            put(new ItemStack(Blocks.PUMPKIN).getItem(), 10000);
-            put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-            put(new ItemStack(Items.GRASS).getItem(), 3000);
-            put(new ItemStack(Items.VINE).getItem(), 3000);
-            put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
-            put(new ItemStack(Blocks.OAK_LEAVES).getItem(), 1000);
-            put(new ItemStack(Blocks.DARK_OAK_LEAVES).getItem(), 1000);
-            put(new ItemStack(Items.CARROT).getItem(), 1500);
-            put(new ItemStack(Items.WHEAT).getItem(), 6000);
-            put(new ItemStack(Items.SUGAR).getItem(), 500);
-            put(new ItemStack(Items.APPLE).getItem(), 1500);
-            put(new ItemStack(Items.MELON_SLICE).getItem(), 1100);
-            put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
-        }};
     }
 
     private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
@@ -246,6 +229,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
         this.dataManager.register(RESET_TEXTURE, false);
         this.dataManager.register(MOOSHROOM_UUID, "0");
+    }
+
+    @Override
+    protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
+        return cowFoodMap;
     }
 
     protected String getSpecies() {

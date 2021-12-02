@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.entity.Genetics.PigGeneticsInitialiser;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.pig.GrazingGoalPig;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
@@ -58,6 +59,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.pigFoodMap;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 
 public class EnhancedPig extends EnhancedAnimalRideableAbstract {
@@ -142,54 +144,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 //    private int totalBoostTime;
 
     public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.PIG_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.PIG_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, true);
         this.initilizeAnimalSize();
-    }
-
-    private static Map<Item, Integer> createFoodMap() {
-        return new HashMap() {{
-            put(new ItemStack(Blocks.MELON).getItem(), 10000);
-            put(new ItemStack(Blocks.PUMPKIN).getItem(), 10000);
-            put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-            put(new ItemStack(Items.GRASS).getItem(), 3000);
-            put(new ItemStack(Items.VINE).getItem(), 3000);
-            put(new ItemStack(Items.COOKED_BEEF).getItem(), 3000);
-            put(new ItemStack(ModItems.COOKEDCHICKEN_DARKBIG).getItem(), 3000);
-            put(new ItemStack(ModItems.COOKEDCHICKEN_DARK).getItem(), 2000);
-            put(new ItemStack(ModItems.COOKEDCHICKEN_DARKSMALL).getItem(), 1000);
-            put(new ItemStack(Items.COOKED_CHICKEN).getItem(), 3000);
-            put(new ItemStack(ModItems.COOKEDCHICKEN_PALE).getItem(), 2000);
-            put(new ItemStack(ModItems.COOKEDCHICKEN_PALESMALL).getItem(), 1000);
-            put(new ItemStack(Items.COOKED_COD).getItem(), 1500);
-            put(new ItemStack(Items.COOKED_MUTTON).getItem(), 3000);
-            put(new ItemStack(Items.COOKED_RABBIT).getItem(), 1500);
-            put(new ItemStack(ModItems.COOKEDRABBIT_SMALL).getItem(), 750);
-            put(new ItemStack(Items.COOKED_SALMON).getItem(), 3000);
-            put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
-            put(new ItemStack(Blocks.OAK_LEAVES).getItem(), 1000);
-            put(new ItemStack(Blocks.DARK_OAK_LEAVES).getItem(), 1000);
-            put(new ItemStack(Items.CARROT).getItem(), 3000);
-            put(new ItemStack(Items.POTATO).getItem(), 3000);
-            put(new ItemStack(Items.BEETROOT).getItem(), 3000);
-            put(new ItemStack(Items.WHEAT).getItem(), 6000);
-            put(new ItemStack(Items.SUGAR).getItem(), 1500);
-            put(new ItemStack(Items.APPLE).getItem(), 1500);
-            put(new ItemStack(Items.BREAD).getItem(), 18000);
-            put(new ItemStack(Items.EGG).getItem(), 100);
-            put(new ItemStack(Items.TURTLE_EGG).getItem(), 100);
-            put(new ItemStack(Items.WHEAT_SEEDS).getItem(), 100);
-            put(new ItemStack(Items.MELON_SEEDS).getItem(), 100);
-            put(new ItemStack(Items.PUMPKIN_SEEDS).getItem(), 100);
-            put(new ItemStack(Items.BEETROOT_SEEDS).getItem(), 100);
-            put(new ItemStack(Items.SWEET_BERRIES).getItem(), 100);
-            put(new ItemStack(Items.ROTTEN_FLESH).getItem(), 200);
-            put(new ItemStack(Items.BROWN_MUSHROOM).getItem(), 1000);
-            put(new ItemStack(Items.OAK_SAPLING).getItem(), 1000);
-            put(new ItemStack(Items.DARK_OAK_SAPLING).getItem(), 1000);
-            put(new ItemStack(Items.MILK_BUCKET).getItem(), 1500);
-            put(new ItemStack(Items.MELON_SLICE).getItem(), 1000);
-            put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
-        }};
     }
 
     private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
@@ -235,6 +191,11 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         this.goalSelector.addGoal(7, new EnhancedEatPlantsGoal(this, createGrazingMap()));
         this.goalSelector.addGoal(8, this.grazingGoal);
         this.goalSelector.addGoal(9, new EnhancedWanderingGoal(this, 1.0D));
+    }
+
+    @Override
+    protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
+        return pigFoodMap;
     }
 
     @Override

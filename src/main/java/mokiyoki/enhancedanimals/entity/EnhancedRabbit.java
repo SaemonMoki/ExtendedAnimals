@@ -13,6 +13,7 @@ import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitPanicGoal;
 import mokiyoki.enhancedanimals.ai.rabbit.EnhancedRabbitRaidFarmGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.RabbitGeneticsInitialiser;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -64,14 +65,13 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.IForgeShearable;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.rabbitFoodMap;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
 
 public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecraftforge.common.IForgeShearable {
@@ -190,7 +190,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     //TODO find broken texture spawns in desert
 
     private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.CARROT, Items.GOLDEN_CARROT, Items.GRASS, Items.TALL_GRASS, Items.ROSE_BUSH, Items.SWEET_BERRIES);
-    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.CARROT, Items.GOLDEN_CARROT);
 
     private int jumpTicks;
     private int jumpDuration;
@@ -209,23 +208,11 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     private GrazingGoal grazingGoal;
 
     public EnhancedRabbit(EntityType<? extends EnhancedRabbit> entityType, World worldIn) {
-        super(entityType, worldIn,SEXLINKED_GENES_LENGTH, Reference.RABBIT_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
+        super(entityType, worldIn,SEXLINKED_GENES_LENGTH, Reference.RABBIT_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, true);
 //        this.setSize(0.4F, 0.5F);
         this.jumpController = new EnhancedRabbit.JumpHelperController(this);
         this.moveController = new EnhancedRabbit.MoveHelperController(this);
         this.setMovementSpeed(0.0D);
-    }
-
-    private static Map<Item, Integer> createFoodMap() {
-        return new HashMap() {{
-            put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-            put(new ItemStack(Items.GRASS).getItem(), 3000);
-            put(new ItemStack(Items.CARROT).getItem(), 3000);
-            put(new ItemStack(Items.GOLDEN_CARROT).getItem(), 12000);
-            put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
-            put(new ItemStack(Items.DANDELION).getItem(), 1500);
-            put(new ItemStack(Items.ROSE_BUSH).getItem(), 1500);
-        }};
     }
 
     private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
@@ -290,6 +277,11 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         this.goalSelector.addGoal(12, new EnhancedWanderingGoal(this, 1.0D));
         this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, PlayerEntity.class, 10.0F));
         this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
+    }
+
+    @Override
+    protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
+        return rabbitFoodMap;
     }
 
     protected float getJumpUpwardsMotion() {
@@ -854,11 +846,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         currentCoatLength = 0;
         setCoatLength(currentCoatLength);
         return ret;
-    }
-
-    public boolean isBreedingItem(ItemStack stack) {
-        //TODO set this to a separate item or type of item for force breeding
-        return BREED_ITEMS.test(stack);
     }
 
     public void writeAdditional(CompoundNBT compound) {

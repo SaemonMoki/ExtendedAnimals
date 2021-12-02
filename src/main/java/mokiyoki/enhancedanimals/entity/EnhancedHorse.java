@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.HorseGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
@@ -52,6 +53,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.horseFoodMap;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
 
 public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
@@ -153,25 +155,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     public EnhancedHorse(EntityType<? extends EnhancedHorse> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.HORSE_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
-    }
-
-    private static Map<Item, Integer> createFoodMap() {
-        return new HashMap() {{
-        put(new ItemStack(Blocks.MELON).getItem(), 10000);
-        put(new ItemStack(Blocks.PUMPKIN).getItem(), 10000);
-        put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-        put(new ItemStack(Items.GRASS).getItem(), 3000);
-        put(new ItemStack(Items.VINE).getItem(), 3000);
-        put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
-        put(new ItemStack(Blocks.OAK_LEAVES).getItem(), 1000);
-        put(new ItemStack(Blocks.DARK_OAK_LEAVES).getItem(), 1000);
-        put(new ItemStack(Items.CARROT).getItem(), 1500);
-        put(new ItemStack(Items.WHEAT).getItem(), 6000);
-        put(new ItemStack(Items.SUGAR).getItem(), 1500);
-        put(new ItemStack(Items.APPLE).getItem(), 1500);
-        put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
-        }};
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.HORSE_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, true);
     }
 
     protected boolean aiConfigured = false; //TODO move this up
@@ -199,6 +183,11 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     protected String getSpecies() {
         return "entity.eanimod.enhanced_horse";
+    }
+
+    @Override
+    protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
+        return horseFoodMap;
     }
 
     protected int getAdultAge() { return 120000;}

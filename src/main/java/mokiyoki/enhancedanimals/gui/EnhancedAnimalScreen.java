@@ -297,7 +297,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         this.blit(matrixStack, i + 147, j + 5, 134, this.ySize + 54, 9, 10); // hunger icon
         this.blit(matrixStack, i + 158, j + 5, 143, this.ySize + 54, 10, 10); // tameness icon
 
-        int health = enhancedAnimalInfo.health;
+        int health = Math.min(enhancedAnimalInfo.health, 10);
         int hunger = 10 - enhancedAnimalInfo.hunger;
 //        int tameness = enhancedAnimalInfo.tameness;
         this.blit(matrixStack, i + 136, j + 5 + (10-health), 125, this.ySize + 64 + (10-health), 9, health); // health icon

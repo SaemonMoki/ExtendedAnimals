@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -292,14 +293,33 @@ public class Genes {
         return this.makeChild(isDiploid, donor, donorIsDiploid, Species.UNIMPORTANT);
     }
 
-    public boolean testGenes(int gene, int type, int check) {
-        switch (type) {
-            case 0:
-            default:
-                return this.autosomal[gene] == check || this.autosomal[gene+1] == check;
-            case 1:
-                return this.autosomal[gene] == check && this.autosomal[gene+1] == check;
-        }
+    public boolean has(int gene, int allel) {
+        return this.autosomal[gene] == allel || this.autosomal[gene+1] == allel;
+    }
+
+    public boolean isHomozygousFor(int gene, int allel) {
+        return this.autosomal[gene] == allel && this.autosomal[gene+1] == allel;
+    }
+
+    public boolean isHeterozygousFor(int gene, int allel) {
+        return this.autosomal[gene] == allel ^ this.autosomal[gene+1] == allel;
+    }
+
+    public boolean isHeterozygous(int gene) {
+        return this.autosomal[gene] != this.autosomal[gene+1];
+    }
+
+    public boolean isHomozygous(int gene) {
+        return this.autosomal[gene] == this.autosomal[gene+1];
+    }
+
+    public boolean isComplete() {
+        return Arrays.stream(this.sexlinked).noneMatch(i -> i == 0) && Arrays.stream(this.autosomal).noneMatch(i -> i == 0);
+    }
+
+    public boolean isValid() {
+        if (this.sexlinked == null || this.autosomal == null) return false;
+        return Arrays.stream(this.sexlinked).noneMatch(i -> i == 0) && Arrays.stream(this.autosomal).noneMatch(i -> i == 0);
     }
 
     public List<GeneLink> getLinkages(Species species) {

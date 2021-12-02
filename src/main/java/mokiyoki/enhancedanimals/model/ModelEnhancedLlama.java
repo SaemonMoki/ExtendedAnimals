@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.model;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
@@ -494,8 +495,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         float age = 1.0F;
         if (!(llamaModelData.birthTime == null) && !llamaModelData.birthTime.equals("") && !llamaModelData.birthTime.equals("0")) {
             int ageTime = (int)(llamaModelData.clientGameTime - Long.parseLong(llamaModelData.birthTime));
-            if (ageTime <= 80000) {
-                age = ageTime < 0 ? 0 : ageTime/80000.0F;
+            if (ageTime <= llamaModelData.adultAge) {
+                age = ageTime < 0 ? 0 : ageTime/(float) llamaModelData.adultAge;
             }
         }
 
@@ -862,8 +863,8 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         float age = 1.0F;
         if (!(llamaModelData.birthTime == null) && !llamaModelData.birthTime.equals("") && !llamaModelData.birthTime.equals("0")) {
             int ageTime = (int)(llamaModelData.clientGameTime - Long.parseLong(llamaModelData.birthTime));
-            if (ageTime <= 80000) {
-                age = ageTime < 0 ? 0 : ageTime/80000.0F;
+            if (ageTime <= llamaModelData.adultAge) {
+                age = ageTime < 0 ? 0 : (float) ageTime/(float) llamaModelData.adultAge;
             }
         }
 
@@ -1018,6 +1019,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
         boolean collar = false;
         boolean hasChest = false;
         float size;
+        int adultAge;
     }
 
     private LlamaModelData getLlamaModelData() {
@@ -1076,6 +1078,7 @@ public class ModelEnhancedLlama <T extends EnhancedLlama> extends EntityModel<T>
             llamaModelData.collar = hasCollar(enhancedLlama.getEnhancedInventory());
             llamaModelData.hasChest = !enhancedLlama.getEnhancedInventory().getStackInSlot(0).isEmpty();
             llamaModelData.size = enhancedLlama.getAnimalSize();
+            llamaModelData.adultAge = EanimodCommonConfig.COMMON.adultAgeLlama.get();
 
             if(llamaModelData.llamaGenes != null) {
                 llamaModelDataCache.put(enhancedLlama.getEntityId(), llamaModelData);

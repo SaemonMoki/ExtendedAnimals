@@ -165,6 +165,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     //Inventory
     protected Inventory animalInventory;
 
+    //Size
+    private int reloadSizeTime = 0;
+
     //Overrides
     @Nullable
     private CompoundNBT leashNBTTag;
@@ -202,16 +205,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     @Override
-    protected void registerGoals() {
-//        int napmod = this.rand.nextInt(1000);
-//        this.goalSelector.addGoal(0, new SwimGoal(this));
-//        this.goalSelector.addGoal(2, new StayShelteredGoal(this, 5723, 7000, napmod));
-//        this.goalSelector.addGoal(3, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
-//        this.goalSelector.addGoal(3, new EnhancedBreedGoal(this, 1.0D));
-//        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
-//        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-//        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
-    }
+    protected void registerGoals() { }
 
     protected void setMateName(String mateName) {
         if (mateName!=null && !mateName.equals("")) {
@@ -237,17 +231,34 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
     }
 
-    protected abstract String getSpecies();
-
     protected void setBreed(String breed) {
         this.breed = breed;
     }
 
-    protected abstract int getAdultAge();
-
     /*
     Animal expected abstracts and overrides
     */
+
+    //returns the species name in the selected language
+    protected abstract String getSpecies();
+
+    //returns the age an animal becomes an adult
+    protected abstract int getAdultAge();
+
+    //returns the age when the animal finishes growing
+    protected int getFullSizeAge() {
+        return getAdultAge();
+    }
+
+    //returns if the animal is still growing
+    protected boolean isGrowing() {
+        return this.getAge()<(float)this.getFullSizeAge();
+    }
+
+    //returns how grown the animal is
+    protected float growthAmount() {
+        return this.getAge()/(float)this.getFullSizeAge();
+    }
 
     //returns the config for the animals gestation or any overrides
     protected abstract int gestationConfig();
@@ -265,10 +276,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     public boolean sleepingConditional() {
         return (!this.world.isDaytime() && this.awokenTimer == 0 && !this.sleeping);
     }
-
-    //    public void setReloadTexture(Boolean resetTexture) {
-//        this.dataManager.set(RESET_TEXTURE, resetTexture);
-//    }
 
     //toggles the reloading
     protected void toggleReloadTexture() {
@@ -340,6 +347,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     */
 
     protected abstract FoodSerialiser.AnimalFoodMap getAnimalFoodType();
+
+    public void setBirthTime() {
+        this.setBirthTime(String.valueOf(this.world.getWorldInfo().getGameTime()));
+    }
 
     public void setBirthTime(World world, int age) {
         this.setBirthTime(String.valueOf(world.getWorldInfo().getGameTime() + age));
@@ -643,6 +654,17 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     @Override
     public void livingTick() {
         super.livingTick();
+
+        if (this.reloadSizeTime != 0) {
+            if (this.isGrowing()) {
+                if (this.getAge() % this.reloadSizeTime == 0) {
+                    this.recalculateSize();
+                }
+            } else {
+                this.reloadSizeTime = 0;
+            }
+        }
+
         //run client-sided tick stuff
         if (this.world.isRemote) {
             runLivingTickClient();
@@ -952,8 +974,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
-        this.writeNBTGenes("Genes", compound);
-        this.writeNBTGenes("FatherGenes", compound);
+        this.writeNBTGenes("Genetics", compound, this.genetics);
+        this.writeNBTGenes("MateGenetics", compound, this.mateGenetics);
 
         compound.putFloat("Hunger", hunger);
 
@@ -1032,8 +1054,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
 
-        this.readNBTGenes(compound.getList("Genes", 10));
-        this.readNBTGenes(compound.getList("FatherGenes", 10));
+        this.readNBTGenes(compound, "Genetics", this.genetics);
+        this.readNBTGenes(compound, "MateGenetics", this.mateGenetics);
 
         this.hunger = compound.getFloat("Hunger");
 
@@ -1077,7 +1099,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         this.setDamName(compound.getString("DamName"));
 
         readInventory(compound);
-        this.recalculateSize();
     }
 
     private void readInventory(CompoundNBT compound) {
@@ -1131,49 +1152,42 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         this.updateInventorySlots();
     }
 
-    protected void writeNBTGenes(String name, CompoundNBT compound) {
-        ListNBT geneList = new ListNBT();
-        int length = this.genetics.getNumberOfSexlinkedGenes();
-        int[] sexlinked = this.genetics.getSexlinkedGenes();
-        int[] autosomal = this.genetics.getAutosomalGenes();
-        for(int i = 0; i< length; i++){
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Sgene", sexlinked[i]);
-            geneList.add(nbttagcompound);
-        }
-        length = this.genetics.getNumberOfAutosomalGenes();
-        for(int i = 0; i< length; i++){
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Agene", autosomal[i]);
-            geneList.add(nbttagcompound);
-        }
-        compound.put(name, geneList);
+    protected void writeNBTGenes(String name, CompoundNBT compound, Genes genetics) {
+        CompoundNBT nbttagcompound = new CompoundNBT();
+        nbttagcompound.putIntArray("SGenes", genetics.getSexlinkedGenes());
+        nbttagcompound.putIntArray("AGenes", genetics.getAutosomalGenes());
+        compound.put(name, nbttagcompound);
     }
 
-    protected void readNBTGenes(ListNBT geneList) {
+    protected void readNBTGenes(CompoundNBT compoundNBT, String key, Genes genetics) {
+        if (compoundNBT.contains(key)) {
+            CompoundNBT nbtGenetics = compoundNBT.getCompound(key);
+            genetics.setGenes(nbtGenetics.getIntArray("SGenes"), nbtGenetics.getIntArray("AGenes"));
+        } else {
+            readLegacyGenes(compoundNBT.getList(key.equals("Genetics") ? "Genes" : "FatherGenes", 10), genetics);
+        }
+    }
+
+    protected void readLegacyGenes(ListNBT geneList, Genes genetics) {
         if (geneList.getCompound(0).contains("Sgene")) {
-            int sexlinkedlength = this.genetics.getNumberOfSexlinkedGenes();
+            int sexlinkedlength = genetics.getNumberOfSexlinkedGenes();
             for (int i = 0; i < sexlinkedlength; i++) {
-                this.genetics.setSexlinkedGene(i, geneList.getCompound(i).getInt("Sgene"));
+                genetics.setSexlinkedGene(i, geneList.getCompound(i).getInt("Sgene"));
             }
 
-            int length = this.genetics.getNumberOfAutosomalGenes();
+            int length = genetics.getNumberOfAutosomalGenes();
             for (int i = 0; i < length; i++) {
-                this.genetics.setAutosomalGene(i, geneList.getCompound(i+sexlinkedlength).getInt("Agene"));
+                genetics.setAutosomalGene(i, geneList.getCompound(i+sexlinkedlength).getInt("Agene"));
             }
         } else {
-            this.readLegacyGenes(geneList);
-        }
-    }
+            int length = genetics.getNumberOfSexlinkedGenes();
+            for (int i = 0; i < length; i++) {
+                genetics.setSexlinkedGene(i, 1);
+            }
 
-    protected void readLegacyGenes(ListNBT geneList) {
-        int length = this.genetics.getNumberOfSexlinkedGenes();
-        for (int i = 0; i < length; i++) {
-            this.genetics.setSexlinkedGene(i, 1);
-        }
-
-        for (int i = 0; i < geneList.size(); ++i) {
-            this.genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
+            for (int i = 0; i < geneList.size(); ++i) {
+                genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
+            }
         }
     }
 
@@ -1487,8 +1501,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     public void notifyDataManagerChange(DataParameter<?> key) {
-        if (BIRTH_TIME.equals(key) && this.world.isRemote) {
-            this.recalculateSize();
+        if (ANIMAL_SIZE.equals(key) && this.world.isRemote) {
+            if (this.isGrowing()) {
+                this.reloadSizeTime = (int) (this.getFullSizeAge() * 0.05);
+            } else {
+                this.recalculateSize();
+            }
         }
 
         super.notifyDataManagerChange(key);
@@ -1756,9 +1774,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     protected abstract Genes createInitialGenes(IWorld inWorld, BlockPos pos, boolean isDomestic);
 
-    protected abstract Genes createInitialBreedGenes(IWorld inWorld, BlockPos pos, String breed);
+    public abstract Genes createInitialBreedGenes(IWorld inWorld, BlockPos pos, String breed);
 
-    protected void setInitialDefaults() {
+    public void setInitialDefaults() {
         setSharedGenes(this.genetics);
         initilizeAnimalSize();
         initializeHealth(this, 1F);

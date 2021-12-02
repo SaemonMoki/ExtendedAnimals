@@ -246,6 +246,13 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         return EntitySize.flexible(0.8F, 1.2F).scale(this.getRenderScale());
     }
 
+    @Override
+    public float getRenderScale() {
+        float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
+        float newbornSize = 0.325F;
+        return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
+    }
+
     protected void registerData() {
         super.registerData();
         this.dataManager.register(COAT_LENGTH, 0);
@@ -258,7 +265,13 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         return "entity.eanimod.enhanced_sheep";
     }
 
-    protected int getAdultAge() { return 72000;}
+    @Override
+    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeSheep.get();}
+
+    @Override
+    protected int gestationConfig() {
+        return EanimodCommonConfig.COMMON.gestationDaysSheep.get();
+    }
 
     private void setCoatLength(int coatLength) {
         this.dataManager.set(COAT_LENGTH, coatLength);
@@ -1299,11 +1312,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         return super.func_230254_b_(entityPlayer, hand);
     }
 
-    @Override
-    protected  int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysSheep.get();
-    }
-
     /**
      * make a sheep sheared if set to true
      */
@@ -1356,11 +1364,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    protected void setInitialDefaults() {
+    public void setInitialDefaults() {
         super.setInitialDefaults();
-        this.setMaxCoatLength();
-        this.currentCoatLength = (int)(this.maxCoatLength*(this.getAge() >= this.getAdultAge() ? 1 : ((float)this.getAge()/(float)this.getAdultAge())));
-        this.setCoatLength(this.currentCoatLength);
+        setInitialCoat();
 
         //"White" is considered no dye
         this.setFleeceDyeColour(DyeColor.WHITE);
@@ -1378,7 +1384,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     public void setInitialCoat() {
         setMaxCoatLength();
-        this.currentCoatLength = this.maxCoatLength;
+        this.currentCoatLength = (int)(this.maxCoatLength*(this.getAge() >= this.getAdultAge() ? 1 : ((float)this.getAge()/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }
 

@@ -348,7 +348,14 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     @Override
     public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(0.4F, 0.5F).scale(this.getRenderScale());
+        return EntitySize.flexible(0.5F, 0.5F).scale(this.getRenderScale());
+    }
+
+    @Override
+    public float getRenderScale() {
+        float size = (this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F)*1.25F;
+        float newbornSize = 0.35F;
+        return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
     }
 
     protected void registerData() {
@@ -357,9 +364,11 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 //        this.dataManager.register(NOSE_WIGGLING, false);
     }
 
+    @Override
     protected String getSpecies() { return "entity.eanimod.enhanced_rabbit"; }
 
-    protected int getAdultAge() { return 48000;}
+    @Override
+    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeRabbit.get();}
 
     @Override
     protected int gestationConfig() {
@@ -1339,6 +1348,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         if (genes[34] == 2 || genes[35] == 2){
             size = 0.3F + ((size - 0.3F)/2F);
         }
+
+        size=0.3F;
 
         this.setAnimalSize(size);
     }

@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -58,6 +59,14 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     @Override
     protected String getSpecies() {
         return "entity.eanimod.enhanced_moobloom";
+    }
+
+    @Override
+    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeMoobloom.get();}
+
+    @Override
+    protected int gestationConfig() {
+        return EanimodCommonConfig.COMMON.gestationDaysMoobloom.get();
     }
 
     @Override

@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
@@ -467,8 +468,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             float age = 1.0F;
             if (!(pigModelData.birthTime == null) && !pigModelData.birthTime.equals("") && !pigModelData.birthTime.equals("0")) {
                 int ageTime = (int) (pigModelData.clientGameTime - Long.parseLong(pigModelData.birthTime));
-                if (ageTime <= 108000) {
-                    age = ageTime < 0 ? 0 : ageTime / 108000.0F;
+                if (ageTime <= (pigModelData.adultAge * 1.25F)) {
+                    age = ageTime < 0 ? 0 : ageTime / (pigModelData.adultAge * 1.25F);
                 }
             }
 
@@ -624,8 +625,8 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             float snoutLength = pig.snoutLength;
             if (!(pigModelData.birthTime == null) && !pigModelData.birthTime.equals("") && !pigModelData.birthTime.equals("0")) {
                 int ageTime = (int) (pigModelData.clientGameTime - Long.parseLong(pigModelData.birthTime));
-                if (ageTime < 70000) {
-                    float age = ageTime < 0 ? 0 : ageTime / 70000.F;
+                if (ageTime < pigModelData.adultAge) {
+                    float age = ageTime < 0 ? 0 : ageTime / (float)pigModelData.adultAge;
                     snoutLength = snoutLength * age;
                 }
             }
@@ -916,6 +917,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
         ItemStack harness;
         boolean collar = false;
         boolean hasChest = false;
+        int adultAge;
     }
 
     private PigModelData getPigModelData() {
@@ -970,6 +972,7 @@ public class ModelEnhancedPig <T extends EnhancedPig> extends EntityModel<T> {
             pigModelData.harness = enhancedPig.getEnhancedInventory().getStackInSlot(5);
             pigModelData.collar = hasCollar(enhancedPig.getEnhancedInventory());
             pigModelData.hasChest = !enhancedPig.getEnhancedInventory().getStackInSlot(0).isEmpty();
+            pigModelData.adultAge = EanimodCommonConfig.COMMON.adultAgePig.get();
 
             if(pigModelData.phenotype != null) {
                 pigModelDataCache.put(enhancedPig.getEntityId(), pigModelData);

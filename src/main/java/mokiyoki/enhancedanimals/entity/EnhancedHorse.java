@@ -635,7 +635,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected void setInitialDefaults() {
+    public void setInitialDefaults() {
         super.setInitialDefaults();
         configureAI();
     }
@@ -646,7 +646,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
         return new HorseGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 

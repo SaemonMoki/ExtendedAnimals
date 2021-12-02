@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.model;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
@@ -623,8 +624,8 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             float babyScale = 1.0F;
             if (!(cowModelData.birthTime == null) && !cowModelData.birthTime.equals("") && !cowModelData.birthTime.equals("0")) {
                 int ageTime = (int) (cowModelData.clientGameTime - Long.parseLong(cowModelData.birthTime));
-                if (ageTime <= 108000) {
-                    age = ageTime < 0 ? 0 : ageTime / 108000.0F;
+                if (ageTime <= cowModelData.adultAge) {
+                    age = ageTime < 0 ? 0 : ageTime / (float)cowModelData.adultAge;
                     babyScale = (3.0F - age) / 2;
                 }
             }
@@ -897,11 +898,14 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 this.neck.rotationPointZ = -9F;
             }
 
-            this.neck.rotateAngleX = (headPitch * 0.017453292F);
-            this.neck.rotateAngleY = netHeadYaw * 0.017453292F;
+            float headYaw = netHeadYaw - Math.round(netHeadYaw / 180) * 180;
+            this.head.rotateAngleY = headYaw * 0.017453292F * 0.4F;
 
-            this.humpXLarge.rotateAngleX = ((headPitch * 0.017453292F) / 2.5F) - 0.2F;
-            this.humpXLarge.rotateAngleY = (netHeadYaw * 0.017453292F) / 2.5F;
+            this.neck.rotateAngleX = (headPitch * 0.017453292F);
+            this.neck.rotateAngleY = headYaw * 0.017453292F * 0.6F;
+
+            this.humpXLarge.rotateAngleX = (this.neck.rotateAngleX / 2.5F) - 0.2F;
+            this.humpXLarge.rotateAngleY = this.neck.rotateAngleY / 2.5F;
 
             ModelHelper.copyModelRotations(humpXLarge, humpLarge);
             ModelHelper.copyModelRotations(humpXLarge, humpLargeish);
@@ -987,11 +991,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
     }
 
     private void setHornRotations(CowModelData cowModelData, List<String> unrenderedModels) {
-
-//        int[] genes = cowModelData.cowGenes;
         Phenotype cow = cowModelData.phenotype;
-//        char[] uuidArray = cowModelData.uuidArray;
-
 
         this.hornNub1.rotateAngleX = ((float)Math.PI / -2F);
         this.hornNub2.rotateAngleX = ((float)Math.PI / -2F);
@@ -1024,9 +1024,9 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
                 if (ageTime < 0) {
                     ageTime = 0;
                 }
-                if (ageTime < 108000) {
+                if (ageTime < cowModelData.adultAge * 1.2857F) {
                     //this grows the horns from nothing to their adult size
-                    float age = (float)ageTime/108000.0F;
+                    float age = (float)ageTime/(cowModelData.adultAge * 1.2857F);
                     lengthL = lengthL + ((int)((12-lengthL) * (1.0F-(age))));
                     lengthR = lengthR + ((int)((12-lengthR) * (1.0F-(age))));
 
@@ -1394,6 +1394,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
         boolean harness = false;
         boolean collar = false;
         boolean hasChest = false;
+        int adultAge;
     }
 
     private CowModelData getCowModelData() {
@@ -1452,6 +1453,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             cowModelData.bridle = !enhancedCow.getEnhancedInventory().getStackInSlot(3).isEmpty() && collarSlot!=3;
             cowModelData.harness = !enhancedCow.getEnhancedInventory().getStackInSlot(5).isEmpty() && collarSlot!=5;
             cowModelData.hasChest = !enhancedCow.getEnhancedInventory().getStackInSlot(0).isEmpty();
+            cowModelData.adultAge = EanimodCommonConfig.COMMON.adultAgeCow.get();
 
             if(cowModelData.phenotype != null) {
                 cowModelDataCache.put(enhancedCow.getEntityId(), cowModelData);
@@ -1498,11 +1500,13 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             this.setHornGenetics(gene, this.hornType);
             this.dwarf = gene[26] == 1 || gene[27] == 1;
 
+//            float bodyWidth = isFemale ? -0.175F : 0.0F;
             float bodyWidth = isFemale ? -0.175F : 0.0F;
             float bodyLength = 0.0F;
             int hump = 0;
 
-            float genderModifier = isFemale ? 0.01725F : 0.0825F;
+//            float genderModifier = isFemale ? 0.01725F : 0.0825F;
+            float genderModifier = isFemale ? 0.045F : 0.0825F;
             for (int i = 1; i < gene[54]; i++) {
                 bodyWidth = bodyWidth + genderModifier;
             }

@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity;
 import com.google.common.collect.Sets;
 import mokiyoki.enhancedanimals.blocks.EnhancedTurtleEggBlock;
 import mokiyoki.enhancedanimals.capability.turtleegg.NestCapabilityProvider;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.Genetics.TurtleGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -38,6 +39,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -89,9 +91,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     private int isDigging;
     private int sleepTimer;
     private boolean isTempted = false;
+    private boolean homePosFixer = false;
+    private boolean hasScute = false;
 
-    public static final Predicate<LivingEntity> TARGET_DRY_BABY = (p_213616_0_) -> {
-        return p_213616_0_.isChild() && !p_213616_0_.isInWater();
+    public static final Predicate<LivingEntity> TARGET_DRY_BABY = (turtle) -> {
+        return turtle.isChild() && !turtle.isInWater();
     };
 
     private static final String[] TURTLE_TEXTURES_BASE = new String[] {
@@ -99,13 +103,14 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     };
 
     private static final String[] TURTLE_TEXTURES_PIBALD = new String[] {
-            "","pibald_turtle.png"
+            "","pibald_turtle.png", "pibald_turtle1.png", "pibald_turtle2.png", "pibald_turtle3.png",
+            "pibald_turtle.png", "pibald_turtle1.png", "pibald_turtle2.png", "pibald_turtle3.png",
+            "pibald_turtle.png", "pibald_turtle1.png", "pibald_turtle2.png", "pibald_turtle3.png",
+            "pibald_turtle.png", "pibald_turtle1.png", "pibald_turtle2.png", "pibald_turtle3.png"
     };
 
     protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.SEAGRASS.asItem());
     private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.SEAGRASS.asItem());
-
-    private boolean homePosFixer = false;
 
     public EnhancedTurtle(EntityType<? extends EnhancedTurtle> type, World worldIn) {
         super(type, worldIn, 2, Reference.TURTLE_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, false);
@@ -132,7 +137,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     public float getRenderScale() {
-        return this.isChild() ? 0.3F : 1.0F;
+        return this.isGrowing() ? (0.2F + (0.8F * (this.growthAmount()))) : 1.0F;
     }
 
     public static AttributeModifierMap.MutableAttribute prepareAttributes() {
@@ -244,8 +249,14 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected int getAdultAge() {
-        return 24000;
+    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeTurtle.get();}
+
+    public void setHasScute() {
+        this.hasScute = getAge() < 24000;
+    }
+
+    public boolean canDropScute() {
+        return this.hasScute && this.isAddedToWorld() && EanimodCommonConfig.COMMON.turtleScuteDropAge.get() <= this.getAge();
     }
 
     @Override
@@ -263,6 +274,12 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         if (this.homePosFixer && this.isAddedToWorld()) {
             this.homePosFixer = false;
             this.setHome(this.getPosition());
+        }
+        if (this.canDropScute()) {
+            if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
+                this.entityDropItem(Items.SCUTE, 1);
+            }
+            this.hasScute = false;
         }
     }
 
@@ -336,6 +353,10 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         SoundEvent soundevent = this.isChild() ? SoundEvents.ENTITY_TURTLE_SHAMBLE_BABY : SoundEvents.ENTITY_TURTLE_SHAMBLE;
         this.playSound(soundevent, 0.15F, 1.0F);
+        if (!this.isSilent() && this.getBells() && this.rand.nextBoolean()) {
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, 0.5F, 0.2F);
+            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.4F, 0.155F);
+        }
     }
 
     protected float determineNextStepDistance() {
@@ -363,7 +384,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             int base = 0;
             int pibald = 0;
 
-            //"normal_turtle.png", "albino_turtle.png", "axanthic_turtle.png", "xanthic_albino_turtle.png", "black_turtle.png", "het_melanised_normal.png", "het_melanised_xanthic.png"
+            char[] uuidArry = getCachedUniqueIdString().toCharArray();
 
             if (gene[0] == 1 || gene[1] == 1) {
                 //non-albino
@@ -394,7 +415,40 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             }
 
             if (gene[6] == 2 && gene[7] == 2) {
-                pibald = 1;
+                if ( Character.isDigit(uuidArry[5]) ){
+                    pibald = 1 + (uuidArry[5]-48);
+                } else {
+                    char d = uuidArry[5];
+
+                    switch (d) {
+                        case 'a':
+                            pibald = 11;
+                            break;
+                        case 'b':
+                            pibald = 12;
+                            break;
+                        case 'c':
+                            pibald = 13;
+                            break;
+                        case 'd':
+                            pibald = 14;
+                            break;
+                        case 'e':
+                            pibald = 15;
+                            break;
+                        case 'f':
+                            pibald = 16;
+                            break;
+                        default:
+                            pibald = 0;
+                    }
+                }
+
+                if (gene[8] == 2 && gene[9] == 2) {
+                    pibald = 1;
+                } else if ((pibald-1) % 4 == 0){
+                    pibald = (int)(pibald + (pibald*0.25F));
+                }
             }
 
             addTextureToAnimal(TURTLE_TEXTURES_BASE, base, null);
@@ -431,6 +485,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         compound.putInt("TravelPosX", this.getTravelPos().getX());
         compound.putInt("TravelPosY", this.getTravelPos().getY());
         compound.putInt("TravelPosZ", this.getTravelPos().getZ());
+        compound.putBoolean("hasScute", this.hasScute);
     }
 
     /**
@@ -447,6 +502,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         j = compound.getInt("TravelPosY");
         k = compound.getInt("TravelPosZ");
         this.setTravelPos(new BlockPos(i, j, k));
+        this.hasScute = compound.getBoolean("hasScute");
     }
 
     @Override
@@ -462,10 +518,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected void setInitialDefaults() {
+    public void setInitialDefaults() {
         super.setInitialDefaults();
         this.setHome(new BlockPos(this.getPosition()));
         this.setTravelPos(BlockPos.ZERO);
+        this.setHasScute();
     }
 
     public static boolean canTurtleSpawn(EntityType<EnhancedTurtle> p_223322_0_, IWorld p_223322_1_, SpawnReason reason, BlockPos p_223322_3_, Random p_223322_4_) {
@@ -676,7 +733,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                     world.setBlockState(pos, ModBlocks.TURTLE_EGG.getDefaultState().with(EnhancedTurtleEggBlock.EGGS, Integer.valueOf(numberOfEggs)), 3);
                     this.turtle.setHasEgg(false);
                     this.turtle.setDigging(false);
-                    this.turtle.setInLove(600);
+//                    this.turtle.setInLove(600);
                 }
 
                 if (this.turtle.isDigging()) {

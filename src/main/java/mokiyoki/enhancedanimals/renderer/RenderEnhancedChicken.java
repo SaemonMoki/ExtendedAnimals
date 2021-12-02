@@ -39,7 +39,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
         Colouration colourRGB = entity.getRgb();
         boolean silkie = false;
         if (entity.getSharedGenes() != null) {
-            silkie = entity.getSharedGenes().testGenes(106, 1, 2);
+            silkie = entity.getSharedGenes().isHomozygousFor(106, 2);
         }
 
         if (s == null || s.isEmpty() || colourRGB == null) {

@@ -240,7 +240,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         return "entity.eanimod.enhanced_cow";
     }
 
-    protected int getAdultAge() { return 84000;}
+    @Override
+    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeCow.get();}
 
     @Override
     protected int gestationConfig() {
@@ -309,7 +310,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
         if (this.dwarf == -1.0F) {
             Genes sharedGenetics = new Genes(this.dataManager.get(SHARED_GENES));
-            this.dwarf = (sharedGenetics.getAutosomalGene(26) == 1 || sharedGenetics.getAutosomalGene(27) == 1) ? 0.2F : 0.0F;
+            this.dwarf = sharedGenetics.isHomozygousFor(26, 2) ? 0.0F : 0.2F;
         }
 
         if (this.dwarf>0) {
@@ -383,6 +384,14 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
+    public float getRenderScale() {
+        float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
+        size = this.isFemale() ? size : size * 1.1F;
+        float newbornSize = 0.65F;
+        return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
+    }
+
+    @Override
     public boolean isFemale() {
         char[] uuidArray = (this.mooshroomUUID.equals("0") ? getCachedUniqueIdString() : this.mooshroomUUID).toCharArray();
         return !Character.isLetter(uuidArray[0]) && uuidArray[0] - 48 < 8;
@@ -390,6 +399,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     public void livingTick() {
         super.livingTick();
+
         if (!this.world.isRemote) {
             if (getEntityStatus().equals(EntityState.MOTHER.toString())) {
                 if (hunger <= 24000) {
@@ -1227,8 +1237,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], shadeIntensity));
                 this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
 
-            } else if (this.isChild() && !(genes.testGenes(0, 1, 0))) {
-                this.colouration.setBabyAlpha((float) this.getAge() / (float) this.getAdultAge());
+            } else if (this.isChild() && !(genes.isComplete())) {
+                this.colouration.setBabyAlpha(this.growthAmount());
             }
         }
 
@@ -1470,9 +1480,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         float milkBagSize = this.getMilkAmount() / (30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F));
         this.setBagSize((1.1F*milkBagSize*(this.maxBagSize-1.0F))+1.0F);
 
-        ListNBT geneList = compound.getList("Genes", 10);
-
-        this.dwarf = (geneList.getCompound(2+26).getInt("Agene") == 1 || geneList.getCompound(2+27).getInt("Agene") == 1) ? 0.2F : 0.0F;
+        this.dwarf = this.getSharedGenes().isHomozygousFor(26, 2) ? 0.0F : 0.2F;
 
         configureAI();
     }
@@ -1484,7 +1492,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected void setInitialDefaults() {
+    public void setInitialDefaults() {
         super.setInitialDefaults();
         configureAI();
     }

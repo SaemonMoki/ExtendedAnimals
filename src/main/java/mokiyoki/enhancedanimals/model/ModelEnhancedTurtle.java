@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -27,6 +28,7 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EntityModel<T
     protected ModelRenderer legFrontRight;
     protected ModelRenderer legFrontLeft;
     protected ModelRenderer eyelids;
+    protected ModelRenderer collar;
 
     private Integer currentTurtle = null;
 
@@ -62,6 +64,17 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EntityModel<T
         this.legFrontLeft = new ModelRenderer(this, 27, 24);
         this.legFrontLeft.addBox(0.0F, 0.0F, -2.0F, 13.0F, 1.0F, 5.0F, 0.0F);
         this.legFrontLeft.setRotationPoint(5.0F, 21.0F, -4.0F);
+
+        this.collar = new ModelRenderer(this, 59, 54);
+        this.collar.addBox(-3.5F, -1.0F, -0.5F, 7, 2, 7);
+        this.collar.setTextureOffset(82, 14);
+        this.collar.addBox(0.0F, -1.5F, 5.5F, 0,  3, 3);
+        this.collar.setTextureOffset(59, 0);
+        this.collar.addBox(-1.5F, -1.5F, 7.0F, 3, 3, 3, -0.5F);
+        this.collar.setRotationPoint(0, -1.5F, 2F);
+        this.collar.rotateAngleX = (float) Math.PI * -0.5F;
+
+        this.headModel.addChild(this.collar);
     }
 
     /**
@@ -112,13 +125,13 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EntityModel<T
 
         if (!(turtleModelData.birthTime == null) && !turtleModelData.birthTime.equals("") && !turtleModelData.birthTime.equals("0")) {
             int ageTime = (int)(turtleModelData.clientGameTime - Long.parseLong(turtleModelData.birthTime));
-            if (ageTime < 500000) {
-                size = ageTime < 0 ? 0 : (float) ageTime/500000.0F;
+            if (ageTime < turtleModelData.adultAge) {
+                size = ageTime < 0 ? 0 : (float) ageTime/(float)turtleModelData.adultAge;
                 size = (1.0F + (size * 11.0F))/12.0F;
                 float babyHead = (1.0F + (size*10.0F))/11.0F;
                 matrixStackIn.push();
                 matrixStackIn.scale(babyHead, babyHead, babyHead);
-                matrixStackIn.translate(0, -1.52F + 1.52F/(babyHead), -0.1F + 0.1F/(babyHead));
+                matrixStackIn.translate(0, -1.52F + 1.52F/(babyHead), -0.08F + 0.08F/(babyHead));
 
                     this.headModel.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
@@ -164,6 +177,7 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EntityModel<T
         int lastAccessed = 0;
         int dataReset = 0;
         long clientGameTime = 0;
+        int adultAge = 0;
     }
 
     private TurtleModelData getTurtleModelData() {
@@ -203,6 +217,7 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EntityModel<T
             turtleModelData.birthTime = enhancedTurtle.getBirthTime();
 //            turtleModelData.collar = hasCollar(enhancedTurtle.getEnhancedInventory());
             turtleModelData.clientGameTime = (((ClientWorld)enhancedTurtle.world).getWorldInfo()).getGameTime();
+            turtleModelData.adultAge = EanimodCommonConfig.COMMON.adultAgeTurtle.get();
 
             turtleModelDataCache.put(enhancedTurtle.getEntityId(), turtleModelData);
 

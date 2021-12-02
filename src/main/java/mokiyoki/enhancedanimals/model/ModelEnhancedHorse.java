@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedHorse;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
@@ -776,6 +777,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
         int heightMod = 0; //[-2 to 5]
         float faceShape = 0.0F;
         int faceLength = 0;
+        int adultAge;
     }
 
     private HorseModelData getHorseModelData() {
@@ -834,6 +836,7 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
             horseModelData.heightMod = enhancedHorse.getShape();
             horseModelData.faceShape = enhancedHorse.getFaceShape();
             horseModelData.faceLength = enhancedHorse.getFaceLength();
+            horseModelData.adultAge = EanimodCommonConfig.COMMON.adultAgeCow.get();
 
             if(horseModelData.horseGenes != null) {
                 horseModelDataCache.put(enhancedHorse.getEntityId(), horseModelData);

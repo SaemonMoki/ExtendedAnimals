@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
@@ -598,8 +599,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             float age = 1.0F;
             if (!(chickenModelData.birthTime == null) && !chickenModelData.birthTime.equals("") && !chickenModelData.birthTime.equals("0")) {
                 int ageTime = (int) (chickenModelData.clientGameTime - Long.parseLong(chickenModelData.birthTime));
-                if (ageTime <= 70000) {
-                    age = ageTime < 0 ? 0 : ageTime / 70000.0F;
+                if (ageTime <= chickenModelData.adultAge) {
+                    age = ageTime < 0 ? 0 : ageTime / (float)chickenModelData.adultAge;
                 }
             }
 
@@ -1148,8 +1149,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         float size = 1.0F;
         boolean isFemale = true;
         List<String> unrenderedModels = new ArrayList<>();
-//        int dataReset = 0;
         boolean collar = false;
+        int adultAge;
     }
 
     private ChickenModelData getChickenModelData() {
@@ -1192,6 +1193,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             chickenModelData.size = enhancedChicken.getAnimalSize();
             chickenModelData.isFemale = enhancedChicken.isFemale();
             chickenModelData.clientGameTime = (((ClientWorld)enhancedChicken.world).getWorldInfo().getGameTime());
+            chickenModelData.adultAge = EanimodCommonConfig.COMMON.adultAgeChicken.get();
 
             if(chickenModelData.phenotype != null) {
                 chickenModelDataCache.put(enhancedChicken.getEntityId(), chickenModelData);
@@ -1404,7 +1406,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
     }
 
-    private enum Crested{
+    private enum Crested {
         BIG_CREST,
         BIG_FORWARDCREST,
         SMALL_CREST,
@@ -1412,7 +1414,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         NONE
     }
 
-    private enum FootFeathers{
+    private enum FootFeathers {
         BIG_TOEFEATHERS,
         TOEFEATHERS,
         FOOTFEATHERS,
@@ -1420,7 +1422,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         NONE
     }
 
-    private enum Comb{
+    private enum Comb {
         SINGLE (false),
         ROSE_ONE (false),
         ROSE_TWO (false),
@@ -1443,7 +1445,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         }
     }
 
-    private enum Beard{
+    private enum Beard {
         BIG_BEARD,
         SMALL_BEARD,
         NN_BEARD,

@@ -4,8 +4,13 @@ import mokiyoki.enhancedanimals.ai.ECLlamaFollowCaravan;
 import mokiyoki.enhancedanimals.ai.ECRunAroundLikeCrazy;
 import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
+import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.LlamaGeneticsInitialiser;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
@@ -181,11 +186,14 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return ediblePlants;
     }
 
+    private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
+
     @Override
     protected void registerGoals() {
-        super.registerGoals();
+        int napmod = this.rand.nextInt(1000);
         //Todo add the temperamants
         this.grazingGoal = new GrazingGoal(this, 1.0D);
+        this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 1.0D));
         this.goalSelector.addGoal(2, new ECRunAroundLikeCrazy(this, 1.2D));
@@ -195,11 +203,12 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(7, new EnhancedEatPlantsGoal(this, createGrazingMap()));
         this.goalSelector.addGoal(8, this.grazingGoal);
-        this.goalSelector.addGoal(9, new EnhancedWanderingGoal(this, 1.0D));
-//        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.0D));
-//        this.goalSelector.addGoal(6, new WaterAvoidingRandomWalkingGoal(this, 0.7D));
-//        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-//        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(9, this.wanderEatingGoal);
+        this.goalSelector.addGoal(10, new StayShelteredGoal(this, 5723, 7000, napmod));
+        this.goalSelector.addGoal(11, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
+        this.goalSelector.addGoal(12, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new EnhancedLlama.HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new EnhancedLlama.DefendTargetGoal(this));
     }
@@ -221,15 +230,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         return llamaFoodMap;
     }
 
-    protected int getAdultAge() { return 120000;}
-
-//    @Override
-//    public Boolean isAnimalSleeping() {
-//        if (isLeashedToTrader()) {
-//            return false;
-//        }
-//        return super.isAnimalSleeping();
-//    }
+    @Override
+    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeLlama.get();}
 
     @Override
     protected int gestationConfig() {
@@ -287,6 +289,13 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     @Override
     public EntitySize getSize(Pose poseIn) {
         return EntitySize.flexible(0.8F, 1.87F).scale(this.getRenderScale());
+    }
+
+    @Override
+    public float getRenderScale() {
+        float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
+        float newbornSize = 0.35F;
+        return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
     }
 
     protected boolean isMovementBlocked() {

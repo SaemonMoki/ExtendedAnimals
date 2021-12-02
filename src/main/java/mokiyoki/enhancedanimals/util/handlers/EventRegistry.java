@@ -102,7 +102,11 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK, ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSEGRASS_BLOCK, ModBlocks.PATCHYMYCELIUM_BLOCK, ModBlocks.EGG_CARTON, ModBlocks.TURTLE_EGG, ModBlocks.GROWABLE_ALLIUM, ModBlocks.GROWABLE_AZURE_BLUET, ModBlocks.GROWABLE_BLUE_ORCHID, ModBlocks.GROWABLE_CORNFLOWER, ModBlocks.GROWABLE_DANDELION, ModBlocks.GROWABLE_OXEYE_DAISY, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_ROSE_BUSH, ModBlocks.GROWABLE_SUNFLOWER, ModBlocks.GROWABLE_TALL_GRASS, ModBlocks.GROWABLE_LARGE_FERN
+        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK,
+                ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSEGRASS_BLOCK, ModBlocks.PATCHYMYCELIUM_BLOCK, ModBlocks.EGG_CARTON,
+                ModBlocks.TURTLE_EGG, ModBlocks.GROWABLE_ALLIUM, ModBlocks.GROWABLE_AZURE_BLUET, ModBlocks.GROWABLE_BLUE_ORCHID, ModBlocks.GROWABLE_CORNFLOWER,
+                ModBlocks.GROWABLE_DANDELION, ModBlocks.GROWABLE_OXEYE_DAISY, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_ROSE_BUSH,
+                ModBlocks.GROWABLE_SUNFLOWER, ModBlocks.GROWABLE_TALL_GRASS, ModBlocks.GROWABLE_LARGE_FERN
         };
             event.getRegistry().registerAll(blocks);
     }
@@ -170,6 +174,8 @@ public class EventRegistry {
                 new BlockItem(EGG_CARTON, new Item.Properties().maxStackSize(1).group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(EGG_CARTON.getRegistryName()),
         };
 
+        event.getRegistry().register(new SpawnEggItem(ENHANCED_TURTLE, 0xFFFFDD,0x00DDCC, new Item.Properties()
+                .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_turtle_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000, new Item.Properties()
                 .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_chicken_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34, new Item.Properties()
@@ -184,8 +190,6 @@ public class EventRegistry {
                 .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_mooshroom_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_PIG, 0xFFA4A4,0xB34d4d, new Item.Properties()
                 .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_pig_spawn_egg"));
-//        event.getRegistry().register(new SpawnEggItem(ENHANCED_HORSE, 0x000000,0x000000, new Item.Properties()
-//                .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_horse_spawn_egg"));
 
 
         event.getRegistry().registerAll(itemEggs);
@@ -199,7 +203,7 @@ public class EventRegistry {
                  */
                 protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
                     EnhancedEntityEgg eggItem = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ(), egg);
-                    eggItem.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
+                    eggItem.setEggData(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(stackIn));
                     return eggItem;
                 }
             });

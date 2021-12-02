@@ -23,6 +23,7 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOS
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_TURTLE;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID)
 public class SpawnRegistry {
@@ -46,43 +47,49 @@ public class SpawnRegistry {
             }
             //add sheep
             if (entry.type == EntityType.SHEEP) {
-                if (EanimodCommonConfig.COMMON.spawnGeneticSheep.get()) {
+                if (config.spawnGeneticSheep.get()) {
                     addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_SHEEP, config.spawnWeightSheep.get(), config.minimumSheepGroup.get(), config.maximumSheepGroup.get()));
                 }
             }
             //add cow
             if (entry.type == EntityType.COW) {
-                if(EanimodCommonConfig.COMMON.spawnGeneticCows.get()) {
+                if(config.spawnGeneticCows.get()) {
                     addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_COW,config.spawnWeightCows.get(), config.minimumCowGroup.get(), config.maximumCowGroup.get()));
                 }
             }
             //add llama
             if (entry.type == EntityType.LLAMA) {
-                if(EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
+                if(config.spawnGeneticLlamas.get()) {
                     addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_LLAMA, config.spawnWeightLlamas.get(), config.minimumLlamaGroup.get(), config.maximumLlamaGroup.get()));
                 }
             }
             //add chicken
             if (entry.type == EntityType.CHICKEN) {
-                if (EanimodCommonConfig.COMMON.spawnGeneticChickens.get()) {
+                if (config.spawnGeneticChickens.get()) {
                     addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_CHICKEN, config.spawnWeightChickens.get(), config.minimumChickenGroup.get(), config.maximumChickenGroup.get()));
                 }
             }
             //add rabbit
             if (entry.type == EntityType.RABBIT) {
-                if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get()) {
+                if (config.spawnGeneticRabbits.get()) {
                     addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_RABBIT, config.spawnWeightRabbits.get(), config.minimumRabbitGroup.get(), config.maximumRabbitGroup.get()));
                 }
             }
             //add mooshroom
             if (entry.type == EntityType.MOOSHROOM) {
-                if (EanimodCommonConfig.COMMON.spawnGeneticMooshroom.get()) {
+                if (config.spawnGeneticMooshroom.get()) {
                     addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_MOOSHROOM, config.spawnWeightMooshrooms.get(), config.minimumMooshroomGroup.get(), config.maximumMooshroomGroup.get()));
                 }
             }
+            //add moobloom
             if (entry.type.toString().contains("moobloom")) {
-                if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get()) {
+                if (config.spawnGeneticMoobloom.get()) {
                     addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_MOOBLOOM, entry.minCount, entry.maxCount, entry.itemWeight));
+                }
+            }
+            if (entry.type == EntityType.TURTLE) {
+                if(config.spawnGeneticTurtles.get()) {
+                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_TURTLE, config.spawnWeightTurtles.get(), config.minimumTurtleGroup.get(), config.maximumTurtleGroup.get()));
                 }
             }
         }
@@ -113,43 +120,43 @@ public class SpawnRegistry {
             MobSpawnInfo.Spawners entry = currentSpawns.next();
 
             //remove vanilla pig
-            if (entry.type == EntityType.PIG) {
+            if (entry.type == EntityType.PIG && entry.type.toString().contains("pig")) {
                 if(!EanimodCommonConfig.COMMON.spawnVanillaPigs.get()) {
                     removeSpawns.add(entry);
                 }
             }
             //remove vanilla sheep
-            if (entry.type == EntityType.SHEEP) {
+            if (entry.type == EntityType.SHEEP && entry.type.toString().contains("sheep")) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaSheep.get()) {
                     removeSpawns.add(entry);
                 }
             }
             //remove vanilla cow
-            if (entry.type == EntityType.COW) {
+            if (entry.type == EntityType.COW && entry.type.toString().contains("cow")) {
                 if(!EanimodCommonConfig.COMMON.spawnVanillaCows.get()) {
                     removeSpawns.add(entry);
                 }
             }
             //add and remove llama
-            if (entry.type == EntityType.LLAMA) {
+            if (entry.type == EntityType.LLAMA && entry.type.toString().contains("llama")) {
                 if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
                     removeSpawns.add(entry);
                 }
             }
             //remove vanilla chicken
-            if (entry.type == EntityType.CHICKEN) {
+            if (entry.type == EntityType.CHICKEN && entry.type.toString().contains("chicken")) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
                     removeSpawns.add(entry);
                 }
             }
             //remove vanilla rabbit
-            if (entry.type == EntityType.RABBIT) {
+            if (entry.type == EntityType.RABBIT && entry.type.toString().contains("rabbit")) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
                     removeSpawns.add(entry);
                 }
             }
             //remove vanilla mooshroom
-            if (entry.type == EntityType.MOOSHROOM) {
+            if (entry.type == EntityType.MOOSHROOM && entry.type.toString().contains("mooshroom")) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
                     removeSpawns.add(entry);
                 }
@@ -157,6 +164,13 @@ public class SpawnRegistry {
             //remove modded mooblooms?
             if (entry.type.toString().contains("moobloom")) {
                 if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get()) {
+                    removeSpawns.add(entry);
+                }
+            }
+
+            //remove modded turtles?
+            if (entry.type == EntityType.TURTLE && entry.type.toString().contains("turtle")) {
+                if (!EanimodCommonConfig.COMMON.spawnVanillaTurtles.get()) {
                     removeSpawns.add(entry);
                 }
             }

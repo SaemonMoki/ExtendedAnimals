@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.model;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
@@ -664,8 +665,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         float age = 1.0F;
         if (!(sheepModelData.birthTime == null) && !sheepModelData.birthTime.equals("") && !sheepModelData.birthTime.equals("0")) {
             int ageTime = (int)(sheepModelData.clientGameTime - Long.parseLong(sheepModelData.birthTime));
-            if (ageTime <= 75000) {
-                age = ageTime < 0 ? 0 : ageTime/75000.0F;
+            if (ageTime <= sheepModelData.adultAge) {
+                age = ageTime < 0 ? 0 : ageTime/(float)sheepModelData.adultAge;
             }
         }
 
@@ -1071,9 +1072,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                 ageTime = 0;
             }
 
-            if (ageTime < 108000) {
+            if (ageTime < (sheepModelData.adultAge * 1.2857F)) {
                 //this grows the horns from nothing to their adult size
-                float age = (float)ageTime/108000.0F;
+                float age = (float)ageTime/(float)(sheepModelData.adultAge * 1.2857F);
                 lengthL = lengthL + ((int)((20-lengthL) * (1.0F-(age*age))));
                 lengthR = lengthR + ((int)((20-lengthR) * (1.0F-(age*age))));
             }
@@ -1280,6 +1281,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         ItemStack bridle;
         boolean hasChest = false;
         boolean isFemale = false;
+        int adultAge = 0;
         List<String> unrenderedModels = new ArrayList<>();
     }
 
@@ -1339,6 +1341,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.hasChest = !enhancedSheep.getEnhancedInventory().getStackInSlot(0).isEmpty();
             sheepModelData.isFemale = enhancedSheep.isFemale();
             sheepModelData.clientGameTime = (((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime();
+            sheepModelData.adultAge = EanimodCommonConfig.COMMON.adultAgeSheep.get();
 
             if(sheepModelData.sheepGenes != null) {
                 sheepModelDataCache.put(enhancedSheep.getEntityId(), sheepModelData);

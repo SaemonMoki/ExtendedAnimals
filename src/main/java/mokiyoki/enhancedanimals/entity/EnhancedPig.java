@@ -2,7 +2,12 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
+import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.PigGeneticsInitialiser;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
@@ -179,6 +184,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        int napmod = this.rand.nextInt(1200);
         this.grazingGoal = new GrazingGoalPig(this, 1.0D);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 1.0D));
@@ -187,10 +193,13 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
-//        this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
-        this.goalSelector.addGoal(7, new EnhancedEatPlantsGoal(this, createGrazingMap()));
-        this.goalSelector.addGoal(8, this.grazingGoal);
-        this.goalSelector.addGoal(9, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(7, new StayShelteredGoal(this, 6000, 7500, napmod));
+        this.goalSelector.addGoal(8, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
+        this.goalSelector.addGoal(9, new EnhancedEatPlantsGoal(this, createGrazingMap()));
+        this.goalSelector.addGoal(10, this.grazingGoal);
+        this.goalSelector.addGoal(12, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
     }
 
     @Override
@@ -245,26 +254,39 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
 
         float size = this.getAnimalSize();
-        int age = this.getAge() < 108000 ? this.getAge() : 108000;
-        size = (( 3.0F * size * ((float) age/108000.0F)) + size) / 4.0F;
+        size = ( 3.0F * size * (this.growthAmount()) + size) / 4.0F;
 
         return yPos*(Math.pow(size, 1.2F));
     }
 
     @Override
     public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(0.9F, 1.2F).scale(this.getRenderScale());
+        return EntitySize.flexible(0.9F, 1.0F).scale(this.getRenderScale());
+    }
+
+    @Override
+    public float getRenderScale() {
+        float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
+        float newbornSize = 0.4F;
+        return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
     }
 
     protected void registerData() {
         super.registerData();
     }
 
+    @Override
     protected String getSpecies() {
         return "entity.eanimod.enhanced_pig";
     }
 
-    protected int getAdultAge() { return 60000;}
+    @Override
+    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgePig.get();}
+
+    @Override
+    protected int getFullSizeAge() {
+        return (int)(getAdultAge() * 1.25);
+    }
 
     @Override
     public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
@@ -914,6 +936,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                         }
                         this.enhancedAnimalTextures.add(PIG_TEXTURES_SPOT_BELTED[belt]);
                         this.texturesIndexes.add(String.valueOf(belt));
+                    } else {
+                        this.texturesIndexes.add(CACHE_DELIMITER);
                     }
                     this.texturesIndexes.add(CACHE_DELIMITER);
 

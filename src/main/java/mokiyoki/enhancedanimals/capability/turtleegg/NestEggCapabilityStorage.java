@@ -27,17 +27,20 @@ public class NestEggCapabilityStorage implements Capability.IStorage<INestEggCap
         for (BlockPos blockPos : nestPos) {
             List<EggHolder> listOfEggs = allTurtleEggPos.get(blockPos);
             for (EggHolder egg : listOfEggs) {
-                CompoundNBT nbttagcompound = new CompoundNBT();
-                nbttagcompound.putInt("X", blockPos.getX());
-                nbttagcompound.putInt("Y", blockPos.getY());
-                nbttagcompound.putInt("Z", blockPos.getZ());
+                if (egg.getGenes().isComplete()) {
+                    CompoundNBT nbttagcompound = new CompoundNBT();
+                    nbttagcompound.putInt("X", blockPos.getX());
+                    nbttagcompound.putInt("Y", blockPos.getY());
+                    nbttagcompound.putInt("Z", blockPos.getZ());
 
-                nbttagcompound.putString("SireName", egg.getSire());
-                nbttagcompound.putString("DamName", egg.getDam());
-                nbttagcompound.putIntArray("SGenes", egg.getGenes().getSexlinkedGenes());
-                nbttagcompound.putIntArray("AGenes", egg.getGenes().getAutosomalGenes());
+                    nbttagcompound.putString("SireName", egg.getSire());
+                    nbttagcompound.putString("DamName", egg.getDam());
+                    nbttagcompound.putIntArray("SGenes", egg.getGenes().getSexlinkedGenes());
+                    nbttagcompound.putIntArray("AGenes", egg.getGenes().getAutosomalGenes());
+                    nbttagcompound.putBoolean("hasParents", egg.hasParents());
 
-                nbttaglist.add(nbttagcompound);
+                    nbttaglist.add(nbttagcompound);
+                }
             }
         }
 
@@ -55,7 +58,7 @@ public class NestEggCapabilityStorage implements Capability.IStorage<INestEggCap
         for (int i = 0; i < nbttaglist.size(); ++i) {
             CompoundNBT nbttagcompound = nbttaglist.getCompound(i);
             BlockPos blockPosOfNest = new BlockPos(nbttagcompound.getInt("X"), nbttagcompound.getInt("Y"), nbttagcompound.getInt("Z"));
-            EggHolder egg = new EggHolder(nbttagcompound.getString("SireName"), nbttagcompound.getString("DamName"), new Genes(nbttagcompound.getIntArray("SGenes"),nbttagcompound.getIntArray("AGenes")));
+            EggHolder egg = new EggHolder(nbttagcompound.getString("SireName"), nbttagcompound.getString("DamName"), new Genes(nbttagcompound.getIntArray("SGenes"),nbttagcompound.getIntArray("AGenes")), nbttagcompound.getBoolean("hasParents"));
 
             if (allNestBlockPos.containsKey(blockPosOfNest)) {
                 allNestBlockPos.get(blockPosOfNest).add(egg);

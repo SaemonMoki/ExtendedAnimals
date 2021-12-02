@@ -11,7 +11,7 @@ public interface INestEggCapability {
 
     Map<BlockPos, List<EggHolder>> getAllNestEggPos();
 
-    void addNestEggPos(BlockPos blockPos, String sire, String dam, Genes genes);
+    void addNestEggPos(BlockPos blockPos, String sire, String dam, Genes genes, boolean hasParents);
 
     void removeNestPos(BlockPos blockPos);
 
@@ -21,6 +21,8 @@ public interface INestEggCapability {
 
     List<EggHolder> removeEggsFromNest (BlockPos blockPos);
 
+    List<EggHolder> getEggsInNest(BlockPos blockPos);
 
+    EggHolder getEggInNest(BlockPos blockPos);
 
 }

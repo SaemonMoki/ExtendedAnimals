@@ -10,6 +10,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
 import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
@@ -311,7 +312,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected void registerGoals() {
-        //TODO add temperaments
         int napmod = this.rand.nextInt(1200);
         this.grazingGoal = new GrazingGoalChicken(this, 1.0D);
         this.ecSandBath = new ECSandBath(this);
@@ -331,10 +331,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.goalSelector.addGoal(10, new ECWanderAvoidWater(this, 1.0D));
         this.goalSelector.addGoal(11, new EnhancedEatPlantsGoal(this, createGrazingMap()));
         this.goalSelector.addGoal(12, this.grazingGoal);
-        this.goalSelector.addGoal(13, new EnhancedWanderingGoal(this, 1.0D));
-        this.goalSelector.addGoal(14, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(14, new EnhancedLookAtGoal(this, ChickenEntity.class, 6.0F));
-        this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(14, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(15, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(16, new EnhancedLookAtGoal(this, ChickenEntity.class, 6.0F));
+        this.goalSelector.addGoal(17, new EnhancedLookRandomlyGoal(this));
 
     }
 
@@ -355,20 +355,29 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
+    public float getRenderScale() {
+        float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
+        float newbornSize = 0.2F;
+        return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
+    }
+
+    @Override
     protected void registerData() {
         super.registerData();
         this.dataManager.register(ROOSTING, new Boolean(false));
     }
 
+    @Override
     protected String getSpecies() {
         return "entity.eanimod.enhanced_chicken";
     }
 
-    protected int getAdultAge() { return 60000;}
+    @Override
+    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeChicken.get();}
 
     @Override
     protected int gestationConfig() {
-        return 24000;
+        return EanimodCommonConfig.COMMON.incubationDaysChicken.get();
     }
 
     @Override
@@ -464,7 +473,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.wingRotDelta = (float)((double)this.wingRotDelta * 0.9D);
         Vector3d vec3d = this.getMotion();
         if (!this.onGround && vec3d.y < 0.0D) {
-            this.setMotion(vec3d.mul(1.0D, this.genetics.testGenes(106, 1, 2) ? 1.0D : 0.6D, 1.0D));
+            this.setMotion(vec3d.mul(1.0D, this.genetics.isHomozygousFor(106,   2) ? 1.0D : 0.6D, 1.0D));
         }
 
         this.wingRotation += this.wingRotDelta * 2.0F;
@@ -504,6 +513,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (!this.isChild() && this.timeUntilNextEgg <= 0) {
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
+            ((EnhancedEgg) eggItem.getItem()).setHasParents(eggItem, true);
             if (this.gestationTimer > 0) {
                 String damName = "???";
                 if (this.getCustomName()!=null) {
@@ -527,7 +537,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     public boolean onLivingFall(float distance, float damageMultiplier) {
-        if (this.genetics.testGenes(106, 1, 2)) {
+        if (this.genetics.isHomozygousFor(106, 2)) {
             return super.onLivingFall(distance, damageMultiplier);
         }
             return false;
@@ -742,7 +752,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public String getChickenTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (this.resetTexture && getAge() > 20000) {
+        } else if (this.resetTexture && this.getAge() == (int)(this.getFullSizeAge()*0.3331F)) {
             this.resetTexture = false;
             this.texturesIndexes.clear();
             this.enhancedAnimalTextures.clear();
@@ -760,7 +770,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             int[] sexlinkedGenes = getSharedGenes().getSexlinkedGenes();
             int[] autosomalGenes = getSharedGenes().getAutosomalGenes();
             boolean isFemale = this.isFemale();
-            if (getAge() >= 20000) {
+            if (this.getAge() >= (int)(this.getFullSizeAge()*0.333F)) {
                 int ground = 0;
                 int pattern = 0;
                 int moorhead = 0;
@@ -2454,18 +2464,22 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected void readLegacyGenes(ListNBT geneList) {
-        for (int i = 0; i < 10; ++i) {
-            int gene = geneList.getCompound(i).getInt("Gene");
-            this.genetics.setSexlinkedGene(i*2, gene);
-            this.genetics.setSexlinkedGene((i*2)+1, gene);
-        }
+    protected void readLegacyGenes(ListNBT geneList, Genes genetics) {
+        if (geneList.getCompound(0).contains("Sgene")) {
+            super.readLegacyGenes(geneList, genetics);
+        } else {
+            for (int i = 0; i < 10; ++i) {
+                int gene = geneList.getCompound(i).getInt("Gene");
+                genetics.setSexlinkedGene(i * 2, gene);
+                genetics.setSexlinkedGene((i * 2) + 1, gene);
+            }
 
-        for (int i = 0; i < geneList.size(); ++i) {
-            if (i < 20) {
-                this.genetics.setAutosomalGene(i, 1);
-            } else {
-                this.genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
+            for (int i = 0; i < geneList.size(); ++i) {
+                if (i < 20) {
+                    genetics.setAutosomalGene(i, 1);
+                } else {
+                    genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
+                }
             }
         }
     }

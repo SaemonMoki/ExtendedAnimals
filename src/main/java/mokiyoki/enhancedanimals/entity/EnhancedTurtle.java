@@ -478,7 +478,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected Genes createInitialBreedGenes(IWorld inWorld, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(IWorld inWorld, BlockPos pos, String breed) {
         return new TurtleGeneticsInitialiser().generateWithBreed(this.world, pos, breed);
     }
 
@@ -671,7 +671,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                     String name = this.turtle.hasCustomName() ? this.turtle.getName().getString() : "???";
                     for (int i = 0; i < numberOfEggs;i++) {
                         Genes eggGenes = new Genes(this.turtle.getGenes()).makeChild(true, true, this.turtle.mateGenetics);
-                        world.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).addNestEggPos(pos, mateName,name, eggGenes);
+                        world.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).addNestEggPos(pos, mateName,name, eggGenes, true);
                     }
                     world.setBlockState(pos, ModBlocks.TURTLE_EGG.getDefaultState().with(EnhancedTurtleEggBlock.EGGS, Integer.valueOf(numberOfEggs)), 3);
                     this.turtle.setHasEgg(false);
@@ -726,11 +726,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             this.turtle.setGrowingAge(10);
             this.turtle.resetInLove();
             this.targetMate.setGrowingAge(10);
-            ((EnhancedAnimalAbstract) this.targetMate).resetInLove();
+            this.targetMate.resetInLove();
 
             ServerPlayerEntity entityplayermp = this.turtle.getLoveCause();
-            if (entityplayermp == null && ((EnhancedAnimalAbstract) this.targetMate).getLoveCause() != null) {
-                entityplayermp = ((EnhancedAnimalAbstract) this.targetMate).getLoveCause();
+            if (entityplayermp == null && this.targetMate.getLoveCause() != null) {
+                entityplayermp = this.targetMate.getLoveCause();
             }
 
             if (entityplayermp != null) {

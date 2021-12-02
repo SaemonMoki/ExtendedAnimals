@@ -1,8 +1,10 @@
 package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Lists;
+import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileItemEntity;
 import net.minecraft.item.DyeColor;
@@ -21,7 +23,9 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -37,6 +41,8 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
     private static final DataParameter<String> SIRE = EntityDataManager.<String>createKey(EnhancedEntityEgg.class, DataSerializers.STRING);
     private static final DataParameter<String> DAM = EntityDataManager.<String>createKey(EnhancedEntityEgg.class, DataSerializers.STRING);
 
+    private boolean hasParents = false;
+
     public EnhancedEntityEgg(EntityType<? extends EnhancedEntityEgg> entityIn, World worldIn) {
         super(entityIn, worldIn);
     }
@@ -50,11 +56,12 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         this.setItem(new ItemStack(egg, 1));
     }
 
-    public EnhancedEntityEgg(World worldIn, PlayerEntity playerIn, Genes eggGenes, String sireName, String damName, Item egg) {
+    public EnhancedEntityEgg(World worldIn, PlayerEntity playerIn, Genes eggGenes, String sireName, String damName, Item egg, boolean hasParents) {
         super(ENHANCED_ENTITY_EGG_ENTITY_TYPE, playerIn, worldIn);
         this.setGenes(eggGenes);
         this.setParentNames(sireName, damName);
         this.setItem(new ItemStack(egg, 1));
+        this.hasParents = hasParents;
     }
 
     protected void registerData() {
@@ -103,6 +110,11 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         }
     }
 
+    public void setEggData(EggHolder eggHolder) {
+        this.setGenes(eggHolder.getGenes());
+        this.setParentNames(eggHolder.getSire(), eggHolder.getDam());
+    }
+
     /**
      * Handler for {@link World#setEntityState}
      */
@@ -135,12 +147,24 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         boolean isCreeper = false;
         if (!getGenes().equals("INFERTILE")) {
             Genes genetics = new Genes(getGenes());
-            if (genetics.testGenes(70, 1, 2)) {
+            if (genetics.isHomozygousFor(70, 2)) {
                 isCreeper = true;
                 if (this.world.isRemote) {
                     this.world.makeFireworks(this.getPosX(), this.getPosY(), this.getPosZ(), 1.0D, 1.0D, 1.0D, this.makeCreeperFirework());
                 }
             }
+        } else if (this.world instanceof ServerWorld && !this.hasParents) {
+            EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.create(this.world);
+            Genes chickenGenes = enhancedchicken.createInitialBreedGenes((ServerWorld) this.world, this.getPosition(), "WanderingTrader");
+            enhancedchicken.setGenes(chickenGenes);
+            enhancedchicken.setSharedGenesFromEntityEgg(chickenGenes.getGenesAsString());
+            enhancedchicken.setGrowingAge();
+            enhancedchicken.initilizeAnimalSize();
+            enhancedchicken.setBirthTime();
+            enhancedchicken.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
+            enhancedchicken.setSireName(getSire());
+            enhancedchicken.setDamName(getDam());
+            this.world.addEntity(enhancedchicken);
         }
 
         if (!this.world.isRemote) {
@@ -151,7 +175,7 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
                     enhancedchicken.setSharedGenesFromEntityEgg(getGenes());
                     enhancedchicken.setGrowingAge();
                     enhancedchicken.initilizeAnimalSize();
-                    enhancedchicken.setBirthTime(String.valueOf(this.world.getGameTime()));
+                    enhancedchicken.setBirthTime();
                     enhancedchicken.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
                     enhancedchicken.setSireName(getSire());
                     enhancedchicken.setDamName(getDam());

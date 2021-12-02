@@ -31,8 +31,8 @@ public class NestCapabilityProvider implements INestEggCapability, ICapabilitySe
     }
 
     @Override
-    public void addNestEggPos(BlockPos blockPos, String sire, String dam, Genes genes) {
-        EggHolder egg = new EggHolder(sire, dam, genes);
+    public void addNestEggPos(BlockPos blockPos, String sire, String dam, Genes genes, boolean hasParents) {
+        EggHolder egg = new EggHolder(sire, dam, genes, hasParents);
         List<EggHolder> eggList = this.eggsInNests.containsKey(blockPos) ? this.eggsInNests.get(blockPos) : new ArrayList<>();
         eggList.add(egg);
         this.eggsInNests.put(blockPos, eggList);
@@ -51,6 +51,9 @@ public class NestCapabilityProvider implements INestEggCapability, ICapabilitySe
     @Override
     public EggHolder removeEggFromNest(BlockPos blockPos) {
         List<EggHolder> eggsInNest = this.eggsInNests.get(blockPos);
+        if (eggsInNest.isEmpty()) {
+            return new EggHolder(null, null, null, false);
+        }
         return eggsInNest.remove(0);
     }
 
@@ -58,6 +61,24 @@ public class NestCapabilityProvider implements INestEggCapability, ICapabilitySe
     public List<EggHolder> removeEggsFromNest(BlockPos blockPos) {
         List<EggHolder> eggsInNest = this.eggsInNests.remove(blockPos);
         return eggsInNest;
+    }
+
+    @Override
+    public List<EggHolder> getEggsInNest(BlockPos blockPos) {
+        List<EggHolder> eggsInNest = this.eggsInNests.get(blockPos);
+        if (eggsInNest==null) {
+            return null;
+        }
+        return eggsInNest;
+    }
+
+    @Override
+    public EggHolder getEggInNest(BlockPos blockPos) {
+        List<EggHolder> eggsInNest = this.eggsInNests.get(blockPos);
+        if (eggsInNest==null) {
+            return null;
+        }
+        return eggsInNest.get(0);
     }
 
     @Nullable

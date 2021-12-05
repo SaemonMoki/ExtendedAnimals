@@ -13,6 +13,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
@@ -75,6 +76,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.spawner.WorldEntitySpawner;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -159,6 +161,12 @@ public class EventSubscriber {
             event.setCanceled(true);
         }
     }
+
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onAddReloadListenerEvent(AddReloadListenerEvent e) {
+        e.addListener(new FoodSerialiser());
+    }
+
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onLivingUpdateEvent(LivingEvent.LivingUpdateEvent event) {

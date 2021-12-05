@@ -187,7 +187,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
-        return horseFoodMap;
+        return horseFoodMap();
     }
 
     protected int getAdultAge() { return 120000;}

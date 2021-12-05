@@ -340,7 +340,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             return ActionResultType.func_233537_a_(this.saddleAnimal(itemStack, entityPlayer, hand, this));
         }
 
-        if (TEMPTATION_ITEMS.test(itemStack) || isBreedingItem(itemStack) || item instanceof DebugGenesBook || (this.canHaveBridle() && item instanceof CustomizableBridle) || (this.canHaveBlanket() && isCarpet(itemStack)) || item instanceof CustomizableCollar) {
+        if (TEMPTATION_ITEMS.test(itemStack) || (!this.world.isRemote && isBreedingItem(itemStack)) || item instanceof DebugGenesBook || (this.canHaveBridle() && item instanceof CustomizableBridle) || (this.canHaveBlanket() && isCarpet(itemStack)) || item instanceof CustomizableCollar) {
             return super.func_230254_b_(entityPlayer, hand);
         }
 

@@ -233,7 +233,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
-        return cowFoodMap;
+        return cowFoodMap();
     }
 
     protected String getSpecies() {
@@ -1480,7 +1480,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         float milkBagSize = this.getMilkAmount() / (30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F));
         this.setBagSize((1.1F*milkBagSize*(this.maxBagSize-1.0F))+1.0F);
 
-        this.dwarf = this.getSharedGenes().isHomozygousFor(26, 2) ? 0.0F : 0.2F;
+        this.dwarf = this.genetics.isHomozygousFor(26, 2) ? 0.0F : 0.2F;
 
         configureAI();
     }

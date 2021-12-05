@@ -240,7 +240,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Override
     protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
-        return turtleFoodMap;
+        return turtleFoodMap();
     }
 
     @Override

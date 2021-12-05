@@ -167,7 +167,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
-        return sheepFoodMap;
+        return sheepFoodMap();
     }
 
 //    private int sheepTimer;

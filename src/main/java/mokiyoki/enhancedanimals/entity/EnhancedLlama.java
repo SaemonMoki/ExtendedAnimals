@@ -227,7 +227,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
-        return llamaFoodMap;
+        return llamaFoodMap();
     }
 
     @Override

@@ -204,7 +204,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
-        return pigFoodMap;
+        return pigFoodMap();
     }
 
     @Override

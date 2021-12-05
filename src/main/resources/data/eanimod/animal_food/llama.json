@@ -1,0 +1,50 @@
+{
+  "replaceDefault": false,
+  "values": [
+    {
+      "registryName": "minecraft:tall_grass",
+      "hungerRestored": 6000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:grass",
+      "hungerRestored": 3000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:hay_block",
+      "hungerRestored": 54000,
+      "isBreedingItem": true
+    },
+    {
+      "registryName": "minecraft:carrot",
+      "hungerRestored": 1500,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:golden_carrot",
+      "hungerRestored": 12000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:wheat",
+      "hungerRestored": 6000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:sugar",
+      "hungerRestored": 1500,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:apple",
+      "hungerRestored": 1500,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "eanimod:unboundhay_block",
+      "hungerRestored": 54000,
+      "isBreedingItem": true
+    }
+  ]
+}

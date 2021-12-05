@@ -346,7 +346,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
-        return chickenFoodMap;
+        return chickenFoodMap();
     }
 
     @Override

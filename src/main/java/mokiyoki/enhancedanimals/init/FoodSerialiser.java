@@ -1,10 +1,14 @@
 package mokiyoki.enhancedanimals.init;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.JsonReloadListener;
 import net.minecraft.item.Item;
+import net.minecraft.profiler.IProfiler;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLPaths;
 
@@ -13,97 +17,57 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class FoodSerialiser {
+public class FoodSerialiser  extends JsonReloadListener {
 
-    public static final AnimalFoodMap chickenFoodMap = createFoodMap("Chicken");
-    public static final AnimalFoodMap llamaFoodMap = createFoodMap("Llama");
-    public static final AnimalFoodMap rabbitFoodMap = createFoodMap("Rabbit");
-    public static final AnimalFoodMap sheepFoodMap = createFoodMap("Sheep");
-    public static final AnimalFoodMap cowFoodMap = createFoodMap("Cow");
-    public static final AnimalFoodMap pigFoodMap = createFoodMap("Pig");
-    public static final AnimalFoodMap horseFoodMap = createFoodMap("Horse");
-    public static final AnimalFoodMap turtleFoodMap = createFoodMap("Turtle");
+    private static Map<String, AnimalFoodMap> compiledAnimalFoodMap = new HashMap<>();
 
-    public static AnimalFoodMap createFoodMap(String animal) {
-        AnimalFoodMap animalFoodMap = new AnimalFoodMap();
-        Gson gson = new Gson();
-
-        checkFoodConfigFile();
-
-        loadFoodMappingFile(animal, animalFoodMap, gson);
-
-        return animalFoodMap;
+    public FoodSerialiser() {
+        super((new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create(), "animal_food");
     }
 
-    protected static void loadFoodMappingFile(String animal, AnimalFoodMap animalFoodMap, Gson gson) {
-        try {
-            FileInputStream configPath = new FileInputStream(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\food_items.json");
-
-            InputStreamReader in_strm = new InputStreamReader(configPath);
-
-            BufferedReader reader = new BufferedReader(in_strm);
-            JsonElement je = gson.fromJson(reader, JsonElement.class);
-            JsonObject json = je.getAsJsonObject();
-
-            for (JsonElement animalElement : json.getAsJsonArray("animals")) {
-                if (animalElement.getAsJsonObject().get("type").getAsString().equals(animal)) {
-
-                    List<AnimalFoodMap.FoodMap> foodMapList = new ArrayList<>();
-
-                    for (JsonElement foodElement : animalElement.getAsJsonObject().getAsJsonArray("food")) {
-                        JsonObject foodObject = foodElement.getAsJsonObject();
-                        AnimalFoodMap.FoodMap foodMap = new AnimalFoodMap.FoodMap();
-
-                        if (foodObject.get("tag") != null) {
-                            foodMap.tag = foodObject.get("tag").getAsString();
-                        }
-                        if (foodObject.get("registryName") != null) {
-                            foodMap.registryName = foodObject.get("registryName").getAsString();
-                        }
-                        foodMap.hungerRestored = foodObject.get("hungerRestored").getAsInt();
-                        foodMap.isBreedingItem = foodObject.get("isBreedingItem").getAsBoolean();
-
-                        foodMapList.add(foodMap);
-                    }
-
-                    animalFoodMap.setFoodMapList(foodMapList);
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    @Override
+    protected void apply(Map<ResourceLocation, JsonElement> dataMap, IResourceManager resourceManagerIn, IProfiler profilerIn) {
+        loadFoodMappingFile(dataMap);
     }
 
-    private static void checkFoodConfigFile() {
-        if (!new File(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\food_items.json").isFile()) {
+    protected static void loadFoodMappingFile(Map<ResourceLocation, JsonElement> dataMap) {
+        dataMap.forEach((file, jsonElement) -> {
+            JsonObject jsonFromData = jsonElement.getAsJsonObject();
+
+            createOrReplaceConfig(file, jsonFromData);
+
+            readFoodConfig(file);
+        });
+    }
+
+    private static void createOrReplaceConfig(ResourceLocation file, JsonObject jsonFromData) {
+        Boolean replaceConfig = jsonFromData.get("replaceDefault").getAsBoolean();
+        if (replaceConfig || (!new File(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\" + file.getPath() + ".json").isFile())) {
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .create();
             try {
-                InputStream inputStream = Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation("eanimod:genetic_animals/food_items.json")).getInputStream();
-                File directory = new File(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\");
-
-                if (! directory.exists()){
-                    directory.mkdir();
+                File newFile = new File(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\" + file.getPath() + ".json");
+                if (!newFile.exists()) {
+                    newFile.getParentFile().mkdir();
+                    newFile.createNewFile();
                 }
 
-                File outputFile = new File(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\food_items.json");
+                FileWriter fileWriter = new FileWriter(newFile);
 
-                java.nio.file.Files.copy(
-                        inputStream,
-                        outputFile.toPath(),
-                        StandardCopyOption.REPLACE_EXISTING);
-
-                try {
-                    ((Closeable)inputStream).close();
-                } catch (final IOException ioe) {
-                    // ignore
-                }
+                gson.toJson(jsonFromData, fileWriter);
+                fileWriter.flush();
+                fileWriter.close();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -111,6 +75,76 @@ public class FoodSerialiser {
         }
     }
 
+    private static void readFoodConfig(ResourceLocation file) {
+        try {
+            FileInputStream configPath = new FileInputStream(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\" + file.getPath() + ".json");
+
+            InputStreamReader in_strm = new InputStreamReader(configPath);
+
+            Gson gson = new Gson();
+
+            BufferedReader reader = new BufferedReader(in_strm);
+            JsonElement je = gson.fromJson(reader, JsonElement.class);
+            JsonObject json = je.getAsJsonObject();
+
+            AnimalFoodMap animalFoodMap = new AnimalFoodMap();
+            List<AnimalFoodMap.FoodMap> foodMapList = new ArrayList<>();
+            for (JsonElement foodElement : json.getAsJsonArray("values")) {
+
+                JsonObject foodObject = foodElement.getAsJsonObject();
+                AnimalFoodMap.FoodMap foodMap = new AnimalFoodMap.FoodMap();
+
+                if (foodObject.get("tag") != null) {
+                    foodMap.tag = foodObject.get("tag").getAsString();
+                }
+                if (foodObject.get("registryName") != null) {
+                    foodMap.registryName = foodObject.get("registryName").getAsString();
+                }
+                foodMap.hungerRestored = foodObject.get("hungerRestored").getAsInt();
+                foodMap.isBreedingItem = foodObject.get("isBreedingItem").getAsBoolean();
+
+                foodMapList.add(foodMap);
+
+                animalFoodMap.setFoodMapList(foodMapList);
+            }
+
+            compiledAnimalFoodMap.put(file.getPath(), animalFoodMap);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static AnimalFoodMap chickenFoodMap() {
+        return compiledAnimalFoodMap.get("chicken");
+    }
+
+    public static AnimalFoodMap llamaFoodMap() {
+        return compiledAnimalFoodMap.get("llama");
+    }
+
+    public static AnimalFoodMap rabbitFoodMap() {
+        return compiledAnimalFoodMap.get("rabbit");
+    }
+
+    public static AnimalFoodMap sheepFoodMap() {
+        return compiledAnimalFoodMap.get("sheep");
+    }
+
+    public static AnimalFoodMap cowFoodMap() {
+        return compiledAnimalFoodMap.get("cow");
+    }
+
+    public static AnimalFoodMap pigFoodMap() {
+        return compiledAnimalFoodMap.get("pig");
+    }
+
+    public static AnimalFoodMap horseFoodMap() {
+        return compiledAnimalFoodMap.get("horse");
+    }
+
+    public static AnimalFoodMap turtleFoodMap() {
+        return compiledAnimalFoodMap.get("turtle");
+    }
 
     public static class AnimalFoodMap {
 

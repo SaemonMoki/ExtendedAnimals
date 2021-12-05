@@ -1,0 +1,70 @@
+{
+  "replaceDefault": false,
+  "values": [
+    {
+      "registryName": "minecraft:melon",
+      "hungerRestored": 10000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:pumpkin",
+      "hungerRestored": 10000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:tall_grass",
+      "hungerRestored": 6000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:vine",
+      "hungerRestored": 3000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:hay_block",
+      "hungerRestored": 54000,
+      "isBreedingItem": true
+    },
+    {
+      "registryName": "minecraft:oak_leaves",
+      "hungerRestored": 1000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:dark_oak_leaves",
+      "hungerRestored": 1000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:carrot",
+      "hungerRestored": 1500,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:wheat",
+      "hungerRestored": 6000,
+      "isBreedingItem": true
+    },
+    {
+      "registryName": "minecraft:sugar",
+      "hungerRestored": 500,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:apple",
+      "hungerRestored": 1500,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:melon_slice",
+      "hungerRestored": 1100,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "eanimod:unboundhay_block",
+      "hungerRestored": 54000,
+      "isBreedingItem": false
+    }
+  ]
+}

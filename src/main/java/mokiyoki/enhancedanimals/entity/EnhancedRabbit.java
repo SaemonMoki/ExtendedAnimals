@@ -281,7 +281,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     @Override
     protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
-        return rabbitFoodMap;
+        return rabbitFoodMap();
     }
 
     protected float getJumpUpwardsMotion() {

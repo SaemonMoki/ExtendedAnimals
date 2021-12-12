@@ -26,16 +26,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.IShearable;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
-import net.minecraft.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AirItem;
@@ -44,7 +41,6 @@ import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -401,8 +397,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedsheep, inWorld, babyGenes, -72000);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
+        defaultCreateAndSpawn(enhancedsheep, inWorld, babyGenes, -this.getAdultAge());
         enhancedsheep.setMaxCoatLength();
         enhancedsheep.currentCoatLength = 0;
         enhancedsheep.setCoatLength(0);

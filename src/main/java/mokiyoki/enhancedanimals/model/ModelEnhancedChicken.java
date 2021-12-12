@@ -1191,7 +1191,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
             chickenModelData.birthTime = enhancedChicken.getBirthTime();
             chickenModelData.collar = hasCollar(enhancedChicken.getEnhancedInventory());
             chickenModelData.size = enhancedChicken.getAnimalSize();
-            chickenModelData.isFemale = enhancedChicken.isFemale();
+            chickenModelData.isFemale = enhancedChicken.getOrSetIsFemale();
             chickenModelData.clientGameTime = (((ClientWorld)enhancedChicken.world).getWorldInfo().getGameTime());
             chickenModelData.adultAge = EanimodCommonConfig.COMMON.adultAgeChicken.get();
 

@@ -19,9 +19,7 @@ import net.minecraft.block.FlowerBlock;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
-import net.minecraft.entity.ai.goal.PanicGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,7 +27,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.SuspiciousStewItem;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -121,9 +118,9 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         enhancedmooshroom.setMooshroomType(this.setChildMushroomType((enhancedmooshroom)));
-        defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -84000);
+        defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -this.getAdultAge());
         enhancedmooshroom.configureAI();
         this.world.addEntity(enhancedmooshroom);
     }
@@ -131,7 +128,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemstack = entityPlayer.getHeldItem(hand);
-        if (itemstack.getItem() == Items.BOWL && this.getGrowingAge() >= 0 && !entityPlayer.abilities.isCreativeMode && getEntityStatus().equals(EntityState.MOTHER.toString())) {
+        if (itemstack.getItem() == Items.BOWL && !this.isChild() && !entityPlayer.abilities.isCreativeMode && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int milk = getMilkAmount();
             if (milk <= 3) {
                 entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
@@ -280,7 +277,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     @Override
     public boolean isShearable(ItemStack item, World world, net.minecraft.util.math.BlockPos pos) {
-        return this.getGrowingAge() >= 0;
+        return !this.isChild();
     }
 
     @Override

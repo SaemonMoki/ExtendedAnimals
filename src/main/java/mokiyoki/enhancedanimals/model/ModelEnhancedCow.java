@@ -1438,7 +1438,7 @@ public class ModelEnhancedCow <T extends EnhancedCow> extends EntityModel<T> {
             CowModelData cowModelData = new CowModelData();
             if (enhancedCow.getSharedGenes()!=null) {
                 char[] uuid = (enhancedCow.getMooshroomUUID().isEmpty() || enhancedCow.getMooshroomUUID().equals("0")) ? enhancedCow.getCachedUniqueIdString().toCharArray() : enhancedCow.getMooshroomUUID().toCharArray();
-                cowModelData.phenotype = new Phenotype(enhancedCow.getSharedGenes().getAutosomalGenes(), uuid, enhancedCow.isFemale());
+                cowModelData.phenotype = new Phenotype(enhancedCow.getSharedGenes().getAutosomalGenes(), uuid, enhancedCow.getOrSetIsFemale());
             }
             cowModelData.cowSize = enhancedCow.getAnimalSize();
             cowModelData.bagSize = enhancedCow.getBagSize();

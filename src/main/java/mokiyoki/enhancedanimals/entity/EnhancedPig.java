@@ -14,7 +14,6 @@ import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.pig.GrazingGoalPig;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
-import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
@@ -43,7 +42,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
@@ -408,8 +406,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedPig enhancedpig = ENHANCED_PIG.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedpig, inWorld, babyGenes, -60000);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
+        defaultCreateAndSpawn(enhancedpig, inWorld, babyGenes, -this.getAdultAge());
 
         this.world.addEntity(enhancedpig);
     }

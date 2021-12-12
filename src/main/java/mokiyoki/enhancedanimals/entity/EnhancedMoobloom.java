@@ -14,7 +14,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.Effect;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -22,8 +21,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.UUID;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOBLOOM;
@@ -73,8 +70,8 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     @Override
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedMoobloom enhancedmoobloom = ENHANCED_MOOBLOOM.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedmoobloom, inWorld, babyGenes, -84000);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
+        defaultCreateAndSpawn(enhancedmoobloom, inWorld, babyGenes, -this.getAdultAge());
         enhancedmoobloom.configureAI();
         this.world.addEntity(enhancedmoobloom);
     }
@@ -109,7 +106,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
 
     @Override
     public boolean isShearable(ItemStack item, World world, net.minecraft.util.math.BlockPos pos) {
-        return this.getGrowingAge() >= 0;
+        return !this.isChild();
     }
 
     @Override

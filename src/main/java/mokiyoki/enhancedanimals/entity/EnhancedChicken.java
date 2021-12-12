@@ -10,7 +10,6 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
 import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
@@ -50,7 +49,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -65,7 +63,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IServerWorld;
@@ -490,7 +487,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected void runExtraIdleTimeTick() {
-        if (EanimodCommonConfig.COMMON.omnigenders.get() || this.isFemale()) {
+        if (EanimodCommonConfig.COMMON.omnigenders.get() || this.getOrSetIsFemale()) {
             if (this.gestationTimer > 0) {
                 --this.gestationTimer;
             }
@@ -514,7 +511,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 if (this.getCustomName()!=null) {
                     damName = this.getCustomName().getString();
                 }
-                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.isFemale(), Genes.Species.CHICKEN), this.mateName, damName);
+                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.getOrSetIsFemale(), Genes.Species.CHICKEN), this.mateName, damName);
                 CompoundNBT nbtTagCompound = eggItem.serializeNBT();
                 eggItem.deserializeNBT(nbtTagCompound);
                 if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
@@ -597,17 +594,17 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (EanimodCommonConfig.COMMON.omnigenders.get()) {
             this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
             this.setFertile();
-            this.setMateGender(((EnhancedChicken)ageable).isFemale());
+            this.setMateGender(((EnhancedChicken)ageable).getOrSetIsFemale());
             if (((EnhancedChicken)ageable).hasCustomName()) {
                 this.setMateName(((EnhancedChicken) ageable).getCustomName().getString());
             }
             ((EnhancedChicken)ageable).setMateGenes(this.genetics);
             ((EnhancedChicken)ageable).setFertile();
-            ((EnhancedChicken)ageable).setMateGender(this.isFemale());
+            ((EnhancedChicken)ageable).setMateGender(this.getOrSetIsFemale());
             if (this.hasCustomName()) {
                 ((EnhancedChicken)ageable).setMateName(this.getCustomName().getString());
             }
-        } else if (this.isFemale()) {
+        } else if (this.getOrSetIsFemale()) {
             this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
             this.setFertile();
             this.setMateGender(false);
@@ -632,7 +629,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             int[] sexlinkedGenes = this.genetics.getSexlinkedGenes();
             int[] genes = this.genetics.getAutosomalGenes();
 
-        if(sexlinkedGenes[10] == 1 || (!this.isFemale() && sexlinkedGenes[11] == 1)) {
+        if(sexlinkedGenes[10] == 1 || (!this.getOrSetIsFemale() && sexlinkedGenes[11] == 1)) {
 
             if (genes[64] == 1 || genes[65] == 1 || genes[66] == 1 || genes[67] == 1) {
                 //egg is brown
@@ -762,7 +759,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if(this.getSharedGenes()!=null) {
             int[] sexlinkedGenes = getSharedGenes().getSexlinkedGenes();
             int[] autosomalGenes = getSharedGenes().getAutosomalGenes();
-            boolean isFemale = this.isFemale();
+            boolean isFemale = this.getOrSetIsFemale();
             if (this.getAge() >= (int)(this.getFullSizeAge()*0.333F)) {
                 int ground = 0;
                 int pattern = 0;
@@ -1625,7 +1622,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                             moorhead = 8;
                         } else {
                             //if chocolate
-                            if (sexlinkedGenes[2] == 2 && (isFemale() || sexlinkedGenes[3] == 2)) {
+                            if (sexlinkedGenes[2] == 2 && (getOrSetIsFemale() || sexlinkedGenes[3] == 2)) {
                                 //if lavender
                                 if (autosomalGenes[36] == 2 && autosomalGenes[37] == 2) {
                                     //is a dun variety
@@ -1705,10 +1702,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 }
 
                 //white marking autosomalGenes
-                if (!this.isFemale() && sexlinkedGenes[6] == 2 && sexlinkedGenes[7] == 2) {
+                if (!this.getOrSetIsFemale() && sexlinkedGenes[6] == 2 && sexlinkedGenes[7] == 2) {
                     //Light Barred
                     white = 2;
-                } else if ((this.isFemale() && sexlinkedGenes[6] == 2) || (!this.isFemale() && (sexlinkedGenes[6] == 2 ^ sexlinkedGenes[7] == 2))) {
+                } else if ((this.getOrSetIsFemale() && sexlinkedGenes[6] == 2) || (!this.getOrSetIsFemale() && (sexlinkedGenes[6] == 2 ^ sexlinkedGenes[7] == 2))) {
                     //Dark Barred
                     white = 1;
                 } else {
@@ -2550,7 +2547,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
 
         genes = this.genetics.getSexlinkedGenes();
-        if (this.isFemale()) {
+        if (this.getOrSetIsFemale()) {
             if(genes[14] == 2){
                 size = size * 0.9F;
             }

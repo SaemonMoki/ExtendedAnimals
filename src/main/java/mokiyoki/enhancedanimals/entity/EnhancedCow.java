@@ -34,14 +34,11 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -291,7 +288,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     public double getMountedYOffset() {
         ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
         double yPos;
-        if (this.isFemale()) {
+        if (this.getOrSetIsFemale()) {
             //female height
                 yPos = 1.0D;
         } else {
@@ -378,7 +375,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @Override
     public float getRenderScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
-        size = this.isFemale() ? size : size * 1.1F;
+        size = this.getOrSetIsFemale() ? size : size * 1.1F;
         float newbornSize = 0.65F;
         return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
     }
@@ -458,8 +455,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -84000);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
+        defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -this.getAdultAge());
         enhancedcow.configureAI();
 
         this.world.addEntity(enhancedcow);
@@ -684,7 +681,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     black = 5;
                 } else if (gene[0] == 4 || gene[1] == 4) {
                     if ((gene[4] == 3 || gene[4] == 5) && (gene[5] == 3 || gene[5] == 5)) {
-                        black = this.isFemale() ? 9 : 5;
+                        black = this.getOrSetIsFemale() ? 9 : 5;
                     } else {
                         black = 5;
                     }
@@ -701,29 +698,29 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                         if (gene[4] == 2 || gene[5] == 2) {
                             //darker wildtype
                             //or other incomplete dominance
-                            black = this.isFemale() ? 4 : 5;
+                            black = this.getOrSetIsFemale() ? 4 : 5;
                         } else {
                             //complete dominance of black enhancer
-                            black = this.isFemale() ? 4 : 5;
+                            black = this.getOrSetIsFemale() ? 4 : 5;
                         }
                     } else if (gene[4] == 2 || gene[5] == 2) {
                         //wildtype
-                            black = this.isFemale() ? 2 : 4;
+                            black = this.getOrSetIsFemale() ? 2 : 4;
                     } else if (gene[4] == 3 || gene[5] == 3) {
                         //white bellied fawn more blured markings?
                         if (gene[0] == 5 || gene[1] == 5) {
-                            black = this.isFemale() ? 7 : 2;
+                            black = this.getOrSetIsFemale() ? 7 : 2;
                         } else {
-                            black = this.isFemale() ? 8 : 1;
+                            black = this.getOrSetIsFemale() ? 8 : 1;
                         }
                         red = 2;
                     } else if (gene[4] == 5 || gene[5] == 5){
                         //fawn
                         red = 3;
                         if (gene[0] == 5 || gene[1] == 5) {
-                            black = this.isFemale() ? 10 : 3;
+                            black = this.getOrSetIsFemale() ? 10 : 3;
                         } else {
-                            black = this.isFemale() ? 8 : 2;
+                            black = this.getOrSetIsFemale() ? 8 : 2;
                         }
                     } else {
                         //recessive black
@@ -735,7 +732,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             //mealy
             if (gene[0] != 1 && gene[1] != 1) {
                 if (gene[24] != 1 && gene[25] != 1) {
-                    if (!this.isFemale() || gene[24] == 2 || gene[25] == 2) {
+                    if (!this.getOrSetIsFemale() || gene[24] == 2 || gene[25] == 2) {
                         mealy = 2;
                         if (red < 3) {
                             red++;
@@ -1225,7 +1222,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     }
                 }
 
-                if (!this.isFemale()) {
+                if (!this.getOrSetIsFemale()) {
                     shadeIntensity = 0.5F * (shadeIntensity + 1.0F);
                 }
 
@@ -1238,7 +1235,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], shadeIntensity));
                 this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
 
-            } else if (this.isChild() && !(genes.isComplete())) {
+            } else if (this.isChild() && !genes.has(0,0)) {
                 this.colouration.setBabyAlpha(this.growthAmount());
             }
         }
@@ -1251,7 +1248,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         int[] genes = this.genetics.getAutosomalGenes();
         float maxBagSize = 0.0F;
 
-        if (this.isFemale() || EanimodCommonConfig.COMMON.omnigenders.get()){
+        if (this.getOrSetIsFemale() || EanimodCommonConfig.COMMON.omnigenders.get()){
             for (int i = 1; i < genes[62]; i++){
                 maxBagSize = maxBagSize + 0.01F;
             }

@@ -483,8 +483,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
             return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
         } else {
-            setBirthTime(String.valueOf(this.world.getWorldInfo().getGameTime() - 500000));
-            return 500000;
+            setBirthTime(String.valueOf(this.world.getWorldInfo().getGameTime() - this.getAdultAge()));
+            return this.getAdultAge();
         }
     }
 
@@ -588,7 +588,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     General Info
     */
 
-    public boolean isFemale() {
+    public boolean getOrSetIsFemale() {
+        if (this.isFemale == null) {
+            return this.isFemale = getCachedUniqueIdString().toCharArray()[0] - 48 < 8;
+        }
         return this.isFemale;
     }
 
@@ -730,8 +733,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
             runPregnancyTick();
 
-            updateStatusTick();
-
             lethalGenes();
         }
     }
@@ -830,33 +831,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         return 1;
     }
 
-    protected void updateStatusTick() {
-        String entityState = getEntityStatus();
-        if (this.isChild()) {
-            if (entityState.equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
-                if(hunger < 5000) {
-                    setEntityStatus(EntityState.CHILD_STAGE_TWO.toString());
-                } else {
-                    this.setGrowingAge(-16500);
-                }
-            } else if (entityState.equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
-                if(hunger < 5000) {
-                    setEntityStatus(EntityState.CHILD_STAGE_THREE.toString());
-                } else {
-                    this.setGrowingAge(-8500);
-                }
-            } else if (entityState.equals(EntityState.CHILD_STAGE_THREE.toString())) {
-                setEntityStatus(EntityState.ADULT.toString());
-                this.setGrowingAge(0);
-                //TODO remove the child follow mother ai
-            }
-        } else if (entityState.equals(EntityState.CHILD_STAGE_THREE.toString())) {
-            setEntityStatus(EntityState.ADULT.toString());
-            this.setGrowingAge(0);
-            //TODO remove the child follow mother ai
-        }
-    }
-
     public boolean isPlantEaten() {
         return this.eatingTicks == 0;
     }
@@ -875,21 +849,21 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
+            boolean isChild = this.isChild();
             if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             } else if (!this.isChild() && isBreedingItem(itemStack)) {
-                int i = this.getGrowingAge();
-                if (this.hunger >= 4000 || (!this.pregnant && i == 0 && this.canFallInLove())) {
+                if (this.hunger >= 4000 || (!this.pregnant && !isChild && this.canFallInLove())) {
                     decreaseHunger(getHungerRestored(itemStack));
                     shrinkItemStack(entityPlayer, itemStack);
                 } else {
                     return ActionResultType.PASS;
                 }
-                if (!this.world.isRemote && i == 0 && this.canFallInLove()) {
+                if (!this.world.isRemote && !isChild && this.canFallInLove()) {
                     this.setInLove(entityPlayer);
                     return ActionResultType.SUCCESS;
                 }
-            } else if (this.isChild() && (isBreedingItem(itemStack)) || (this.bottleFeedable && MILK_ITEMS.test(itemStack))) {
+            } else if (isChild && (isBreedingItem(itemStack)) || (this.bottleFeedable && MILK_ITEMS.test(itemStack))) {
                 if (this.hunger >= 4000 || EanimodCommonConfig.COMMON.feedGrowth.get()) {
                     boolean isHungry = this.hunger >= 4000;
                     if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
@@ -1101,6 +1075,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         setSharedGenes(this.genetics);
         initilizeAnimalSize();
 
+        resetGrowingAgeToAge();
+
         if (canLactate()) {
             this.lactationTimer = compound.getInt("Lactation");
             this.setMilkAmount(compound.getInt("milk"));
@@ -1116,6 +1092,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         this.toggleReloadTexture();
 
         readInventory(compound);
+    }
+
+    protected void resetGrowingAgeToAge() {
+        int resetAge = this.getAge() - this.getAdultAge();
+        super.setGrowingAge(Math.min(resetAge, 0));
     }
 
     private void readInventory(CompoundNBT compound) {
@@ -1266,19 +1247,19 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             if(this.pregnant) {
                 ((EnhancedAnimalAbstract)ageable).pregnant = true;
                 ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
-                ((EnhancedAnimalAbstract)ageable).setMateGender(this.isFemale());
+                ((EnhancedAnimalAbstract)ageable).setMateGender(this.getOrSetIsFemale());
                 if (this.hasCustomName()) {
                     ((EnhancedAnimalAbstract)ageable).setMateName(this.getCustomName().getString());
                 }
             } else {
                 this.pregnant = true;
                 this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
-                this.mateGender = ((EnhancedAnimalAbstract)ageable).isFemale();
+                this.mateGender = ((EnhancedAnimalAbstract)ageable).getOrSetIsFemale();
                 if (ageable.hasCustomName()) {
                     this.setMateName(ageable.getCustomName().getString());
                 }
             }
-        } else if (this.isFemale()) {
+        } else if (this.getOrSetIsFemale()) {
            //is female
            this.pregnant = true;
            this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
@@ -1307,7 +1288,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         } else if (otherAnimal.getClass() != this.getClass()) {
             return false;
         } else {
-            if (EanimodCommonConfig.COMMON.omnigenders.get() || (this.isFemale() ^ ((EnhancedAnimalAbstract)otherAnimal).isFemale())) {
+            if (EanimodCommonConfig.COMMON.omnigenders.get() || (this.getOrSetIsFemale() ^ ((EnhancedAnimalAbstract)otherAnimal).getOrSetIsFemale())) {
                 return this.isInLove() && otherAnimal.isInLove();
             }
             return false;
@@ -1451,7 +1432,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
             animalInfo.health = (int)(10 * (this.getHealth() / this.getMaxHealth()));
             animalInfo.hunger = (int)(this.getHunger() / 7200);
-            animalInfo.isFemale = this.isFemale();
+            animalInfo.isFemale = this.getOrSetIsFemale();
             animalInfo.pregnant = getPregnancyProgression();
             animalInfo.name = this.getAnimalsName(getSpecies());
             animalInfo.agePrefix = this.getAnimalsAgeString();
@@ -1765,7 +1746,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             }
 
             if (spawnReason.equals(SpawnReason.CHUNK_GENERATION)) {
-                canBePregnant = EanimodCommonConfig.COMMON.omnigenders.get() ? this.rand.nextInt(50) == 0 : this.isFemale() && this.rand.nextInt(25) == 0;
+                canBePregnant = EanimodCommonConfig.COMMON.omnigenders.get() ? this.rand.nextInt(50) == 0 : this.getOrSetIsFemale() && this.rand.nextInt(25) == 0;
             }
         }
 

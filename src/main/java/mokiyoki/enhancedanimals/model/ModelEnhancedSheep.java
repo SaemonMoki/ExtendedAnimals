@@ -1339,7 +1339,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.collar = hasCollar(enhancedSheep.getEnhancedInventory());
             sheepModelData.bridle = enhancedSheep.getEnhancedInventory().getStackInSlot(3);
             sheepModelData.hasChest = !enhancedSheep.getEnhancedInventory().getStackInSlot(0).isEmpty();
-            sheepModelData.isFemale = enhancedSheep.isFemale();
+            sheepModelData.isFemale = enhancedSheep.getOrSetIsFemale();
             sheepModelData.clientGameTime = (((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime();
             sheepModelData.adultAge = EanimodCommonConfig.COMMON.adultAgeSheep.get();
 

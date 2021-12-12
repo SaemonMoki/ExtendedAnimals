@@ -31,6 +31,7 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.IntValue wildTypeChance;
         public final ForgeConfigSpec.BooleanValue tabsOnTop;
         public final ForgeConfigSpec.BooleanValue spawnWithRandomBiome;
+        public final ForgeConfigSpec.BooleanValue onlyKilledWithAxe;
 
         public final ForgeConfigSpec.BooleanValue leatherWorkerTrades;
         public final ForgeConfigSpec.BooleanValue shepardTrades;
@@ -134,6 +135,8 @@ public class EanimodCommonConfig {
                     .define("Animal inventory tabs will be on the top if true and tabs will be on the side if false:", true);
             spawnWithRandomBiome = builder
                     .define("Animals will spawn with random biome type", false);
+            onlyKilledWithAxe = builder
+                    .define("Genetic animals are immune to all damage unless attacked with an axe by a player", false);
             builder.pop();
 
             builder.push("Trading");

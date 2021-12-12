@@ -98,8 +98,8 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     protected int temper;
 
-    protected EnhancedAnimalRideableAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, Ingredient temptationItems, boolean bottleFeedable) {
-        super(type, worldIn, SgenesSize, AgenesSize, temptationItems, bottleFeedable);
+    protected EnhancedAnimalRideableAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, boolean bottleFeedable) {
+        super(type, worldIn, SgenesSize, AgenesSize, bottleFeedable);
         this.stepHeight = 1.1F;
     }
 
@@ -114,7 +114,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Ingredient.fromItems(Items.CARROT_ON_A_STICK)));
+        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.CARROT_ON_A_STICK));
     }
 
     protected void registerData() {
@@ -340,7 +340,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             return ActionResultType.func_233537_a_(this.saddleAnimal(itemStack, entityPlayer, hand, this));
         }
 
-        if (TEMPTATION_ITEMS.test(itemStack) || (!this.world.isRemote && isBreedingItem(itemStack)) || item instanceof DebugGenesBook || (this.canHaveBridle() && item instanceof CustomizableBridle) || (this.canHaveBlanket() && isCarpet(itemStack)) || item instanceof CustomizableCollar) {
+        if ((!this.world.isRemote && this.isFoodItem(itemStack)) || (!this.world.isRemote && isBreedingItem(itemStack)) || item instanceof DebugGenesBook || (this.canHaveBridle() && item instanceof CustomizableBridle) || (this.canHaveBlanket() && isCarpet(itemStack)) || item instanceof CustomizableCollar) {
             return super.func_230254_b_(entityPlayer, hand);
         }
 

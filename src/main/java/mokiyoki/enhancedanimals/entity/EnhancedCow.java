@@ -2,9 +2,12 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
 import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
@@ -31,6 +34,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -64,12 +68,8 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     //avalible UUID spaces : [ S X X X X X 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
-
-//    private static final DataParameter<Boolean> SADDLED = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
-//    private static final DataParameter<Integer> BOOST_TIME = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.VARINT);
     protected static final DataParameter<Boolean> RESET_TEXTURE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> MOOSHROOM_UUID = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
-//    private static final DataParameter<String> HORN_ALTERATION = EntityDataManager.<String>createKey(EnhancedCow.class, DataSerializers.STRING);
 
     private static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
@@ -157,9 +157,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             "coat_normal.png", "coat_smooth.png", "coat_furry.png"
     };
 
-    protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UNBOUNDHAY_BLOCK, Items.MELON_SLICE);
-    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
-
     protected boolean resetTexture = true;
     protected String cacheTexture;
 
@@ -170,13 +167,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     private String mooshroomUUID = "0";
 
     protected GrazingGoal grazingGoal;
-
-//    private boolean boosting;
-//    private int boostTime;
-//    private int totalBoostTime;
+    private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
     public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, true);
         // cowsize from .7 to 1.5 max bag size is 1 to 1.5
         //large cows make from 30 to 12 milk points per day, small cows make up to 1/4
         this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*2400)) * (getAnimalSize()/1.5F)) - 300;
@@ -226,7 +220,6 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     protected void registerData() {
         super.registerData();
-//        this.dataManager.register(HORN_ALTERATION, "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
         this.dataManager.register(RESET_TEXTURE, false);
         this.dataManager.register(MOOSHROOM_UUID, "0");
     }
@@ -323,8 +316,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             yPos = yPos + 0.06D;
         }
 
-        int age = this.getAge() < 108000 ? this.getAge() : 108000;
-        size = (( 2.0F * size * ((float) age/108000.0F)) + size) / 3.0F;
+        size = (( 2.0F * size * this.growthAmount()) + size) / 3.0F;
 
         return yPos*(Math.pow(size, 1.2F));
     }
@@ -392,9 +384,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    public boolean isFemale() {
-        char[] uuidArray = (this.mooshroomUUID.equals("0") ? getCachedUniqueIdString() : this.mooshroomUUID).toCharArray();
-        return !Character.isLetter(uuidArray[0]) && uuidArray[0] - 48 < 8;
+    protected void setIsFemale(CompoundNBT compound) {
+        if (compound.contains("IsFemale")) {
+            this.isFemale = compound.getBoolean("IsFemale");
+        } else {
+            this.isFemale = (this.mooshroomUUID.equals("0") ? getCachedUniqueIdString() : this.mooshroomUUID).toCharArray()[0] - 48 < 8;
+        }
     }
 
     public void livingTick() {
@@ -624,20 +619,26 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String getCowTexture() {
+    public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (this.resetTexture) {
-            this.resetTexture = false;
-            this.texturesIndexes.clear();
-            this.enhancedAnimalTextures.clear();
-            this.setTexturePaths();
-            this.colouration.setMelaninColour(-1);
-            this.colouration.setPheomelaninColour(-1);
+        } else if (this.reload) {
+            this.reload = false;
+            this.reloadTextures();
         }
 
         return getCompiledTextures("enhanced_cow");
 
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    protected void reloadTextures() {
+        this.texturesIndexes.clear();
+        this.enhancedAnimalTextures.clear();
+        this.setTexturePaths();
+        this.colouration.setMelaninColour(-1);
+        this.colouration.setPheomelaninColour(-1);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1598,12 +1599,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //            if (bodyShape == 4) {
 //                speed = speed - 0.1;
 //            }
-
+            this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
             this.goalSelector.addGoal(0, new SwimGoal(this));
             this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
             this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, speed));
-            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D, false, Ingredient.fromItems(Items.CARROT_ON_A_STICK)));
-            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed,speed*1.25D, false, TEMPTATION_ITEMS));
+            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D, false, Items.CARROT_ON_A_STICK));
+            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed,speed*1.25D, false, Items.AIR));
 //            this.goalSelector.addGoal(4, new EnhancedFollowParentGoal(this, this.parent,speed*1.25D));
 //            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, this.parent, speed*1.25D));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
@@ -1611,9 +1612,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             this.goalSelector.addGoal(6, new SeekShelterGoal(this, 1.0D, 5723, 7000, 0));
 //            grazingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, speed, 7, 0.001F, 120, 2, 20);
             this.goalSelector.addGoal(7, new EnhancedEatPlantsGoal(this, createGrazingMap()));
-            grazingGoal = new GrazingGoal(this, speed);
+            this.grazingGoal = new GrazingGoal(this, speed);
             this.goalSelector.addGoal(8, grazingGoal);
-            this.goalSelector.addGoal(9, new EnhancedWanderingGoal(this, speed));
+            this.goalSelector.addGoal(9, this.wanderEatingGoal);
+            this.goalSelector.addGoal(10, new EnhancedWanderingGoal(this, speed));
+            this.goalSelector.addGoal(11, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+            this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, EnhancedAnimalAbstract.class, 6.0F));
+            this.goalSelector.addGoal(13, new EnhancedLookRandomlyGoal(this));
         }
         aiConfigured = true;
     }

@@ -76,7 +76,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.*;
 
-import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.llamaFoodMap;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 
@@ -131,8 +130,6 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             "blanket_trader.png", "blanket_black.png", "blanket_blue.png", "blanket_brown.png", "blanket_cyan.png", "blanket_grey.png", "blanket_green.png", "blanket_lightblue.png", "blanket_lightgrey.png", "blanket_lime.png", "blanket_magenta.png", "blanket_orange.png", "blanket_pink.png", "blanket_purple.png", "blanket_red.png", "blanket_white.png", "blanket_yellow.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT, Items.CARROT, Items.SUGAR_CANE, Items.BEETROOT, Items.GRASS, Items.TALL_GRASS, Items.APPLE);
-
     public float destPos;
 
     private static final int SEXLINKED_GENES_LENGTH = 2;
@@ -156,7 +153,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     private EnhancedLlama caravanTail;
 
     public EnhancedLlama(EntityType<? extends EnhancedLlama> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.LLAMA_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.LLAMA_AUTOSOMAL_GENES_LENGTH, true);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
     }
 
@@ -208,6 +205,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         this.goalSelector.addGoal(11, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
         this.goalSelector.addGoal(12, new EnhancedWanderingGoal(this, 1.0D));
         this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, EnhancedAnimalAbstract.class, 6.0F));
         this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new EnhancedLlama.HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new EnhancedLlama.DefendTargetGoal(this));
@@ -618,14 +616,12 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String getLlamaTexture() {
+    public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
         } else if (this.resetTexture) {
             this.resetTexture = false;
-            this.texturesIndexes.clear();
-            this.enhancedAnimalTextures.clear();
-            this.setTexturePaths();
+            this.reloadTextures();
         }
 
         return getCompiledTextures("enhanced_llama");

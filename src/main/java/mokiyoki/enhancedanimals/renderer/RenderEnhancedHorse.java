@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.renderer;
 
-import com.google.common.collect.Maps;
 import mokiyoki.enhancedanimals.entity.EnhancedHorse;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedHorse;
@@ -12,8 +11,6 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderEnhancedHorse extends MobRenderer<EnhancedHorse, ModelEnhancedHorse<EnhancedHorse>> {
@@ -30,7 +27,7 @@ public class RenderEnhancedHorse extends MobRenderer<EnhancedHorse, ModelEnhance
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
     public ResourceLocation getEntityTexture(EnhancedHorse entity) {
-        String s = entity.getHorseTexture();
+        String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
 
         if (s == null || s.isEmpty() || colourRGB == null) {

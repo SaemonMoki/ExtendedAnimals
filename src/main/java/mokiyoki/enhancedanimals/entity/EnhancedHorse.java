@@ -148,14 +148,12 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
 //    private final List<String> horseTextures = new ArrayList<>();
 
-    protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Blocks.VINE, Blocks.TALL_GRASS, Blocks.OAK_LEAVES, Blocks.DARK_OAK_LEAVES, Items.CARROT, Items.WHEAT, Items.SUGAR, Items.APPLE, ModBlocks.UNBOUNDHAY_BLOCK);
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
-    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
 
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     public EnhancedHorse(EntityType<? extends EnhancedHorse> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.HORSE_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.HORSE_AUTOSOMAL_GENES_LENGTH, true);
     }
 
     protected boolean aiConfigured = false; //TODO move this up
@@ -374,20 +372,26 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String getHorseTexture() {
+    public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (!this.reload && getReloadTexture() || this.reload && !getReloadTexture()) {
-            this.texturesIndexes.clear();
-            this.enhancedAnimalTextures.clear();
-            this.setTexturePaths();
-            this.reload = (this.reload == true ? false : true);
-            this.colouration.setMelaninColour(-1);
-            this.colouration.setPheomelaninColour(-1);
+        } else if (this.reload) {
+            this.reload = false;
+            this.reloadTextures();
         }
 
         return getCompiledTextures("enhanced_horse");
 
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    protected void reloadTextures() {
+        this.texturesIndexes.clear();
+        this.enhancedAnimalTextures.clear();
+        this.setTexturePaths();
+        this.colouration.setMelaninColour(-1);
+        this.colouration.setPheomelaninColour(-1);
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -29,6 +29,8 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(CowBreeds.GLOUCESTER);
         this.breeds.add(CowBreeds.HUNGARIAN_GREY);
         this.breeds.add(CowBreeds.BROWN_SWISS);
+        this.breeds.add(CowBreeds.LIGHT_JERSEY);
+        this.breeds.add(CowBreeds.DARK_JERSEY);
     }
 
     public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
@@ -1074,23 +1076,45 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        // darker/lighter genes
-        for (int i = 170; i < 200; i++) {
-            if (ThreadLocalRandom.current().nextInt(100) > WTC*0.6F) {
-                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
-            } else {
+        if (ThreadLocalRandom.current().nextBoolean()) {
+            // darker/lighter genes
+            for (int i = 170; i < 200; i++) {
+                    autosomalGenes[i] = 1;
+            }
+
+            // darker/lighter pattern genes
+            for (int i = 200; i < 250; i++) {
+                    autosomalGenes[i] = 2;
+            }
+        } else {
+            // darker/lighter genes
+            for (int i = 170; i < 200; i++) {
+                autosomalGenes[i] = 2;
+            }
+
+            // darker/lighter pattern genes
+            for (int i = 200; i < 250; i++) {
                 autosomalGenes[i] = 1;
             }
         }
 
-        // darker/lighter pattern genes
-        for (int i = 200; i < 250; i++) {
-            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
-            } else {
-                autosomalGenes[i] = 1;
-            }
-        }
+//        // darker/lighter genes
+//        for (int i = 170; i < 200; i++) {
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC*0.6F) {
+//                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
+//            } else {
+//                autosomalGenes[i] = 1;
+//            }
+//        }
+//
+//        // darker/lighter pattern genes
+//        for (int i = 200; i < 250; i++) {
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
+//            } else {
+//                autosomalGenes[i] = 1;
+//            }
+//        }
 
         // Belted [wildtype, Belted]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {

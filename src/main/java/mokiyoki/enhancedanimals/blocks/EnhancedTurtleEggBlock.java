@@ -43,7 +43,7 @@ import java.util.Random;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_TURTLE;
 
-public class EnhancedTurtleEggBlock extends Block {
+public class EnhancedTurtleEggBlock extends NestBlock {
     private static final VoxelShape ONE_EGG_SHAPE = Block.makeCuboidShape(3.0D, 0.0D, 3.0D, 12.0D, 7.0D, 12.0D);
     private static final VoxelShape MULTI_EGG_SHAPE = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 7.0D, 15.0D);
     public static final IntegerProperty HATCH = BlockStateProperties.HATCH_0_2;
@@ -85,7 +85,7 @@ public class EnhancedTurtleEggBlock extends Block {
         }
     }
 
-    private void removeOneEgg(World worldIn, BlockPos pos, BlockState state) {
+    protected void removeOneEgg(World worldIn, BlockPos pos, BlockState state) {
         removeOneEgg(worldIn, pos, state, true);
     }
 

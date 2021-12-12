@@ -4,9 +4,11 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -123,6 +125,8 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EntityModel<T
 
         this.eyelids.showModel = turtleModelData.blink <= 12;
 
+        this.collar.showModel = turtleModelData.collar;
+
         if (!(turtleModelData.birthTime == null) && !turtleModelData.birthTime.equals("") && !turtleModelData.birthTime.equals("0")) {
             int ageTime = (int)(turtleModelData.clientGameTime - Long.parseLong(turtleModelData.birthTime));
             if (ageTime < turtleModelData.adultAge) {
@@ -215,7 +219,7 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EntityModel<T
             turtleModelData.blink = enhancedTurtle.getBlink();
             turtleModelData.hasEggs = enhancedTurtle.hasEgg();
             turtleModelData.birthTime = enhancedTurtle.getBirthTime();
-//            turtleModelData.collar = hasCollar(enhancedTurtle.getEnhancedInventory());
+            turtleModelData.collar = hasCollar(enhancedTurtle.getEnhancedInventory());
             turtleModelData.clientGameTime = (((ClientWorld)enhancedTurtle.world).getWorldInfo()).getGameTime();
             turtleModelData.adultAge = EanimodCommonConfig.COMMON.adultAgeTurtle.get();
 
@@ -223,5 +227,14 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EntityModel<T
 
             return turtleModelData;
         }
+    }
+
+    private boolean hasCollar(Inventory inventory) {
+        for (int i = 1; i < 6; i++) {
+            if (inventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                return true;
+            }
+        }
+        return false;
     }
 }

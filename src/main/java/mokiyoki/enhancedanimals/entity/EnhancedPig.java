@@ -134,9 +134,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             "bald", "sparse.png", "medium.png", "furry.png", "wooly.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.HAY_BLOCK, Items.CARROT, Items.POTATO, Items.WHEAT, Items.BEETROOT, Items.ROTTEN_FLESH, Items.APPLE, Items.COOKED_CHICKEN, Items.COOKED_BEEF, Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_COD, Blocks.BROWN_MUSHROOM, Blocks.DARK_OAK_SAPLING, Blocks.OAK_SAPLING, Items.MILK_BUCKET, Items.BREAD, Items.EGG, Items.TURTLE_EGG, ModItems.COOKEDCHICKEN_DARK, ModItems.COOKEDCHICKEN_DARKBIG, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_PALE, ModItems.COOKEDCHICKEN_PALESMALL, ModItems.COOKEDRABBIT_SMALL);
-    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.CARROT, Items.BEETROOT, Items.POTATO);
-
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     private UUID angerTargetUUID;
@@ -149,7 +146,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 //    private int totalBoostTime;
 
     public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.PIG_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.PIG_AUTOSOMAL_GENES_LENGTH, true);
         this.initilizeAnimalSize();
     }
 
@@ -190,15 +187,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 1.0D));
         this.targetSelector.addGoal(2, new EnhancedPig.HurtByAggressorGoal(this));
         this.targetSelector.addGoal(3, new EnhancedPig.TargetAggressorGoal(this));
-        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.AIR));
         this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, true));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(7, new StayShelteredGoal(this, 6000, 7500, napmod));
         this.goalSelector.addGoal(8, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
         this.goalSelector.addGoal(9, new EnhancedEatPlantsGoal(this, createGrazingMap()));
         this.goalSelector.addGoal(10, this.grazingGoal);
-        this.goalSelector.addGoal(12, new EnhancedWanderingGoal(this, 1.0D));
-        this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(9, new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50));
+        this.goalSelector.addGoal(11, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, EnhancedAnimalAbstract.class, 6.0F));
         this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
     }
 
@@ -254,7 +253,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
 
         float size = this.getAnimalSize();
-        size = ( 3.0F * size * (this.growthAmount()) + size) / 4.0F;
+        size = (( 3.0F * size * this.growthAmount()) + size) / 4.0F;
 
         return yPos*(Math.pow(size, 1.2F));
     }
@@ -311,18 +310,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         return super.func_230254_b_(entityPlayer, hand);
     }
 
-//    public boolean saddlePig(ItemStack stack, PlayerEntity playerIn, LivingEntity target) {
-//        EnhancedPig pigentity = (EnhancedPig)target;
-//        if (pigentity.isAlive() && !pigentity.getSaddled() && !pigentity.isChild()) {
-//            pigentity.setSaddled(true);
-//            pigentity.world.playSound(playerIn, pigentity.getPosX(), pigentity.getPosY(), pigentity.getPosZ(), SoundEvents.ENTITY_PIG_SADDLE, SoundCategory.NEUTRAL, 0.5F, 1.0F);
-//            stack.shrink(1);
-//            return true;
-//        }
-//
-//        return false;
-//    }
-
     protected void dropInventory() {
         super.dropInventory();
     }
@@ -355,32 +342,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     public static AttributeModifierMap.MutableAttribute prepareAttributes() {
-//        char[] uuidArry = getCachedUniqueIdString().toCharArray();
-//        double tusks = 2.0D;
-//        if (!isChild()) {
-//            if ((Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8)) {
-//                //tusks if "male"
-//                tusks = 3.0D;
-//            }
-//        }
         return MobEntity.func_233666_p_()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 10.0D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.0D)
                 .createMutableAttribute(JUMP_STRENGTH);
     }
-
-//    public static AttributeModifierMap.MutableAttribute func_234215_eI_() {
-//        char[] uuidArry = getCachedUniqueIdString().toCharArray();
-//        double tusks = 2.0D;
-//        if (!isChild()) {
-//            if ((Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8)) {
-//                //tusks if "male"
-//                tusks = 3.0D;
-//            }
-//        }
-//        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 10.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
-//    }
 
     public void livingTick() {
         super.livingTick();
@@ -697,9 +664,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String getPigTexture() {
+    public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
+        } else if (this.reload) {
+            this.reload = false;
+            this.reloadTextures();
         }
 
         return getCompiledTextures("enhanced_pig");

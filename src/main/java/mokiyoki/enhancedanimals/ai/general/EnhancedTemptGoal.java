@@ -5,7 +5,9 @@ import net.minecraft.block.GrassBlock;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 
 import java.util.EnumSet;
@@ -24,19 +26,18 @@ public class EnhancedTemptGoal extends Goal {
     protected PlayerEntity closestPlayer;
     private int delayTemptCounter;
     private boolean isRunning;
-    private final Ingredient temptItem;
+    private final Item temptItem;
     private final boolean scaredByPlayerMovement;
-
     private static final int VERY_HUNGRY = 24000; //If above this will follow without tempt item
     private static final int REGULAR_HUNGRY = 12000; //If above this but below the other, will act as regular minecraft
 
     protected final EnhancedAnimalAbstract eanimal;
 
-    public EnhancedTemptGoal(EnhancedAnimalAbstract eanimal, double walkspeed, double fastspeed, boolean scaredByPlayerMovementIn, Ingredient temptItemsIn) {
+    public EnhancedTemptGoal(EnhancedAnimalAbstract eanimal, double walkspeed, double fastspeed, boolean scaredByPlayerMovementIn, Item item) {
         this.eanimal = eanimal;
         this.speed = walkspeed;
         this.fastspeed = fastspeed;
-        this.temptItem = temptItemsIn;
+        this.temptItem = item;
         this.scaredByPlayerMovement = scaredByPlayerMovementIn;
         this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
@@ -51,9 +52,11 @@ public class EnhancedTemptGoal extends Goal {
             this.closestPlayer = this.eanimal.world.getClosestPlayer(getSearchPredicate(), this.eanimal);
             if (this.closestPlayer == null) {
                 return false;
+            } else if (this.temptItem != Items.AIR && (this.temptItem == this.closestPlayer.getHeldItemMainhand().getItem() || this.temptItem == this.closestPlayer.getHeldItemOffhand().getItem())) {
+                return true;
             } else {
                  if (this.eanimal.world.getBlockState(this.eanimal.getPosition().down()).getBlock() instanceof GrassBlock) {
-                     return this.temptItem.test(this.closestPlayer.getHeldItemMainhand()) || this.temptItem.test(this.closestPlayer.getHeldItemOffhand());
+                     return this.eanimal.isFoodItem(this.closestPlayer.getHeldItemMainhand()) || this.eanimal.isFoodItem(this.closestPlayer.getHeldItemOffhand());
                 }
                 return this.isTempting(this.closestPlayer.getHeldItemMainhand()) || this.isTempting(this.closestPlayer.getHeldItemOffhand());
             }
@@ -72,7 +75,7 @@ public class EnhancedTemptGoal extends Goal {
         if (this.eanimal.getHunger() > VERY_HUNGRY) {
             return true;
         }
-        return this.temptItem.test(stack);
+        return this.eanimal.isFoodItem(stack);
     }
 
     public boolean shouldContinueExecuting() {

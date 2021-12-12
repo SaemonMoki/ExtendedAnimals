@@ -66,6 +66,7 @@ import net.minecraft.item.SwordItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -79,7 +80,10 @@ import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.BabyEntitySpawnEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -610,6 +614,22 @@ public class EventSubscriber {
             event.getWorld().setBlockState(event.getPos(), Blocks.FARMLAND.getDefaultState(), 11);
         } else if (block instanceof SparseGrassBlock && (item instanceof ShovelItem)) {
             event.getWorld().setBlockState(event.getPos(), Blocks.GRASS_PATH.getDefaultState(), 11);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onLivingHurtEvent(LivingHurtEvent event) {
+        if (EanimodCommonConfig.COMMON.onlyKilledWithAxe.get()) {
+            if (event.getEntity() instanceof EnhancedAnimalAbstract) {
+                Entity damageSource = event.getSource().getTrueSource();
+                if (damageSource instanceof PlayerEntity) {
+                    if (!(((PlayerEntity) damageSource).getHeldItemMainhand().getItem() instanceof AxeItem)) {
+                        event.setCanceled(true);
+                    }
+                } else {
+                    event.setCanceled(true);
+                }
+            }
         }
     }
 

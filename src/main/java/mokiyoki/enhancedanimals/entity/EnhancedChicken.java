@@ -250,9 +250,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         "eyes_albino.png", "eyes_black.png", "eyes_blue.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.MELON_SLICE, Items.TALL_GRASS, Items.GRASS, Items.BREAD, Items.EGG);
-    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
-
     public float wingRotation;
     public float destPos;
     public float oFlapSpeed;
@@ -268,10 +265,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     private String dropMeatType;
     public boolean chickenJockey;
 
-    private boolean resetTexture = true;
-
     public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, World worldIn) {
-        super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, false);
+        super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, false);
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
         this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
         this.setPathPriority(PathNodeType.WATER, 0.0F);
@@ -323,7 +318,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 4.0F, 1.0D, 1.8D, null));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, MonsterEntity.class, 4.0F, 1.0D, 2.0D, null));
         this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, Items.AIR));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(7, new ECRoost(this));
         this.goalSelector.addGoal(8, new StayShelteredGoal(this, 6000, 7500, napmod));
@@ -748,16 +743,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         return eggColour;
     }
 
+    @Override
     @OnlyIn(Dist.CLIENT)
-    public String getChickenTexture() {
+    public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (this.resetTexture && this.getAge() == (int)(this.getFullSizeAge()*0.3331F)) {
-            this.resetTexture = false;
-            this.texturesIndexes.clear();
-            this.enhancedAnimalTextures.clear();
-            this.compiledTexture = null;
-            this.setTexturePaths();
+        } else if (this.reload && this.getAge() >= (int)(this.getFullSizeAge()*0.3331F)) {
+            this.reload = false;
+            this.reloadTextures();
         }
 
         return getCompiledTextures("enhanced_chicken");

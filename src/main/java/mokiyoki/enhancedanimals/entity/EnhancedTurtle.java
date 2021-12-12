@@ -76,7 +76,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import static mokiyoki.enhancedanimals.init.FoodSerialiser.cowFoodMap;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.turtleFoodMap;
 
 public class EnhancedTurtle  extends EnhancedAnimalAbstract {
@@ -109,11 +108,8 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             "pibald_turtle.png", "pibald_turtle1.png", "pibald_turtle2.png", "pibald_turtle3.png"
     };
 
-    protected static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.SEAGRASS.asItem());
-    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.SEAGRASS.asItem());
-
     public EnhancedTurtle(EntityType<? extends EnhancedTurtle> type, World worldIn) {
-        super(type, worldIn, 2, Reference.TURTLE_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, false);
+        super(type, worldIn, 2, Reference.TURTLE_AUTOSOMAL_GENES_LENGTH, false);
         this.setPathPriority(PathNodeType.WATER, 0.0F);
         this.moveController = new EnhancedTurtle.MoveHelperController(this);
         this.stepHeight = 1.0F;
@@ -215,13 +211,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Override
     public Boolean isAnimalSleeping() {
-        if (this.sleeping == null) {
-            return false;
-        } else if (!this.isInWater() || this.hasEgg() || this.isGoingHome()) {
+        if (!this.isInWater() || this.hasEgg() || this.isGoingHome()) {
             return false;
         } else {
-            sleeping = this.dataManager.get(SLEEPING);
-            return sleeping;
+            this.sleeping = this.dataManager.get(SLEEPING);
+            return this.sleeping;
         }
     }
 
@@ -368,9 +362,12 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 //    }
 
     @OnlyIn(Dist.CLIENT)
-    public String getTurtleTexture() {
+    public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
+        } else if (this.reload) {
+            this.reload = false;
+            this.reloadTextures();
         }
 
         return getCompiledTextures("enhanced_turtle");
@@ -907,12 +904,10 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         private final double speed;
         private PlayerEntity tempter;
         private int cooldown;
-        private final Set<Item> temptItems;
 
         PlayerTemptGoal(EnhancedTurtle turtle, double speedIn, Item temptItem) {
             this.turtle = turtle;
             this.speed = speedIn;
-            this.temptItems = Sets.newHashSet(temptItem);
             this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
         }
 
@@ -935,7 +930,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         }
 
         private boolean isTemptedBy(ItemStack itemStack) {
-            return this.temptItems.contains(itemStack.getItem());
+            return this.turtle.isFoodItem(itemStack);
         }
 
         /**

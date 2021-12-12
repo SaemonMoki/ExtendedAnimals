@@ -33,6 +33,7 @@ import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootTables;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -86,7 +87,9 @@ public class EnhancedAnimals {
         }
     };
 
-
+    public static Logger getLogger() {
+        return LOGGER;
+    }
 
     public static EnhancedAnimals instance;
 
@@ -134,9 +137,7 @@ public class EnhancedAnimals {
         GlobalEntityTypeAttributes.put(ENHANCED_HORSE, EnhancedHorse.prepareAttributes().create());
         GlobalEntityTypeAttributes.put(ENHANCED_TURTLE, EnhancedTurtle.prepareAttributes().create());
 
-//        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
-//        LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());
-//
+
 //        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_rabbit"));
 //        LootConditionManager.registerCondition(new EnhancedRabbitLootCondition.Serializer());
 //

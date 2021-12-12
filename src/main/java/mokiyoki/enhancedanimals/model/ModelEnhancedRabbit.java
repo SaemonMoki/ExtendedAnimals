@@ -55,15 +55,12 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     private final ModelRenderer rabbitNose;
     private final ModelRenderer rabbitHeadMuzzleDwarf;
     private final ModelRenderer rabbitNoseDwarf;
-    private final ModelRenderer rabbitLionHeadL;
-    private final ModelRenderer rabbitLionHeadR;
-    private final ModelRenderer rabbitLionHeadL1;
-    private final ModelRenderer rabbitLionHeadR1;
+    private final ModelRenderer lionHeadManeDouble;
+    private final ModelRenderer lionHeadManeSingle;
+    private final ModelRenderer lionHeadDouble;
+    private final ModelRenderer lionHeadSingle;
+    private final ModelRenderer lionHeadCheeks;
     private final ModelRenderer earHelper;
-    private final ModelRenderer lionEarL;
-    private final ModelRenderer lionEarR;
-    private final ModelRenderer lionEarL1;
-    private final ModelRenderer lionEarR1;
     private final ModelRenderer earL;
     private final ModelRenderer earR;
     private final ModelRenderer dwarfEarL;
@@ -215,30 +212,29 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         this.rabbitNoseDwarf = new ModelRenderer(this, 0, 8);
         this.rabbitNoseDwarf.addBox(-0.5F, 1.6F, -7.1F, 1, 1, 1);
 
-        this.rabbitLionHeadL = new ModelRenderer(this, 33, 30);
-        this.rabbitLionHeadL.addBox(0.0F, 0.0F, -6.0F, 3, 6, 6, 0.5F);
+        this.lionHeadManeDouble = new ModelRenderer(this, 98, 23);
+        this.lionHeadManeDouble.addBox(-7.5F, -5.5F, 0.0F, 15, 15, 0);
 
-        this.rabbitLionHeadR = new ModelRenderer(this, 33, 18);
-        this.rabbitLionHeadR.addBox(-3.0F, 0.0F, -6.0F, 3, 6, 6, 0.5F);
+        this.lionHeadManeSingle = new ModelRenderer(this, 98, 23);
+        this.lionHeadManeSingle.addBox(-7.5F, -3.5F, 0.0F, 15, 13, 0);
 
-        this.rabbitLionHeadL1 = new ModelRenderer(this, 33, 30);
-        this.rabbitLionHeadL1.addBox(0.0F, 0.0F, -6.0F, 3, 6, 6, 1.1F);
+        this.lionHeadDouble = new ModelRenderer(this, 106, 10);
+        this.lionHeadDouble.addBox(-5.5F, -4.0F, -2.0F, 11, 13, 0);
+        this.lionHeadDouble.setTextureOffset(112, 31);
+        this.lionHeadDouble.addBox(0.0F, -3.0F, -6.0F, 0, 7, 8);
+        this.lionHeadDouble.setTextureOffset(106, 0);
+        this.lionHeadDouble.addBox(-5.5F, -1.0F, -3.0F, 11, 9, 0);
 
-        this.rabbitLionHeadR1 = new ModelRenderer(this, 33, 18);
-        this.rabbitLionHeadR1.addBox(-3.0F, 0.0F, -6.0F, 3, 6, 6, 1.1F);
+        this.lionHeadSingle = new ModelRenderer(this, 106, 12);
+        this.lionHeadSingle.addBox(-5.5F, -2.0F, -2.0F, 11, 11, 0);
+        this.lionHeadSingle.setTextureOffset(113, 32);
+        this.lionHeadSingle.addBox(0.0F, -2.0F, -6.0F, 0, 6, 7);
+
+        this.lionHeadCheeks = new ModelRenderer(this, 100, 35);
+        this.lionHeadCheeks.addBox(-5.5F, 4.0F, -4.0F, 11, 4, 0);
 
         this.earHelper = new ModelRenderer(this, 0, 0);
         this.earHelper.setRotationPoint(0.0F, 0.0F, -6.0F);
-
-        this.lionEarL = new ModelRenderer(this, 50, 46);
-        this.lionEarL.addBox(-3.0F, -7.0F, -0.5F, 4, 7, 1, 0.4F);
-        this.lionEarR = new ModelRenderer(this, 40, 46);
-        this.lionEarR.addBox(-1.0F, -7.0F, -0.5F, 4, 7, 1, 0.4F);
-
-        this.lionEarL1 = new ModelRenderer(this, 50, 46);
-        this.lionEarL1.addBox(-3.0F, -7.0F, -0.5F, 4, 7, 1, 0.5F);
-        this.lionEarR1 = new ModelRenderer(this, 40, 46);
-        this.lionEarR1.addBox(-1.0F, -7.0F, -0.5F, 4, 7, 1, 0.5F);
 
         this.earL = new ModelRenderer(this, 10, 0);
         this.earL.addBox(-3.0F, -7.0F, -0.5F, 4, 7, 1);
@@ -257,13 +253,12 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         this.headLeft.addChild(this.eyeLeft);
         this.headRight.addChild(this.eyeRight);
         this.headLeft.addChild(this.earHelper);
+        this.headLeft.addChild(this.lionHeadDouble);
+        this.headLeft.addChild(this.lionHeadSingle);
+        this.headLeft.addChild(this.lionHeadCheeks);
 
         this.earHelper.addChild(this.earL);
         this.earHelper.addChild(this.earR);
-        this.earHelper.addChild(this.lionEarL);
-        this.earHelper.addChild(this.lionEarR);
-        this.earHelper.addChild(this.lionEarL1);
-        this.earHelper.addChild(this.lionEarR1);
         this.earHelper.addChild(this.dwarfEarL);
         this.earHelper.addChild(this.dwarfEarR);
 
@@ -316,26 +311,25 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
 
             this.earL.showModel = false;
             this.earR.showModel = false;
-            this.lionEarL1.showModel = false;
-            this.lionEarR1.showModel = false;
-            this.lionEarL.showModel = false;
-            this.lionEarR.showModel = false;
             this.dwarfEarL.showModel = false;
             this.dwarfEarR.showModel = false;
 
+            this.lionHeadDouble.showModel = false;
+            this.lionHeadSingle.showModel = false;
+            this.lionHeadCheeks.showModel = false;
 
             switch (rabbit.lionsmane) {
-                case LARGE:
-                    this.lionEarL1.showModel = true;
-                    this.lionEarR1.showModel = true;
-                    this.rabbitLionHeadL1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    this.rabbitLionHeadR1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                case NONE:
                     break;
-                case SMALL:
-                    this.lionEarL.showModel = true;
-                    this.lionEarR.showModel = true;
-                    this.rabbitLionHeadL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    this.rabbitLionHeadR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                case SINGLE:
+                    this.lionHeadManeSingle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.lionHeadSingle.showModel = true;
+                    this.lionHeadCheeks.showModel = true;
+                    break;
+                case DOUBLE:
+                    this.lionHeadManeDouble.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.lionHeadDouble.showModel = true;
+                    this.lionHeadCheeks.showModel = true;
                     break;
             }
 
@@ -423,10 +417,6 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             ModelHelper.copyModelPositioning(headLeft, headRight);
             ModelHelper.copyModelPositioning(headLeft, rabbitHeadMuzzle);
             ModelHelper.copyModelPositioning(headLeft, rabbitHeadMuzzleDwarf);
-            ModelHelper.copyModelPositioning(headLeft, rabbitLionHeadL);
-            ModelHelper.copyModelPositioning(headRight, rabbitLionHeadR);
-            ModelHelper.copyModelPositioning(headLeft, rabbitLionHeadL1);
-            ModelHelper.copyModelPositioning(headRight, rabbitLionHeadR1);
             ModelHelper.copyModelPositioning(headLeft, rabbitNose);
 
             this.collar.rotateAngleX = -(this.headLeft.rotateAngleX / 2.0F) - ((float) Math.PI / 2.0F);
@@ -470,10 +460,6 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             this.earL.rotateAngleZ = (earRotateZ * (1.0F - lop) + floppyEarRotateZ * (lop));
             this.earR.rotateAngleZ = (-earRotateZ * (1.0F - lop) + floppyEarRotateZ * (lop));
 
-            ModelHelper.copyModelPositioning(earL, lionEarL);
-            ModelHelper.copyModelPositioning(earR, lionEarR);
-            ModelHelper.copyModelPositioning(earL, lionEarL1);
-            ModelHelper.copyModelPositioning(earR, lionEarR1);
             ModelHelper.copyModelPositioning(earL, dwarfEarL);
             ModelHelper.copyModelPositioning(earR, dwarfEarR);
 
@@ -537,7 +523,11 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             this.rabbitLeftThigh.rotateAngleX = (this.jumpRotation * 50.0F - 21.0F) * ((float) Math.PI / 180F);
             this.rabbitRightThigh.rotateAngleX = (this.jumpRotation * 50.0F - 21.0F) * ((float) Math.PI / 180F);
 
-            ModelHelper.copyModelPositioning(rabbitButt, rabbitTail);
+            ModelHelper.copyModelPositioning(this.rabbitButt, this.rabbitTail);
+            ModelHelper.copyModelPositioning(this.rabbitBody, this.lionHeadManeDouble);
+            this.lionHeadManeDouble.rotationPointZ = this.lionHeadManeDouble.rotationPointZ + 0.5F;
+            ModelHelper.copyModelRotations(this.headLeft, this.lionHeadManeDouble, 0.6F);
+            ModelHelper.copyModelPositioning(this.lionHeadManeDouble, this.lionHeadManeSingle);
 
             this.rabbitNose.rotationPointY = 14.2F + (float) entityIn.getNoseTwitch() / 4.0F;
 
@@ -630,7 +620,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             }
 
             if (gene[24] == 2 || gene[25] == 2) {
-                this.lionsmane = gene[24] == gene[25] ? LionsMane.LARGE : LionsMane.SMALL;
+                this.lionsmane = gene[24] == gene[25] ? LionsMane.DOUBLE : LionsMane.SINGLE;
             }
 
             float lop = 0;
@@ -665,8 +655,8 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     }
 
     private enum LionsMane {
-        LARGE,
-        SMALL,
+        DOUBLE,
+        SINGLE,
         NONE
     }
 }

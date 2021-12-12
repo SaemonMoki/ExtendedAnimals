@@ -42,6 +42,12 @@ public class CowBreeds {
                     .add(200, "2","1|2","2","1|2","2","1|2","2","2","2","2","2","2")
             ));
 
+    public static final Breed LIGHT_JERSEY = new Breed(JERSEY, new Breed.Properties().setData("LightJersey", Breed.Rarity.COMMON)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(170, "2","2","2","2","2","2","2","1","1","1","1","1","1","1","2","2","2","2","2","2","2","2","2","2","2","2","1","1","1","1","1","1","1","1","1","1","1","1")));
+
+    public static final Breed DARK_JERSEY = new Breed(JERSEY, new Breed.Properties().setData("DarkJersey", Breed.Rarity.COMMON)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(170, "1","1","1","1","1","1","1","2","2","2","2","2","2","2","1","1","1","1","1","1","1","1","1","1","1","1","2","2","2","2","2","2","2","2","2","2","2","2")));
+    
     public static final Breed TEXAS_LONGHORN = new Breed(new Breed.Properties().setData("texaslonghorn", Biomes.SAVANNA, Breed.Rarity.COMMON)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "10%1","2|3").add(12, "2","2","2|3|4","1|4","1","_","25%2","1").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
                 .add(84, "1-4")

@@ -3,7 +3,6 @@ package mokiyoki.enhancedanimals.renderer;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
-import mokiyoki.enhancedanimals.renderer.layers.SilkieChickenLayer;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
@@ -35,7 +34,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
     public ResourceLocation getEntityTexture(EnhancedChicken entity) {
-        String s = entity.getChickenTexture();
+        String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
         boolean silkie = false;
         if (entity.getSharedGenes() != null) {

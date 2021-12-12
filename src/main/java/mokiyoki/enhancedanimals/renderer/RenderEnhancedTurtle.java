@@ -33,7 +33,7 @@ public class RenderEnhancedTurtle extends MobRenderer<EnhancedTurtle, ModelEnhan
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
     public ResourceLocation getEntityTexture(EnhancedTurtle entity) {
-        String s = entity.getTurtleTexture();
+        String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
 
         if (s == null || s.isEmpty() || colourRGB == null) {

@@ -116,9 +116,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             "eyes_black.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.TALL_GRASS, Items.VINE, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.ROSE_BUSH, Items.DANDELION, Items.SUGAR, Items.APPLE, ModBlocks.UNBOUNDHAY_BLOCK);
-
-    private final List<String> sheepFleeceTextures = new ArrayList<>();
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     protected float maxBagSize;
@@ -129,11 +126,10 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     private boolean resetTexture = true;
 
-//    protected boolean aiConfigured = false;
     private String motherUUID = "";
 
     public EnhancedSheep(EntityType<? extends EnhancedSheep> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.SHEEP_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, true);
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.SHEEP_AUTOSOMAL_GENES_LENGTH, true);
         this.initilizeAnimalSize();
         this.timeUntilNextMilk = this.rand.nextInt(this.rand.nextInt(8000) + 4000);
     }
@@ -168,18 +164,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @Override
     protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
         return sheepFoodMap();
-    }
-
-//    private int sheepTimer;
-//    private EnhancedWaterAvoidingRandomWalkingEatingGoal grazingGoal;
-
-//    /** Map from EnumDyeColor to RGB values for passage to GlStateManager.color() */
-//    private static final Map<DyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(Arrays.stream(DyeColor.values()).collect(Collectors.toMap((DyeColor p_200204_0_) -> {
-//        return p_200204_0_;
-//    }, EnhancedSheep::createSheepDyeColor)));
-
-    private static int createSheepDyeColor(DyeColor enumDyeColour) {
-        return enumDyeColour.getColorValue();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -218,13 +202,14 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.25D));
         this.goalSelector.addGoal(2, new EnhancedAvoidEntityGoal<>(this, WolfEntity.class, 10.0F, 1.25D, 1.25D, null));
         this.goalSelector.addGoal(3, new EnhancedBreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.AIR));
         this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(6, new StayShelteredGoal(this, 5723, 7000, napmod));
         this.goalSelector.addGoal(7, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
         this.goalSelector.addGoal(8, new EnhancedEatPlantsGoal(this, createGrazingMap()));
         this.goalSelector.addGoal(9, this.wanderEatingGoal);
         this.goalSelector.addGoal(10, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(10, new EnhancedLookAtGoal(this, EnhancedSheep.class, 6.0F));
         this.goalSelector.addGoal(11, new EnhancedLookRandomlyGoal(this));
     }
 
@@ -997,19 +982,27 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String getSheepTexture() {
+    public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
             this.setAlphaTexturePaths();
         } else if (this.resetTexture && !this.isChild()) {
             this.resetTexture = false;
-            this.texturesIndexes.clear();
-            this.enhancedAnimalTextures.clear();
-            this.compiledTexture = null;
-            this.setTexturePaths();
+            this.reloadTextures();
         }
 
         return getCompiledTextures("enhanced_sheep");
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    protected void reloadTextures() {
+        this.texturesIndexes.clear();
+        this.enhancedAnimalTextures.clear();
+        this.compiledTexture = null;
+        this.colouration.setMelaninColour(-1);
+        this.colouration.setPheomelaninColour(-1);
+        this.setTexturePaths();
     }
 
     @Override

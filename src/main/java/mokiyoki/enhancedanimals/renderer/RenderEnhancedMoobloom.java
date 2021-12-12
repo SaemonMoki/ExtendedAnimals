@@ -26,7 +26,7 @@ public class RenderEnhancedMoobloom extends MobRenderer<EnhancedMoobloom, ModelE
     }
 
     public ResourceLocation getEntityTexture(EnhancedMoobloom entity) {
-        String s = entity.getCowTexture();
+        String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
 
         if (s == null || s.isEmpty() || colourRGB == null) {

@@ -189,8 +189,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     //TODO find broken texture spawns in desert
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.DANDELION, Items.CARROT, Items.GOLDEN_CARROT, Items.GRASS, Items.TALL_GRASS, Items.ROSE_BUSH, Items.SWEET_BERRIES);
-
     private int jumpTicks;
     private int jumpDuration;
     public int[] noseTwitch = {0,0,0,0}; //how long to twitch/not twitch, how fast to twitch, count up or down, twitch cycle
@@ -208,7 +206,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     private GrazingGoal grazingGoal;
 
     public EnhancedRabbit(EntityType<? extends EnhancedRabbit> entityType, World worldIn) {
-        super(entityType, worldIn,SEXLINKED_GENES_LENGTH, Reference.RABBIT_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, true);
+        super(entityType, worldIn,SEXLINKED_GENES_LENGTH, Reference.RABBIT_AUTOSOMAL_GENES_LENGTH, true);
 //        this.setSize(0.4F, 0.5F);
         this.jumpController = new EnhancedRabbit.JumpHelperController(this);
         this.moveController = new EnhancedRabbit.MoveHelperController(this);
@@ -222,8 +220,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(2, 1, 750));
         ediblePlants.put(Blocks.AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
         ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
-//        ediblePlants.put(Blocks.ALLIUM, new EnhancedEatPlantsGoal.EatValues(3, 3, 750));
-//        ediblePlants.put(ModBlocks.GROWABLE_ALLIUM, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
         ediblePlants.put(Blocks.BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
         ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
         ediblePlants.put(Blocks.CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
@@ -264,7 +260,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 6.0F, 2.2D, 2.2D, null));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, MonsterEntity.class, 4.0F, 2.2D, 2.2D, null));
         this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 0.8D));
-        this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, TEMPTATION_ITEMS));
+        this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.AIR));
         this.goalSelector.addGoal(6, new EnhancedAvoidEntityGoal<>(this, PlayerEntity.class, 8.0F, 2.2D, 2.2D, null));
         this.goalSelector.addGoal(7, new FollowParentGoal(this, 1.1D));
         this.goalSelector.addGoal(8, new StayShelteredGoal(this, 4000, 7500, napmod));
@@ -276,6 +272,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 //        this.goalSelector.addGoal(6, new EnhancedWaterAvoidingRandomWalkingGoal(this, 0.6D));
         this.goalSelector.addGoal(12, new EnhancedWanderingGoal(this, 1.0D));
         this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, PlayerEntity.class, 10.0F));
+        this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, MonsterEntity.class, 10.0F));
         this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
     }
 
@@ -887,9 +884,12 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String getRabbitTexture() {
+    public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
+        } else if (this.reload ^ this.getReloadTexture()) {
+            this.reload = !this.reload;
+            this.reloadTextures();
         }
 
         return getCompiledTextures("enhanced_rabbit");
@@ -1348,8 +1348,6 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         if (genes[34] == 2 || genes[35] == 2){
             size = 0.3F + ((size - 0.3F)/2F);
         }
-
-        size=0.3F;
 
         this.setAnimalSize(size);
     }

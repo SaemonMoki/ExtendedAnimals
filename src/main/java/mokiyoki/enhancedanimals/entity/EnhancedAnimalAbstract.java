@@ -105,7 +105,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             "collar_belliron.png", "collar_bellgold.png", "collar_belldiamond.png"
     };
 
-    protected Ingredient TEMPTATION_ITEMS;
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
 
 
@@ -119,6 +118,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     protected String mateName = "???";
     protected String sireName = "???";
     protected String damName = "???";
+    public Boolean isFemale;
 
     //Hunger
     protected float hunger = 0F;
@@ -129,7 +129,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     protected AIStatus currentAIStatus = AIStatus.NONE;
 
     //Sleeping
-    protected Boolean sleeping = false;
+    protected boolean sleeping = false;
     protected int awokenTimer = 0;
 
     //Animations
@@ -160,7 +160,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     protected String compiledEquipmentTexture;
     public Colouration colouration = new Colouration();
     protected boolean bells;
-    protected Boolean reload = false; //used in a toggle manner
+    protected Boolean reload = true; //used in a toggle manner
 
     //Inventory
     protected Inventory animalInventory;
@@ -176,12 +176,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     Entity Construction
     */
 
-    protected EnhancedAnimalAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, Ingredient temptationItems, boolean bottleFeedable) {
+    protected EnhancedAnimalAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, boolean bottleFeedable) {
         super(type, worldIn);
         this.genetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
         this.mateGenetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
         this.mateGender = false;
-        this.TEMPTATION_ITEMS = temptationItems;
         this.bottleFeedable = bottleFeedable;
 
         initInventory();
@@ -257,7 +256,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     //returns how grown the animal is
     protected float growthAmount() {
-        return this.getAge()/(float)this.getFullSizeAge();
+        return this.getAge() > this.getFullSizeAge() ? 1.0F : this.getAge()/(float)this.getFullSizeAge();
     }
 
     //returns the config for the animals gestation or any overrides
@@ -279,11 +278,22 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     //toggles the reloading
     protected void toggleReloadTexture() {
-        this.dataManager.set(RESET_TEXTURE, this.getReloadTexture() == true ? false : true);
+        this.dataManager.set(RESET_TEXTURE, !this.getReloadTexture());
     }
 
     public boolean getReloadTexture() {
         return this.dataManager.get(RESET_TEXTURE);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public abstract String getTexture();
+
+    @OnlyIn(Dist.CLIENT)
+    protected void reloadTextures() {
+        this.texturesIndexes.clear();
+        this.enhancedAnimalTextures.clear();
+        this.compiledTexture = null;
+        this.setTexturePaths();
     }
 
     //for setting the textures
@@ -410,15 +420,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         this.dataManager.set(SLEEPING, sleeping); }
 
     public Boolean isAnimalSleeping() {
-        if (this.sleeping == null) {
-            return false;
-        } else if (this.isWet()) {
+        if (this.isWet()) {
             return false;
         } else if (!(this.getLeashHolder() instanceof LeashKnotEntity) && this.getLeashHolder() != null) {
             return false;
         } else {
-            sleeping = this.dataManager.get(SLEEPING);
-            return sleeping;
+            this.sleeping = this.dataManager.get(SLEEPING);
+            return this.sleeping;
         }
     }
 
@@ -581,8 +589,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     */
 
     public boolean isFemale() {
-        char[] uuidArray = getCachedUniqueIdString().toCharArray();
-        return !Character.isLetter(uuidArray[0]) && uuidArray[0] - 48 < 8;
+        return this.isFemale;
+    }
+
+    protected void setIsFemale(CompoundNBT compound) {
+        this.isFemale = compound.contains("IsFemale") ? compound.getBoolean("IsFemale") : getCachedUniqueIdString().toCharArray()[0] - 48 < 8;
     }
 
     /*
@@ -1003,6 +1014,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
         compound.putBoolean("Collared", this.hasCollar());
 
+        compound.putBoolean("IsFemale", this.isFemale);
+
         writeInventory(compound);
     }
 
@@ -1083,6 +1096,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
         geneFixer();
 
+        this.setIsFemale(compound);
+
         setSharedGenes(this.genetics);
         initilizeAnimalSize();
 
@@ -1097,6 +1112,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         this.setMateName(compound.getString("MateName"));
         this.setSireName(compound.getString("SireName"));
         this.setDamName(compound.getString("DamName"));
+
+        this.toggleReloadTexture();
 
         readInventory(compound);
     }

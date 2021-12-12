@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class AbstractGeneticsInitialiser {
     int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
@@ -185,5 +186,17 @@ public abstract class AbstractGeneticsInitialiser {
             }
         }
         return null;
+    }
+
+    protected boolean getChance(int value) {
+        return ThreadLocalRandom.current().nextInt(100) > value;
+    }
+
+    protected boolean getChance(float value) {
+        return ThreadLocalRandom.current().nextFloat() > value;
+    }
+
+    protected boolean getChance() {
+        return ThreadLocalRandom.current().nextInt(100) > WTC;
     }
 }

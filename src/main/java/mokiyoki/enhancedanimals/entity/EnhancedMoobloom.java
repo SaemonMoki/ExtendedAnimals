@@ -43,11 +43,6 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
             "yellow_flower.png"
     };
 
-    private Effect hasStewEffect;
-    private int effectDuration;
-    /** Stores the UUID of the most recent lightning bolt to strike */
-    private UUID lightningUUID;
-
     public EnhancedMoobloom(EntityType<? extends EnhancedCow> entityType, World worldIn) {
         super(entityType, worldIn);
     }

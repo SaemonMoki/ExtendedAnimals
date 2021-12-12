@@ -54,7 +54,7 @@ public class SeekShelterGoal extends FleeSunGoal {
         Biome biome = this.world.getBiome(animal.getPosition());
         this.isLeashedToEntity = !(animal.getLeashHolder() instanceof LeashKnotEntity) && animal.getLeashHolder() != null;
         if (!this.isLeashedToEntity) {
-            this.isBeingRainedOn = this.world.isRaining() && biome.getPrecipitation() == Biome.RainType.RAIN && biome.getTemperature(animal.getPosition()) >= 0.15F;
+            this.isBeingRainedOn = (animal.isWet() && !animal.isInWaterOrBubbleColumn());
             if (this.world.isDaytime() && !this.isBeingRainedOn) {
                 this.isHungry = ((EnhancedAnimalAbstract) animal).getHunger() > 6000;
                 float temperature = this.world.getBiome(animal.getPosition()).getTemperature(animal.getPosition());

@@ -54,8 +54,8 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             "harness_iron.png", "harness_gold.png", "harness_diamond.png"
     };
 
-    protected EnhancedAnimalChestedAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn,int SgenesSize, int AgenesSize, Ingredient temptationItems, boolean bottleFeedable) {
-        super(type, worldIn, SgenesSize, AgenesSize, temptationItems, bottleFeedable);
+    protected EnhancedAnimalChestedAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn,int SgenesSize, int AgenesSize, boolean bottleFeedable) {
+        super(type, worldIn, SgenesSize, AgenesSize, bottleFeedable);
     }
 
     protected void registerData() {

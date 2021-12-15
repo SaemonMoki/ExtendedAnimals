@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.entity.Genetics;
 
-import mokiyoki.enhancedanimals.init.CowBreeds;
+import mokiyoki.enhancedanimals.init.breeds.CowBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -24,6 +24,13 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(CowBreeds.TEXAS_LONGHORN);
         this.breeds.add(CowBreeds.WILD_HORNS);
         this.breeds.add(CowBreeds.DEXTER);
+        this.breeds.add(CowBreeds.SPANISH);
+        this.breeds.add(CowBreeds.MURREY_GREY);
+        this.breeds.add(CowBreeds.GLOUCESTER);
+        this.breeds.add(CowBreeds.HUNGARIAN_GREY);
+        this.breeds.add(CowBreeds.BROWN_SWISS);
+        this.breeds.add(CowBreeds.LIGHT_JERSEY);
+        this.breeds.add(CowBreeds.DARK_JERSEY);
     }
 
     public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
@@ -41,7 +48,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         int wildType = 2;
         if (biome.getCategory().equals(Biome.Category.PLAINS)) {
             wildType = 3;
-        } else if (biome.getDefaultTemperature() >= 0.9F){
+        } else if (biome.getTemperature() >= 0.9F){
             wildType = 1;
         }
 
@@ -52,7 +59,16 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //Extension [ Dom.Black, Wildtype+, red, indusWhite, indusRed ]
+        /**
+         *  E^D     Dominant Black
+         *  E^BR    Black-Red
+         *  E^m     Masked
+         *  E+      Wildtype
+         *  e       Red
+         *
+         *      E^D > E^BR > E^m > E+ > e
+         */
+        //Extension [ Dom.Black, Wildtype+, red, black-red, masked]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
@@ -66,7 +82,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[1] = (2);
         }
 
-        //Dilution [ wildtype, dilute]
+        //Dilute [ wildtype, simmental dilute, charolais dilute]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[2] = (ThreadLocalRandom.current().nextInt(2) + 1);
             autosomalGenes[3] = (1);
@@ -76,7 +92,15 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[3] = (1);
         }
 
-        //Agouti [ Black enhancer, Wildtype+, white-bellied fawn, brindle ]
+        /**
+         *  A^BR    Brindle
+         *  a^b     Dark Agouti
+         *  A+      Agouti
+         *  A^W     White-Belly Agouti (Reduced black patterning black is spread thinly, reduced red, enhanced white belly)
+         *  A^F     Fawn (Reduced black patterning, removal of red from belly)
+         *  a       Recessive Black
+         */
+        //Agouti [ Dark Agouti, Wildtype+, white-bellied agouti, brindle, fawn, recessive black ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -122,7 +146,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[9] = (1);
         }
 
-        //Chocoalte [wildtype, chocolate] as in dexter cattle
+        //Chocolate [wildtype, chocolate] as in dexter cattle
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[10] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
@@ -165,7 +189,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[15] = (2);
         }
 
-        //White face and other spots [whiteface1, border spotted, wildtype+, piebald]
+        //White face and other spots [hereford, pinzgauer, wildtype+, piebald]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[16] = (ThreadLocalRandom.current().nextInt(4) + 1);
 
@@ -187,15 +211,16 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //belted [belted, blaze, brockling, wildtype]
+        //Legacy belted [belted, blaze, brockling, wildtype]
+        //Brockling [Brockling, wildtype]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[18] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            autosomalGenes[18] = (ThreadLocalRandom.current().nextInt(2) + 3);
 
         } else {
             autosomalGenes[18] = (4);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[19] = (ThreadLocalRandom.current().nextInt(4) + 1);
+            autosomalGenes[19] = (ThreadLocalRandom.current().nextInt(2) + 3);
 
         } else {
             autosomalGenes[19] = (4);
@@ -892,7 +917,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         } else {
             autosomalGenes[105] = (165);
-        };
+        }
 
         //cow horn4 X and Z
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
@@ -982,10 +1007,19 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[118] = 1;
         autosomalGenes[119] = 1;
 
-        //recessive dilution
-        autosomalGenes[120] = 1;
-        autosomalGenes[121] = 1;
+        // Eel Stripe
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[120] = ThreadLocalRandom.current().nextInt(2)+1;
+        } else {
+            autosomalGenes[120] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[121] = ThreadLocalRandom.current().nextInt(2)+1;
+        } else {
+            autosomalGenes[121] = 1;
+        }
 
+        //horn modifier
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[122] = ThreadLocalRandom.current().nextInt(5)+1;
         } else {
@@ -995,6 +1029,115 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[123] = ThreadLocalRandom.current().nextInt(5)+1;
         } else {
             autosomalGenes[123] = 1;
+        }
+
+        // masculine coat modifier
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[124] = ThreadLocalRandom.current().nextInt(3)+1;
+        } else {
+            autosomalGenes[124] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[125] = ThreadLocalRandom.current().nextInt(3)+1;
+        } else {
+            autosomalGenes[125] = 1;
+        }
+
+        // feminine coat modifier
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[126] = ThreadLocalRandom.current().nextInt(3)+1;
+        } else {
+            autosomalGenes[126] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[127] = ThreadLocalRandom.current().nextInt(3)+1;
+        } else {
+            autosomalGenes[127] = 1;
+        }
+
+        // dun
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[128] = ThreadLocalRandom.current().nextInt(2)+1;
+        } else {
+            autosomalGenes[128] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[129] = ThreadLocalRandom.current().nextInt(2)+1;
+        } else {
+            autosomalGenes[129] = 1;
+        }
+
+        // rufous genes
+        for (int i = 130; i < 170; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC*0.6F) {
+                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
+            } else {
+                autosomalGenes[i] = 1;
+            }
+        }
+
+        if (ThreadLocalRandom.current().nextBoolean()) {
+            // darker/lighter genes
+            for (int i = 170; i < 200; i++) {
+                    autosomalGenes[i] = 1;
+            }
+
+            // darker/lighter pattern genes
+            for (int i = 200; i < 250; i++) {
+                    autosomalGenes[i] = 2;
+            }
+        } else {
+            // darker/lighter genes
+            for (int i = 170; i < 200; i++) {
+                autosomalGenes[i] = 2;
+            }
+
+            // darker/lighter pattern genes
+            for (int i = 200; i < 250; i++) {
+                autosomalGenes[i] = 1;
+            }
+        }
+
+//        // darker/lighter genes
+//        for (int i = 170; i < 200; i++) {
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC*0.6F) {
+//                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
+//            } else {
+//                autosomalGenes[i] = 1;
+//            }
+//        }
+//
+//        // darker/lighter pattern genes
+//        for (int i = 200; i < 250; i++) {
+//            if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+//                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
+//            } else {
+//                autosomalGenes[i] = 1;
+//            }
+//        }
+
+        // Belted [wildtype, Belted]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[250] = ThreadLocalRandom.current().nextInt(2)+1;
+        } else {
+            autosomalGenes[250] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[251] = ThreadLocalRandom.current().nextInt(2)+1;
+        } else {
+            autosomalGenes[251] = 1;
+        }
+
+        // Blaze [wildtype, Blaze]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[252] = ThreadLocalRandom.current().nextInt(2)+1;
+        } else {
+            autosomalGenes[252] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[253] = ThreadLocalRandom.current().nextInt(2)+1;
+        } else {
+            autosomalGenes[253] = 1;
         }
 
         return new Genes(autosomalGenes);

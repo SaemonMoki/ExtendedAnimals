@@ -82,7 +82,7 @@ public class EnhancedMeleeAttackGoal extends Goal {
             return false;
         } else if (!this.longMemory) {
             return !this.attacker.getNavigator().noPath();
-        } else if (!this.attacker.isWithinHomeDistanceFromPosition(new BlockPos(livingentity))) {
+        } else if (!this.attacker.isWithinHomeDistanceFromPosition(new BlockPos(livingentity.getPosition()))) {
             return false;
         } else {
             return !(livingentity instanceof PlayerEntity) || !livingentity.isSpectator() && !((PlayerEntity)livingentity).isCreative();

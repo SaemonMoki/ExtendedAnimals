@@ -23,7 +23,7 @@ public class SilkieChickenLayer extends LayerRenderer<EnhancedChicken, ModelEnha
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/chickensilkie/chickenbase.png");
 
     private static final ResourceLocation[] CHICKEN_SADDLE_TEXTURES = new ResourceLocation[]{new ResourceLocation("eanimod:textures/entities/chickensilkie/ground_solid_silver.png")};
-    private final ModelEnhancedChicken<EnhancedChicken> model_2 = new ModelEnhancedChicken<>(0.1F, true);
+    private final ModelEnhancedChicken<EnhancedChicken> model_2 = new ModelEnhancedChicken<>();
 
     public SilkieChickenLayer(IEntityRenderer<EnhancedChicken, ModelEnhancedChicken<EnhancedChicken>> p_i50933_1_) {
         super(p_i50933_1_);

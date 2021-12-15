@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.entity.Genetics;
 
-import mokiyoki.enhancedanimals.init.LlamaBreeds;
+import mokiyoki.enhancedanimals.init.breeds.LlamaBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -38,10 +38,6 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
         int[] autosomalGenes = new int[Reference.LLAMA_AUTOSOMAL_GENES_LENGTH];
         //TODO create biome WTC variable [hot and dry biomes, cold biomes ] WTC is neutral biomes "all others"
 
-        /**
-         * Colour Genes
-         */
-
         //Endurance genes [ wildtype, stronger1, stronger2]
         if(ThreadLocalRandom.current().nextInt(100)>WTC){
             autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(3)+1);
@@ -55,7 +51,6 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
         } else {
             autosomalGenes[1] = (1);
         }
-
 
         //Strength genes [ wildtype, stronger1, stronger2]
         if(ThreadLocalRandom.current().nextInt(100)>WTC){
@@ -84,6 +79,10 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
         } else {
             autosomalGenes[5] = (1);
         }
+
+        /**
+         * Colour Genes
+         */
 
         //Dominant White [ dominant white, wildtype ]
         if(ThreadLocalRandom.current().nextInt(100)>WTC){
@@ -278,6 +277,48 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
 
         } else {
             autosomalGenes[33] = (1);
+        }
+
+        //Health genes A [ wildtype, healthier1, healthier2, unhealthy]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            autosomalGenes[34] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            autosomalGenes[34] = (1);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            autosomalGenes[35] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            autosomalGenes[35] = (1);
+        }
+
+        //Health genes B [ wildtype, healthier1, healthier2, unhealthy]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            autosomalGenes[36] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            autosomalGenes[36] = (1);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            autosomalGenes[37] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            autosomalGenes[37] = (1);
+        }
+
+        //Health genes C [ wildtype, healthier1, healthier2, unhealthy]
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            autosomalGenes[38] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            autosomalGenes[38] = (1);
+        }
+        if(ThreadLocalRandom.current().nextInt(100)>WTC){
+            autosomalGenes[39] = (ThreadLocalRandom.current().nextInt(4)+1);
+
+        } else {
+            autosomalGenes[39] = (1);
         }
 
         return new Genes(autosomalGenes);

@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -17,8 +18,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -51,8 +54,8 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             "harness_iron.png", "harness_gold.png", "harness_diamond.png"
     };
 
-    protected EnhancedAnimalChestedAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn,int SgenesSize, int AgenesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
-        super(type, worldIn, SgenesSize, AgenesSize, temptationItems, breedItems, foodWeightMap, bottleFeedable);
+    protected EnhancedAnimalChestedAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn,int SgenesSize, int AgenesSize, boolean bottleFeedable) {
+        super(type, worldIn, SgenesSize, AgenesSize, bottleFeedable);
     }
 
     protected void registerData() {
@@ -64,7 +67,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     @Override
     public Boolean isAnimalSleeping() {
-        if (this.dataManager.get(HAS_CHEST)) {
+        if (this.hasChest()) {
             return false;
         }
         return super.isAnimalSleeping();
@@ -76,17 +79,20 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     }
 
     public boolean hasChest() {
-        return this.dataManager.get(HAS_CHEST);
+        if (this.animalInventory!=null) {
+            return this.animalInventory.getStackInSlot(0).getItem() == Items.CHEST;
+        }
+        return false;
     }
 
-    public void setChested(boolean chested) {
-        this.dataManager.set(HAS_CHEST,chested);
-        if (chested && !this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
-            this.enhancedAnimalTextures.add(CHEST_TEXTURE);
-        } else if (!chested && this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
-            this.enhancedAnimalTextures.remove(CHEST_TEXTURE);
-        }
-    }
+//    public void setChested(boolean chested) {
+//        this.dataManager.set(HAS_CHEST,chested);
+//        if (chested && !this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
+//            this.enhancedAnimalTextures.add(CHEST_TEXTURE);
+//        } else if (!chested && this.enhancedAnimalTextures.contains(CHEST_TEXTURE)) {
+//            this.enhancedAnimalTextures.remove(CHEST_TEXTURE);
+//        }
+//    }
 
     @Override
     public boolean canHaveBlanket() {
@@ -103,14 +109,31 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         List<String> newBlanketTextures = getBlanket();
 
         if(blanketed) {
-            if(previousBlanketTextures == null || !previousBlanketTextures.containsAll(newBlanketTextures)){
+//            if(previousBlanketTextures == null || !previousBlanketTextures.containsAll(newBlanketTextures)){
                 this.equipmentTextures.put(Equipment.BLANKET, newBlanketTextures);
-            }
+//            }
         } else {
             if(previousBlanketTextures != null){
                 this.equipmentTextures.remove(Equipment.BLANKET);
             }
         }
+        this.compiledEquipmentTexture = null; //reset compiled string
+    }
+
+    public void setChest(boolean chested) {
+        List<String> previousChestTexture = equipmentTextures.get(Equipment.CHEST);
+        List<String> newChestTexture = getChestTexture();
+
+        if(chested) {
+//            if(previousChestTexture == null || !previousChestTexture.containsAll(newChestTexture)){
+                this.equipmentTextures.put(Equipment.CHEST, newChestTexture);
+//            }
+        } else {
+            if(previousChestTexture != null){
+                this.equipmentTextures.remove(Equipment.CHEST);
+            }
+        }
+        this.compiledEquipmentTexture = null; //reset compiled string
     }
 
     @Override
@@ -128,53 +151,81 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         List<String> newBridleTextures = getBridleTextures();
 
         if(bridled) {
-            if(previousBridleTextures == null || !previousBridleTextures.containsAll(newBridleTextures)){
+//            if(previousBridleTextures == null || !previousBridleTextures.containsAll(newBridleTextures)){
                 equipmentTextures.put(Equipment.BRIDLE, newBridleTextures);
-            }
+//            }
         } else {
             if(previousBridleTextures != null){
                 equipmentTextures.remove(Equipment.BRIDLE);
             }
         }
+        this.compiledEquipmentTexture = null; //reset compiled string
     }
 
-    public boolean processInteract(PlayerEntity player, Hand hand) {
+    @Override
+    public ActionResultType func_230254_b_(PlayerEntity player, Hand hand) {
         ItemStack itemstack = player.getHeldItem(hand);
         if (!itemstack.isEmpty()) {
             Item item = itemstack.getItem();
             if (this.canHaveChest() && !this.hasChest() && item == Items.CHEST) {
-                this.setChested(true);
+                this.setChest(true);
                 this.playChestEquipSound();
                 this.animalInventory.setInventorySlotContents(0, new ItemStack(itemstack.getItem(), 1));
                 this.initInventory();
-                return true;
+                itemstack.shrink(1);
+                return ActionResultType.SUCCESS;
             }
             if (this.canHaveBlanket() && isCarpet(itemstack)) {
-                return this.blanketAnimal(itemstack, player, hand, this);
+                return ActionResultType.func_233537_a_(this.blanketAnimal(itemstack, player, hand, this));
             }
             if (this.canHaveBridle() && item instanceof CustomizableBridle) {
-                return this.bridleAnimal(itemstack, player, hand, this);
+                return ActionResultType.func_233537_a_(this.bridleAnimal(itemstack, player, hand, this));
             }
         }
-        return super.processInteract(player, hand);
+        return super.func_230254_b_(player, hand);
     }
 
     public boolean canBeSteered() {
         return this.getControllingPassenger() instanceof LivingEntity/* && this.isTame()*/ && this.dataManager.get(HAS_BRIDLE);
     }
 
+    public void equipAnimal(boolean hasChest, DyeColor blanketColour) {
+        if (hasChest) {
+            this.setChest(true);
+            this.animalInventory.setInventorySlotContents(0, new ItemStack(Items.CHEST, 1));
+            this.initInventory();
+        }
+        if (blanketColour != null) {
+            ItemStack equipedBlanket = new ItemStack(this.getCarpetByColour(blanketColour), 1);
+            this.animalInventory.setInventorySlotContents(4, equipedBlanket);
+        }
+    }
+
+    public void equipTraderAnimal(boolean hasChest) {
+        if (hasChest) {
+            this.setChest(true);
+            this.animalInventory.setInventorySlotContents(0, new ItemStack(Items.CHEST, 1));
+            this.initInventory();
+        }
+        ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setDisplayName(new StringTextComponent("Trader's Blanket"));
+        traderBlanket.getOrCreateChildTag("tradersblanket");
+        this.animalInventory.setInventorySlotContents(4, traderBlanket);
+    }
+
     public boolean blanketAnimal(ItemStack blanketItemStack, PlayerEntity player, Hand hand, LivingEntity target) {
         EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
-        if (enhancedAnimal.isAlive() && !enhancedAnimal.dataManager.get(HAS_BLANKET)) {
-            this.animalInventory.setInventorySlotContents(4, new ItemStack(blanketItemStack.getItem(), 1));
-            this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
-            blanketItemStack.shrink(1);
-        } else {
+        if (enhancedAnimal.isAlive()) {
             ItemStack otherCarpet = this.getEnhancedInventory().getStackInSlot(4);
-            this.animalInventory.setInventorySlotContents(4, new ItemStack(blanketItemStack.getItem(), 1));
+            ItemStack equipedBlanket = new ItemStack(blanketItemStack.getItem(), 1).setDisplayName(blanketItemStack.getDisplayName());
+            if (blanketItemStack.getChildTag("tradersblanket") != null) {
+                equipedBlanket.getOrCreateChildTag("tradersblanket");
+            }
+            this.animalInventory.setInventorySlotContents(4, equipedBlanket);
             this.playSound(SoundEvents.ENTITY_LLAMA_SWAG, 0.5F, 1.0F);
             blanketItemStack.shrink(1);
-            player.setHeldItem(hand, otherCarpet);
+            if (!otherCarpet.isEmpty()) {
+                player.setHeldItem(hand, otherCarpet);
+            }
         }
 
         return true;
@@ -183,16 +234,12 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     public boolean bridleAnimal(ItemStack bridleItemStack, PlayerEntity player, Hand hand, LivingEntity target) {
         EnhancedAnimalChestedAbstract enhancedAnimal = (EnhancedAnimalChestedAbstract) target;
         if (enhancedAnimal.isAlive()) {
-            if (!enhancedAnimal.dataManager.get(HAS_BRIDLE)) {
-                ItemStack replacementItem = getReplacementItemWithColour(bridleItemStack);
-                this.animalInventory.setInventorySlotContents(3, replacementItem);
-                this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
-                bridleItemStack.shrink(1);
-            } else {
-                ItemStack otherBridle = this.getEnhancedInventory().getStackInSlot(3);
-                this.animalInventory.setInventorySlotContents(3, getReplacementItemWithColour(bridleItemStack));
-                this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
-                bridleItemStack.shrink(1);
+            ItemStack otherBridle = this.getEnhancedInventory().getStackInSlot(3);
+            this.animalInventory.setInventorySlotContents(3, getReplacementItemWithColour(bridleItemStack));
+//            this.animalInventory.setInventorySlotContents(3, bridleItemStack);
+            this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
+            bridleItemStack.shrink(1);
+            if (!otherBridle.isEmpty()) {
                 player.setHeldItem(hand, otherBridle);
             }
         }
@@ -209,19 +256,20 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     protected void playChestEquipSound() {
         this.playSound(SoundEvents.ENTITY_DONKEY_CHEST, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+
     }
 
     @Override
     public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
         if (inventorySlot == 499) {
             if (this.hasChest() && itemStackIn.isEmpty()) {
-                this.setChested(false);
+//                this.setChested(false);
                 this.initInventory();
                 return true;
             }
 
             if (!this.hasChest() && itemStackIn.getItem() == Blocks.CHEST.asItem()) {
-                this.setChested(true);
+//                this.setChested(true);
                 this.initInventory();
                 return true;
             }
@@ -242,7 +290,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
     }
 
     @Override
-    protected int getInventorySize() {
+    public int getInventorySize() {
         return this.hasChest() ? 22 : super.getInventorySize();
     }
 
@@ -255,14 +303,14 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
-        compound.putBoolean("Chested", this.hasChest());
+//        compound.putBoolean("Chested", this.hasChest());
         compound.putBoolean("Bridled", this.hasBridle());
     }
 
 
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
-        this.setChested(compound.getBoolean("Chested"));
+//        this.setChested(compound.getBoolean("Chested"));
         this.setBridle(compound.getBoolean("Bridled"));
     }
 
@@ -277,8 +325,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                     blanketTextures.add(BLANKET_TEXTURE[1]);
                 } else if (blanket == Items.BLUE_CARPET) {
                     if (blanketSlot.hasDisplayName()) {
-                        if (blanketSlot.getDisplayName().getString().equals("Trader's Blanket")) {
-                            //TODO maybe make this so it checks "ownership" instead?
+                        if (blanketSlot.getChildTag("tradersblanket") != null) {
                             blanketTextures.add(BLANKET_TEXTURE[0]);
                             return blanketTextures;
                         }
@@ -317,6 +364,45 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
             }
         }
         return blanketTextures;
+    }
+
+    protected Item getCarpetByColour(DyeColor color) {
+        switch (color) {
+            case WHITE:
+                return Items.WHITE_CARPET;
+            case RED:
+                return Items.RED_CARPET;
+            case BROWN:
+                return Items.BROWN_CARPET;
+            case BLACK:
+                return Items.BLACK_CARPET;
+            case LIGHT_GRAY:
+                return Items.LIGHT_GRAY_WOOL;
+            case GRAY:
+                return Items.GRAY_CARPET;
+
+            case BLUE:
+                return Items.BLUE_CARPET;
+            case CYAN:
+                return Items.CYAN_CARPET;
+            case LIME:
+                return Items.LIME_CARPET;
+            case PINK:
+                return Items.PINK_CARPET;
+            case GREEN:
+                return Items.GREEN_CARPET;
+            case ORANGE:
+                return Items.ORANGE_CARPET;
+            case PURPLE:
+                return Items.PURPLE_CARPET;
+            case YELLOW:
+                return Items.YELLOW_CARPET;
+            case MAGENTA:
+                return Items.MAGENTA_CARPET;
+            case LIGHT_BLUE:
+            default:
+                return Items.LIGHT_BLUE_CARPET;
+        }
     }
 
     protected boolean isCarpet(ItemStack itemStack) {
@@ -389,6 +475,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
                     } else if (bridle == ModItems.BRIDLE_BASIC_CLOTH_GOLD) {
                         bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[1]);
                     } else if (bridle == ModItems.BRIDLE_BASIC_LEATHER_GOLD) {
+                        bridleTextures.add(BRIDLE_LEATHER_TEXTURE);
                         bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[1]);
                     } else if (bridle == ModItems.BRIDLE_BASIC_CLOTH_DIAMOND) {
                         bridleTextures.add(BRIDLE_HARDWEAR_TEXTURE[2]);
@@ -402,4 +489,19 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
         return bridleTextures;
     }
+
+    private List<String> getChestTexture() {
+        List<String> chestTexture = new ArrayList<>();
+
+        if (this.getEnhancedInventory() != null) {
+            ItemStack chestSlot = this.animalInventory.getStackInSlot(0);
+            if (chestSlot != ItemStack.EMPTY) {
+                chestTexture.add(CHEST_TEXTURE);
+            }
+        }
+
+        return chestTexture;
+    }
+
+
 }

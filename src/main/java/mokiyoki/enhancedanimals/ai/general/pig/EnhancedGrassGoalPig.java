@@ -32,7 +32,7 @@ public class EnhancedGrassGoalPig extends EnhancedGrassGoal {
         } else {
             this.eatingGrassTimer = Math.max(0, this.eatingGrassTimer - 1);
             if (this.eatingGrassTimer == 4) {
-                BlockPos blockpos = new BlockPos(this.grassEaterEntity);
+                BlockPos blockpos = new BlockPos(this.grassEaterEntity.getPosition());
                 if (IS_TALLGRASS.test(this.entityWorld.getBlockState(blockpos))) {
                     if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
                         this.entityWorld.destroyBlock(blockpos, false);

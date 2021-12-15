@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.ai.general;
 
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 
@@ -15,7 +15,7 @@ public class EnhancedLookRandomlyGoal extends LookRandomlyGoal {
 
     @Override
     public boolean shouldExecute() {
-        if (((EnhancedAnimal)entityIn).isAnimalSleeping()) {
+        if (((EnhancedAnimalAbstract)entityIn).isAnimalSleeping()) {
             return false;
         } else {
             return super.shouldExecute();

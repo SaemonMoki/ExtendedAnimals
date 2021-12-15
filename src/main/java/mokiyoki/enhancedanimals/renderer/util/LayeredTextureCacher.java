@@ -59,6 +59,9 @@ public class LayeredTextureCacher {
         }
     }
 
+    public void removeFromCache(String key) {
+        LAYERED_LOCATION_CACHE.remove(key);
+    }
 
     private class CachedLayeredTexture {
         boolean recentlyAccessed = true;

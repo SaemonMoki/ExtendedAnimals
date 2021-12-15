@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.model;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
@@ -15,7 +16,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -179,12 +179,12 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.polyHornBase.setRotationPoint(0.0F, 0.0F, -6.0F);
 
         this.polyHornL0 = new EnhancedRendererModelNew(this, 50, 12);
-//        this.polyHornL0.addBox(0.0F, -3.0F, -1.5F, 0, 0, 0, -0.6F);
-        this.polyHornL0.setRotationPoint(2.5F, -4.5F, -1.0F);
+//        this.polyHornL0.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.7F);
+//        sheepLeftHorns.add(polyHornL0);
 
         this.polyHornR0 = new EnhancedRendererModelNew(this, 50, 12);
-//        this.polyHornR0.addBox(-3.0F, -3.0F, -1.5F, 0, 0, 0, -0.6F);
-        this.polyHornR0.setRotationPoint(-2.5F, -4.5F, -1.0F);
+//        this.polyHornR0.addBox(-3.0F, -3.0F, -1.5F, 3, 3, 3, -0.7F);
+//        sheepRightHorns.add(polyHornR0);
 
         // scale down by 0.1 for each
         this.hornL0 = new EnhancedRendererModelNew(this, 50, 12, "HornL0");
@@ -377,11 +377,11 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.hornR9.setRotationPoint(0.0F, 0.0F, 0.0F);
         sheepRightHorns.add(hornR9);
 
-        this.earLeft = new EnhancedRendererModelNew(this, 50, 3);
+        this.earLeft = new EnhancedRendererModelNew(this, 57, 4);
         this.earLeft.addBox(0.0F, -2.0F, 0.0F, 3, 2, 1, 0.001F); //ear left
         this.earLeft.setRotationPoint(2.0F, 2.0F, -2.0F);
 
-        this.earRight = new EnhancedRendererModelNew(this, 50, 0);
+        this.earRight = new EnhancedRendererModelNew(this, 50, 4);
         this.earRight.addBox(-3.0F, -2.0F, 0.0F, 3, 2, 1, 0.001F); //ear right
         this.earRight.setRotationPoint(-2.0F, 2.0F, -2.0F);
 
@@ -490,15 +490,15 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.nippleL.setRotationPoint(-1.0F, 2.5F, 1.0F);
         this.nippleR.setRotationPoint(1.0F, 2.5F, 1.0F);
 
-        this.tailBase = new ModelRenderer(this, 50, 6);
+        this.tailBase = new ModelRenderer(this, 50, 0);
         this.tailBase.addBox(-1.0F, 0.0F, 0.0F, 2, 3, 1);
         this.tailBase.setRotationPoint(0.0F, 9.0F, 8.0F);
 
-        this.tailMiddle = new ModelRenderer(this, 56, 6);
+        this.tailMiddle = new ModelRenderer(this, 56, 0);
         this.tailMiddle.addBox(-0.5F, 0.0F, 0.0F, 1, 3, 1);
         this.tailMiddle.setRotationPoint(0.0F, 3.0F, 0.0F);
 
-        this.tailTip = new ModelRenderer(this, 60, 6);
+        this.tailTip = new ModelRenderer(this, 60, 0);
         this.tailTip.addBox(-0.5F, 0.0F, 0.0F, 1, 3, 1);
         this.tailTip.setRotationPoint(0.0F, 3.0F, 0.0F);
 
@@ -559,9 +559,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         this.hornR8.addChild(hornR9);
 
         this.polyHornBase.addChild(polyHornL0);
-        this.polyHornL0.addChild(hornL3);
+        this.polyHornL0.addChild(hornL2);
         this.polyHornBase.addChild(polyHornR0);
-        this.polyHornR0.addChild(hornR3);
+        this.polyHornR0.addChild(hornR2);
 
         this.neck.addChild(head);
         this.head.addChild(this.eyeLeft);
@@ -631,6 +631,10 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         int[] genes = sheepModelData.sheepGenes;
         int coatLength = sheepModelData.coatlength;
+        if (coatLength > 15) {
+            coatLength = 15;
+        }
+
         String sheepStatus = sheepModelData.sheepStatus;
         boolean sleeping = sheepModelData.sleeping;
         float size = sheepModelData.size;
@@ -661,8 +665,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         float age = 1.0F;
         if (!(sheepModelData.birthTime == null) && !sheepModelData.birthTime.equals("") && !sheepModelData.birthTime.equals("0")) {
             int ageTime = (int)(sheepModelData.clientGameTime - Long.parseLong(sheepModelData.birthTime));
-            if (ageTime <= 75000) {
-                age = ageTime < 0 ? 0 : ageTime/75000.0F;
+            if (ageTime <= sheepModelData.adultAge) {
+                age = ageTime < 0 ? 0 : ageTime/(float)sheepModelData.adultAge;
             }
         }
 
@@ -762,7 +766,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             renderHorns(horns, hornScale, unrenderedModels, matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
 
-        float woolLength = ((coatLength-1)*0.025F) + 1.0F;
+        float woolLength = (((coatLength > 15 ? 15 : coatLength)-1)*0.025F) + 1.0F;
 
 //            GlStateManager.pushMatrix();
 //            GlStateManager.scalef(woolLength, woolLength, woolLength);
@@ -874,7 +878,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             if (true) {
                 this.neckWool7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
-        }else if (coatLength == 15){
+        }else if (coatLength >= 15){
             this.wool15.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             if (true) {
                 this.neckWool7.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
@@ -924,7 +928,7 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
 
         float age = 1.0F;
         if (!(sheepModelData.birthTime == null) && !sheepModelData.birthTime.equals("") && !sheepModelData.birthTime.equals("0")) {
-            int ageTime = (int)(((WorldInfo)((ClientWorld)entityIn.world).getWorldInfo()).getGameTime() - Long.parseLong(sheepModelData.birthTime));
+            int ageTime = (int)(((ClientWorld)entityIn.world).getWorldInfo().getGameTime() - Long.parseLong(sheepModelData.birthTime));
             if (ageTime <= 75000) {
                 age = ageTime < 0 ? 0 : ageTime/75000.0F;
             }
@@ -1062,16 +1066,15 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         Float[] hornGrowthL = {0.0F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.8F, -1.4F, -1.1F, -0.9F, -0.7876F, -0.675F, -0.5376F, -0.4F};
         Float[] hornGrowthR = {0.0F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.95F, -1.8F, -1.4F, -1.1F, -0.9F, -0.7876F, -0.675F, -0.5376F, -0.4F};
 
-        int hornGrowth = 0;
         if (!(sheepModelData.birthTime == null) && !sheepModelData.birthTime.equals("") && !sheepModelData.birthTime.equals("0")) {
             int ageTime = (int)(sheepModelData.clientGameTime - Long.parseLong(sheepModelData.birthTime));
             if (ageTime < 0) {
                 ageTime = 0;
             }
 
-            if (ageTime < 108000) {
+            if (ageTime < (sheepModelData.adultAge * 1.2857F)) {
                 //this grows the horns from nothing to their adult size
-                float age = (float)ageTime/108000.0F;
+                float age = (float)ageTime/(float)(sheepModelData.adultAge * 1.2857F);
                 lengthL = lengthL + ((int)((20-lengthL) * (1.0F-(age*age))));
                 lengthR = lengthR + ((int)((20-lengthR) * (1.0F-(age*age))));
             }
@@ -1084,8 +1087,10 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             lengthR = 18;
         }
 
-        lengthL = lengthL + hornGrowth;
-        lengthR = lengthR + hornGrowth;
+        if (sheepModelData.isFemale) {
+            lengthL = 18 - (int)((18 - lengthL) * 0.5F);
+            lengthR = 18 - (int)((18 - lengthR) * 0.5F);
+        }
 
         if (lengthL != 0 || lengthR != 0) {
             for (int i = 0; i <= 18; i++) {
@@ -1131,15 +1136,15 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             }
         }
 
-        this.polyHornL0.rotateAngleX = this.polyHornL0.rotateAngleX + 0.001F;
-        this.polyHornR0.rotateAngleX = this.polyHornR0.rotateAngleX - 0.001F;
+        this.polyHornL0.setRotationPoint(-0.5F, -5.75F, 0.0F);
+        this.polyHornR0.setRotationPoint(0.5F, -5.75F, 0.0F);
 
-        this.polyHornL0.rotateAngleX = -1.0F;
-        this.polyHornR0.rotateAngleX = -1.0F;
-        this.polyHornL0.rotateAngleY = 2.6F;
-        this.polyHornR0.rotateAngleY = -2.6F;
-        this.polyHornL0.rotateAngleZ = 1.6F;
-        this.polyHornR0.rotateAngleZ = -1.6F;
+        this.polyHornL0.rotateAngleX = -(float)Math.PI * 0.1F;
+        this.polyHornR0.rotateAngleX = -(float)Math.PI * 0.1F;
+        this.polyHornL0.rotateAngleY = (float)Math.PI * 0.9F;
+        this.polyHornR0.rotateAngleY = -(float)Math.PI * 0.9F;
+        this.polyHornL0.rotateAngleZ = (float)Math.PI * 0.6F;
+        this.polyHornR0.rotateAngleZ = -(float)Math.PI * 0.6F;
 
         //horn shape controllers
 //        if (horns != 0) {
@@ -1275,6 +1280,8 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
         boolean collar = false;
         ItemStack bridle;
         boolean hasChest = false;
+        boolean isFemale = false;
+        int adultAge = 0;
         List<String> unrenderedModels = new ArrayList<>();
     }
 
@@ -1304,14 +1311,14 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
                 sheepModelData.dataReset = 0;
             }
             sheepModelData.bagSize = enhancedSheep.getBagSize();
-            sheepModelData.coatlength = enhancedSheep.getCoatLength();
+            sheepModelData.coatlength = enhancedSheep.getCoatLength() > 15 ? 15 : enhancedSheep.getCoatLength();
             sheepModelData.sleeping = enhancedSheep.isAnimalSleeping();
             sheepModelData.blink = enhancedSheep.getBlink();
             sheepModelData.birthTime = enhancedSheep.getBirthTime();
             sheepModelData.collar = hasCollar(enhancedSheep.getEnhancedInventory());
             sheepModelData.bridle = enhancedSheep.getEnhancedInventory().getStackInSlot(3);
             sheepModelData.hasChest = !enhancedSheep.getEnhancedInventory().getStackInSlot(0).isEmpty();
-            sheepModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime());
+            sheepModelData.clientGameTime = (((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime();
 
             sheepModelData.unrenderedModels = new ArrayList<>();
 
@@ -1332,7 +1339,9 @@ public class ModelEnhancedSheep  <T extends EnhancedSheep> extends EntityModel<T
             sheepModelData.collar = hasCollar(enhancedSheep.getEnhancedInventory());
             sheepModelData.bridle = enhancedSheep.getEnhancedInventory().getStackInSlot(3);
             sheepModelData.hasChest = !enhancedSheep.getEnhancedInventory().getStackInSlot(0).isEmpty();
-            sheepModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime());
+            sheepModelData.isFemale = enhancedSheep.getOrSetIsFemale();
+            sheepModelData.clientGameTime = (((ClientWorld)enhancedSheep.world).getWorldInfo()).getGameTime();
+            sheepModelData.adultAge = EanimodCommonConfig.COMMON.adultAgeSheep.get();
 
             if(sheepModelData.sheepGenes != null) {
                 sheepModelDataCache.put(enhancedSheep.getEntityId(), sheepModelData);

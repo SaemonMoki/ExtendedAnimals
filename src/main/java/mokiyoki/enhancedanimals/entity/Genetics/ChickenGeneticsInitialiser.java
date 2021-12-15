@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.entity.Genetics;
 
-import mokiyoki.enhancedanimals.init.ChickenBreeds;
+import mokiyoki.enhancedanimals.init.breeds.ChickenBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -64,6 +64,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(ChickenBreeds.EASTEREGGER);
         this.breeds.add(ChickenBreeds.SPANISH);
         this.breeds.add(ChickenBreeds.SILKIE);
+        this.breeds.add(ChickenBreeds.SCOTS_DUMPY);
 //        this.breeds.add(ChickenBreeds.CUTIEPIE);
     }
 
@@ -83,16 +84,16 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
         int wildType = 0;
 
-        if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
+        if (biome.getTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
         {
             wildType = 1;
-        } else if (biome.getDefaultTemperature() >= 0.9F && biome.getDownfall() < 0.3F) // hot and dry (savanna)
+        } else if (biome.getTemperature() >= 0.9F && biome.getDownfall() < 0.3F) // hot and dry (savanna)
         {
             wildType = 2;
-        } else if (biome.getDefaultTemperature() < 0.3F) // cold (mountains)
+        } else if (biome.getTemperature() < 0.3F) // cold (mountains)
         {
             wildType = 3;
-        } else if (biome.getDefaultTemperature() >= 0.8F && biome.getDownfall() > 0.8F) {
+        } else if (biome.getTemperature() >= 0.8F && biome.getDownfall() > 0.8F) {
             wildType = 4;
         }
 
@@ -586,7 +587,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
                 autosomalGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
             }
         } else {
-            if (wildType == 0) {
+            if (biome.getCategory() == Biome.Category.PLAINS) {
                 autosomalGenes[20] = (2);
             } else {
                 autosomalGenes[20] = (1);
@@ -595,7 +596,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
             autosomalGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            if (wildType == 0) {
+            if (biome.getCategory() == Biome.Category.PLAINS) {
                 autosomalGenes[21] = (2);
             } else {
                 autosomalGenes[21] = (1);
@@ -663,7 +664,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         //Pattern Gene [ pattern, wildtype ] pattern genes is common in savannas
         if (wildType == 2) {
-            if (ThreadLocalRandom.current().nextInt(100) > (WTC / 2)) {
+            if (ThreadLocalRandom.current().nextInt(100) > (WTC * 0.5)) {
                 autosomalGenes[26] = (ThreadLocalRandom.current().nextInt(2) + 1);
             } else {
                 autosomalGenes[26] = (2);
@@ -876,14 +877,24 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             }
         }
 
-        //Duplex comb or v comb [ wildtype, duplexV, duplexC ]   // reversed dominance, cold biome exclusive
-        if ((ThreadLocalRandom.current().nextInt(100) > WTC) && wildType == 3) {
-            autosomalGenes[50] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        //Duplex comb or v comb [ wildtype, duplexV, duplexC ]   // cold biome exclusive
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            int i = ThreadLocalRandom.current().nextInt(2) + 1;
+            if (i == 2) {
+                autosomalGenes[50] = wildType == 3 ? 2 : 3;
+            } else {
+                autosomalGenes[50] = 1;
+            }
         } else {
             autosomalGenes[50] = (1);
         }
-        if ((ThreadLocalRandom.current().nextInt(100) > WTC) && wildType == 3) {
-            autosomalGenes[51] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            int i = ThreadLocalRandom.current().nextInt(2) + 1;
+            if (i == 2) {
+                autosomalGenes[51] = wildType == 3 ? 2 : 3;
+            } else {
+                autosomalGenes[51] = 1;
+            }
         } else {
             autosomalGenes[51] = (1);
         }
@@ -1838,6 +1849,19 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[183] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
             autosomalGenes[183] = (1);
+        }
+
+        //Vault [wildtype, vault ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[184] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[184] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[185] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[185] = (1);
         }
 
         return new Genes(sexlinkedGenes, autosomalGenes);

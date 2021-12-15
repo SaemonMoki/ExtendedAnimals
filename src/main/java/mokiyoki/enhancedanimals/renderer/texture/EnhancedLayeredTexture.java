@@ -18,6 +18,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static net.minecraft.client.renderer.texture.NativeImage.getAlpha;
+import static net.minecraft.client.renderer.texture.NativeImage.getCombined;
+import static net.minecraft.client.renderer.texture.NativeImage.getGreen;
+import static net.minecraft.client.renderer.texture.NativeImage.getBlue;
+import static net.minecraft.client.renderer.texture.NativeImage.getRed;
+
 /**
  * Created by saemon on 8/09/2018.
  */
@@ -126,7 +132,7 @@ public class EnhancedLayeredTexture extends Texture {
             } else if(s.startsWith("b_") && blackRGB !=0) {
                 for(int i = 0; i < nativeimage.getHeight(); ++i) {
                     for (int j = 0; j < nativeimage.getWidth(); ++j) {
-                        blendDye(j, i, blackRGB, nativeimage);
+                        shadeMelanin(j, i, blackRGB, nativeimage);
                     }
                 }
             } else if(s.startsWith("eyel_") && eyeLRGB !=0) {
@@ -206,7 +212,7 @@ public class EnhancedLayeredTexture extends Texture {
                             } else if(s1.startsWith("b_") && blackRGB !=0) {
                                 for(int i = 0; i < nativeimage1.getHeight(); ++i) {
                                     for (int j = 0; j < nativeimage1.getWidth(); ++j) {
-                                        blendDye(j, i, blackRGB, nativeimage1);
+                                        shadeMelanin(j, i, blackRGB, nativeimage1);
                                     }
                                 }
                             } else if(s1.startsWith("eyel_") && eyeLRGB !=0) {
@@ -255,7 +261,7 @@ public class EnhancedLayeredTexture extends Texture {
 
                             for(int i = 0; i < nativeimage1.getHeight(); ++i) {
                                 for(int j = 0; j < nativeimage1.getWidth(); ++j) {
-                                    nativeimage.blendPixel(j, i, nativeimage1.getPixelRGBA(j, i));
+                                    blendPixel(nativeimage, j, i, nativeimage1.getPixelRGBA(j, i));
                                 }
                             }
                         }
@@ -289,9 +295,18 @@ public class EnhancedLayeredTexture extends Texture {
                         }
                     }
                 } else if (s.startsWith("b_") && blackRGB != 0) {
-                    for (int i = 0; i < firstGroupImage.getHeight(); ++i) {
-                        for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
-                            blendDye(j, i, blackRGB, firstGroupImage);
+                    if (dyeRGB != 0) {
+                        for (int i = 0; i < firstGroupImage.getHeight(); ++i) {
+                            for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
+                                shadeMelanin(j, i, blackRGB, firstGroupImage);
+                                blendDye(j, i, dyeRGB, firstGroupImage);
+                            }
+                        }
+                    } else {
+                        for (int i = 0; i < firstGroupImage.getHeight(); ++i) {
+                            for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
+                                shadeMelanin(j, i, blackRGB, firstGroupImage);
+                            }
                         }
                     }
                 }
@@ -320,7 +335,7 @@ public class EnhancedLayeredTexture extends Texture {
                             }
                             for (int i = 0; i < firstGroupImage.getHeight(); ++i) {
                                 for (int j = 0; j < firstGroupImage.getWidth(); ++j) {
-                                    baseImage.blendPixel(j, i, firstGroupImage.getPixelRGBA(j, i));
+                                    blendPixel(baseImage, j, i, firstGroupImage.getPixelRGBA(j, i));
                                 }
                             }
 
@@ -348,7 +363,7 @@ public class EnhancedLayeredTexture extends Texture {
                                 } else if (s1.startsWith("b_") && blackRGB != 0) {
                                     for (int i = 0; i < nativeimage1.getHeight(); ++i) {
                                         for (int j = 0; j < nativeimage1.getWidth(); ++j) {
-                                            blendDye(j, i, blackRGB, nativeimage1);
+                                            shadeMelanin(j, i, blackRGB, nativeimage1);
                                         }
                                     }
                                 }
@@ -368,7 +383,7 @@ public class EnhancedLayeredTexture extends Texture {
 
                                 for (int i = 0; i < nativeimage1.getHeight(); ++i) {
                                     for (int j = 0; j < nativeimage1.getWidth(); ++j) {
-                                        firstGroupImage.blendPixel(j, i, nativeimage1.getPixelRGBA(j, i));
+                                        blendPixel(firstGroupImage, j, i, nativeimage1.getPixelRGBA(j, i));
                                     }
                                 }
                             }
@@ -404,7 +419,7 @@ public class EnhancedLayeredTexture extends Texture {
                     ) {
                         for(int i = 0; i < nativeimage1.getHeight(); ++i) {
                             for(int j = 0; j < nativeimage1.getWidth(); ++j) {
-                                nativeimage.blendPixel(j, i, nativeimage1.getPixelRGBA(j, i));
+                                blendPixel(nativeimage, j, i, nativeimage1.getPixelRGBA(j, i));
                             }
                         }
                     }
@@ -437,6 +452,86 @@ public class EnhancedLayeredTexture extends Texture {
         }
     }
 
+    public void shadeMelanin(int xIn, int yIn, int rgbaDye, NativeImage nativeimage) {
+        int i = nativeimage.getPixelRGBA(xIn, yIn);
+
+        float layerAlpha = 1.0F - ((float)(rgbaDye >> 24 & 255) / 255.0F);
+        float layerBlue = (float)(rgbaDye >> 16 & 255) / 255.0F;
+        float layerGreen = (float)(rgbaDye >> 8 & 255) / 255.0F;
+        float layerRed = (float)(rgbaDye >> 0 & 255) / 255.0F;
+        float originalAlpha = (float)(i >> 24 & 255) / 255.0F;
+//        float oBlue = (float)(i >> 16 & 255) / 255.0F;
+//        float oGreen = (float)(i >> 8 & 255) / 255.0F;
+//        float oRed = (float)(i >> 0 & 255) / 255.0F;
+
+        if (originalAlpha != 0.0F) {
+
+//            float mod = 0.5F;
+//            float inverse = 1F - mod;
+//            if (layerAlpha > originalAlpha) {
+//                originalAlpha = layerAlpha*inverse > originalAlpha ? 0 : 0.5F*(1-((layerAlpha-originalAlpha)/mod));
+//            } else {
+//                originalAlpha = originalAlpha*inverse > layerAlpha ? 1 : 0.5F + (0.5F*((originalAlpha-layerAlpha)/mod));
+//            }
+
+            if (layerAlpha == originalAlpha) {
+                originalAlpha = 0.5F;
+            } else if (layerAlpha > originalAlpha) {
+                originalAlpha = (originalAlpha*0.5F)/layerAlpha;
+            } else {
+                originalAlpha = 1.0F - (((1.0F-originalAlpha)*0.5F)/(1.0F-layerAlpha));
+            }
+
+            originalAlpha = originalAlpha > 1.0F ? 1.0F : originalAlpha;
+            originalAlpha = originalAlpha < 0.0F ? 0.0F : originalAlpha;
+
+            int j = (int) (originalAlpha * 255.0F);
+            int k = (int)(layerBlue * 255.0F);
+            int l = (int)(layerGreen * 255.0F);
+            int i1 = (int)(layerRed * 255.0F);
+
+            nativeimage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
+        }
+    }
+
+    public void blendMelanin(int xIn, int yIn, int rgbaDye, NativeImage nativeimage) {
+        int i = nativeimage.getPixelRGBA(xIn, yIn);
+
+        float layerAlpha = 1.0F - ((float)(rgbaDye >> 24 & 255) / 255.0F);
+        float layerBlue = (float)(rgbaDye >> 16 & 255) / 255.0F;
+        float layerGreen = (float)(rgbaDye >> 8 & 255) / 255.0F;
+        float layerRed = (float)(rgbaDye >> 0 & 255) / 255.0F;
+        float originalAlpha = (float)(i >> 24 & 255) / 255.0F;
+        float oBlue = (float)(i >> 16 & 255) / 255.0F;
+        float oGreen = (float)(i >> 8 & 255) / 255.0F;
+        float oRed = (float)(i >> 0 & 255) / 255.0F;
+
+        if (originalAlpha != 0.0F) {
+
+            float mod = 0.125F;
+            float inverse = 1F - mod;
+            if (layerAlpha > originalAlpha) {
+                originalAlpha = layerAlpha*inverse > originalAlpha ? 0F : 0.5F*(1-((layerAlpha-originalAlpha)/mod));
+            } else {
+                originalAlpha = originalAlpha*inverse > layerAlpha ? 1F : 0.5F + (0.5F*((originalAlpha-layerAlpha)/mod));
+            }
+
+            originalAlpha = originalAlpha > 1.0F ? 1.0F : originalAlpha;
+            originalAlpha = originalAlpha < 0.0F ? 0.0F : originalAlpha;
+
+            float blue = (layerBlue * 255) * oBlue;
+            float green = (layerGreen * 255) * oGreen;
+            float f12 = (layerRed * 255) * oRed;
+
+            int j = (int) (originalAlpha * 255.0F);
+            int k = (int) (blue);
+            int l = (int) (green);
+            int i1 = (int) (f12);
+
+            nativeimage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
+        }
+    }
+
     public void blendAlpha(int xIn, int yIn, NativeImage maskingImage, NativeImage nativeImage) {
         int i = nativeImage.getPixelRGBA(xIn, yIn);
         int iAlpha = maskingImage.getPixelRGBA(xIn, yIn);
@@ -456,6 +551,82 @@ public class EnhancedLayeredTexture extends Texture {
 
             nativeImage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
         }
+    }
+
+    public void blendPixel(NativeImage baseImage, int xIn, int yIn, int colIn) {
+        int i = baseImage.getPixelRGBA(xIn, yIn);
+        float f = (float)getAlpha(colIn) / 255.0F;
+        float f1 = (float)getBlue(colIn) / 255.0F;
+        float f2 = (float)getGreen(colIn) / 255.0F;
+        float f3 = (float)getRed(colIn) / 255.0F;
+        float f4 = (float)getAlpha(i) / 255.0F;
+        float f5 = (float)getBlue(i) / 255.0F;
+        float f6 = (float)getGreen(i) / 255.0F;
+        float f7 = (float)getRed(i) / 255.0F;
+        float f8 = 1.0F - f;
+        float f9 = f * f + f4 * f8;
+        float f10 = f1 * f + f5 * f8;
+        float f11 = f2 * f + f6 * f8;
+        float f12 = f3 * f + f7 * f8;
+        if (f9 > 1.0F) {
+            f9 = 1.0F;
+        }
+
+        if (f10 > 1.0F) {
+            f10 = 1.0F;
+        }
+
+        if (f11 > 1.0F) {
+            f11 = 1.0F;
+        }
+
+        if (f12 > 1.0F) {
+            f12 = 1.0F;
+        }
+
+        int j = (int)(f9 * 255.0F);
+        int k = (int)(f10 * 255.0F);
+        int l = (int)(f11 * 255.0F);
+        int i1 = (int)(f12 * 255.0F);
+        baseImage.setPixelRGBA(xIn, yIn, getCombined(j, k, l, i1));
+    }
+
+    public void multiplyPixel(NativeImage baseImage, int xIn, int yIn, int layerABGR) {
+        int baseABGR = baseImage.getPixelRGBA(xIn, yIn);
+        float layerAlpha = (float)getAlpha(layerABGR) / 255.0F;
+        float layerBlue = (float)getBlue(layerABGR) / 255.0F;
+        float layerGreen = (float)getGreen(layerABGR) / 255.0F;
+        float layerRed = (float)getRed(layerABGR) / 255.0F;
+        float baseAlpha = (float)getAlpha(baseABGR) / 255.0F;
+        float baseBlue = (float)getBlue(baseABGR) / 255.0F;
+        float baseGreen = (float)getGreen(baseABGR) / 255.0F;
+        float baseRed = (float)getRed(baseABGR) / 255.0F;
+        float remainder = 1.0F - layerAlpha;
+        float alpha = layerAlpha * layerAlpha + baseAlpha * remainder;
+        float blue = (layerBlue * baseBlue * layerAlpha) + baseBlue * remainder;
+        float green = (layerGreen * baseGreen * layerAlpha) + baseGreen * remainder;
+        float red = (layerRed * baseRed * layerAlpha) + baseRed * remainder;
+        if (alpha > 1.0F) {
+            alpha = 1.0F;
+        }
+
+        if (blue > 1.0F) {
+            blue = 1.0F;
+        }
+
+        if (green > 1.0F) {
+            green = 1.0F;
+        }
+
+        if (red > 1.0F) {
+            red = 1.0F;
+        }
+
+        int j = (int)(alpha * 255.0F);
+        int k = (int)(blue * 255.0F);
+        int l = (int)(green * 255.0F);
+        int i1 = (int)(red * 255.0F);
+        baseImage.setPixelRGBA(xIn, yIn, getCombined(j, k, l, i1));
     }
 
 }

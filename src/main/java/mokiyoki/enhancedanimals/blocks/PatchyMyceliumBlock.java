@@ -1,9 +1,9 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SpreadableSnowyDirtBlock;
-import net.minecraft.block.material.Material;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
@@ -14,15 +14,23 @@ import net.minecraftforge.common.ToolType;
 import javax.annotation.Nullable;
 import java.util.Random;
 
+import static net.minecraftforge.common.PlantType.BEACH;
+import static net.minecraftforge.common.PlantType.CAVE;
+import static net.minecraftforge.common.PlantType.CROP;
+import static net.minecraftforge.common.PlantType.DESERT;
+import static net.minecraftforge.common.PlantType.NETHER;
+import static net.minecraftforge.common.PlantType.PLAINS;
+import static net.minecraftforge.common.PlantType.WATER;
+
 public class PatchyMyceliumBlock extends SpreadableSnowyDirtBlock {
 
-    public PatchyMyceliumBlock(Properties properties) {
+    public PatchyMyceliumBlock(AbstractBlock.Properties properties) {
         super(properties);
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
-        super.tick(state, worldIn, pos, random);
+    public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
+        super.randomTick(state, worldIn, pos, random);
         if (!worldIn.isRemote) {
             if (!worldIn.isAreaLoaded(pos, 3))
                 return; // Forge: prevent loading unloaded chunks when checking neighbor's light and spreading
@@ -49,15 +57,12 @@ public class PatchyMyceliumBlock extends SpreadableSnowyDirtBlock {
     {
         PlantType type = plantable.getPlantType(world, pos.offset(facing));
 
-        switch (type) {
-            case Desert: return false;
-            case Nether: return false;
-            case Crop: return false;
-            case Cave: return true;
-            case Plains: return false;
-            case Water: return false;
-            case Beach: return false;
+        if (DESERT.equals(type) || NETHER.equals(type) || CROP.equals(type) || PLAINS.equals(type) || WATER.equals(type) || BEACH.equals(type)) {
+            return false;
+        } else if (CAVE.equals(type)) {
+            return true;
         }
+
         return false;
     }
 

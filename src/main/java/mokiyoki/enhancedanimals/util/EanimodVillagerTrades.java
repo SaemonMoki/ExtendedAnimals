@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.util;
 
-import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import net.minecraft.entity.merchant.villager.VillagerProfession;
@@ -11,41 +10,41 @@ import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.item.MerchantOffers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static net.minecraft.entity.merchant.villager.VillagerProfession.FARMER;
 import static net.minecraft.entity.merchant.villager.VillagerProfession.LEATHERWORKER;
 import static net.minecraft.entity.merchant.villager.VillagerProfession.SHEPHERD;
 
-public class EanimodVillagerTrades extends MerchantOffers {
-    private static LinkedList<SaleItemHolder> LeatherWorkerTrades = new LinkedList<>();
-    private static LinkedList<SaleItemHolder> ShepardTrades = new LinkedList<>();
+public final class EanimodVillagerTrades extends MerchantOffers {
+    private static ArrayList<SaleItemHolder> LeatherWorkerTrades = new ArrayList<>();
+    private static ArrayList<SaleItemHolder> ShepardTrades = new ArrayList<>();
 //    private static LinkedList<SaleItemHolder> FarmerTrades = new LinkedList<>();
 
     public EanimodVillagerTrades() {
-        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH, 1, 2, 1, 1, true, Items.LEATHER));
         ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH, 1, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_IRONRING, 1, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_GOLDRING, 1, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING, 1, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_IRONBELL, 2, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.FLINT));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_GOLDBELL, 2, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.FLINT));
+        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL, 2, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.FLINT));
+        LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH, 1, 2, 1, 1, true, Items.LEATHER));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER, 1, 2, 1, 1, true, Items.LEATHER));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_IRONRING, 1, 3, 1, 1, true, Items.LEATHER));
-        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_IRONRING, 1, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER_IRONRING, 1, 3, 1, 1, true, Items.LEATHER));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_GOLDRING, 1, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.LEATHER));
-        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_GOLDRING, 1, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER_GOLDRING, 1, 3, 1, 1, true, Items.LEATHER));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING, 1, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.LEATHER));
-        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING, 1, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING, 1, 3, 1, 1, true, Items.LEATHER));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_IRONBELL, 2, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.LEATHER, Items.FLINT));
-        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_IRONBELL, 2, 5, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.FLINT));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER_IRONBELL, 2, 3, 1, 1, true, Items.LEATHER, Items.FLINT));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_GOLDBELL, 2, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.LEATHER, Items.FLINT));
-        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_GOLDBELL, 2, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.FLINT));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER_GOLDBELL, 2, 3, 1, 1, true, Items.LEATHER, Items.FLINT));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL, 2, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.LEATHER, Items.FLINT));
-        ShepardTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL, 2, 3, 1, 1, true, Items.BLACK_WOOL, Items.LIGHT_GRAY_WOOL, Items.FLINT));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL, 2, 3, 1, 1, true, Items.LEATHER, Items.FLINT));
         LeatherWorkerTrades.add(new SaleItemHolder(Items.SADDLE, 3, 5, 1, 1, false, ModItems.SADDLE_BASIC_LEATHER));
         LeatherWorkerTrades.add(new SaleItemHolder(ModItems.SADDLE_BASIC_CLOTH, 3, 5, 8, 14, true, Items.SADDLE, Items.LEATHER, Items.EMERALD));
@@ -146,7 +145,7 @@ public class EanimodVillagerTrades extends MerchantOffers {
         int minLevel;
         int maxLevel;
         Item saleItem;
-        LinkedList<Item> types = new LinkedList<>();
+        ArrayList<Item> types = new ArrayList<>();
         int minValue;
         int maxValue;
         boolean dyeable = false;
@@ -245,7 +244,7 @@ public class EanimodVillagerTrades extends MerchantOffers {
                 }
             } else if (ThreadLocalRandom.current().nextInt(4)==0 && !isTrader) {
                 Collections.shuffle(this.types);
-                Item paymentItem = ThreadLocalRandom.current().nextBoolean() ? this.types.getFirst() : prefferedPayment;
+                Item paymentItem = ThreadLocalRandom.current().nextBoolean() ? this.types.get(0) : prefferedPayment;
                 payment = new ItemStack(paymentItem);
                 if (payment.isStackable()) {
                     if (this.minValue == this.maxValue) {

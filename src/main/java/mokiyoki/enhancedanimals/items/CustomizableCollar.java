@@ -22,7 +22,7 @@ public class CustomizableCollar extends CustomizableAnimalEquipment{
     public String getCollarName(ItemStack stack) {
         CompoundNBT compoundnbt = stack.getChildTag("display");
         if (compoundnbt != null && compoundnbt.contains("Name", 8)) {
-            return ITextComponent.Serializer.fromJson(compoundnbt.getString("Name")).getString();
+            return ITextComponent.Serializer.getComponentFromJson(compoundnbt.getString("Name")).getString();
         }
         return "";
     }

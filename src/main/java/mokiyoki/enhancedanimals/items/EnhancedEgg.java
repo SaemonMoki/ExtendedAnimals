@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.items;
 
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
+import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,13 +22,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
  */
 public class EnhancedEgg extends Item {
 
-    private int[] arrayOfDifferences;
-
     public EnhancedEgg(Properties properties) { super(properties); }
-
-    public void setDifference(int[] arrayOfDifferences){
-        this.arrayOfDifferences = arrayOfDifferences;
-    }
 
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn){
         ItemStack itemstack = playerIn.getHeldItem(handIn);
@@ -38,17 +33,18 @@ public class EnhancedEgg extends Item {
         worldIn.playSound((PlayerEntity)null, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), SoundEvents.ENTITY_EGG_THROW, SoundCategory.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
 
         if (!worldIn.isRemote) {
-            Genes eggGenes = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes();
-            String sireName = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getSire();
-            String damName = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getDam();
+            EggHolder egg = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(itemstack);
+            Genes eggGenes = egg.getGenes();
+            String sireName = egg.getSire();
+            String damName = egg.getDam();
             EnhancedEntityEgg entityegg;
             if (eggGenes != null) {
-                entityegg = new EnhancedEntityEgg(worldIn, playerIn, eggGenes, sireName, damName);
+                entityegg = new EnhancedEntityEgg(worldIn, playerIn, eggGenes, sireName, damName, this.getItem(), this.getHasParents(itemstack));
             } else {
-                entityegg = new EnhancedEntityEgg(worldIn, playerIn, null, null, null);
+                entityegg = new EnhancedEntityEgg(worldIn, playerIn, null, null, null, this.getItem(), this.getHasParents(itemstack));
             }
 
-            entityegg.shoot(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
+            entityegg.func_234612_a_(playerIn, playerIn.rotationPitch, playerIn.rotationYaw, 0.0F, 1.5F, 1.0F);
             worldIn.addEntity(entityegg);
         }
 
@@ -61,5 +57,14 @@ public class EnhancedEgg extends Item {
         EggCapabilityProvider provider = new EggCapabilityProvider();
 
         return provider;
+    }
+
+    public void setHasParents(ItemStack stack, boolean hasParents) {
+        stack.getOrCreateChildTag("display").putBoolean("hasParents", hasParents);
+    }
+
+    public boolean getHasParents(ItemStack stack) {
+        CompoundNBT compoundnbt = stack.getChildTag("display");
+        return compoundnbt != null && compoundnbt.contains("hasParents", 99) && compoundnbt.getBoolean("hasParents");
     }
 }

@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.entity.Genetics;
 
-import mokiyoki.enhancedanimals.init.RabbitBreeds;
+import mokiyoki.enhancedanimals.init.breeds.RabbitBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -47,13 +47,13 @@ public class RabbitGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         //[ 0=forest wildtype, 1=cold wildtype, 2=desert wildtype, 3=extreme cold ]
         int wildType = 0;
-        if (biome.getDefaultTemperature() < 0.5F){
-            if (biome.getDefaultTemperature() <= 0.05F){
+        if (biome.getTemperature() < 0.5F){
+            if (biome.getTemperature() <= 0.05F){
                 wildType  = 3;
             } else {
                 wildType = 1;
             }
-        } else if (biome.getDefaultTemperature() > 0.8F) {
+        } else if (biome.getTemperature() > 0.8F) {
             wildType = 2;
         }
         if (isFlat) {

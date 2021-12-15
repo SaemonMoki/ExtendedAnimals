@@ -6,7 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.EnumSet;
 
@@ -28,7 +28,7 @@ public class ECRunAroundLikeCrazy extends Goal {
      */
     public boolean shouldExecute() {
         if (!this.ridable.isTame() && this.ridable.isBeingRidden()) {
-            Vec3d vec3d = RandomPositionGenerator.findRandomTarget(this.ridable, 5, 4);
+            Vector3d vec3d = RandomPositionGenerator.findRandomTarget(this.ridable, 5, 4);
             if (vec3d == null) {
                 return false;
             } else {

@@ -27,7 +27,7 @@ public class RenderEnhancedCow extends MobRenderer<EnhancedCow, ModelEnhancedCow
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
     public ResourceLocation getEntityTexture(EnhancedCow entity) {
-        String s = entity.getCowTexture();
+        String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
 
         if (s == null || s.isEmpty() || colourRGB == null) {
@@ -35,6 +35,8 @@ public class RenderEnhancedCow extends MobRenderer<EnhancedCow, ModelEnhancedCow
         }
 
         s = s + colourRGB.getRGBStrings();
+
+        textureCache.removeFromCache(entity.updateCashe(s));
 
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 

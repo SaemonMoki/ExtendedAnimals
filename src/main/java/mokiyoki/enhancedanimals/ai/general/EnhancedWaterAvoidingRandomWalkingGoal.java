@@ -1,13 +1,13 @@
 package mokiyoki.enhancedanimals.ai.general;
 
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.pattern.BlockStateMatcher;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.function.Predicate;
 
@@ -32,11 +32,11 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomW
         } else {
             if (!this.mustUpdate) {
                 //Todo make this use Temperaments\
-                if(((EnhancedAnimal)this.creature).getHunger() > 12000 && checkForFood()) {
+                if(((EnhancedAnimalAbstract)this.creature).getHunger() > 12000 && checkForFood()) {
                     return false;
                 }
 
-                float hungerModifier = ((EnhancedAnimal)this.creature).getHunger()/100;
+                float hungerModifier = ((EnhancedAnimalAbstract)this.creature).getHunger()/100;
                 if (hungerModifier >= this.executionChance) {
                     hungerModifier = this.executionChance - 1;
                 }
@@ -51,7 +51,7 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomW
                 }
             }
 
-            Vec3d lvt_1_1_ = this.getPosition();
+            Vector3d lvt_1_1_ = this.getPosition();
             if (lvt_1_1_ == null) {
                 return false;
             } else {
@@ -65,7 +65,7 @@ public class EnhancedWaterAvoidingRandomWalkingGoal extends WaterAvoidingRandomW
     }
 
     private boolean checkForFood() {
-        BlockPos blockpos = new BlockPos(this.creature);
+        BlockPos blockpos = new BlockPos(this.creature.getPosition());
 
         //TODO add the predicate for different blocks to eat based on temperaments and animal type.
 //        if (IS_TALLGRASS.test(this.creature.world.getBlockState(blockpos))) {

@@ -1,6 +1,9 @@
 package mokiyoki.enhancedanimals.capability.egg;
 
+import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
+import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -18,8 +21,6 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
 
     @CapabilityInject(IEggCapability.class)
     public static final Capability<IEggCapability> EGG_CAP = null;
-
-//    private IEggCapability instance = EGG_CAP.getDefaultInstance();
 
     private final LazyOptional<IEggCapability> holder = LazyOptional.of(() -> this);
 
@@ -69,6 +70,21 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
         setDam(damName);
     }
 
+    @Override
+    public void setEggData(EggHolder eggHolder) {
+        setGenes(eggHolder.getGenes());
+        setSire(eggHolder.getSire());
+        setDam(eggHolder.getDam());
+    }
+
+    @Override
+    public EggHolder getEggHolder(ItemStack stack) {
+        boolean hasParents = false;
+        if (stack.getItem() instanceof EnhancedEgg) {
+            hasParents = ((EnhancedEgg) stack.getItem()).getHasParents(stack);
+        }
+        return new EggHolder(this.sireName, this.damName, this.genes, hasParents);
+    }
 
     @Nullable
     @Override

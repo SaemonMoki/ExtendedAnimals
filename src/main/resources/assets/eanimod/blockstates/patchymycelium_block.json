@@ -1,7 +1,10 @@
 {
   "variants": {
     "": [
-      { "model": "eanimod:block/patchymycelium_block" }
+      {"model": "eanimod:block/patchymycelium_block"},
+      {"model": "eanimod:block/patchymycelium_block", "y": 90},
+      {"model": "eanimod:block/patchymycelium_block", "y": 180},
+      {"model": "eanimod:block/patchymycelium_block", "y": 270}
     ]
   }
 }

@@ -1,21 +1,18 @@
 package mokiyoki.enhancedanimals.blocks;
 
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CropsBlock;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.client.event.ColorHandlerEvent;
 
 import java.util.Random;
 
@@ -43,7 +40,7 @@ public class GrowablePlant extends CropsBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        Vec3d vec3d = state.getOffset(worldIn, pos);
+        Vector3d vec3d = state.getOffset(worldIn, pos);
         return SHAPE_BY_AGE[state.get(this.getAgeProperty())].withOffset(vec3d.x, vec3d.y, vec3d.z);
     }
 
@@ -79,6 +76,6 @@ public class GrowablePlant extends CropsBlock {
     @Override
     protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
         Block block = state.getBlock();
-        return block == Blocks.GRASS_BLOCK || block == Blocks.DIRT || block == Blocks.COARSE_DIRT || block == Blocks.PODZOL || block == Blocks.FARMLAND;
+        return block == Blocks.GRASS_BLOCK || block == Blocks.DIRT || block == Blocks.COARSE_DIRT || block == Blocks.PODZOL || block == Blocks.FARMLAND || block == ModBlocks.SPARSEGRASS_BLOCK;
     }
 }

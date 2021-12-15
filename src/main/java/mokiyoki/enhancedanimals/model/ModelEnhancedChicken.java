@@ -2,15 +2,16 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
+import mokiyoki.enhancedanimals.renderer.EnhancedRendererModelNew;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,40 +31,41 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
     private float headRotationAngleX;
     private boolean nesting = false; //TODO actually make some nesting ai
-    private int pose = 0;
-    private int mutation = 0;
     private float wingAngle = 0; //[between 0 - -1.5]
 
     //the below is all chicken parts
-    private final ModelRenderer head;
-    private final ModelRenderer headNakedNeck;
-    private final ModelRenderer bigCrest;
-    private final ModelRenderer smallCrest;
-    private final ModelRenderer forwardCrest;
-    private final ModelRenderer combXtraSmallSingle;
-    private final ModelRenderer combSmallSingle;
-    private final ModelRenderer combSingle;
-    private final ModelRenderer combLargeSingle;
-    private final ModelRenderer combXtraLargeSingle;
-    private final ModelRenderer combSmallRose;
-    private final ModelRenderer combRose;
-    private final ModelRenderer combLargeRose;
-    private final ModelRenderer combSmallRose2;
-    private final ModelRenderer combRose2;
-    private final ModelRenderer combLargeRose2;
-    private final ModelRenderer combSmallPea;
-    private final ModelRenderer combPea;
-    private final ModelRenderer combLargePea;
-    private final ModelRenderer combSmallWalnut;
-    private final ModelRenderer combWalnut;
-    private final ModelRenderer combLargeWalnut;
-    private final ModelRenderer combV;
-    private final ModelRenderer body;
-    private final ModelRenderer bodyBig;
-    private final ModelRenderer bodySmall;
+    private final EnhancedRendererModelNew theChicken;
+    private final EnhancedRendererModelNew head;
+    private final EnhancedRendererModelNew headNakedNeck;
+    private final EnhancedRendererModelNew bigCrest;
+    private final EnhancedRendererModelNew smallCrest;
+    private final EnhancedRendererModelNew forwardCrest;
+    private final EnhancedRendererModelNew combXtraSmallSingle;
+    private final EnhancedRendererModelNew combSmallSingle;
+    private final EnhancedRendererModelNew combSingle;
+    private final EnhancedRendererModelNew combLargeSingle;
+    private final EnhancedRendererModelNew combXtraLargeSingle;
+    private final EnhancedRendererModelNew combSmallRose;
+    private final EnhancedRendererModelNew combRose;
+    private final EnhancedRendererModelNew combLargeRose;
+    private final EnhancedRendererModelNew combSmallRose2;
+    private final EnhancedRendererModelNew combRose2;
+    private final EnhancedRendererModelNew combLargeRose2;
+    private final EnhancedRendererModelNew combSmallPea;
+    private final EnhancedRendererModelNew combPea;
+    private final EnhancedRendererModelNew combLargePea;
+    private final EnhancedRendererModelNew combSmallWalnut;
+    private final EnhancedRendererModelNew combWalnut;
+    private final EnhancedRendererModelNew combLargeWalnut;
+    private final EnhancedRendererModelNew combV;
+    private final EnhancedRendererModelNew comb;
+    private final EnhancedRendererModelNew butterCup;
+    private final EnhancedRendererModelNew body;
+    private final EnhancedRendererModelNew bodyBig;
+    private final EnhancedRendererModelNew bodySmall;
     private final ModelRenderer xtraShortTail;
     private final ModelRenderer shortTail;
-    private final ModelRenderer tail;
+    private final EnhancedRendererModelNew tail;
     private final ModelRenderer longTail;
     private final ModelRenderer xtraLongTail;
     private final ModelRenderer rightLeg;
@@ -86,274 +88,272 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     private final ModelRenderer rightWingSmall;
     private final ModelRenderer leftWing;
     private final ModelRenderer leftWingSmall;
-    private final ModelRenderer bill;
-    private final ModelRenderer billChild;
-    private final ModelRenderer smallChin;
-    private final ModelRenderer chin;
-    private final ModelRenderer bigChin;
-    private final ModelRenderer beardChin;
-    private final ModelRenderer peaChin;
-    private final ModelRenderer beard;
-    private final ModelRenderer beardNN;
-    private final ModelRenderer earL;
-    private final ModelRenderer earR;
-    private final ModelRenderer earTuftL;
-    private final ModelRenderer earTuftR;
-    private final ModelRenderer earTuftHelper;
-    private final ModelRenderer eyeLeft;
-    private final ModelRenderer eyeRight;
-    private final ModelRenderer collar;
-    private final ModelRenderer bell;
+    private final EnhancedRendererModelNew beak;
+    private final EnhancedRendererModelNew smallChin;
+    private final EnhancedRendererModelNew chin;
+    private final EnhancedRendererModelNew bigChin;
+    private final EnhancedRendererModelNew beardChin;
+    private final EnhancedRendererModelNew peaChin;
+    private final EnhancedRendererModelNew beard;
+    private final EnhancedRendererModelNew beardNN;
+    private final EnhancedRendererModelNew earL;
+    private final EnhancedRendererModelNew earR;
+    private final EnhancedRendererModelNew earTuftL;
+    private final EnhancedRendererModelNew earTuftR;
+    private final EnhancedRendererModelNew eyeLeft;
+    private final EnhancedRendererModelNew eyeRight;
+    private final EnhancedRendererModelNew collar;
+    private final EnhancedRendererModelNew bell;
 
     private Integer currentChicken = null;
 
-    public ModelEnhancedChicken(float fluffyscale, boolean silkie) {
+    public ModelEnhancedChicken() {
         this.textureWidth = 64;
         this.textureHeight = 64;
 
         int combRz = 3;
 
-        this.head = new ModelRenderer(this, 12, 0);
-        this.head.addBox(-2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F + fluffyscale);
+        this.theChicken = new EnhancedRendererModelNew(this, 0, 0);
 
-        this.headNakedNeck = new ModelRenderer(this, 12, 0);
-        this.headNakedNeck.addBox(-2.0F, -6.0F, -2.0F, 4, 4, 3, 0.0F + fluffyscale);
+        this.head = new EnhancedRendererModelNew(this, 12, 0, "Head");
+        this.head.addBox(-2.0F, -6.0F, -2.0F, 4, 6, 3, 0.0F);
+
+        this.headNakedNeck = new EnhancedRendererModelNew(this, 12, 0, "NNHead");
+        this.headNakedNeck.addBox(-2.0F, -6.0F, -2.0F, 4, 4, 3, 0.0F);
         this.headNakedNeck.setTextureOffset(0, 6);
         this.headNakedNeck.addBox(-1F, -2.0F, -4F + combRz, 2, 3, 2);
 
-        this.bigCrest = new ModelRenderer(this, 1, 42);
-        this.bigCrest.addBox(-2F, -9.0F, -5.5F + combRz, 4, 4, 4, 0.4F + fluffyscale);
+        this.bigCrest = new EnhancedRendererModelNew(this, 1, 42, "BigCrest");
+        this.bigCrest.addBox(-2F, -9.0F, -5.5F + combRz, 4, 4, 4, 0.4F);
 
-        this.smallCrest = new ModelRenderer(this, 2, 43);
-        this.smallCrest.addBox(-1.5F, -8.5F, -5F + combRz, 3, 3, 3, 0.1F + fluffyscale);
+        this.smallCrest = new EnhancedRendererModelNew(this, 2, 43, "SmallCrest");
+        this.smallCrest.addBox(-1.5F, -8.5F, -5F + combRz, 3, 3, 3, 0.1F);
 
-        this.forwardCrest = new ModelRenderer(this, 2, 43);
-        this.forwardCrest.addBox(-1.5F, -8.0F, -6F + combRz, 3, 3, 3, 0.2F + fluffyscale);
+        this.forwardCrest = new EnhancedRendererModelNew(this, 2, 43, "ForwardCrest");
+        this.forwardCrest.addBox(-1.5F, -8.0F, -6F + combRz, 3, 3, 3, 0.2F);
 
-        this.earL = new ModelRenderer(this, 1, 52);
-        this.earR = new ModelRenderer(this, 1, 52);
-        this.eyeLeft = new ModelRenderer(this, 23, 0);
-        this.eyeRight = new ModelRenderer(this, 11, 0);
-        if (!silkie) {
-            this.earL.addBox(-2.2F, -6.0F, -2.2F, 1, 6, 3);
-            this.earR.addBox(2.2F, -6.0F, -2.4F, 1, 6, 3);
-            this.earR.mirror = true;
+        this.earL = new EnhancedRendererModelNew(this, 1, 52, "LeftEar");
+        this.earL.addBox(-2.2F, -6.0F, -2.2F, 1, 6, 3);
+        this.earR = new EnhancedRendererModelNew(this, 1, 52, "RightEar");
+        this.earR.addBox(2.2F, -6.0F, -2.4F, 1, 6, 3);
+        this.earR.mirror = true;
 
-            this.eyeLeft.addBox(1.0F, -5.0F, -2.0F, 1, 1, 1, 0.01F);
-            this.eyeRight.addBox(-2.0F, -5.0F, -2.0F, 1, 1, 1, 0.01F);
-        }
+        this.eyeLeft = new EnhancedRendererModelNew(this, 23, 0, "EyeLeft");
+        this.eyeLeft.addBox(1.0F, -5.0F, -2.0F, 1, 1, 1, 0.01F);
+        this.eyeRight = new EnhancedRendererModelNew(this, 11, 0, "EyeRight");
+        this.eyeRight.addBox(-2.0F, -5.0F, -2.0F, 1, 1, 1, 0.01F);
 
-        this.earTuftL = new ModelRenderer(this, 12, 47);
-        this.earTuftL.addBox(-2.0F, 0.0F, 0.0F, 2, 1, 3 + fluffyscale);
+        this.earTuftL = new EnhancedRendererModelNew(this, 12, 47, "LeftEarTuft");
+        this.earTuftL.addBox(-2.0F, 0.0F, 0.0F, 2, 1, 3F);
         this.earTuftL.setRotationPoint(-1.5F, -4.5F, -1.0F);
 
-        this.earTuftR = new ModelRenderer(this, 12, 47);
-        this.earTuftR.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3 + fluffyscale);
+        this.earTuftR = new EnhancedRendererModelNew(this, 12, 47, "RightEarTuft");
+        this.earTuftR.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3F);
         this.earTuftR.setRotationPoint(1.5F, -4.5F, -1.0F);
         this.earR.mirror = true;
 
         int combSz = 3;
 
+        this.combXtraSmallSingle = new EnhancedRendererModelNew(this, 0, 0, "XSSingleComb");
+        this.combXtraSmallSingle.addBox(-0.5F, -1.5F, -2.5F, 1, 2, 1, -0.25F);
+        this.combXtraSmallSingle.addBox(-0.5F, -2.0F, -2.0F, 1, 2, 1, -0.25F);
+        this.combXtraSmallSingle.addBox(-0.5F, -1.75F, -1.5F, 1, 1, 1, -0.25F);
+        this.combXtraSmallSingle.addBox(-0.5F, -2.25F, -1.0F, 1, 2, 1, -0.25F);
+        this.combXtraSmallSingle.addBox(-0.5F, -1.75F, -0.5F, 1, 1, 1, -0.25F);
+        this.combXtraSmallSingle.addBox(-0.5F, -2.0F, 0.0F, 1, 1, 1, -0.25F);
 
-        this.combXtraSmallSingle = new ModelRenderer(this, 0, 0);
-        this.combSmallSingle = new ModelRenderer(this, 0, 0);
-        this.combSingle = new ModelRenderer(this, 0, 0);
-        this.combLargeSingle = new ModelRenderer(this, 0, 0);
-        this.combXtraLargeSingle = new ModelRenderer(this, 0, 0);
-        this.combSmallRose = new ModelRenderer(this, 0, 0);
-        this.combRose = new ModelRenderer(this, 0, 0);
-        this.combLargeRose = new ModelRenderer(this, 0, 0);
-        this.combSmallRose2 = new ModelRenderer(this, 0, 0);
-        this.combRose2 = new ModelRenderer(this, 0, 0);
-        this.combLargeRose2 = new ModelRenderer(this, 0, 0);
-        this.combSmallPea = new ModelRenderer(this, 0, 0);
-        this.combV = new ModelRenderer(this, 0, 0);
-        this.combPea = new ModelRenderer(this, 0, 0);
-        this.combLargePea = new ModelRenderer(this, 0, 0);
-        this.combSmallWalnut = new ModelRenderer(this, 0, 0);
-        this.combWalnut = new ModelRenderer(this, 0, 0);
-        this.combLargeWalnut = new ModelRenderer(this, 0, 0);
+        this.combSmallSingle = new EnhancedRendererModelNew(this, 0, 0, "SSingleComb");
+        this.combSmallSingle.addBox(-0.5F, -1.75F, -2.25F, 1, 2, 1, -0.125F);
+        this.combSmallSingle.addBox(-0.5F, -2.5F, -1.75F, 1, 1, 1, -0.125F);
+        this.combSmallSingle.addBox(-0.5F, -1.75F, -1.5F, 1, 1, 2, -0.125F);
+        this.combSmallSingle.addBox(-0.5F, -2.5F, -0.5F, 1, 1, 1, -0.125F);
+        this.combSmallSingle.addBox(-0.5F, -1.75F, 0F, 1, 1, 1, -0.125F);
+        this.combSmallSingle.addBox(-0.5F, -2.0F, 0.75F, 1, 1, 1, -0.125F);
 
-        if (!silkie) {
-            this.combXtraSmallSingle.addBox(-0.5F, -6.5F, (-5.5F + combSz), 1, 2, 1, -0.25F);
-            this.combXtraSmallSingle.addBox(-0.5F, -7.0F, (-5F + combSz), 1, 2, 1, -0.25F);
-            this.combXtraSmallSingle.addBox(-0.5F, -6.75F, (-4.5F + combSz), 1, 1, 1, -0.25F);
-            this.combXtraSmallSingle.addBox(-0.5F, -7.25F, (-4F + combSz), 1, 2, 1, -0.25F);
-            this.combXtraSmallSingle.addBox(-0.5F, -6.75F, (-3.5F + combSz), 1, 1, 1, -0.25F);
-            this.combXtraSmallSingle.addBox(-0.5F, -7.0F, (-3.25F + combSz), 1, 1, 1, -0.25F);
+        this.combSingle = new EnhancedRendererModelNew(this, 0, 0, "SingleComb");
+        this.combSingle.addBox(-0.5F, -1.0F, (-6F + combSz), 1, 1, 1);
+        this.combSingle.addBox(-0.5F, -1.5F, (-6F + combSz), 1, 1, 1);
+        this.combSingle.addBox(-0.5F, -2.5F, (-5F + combSz), 1, 2, 1);
+        this.combSingle.addBox(-0.5F, -2.0F, (-4F + combSz), 1, 1, 1);
+        this.combSingle.addBox(-0.5F, -2.5F, (-3F + combSz), 1, 2, 1);
+        this.combSingle.addBox(-0.5F, -1.5F, (-2F + combSz), 1, 1, 1);
 
-            this.combSmallSingle.addBox(-0.5F, -6.75F, -2.25F, 1, 2, 1, -0.125F);
-            this.combSmallSingle.addBox(-0.5F, -7.5F, -1.75F, 1, 1, 1, -0.125F);
-            this.combSmallSingle.addBox(-0.5F, -6.75F, -1.5F, 1, 1, 2, -0.125F);
-            this.combSmallSingle.addBox(-0.5F, -7.5F, -0.5F, 1, 1, 1, -0.125F);
-            this.combSmallSingle.addBox(-0.5F, -6.75F, 0F, 1, 1, 1, -0.125F);
-            this.combSmallSingle.addBox(-0.5F, -7F, 0.75F, 1, 1, 1, -0.125F);
+        this.combLargeSingle = new EnhancedRendererModelNew(this, 0, 0, "LSingleComb");
+        this.combLargeSingle.addBox(-0.5F, -2.5F, (-6.5F + combSz), 1, 1, 1);
+        this.combLargeSingle.addBox(-0.5F, -1.5F, (-6F + combSz), 1, 2, 1);
+        this.combLargeSingle.addBox(-0.5F, -3.5F, (-5F + combSz), 1, 3, 1);
+        this.combLargeSingle.addBox(-0.5F, -2.5F, (-4F + combSz), 1, 2, 1);
+        this.combLargeSingle.addBox(-0.5F, -4.0F, (-3F + combSz), 1, 3, 1);
+        this.combLargeSingle.addBox(-0.5F, -2.5F, (-2F + combSz), 1, 2, 1);
+        this.combLargeSingle.addBox(-0.5F, -3.5F, (-1F + combSz), 1, 3, 1);
+        this.combLargeSingle.addBox(-0.5F, -2.0F, (0F + combSz), 1, 1, 1);
 
-            this.combSingle.addBox(-0.5F, -6.0F, (-6F + combSz), 1, 1, 1);
-            this.combSingle.addBox(-0.5F, -6.5F, (-6F + combSz), 1, 1, 1);
-            this.combSingle.addBox(-0.5F, -7.5F, (-5F + combSz), 1, 2, 1);
-            this.combSingle.addBox(-0.5F, -7.0F, (-4F + combSz), 1, 1, 1);
-            this.combSingle.addBox(-0.5F, -7.5F, (-3F + combSz), 1, 2, 1);
-            this.combSingle.addBox(-0.5F, -6.5F, (-2F + combSz), 1, 1, 1);
+        this.combXtraLargeSingle = new EnhancedRendererModelNew(this, 0, 0, "XLSingleComb");
+        this.combXtraLargeSingle.addBox(-0.5F, -3.5F, (-6.5F + combSz), 1, 2, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, -2.5F, (-6F + combSz), 1, 3, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, -5.0F, (-5F + combSz), 1, 4, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, -3.5F, (-4F + combSz), 1, 3, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, -4.5F, (-3F + combSz), 1, 4, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, -5.5F, (-2.5F + combSz), 1, 1, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, -3.5F, (-2F + combSz), 1, 3, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, -4.5F, (-1F + combSz), 1, 4, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, -5.0F, (-0.5F + combSz), 1, 1, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, -3.0F, (0F + combSz), 1, 2, 1);
+        this.combXtraLargeSingle.addBox(-0.5F, -3.5F, (1F + combSz), 1, 2, 1);
 
-            this.combLargeSingle.addBox(-0.5F, -7.5F, (-6.5F + combSz), 1, 1, 1);
-            this.combLargeSingle.addBox(-0.5F, -6.5F, (-6F + combSz), 1, 2, 1);
-            this.combLargeSingle.addBox(-0.5F, -8.5F, (-5F + combSz), 1, 3, 1);
-            this.combLargeSingle.addBox(-0.5F, -7.5F, (-4F + combSz), 1, 2, 1);
-            this.combLargeSingle.addBox(-0.5F, -9.0F, (-3F + combSz), 1, 3, 1);
-            this.combLargeSingle.addBox(-0.5F, -7.5F, (-2F + combSz), 1, 2, 1);
-            this.combLargeSingle.addBox(-0.5F, -8.5F, (-1F + combSz), 1, 3, 1);
-            this.combLargeSingle.addBox(-0.5F, -7.0F, (0F + combSz), 1, 1, 1);
+        this.combSmallRose = new EnhancedRendererModelNew(this, 0, 0, "SRoseComb");
+        this.combSmallRose.addBox(-1F, -1.25F, (-5.75F + combRz), 2, 2, 1, -0.25F);
+        this.combSmallRose.addBox(-0.5F, -2.0F, (-5.25F + combRz), 1, 2, 1, -0.1F);
+        this.combSmallRose.addBox(-0.5F, -2.4F, (-4.75F + combRz), 1, 1, 1, -0.25F);
 
-            this.combXtraLargeSingle.addBox(-0.5F, -8.5F, (-6.5F + combSz), 1, 2, 1);
-            this.combXtraLargeSingle.addBox(-0.5F, -7.5F, (-6F + combSz), 1, 3, 1);
-            this.combXtraLargeSingle.addBox(-0.5F, -10.0F, (-5F + combSz), 1, 4, 1);
-            this.combXtraLargeSingle.addBox(-0.5F, -8.5F, (-4F + combSz), 1, 3, 1);
-            this.combXtraLargeSingle.addBox(-0.5F, -9.5F, (-3F + combSz), 1, 4, 1);
-            this.combXtraLargeSingle.addBox(-0.5F, -10.5F, (-2.5F + combSz), 1, 1, 1);
-            this.combXtraLargeSingle.addBox(-0.5F, -8.5F, (-2F + combSz), 1, 3, 1);
-            this.combXtraLargeSingle.addBox(-0.5F, -9.5F, (-1F + combSz), 1, 4, 1);
-            this.combXtraLargeSingle.addBox(-0.5F, -10.0F, (-0.5F + combSz), 1, 1, 1);
-            this.combXtraLargeSingle.addBox(-0.5F, -8.0F, (0F + combSz), 1, 2, 1);
-            this.combXtraLargeSingle.addBox(-0.5F, -8.5F, (1F + combSz), 1, 2, 1);
+        this.combRose = new EnhancedRendererModelNew(this, 0, 0, "RoseComb");
+        this.combRose.addBox(-0.5F, -1.0F, (-6F + combRz), 1, 1, 1, 0.5F);
+        this.combRose.addBox(-0.5F, -2.0F, (-5F + combRz), 1, 1, 1, 0.25F);
+        this.combRose.addBox(-0.5F, -3.0F, (-4F + combRz), 1, 1, 1);
 
-            this.combSmallRose.addBox(-1F, -6.25F, (-5.75F + combRz), 2, 2, 1, -0.25F);
-            this.combSmallRose.addBox(-0.5F, -7F, (-5.25F + combRz), 1, 2, 1, -0.1F);
-            this.combSmallRose.addBox(-0.5F, -7.4F, (-4.75F + combRz), 1, 1, 1, -0.25F);
+        this.combLargeRose = new EnhancedRendererModelNew(this, 0, 0, "LRoseComb");
+        this.combLargeRose.addBox(-1.0F, -1.0F, -3.0F, 2, 2, 1);
+        this.combLargeRose.addBox(-0.5F, -2.0F, -2.5F, 1, 1, 2, 0.2F);
+        this.combLargeRose.addBox(-0.5F, -3.0F, -0.5F, 1, 2, 1);
+        this.combLargeRose.addBox(-0.5F, -4.0F, -0.0F, 1, 1, 1);
 
-            this.combRose.addBox(-0.5F, -6.0F, (-6F + combRz), 1, 1, 1, 0.5F);
-            this.combRose.addBox(-0.5F, -7.0F, (-5F + combRz), 1, 1, 1, 0.25F);
-            this.combRose.addBox(-0.5F, -8.0F, (-4F + combRz), 1, 1, 1);
+        this.combSmallRose2 = new EnhancedRendererModelNew(this, 0, 0, "SRoseTwo");
+        this.combSmallRose2.addBox(-0.5F, -1.0F, -2.5F, 1, 1, 1, 0.1F);
+        this.combSmallRose2.addBox(-0.5F, -1.5F, -2.0F, 1, 1, 1);
+        this.combSmallRose2.addBox(-0.5F, -1.4F, -1F, 1, 1, 1);
 
-            this.combLargeRose.addBox(-1.0F, -6.0F, -3.0F, 2, 2, 1);
-            this.combLargeRose.addBox(-0.5F, -7.0F, -2.5F, 1, 1, 2, 0.2F);
-            this.combLargeRose.addBox(-0.5F, -8.0F, -0.5F, 1, 2, 1);
-            this.combLargeRose.addBox(-0.5F, -9.0F, -0.0F, 1, 1, 1);
+        this.combRose2 = new EnhancedRendererModelNew(this, 0, 0, "RoseTwo");
+        this.combRose2.addBox(-0.5F, -1.0F, (-6F + combRz), 1, 1, 1, 0.5F);
+        this.combRose2.addBox(-0.5F, -2.0F, (-5F + combRz), 1, 1, 1, 0.25F);
+        this.combRose2.addBox(-0.5F, -2.0F, (-4F + combRz), 1, 1, 1);
 
-            this.combSmallRose2.addBox(-0.5F, -6.0F, -2.5F, 1, 1, 1, 0.1F);
-            this.combSmallRose2.addBox(-0.5F, -6.5F, -2.0F, 1, 1, 1);
-            this.combSmallRose2.addBox(-0.5F, -6.4F, -1F, 1, 1, 1);
+        this.combLargeRose2 = new EnhancedRendererModelNew(this, 0, 0, "LRoseTwo");
+        this.combLargeRose2.addBox(-1.0F, -1.0F, -3.0F, 2, 2, 1);
+        this.combLargeRose2.addBox(-1.0F, -1.75F, -2.5F, 2, 1, 2);
+        this.combLargeRose2.addBox(-0.5F, -1.5F, -0.5F, 1, 1, 1, 0.2F);
 
-            this.combRose2.addBox(-0.5F, -6.0F, (-6F + combRz), 1, 1, 1, 0.5F);
-            this.combRose2.addBox(-0.5F, -7.0F, (-5F + combRz), 1, 1, 1, 0.25F);
-            this.combRose2.addBox(-0.5F, -7.0F, (-4F + combRz), 1, 1, 1);
+        this.combSmallPea = new EnhancedRendererModelNew(this, 0, 0, "SPeaComb");
+        this.combSmallPea.addBox(-0.5F, -1.0F, -2.5F, 1, 1, 1, -0.25F);
+        this.combSmallPea.addBox(-0.5F, -1.5F, -2.5F, 1, 1, 1, -0.125F);
+        this.combSmallPea.addBox(-0.5F, -1.5F, -1.9F, 1, 1, 1, -0.25F);
 
-            this.combLargeRose2.addBox(-1.0F, -6.0F, -3.0F, 2, 2, 1);
-            this.combLargeRose2.addBox(-1.0F, -6.75F, -2.5F, 2, 1, 2);
-            this.combLargeRose2.addBox(-0.5F, -6.5F, -0.5F, 1, 1, 1, 0.2F);
+        this.combPea = new EnhancedRendererModelNew(this, 0, 0, "PeaComb");
+        this.combPea.addBox(-0.5F, -1.0F, -3.0F, 1, 1, 2, -0.2F);
+        this.combPea.addBox(-0.5F, -1.5F, -2.5F, 1, 1, 1);
+        this.combPea.addBox(-0.5F, -2.0F, -2.0F, 1, 2, 1, -0.2F);
 
-            int combPy = -15;
-            int combPz = 3;
-            this.combSmallPea.addBox(-0.5F, -6F, -2.5F, 1, 1, 1, -0.25F);
-            this.combSmallPea.addBox(-0.5F, -6.5F, -2.5F, 1, 1, 1, -0.125F);
-            this.combSmallPea.addBox(-0.5F, -6.5F, -1.9F, 1, 1, 1, -0.25F);
+        this.combLargePea = new EnhancedRendererModelNew(this, 0, 0, "LPeaComb");
+        this.combLargePea.addBox(-1.0F, -0.75F, -2.25F, 2, 1, 1);
+        this.combLargePea.addBox(-0.5F, -1.75F, -2.4F, 1, 2, 2);
+        this.combLargePea.setTextureOffset(0, 14);
+        this.combLargePea.addBox(0.5F, -1.75F, -2.4F, 1, 2, 2);
+        this.combLargePea.addBox(-0.5F, -2.0F, -1.1F, 1, 1, 1);
 
-            this.combPea.addBox(-0.5F, (9F + combPy), (-6F + combPz), 1, 1, 2, -0.2F);
-            this.combPea.addBox(-0.5F, (8.5F + combPy), (-5.5F + combPz), 1, 1, 1);
-            this.combPea.addBox(-0.5F, (8F + combPy), (-5F + combPz), 1, 2, 1, -0.2F);
+        this.combSmallWalnut = new EnhancedRendererModelNew(this, 0, 0, "SWalnutComb");
+        this.combSmallWalnut.addBox(-0.5F, -1.5F, -2.5F, 1, 1, 1, -0.25F);
 
-            this.combLargePea.addBox(-1.0F, -5.75F, -2.25F, 2, 1, 1);
-            this.combLargePea.addBox(-0.5F, -6.75F, -2.4F, 1, 2, 2);
-            this.combLargePea.setTextureOffset(0, 14);
-            this.combLargePea.addBox(0.5F, -6.75F, -2.4F, 1, 2, 2);
-            this.combLargePea.addBox(-0.5F, -7F, -1.1F, 1, 1, 1);
+        this.combWalnut = new EnhancedRendererModelNew(this, 0, 0, "WalnutComb");
+        this.combWalnut.addBox(-0.5F, -1.5F, -2.5F, 1, 1, 1);
 
-            this.combSmallWalnut.addBox(-0.5F, (8.5F + combPy), (-5.5F + combPz), 1, 1, 1, -0.25F);
+        this.combLargeWalnut = new EnhancedRendererModelNew(this, 0, 0, "LWalnut");
+        this.combLargeWalnut.addBox(-1F, -2.0F, -2.5F, 2, 2, 1, -0.125F);
+        this.combLargeWalnut.addBox(-0.5F, -1.5F, -2.0F, 1, 1, 1);
 
-            this.combWalnut.addBox(-0.5F, (8.5F + combPy), (-5.5F + combPz), 1, 1, 1);
+        this.combV = new EnhancedRendererModelNew(this, 0, 0, "VComb");
+        this.combV.addBox(-0.5F, -1.5F, (-5.5F + combRz), 1, 1, 1);
+        this.combV.addBox(0F, -2.0F, (-5.25F + combRz), 1, 1, 1, -0.2F);
+        this.combV.addBox(-1F, -2.0F, (-5.25F + combRz), 1, 1, 1, -0.2F);
+        this.combV.addBox(.1F, -2.3F, (-5F + combRz), 1, 1, 1, -0.3F);
+        this.combV.addBox(-1.1F, -2.3F, (-5F + combRz), 1, 1, 1, -0.3F);
 
-            this.combLargeWalnut.addBox(-1F, (8F + combPy), (-5.5F + combPz), 2, 2, 1, -0.125F);
-            this.combLargeWalnut.addBox(-0.5F, (8.5F + combPy), (-5F + combPz), 1, 1, 1);
+        this.comb = new EnhancedRendererModelNew(this, 0, 0, "Comb", false);
+        this.comb.setRotationPoint(0.0F, -5.0F, 0.0F);
 
-            this.combV.addBox(-0.5F, (8.5F + -15), (-5.5F + combRz), 1, 1, 1);
-            this.combV.addBox(0F, -7.0F, (-5.25F + combRz), 1, 1, 1, -0.2F);
-            this.combV.addBox(-1F, -7.0F, (-5.25F + combRz), 1, 1, 1, -0.2F);
-            this.combV.addBox(.1F, (7.7F + -15), (-5F + combRz), 1, 1, 1, -0.3F);
-            this.combV.addBox(-1.1F, (7.7F + -15), (-5F + combRz), 1, 1, 1, -0.3F);
-        }
+        this.butterCup = new EnhancedRendererModelNew(this, 0, 0, "ButterCup", false);
+        this.butterCup.setRotationPoint(0.0F, -5.0F, 0.0F);
+        this.butterCup.rotateAngleZ = (float)Math.PI * 0.15F;
 
-        this.body = new ModelRenderer(this, 22, 10);
-        this.body.addBox(-3F, -6F, -4F, 6, 6, 8 + fluffyscale);
+        this.body = new EnhancedRendererModelNew(this, 22, 10, "Body");
+        this.body.addBox(-3F, -6F, -4F, 6, 6, 8F);
         this.body.setRotationPoint(0F, 0F, 1F);
 
-        this.bodyBig = new ModelRenderer(this, 22, 10);
-        this.bodyBig.addBox(-3F, -6F, -4F, 6, 6, 8, 0.5F + fluffyscale);
+        this.bodyBig = new EnhancedRendererModelNew(this, 22, 10, "BigBody");
+        this.bodyBig.addBox(-3F, -6F, -4F, 6, 6, 8, 0.5F);
         this.bodyBig.setRotationPoint(0F, 0F, 1F);
 
-        this.bodySmall = new ModelRenderer(this, 22, 10);
-        this.bodySmall.addBox(-3F, -6F, -4F, 6, 6, 8, -0.5F + fluffyscale);
+        this.bodySmall = new EnhancedRendererModelNew(this, 22, 10, "SmallBody");
+        this.bodySmall.addBox(-3F, -6F, -4F, 6, 6, 8, -0.5F);
         this.bodySmall.setRotationPoint(0F, 0F, 1F);
 
         this.xtraShortTail = new ModelRenderer(this, 36, 10);
-        this.xtraShortTail.addBox(-0.5F, 12F, 3F, 1, 4, 3 + fluffyscale);
+        this.xtraShortTail.addBox(-0.5F, 12F, 3F, 1, 4, 3F);
         this.xtraShortTail.setTextureOffset(37, 11);
-        this.xtraShortTail.addBox(-0.5F, 11F, 4F, 1, 1, 2 + fluffyscale);
+        this.xtraShortTail.addBox(-0.5F, 11F, 4F, 1, 1, 2F);
 
         this.shortTail = new ModelRenderer(this, 34, 11);
-        this.shortTail.addBox(-0.5F, 12F, 3F, 1, 4, 4 + fluffyscale);
+        this.shortTail.addBox(-0.5F, 12F, 3F, 1, 4, 4F);
         this.shortTail.setTextureOffset(36, 11);
-        this.shortTail.addBox(-0.5F, 11F, 4F, 1, 1, 3 + fluffyscale);
+        this.shortTail.addBox(-0.5F, 11F, 4F, 1, 1, 3F);
 
-        this.tail = new ModelRenderer(this, 30, 0);
-        this.tail.addBox(-0.5F, -7F, 3F, 1, 4, 5 + fluffyscale);
+        this.tail = new EnhancedRendererModelNew(this, 30, 0, "NormalTail");
+        this.tail.addBox(-0.5F, 0.0F, 3F, 1, 4, 5F);
         this.tail.setTextureOffset(44, 3);
-        this.tail.addBox(-0.5F, -8F, 4F, 1, 1, 4 + fluffyscale);
+        this.tail.addBox(-0.5F, -1.0F, 4F, 1, 1, 4F);
+        this.tail.setRotationPoint(0.0F, -6.5F, -0.5F);
 
         this.longTail = new ModelRenderer(this, 34, 10);
-        this.longTail.addBox(-0.5F, 12F, 3F, 1, 4, 5 + fluffyscale);
+        this.longTail.addBox(-0.5F, 12F, 3F, 1, 4, 5F);
         this.longTail.setTextureOffset(35, 11);
-        this.longTail.addBox(-0.5F, 11F, 4F, 1, 1, 4 + fluffyscale);
+        this.longTail.addBox(-0.5F, 11F, 4F, 1, 1, 4F);
         this.longTail.setTextureOffset(38, 13);
-        this.longTail.addBox(-0.5F, 12F, 8F, 1, 3, 2 + fluffyscale);
+        this.longTail.addBox(-0.5F, 12F, 8F, 1, 3, 2F);
         this.longTail.setTextureOffset(39, 15);
-        this.longTail.addBox(-0.5F, 13F, 10F, 1, 1, 1 + fluffyscale);
+        this.longTail.addBox(-0.5F, 13F, 10F, 1, 1, 1F);
 
         this.xtraLongTail = new ModelRenderer(this, 34, 10);
-        this.xtraLongTail.addBox(-0.5F, 12F, 4F, 1, 4, 5 + fluffyscale);
+        this.xtraLongTail.addBox(-0.5F, 12F, 4F, 1, 4, 5F);
         this.xtraLongTail.setTextureOffset(35, 11);
-        this.xtraLongTail.addBox(-0.5F, 11F, 5F, 1, 1, 4 + fluffyscale);
+        this.xtraLongTail.addBox(-0.5F, 11F, 5F, 1, 1, 4F);
         this.xtraLongTail.setTextureOffset(38, 13);
-        this.xtraLongTail.addBox(-0.5F, 12F, 9F, 1, 3, 2 + fluffyscale);
-        this.xtraLongTail.addBox(-0.5F, 15F, 9F, 1, 3, 3 + fluffyscale);
+        this.xtraLongTail.addBox(-0.5F, 12F, 9F, 1, 3, 2F);
+        this.xtraLongTail.addBox(-0.5F, 15F, 9F, 1, 3, 3F);
         this.xtraLongTail.setTextureOffset(39, 15);
-        this.xtraLongTail.addBox(-0.5F, 18F, 11F, 1, 1, 1 + fluffyscale);
-        this.xtraLongTail.addBox(-0.5F, 16F, 5F, 1, 1, 1 + fluffyscale);
+        this.xtraLongTail.addBox(-0.5F, 18F, 11F, 1, 1, 1F);
+        this.xtraLongTail.addBox(-0.5F, 16F, 5F, 1, 1, 1F);
 
         this.leftLeg = new ModelRenderer(this, 8, 18);
         this.leftLegExtend = new ModelRenderer(this, 8, 18);
         this.rightLeg = new ModelRenderer(this, 8, 18);
         this.rightLegExtend = new ModelRenderer(this, 8, 18);
-        if (!silkie) {
-            this.leftLeg.addBox(-2F, 3.5F, 1F, 1, 5, 1);
-            this.leftLeg.setTextureOffset(0, 22);
-            this.leftLeg.addBox(-3F, 8F, -1F, 3, 1, 2);
-            this.leftLeg.setTextureOffset(2, 23);
-            this.leftLeg.addBox(-2F, 8F, -2F, 1, 1, 1);
+        this.leftLeg.addBox(-2F, 3.5F, 1F, 1, 5, 1);
+        this.leftLeg.setTextureOffset(0, 22);
+        this.leftLeg.addBox(-3F, 8F, -1F, 3, 1, 2);
+        this.leftLeg.setTextureOffset(2, 23);
+        this.leftLeg.addBox(-2F, 8F, -2F, 1, 1, 1);
 
-            this.leftLegExtend.addBox(-2F, 1.5F, 1F, 1, 2, 1);
+        this.leftLegExtend.addBox(-2F, 1.5F, 1F, 1, 2, 1);
 
-            this.rightLeg.addBox(1F, 3.5F, 1F, 1, 5, 1);
-            this.rightLeg.setTextureOffset(0, 22);
-            this.rightLeg.addBox(0F, 8F, -1F, 3, 1, 2);
-            this.rightLeg.setTextureOffset(3, 23);
-            this.rightLeg.addBox(1F, 8F, -2F, 1, 1, 1);
+        this.rightLeg.addBox(1F, 3.5F, 1F, 1, 5, 1);
+        this.rightLeg.setTextureOffset(0, 22);
+        this.rightLeg.addBox(0F, 8F, -1F, 3, 1, 2);
+        this.rightLeg.setTextureOffset(3, 23);
+        this.rightLeg.addBox(1F, 8F, -2F, 1, 1, 1);
 
-            this.rightLegExtend.addBox(1F, 1.5F, 1F, 1, 2, 1);
-        }
+        this.rightLegExtend.addBox(1F, 1.5F, 1F, 1, 2, 1);
 
         this.rightFeather1 = new ModelRenderer(this, 1, 35);
-        this.rightFeather1.addBox(1.1F, 4F, 0F, 2, 3, 3 + fluffyscale);
+        this.rightFeather1.addBox(1.1F, 4F, 0F, 2, 3, 3F);
 
         this.rightFeather1Extend = new ModelRenderer(this, 1, 35);
-        this.rightFeather1Extend.addBox(1.1F, 2F, 0F, 2, 2, 3 + fluffyscale);
+        this.rightFeather1Extend.addBox(1.1F, 2F, 0F, 2, 2, 3F);
 
         this.leftFeather1 = new ModelRenderer(this, 1, 35);
         this.leftFeather1.mirror = true;
-        this.leftFeather1.addBox(-3.1F, 4F, 0F, 2, 3, 3 + fluffyscale);
+        this.leftFeather1.addBox(-3.1F, 4F, 0F, 2, 3, 3F);
 
         this.leftFeather1Extend = new ModelRenderer(this, 1, 35);
         this.leftFeather1Extend.mirror = true;
-        this.leftFeather1Extend.addBox(-3.1F, 2F, 0F, 2, 2, 3 + fluffyscale);
+        this.leftFeather1Extend.addBox(-3.1F, 2F, 0F, 2, 2, 3F);
 
 //        this.rightFeatherTall1 = new ModelRenderer(this,1,35);
 //        this.rightFeatherTall1.addBox(1.1F, 3F, 0F, 2, 1, 3);
@@ -365,101 +365,165 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 //        this.leftFeatherTall1.addBox(-3.1F, 4F, 0F, 2, 3, 3);
 
         this.rightFeather2 = new ModelRenderer(this, 12, 34);
-        this.rightFeather2.addBox(1.5F, 7F, -2.5F, 2, 2, 5 + fluffyscale);
+        this.rightFeather2.addBox(1.5F, 7F, -2.5F, 2, 2, 5F);
 
         this.leftFeather2 = new ModelRenderer(this, 12, 34);
         this.leftFeather2.mirror = true;
-        this.leftFeather2.addBox(-3.5F, 7F, -2.5F, 2, 2, 5 + fluffyscale);
+        this.leftFeather2.addBox(-3.5F, 7F, -2.5F, 2, 2, 5F);
 
         this.rightFeather3 = new ModelRenderer(this, 28, 36);
-        this.rightFeather3.addBox(3.5F, 8.9F, -2.5F, 4, 1, 5 + fluffyscale);
+        this.rightFeather3.addBox(3.5F, 8.9F, -2.5F, 4, 1, 5F);
 
         this.leftFeather3 = new ModelRenderer(this, 28, 36);
         this.leftFeather3.mirror = true;
-        this.leftFeather3.addBox(-7.5F, 8.9F, -2.5F, 4, 1, 5 + fluffyscale);
+        this.leftFeather3.addBox(-7.5F, 8.9F, -2.5F, 4, 1, 5F);
 
         this.rightVultureHock = new ModelRenderer(this, 33, 32);
         this.rightVultureHock.mirror = true;
-        this.rightVultureHock.addBox(2.5F, 3.0F, 2.5F, 1, 3, 4, -0.2F + fluffyscale);
+        this.rightVultureHock.addBox(2.5F, 3.0F, 2.5F, 1, 3, 4, -0.2F);
 
         this.leftVultureHock = new ModelRenderer(this, 33, 32);
-        this.leftVultureHock.addBox(-3.5F, 3.0F, 2.5F, 1, 3, 4, -0.2F + fluffyscale);
+        this.leftVultureHock.addBox(-3.5F, 3.0F, 2.5F, 1, 3, 4, -0.2F);
 
         this.rightWing = new ModelRenderer(this, 13, 19);
-        this.rightWing.addBox(0F, 0F, -3.0F, 1, 4, 6 + fluffyscale);
+        this.rightWing.addBox(0F, 0F, -3.0F, 1, 4, 6F);
         this.rightWing.setRotationPoint(-4.0F, 13.0F, 1.0F);
 
         this.leftWing = new ModelRenderer(this, 45, 19);
-        this.leftWing.addBox(-1.0F, 0F, -3.0F, 1, 4, 6 + fluffyscale);
+        this.leftWing.addBox(-1.0F, 0F, -3.0F, 1, 4, 6F);
         this.leftWing.setRotationPoint(4.0F, 13.0F, 1.0F);
 
         this.rightWingSmall = new ModelRenderer(this, 14, 20);
-        this.rightWingSmall.addBox(0F, 0F, -3.0F, 1, 3, 5 + fluffyscale);
+        this.rightWingSmall.addBox(0F, 0F, -3.0F, 1, 3, 5F);
         this.rightWingSmall.setRotationPoint(-4.0F, 13.0F, 1.0F);
 
         this.leftWingSmall = new ModelRenderer(this, 46, 20);
-        this.leftWingSmall.addBox(-1.0F, 0F, -3.0F, 1, 3, 5 + fluffyscale);
+        this.leftWingSmall.addBox(-1.0F, 0F, -3.0F, 1, 3, 5F);
         this.leftWingSmall.setRotationPoint(4.0F, 13.0F, 1.0F);
 
-        this.bill = new ModelRenderer(this, 0, 18);
-        this.billChild = new ModelRenderer(this, 0, 18);
-        this.smallChin = new ModelRenderer(this, 14, 10);
-        this.chin = new ModelRenderer(this, 14, 10);
-        this.bigChin = new ModelRenderer(this, 14, 10);
-        this.peaChin = new ModelRenderer(this, 14, 10);
-        this.beardChin = new ModelRenderer(this, 14, 10);
-        if (!silkie) {
-            this.bill.addBox(-1.0F, -4.0F, -4.0F, 2, 2, 2, 0.0F);
-            this.bill.setRotationPoint(0.0F, 15.0F, -4.0F);
-            this.billChild.addBox(-1.0F, -4.0F, -3F, 2, 2, 2, 0.0F);
-            this.billChild.setRotationPoint(0.0F, 15.0F, -4.0F);
-            this.smallChin.addBox(-1.0F, -2.0F, -3.0F, 2, 1, 2, 0.0F);
-            this.chin.addBox(-1.0F, -2.0F, -3.0F, 2, 2, 1, 0.0F);
-            this.bigChin.addBox(-1.0F, -2.0F, -3.0F, 2, 3, 1, 0.0F);
-            this.peaChin.addBox(-0.5F, -2.0F, -3.0F, 1, 1, 2, 0.0F);
-            this.beardChin.addBox(-1.5F, -2.5F, -3.0F, 3, 1, 1, 0.0F);
-        }
+        this.beak = new EnhancedRendererModelNew(this, 0, 18, "Beak");
+        this.beak.addBox(-1.0F, 0.0F, -2.0F, 2, 2, 2, 0.0F);
+        this.beak.setRotationPoint(0.0F, -4.0F, -2.0F);
 
-        this.beard = new ModelRenderer(this,2,29);
-        this.beard.addBox(-3F, -4F, -2F, 1, 2, 2 + fluffyscale);
-        this.beard.addBox(-2.5F, -3F, -2.75F, 2, 2, 2 + fluffyscale);
+        this.chin = new EnhancedRendererModelNew(this, 14, 10, "Waddles");
+        this.chin.addBox(-1.0F, -2.0F, -3.0F, 2, 2, 1, 0.0F);
+
+        this.bigChin = new EnhancedRendererModelNew(this, 14, 10, "BigWaddles");
+        this.bigChin.addBox(-1.0F, -2.0F, -3.0F, 2, 3, 1, 0.0F);
+
+        this.smallChin = new EnhancedRendererModelNew(this, 14, 10, "SmallWaddles");
+        this.smallChin.addBox(-1.0F, -2.0F, -3.0F, 2, 1, 2, 0.0F);
+
+        this.peaChin = new EnhancedRendererModelNew(this, 14, 10, "PeaCombWaddles");
+        this.peaChin.addBox(-0.5F, -2.0F, -3.0F, 1, 1, 2, 0.0F);
+
+        this.beardChin = new EnhancedRendererModelNew(this, 14, 10, "BeardWaddles");
+        this.beardChin.addBox(-1.5F, -2.5F, -3.0F, 3, 1, 1, 0.0F);
+
+        this.beard = new EnhancedRendererModelNew(this,2,29, "Beard");
+        this.beard.addBox(-3F, -4F, -2F, 1, 2, 2F);
+        this.beard.addBox(-2.5F, -3F, -2.75F, 2, 2, 2F);
         this.beard.setTextureOffset(3,30);
-        this.beard.addBox(-1F, -2.25F, -2.9F, 2, 2, 2 + fluffyscale);
-        this.beard.addBox(-0.5F, -2F, -3.75F, 1, 1, 1 + fluffyscale);
+        this.beard.addBox(-1F, -2.25F, -2.9F, 2, 2, 2F);
+        this.beard.addBox(-0.5F, -2F, -3.75F, 1, 1, 1F);
         this.beard.setTextureOffset(2,29);
-        this.beard.addBox(2F, -4F, -2F, 1, 2, 2 + fluffyscale);
-        this.beard.addBox(0.5F, -3F, -2.75F, 2, 2, 2 + fluffyscale);
+        this.beard.addBox(2F, -4F, -2F, 1, 2, 2F);
+        this.beard.addBox(0.5F, -3F, -2.75F, 2, 2, 2F);
 
-        this.beardNN = new ModelRenderer(this,2,29);
-        this.beardNN.addBox(-3F, -4F, -2F, 1, 2, 2 + fluffyscale);
-        this.beardNN.addBox(-2F, -3F, -2.75F, 2, 2, 2 + fluffyscale);
+        this.beardNN = new EnhancedRendererModelNew(this,2,29, "NNBeard");
+        this.beardNN.addBox(-3F, -4F, -2F, 1, 2, 2F);
+        this.beardNN.addBox(-2F, -3F, -2.75F, 2, 2, 2F);
         this.beardNN.setTextureOffset(3,30);
-        this.beardNN.addBox(-0.5F, -2F, -3.5F, 1, 1, 1 + fluffyscale);
+        this.beardNN.addBox(-0.5F, -2F, -3.5F, 1, 1, 1F);
         this.beardNN.setTextureOffset(2,29);
-        this.beardNN.addBox(2F, -4F, -2F, 1, 2, 2 + fluffyscale);
-        this.beardNN.addBox(0F, -3F, -2.75F, 2, 2, 2 + fluffyscale);
+        this.beardNN.addBox(2F, -4F, -2F, 1, 2, 2F);
+        this.beardNN.addBox(0F, -3F, -2.75F, 2, 2, 2F);
 
-        this.earTuftHelper = new ModelRenderer(this, 47, 44);
+        theChicken.addChild(this.body);
+        theChicken.addChild(this.bodyBig);
+        theChicken.addChild(this.bodySmall);
 
-        this.earTuftHelper.addChild(this.earTuftL);
-        this.earTuftHelper.addChild(this.earTuftR);
+        this.body.addChild(this.head);
+        this.body.addChild(this.headNakedNeck);
+        this.body.addChild(this.tail);
 
-        this.headNakedNeck.addChild(this.eyeLeft);
-        this.headNakedNeck.addChild(this.eyeRight);
+        this.head.addChild(this.beak);
         this.head.addChild(this.eyeLeft);
         this.head.addChild(this.eyeRight);
+        this.head.addChild(this.earL);
+        this.head.addChild(this.earR);
 
+        this.head.addChild(this.bigChin);
+        this.head.addChild(this.chin);
+        this.head.addChild(this.smallChin);
+        this.head.addChild(this.beardChin);
+        this.head.addChild(this.peaChin);
+        this.head.addChild(this.comb);
+        this.head.addChild(this.butterCup);
+
+        this.head.addChild(this.smallCrest);
+        this.head.addChild(this.forwardCrest);
+        this.head.addChild(this.bigCrest);
+
+        this.head.addChild(this.earTuftL);
+        this.head.addChild(this.earTuftR);
+
+        this.head.addChild(this.beard);
+        this.head.addChild(this.beardNN);
+
+        this.comb.addChild(this.combXtraSmallSingle);
+        this.comb.addChild(this.combSmallSingle);
+        this.comb.addChild(this.combSingle);
+        this.comb.addChild(this.combLargeSingle);
+        this.comb.addChild(this.combXtraLargeSingle);
+        this.comb.addChild(this.combSmallRose);
+        this.comb.addChild(this.combRose);
+        this.comb.addChild(this.combLargeRose);
+        this.comb.addChild(this.combSmallRose2);
+        this.comb.addChild(this.combRose2);
+        this.comb.addChild(this.combLargeRose2);
+        this.comb.addChild(this.combSmallPea);
+        this.comb.addChild(this.combPea);
+        this.comb.addChild(this.combLargePea);
+        this.comb.addChild(this.combSmallWalnut);
+        this.comb.addChild(this.combWalnut);
+        this.comb.addChild(this.combLargeWalnut);
+        this.comb.addChild(this.combV);
+        this.butterCup.addChild(this.combXtraSmallSingle);
+        this.butterCup.addChild(this.combSmallSingle);
+        this.butterCup.addChild(this.combSingle);
+        this.butterCup.addChild(this.combLargeSingle);
+        this.butterCup.addChild(this.combXtraLargeSingle);
+        this.butterCup.addChild(this.combSmallRose);
+        this.butterCup.addChild(this.combRose);
+        this.butterCup.addChild(this.combLargeRose);
+        this.butterCup.addChild(this.combSmallRose2);
+        this.butterCup.addChild(this.combRose2);
+        this.butterCup.addChild(this.combLargeRose2);
+        this.butterCup.addChild(this.combSmallPea);
+        this.butterCup.addChild(this.combPea);
+        this.butterCup.addChild(this.combLargePea);
+        this.butterCup.addChild(this.combSmallWalnut);
+        this.butterCup.addChild(this.combWalnut);
+        this.butterCup.addChild(this.combLargeWalnut);
+
+        /**
+         *  Equipment Stuff
+         */
         this.textureWidth=160;
         this.textureHeight=160;
-        this.collar = new ModelRenderer(this, 0, 155);
+
+        this.collar = new EnhancedRendererModelNew(this, 0, 155, "Collar");
         this.collar.addBox(-2.5F, -1.0F, -1.5F, 5,  1, 4, 0.001F);
         this.collar.setTextureOffset(30, 156);
         this.collar.addBox(0.0F, -1.3333F, -2.5F, 0,  2, 2);
         this.collar.rotateAngleX = (float)Math.PI/4.0F;
-        this.bell = new ModelRenderer(this, 18, 154);
+
+        this.bell = new EnhancedRendererModelNew(this, 18, 154, "Bell");
         this.bell.addBox(-1.5F, 0.0F, -1.5F, 3, 3, 3, -1.0F);
         this.bell.setRotationPoint(0.0F, -1.0F, -1.25F);
         this.bell.rotateAngleX = -(float)Math.PI/4.0F;
+
         this.collar.addChild(this.bell);
         this.head.addChild(this.collar);
         this.headNakedNeck.addChild(this.collar);
@@ -473,435 +537,373 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-
         ChickenModelData chickenModelData = getChickenModelData();
+        Phenotype chicken = chickenModelData.phenotype;
 
-        Boolean roosting = chickenModelData.sleeping;
-        int blink = chickenModelData.blink;
+        if (chicken != null) {
+            this.resetAllCubes();
+            int blink = chickenModelData.blink;
+            List<String> unrenderedModels = chickenModelData.unrenderedModels;
 
-        int[] genes = chickenModelData.chickenGenes;
-        boolean nakedNeck = false;
-        boolean longHockFeathers = false;
-        int crest = 0; // [0, 1, 2, 3]          [none, small, forward, big]
-        int fFeet = 0; // [0, 1, 2, 3]          [none, 1, 1&2, 1&2&3]
-        int comb = 0;  // [0, 1, 2, 3, 4, 5, 6] [none, single, rose, rose2, pea, walnut, v]
-//        int chin = 0;  // [0, 1, 2, 3]    [none, waddles, peacomb waddles, beard waddles]
-        int beard = 0; // [0, 1, 2 ]            [none, beard, naked neck beard]
-        float size = 1;  // [] [
-        int cSize = 0; // [0, 1, 2, 3, 4]
-        int wSize = 0; // [0, 1, 2, 3, 4]
-        int wingSize = 0; // [0, 1, 2]
-        int bodyType = 0; //[-1, 0, 1]  [small, normal, big]
-        boolean earTuft = false;
-        boolean longLegs = false;
+            boolean longLegs = false;
 
-        if (genes != null) {
-
-            if (genes[52] == 1 || genes[53] == 1) {
-                nakedNeck = true;
-            }
-
-            if (genes[50] == 1 && genes[51] == 1) {
-                if (genes[48] == 1 || genes[49] == 1) {
-                    if (genes[46] == 3 && genes[47] == 3) {
-                        //peacomb
-                        comb = 4;
-                    } else {
-                        //walnut
-                        comb = 5;
-                    }
-                } else {
-                    if (genes[46] == 3 && genes[47] == 3) {
-                        //single comb
-                        comb = 1;
-                    } else if (genes[46] == 1 || genes[47] == 1) {
-                        //rose comb
-                        comb = 2;
-                    } else {
-                        //rose comb2
-                        comb = 3;
-                    }
-                }
-            } else {
-                if (genes[46] == 3 && genes[47] == 3 && genes[48] == 2 && genes[49] == 2) {
-                    //v comb
-                    comb = 6;
-                } else {
-                    if (genes[48] == 2 && genes[49] == 2) {
-                        //only waddles
-                    }
-                }
-            }
-
-            //bearded
-            if (genes[56] == 1 || genes[57] == 1) {
-                if (genes[52] == 1 || genes[53] == 1) {
-                    beard = 2;
-                } else {
-                    beard = 1;
-                }
-            }
-
-            //crestedness
-            if ((genes[54] == 2 || genes[55] == 2) && (genes[54] != 1 && genes[55] != 1)) {
-                crest = 2;
-            } else if (genes[54] == 1 || genes[55] == 1) {
-                if (genes[54] == genes[55]) {
-                    if (genes[82] == 1 && genes[83] == 1) {
-                        crest = 1;
-                    } else {
-                        crest = 3;
-                    }
-
-                } else {
-                    crest = 1;
-                }
-            }
-
-            //feather feets
-            if (genes[58] == 1 || genes[59] == 1) {
-                fFeet = fFeet + 1;
-            } else if (genes[58] == 2 || genes[59] == 2) {
-                fFeet = fFeet + 2;
-            }
-            if (genes[60] == 1 || genes[61] == 1) {
-                fFeet = fFeet + 1;
-            }
-
-            //chicken size [ 0.5 to 1 ] genes 74-79 & 7 & 8
-            if(genes[74] == 1){
-                size = size - 0.05F;
-            }else if(genes[74] == 2){
-                size = size - 0.025F;
-            }
-            if(genes[75] == 1){
-                size = size - 0.05F;
-            }else if(genes[75] == 2){
-                size = size - 0.025F;
-            }
-
-            if(genes[76] == 1 || genes[77] == 1){
-                size = size - 0.05F;
-            }else if(genes[76] == 3 && genes[77] == 3){
-                size = size - 0.1F;
-            }
-
-            if(genes[78] == 1 || genes[79] == 1){
-                size = size * 0.94F;
-            }
-
-            if(genes[7] == 2){
-                size = size * 0.9F;
-            }
-
-            if(genes[8] == 2){
-                size = size * 0.75F;
-            }
-
-            //comb size [80 and 81 small / 82 and 83 large]
-            if (genes[80] == 2) {
-                cSize = cSize + 1;
-            }
-            if (genes[81] == 2) {
-                cSize = cSize + 1;
-            }
-            if (genes[82] == 1) {
-                cSize = cSize + 1;
-            }
-            if (genes[83] == 1) {
-                cSize = cSize + 1;
-            }
-
-            wSize = cSize;
-
-            if (genes[84] == 1 && genes[85] == 1 && wSize > 0) {
-                wSize = wSize - 1;
-            }
-
-            if (genes[90] == 1 || genes[91] == 1){
-                wingSize = 2;
-            } else if (genes[92] == 1 || genes[93] == 1){
-                wingSize = 1;
-            }
-
-
-            if (genes[146] == 2 && genes[147] == 2) {
-                if (genes[148] == 2 && genes[149] == 2) {
-                    //normal body
-                    bodyType = 0;
-                } else {
-                    //big body
-                    bodyType = 1;
-                }
-            } else if (genes[148] == 2 && genes[149] == 2) {
-                if (genes[146] == 2 || genes[147] == 2) {
-                    //normal body
-                    bodyType = 0;
-                } else {
-                    //small body
-                    longHockFeathers = true;
-                    bodyType = -1;
-                }
-            } else {
-                //normal body
-                bodyType = 0;
-            }
-
-            //ear tufts
-            if (genes[150] == 2 || genes[151] == 2) {
-                earTuft = true;
-            } else {
-                earTuft = false;
-            }
-
-            if (!roosting) {
+            if (!chickenModelData.sleeping) {
                 //long legs
-                if (genes[168] == 2 || genes[169] == 2) {
-                    longLegs = true;
-                } else {
-                    longLegs = false;
+                longLegs = chicken.hasLongLegs();
+            }
+
+
+            wingAngle = 0;   //do not use this to debug wingAngle scroll down
+    //
+    //        if(genes[88] == 2){
+    //            this.wingAngle = this.wingAngle + 0.1F;
+    //        }else if(genes[88] == 3) {
+    //            this.wingAngle = this.wingAngle + 0.15F;
+    //        }else{
+    //
+    //        }
+    //        if(genes[89] == 2){
+    //            this.wingAngle = this.wingAngle + 0.1F;
+    //        }else if(genes[89] == 3) {
+    //            this.wingAngle = this.wingAngle + 0.15F;
+    //        }
+    //        if(genes[86] == 2){
+    //            this.wingAngle = this.wingAngle + 0.1F;
+    //        }else if(genes[86] == 3) {
+    //            this.wingAngle = this.wingAngle + 0.15F;
+    //        }
+    //        if(genes[87] == 2){
+    //            this.wingAngle = this.wingAngle + 0.1F;
+    //        }else if(genes[87] == 3) {
+    //            this.wingAngle = this.wingAngle + 0.15F;
+    //        }
+    //
+    //        if(genes[94] == 2 && genes[95] == 2){
+    //            this.wingAngle = this.wingAngle * 1.2F;
+    //        }else if(genes[94] == 3 && genes[95] == 3) {
+    //            this.wingAngle = this.wingAngle * 1.5F;
+    //        }else if(genes[94] != 1 || genes[95] != 1) {
+    //            this.wingAngle = this.wingAngle * 1.1F;
+    //        }
+    //
+    //        if(genes[96] == 2 && genes[97] == 2){
+    //            this.wingAngle = this.wingAngle * 1.2F;
+    //        }else if(genes[96] == 3 && genes[97] == 3) {
+    //            wingAngle = this.wingAngle * 1.5F;
+    //        }else if(genes[96] != 1 || genes[97] != 1) {
+    //            this.wingAngle = this.wingAngle * 1.1F;
+    //        }
+
+    //        wingAngle = 1.5F;   // used for debugging wingAngle  [ 0 to 1.5 ]
+
+            float age = 1.0F;
+            if (!(chickenModelData.birthTime == null) && !chickenModelData.birthTime.equals("") && !chickenModelData.birthTime.equals("0")) {
+                int ageTime = (int) (chickenModelData.clientGameTime - Long.parseLong(chickenModelData.birthTime));
+                if (ageTime <= chickenModelData.adultAge) {
+                    age = ageTime < 0 ? 0 : ageTime / (float)chickenModelData.adultAge;
                 }
             }
 
-        }
+            float size = chickenModelData.size;
 
+            float finalChickenSize = ((3.0F * size * age) + size) / 4.0F;
 
-        wingAngle = 0;   //do not use this to debug wingAngle scroll down
-//
-//        if(genes[88] == 2){
-//            this.wingAngle = this.wingAngle + 0.1F;
-//        }else if(genes[88] == 3) {
-//            this.wingAngle = this.wingAngle + 0.15F;
-//        }else{
-//
-//        }
-//        if(genes[89] == 2){
-//            this.wingAngle = this.wingAngle + 0.1F;
-//        }else if(genes[89] == 3) {
-//            this.wingAngle = this.wingAngle + 0.15F;
-//        }
-//        if(genes[86] == 2){
-//            this.wingAngle = this.wingAngle + 0.1F;
-//        }else if(genes[86] == 3) {
-//            this.wingAngle = this.wingAngle + 0.15F;
-//        }
-//        if(genes[87] == 2){
-//            this.wingAngle = this.wingAngle + 0.1F;
-//        }else if(genes[87] == 3) {
-//            this.wingAngle = this.wingAngle + 0.15F;
-//        }
-//
-//        if(genes[94] == 2 && genes[95] == 2){
-//            this.wingAngle = this.wingAngle * 1.2F;
-//        }else if(genes[94] == 3 && genes[95] == 3) {
-//            this.wingAngle = this.wingAngle * 1.5F;
-//        }else if(genes[94] != 1 || genes[95] != 1) {
-//            this.wingAngle = this.wingAngle * 1.1F;
-//        }
-//
-//        if(genes[96] == 2 && genes[97] == 2){
-//            this.wingAngle = this.wingAngle * 1.2F;
-//        }else if(genes[96] == 3 && genes[97] == 3) {
-//            wingAngle = this.wingAngle * 1.5F;
-//        }else if(genes[96] != 1 || genes[97] != 1) {
-//            this.wingAngle = this.wingAngle * 1.1F;
-//        }
-
-
-
-//        fFeet = 3; // these are to set everything to true
-//        beard = 1;
-
-//        wingAngle = 1.5F;   // used for debugging wingAngle  [ 0 to 1.5 ]
-
-        float age = 1.0F;
-        if (!(chickenModelData.birthTime == null) && !chickenModelData.birthTime.equals("") && !chickenModelData.birthTime.equals("0")) {
-            int ageTime = (int)(chickenModelData.clientGameTime - Long.parseLong(chickenModelData.birthTime));
-            if (ageTime <= 70000) {
-                age = ageTime < 0 ? 0 : ageTime/70000.0F;
+            matrixStackIn.push();
+            matrixStackIn.scale(finalChickenSize, finalChickenSize, finalChickenSize);
+            matrixStackIn.translate(0.0F, -1.5F + 1.5F / finalChickenSize, 0.0F);
+            if (blink == 0 || blink >= 6) {
+                this.eyeLeft.showModel = true;
+                this.eyeRight.showModel = true;
+            } else {
+                this.eyeLeft.showModel = false;
+                this.eyeRight.showModel = false;
             }
-        }
 
-        float finalChickenSize = (( 3.0F * size * age) + size) / 4.0F;
+            if (chickenModelData.collar) {
+                this.collar.showModel = true;
+            }
 
-        matrixStackIn.push();
-        matrixStackIn.scale(finalChickenSize, finalChickenSize, finalChickenSize);
-        matrixStackIn.translate(0.0F, -1.5F + 1.5F/finalChickenSize, 0.0F);
-        if (blink == 0 || blink >= 6) {
-            this.eyeLeft.showModel = true;
-            this.eyeRight.showModel = true;
-        } else {
-            this.eyeLeft.showModel = false;
-            this.eyeRight.showModel = false;
-        }
+            unrenderedModels.add(chicken.isNakedNeck ? "Head" : "NNHead");
 
-        if (chickenModelData.collar) {
-            this.collar.showModel = true;
-        } else {
-            this.collar.showModel = false;
-        }
+            switch (chicken.beard) {
+                case BIG_BEARD:
+                    this.beard.showModel = true;
+                    break;
+                case NN_BEARD:
+                    this.beardNN.showModel = true;
+                    break;
+            }
 
-        if (nakedNeck) {
-            this.headNakedNeck.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        } else {
-            this.head.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        }
+            if (age <= 0.3F) {
+                this.earL.showModel = false;
+                this.earR.showModel = false;
+            } else if (chicken.isCombed()){
+                this.comb.showModel = true;
 
-        if (beard == 1) {
-            this.beard.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        } else if (beard == 2) {
-            this.beardNN.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        }
-
-        if (age > 0.3F) {
-
-            if ((wSize == 2 || wSize == 3 || wSize == 4)) {
-
-                if (beard != 0 && (comb == 1 || comb == 2 || comb == 3)) {
-                    this.beardChin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                }
-
-                if (beard == 0) {
-                    if (comb == 4 || comb == 5) {
-                        this.peaChin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                if (chicken.waddleSize >= 2) {
+                    if (chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
+                        this.beardChin.showModel = true;
+                    }
+                    if (!chicken.isBearded()) {
+                        if (chicken.comb.hasPeaComb()) {
+                            this.peaChin.showModel = true;
+                        }
                     }
                 }
-            }
-            if (beard == 0 && (comb != 4 && comb != 5)){
-                if (wSize == 4 || wSize == 3){
-                    this.bigChin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                } else if (wSize == 2 || wSize == 1){
-                    this.chin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                }else{
-                    this.smallChin.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                }
-            }
-
-                if ((comb == 1 && crest == 0) || (comb == 1 && cSize >= 3)) {
-                    if (cSize == 0) {
-                        this.combXtraSmallSingle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    } else if (cSize == 1) {
-                        this.combSmallSingle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    } else if (cSize == 2) {
-                        //TODO change this back to combSingle
-                        this.combSingle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    } else if (cSize == 3) {
-                        this.combLargeSingle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                if (!chicken.isBearded() && (!chicken.comb.hasPeaComb())) {
+                    if (chicken.waddleSize >= 3) {
+                        this.bigChin.showModel = true;
+                    } else if (chicken.waddleSize >= 1) {
+                        this.chin.showModel = true;
                     } else {
-                        this.combXtraLargeSingle.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                        this.smallChin.showModel = true;
                     }
-                } else if (comb == 2 && crest == 0) {
-                    if (cSize == 0) {
-                        this.combSmallRose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    } else if (cSize == 1 || cSize == 2 || cSize == 3) {
-                        this.combRose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    } else {
-                        this.combLargeRose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                }
+                if (chicken.comb == Comb.SINGLE && (chicken.crestType == Crested.NONE || chicken.combSize >= 3)) {
+                    switch (chicken.combSize) {
+                        case 0:
+                            this.combXtraSmallSingle.showModel = true;
+                            break;
+                        case 1:
+                            this.combSmallSingle.showModel = true;
+                            break;
+                        case 2:
+                            this.combSingle.showModel = true;
+                            break;
+                        case 3:
+                            this.combLargeSingle.showModel = true;
+                            break;
+                        case 4:
+                        default:
+                            this.combXtraLargeSingle.showModel = true;
+                            break;
+
                     }
-                } else if (comb == 3) {
-                    if (cSize == 0) {
-                        this.combSmallRose2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    } else if (cSize == 1 || cSize == 2 || cSize == 3) {
-                        this.combRose2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    } else {
-                        this.combLargeRose2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                } else if (chicken.comb == Comb.ROSE_ONE && chicken.crestType == Crested.NONE) {
+                    switch (chicken.combSize) {
+                        case 0:
+                            this.combSmallRose.showModel = true;
+                            break;
+                        case 1:
+                        case 2:
+                        case 3:
+                            this.combRose.showModel = true;
+                            break;
+                        case 4:
+                        default:
+                            this.combLargeRose.showModel = true;
+                            break;
                     }
-                } else if (comb == 4 || (comb == 1 && crest != 0)) {
-                    if (cSize == 1 || cSize == 2) {
-                        this.combSmallPea.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    } else if (cSize == 3) {
-                        this.combPea.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    } else if (cSize == 4) {
-                        this.combLargePea.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                } else if (chicken.comb == Comb.ROSE_TWO) {
+                    switch (chicken.combSize) {
+                        case 0:
+                            this.combSmallRose2.showModel = true;
+                            break;
+                        case 1:
+                        case 2:
+                        case 3:
+                            this.combRose2.showModel = true;
+                            break;
+                        case 4:
+                        default:
+                            this.combLargeRose2.showModel = true;
+                            break;
                     }
-                } else if (comb == 5 || ((comb == 2 || comb == 3) && crest != 0)) {
-                    if (cSize == 1 || cSize == 2) {
-                        this.combSmallWalnut.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    } else if (cSize == 3) {
-                        this.combWalnut.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    } else if (cSize == 4) {
-                        this.combLargeWalnut.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                } else if (chicken.comb == Comb.PEA || (chicken.comb == Comb.SINGLE && chicken.crestType != Crested.NONE)) {
+                    switch (chicken.combSize) {
+                        case 1:
+                        case 2:
+                            this.combSmallPea.showModel = true;
+                            break;
+                        case 3:
+                            this.combPea.showModel = true;
+                            break;
+                        case 4:
+                        default:
+                            this.combLargePea.showModel = true;
+                            break;
                     }
-                } else if (comb == 6) {
-                    this.combV.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                } else if (chicken.comb == Comb.WALNUT || ((chicken.comb == Comb.ROSE_ONE || chicken.comb == Comb.ROSE_TWO) && chicken.crestType != Crested.NONE)) {
+                    switch (chicken.combSize) {
+                        case 1:
+                        case 2:
+                            this.combSmallWalnut.showModel = true;
+                            break;
+                        case 3:
+                            this.combWalnut.showModel = true;
+                            break;
+                        case 4:
+                        default:
+                            this.combLargeWalnut.showModel = true;
+                            break;
+                    }
+                } else if (chicken.comb == Comb.V) {
+                    this.combV.showModel = true;
                 }
 
-                this.earL.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                this.earR.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-
-            }
-
-            if(crest == 1 || (crest != 0 && age > 0.5F)){
-                this.smallCrest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            }else if(crest == 2){
-                this.forwardCrest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            }else if(crest == 3){
-                this.bigCrest.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            }
-
-            if (genes != null) {
-                if ((age > 0.15F || age >= 0.3333F) && (genes[72] == 1 && genes[73] == 1)) {
-                    this.tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                if (chicken.butterCup) {
+                    this.butterCup.showModel = true;
                 }
             }
 
-            if (wingSize == 2) {
+            if (chicken.crestType == Crested.SMALL_CREST || (chicken.crestType != Crested.NONE && age > 0.5F)) {
+                this.smallCrest.showModel = true;
+            } else if (chicken.crestType == Crested.SMALL_FORWARDCREST || chicken.crestType == Crested.BIG_FORWARDCREST) {
+                this.forwardCrest.showModel = true;
+            } else if (chicken.crestType == Crested.BIG_CREST) {
+                this.bigCrest.showModel = true;
+            }
+
+            if (chicken.rumpless || age < 0.15F) {
+                this.tail.showModel = false;
+            }
+
+            if (chicken.wingSize == 2) {
+                this.rightWing.showModel = true;
+                this.leftWing.showModel = true;
                 this.rightWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 this.leftWing.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            }else{
+            } else {
+                this.rightWingSmall.showModel = true;
+                this.leftWingSmall.showModel = true;
                 this.rightWingSmall.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 this.leftWingSmall.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
 
-
-            if (bodyType == -1) {
-                this.bodySmall.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            } else if (bodyType == 0) {
-                this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            } else {
-                this.bodyBig.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            }
-
             this.rightLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.leftLeg.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
             if (longLegs) {
+                this.leftLegExtend.showModel = true;
+                this.rightLegExtend.showModel = true;
                 this.leftLegExtend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 this.rightLegExtend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
 
-            if (fFeet >= 1) {
-                if (!roosting && !nesting) {
-                    this.leftFeather1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    this.rightFeather1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    if (longHockFeathers || longLegs) {
-                        this.leftFeather1Extend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                        this.rightFeather1Extend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            switch (chicken.footFeatherType) {
+                case BIG_TOEFEATHERS:
+                case TOEFEATHERS:
+                    this.leftFeather3.showModel = true;
+                    this.rightFeather3.showModel = true;
+                    this.leftFeather3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.rightFeather3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                case FOOTFEATHERS:
+                    this.leftFeather2.showModel = true;
+                    this.rightFeather2.showModel = true;
+                    this.leftFeather2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.rightFeather2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                case LEGFEATHERS:
+                    if (!chickenModelData.sleeping && !nesting) {
+                        this.leftFeather1.showModel = true;
+                        this.rightFeather1.showModel = true;
+                        this.leftFeather1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                        this.rightFeather1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                        if (chicken.longHockFeathers || longLegs) {
+                            this.leftFeather1Extend.showModel = true;
+                            this.rightFeather1Extend.showModel = true;
+                            this.leftFeather1Extend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                            this.rightFeather1Extend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                        }
                     }
-                }
 
-                if (genes != null) {
-                    if (genes[102] == 2 && genes[103] == 2){
+                    if (chicken.isVultureHocked) {
+                        this.leftVultureHock.showModel = true;
+                        this.rightVultureHock.showModel = true;
                         this.leftVultureHock.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                         this.rightVultureHock.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                     }
-                }
-
-                if (fFeet >= 2) {
-                    this.leftFeather2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    this.rightFeather2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    if (fFeet >= 3) {
-                        this.leftFeather3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                        this.rightFeather3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                    }}}
-
-            this.bill.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-
-            if (earTuft) {
-                this.earTuftHelper.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    break;
             }
 
-        matrixStackIn.pop();
+
+                if (chicken.earTufts) {
+                    this.earTuftL.showModel = true;
+                    this.earTuftR.showModel = true;
+                }
+
+                switch (chicken.bodyType) {
+                    case -1:
+                        unrenderedModels.add("Body");
+                        unrenderedModels.add("BigBody");
+                        break;
+                    case 0:
+                        unrenderedModels.add("SmallBody");
+                        unrenderedModels.add("BigBody");
+                        break;
+                    default:
+                        unrenderedModels.add("SmallBody");
+                        unrenderedModels.add("Body");
+                        break;
+                }
+
+                this.theChicken.render(matrixStackIn, bufferIn, null, unrenderedModels, false, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+            matrixStackIn.pop();
+        }
   }
+
+    private void resetAllCubes() {
+        this.bigCrest.showModel = false;
+        this.smallCrest.showModel = false;
+        this.forwardCrest.showModel = false;
+        this.combXtraSmallSingle.showModel = false;
+        this.combSmallSingle.showModel = false;
+        this.combSingle.showModel = false;
+        this.combLargeSingle.showModel = false;
+        this.combXtraLargeSingle.showModel = false;
+        this.combSmallRose.showModel = false;
+        this.combRose.showModel = false;
+        this.combLargeRose.showModel = false;
+        this.combSmallRose2.showModel = false;
+        this.combRose2.showModel = false;
+        this.combLargeRose2.showModel = false;
+        this.combSmallPea.showModel = false;
+        this.combPea.showModel = false;
+        this.combLargePea.showModel = false;
+        this.combSmallWalnut.showModel = false;
+        this.combWalnut.showModel = false;
+        this.combLargeWalnut.showModel = false;
+        this.combV.showModel = false;
+        this.comb.showModel = false;
+        this.butterCup.showModel = false;
+        this.xtraShortTail.showModel = false;
+        this.shortTail.showModel = false;
+        this.tail.showModel = true;
+        this.longTail.showModel = false;
+        this.xtraLongTail.showModel = false;
+        this.rightLegExtend.showModel = false;
+        this.rightFeather1.showModel = false;
+        this.rightFeather1Extend.showModel = false;
+//     rightFeatherTall1;
+        this.rightFeather2.showModel = false;
+        this.rightFeather3.showModel = false;
+        this.leftLegExtend.showModel = false;
+        this.leftFeather1.showModel = false;
+        this.leftFeather1Extend.showModel = false;
+//     leftFeatherTall1;
+        this.leftFeather2.showModel = false;
+        this.leftFeather3.showModel = false;
+        this.leftVultureHock.showModel = false;
+        this.rightVultureHock.showModel = false;
+        this.rightWing.showModel = false;
+        this.rightWingSmall.showModel = false;
+        this.leftWing.showModel = false;
+        this.leftWingSmall.showModel = false;
+        this.smallChin.showModel = false;
+        this.chin.showModel = false;
+        this.bigChin.showModel = false;
+        this.beardChin.showModel = false;
+        this.peaChin.showModel = false;
+        this.beard.showModel = false;
+        this.beardNN.showModel = false;
+        this.earL.showModel = true;
+        this.earR.showModel = true;
+        this.earTuftL.showModel = false;
+        this.earTuftR.showModel = false;
+        this.eyeLeft.showModel = false;
+        this.eyeRight.showModel = false;
+        this.collar.showModel = false;
+    }
 
 
     /**
@@ -912,125 +914,74 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         ChickenModelData chickenModelData = getChickenModelData();
-//        List<String> unrenderedModels = new ArrayList<>();
+
+        Phenotype chicken = chickenModelData.phenotype;
+
+        if (chicken != null) {
+            this.comb.rotateAngleZ = chicken.butterCup ? -(float) Math.PI * 0.15F : 0F;
 
 //        float bodyangle = 0.5F;
 //        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
-        if(this.pose == 1){
-            this.head.rotationPointY = 22F;
-        } else if (this.pose == 2){
-            this.head.rotationPointY = 21F;
-        } else{
-            if(this.mutation == 1){
-                this.head.rotationPointY = 18F;
-            } else if(this.mutation == 2){
-                this.head.rotationPointY = 17.5F;
-            } else if(this.mutation == 3){
-                this.head.rotationPointY = 17F;
-            } else if(this.mutation == 4){
-                this.head.rotationPointY = 14F;
-            } else if(this.mutation == 5){
-                this.head.rotationPointY = 13F;
-            } else{
-                this.head.rotationPointY = 15F;
-            }
-        }
-        this.head.rotationPointZ = -3F;
-        this.head.rotateAngleX = headPitch * 0.017453292F;
-        this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
-        ModelHelper.copyModelPositioning(head, headNakedNeck);
+            this.head.rotationPointY = -3.5F;
+            this.head.rotationPointZ = -3.5F;
+            this.head.rotateAngleX = headPitch * 0.017453292F;
+            this.head.rotateAngleY = netHeadYaw * 0.017453292F;
 
-        ModelHelper.copyModelPositioning(head, bill);
-        ModelHelper.copyModelPositioning(head, billChild);
-        ModelHelper.copyModelPositioning(head, smallChin);
-        ModelHelper.copyModelPositioning(head, chin);
-        ModelHelper.copyModelPositioning(head, bigChin);
-        ModelHelper.copyModelPositioning(head, beardChin);
-        ModelHelper.copyModelPositioning(head, peaChin);
+            ModelHelper.copyModelPositioning(head, headNakedNeck);
 
-        ModelHelper.copyModelPositioning(head, smallCrest);
-        ModelHelper.copyModelPositioning(head, bigCrest);
-        ModelHelper.copyModelPositioning(head, forwardCrest);
+            this.earTuftL.rotateAngleX = 1.4F;
+            this.earTuftL.rotateAngleZ = -1.4F;
+            this.earTuftR.rotateAngleX = 1.4F;
+            this.earTuftR.rotateAngleZ = 1.4F;
 
-        ModelHelper.copyModelPositioning(head, combXtraSmallSingle);
-        ModelHelper.copyModelPositioning(head, combSmallSingle);
-        ModelHelper.copyModelPositioning(head, combSingle);
-        ModelHelper.copyModelPositioning(head, combLargeSingle);
-        ModelHelper.copyModelPositioning(head, combXtraLargeSingle);
-        ModelHelper.copyModelPositioning(head, combSmallRose);
-        ModelHelper.copyModelPositioning(head, combRose);
-        ModelHelper.copyModelPositioning(head, combLargeRose);
-        ModelHelper.copyModelPositioning(head, combSmallRose2);
-        ModelHelper.copyModelPositioning(head, combRose2);
-        ModelHelper.copyModelPositioning(head, combLargeRose2);
-        ModelHelper.copyModelPositioning(head, combSmallPea);
-        ModelHelper.copyModelPositioning(head, combPea);
-        ModelHelper.copyModelPositioning(head, combLargePea);
-        ModelHelper.copyModelPositioning(head, combSmallWalnut);
-        ModelHelper.copyModelPositioning(head, combWalnut);
-        ModelHelper.copyModelPositioning(head, combLargeWalnut);
-        ModelHelper.copyModelPositioning(head, combV);
+            //leg stuff
+            this.rightLeg.rotationPointY = 15F;
+            this.leftLeg.rotationPointY = 15F;
+            this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
+            this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
+            ModelHelper.copyModelPositioning(rightLeg, rightFeather1);
+            ModelHelper.copyModelPositioning(rightLeg, rightLegExtend);
+            ModelHelper.copyModelPositioning(rightLeg, rightFeather1Extend);
+            ModelHelper.copyModelPositioning(rightLeg, rightFeather2);
+            ModelHelper.copyModelPositioning(rightLeg, rightFeather3);
+            ModelHelper.copyModelPositioning(rightLeg, rightVultureHock);
+            ModelHelper.copyModelPositioning(leftLeg, leftLegExtend);
+            ModelHelper.copyModelPositioning(leftLeg, leftFeather1Extend);
+            ModelHelper.copyModelPositioning(leftLeg, leftFeather1);
+            ModelHelper.copyModelPositioning(leftLeg, leftFeather2);
+            ModelHelper.copyModelPositioning(leftLeg, leftFeather3);
+            ModelHelper.copyModelPositioning(leftLeg, leftVultureHock);
 
-        ModelHelper.copyModelPositioning(head, beard);
-        ModelHelper.copyModelPositioning(head, beardNN);
-
-        ModelHelper.copyModelPositioning(head, earL);
-        ModelHelper.copyModelPositioning(head, earR);
-
-        ModelHelper.copyModelPositioning(head, earTuftHelper);
-
-        this.earTuftL.rotateAngleX = 1.4F;
-        this.earTuftL.rotateAngleZ = -1.4F;
-        this.earTuftR.rotateAngleX = 1.4F;
-        this.earTuftR.rotateAngleZ = 1.4F;
-
-        //leg stuff
-        this.rightLeg.rotationPointY = 15F;
-        this.leftLeg.rotationPointY = 15F;
-        this.rightLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        this.leftLeg.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-        ModelHelper.copyModelPositioning(rightLeg, rightFeather1);
-        ModelHelper.copyModelPositioning(rightLeg, rightLegExtend);
-        ModelHelper.copyModelPositioning(rightLeg, rightFeather1Extend);
-        ModelHelper.copyModelPositioning(rightLeg, rightFeather2);
-        ModelHelper.copyModelPositioning(rightLeg, rightFeather3);
-        ModelHelper.copyModelPositioning(rightLeg, rightVultureHock);
-        ModelHelper.copyModelPositioning(leftLeg, leftLegExtend);
-        ModelHelper.copyModelPositioning(leftLeg, leftFeather1Extend);
-        ModelHelper.copyModelPositioning(leftLeg, leftFeather1);
-        ModelHelper.copyModelPositioning(leftLeg, leftFeather2);
-        ModelHelper.copyModelPositioning(leftLeg, leftFeather3);
-        ModelHelper.copyModelPositioning(leftLeg, leftVultureHock);
-
-        //body angle
+            //body angle
 //        this.body.rotateAngleX = -bodyangle;
 
-        //tail stuff
-        ModelHelper.copyModelPositioning(body, bodyBig);
-        ModelHelper.copyModelPositioning(body, bodySmall);
-        ModelHelper.copyModelPositioning(body, tail);
-        ModelHelper.copyModelPositioning(body, longTail);
-        ModelHelper.copyModelPositioning(body, shortTail);
-        ModelHelper.copyModelPositioning(body, xtraLongTail);
-        ModelHelper.copyModelPositioning(body, xtraShortTail);
+            //tail stuff
+            ModelHelper.copyModelPositioning(body, bodyBig);
+            ModelHelper.copyModelPositioning(body, bodySmall);
+//        ModelHelper.copyModelPositioning(body, tail);
+            ModelHelper.copyModelPositioning(body, longTail);
+            ModelHelper.copyModelPositioning(body, shortTail);
+            ModelHelper.copyModelPositioning(body, xtraLongTail);
+            ModelHelper.copyModelPositioning(body, xtraShortTail);
 
-        //wing stuff
+            //wing stuff
 
 //        this.rightWing.rotationPointZ = -1;
 //        this.leftWing.rotationPointZ = -1;
 //        this.rightWing.rotationPointY = 13;
 //        this.leftWing.rotationPointY = 13;
 
-        this.rightWing.rotateAngleZ = ageInTicks;
-        this.leftWing.rotateAngleZ = -ageInTicks;
-        this.rightWingSmall.rotateAngleZ = ageInTicks;
-        this.leftWingSmall.rotateAngleZ = -ageInTicks;
+            this.rightWing.rotateAngleZ = ageInTicks;
+            this.leftWing.rotateAngleZ = -ageInTicks;
+            this.rightWingSmall.rotateAngleZ = ageInTicks;
+            this.leftWingSmall.rotateAngleZ = -ageInTicks;
 
 //        this.rightWing.rotateAngleX = -wingAngle - bodyangle ;
 //        this.leftWing.rotateAngleX = -wingAngle - bodyangle;
 //        this.rightWingSmall.rotateAngleX = -wingAngle - bodyangle;
 //        this.leftWingSmall.rotateAngleX = -wingAngle - bodyangle;
+        }
     }
 
     @Override
@@ -1041,7 +992,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
         boolean roosting = chickenModelData.sleeping;
 
-        int[] sharedGenes = chickenModelData.chickenGenes;
+        Phenotype chicken = chickenModelData.phenotype;
 
         this.rightLeg.rotationPointX = 0F;
         this.leftLeg.rotationPointX = 0F;
@@ -1052,172 +1003,154 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
 
         float wingMod = 0.0F;
 
-        if (sharedGenes != null) {
-            if (sharedGenes[148] == 2 && sharedGenes[149] == 2 && sharedGenes[146] != 2 && sharedGenes[147] != 2) {
+        if (chicken != null) {
+            if (chicken.bodyType == -1) {
                 wingMod = 0.5F;
             }
 
             //genes variations
-            if ((sharedGenes[70] == 2 || sharedGenes [71] == 2) && (!nesting && !roosting)) {
-
-                if (sharedGenes[168] == 1 && sharedGenes[169] == 1) {
-                    this.body.rotationPointY = 3F + point;
-//            this.tail.rotationPointY = 3F;
-                    this.rightWing.rotationPointY = 16.0F + wingMod;
-                    this.leftWing.rotationPointY = 16.0F + wingMod;
-                    this.rightWingSmall.rotationPointY = 16.0F + wingMod;
-                    this.leftWingSmall.rotationPointY = 16.0F + wingMod;
-                    this.mutation = 1;
-                } else if (sharedGenes[168] == 2 && sharedGenes[169] == 2) {
-                    this.body.rotationPointY = 2F + point;
-//            this.tail.rotationPointY = 3F;
-                    this.rightWing.rotationPointY = 15.0F + wingMod;
-                    this.leftWing.rotationPointY = 15.0F + wingMod;
-                    this.rightWingSmall.rotationPointY = 15.0F + wingMod;
-                    this.leftWingSmall.rotationPointY = 15.0F + wingMod;
-                    this.mutation = 3;
+            if ((chicken.creeper) && (!nesting && !roosting)) {
+                switch (chicken.longLegs) {
+                    case 0:
+                    default:
+                        this.body.rotationPointY = 3F + point;
+                        this.rightWing.rotationPointY = 16.0F + wingMod;
+                        this.leftWing.rotationPointY = 16.0F + wingMod;
+                        this.rightWingSmall.rotationPointY = 16.0F + wingMod;
+                        this.leftWingSmall.rotationPointY = 16.0F + wingMod;
+                        break;
+                    case 1:
+                        this.body.rotationPointY = 2.5F + point;
+                        this.rightWing.rotationPointY = 15.5F + wingMod;
+                        this.leftWing.rotationPointY = 15.5F + wingMod;
+                        this.rightWingSmall.rotationPointY = 15.5F + wingMod;
+                        this.leftWingSmall.rotationPointY = 15.5F + wingMod;
+                        break;
+                    case 2:
+                        this.body.rotationPointY = 2F + point;
+                        this.rightWing.rotationPointY = 15.0F + wingMod;
+                        this.leftWing.rotationPointY = 15.0F + wingMod;
+                        this.rightWingSmall.rotationPointY = 15.0F + wingMod;
+                        this.leftWingSmall.rotationPointY = 15.0F + wingMod;
+                        break;
+                    }
                 } else {
-                    this.body.rotationPointY = 2.5F + point;
-//            this.tail.rotationPointY = 3F;
-                    this.rightWing.rotationPointY = 15.5F + wingMod;
-                    this.leftWing.rotationPointY = 15.5F + wingMod;
-                    this.rightWingSmall.rotationPointY = 15.5F + wingMod;
-                    this.leftWingSmall.rotationPointY = 15.5F + wingMod;
-                    this.mutation = 2;
+                    switch (chicken.longLegs) {
+                        case 0:
+                        default:
+                            this.body.rotationPointY = 0F + point;
+                            this.rightWing.rotationPointY = 13.0F + wingMod;
+                            this.leftWing.rotationPointY = 13.0F + wingMod;
+                            this.rightWingSmall.rotationPointY = 13.0F + wingMod;
+                            this.leftWingSmall.rotationPointY = 13.0F + wingMod;
+                            break;
+                        case 1:
+                            this.body.rotationPointY = -1F + point;
+                            this.rightWing.rotationPointY = 12.0F + wingMod;
+                            this.leftWing.rotationPointY = 12.0F + wingMod;
+                            this.rightWingSmall.rotationPointY = 12.0F + wingMod;
+                            this.leftWingSmall.rotationPointY = 12.0F + wingMod;
+                            break;
+                        case 2:
+                            this.body.rotationPointY = -2F + point;
+                            this.rightWing.rotationPointY = 11.0F + wingMod;
+                            this.leftWing.rotationPointY = 11.0F + wingMod;
+                            this.rightWingSmall.rotationPointY = 11.0F + wingMod;
+                            this.leftWingSmall.rotationPointY = 11.0F + wingMod;
+                            break;
+                    }
                 }
 
-            } else {
-                if (sharedGenes[168] == 1 && sharedGenes[169] == 1) {
-                    this.body.rotationPointY = 0F + point;
-//            this.tail.rotationPointY = 0F;
-                    this.rightWing.rotationPointY = 13.0F + wingMod;
-                    this.leftWing.rotationPointY = 13.0F + wingMod;
-                    this.rightWingSmall.rotationPointY = 13.0F + wingMod;
-                    this.leftWingSmall.rotationPointY = 13.0F + wingMod;
-                    this.mutation = 0;
-                } else if (sharedGenes[168] == 2 && sharedGenes[169] == 2) {
-                    this.body.rotationPointY = -2F + point;
-//            this.tail.rotationPointY = 0F;
-                    this.rightWing.rotationPointY = 11.0F + wingMod;
-                    this.leftWing.rotationPointY = 11.0F + wingMod;
-                    this.rightWingSmall.rotationPointY = 11.0F + wingMod;
-                    this.leftWingSmall.rotationPointY = 11.0F + wingMod;
-                    this.mutation = 5;
+
+                //behaviour animations
+                //nesting "moves legs together to remove clipping"
+                if (nesting) {
+                    this.body.rotationPointY = 4.9F + point;
+                    this.rightLeg.rotationPointX = this.rightLeg.rotationPointX - 0.1F;
+                    this.leftLeg.rotationPointX = this.leftLeg.rotationPointX + 0.1F;
+
+                    this.rightWing.rotationPointY = 19F + wingMod;
+                    this.leftWing.rotationPointY = 19F + wingMod;
+                    this.rightWingSmall.rotationPointY = 19F + wingMod;
+                    this.leftWingSmall.rotationPointY = 19F + wingMod;
                 } else {
-                    this.body.rotationPointY = -1F + point;
-//            this.tail.rotationPointY = -1F;
-                    this.rightWing.rotationPointY = 12.0F + wingMod;
-                    this.leftWing.rotationPointY = 12.0F + wingMod;
-                    this.rightWingSmall.rotationPointY = 12.0F + wingMod;
-                    this.leftWingSmall.rotationPointY = 12.0F + wingMod;
-                    this.mutation = 4;
+                    if (roosting) {
+                        this.body.rotationPointY = 4.9F + point;
+                        this.rightLeg.rotationPointY = 1F;
+                        this.leftLeg.rotationPointY = 1F;
+                        this.rightLeg.rotationPointX = this.rightLeg.rotationPointX - 0.1F;
+                        this.leftLeg.rotationPointX = this.leftLeg.rotationPointX + 0.1F;
+
+                        this.rightWing.rotationPointY = 18F + wingMod;
+                        this.leftWing.rotationPointY = 18F + wingMod;
+                        this.rightWingSmall.rotationPointY = 18F + wingMod;
+                        this.leftWingSmall.rotationPointY = 18F + wingMod;
+                    }
                 }
-            }
+                //pecking ground
+
+                //scratching (eating grass)
+
+                //crowing
+
+                /** wing position variants */
+                switch (chicken.wingPlacement) {
+                    case 0:
+                    default:
+                        break;
+                    case 1:
+                        this.rightWing.rotationPointY = this.rightWing.rotationPointY + 0.5F - (wingMod / 2);
+                        this.leftWing.rotationPointY = this.leftWing.rotationPointY + 0.5F - (wingMod / 2);
+                        this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY - 0.5F - (wingMod / 2);
+                        this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY - 0.5F - (wingMod / 2);
+                        break;
+                    case 2:
+                        this.rightWing.rotationPointY = this.rightWing.rotationPointY + 1F - wingMod;
+                        this.leftWing.rotationPointY = this.leftWing.rotationPointY + 1F - wingMod;
+                        this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + 1F - wingMod;
+                        this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + 1F - wingMod;
+                        break;
+                }
+
+    //            this.rightWing.rotationPointY = this.rightWing.rotationPointY + wingAngle* 2.2F;
+    //            this.leftWing.rotationPointY = this.leftWing.rotationPointY + wingAngle * 2.2F;
+    //            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + wingAngle * 2.2F;
+    //            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + wingAngle * 2.2F;
+
+                switch (chicken.bodyType) {
+                    case -1:
+                        this.rightWing.rotationPointX = -3.5F;
+                        this.leftWing.rotationPointX = 3.5F;
+                        break;
+                    case 0:
+                    default:
+                        this.rightWing.rotationPointX = -4.0F;
+                        this.leftWing.rotationPointX = 4.0F;
+                        break;
+                    case 2:
+                        this.rightWing.rotationPointX = -4.5F;
+                        this.leftWing.rotationPointX = 4.5F;
+                        break;
+                }
+
+            this.head.rotationPointY = (9.0F + ((EnhancedChicken) entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F);
+            this.headRotationAngleX = ((EnhancedChicken) entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
         }
-
-
-        //behaviour animations
-        //nesting "moves legs together to remove clipping"
-        if(nesting){
-            this.body.rotationPointY = 4.9F + point;
-//            this.tail.rotationPointY = 5F;
-            this.rightLeg.rotationPointX = this.rightLeg.rotationPointX - 0.1F;
-            this.leftLeg.rotationPointX = this.leftLeg.rotationPointX + 0.1F;
-
-            this.rightWing.rotationPointY = 19F + wingMod;
-            this.leftWing.rotationPointY = 19F + wingMod;
-            this.rightWingSmall.rotationPointY = 19F + wingMod;
-            this.leftWingSmall.rotationPointY = 19F + wingMod;
-
-            this.pose = 1;
-        } else {
-            if(roosting){
-                this.body.rotationPointY = 4.9F + point;
-//                this.tail.rotationPointY = 5F;
-                this.rightLeg.rotationPointY = 1F;
-                this.leftLeg.rotationPointY = 1F;
-                this.rightLeg.rotationPointX = this.rightLeg.rotationPointX - 0.1F;
-                this.leftLeg.rotationPointX = this.leftLeg.rotationPointX + 0.1F;
-
-                this.rightWing.rotationPointY = 18F + wingMod;
-                this.leftWing.rotationPointY = 18F + wingMod;
-                this.rightWingSmall.rotationPointY = 18F + wingMod;
-                this.leftWingSmall.rotationPointY = 18F + wingMod;
-
-                this.pose = 2;
-            } else {
-                this.pose = 0;
-            }
-        }
-        //pecking ground
-
-        //scratching (eating grass)
-
-        //crowing
-
-        /** wing position variants */
-        if (sharedGenes != null) {
-            if ((sharedGenes[86] == 1 && sharedGenes[87] == 1) || (sharedGenes[86] == 3 && sharedGenes[87] == 3)){
-                this.rightWing.rotationPointY = this.rightWing.rotationPointY + 1F - wingMod;
-                this.leftWing.rotationPointY = this.leftWing.rotationPointY + 1F - wingMod;
-                this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + 1F - wingMod;
-                this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + 1F - wingMod;
-            } else if (sharedGenes[86] == 1 || sharedGenes[87] == 1){
-                this.rightWing.rotationPointY = this.rightWing.rotationPointY + 0.5F - (wingMod/2);
-                this.leftWing.rotationPointY = this.leftWing.rotationPointY + 0.5F - (wingMod/2);
-                this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY - 0.5F - (wingMod/2);
-                this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY - 0.5F - (wingMod/2);
-            }
-
-//            this.rightWing.rotationPointY = this.rightWing.rotationPointY + wingAngle* 2.2F;
-//            this.leftWing.rotationPointY = this.leftWing.rotationPointY + wingAngle * 2.2F;
-//            this.rightWingSmall.rotationPointY = this.rightWingSmall.rotationPointY + wingAngle * 2.2F;
-//            this.leftWingSmall.rotationPointY = this.leftWingSmall.rotationPointY + wingAngle * 2.2F;
-
-            if (sharedGenes[146] == 2 && sharedGenes[147] == 2) {
-                if (sharedGenes[148] == 2 && sharedGenes[149] == 2) {
-                    //normal body
-                    this.rightWing.rotationPointX = -4.0F;
-                    this.leftWing.rotationPointX = 4.0F;
-                } else {
-                    //big body
-                    this.rightWing.rotationPointX = -4.5F;
-                    this.leftWing.rotationPointX = 4.5F;
-                }
-            } else if (sharedGenes[148] == 2 && sharedGenes[149] == 2) {
-                if (sharedGenes[146] == 2 || sharedGenes[147] == 2) {
-                    //normal body
-                    this.rightWing.rotationPointX = -4.0F;
-                    this.leftWing.rotationPointX = 4.0F;
-                } else {
-                    //small body
-                    this.rightWing.rotationPointX = -3.5F;
-                    this.leftWing.rotationPointX = 3.5F;
-                }
-            } else {
-                //normal body
-                this.rightWing.rotationPointX = -4.0F;
-                this.leftWing.rotationPointX = 4.0F;
-            }
-        }
-
-        this.head.rotationPointY = 9.0F + ((EnhancedChicken)entitylivingbaseIn).getHeadRotationPointY(partialTickTime) * 9.0F;
-        this.headRotationAngleX = ((EnhancedChicken)entitylivingbaseIn).getHeadRotationAngleX(partialTickTime);
-
-
 
     }
 
     private class ChickenModelData {
-        int[] chickenGenes;
+        Phenotype phenotype;
         String birthTime;
         boolean sleeping = false;
         int blink = 0;
         int lastAccessed = 0;
         long clientGameTime = 0;
+        float size = 1.0F;
+        boolean isFemale = true;
         List<String> unrenderedModels = new ArrayList<>();
-//        int dataReset = 0;
         boolean collar = false;
+        int adultAge;
     }
 
     private ChickenModelData getChickenModelData() {
@@ -1240,26 +1173,29 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         if (chickenModelDataCache.containsKey(enhancedChicken.getEntityId())) {
             ChickenModelData chickenModelData = chickenModelDataCache.get(enhancedChicken.getEntityId());
             chickenModelData.lastAccessed = 0;
-            chickenModelData.sleeping = enhancedChicken.isRoosting();
+            chickenModelData.sleeping = enhancedChicken.isAnimalSleeping();
             chickenModelData.blink = enhancedChicken.getBlink();
             chickenModelData.birthTime = enhancedChicken.getBirthTime();
             chickenModelData.collar = hasCollar(enhancedChicken.getEnhancedInventory());
-            chickenModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedChicken.world).getWorldInfo()).getGameTime());
+            chickenModelData.clientGameTime = ((((ClientWorld)enhancedChicken.world).getWorldInfo()).getGameTime());
             chickenModelData.unrenderedModels = new ArrayList<>();
 
             return chickenModelData;
         } else {
             ChickenModelData chickenModelData = new ChickenModelData();
             if (enhancedChicken.getSharedGenes()!=null) {
-                chickenModelData.chickenGenes = enhancedChicken.getSharedGenes().getAutosomalGenes();
+                chickenModelData.phenotype = new Phenotype(enhancedChicken.getSharedGenes().getAutosomalGenes());
             }
-            chickenModelData.sleeping = enhancedChicken.isRoosting();
+            chickenModelData.sleeping = enhancedChicken.isAnimalSleeping();
             chickenModelData.blink = enhancedChicken.getBlink();
             chickenModelData.birthTime = enhancedChicken.getBirthTime();
             chickenModelData.collar = hasCollar(enhancedChicken.getEnhancedInventory());
-            chickenModelData.clientGameTime = (((WorldInfo)((ClientWorld)enhancedChicken.world).getWorldInfo()).getGameTime());
+            chickenModelData.size = enhancedChicken.getAnimalSize();
+            chickenModelData.isFemale = enhancedChicken.getOrSetIsFemale();
+            chickenModelData.clientGameTime = (((ClientWorld)enhancedChicken.world).getWorldInfo().getGameTime());
+            chickenModelData.adultAge = EanimodCommonConfig.COMMON.adultAgeChicken.get();
 
-            if(chickenModelData.chickenGenes != null) {
+            if(chickenModelData.phenotype != null) {
                 chickenModelDataCache.put(enhancedChicken.getEntityId(), chickenModelData);
             }
 
@@ -1276,4 +1212,244 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EntityModel
         }
         return false;
     }
+
+    private class Phenotype{
+        private Crested crestType = Crested.NONE;
+        private FootFeathers footFeatherType = FootFeathers.NONE;
+        private Comb comb = Comb.SINGLE;
+        private Beard beard;
+        private boolean butterCup = false;
+        private boolean isVultureHocked;
+        private boolean isNakedNeck;
+        private boolean earTufts;
+        private boolean rumpless;
+        private boolean longHockFeathers;
+        private boolean creeper;
+        private int longLegs = 0;
+        private int combSize = 0;
+        private int waddleSize;
+        private int bodyType;
+        private int wingSize;
+        private int wingPlacement = 0;
+
+        Phenotype(int[] gene) {
+            this.isNakedNeck = gene[52] == 1 || gene[53] == 1;
+            this.rumpless = gene[72] == 2 || gene[73] == 2;
+            this.earTufts = gene[150] == 2 || gene[151] == 2;
+            this.isVultureHocked = gene[102] == 2 && gene[103] == 2;
+            this.creeper = gene[70] == 2 || gene[71] == 2;
+
+            if (gene[56] == 1 || gene[57] == 1) {
+                this.beard = this.isNakedNeck ? Beard.NN_BEARD : Beard.BIG_BEARD;
+            } else {
+                this.beard = Beard.NONE;
+            }
+
+            //Crest type
+            if (!(gene[54] == 3 && gene[55] == 3)) {
+                if (gene[54] == 3 || gene[55] == 3) {
+                    if (gene[54] == 1 || gene[55] == 1) {
+                        this.crestType = Crested.SMALL_CREST;
+                    } else {
+                        this.crestType = Crested.SMALL_FORWARDCREST;
+                    }
+                } else if (gene[54] != gene[55] || (gene[54] == 1 && gene[55] == 1)) {
+                    this.crestType = Crested.BIG_CREST;
+                } else {
+                    this.crestType = Crested.BIG_FORWARDCREST;
+                }
+            }
+
+            //Foot Feather Type
+            if (!(gene[60] == 3 && gene[61] == 3)) {
+                if (gene[60] == 1 || gene[61] == 1) {
+                    if (gene[58] == 2 && gene[59] == 2) {
+                        this.footFeatherType = FootFeathers.BIG_TOEFEATHERS;
+                    } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[58] == 1)) {
+                        this.footFeatherType = FootFeathers.TOEFEATHERS;
+                    } else if (gene[58] == 1 || gene[59] == 1) {
+                        this.footFeatherType = FootFeathers.FOOTFEATHERS;
+                    }
+                } else {
+                    if (gene[58] == 2 && gene[59] == 2) {
+                        this.footFeatherType = FootFeathers.TOEFEATHERS;
+                    } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[58] == 1)) {
+                        this.footFeatherType = FootFeathers.FOOTFEATHERS;
+                    } else if (gene[58] == 1 || gene[59] == 1) {
+                        this.footFeatherType = FootFeathers.LEGFEATHERS;
+                    }
+                }
+            }
+
+            if ((gene[50] == 2 || gene[51] == 2) && !(gene[50] == 1 || gene[51] == 1)) {
+                if (gene[46] == 3 && gene[47] == 3 && gene[48] == 2 && gene[49] == 2) {
+                    //v comb
+                    this.comb = Comb.V;
+                } else {
+                    if (gene[48] == 2 && gene[49] == 2) {
+                        //only waddles
+                        this.comb = Comb.NONE;
+                    }
+                }
+            } else {
+                if (gene[48] == 1 || gene[49] == 1) {
+                    if (gene[46] == 3 && gene[47] == 3) {
+                        //peacomb
+                        this.comb = Comb.PEA;
+                    } else {
+                        //walnut
+                        this.comb = Comb.WALNUT;
+                    }
+                } else {
+                    if (gene[46] == 3 && gene[47] == 3) {
+                        //single comb
+                        this.comb = Comb.SINGLE;
+                    } else if (gene[46] == 1 || gene[47] == 1) {
+                        //rose comb
+//                        if (gene[46] == 3 || gene[47] == 3) {
+//                            this.comb = Comb.HET_ROSE_ONE;
+//                        } else {
+                            this.comb = Comb.ROSE_ONE;
+//                        }
+                    } else {
+                        //rose comb2
+//                        if (gene[46] == 3 || gene[47] == 3) {
+//                            this.comb = Comb.HET_ROSE_TWO;
+//                        } else {
+                            this.comb = Comb.ROSE_TWO;
+//                        }
+                    }
+                }
+
+                if (gene[50] == 2 || gene[51] == 2) {
+                    this.butterCup = true;
+                    this.combSize = -1;
+                } else {
+                    this.butterCup = gene[50] == 3 || gene[51] == 3;
+                }
+
+            }
+
+            if ((gene[86] == 1 && gene[87] == 1) || (gene[86] == 3 && gene[87] == 3)){
+                wingPlacement = 2;
+            } else if (gene[86] == 1 || gene[87] == 1){
+                wingPlacement = 1;
+            }
+
+            //comb size [80 and 81 small / 82 and 83 large]
+            if (gene[80] == 2) {
+                this.combSize = this.combSize + 1;
+            }
+            if (gene[81] == 2) {
+                this.combSize = this.combSize + 1;
+            }
+            if (gene[82] == 1) {
+                this.combSize = this.combSize + 1;
+            }
+            if (gene[83] == 1) {
+                this.combSize = this.combSize + 1;
+            }
+
+            if (this.combSize < 0) {
+                this.combSize = 0;
+            }
+
+            this.waddleSize = this.combSize;
+
+            if (gene[84] == 1 && gene[85] == 1 && this.waddleSize > 0) {
+                this.waddleSize = this.waddleSize - 1;
+            }
+
+            if (gene[146] == 2 && gene[147] == 2) {
+                if (gene[148] == 2 && gene[149] == 2) {
+                    //normal body
+                    this.bodyType = 0;
+                } else {
+                    //big body
+                    this.bodyType = 1;
+                }
+            } else if (gene[148] == 2 && gene[149] == 2) {
+                if (gene[146] == 2 || gene[147] == 2) {
+                    //normal body
+                    this.bodyType = 0;
+                } else {
+                    //small body
+                    this.longHockFeathers = true;
+                    this.bodyType = -1;
+                }
+            } else {
+                //normal body
+                this.bodyType = 0;
+            }
+
+            if (gene[90] == 1 || gene[91] == 1){
+                this.wingSize = 2;
+            } else if (gene[92] == 1 || gene[93] == 1){
+                this.wingSize = 1;
+            }
+
+            if (gene[168] == 2) {
+                this.longLegs++;
+            }
+            if (gene[169] == 2) {
+                this.longLegs++;
+            }
+        }
+
+        private boolean isBearded() {
+            return this.beard != Beard.NONE;
+        }
+
+        private boolean isCombed() { return this.comb != Comb.NONE && this.comb != Comb.BREDA_COMBLESS; }
+
+        private boolean hasLongLegs() { return this.longLegs != 0; }
+
+    }
+
+    private enum Crested {
+        BIG_CREST,
+        BIG_FORWARDCREST,
+        SMALL_CREST,
+        SMALL_FORWARDCREST,
+        NONE
+    }
+
+    private enum FootFeathers {
+        BIG_TOEFEATHERS,
+        TOEFEATHERS,
+        FOOTFEATHERS,
+        LEGFEATHERS,
+        NONE
+    }
+
+    private enum Comb {
+        SINGLE (false),
+        ROSE_ONE (false),
+        ROSE_TWO (false),
+        PEA (true),
+        WALNUT (true),
+        V (false),
+        HET_ROSE_ONE (false),
+        HET_ROSE_TWO (false),
+        BREDA_COMBLESS (false),
+        NONE (true);
+
+        boolean containsPeaComb;
+
+        Comb(boolean effectsWaddleSize) {
+            this.containsPeaComb = effectsWaddleSize;
+        }
+
+        public boolean hasPeaComb() {
+            return this.containsPeaComb;
+        }
+    }
+
+    private enum Beard {
+        BIG_BEARD,
+        SMALL_BEARD,
+        NN_BEARD,
+        NONE
+    }
+
 }

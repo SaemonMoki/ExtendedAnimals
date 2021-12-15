@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.capability.egg;
 
+import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
 import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.item.ItemStack;
 
 /**
  * Created by saemon on 30/09/2018.
@@ -8,6 +10,8 @@ import mokiyoki.enhancedanimals.util.Genes;
 public interface IEggCapability {
 
     void setEggData(Genes genes, String sireName, String damName);
+
+    void setEggData(EggHolder eggHolder);
 
     Genes getGenes();
     void setGenes(Genes genes);
@@ -17,4 +21,6 @@ public interface IEggCapability {
 
     String getDam();
     void setDam(String name);
+
+    EggHolder getEggHolder(ItemStack itemStack);
 }

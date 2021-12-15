@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -92,15 +93,34 @@ public class Genes {
     }
 
     public Genes setGenes(int[] sexlinked, int[] autosomal) {
-        this.sexlinked = sexlinked;
-        this.autosomal = autosomal;
+        if (this.sexlinked == null || this.sexlinked.length <= sexlinked.length) {
+            this.sexlinked = sexlinked;
+        } else {
+            for (int i = 0; sexlinked.length > i; i++) {
+                this.setSexlinkedGene(i, sexlinked[i]);
+            }
+        }
+
+        if (this.autosomal == null || this.autosomal.length <= autosomal.length) {
+            this.autosomal = autosomal;
+        } else {
+            for (int i = 0; autosomal.length > i; i++) {
+                this.setAutosomalGene(i, autosomal[i]);
+            }
+        }
         return this;
     }
 
     public Genes setGenes(int[] autosomal) {
         //only to be used when there are no sexlinked genes
         this.sexlinked = new int[]{1, 1};
-        this.autosomal = autosomal;
+        if (this.autosomal == null || this.autosomal.length <= autosomal.length) {
+            this.autosomal = autosomal;
+        } else {
+            for (int i = 0; autosomal.length > i; i++) {
+                this.setAutosomalGene(i, autosomal[i]);
+            }
+        }
         return this;
     }
 
@@ -124,6 +144,13 @@ public class Genes {
 
     public void setAutosomalGene(int gene, int allel) {
         this.autosomal[gene] = allel;
+    }
+
+    public void setAutosomalGene(int gene, int ... allels) {
+        for (int allel : allels) {
+            this.autosomal[gene] = allel;
+            gene++;
+        }
     }
 
     public void setGeneOfChromosome(boolean isAutosomal, int gene, int allel) {
@@ -283,6 +310,35 @@ public class Genes {
 
     public Genes makeChild(boolean isDiploid, boolean donorIsDiploid, Genes donor) {
         return this.makeChild(isDiploid, donor, donorIsDiploid, Species.UNIMPORTANT);
+    }
+
+    public boolean has(int gene, int allel) {
+        return this.autosomal[gene] == allel || this.autosomal[gene+1] == allel;
+    }
+
+    public boolean isHomozygousFor(int gene, int allel) {
+        return this.autosomal[gene] == allel && this.autosomal[gene+1] == allel;
+    }
+
+    public boolean isHeterozygousFor(int gene, int allel) {
+        return this.autosomal[gene] == allel ^ this.autosomal[gene+1] == allel;
+    }
+
+    public boolean isHeterozygous(int gene) {
+        return this.autosomal[gene] != this.autosomal[gene+1];
+    }
+
+    public boolean isHomozygous(int gene) {
+        return this.autosomal[gene] == this.autosomal[gene+1];
+    }
+
+    public boolean isComplete() {
+        return Arrays.stream(this.sexlinked).noneMatch(i -> i == 0) && Arrays.stream(this.autosomal).noneMatch(i -> i == 0);
+    }
+
+    public boolean isValid() {
+        if (this.sexlinked == null || this.autosomal == null) return false;
+        return Arrays.stream(this.sexlinked).noneMatch(i -> i == 0) && Arrays.stream(this.autosomal).noneMatch(i -> i == 0);
     }
 
     public List<GeneLink> getLinkages(Species species) {

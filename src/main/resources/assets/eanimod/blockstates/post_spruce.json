@@ -1,24 +1,24 @@
 {
   "multipart": [
     {   "when": { "facing": "up" },
-      "apply": { "model": "eanimod:block/post_spruce"}
+      "apply": { "model": "minecraft:block/spruce_fence_post"}
     },
     {   "when": { "facing": "north" },
-      "apply": { "model": "eanimod:block/post_spruce", "x": 90}
+      "apply": { "model": "minecraft:block/spruce_fence_post", "x": 90}
     },
     {   "when": { "facing": "east" },
-      "apply": { "model": "eanimod:block/post_spruce", "x": 90, "y": 90}
+      "apply": { "model": "minecraft:block/spruce_fence_post", "x": 90, "y": 90}
     },
-    {   "when": { "fencenorth": "true"},
-      "apply": { "model": "eanimod:block/post_fence_spruce", "uvlock": true , "y": 180 }
+    {   "when": { "facing": "up", "north": "true"},
+      "apply": { "model": "eanimod:block/post_fence_spruce", "uvlock": true , "y": 180}
     },
-    {   "when": { "fenceeast": "true"},
+    {   "when": { "facing": "up", "east": "true"},
       "apply": { "model": "eanimod:block/post_fence_spruce", "uvlock": true , "y": 270 }
     },
-    {   "when": { "fencesouth": "true"},
+    {   "when": { "facing": "up", "south": "true"},
       "apply": { "model": "eanimod:block/post_fence_spruce", "uvlock": true , "y": 0 }
     },
-    {   "when": { "fencewest": "true"},
+    {   "when": { "facing": "up", "west": "true"},
       "apply": { "model": "eanimod:block/post_fence_spruce", "uvlock": true , "y": 90 }
     },
     {   "when": { "facing": "north", "north": "true"},

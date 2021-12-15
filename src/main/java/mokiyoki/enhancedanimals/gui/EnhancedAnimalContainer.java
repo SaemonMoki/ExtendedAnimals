@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.gui;
 
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
@@ -177,6 +176,7 @@ public class EnhancedAnimalContainer extends Container {
 
         this.addSlot(new EnhancedSlot(retrievedInventory, 0, 116, 36) {
             public boolean isItemValid(ItemStack stack) {
+                //TODO add option for item to be in forge:chests/wooden
                 return stack.getItem() == Items.CHEST;
             }
 
@@ -188,8 +188,15 @@ public class EnhancedAnimalContainer extends Container {
 
         int inventoryShift = 7;
         if (enhancedAnimal.canHaveChest()) {
+            int limit = enhancedAnimal.getInventorySize();
                 for (int k = 0; k < i; ++k) {
+                    if (inventoryShift >= limit) {
+                        break;
+                    }
                     for (int l = 0; l < j; ++l) {
+                        if (inventoryShift >= limit) {
+                            break;
+                        }
                         this.addSlot(new EnhancedSlot(retrievedInventory, inventoryShift, 80 + (l * 18), 18 + (k * 18)) {
                         });
                         inventoryShift++;

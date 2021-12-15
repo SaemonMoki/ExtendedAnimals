@@ -1,12 +1,18 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
+import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
+import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.entity.Genetics.SheepGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
@@ -20,12 +26,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.BreedGoal;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.FollowParentGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AirItem;
 import net.minecraft.item.DyeColor;
@@ -33,7 +41,6 @@ import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -41,6 +48,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -50,9 +58,10 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.sheepFoodMap;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
 
-public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.minecraftforge.common.IShearable, EnhancedAnimal{
+public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.minecraftforge.common.IForgeShearable {
 
     //avalible UUID spaces : [ S X X 3 X 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
@@ -79,6 +88,14 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             "", "c_spot0.png",  "c_spot1.png",  "c_spot2.png", "c_spot3.png",  "c_spot4.png",  "c_spot5.png", "c_spot6.png",  "c_spot7.png",  "c_spot8.png", "c_spot9.png",  "c_spota.png",  "c_spotb.png", "c_spotc.png",  "c_spotd.png",  "c_spote.png",  "c_spotf.png"
     };
 
+    private static final String[] SHEEP_TEXTURES_PIGMENTEDHEAD = new String[] {
+            "", "c_solid_white.png", "c_afghan_pied.png", "c_turkish.png", "c_turkish_speckled.png", "c_turkish_pigmented_head.png", "c_pigmented_head.png"
+    };
+
+    private static final String[] SHEEP_TEXTURES_TICKED = new String[] {
+            "", "ticking.png"
+    };
+
     private static final String[] SHEEP_TEXTURES_SKIN = new String[] {
             "skin_pink.png"
     };
@@ -95,10 +112,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             "eyes_black.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Blocks.MELON, Blocks.PUMPKIN, Blocks.GRASS, Blocks.TALL_GRASS, Items.VINE, Blocks.HAY_BLOCK, Items.CARROT, Items.WHEAT, Items.ROSE_BUSH, Items.DANDELION, Items.SUGAR, Items.APPLE, ModBlocks.UNBOUNDHAY_BLOCK);
-    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Blocks.HAY_BLOCK, Items.WHEAT);
-
-    private final List<String> sheepFleeceTextures = new ArrayList<>();
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
     protected float maxBagSize;
@@ -107,46 +120,46 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     private int currentCoatLength;
     private int timeForGrowth = 0;
 
-//    protected boolean aiConfigured = false;
+    private boolean resetTexture = true;
+
     private String motherUUID = "";
 
     public EnhancedSheep(EntityType<? extends EnhancedSheep> entityType, World worldIn) {
-        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.SHEEP_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), true);
-        this.setSheepSize();
+        super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.SHEEP_AUTOSOMAL_GENES_LENGTH, true);
+        this.initilizeAnimalSize();
         this.timeUntilNextMilk = this.rand.nextInt(this.rand.nextInt(8000) + 4000);
     }
 
-    private static Map<Item, Integer> createFoodMap() {
-        return new HashMap() {{
-            put(new ItemStack(Blocks.MELON).getItem(), 10000);
-            put(new ItemStack(Blocks.PUMPKIN).getItem(), 10000);
-            put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-            put(new ItemStack(Items.GRASS).getItem(), 3000);
-            put(new ItemStack(Items.VINE).getItem(), 3000);
-            put(new ItemStack(Blocks.HAY_BLOCK).getItem(), 54000);
-            put(new ItemStack(Items.WHEAT).getItem(), 6000);
-            put(new ItemStack(Items.CARROT).getItem(), 3000);
-            put(new ItemStack(Items.GOLDEN_CARROT).getItem(), 12000);
-            put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
-            put(new ItemStack(Items.DANDELION).getItem(), 1500);
-            put(new ItemStack(Items.ROSE_BUSH).getItem(), 1500);
-            put(new ItemStack(Items.SUGAR).getItem(), 1500);
-            put(new ItemStack(Items.APPLE).getItem(), 1500);
-            put(new ItemStack(ModBlocks.UNBOUNDHAY_BLOCK).getItem(), 54000);
-        }};
+    private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
+        Map<Block, EnhancedEatPlantsGoal.EatValues> ediblePlants = new HashMap<>();
+        ediblePlants.put(Blocks.CARROTS, new EnhancedEatPlantsGoal.EatValues(4, 2, 750));
+        ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(2, 2, 750));
+        ediblePlants.put(Blocks.ALLIUM, new EnhancedEatPlantsGoal.EatValues(8, 3, 750));
+        ediblePlants.put(Blocks.AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(Blocks.BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(Blocks.CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(Blocks.DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(Blocks.OXEYE_DAISY, new EnhancedEatPlantsGoal.EatValues(7, 3, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_OXEYE_DAISY, new EnhancedEatPlantsGoal.EatValues(7, 2, 750));
+        ediblePlants.put(Blocks.GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
 
+        return ediblePlants;
     }
 
-//    private int sheepTimer;
-//    private EnhancedWaterAvoidingRandomWalkingEatingGoal grazingGoal;
-
-//    /** Map from EnumDyeColor to RGB values for passage to GlStateManager.color() */
-//    private static final Map<DyeColor, float[]> DYE_TO_RGB = Maps.newEnumMap(Arrays.stream(DyeColor.values()).collect(Collectors.toMap((DyeColor p_200204_0_) -> {
-//        return p_200204_0_;
-//    }, EnhancedSheep::createSheepDyeColor)));
-
-    private static int createSheepDyeColor(DyeColor enumDyeColour) {
-        return enumDyeColour.getColorValue();
+    @Override
+    protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
+        return sheepFoodMap();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -179,15 +192,21 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @Override
     protected void registerGoals() {
         //Todo add the temperamants
+        int napmod = this.rand.nextInt(1000);
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.25D));
-        this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.1D, false, TEMPTATION_ITEMS));
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(5, this.wanderEatingGoal);
-        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(2, new EnhancedAvoidEntityGoal<>(this, WolfEntity.class, 10.0F, 1.25D, 1.25D, null));
+        this.goalSelector.addGoal(3, new EnhancedBreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.AIR));
+        this.goalSelector.addGoal(5, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(6, new StayShelteredGoal(this, 5723, 7000, napmod));
+        this.goalSelector.addGoal(7, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
+        this.goalSelector.addGoal(8, new EnhancedEatPlantsGoal(this, createGrazingMap()));
+        this.goalSelector.addGoal(9, this.wanderEatingGoal);
+        this.goalSelector.addGoal(10, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(10, new EnhancedLookAtGoal(this, EnhancedSheep.class, 6.0F));
+        this.goalSelector.addGoal(11, new EnhancedLookRandomlyGoal(this));
     }
 
     //TODO put new sheep behaviour here
@@ -205,7 +224,14 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(0.8F, 1.2F);
+        return EntitySize.flexible(0.8F, 1.2F).scale(this.getRenderScale());
+    }
+
+    @Override
+    public float getRenderScale() {
+        float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
+        float newbornSize = 0.325F;
+        return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
     }
 
     protected void registerData() {
@@ -220,7 +246,13 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         return "entity.eanimod.enhanced_sheep";
     }
 
-    protected int getAdultAge() { return 72000;}
+    @Override
+    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeSheep.get();}
+
+    @Override
+    protected int gestationConfig() {
+        return EanimodCommonConfig.COMMON.gestationDaysSheep.get();
+    }
 
     private void setCoatLength(int coatLength) {
         this.dataManager.set(COAT_LENGTH, coatLength);
@@ -230,10 +262,10 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         return this.dataManager.get(COAT_LENGTH);
     }
 
-    protected void registerAttributes() {
-        super.registerAttributes();
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(8.0D);
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23000000417232513D);
+    public static AttributeModifierMap.MutableAttribute prepareAttributes() {
+        return MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 8.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.23D);
     }
 
     protected void setMilkAmount(Integer milkAmount) {
@@ -291,19 +323,23 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void runExtraIdleTimeTick() {
-        if (hunger <= 36000) {
-            timeForGrowth++;
+        if (this.hunger <= 36000) {
+            this.timeForGrowth++;
         }
-        if (maxCoatLength > 0) {
+
+        int maxcoat = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+
+        if (maxcoat > 0) {
             int[] genes = this.genetics.getAutosomalGenes();
-            if (!this.isChild() && currentCoatLength == maxCoatLength && (genes[46] == 1 || genes[47] == 1) && timeForGrowth >= 24000) {
-                timeForGrowth = 0;
-                currentCoatLength = rand.nextInt(maxCoatLength/2);
-            } else if (timeForGrowth >= (24000 / maxCoatLength)) {
-                timeForGrowth = 0;
-                if (maxCoatLength > currentCoatLength) {
-                    currentCoatLength++;
-                    setCoatLength(currentCoatLength);
+            //first check is for self shearing sheep
+            if (this.currentCoatLength == maxcoat && (genes[46] == 1 || genes[47] == 1) && this.timeForGrowth >= 24000) {
+                this.timeForGrowth = 0;
+                this.currentCoatLength = maxcoat >= 2 ? this.rand.nextInt(maxcoat/2) : 0;
+            } else if (this.timeForGrowth >= (24000 / maxcoat)) {
+                this.timeForGrowth = 0;
+                if (maxcoat > this.currentCoatLength) {
+                    this.currentCoatLength++;
+                    setCoatLength(this.currentCoatLength);
                 }
             }
 
@@ -312,6 +348,10 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void lethalGenes() {
+        int[] genes = this.genetics.getAutosomalGenes();
+        if(genes[68] == 2 && genes[69] == 2) {
+            this.remove();
+        }
     }
 
     @Override
@@ -348,20 +388,20 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void incrementHunger() {
-        if(sleeping) {
-            hunger = hunger + (0.5F*getHungerModifier());
+        if(this.sleeping) {
+            this.hunger = this.hunger + (0.5F*getHungerModifier());
         } else {
-            hunger = hunger + (1.0F*getHungerModifier());
+            this.hunger = this.hunger + (1.0F*getHungerModifier());
         }
     }
 
     protected void createAndSpawnEnhancedChild(World inWorld) {
         EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.world);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.isFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedsheep, inWorld, babyGenes, -72000);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
+        defaultCreateAndSpawn(enhancedsheep, inWorld, babyGenes, -this.getAdultAge());
         enhancedsheep.setMaxCoatLength();
-        enhancedsheep.currentCoatLength = enhancedsheep.maxCoatLength;
-        enhancedsheep.setCoatLength(enhancedsheep.currentCoatLength);
+        enhancedsheep.currentCoatLength = 0;
+        enhancedsheep.setCoatLength(0);
         this.world.addEntity(enhancedsheep);
     }
 
@@ -376,6 +416,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     protected SoundEvent getAmbientSound() {
+        if (isAnimalSleeping()) {
+            return null;
+        }
         return SoundEvents.ENTITY_SHEEP_AMBIENT;
     }
 
@@ -404,84 +447,81 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    public boolean isShearable(ItemStack item, net.minecraft.world.IWorldReader world, BlockPos pos) {
-        if (!this.world.isRemote && currentCoatLength >=1) {
-            return true;
-        }
-        return false;
+    public boolean isShearable(ItemStack item, World world, BlockPos pos) {
+        return !this.world.isRemote && currentCoatLength >= 1;
     }
 
     @Override
-    public java.util.List<ItemStack> onSheared(ItemStack item, net.minecraft.world.IWorld world, BlockPos pos, int fortune) {
+    public java.util.List<ItemStack> onSheared(PlayerEntity player, ItemStack item, World world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         if (!this.world.isRemote) {
             int woolCount = 0;
-            if (currentCoatLength == 1) {
+            if (this.currentCoatLength == 1) {
                 int i = this.rand.nextInt(5);
                 if (i>3){
                     woolCount++;
                 }
-            } else if (currentCoatLength == 2) {
+            } else if (this.currentCoatLength == 2) {
                 int i = this.rand.nextInt(5);
                 if (i>2){
                     woolCount++;
                 }
-            } else if (currentCoatLength == 3) {
+            } else if (this.currentCoatLength == 3) {
                 int i = this.rand.nextInt(5);
                 if (i>1){
                     woolCount++;
                 }
-            } else if (currentCoatLength == 4) {
+            } else if (this.currentCoatLength == 4) {
                 int i = this.rand.nextInt(5);
                 if (i>0) {
                     woolCount++;
                 }
-            } else if (currentCoatLength >= 5) {
+            } else if (this.currentCoatLength >= 5) {
                 woolCount++;
 
-                if (currentCoatLength == 6) {
+                if (this.currentCoatLength == 6) {
                     int i = this.rand.nextInt(5);
                     if (i>3){
                         woolCount++;
                     }
-                } else if (currentCoatLength == 7) {
+                } else if (this.currentCoatLength == 7) {
                     int i = this.rand.nextInt(5);
                     if (i>2){
                         woolCount++;
                     }
-                } else if (currentCoatLength == 8) {
+                } else if (this.currentCoatLength == 8) {
                     int i = this.rand.nextInt(5);
                     if (i>1){
                         woolCount++;
                     }
-                } else if (currentCoatLength == 9) {
+                } else if (this.currentCoatLength == 9) {
                     int i = this.rand.nextInt(5);
                     if (i>0) {
                         woolCount++;
                     }
-                } else if (currentCoatLength >= 10) {
+                } else if (this.currentCoatLength >= 10) {
                     woolCount++;
-                    if (currentCoatLength == 11) {
+                    if (this.currentCoatLength == 11) {
                         int i = this.rand.nextInt(5);
                         if (i>3){
                             woolCount++;
                         }
-                    } else if (currentCoatLength == 12) {
+                    } else if (this.currentCoatLength == 12) {
                         int i = this.rand.nextInt(5);
                         if (i>2){
                             woolCount++;
                         }
-                    } else if (currentCoatLength == 13) {
+                    } else if (this.currentCoatLength == 13) {
                         int i = this.rand.nextInt(5);
                         if (i>1){
                             woolCount++;
                         }
-                    } else if (currentCoatLength == 14) {
+                    } else if (this.currentCoatLength == 14) {
                         int i = this.rand.nextInt(5);
                         if (i>0) {
                             woolCount++;
                         }
-                    } else if (currentCoatLength >= 15) {
+                    } else if (this.currentCoatLength >= 15) {
                         woolCount++;
                     }
                 }
@@ -544,67 +584,84 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 }
             }
         }
-        currentCoatLength = 0;
-        setCoatLength(currentCoatLength);
+        this.currentCoatLength = 0;
+        setCoatLength(this.currentCoatLength);
         return ret;
     }
 
     private DyeColor getWoolColour() {
-        int[] genes = this.genetics.getAutosomalGenes();
+        int[] gene = this.genetics.getAutosomalGenes();
         int spots = 0;
         DyeColor returnDye;
 
-        if ((genes[0] == 1 || genes[1] == 1) && !(genes[4] == 1 || genes[5] == 1)) {
+        if (((gene[0] == 1 || gene[1] == 1) && !(gene[4] == 1 || gene[5] == 1)) || gene[68] == 2 || gene[69] == 2 || (gene[68] >= 3 && gene[68] == gene[69])) {
             //sheep is white
             spots = 2;
-        } else if (genes[8] == 2 && genes[9] == 2){
+        } else if (gene[8] == 2 && gene[9] == 2){
             // 1 out of 3 chance to drop white wool instead
-            spots = this.rand.nextInt(3);
+            spots = this.rand.nextInt(3) == 0 ? 1 : 0;
+            if (spots == 0 && (gene[68] == 3 || gene[69] == 3)) {
+                if (gene[68] == 4 || gene[69] == 4) {
+                    // 2 out of 3 chance to drop white wool
+                    spots = this.rand.nextInt(3) == 0 ? 1 : 0;
+                } else if (gene[68] == 1 || gene[69] == 1) {
+                    // 1 out of 2 chance to drop white wool
+                    spots = this.rand.nextInt(2);
+                }
+            }
+        } else if (gene[68] == 3 || gene[69] == 3) {
+            if (gene[68] == 4 || gene[69] == 4) {
+                // 2 out of 3 chance to drop white wool
+                spots = this.rand.nextInt(3);
+            } else if (gene[68] == 1 || gene[69] == 1) {
+                // 1 out of 2 chance to drop white wool
+                spots = this.rand.nextInt(2);
+            }
         }
 
-        if (spots != 2) {
-            if (genes[4] == 1 || genes[5] == 1) {
+        if (spots == 0) {
+            if (gene[4] == 1 || gene[5] == 1) {
                 //sheep is dominant black
-                if (genes[2] == 1 || genes[3] == 1){
+                if (gene[2] == 1 || gene[3] == 1){
                     //is not chocolate
                     returnDye = DyeColor.BLACK;
                 }else{
                     //is chocolate
                     returnDye = DyeColor.BROWN;
                 }
-            } else if (genes[4] == 3 && genes[5] == 3) {
+            } else if (gene[4] == 3 && gene[5] == 3) {
                 //red sheep
-                if (genes[0] == 2 || genes[1] == 2 || genes[0] == 3 || genes[1] == 3) {
+                if (gene[0] == 2 || gene[1] == 2 || gene[0] == 3 || gene[1] == 3) {
                     returnDye = DyeColor.WHITE;
                 } else {
-                    if ((genes[0] >= 5 && genes[1] >= 5) && (genes[0] == 5 || genes[1] == 5)) {
+                    if ((gene[0] >= 5 && gene[1] >= 5) && (gene[0] == 5 || gene[1] == 5)) {
                         returnDye = DyeColor.LIGHT_GRAY;
                     } else {
                         returnDye = DyeColor.BROWN;
                     }
                 }
-            } else if (genes[0] >= 3 && genes[1] >= 3){
-                if (genes[0] == 3 || genes[1] == 3) {
+            } else if (gene[0] >= 3 && gene[1] >= 3){
+                if (gene[0] == 3 || gene[1] == 3) {
                     //badgerface or badgerface mix brown sheep
                     returnDye = DyeColor.BROWN;
-                } else if (genes[0] == 4 || genes[1] == 4) {
+                } else if (gene[0] == 4 || gene[1] == 4) {
                     //mouflon black or black mix with blue
-                    if (genes[2] == 1 || genes[3] == 1){
+                    if (gene[2] == 1 || gene[3] == 1){
                         //is not chocolate
                         returnDye = DyeColor.BLACK;
                     }else{
                         //is chocolate
                         returnDye = DyeColor.BROWN;
                     }
-                } else if (genes[0] == 5 || genes[1] == 5) {
+                } else if (gene[0] == 5 || gene[1] == 5) {
                     //blue
-                    if (genes[2] == 1 || genes[3] == 1) {
+                    if (gene[2] == 1 || gene[3] == 1) {
                         returnDye = DyeColor.GRAY;
                     } else {
                         returnDye = DyeColor.BROWN;
                     }
                 } else {
-                    if (genes[2] == 1 || genes[3] == 1){
+                    if (gene[2] == 1 || gene[3] == 1){
                         //is not chocolate
                         returnDye = DyeColor.BLACK;
                     }else{
@@ -612,7 +669,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                         returnDye = DyeColor.BROWN;
                     }
                 }
-            }else if ((genes[0] == 2 || genes[1] == 2) && !(genes[0] == 3 || genes[1] == 3)) {
+            }else if ((gene[0] == 2 || gene[1] == 2) && !(gene[0] == 3 || gene[1] == 3)) {
                 returnDye = DyeColor.LIGHT_GRAY;
             } else {
                 returnDye = DyeColor.WHITE;
@@ -791,53 +848,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         return returnBlocks;
     }
 
-    private void setSheepSize() {
-        int[] genes = this.genetics.getAutosomalGenes();
-        float size = 0.4F;
-
-        //(56/57) 1-2 minature [wildtype, minature]
-        //(58/59) 1-16 size genes reducer [wildtype, smaller smaller smallest...] adds milk fat [none to most]
-        //(60/61) 1-16 size genes adder [wildtype, bigger bigger biggest...]
-        //(62/63) 1-3 size genes varient1 [wildtype, smaller, smallest]
-        //(64/65) 1-3 size genes varient2 [wildtype, smaller, smallest]
-
-        size = size - (genes[58] - 1)*0.01F;
-        size = size - (genes[59] - 1)*0.01F;
-        size = size + (genes[60] - 1)*0.0075F;
-        size = size + (genes[61] - 1)*0.0075F;
-
-        if (genes[56] == 2 || genes[57] == 2) {
-            if (genes[56] == 2 && genes[57] == 2) {
-                size = size * 0.8F;
-            } else {
-                size = size * 0.9F;
-            }
-        }
-
-        if (genes[62] == 2 || genes[63] == 2) {
-            size = size * 0.975F;
-        } else if (genes[62] == 3 || genes[63] == 3) {
-            size = size * 0.925F;
-        } else {
-            size = size * 1.025F;
-        }
-
-        if (genes[64] == 2 || genes[65] == 2) {
-            size = size * 1.05F;
-        } else if (genes[64] == 3 || genes[65] == 3) {
-            size = size * 1.1F;
-        }
-
-        if (size > 0.6F) {
-            size = 0.6F;
-        }
-
-        size = size + 0.43F;
-
-        // [ 0.52325 - 1.1 ]
-        this.setAnimalSize(size);
-    }
-
     @Override
     protected boolean canDropLoot() { return true; }
 
@@ -850,20 +860,22 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         boolean leatherDrop = false;
         int meatChanceMod;
 
-        if (currentCoatLength == maxCoatLength && maxCoatLength >= 1) {
-            if (currentCoatLength >= 5) {
+        if (this.currentCoatLength >= 5) {
+            woolDrop = true;
+        } else if (this.currentCoatLength == this.maxCoatLength && this.maxCoatLength >= 1) {
+            if (this.currentCoatLength >= 5) {
                     woolDrop = true;
-            } else if (currentCoatLength == 1) {
+            } else if (this.currentCoatLength == 1) {
                 int i = this.rand.nextInt(5);
                 if (i>3){
                     woolDrop = true;
                 }
-            } else if (currentCoatLength == 2) {
+            } else if (this.currentCoatLength == 2) {
                 int i = this.rand.nextInt(5);
                 if (i>2){
                     woolDrop = true;
                 }
-            } else if (currentCoatLength == 3) {
+            } else if (this.currentCoatLength == 3) {
                 int i = this.rand.nextInt(5);
                 if (i>1){
                     woolDrop = true;
@@ -876,26 +888,26 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             }
         }
 
-        if (maxCoatLength < 5 && !woolDrop) {
+        if (this.maxCoatLength < 5 && !woolDrop) {
             int i = this.rand.nextInt(3);
             // 2 out of 3 times
             if (i != 0) {
-                if (currentCoatLength == 0) {
+                if (this.currentCoatLength == 0) {
                     // 5 out of 5 times
                     leatherDrop = true;
-                } else if (currentCoatLength == 1) {
+                } else if (this.currentCoatLength == 1) {
                     // 4 out of 5 times
                     i = this.rand.nextInt(5);
                     if (i != 0) {
                         leatherDrop = true;
                     }
-                } else if (currentCoatLength == 2) {
+                } else if (this.currentCoatLength == 2) {
                     // 3 out of 5 times
                     i = this.rand.nextInt(5);
                     if (i <= 2) {
                         leatherDrop = true;
                     }
-                } else if (currentCoatLength == 3) {
+                } else if (this.currentCoatLength == 3) {
                     // 2 out of 5 times
                     i = this.rand.nextInt(5);
                     if (i <= 1) {
@@ -966,9 +978,13 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @OnlyIn(Dist.CLIENT)
-    public String getSheepTexture() {
+    public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
+            this.setAlphaTexturePaths();
+        } else if (this.resetTexture && !this.isChild()) {
+            this.resetTexture = false;
+            this.reloadTextures();
         }
 
         return getCompiledTextures("enhanced_sheep");
@@ -976,14 +992,26 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     @OnlyIn(Dist.CLIENT)
+    protected void reloadTextures() {
+        this.texturesIndexes.clear();
+        this.enhancedAnimalTextures.clear();
+        this.compiledTexture = null;
+        this.colouration.setMelaninColour(-1);
+        this.colouration.setPheomelaninColour(-1);
+        this.setTexturePaths();
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
     protected void setTexturePaths() {
         if (this.getSharedGenes() != null) {
-            int[] genesForText = getSharedGenes().getAutosomalGenes();
+            int[] gene = getSharedGenes().getAutosomalGenes();
 
             int under = 0;
             int pattern = 0;
             int grey = 0;
             int spots = 0;
+            int pigmentedHead = 0;
             int skin = 0;
             int hooves = 0;
             int fur = 0;
@@ -991,31 +1019,31 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             char[] uuidArry = getCachedUniqueIdString().toCharArray();
 
-            if (genesForText[4] == 1 || genesForText[5] ==1){
+            if (gene[4] == 1 || gene[5] ==1){
                 //black sheep
                 under = 1;
             }else {
-                if (genesForText[0] == 1 || genesForText[1] == 1) {
+                if (gene[0] == 1 || gene[1] == 1) {
                     //white sheep
                     pattern = 1;
-                }else if (genesForText[0] == 2 || genesForText[1] == 2){
+                }else if (gene[0] == 2 || gene[1] == 2){
                     grey = 1;
-                    if (genesForText[0] == 3 || genesForText[1] == 3){
+                    if (gene[0] == 3 || gene[1] == 3){
                         pattern = 2;
-                    }else if (genesForText[0] == 4 || genesForText[1] == 4){
+                    }else if (gene[0] == 4 || gene[1] == 4){
                         pattern = 6;
                     }else{
                         pattern = 10;
                     }
-                }else if(genesForText[0] == 3 || genesForText[1] == 3){
-                    if(genesForText[0] == 4 || genesForText[1] == 4){
+                }else if(gene[0] == 3 || gene[1] == 3){
+                    if(gene[0] == 4 || gene[1] == 4){
                         pattern = 4;
                     }else{
                         pattern = 2;
                     }
-                }else if (genesForText[0] == 4 || genesForText[1] == 4){
+                }else if (gene[0] == 4 || gene[1] == 4){
                     pattern = 6;
-                }else if (genesForText[0] == 5 || genesForText[1] == 5){
+                }else if (gene[0] == 5 || gene[1] == 5){
                     pattern = 8;
                     under = 3;
                 }else{
@@ -1023,14 +1051,14 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 }
 
                 //red variant
-                if (genesForText[4] == 3 && genesForText[5] == 3){
+                if (gene[4] == 3 && gene[5] == 3){
                     under = under + 4;
                     pattern = pattern + 11;
                 }
             }
 
             //chocolate variant
-            if (genesForText[2] == 2 && genesForText[3] == 2){
+            if (gene[2] == 2 && gene[3] == 2){
                 if (pattern == 0) {
                     under = 2;
                 } else if (pattern!=1 && pattern!=12){
@@ -1039,7 +1067,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             }
 
             //basic spots
-            if (genesForText[8] == 2 && genesForText[9] == 2){
+            if (gene[8] == 2 && gene[9] == 2){
                 if (Character.isDigit(uuidArry[1])){
                     spots = 2;
                 }else {
@@ -1047,10 +1075,44 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 }
             }
 
+            //pigmented head
+            if (gene[68] == 2 || gene[69] == 2) {
+                if (gene[68] == 1 || gene[69] == 1) {
+                    //het afghan
+                    pigmentedHead = 2;
+                } else {
+                    //white afghan
+                    pigmentedHead = 1;
+                }
+            } else if (gene[68] == 3 || gene[69] == 3) {
+                if (gene[68] == gene[69]) {
+                    //homozygous turkish
+                    pigmentedHead = 3;
+                } else if (gene[68] == 4 || gene[69] == 4) {
+                    //het turkish/pigmented head
+                    pigmentedHead = 5;
+                } else {
+                    //het turkish (speckled)
+                    pigmentedHead = 4;
+                }
+            } else if (gene[68] == 4 && gene[69] == 4) {
+                // pigmented head
+                pigmentedHead = 6;
+            }
+
+            boolean ticked = !this.isChild() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHead != 0);
+
             addTextureToAnimal(SHEEP_TEXTURES_UNDER, under, null);
             addTextureToAnimal(SHEEP_TEXTURES_PATTERN, pattern, l -> l != 0);
             addTextureToAnimal(SHEEP_TEXTURES_GREY, grey, l -> l != 0);
+            if (ticked) {
+                this.enhancedAnimalTextures.add("alpha_group_start");
+            }
             addTextureToAnimal(SHEEP_TEXTURES_SPOTS, spots, l -> l != 0);
+            addTextureToAnimal(SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHead, l -> l != 0);
+            if (ticked) {
+                this.enhancedAnimalTextures.add("alpha_group_end");
+            }
             addTextureToAnimal(SHEEP_TEXTURES_SKIN, skin, null);
             addTextureToAnimal(SHEEP_TEXTURES_HOOVES, hooves, null);
             addTextureToAnimal(SHEEP_TEXTURES_FUR, fur, null);
@@ -1060,6 +1122,37 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void setAlphaTexturePaths() {
+        Genes genes = getSharedGenes();
+        if (genes != null) {
+            int[] gene = genes.getAutosomalGenes();
+            if (gene != null) {
+                if (!this.isChild() && (gene[70] == 2 || gene[71] == 2)) {
+                    this.enhancedAnimalAlphaTextures.add(SHEEP_TEXTURES_TICKED[1]);
+                }
+            }
+        }
+    }
+
+    @Override
+    public Colouration getRgb() {
+        boolean flag = this.colouration.getMelaninColour() == -1;
+        this.colouration = super.getRgb();
+
+        if(this.colouration == null) {
+            return null;
+        }
+
+        if (flag) {
+            float[] melanin = Colouration.getHSBFromABGR(this.colouration.getMelaninColour());
+
+            melanin[0] = 0.02F;
+            melanin[1] = 0.5F;
+            melanin[2] = 0.02F;
+
+            this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], 1F));
+        }
+
+        return this.colouration;
     }
 
     @Override
@@ -1082,7 +1175,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
@@ -1140,7 +1233,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             switch (resultAmount) {
                 case 0:
                     entityPlayer.playSound(SoundEvents.ENTITY_SHEEP_HURT, 1.0F, 1.0F);
-                    return true;
+                    return ActionResultType.SUCCESS;
                 case 1:
                     if (isBottle) {
                         resultItem = new ItemStack(ModItems.HALF_MILK_BOTTLE);
@@ -1182,13 +1275,13 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
             if (item instanceof AirItem) {
                 int[] genes = this.genetics.getAutosomalGenes();
-                if (!this.isChild() && (genes[46] == 1 || genes[47] == 1) && currentCoatLength == maxCoatLength) {
-                        List<ItemStack> woolToDrop = onSheared(null, this.world, getPosition(), 0);
+                if (!this.isChild() && (genes[46] == 1 || genes[47] == 1) && this.currentCoatLength == this.maxCoatLength) {
+                        List<ItemStack> woolToDrop = onSheared(entityPlayer,null, this.world, getPosition(), 0);
                         woolToDrop.forEach(d -> {
                             net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
                             ent.setMotion(ent.getMotion().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
                         });
-                        onSheared(ItemStack.EMPTY, this.world, getPosition(), 0);
+                        onSheared(entityPlayer, ItemStack.EMPTY, this.world, getPosition(), 0);
                 }
 
             } else if (item == Items.WATER_BUCKET) {
@@ -1205,12 +1298,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
             }
         }
-        return super.processInteract(entityPlayer, hand);
-    }
-
-    @Override
-    protected  int gestationConfig() {
-        return EanimodCommonConfig.COMMON.gestationDaysSheep.get();
+        return super.func_230254_b_(entityPlayer, hand);
     }
 
     /**
@@ -1258,82 +1346,19 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         }
     }
 
-    protected void initilizeAnimalSize() {
-        setSheepSize();
-    }
-
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 60000, 80000);
+    public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 60000, 80000, spawnReason);
     }
 
     @Override
-    protected void setInitialDefaults() {
+    public void setInitialDefaults() {
         super.setInitialDefaults();
-        this.setMaxCoatLength();
-        this.currentCoatLength = this.maxCoatLength;
-        this.setCoatLength(this.currentCoatLength);
+        setInitialCoat();
 
         //"White" is considered no dye
         this.setFleeceDyeColour(DyeColor.WHITE);
-    }
-
-    private void setMaxCoatLength() {
-        int[] genes = this.genetics.getAutosomalGenes();
-        int maxCoatLength = 0;
-
-        if ( !this.isChild() ) {
-            if (genes[20] == 2){
-                maxCoatLength = 1;
-            }
-            if (genes[21] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[22] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[23] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[24] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[25] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[26] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[27] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[28] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[29] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[30] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[31] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[32] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[33] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-            if (genes[34] == 2 && genes[35] == 2){
-                maxCoatLength = maxCoatLength + 1;
-            }
-
-        }
-
-        this.maxCoatLength = maxCoatLength;
-
     }
 
     @Override
@@ -1342,8 +1367,126 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     @Override
-    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
         return new SheepGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
+    public void setInitialCoat() {
+        setMaxCoatLength();
+        this.currentCoatLength = (int)(this.maxCoatLength*(this.getAge() >= this.getAdultAge() ? 1 : ((float)this.getAge()/(float)this.getAdultAge())));
+        setCoatLength(this.currentCoatLength);
+    }
+
+    @Override
+    protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {
+//        int[] genes = animal.genetics.getAutosomalGenes();
+
+        health = 8.0F;
+
+        super.initializeHealth(animal, health);
+    }
+
+    @Override
+    public void initilizeAnimalSize() {
+        int[] genes = this.genetics.getAutosomalGenes();
+        float size = 0.4F;
+
+        //(56/57) 1-2 minature [wildtype, minature]
+        //(58/59) 1-16 size genes reducer [wildtype, smaller smaller smallest...] adds milk fat [none to most]
+        //(60/61) 1-16 size genes adder [wildtype, bigger bigger biggest...]
+        //(62/63) 1-3 size genes varient1 [wildtype, smaller, smallest]
+        //(64/65) 1-3 size genes varient2 [wildtype, smaller, smallest]
+
+        size = size - (genes[58] - 1)*0.01F;
+        size = size - (genes[59] - 1)*0.01F;
+        size = size + (genes[60] - 1)*0.0075F;
+        size = size + (genes[61] - 1)*0.0075F;
+
+        if (genes[56] == 2 || genes[57] == 2) {
+            if (genes[56] == 2 && genes[57] == 2) {
+                size = size * 0.8F;
+            } else {
+                size = size * 0.9F;
+            }
+        }
+
+        if (genes[62] == 2 || genes[63] == 2) {
+            size = size * 0.975F;
+        } else if (genes[62] == 3 || genes[63] == 3) {
+            size = size * 0.925F;
+        } else {
+            size = size * 1.025F;
+        }
+
+        if (genes[64] == 2 || genes[65] == 2) {
+            size = size * 1.05F;
+        } else if (genes[64] == 3 || genes[65] == 3) {
+            size = size * 1.1F;
+        }
+
+        if (size > 0.6F) {
+            size = 0.6F;
+        }
+
+        size = size + 0.43F;
+
+        // [ 0.52325 - 1.1 ]
+        this.setAnimalSize(size);
+    }
+
+    private void setMaxCoatLength() {
+        int[] genes = this.genetics.getAutosomalGenes();
+        int maxCoatLength = 0;
+
+        if (genes[20] == 2){
+            maxCoatLength = 1;
+        }
+        if (genes[21] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[22] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[23] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[24] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[25] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[26] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[27] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[28] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[29] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[30] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[31] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[32] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[33] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+        if (genes[34] == 2 && genes[35] == 2){
+            maxCoatLength = maxCoatLength + 1;
+        }
+
+
+        this.maxCoatLength = maxCoatLength > 15 ? 15 : maxCoatLength;
+
     }
 
 //    private void configureAI() {
@@ -1351,7 +1494,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 //            Double speed = 1.0D;
 //
 //            this.goalSelector.addGoal(1, new PanicGoal(this, speed*1.25D));
-//            this.goalSelector.addGoal(2, new BreedGoal(this, speed));
+//            this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, speed));
 //            this.goalSelector.addGoal(3, new TemptGoal(this, speed*1.1D, TEMPTATION_ITEMS, false));
 //            this.goalSelector.addGoal(4, new FollowParentGoal(this, speed*1.25D));
 //            this.goalSelector.addGoal(4, new EnhancedAINurseFromMotherGoal(this, motherUUID, speed*1.1D));

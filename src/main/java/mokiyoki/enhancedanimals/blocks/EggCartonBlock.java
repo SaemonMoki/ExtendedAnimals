@@ -16,6 +16,8 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -37,6 +39,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -44,8 +47,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -243,14 +244,14 @@ public class EggCartonBlock extends ContainerBlock {
                         if (i <= 4) {
                             ++i;
                             ITextComponent itextcomponent = itemstack.getDisplayName().deepCopy();
-                            itextcomponent.appendText(" x").appendText(String.valueOf(itemstack.getCount()));
+                            ((IFormattableTextComponent) itextcomponent).appendString(" x").appendString(String.valueOf(itemstack.getCount()));
                             tooltip.add(itextcomponent);
                         }
                     }
                 }
 
                 if (j - i > 0) {
-                    tooltip.add((new TranslationTextComponent("container.egg_carton.more", j - i)).applyTextStyle(TextFormatting.ITALIC));
+                    tooltip.add((new TranslationTextComponent("container.egg_carton.more", j - i)).mergeStyle(TextFormatting.ITALIC));
                 }
             }
         }
@@ -322,9 +323,4 @@ public class EggCartonBlock extends ContainerBlock {
         return Container.calcRedstoneFromInventory((IInventory)worldIn.getTileEntity(pos));
     }
 
-    //TODO make it so it will break when moved by piston
-//    @Override
-//    public PushReaction getPushReaction(BlockState state) {
-//        return PushReaction.DESTROY;
-//    }
 }

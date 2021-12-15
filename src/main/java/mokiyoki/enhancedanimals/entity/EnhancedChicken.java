@@ -2,52 +2,70 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.ai.ECRoost;
 import mokiyoki.enhancedanimals.ai.ECSandBath;
+import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
+import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
+import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
 import mokiyoki.enhancedanimals.ai.general.chicken.GrazingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.Genetics.ChickenGeneticsInitialiser;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.item.ExperienceOrbEntity;
+import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.passive.ChickenEntity;
+import net.minecraft.entity.passive.FoxEntity;
+import net.minecraft.entity.passive.OcelotEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -56,10 +74,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
+
 /**
  * Created by saemon and moki on 30/08/2018.
  */
-public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedAnimal {
+public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     //avalible UUID spaces : [ S 1 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
@@ -159,8 +179,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         "", "moorhead_black.png", "moorhead_blue.png", "moorhead_splash.png", "moorhead_splashlav.png", "moorhead_splashdun.png",
             "moorhead_splashchoc.png", "moorhead_lav.png", "moorhead_white.png", "moorhead_dun.png",    "moorhead_choc.png",
     };
+
     private static final String[] CHICKEN_TEXTURES_WHITE = new String[] {
         "","white_darkbarred.png","white_barred.png","white_crested.png","white_mottles.png", "white_crestedmottled.png"
+    };
+
+    private static final String[] CHICKEN_TEXTURES_MOTTLEMARKINGS = new String[] {
+            "", "pattern_mottles.png", "pattern_mottles_blue.png", "pattern_mottles_splash.png", "pattern_mottles_splashlav.png", "pattern_mottles_splashdun.png",
+            "pattern_mottles_splashchoc.png",  "pattern_mottles_lav.png", "pattern_mottles_white.png", "pattern_mottles_dun.png", "pattern_mottles_choc.png"
     };
 
     private static final String[] CHICKEN_TEXTURES_CHICKBASE = new String[] {
@@ -221,9 +247,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         "eyes_albino.png", "eyes_black.png", "eyes_blue.png"
     };
 
-    private static final Ingredient TEMPTATION_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS, Items.SWEET_BERRIES, Items.DANDELION, Items.SPIDER_EYE, Items.TALL_GRASS, Items.GRASS, Items.BREAD, Items.EGG);
-    private static final Ingredient BREED_ITEMS = Ingredient.fromItems(Items.WHEAT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS, Items.BEETROOT_SEEDS);
-
     public float wingRotation;
     public float destPos;
     public float oFlapSpeed;
@@ -232,7 +255,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     private int timeUntilNextEgg;
     private int grassTimer;
     private int sandBathTimer;
-    private int fertileTimer = 0;
 
     protected GrazingGoal grazingGoal;
 
@@ -240,52 +262,71 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     private String dropMeatType;
     public boolean chickenJockey;
 
-    private boolean resetTexture = true;
-
-    private float chickenSize = 0.0F;
-
     public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, World worldIn) {
-        super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, TEMPTATION_ITEMS, BREED_ITEMS, createFoodMap(), false);
-        this.setChickenSize();
+        super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, false);
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
         this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
         this.setPathPriority(PathNodeType.WATER, 0.0F);
     }
 
-    private static Map<Item, Integer> createFoodMap() {
-        return new HashMap() {{
-            put(new ItemStack(Items.TALL_GRASS).getItem(), 6000);
-            put(new ItemStack(Items.GRASS).getItem(), 3000);
-            put(new ItemStack(Items.WHEAT).getItem(), 6000);
-            put(new ItemStack(Items.BREAD).getItem(), 18000);
-            put(new ItemStack(Items.WHEAT_SEEDS).getItem(), 4000);
-            put(new ItemStack(Items.MELON_SEEDS).getItem(), 4000);
-            put(new ItemStack(Items.PUMPKIN_SEEDS).getItem(), 4000);
-            put(new ItemStack(Items.BEETROOT_SEEDS).getItem(), 4000);
-            put(new ItemStack(Items.SWEET_BERRIES).getItem(), 1500);
-            put(new ItemStack(Items.DANDELION).getItem(), 1500);
-            put(new ItemStack(Items.SPIDER_EYE).getItem(), 1500);
-            put(new ItemStack(Items.EGG).getItem(), 200);
-        }};
+    private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
+        Map<Block, EnhancedEatPlantsGoal.EatValues> ediblePlants = new HashMap<>();
+        ediblePlants.put(Blocks.CARROTS, new EnhancedEatPlantsGoal.EatValues(7, 1, 750));
+        ediblePlants.put(Blocks.BEETROOTS, new EnhancedEatPlantsGoal.EatValues(3, 1, 750));
+        ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(2, 1, 750));
+        ediblePlants.put(Blocks.AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(Blocks.ALLIUM, new EnhancedEatPlantsGoal.EatValues(3, 3, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_ALLIUM, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(Blocks.BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(Blocks.CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+        ediblePlants.put(Blocks.DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+        ediblePlants.put(Blocks.ROSE_BUSH, new EnhancedEatPlantsGoal.EatValues(4, 3, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_ROSE_BUSH, new EnhancedEatPlantsGoal.EatValues(4, 2, 375));
+        ediblePlants.put(Blocks.SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(4, 3, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(4, 2, 375));
+        ediblePlants.put(Blocks.GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+        ediblePlants.put(Blocks.SWEET_BERRY_BUSH, new EnhancedEatPlantsGoal.EatValues(1, 1, 1000));
+        ediblePlants.put(Blocks.CACTUS, new EnhancedEatPlantsGoal.EatValues(1, 1, 3000));
 
+        return ediblePlants;
     }
 
     @Override
     protected void registerGoals() {
-        //TODO add temperaments
+        int napmod = this.rand.nextInt(1200);
         this.grazingGoal = new GrazingGoalChicken(this, 1.0D);
         this.ecSandBath = new ECSandBath(this);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
-        this.goalSelector.addGoal(2, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, 1.0D, false, TEMPTATION_ITEMS));
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(5, new ECWanderAvoidWater(this, 1.0D));
-        this.goalSelector.addGoal(6, this.grazingGoal);
-        this.goalSelector.addGoal(7, new EnhancedWanderingGoal(this, 1.0D));
-        this.goalSelector.addGoal(8, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(9, new EnhancedLookRandomlyGoal(this));
-        this.goalSelector.addGoal(10, new ECRoost(this));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, WolfEntity.class, 10.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, FoxEntity.class, 10.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, OcelotEntity.class, 10.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 4.0F, 1.0D, 1.8D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, MonsterEntity.class, 4.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, Items.AIR));
+        this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
+        this.goalSelector.addGoal(7, new ECRoost(this));
+        this.goalSelector.addGoal(8, new StayShelteredGoal(this, 6000, 7500, napmod));
+        this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
+        this.goalSelector.addGoal(10, new ECWanderAvoidWater(this, 1.0D));
+        this.goalSelector.addGoal(11, new EnhancedEatPlantsGoal(this, createGrazingMap()));
+        this.goalSelector.addGoal(12, this.grazingGoal);
+        this.goalSelector.addGoal(14, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(15, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(16, new EnhancedLookAtGoal(this, ChickenEntity.class, 6.0F));
+        this.goalSelector.addGoal(17, new EnhancedLookRandomlyGoal(this));
 
     }
 
@@ -296,8 +337,20 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     }
 
     @Override
+    protected FoodSerialiser.AnimalFoodMap getAnimalFoodType() {
+        return chickenFoodMap();
+    }
+
+    @Override
     public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(0.4F, 0.7F);
+        return EntitySize.flexible(0.4F, 0.7F).scale(this.getRenderScale());
+    }
+
+    @Override
+    public float getRenderScale() {
+        float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
+        float newbornSize = 0.2F;
+        return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
     }
 
     @Override
@@ -306,19 +359,21 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         this.dataManager.register(ROOSTING, new Boolean(false));
     }
 
+    @Override
     protected String getSpecies() {
         return "entity.eanimod.enhanced_chicken";
     }
 
-    protected int getAdultAge() { return 60000;}
+    @Override
+    protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeChicken.get();}
 
     @Override
     protected int gestationConfig() {
-        return 24000;
+        return EanimodCommonConfig.COMMON.incubationDaysChicken.get();
     }
 
     @Override
-    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
 
@@ -334,7 +389,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             }
         }
 
-        return super.processInteract(entityPlayer, hand);
+        return super.func_230254_b_(entityPlayer, hand);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -362,10 +417,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         return this.isChild() ? sizeIn.height * 0.85F : sizeIn.height * 0.92F;
     }
 
-    protected void registerAttributes() {
-        super.registerAttributes();
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(3.0D);
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
+    public static AttributeModifierMap.MutableAttribute prepareAttributes() {
+        return MobEntity.func_233666_p_()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 3.0D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     public void updatePassenger(Entity passenger) {
@@ -408,9 +463,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         }
 
         this.wingRotDelta = (float)((double)this.wingRotDelta * 0.9D);
-        Vec3d vec3d = this.getMotion();
+        Vector3d vec3d = this.getMotion();
         if (!this.onGround && vec3d.y < 0.0D) {
-            this.setMotion(vec3d.mul(1.0D, 0.6D, 1.0D));
+            this.setMotion(vec3d.mul(1.0D, this.genetics.isHomozygousFor(106,   2) ? 1.0D : 0.6D, 1.0D));
         }
 
         this.wingRotation += this.wingRotDelta * 2.0F;
@@ -432,8 +487,10 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     @Override
     protected void runExtraIdleTimeTick() {
-        if (EanimodCommonConfig.COMMON.omnigenders.get() || this.isFemale()) {
-            --this.fertileTimer;
+        if (EanimodCommonConfig.COMMON.omnigenders.get() || this.getOrSetIsFemale()) {
+            if (this.gestationTimer > 0) {
+                --this.gestationTimer;
+            }
 
             if (hunger <= 24000) {
                 --this.timeUntilNextEgg;
@@ -448,12 +505,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         if (!this.isChild() && this.timeUntilNextEgg <= 0) {
             this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
-            if (this.fertileTimer > 0) {
+            ((EnhancedEgg) eggItem.getItem()).setHasParents(eggItem, true);
+            if (this.gestationTimer > 0) {
                 String damName = "???";
                 if (this.getCustomName()!=null) {
                     damName = this.getCustomName().getString();
                 }
-                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.isFemale(), Genes.Species.CHICKEN), this.mateName, damName);
+                eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.getOrSetIsFemale(), Genes.Species.CHICKEN), this.mateName, damName);
                 CompoundNBT nbtTagCompound = eggItem.serializeNBT();
                 eggItem.deserializeNBT(nbtTagCompound);
                 if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
@@ -470,67 +528,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         }
     }
 
-    private void setChickenSize(){
-        float size = 1.0F;
-
-        int[] genes = this.genetics.getAutosomalGenes();
-        if(genes[74] == 1){
-            size = size - 0.05F;
-        }else if(genes[74] == 2){
-            size = size - 0.025F;
-        }
-        if(genes[75] == 1){
-            size = size - 0.05F;
-        }else if(genes[75] == 2){
-            size = size - 0.025F;
-        }
-
-        if(genes[76] == 1 || genes[77] == 1){
-            size = size - 0.05F;
-        }else if(genes[76] == 3 && genes[77] == 3){
-            size = size - 0.1F;
-        }
-
-        if(genes[78] == 1 || genes[79] == 1){
-            size = size * 0.94F;
-        }
-
-
-        genes = this.genetics.getSexlinkedGenes();
-        if (this.isFemale()) {
-            if(genes[14] == 2){
-                size = size * 0.9F;
-            }
-
-            if(genes[16] == 2){
-                size = size * 0.75F;
-            }
-        } else {
-            if (genes[14] == 2 || genes[15] == 2) {
-                if (genes[14] == 2 && genes[15] == 2) {
-                    size = size * 0.9F;
-                } else {
-                    size = size * 0.99F;
-                }
-            }
-
-            if (genes[16] == 2 || genes[17] == 2) {
-                if (genes[16] == 2 && genes[17] == 2) {
-                    size = size * 0.75F;
-                } else {
-                    size = size * 0.99F;
-                }
-            }
-        }
-
-
-        // size is [ 0.5076 - 1.0F]
-        this.chickenSize = size;
-        this.setAnimalSize(size);
-    }
-
     public boolean onLivingFall(float distance, float damageMultiplier) {
-        return false;
+        if (this.genetics.isHomozygousFor(106, 2)) {
+            return super.onLivingFall(distance, damageMultiplier);
+        }
+            return false;
     }
 
     @Override
@@ -550,6 +552,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     @Override
     protected SoundEvent getAmbientSound() {
+        if (isAnimalSleeping()) {
+            return null;
+        }
         return SoundEvents.ENTITY_CHICKEN_AMBIENT;
     }
 
@@ -589,17 +594,17 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         if (EanimodCommonConfig.COMMON.omnigenders.get()) {
             this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
             this.setFertile();
-            this.setMateGender(((EnhancedChicken)ageable).isFemale());
+            this.setMateGender(((EnhancedChicken)ageable).getOrSetIsFemale());
             if (((EnhancedChicken)ageable).hasCustomName()) {
                 this.setMateName(((EnhancedChicken) ageable).getCustomName().getString());
             }
             ((EnhancedChicken)ageable).setMateGenes(this.genetics);
             ((EnhancedChicken)ageable).setFertile();
-            ((EnhancedChicken)ageable).setMateGender(this.isFemale());
+            ((EnhancedChicken)ageable).setMateGender(this.getOrSetIsFemale());
             if (this.hasCustomName()) {
                 ((EnhancedChicken)ageable).setMateName(this.getCustomName().getString());
             }
-        } else if (this.isFemale()) {
+        } else if (this.getOrSetIsFemale()) {
             this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
             this.setFertile();
             this.setMateGender(false);
@@ -624,7 +629,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
             int[] sexlinkedGenes = this.genetics.getSexlinkedGenes();
             int[] genes = this.genetics.getAutosomalGenes();
 
-        if(sexlinkedGenes[10] == 1 || (!this.isFemale() && sexlinkedGenes[11] == 1)) {
+        if(sexlinkedGenes[10] == 1 || (!this.getOrSetIsFemale() && sexlinkedGenes[11] == 1)) {
 
             if (genes[64] == 1 || genes[65] == 1 || genes[66] == 1 || genes[67] == 1) {
                 //egg is brown
@@ -735,15 +740,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         return eggColour;
     }
 
+    @Override
     @OnlyIn(Dist.CLIENT)
-    public String getChickenTexture() {
+    public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (this.resetTexture && getAge() > 20000) {
-            this.resetTexture = false;
-            this.texturesIndexes.clear();
-            this.enhancedAnimalTextures.clear();
-            this.setTexturePaths();
+        } else if (this.reload && this.getAge() >= (int)(this.getFullSizeAge()*0.3331F)) {
+            this.reload = false;
+            this.reloadTextures();
         }
 
         return getCompiledTextures("enhanced_chicken");
@@ -755,19 +759,20 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         if(this.getSharedGenes()!=null) {
             int[] sexlinkedGenes = getSharedGenes().getSexlinkedGenes();
             int[] autosomalGenes = getSharedGenes().getAutosomalGenes();
-            boolean isFemale = this.isFemale();
-            if (getAge() >= 20000) {
+            boolean isFemale = this.getOrSetIsFemale();
+            if (this.getAge() >= (int)(this.getFullSizeAge()*0.333F)) {
                 int ground = 0;
                 int pattern = 0;
                 int moorhead = 0;
                 int white = 0;
+                int mottles = 0;
                 int shanks = 3;
                 int comb = 2;
                 int eyes = 1;
                 int ptrncolours = 10; //number of pattern colours
 
                 int moorheadtoggle = 0;
-                int Melanin = 0;
+                int melanin = 0;
 
                 int face = 0;
                 int ears = 0;
@@ -1617,7 +1622,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                             moorhead = 8;
                         } else {
                             //if chocolate
-                            if (sexlinkedGenes[2] == 2 && (isFemale() || sexlinkedGenes[3] == 2)) {
+                            if (sexlinkedGenes[2] == 2 && (getOrSetIsFemale() || sexlinkedGenes[3] == 2)) {
                                 //if lavender
                                 if (autosomalGenes[36] == 2 && autosomalGenes[37] == 2) {
                                     //is a dun variety
@@ -1690,24 +1695,20 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                             }
                         }
                     }
+                    mottles = moorhead == 0 ? 1 : moorhead;
                     if (moorheadtoggle == 0) {
                         moorhead = 0;
                     }
                 }
 
                 //white marking autosomalGenes
-                if ((sexlinkedGenes[6] == 2 ^ sexlinkedGenes[7] == 2)) {
+                if (!this.getOrSetIsFemale() && sexlinkedGenes[6] == 2 && sexlinkedGenes[7] == 2) {
+                    //Light Barred
+                    white = 2;
+                } else if ((this.getOrSetIsFemale() && sexlinkedGenes[6] == 2) || (!this.getOrSetIsFemale() && (sexlinkedGenes[6] == 2 ^ sexlinkedGenes[7] == 2))) {
                     //Dark Barred
                     white = 1;
-                } else if (sexlinkedGenes[6] == 2 && sexlinkedGenes[7] == 2){
-                    if (isFemale()) {
-                        //Dark Barred
-                        white = 1;
-                    } else {
-                        //Light Barred
-                        white = 2;
-                    }
-                }else {
+                } else {
                     if (autosomalGenes[22] >= 2 && autosomalGenes[23] >= 2) {
                         if (autosomalGenes[22] == 2 && autosomalGenes[23] == 2) {
                             //mottled
@@ -2134,10 +2135,15 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
                     eyes = 2;
                 }
 
-//            after finished autosomalGenes
+                if (!(white == 3 || white == 5) || (autosomalGenes[106] == 2 && autosomalGenes[107] == 2)) {
+                    mottles = 0;
+                }
+
+                //after finished autosomalGenes
                 addTextureToAnimal(CHICKEN_TEXTURES_GROUND, ground, null);
                 addTextureToAnimal(CHICKEN_TEXTURES_PATTERN, pattern, p -> p <= 350);
                 addTextureToAnimal(CHICKEN_TEXTURES_MOORHEAD, moorhead, m -> m != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_MOTTLEMARKINGS, mottles, m -> m != 0);
                 addTextureToAnimal(CHICKEN_TEXTURES_WHITE, white, w -> w != 0);
                 addTextureToAnimal(CHICKEN_TEXTURES_SHANKS, shanks, null);
                 addTextureToAnimal(CHICKEN_TEXTURES_FACE, face, f -> f >= 1);
@@ -2332,7 +2338,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
 
     @Override
     protected boolean canDropLoot() {
-        if (getAge() > 20000) {
+        if (getAge() > 10000) {
             return true;
         } else {
             return false;
@@ -2382,9 +2388,9 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         }
 
         // size is [ 0.5076 - 1.0F]
-        if (chickenSize < 0.67) {
+        if (this.getAnimalSize() < 0.67) {
             meatSize = bodyType + 1;
-        } else if (chickenSize < 0.89) {
+        } else if (this.getAnimalSize() < 0.89) {
             meatSize = bodyType + 2;
         } else {
             meatSize = bodyType + 3;
@@ -2448,17 +2454,24 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     }
 
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-    }
+    protected void readLegacyGenes(ListNBT geneList, Genes genetics) {
+        if (geneList.getCompound(0).contains("Sgene")) {
+            super.readLegacyGenes(geneList, genetics);
+        } else {
+            for (int i = 0; i < 10; ++i) {
+                int gene = geneList.getCompound(i).getInt("Gene");
+                genetics.setSexlinkedGene(i * 2, gene);
+                genetics.setSexlinkedGene((i * 2) + 1, gene);
+            }
 
-    @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
-    }
-
-    protected void initilizeAnimalSize() {
-        setChickenSize();
+            for (int i = 0; i < geneList.size(); ++i) {
+                if (i < 20) {
+                    genetics.setAutosomalGene(i, 1);
+                } else {
+                    genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
+                }
+            }
+        }
     }
 
     @Override
@@ -2474,19 +2487,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
         return false;
     }
 
-//    @Override
-//    protected void geneFixer() {
-//        if (this.genetics.getAutosomalGenes()[0] == 0) {
-//            this.setGenes(new GeneticsInitialiser.ChickenGeneticsInitialiser().generateNewChickenGenetics(this.world, new BlockPos(this), true));
-//            setInitialDefaults();
-//            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (rand.nextInt(180000-24000) + 24000)));
-//        }
-//    }
-
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
-        return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000);
+    public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+        livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000, spawnReason);
+        if (this.mateGenetics != null && this.mateGenetics.getSexlinkedGene(0) != 0) {
+            this.setFertile();
+        }
+        return livingdata;
     }
 
     @Override
@@ -2495,8 +2503,79 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     }
 
     @Override
-    protected Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
         return new ChickenGeneticsInitialiser().generateWithBreed(world, pos, breed);
+    }
+
+    @Override
+    protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {
+        int[] genes = animal.genetics.getAutosomalGenes();
+        if (genes[54] != 3 && genes[55] != 3 && genes[184] == 2 && genes[185] == 2) {
+            health = 0.5F;
+        } else {
+            health = (2.0F * animal.getAnimalSize()) + 2.0F;
+        }
+
+        super.initializeHealth(animal, health);
+    }
+
+    @Override
+    public void initilizeAnimalSize(){
+        float size = 1.0F;
+
+        int[] genes = this.genetics.getAutosomalGenes();
+        if(genes[74] == 1){
+            size = size - 0.05F;
+        }else if(genes[74] == 2){
+            size = size - 0.025F;
+        }
+        if(genes[75] == 1){
+            size = size - 0.05F;
+        }else if(genes[75] == 2){
+            size = size - 0.025F;
+        }
+
+        if(genes[76] == 1 || genes[77] == 1){
+            size = size - 0.05F;
+        }else if(genes[76] == 3 && genes[77] == 3){
+            size = size - 0.1F;
+        }
+
+        if(genes[78] == 1 || genes[79] == 1){
+            size = size * 0.94F;
+        }
+
+
+        genes = this.genetics.getSexlinkedGenes();
+        if (this.getOrSetIsFemale()) {
+            if(genes[14] == 2){
+                size = size * 0.9F;
+            }
+
+            if(genes[16] == 2){
+                size = size * 0.75F;
+            }
+        } else {
+            if (genes[14] == 2 || genes[15] == 2) {
+                if (genes[14] == 2 && genes[15] == 2) {
+                    size = size * 0.9F;
+                } else {
+                    size = size * 0.99F;
+                }
+            }
+
+            if (genes[16] == 2 || genes[17] == 2) {
+                if (genes[16] == 2 && genes[17] == 2) {
+                    size = size * 0.75F;
+                } else {
+                    size = size * 0.99F;
+                }
+            }
+        }
+
+
+        // size is [ 0.5076 - 1.0F]
+        this.setAnimalSize(size);
     }
 
     private Item getEggColour(int eggColourGene){
@@ -3119,7 +3198,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract implements EnhancedA
     }
 
     public void setFertile(){
-        this.fertileTimer = 96000;
+        this.gestationTimer = 96000;
     }
 
 }

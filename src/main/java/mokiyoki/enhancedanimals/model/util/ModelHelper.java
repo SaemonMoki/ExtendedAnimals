@@ -39,10 +39,44 @@ public class ModelHelper {
         dest.rotateAngleZ = source.rotateAngleZ;
     }
 
+    public static void copyModelRotations(ModelRenderer source, ModelRenderer ... dest) {
+        for (ModelRenderer destination : dest) {
+            destination.rotateAngleX = source.rotateAngleX;
+            destination.rotateAngleY = source.rotateAngleY;
+            destination.rotateAngleZ = source.rotateAngleZ;
+        }
+    }
+
+    public static void copyModelRotations(ModelRenderer source, ModelRenderer dest, float percent) {
+        dest.rotateAngleX = source.rotateAngleX * percent;
+        dest.rotateAngleY = source.rotateAngleY * percent;
+        dest.rotateAngleZ = source.rotateAngleZ * percent;
+    }
+
     public static void copyModelPositioning(ModelRenderer source, ModelRenderer dest) {
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
         dest.rotateAngleZ = source.rotateAngleZ;
+        dest.rotationPointX = source.rotationPointX;
+        dest.rotationPointY = source.rotationPointY;
+        dest.rotationPointZ = source.rotationPointZ;
+    }
+
+    public static void copyModelPositioning(ModelRenderer source, ModelRenderer ... dest) {
+        for (ModelRenderer destination : dest) {
+            destination.rotateAngleX = source.rotateAngleX;
+            destination.rotateAngleY = source.rotateAngleY;
+            destination.rotateAngleZ = source.rotateAngleZ;
+            destination.rotationPointX = source.rotationPointX;
+            destination.rotationPointY = source.rotationPointY;
+            destination.rotationPointZ = source.rotationPointZ;
+        }
+    }
+
+    public static void copyModelPositioning(ModelRenderer source, ModelRenderer dest, float percent) {
+        dest.rotateAngleX = source.rotateAngleX * percent;
+        dest.rotateAngleY = source.rotateAngleY * percent;
+        dest.rotateAngleZ = source.rotateAngleZ * percent;
         dest.rotationPointX = source.rotationPointX;
         dest.rotationPointY = source.rotationPointY;
         dest.rotationPointZ = source.rotationPointZ;

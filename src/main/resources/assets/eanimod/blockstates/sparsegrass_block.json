@@ -1,7 +1,10 @@
 {
   "variants": {
     "": [
-      { "model": "eanimod:block/sparsegrass_block" }
+      {"model": "eanimod:block/sparsegrass_block"},
+      {"model": "eanimod:block/sparsegrass_block", "y": 90},
+      {"model": "eanimod:block/sparsegrass_block", "y": 180},
+      {"model": "eanimod:block/sparsegrass_block", "y": 270}
     ]
   }
 }

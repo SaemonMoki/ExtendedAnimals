@@ -24,7 +24,7 @@ public class GrazingGoalMooshroom extends GrazingGoal {
 
     @Override
     protected void eatBlocks() {
-        BlockPos blockpos = new BlockPos(this.eanimal);
+        BlockPos blockpos = new BlockPos(this.eanimal.getPosition());
         if (IS_GRASS.test(this.eanimal.world.getBlockState(blockpos)) || IS_TALL_GRASS_BLOCK.test(this.eanimal.world.getBlockState(blockpos)) || IS_BROWN_MUSHROOM.test(this.eanimal.world.getBlockState(blockpos)) || IS_RED_MUSHROOM.test(this.eanimal.world.getBlockState(blockpos))) {
             if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.eanimal.world, this.eanimal)) {
                 this.eanimal.world.destroyBlock(blockpos, false);
@@ -66,7 +66,7 @@ public class GrazingGoalMooshroom extends GrazingGoal {
     @Override
     protected boolean isEdibleBlock(IWorldReader worldIn, BlockPos pos) {
         BlockState blockstate = worldIn.getBlockState(pos);
-        if (IS_GRASS_BLOCK.test(blockstate) || IS_GRASS.test(blockstate) || IS_SPARSE_GRASS_BLOCK.test(blockstate) || IS_TALL_GRASS_BLOCK.test(blockstate) || IS_MYCELIUM.test(blockstate) || IS_BROWN_MUSHROOM.test(blockstate) || IS_RED_MUSHROOM.test(blockstate)) {
+        if (IS_GRASS_BLOCK.test(blockstate) || IS_BROWN_MUSHROOM.test(blockstate) || IS_RED_MUSHROOM.test(blockstate)/* || IS_GRASS.test(blockstate) || IS_SPARSE_GRASS_BLOCK.test(blockstate) || IS_TALL_GRASS_BLOCK.test(blockstate) || IS_MYCELIUM.test(blockstate)*/) {
             return true;
         }
         return false;

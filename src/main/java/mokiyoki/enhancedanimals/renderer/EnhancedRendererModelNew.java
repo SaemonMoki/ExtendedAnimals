@@ -4,13 +4,13 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import net.minecraft.client.renderer.Matrix3f;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Matrix3f;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -24,12 +24,13 @@ public class EnhancedRendererModelNew extends ModelRenderer {
     private final ObjectList<EnhancedRendererModelNew.ModelBox> cubeList = new ObjectArrayList<>();
     private final ObjectList<EnhancedRendererModelNew> childModels = new ObjectArrayList<>();
     public final String boxName;
+    public boolean pushPopChildren = true;
     private int textureOffsetX;
     private int textureOffsetY;
 
     public EnhancedRendererModelNew(Model model, String boxNameIn) {
         super(model);
-        model.accept(this);
+//        model.accept(this);
         this.boxName = boxNameIn;
         this.setTextureSize(model.textureWidth, model.textureHeight);
     }
@@ -42,6 +43,12 @@ public class EnhancedRendererModelNew extends ModelRenderer {
     public EnhancedRendererModelNew(Model model, int texOffX, int texOffY, String boxNameIn) {
         this(model, boxNameIn);
         this.setTextureOffset(texOffX, texOffY);
+    }
+
+    public EnhancedRendererModelNew(Model model, int texOffX, int texOffY, String boxNameIn, boolean pushPopChildren) {
+        this(model, boxNameIn);
+        this.setTextureOffset(texOffX, texOffY);
+        this.pushPopChildren = pushPopChildren;
     }
 
     /**
@@ -109,27 +116,26 @@ public class EnhancedRendererModelNew extends ModelRenderer {
     }
 
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender, Boolean pushPopEntireChain, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        render(matrixStackIn, bufferIn,  mapOfScale, boxesToNotRender, pushPopEntireChain, packedLightIn, packedOverlayIn, red, green, blue, alpha, true);
+    }
+
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender, Boolean pushPopEntireChain, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha, boolean pushPopChildren) {
         if (this.showModel) {
             if (!this.cubeList.isEmpty() || !this.childModels.isEmpty()) {
-//                if (pushPopEntireChain) {
-//                    matrixStackIn.push();
-//                }
 
-                matrixStackIn.push();
-
-                this.translateRotate(matrixStackIn);
+                if (!pushPopChildren) {
+                    if (!boxesToNotRender.contains(this.boxName)) {
+                        matrixStackIn.push();
+                        this.translateRotate(matrixStackIn);
+                    }
+                } else {
+                    matrixStackIn.push();
+                    this.translateRotate(matrixStackIn);
+                }
 
                 if (mapOfScale != null) {
                     if (mapOfScale.containsKey(this.boxName)) {
                         List<Float> scaleAmounts = mapOfScale.get(this.boxName);
-//                        Float scaling = scaleAmounts.get(0);
-//                        if (scaling != null) {
-//                            if (scaling == 2.0F) {
-//                                matrixStackIn.scale(0.8F, scaling, 2.0F);
-//                            } else {
-//                                matrixStackIn.scale(scaling, scaling, scaling);
-//                            }
-//                        }
                         if (scaleAmounts.get(0) != null && scaleAmounts.get(1) != null && scaleAmounts.get(2) != null) {
                             matrixStackIn.scale(scaleAmounts.get(0), scaleAmounts.get(1), scaleAmounts.get(2));
                         }
@@ -145,14 +151,20 @@ public class EnhancedRendererModelNew extends ModelRenderer {
                 }
 
                 for(EnhancedRendererModelNew modelrenderer : this.childModels) {
-                    ((EnhancedRendererModelNew)modelrenderer).render(matrixStackIn, bufferIn, mapOfScale, boxesToNotRender, pushPopEntireChain, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    if(!this.pushPopChildren || !pushPopChildren) {
+                        ((EnhancedRendererModelNew)modelrenderer).render(matrixStackIn, bufferIn, mapOfScale, boxesToNotRender, pushPopEntireChain, packedLightIn, packedOverlayIn, red, green, blue, alpha, false);
+                    } else {
+                        ((EnhancedRendererModelNew)modelrenderer).render(matrixStackIn, bufferIn, mapOfScale, boxesToNotRender, pushPopEntireChain, packedLightIn, packedOverlayIn, red, green, blue, alpha, true);
+                    }
                 }
 
-                matrixStackIn.pop();
-
-//                if (pushPopEntireChain) {
-//                    matrixStackIn.pop();
-//                }
+                if (!pushPopChildren) {
+                    if (!boxesToNotRender.contains(this.boxName)) {
+                        matrixStackIn.pop();
+                    }
+                } else {
+                    matrixStackIn.pop();
+                }
             }
         }
     }
@@ -176,23 +188,31 @@ public class EnhancedRendererModelNew extends ModelRenderer {
     private void doRender(MatrixStack.Entry matrixEntryIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         Matrix4f matrix4f = matrixEntryIn.getMatrix();
         Matrix3f matrix3f = matrixEntryIn.getNormal();
+        int i = this.cubeList.size();
 
-        for(EnhancedRendererModelNew.ModelBox modelrenderer$modelbox : this.cubeList) {
-            for(EnhancedRendererModelNew.TexturedQuad modelrenderer$texturedquad : modelrenderer$modelbox.quads) {
-                Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
-                vector3f.transform(matrix3f);
-                float f = vector3f.getX();
-                float f1 = vector3f.getY();
-                float f2 = vector3f.getZ();
+        for (int j = 0; j < i; ++j) {
+            EnhancedRendererModelNew.ModelBox modelrenderer$modelbox = this.cubeList.get(j);
+            int k = modelrenderer$modelbox.quads.length;
 
-                for(int i = 0; i < 4; ++i) {
-                    EnhancedRendererModelNew.PositionTextureVertex modelrenderer$positiontexturevertex = modelrenderer$texturedquad.vertexPositions[i];
-                    float f3 = modelrenderer$positiontexturevertex.position.getX() / 16.0F;
-                    float f4 = modelrenderer$positiontexturevertex.position.getY() / 16.0F;
-                    float f5 = modelrenderer$positiontexturevertex.position.getZ() / 16.0F;
-                    Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
-                    vector4f.transform(matrix4f);
-                    bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
+            for (int l = 0; l < k; ++l) {
+                EnhancedRendererModelNew.TexturedQuad modelrenderer$texturedquad = modelrenderer$modelbox.quads[l];
+
+                if (modelrenderer$texturedquad != null) {
+                    Vector3f vector3f = (modelrenderer$texturedquad.normal).copy();
+                    vector3f.transform(matrix3f);
+                    float f = vector3f.getX();
+                    float f1 = vector3f.getY();
+                    float f2 = vector3f.getZ();
+
+                    for (int i1 = 0; i1 < 4; ++i1) {
+                        EnhancedRendererModelNew.PositionTextureVertex modelrenderer$positiontexturevertex = modelrenderer$texturedquad.vertexPositions[i1];
+                        float f3 = modelrenderer$positiontexturevertex.position.getX() / 16.0F;
+                        float f4 = modelrenderer$positiontexturevertex.position.getY() / 16.0F;
+                        float f5 = modelrenderer$positiontexturevertex.position.getZ() / 16.0F;
+                        Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
+                        vector4f.transform(matrix4f);
+                        bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
+                    }
                 }
             }
         }

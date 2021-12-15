@@ -5,7 +5,6 @@ import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 //import mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider;
-import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 //import mokiyoki.enhancedanimals.entity.EnhancedBee;
 //import mokiyoki.enhancedanimals.entity.EnhancedCat;
@@ -13,6 +12,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityLlamaSpit;
 //import mokiyoki.enhancedanimals.entity.EnhancedHorse;
+import mokiyoki.enhancedanimals.entity.EnhancedHorse;
 import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
 import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
@@ -20,6 +20,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
+import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
@@ -28,39 +29,48 @@ import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.dispenser.BeehiveDispenseBehavior;
+import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.dispenser.IPosition;
 import net.minecraft.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.*;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.EntityPredicates;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
+import static mokiyoki.enhancedanimals.init.ModBlocks.TURTLE_EGG;
 
 //import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
 /**
  * Created by moki on 24/08/2018.
  */
-@Mod.EventBusSubscriber(bus= Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Reference.MODID, bus= Mod.EventBusSubscriber.Bus.MOD)
 public class EventRegistry {
     private static final Logger eventLogger = LogManager.getLogger();
 
@@ -74,7 +84,8 @@ public class EventRegistry {
     public static final EntityType<EnhancedMooshroom> ENHANCED_MOOSHROOM = EntityType.Builder.create(EnhancedMooshroom::new, EntityClassification.CREATURE).size(1.0F, 1.5F).build(Reference.MODID + ":enhanced_mooshroom");
     public static final EntityType<EnhancedMoobloom> ENHANCED_MOOBLOOM = EntityType.Builder.create(EnhancedMoobloom::new, EntityClassification.CREATURE).size(1.0F, 1.5F).build(Reference.MODID + ":enhanced_moobloom");
     public static final EntityType<EnhancedPig> ENHANCED_PIG = EntityType.Builder.create(EnhancedPig::new, EntityClassification.CREATURE).size(0.9F, 0.9F).build(Reference.MODID + ":enhanced_pig");
-//    public static final EntityType<EnhancedHorse> ENHANCED_HORSE = EntityType.Builder.create(EnhancedHorse::new, EntityClassification.CREATURE).size(1.0F, 1.6F).build(Reference.MODID + ":enhanced_horse");
+    public static final EntityType<EnhancedHorse> ENHANCED_HORSE = EntityType.Builder.create(EnhancedHorse::new, EntityClassification.CREATURE).size(1.0F, 1.6F).build(Reference.MODID + ":enhanced_horse");
+    public static final EntityType<EnhancedTurtle> ENHANCED_TURTLE = EntityType.Builder.create(EnhancedTurtle::new, EntityClassification.CREATURE).size(1.2F, 0.4F).build(Reference.MODID + ":enhanced_turtle");
 //    public static final EntityType<EnhancedCat> ENHANCED_CAT = EntityType.Builder.create(EnhancedCat::new, EntityClassification.CREATURE).size(0.6F, 0.7F).build(Reference.MODID + ":enhanced_cat");
 //    public static final EntityType<EnhancedBee> ENHANCED_BEE = EntityType.Builder.create(EnhancedBee::new, EntityClassification.CREATURE).size(0.4F, 0.4F).build(Reference.MODID + ":enhanced_bee");
 
@@ -89,10 +100,13 @@ public class EventRegistry {
         }
     });
 
-
     @SubscribeEvent
     public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK, ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSEGRASS_BLOCK, ModBlocks.PATCHYMYCELIUM_BLOCK, EGG_CARTON, ModBlocks.GROWABLE_ALLIUM, ModBlocks.GROWABLE_AZURE_BLUET, ModBlocks.GROWABLE_BLUE_ORCHID, ModBlocks.GROWABLE_CORNFLOWER, ModBlocks.GROWABLE_DANDELION, ModBlocks.GROWABLE_OXEYE_DAISY, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_ROSE_BUSH, ModBlocks.GROWABLE_SUNFLOWER, ModBlocks.GROWABLE_TALL_GRASS, ModBlocks.GROWABLE_LARGE_FERN
+        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK,
+                ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSEGRASS_BLOCK, ModBlocks.PATCHYMYCELIUM_BLOCK, ModBlocks.EGG_CARTON,
+                ModBlocks.TURTLE_EGG, ModBlocks.GROWABLE_ALLIUM, ModBlocks.GROWABLE_AZURE_BLUET, ModBlocks.GROWABLE_BLUE_ORCHID, ModBlocks.GROWABLE_CORNFLOWER,
+                ModBlocks.GROWABLE_DANDELION, ModBlocks.GROWABLE_OXEYE_DAISY, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_ROSE_BUSH,
+                ModBlocks.GROWABLE_SUNFLOWER, ModBlocks.GROWABLE_TALL_GRASS, ModBlocks.GROWABLE_LARGE_FERN
         };
             event.getRegistry().registerAll(blocks);
     }
@@ -116,7 +130,7 @@ public class EventRegistry {
                  ModItems.EGG_MATCHA_SPATTER, ModItems.EGG_MATCHADARK_SPATTER, ModItems.EGG_MOSS_SPATTER, ModItems.EGG_MOSSDARK_SPATTER, ModItems.EGG_GREENUMBER_SPATTER, ModItems.EGG_CELADON_SPATTER, ModItems.EGG_FERN_SPATTER, ModItems.EGG_ASPARAGUS_SPATTER, ModItems.EGG_HUNTER_SPATTER, ModItems.EGG_HUNTERDARK_SPATTER, ModItems.EGG_TREEDARK_SPATTER, ModItems.EGG_GREYNEUTRAL_SPATTER, ModItems.EGG_LAUREL_SPATTER, ModItems.EGG_RESEDA_SPATTER, ModItems.EGG_GREENPEWTER_SPATTER, ModItems.EGG_GREYDARK_SPATTER,
                  ModItems.EGG_EARTH_SPATTER, ModItems.EGG_KHAKI_SPATTER, ModItems.EGG_GRULLO_SPATTER, ModItems.EGG_KHAKIDARK_SPATTER, ModItems.EGG_CAROB_SPATTER, ModItems.EGG_JADE_SPATTER, ModItems.EGG_PISTACHIO_SPATTER, ModItems.EGG_SAGE_SPATTER, ModItems.EGG_ROSEMARY_SPATTER, ModItems.EGG_GREENBROWN_SPATTER, ModItems.EGG_UMBER_SPATTER, ModItems.EGG_PINKGREY_SPATTER, ModItems.EGG_WARMGREY_SPATTER, ModItems.EGG_ARTICHOKE_SPATTER, ModItems.EGG_MYRTLEGREY_SPATTER, ModItems.EGG_RIFLE_SPATTER};
 
-        final Item[] items = {ModItems.RAWCHICKEN_DARKSMALL, ModItems.RAWCHICKEN_DARK, ModItems.RAWCHICKEN_DARKBIG, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_DARK,
+        final Item[] items = {ModItems.RAWCHICKEN_DARKSMALL, ModItems.RAWCHICKEN_DARKBIG, ModItems.RAWCHICKEN_DARK, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_DARK,
                 ModItems.COOKEDCHICKEN_DARKBIG, ModItems.RAWCHICKEN_PALESMALL, ModItems.RAWCHICKEN_PALE, ModItems.COOKEDCHICKEN_PALESMALL, ModItems.COOKEDCHICKEN_PALE,
                 ModItems.RAWRABBIT_SMALL, ModItems.COOKEDRABBIT_SMALL, ModItems.RABBITSTEW_WEAK, ModItems.HALF_MILK_BOTTLE, ModItems.MILK_BOTTLE, ModItems.ONESIXTH_MILK_BUCKET,
                 ModItems.ONETHIRD_MILK_BUCKET, ModItems.HALF_MILK_BUCKET, ModItems.TWOTHIRDS_MILK_BUCKET, ModItems.FIVESIXTHS_MILK_BUCKET,
@@ -156,9 +170,12 @@ public class EventRegistry {
                 new BlockItem(ModBlocks.GROWABLE_SUNFLOWER, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_SUNFLOWER.getRegistryName()),
                 new BlockItem(ModBlocks.GROWABLE_TALL_GRASS, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_TALL_GRASS.getRegistryName()),
                 new BlockItem(ModBlocks.GROWABLE_LARGE_FERN, new Item.Properties().group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_LARGE_FERN.getRegistryName()),
+                new BlockItem(TURTLE_EGG, new Item.Properties().maxStackSize(1).group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(TURTLE_EGG.getRegistryName()),
                 new BlockItem(EGG_CARTON, new Item.Properties().maxStackSize(1).group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(EGG_CARTON.getRegistryName()),
         };
 
+        event.getRegistry().register(new SpawnEggItem(ENHANCED_TURTLE, 0xFFFFDD,0x00DDCC, new Item.Properties()
+                .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_turtle_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000, new Item.Properties()
                 .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_chicken_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34, new Item.Properties()
@@ -173,8 +190,6 @@ public class EventRegistry {
                 .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_mooshroom_spawn_egg"));
         event.getRegistry().register(new SpawnEggItem(ENHANCED_PIG, 0xFFA4A4,0xB34d4d, new Item.Properties()
                 .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_pig_spawn_egg"));
-//        event.getRegistry().register(new SpawnEggItem(ENHANCED_HORSE, 0x000000,0x000000, new Item.Properties()
-//                .group(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_horse_spawn_egg"));
 
 
         event.getRegistry().registerAll(itemEggs);
@@ -186,13 +201,16 @@ public class EventRegistry {
                 /**
                  * Return the projectile entity spawned by this dispense behavior.
                  */
-                protected IProjectile getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                    EnhancedEntityEgg egg = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ());
-                    egg.setGenes(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getGenes());
-                    return egg;
+                protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+                    EnhancedEntityEgg eggItem = new EnhancedEntityEgg(worldIn, position.getX(), position.getY(), position.getZ(), egg);
+                    eggItem.setEggData(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(stackIn));
+                    return eggItem;
                 }
             });
         }
+
+        DispenserBlock.registerDispenseBehavior(Items.SHEARS.asItem(), new GeneticShearDispenseBehavior());
+
         //TODO dispensers should be able to turn hay to unbound hay if they contain a sharp tool and are facing a hay block
     }
 
@@ -262,99 +280,60 @@ public class EventRegistry {
         event.getRegistry().register(ENHANCED_MOOSHROOM.setRegistryName("enhanced_mooshroom"));
         event.getRegistry().register(ENHANCED_MOOBLOOM.setRegistryName("enhanced_moobloom"));
         event.getRegistry().register(ENHANCED_PIG.setRegistryName("enhanced_pig"));
-//        event.getRegistry().register(ENHANCED_HORSE.setRegistryName("enhanced_horse"));
+        event.getRegistry().register(ENHANCED_HORSE.setRegistryName("enhanced_horse"));
+        event.getRegistry().register(ENHANCED_TURTLE.setRegistryName("enhanced_turtle"));
 //        event.getRegistry().register(ENHANCED_CAT.setRegistryName("enhanced_cat"));
         event.getRegistry().register(ENHANCED_ENTITY_EGG_ENTITY_TYPE.setRegistryName("enhanced_entity_egg"));
         event.getRegistry().register(ENHANCED_LLAMA_SPIT.setRegistryName("enhanced_entity_llama_spit"));
 
-//        EntitySpawnPlacementRegistry.register(ENHANCED_CHICKEN, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_RABBIT, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_SHEEP, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_COW, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
-//        EntitySpawnPlacementRegistry.register(ENHANCED_PIG, EntitySpawnPlacementRegistry.SpawnPlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, null);
+        EntitySpawnPlacementRegistry.register(ENHANCED_PIG, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_SHEEP, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_COW, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_LLAMA, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_CHICKEN, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_RABBIT, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, AnimalEntity::canAnimalSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_MOOSHROOM, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EnhancedMooshroom::canMooshroomSpawn);
+        EntitySpawnPlacementRegistry.register(ENHANCED_TURTLE, EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EnhancedTurtle::canTurtleSpawn);
+
     }
 
-    @SubscribeEvent
-    public static void onCommonSetupEvent(FMLCommonSetupEvent event) {
-        removeVanillaFromBiomes(ForgeRegistries.BIOMES);
+    private static class GeneticShearDispenseBehavior extends BeehiveDispenseBehavior {
 
-        for (Biome biome : ForgeRegistries.BIOMES) {
-            //Enhanced Rabbit Spawning
-            if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get() && (biome.getRegistryName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || biome.getRegistryName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || biome.getRegistryName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()))) {
-                biome.getSpawns(EntityClassification.CREATURE).add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3));
+        @Override
+        protected ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+            World world = source.getWorld();
+            if (!world.isRemote()) {
+                BlockPos blockpos = source.getBlockPos().offset(source.getBlockState().get(DispenserBlock.FACING));
+                this.setSuccessful(shearGeneticAnimals((ServerWorld)world, blockpos));
+                if (this.isSuccessful() && stack.attemptDamageItem(1, world.getRandom(), (ServerPlayerEntity)null)) {
+                    stack.setCount(0);
+                }
+                if (this.isSuccessful()) {
+                    return stack;
+                }
             }
+
+            return super.dispenseStack(source, stack);
         }
-    }
 
-    private static void removeVanillaFromBiomes(IForgeRegistry<Biome> biomes) {
-        Iterator<Biome> biomeIterator = biomes.iterator();
-
-        while (biomeIterator.hasNext()) {
-            Biome biome = biomeIterator.next();
-            Iterator<Biome.SpawnListEntry> spawns = biome.getSpawns(EntityClassification.CREATURE).iterator();
-
-            ArrayList<Biome.SpawnListEntry> addSpawns = new ArrayList<Biome.SpawnListEntry>();
-            ArrayList<Biome.SpawnListEntry> removeSpawns = new ArrayList<>();
-            while (spawns.hasNext()) {
-                Biome.SpawnListEntry entry = spawns.next();
-                //add and remove pigs
-                if (entry.entityType == EntityType.PIG) {
-                    if(!EanimodCommonConfig.COMMON.spawnVanillaPigs.get()) {
-                        removeSpawns.add(entry);
+        private boolean shearGeneticAnimals(ServerWorld world, BlockPos pos) {
+            for(LivingEntity livingentity : world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pos), EntityPredicates.NOT_SPECTATING)) {
+                if (livingentity instanceof EnhancedAnimalAbstract && livingentity instanceof IForgeShearable) {
+                    IForgeShearable ishearable = (IForgeShearable)livingentity;
+                    if (ishearable.isShearable(ItemStack.EMPTY, world, pos)) {
+                        List<ItemStack> wool = ishearable.onSheared(null, ItemStack.EMPTY, world, pos, 0);
+                        wool.forEach(d -> {
+                            net.minecraft.entity.item.ItemEntity ent = livingentity.entityDropItem(d, 1.0F);
+                            ent.setMotion(ent.getMotion().add((double)(ThreadLocalRandom.current().nextFloat() * 0.1F), (double)(ThreadLocalRandom.current().nextFloat() * 0.05F), (double)((ThreadLocalRandom.current().nextFloat()) * 0.1F)));
+                        });
+                        return true;
                     }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_PIG, 6, 2, 3));
-                }
-                //add and remove sheep
-                if (entry.entityType == EntityType.SHEEP) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaSheep.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_SHEEP, 12, 4, 4));
-                }
-                //add and remove cow
-                if (entry.entityType == EntityType.COW) {
-                    if(!EanimodCommonConfig.COMMON.spawnVanillaCows.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_COW, 8, 4, 4));
-                }
-                //add and remove llama
-                if (entry.entityType == EntityType.LLAMA) {
-                    if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_LLAMA, 4, 2, 3));
-                }
-                //add and remove chicken
-                if (entry.entityType == EntityType.CHICKEN) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaChickens.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_CHICKEN, 10, 4, 4));
-                }
-                //add and remove rabbit
-                if (entry.entityType == EntityType.RABBIT) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_RABBIT, 4, 2, 3));
-                }
-                //add and remove mooshroom
-                if (entry.entityType == EntityType.MOOSHROOM) {
-                    if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get()) {
-                        removeSpawns.add(entry);
-                    }
-                    addSpawns.add(new Biome.SpawnListEntry(ENHANCED_MOOSHROOM, 8, 4, 4));
                 }
             }
-            if (!addSpawns.isEmpty()) {
-                biome.getSpawns(EntityClassification.CREATURE).addAll(addSpawns);
-            }
-            if (!removeSpawns.isEmpty()) {
-                biome.getSpawns(EntityClassification.CREATURE).removeAll(removeSpawns);
-            }
+
+            return false;
         }
+
     }
 
 }

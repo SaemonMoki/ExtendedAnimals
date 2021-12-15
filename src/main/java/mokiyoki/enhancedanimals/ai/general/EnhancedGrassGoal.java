@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.ai.general;
 
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.entity.Temperament;
@@ -44,9 +44,9 @@ public class EnhancedGrassGoal extends Goal {
             //first stage babies should NOT eat grass
             return false;
         }
-        int eatingModifier = Math.round(((EnhancedAnimal)grassEaterEntity).getHunger()/50);
+        int eatingModifier = Math.round(((EnhancedAnimalAbstract)grassEaterEntity).getHunger()/50);
 
-        if (((EnhancedAnimal)grassEaterEntity).getHunger() > 12000) {
+        if (((EnhancedAnimalAbstract)grassEaterEntity).getHunger() > 12000) {
             eatingModifier = 999;
         }
 
@@ -60,7 +60,7 @@ public class EnhancedGrassGoal extends Goal {
         if (this.grassEaterEntity.getRNG().nextInt(chanceToEat) != 0) {
             return false;
         } else {
-            BlockPos blockpos = new BlockPos(this.grassEaterEntity);
+            BlockPos blockpos = new BlockPos(this.grassEaterEntity.getPosition());
 
             //TODO add the predicate for different blocks to eat based on temperaments and animal type.
             if (IS_GRASSBLOCK.test(this.entityWorld.getBlockState(blockpos))) {
@@ -75,7 +75,7 @@ public class EnhancedGrassGoal extends Goal {
      * Execute a one shot task or start executing a continuous task
      */
     public void startExecuting() {
-        ((EnhancedAnimal)this.grassEaterEntity).decreaseHunger(3000);
+        ((EnhancedAnimalAbstract)this.grassEaterEntity).decreaseHunger(3000);
         this.eatingGrassTimer = 40;
         this.entityWorld.setEntityState(this.grassEaterEntity, (byte)10);
         this.grassEaterEntity.getNavigator().clearPath();
@@ -108,7 +108,7 @@ public class EnhancedGrassGoal extends Goal {
     public void tick() {
         this.eatingGrassTimer = Math.max(0, this.eatingGrassTimer - 1);
         if (this.eatingGrassTimer == 4) {
-            BlockPos blockpos = new BlockPos(this.grassEaterEntity);
+            BlockPos blockpos = new BlockPos(this.grassEaterEntity.getPosition());
             if (IS_TALLGRASS.test(this.entityWorld.getBlockState(blockpos))) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
                     this.entityWorld.destroyBlock(blockpos, false);

@@ -3,7 +3,6 @@ package mokiyoki.enhancedanimals.renderer;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
-import mokiyoki.enhancedanimals.renderer.layers.SilkieChickenLayer;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
@@ -27,7 +26,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
 
     public RenderEnhancedChicken(EntityRendererManager render)
     {
-        super(render, new ModelEnhancedChicken<>(0.0F, false), 0.5F);
+        super(render, new ModelEnhancedChicken<>(), 0.5F);
 //        this.addLayer(new SilkieChickenLayer(this));
     }
 
@@ -35,15 +34,20 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
     public ResourceLocation getEntityTexture(EnhancedChicken entity) {
-        entity.getEntityWorld().getProfiler().startSection("ChickenRenderer");
-        String s = entity.getChickenTexture();
+        String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
+        boolean silkie = false;
+        if (entity.getSharedGenes() != null) {
+            silkie = entity.getSharedGenes().isHomozygousFor(106, 2);
+        }
 
         if (s == null || s.isEmpty() || colourRGB == null) {
             return ERROR_TEXTURE_LOCATION;
         }
 
         s = s + colourRGB.getRGBStrings();
+
+        s = silkie ? s + "1" : s + "-";
 
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
@@ -57,7 +61,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
             try {
                 resourcelocation = new ResourceLocation(s);
 
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, textures, null, entity.colouration));
+                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(silkie ? ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION : ENHANCED_CHICKEN_TEXTURE_LOCATION, textures, null, entity.colouration));
 //                if (genes[106] == 1 || genes[107] == 1) {
 //                    Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, textures, null));
 //                } else {

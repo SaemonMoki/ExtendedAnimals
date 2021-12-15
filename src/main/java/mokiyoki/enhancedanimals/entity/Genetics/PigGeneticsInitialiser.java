@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.entity.Genetics;
 
-import mokiyoki.enhancedanimals.init.PigBreeds;
+import mokiyoki.enhancedanimals.init.breeds.PigBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
@@ -200,13 +200,11 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //face squash genes 1 [ Wildtype+, long, medium, short, squashed ]
         if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[18] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
         } else {
             autosomalGenes[18] = (1);
         }
         if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[19] = (ThreadLocalRandom.current().nextInt(5) + 1);
-
         } else {
             autosomalGenes[19] = (1);
         }
@@ -476,9 +474,47 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[65] = 1;
         }
 
-        //ear size [xsmall, small, medium, large, xlarge]
+        //face squash genes 3 [ Wildtype+, long, medium, short, squashed ]
+        if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[66] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[66] = (1);
+        }
+        if (wildType == 1 || ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[67] = (ThreadLocalRandom.current().nextInt(5) + 1);
+        } else {
+            autosomalGenes[67] = (1);
+        }
 
-        //ear angle [up, medium, down
+        //SSC1 some effect on both
+        autosomalGenes[68] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(3)+1 : 1;
+        autosomalGenes[69] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(3)+1 : 1;
+
+        //SSC5 makes ears bigger but less effect on size
+        autosomalGenes[70] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(3)+1 : 1;
+        autosomalGenes[71] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(3)+1 : 1;
+
+        //SSC6 only effects size
+        autosomalGenes[72] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? 2 : 1;
+        autosomalGenes[73] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? 2 : 1;
+
+        //SSC7 makes ears floppier and bigger the most
+        autosomalGenes[74] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(3)+1 : 1;
+        autosomalGenes[75] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(3)+1 : 1;
+
+        //SSC9 small change
+        autosomalGenes[76] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(3)+1 : 1;
+        autosomalGenes[77] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(3)+1 : 1;
+
+        //SSC12 least change
+        autosomalGenes[78] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(3)+1 : 1;
+        autosomalGenes[79] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(3)+1 : 1;
+
+        for (int i = 80; i < 120; i++) {
+            autosomalGenes[i] = (ThreadLocalRandom.current().nextInt(100) > WTC) ? ThreadLocalRandom.current().nextInt(4)+1 : 1;
+        }
+
+        //ear size [xsmall, small, medium, large, xlarge]
 
         return new Genes(autosomalGenes);
     }

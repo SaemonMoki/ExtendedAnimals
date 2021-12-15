@@ -1,0 +1,40 @@
+{
+  "replaceDefault": false,
+  "values": [
+    {
+      "registryName": "minecraft:tall_grass",
+      "hungerRestored": 6000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:grass",
+      "hungerRestored": 3000,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:carrot",
+      "hungerRestored": 3000,
+      "isBreedingItem": true
+    },
+    {
+      "registryName": "minecraft:golden_carrot",
+      "hungerRestored": 12000,
+      "isBreedingItem": true
+    },
+    {
+      "registryName": "minecraft:sweet_berries",
+      "hungerRestored": 1500,
+      "isBreedingItem": false
+    },
+    {
+      "registryName": "minecraft:dandelion",
+      "hungerRestored": 1500,
+      "isBreedingItem": true
+    },
+    {
+      "registryName": "minecraft:rose_bush",
+      "hungerRestored": 1500,
+      "isBreedingItem": false
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.ai.general.cow;
 
-import mokiyoki.enhancedanimals.entity.EnhancedAnimal;
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import net.minecraft.entity.ai.goal.Goal;
@@ -9,13 +9,13 @@ import net.minecraft.entity.passive.AnimalEntity;
 import java.util.List;
 
 public class EnhancedAINurseFromMotherGoal extends Goal {
-    private final AnimalEntity childEntity;
-    private AnimalEntity motherEntity;
+    private final EnhancedAnimalAbstract childEntity;
+    private EnhancedAnimalAbstract motherEntity;
     private String motherUUID;
     private final double moveSpeed;
     private int delayCounter;
 
-    public EnhancedAINurseFromMotherGoal(AnimalEntity child, String motherUUID, double speed) {
+    public EnhancedAINurseFromMotherGoal(EnhancedAnimalAbstract child, String motherUUID, double speed) {
         this.childEntity = child;
         this.motherUUID = motherUUID;
         this.moveSpeed = speed;
@@ -25,9 +25,13 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
      * Returns whether the EntityAIBase should begin execution.
      */
     public boolean shouldExecute() {
-        if (this.childEntity.getGrowingAge() >= 0 || this.childEntity.getIdleTime() >= 100) {
+        if (this.childEntity.isBeingRidden() || this.childEntity.isAnimalSleeping()) {
             return false;
-        } else if (((EnhancedAnimal)this.childEntity).getHunger() > 1000) {
+        }
+
+        if (!this.childEntity.isChild() || this.childEntity.getIdleTime() >= 100) {
+            return false;
+        } else if (((EnhancedAnimalAbstract)this.childEntity).getHunger() > 1000) {
             List<AnimalEntity> list = this.childEntity.world.getEntitiesWithinAABB(this.childEntity.getClass(), this.childEntity.getBoundingBox().grow(8.0D, 4.0D, 8.0D));
             AnimalEntity animalentity = null;
             double d0 = Double.MAX_VALUE;
@@ -47,8 +51,11 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
             } else if (d0 < 2.0D) {
                 return false;
             } else {
-                this.motherEntity = animalentity;
-                return true;
+                if (animalentity instanceof EnhancedAnimalAbstract) {
+                    this.motherEntity = (EnhancedAnimalAbstract)animalentity;
+                    return true;
+                }
+                return false;
             }
         }
 
@@ -59,7 +66,7 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     public boolean shouldContinueExecuting() {
-        if (this.childEntity.getGrowingAge() >= 0) {
+        if (!this.childEntity.isChild()) {
             return false;
         } else if (!this.motherEntity.isAlive()) {
             return false;
@@ -69,14 +76,14 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
             if (!shouldContinue) {
                 if (motherEntity instanceof EnhancedCow) {
                     if (((EnhancedCow)motherEntity).decreaseMilk(2)) {
-                        ((EnhancedAnimal)childEntity).decreaseHunger(6000);
+                        ((EnhancedAnimalAbstract)childEntity).decreaseHunger(6000);
                     }
                 } else if (motherEntity instanceof EnhancedSheep) {
                     if (((EnhancedSheep)motherEntity).decreaseMilk(1)) {
-                        ((EnhancedAnimal)childEntity).decreaseHunger(6000);
+                        ((EnhancedAnimalAbstract)childEntity).decreaseHunger(6000);
                     }
                 } else {
-                    ((EnhancedAnimal)childEntity).decreaseHunger(6000);
+                    ((EnhancedAnimalAbstract)childEntity).decreaseHunger(6000);
                 }
             }
 

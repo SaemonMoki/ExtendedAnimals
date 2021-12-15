@@ -64,7 +64,7 @@ public class GeneticsEncyclopedia extends Item {
             CompoundNBT compoundnbt = stack.getTag();
             String s = compoundnbt.getString("author");
             if (!StringUtils.isNullOrEmpty(s)) {
-                tooltip.add((new TranslationTextComponent("book.byAuthor", s)).applyTextStyle(TextFormatting.GRAY));
+                tooltip.add((new TranslationTextComponent("book.byAuthor", s)).mergeStyle(TextFormatting.GRAY));
             }
         }
 
@@ -102,8 +102,8 @@ public class GeneticsEncyclopedia extends Item {
 
                     ITextComponent itextcomponent;
                     try {
-                        itextcomponent = ITextComponent.Serializer.fromJsonLenient(s);
-                        itextcomponent = TextComponentUtils.updateForEntity(resolvingSource, itextcomponent, resolvingPlayer, 0);
+                        itextcomponent = ITextComponent.Serializer.getComponentFromJsonLenient(s);
+                        itextcomponent = TextComponentUtils.func_240645_a_(resolvingSource, itextcomponent, resolvingPlayer, 0);
                     } catch (Exception var9) {
                         itextcomponent = new StringTextComponent(s);
                     }

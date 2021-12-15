@@ -24,7 +24,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom extends Enhan
 
     @Override
     protected boolean checkForFood() {
-        BlockPos blockpos = new BlockPos(this.creature);
+        BlockPos blockpos = new BlockPos(this.creature.getPosition());
 
         //TODO add the predicate for different blocks to eat based on temperaments and animal type.
         BlockState blockState = this.entityWorld.getBlockState(blockpos);
@@ -38,7 +38,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoalMooshroom extends Enhan
 
     @Override
     protected void eatBlocks() {
-        BlockPos blockpos = new BlockPos(this.creature);
+        BlockPos blockpos = new BlockPos(this.creature.getPosition());
         if (IS_GRASS.test(this.entityWorld.getBlockState(blockpos)) || IS_TALL_GRASS_BLOCK.test(this.entityWorld.getBlockState(blockpos)) || IS_BROWN_MUSHROOM.test(this.entityWorld.getBlockState(blockpos)) || IS_RED_MUSHROOM.test(this.entityWorld.getBlockState(blockpos))) {
             if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
                 this.entityWorld.destroyBlock(blockpos, false);

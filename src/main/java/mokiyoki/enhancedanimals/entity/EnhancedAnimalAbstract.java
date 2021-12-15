@@ -2,12 +2,11 @@ package mokiyoki.enhancedanimals.entity;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.ai.general.AIStatus;
-import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
+import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
@@ -27,11 +26,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.BreedGoal;
-import net.minecraft.entity.ai.goal.FollowParentGoal;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ExperienceOrbEntity;
+import net.minecraft.entity.item.LeashKnotEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -51,18 +50,20 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -80,12 +81,12 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class EnhancedAnimalAbstract extends AnimalEntity implements EnhancedAnimal, IInventoryChangedListener {
+public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IInventoryChangedListener {
 
-    protected static final DataParameter<String> SHARED_GENES = EntityDataManager.<String>createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
+    protected static final DataParameter<String> SHARED_GENES = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Boolean> TAMED = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<String> BIRTH_TIME = EntityDataManager.<String>createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
+    protected static final DataParameter<String> BIRTH_TIME = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     private static final DataParameter<Float> ANIMAL_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
     private static final DataParameter<String> ENTITY_STATUS = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
     private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
@@ -104,14 +105,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             "collar_belliron.png", "collar_bellgold.png", "collar_belldiamond.png"
     };
 
-    protected Ingredient TEMPTATION_ITEMS;
-    protected Ingredient BREED_ITEMS;
     private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
-
-    //demo mode
-    public boolean runDemoMode = false;
-    protected int demoTimerMax = 60;
-    private int demoTimer = 0;
 
 
     // Genetic Info
@@ -124,9 +118,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected String mateName = "???";
     protected String sireName = "???";
     protected String damName = "???";
+    protected Boolean isFemale;
 
     //Hunger
-    Map<Item, Integer> foodWeightMap = new HashMap();
     protected float hunger = 0F;
     protected int healTicks = 0;
     protected boolean bottleFeedable = false;
@@ -135,13 +129,17 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected AIStatus currentAIStatus = AIStatus.NONE;
 
     //Sleeping
-    protected Boolean sleeping = false;
+    protected boolean sleeping = false;
     protected int awokenTimer = 0;
 
     //Animations
     private int blink = 0;
     private int earTwitchTicker = 0;
     private int earTwitch = 0;
+
+    //Parent
+//    protected EnhancedAnimalAbstract parent = null;
+    protected String motherUUID = "";
 
     //Pregnancy
     protected int gestationTimer = 0;
@@ -155,14 +153,20 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     //Texture
     protected final List<String> enhancedAnimalTextures = new ArrayList<>();
     protected final List<String> texturesIndexes = new ArrayList<>();
+    protected String compiledTexture;
     protected final List<String> enhancedAnimalAlphaTextures = new ArrayList<>();
+    protected String compiledAlphaTexture;
     protected final Map<Equipment, List<String>> equipmentTextures = new HashMap<>();
+    protected String compiledEquipmentTexture;
     public Colouration colouration = new Colouration();
     protected boolean bells;
-    protected Boolean reload = false; //used in a toggle manner
+    protected Boolean reload = true; //used in a toggle manner
 
     //Inventory
     protected Inventory animalInventory;
+
+    //Size
+    private int reloadSizeTime = 0;
 
     //Overrides
     @Nullable
@@ -172,14 +176,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     Entity Construction
     */
 
-    protected EnhancedAnimalAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, Ingredient temptationItems, Ingredient breedItems, Map<Item, Integer> foodWeightMap, boolean bottleFeedable) {
+    protected EnhancedAnimalAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, boolean bottleFeedable) {
         super(type, worldIn);
         this.genetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
         this.mateGenetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
         this.mateGender = false;
-        this.TEMPTATION_ITEMS = temptationItems;
-        this.BREED_ITEMS = breedItems;
-        this.foodWeightMap = foodWeightMap;
         this.bottleFeedable = bottleFeedable;
 
         initInventory();
@@ -203,13 +204,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     @Override
-    protected void registerGoals() {
-        this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
-    }
+    protected void registerGoals() { }
 
     protected void setMateName(String mateName) {
         if (mateName!=null && !mateName.equals("")) {
@@ -219,7 +214,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
-    protected void setSireName(String sireName) {
+    public void setSireName(String sireName) {
         if (sireName!=null && !sireName.equals("")) {
             this.sireName = sireName;
         } else {
@@ -227,7 +222,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
-    protected void setDamName(String damName) {
+    public void setDamName(String damName) {
         if (damName!=null && !damName.equals("")) {
             this.damName = damName;
         } else {
@@ -235,17 +230,34 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
-    protected abstract String getSpecies();
-
     protected void setBreed(String breed) {
         this.breed = breed;
     }
 
-    protected abstract int getAdultAge();
-
     /*
     Animal expected abstracts and overrides
     */
+
+    //returns the species name in the selected language
+    protected abstract String getSpecies();
+
+    //returns the age an animal becomes an adult
+    protected abstract int getAdultAge();
+
+    //returns the age when the animal finishes growing
+    protected int getFullSizeAge() {
+        return getAdultAge();
+    }
+
+    //returns if the animal is still growing
+    protected boolean isGrowing() {
+        return this.getAge()<(float)this.getFullSizeAge();
+    }
+
+    //returns how grown the animal is
+    public float growthAmount() {
+        return this.getAge() > this.getFullSizeAge() ? 1.0F : this.getAge()/(float)this.getFullSizeAge();
+    }
 
     //returns the config for the animals gestation or any overrides
     protected abstract int gestationConfig();
@@ -260,21 +272,28 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected abstract void lethalGenes();
 
     //when the animal wakes up
-    protected boolean sleepingConditional() {
-        return (!this.world.isDaytime() && awokenTimer == 0 && !sleeping);
+    public boolean sleepingConditional() {
+        return (!this.world.isDaytime() && this.awokenTimer == 0 && !this.sleeping);
     }
-
-    //    public void setReloadTexture(Boolean resetTexture) {
-//        this.dataManager.set(RESET_TEXTURE, resetTexture);
-//    }
 
     //toggles the reloading
     protected void toggleReloadTexture() {
-        this.dataManager.set(RESET_TEXTURE, this.getReloadTexture() == true ? false : true);
+        this.dataManager.set(RESET_TEXTURE, !this.getReloadTexture());
     }
 
     public boolean getReloadTexture() {
         return this.dataManager.get(RESET_TEXTURE);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public abstract String getTexture();
+
+    @OnlyIn(Dist.CLIENT)
+    protected void reloadTextures() {
+        this.texturesIndexes.clear();
+        this.enhancedAnimalTextures.clear();
+        this.compiledTexture = null;
+        this.setTexturePaths();
     }
 
     //for setting the textures
@@ -286,7 +305,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     protected abstract void setAlphaTexturePaths();
 
     //called during construction to set up the animal size
-    protected abstract void initilizeAnimalSize();
+    public abstract void initilizeAnimalSize();
 
     //method to create the new child
     protected abstract void createAndSpawnEnhancedChild(World world);
@@ -337,6 +356,16 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     Getters and Setters for variables and datamanagers
     */
 
+    protected abstract FoodSerialiser.AnimalFoodMap getAnimalFoodType();
+
+    public void setBirthTime() {
+        this.setBirthTime(String.valueOf(this.world.getWorldInfo().getGameTime()));
+    }
+
+    public void setBirthTime(World world, int age) {
+        this.setBirthTime(String.valueOf(world.getWorldInfo().getGameTime() + age));
+    }
+
     public void setBirthTime(String birthTime) {
         this.dataManager.set(BIRTH_TIME, birthTime);
     }
@@ -344,6 +373,39 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     public String getBirthTime() {
         return this.dataManager.get(BIRTH_TIME);
     }
+
+//    private void setParent(String motherUUID) {
+//        if (this.isChild()) {
+//            List<EnhancedAnimalAbstract> list = this.world.getEntitiesWithinAABB(this.getClass(), this.getBoundingBox().grow(8.0D, 4.0D, 8.0D));
+//            EnhancedAnimalAbstract animalentity = null;
+//            double d0 = Double.MAX_VALUE;
+//
+//            for (EnhancedAnimalAbstract animalentity1 : list) {
+//                if (animalentity1.getUniqueID().equals(motherUUID)) {
+//                    double d1 = this.getDistanceSq(animalentity1);
+//                    if (!(d1 > d0)) {
+//                        d0 = d1;
+//                        animalentity = animalentity1;
+//                    }
+//                }
+//            }
+//
+//            if (!(animalentity == null || d0 < 2.0D)) {
+//                if (animalentity instanceof EnhancedAnimalAbstract) {
+//                    this.parent = (EnhancedAnimalAbstract) animalentity;
+//                }
+//            }
+//        }
+//    }
+
+    protected void setParent(String parentUUID) {
+//        this.parent = parent;
+        this.motherUUID = parentUUID;
+    }
+
+//    private EnhancedAnimalAbstract getParent() {
+//        return this.parent;
+//    }
 
     protected void setEntityStatus(String status) {
         this.dataManager.set(ENTITY_STATUS, status);
@@ -357,17 +419,17 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         this.sleeping = sleeping;
         this.dataManager.set(SLEEPING, sleeping); }
 
-    @Override
     public Boolean isAnimalSleeping() {
-        if (this.sleeping == null) {
+        if (this.isWet()) {
+            return false;
+        } else if (!(this.getLeashHolder() instanceof LeashKnotEntity) && this.getLeashHolder() != null) {
             return false;
         } else {
-            sleeping = this.dataManager.get(SLEEPING);
-            return sleeping;
+            this.sleeping = this.dataManager.get(SLEEPING);
+            return this.sleeping;
         }
     }
 
-    @Override
     public void awaken() {
         this.awokenTimer = 200;
         setSleeping(false);
@@ -381,7 +443,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return this.dataManager.get(ANIMAL_SIZE);
     }
 
-    @Override
     public float getHunger(){
         return this.hunger;
     }
@@ -422,8 +483,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
             return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
         } else {
-            setBirthTime(String.valueOf(1));
-            return 500000;
+            setBirthTime(String.valueOf(this.world.getWorldInfo().getGameTime() - this.getAdultAge()));
+            return this.getAdultAge();
         }
     }
 
@@ -516,19 +577,26 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                 this.equipmentTextures.remove(Equipment.COLLAR);
             }
         }
+        this.compiledEquipmentTexture = null; //reset compiled string
     }
-
     //used to set if an animal is wearing bells
+
     protected boolean getBells() {
         return this.bells;
     }
-
     /*
     General Info
     */
-    public boolean isFemale() {
-        char[] uuidArray = getCachedUniqueIdString().toCharArray();
-        return !Character.isLetter(uuidArray[0]) && uuidArray[0] - 48 < 8;
+
+    public boolean getOrSetIsFemale() {
+        if (this.isFemale == null) {
+            return this.isFemale = getCachedUniqueIdString().toCharArray()[0] - 48 < 8;
+        }
+        return this.isFemale;
+    }
+
+    protected void setIsFemale(CompoundNBT compound) {
+        this.isFemale = compound.contains("IsFemale") ? compound.getBoolean("IsFemale") : getCachedUniqueIdString().toCharArray()[0] - 48 < 8;
     }
 
     /*
@@ -569,7 +637,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         Entity entity = this.getLeashHolder();
         if (entity != null && entity.world == this.world) {
-            this.setHomePosAndDistance(new BlockPos(entity), 5);
+            this.setHomePosAndDistance(new BlockPos(entity.getPosition()), 5);
             float f = this.getDistance(entity);
 
             this.onLeashDistance(f);
@@ -583,7 +651,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
                 this.setMotion(this.getMotion().add(Math.copySign(d0 * d0 * 0.4D, d0), Math.copySign(d1 * d1 * 0.4D, d1), Math.copySign(d2 * d2 * 0.4D, d2)));
             } else if (!ableToMoveWhileLeashed()){
                 this.goalSelector.enableFlag(Goal.Flag.MOVE);
-                Vec3d vec3d = (new Vec3d(entity.getPosX() - this.getPosX(), entity.getPosY() - this.getPosY(), entity.getPosZ() - this.getPosZ())).normalize().scale((double)Math.max(f - 2.0F, 0.0F));
+                Vector3d vec3d = (new Vector3d(entity.getPosX() - this.getPosX(), entity.getPosY() - this.getPosY(), entity.getPosZ() - this.getPosZ())).normalize().scale((double)Math.max(f - 2.0F, 0.0F));
                 this.getNavigator().tryMoveToXYZ(this.getPosX() + vec3d.x, this.getPosY() + vec3d.y, this.getPosZ() + vec3d.z, this.followLeashSpeed());
             }
         }
@@ -600,6 +668,17 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     @Override
     public void livingTick() {
         super.livingTick();
+
+        if (this.reloadSizeTime != 0) {
+            if (this.isGrowing()) {
+                if (this.getAge() % this.reloadSizeTime == 0) {
+                    this.recalculateSize();
+                }
+            } else {
+                this.reloadSizeTime = 0;
+            }
+        }
+
         //run client-sided tick stuff
         if (this.world.isRemote) {
             runLivingTickClient();
@@ -625,25 +704,25 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
             if (sleepingConditional()) {
                 setSleeping(true);
-                healTicks = 0;
+                this.healTicks = 0;
             } else if (awokenTimer > 0) {
-                awokenTimer--;
-            } else if (this.world.isDaytime() && sleeping) {
+                this.awokenTimer--;
+            } else if (this.world.isDaytime() && this.sleeping) {
                 setSleeping(false);
             }
 
             //not outside AI processing distance
             if (this.getIdleTime() < 100) {
-                if (hunger <= 72000) {
-                    if (sleeping) {
-                        if ((hunger <= (gestationConfig()/2))) {
+                if (this.hunger <= 72000) {
+                    if (this.sleeping) {
+                        if ((this.hunger <= (gestationConfig()/2))) {
                             incrementHunger();
                         }
-                        healTicks++;
-                        if (healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
+                        this.healTicks++;
+                        if (this.healTicks > 100 && hunger < 6000 && this.getMaxHealth() > this.getHealth()) {
                             this.heal(2.0F);
-                            hunger = hunger + 1000;
-                            healTicks = 0;
+                            this.hunger = this.hunger + 1000;
+                            this.healTicks = 0;
                         }
                     } else {
                         incrementHunger();
@@ -653,8 +732,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             }
 
             runPregnancyTick();
-
-            updateStatusTick();
 
             lethalGenes();
         }
@@ -754,33 +831,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         return 1;
     }
 
-    protected void updateStatusTick() {
-        String entityState = getEntityStatus();
-        if (this.isChild()) {
-            if (entityState.equals(EntityState.CHILD_STAGE_ONE.toString()) && this.getGrowingAge() < -16000) {
-                if(hunger < 5000) {
-                    setEntityStatus(EntityState.CHILD_STAGE_TWO.toString());
-                } else {
-                    this.setGrowingAge(-16500);
-                }
-            } else if (entityState.equals(EntityState.CHILD_STAGE_TWO.toString()) && this.getGrowingAge() < -8000) {
-                if(hunger < 5000) {
-                    setEntityStatus(EntityState.CHILD_STAGE_THREE.toString());
-                } else {
-                    this.setGrowingAge(-8500);
-                }
-            } else if (entityState.equals(EntityState.CHILD_STAGE_THREE.toString())) {
-                setEntityStatus(EntityState.ADULT.toString());
-                this.setGrowingAge(0);
-                //TODO remove the child follow mother ai
-            }
-        } else if (entityState.equals(EntityState.CHILD_STAGE_THREE.toString())) {
-            setEntityStatus(EntityState.ADULT.toString());
-            this.setGrowingAge(0);
-            //TODO remove the child follow mother ai
-        }
-    }
-
     public boolean isPlantEaten() {
         return this.eatingTicks == 0;
     }
@@ -790,108 +840,92 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     */
 
     @Override
-    public boolean processInteract(PlayerEntity entityPlayer, Hand hand) {
+    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
         ItemStack itemStack = entityPlayer.getHeldItem(hand);
         Item item = itemStack.getItem();
-
         if (entityPlayer.isSecondaryUseActive()) {
             this.openGUI(entityPlayer);
-            return true;
+            return ActionResultType.func_233537_a_(this.world.isRemote);
         }
 
         if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
+            boolean isChild = this.isChild();
             if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
-            }
-            else if ((!this.isChild() || !bottleFeedable) && TEMPTATION_ITEMS.test(itemStack)) {
-                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
-                    if (hunger < 4000) {
-                        return super.processInteract(entityPlayer, hand);
-                    }
-                }
-
-                if (this.foodWeightMap.containsKey(item)) {
-                    decreaseHunger(this.foodWeightMap.get(item));
+            } else if (!this.isChild() && isBreedingItem(itemStack)) {
+                if (this.hunger >= 4000 || (!this.pregnant && !isChild && this.canFallInLove())) {
+                    decreaseHunger(getHungerRestored(itemStack));
+                    shrinkItemStack(entityPlayer, itemStack);
                 } else {
-                    decreaseHunger(6000);
+                    return ActionResultType.PASS;
                 }
-                if (!entityPlayer.abilities.isCreativeMode) {
-                    itemStack.shrink(1);
-                } else {
-                    if (itemStack.getCount() > 1) {
-                        itemStack.shrink(1);
-                    }
+                if (!this.world.isRemote && !isChild && this.canFallInLove()) {
+                    this.setInLove(entityPlayer);
+                    return ActionResultType.SUCCESS;
                 }
-            } else if (this.isChild() && (TEMPTATION_ITEMS.test(itemStack) || MILK_ITEMS.test(itemStack))) {
-                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
-                    if (hunger < 4000) {
-                        return super.processInteract(entityPlayer, hand);
-                    }
-                }
-
-                if (bottleFeedable && MILK_ITEMS.test(itemStack)) {
+            } else if (isChild && (isBreedingItem(itemStack)) || (this.bottleFeedable && MILK_ITEMS.test(itemStack))) {
+                if (this.hunger >= 4000 || EanimodCommonConfig.COMMON.feedGrowth.get()) {
+                    boolean isHungry = this.hunger >= 4000;
                     if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
-                        super.ageUp((int)((float)(-this.getGrowingAge() / 20) * 0.1F), true);
-                        return true;
+                        this.ageUp((int) ((float) (-this.getGrowingAge() / 20) * 0.1F), true);
                     }
-                    if (item == ModItems.HALF_MILK_BOTTLE) {
-                        decreaseHunger(6000);
-                        if (!entityPlayer.abilities.isCreativeMode) {
-                            if (itemStack.isEmpty()) {
-                                entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                                entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
+                    if (MILK_ITEMS.test(itemStack)) {
+                        if (item == ModItems.HALF_MILK_BOTTLE) {
+                            if (isHungry) {
+                                decreaseHunger(6000);
+                            }
+                            swapItemStack(entityPlayer, hand, itemStack, Items.GLASS_BOTTLE);
+                        } else if (item == ModItems.MILK_BOTTLE) {
+                            if (hunger >= 12000) {
+                                decreaseHunger(12000);
+                                swapItemStack(entityPlayer, hand, itemStack, Items.GLASS_BOTTLE);
+                            } else {
+                                if (isHungry) {
+                                    decreaseHunger(6000);
+                                }
+                                swapItemStack(entityPlayer, hand, itemStack, ModItems.HALF_MILK_BOTTLE);
                             }
                         }
-                    } else if (item == ModItems.MILK_BOTTLE) {
-                        if (hunger >= 12000) {
-                            decreaseHunger(12000);
-                            if (!entityPlayer.abilities.isCreativeMode) {
-                                if (itemStack.isEmpty()) {
-                                    entityPlayer.setHeldItem(hand, new ItemStack(Items.GLASS_BOTTLE));
-                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(Items.GLASS_BOTTLE))) {
-                                    entityPlayer.dropItem(new ItemStack(Items.GLASS_BOTTLE), false);
-                                }
-                            }
-                        } else {
-                            decreaseHunger(6000);
-                            if (!entityPlayer.abilities.isCreativeMode) {
-                                if (itemStack.isEmpty()) {
-                                    entityPlayer.setHeldItem(hand, new ItemStack(ModItems.HALF_MILK_BOTTLE));
-                                } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(ModItems.HALF_MILK_BOTTLE))) {
-                                    entityPlayer.dropItem(new ItemStack(ModItems.HALF_MILK_BOTTLE), false);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    decreaseHunger(this.foodWeightMap.get(item));
-                    if (!entityPlayer.abilities.isCreativeMode) {
-                        itemStack.shrink(1);
                     } else {
-                        if (itemStack.getCount() > 1) {
-                            itemStack.shrink(1);
+                        if (isHungry) {
+                            decreaseHunger(getHungerRestored(itemStack));
                         }
+                        shrinkItemStack(entityPlayer, itemStack);
                     }
-                }
-            } else if (BREED_ITEMS.test(itemStack)) {
-                if (EanimodCommonConfig.COMMON.onlyEatsWhenHungry.get()) {
-                    if (hunger < 4000) {
-                        return super.processInteract(entityPlayer, hand);
-                    }
-                }
-                decreaseHunger(this.foodWeightMap.get(item));
-                if (!entityPlayer.abilities.isCreativeMode) {
-                    itemStack.shrink(1);
                 } else {
-                    if (itemStack.getCount() > 1) {
-                        itemStack.shrink(1);
-                    }
+                    return ActionResultType.PASS;
+                }
+            } else if (isFoodItem(itemStack)) {
+                if (hunger >= 4000) {
+                    decreaseHunger(getHungerRestored(itemStack));
+                    shrinkItemStack(entityPlayer, itemStack);
+                } else {
+                    return ActionResultType.PASS;
                 }
             }
         }
 
-        return super.processInteract(entityPlayer, hand);
+        return ActionResultType.PASS;
+    }
+
+    private void shrinkItemStack(PlayerEntity entityPlayer, ItemStack itemStack) {
+        if (!entityPlayer.abilities.isCreativeMode) {
+            itemStack.shrink(1);
+        } else {
+            if (itemStack.getCount() > 1) {
+                itemStack.shrink(1);
+            }
+        }
+    }
+
+    private void swapItemStack(PlayerEntity entityPlayer, Hand hand, ItemStack itemStack, Item swapItem) {
+        if (!entityPlayer.abilities.isCreativeMode) {
+            if (itemStack.isEmpty()) {
+                entityPlayer.setHeldItem(hand, new ItemStack(swapItem));
+            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(swapItem))) {
+                entityPlayer.dropItem(new ItemStack(swapItem), false);
+            }
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -925,39 +959,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
 
-        ListNBT geneList = new ListNBT();
-        int length = this.genetics.getNumberOfSexlinkedGenes();
-        int[] sexlinked = this.genetics.getSexlinkedGenes();
-        int[] autosomal = this.genetics.getAutosomalGenes();
-        for(int i = 0; i< length; i++){
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Sgene", sexlinked[i]);
-            geneList.add(nbttagcompound);
-        }
-        length = this.genetics.getNumberOfAutosomalGenes();
-        for(int i = 0; i< length; i++){
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Agene", autosomal[i]);
-            geneList.add(nbttagcompound);
-        }
-        compound.put("Genes", geneList);
-
-        ListNBT mateGeneList = new ListNBT();
-            length = this.genetics.getNumberOfSexlinkedGenes();
-            sexlinked = this.mateGenetics.getSexlinkedGenes();
-            autosomal = this.mateGenetics.getAutosomalGenes();
-        for(int i = 0; i< length; i++){
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Sgene", sexlinked[i]);
-            mateGeneList.add(nbttagcompound);
-        }
-            length = this.genetics.getNumberOfAutosomalGenes();
-        for(int i = 0; i< length; i++){
-            CompoundNBT nbttagcompound = new CompoundNBT();
-            nbttagcompound.putInt("Agene", autosomal[i]);
-            mateGeneList.add(nbttagcompound);
-        }
-        compound.put("FatherGenes", mateGeneList);
+        this.writeNBTGenes("Genetics", compound, this.genetics);
+        this.writeNBTGenes("MateGenetics", compound, this.mateGenetics);
 
         compound.putFloat("Hunger", hunger);
 
@@ -971,10 +974,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         compound.putBoolean("Tamed", this.isTame());
 
+        compound.putString("MotherUUID", this.motherUUID);
+
         if (canBePregnant()) {
             compound.putBoolean("Pregnant", this.pregnant);
-            compound.putInt("Gestation", this.gestationTimer);
         }
+        compound.putInt("Gestation", this.gestationTimer);
 
         if (canLactate()) {
             compound.putInt("Lactation", this.lactationTimer);
@@ -983,7 +988,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         compound.putBoolean("Collared", this.hasCollar());
 
-        compound.putBoolean("demo", this.runDemoMode);
+        compound.putBoolean("IsFemale", this.getOrSetIsFemale());
 
         writeInventory(compound);
     }
@@ -1036,75 +1041,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
 
-        ListNBT geneList = compound.getList("Genes", 10);
-        if (geneList.getCompound(0).contains("Sgene")) {
-            int sexlinkedlength = this.genetics.getNumberOfSexlinkedGenes();
-            for (int i = 0; i < sexlinkedlength; i++) {
-                this.genetics.setSexlinkedGene(i, geneList.getCompound(i).getInt("Sgene"));
-            }
-
-            int length = this.genetics.getNumberOfAutosomalGenes();
-            for (int i = 0; i < length; i++) {
-                this.genetics.setAutosomalGene(i, geneList.getCompound(i+sexlinkedlength).getInt("Agene"));
-            }
-        } else {
-            if (this instanceof EnhancedChicken) {
-                for (int i = 0; i < 10; ++i) {
-                    int gene = geneList.getCompound(i).getInt("Gene");
-                    this.genetics.setSexlinkedGene(i*2, gene);
-                    this.genetics.setSexlinkedGene((i*2)+1, gene);
-                }
-            } else {
-                int length = this.genetics.getNumberOfSexlinkedGenes();
-                for (int i = 0; i < length; i++) {
-                    this.genetics.setSexlinkedGene(i, 1);
-                }
-            }
-
-            for (int i = 0; i < geneList.size(); ++i) {
-                if (i < 20 && this instanceof EnhancedChicken) {
-                    this.genetics.setAutosomalGene(i, 1);
-                } else {
-                    this.genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
-                }
-            }
-        }
-
-            geneList = compound.getList("FatherGenes", 10);
-        if (geneList.getCompound(0).contains("Sgene")) {
-            int sexlinkedlength = this.genetics.getNumberOfSexlinkedGenes();
-            for (int i = 0; i < sexlinkedlength; i++) {
-                this.mateGenetics.setSexlinkedGene(i, geneList.getCompound(i).getInt("Sgene"));
-            }
-
-            int length = this.genetics.getNumberOfAutosomalGenes();
-            for (int i = 0; i < length; i++) {
-                this.mateGenetics.setAutosomalGene(i, geneList.getCompound(i+sexlinkedlength).getInt("Agene"));
-            }
-        } else {
-            if (this instanceof EnhancedChicken) {
-                for (int i = 0; i < 9; ++i) {
-                    int gene = geneList.getCompound(i).getInt("Gene");
-                    if (gene == 10) {
-                        break;
-                    }
-                    this.mateGenetics.setSexlinkedGene(i*2, gene);
-                    this.mateGenetics.setSexlinkedGene((i*2)+1, gene);
-                }
-            } else {
-                int length = this.genetics.getNumberOfSexlinkedGenes();
-                for (int i = 0; i < length; i++) {
-                    this.mateGenetics.setSexlinkedGene(i, 1);
-                }
-            }
-
-            for (int i = 0; i < geneList.size(); ++i) {
-                if (i < 20 && this instanceof EnhancedChicken) {
-                    this.mateGenetics.setAutosomalGene(i, 1);
-                }
-                this.mateGenetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
-            }
-        }
+        this.readNBTGenes(compound, "Genetics", this.genetics);
+        this.readNBTGenes(compound, "MateGenetics", this.mateGenetics);
 
         this.hunger = compound.getFloat("Hunger");
 
@@ -1114,20 +1052,16 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         this.setTame(compound.getBoolean("Tamed"));
 
+        this.motherUUID = compound.getString("MotherUUID");
+
+//        this.setParent(this.motherUUID);
+
         if (canBePregnant()) {
             this.pregnant = compound.getBoolean("Pregnant");
-            this.gestationTimer = compound.getInt("Gestation");
         }
-
-        if (canLactate()) {
-            this.lactationTimer = compound.getInt("Lactation");
-            this.setMilkAmount(compound.getInt("milk"));
-            this.setMaxBagSize();
-        }
+        this.gestationTimer = compound.getInt("Gestation");
 
         this.setBreed(compound.getString("breed"));
-
-        this.runDemoMode = (compound.getBoolean("demo"));
 
         //from MobEntity parent
         if (compound.contains("Leash", 10)) {
@@ -1136,8 +1070,18 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
         geneFixer();
 
+        this.setIsFemale(compound);
+
         setSharedGenes(this.genetics);
         initilizeAnimalSize();
+
+        resetGrowingAgeToAge();
+
+        if (canLactate()) {
+            this.lactationTimer = compound.getInt("Lactation");
+            this.setMilkAmount(compound.getInt("milk"));
+            this.setMaxBagSize();
+        }
 
         this.setCollar(compound.getBoolean("Collared"));
 
@@ -1145,7 +1089,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         this.setSireName(compound.getString("SireName"));
         this.setDamName(compound.getString("DamName"));
 
+        this.toggleReloadTexture();
+
         readInventory(compound);
+    }
+
+    protected void resetGrowingAgeToAge() {
+        int resetAge = this.getAge() - this.getAdultAge();
+        super.setGrowingAge(Math.min(resetAge, 0));
     }
 
     private void readInventory(CompoundNBT compound) {
@@ -1199,6 +1150,45 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         this.updateInventorySlots();
     }
 
+    protected void writeNBTGenes(String name, CompoundNBT compound, Genes genetics) {
+        CompoundNBT nbttagcompound = new CompoundNBT();
+        nbttagcompound.putIntArray("SGenes", genetics.getSexlinkedGenes());
+        nbttagcompound.putIntArray("AGenes", genetics.getAutosomalGenes());
+        compound.put(name, nbttagcompound);
+    }
+
+    protected void readNBTGenes(CompoundNBT compoundNBT, String key, Genes genetics) {
+        if (compoundNBT.contains(key)) {
+            CompoundNBT nbtGenetics = compoundNBT.getCompound(key);
+            genetics.setGenes(nbtGenetics.getIntArray("SGenes"), nbtGenetics.getIntArray("AGenes"));
+        } else {
+            readLegacyGenes(compoundNBT.getList(key.equals("Genetics") ? "Genes" : "FatherGenes", 10), genetics);
+        }
+    }
+
+    protected void readLegacyGenes(ListNBT geneList, Genes genetics) {
+        if (geneList.getCompound(0).contains("Sgene")) {
+            int sexlinkedlength = genetics.getNumberOfSexlinkedGenes();
+            for (int i = 0; i < sexlinkedlength; i++) {
+                genetics.setSexlinkedGene(i, geneList.getCompound(i).getInt("Sgene"));
+            }
+
+            int length = genetics.getNumberOfAutosomalGenes();
+            for (int i = 0; i < length; i++) {
+                genetics.setAutosomalGene(i, geneList.getCompound(i+sexlinkedlength).getInt("Agene"));
+            }
+        } else {
+            int length = genetics.getNumberOfSexlinkedGenes();
+            for (int i = 0; i < length; i++) {
+                genetics.setSexlinkedGene(i, 1);
+            }
+
+            for (int i = 0; i < geneList.size(); ++i) {
+                genetics.setAutosomalGene(i, geneList.getCompound(i).getInt("Gene"));
+            }
+        }
+    }
+
     /*
     Entity Creation
     */
@@ -1211,6 +1201,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         enhancedAnimalChild.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedAnimalChild.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
         enhancedAnimalChild.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
+        enhancedAnimalChild.setParent(this.getUniqueID().toString());
         enhancedAnimalChild.setSireName(this.mateName);
         String name = "???";
         if (this.getCustomName()!=null) {
@@ -1229,21 +1220,23 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     @Override
-    public AgeableEntity createChild(AgeableEntity ageable) {
-        handlePartnerBreeding(ageable);
-        this.setGrowingAge(10);
-        this.resetInLove();
-        ageable.setGrowingAge(10);
-        ((EnhancedAnimalAbstract)ageable).resetInLove();
+    public AgeableEntity func_241840_a(ServerWorld serverWorld, AgeableEntity ageable) {
+        if (this.getAdultAge() <= this.getAge()) {
+            handlePartnerBreeding(ageable);
+            this.setGrowingAge(10);
+            this.resetInLove();
+            ageable.setGrowingAge(10);
+            ((EnhancedAnimalAbstract) ageable).resetInLove();
 
-        ServerPlayerEntity entityplayermp = this.getLoveCause();
-        if (entityplayermp == null && ((EnhancedAnimalAbstract)ageable).getLoveCause() != null) {
-            entityplayermp = ((EnhancedAnimalAbstract)ageable).getLoveCause();
-        }
+            ServerPlayerEntity entityplayermp = this.getLoveCause();
+            if (entityplayermp == null && ((EnhancedAnimalAbstract) ageable).getLoveCause() != null) {
+                entityplayermp = ((EnhancedAnimalAbstract) ageable).getLoveCause();
+            }
 
-        if (entityplayermp != null) {
-            entityplayermp.addStat(Stats.ANIMALS_BRED);
-            CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedAnimalAbstract)ageable), (AgeableEntity)null);
+            if (entityplayermp != null) {
+                entityplayermp.addStat(Stats.ANIMALS_BRED);
+                CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedAnimalAbstract) ageable), (AgeableEntity) null);
+            }
         }
 
         return null;
@@ -1251,28 +1244,28 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     protected void handlePartnerBreeding(AgeableEntity ageable) {
         if (EanimodCommonConfig.COMMON.omnigenders.get()) {
-            if(pregnant) {
+            if(this.pregnant) {
                 ((EnhancedAnimalAbstract)ageable).pregnant = true;
                 ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
-                ((EnhancedAnimalAbstract)ageable).setMateGender(this.isFemale());
+                ((EnhancedAnimalAbstract)ageable).setMateGender(this.getOrSetIsFemale());
                 if (this.hasCustomName()) {
                     ((EnhancedAnimalAbstract)ageable).setMateName(this.getCustomName().getString());
                 }
             } else {
                 this.pregnant = true;
                 this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
-                this.mateGender = ((EnhancedAnimalAbstract)ageable).isFemale();
-                if (((EnhancedAnimalAbstract)ageable).hasCustomName()) {
-                    this.setMateName(((EnhancedAnimalAbstract) ageable).getCustomName().getString());
+                this.mateGender = ((EnhancedAnimalAbstract)ageable).getOrSetIsFemale();
+                if (ageable.hasCustomName()) {
+                    this.setMateName(ageable.getCustomName().getString());
                 }
             }
-        } else if (this.isFemale()) {
+        } else if (this.getOrSetIsFemale()) {
            //is female
            this.pregnant = true;
            this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
            this.mateGender = false;
-            if (((EnhancedAnimalAbstract)ageable).hasCustomName()) {
-                this.setMateName(((EnhancedAnimalAbstract) ageable).getCustomName().getString());
+            if (ageable.hasCustomName()) {
+                this.setMateName(ageable.getCustomName().getString());
             }
         } else {
             //is male
@@ -1295,7 +1288,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         } else if (otherAnimal.getClass() != this.getClass()) {
             return false;
         } else {
-            if (EanimodCommonConfig.COMMON.omnigenders.get() || (this.isFemale() ^ ((EnhancedAnimalAbstract)otherAnimal).isFemale())) {
+            if (EanimodCommonConfig.COMMON.omnigenders.get() || (this.getOrSetIsFemale() ^ ((EnhancedAnimalAbstract)otherAnimal).getOrSetIsFemale())) {
                 return this.isInLove() && otherAnimal.isInLove();
             }
             return false;
@@ -1306,7 +1299,6 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     Inventory
     */
 
-    @Override
     public Inventory getEnhancedInventory() {
         return this.animalInventory;
     }
@@ -1342,7 +1334,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
-    protected int getInventorySize() {
+    public int getInventorySize() {
         return 22;
     }
 
@@ -1400,7 +1392,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     protected ItemStack getReplacementItemWithColour(ItemStack itemStack) {
         ItemStack replacementItem = new ItemStack(itemStack.getItem(), 1);
-        ((CustomizableAnimalEquipment)replacementItem.getItem()).setColor(replacementItem, ((CustomizableAnimalEquipment)itemStack.getItem()).getColor(itemStack));
+        if (((CustomizableAnimalEquipment)itemStack.getItem()).hasColor(itemStack)) {
+            ((CustomizableAnimalEquipment)replacementItem.getItem()).setColor(replacementItem, ((CustomizableAnimalEquipment)itemStack.getItem()).getColor(itemStack));
+        }
         return replacementItem;
     }
 
@@ -1438,8 +1432,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
             animalInfo.health = (int)(10 * (this.getHealth() / this.getMaxHealth()));
             animalInfo.hunger = (int)(this.getHunger() / 7200);
-            animalInfo.isFemale = this.isFemale();
-            animalInfo.pregnant = (10 * this.gestationTimer)/gestationConfig();
+            animalInfo.isFemale = this.getOrSetIsFemale();
+            animalInfo.pregnant = getPregnancyProgression();
             animalInfo.name = this.getAnimalsName(getSpecies());
             animalInfo.agePrefix = this.getAnimalsAgeString();
             animalInfo.age = this.getAge();
@@ -1466,6 +1460,10 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         }
     }
 
+    protected int getPregnancyProgression() {
+        return this.canBePregnant() ? (10 * this.gestationTimer)/gestationConfig() : 0;
+    }
+
     protected String getAnimalsName(String species) {
         String name = species;
         if (this.getCustomName() != null) {
@@ -1483,11 +1481,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         int adultAge = getAdultAge();
         if (age < adultAge) {
             if (age > (adultAge*3)/4) {
-                return "Young ";
+                return "YOUNG";
             } else if (age > adultAge/3) {
-                return "Baby ";
+                return "BABY";
             } else {
-                return "Newborn ";
+                return "NEWBORN";
             }
         }
         return "ADULT";
@@ -1499,6 +1497,19 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         int adultAge = getAdultAge();
         return age < adultAge;
     }
+
+    public void notifyDataManagerChange(DataParameter<?> key) {
+        if (ANIMAL_SIZE.equals(key) && this.world.isRemote) {
+            if (this.isGrowing()) {
+                this.reloadSizeTime = (int) (this.getFullSizeAge() * 0.05);
+            } else {
+                this.recalculateSize();
+            }
+        }
+
+        super.notifyDataManagerChange(key);
+    }
+
 
     /*
     Client Sided Work
@@ -1551,8 +1562,15 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     @Override
     public boolean isBreedingItem(ItemStack stack) {
-        //TODO set this to a separate item or type of item for force breeding
-        return this.BREED_ITEMS.test(stack);
+        return getAnimalFoodType().isBreedingItem(stack.getItem());
+    }
+
+    public boolean isFoodItem(ItemStack stack) {
+        return getAnimalFoodType().isFoodItem(stack.getItem());
+    }
+
+    public int getHungerRestored(ItemStack stack) {
+        return getAnimalFoodType().getHungerRestored(stack.getItem());
     }
 
     public void setSharedGenes(Genes genes) {
@@ -1583,6 +1601,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
+    protected void addTextureToAnimal(String texture) {
+        this.enhancedAnimalTextures.add(texture);
+        this.texturesIndexes.add(String.valueOf(0));
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
     @OnlyIn(Dist.CLIENT)
     public String[] getVariantTexturePaths() {
         if (this.enhancedAnimalTextures.isEmpty()) {
@@ -1601,7 +1625,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
             this.setAlphaTexturePaths();
         }
 
-        //todo this is only temporarity until we have alpha textures
+        //todo this is only temporary until we have alpha textures
         if (this.enhancedAnimalAlphaTextures.isEmpty()) {
             return null;
         }
@@ -1610,22 +1634,53 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
     }
 
     protected String getCompiledTextures(String eanimal) {
-        String compiledTextures = this.texturesIndexes.stream().collect(Collectors.joining("",eanimal+"/",""));
-        compiledTextures = compiledTextures + this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.joining("/"));
-        return compiledTextures;
+        if (this.compiledTexture == null) {
+            this.compiledTexture = this.texturesIndexes.stream().collect(Collectors.joining("",eanimal+"/",""));
+        }
+
+        if (this.compiledAlphaTexture == null) {
+            this.compiledAlphaTexture = this.enhancedAnimalAlphaTextures.stream().collect(Collectors.joining("/"));
+        }
+
+        if (this.compiledEquipmentTexture == null) {
+            this.compiledEquipmentTexture = this.equipmentTextures.values().stream().flatMap(Collection::stream).collect(Collectors.joining("/"));
+        }
+        return this.compiledTexture + compiledAlphaTexture + compiledEquipmentTexture;
     }
 
     protected void geneFixer() {
         if (!this.breed.isEmpty()) {
-            this.genetics = createInitialBreedGenes(this.world, new BlockPos(this), this.breed);
+            this.genetics = this.breed.equals("village") ? this.genetics = createInitialGenes(this.world, new BlockPos(this.getPosition()), true) : createInitialBreedGenes(this.world, new BlockPos(this.getPosition()), this.breed);
             setInitialDefaults();
-            this.setBirthTime(String.valueOf(0));
-            this.setGrowingAge(0);
-            this.ageUp(0, true);
+            int childAge = this.getAdultAge();
+            if (this.rand.nextInt(20) == 0) {
+                childAge = this.rand.nextInt(childAge);
+                this.setGrowingAge(childAge);
+                this.setBirthTime(this.world, -childAge);
+            } else {
+                this.setGrowingAge(0);
+                if (this.rand.nextInt(20) == 0) {
+                    this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 192000) + 1536000));
+                } else {
+                    this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 100000) + childAge));
+                }
+            }
         } else if (this.genetics.getAutosomalGene(0) == 0) {
-            this.genetics = createInitialGenes(this.world, new BlockPos(this), true);
+            this.genetics = createInitialGenes(this.world, new BlockPos(this.getPosition()), true);
             setInitialDefaults();
-            this.setBirthTime(String.valueOf(this.world.getWorld().getGameTime() - (rand.nextInt(180000-24000) + 24000)));
+            int childAge = this.getAdultAge();
+            if (this.rand.nextInt(20) == 0) {
+                childAge = this.rand.nextInt(childAge);
+                this.setGrowingAge(childAge);
+                this.setBirthTime(this.world, -childAge);
+            } else {
+                this.setGrowingAge(0);
+                if (this.rand.nextInt(20) == 0) {
+                    this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 192000) + 1536000));
+                } else {
+                    this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 100000) + childAge));
+                }
+            }
         } else {
             int[] sexlinkedGenes = this.genetics.getSexlinkedGenes();
             int[] autosomalGenes = this.genetics.getAutosomalGenes();
@@ -1654,36 +1709,68 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
         this.mateGender = gender;
     }
 
+    public void setGrowingAge() {
+        super.setGrowingAge(-this.getAdultAge());
+    }
+
     //overriden to prevent aging up when fed
     @Override
     public void ageUp(int growthSeconds, boolean updateForcedAge) {
-        if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
-            int newBirthTime = Integer.valueOf(getBirthTime()) - ((int)(getAdultAge()*0.1));
-            this.setBirthTime(String.valueOf(newBirthTime));
-            super.ageUp(growthSeconds, updateForcedAge);
-            if (!this.isChild() && getGrowingAge() <= -1) {
-                this.setGrowingAge(0);
-            }
+        int newBirthTime = Integer.valueOf(getBirthTime()) - ((int)(getAdultAge()*0.1));
+        this.setBirthTime(String.valueOf(newBirthTime));
+        super.ageUp(growthSeconds, updateForcedAge);
+        if (!this.isChild() && getGrowingAge() <= -1) {
+            this.setGrowingAge(0);
         }
     }
 
-    protected ILivingEntityData commonInitialSpawnSetup(IWorld inWorld, @Nullable ILivingEntityData livingdata, int childAge, int ageMinimum, int ageMaximum) {
+    protected ILivingEntityData commonInitialSpawnSetup(IWorld inWorld, @Nullable ILivingEntityData livingdata, int childAge, int ageMinimum, int ageMaximum, SpawnReason spawnReason) {
         Genes spawnGenes;
 
-        if (livingdata instanceof GroupData) {
+        if (spawnReason.equals(SpawnReason.STRUCTURE)) {
+            spawnGenes = createInitialGenes(this.world, new BlockPos(this.getPosition()), true);
+        } else if (livingdata instanceof GroupData) {
             spawnGenes = new Genes(((GroupData)livingdata).groupGenes).makeChild(true, false, ((GroupData)livingdata).groupGenes);
         } else {
-            spawnGenes = createInitialGenes(this.world, new BlockPos(this), false);
+            spawnGenes = createInitialGenes(this.world, new BlockPos(this.getPosition()), false);
             livingdata = new GroupData(spawnGenes);
         }
 
         this.genetics = spawnGenes;
+
+        boolean canBePregnant = false;
+        if (this.rand.nextInt(20) == 0) {
+            int age = this.rand.nextInt(childAge);
+            this.setGrowingAge(age);
+            this.setBirthTime(this.world, -age);
+        } else {
+            this.setGrowingAge(0);
+            if (this.rand.nextInt(20) == 0) {
+                this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 192000) + 1536000));
+            } else {
+                this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 100000) + childAge));
+            }
+
+            if (spawnReason.equals(SpawnReason.CHUNK_GENERATION)) {
+                canBePregnant = EanimodCommonConfig.COMMON.omnigenders.get() ? this.rand.nextInt(50) == 0 : this.getOrSetIsFemale() && this.rand.nextInt(25) == 0;
+            }
+        }
+
         setInitialDefaults();
 
-        int birthMod = ThreadLocalRandom.current().nextInt(ageMinimum, ageMaximum);
-        this.setBirthTime(String.valueOf(inWorld.getWorld().getGameTime() - birthMod));
-        if (birthMod < childAge) {
-            this.setGrowingAge(birthMod - childAge);
+        if (canBePregnant) {
+            if (this.bottleFeedable) {
+                this.pregnant = true;
+            }
+            if (this.rand.nextInt(5) == 0) {
+                int x = this.rand.nextBoolean() ? this.rand.nextInt(600) : -this.rand.nextInt(600);
+                int z = this.rand.nextBoolean() ? this.rand.nextInt(600) : -this.rand.nextInt(600);
+                BlockPos matePos = new BlockPos(this.getPosition().add(x, 0, z));
+                this.mateGenetics = createInitialGenes(this.world, matePos, false);
+            } else {
+                this.mateGenetics = ((GroupData)livingdata).groupGenes;
+            }
+            this.mateGender = false;
         }
 
         return livingdata;
@@ -1691,11 +1778,17 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements Enh
 
     protected abstract Genes createInitialGenes(IWorld inWorld, BlockPos pos, boolean isDomestic);
 
-    protected abstract Genes createInitialBreedGenes(IWorld inWorld, BlockPos pos, String breed);
+    public abstract Genes createInitialBreedGenes(IWorld inWorld, BlockPos pos, String breed);
 
-    protected void setInitialDefaults() {
+    public void setInitialDefaults() {
         setSharedGenes(this.genetics);
         initilizeAnimalSize();
+        initializeHealth(this, 1F);
+    }
+
+    protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {
+        animal.getAttribute(Attributes.MAX_HEALTH).setBaseValue((double)health);
+        animal.heal(animal.getMaxHealth() - animal.getHealth());
     }
 
     public static class GroupData implements ILivingEntityData {

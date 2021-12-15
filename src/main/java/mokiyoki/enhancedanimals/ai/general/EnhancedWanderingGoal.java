@@ -20,4 +20,12 @@ public class EnhancedWanderingGoal extends WaterAvoidingRandomWalkingGoal {
         boolean superShould = super.shouldExecute();
         return superShould && !enhancedAnimal.getAIStatus().equals(AIStatus.EATING);
     }
+
+    @Override
+    public boolean shouldContinueExecuting() {
+        if (enhancedAnimal.isAnimalSleeping()) {
+            return false;
+        }
+        return super.shouldExecute();
+    }
 }

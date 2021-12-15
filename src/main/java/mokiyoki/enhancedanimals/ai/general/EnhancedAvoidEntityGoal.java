@@ -1,5 +1,6 @@
 package mokiyoki.enhancedanimals.ai.general;
 
+import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.Temperament;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityPredicate;
@@ -9,7 +10,7 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.EnumSet;
 import java.util.Map;
@@ -28,7 +29,6 @@ public class EnhancedAvoidEntityGoal<T extends LivingEntity> extends Goal {
     protected final Predicate<LivingEntity> field_203784_k;
     private final EntityPredicate field_220872_k;
     Map<Temperament, Integer> temperaments;
-
 
     public EnhancedAvoidEntityGoal(CreatureEntity entityIn, Class<T> classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn, Map<Temperament, Integer> temperaments) {
         this(entityIn, classToAvoidIn, (p_200828_0_) -> {
@@ -63,12 +63,13 @@ public class EnhancedAvoidEntityGoal<T extends LivingEntity> extends Goal {
         if (this.field_75376_d == null) {
             return false;
         } else {
-            Vec3d vec3d = RandomPositionGenerator.findRandomTargetBlockAwayFrom(this.entity, 16, 7, new Vec3d(this.field_75376_d.getPosX(), this.field_75376_d.getPosY(), this.field_75376_d.getPosZ()));
+            Vector3d vec3d = RandomPositionGenerator.findRandomTargetBlockAwayFrom(this.entity, 16, 7, new Vector3d(this.field_75376_d.getPosX(), this.field_75376_d.getPosY(), this.field_75376_d.getPosZ()));
             if (vec3d == null) {
                 return false;
             } else if (this.field_75376_d.getDistanceSq(vec3d.x, vec3d.y, vec3d.z) < this.field_75376_d.getDistanceSq(this.entity)) {
                 return false;
             } else {
+                ((EnhancedAnimalAbstract)this.entity).awaken();
                 this.path = this.navigation.getPathToPos(vec3d.x, vec3d.y, vec3d.z, 0);
                 return this.path != null;
             }

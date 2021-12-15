@@ -1,0 +1,10 @@
+{
+  "replaceDefault": false,
+  "values": [
+    {
+      "tag": "minecraft:seagrass",
+      "hungerRestored": 6000,
+      "isBreedingItem": true
+    }
+  ]
+}

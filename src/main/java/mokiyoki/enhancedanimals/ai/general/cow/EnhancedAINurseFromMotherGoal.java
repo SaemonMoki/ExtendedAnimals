@@ -3,8 +3,8 @@ package mokiyoki.enhancedanimals.ai.general.cow;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.animal.Animal;
 
 import java.util.List;
 
@@ -24,21 +24,21 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
-    public boolean shouldExecute() {
-        if (this.childEntity.isBeingRidden() || this.childEntity.isAnimalSleeping()) {
+    public boolean canUse() {
+        if (this.childEntity.isVehicle() || this.childEntity.isAnimalSleeping()) {
             return false;
         }
 
-        if (!this.childEntity.isChild() || this.childEntity.getIdleTime() >= 100) {
+        if (!this.childEntity.isChild() || this.childEntity.getNoActionTime() >= 100) {
             return false;
         } else if (((EnhancedAnimalAbstract)this.childEntity).getHunger() > 1000) {
-            List<AnimalEntity> list = this.childEntity.world.getEntitiesWithinAABB(this.childEntity.getClass(), this.childEntity.getBoundingBox().grow(8.0D, 4.0D, 8.0D));
-            AnimalEntity animalentity = null;
+            List<Animal> list = this.childEntity.level.getEntitiesOfClass(this.childEntity.getClass(), this.childEntity.getBoundingBox().inflate(8.0D, 4.0D, 8.0D));
+            Animal animalentity = null;
             double d0 = Double.MAX_VALUE;
 
-            for(AnimalEntity animalentity1 : list) {
-                if (animalentity1.getUniqueID().equals(motherUUID)) {
-                    double d1 = this.childEntity.getDistanceSq(animalentity1);
+            for(Animal animalentity1 : list) {
+                if (animalentity1.getUUID().equals(motherUUID)) {
+                    double d1 = this.childEntity.distanceToSqr(animalentity1);
                     if (!(d1 > d0)) {
                         d0 = d1;
                         animalentity = animalentity1;
@@ -65,13 +65,13 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
-    public boolean shouldContinueExecuting() {
+    public boolean canContinueToUse() {
         if (!this.childEntity.isChild()) {
             return false;
         } else if (!this.motherEntity.isAlive()) {
             return false;
         } else {
-            double d0 = this.childEntity.getDistanceSq(this.motherEntity);
+            double d0 = this.childEntity.distanceToSqr(this.motherEntity);
             boolean shouldContinue = !(d0 < 2.0D) && !(d0 > 256.0D);
             if (!shouldContinue) {
                 if (motherEntity instanceof EnhancedCow) {
@@ -94,7 +94,7 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
     /**
      * Execute a one shot task or start executing a continuous task
      */
-    public void startExecuting() {
+    public void start() {
         this.delayCounter = 0;
     }
 
@@ -104,7 +104,7 @@ public class EnhancedAINurseFromMotherGoal extends Goal {
     public void tick() {
         if (--this.delayCounter <= 0) {
             this.delayCounter = 10;
-            this.childEntity.getNavigator().tryMoveToEntityLiving(this.motherEntity, this.moveSpeed);
+            this.childEntity.getNavigation().moveTo(this.motherEntity, this.moveSpeed);
         }
     }
 }

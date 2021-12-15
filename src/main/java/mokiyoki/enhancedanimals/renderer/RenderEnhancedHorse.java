@@ -6,9 +6,9 @@ import mokiyoki.enhancedanimals.model.ModelEnhancedHorse;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,7 +18,7 @@ public class RenderEnhancedHorse extends MobRenderer<EnhancedHorse, ModelEnhance
     private static final String ENHANCED_HORSE_TEXTURE_LOCATION = "eanimod:textures/entities/horse/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/horse/horsebase.png");
 
-    public RenderEnhancedHorse(EntityRendererManager render)
+    public RenderEnhancedHorse(EntityRenderDispatcher render)
     {
         super(render, new ModelEnhancedHorse<>(), 0.8F);
     }
@@ -26,7 +26,7 @@ public class RenderEnhancedHorse extends MobRenderer<EnhancedHorse, ModelEnhance
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    public ResourceLocation getEntityTexture(EnhancedHorse entity) {
+    public ResourceLocation getTextureLocation(EnhancedHorse entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
 
@@ -47,7 +47,7 @@ public class RenderEnhancedHorse extends MobRenderer<EnhancedHorse, ModelEnhance
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_HORSE_TEXTURE_LOCATION, textures, null, colourRGB));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexture(ENHANCED_HORSE_TEXTURE_LOCATION, textures, null, colourRGB));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

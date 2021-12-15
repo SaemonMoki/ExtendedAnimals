@@ -3,9 +3,9 @@ package mokiyoki.enhancedanimals.capability.egg;
 import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 /**
  * Created by saemon on 30/09/2018.
  */
-public class EggCapabilityProvider implements IEggCapability, ICapabilitySerializable<INBT> {
+public class EggCapabilityProvider implements IEggCapability, ICapabilitySerializable<Tag> {
 
     @CapabilityInject(IEggCapability.class)
     public static final Capability<IEggCapability> EGG_CAP = null;
@@ -93,12 +93,12 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
     }
 
     @Override
-    public INBT serializeNBT() {
+    public Tag serializeNBT() {
         return EGG_CAP.getStorage().writeNBT(EGG_CAP, this, null);
     }
 
     @Override
-    public void deserializeNBT(INBT nbt) {
+    public void deserializeNBT(Tag nbt) {
         EGG_CAP.getStorage().readNBT(EGG_CAP, this, null, nbt);
     }
 }

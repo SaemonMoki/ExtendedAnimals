@@ -1,8 +1,8 @@
 package mokiyoki.enhancedanimals.capability.hay;
 
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -18,7 +18,7 @@ import java.util.Set;
 /**
  * Created by saemon on 29/09/2018.
  */
-public class HayCapabilityProvider implements IHayCapability, ICapabilitySerializable<INBT> {
+public class HayCapabilityProvider implements IHayCapability, ICapabilitySerializable<Tag> {
 
     @CapabilityInject(IHayCapability.class)
     public static final Capability<IHayCapability> HAY_CAP = null;
@@ -55,12 +55,12 @@ public class HayCapabilityProvider implements IHayCapability, ICapabilitySeriali
 
 
     @Override
-    public INBT serializeNBT() {
+    public Tag serializeNBT() {
         return HAY_CAP.getStorage().writeNBT(HAY_CAP, this, null);
     }
 
     @Override
-    public void deserializeNBT(INBT nbt) {
+    public void deserializeNBT(Tag nbt) {
         HAY_CAP.getStorage().readNBT(HAY_CAP, this, null, nbt);
     }
 }

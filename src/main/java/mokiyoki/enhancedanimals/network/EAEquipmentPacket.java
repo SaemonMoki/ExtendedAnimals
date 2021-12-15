@@ -1,10 +1,10 @@
 package mokiyoki.enhancedanimals.network;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -22,22 +22,22 @@ public class EAEquipmentPacket {
         this.itemStack = itemStackIn.copy();
     }
 
-    public EAEquipmentPacket(PacketBuffer buf) {
+    public EAEquipmentPacket(FriendlyByteBuf buf) {
         this.entityID = buf.readVarInt();
         this.equipmentSlot = buf.readVarInt();
-        this.itemStack = buf.readItemStack();
+        this.itemStack = buf.readItem();
     }
 
-    public void readPacketData(PacketBuffer buf){
+    public void readPacketData(FriendlyByteBuf buf){
         this.entityID = buf.readVarInt();
         this.equipmentSlot = buf.readVarInt();
-        this.itemStack = buf.readItemStack();
+        this.itemStack = buf.readItem();
     }
 
-    public void writePacketData(PacketBuffer buf){
+    public void writePacketData(FriendlyByteBuf buf){
         buf.writeVarInt(this.entityID);
         buf.writeVarInt(this.equipmentSlot);
-        buf.writeItemStack(this.itemStack);
+        buf.writeItem(this.itemStack);
     }
 
     public boolean processPacket(Supplier<NetworkEvent.Context> contextSupplier) {

@@ -1,10 +1,10 @@
 package mokiyoki.enhancedanimals.init;
 
 import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ModTileEntities {
 
-    public static final TileEntityType<EggCartonTileEntity> EGG_CARTON_TILE_ENTITY = TileEntityType.Builder.create(EggCartonTileEntity::new, ModBlocks.EGG_CARTON).build(null);
+    public static final BlockEntityType<EggCartonTileEntity> EGG_CARTON_TILE_ENTITY = BlockEntityType.Builder.of(EggCartonTileEntity::new, ModBlocks.EGG_CARTON).build(null);
 
 }

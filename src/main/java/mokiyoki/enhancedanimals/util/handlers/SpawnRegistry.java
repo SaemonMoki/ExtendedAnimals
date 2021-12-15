@@ -2,10 +2,10 @@ package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.biome.MobSpawnInfo;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,71 +31,71 @@ public class SpawnRegistry {
     //must be higher priority than removing
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void addBiomeSpawns(BiomeLoadingEvent event) {
-        ArrayList<MobSpawnInfo.Spawners> addSpawns = new ArrayList<>();
+        ArrayList<MobSpawnSettings.SpawnerData> addSpawns = new ArrayList<>();
 
-        Iterator<MobSpawnInfo.Spawners> currentSpawns = event.getSpawns().getSpawner(EntityClassification.CREATURE).iterator();
+        Iterator<MobSpawnSettings.SpawnerData> currentSpawns = event.getSpawns().getSpawner(MobCategory.CREATURE).iterator();
         while (currentSpawns.hasNext()) {
-            MobSpawnInfo.Spawners entry = currentSpawns.next();
+            MobSpawnSettings.SpawnerData entry = currentSpawns.next();
 
             EanimodCommonConfig.CommonConfig config = EanimodCommonConfig.COMMON;
 
             //add pigs
             if (entry.type == EntityType.PIG) {
                 if(config.spawnGeneticPigs.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_PIG, config.spawnWeightPigs.get(), config.minimumPigGroup.get(), config.maximumPigGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_PIG, config.spawnWeightPigs.get(), config.minimumPigGroup.get(), config.maximumPigGroup.get()));
                 }
             }
             //add sheep
             if (entry.type == EntityType.SHEEP) {
                 if (config.spawnGeneticSheep.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_SHEEP, config.spawnWeightSheep.get(), config.minimumSheepGroup.get(), config.maximumSheepGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_SHEEP, config.spawnWeightSheep.get(), config.minimumSheepGroup.get(), config.maximumSheepGroup.get()));
                 }
             }
             //add cow
             if (entry.type == EntityType.COW) {
                 if(config.spawnGeneticCows.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_COW,config.spawnWeightCows.get(), config.minimumCowGroup.get(), config.maximumCowGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_COW,config.spawnWeightCows.get(), config.minimumCowGroup.get(), config.maximumCowGroup.get()));
                 }
             }
             //add llama
             if (entry.type == EntityType.LLAMA) {
                 if(config.spawnGeneticLlamas.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_LLAMA, config.spawnWeightLlamas.get(), config.minimumLlamaGroup.get(), config.maximumLlamaGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_LLAMA, config.spawnWeightLlamas.get(), config.minimumLlamaGroup.get(), config.maximumLlamaGroup.get()));
                 }
             }
             //add chicken
             if (entry.type == EntityType.CHICKEN) {
                 if (config.spawnGeneticChickens.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_CHICKEN, config.spawnWeightChickens.get(), config.minimumChickenGroup.get(), config.maximumChickenGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_CHICKEN, config.spawnWeightChickens.get(), config.minimumChickenGroup.get(), config.maximumChickenGroup.get()));
                 }
             }
             //add rabbit
             if (entry.type == EntityType.RABBIT) {
                 if (config.spawnGeneticRabbits.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_RABBIT, config.spawnWeightRabbits.get(), config.minimumRabbitGroup.get(), config.maximumRabbitGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_RABBIT, config.spawnWeightRabbits.get(), config.minimumRabbitGroup.get(), config.maximumRabbitGroup.get()));
                 }
             }
             //add mooshroom
             if (entry.type == EntityType.MOOSHROOM) {
                 if (config.spawnGeneticMooshroom.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_MOOSHROOM, config.spawnWeightMooshrooms.get(), config.minimumMooshroomGroup.get(), config.maximumMooshroomGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_MOOSHROOM, config.spawnWeightMooshrooms.get(), config.minimumMooshroomGroup.get(), config.maximumMooshroomGroup.get()));
                 }
             }
             //add moobloom
             if (entry.type.toString().contains("moobloom")) {
                 if (config.spawnGeneticMoobloom.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_MOOBLOOM, entry.minCount, entry.maxCount, entry.itemWeight));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_MOOBLOOM, entry.minCount, entry.maxCount, entry.weight));
                 }
             }
             if (entry.type == EntityType.TURTLE) {
                 if(config.spawnGeneticTurtles.get()) {
-                    addSpawns.add(new MobSpawnInfo.Spawners(ENHANCED_TURTLE, config.spawnWeightTurtles.get(), config.minimumTurtleGroup.get(), config.maximumTurtleGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_TURTLE, config.spawnWeightTurtles.get(), config.minimumTurtleGroup.get(), config.maximumTurtleGroup.get()));
                 }
             }
         }
 
         // Add all to spawn
-        List<MobSpawnInfo.Spawners> spawns = event.getSpawns().getSpawner(EntityClassification.CREATURE);
+        List<MobSpawnSettings.SpawnerData> spawns = event.getSpawns().getSpawner(MobCategory.CREATURE);
 
         if (!addSpawns.isEmpty()) {
             spawns.addAll(addSpawns);
@@ -104,7 +104,7 @@ public class SpawnRegistry {
         //documentation says this miiiiight be null on super rare occurances
         if (event.getName() != null) {
             if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get() && (event.getName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || event.getName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || event.getName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || event.getName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || event.getName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || event.getName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()))) {
-                spawns.add(new MobSpawnInfo.Spawners(ENHANCED_RABBIT, EanimodCommonConfig.COMMON.spawnWeightRabbits.get(), EanimodCommonConfig.COMMON.minimumRabbitGroup.get(), EanimodCommonConfig.COMMON.maximumRabbitGroup.get()));
+                spawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_RABBIT, EanimodCommonConfig.COMMON.spawnWeightRabbits.get(), EanimodCommonConfig.COMMON.minimumRabbitGroup.get(), EanimodCommonConfig.COMMON.maximumRabbitGroup.get()));
             }
         }
 
@@ -113,11 +113,11 @@ public class SpawnRegistry {
     // And removing entity spawns should use NORMAL priority
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public static void removeBiomeSpawns(BiomeLoadingEvent event) {
-        ArrayList<MobSpawnInfo.Spawners> removeSpawns = new ArrayList<>();
+        ArrayList<MobSpawnSettings.SpawnerData> removeSpawns = new ArrayList<>();
 
-        Iterator<MobSpawnInfo.Spawners> currentSpawns = event.getSpawns().getSpawner(EntityClassification.CREATURE).iterator();
+        Iterator<MobSpawnSettings.SpawnerData> currentSpawns = event.getSpawns().getSpawner(MobCategory.CREATURE).iterator();
         while (currentSpawns.hasNext()) {
-            MobSpawnInfo.Spawners entry = currentSpawns.next();
+            MobSpawnSettings.SpawnerData entry = currentSpawns.next();
 
             //remove vanilla pig
             if (entry.type == EntityType.PIG && entry.type.toString().contains("pig")) {
@@ -176,7 +176,7 @@ public class SpawnRegistry {
             }
         }
 
-        List<MobSpawnInfo.Spawners> spawns = event.getSpawns().getSpawner(EntityClassification.CREATURE);
+        List<MobSpawnSettings.SpawnerData> spawns = event.getSpawns().getSpawner(MobCategory.CREATURE);
         if (!removeSpawns.isEmpty()) {
             spawns.removeAll(removeSpawns);
         }

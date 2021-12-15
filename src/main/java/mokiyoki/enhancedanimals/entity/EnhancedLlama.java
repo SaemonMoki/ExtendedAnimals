@@ -20,53 +20,54 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.IRangedAttackMob;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.FollowParentGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.RangedAttackGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.ai.goal.TargetGoal;
-import net.minecraft.entity.merchant.villager.WanderingTraderEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.ShearsItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.monster.RangedAttackMob;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FollowParentGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.target.TargetGoal;
+import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ShearsItem;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -76,13 +77,13 @@ import java.util.*;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.llamaFoodMap;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
 
-public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRangedAttackMob, net.minecraftforge.common.IForgeShearable {
+public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements RangedAttackMob, net.minecraftforge.common.IForgeShearable {
 
     //avalible UUID spaces : [ S X X 3 X 5 X 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
-    private static final DataParameter<Integer> DATA_STRENGTH_ID = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> DATA_INVENTORY_SIZE = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> COAT_LENGTH = EntityDataManager.createKey(EnhancedLlama.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> DATA_STRENGTH_ID = SynchedEntityData.defineId(EnhancedLlama.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_INVENTORY_SIZE = SynchedEntityData.defineId(EnhancedLlama.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> COAT_LENGTH = SynchedEntityData.defineId(EnhancedLlama.class, EntityDataSerializers.INT);
 
     private static final String[] LLAMA_TEXTURES_GROUND = new String[] {
             "brokenlogic.png", "ground_paleshaded.png", "ground_shaded.png", "ground_blacktan.png", "ground_bay.png", "ground_mahogany.png", "ground_blacktan.png", "black.png", "fawn.png"
@@ -149,9 +150,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     @Nullable
     private EnhancedLlama caravanTail;
 
-    public EnhancedLlama(EntityType<? extends EnhancedLlama> entityType, World worldIn) {
+    public EnhancedLlama(EntityType<? extends EnhancedLlama> entityType, Level worldIn) {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.LLAMA_AUTOSOMAL_GENES_LENGTH, true);
-        this.setPathPriority(PathNodeType.WATER, 0.0F);
+        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
     }
 
     private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
@@ -184,11 +185,11 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     protected void registerGoals() {
-        int napmod = this.rand.nextInt(1000);
+        int napmod = this.random.nextInt(1000);
         //Todo add the temperamants
         this.grazingGoal = new GrazingGoal(this, 1.0D);
         this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
-        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 1.0D));
         this.goalSelector.addGoal(2, new ECRunAroundLikeCrazy(this, 1.2D));
         this.goalSelector.addGoal(3, new ECLlamaFollowCaravan(this, (double)2.1F));
@@ -201,7 +202,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         this.goalSelector.addGoal(10, new StayShelteredGoal(this, 5723, 7000, napmod));
         this.goalSelector.addGoal(11, new SeekShelterGoal(this, 1.0D, 5723, 7000, napmod));
         this.goalSelector.addGoal(12, new EnhancedWanderingGoal(this, 1.0D));
-        this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, EnhancedAnimalAbstract.class, 6.0F));
         this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
         this.targetSelector.addGoal(1, new EnhancedLlama.HurtByTargetGoal(this));
@@ -209,11 +210,11 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
 
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(DATA_STRENGTH_ID, 0);
-        this.dataManager.register(DATA_INVENTORY_SIZE, 0);
-        this.dataManager.register(COAT_LENGTH, -1);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_STRENGTH_ID, 0);
+        this.entityData.define(DATA_INVENTORY_SIZE, 0);
+        this.entityData.define(COAT_LENGTH, -1);
     }
 
     protected String getSpecies() {
@@ -234,19 +235,19 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     private void setStrength(int strengthIn) {
-        this.dataManager.set(DATA_STRENGTH_ID, strengthIn);
+        this.entityData.set(DATA_STRENGTH_ID, strengthIn);
     }
 
     public int getStrength() {
-        return this.dataManager.get(DATA_STRENGTH_ID);
+        return this.entityData.get(DATA_STRENGTH_ID);
     }
 
     private void setInventorySizeData(int invSizeIn) {
-        this.dataManager.set(DATA_INVENTORY_SIZE, invSizeIn);
+        this.entityData.set(DATA_INVENTORY_SIZE, invSizeIn);
     }
 
     public int getInventorySizeData() {
-        return this.dataManager.get(DATA_INVENTORY_SIZE);
+        return this.entityData.get(DATA_INVENTORY_SIZE);
     }
 
 //    @Override
@@ -259,16 +260,16 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 //    }
 
     private void setCoatLength(int coatLength) {
-        this.dataManager.set(COAT_LENGTH, coatLength);
+        this.entityData.set(COAT_LENGTH, coatLength);
     }
 
     public int getCoatLength() {
-        return this.dataManager.get(COAT_LENGTH);
+        return this.entityData.get(COAT_LENGTH);
     }
 
     @Override
-    public double getMountedYOffset() {
-        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+    public double getPassengersRidingOffset() {
+        ItemStack saddleSlot = this.getEnhancedInventory().getItem(1);
         double yPos;
         if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
             yPos = 1.25D;
@@ -282,55 +283,55 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     @Override
-    public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(0.8F, 1.87F).scale(this.getRenderScale());
+    public EntityDimensions getDimensions(Pose poseIn) {
+        return EntityDimensions.scalable(0.8F, 1.87F).scale(this.getScale());
     }
 
     @Override
-    public float getRenderScale() {
+    public float getScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
         float newbornSize = 0.35F;
         return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
     }
 
-    protected boolean isMovementBlocked() {
+    protected boolean isImmobile() {
         return this.getHealth() <= 0.0F;
     }
 
-    public static AttributeModifierMap.MutableAttribute prepareAttributes() {
-        return MobEntity.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 4.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.175D)
-                .createMutableAttribute(JUMP_STRENGTH);
+    public static AttributeSupplier.Builder prepareAttributes() {
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 4.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.175D)
+                .add(JUMP_STRENGTH);
     }
 
     @Override
-    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
-        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
+        ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
 
-        if (this.isBeingRidden()) {
-            return super.func_230254_b_(entityPlayer, hand);
+        if (this.isVehicle()) {
+            return super.mobInteract(entityPlayer, hand);
         }
 
-        if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
+        if (!this.level.isClientSide && !hand.equals(InteractionHand.OFF_HAND)) {
             if (item instanceof ShearsItem) {
                 List<ItemStack> woolToDrop = onSheared(entityPlayer, itemStack, null, null, 0);
                 java.util.Random rand = new java.util.Random();
                 woolToDrop.forEach(d -> {
-                    net.minecraft.entity.item.ItemEntity ent = this.entityDropItem(d, 1.0F);
-                    ent.setMotion(ent.getMotion().add((double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double) (rand.nextFloat() * 0.05F), (double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
+                    net.minecraft.world.entity.item.ItemEntity ent = this.spawnAtLocation(d, 1.0F);
+                    ent.setDeltaMovement(ent.getDeltaMovement().add((double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double) (rand.nextFloat() * 0.05F), (double) ((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
                 });
             }
         }
-        return super.func_230254_b_(entityPlayer, hand);
+        return super.mobInteract(entityPlayer, hand);
     }
 
-    public void livingTick() {
-        super.livingTick();
+    public void aiStep() {
+        super.aiStep();
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
-        this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
-        if (!this.world.isRemote) {
+        this.destPos = Mth.clamp(this.destPos, 0.0F, 1.0F);
+        if (!this.level.isClientSide) {
             if (this.despawnDelay != -1) {
                 this.tryDespawn();
             }
@@ -366,8 +367,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         }
     }
 
-    protected void createAndSpawnEnhancedChild(World inWorld) {
-        EnhancedLlama enhancedllama = ENHANCED_LLAMA.create(this.world);
+    protected void createAndSpawnEnhancedChild(Level inWorld) {
+        EnhancedLlama enhancedllama = ENHANCED_LLAMA.create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedllama, inWorld, babyGenes, -this.getAdultAge());
         enhancedllama.setStrengthAndInventory();
@@ -375,7 +376,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         enhancedllama.currentCoatLength = 0;
         enhancedllama.setCoatLength(0);
 
-        this.world.addEntity(enhancedllama);
+        this.level.addFreshEntity(enhancedllama);
     }
 
     @Override
@@ -390,7 +391,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     protected float getJumpHeight() {
-        if (this.getEnhancedInventory().getStackInSlot(0).getItem() == Items.CHEST) {
+        if (this.getEnhancedInventory().getItem(0).getItem() == Items.CHEST) {
             return 0.48F;
         } else {
             float size = this.getAnimalSize();
@@ -411,7 +412,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         }
 
         float chestMod = 0.0F;
-        ItemStack chestSlot = this.getEnhancedInventory().getStackInSlot(0);
+        ItemStack chestSlot = this.getEnhancedInventory().getItem(0);
         if (chestSlot.getItem() == Items.CHEST) {
             chestMod = (1.0F-((size-0.7F)*1.25F)) * 0.4F;
         }
@@ -421,7 +422,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Override
     @Nullable
-    protected ResourceLocation getLootTable() {
+    protected ResourceLocation getDefaultLootTable() {
         return null;
     }
 
@@ -429,53 +430,53 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         if (isAnimalSleeping()) {
             return null;
         }
-        return SoundEvents.ENTITY_LLAMA_AMBIENT;
+        return SoundEvents.LLAMA_AMBIENT;
     }
 
     protected SoundEvent getHurtSound(DamageSource damageSourceIn)
     {
-        return SoundEvents.ENTITY_LLAMA_HURT;
+        return SoundEvents.LLAMA_HURT;
     }
 
     protected SoundEvent getDeathSound()
     {
-        return SoundEvents.ENTITY_LLAMA_DEATH;
+        return SoundEvents.LLAMA_DEATH;
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         super.playStepSound(pos, blockIn);
-        this.playSound(SoundEvents.ENTITY_LLAMA_STEP, 0.15F, 1.0F);
+        this.playSound(SoundEvents.LLAMA_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 0.75F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 0.75F);
         }
     }
 
     protected void playChestEquipSound() {
-        this.playSound(SoundEvents.ENTITY_LLAMA_CHEST, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+        this.playSound(SoundEvents.LLAMA_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
     }
 
     @Override
-    public boolean isShearable(ItemStack item, World world, BlockPos pos) {
-        return !this.world.isRemote && this.currentCoatLength >= 0 && !isChild();
+    public boolean isShearable(ItemStack item, Level world, BlockPos pos) {
+        return !this.level.isClientSide && this.currentCoatLength >= 0 && !isBaby();
     }
 
     @Override
-    public java.util.List<ItemStack> onSheared(PlayerEntity player, ItemStack item, World world, BlockPos pos, int fortune) {
+    public java.util.List<ItemStack> onSheared(Player player, ItemStack item, Level world, BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
         int[] genes = this.genetics.getAutosomalGenes();
-        if (!this.world.isRemote && !isChild()) {
+        if (!this.level.isClientSide && !isBaby()) {
             if (currentCoatLength == 1) {
-                int i = this.rand.nextInt(4);
+                int i = this.random.nextInt(4);
                 if (i>3){
                     ret.add(new ItemStack(getWoolBlocks(genes)));
                 }
             } else if (currentCoatLength == 2) {
-                int i = this.rand.nextInt(2);
+                int i = this.random.nextInt(2);
                 if (i>0){
                     ret.add(new ItemStack(getWoolBlocks(genes)));
                 }
             } else if (currentCoatLength == 3) {
-                int i = this.rand.nextInt(4);
+                int i = this.random.nextInt(4);
                 if (i>0){
                     ret.add(new ItemStack(getWoolBlocks(genes)));
                 }
@@ -517,14 +518,14 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             }
 
             if (genes[10] == 2 && genes[11] == 2) {
-                boolean i = rand.nextBoolean();
+                boolean i = random.nextBoolean();
                 if (i) {
                     returnBlocks = Blocks.WHITE_WOOL;
                 }
             }
 
             if (genes[12] == 1 || genes[13] == 1) {
-                boolean i = rand.nextBoolean();
+                boolean i = random.nextBoolean();
                 if (i) {
                     returnBlocks = Blocks.WHITE_WOOL;
                 }
@@ -534,30 +535,30 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     @Override
-    protected boolean canDropLoot() { return true; }
+    protected boolean shouldDropExperience() { return true; }
 
-    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
-        super.dropSpecialItems(source, looting, recentlyHitIn);
+    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
+        super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
         int age = this.getAge();
         boolean woolDrop = false;
         int lootCount = 0;
 
-        if (!this.isBurning()) {
+        if (!this.isOnFire()) {
 
-            int i = rand.nextInt(100);
+            int i = random.nextInt(100);
             if ((age/1200) > i) {
 
                 if (genes[20] != 1 && genes[21] != 1) {
                     woolDrop = true;
                     lootCount = 1;
                     if (currentCoatLength > 2 && age > 80000) {
-                        if (rand.nextBoolean()) {
+                        if (random.nextBoolean()) {
                             lootCount++;
                         }
                     }
                 } else {
-                    lootCount = rand.nextInt(3);
+                    lootCount = random.nextInt(3);
                     if (lootCount !=0 && age < 120000) {
                         lootCount--;
                         if (lootCount !=0 && age < 80000) {
@@ -570,10 +571,10 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
             if (woolDrop) {
                 ItemStack fleeceStack = new ItemStack(getWoolBlocks(genes), lootCount);
-                this.entityDropItem(fleeceStack);
+                this.spawnAtLocation(fleeceStack);
             } else {
                 ItemStack leatherStack = new ItemStack(Items.LEATHER, lootCount);
-                this.entityDropItem(leatherStack);
+                this.spawnAtLocation(leatherStack);
             }
         }
     }
@@ -582,34 +583,34 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         this.despawnDelay = delay;
         if (traderLlama) {
             this.targetSelector.addGoal(1, new EnhancedLlama.FollowTraderGoal(this));
-            ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setDisplayName(new StringTextComponent("Trader's Blanket"));
-            traderBlanket.getOrCreateChildTag("tradersblanket");
-            this.animalInventory.setInventorySlotContents(4, traderBlanket);
+            ItemStack traderBlanket = new ItemStack(Items.BLUE_CARPET).setHoverName(new TextComponent("Trader's Blanket"));
+            traderBlanket.getOrCreateTagElement("tradersblanket");
+            this.animalInventory.setItem(4, traderBlanket);
         }
         this.setStrengthAndInventory();
     }
 
     private void tryDespawn() {
         if (this.canDespawn()) {
-            this.despawnDelay = this.isLeashedToTrader() ? ((WanderingTraderEntity)this.getLeashHolder()).getDespawnDelay() - 1 : this.despawnDelay - 1;
+            this.despawnDelay = this.isLeashedToTrader() ? ((WanderingTrader)this.getLeashHolder()).getDespawnDelay() - 1 : this.despawnDelay - 1;
             if (this.despawnDelay <= 0) {
-                this.clearLeashed(true, false);
-                this.remove();
+                this.dropLeash(true, false);
+                this.remove(RemovalReason.DISCARDED);
             }
 
         }
     }
 
     private boolean canDespawn() {
-        return !this.isTame() && !this.isLeashedToStranger() && !this.isOnePlayerRiding();
+        return !this.isTame() && !this.isLeashedToStranger() && !this.hasOnePlayerPassenger();
     }
 
     private boolean isLeashedToTrader() {
-        return this.getLeashHolder() instanceof WanderingTraderEntity;
+        return this.getLeashHolder() instanceof WanderingTrader;
     }
 
     private boolean isLeashedToStranger() {
-        return this.getLeashed() && !this.isLeashedToTrader();
+        return this.isLeashed() && !this.isLeashedToTrader();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -639,7 +640,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
             int eyes = 0;
             int skin = 0;
             // i is a random modifier
-            char[] uuidArry = getCachedUniqueIdString().toCharArray();
+            char[] uuidArry = getStringUUID().toCharArray();
 
             if ( genesForText[14] == 1 || genesForText[15] == 1 ){
                 //Dominant Black
@@ -856,8 +857,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
 
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
 
         compound.putInt("Strength", this.getStrength());
         compound.putInt("InventorySize", this.getInventorySizeData());
@@ -869,8 +870,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     }
 
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
         this.setStrength(compound.getInt("Strength"));
         this.setInventorySizeData(compound.getInt("InventorySize"));
         currentCoatLength = compound.getInt("CoatLength");
@@ -891,7 +892,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
         livingdata =  commonInitialSpawnSetup(inWorld, livingdata, 120000, 20000, 500000, spawnReason);
 
         setStrengthAndInventory();
@@ -906,12 +907,12 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
 //    }
 
     @Override
-    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+    protected Genes createInitialGenes(LevelAccessor world, BlockPos pos, boolean isDomestic) {
         return new LlamaGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
 
     @Override
-    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(LevelAccessor world, BlockPos pos, String breed) {
         return new LlamaGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 
@@ -1073,14 +1074,14 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     private void spit(LivingEntity target) {
-        EnhancedEntityLlamaSpit entityllamaspit = new EnhancedEntityLlamaSpit(this.world, this);
-        double d0 = target.getPosX() - this.getPosX();
-        double d1 = target.getBoundingBox().minY + (double)(target.getHeight() / 3.0F) - entityllamaspit.getPosY();
-        double d2 = target.getPosZ() - this.getPosZ();
-        float f = MathHelper.sqrt(d0 * d0 + d2 * d2) * 0.2F;
+        EnhancedEntityLlamaSpit entityllamaspit = new EnhancedEntityLlamaSpit(this.level, this);
+        double d0 = target.getX() - this.getX();
+        double d1 = target.getBoundingBox().minY + (double)(target.getBbHeight() / 3.0F) - entityllamaspit.getY();
+        double d2 = target.getZ() - this.getZ();
+        float f = Mth.sqrt(d0 * d0 + d2 * d2) * 0.2F;
         entityllamaspit.shoot(d0, d1 + (double)f, d2, 1.5F, 10.0F);
-        this.world.playSound((PlayerEntity)null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_LLAMA_SPIT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-        this.world.addEntity(entityllamaspit);
+        this.level.playSound((Player)null, this.getX(), this.getY(), this.getZ(), SoundEvents.LLAMA_SPIT, this.getSoundSource(), 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
+        this.level.addFreshEntity(entityllamaspit);
         this.didSpit = true;
     }
 
@@ -1089,21 +1090,21 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     public void fall(float distance, float damageMultiplier) {
-        int i = MathHelper.ceil((distance * 0.5F - 3.0F) * damageMultiplier);
+        int i = Mth.ceil((distance * 0.5F - 3.0F) * damageMultiplier);
         if (i > 0) {
             if (distance >= 6.0F) {
-                this.attackEntityFrom(DamageSource.FALL, (float)i);
-                if (this.isBeingRidden()) {
-                    for(Entity entity : this.getRecursivePassengers()) {
-                        entity.attackEntityFrom(DamageSource.FALL, (float)i);
+                this.hurt(DamageSource.FALL, (float)i);
+                if (this.isVehicle()) {
+                    for(Entity entity : this.getIndirectPassengers()) {
+                        entity.hurt(DamageSource.FALL, (float)i);
                     }
                 }
             }
 
-            BlockState blockstate = this.world.getBlockState(new BlockPos(this.getPosX(), this.getPosY() - 0.2D - (double)this.prevRotationYaw, this.getPosZ()));
+            BlockState blockstate = this.level.getBlockState(new BlockPos(this.getX(), this.getY() - 0.2D - (double)this.yRotO, this.getZ()));
             if (!blockstate.isAir() && !this.isSilent()) {
                 SoundType soundtype = blockstate.getSoundType();
-                this.world.playSound((PlayerEntity)null, this.getPosX(), this.getPosY(), this.getPosZ(), soundtype.getStepSound(), this.getSoundCategory(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
+                this.level.playSound((Player)null, this.getX(), this.getY(), this.getZ(), soundtype.getStepSound(), this.getSoundSource(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
             }
 
         }
@@ -1140,30 +1141,30 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
     }
 
     protected SoundEvent getAngrySound() {
-        return SoundEvents.ENTITY_LLAMA_ANGRY;
+        return SoundEvents.LLAMA_ANGRY;
     }
 
     /**
      * Attack the specified entity using a ranged attack.
      */
 
-    public void attackEntityWithRangedAttack(LivingEntity target, float distanceFactor) {
+    public void performRangedAttack(LivingEntity target, float distanceFactor) {
         this.spit(target);
     }
 
-    static class DefendTargetGoal extends NearestAttackableTargetGoal<WolfEntity> {
+    static class DefendTargetGoal extends NearestAttackableTargetGoal<Wolf> {
         public DefendTargetGoal(EnhancedLlama llama) {
-            super(llama, WolfEntity.class, 16, false, true, (p_220789_0_) -> {
-                return !((WolfEntity)p_220789_0_).isTamed();
+            super(llama, Wolf.class, 16, false, true, (p_220789_0_) -> {
+                return !((Wolf)p_220789_0_).isTame();
             });
         }
 
-        protected double getTargetDistance() {
-            return super.getTargetDistance() * 0.25D;
+        protected double getFollowDistance() {
+            return super.getFollowDistance() * 0.25D;
         }
     }
 
-    static class HurtByTargetGoal extends net.minecraft.entity.ai.goal.HurtByTargetGoal {
+    static class HurtByTargetGoal extends net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal {
         public HurtByTargetGoal(EnhancedLlama llama) {
             super(llama);
         }
@@ -1171,16 +1172,16 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         /**
          * Returns whether an in-progress EntityAIBase should continue executing
          */
-        public boolean shouldContinueExecuting() {
-            if (this.goalOwner instanceof EnhancedLlama) {
-                EnhancedLlama llamaentity = (EnhancedLlama)this.goalOwner;
+        public boolean canContinueToUse() {
+            if (this.mob instanceof EnhancedLlama) {
+                EnhancedLlama llamaentity = (EnhancedLlama)this.mob;
                 if (llamaentity.didSpit) {
                     llamaentity.setDidSpit(false);
                     return false;
                 }
             }
 
-            return super.shouldContinueExecuting();
+            return super.canContinueToUse();
         }
     }
 
@@ -1192,36 +1193,36 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements IRa
         public FollowTraderGoal(EnhancedLlama enhancedLlama) {
             super(enhancedLlama, false);
             this.enhancedllama = enhancedLlama;
-            this.setMutexFlags(EnumSet.of(Goal.Flag.TARGET));
+            this.setFlags(EnumSet.of(Goal.Flag.TARGET));
         }
 
         /**
          * Returns whether the EntityAIBase should begin execution.
          */
-        public boolean shouldExecute() {
-            if (!this.enhancedllama.getLeashed()) {
+        public boolean canUse() {
+            if (!this.enhancedllama.isLeashed()) {
                 return false;
             } else {
                 Entity entity = this.enhancedllama.getLeashHolder();
-                if (!(entity instanceof WanderingTraderEntity)) {
+                if (!(entity instanceof WanderingTrader)) {
                     return false;
                 } else {
-                    WanderingTraderEntity wanderingtraderentity = (WanderingTraderEntity)entity;
-                    this.targetEntity = wanderingtraderentity.getRevengeTarget();
-                    int i = wanderingtraderentity.getRevengeTimer();
-                    return i != this.revengeTimer && this.isSuitableTarget(this.targetEntity, EntityPredicate.DEFAULT);
+                    WanderingTrader wanderingtraderentity = (WanderingTrader)entity;
+                    this.targetEntity = wanderingtraderentity.getLastHurtByMob();
+                    int i = wanderingtraderentity.getLastHurtByMobTimestamp();
+                    return i != this.revengeTimer && this.canAttack(this.targetEntity, TargetingConditions.DEFAULT);
                 }
             }
         }
 
-        public void startExecuting() {
-            this.goalOwner.setAttackTarget(this.targetEntity);
+        public void start() {
+            this.mob.setTarget(this.targetEntity);
             Entity entity = this.enhancedllama.getLeashHolder();
-            if (entity instanceof WanderingTraderEntity) {
-                this.revengeTimer = ((WanderingTraderEntity)entity).getRevengeTimer();
+            if (entity instanceof WanderingTrader) {
+                this.revengeTimer = ((WanderingTrader)entity).getLastHurtByMobTimestamp();
             }
 
-            super.startExecuting();
+            super.start();
         }
     }
 }

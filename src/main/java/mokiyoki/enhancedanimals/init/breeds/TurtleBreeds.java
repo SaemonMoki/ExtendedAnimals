@@ -2,7 +2,7 @@ package mokiyoki.enhancedanimals.init.breeds;
 
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.GeneSketch;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.level.biome.Biomes;
 
 public class TurtleBreeds {
     public static final Breed ALBINO = new Breed(new Breed.Properties().setData("albino", Biomes.BEACH, Breed.Rarity.RARE)

@@ -5,14 +5,14 @@ import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.entity.Temperament;
 import mokiyoki.enhancedanimals.init.ModBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.pattern.BlockStateMatcher;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.EnumSet;
 import java.util.Map;
@@ -20,25 +20,25 @@ import java.util.function.Predicate;
 
 public class EnhancedGrassGoal extends Goal {
 
-    protected static final Predicate<BlockState> IS_GRASSBLOCK = BlockStateMatcher.forBlock(Blocks.GRASS);
+    protected static final Predicate<BlockState> IS_GRASSBLOCK = BlockStatePredicate.forBlock(Blocks.GRASS);
 //    private static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
-    protected static final Predicate<BlockState> IS_TALLGRASS = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
-    protected final MobEntity grassEaterEntity;
-    protected final World entityWorld;
+    protected static final Predicate<BlockState> IS_TALLGRASS = BlockStatePredicate.forBlock(Blocks.TALL_GRASS);
+    protected final Mob grassEaterEntity;
+    protected final Level entityWorld;
     protected int eatingGrassTimer;
     Map<Temperament, Integer> temperaments;
 
-    public EnhancedGrassGoal(MobEntity grassEaterEntityIn, Map<Temperament, Integer> temperaments) {
+    public EnhancedGrassGoal(Mob grassEaterEntityIn, Map<Temperament, Integer> temperaments) {
         this.grassEaterEntity = grassEaterEntityIn;
-        this.entityWorld = grassEaterEntityIn.world;
+        this.entityWorld = grassEaterEntityIn.level;
         this.temperaments = temperaments;
-        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
     }
 
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
-    public boolean shouldExecute() {
+    public boolean canUse() {
         //TODO make the amount needed before 'hungry' using temperaments
         if (grassEaterEntity instanceof EnhancedCow && ((EnhancedCow)grassEaterEntity).getEntityStatus().equals(EntityState.CHILD_STAGE_ONE)) {
             //first stage babies should NOT eat grass
@@ -50,23 +50,23 @@ public class EnhancedGrassGoal extends Goal {
             eatingModifier = 999;
         }
 
-        int chanceToEat = (this.grassEaterEntity.isChild() ? 50 : 1000) - eatingModifier;
+        int chanceToEat = (this.grassEaterEntity.isBaby() ? 50 : 1000) - eatingModifier;
 
         if (chanceToEat < 1) {
             chanceToEat = 1;
         }
 
 
-        if (this.grassEaterEntity.getRNG().nextInt(chanceToEat) != 0) {
+        if (this.grassEaterEntity.getRandom().nextInt(chanceToEat) != 0) {
             return false;
         } else {
-            BlockPos blockpos = new BlockPos(this.grassEaterEntity.getPosition());
+            BlockPos blockpos = new BlockPos(this.grassEaterEntity.blockPosition());
 
             //TODO add the predicate for different blocks to eat based on temperaments and animal type.
             if (IS_GRASSBLOCK.test(this.entityWorld.getBlockState(blockpos))) {
                 return true;
             } else {
-                return this.entityWorld.getBlockState(blockpos.down()).getBlock() == Blocks.GRASS_BLOCK;
+                return this.entityWorld.getBlockState(blockpos.below()).getBlock() == Blocks.GRASS_BLOCK;
             }
         }
     }
@@ -74,24 +74,24 @@ public class EnhancedGrassGoal extends Goal {
     /**
      * Execute a one shot task or start executing a continuous task
      */
-    public void startExecuting() {
+    public void start() {
         ((EnhancedAnimalAbstract)this.grassEaterEntity).decreaseHunger(3000);
         this.eatingGrassTimer = 40;
-        this.entityWorld.setEntityState(this.grassEaterEntity, (byte)10);
-        this.grassEaterEntity.getNavigator().clearPath();
+        this.entityWorld.broadcastEntityEvent(this.grassEaterEntity, (byte)10);
+        this.grassEaterEntity.getNavigation().stop();
     }
 
     /**
      * Reset the task's internal state. Called when this task is interrupted by another one
      */
-    public void resetTask() {
+    public void stop() {
         this.eatingGrassTimer = 0;
     }
 
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
-    public boolean shouldContinueExecuting() {
+    public boolean canContinueToUse() {
         return this.eatingGrassTimer > 0;
     }
 
@@ -108,39 +108,39 @@ public class EnhancedGrassGoal extends Goal {
     public void tick() {
         this.eatingGrassTimer = Math.max(0, this.eatingGrassTimer - 1);
         if (this.eatingGrassTimer == 4) {
-            BlockPos blockpos = new BlockPos(this.grassEaterEntity.getPosition());
+            BlockPos blockpos = new BlockPos(this.grassEaterEntity.blockPosition());
             if (IS_TALLGRASS.test(this.entityWorld.getBlockState(blockpos))) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
                     this.entityWorld.destroyBlock(blockpos, false);
-                    this.entityWorld.setBlockState(blockpos, Blocks.GRASS.getDefaultState());
+                    this.entityWorld.setBlockAndUpdate(blockpos, Blocks.GRASS.defaultBlockState());
                 }
 
-                this.grassEaterEntity.eatGrassBonus();
+                this.grassEaterEntity.ate();
 
             } else if (IS_GRASSBLOCK.test(this.entityWorld.getBlockState(blockpos))) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
                     this.entityWorld.destroyBlock(blockpos, false);
                 }
 
-                this.grassEaterEntity.eatGrassBonus();
+                this.grassEaterEntity.ate();
 
             } else {
-                BlockPos blockpos1 = blockpos.down();
+                BlockPos blockpos1 = blockpos.below();
                 if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.GRASS_BLOCK) {
                     if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
-                        this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
+                        this.entityWorld.levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
 //                        this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);
-                        this.entityWorld.setBlockState(blockpos1, ModBlocks.SPARSEGRASS_BLOCK.getDefaultState(), 2);
+                        this.entityWorld.setBlock(blockpos1, ModBlocks.SPARSEGRASS_BLOCK.defaultBlockState(), 2);
                     }
 
-                    this.grassEaterEntity.eatGrassBonus();
+                    this.grassEaterEntity.ate();
                 } else if (this.entityWorld.getBlockState(blockpos1).getBlock() == ModBlocks.SPARSEGRASS_BLOCK) {
                     if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.grassEaterEntity)) {
-                        this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                        this.entityWorld.setBlockState(blockpos1, Blocks.DIRT.getDefaultState(), 2);
+                        this.entityWorld.levelEvent(2001, blockpos1, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
+                        this.entityWorld.setBlock(blockpos1, Blocks.DIRT.defaultBlockState(), 2);
                     }
 
-                    this.grassEaterEntity.eatGrassBonus();
+                    this.grassEaterEntity.ate();
                 }
             }
 

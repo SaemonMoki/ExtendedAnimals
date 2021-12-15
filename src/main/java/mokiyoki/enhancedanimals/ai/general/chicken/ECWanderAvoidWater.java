@@ -1,45 +1,45 @@
 package mokiyoki.enhancedanimals.ai.general.chicken;
 
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.goal.RandomWalkingGoal;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
-public class ECWanderAvoidWater extends RandomWalkingGoal {
+public class ECWanderAvoidWater extends RandomStrollGoal {
 
     protected final float probability;
     private final EnhancedChicken enhancedChicken;
 
-    public ECWanderAvoidWater(CreatureEntity entity, double speedIn) {
+    public ECWanderAvoidWater(PathfinderMob entity, double speedIn) {
         this(entity, speedIn, 0.001F);
     }
 
-    public ECWanderAvoidWater(CreatureEntity entity, double speedIn, float probability) {
+    public ECWanderAvoidWater(PathfinderMob entity, double speedIn, float probability) {
         super(entity, speedIn);
         this.probability = probability;
         this.enhancedChicken = (EnhancedChicken) entity;
     }
 
-    public boolean shouldExecute() {
+    public boolean canUse() {
         if (!enhancedChicken.isRoosting()) {
-            return super.shouldExecute();
+            return super.canUse();
         }
         return false;
     }
 
     @Nullable
-    protected Vector3d getPosition() {
-        if (this.creature.isInWater())
+    protected Vec3 getPosition() {
+        if (this.mob.isInWater())
         {
-            Vector3d vec3d = RandomPositionGenerator.getLandPos(this.creature, 15, 7);
+            Vec3 vec3d = RandomPos.getLandPos(this.mob, 15, 7);
             return vec3d == null ? super.getPosition() : vec3d;
         }
         else
         {
-            return this.creature.getRNG().nextFloat() >= this.probability ? RandomPositionGenerator.getLandPos(this.creature, 10, 7) : super.getPosition();
+            return this.mob.getRandom().nextFloat() >= this.probability ? RandomPos.getLandPos(this.mob, 10, 7) : super.getPosition();
         }
     }
 }

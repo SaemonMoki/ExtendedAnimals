@@ -7,32 +7,32 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIMAL_CONTAINER;
 
-public class EnhancedAnimalContainer extends Container {
-    private IInventory inventory;
+public class EnhancedAnimalContainer extends AbstractContainerMenu {
+    private Container inventory;
     public EnhancedAnimalAbstract enhancedAnimal;
     public EnhancedAnimalInfo animalInfo;
     public int numberOfEquipmentSlots = 0;
     public int totalNumberOfAnimalSlots = 0;
 
-    public EnhancedAnimalContainer(int p_i50066_1_, PlayerInventory playerInventoryIn, EnhancedAnimalAbstract enhancedAnimal, EnhancedAnimalInfo animalInfo) {
+    public EnhancedAnimalContainer(int p_i50066_1_, Inventory playerInventoryIn, EnhancedAnimalAbstract enhancedAnimal, EnhancedAnimalInfo animalInfo) {
         super(ENHANCED_ANIMAL_CONTAINER, p_i50066_1_);
-        Inventory retrievedInventory = enhancedAnimal.getEnhancedInventory();
+        SimpleContainer retrievedInventory = enhancedAnimal.getEnhancedInventory();
         this.enhancedAnimal = enhancedAnimal;
         this.animalInfo = animalInfo;
         this.inventory = retrievedInventory;
-        retrievedInventory.openInventory(playerInventoryIn.player);
+        retrievedInventory.startOpen(playerInventoryIn.player);
         int i = 3; // inv height
         int j = 5; // inv width
         int xShift = 8;
@@ -43,12 +43,12 @@ public class EnhancedAnimalContainer extends Container {
             hasEquipment = true;
             this.addSlot(new Slot(retrievedInventory, 1, xShift, yShift) {
 
-                public boolean isItemValid(ItemStack stack) {
+                public boolean mayPlace(ItemStack stack) {
                     Item item = stack.getItem();
                     return checkSaddle(item) || collarCheck(item, 1);
                 }
 
-                public int getSlotStackLimit() {
+                public int getMaxStackSize() {
                     return 1;
                 }
 
@@ -61,11 +61,11 @@ public class EnhancedAnimalContainer extends Container {
             hasEquipment = true;
             this.addSlot(new Slot(retrievedInventory, 3, xShift, yShift) {
 
-                public boolean isItemValid(ItemStack stack) {
+                public boolean mayPlace(ItemStack stack) {
                     return checkBridle(stack.getItem()) || collarCheck(stack.getItem(), 3);
                 }
 
-                public int getSlotStackLimit() {
+                public int getMaxStackSize() {
                     return 1;
                 }
 
@@ -78,11 +78,11 @@ public class EnhancedAnimalContainer extends Container {
             hasEquipment = true;
             this.addSlot(new Slot(retrievedInventory, 2, xShift, yShift) {
 
-                public boolean isItemValid(ItemStack stack) {
+                public boolean mayPlace(ItemStack stack) {
                     return checkArmour(stack.getItem()) || collarCheck(stack.getItem(), 2);
                 }
 
-                public int getSlotStackLimit() {
+                public int getMaxStackSize() {
                     return 1;
                 }
 
@@ -99,11 +99,11 @@ public class EnhancedAnimalContainer extends Container {
             hasEquipment = true;
             this.addSlot(new Slot(retrievedInventory, 4, xShift, yShift) {
 
-                public boolean isItemValid(ItemStack stack) {
+                public boolean mayPlace(ItemStack stack) {
                     return checkBlanket(stack.getItem()) || collarCheck(stack.getItem(), 4);
                 }
 
-                public int getSlotStackLimit() {
+                public int getMaxStackSize() {
                     return 1;
                 }
 
@@ -120,11 +120,11 @@ public class EnhancedAnimalContainer extends Container {
             hasEquipment = true;
             this.addSlot(new Slot(retrievedInventory, 6, xShift, yShift) {
 
-                public boolean isItemValid(ItemStack stack) {
+                public boolean mayPlace(ItemStack stack) {
                     return checkBanner(stack.getItem()) || collarCheck(stack.getItem(), 6);
                 }
 
-                public int getSlotStackLimit() {
+                public int getMaxStackSize() {
                     return 1;
                 }
 
@@ -141,11 +141,11 @@ public class EnhancedAnimalContainer extends Container {
             hasEquipment = true;
             this.addSlot(new Slot(retrievedInventory, 5, xShift, yShift) {
 
-                public boolean isItemValid(ItemStack stack) {
+                public boolean mayPlace(ItemStack stack) {
                     return collarCheck(stack.getItem(), 5);
                 }
 
-                public int getSlotStackLimit() {
+                public int getMaxStackSize() {
                     return 1;
                 }
 
@@ -161,11 +161,11 @@ public class EnhancedAnimalContainer extends Container {
         if (!hasEquipment) {
             this.addSlot(new Slot(retrievedInventory, 1, xShift, yShift) {
 
-                public boolean isItemValid(ItemStack stack) {
+                public boolean mayPlace(ItemStack stack) {
                     return stack.getItem() instanceof CustomizableCollar;
                 }
 
-                public int getSlotStackLimit() {
+                public int getMaxStackSize() {
                     return 1;
                 }
 
@@ -175,12 +175,12 @@ public class EnhancedAnimalContainer extends Container {
         }
 
         this.addSlot(new EnhancedSlot(retrievedInventory, 0, 116, 36) {
-            public boolean isItemValid(ItemStack stack) {
+            public boolean mayPlace(ItemStack stack) {
                 //TODO add option for item to be in forge:chests/wooden
                 return stack.getItem() == Items.CHEST;
             }
 
-            public int getSlotStackLimit() {
+            public int getMaxStackSize() {
             return 1; }
         });
 
@@ -224,7 +224,7 @@ public class EnhancedAnimalContainer extends Container {
 
             if (enhancedAnimal.canHaveSaddle()) {
                 if (!equipmentSlotEmpty(1)) {
-                    if (this.inventory.getStackInSlot(1).getStack().getItem() instanceof CustomizableCollar) {
+                    if (this.inventory.getItem(1).getStack().getItem() instanceof CustomizableCollar) {
                         return false;
                     }
                 } else {
@@ -234,7 +234,7 @@ public class EnhancedAnimalContainer extends Container {
             }
             if (enhancedAnimal.canHaveBridle()) {
                 if (!equipmentSlotEmpty(3)) {
-                    if (this.inventory.getStackInSlot(3).getStack().getItem() instanceof CustomizableCollar) {
+                    if (this.inventory.getItem(3).getStack().getItem() instanceof CustomizableCollar) {
                         return false;
                     }
                 } else {
@@ -244,7 +244,7 @@ public class EnhancedAnimalContainer extends Container {
 
             if (enhancedAnimal.canHaveArmour()) {
                 if (!equipmentSlotEmpty(2)) {
-                    if (this.inventory.getStackInSlot(2).getStack().getItem() instanceof CustomizableCollar) {
+                    if (this.inventory.getItem(2).getStack().getItem() instanceof CustomizableCollar) {
                         return false;
                     }
                 } else {
@@ -254,7 +254,7 @@ public class EnhancedAnimalContainer extends Container {
 
             if (enhancedAnimal.canHaveBlanket() ) {
                 if (!equipmentSlotEmpty(4)) {
-                    if (this.inventory.getStackInSlot(4).getStack().getItem() instanceof CustomizableCollar) {
+                    if (this.inventory.getItem(4).getStack().getItem() instanceof CustomizableCollar) {
                         return false;
                     }
                 } else {
@@ -264,7 +264,7 @@ public class EnhancedAnimalContainer extends Container {
 
             if (enhancedAnimal.canHaveBanner()) {
                 if (!equipmentSlotEmpty(6)) {
-                    if (this.inventory.getStackInSlot(6).getStack().getItem() instanceof CustomizableCollar) {
+                    if (this.inventory.getItem(6).getStack().getItem() instanceof CustomizableCollar) {
                         return false;
                     }
                 } else {
@@ -274,7 +274,7 @@ public class EnhancedAnimalContainer extends Container {
 
             if (enhancedAnimal.canHaveHarness()) {
                 if (!equipmentSlotEmpty(5)) {
-                    if (this.inventory.getStackInSlot(5).getStack().getItem() instanceof CustomizableCollar) {
+                    if (this.inventory.getItem(5).getStack().getItem() instanceof CustomizableCollar) {
                         return false;
                     }
                 } else {
@@ -313,7 +313,7 @@ public class EnhancedAnimalContainer extends Container {
     }
 
     private boolean equipmentSlotEmpty(int slotIndex) {
-        return this.inventory.getStackInSlot(slotIndex).getStack().getItem() == Items.AIR;
+        return this.inventory.getItem(slotIndex).getStack().getItem() == Items.AIR;
     }
 
     private boolean checkSaddle(Item item) {
@@ -348,8 +348,8 @@ public class EnhancedAnimalContainer extends Container {
                 item == Items.YELLOW_BANNER;
     }
 
-    public boolean canInteractWith(PlayerEntity playerIn) {
-        return this.inventory.isUsableByPlayer(playerIn);
+    public boolean stillValid(Player playerIn) {
+        return this.inventory.stillValid(playerIn);
     }
 
     private boolean checkHarness(Item item) {
@@ -359,7 +359,7 @@ public class EnhancedAnimalContainer extends Container {
     public boolean collarCheck(Item item, int thisSlot) {
         if (item instanceof CustomizableCollar) {
             for (int i = 1; i <= 6; i++) {
-                if (i != thisSlot && getEnhancedAnimalInventory().getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+                if (i != thisSlot && getEnhancedAnimalInventory().getItem(i).getItem() instanceof CustomizableCollar) {
                     return false;
                 }
             }
@@ -368,37 +368,37 @@ public class EnhancedAnimalContainer extends Container {
         return false;
     }
 
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (index < totalNumberOfAnimalSlots) {
-                if (!this.mergeItemStack(itemstack1, this.inventory.getSizeInventory()-numberOfEquipmentSlots, this.inventorySlots.size(), true)) {
+                if (!this.moveItemStackTo(itemstack1, this.inventory.getContainerSize()-numberOfEquipmentSlots, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, this.inventory.getSizeInventory()-numberOfEquipmentSlots, false)) {
+            } else if (!this.moveItemStackTo(itemstack1, 0, this.inventory.getContainerSize()-numberOfEquipmentSlots, false)) {
                 return ItemStack.EMPTY;
             }
 
             if (itemstack1.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
         }
 
         return itemstack;
     }
 
-    public IInventory getEnhancedAnimalInventory() {
+    public Container getEnhancedAnimalInventory() {
         return this.inventory;
     }
 
-    public void onContainerClosed(PlayerEntity playerIn) {
-        super.onContainerClosed(playerIn);
-        this.inventory.closeInventory(playerIn);
+    public void removed(Player playerIn) {
+        super.removed(playerIn);
+        this.inventory.stopOpen(playerIn);
     }
 
     public EnhancedAnimalAbstract getAnimal() {

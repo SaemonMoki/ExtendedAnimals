@@ -2,12 +2,12 @@ package mokiyoki.enhancedanimals.renderer.texture;
 
 import com.google.common.collect.Lists;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
-import net.minecraft.client.renderer.texture.NativeImage;
-import net.minecraft.client.renderer.texture.Texture;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import com.mojang.blaze3d.platform.TextureUtil;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
@@ -18,17 +18,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static net.minecraft.client.renderer.texture.NativeImage.getAlpha;
-import static net.minecraft.client.renderer.texture.NativeImage.getCombined;
-import static net.minecraft.client.renderer.texture.NativeImage.getGreen;
-import static net.minecraft.client.renderer.texture.NativeImage.getBlue;
-import static net.minecraft.client.renderer.texture.NativeImage.getRed;
+import static com.mojang.blaze3d.platform.NativeImage.combine;
+import static com.mojang.blaze3d.platform.NativeImage.getA;
+import static com.mojang.blaze3d.platform.NativeImage.getB;
+import static com.mojang.blaze3d.platform.NativeImage.getG;
+import static com.mojang.blaze3d.platform.NativeImage.getR;
 
-/**
- * Created by saemon on 8/09/2018.
- */
 @OnlyIn(Dist.CLIENT)
-public class EnhancedLayeredTexture extends Texture {
+public class EnhancedLayeredTexture extends AbstractTexture {
 
     private static final Logger LOGGER = LogManager.getLogger();
     protected final List<String> layeredTextureNames;
@@ -99,7 +96,7 @@ public class EnhancedLayeredTexture extends Texture {
     }
 
     @Override
-    public void loadTexture(IResourceManager manager) throws IOException {
+    public void load(ResourceManager manager) throws IOException {
         NativeImage maskingImage = null;
         if (!this.maskingTextureNames.isEmpty()) {
             try {
@@ -113,7 +110,7 @@ public class EnhancedLayeredTexture extends Texture {
         String s = iterator.next();
 
         try (
-                IResource iresource = manager.getResource(new ResourceLocation(modLocation+s));
+                Resource iresource = manager.getResource(new ResourceLocation(modLocation+s));
                 NativeImage nativeimage = NativeImage.read(iresource.getInputStream());
 
         ) {
@@ -180,8 +177,8 @@ public class EnhancedLayeredTexture extends Texture {
             }
             while(true) {
                 if (!iterator.hasNext()) {
-                    TextureUtil.prepareImage(this.getGlTextureId(), nativeimage.getWidth(), nativeimage.getHeight());
-                    nativeimage.uploadTextureSub(0, 0, 0, false);
+                    TextureUtil.prepareImage(this.getId(), nativeimage.getWidth(), nativeimage.getHeight());
+                    nativeimage.upload(0, 0, 0, false);
                     break;
                 }
 
@@ -193,7 +190,7 @@ public class EnhancedLayeredTexture extends Texture {
                         }
                     } else {
                         try (
-                                IResource iresource1 = manager.getResource(new ResourceLocation(modLocation+s1));
+                                Resource iresource1 = manager.getResource(new ResourceLocation(modLocation+s1));
                                 NativeImage nativeimage1 = NativeImage.read(iresource1.getInputStream());
                         ) {
 
@@ -274,11 +271,11 @@ public class EnhancedLayeredTexture extends Texture {
 
     }
 
-    private void combineAlphaGroup(NativeImage maskingImage, NativeImage baseImage, Iterator<String> iterator, IResourceManager manager) {
+    private void combineAlphaGroup(NativeImage maskingImage, NativeImage baseImage, Iterator<String> iterator, ResourceManager manager) {
         if (iterator.hasNext()) {
             String s = iterator.next();
             try (
-                    IResource iresource = manager.getResource(new ResourceLocation(modLocation + s));
+                    Resource iresource = manager.getResource(new ResourceLocation(modLocation + s));
                     NativeImage firstGroupImage = NativeImage.read(iresource.getInputStream());
 
             ) {
@@ -345,7 +342,7 @@ public class EnhancedLayeredTexture extends Texture {
 
                         if (s1 != null) {
                             try (
-                                    IResource iresource1 = manager.getResource(new ResourceLocation(modLocation + s1));
+                                    Resource iresource1 = manager.getResource(new ResourceLocation(modLocation + s1));
                                     NativeImage nativeimage1 = NativeImage.read(iresource1.getInputStream());
                             ) {
                                 if (s1.startsWith("c_") && dyeRGB != 0) {
@@ -398,23 +395,23 @@ public class EnhancedLayeredTexture extends Texture {
         }
     }
 
-    private NativeImage generateMaskingImage(IResourceManager manager) throws IOException {
+    private NativeImage generateMaskingImage(ResourceManager manager) throws IOException {
         Iterator<String> iterator = this.maskingTextureNames.iterator();
         String s = iterator.next();
 
-                IResource iresource = manager.getResource(new ResourceLocation(modLocation+s));
+                Resource iresource = manager.getResource(new ResourceLocation(modLocation+s));
                 NativeImage nativeimage = NativeImage.read(iresource.getInputStream());
 
             while(true) {
                 if (!iterator.hasNext()) {
-                    TextureUtil.prepareImage(this.getGlTextureId(), nativeimage.getWidth(), nativeimage.getHeight());
+                    TextureUtil.prepareImage(this.getId(), nativeimage.getWidth(), nativeimage.getHeight());
                     return nativeimage;
                 }
 
                 String s1 = iterator.next();
                 if (s1 != null) {
                     try (
-                            IResource iresource1 = manager.getResource(new ResourceLocation(modLocation+s1));
+                            Resource iresource1 = manager.getResource(new ResourceLocation(modLocation+s1));
                             NativeImage nativeimage1 = NativeImage.read(iresource1.getInputStream());
                     ) {
                         for(int i = 0; i < nativeimage1.getHeight(); ++i) {
@@ -555,14 +552,14 @@ public class EnhancedLayeredTexture extends Texture {
 
     public void blendPixel(NativeImage baseImage, int xIn, int yIn, int colIn) {
         int i = baseImage.getPixelRGBA(xIn, yIn);
-        float f = (float)getAlpha(colIn) / 255.0F;
-        float f1 = (float)getBlue(colIn) / 255.0F;
-        float f2 = (float)getGreen(colIn) / 255.0F;
-        float f3 = (float)getRed(colIn) / 255.0F;
-        float f4 = (float)getAlpha(i) / 255.0F;
-        float f5 = (float)getBlue(i) / 255.0F;
-        float f6 = (float)getGreen(i) / 255.0F;
-        float f7 = (float)getRed(i) / 255.0F;
+        float f = (float)getA(colIn) / 255.0F;
+        float f1 = (float)getB(colIn) / 255.0F;
+        float f2 = (float)getG(colIn) / 255.0F;
+        float f3 = (float)getR(colIn) / 255.0F;
+        float f4 = (float)getA(i) / 255.0F;
+        float f5 = (float)getB(i) / 255.0F;
+        float f6 = (float)getG(i) / 255.0F;
+        float f7 = (float)getR(i) / 255.0F;
         float f8 = 1.0F - f;
         float f9 = f * f + f4 * f8;
         float f10 = f1 * f + f5 * f8;
@@ -588,19 +585,19 @@ public class EnhancedLayeredTexture extends Texture {
         int k = (int)(f10 * 255.0F);
         int l = (int)(f11 * 255.0F);
         int i1 = (int)(f12 * 255.0F);
-        baseImage.setPixelRGBA(xIn, yIn, getCombined(j, k, l, i1));
+        baseImage.setPixelRGBA(xIn, yIn, combine(j, k, l, i1));
     }
 
     public void multiplyPixel(NativeImage baseImage, int xIn, int yIn, int layerABGR) {
         int baseABGR = baseImage.getPixelRGBA(xIn, yIn);
-        float layerAlpha = (float)getAlpha(layerABGR) / 255.0F;
-        float layerBlue = (float)getBlue(layerABGR) / 255.0F;
-        float layerGreen = (float)getGreen(layerABGR) / 255.0F;
-        float layerRed = (float)getRed(layerABGR) / 255.0F;
-        float baseAlpha = (float)getAlpha(baseABGR) / 255.0F;
-        float baseBlue = (float)getBlue(baseABGR) / 255.0F;
-        float baseGreen = (float)getGreen(baseABGR) / 255.0F;
-        float baseRed = (float)getRed(baseABGR) / 255.0F;
+        float layerAlpha = (float)getA(layerABGR) / 255.0F;
+        float layerBlue = (float)getB(layerABGR) / 255.0F;
+        float layerGreen = (float)getG(layerABGR) / 255.0F;
+        float layerRed = (float)getR(layerABGR) / 255.0F;
+        float baseAlpha = (float)getA(baseABGR) / 255.0F;
+        float baseBlue = (float)getB(baseABGR) / 255.0F;
+        float baseGreen = (float)getG(baseABGR) / 255.0F;
+        float baseRed = (float)getR(baseABGR) / 255.0F;
         float remainder = 1.0F - layerAlpha;
         float alpha = layerAlpha * layerAlpha + baseAlpha * remainder;
         float blue = (layerBlue * baseBlue * layerAlpha) + baseBlue * remainder;
@@ -626,7 +623,7 @@ public class EnhancedLayeredTexture extends Texture {
         int k = (int)(blue * 255.0F);
         int l = (int)(green * 255.0F);
         int i1 = (int)(red * 255.0F);
-        baseImage.setPixelRGBA(xIn, yIn, getCombined(j, k, l, i1));
+        baseImage.setPixelRGBA(xIn, yIn, combine(j, k, l, i1));
     }
 
 }

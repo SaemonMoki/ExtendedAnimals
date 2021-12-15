@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.client.renderer.Atlases;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -14,7 +14,7 @@ public class ClientEventRegistry {
 
     @SubscribeEvent
     public static void onStitchEvent(TextureStitchEvent.Pre event) {
-        if (event.getMap().getTextureLocation().equals(Atlases.CHEST_ATLAS)) {
+        if (event.getMap().location().equals(Sheets.CHEST_SHEET)) {
             event.addSprite(EGG_CARTON_TEXTURE);
         }
     }

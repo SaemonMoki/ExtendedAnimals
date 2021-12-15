@@ -1,8 +1,8 @@
 package mokiyoki.enhancedanimals.entity.util;
 
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
 import java.awt.*;
 
@@ -262,7 +262,7 @@ public class Colouration {
     public static int getEquipmentColor(ItemStack stack) {
         int colour = 0;
         if (stack.getItem() instanceof CustomizableAnimalEquipment) {
-            CompoundNBT compoundnbt = stack.getChildTag("display");
+            CompoundTag compoundnbt = stack.getTagElement("display");
             if (compoundnbt != null && compoundnbt.contains("color", 99)) {
                 colour = compoundnbt.getInt("color");
             } else {

@@ -6,9 +6,9 @@ import mokiyoki.enhancedanimals.model.ModelEnhancedSheep;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -19,14 +19,14 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
     private static final String ENHANCED_SHEEP_TEXTURE_LOCATION = "eanimod:textures/entities/sheep/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/sheep/sheep.png");
 
-    public RenderEnhancedSheep(EntityRendererManager render) {
+    public RenderEnhancedSheep(EntityRenderDispatcher render) {
         super(render, new ModelEnhancedSheep<>(), 0.6F);
     }
 
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    public ResourceLocation getEntityTexture(EnhancedSheep entity) {
+    public ResourceLocation getTextureLocation(EnhancedSheep entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
         colourRGB.setDyeColour(EnhancedSheep.getDyeRgb(entity.getFleeceDyeColour()));
@@ -49,7 +49,7 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_SHEEP_TEXTURE_LOCATION, textures, entity.getVariantAlphaTexturePaths(), colourRGB));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexture(ENHANCED_SHEEP_TEXTURE_LOCATION, textures, entity.getVariantAlphaTexturePaths(), colourRGB));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

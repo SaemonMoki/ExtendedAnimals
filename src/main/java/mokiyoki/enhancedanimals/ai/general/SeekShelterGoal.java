@@ -1,20 +1,20 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.goal.FleeSunGoal;
-import net.minecraft.entity.item.LeashKnotEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
+import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
 public class SeekShelterGoal extends FleeSunGoal {
-    protected final CreatureEntity creature;
-    private final World world;
+    protected final PathfinderMob creature;
+    private final Level world;
     private final int start;
     private final int end;
     private boolean isHungry = false;
@@ -22,42 +22,42 @@ public class SeekShelterGoal extends FleeSunGoal {
     private boolean isHot = false;
     private boolean isLeashedToEntity = false;
 
-    public SeekShelterGoal(CreatureEntity theCreatureIn, double movementSpeedIn, int start, int end, int modifier) {
+    public SeekShelterGoal(PathfinderMob theCreatureIn, double movementSpeedIn, int start, int end, int modifier) {
         super(theCreatureIn, movementSpeedIn);
-        this.world = theCreatureIn.world;
+        this.world = theCreatureIn.level;
         this.creature = theCreatureIn;
         this.start = start + modifier;
         this.end = end + modifier;
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         this.getData(this.creature);
         if ((this.isBeingRainedOn || this.isHot) && !this.isLeashedToEntity) {
-            if (this.creature.getAttackTarget() != null) {
+            if (this.creature.getTarget() != null) {
                 return false;
             } else if (this.isHungry) {
                 return false;
-            } else if (this.creature.isBurning()) {
+            } else if (this.creature.isOnFire()) {
                 return false;
-            } else if (!this.world.canSeeSky(this.creature.getPosition())) {
+            } else if (!this.world.canSeeSky(this.creature.blockPosition())) {
                 return false;
             } else {
-                return this.isPossibleShelter();
+                return this.setWantedPos();
             }
         } else {
             return false;
         }
     }
 
-    private void getData(CreatureEntity animal) {
-        Biome biome = this.world.getBiome(animal.getPosition());
-        this.isLeashedToEntity = !(animal.getLeashHolder() instanceof LeashKnotEntity) && animal.getLeashHolder() != null;
+    private void getData(PathfinderMob animal) {
+        Biome biome = this.world.getBiome(animal.blockPosition());
+        this.isLeashedToEntity = !(animal.getLeashHolder() instanceof LeashFenceKnotEntity) && animal.getLeashHolder() != null;
         if (!this.isLeashedToEntity) {
             this.isBeingRainedOn = (animal.isWet() && !animal.isInWaterOrBubbleColumn());
-            if (this.world.isDaytime() && !this.isBeingRainedOn) {
+            if (this.world.isDay() && !this.isBeingRainedOn) {
                 this.isHungry = ((EnhancedAnimalAbstract) animal).getHunger() > 6000;
-                float temperature = this.world.getBiome(animal.getPosition()).getTemperature(animal.getPosition());
+                float temperature = this.world.getBiome(animal.blockPosition()).getTemperature(animal.blockPosition());
                 this.isHot = temperature > 0.4F && this.world.getDayTime() >= this.start - (1500 * (temperature - 0.7F)) && this.world.getDayTime() <= this.end + (1500 * (temperature - 0.8F));
             } else {
                 this.isHungry = ((EnhancedAnimalAbstract) animal).getHunger() > 12000;
@@ -67,14 +67,14 @@ public class SeekShelterGoal extends FleeSunGoal {
 
     @Override
     @Nullable
-    protected Vector3d findPossibleShelter() {
-        Random random = this.creature.getRNG();
-        BlockPos blockpos = this.creature.getPosition();
+    protected Vec3 getHidePos() {
+        Random random = this.creature.getRandom();
+        BlockPos blockpos = this.creature.blockPosition();
 
         for(int i = 0; i < 10; ++i) {
-            BlockPos blockpos1 = blockpos.add(random.nextInt(20) - 10, random.nextInt(6) - 3, random.nextInt(20) - 10);
-            if (!this.world.canBlockSeeSky(blockpos1) && (this.isHot || !this.world.hasWater(blockpos)) && this.creature.getBlockPathWeight(blockpos1) < 0.0F) {
-                return Vector3d.copyCenteredHorizontally(blockpos1);
+            BlockPos blockpos1 = blockpos.offset(random.nextInt(20) - 10, random.nextInt(6) - 3, random.nextInt(20) - 10);
+            if (!this.world.canSeeSkyFromBelowWater(blockpos1) && (this.isHot || !this.world.isWaterAt(blockpos)) && this.creature.getWalkTargetValue(blockpos1) < 0.0F) {
+                return Vec3.atBottomCenterOf(blockpos1);
             }
         }
 

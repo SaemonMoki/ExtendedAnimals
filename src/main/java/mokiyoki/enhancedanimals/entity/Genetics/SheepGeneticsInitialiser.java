@@ -4,9 +4,9 @@ import mokiyoki.enhancedanimals.init.breeds.SheepBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,11 +27,11 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(SheepBreeds.DORPER);
     }
 
-    public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
+    public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
         return super.generateNewGenetics(world, pos, generateBreed, this.breeds);
     }
 
-    public Genes generateWithBreed(IWorld world, BlockPos pos, String breed) {
+    public Genes generateWithBreed(LevelAccessor world, BlockPos pos, String breed) {
         return super.generateWithBreed(world, pos, this.breeds, breed);
     }
 
@@ -197,11 +197,11 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         Collections.shuffle(woolShuffle);
         woolShuffle.toArray(woolmod);
 
-        if (biome.getCategory() == Biome.Category.PLAINS || biome.getPrecipitation() == Biome.RainType.SNOW ) {
+        if (biome.getBiomeCategory() == Biome.BiomeCategory.PLAINS || biome.getPrecipitation() == Biome.Precipitation.SNOW ) {
             for (int i = 0; i < woolmod.length; i++) {
                 woolmod[i] = woolmod[i] * 2;
             }
-        } else if (biome.getPrecipitation() == Biome.RainType.NONE) {
+        } else if (biome.getPrecipitation() == Biome.Precipitation.NONE) {
             for (int i = 0; i < woolmod.length; i++) {
                 woolmod[i] = woolmod[i] != 1 ? (int)(woolmod[i] * 0.5) : 1;
             }
@@ -394,7 +394,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[46] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            if (biome.getPrecipitation() == Biome.RainType.NONE) {
+            if (biome.getPrecipitation() == Biome.Precipitation.NONE) {
                 autosomalGenes[46] = 1;
             } else {
                 autosomalGenes[46] = 2;
@@ -404,7 +404,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[47] = (ThreadLocalRandom.current().nextInt(2) + 1);
 
         } else {
-            if (biome.getPrecipitation() == Biome.RainType.NONE) {
+            if (biome.getPrecipitation() == Biome.Precipitation.NONE) {
                 autosomalGenes[47] = 1;
             } else {
                 autosomalGenes[47] = 2;

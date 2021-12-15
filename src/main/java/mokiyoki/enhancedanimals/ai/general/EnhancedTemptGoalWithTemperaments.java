@@ -1,17 +1,17 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.Temperament;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.goal.TemptGoal;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.TemptGoal;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.Map;
 
 public class EnhancedTemptGoalWithTemperaments extends TemptGoal {
-    CreatureEntity entity;
+    PathfinderMob entity;
     Map<Temperament, Integer> temperaments;
 
-    public EnhancedTemptGoalWithTemperaments(CreatureEntity entity, double speedIn, Ingredient temptingItem, boolean scaredByPlayerMovement, Map<Temperament, Integer> temperaments) {
+    public EnhancedTemptGoalWithTemperaments(PathfinderMob entity, double speedIn, Ingredient temptingItem, boolean scaredByPlayerMovement, Map<Temperament, Integer> temperaments) {
         super(entity, speedIn, temptingItem, scaredByPlayerMovement);
         this.entity = entity;
         this.temperaments = temperaments;
@@ -19,25 +19,25 @@ public class EnhancedTemptGoalWithTemperaments extends TemptGoal {
 
 
     @Override
-    public boolean shouldExecute() {
-        boolean superShould = super.shouldExecute();
+    public boolean canUse() {
+        boolean superShould = super.canUse();
         if ((temperaments.containsKey(Temperament.AFRAID) && temperaments.get(Temperament.AFRAID) > 8) || !superShould) {
             return false;
         }
         return superShould;
     }
 
-    public boolean shouldContinueExecuting() {
-        boolean shouldContinue = super.shouldContinueExecuting();
+    public boolean canContinueToUse() {
+        boolean shouldContinue = super.canContinueToUse();
         if (temperaments.containsKey(Temperament.AGGRESSIVE) && temperaments.get(Temperament.AGGRESSIVE) > 3 && tooCloseToPlayer()) {
-            this.entity.setAttackTarget(this.closestPlayer);
+            this.entity.setTarget(this.player);
             return false;
         }
         return shouldContinue;
     }
 
     private boolean tooCloseToPlayer() {
-        double distanceToPlayer = this.closestPlayer.getDistanceSq(this.entity);
+        double distanceToPlayer = this.player.distanceToSqr(this.entity);
 
         if (temperaments.get(Temperament.AGGRESSIVE) > 8 && distanceToPlayer < 8) {
             return true;
@@ -54,8 +54,8 @@ public class EnhancedTemptGoalWithTemperaments extends TemptGoal {
     }
 
 
-    protected boolean isScaredByPlayerMovement() {
-        return super.isScaredByPlayerMovement();
+    protected boolean canScare() {
+        return super.canScare();
     }
 
 }

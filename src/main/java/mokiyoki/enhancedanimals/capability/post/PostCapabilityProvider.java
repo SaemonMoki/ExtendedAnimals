@@ -1,8 +1,8 @@
 package mokiyoki.enhancedanimals.capability.post;
 
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by saemon on 29/09/2018.
  */
-public class PostCapabilityProvider implements IPostCapability, ICapabilitySerializable<INBT> {
+public class PostCapabilityProvider implements IPostCapability, ICapabilitySerializable<Tag> {
 
     @CapabilityInject(IPostCapability.class)
     public static final Capability<IPostCapability> POST_CAP = null;
@@ -53,12 +53,12 @@ public class PostCapabilityProvider implements IPostCapability, ICapabilitySeria
 
 
     @Override
-    public INBT serializeNBT() {
+    public Tag serializeNBT() {
         return POST_CAP.getStorage().writeNBT(POST_CAP, this, null);
     }
 
     @Override
-    public void deserializeNBT(INBT nbt) {
+    public void deserializeNBT(Tag nbt) {
         POST_CAP.getStorage().readNBT(POST_CAP, this, null, nbt);
     }
 }

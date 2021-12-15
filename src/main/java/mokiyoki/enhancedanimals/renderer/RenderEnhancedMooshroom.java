@@ -6,9 +6,9 @@ import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,12 +18,12 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
     private static final String ENHANCED_COW_TEXTURE_LOCATION = "eanimod:textures/entities/cow/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/cow/cowbase.png");
 
-    public RenderEnhancedMooshroom(EntityRendererManager renderManagerIn) {
+    public RenderEnhancedMooshroom(EntityRenderDispatcher renderManagerIn) {
         super(renderManagerIn, new ModelEnhancedCow<>(), 0.7F);
 //        this.addLayer(new EnhancedMooshroomMushroomLayer<>(this));
     }
 
-    public ResourceLocation getEntityTexture(EnhancedMooshroom entity) {
+    public ResourceLocation getTextureLocation(EnhancedMooshroom entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
 
@@ -44,7 +44,7 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, textures, null, colourRGB));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexture(ENHANCED_COW_TEXTURE_LOCATION, textures, null, colourRGB));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

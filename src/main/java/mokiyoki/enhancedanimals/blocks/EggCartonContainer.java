@@ -1,34 +1,34 @@
 package mokiyoki.enhancedanimals.blocks;
 
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.network.FriendlyByteBuf;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
 
-public class EggCartonContainer extends Container {
-    private final IInventory inventory;
+public class EggCartonContainer extends AbstractContainerMenu {
+    private final Container inventory;
 
-    public EggCartonContainer(int p_i50065_1_, PlayerInventory p_i50065_2_) {
-        this(p_i50065_1_, p_i50065_2_, new Inventory(16));
+    public EggCartonContainer(int p_i50065_1_, Inventory p_i50065_2_) {
+        this(p_i50065_1_, p_i50065_2_, new SimpleContainer(16));
     }
 
-    public EggCartonContainer(int i, PlayerInventory playerInventory, PacketBuffer packetBuffer) {
-        this(i, playerInventory, new Inventory(16));
+    public EggCartonContainer(int i, Inventory playerInventory, FriendlyByteBuf packetBuffer) {
+        this(i, playerInventory, new SimpleContainer(16));
     }
 
-    public EggCartonContainer(int p_i50066_1_, PlayerInventory playerInventoryIn, IInventory p_i50066_3_) {
+    public EggCartonContainer(int p_i50066_1_, Inventory playerInventoryIn, Container p_i50066_3_) {
         super(EGG_CARTON_CONTAINER, p_i50066_1_);
-        assertInventorySize(p_i50066_3_, 16);
+        checkContainerSize(p_i50066_3_, 16);
         this.inventory = p_i50066_3_;
-        p_i50066_3_.openInventory(playerInventoryIn.player);
+        p_i50066_3_.startOpen(playerInventoryIn.player);
         int i = 2;
         int j = 8;
 
@@ -38,9 +38,9 @@ public class EggCartonContainer extends Container {
                     /**
                      * Check if the stack is allowed to be placed in this slot, used for armor slots as well as furnace fuel.
                      */
-                    public boolean isItemValid(ItemStack stack) { return ((stack.getItem() instanceof EnhancedEgg) || stack.getItem() == Items.TURTLE_EGG); }
+                    public boolean mayPlace(ItemStack stack) { return ((stack.getItem() instanceof EnhancedEgg) || stack.getItem() == Items.TURTLE_EGG); }
 
-                    public int getSlotStackLimit() {
+                    public int getMaxStackSize() {
                         return 1;
                     }
                 });
@@ -58,47 +58,47 @@ public class EggCartonContainer extends Container {
         }
     }
 
-    public boolean canInteractWith(PlayerEntity playerIn) {
-        return this.inventory.isUsableByPlayer(playerIn);
+    public boolean stillValid(Player playerIn) {
+        return this.inventory.stillValid(playerIn);
     }
 
     /**
      * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player
      * inventory and the other inventory(s).
      */
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    public ItemStack quickMoveStack(Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-            if (index < this.inventory.getSizeInventory()) {
-                if (!this.mergeItemStack(itemstack1, this.inventory.getSizeInventory(), this.inventorySlots.size(), true)) {
+            if (index < this.inventory.getContainerSize()) {
+                if (!this.moveItemStackTo(itemstack1, this.inventory.getContainerSize(), this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.mergeItemStack(itemstack1, 0, this.inventory.getSizeInventory(), false)) {
+            } else if (!this.moveItemStackTo(itemstack1, 0, this.inventory.getContainerSize(), false)) {
                 return ItemStack.EMPTY;
             }
 
             if (itemstack1.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
         }
 
         return itemstack;
     }
 
-    public IInventory getEggCartonInventory() {
+    public Container getEggCartonInventory() {
         return this.inventory;
     }
 
     /**
      * Called when the container is closed.
      */
-    public void onContainerClosed(PlayerEntity playerIn) {
-        super.onContainerClosed(playerIn);
-        this.inventory.closeInventory(playerIn);
+    public void removed(Player playerIn) {
+        super.removed(playerIn);
+        this.inventory.stopOpen(playerIn);
     }
 }

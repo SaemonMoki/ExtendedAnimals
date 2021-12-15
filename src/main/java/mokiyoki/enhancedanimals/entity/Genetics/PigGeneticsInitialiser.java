@@ -4,9 +4,9 @@ import mokiyoki.enhancedanimals.init.breeds.PigBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +28,11 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(PigBreeds.TAMWORTH);
     }
 
-    public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
+    public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
         return super.generateNewGenetics(world, pos, generateBreed, this.breeds);
     }
 
-    public Genes generateWithBreed(IWorld world, BlockPos pos, String breed) {
+    public Genes generateWithBreed(LevelAccessor world, BlockPos pos, String breed) {
         return super.generateWithBreed(world, pos, this.breeds, breed);
     }
 
@@ -41,7 +41,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         int[] autosomalGenes = new int[Reference.PIG_AUTOSOMAL_GENES_LENGTH];
 
         int wildType = 2;
-        if (biome.getCategory().equals(Biome.Category.PLAINS)) {
+        if (biome.getBiomeCategory().equals(Biome.BiomeCategory.PLAINS)) {
             wildType = 1;
         }
         if (isFlat) {

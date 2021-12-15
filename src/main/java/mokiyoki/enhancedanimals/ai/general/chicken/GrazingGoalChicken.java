@@ -11,7 +11,7 @@ public class GrazingGoalChicken extends GrazingGoal {
 
     @Override
     protected void eatBlocks() {
-        int root = this.eanimal.world.rand.nextInt(1);
+        int root = this.eanimal.level.random.nextInt(1);
         if (root == 1) {
             return;
         } else {

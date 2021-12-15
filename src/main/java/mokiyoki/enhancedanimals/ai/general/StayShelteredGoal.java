@@ -2,14 +2,14 @@ package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.ai.pathfinding.EnhancedGroundPathNavigator;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 
 public class StayShelteredGoal extends Goal {
-    protected final CreatureEntity creature;
-    private final World world;
+    protected final PathfinderMob creature;
+    private final Level world;
     private final int start;
     private final int end;
 
@@ -17,37 +17,37 @@ public class StayShelteredGoal extends Goal {
     private boolean isRaining = false;
     private boolean isHot = false;
 
-    public StayShelteredGoal(CreatureEntity creature, int siestaStart, int siestaEnd, int napMod) {
+    public StayShelteredGoal(PathfinderMob creature, int siestaStart, int siestaEnd, int napMod) {
         this.creature = creature;
-        this.world = creature.world;
+        this.world = creature.level;
         this.start = siestaStart + napMod;
         this.end = siestaEnd + napMod;
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         this.getData(this.creature);
-        return !this.isHungry && (this.isRaining || this.isHot) && this.creature.getNavigator() instanceof EnhancedGroundPathNavigator;
+        return !this.isHungry && (this.isRaining || this.isHot) && this.creature.getNavigation() instanceof EnhancedGroundPathNavigator;
     }
 
     @Override
-    public void startExecuting() {
-        ((EnhancedGroundPathNavigator)this.creature.getNavigator()).setSeekShelter(true, this.isHot);
+    public void start() {
+        ((EnhancedGroundPathNavigator)this.creature.getNavigation()).setSeekShelter(true, this.isHot);
     }
 
     @Override
-    public void resetTask() {
-        if (this.creature.getNavigator() instanceof EnhancedGroundPathNavigator && !this.isHungry) {
-            ((EnhancedGroundPathNavigator)this.creature.getNavigator()).setSeekShelter(true, this.isHot);
+    public void stop() {
+        if (this.creature.getNavigation() instanceof EnhancedGroundPathNavigator && !this.isHungry) {
+            ((EnhancedGroundPathNavigator)this.creature.getNavigation()).setSeekShelter(true, this.isHot);
         }
     }
 
-    private void getData(CreatureEntity animal) {
-        Biome biome = this.world.getBiome(animal.getPosition());
-        this.isRaining = this.world.isRaining() && biome.getPrecipitation() == Biome.RainType.RAIN && biome.getTemperature(animal.getPosition()) >= 0.15F;
-        if (this.world.isDaytime()) {
+    private void getData(PathfinderMob animal) {
+        Biome biome = this.world.getBiome(animal.blockPosition());
+        this.isRaining = this.world.isRaining() && biome.getPrecipitation() == Biome.Precipitation.RAIN && biome.getTemperature(animal.blockPosition()) >= 0.15F;
+        if (this.world.isDay()) {
             this.isHungry = ((EnhancedAnimalAbstract)animal).getHunger() > 6000;
-            float temperature = this.world.getBiome(animal.getPosition()).getTemperature(animal.getPosition());
+            float temperature = this.world.getBiome(animal.blockPosition()).getTemperature(animal.blockPosition());
             this.isHot = temperature > 0.4F && this.world.getDayTime() >= this.start - (1500 * (temperature - 0.7F)) && this.world.getDayTime() <= this.end + (1500 * (temperature - 0.8F));
         } else {
             this.isHungry = ((EnhancedAnimalAbstract)animal).getHunger() > 12000;

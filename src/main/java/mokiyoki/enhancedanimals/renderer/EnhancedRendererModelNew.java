@@ -1,16 +1,16 @@
 package mokiyoki.enhancedanimals.renderer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.core.Direction;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class EnhancedRendererModelNew extends ModelRenderer {
+public class EnhancedRendererModelNew extends ModelPart {
     private float textureWidth = 64.0F;
     private float textureHeight = 32.0F;
     private final ObjectList<EnhancedRendererModelNew.ModelBox> cubeList = new ObjectArrayList<>();
@@ -32,22 +32,22 @@ public class EnhancedRendererModelNew extends ModelRenderer {
         super(model);
 //        model.accept(this);
         this.boxName = boxNameIn;
-        this.setTextureSize(model.textureWidth, model.textureHeight);
+        this.setTexSize(model.texWidth, model.texHeight);
     }
 
     public EnhancedRendererModelNew(Model model, int texOffX, int texOffY) {
         this(model, (String)null);
-        this.setTextureOffset(texOffX, texOffY);
+        this.texOffs(texOffX, texOffY);
     }
 
     public EnhancedRendererModelNew(Model model, int texOffX, int texOffY, String boxNameIn) {
         this(model, boxNameIn);
-        this.setTextureOffset(texOffX, texOffY);
+        this.texOffs(texOffX, texOffY);
     }
 
     public EnhancedRendererModelNew(Model model, int texOffX, int texOffY, String boxNameIn, boolean pushPopChildren) {
         this(model, boxNameIn);
-        this.setTextureOffset(texOffX, texOffY);
+        this.texOffs(texOffX, texOffY);
         this.pushPopChildren = pushPopChildren;
     }
 
@@ -59,14 +59,14 @@ public class EnhancedRendererModelNew extends ModelRenderer {
     }
 
     @Override
-    public EnhancedRendererModelNew setTextureSize(int textureWidthIn, int textureHeightIn) {
+    public EnhancedRendererModelNew setTexSize(int textureWidthIn, int textureHeightIn) {
         this.textureWidth = (float)textureWidthIn;
         this.textureHeight = (float)textureHeightIn;
         return this;
     }
 
     @Override
-    public EnhancedRendererModelNew setTextureOffset(int x, int y) {
+    public EnhancedRendererModelNew texOffs(int x, int y) {
         this.textureOffsetX = x;
         this.textureOffsetY = y;
         return this;
@@ -74,7 +74,7 @@ public class EnhancedRendererModelNew extends ModelRenderer {
 
     @Override
     public EnhancedRendererModelNew addBox(String partName, float x, float y, float z, int width, int height, int depth, float delta, int texX, int texY) {
-        this.setTextureOffset(texX, texY);
+        this.texOffs(texX, texY);
         this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, (float)width, (float)height, (float)depth, delta, delta, delta, this.mirror, false);
         return this;
     }
@@ -109,28 +109,28 @@ public class EnhancedRendererModelNew extends ModelRenderer {
         this.cubeList.add(new EnhancedRendererModelNew.ModelBox(texOffX, texOffY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, mirorIn, this.textureWidth, this.textureHeight));
     }
 
-    public void setRotationPoint(float rotationPointXIn, float rotationPointYIn, float rotationPointZIn) {
-        this.rotationPointX = rotationPointXIn;
-        this.rotationPointY = rotationPointYIn;
-        this.rotationPointZ = rotationPointZIn;
+    public void setPos(float rotationPointXIn, float rotationPointYIn, float rotationPointZIn) {
+        this.x = rotationPointXIn;
+        this.y = rotationPointYIn;
+        this.z = rotationPointZIn;
     }
 
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender, Boolean pushPopEntireChain, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    public void render(PoseStack matrixStackIn, VertexConsumer bufferIn, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender, Boolean pushPopEntireChain, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         render(matrixStackIn, bufferIn,  mapOfScale, boxesToNotRender, pushPopEntireChain, packedLightIn, packedOverlayIn, red, green, blue, alpha, true);
     }
 
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender, Boolean pushPopEntireChain, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha, boolean pushPopChildren) {
-        if (this.showModel) {
+    public void render(PoseStack matrixStackIn, VertexConsumer bufferIn, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender, Boolean pushPopEntireChain, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha, boolean pushPopChildren) {
+        if (this.visible) {
             if (!this.cubeList.isEmpty() || !this.childModels.isEmpty()) {
 
                 if (!pushPopChildren) {
                     if (!boxesToNotRender.contains(this.boxName)) {
-                        matrixStackIn.push();
-                        this.translateRotate(matrixStackIn);
+                        matrixStackIn.pushPose();
+                        this.translateAndRotate(matrixStackIn);
                     }
                 } else {
-                    matrixStackIn.push();
-                    this.translateRotate(matrixStackIn);
+                    matrixStackIn.pushPose();
+                    this.translateAndRotate(matrixStackIn);
                 }
 
                 if (mapOfScale != null) {
@@ -147,7 +147,7 @@ public class EnhancedRendererModelNew extends ModelRenderer {
 
 
                 if (this.boxName == null || !(boxesToNotRender.contains(this.boxName))) {
-                    this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                    this.doRender(matrixStackIn.last(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
 
                 for(EnhancedRendererModelNew modelrenderer : this.childModels) {
@@ -160,34 +160,34 @@ public class EnhancedRendererModelNew extends ModelRenderer {
 
                 if (!pushPopChildren) {
                     if (!boxesToNotRender.contains(this.boxName)) {
-                        matrixStackIn.pop();
+                        matrixStackIn.popPose();
                     }
                 } else {
-                    matrixStackIn.pop();
+                    matrixStackIn.popPose();
                 }
             }
         }
     }
 
-    public void translateRotate(MatrixStack matrixStackIn) {
-        matrixStackIn.translate((double)(this.rotationPointX / 16.0F), (double)(this.rotationPointY / 16.0F), (double)(this.rotationPointZ / 16.0F));
-        if (this.rotateAngleZ != 0.0F) {
-            matrixStackIn.rotate(Vector3f.ZP.rotation(this.rotateAngleZ));
+    public void translateAndRotate(PoseStack matrixStackIn) {
+        matrixStackIn.translate((double)(this.x / 16.0F), (double)(this.y / 16.0F), (double)(this.z / 16.0F));
+        if (this.zRot != 0.0F) {
+            matrixStackIn.mulPose(Vector3f.ZP.rotation(this.zRot));
         }
 
-        if (this.rotateAngleY != 0.0F) {
-            matrixStackIn.rotate(Vector3f.YP.rotation(this.rotateAngleY));
+        if (this.yRot != 0.0F) {
+            matrixStackIn.mulPose(Vector3f.YP.rotation(this.yRot));
         }
 
-        if (this.rotateAngleX != 0.0F) {
-            matrixStackIn.rotate(Vector3f.XP.rotation(this.rotateAngleX));
+        if (this.xRot != 0.0F) {
+            matrixStackIn.mulPose(Vector3f.XP.rotation(this.xRot));
         }
 
     }
 
-    private void doRender(MatrixStack.Entry matrixEntryIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        Matrix4f matrix4f = matrixEntryIn.getMatrix();
-        Matrix3f matrix3f = matrixEntryIn.getNormal();
+    private void doRender(PoseStack.Pose matrixEntryIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        Matrix4f matrix4f = matrixEntryIn.pose();
+        Matrix3f matrix3f = matrixEntryIn.normal();
         int i = this.cubeList.size();
 
         for (int j = 0; j < i; ++j) {
@@ -200,18 +200,18 @@ public class EnhancedRendererModelNew extends ModelRenderer {
                 if (modelrenderer$texturedquad != null) {
                     Vector3f vector3f = (modelrenderer$texturedquad.normal).copy();
                     vector3f.transform(matrix3f);
-                    float f = vector3f.getX();
-                    float f1 = vector3f.getY();
-                    float f2 = vector3f.getZ();
+                    float f = vector3f.x();
+                    float f1 = vector3f.y();
+                    float f2 = vector3f.z();
 
                     for (int i1 = 0; i1 < 4; ++i1) {
                         EnhancedRendererModelNew.PositionTextureVertex modelrenderer$positiontexturevertex = modelrenderer$texturedquad.vertexPositions[i1];
-                        float f3 = modelrenderer$positiontexturevertex.position.getX() / 16.0F;
-                        float f4 = modelrenderer$positiontexturevertex.position.getY() / 16.0F;
-                        float f5 = modelrenderer$positiontexturevertex.position.getZ() / 16.0F;
+                        float f3 = modelrenderer$positiontexturevertex.position.x() / 16.0F;
+                        float f4 = modelrenderer$positiontexturevertex.position.y() / 16.0F;
+                        float f5 = modelrenderer$positiontexturevertex.position.z() / 16.0F;
                         Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
                         vector4f.transform(matrix4f);
-                        bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
+                        bufferIn.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
                     }
                 }
             }
@@ -322,7 +322,7 @@ public class EnhancedRendererModelNew extends ModelRenderer {
                 }
             }
 
-            this.normal = directionIn.toVector3f();
+            this.normal = directionIn.step();
             if (mirrorIn) {
                 this.normal.mul(-1.0F, 1.0F, 1.0F);
             }

@@ -5,32 +5,27 @@ package mokiyoki.enhancedanimals.renderer.layers;
 // (powered by Fernflower decompiler)
 //
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends LayerRenderer<T, ModelEnhancedCow<T>> {
+public class EnhancedMooshroomMushroomLayer<T extends EnhancedMooshroom> extends RenderLayer<T, ModelEnhancedCow<T>> {
 
     private float size;
 
-    public EnhancedMooshroomMushroomLayer(IEntityRenderer<T, ModelEnhancedCow<T>> p_i50931_1_) {
+    public EnhancedMooshroomMushroomLayer(RenderLayerParent<T, ModelEnhancedCow<T>> p_i50931_1_) {
         super(p_i50931_1_);
     }
 
 
-    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (!entitylivingbaseIn.isChild() && !entitylivingbaseIn.isInvisible()) {
+    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (!entitylivingbaseIn.isBaby() && !entitylivingbaseIn.isInvisible()) {
 
 //            EnhancedMooshroom enhancedMooshroom = entitylivingbaseIn;
 //

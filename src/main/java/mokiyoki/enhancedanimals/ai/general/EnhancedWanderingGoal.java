@@ -1,9 +1,9 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 
-public class EnhancedWanderingGoal extends WaterAvoidingRandomWalkingGoal {
+public class EnhancedWanderingGoal extends WaterAvoidingRandomStrollGoal {
 
     EnhancedAnimalAbstract enhancedAnimal;
 
@@ -13,19 +13,19 @@ public class EnhancedWanderingGoal extends WaterAvoidingRandomWalkingGoal {
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         if (enhancedAnimal.isAnimalSleeping()) {
             return false;
         }
-        boolean superShould = super.shouldExecute();
+        boolean superShould = super.canUse();
         return superShould && !enhancedAnimal.getAIStatus().equals(AIStatus.EATING);
     }
 
     @Override
-    public boolean shouldContinueExecuting() {
+    public boolean canContinueToUse() {
         if (enhancedAnimal.isAnimalSleeping()) {
             return false;
         }
-        return super.shouldExecute();
+        return super.canUse();
     }
 }

@@ -20,56 +20,56 @@ import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.item.LeashKnotEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.IInventoryChangedListener;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerListener;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.NonNullList;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -81,18 +81,18 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IInventoryChangedListener {
+public abstract class EnhancedAnimalAbstract extends Animal implements ContainerListener {
 
-    protected static final DataParameter<String> SHARED_GENES = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
-    protected static final DataParameter<Boolean> SLEEPING = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Boolean> TAMED = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<String> BIRTH_TIME = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
-    private static final DataParameter<Float> ANIMAL_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
-    private static final DataParameter<String> ENTITY_STATUS = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.STRING);
-    private static final DataParameter<Float> BAG_SIZE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.FLOAT);
-    private static final DataParameter<Integer> MILK_AMOUNT = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.VARINT);
-    private static final DataParameter<Boolean> HAS_COLLAR = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Boolean> RESET_TEXTURE = EntityDataManager.createKey(EnhancedAnimalAbstract.class, DataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<String> SHARED_GENES = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.STRING);
+    protected static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> TAMED = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<String> BIRTH_TIME = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Float> ANIMAL_SIZE = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<String> ENTITY_STATUS = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Float> BAG_SIZE = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> MILK_AMOUNT = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> HAS_COLLAR = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> RESET_TEXTURE = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BOOLEAN);
 
     private final NonNullList<ItemStack> equipmentArray = NonNullList.withSize(7, ItemStack.EMPTY);
 
@@ -105,7 +105,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             "collar_belliron.png", "collar_bellgold.png", "collar_belldiamond.png"
     };
 
-    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
+    private static final Ingredient MILK_ITEMS = Ingredient.of(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
 
 
     // Genetic Info
@@ -163,20 +163,20 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     protected Boolean reload = true; //used in a toggle manner
 
     //Inventory
-    protected Inventory animalInventory;
+    protected SimpleContainer animalInventory;
 
     //Size
     private int reloadSizeTime = 0;
 
     //Overrides
     @Nullable
-    private CompoundNBT leashNBTTag;
+    private CompoundTag leashNBTTag;
 
     /*
     Entity Construction
     */
 
-    protected EnhancedAnimalAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, boolean bottleFeedable) {
+    protected EnhancedAnimalAbstract(EntityType<? extends EnhancedAnimalAbstract> type, Level worldIn, int SgenesSize, int AgenesSize, boolean bottleFeedable) {
         super(type, worldIn);
         this.genetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
         this.mateGenetics = new Genes(new int[SgenesSize], new int[AgenesSize]);
@@ -187,20 +187,20 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(SHARED_GENES, new String());
-        this.dataManager.register(SLEEPING, false);
-        this.dataManager.register(TAMED, false);
-        this.dataManager.register(ENTITY_STATUS, new String());
-        this.dataManager.register(BIRTH_TIME, "0");
-        this.dataManager.register(ANIMAL_SIZE, 0.0F);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(SHARED_GENES, new String());
+        this.entityData.define(SLEEPING, false);
+        this.entityData.define(TAMED, false);
+        this.entityData.define(ENTITY_STATUS, new String());
+        this.entityData.define(BIRTH_TIME, "0");
+        this.entityData.define(ANIMAL_SIZE, 0.0F);
         if (canLactate()) {
-            this.dataManager.register(BAG_SIZE, 0.0F);
-            this.dataManager.register(MILK_AMOUNT, 0);
+            this.entityData.define(BAG_SIZE, 0.0F);
+            this.entityData.define(MILK_AMOUNT, 0);
         }
-        this.dataManager.register(HAS_COLLAR, false);
-        this.dataManager.register(RESET_TEXTURE, false);
+        this.entityData.define(HAS_COLLAR, false);
+        this.entityData.define(RESET_TEXTURE, false);
     }
 
     @Override
@@ -273,16 +273,16 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     //when the animal wakes up
     public boolean sleepingConditional() {
-        return (!this.world.isDaytime() && this.awokenTimer == 0 && !this.sleeping);
+        return (!this.level.isDay() && this.awokenTimer == 0 && !this.sleeping);
     }
 
     //toggles the reloading
     protected void toggleReloadTexture() {
-        this.dataManager.set(RESET_TEXTURE, !this.getReloadTexture());
+        this.entityData.set(RESET_TEXTURE, !this.getReloadTexture());
     }
 
     public boolean getReloadTexture() {
-        return this.dataManager.get(RESET_TEXTURE);
+        return this.entityData.get(RESET_TEXTURE);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -308,7 +308,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     public abstract void initilizeAnimalSize();
 
     //method to create the new child
-    protected abstract void createAndSpawnEnhancedChild(World world);
+    protected abstract void createAndSpawnEnhancedChild(Level world);
 
     //used to set if an animal runs the pregnancy code
     protected abstract boolean canBePregnant();
@@ -359,19 +359,19 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     protected abstract FoodSerialiser.AnimalFoodMap getAnimalFoodType();
 
     public void setBirthTime() {
-        this.setBirthTime(String.valueOf(this.world.getWorldInfo().getGameTime()));
+        this.setBirthTime(String.valueOf(this.level.getLevelData().getGameTime()));
     }
 
-    public void setBirthTime(World world, int age) {
-        this.setBirthTime(String.valueOf(world.getWorldInfo().getGameTime() + age));
+    public void setBirthTime(Level world, int age) {
+        this.setBirthTime(String.valueOf(world.getLevelData().getGameTime() + age));
     }
 
     public void setBirthTime(String birthTime) {
-        this.dataManager.set(BIRTH_TIME, birthTime);
+        this.entityData.set(BIRTH_TIME, birthTime);
     }
 
     public String getBirthTime() {
-        return this.dataManager.get(BIRTH_TIME);
+        return this.entityData.get(BIRTH_TIME);
     }
 
 //    private void setParent(String motherUUID) {
@@ -408,25 +408,24 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 //    }
 
     protected void setEntityStatus(String status) {
-        this.dataManager.set(ENTITY_STATUS, status);
+        this.entityData.set(ENTITY_STATUS, status);
     }
 
     public String getEntityStatus() {
-        return this.dataManager.get(ENTITY_STATUS);
+        return this.entityData.get(ENTITY_STATUS);
     }
 
     public void setSleeping(Boolean sleeping) {
         this.sleeping = sleeping;
-        this.dataManager.set(SLEEPING, sleeping); }
+        this.entityData.set(SLEEPING, sleeping); }
 
     public Boolean isAnimalSleeping() {
         if (this.isWet()) {
             return false;
-        } else if (!(this.getLeashHolder() instanceof LeashKnotEntity) && this.getLeashHolder() != null) {
+        } else if (!(this.getLeashHolder() instanceof LeashFenceKnotEntity) && this.getLeashHolder() != null) {
             return false;
         } else {
-            this.sleeping = this.dataManager.get(SLEEPING);
-            return this.sleeping;
+            return this.entityData.get(SLEEPING);
         }
     }
 
@@ -436,11 +435,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     protected void setAnimalSize(float size) {
-        this.dataManager.set(ANIMAL_SIZE, size);
+        this.entityData.set(ANIMAL_SIZE, size);
     }
 
     public float getAnimalSize() {
-        return this.dataManager.get(ANIMAL_SIZE);
+        return this.entityData.get(ANIMAL_SIZE);
     }
 
     public float getHunger(){
@@ -472,33 +471,33 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     public boolean isTame() {
-        return this.dataManager.get(TAMED);
+        return this.entityData.get(TAMED);
     }
 
     public void setTame(boolean tame) {
-        this.dataManager.set(TAMED, tame);
+        this.entityData.set(TAMED, tame);
     }
 
-    protected int getAge() {
+    public int getAge() {
         if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
-            return (int)(this.world.getWorldInfo().getGameTime() - Long.parseLong(getBirthTime()));
+            return (int)(this.level.getLevelData().getGameTime() - Long.parseLong(getBirthTime()));
         } else {
-            setBirthTime(String.valueOf(this.world.getWorldInfo().getGameTime() - this.getAdultAge()));
+            setBirthTime(String.valueOf(this.level.getLevelData().getGameTime() - this.getAdultAge()));
             return this.getAdultAge();
         }
     }
 
-    protected void setBagSize(float size) { this.dataManager.set(BAG_SIZE, size); }
+    protected void setBagSize(float size) { this.entityData.set(BAG_SIZE, size); }
 
     public float getBagSize() {
-        return this.dataManager.get(BAG_SIZE);
+        return this.entityData.get(BAG_SIZE);
     }
 
     protected void setMilkAmount(Integer milkAmount) {
-        this.dataManager.set(MILK_AMOUNT, milkAmount);
+        this.entityData.set(MILK_AMOUNT, milkAmount);
     }
 
-    public Integer getMilkAmount() { return this.dataManager.get(MILK_AMOUNT); }
+    public Integer getMilkAmount() { return this.entityData.get(MILK_AMOUNT); }
 
     public boolean decreaseMilk(int decrease) {
         int milk = getMilkAmount();
@@ -560,11 +559,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     public boolean hasCollar() {
-        return this.dataManager.get(HAS_COLLAR);
+        return this.entityData.get(HAS_COLLAR);
     }
 
     public void setCollar(boolean collared) {
-        this.dataManager.set(HAS_COLLAR, collared);
+        this.entityData.set(HAS_COLLAR, collared);
         List<String> previousCollarTextures = this.equipmentTextures.get(Equipment.COLLAR);
         List<String> newCollarTextures = getCollarTextures();
 
@@ -590,13 +589,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     public boolean getOrSetIsFemale() {
         if (this.isFemale == null) {
-            return this.isFemale = getCachedUniqueIdString().toCharArray()[0] - 48 < 8;
+            return this.isFemale = getStringUUID().toCharArray()[0] - 48 < 8;
         }
         return this.isFemale;
     }
 
     protected void setIsFemale(CompoundNBT compound) {
-        this.isFemale = compound.contains("IsFemale") ? compound.getBoolean("IsFemale") : getCachedUniqueIdString().toCharArray()[0] - 48 < 8;
+        this.isFemale = compound.contains("IsFemale") ? compound.getBoolean("IsFemale") : getStringUUID().toCharArray()[0] - 48 < 8;
     }
 
     /*
@@ -606,14 +605,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     @Override
     public void tick() {
         super.tick();
-        if (!this.world.isRemote) {
+        if (!this.level.isClientSide) {
             for(int invSlot = 0; invSlot < 7; invSlot++) {
-                ItemStack inventoryItemStack = this.animalInventory.getStackInSlot(invSlot);
+                ItemStack inventoryItemStack = this.animalInventory.getItem(invSlot);
                 ItemStack equipmentItemStack = equipmentArray.get(invSlot);
 
-                if (!ItemStack.areItemStacksEqual(inventoryItemStack, equipmentItemStack)) {
+                if (!ItemStack.matches(inventoryItemStack, equipmentItemStack)) {
                     if (!inventoryItemStack.equals(equipmentItemStack, true)) {
-                        EAEquipmentPacket equipmentPacket = new EAEquipmentPacket(this.getEntityId(), invSlot, inventoryItemStack);
+                        EAEquipmentPacket equipmentPacket = new EAEquipmentPacket(this.getId(), invSlot, inventoryItemStack);
                         EnhancedAnimals.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), equipmentPacket);
                     }
                     this.equipmentArray.set(invSlot, inventoryItemStack.copy());
@@ -623,36 +622,36 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     @Override
-    protected void updateLeashedState() {
+    protected void tickLeash() {
         if (this.leashNBTTag != null) {
-            super.updateLeashedState();
+            super.tickLeash();
             leashNBTTag = null;
         }
 
         if (this.getLeashHolder() != null) {
             if (!this.isAlive() || !this.getLeashHolder().isAlive()) {
-                this.clearLeashed(true, true);
+                this.dropLeash(true, true);
             }
         }
 
         Entity entity = this.getLeashHolder();
-        if (entity != null && entity.world == this.world) {
-            this.setHomePosAndDistance(new BlockPos(entity.getPosition()), 5);
-            float f = this.getDistance(entity);
+        if (entity != null && entity.level == this.level) {
+            this.restrictTo(new BlockPos(entity.blockPosition()), 5);
+            float f = this.distanceTo(entity);
 
             this.onLeashDistance(f);
             if (f > 10.0F) {
-                this.clearLeashed(true, true);
-                this.goalSelector.disableFlag(Goal.Flag.MOVE);
+                this.dropLeash(true, true);
+                this.goalSelector.disableControlFlag(Goal.Flag.MOVE);
             } else if (f > 6.0F) {
-                double d0 = (entity.getPosX() - this.getPosX()) / (double)f;
-                double d1 = (entity.getPosY() - this.getPosY()) / (double)f;
-                double d2 = (entity.getPosZ() - this.getPosZ()) / (double)f;
-                this.setMotion(this.getMotion().add(Math.copySign(d0 * d0 * 0.4D, d0), Math.copySign(d1 * d1 * 0.4D, d1), Math.copySign(d2 * d2 * 0.4D, d2)));
+                double d0 = (entity.getX() - this.getX()) / (double)f;
+                double d1 = (entity.getY() - this.getY()) / (double)f;
+                double d2 = (entity.getZ() - this.getZ()) / (double)f;
+                this.setDeltaMovement(this.getDeltaMovement().add(Math.copySign(d0 * d0 * 0.4D, d0), Math.copySign(d1 * d1 * 0.4D, d1), Math.copySign(d2 * d2 * 0.4D, d2)));
             } else if (!ableToMoveWhileLeashed()){
-                this.goalSelector.enableFlag(Goal.Flag.MOVE);
-                Vector3d vec3d = (new Vector3d(entity.getPosX() - this.getPosX(), entity.getPosY() - this.getPosY(), entity.getPosZ() - this.getPosZ())).normalize().scale((double)Math.max(f - 2.0F, 0.0F));
-                this.getNavigator().tryMoveToXYZ(this.getPosX() + vec3d.x, this.getPosY() + vec3d.y, this.getPosZ() + vec3d.z, this.followLeashSpeed());
+                this.goalSelector.enableControlFlag(Goal.Flag.MOVE);
+                Vec3 vec3d = (new Vec3(entity.getX() - this.getX(), entity.getY() - this.getY(), entity.getZ() - this.getZ())).normalize().scale((double)Math.max(f - 2.0F, 0.0F));
+                this.getNavigation().moveTo(this.getX() + vec3d.x, this.getY() + vec3d.y, this.getZ() + vec3d.z, this.followLeashSpeed());
             }
         }
     }
@@ -666,13 +665,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     */
 
     @Override
-    public void livingTick() {
-        super.livingTick();
+    public void aiStep() {
+        super.aiStep();
 
         if (this.reloadSizeTime != 0) {
             if (this.isGrowing()) {
                 if (this.getAge() % this.reloadSizeTime == 0) {
-                    this.recalculateSize();
+                    this.refreshDimensions();
                 }
             } else {
                 this.reloadSizeTime = 0;
@@ -680,7 +679,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
 
         //run client-sided tick stuff
-        if (this.world.isRemote) {
+        if (this.level.isClientSide) {
             runLivingTickClient();
 
 //            if (this.serializeNBT().contains("OpenEnhancedAnimalRidenGUI")) {
@@ -707,12 +706,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
                 this.healTicks = 0;
             } else if (awokenTimer > 0) {
                 this.awokenTimer--;
-            } else if (this.world.isDaytime() && this.sleeping) {
+            } else if (this.level.isDay() && this.sleeping) {
                 setSleeping(false);
             }
 
             //not outside AI processing distance
-            if (this.getIdleTime() < 100) {
+            if (this.getNoActionTime() < 100) {
                 if (this.hunger <= 72000) {
                     if (this.sleeping) {
                         if ((this.hunger <= (gestationConfig()/2))) {
@@ -746,7 +745,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             this.blink = 1;
         } else {
             if (this.blink == 0) {
-                this.blink = rand.nextInt(400);
+                this.blink = random.nextInt(400);
             } else {
                 this.blink--;
             }
@@ -755,11 +754,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         //ear twitch timer
         if (this.earTwitchTicker == 0) {
             if (asleep) {
-                this.earTwitchTicker = rand.nextInt(2400);
+                this.earTwitchTicker = random.nextInt(2400);
             } else {
-                this.earTwitchTicker = rand.nextInt(1200);
+                this.earTwitchTicker = random.nextInt(1200);
             }
-            if (rand.nextBoolean()) {
+            if (random.nextBoolean()) {
                 this.earTwitchTicker = -this.earTwitchTicker;
             }
         } else if (this.earTwitchTicker > 0) {
@@ -775,7 +774,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             this.gestationTimer++;
             int days = gestationConfig();
             if (this.gestationTimer > days + 1200) {
-                this.setGrowingAge(600);
+                this.setAge(600);
             }
             if (days/2 < this.gestationTimer) {
                 setEntityStatus(EntityState.PREGNANT.toString());
@@ -799,15 +798,15 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
                 for (int i = 0; i < numberOfChildren; i++) {
 //                    mixMateMitosisGenes();
 //                    mixMitosisGenes();
-                    createAndSpawnEnhancedChild(this.world);
+                    createAndSpawnEnhancedChild(this.level);
                 }
 
-                if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
+                if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
                     int i = 1;
                     while (i > 0) {
-                        int j = ExperienceOrbEntity.getXPSplit(i);
+                        int j = ExperienceOrb.getExperienceValue(i);
                         i -= j;
-                        this.world.addEntity(new ExperienceOrbEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), j));
+                        this.level.addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), j));
                     }
                 }
             }
@@ -840,34 +839,34 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     */
 
     @Override
-    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
-        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
+        ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
         if (entityPlayer.isSecondaryUseActive()) {
             this.openGUI(entityPlayer);
-            return ActionResultType.func_233537_a_(this.world.isRemote);
+            return InteractionResult.sidedSuccess(this.level.isClientSide);
         }
 
-        if (!this.world.isRemote && !hand.equals(Hand.OFF_HAND)) {
+        if (!this.level.isClientSide && !hand.equals(InteractionHand.OFF_HAND)) {
             boolean isChild = this.isChild();
             if (item instanceof DebugGenesBook) {
-                Minecraft.getInstance().keyboardListener.setClipboardString(this.dataManager.get(SHARED_GENES));
+                Minecraft.getInstance().keyboardHandler.setClipboard(this.entityData.get(SHARED_GENES));
             } else if (!this.isChild() && isBreedingItem(itemStack)) {
                 if (this.hunger >= 4000 || (!this.pregnant && !isChild && this.canFallInLove())) {
                     decreaseHunger(getHungerRestored(itemStack));
                     shrinkItemStack(entityPlayer, itemStack);
                 } else {
-                    return ActionResultType.PASS;
+                    return InteractionResult.PASS;
                 }
-                if (!this.world.isRemote && !isChild && this.canFallInLove()) {
+                if (!this.level.isClientSide && !isChild && this.canFallInLove()) {
                     this.setInLove(entityPlayer);
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             } else if (isChild && (isBreedingItem(itemStack)) || (this.bottleFeedable && MILK_ITEMS.test(itemStack))) {
                 if (this.hunger >= 4000 || EanimodCommonConfig.COMMON.feedGrowth.get()) {
                     boolean isHungry = this.hunger >= 4000;
                     if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
-                        this.ageUp((int) ((float) (-this.getGrowingAge() / 20) * 0.1F), true);
+                        this.ageUp((int) ((float) (-this.getAge() / 20) * 0.1F), true);
                     }
                     if (MILK_ITEMS.test(itemStack)) {
                         if (item == ModItems.HALF_MILK_BOTTLE) {
@@ -893,23 +892,23 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
                         shrinkItemStack(entityPlayer, itemStack);
                     }
                 } else {
-                    return ActionResultType.PASS;
+                    return InteractionResult.PASS;
                 }
             } else if (isFoodItem(itemStack)) {
                 if (hunger >= 4000) {
                     decreaseHunger(getHungerRestored(itemStack));
                     shrinkItemStack(entityPlayer, itemStack);
                 } else {
-                    return ActionResultType.PASS;
+                    return InteractionResult.PASS;
                 }
             }
         }
 
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
-    private void shrinkItemStack(PlayerEntity entityPlayer, ItemStack itemStack) {
-        if (!entityPlayer.abilities.isCreativeMode) {
+    private void shrinkItemStack(Player entityPlayer, ItemStack itemStack) {
+        if (!entityPlayer.getAbilities().instabuild) {
             itemStack.shrink(1);
         } else {
             if (itemStack.getCount() > 1) {
@@ -918,12 +917,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
     }
 
-    private void swapItemStack(PlayerEntity entityPlayer, Hand hand, ItemStack itemStack, Item swapItem) {
-        if (!entityPlayer.abilities.isCreativeMode) {
+    private void swapItemStack(Player entityPlayer, InteractionHand hand, ItemStack itemStack, Item swapItem) {
+        if (!entityPlayer.getAbilities().instabuild) {
             if (itemStack.isEmpty()) {
-                entityPlayer.setHeldItem(hand, new ItemStack(swapItem));
-            } else if (!entityPlayer.inventory.addItemStackToInventory(new ItemStack(swapItem))) {
-                entityPlayer.dropItem(new ItemStack(swapItem), false);
+                entityPlayer.setItemInHand(hand, new ItemStack(swapItem));
+            } else if (!entityPlayer.getInventory().add(new ItemStack(swapItem))) {
+                entityPlayer.drop(new ItemStack(swapItem), false);
             }
         }
     }
@@ -931,7 +930,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
         for (int i = 1; i <= 6;i++) {
-            Item item = this.getEnhancedInventory().getStackInSlot(i).getItem();
+            Item item = this.getEnhancedInventory().getItem(i).getItem();
             if (item instanceof CustomizableAnimalEquipment) {
                 setColourToSlot(item, i);
             }
@@ -942,13 +941,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     protected void setColourToSlot(Item item, int i) {
         if (item instanceof CustomizableSaddleEnglish || item instanceof CustomizableSaddleWestern || item instanceof CustomizableSaddleVanilla) {
-            this.colouration.setSaddleColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(i)));
+            this.colouration.setSaddleColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getItem(i)));
         } else if (item instanceof CustomizableBridle) {
-            this.colouration.setBridleColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(i)));
+            this.colouration.setBridleColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getItem(i)));
         } else if (item instanceof CustomizableCollar) {
-            this.colouration.setCollarColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(i)));
+            this.colouration.setCollarColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getItem(i)));
         } else if (item instanceof CustomizableAnimalEquipment) {
-            this.colouration.setHarnessColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getStackInSlot(i)));
+            this.colouration.setHarnessColour(Colouration.getEquipmentColor(this.getEnhancedInventory().getItem(i)));
         }
     }
 
@@ -956,8 +955,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     NBT read/write
     */
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
 
         this.writeNBTGenes("Genetics", compound, this.genetics);
         this.writeNBTGenes("MateGenetics", compound, this.mateGenetics);
@@ -993,43 +992,43 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         writeInventory(compound);
     }
 
-    protected void writeInventory(CompoundNBT compound) {
-        ListNBT listnbt = new ListNBT();
+    protected void writeInventory(CompoundTag compound) {
+        ListTag listnbt = new ListTag();
 
-        if (!this.animalInventory.getStackInSlot(0).isEmpty()) {
-            compound.put("Chest", this.animalInventory.getStackInSlot(0).write(new CompoundNBT()));
+        if (!this.animalInventory.getItem(0).isEmpty()) {
+            compound.put("Chest", this.animalInventory.getItem(0).save(new CompoundTag()));
         }
 
-        if (!this.animalInventory.getStackInSlot(1).isEmpty()) {
-            compound.put("Saddle", this.animalInventory.getStackInSlot(1).write(new CompoundNBT()));
+        if (!this.animalInventory.getItem(1).isEmpty()) {
+            compound.put("Saddle", this.animalInventory.getItem(1).save(new CompoundTag()));
         }
 
-        if (!this.animalInventory.getStackInSlot(2).isEmpty()) {
-            compound.put("Armour", this.animalInventory.getStackInSlot(2).write(new CompoundNBT()));
+        if (!this.animalInventory.getItem(2).isEmpty()) {
+            compound.put("Armour", this.animalInventory.getItem(2).save(new CompoundTag()));
         }
 
-        if (!this.animalInventory.getStackInSlot(3).isEmpty()) {
-            compound.put("Bridle", this.animalInventory.getStackInSlot(3).write(new CompoundNBT()));
+        if (!this.animalInventory.getItem(3).isEmpty()) {
+            compound.put("Bridle", this.animalInventory.getItem(3).save(new CompoundTag()));
         }
 
-        if (!this.animalInventory.getStackInSlot(4).isEmpty()) {
-            compound.put("Blanket", this.animalInventory.getStackInSlot(4).write(new CompoundNBT()));
+        if (!this.animalInventory.getItem(4).isEmpty()) {
+            compound.put("Blanket", this.animalInventory.getItem(4).save(new CompoundTag()));
         }
 
-        if (!this.animalInventory.getStackInSlot(5).isEmpty()) {
-            compound.put("Harness", this.animalInventory.getStackInSlot(5).write(new CompoundNBT()));
+        if (!this.animalInventory.getItem(5).isEmpty()) {
+            compound.put("Harness", this.animalInventory.getItem(5).save(new CompoundTag()));
         }
 
-        if (!this.animalInventory.getStackInSlot(6).isEmpty()) {
-            compound.put("Banner", this.animalInventory.getStackInSlot(6).write(new CompoundNBT()));
+        if (!this.animalInventory.getItem(6).isEmpty()) {
+            compound.put("Banner", this.animalInventory.getItem(6).save(new CompoundTag()));
         }
 
-        for(int i = 7; i < this.animalInventory.getSizeInventory(); ++i) {
-            ItemStack itemstack = this.animalInventory.getStackInSlot(i);
+        for(int i = 7; i < this.animalInventory.getContainerSize(); ++i) {
+            ItemStack itemstack = this.animalInventory.getItem(i);
             if (!itemstack.isEmpty()) {
-                CompoundNBT compoundnbt = new CompoundNBT();
+                CompoundTag compoundnbt = new CompoundTag();
                 compoundnbt.putByte("Slot", (byte)i);
-                itemstack.write(compoundnbt);
+                itemstack.save(compoundnbt);
                 listnbt.add(compoundnbt);
             }
         }
@@ -1038,8 +1037,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
 
         this.readNBTGenes(compound, "Genetics", this.genetics);
         this.readNBTGenes(compound, "MateGenetics", this.mateGenetics);
@@ -1099,74 +1098,74 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         super.setGrowingAge(Math.min(resetAge, 0));
     }
 
-    private void readInventory(CompoundNBT compound) {
+    private void readInventory(CompoundTag compound) {
         this.initInventory();
 
         if (compound.contains("Chest", 10)) {
-            ItemStack itemstack = ItemStack.read(compound.getCompound("Chest"));
-            this.animalInventory.setInventorySlotContents(0, itemstack);
+            ItemStack itemstack = ItemStack.of(compound.getCompound("Chest"));
+            this.animalInventory.setItem(0, itemstack);
         }
 
         if (compound.contains("Saddle", 10)) {
-            ItemStack itemstack = ItemStack.read(compound.getCompound("Saddle"));
-            this.animalInventory.setInventorySlotContents(1, itemstack);
+            ItemStack itemstack = ItemStack.of(compound.getCompound("Saddle"));
+            this.animalInventory.setItem(1, itemstack);
         }
 
         if (compound.contains("Armour", 10)) {
-            ItemStack itemstack = ItemStack.read(compound.getCompound("Armour"));
-            this.animalInventory.setInventorySlotContents(2, itemstack);
+            ItemStack itemstack = ItemStack.of(compound.getCompound("Armour"));
+            this.animalInventory.setItem(2, itemstack);
         }
 
         if (compound.contains("Bridle", 10)) {
-            ItemStack itemstack = ItemStack.read(compound.getCompound("Bridle"));
-            this.animalInventory.setInventorySlotContents(3, itemstack);
+            ItemStack itemstack = ItemStack.of(compound.getCompound("Bridle"));
+            this.animalInventory.setItem(3, itemstack);
         }
 
         if (compound.contains("Blanket", 10)) {
-            ItemStack itemstack = ItemStack.read(compound.getCompound("Blanket"));
-            this.animalInventory.setInventorySlotContents(4, itemstack);
+            ItemStack itemstack = ItemStack.of(compound.getCompound("Blanket"));
+            this.animalInventory.setItem(4, itemstack);
         }
 
         if (compound.contains("Harness", 10)) {
-            ItemStack itemstack = ItemStack.read(compound.getCompound("Harness"));
-            this.animalInventory.setInventorySlotContents(5, itemstack);
+            ItemStack itemstack = ItemStack.of(compound.getCompound("Harness"));
+            this.animalInventory.setItem(5, itemstack);
         }
 
         if (compound.contains("Banner", 10)) {
-            ItemStack itemstack = ItemStack.read(compound.getCompound("Banner"));
-            this.animalInventory.setInventorySlotContents(6, itemstack);
+            ItemStack itemstack = ItemStack.of(compound.getCompound("Banner"));
+            this.animalInventory.setItem(6, itemstack);
         }
 
-        ListNBT listnbt = compound.getList("Items", 10);
+        ListTag listnbt = compound.getList("Items", 10);
 
         for(int i = 0; i < listnbt.size(); ++i) {
-            CompoundNBT compoundnbt = listnbt.getCompound(i);
+            CompoundTag compoundnbt = listnbt.getCompound(i);
             int j = compoundnbt.getByte("Slot") & 255;
-            if (j >= 0 && j < this.animalInventory.getSizeInventory()) {
-                this.animalInventory.setInventorySlotContents(j, ItemStack.read(compoundnbt));
+            if (j >= 0 && j < this.animalInventory.getContainerSize()) {
+                this.animalInventory.setItem(j, ItemStack.of(compoundnbt));
             }
         }
 
         this.updateInventorySlots();
     }
 
-    protected void writeNBTGenes(String name, CompoundNBT compound, Genes genetics) {
-        CompoundNBT nbttagcompound = new CompoundNBT();
+    protected void writeNBTGenes(String name, CompoundTag compound, Genes genetics) {
+        CompoundTag nbttagcompound = new CompoundTag();
         nbttagcompound.putIntArray("SGenes", genetics.getSexlinkedGenes());
         nbttagcompound.putIntArray("AGenes", genetics.getAutosomalGenes());
         compound.put(name, nbttagcompound);
     }
 
-    protected void readNBTGenes(CompoundNBT compoundNBT, String key, Genes genetics) {
+    protected void readNBTGenes(CompoundTag compoundNBT, String key, Genes genetics) {
         if (compoundNBT.contains(key)) {
-            CompoundNBT nbtGenetics = compoundNBT.getCompound(key);
+            CompoundTag nbtGenetics = compoundNBT.getCompound(key);
             genetics.setGenes(nbtGenetics.getIntArray("SGenes"), nbtGenetics.getIntArray("AGenes"));
         } else {
             readLegacyGenes(compoundNBT.getList(key.equals("Genetics") ? "Genes" : "FatherGenes", 10), genetics);
         }
     }
 
-    protected void readLegacyGenes(ListNBT geneList, Genes genetics) {
+    protected void readLegacyGenes(ListTag geneList, Genes genetics) {
         if (geneList.getCompound(0).contains("Sgene")) {
             int sexlinkedlength = genetics.getNumberOfSexlinkedGenes();
             for (int i = 0; i < sexlinkedlength; i++) {
@@ -1193,15 +1192,15 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     Entity Creation
     */
 
-    protected void defaultCreateAndSpawn(EnhancedAnimalAbstract enhancedAnimalChild, World inWorld, Genes babyGenes, int childAge) {
+    protected void defaultCreateAndSpawn(EnhancedAnimalAbstract enhancedAnimalChild, Level inWorld, Genes babyGenes, int childAge) {
         enhancedAnimalChild.setGenes(babyGenes);
         enhancedAnimalChild.setSharedGenes(babyGenes);
         enhancedAnimalChild.initilizeAnimalSize();
-        enhancedAnimalChild.setGrowingAge(childAge); // 3 days
+        enhancedAnimalChild.setAge(childAge); // 3 days
         enhancedAnimalChild.setBirthTime(String.valueOf(inWorld.getGameTime()));
         enhancedAnimalChild.setEntityStatus(EntityState.CHILD_STAGE_ONE.toString());
-        enhancedAnimalChild.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
-        enhancedAnimalChild.setParent(this.getUniqueID().toString());
+        enhancedAnimalChild.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+        enhancedAnimalChild.setParent(this.getUUID().toString());
         enhancedAnimalChild.setSireName(this.mateName);
         String name = "???";
         if (this.getCustomName()!=null) {
@@ -1220,29 +1219,29 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     @Override
-    public AgeableEntity func_241840_a(ServerWorld serverWorld, AgeableEntity ageable) {
+    public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageable) {
         if (this.getAdultAge() <= this.getAge()) {
             handlePartnerBreeding(ageable);
-            this.setGrowingAge(10);
-            this.resetInLove();
-            ageable.setGrowingAge(10);
-            ((EnhancedAnimalAbstract) ageable).resetInLove();
+            this.setAge(10);
+            this.resetLove();
+            ageable.setAge(10);
+            ((EnhancedAnimalAbstract) ageable).resetLove();
 
-            ServerPlayerEntity entityplayermp = this.getLoveCause();
+            ServerPlayer entityplayermp = this.getLoveCause();
             if (entityplayermp == null && ((EnhancedAnimalAbstract) ageable).getLoveCause() != null) {
                 entityplayermp = ((EnhancedAnimalAbstract) ageable).getLoveCause();
             }
 
             if (entityplayermp != null) {
-                entityplayermp.addStat(Stats.ANIMALS_BRED);
-                CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedAnimalAbstract) ageable), (AgeableEntity) null);
+                entityplayermp.awardStat(Stats.ANIMALS_BRED);
+                CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this, ((EnhancedAnimalAbstract) ageable), (AgeableMob) null);
             }
         }
 
         return null;
     }
 
-    protected void handlePartnerBreeding(AgeableEntity ageable) {
+    protected void handlePartnerBreeding(AgeableMob ageable) {
         if (EanimodCommonConfig.COMMON.omnigenders.get()) {
             if(this.pregnant) {
                 ((EnhancedAnimalAbstract)ageable).pregnant = true;
@@ -1282,7 +1281,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
      * Returns true if the mob is currently able to mate with the specified mob.
      */
     @Override
-    public boolean canMateWith(AnimalEntity otherAnimal) {
+    public boolean canMate(Animal otherAnimal) {
         if (otherAnimal == this) {
             return false;
         } else if (otherAnimal.getClass() != this.getClass()) {
@@ -1299,19 +1298,19 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     Inventory
     */
 
-    public Inventory getEnhancedInventory() {
+    public SimpleContainer getEnhancedInventory() {
         return this.animalInventory;
     }
 
     @Override
-    public void onInventoryChanged(IInventory invBasic) {
-        boolean flag = this.dataManager.get(HAS_COLLAR);
+    public void containerChanged(Container invBasic) {
+        boolean flag = this.entityData.get(HAS_COLLAR);
         boolean flag2 = this.bells;
         this.updateInventorySlots();
-        if (this.ticksExisted > 20 && !flag && this.dataManager.get(HAS_COLLAR)) {
-            this.playSound(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
+        if (this.tickCount > 20 && !flag && this.entityData.get(HAS_COLLAR)) {
+            this.playSound(SoundEvents.ARMOR_EQUIP_LEATHER, 0.5F, 1.0F);
             if (!flag2 && this.bells) {
-                this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 0.5F, 1.0F);
+                this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 0.5F, 1.0F);
             }
         }
         this.updateInventorySlots();
@@ -1321,16 +1320,16 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         boolean hasCollar = false;
         this.bells = false;
         for (int i = 1; i <= 6;i++) {
-            if (this.animalInventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+            if (this.animalInventory.getItem(i).getItem() instanceof CustomizableCollar) {
                 hasCollar = true;
-                if (((CustomizableCollar) this.animalInventory.getStackInSlot(i).getItem()).getHasBells()) {
+                if (((CustomizableCollar) this.animalInventory.getItem(i).getItem()).getHasBells()) {
                     this.bells = true;
                 }
                 break;
             }
         }
         this.setCollar(hasCollar);
-        if (!this.world.isRemote) {
+        if (!this.level.isClientSide) {
         }
     }
 
@@ -1339,16 +1338,16 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     protected void initInventory() {
-        Inventory inventory = this.animalInventory;
-        this.animalInventory = new Inventory(this.getInventorySize());
+        SimpleContainer inventory = this.animalInventory;
+        this.animalInventory = new SimpleContainer(this.getInventorySize());
         if (inventory != null) {
             inventory.removeListener(this);
-            int i = Math.min(inventory.getSizeInventory(), this.animalInventory.getSizeInventory());
+            int i = Math.min(inventory.getContainerSize(), this.animalInventory.getContainerSize());
 
             for(int j = 0; j < i; ++j) {
-                ItemStack itemstack = inventory.getStackInSlot(j);
+                ItemStack itemstack = inventory.getItem(j);
                 if (!itemstack.isEmpty()) {
-                    this.animalInventory.setInventorySlotContents(j, itemstack.copy());
+                    this.animalInventory.setItem(j, itemstack.copy());
                 }
             }
         }
@@ -1358,9 +1357,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         this.itemHandler = net.minecraftforge.common.util.LazyOptional.of(() -> new net.minecraftforge.items.wrapper.InvWrapper(this.animalInventory));
     }
 
-    public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
+    public boolean setSlot(int inventorySlot, ItemStack itemStackIn) {
         int i = inventorySlot - 400;
-        if (i >= 0 && i < 2 && i < this.animalInventory.getSizeInventory()) {
+        if (i >= 0 && i < 2 && i < this.animalInventory.getContainerSize()) {
             if (i == 0 && itemStackIn.getItem() != Items.SADDLE) {
                 return false;
             } else {
@@ -1368,8 +1367,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             }
         } else {
             int j = inventorySlot - 500 + 2;
-            if (j >= 7 && j < this.animalInventory.getSizeInventory()) {
-                this.animalInventory.setInventorySlotContents(j, itemStackIn);
+            if (j >= 7 && j < this.animalInventory.getContainerSize()) {
+                this.animalInventory.setItem(j, itemStackIn);
                 return true;
             } else {
                 return false;
@@ -1377,13 +1376,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         }
     }
 
-    protected void dropInventory() {
-        super.dropInventory();
+    protected void dropEquipment() {
+        super.dropEquipment();
         if (this.animalInventory != null) {
-            for(int i = 0; i < this.animalInventory.getSizeInventory(); ++i) {
-                ItemStack itemstack = this.animalInventory.getStackInSlot(i);
+            for(int i = 0; i < this.animalInventory.getContainerSize(); ++i) {
+                ItemStack itemstack = this.animalInventory.getItem(i);
                 if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
-                    this.entityDropItem(itemstack);
+                    this.spawnAtLocation(itemstack);
                 }
             }
 
@@ -1392,7 +1391,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     protected ItemStack getReplacementItemWithColour(ItemStack itemStack) {
         ItemStack replacementItem = new ItemStack(itemStack.getItem(), 1);
-        if (((CustomizableAnimalEquipment)itemStack.getItem()).hasColor(itemStack)) {
+        if (((CustomizableAnimalEquipment)itemStack.getItem()).hasCustomColor(itemStack)) {
             ((CustomizableAnimalEquipment)replacementItem.getItem()).setColor(replacementItem, ((CustomizableAnimalEquipment)itemStack.getItem()).getColor(itemStack));
         }
         return replacementItem;
@@ -1408,9 +1407,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     @Override
-    public void remove(boolean keepData) {
-        super.remove(keepData);
-        if (!keepData && itemHandler != null) {
+    public void remove(Entity.RemovalReason removalReason) {
+        super.remove(removalReason);
+        if (removalReason.shouldDestroy() && itemHandler != null) {
             itemHandler.invalidate();
             itemHandler = null;
         }
@@ -1420,14 +1419,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     GUI
     */
 
-    public void openGUI(PlayerEntity playerEntity) {
-        if (!this.world.isRemote && (!this.isBeingRidden() || this.isPassenger(playerEntity))) {
+    public void openGUI(Player playerEntity) {
+        if (!this.level.isClientSide && (!this.isVehicle() || this.hasPassenger(playerEntity))) {
             this.openInfoInventory(this, this.animalInventory, playerEntity);
         }
     }
 
-    public void openInfoInventory(EnhancedAnimalAbstract enhancedAnimal, IInventory inventoryIn, PlayerEntity playerEntity) {
-        if(!playerEntity.world.isRemote) {
+    public void openInfoInventory(EnhancedAnimalAbstract enhancedAnimal, Container inventoryIn, Player playerEntity) {
+        if(!playerEntity.level.isClientSide) {
 
             EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo();
             animalInfo.health = (int)(10 * (this.getHealth() / this.getMaxHealth()));
@@ -1440,21 +1439,21 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             animalInfo.sire = this.sireName;
             animalInfo.dam = this.damName;
 
-            if(playerEntity instanceof ServerPlayerEntity) {
-                ServerPlayerEntity entityPlayerMP = (ServerPlayerEntity)playerEntity;
-                NetworkHooks.openGui(entityPlayerMP, new INamedContainerProvider() {
+            if(playerEntity instanceof ServerPlayer) {
+                ServerPlayer entityPlayerMP = (ServerPlayer)playerEntity;
+                NetworkHooks.openGui(entityPlayerMP, new MenuProvider() {
                     @Override
-                    public Container createMenu(int windowId, PlayerInventory inventory, PlayerEntity player) {
+                    public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
                         return new EnhancedAnimalContainer(windowId, inventory, enhancedAnimal, animalInfo);
                     }
 
                     @Override
-                    public ITextComponent getDisplayName() {
-                        return new TranslationTextComponent("eanimod.animalinfocontainer");
+                    public Component getDisplayName() {
+                        return new TranslatableComponent("eanimod.animalinfocontainer");
                     }
                 }, buf -> {
-                    buf.writeInt(enhancedAnimal.getEntityId());
-                    buf.writeString(animalInfo.serialiseToString());
+                    buf.writeInt(enhancedAnimal.getId());
+                    buf.writeUtf(animalInfo.serialiseToString());
                 });
             }
         }
@@ -1467,7 +1466,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     protected String getAnimalsName(String species) {
         String name = species;
         if (this.getCustomName() != null) {
-            name = this.getCustomName().getUnformattedComponentText();
+            name = this.getCustomName().getContents();
             if (name.equals("")) {
                 name = species;
             }
@@ -1492,22 +1491,22 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     @Override
-    public boolean isChild() {
+    public boolean isBaby() {
         int age = this.getAge();
         int adultAge = getAdultAge();
         return age < adultAge;
     }
 
-    public void notifyDataManagerChange(DataParameter<?> key) {
-        if (ANIMAL_SIZE.equals(key) && this.world.isRemote) {
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        if (ANIMAL_SIZE.equals(key) && this.level.isClientSide) {
             if (this.isGrowing()) {
                 this.reloadSizeTime = (int) (this.getFullSizeAge() * 0.05);
             } else {
-                this.recalculateSize();
+                this.refreshDimensions();
             }
         }
 
-        super.notifyDataManagerChange(key);
+        super.onSyncedDataUpdated(key);
     }
 
 
@@ -1516,11 +1515,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     */
 
     @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id) {
+    public void handleEntityEvent(byte id) {
         if (id == 10) {
             this.animalEatingTimer = 40;
         } else {
-            super.handleStatusUpdate(id);
+            super.handleEntityEvent(id);
         }
     }
 
@@ -1540,28 +1539,28 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     public float getHeadRotationAngleX(float partialTickTime) {
         if (this.animalEatingTimer > 4 && this.animalEatingTimer <= 36) {
             float f = ((float)(this.animalEatingTimer - 4) - partialTickTime) / 32.0F;
-            return ((float)Math.PI / 5F) + ((float)Math.PI * 7F / 100F) * MathHelper.sin(f * 28.7F);
+            return ((float)Math.PI / 5F) + ((float)Math.PI * 7F / 100F) * Mth.sin(f * 28.7F);
         } else {
-            return this.animalEatingTimer > 0 ? ((float)Math.PI / 5F) : this.rotationPitch * 0.017453292F;
+            return this.animalEatingTimer > 0 ? ((float)Math.PI / 5F) : this.getXRot() * 0.017453292F;
         }
     }
 
     //------------
 
-    public boolean setTamedBy(PlayerEntity player) {
+    public boolean setTamedBy(Player player) {
         //TODO save player's name to be displayed in GUI
 //        this.setOwnerUniqueId(player.getUniqueID());
         this.setTame(true);
-        if (player instanceof ServerPlayerEntity) {
-            CriteriaTriggers.TAME_ANIMAL.trigger((ServerPlayerEntity)player, this);
+        if (player instanceof ServerPlayer) {
+            CriteriaTriggers.TAME_ANIMAL.trigger((ServerPlayer)player, this);
         }
 
-        this.world.setEntityState(this, (byte)7);
+        this.level.broadcastEntityEvent(this, (byte)7);
         return true;
     }
 
     @Override
-    public boolean isBreedingItem(ItemStack stack) {
+    public boolean isFood(ItemStack stack) {
         return getAnimalFoodType().isBreedingItem(stack.getItem());
     }
 
@@ -1574,13 +1573,13 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     public void setSharedGenes(Genes genes) {
-        this.dataManager.set(SHARED_GENES, genes.getGenesAsString());
+        this.entityData.set(SHARED_GENES, genes.getGenesAsString());
     }
 
     @OnlyIn(Dist.CLIENT)
     public Genes getSharedGenes() {
         if(this.genesSplitForClient==null) {
-            String sharedGenes = this.dataManager.get(SHARED_GENES);
+            String sharedGenes = this.entityData.get(SHARED_GENES);
             if (sharedGenes.isEmpty()) {
                 return null;
             }
@@ -1650,35 +1649,35 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     protected void geneFixer() {
         if (!this.breed.isEmpty()) {
-            this.genetics = this.breed.equals("village") ? this.genetics = createInitialGenes(this.world, new BlockPos(this.getPosition()), true) : createInitialBreedGenes(this.world, new BlockPos(this.getPosition()), this.breed);
+            this.genetics = this.breed.equals("village") ? this.genetics = createInitialGenes(this.level, new BlockPos(this.blockPosition()), true) : createInitialBreedGenes(this.level, new BlockPos(this.blockPosition()), this.breed);
             setInitialDefaults();
             int childAge = this.getAdultAge();
-            if (this.rand.nextInt(20) == 0) {
-                childAge = this.rand.nextInt(childAge);
-                this.setGrowingAge(childAge);
-                this.setBirthTime(this.world, -childAge);
+            if (this.random.nextInt(20) == 0) {
+                childAge = this.random.nextInt(childAge);
+                this.setAge(childAge);
+                this.setBirthTime(this.level, -childAge);
             } else {
-                this.setGrowingAge(0);
-                if (this.rand.nextInt(20) == 0) {
-                    this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 192000) + 1536000));
+                this.setAge(0);
+                if (this.random.nextInt(20) == 0) {
+                    this.setBirthTime(this.level, -((ThreadLocalRandom.current().nextInt(50) * 192000) + 1536000));
                 } else {
-                    this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 100000) + childAge));
+                    this.setBirthTime(this.level, -((ThreadLocalRandom.current().nextInt(50) * 100000) + childAge));
                 }
             }
         } else if (this.genetics.getAutosomalGene(0) == 0) {
-            this.genetics = createInitialGenes(this.world, new BlockPos(this.getPosition()), true);
+            this.genetics = createInitialGenes(this.level, new BlockPos(this.blockPosition()), true);
             setInitialDefaults();
             int childAge = this.getAdultAge();
-            if (this.rand.nextInt(20) == 0) {
-                childAge = this.rand.nextInt(childAge);
-                this.setGrowingAge(childAge);
-                this.setBirthTime(this.world, -childAge);
+            if (this.random.nextInt(20) == 0) {
+                childAge = this.random.nextInt(childAge);
+                this.setAge(childAge);
+                this.setBirthTime(this.level, -childAge);
             } else {
-                this.setGrowingAge(0);
-                if (this.rand.nextInt(20) == 0) {
-                    this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 192000) + 1536000));
+                this.setAge(0);
+                if (this.random.nextInt(20) == 0) {
+                    this.setBirthTime(this.level, -((ThreadLocalRandom.current().nextInt(50) * 192000) + 1536000));
                 } else {
-                    this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 100000) + childAge));
+                    this.setBirthTime(this.level, -((ThreadLocalRandom.current().nextInt(50) * 100000) + childAge));
                 }
             }
         } else {
@@ -1710,7 +1709,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     public void setGrowingAge() {
-        super.setGrowingAge(-this.getAdultAge());
+        super.setAge(-this.getAdultAge());
     }
 
     //overriden to prevent aging up when fed
@@ -1719,40 +1718,40 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         int newBirthTime = Integer.valueOf(getBirthTime()) - ((int)(getAdultAge()*0.1));
         this.setBirthTime(String.valueOf(newBirthTime));
         super.ageUp(growthSeconds, updateForcedAge);
-        if (!this.isChild() && getGrowingAge() <= -1) {
-            this.setGrowingAge(0);
+        if (!this.isBaby() && getAge() <= -1) {
+            this.setAge(0);
         }
     }
 
-    protected ILivingEntityData commonInitialSpawnSetup(IWorld inWorld, @Nullable ILivingEntityData livingdata, int childAge, int ageMinimum, int ageMaximum, SpawnReason spawnReason) {
+    protected SpawnGroupData commonInitialSpawnSetup(LevelAccessor inWorld, @Nullable SpawnGroupData livingdata, int childAge, int ageMinimum, int ageMaximum, MobSpawnType spawnReason) {
         Genes spawnGenes;
 
-        if (spawnReason.equals(SpawnReason.STRUCTURE)) {
-            spawnGenes = createInitialGenes(this.world, new BlockPos(this.getPosition()), true);
+        if (spawnReason.equals(MobSpawnType.STRUCTURE)) {
+            spawnGenes = createInitialGenes(this.level, new BlockPos(this.blockPosition()), true);
         } else if (livingdata instanceof GroupData) {
             spawnGenes = new Genes(((GroupData)livingdata).groupGenes).makeChild(true, false, ((GroupData)livingdata).groupGenes);
         } else {
-            spawnGenes = createInitialGenes(this.world, new BlockPos(this.getPosition()), false);
+            spawnGenes = createInitialGenes(this.level, new BlockPos(this.blockPosition()), false);
             livingdata = new GroupData(spawnGenes);
         }
 
         this.genetics = spawnGenes;
 
         boolean canBePregnant = false;
-        if (this.rand.nextInt(20) == 0) {
-            int age = this.rand.nextInt(childAge);
-            this.setGrowingAge(age);
-            this.setBirthTime(this.world, -age);
+        if (this.random.nextInt(20) == 0) {
+            int age = this.random.nextInt(childAge);
+            this.setAge(age);
+            this.setBirthTime(this.level, -age);
         } else {
-            this.setGrowingAge(0);
-            if (this.rand.nextInt(20) == 0) {
-                this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 192000) + 1536000));
+            this.setAge(0);
+            if (this.random.nextInt(20) == 0) {
+                this.setBirthTime(this.level, -((ThreadLocalRandom.current().nextInt(50) * 192000) + 1536000));
             } else {
-                this.setBirthTime(this.world, -((ThreadLocalRandom.current().nextInt(50) * 100000) + childAge));
+                this.setBirthTime(this.level, -((ThreadLocalRandom.current().nextInt(50) * 100000) + childAge));
             }
 
-            if (spawnReason.equals(SpawnReason.CHUNK_GENERATION)) {
-                canBePregnant = EanimodCommonConfig.COMMON.omnigenders.get() ? this.rand.nextInt(50) == 0 : this.getOrSetIsFemale() && this.rand.nextInt(25) == 0;
+            if (spawnReason.equals(MobSpawnType.CHUNK_GENERATION)) {
+                canBePregnant = EanimodCommonConfig.COMMON.omnigenders.get() ? this.random.nextInt(50) == 0 : this.getOrSetIsFemale() && this.random.nextInt(25) == 0;
             }
         }
 
@@ -1762,11 +1761,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             if (this.bottleFeedable) {
                 this.pregnant = true;
             }
-            if (this.rand.nextInt(5) == 0) {
-                int x = this.rand.nextBoolean() ? this.rand.nextInt(600) : -this.rand.nextInt(600);
-                int z = this.rand.nextBoolean() ? this.rand.nextInt(600) : -this.rand.nextInt(600);
-                BlockPos matePos = new BlockPos(this.getPosition().add(x, 0, z));
-                this.mateGenetics = createInitialGenes(this.world, matePos, false);
+            if (this.random.nextInt(5) == 0) {
+                int x = this.random.nextBoolean() ? this.random.nextInt(600) : -this.random.nextInt(600);
+                int z = this.random.nextBoolean() ? this.random.nextInt(600) : -this.random.nextInt(600);
+                BlockPos matePos = new BlockPos(this.blockPosition().offset(x, 0, z));
+                this.mateGenetics = createInitialGenes(this.level, matePos, false);
             } else {
                 this.mateGenetics = ((GroupData)livingdata).groupGenes;
             }
@@ -1776,9 +1775,9 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         return livingdata;
     }
 
-    protected abstract Genes createInitialGenes(IWorld inWorld, BlockPos pos, boolean isDomestic);
+    protected abstract Genes createInitialGenes(LevelAccessor inWorld, BlockPos pos, boolean isDomestic);
 
-    public abstract Genes createInitialBreedGenes(IWorld inWorld, BlockPos pos, String breed);
+    public abstract Genes createInitialBreedGenes(LevelAccessor inWorld, BlockPos pos, String breed);
 
     public void setInitialDefaults() {
         setSharedGenes(this.genetics);
@@ -1791,7 +1790,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         animal.heal(animal.getMaxHealth() - animal.getHealth());
     }
 
-    public static class GroupData implements ILivingEntityData {
+    public static class GroupData implements SpawnGroupData {
         public Genes groupGenes;
 
         public GroupData(Genes groupGenes) {
@@ -1805,8 +1804,8 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         if (this.getEnhancedInventory() != null) {
             ItemStack collarSlot = ItemStack.EMPTY;
             for (int i = 1; i <= 6;i++) {
-                if (this.animalInventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
-                    collarSlot = this.animalInventory.getStackInSlot(i);
+                if (this.animalInventory.getItem(i).getItem() instanceof CustomizableCollar) {
+                    collarSlot = this.animalInventory.getItem(i);
                     break;
                 }
             }

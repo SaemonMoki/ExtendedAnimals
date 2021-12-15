@@ -1,11 +1,11 @@
 package mokiyoki.enhancedanimals.capability.turtleegg;
 
 import mokiyoki.enhancedanimals.util.Genes;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
@@ -19,16 +19,16 @@ public class NestEggCapabilityStorage implements Capability.IStorage<INestEggCap
 
     @Nullable
     @Override
-    public INBT writeNBT(Capability<INestEggCapability> capability, INestEggCapability instance, Direction side) {
-        CompoundNBT compound = new CompoundNBT();
+    public Tag writeNBT(Capability<INestEggCapability> capability, INestEggCapability instance, Direction side) {
+        CompoundTag compound = new CompoundTag();
         Map<BlockPos, List<EggHolder>> allTurtleEggPos = instance.getAllNestEggPos();
-        ListNBT nbttaglist = new ListNBT();
+        ListTag nbttaglist = new ListTag();
         Set<BlockPos> nestPos = allTurtleEggPos.keySet();
         for (BlockPos blockPos : nestPos) {
             List<EggHolder> listOfEggs = allTurtleEggPos.get(blockPos);
             for (EggHolder egg : listOfEggs) {
                 if (egg.getGenes().isComplete()) {
-                    CompoundNBT nbttagcompound = new CompoundNBT();
+                    CompoundTag nbttagcompound = new CompoundTag();
                     nbttagcompound.putInt("X", blockPos.getX());
                     nbttagcompound.putInt("Y", blockPos.getY());
                     nbttagcompound.putInt("Z", blockPos.getZ());
@@ -50,13 +50,13 @@ public class NestEggCapabilityStorage implements Capability.IStorage<INestEggCap
     }
 
     @Override
-    public void readNBT(Capability<INestEggCapability> capability, INestEggCapability instance, Direction side, INBT nbt) {
-        CompoundNBT compound = (CompoundNBT) nbt;
+    public void readNBT(Capability<INestEggCapability> capability, INestEggCapability instance, Direction side, Tag nbt) {
+        CompoundTag compound = (CompoundTag) nbt;
         Map<BlockPos, List<EggHolder>> allNestBlockPos = new HashMap<>();
-        ListNBT nbttaglist = compound.getList("NestPos", 10);
+        ListTag nbttaglist = compound.getList("NestPos", 10);
 
         for (int i = 0; i < nbttaglist.size(); ++i) {
-            CompoundNBT nbttagcompound = nbttaglist.getCompound(i);
+            CompoundTag nbttagcompound = nbttaglist.getCompound(i);
             BlockPos blockPosOfNest = new BlockPos(nbttagcompound.getInt("X"), nbttagcompound.getInt("Y"), nbttagcompound.getInt("Z"));
             EggHolder egg = new EggHolder(nbttagcompound.getString("SireName"), nbttagcompound.getString("DamName"), new Genes(nbttagcompound.getIntArray("SGenes"),nbttagcompound.getIntArray("AGenes")), nbttagcompound.getBoolean("hasParents"));
 

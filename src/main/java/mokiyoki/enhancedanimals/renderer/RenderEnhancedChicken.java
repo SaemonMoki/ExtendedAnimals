@@ -6,10 +6,10 @@ import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -24,7 +24,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
     private static final String ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION = "eanimod:textures/entities/chickensilkie/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/chicken/chickenbase.png");
 
-    public RenderEnhancedChicken(EntityRendererManager render)
+    public RenderEnhancedChicken(EntityRenderDispatcher render)
     {
         super(render, new ModelEnhancedChicken<>(), 0.5F);
 //        this.addLayer(new SilkieChickenLayer(this));
@@ -33,7 +33,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    public ResourceLocation getEntityTexture(EnhancedChicken entity) {
+    public ResourceLocation getTextureLocation(EnhancedChicken entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
         boolean silkie = false;
@@ -61,7 +61,7 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
             try {
                 resourcelocation = new ResourceLocation(s);
 
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(silkie ? ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION : ENHANCED_CHICKEN_TEXTURE_LOCATION, textures, null, entity.colouration));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexture(silkie ? ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION : ENHANCED_CHICKEN_TEXTURE_LOCATION, textures, null, entity.colouration));
 //                if (genes[106] == 1 || genes[107] == 1) {
 //                    Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_CHICKEN_TEXTURE_LOCATION, null, textures, null));
 //                } else {
@@ -77,10 +77,10 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
         return resourcelocation;
     }
 
-    protected float handleRotationFloat(EnhancedChicken livingBase, float partialTicks)
+    protected float getBob(EnhancedChicken livingBase, float partialTicks)
     {
         float f = livingBase.oFlap + (livingBase.wingRotation - livingBase.oFlap) * partialTicks;
         float f1 = livingBase.oFlapSpeed + (livingBase.destPos - livingBase.oFlapSpeed) * partialTicks;
-        return (MathHelper.sin(f) + 1.0F) * f1;
+        return (Mth.sin(f) + 1.0F) * f1;
     }
 }

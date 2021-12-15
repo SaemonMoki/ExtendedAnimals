@@ -2,9 +2,7 @@ package mokiyoki.enhancedanimals.init.breeds;
 
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.GeneSketch;
-import net.minecraft.world.biome.BiomeAmbience;
-import net.minecraft.world.biome.Biomes;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.level.biome.Biomes;
 
 public class RabbitBreeds {
     public static final Breed ANGORA = new Breed(new Breed.Properties().setData("Angora", Biomes.MOUNTAINS , Breed.Rarity.ORDINARY)

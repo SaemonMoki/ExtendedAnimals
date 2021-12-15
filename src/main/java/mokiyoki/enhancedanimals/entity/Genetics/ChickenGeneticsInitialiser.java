@@ -4,9 +4,9 @@ import mokiyoki.enhancedanimals.init.breeds.ChickenBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,11 +68,11 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
 //        this.breeds.add(ChickenBreeds.CUTIEPIE);
     }
 
-    public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
+    public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
         return super.generateNewGenetics(world, pos, generateBreed, this.breeds);
     }
 
-    public Genes generateWithBreed(IWorld world, BlockPos pos, String breed) {
+    public Genes generateWithBreed(LevelAccessor world, BlockPos pos, String breed) {
         return super.generateWithBreed(world, pos, this.breeds, breed);
     }
 
@@ -84,16 +84,16 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //[ 0=minecraft wildtype, 1=jungle wildtype, 2=savanna wildtype, 3=cold wildtype, 4=swamp wildtype ]
         int wildType = 0;
 
-        if (biome.getTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
+        if (biome.getBaseTemperature() >= 0.9F && biome.getDownfall() > 0.8F) // hot and wet (jungle)
         {
             wildType = 1;
-        } else if (biome.getTemperature() >= 0.9F && biome.getDownfall() < 0.3F) // hot and dry (savanna)
+        } else if (biome.getBaseTemperature() >= 0.9F && biome.getDownfall() < 0.3F) // hot and dry (savanna)
         {
             wildType = 2;
-        } else if (biome.getTemperature() < 0.3F) // cold (mountains)
+        } else if (biome.getBaseTemperature() < 0.3F) // cold (mountains)
         {
             wildType = 3;
-        } else if (biome.getTemperature() >= 0.8F && biome.getDownfall() > 0.8F) {
+        } else if (biome.getBaseTemperature() >= 0.8F && biome.getDownfall() > 0.8F) {
             wildType = 4;
         }
 
@@ -587,7 +587,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
                 autosomalGenes[20] = (ThreadLocalRandom.current().nextInt(2) + 1);
             }
         } else {
-            if (biome.getCategory() == Biome.Category.PLAINS) {
+            if (biome.getBiomeCategory() == Biome.BiomeCategory.PLAINS) {
                 autosomalGenes[20] = (2);
             } else {
                 autosomalGenes[20] = (1);
@@ -596,7 +596,7 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
         if (ThreadLocalRandom.current().nextInt(100) > WTC || wildType == 4) {
             autosomalGenes[21] = (ThreadLocalRandom.current().nextInt(2) + 1);
         } else {
-            if (biome.getCategory() == Biome.Category.PLAINS) {
+            if (biome.getBiomeCategory() == Biome.BiomeCategory.PLAINS) {
                 autosomalGenes[21] = (2);
             } else {
                 autosomalGenes[21] = (1);

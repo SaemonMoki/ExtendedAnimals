@@ -1,30 +1,30 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
-import net.minecraft.entity.ai.goal.BreedGoal;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.ai.goal.BreedGoal;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.server.level.ServerLevel;
 
 public class EnhancedBreedGoal extends BreedGoal {
 
-    public EnhancedBreedGoal(AnimalEntity animal, double speedIn) {
+    public EnhancedBreedGoal(Animal animal, double speedIn) {
         super(animal, speedIn);
     }
 
-    public boolean shouldExecute() {
-        if (this.animal.isBeingRidden() || ((EnhancedAnimalAbstract)this.animal).isAnimalSleeping()) {
+    public boolean canUse() {
+        if (this.animal.isVehicle() || ((EnhancedAnimalAbstract)this.animal).isAnimalSleeping()) {
             return false;
         }
-        return super.shouldExecute();
+        return super.canUse();
     }
 
     /**
      * This is so the Growing Age is set lower than vanilla resets it to after Cancelling the event
      */
-    protected void spawnBaby() {
-        this.animal.func_234177_a_((ServerWorld)this.world, this.targetMate);
-        this.animal.setGrowingAge(10);
-        this.targetMate.setGrowingAge(10);
+    protected void breed() {
+        this.animal.spawnChildFromBreeding((ServerLevel)this.level, this.partner);
+        this.animal.setAge(10);
+        this.partner.setAge(10);
     }
 
 }

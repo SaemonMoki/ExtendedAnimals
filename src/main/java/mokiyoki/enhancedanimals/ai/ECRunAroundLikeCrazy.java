@@ -2,11 +2,11 @@ package mokiyoki.enhancedanimals.ai;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalRideableAbstract;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
@@ -20,15 +20,15 @@ public class ECRunAroundLikeCrazy extends Goal {
     public ECRunAroundLikeCrazy(EnhancedLlama horse, double speedIn) {
         this.ridable = horse;
         this.speed = speedIn;
-        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE));
     }
 
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
-    public boolean shouldExecute() {
-        if (!this.ridable.isTame() && this.ridable.isBeingRidden()) {
-            Vector3d vec3d = RandomPositionGenerator.findRandomTarget(this.ridable, 5, 4);
+    public boolean canUse() {
+        if (!this.ridable.isTame() && this.ridable.isVehicle()) {
+            Vec3 vec3d = RandomPos.getPos(this.ridable, 5, 4);
             if (vec3d == null) {
                 return false;
             } else {
@@ -45,42 +45,42 @@ public class ECRunAroundLikeCrazy extends Goal {
     /**
      * Execute a one shot task or start executing a continuous task
      */
-    public void startExecuting() {
-        this.ridable.getNavigator().tryMoveToXYZ(this.targetX, this.targetY, this.targetZ, this.speed);
+    public void start() {
+        this.ridable.getNavigation().moveTo(this.targetX, this.targetY, this.targetZ, this.speed);
     }
 
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
-    public boolean shouldContinueExecuting() {
-        return !this.ridable.isTame() && !this.ridable.getNavigator().noPath() && this.ridable.isBeingRidden();
+    public boolean canContinueToUse() {
+        return !this.ridable.isTame() && !this.ridable.getNavigation().isDone() && this.ridable.isVehicle();
     }
 
     /**
      * Keep ticking a continuous task that has already been started
      */
     public void tick() {
-        if (!this.ridable.isTame() && this.ridable.getRNG().nextInt(50) == 0) {
+        if (!this.ridable.isTame() && this.ridable.getRandom().nextInt(50) == 0) {
             Entity entity = this.ridable.getPassengers().get(0);
             if (entity == null) {
                 return;
             }
 
-            if (entity instanceof PlayerEntity) {
+            if (entity instanceof Player) {
                 int i = this.ridable.getTemper();
                 int j = this.ridable.getMaxTemper();
-                if (j > 0 && this.ridable.getRNG().nextInt(j) < i && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(ridable, (PlayerEntity)entity)) {
+                if (j > 0 && this.ridable.getRandom().nextInt(j) < i && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(ridable, (Player)entity)) {
                     //TODO ADD OWNERSHIP
-                    this.ridable.setTamedBy((PlayerEntity)entity);
+                    this.ridable.setTamedBy((Player)entity);
                     return;
                 }
 
                 this.ridable.increaseTemper(5);
             }
 
-            this.ridable.removePassengers();
+            this.ridable.ejectPassengers();
             this.ridable.makeMad();
-            this.ridable.world.setEntityState(this.ridable, (byte)6);
+            this.ridable.level.broadcastEntityEvent(this.ridable, (byte)6);
         }
 
     }

@@ -4,9 +4,9 @@ import mokiyoki.enhancedanimals.init.breeds.RabbitBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +33,11 @@ public class RabbitGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(RabbitBreeds.HARLEQUIN);
     }
 
-    public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
+    public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
         return super.generateNewGenetics(world, pos, generateBreed, this.breeds);
     }
 
-    public Genes generateWithBreed(IWorld world, BlockPos pos, String breed) {
+    public Genes generateWithBreed(LevelAccessor world, BlockPos pos, String breed) {
         return super.generateWithBreed(world, pos, this.breeds, breed);
     }
 
@@ -47,13 +47,13 @@ public class RabbitGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         //[ 0=forest wildtype, 1=cold wildtype, 2=desert wildtype, 3=extreme cold ]
         int wildType = 0;
-        if (biome.getTemperature() < 0.5F){
-            if (biome.getTemperature() <= 0.05F){
+        if (biome.getBaseTemperature() < 0.5F){
+            if (biome.getBaseTemperature() <= 0.05F){
                 wildType  = 3;
             } else {
                 wildType = 1;
             }
-        } else if (biome.getTemperature() > 0.8F) {
+        } else if (biome.getBaseTemperature() > 0.8F) {
             wildType = 2;
         }
         if (isFlat) {

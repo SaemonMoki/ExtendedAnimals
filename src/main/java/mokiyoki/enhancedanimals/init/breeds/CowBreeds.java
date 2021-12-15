@@ -2,7 +2,7 @@ package mokiyoki.enhancedanimals.init.breeds;
 
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.GeneSketch;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.level.biome.Biomes;
 
 public class CowBreeds {
     public static final Breed HEREFORD = new Breed(new Breed.Properties().setData("Hereford", Biomes.BIRCH_FOREST_HILLS, Breed.Rarity.ORDINARY)

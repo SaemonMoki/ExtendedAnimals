@@ -6,36 +6,36 @@ import mokiyoki.enhancedanimals.capability.turtleegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.monster.ZombieEntity;
-import net.minecraft.entity.passive.BatEntity;
-import net.minecraft.entity.passive.TurtleEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.ambient.Bat;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -44,40 +44,41 @@ import java.util.Random;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_TURTLE;
 
 public class EnhancedTurtleEggBlock extends NestBlock {
-    private static final VoxelShape ONE_EGG_SHAPE = Block.makeCuboidShape(3.0D, 0.0D, 3.0D, 12.0D, 7.0D, 12.0D);
-    private static final VoxelShape MULTI_EGG_SHAPE = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 7.0D, 15.0D);
-    public static final IntegerProperty HATCH = BlockStateProperties.HATCH_0_2;
-    public static final IntegerProperty EGGS = BlockStateProperties.EGGS_1_4;
+    private static final VoxelShape ONE_EGG_SHAPE = Block.box(3.0D, 0.0D, 3.0D, 12.0D, 7.0D, 12.0D);
+    private static final VoxelShape MULTI_EGG_SHAPE = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 7.0D, 15.0D);
+    public static final IntegerProperty HATCH = BlockStateProperties.HATCH;
+    public static final IntegerProperty EGGS = BlockStateProperties.EGGS;
 
-    public EnhancedTurtleEggBlock(AbstractBlock.Properties properties) {
+    public EnhancedTurtleEggBlock(BlockBehaviour.Properties properties) {
         super(properties);
-        this.setDefaultState(this.stateContainer.getBaseState().with(HATCH, Integer.valueOf(0)).with(EGGS, Integer.valueOf(1)));
+        this.registerDefaultState(this.stateDefinition.any().setValue(HATCH, Integer.valueOf(0)).setValue(EGGS, Integer.valueOf(1)));
     }
 
     /**
      * Called when the given entity walks on this Block
      */
-    public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
+    public void stepOn(Level worldIn, BlockPos pos, Entity entityIn) {
         this.tryTrample(worldIn, pos, entityIn, 100);
-        super.onEntityWalk(worldIn, pos, entityIn);
+        super.stepOn(worldIn, pos, entityIn);
     }
 
     /**
      * Block's chance to react to a living entity falling on it.
      */
-    public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance) {
-        if (!(entityIn instanceof ZombieEntity)) {
+    @Override
+    public void fallOn(Level worldIn, BlockState blockState, BlockPos pos, Entity entityIn, float fallDistance) {
+        if (!(entityIn instanceof Zombie)) {
             this.tryTrample(worldIn, pos, entityIn, 3);
         }
 
-        super.onFallenUpon(worldIn, pos, entityIn, fallDistance);
+        super.fallOn(worldIn, blockState, pos, entityIn, fallDistance);
     }
 
-    private void tryTrample(World worldIn, BlockPos pos, Entity trampler, int chances) {
+    private void tryTrample(Level worldIn, BlockPos pos, Entity trampler, int chances) {
         if (this.canTrample(worldIn, trampler)) {
-            if (!worldIn.isRemote && worldIn.rand.nextInt(chances) == 0) {
+            if (!worldIn.isClientSide && worldIn.random.nextInt(chances) == 0) {
                 BlockState blockstate = worldIn.getBlockState(pos);
-                if (blockstate.isIn(Blocks.TURTLE_EGG)) {
+                if (blockstate.is(Blocks.TURTLE_EGG)) {
                     this.removeOneEgg(worldIn, pos, blockstate);
                 }
             }
@@ -85,13 +86,13 @@ public class EnhancedTurtleEggBlock extends NestBlock {
         }
     }
 
-    protected void removeOneEgg(World worldIn, BlockPos pos, BlockState state) {
+    protected void removeOneEgg(Level worldIn, BlockPos pos, BlockState state) {
         removeOneEgg(worldIn, pos, state, true);
     }
 
-    private void removeOneEgg(World worldIn, BlockPos pos, BlockState state, boolean removeEgg) {
-        worldIn.playSound((PlayerEntity)null, pos, SoundEvents.ENTITY_TURTLE_EGG_BREAK, SoundCategory.BLOCKS, 0.7F, 0.9F + worldIn.rand.nextFloat() * 0.2F);
-        int i = state.get(EGGS);
+    private void removeOneEgg(Level worldIn, BlockPos pos, BlockState state, boolean removeEgg) {
+        worldIn.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_BREAK, SoundSource.BLOCKS, 0.7F, 0.9F + worldIn.random.nextFloat() * 0.2F);
+        int i = state.getValue(EGGS);
         if (i <= 1) {
             if (removeEgg) {
                 worldIn.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeNestPos(pos);
@@ -101,22 +102,22 @@ public class EnhancedTurtleEggBlock extends NestBlock {
             if (removeEgg) {
                 worldIn.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggFromNest(pos);
             }
-            worldIn.setBlockState(pos, state.with(EGGS, Integer.valueOf(i - 1)), 2);
-            worldIn.playEvent(2001, pos, Block.getStateId(state));
+            worldIn.setBlock(pos, state.setValue(EGGS, Integer.valueOf(i - 1)), 2);
+            worldIn.levelEvent(2001, pos, Block.getId(state));
         }
     }
 
     /**
      * Performs a random tick on a block.
      */
-    public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
+    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random) {
         if (this.canGrow(worldIn) && hasProperHabitat(worldIn, pos)) {
-            int i = state.get(HATCH);
+            int i = state.getValue(HATCH);
             if (i < 2) {
-                worldIn.playSound((PlayerEntity)null, pos, SoundEvents.ENTITY_TURTLE_EGG_CRACK, SoundCategory.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
-                worldIn.setBlockState(pos, state.with(HATCH, Integer.valueOf(i + 1)), 2);
+                worldIn.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_CRACK, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
+                worldIn.setBlock(pos, state.setValue(HATCH, Integer.valueOf(i + 1)), 2);
             } else {
-                worldIn.playSound((PlayerEntity)null, pos, SoundEvents.ENTITY_TURTLE_EGG_HATCH, SoundCategory.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
+                worldIn.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
                 worldIn.removeBlock(pos, false);
 
                 List<EggHolder> eggList = worldIn.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggsFromNest(pos);
@@ -124,7 +125,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
 
                 if (eggList!=null) {
                     for (EggHolder egg : eggList) {
-                        worldIn.playEvent(2001, pos, Block.getStateId(state));
+                        worldIn.levelEvent(2001, pos, Block.getId(state));
                         EnhancedTurtle turtle = ENHANCED_TURTLE.create(worldIn);
                         turtle.setGenes(egg.getGenes());
                         turtle.setSharedGenes(egg.getGenes());
@@ -133,16 +134,16 @@ public class EnhancedTurtleEggBlock extends NestBlock {
                         turtle.setGrowingAge();
                         turtle.initilizeAnimalSize();
                         turtle.setBirthTime();
-                        turtle.setLocationAndAngles((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
+                        turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
                         turtle.setHome(pos);
                         turtle.setHasScute();
-                        worldIn.addEntity(turtle);
+                        worldIn.addFreshEntity(turtle);
                     }
                 } else {
-                    for (int k = 0; k < state.get(EGGS); k++) {
-                        worldIn.playEvent(2001, pos, Block.getStateId(state));
+                    for (int k = 0; k < state.getValue(EGGS); k++) {
+                        worldIn.levelEvent(2001, pos, Block.getId(state));
                         EnhancedTurtle turtle = ENHANCED_TURTLE.create(worldIn);
-                        Genes turtleGenes = turtle.createInitialBreedGenes(turtle.getEntityWorld(), turtle.getPosition(), "WanderingTrader");
+                        Genes turtleGenes = turtle.createInitialBreedGenes(turtle.getCommandSenderWorld(), turtle.blockPosition(), "WanderingTrader");
                         turtle.setGenes(turtleGenes);
                         turtle.setSharedGenes(turtleGenes);
                         turtle.setSireName("???");
@@ -150,10 +151,10 @@ public class EnhancedTurtleEggBlock extends NestBlock {
                         turtle.setGrowingAge();
                         turtle.initilizeAnimalSize();
                         turtle.setBirthTime();
-                        turtle.setLocationAndAngles((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
+                        turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
                         turtle.setHome(pos);
                         turtle.setHasScute();
-                        worldIn.addEntity(turtle);
+                        worldIn.addFreshEntity(turtle);
                     }
                 }
             }
@@ -161,27 +162,27 @@ public class EnhancedTurtleEggBlock extends NestBlock {
 
     }
 
-    public static boolean hasProperHabitat(IBlockReader reader, BlockPos blockReader) {
-        return isProperHabitat(reader, blockReader.down());
+    public static boolean hasProperHabitat(BlockGetter reader, BlockPos blockReader) {
+        return isProperHabitat(reader, blockReader.below());
     }
 
-    public static boolean isProperHabitat(IBlockReader reader, BlockPos pos) {
-        return reader.getBlockState(pos).isIn(BlockTags.SAND);
+    public static boolean isProperHabitat(BlockGetter reader, BlockPos pos) {
+        return reader.getBlockState(pos).is(BlockTags.SAND);
     }
 
-    public void onBlockAdded(BlockState state, World worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (hasProperHabitat(worldIn, pos) && !worldIn.isRemote) {
-            worldIn.playEvent(2005, pos, 0);
+    public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
+        if (hasProperHabitat(worldIn, pos) && !worldIn.isClientSide) {
+            worldIn.levelEvent(2005, pos, 0);
         }
 
     }
 
-    private boolean canGrow(World worldIn) {
-        float f = worldIn.func_242415_f(1.0F);
+    private boolean canGrow(Level worldIn) {
+        float f = worldIn.getTimeOfDay(1.0F);
         if ((double)f < 0.69D && (double)f > 0.65D) {
             return true;
         } else {
-            return worldIn.rand.nextInt(500) == 0;
+            return worldIn.random.nextInt(500) == 0;
         }
     }
 
@@ -189,49 +190,49 @@ public class EnhancedTurtleEggBlock extends NestBlock {
      * Spawns the block's drops in the world. By the time this is called the Block has possibly been set to air via
      * Block.removedByPlayer
      */
-    public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity tileEntityIn, ItemStack stack) {
-        player.addStat(Stats.BLOCK_MINED.get(this));
-        player.addExhaustion(0.005F);
-        if (worldIn instanceof ServerWorld) {
-            getDrops(state, (ServerWorld)worldIn, pos, tileEntityIn, player, stack).forEach((stackToSpawn) -> {
+    public void playerDestroy(Level worldIn, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity tileEntityIn, ItemStack stack) {
+        player.awardStat(Stats.BLOCK_MINED.get(this));
+        player.causeFoodExhaustion(0.005F);
+        if (worldIn instanceof ServerLevel) {
+            getDrops(state, (ServerLevel)worldIn, pos, tileEntityIn, player, stack).forEach((stackToSpawn) -> {
                 spawnAsGeneticItemEntity(worldIn, pos, stackToSpawn);
             });
-            state.spawnAdditionalDrops((ServerWorld)worldIn, pos, stack);
+            state.spawnAfterBreak((ServerLevel)worldIn, pos, stack);
         }
         this.removeOneEgg(worldIn, pos, state, false);
     }
 
-    public boolean isReplaceable(BlockState state, BlockItemUseContext useContext) {
-        return useContext.getItem().getItem() == this.asItem() && state.get(EGGS) < 4 || super.isReplaceable(state, useContext);
+    public boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
+        return useContext.getItemInHand().getItem() == this.asItem() && state.getValue(EGGS) < 4 || super.canBeReplaced(state, useContext);
     }
 
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        BlockState blockstate = context.getWorld().getBlockState(context.getPos());
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockState blockstate = context.getLevel().getBlockState(context.getClickedPos());
 
-        EggHolder eggHolder = context.getItem().getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(context.getItem());
+        EggHolder eggHolder = context.getItemInHand().getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(context.getItemInHand());
 
         if (eggHolder.getGenes()!=null) {
-            context.getWorld().getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).addNestEggPos(context.getPos(), eggHolder.getSire(), eggHolder.getDam(), eggHolder.getGenes(), true);
+            context.getLevel().getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).addNestEggPos(context.getClickedPos(), eggHolder.getSire(), eggHolder.getDam(), eggHolder.getGenes(), true);
         }
 
-        return blockstate.isIn(this) ? blockstate.with(EGGS, Integer.valueOf(Math.min(4, blockstate.get(EGGS) + 1))) : super.getStateForPlacement(context);
+        return blockstate.is(this) ? blockstate.setValue(EGGS, Integer.valueOf(Math.min(4, blockstate.getValue(EGGS) + 1))) : super.getStateForPlacement(context);
     }
 
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-        return state.get(EGGS) > 1 ? MULTI_EGG_SHAPE : ONE_EGG_SHAPE;
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+        return state.getValue(EGGS) > 1 ? MULTI_EGG_SHAPE : ONE_EGG_SHAPE;
     }
 
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(HATCH, EGGS);
     }
 
-    private boolean canTrample(World worldIn, Entity trampler) {
-        if (!(trampler instanceof TurtleEntity) && !(trampler instanceof BatEntity) && !(trampler instanceof EnhancedTurtle)) {
+    private boolean canTrample(Level worldIn, Entity trampler) {
+        if (!(trampler instanceof Turtle) && !(trampler instanceof Bat) && !(trampler instanceof EnhancedTurtle)) {
             if (!(trampler instanceof LivingEntity)) {
                 return false;
             } else {
-                return trampler instanceof PlayerEntity || net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(worldIn, trampler);
+                return trampler instanceof Player || net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(worldIn, trampler);
             }
         } else {
             return false;
@@ -239,7 +240,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
+    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
         ItemStack itemStack = super.getPickBlock(state, target, world, pos, player);
         EggHolder egg = itemStack.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).getEggInNest(pos);
         if (egg!=null) {
@@ -247,28 +248,28 @@ public class EnhancedTurtleEggBlock extends NestBlock {
             if (itemStack.getItem() instanceof EnhancedEgg) {
                 ((EnhancedEgg) itemStack.getItem()).setHasParents(itemStack, egg.hasParents());
             }
-            CompoundNBT nbtTagCompound = itemStack.serializeNBT();
+            CompoundTag nbtTagCompound = itemStack.serializeNBT();
             itemStack.deserializeNBT(nbtTagCompound);
         }
         return itemStack;
     }
 
-    public static void spawnAsGeneticItemEntity(World worldIn, BlockPos pos, ItemStack stack) {
-        if (!worldIn.isRemote && !stack.isEmpty() && worldIn.getGameRules().getBoolean(GameRules.DO_TILE_DROPS) && !worldIn.restoringBlockSnapshots) {
+    public static void spawnAsGeneticItemEntity(Level worldIn, BlockPos pos, ItemStack stack) {
+        if (!worldIn.isClientSide && !stack.isEmpty() && worldIn.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS) && !worldIn.restoringBlockSnapshots) {
             float f = 0.5F;
-            double d0 = (double)(worldIn.rand.nextFloat() * 0.5F) + 0.25D;
-            double d1 = (double)(worldIn.rand.nextFloat() * 0.5F) + 0.25D;
-            double d2 = (double)(worldIn.rand.nextFloat() * 0.5F) + 0.25D;
+            double d0 = (double)(worldIn.random.nextFloat() * 0.5F) + 0.25D;
+            double d1 = (double)(worldIn.random.nextFloat() * 0.5F) + 0.25D;
+            double d2 = (double)(worldIn.random.nextFloat() * 0.5F) + 0.25D;
             EggHolder eggHolder = worldIn.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggFromNest(pos);
             stack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(eggHolder.getGenes()), eggHolder.getSire(), eggHolder.getDam());
             if (stack.getItem() instanceof EnhancedEgg) {
                 ((EnhancedEgg)stack.getItem()).setHasParents(stack, eggHolder.getGenes()!=null);
             }
-            CompoundNBT nbtTagCompound = stack.serializeNBT();
+            CompoundTag nbtTagCompound = stack.serializeNBT();
             stack.deserializeNBT(nbtTagCompound);
             ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX() + d0, (double)pos.getY() + d1, (double)pos.getZ() + d2, stack);
-            itementity.setDefaultPickupDelay();
-            worldIn.addEntity(itementity);
+            itementity.setDefaultPickUpDelay();
+            worldIn.addFreshEntity(itementity);
         }
     }
 }

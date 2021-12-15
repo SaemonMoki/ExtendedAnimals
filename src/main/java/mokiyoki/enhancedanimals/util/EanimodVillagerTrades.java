@@ -2,13 +2,13 @@ package mokiyoki.enhancedanimals.util;
 
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
-import net.minecraft.entity.merchant.villager.VillagerProfession;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.MerchantOffer;
-import net.minecraft.item.MerchantOffers;
+import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.MerchantOffer;
+import net.minecraft.world.item.trading.MerchantOffers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static net.minecraft.entity.merchant.villager.VillagerProfession.LEATHERWORKER;
-import static net.minecraft.entity.merchant.villager.VillagerProfession.SHEPHERD;
+import staticnet.minecraft.world.entity.npc.VillagerProfessionn.SHEPHERD;
 
 public final class EanimodVillagerTrades extends MerchantOffers {
     private static ArrayList<SaleItemHolder> LeatherWorkerTrades = new ArrayList<>();

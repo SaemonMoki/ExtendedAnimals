@@ -17,7 +17,7 @@ public class EnhancedRabbitPanicGoal extends EnhancedPanicGoal {
      */
     public void tick() {
         super.tick();
-        this.rabbit.setMovementSpeed(this.speed);
+        this.rabbit.setMovementSpeed(this.speedModifier);
     }
 
 }

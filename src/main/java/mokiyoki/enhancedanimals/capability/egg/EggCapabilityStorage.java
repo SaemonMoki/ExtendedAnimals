@@ -2,10 +2,10 @@ package mokiyoki.enhancedanimals.capability.egg;
 
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nullable;
@@ -17,11 +17,11 @@ public class EggCapabilityStorage implements Capability.IStorage<IEggCapability>
 
     @Nullable
     @Override
-    public INBT writeNBT(Capability<IEggCapability> capability, IEggCapability instance, Direction side) {
-        CompoundNBT compound = new CompoundNBT();
+    public Tag writeNBT(Capability<IEggCapability> capability, IEggCapability instance, Direction side) {
+        CompoundTag compound = new CompoundTag();
         Genes genes = instance.getGenes();
         if (genes != null) {
-            CompoundNBT nbttagcompound = new CompoundNBT();
+            CompoundTag nbttagcompound = new CompoundTag();
             nbttagcompound.putIntArray("SGenes", genes.getSexlinkedGenes());
             nbttagcompound.putIntArray("AGenes", genes.getAutosomalGenes());
             compound.put("Genetics", nbttagcompound);
@@ -42,14 +42,14 @@ public class EggCapabilityStorage implements Capability.IStorage<IEggCapability>
     }
 
     @Override
-    public void readNBT(Capability<IEggCapability> capability, IEggCapability instance, Direction side, INBT nbt) {
-        CompoundNBT compound = (CompoundNBT) nbt;
+    public void readNBT(Capability<IEggCapability> capability, IEggCapability instance, Direction side, Tag nbt) {
+        CompoundTag compound = (CompoundTag) nbt;
 
         if (compound.contains("Genetics")) {
-            CompoundNBT nbtGenetics = compound.getCompound("Genetics");
+            CompoundTag nbtGenetics = compound.getCompound("Genetics");
             instance.setGenes(new Genes(nbtGenetics.getIntArray("SGenes"), nbtGenetics.getIntArray("AGenes")));
         } else {
-            ListNBT geneList = compound.getList("Genes", 10);
+            ListTag geneList = compound.getList("Genes", 10);
             if (geneList.size() > 0) {
                 if (geneList.getCompound(0).contains("Sgene") && geneList.getCompound(0).getInt("Sgene") != 0) {
                     Genes genetics = new Genes(Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH);

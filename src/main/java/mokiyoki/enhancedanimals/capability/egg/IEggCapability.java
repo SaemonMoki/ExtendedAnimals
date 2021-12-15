@@ -2,7 +2,7 @@ package mokiyoki.enhancedanimals.capability.egg;
 
 import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
 import mokiyoki.enhancedanimals.util.Genes;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Created by saemon on 30/09/2018.

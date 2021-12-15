@@ -30,11 +30,10 @@ import mokiyoki.enhancedanimals.proxy.ServerProxy;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootTables;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.DistExecutor;
@@ -45,8 +44,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -80,9 +79,9 @@ public class EnhancedAnimals {
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
             .simpleChannel();
 
-    public static final ItemGroup GENETICS_ANIMALS_GROUP = new ItemGroup(MODID) {
+    public static final CreativeModeTab GENETICS_ANIMALS_GROUP = new CreativeModeTab(MODID) {
         @Override
-        public ItemStack createIcon() {
+        public ItemStack makeIcon() {
             return new ItemStack(ModItems.Egg_Blue);
         }
     };
@@ -126,22 +125,24 @@ public class EnhancedAnimals {
         int messageNumber = 0;
         channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumer(EAEquipmentPacket::processPacket).add();
 
-        GlobalEntityTypeAttributes.put(ENHANCED_CHICKEN, EnhancedChicken.prepareAttributes().create());
-        GlobalEntityTypeAttributes.put(ENHANCED_RABBIT, EnhancedRabbit.prepareAttributes().create());
-        GlobalEntityTypeAttributes.put(ENHANCED_SHEEP, EnhancedSheep.prepareAttributes().create());
-        GlobalEntityTypeAttributes.put(ENHANCED_LLAMA, EnhancedLlama.prepareAttributes().create());
-        GlobalEntityTypeAttributes.put(ENHANCED_COW, EnhancedCow.prepareAttributes().create());
-        GlobalEntityTypeAttributes.put(ENHANCED_MOOSHROOM, EnhancedMooshroom.prepareAttributes().create());
-        GlobalEntityTypeAttributes.put(ENHANCED_MOOBLOOM, EnhancedMoobloom.prepareAttributes().create());
-        GlobalEntityTypeAttributes.put(ENHANCED_PIG, EnhancedPig.prepareAttributes().create());
-        GlobalEntityTypeAttributes.put(ENHANCED_HORSE, EnhancedHorse.prepareAttributes().create());
-        GlobalEntityTypeAttributes.put(ENHANCED_TURTLE, EnhancedTurtle.prepareAttributes().create());
+        DefaultAttributes.put(ENHANCED_CHICKEN, EnhancedChicken.prepareAttributes().build());
+        DefaultAttributes.put(ENHANCED_RABBIT, EnhancedRabbit.prepareAttributes().build());
+        DefaultAttributes.put(ENHANCED_SHEEP, EnhancedSheep.prepareAttributes().build());
+        DefaultAttributes.put(ENHANCED_LLAMA, EnhancedLlama.prepareAttributes().build());
+        DefaultAttributes.put(ENHANCED_COW, EnhancedCow.prepareAttributes().build());
+        DefaultAttributes.put(ENHANCED_MOOSHROOM, EnhancedMooshroom.prepareAttributes().build());
+        DefaultAttributes.put(ENHANCED_MOOBLOOM, EnhancedMoobloom.prepareAttributes().build());
+        DefaultAttributes.put(ENHANCED_PIG, EnhancedPig.prepareAttributes().build());
+        DefaultAttributes.put(ENHANCED_HORSE, EnhancedHorse.prepareAttributes().build());
+        DefaultAttributes.put(ENHANCED_TURTLE, EnhancedTurtle.prepareAttributes().build());
 
-
-//        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_rabbit"));
+//        LootTables.all().add(new ResourceLocation(Reference.MODID, "enhanced_chicken"));
+//        LootConditionManager.registerCondition(new EnhancedChickenLootCondition.Serializer());
+//
+//        LootTables.all().add(new ResourceLocation(Reference.MODID, "enhanced_rabbit"));
 //        LootConditionManager.registerCondition(new EnhancedRabbitLootCondition.Serializer());
 //
-//        LootTables.func_215796_a().add(new ResourceLocation(Reference.MODID, "enhanced_llama"));
+//        LootTables.all().add(new ResourceLocation(Reference.MODID, "enhanced_llama"));
 //        LootConditionManager.registerCondition(new EnhancedLlamaLootCondition.Serializer());
 
     }

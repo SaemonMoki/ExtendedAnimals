@@ -1,9 +1,9 @@
 package mokiyoki.enhancedanimals.capability.turtleegg;
 
 import mokiyoki.enhancedanimals.util.Genes;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NestCapabilityProvider implements INestEggCapability, ICapabilitySerializable<INBT> {
+public class NestCapabilityProvider implements INestEggCapability, ICapabilitySerializable<Tag> {
 
     @CapabilityInject(INestEggCapability.class)
     public static final Capability<INestEggCapability> NEST_CAP = null;
@@ -89,12 +89,12 @@ public class NestCapabilityProvider implements INestEggCapability, ICapabilitySe
 
 
     @Override
-    public INBT serializeNBT() {
+    public Tag serializeNBT() {
         return NEST_CAP.getStorage().writeNBT(NEST_CAP, this, null);
     }
 
     @Override
-    public void deserializeNBT(INBT nbt) {
+    public void deserializeNBT(Tag nbt) {
         NEST_CAP.getStorage().readNBT(NEST_CAP, this, null, nbt);
     }
 

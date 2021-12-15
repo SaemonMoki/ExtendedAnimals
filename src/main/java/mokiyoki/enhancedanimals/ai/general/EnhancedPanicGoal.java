@@ -1,27 +1,27 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.goal.PanicGoal;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.core.BlockPos;
 
 public class EnhancedPanicGoal extends PanicGoal {
 
-    public EnhancedPanicGoal(CreatureEntity creature, double speedIn) {
+    public EnhancedPanicGoal(PathfinderMob creature, double speedIn) {
         super(creature, speedIn);
     }
 
-    public boolean shouldExecute() {
-        if (this.creature.getRevengeTarget() == null && !this.creature.isBurning()) {
+    public boolean canUse() {
+        if (this.mob.getLastHurtByMob() == null && !this.mob.isOnFire()) {
             return false;
         } else {
-            ((EnhancedAnimalAbstract)this.creature).awaken();
-            if (this.creature.isBurning()) {
-                BlockPos blockpos = this.getRandPos(this.creature.world, this.creature, 5, 4);
+            ((EnhancedAnimalAbstract)this.mob).awaken();
+            if (this.mob.isOnFire()) {
+                BlockPos blockpos = this.lookForWater(this.mob.level, this.mob, 5, 4);
                 if (blockpos != null) {
-                    this.randPosX = (double)blockpos.getX();
-                    this.randPosY = (double)blockpos.getY();
-                    this.randPosZ = (double)blockpos.getZ();
+                    this.posX = (double)blockpos.getX();
+                    this.posY = (double)blockpos.getY();
+                    this.posZ = (double)blockpos.getZ();
                     return true;
                 }
             }

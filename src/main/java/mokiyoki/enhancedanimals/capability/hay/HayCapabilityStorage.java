@@ -1,10 +1,10 @@
 package mokiyoki.enhancedanimals.capability.hay;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 
@@ -21,15 +21,15 @@ public class HayCapabilityStorage implements IStorage<IHayCapability> {
 
     @Nullable
     @Override
-    public INBT writeNBT(Capability<IHayCapability> capability, IHayCapability instance, Direction side) {
-        CompoundNBT compound = new CompoundNBT();
+    public Tag writeNBT(Capability<IHayCapability> capability, IHayCapability instance, Direction side) {
+        CompoundTag compound = new CompoundTag();
         Set<BlockPos> allHayBlockPos = instance.getAllHayPos();
 
-        ListNBT nbttaglist = new ListNBT();
+        ListTag nbttaglist = new ListTag();
 
         for (BlockPos blockPos : allHayBlockPos)
         {
-            CompoundNBT nbttagcompound = new CompoundNBT();
+            CompoundTag nbttagcompound = new CompoundTag();
             nbttagcompound.putInt("X", blockPos.getX());
             nbttagcompound.putInt("Y", blockPos.getY());
             nbttagcompound.putInt("Z", blockPos.getZ());
@@ -42,13 +42,13 @@ public class HayCapabilityStorage implements IStorage<IHayCapability> {
     }
 
     @Override
-    public void readNBT(Capability<IHayCapability> capability, IHayCapability instance, Direction side, INBT nbt) {
-        CompoundNBT compound = (CompoundNBT) nbt;
+    public void readNBT(Capability<IHayCapability> capability, IHayCapability instance, Direction side, Tag nbt) {
+        CompoundTag compound = (CompoundTag) nbt;
         Set<BlockPos> allHayBlockPos = new HashSet<>();
-        ListNBT nbttaglist = compound.getList("HaysPos", 10);
+        ListTag nbttaglist = compound.getList("HaysPos", 10);
 
         for (int i = 0; i < nbttaglist.size(); ++i) {
-            CompoundNBT nbttagcompound = nbttaglist.getCompound(i);
+            CompoundTag nbttagcompound = nbttaglist.getCompound(i);
             BlockPos blockPosOfHay = new BlockPos(nbttagcompound.getInt("X"), nbttagcompound.getInt("Y"), nbttagcompound.getInt("Z"));
             allHayBlockPos.add(blockPosOfHay);
         }

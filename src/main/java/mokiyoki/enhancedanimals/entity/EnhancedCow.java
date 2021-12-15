@@ -21,37 +21,39 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.FollowParentGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FollowParentGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -65,8 +67,8 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     //avalible UUID spaces : [ S X X X X X 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
-    protected static final DataParameter<Boolean> RESET_TEXTURE = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<String> MOOSHROOM_UUID = EntityDataManager.createKey(EnhancedCow.class, DataSerializers.STRING);
+    protected static final EntityDataAccessor<Boolean> RESET_TEXTURE = SynchedEntityData.defineId(EnhancedCow.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<String> MOOSHROOM_UUID = SynchedEntityData.defineId(EnhancedCow.class, EntityDataSerializers.STRING);
 
     private static final String[] COW_TEXTURES_BASE = new String[] {
             "solid_white.png", "solid_lightcream.png", "solid_cream.png", "solid_silver.png"
@@ -166,11 +168,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     protected GrazingGoal grazingGoal;
     private EnhancedWaterAvoidingRandomWalkingEatingGoal wanderEatingGoal;
 
-    public EnhancedCow(EntityType<? extends EnhancedCow> entityType, World worldIn) {
+    public EnhancedCow(EntityType<? extends EnhancedCow> entityType, Level worldIn) {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.COW_AUTOSOMAL_GENES_LENGTH, true);
         // cowsize from .7 to 1.5 max bag size is 1 to 1.5
         //large cows make from 30 to 12 milk points per day, small cows make up to 1/4
-        this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*2400)) * (getAnimalSize()/1.5F)) - 300;
+        this.timeUntilNextMilk = this.random.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*2400)) * (getAnimalSize()/1.5F)) - 300;
     }
 
     private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
@@ -210,15 +212,15 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //        this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
 //    }
 
-    protected void updateAITasks() {
+    protected void customServerAiStep() {
         this.animalEatingTimer = this.grazingGoal.getEatingGrassTimer();
-        super.updateAITasks();
+        super.customServerAiStep();
     }
 
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(RESET_TEXTURE, false);
-        this.dataManager.register(MOOSHROOM_UUID, "0");
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(RESET_TEXTURE, false);
+        this.entityData.define(MOOSHROOM_UUID, "0");
     }
 
     @Override
@@ -240,7 +242,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     protected void setMooshroomUUID(String status) {
         if (!status.equals("")) {
-            this.dataManager.set(MOOSHROOM_UUID, status);
+            this.entityData.set(MOOSHROOM_UUID, status);
             this.mooshroomUUID = status;
         }
     }
@@ -261,19 +263,19 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         if (isAnimalSleeping()) {
             return null;
         }
-        return SoundEvents.ENTITY_COW_AMBIENT;
+        return SoundEvents.COW_AMBIENT;
     }
 
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) { return SoundEvents.ENTITY_COW_HURT; }
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) { return SoundEvents.COW_HURT; }
 
-    protected SoundEvent getDeathSound() { return SoundEvents.ENTITY_COW_DEATH; }
+    protected SoundEvent getDeathSound() { return SoundEvents.COW_DEATH; }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         super.playStepSound(pos, blockIn);
-        this.playSound(SoundEvents.ENTITY_COW_STEP, 0.15F, 1.0F);
+        this.playSound(SoundEvents.COW_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 0.1F);
-            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BELL, 1.0F, 0.1F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 0.1F);
+            this.playSound(SoundEvents.NOTE_BLOCK_BELL, 1.0F, 0.1F);
         }
     }
 
@@ -285,8 +287,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    public double getMountedYOffset() {
-        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+    public double getPassengersRidingOffset() {
+        ItemStack saddleSlot = this.getEnhancedInventory().getItem(1);
         double yPos;
         if (this.getOrSetIsFemale()) {
             //female height
@@ -299,7 +301,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         float size = this.getAnimalSize();
 
         if (this.dwarf == -1.0F) {
-            Genes sharedGenetics = new Genes(this.dataManager.get(SHARED_GENES));
+            Genes sharedGenetics = new Genes(this.entityData.get(SHARED_GENES));
             this.dwarf = sharedGenetics.isHomozygousFor(26, 2) ? 0.0F : 0.2F;
         }
 
@@ -320,7 +322,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     protected float getJumpHeight() {
-        if (this.dwarf > 0 || this.getEnhancedInventory().getStackInSlot(0).getItem() == Items.CHEST) {
+        if (this.dwarf > 0 || this.getEnhancedInventory().getItem(0).getItem() == Items.CHEST) {
             return 0.45F;
         } else {
             float jump = 0.48F;
@@ -352,7 +354,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         }
 
         float chestMod = 0.0F;
-        ItemStack chestSlot = this.getEnhancedInventory().getStackInSlot(0);
+        ItemStack chestSlot = this.getEnhancedInventory().getItem(0);
         if (chestSlot.getItem() == Items.CHEST) {
             chestMod = (1.0F-((size-0.7F)*1.25F)) * 0.4F;
         }
@@ -360,20 +362,20 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         return 0.4F + (speedMod * 0.4F) - chestMod;
     }
 
-    public static AttributeModifierMap.MutableAttribute prepareAttributes() {
-        return MobEntity.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 8.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.23D)
-                .createMutableAttribute(JUMP_STRENGTH);
+    public static AttributeSupplier.Builder prepareAttributes() {
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 8.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.23D)
+                .add(JUMP_STRENGTH);
     }
 
     @Override
-    public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(1.0F, 1.25F).scale(this.getRenderScale());
+    public EntityDimensions getDimensions(Pose poseIn) {
+        return EntityDimensions.scalable(1.0F, 1.25F).scale(this.getScale());
     }
 
     @Override
-    public float getRenderScale() {
+    public float getScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
         size = this.getOrSetIsFemale() ? size : size * 1.1F;
         float newbornSize = 0.65F;
@@ -381,7 +383,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected void setIsFemale(CompoundNBT compound) {
+    protected void setIsFemale(CompoundTag compound) {
         if (compound.contains("IsFemale")) {
             this.isFemale = compound.getBoolean("IsFemale");
         } else {
@@ -389,10 +391,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         }
     }
 
-    public void livingTick() {
-        super.livingTick();
+    public void aiStep() {
+        super.aiStep();
 
-        if (!this.world.isRemote) {
+        if (!this.level.isClientSide) {
             if (getEntityStatus().equals(EntityState.MOTHER.toString())) {
                 if (hunger <= 24000) {
                     if (--this.timeUntilNextMilk <= 0) {
@@ -400,7 +402,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                         if (milk < (30*(getAnimalSize()/1.5F))*(this.maxBagSize/1.5F)) {
                             milk++;
                             setMilkAmount(milk);
-                            this.timeUntilNextMilk = this.rand.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*1200)) * (getAnimalSize()/1.5F)) - 300;
+                            this.timeUntilNextMilk = this.random.nextInt(600) + Math.round((800 + ((1.5F - this.maxBagSize)*1200)) * (getAnimalSize()/1.5F)) - 300;
 
                             //this takes the number of milk points a cow has over the number possible to make a number between 0 and 1.
                             float milkBagSize = milk / (30*(getAnimalSize()/1.5F)*(this.maxBagSize/1.5F));
@@ -426,7 +428,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Override
     public boolean sleepingConditional() {
-        return (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && this.awokenTimer == 0 && !this.sleeping);
+        return (((this.level.getDayTime()%24000 >= 12600 && this.level.getDayTime()%24000 <= 22000) || this.level.isThundering()) && this.awokenTimer == 0 && !this.sleeping);
     }
 
     protected void initialMilk() {
@@ -453,13 +455,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
 
-    protected void createAndSpawnEnhancedChild(World inWorld) {
-        EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
+    protected void createAndSpawnEnhancedChild(Level inWorld) {
+        EnhancedCow enhancedcow = ENHANCED_COW.create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -this.getAdultAge());
+        defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -this.getAdultAge);
         enhancedcow.configureAI();
 
-        this.world.addEntity(enhancedcow);
+        this.level.addFreshEntity(enhancedcow);
     }
 
     public void lethalGenes(){
@@ -470,12 +472,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected boolean canDropLoot() { return true; }
+    protected boolean shouldDropExperience() { return true; }
 
-    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
-        super.dropSpecialItems(source, looting, recentlyHitIn);
+    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
+        super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
-        this.isBurning();
+        this.isOnFire();
         float cowSize = this.getAnimalSize();
         float age = this.getAge();
         int cowThickness = (genes[54] + genes[55]);
@@ -496,11 +498,11 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         leatherDrop = meatDrop - 2;
 
         if (meatChanceMod  != 0) {
-            int i = this.rand.nextInt(100);
+            int i = this.random.nextInt(100);
             if (meatChanceMod > i) {
                 meatDrop++;
             }
-            i = this.rand.nextInt(100);
+            i = this.random.nextInt(100);
             if (meatChanceMod > i) {
                 leatherDrop++;
             }
@@ -515,12 +517,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         } else if (cowThickness == 5){
 
             //75% chance meat
-            int i = this.rand.nextInt(4);
+            int i = this.random.nextInt(4);
             if (i>=1) {
                 meatDrop++;
             }
             //25% chance leather
-            i = this.rand.nextInt(4);
+            i = this.random.nextInt(4);
             if (i==0) {
                 meatDrop++;
             }
@@ -528,12 +530,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         } else if (cowThickness == 4){
 
             //50% chance meat
-            int i = this.rand.nextInt(2);
+            int i = this.random.nextInt(2);
             if (i==1) {
                 meatDrop++;
             }
             //50% chance leather
-            i = this.rand.nextInt(2);
+            i = this.random.nextInt(2);
             if (i==1) {
                 leatherDrop++;
             }
@@ -541,12 +543,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         } else if (cowThickness == 3){
 
             //25% chance meat
-            int i = this.rand.nextInt(4);
+            int i = this.random.nextInt(4);
             if (i==0) {
                 meatDrop++;
             }
             //75% chance leather
-            i = this.rand.nextInt(4);
+            i = this.random.nextInt(4);
             if (i>=1) {
                 leatherDrop++;
             }
@@ -582,7 +584,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 meatChanceMod = age/140;
             }
 
-            int i = this.rand.nextInt(100);
+            int i = this.random.nextInt(100);
             if (meatChanceMod > i) {
                 meatDrop++;
             }
@@ -594,14 +596,14 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
         leatherDrop = (leatherDrop > 5) ? 5 : leatherDrop;
 
-        if (this.isBurning()){
+        if (this.isOnFire()){
             ItemStack cookedBeefStack = new ItemStack(Items.COOKED_BEEF, meatDrop);
-            this.entityDropItem(cookedBeefStack);
+            this.spawnAtLocation(cookedBeefStack);
         }else {
             ItemStack beefStack = new ItemStack(Items.BEEF, meatDrop);
             ItemStack leatherStack = new ItemStack(Items.LEATHER, leatherDrop);
-            this.entityDropItem(beefStack);
-            this.entityDropItem(leatherStack);
+            this.spawnAtLocation(beefStack);
+            this.spawnAtLocation(leatherStack);
         }
     }
 
@@ -662,10 +664,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             int mealy = 0;
             char[] uuidArry;
 
-            String mooshroomUUIDForTexture = this.dataManager.get(MOOSHROOM_UUID);
+            String mooshroomUUIDForTexture = this.entityData.get(MOOSHROOM_UUID);
 
             if (mooshroomUUIDForTexture.equals("0")) {
-                uuidArry = getCachedUniqueIdString().toCharArray();
+                uuidArry = getStringUUID().toCharArray();
             } else {
                 uuidArry = mooshroomUUIDForTexture.toCharArray();
             }
@@ -1324,13 +1326,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
-        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
+        ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
 
         if (item == Items.NAME_TAG) {
-            itemStack.interactWithEntity(entityPlayer, this, hand);
-            return ActionResultType.SUCCESS;
+            itemStack.interactLivingEntity(entityPlayer, this, hand);
+            return InteractionResult.SUCCESS;
         }
 
         /**
@@ -1360,7 +1362,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         }
          */
 
-        if ((item == Items.BUCKET || item == ModItems.ONESIXTH_MILK_BUCKET || item == ModItems.ONETHIRD_MILK_BUCKET || item == ModItems.HALF_MILK_BUCKET || item == ModItems.TWOTHIRDS_MILK_BUCKET || item == ModItems.FIVESIXTHS_MILK_BUCKET || item == ModItems.HALF_MILK_BOTTLE || item == Items.GLASS_BOTTLE) && !this.isChild() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
+        if ((item == Items.BUCKET || item == ModItems.ONESIXTH_MILK_BUCKET || item == ModItems.ONETHIRD_MILK_BUCKET || item == ModItems.HALF_MILK_BUCKET || item == ModItems.TWOTHIRDS_MILK_BUCKET || item == ModItems.FIVESIXTHS_MILK_BUCKET || item == ModItems.HALF_MILK_BOTTLE || item == Items.GLASS_BOTTLE) && !this.isBaby() && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int maxRefill = 0;
             int bucketSize = 6;
             int currentMilk = getMilkAmount();
@@ -1394,7 +1396,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                    refillAmount = currentMilk;
             }
 
-            if (!this.world.isRemote) {
+            if (!this.level.isClientSide) {
                 int resultingMilkAmount = currentMilk - refillAmount;
                 this.setMilkAmount(resultingMilkAmount);
 
@@ -1409,8 +1411,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
             switch (resultAmount) {
                 case 0:
-                    entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
-                    return ActionResultType.SUCCESS;
+                    entityPlayer.playSound(SoundEvents.COW_HURT, 1.0F, 1.0F);
+                    return InteractionResult.SUCCESS;
                 case 1:
                     if (isBottle) {
                         resultItem = new ItemStack(ModItems.HALF_MILK_BOTTLE);
@@ -1439,26 +1441,26 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                     break;
             }
 
-            entityPlayer.playSound(SoundEvents.ENTITY_COW_MILK, 1.0F, 1.0F);
+            entityPlayer.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
             itemStack.shrink(1);
             if (itemStack.isEmpty()) {
-                entityPlayer.setHeldItem(hand, resultItem);
-            } else if (!entityPlayer.inventory.addItemStackToInventory(resultItem)) {
-                entityPlayer.dropItem(resultItem, false);
+                entityPlayer.setItemInHand(hand, resultItem);
+            } else if (!entityPlayer.inventory.add(resultItem)) {
+                entityPlayer.drop(resultItem, false);
             }
 
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return super.func_230254_b_(entityPlayer, hand);
+        return super.mobInteract(entityPlayer, hand);
     }
 
-    protected void dropInventory() {
-        super.dropInventory();
+    protected void dropEquipment() {
+        super.dropEquipment();
     }
 
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
 
         compound.putString("MooshroomID", getMooshroomUUID());
 
@@ -1469,8 +1471,8 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     /**
      * (abstract) Protected helper method to read subclass entity assets from NBT.
      */
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
 
         setMooshroomUUID(compound.getString("MooshroomID"));
 
@@ -1485,7 +1487,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
         return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 64800, 108000, spawnReason);
     }
 
@@ -1496,12 +1498,12 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+    protected Genes createInitialGenes(LevelAccessor world, BlockPos pos, boolean isDomestic) {
         return new CowGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
 
     @Override
-    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(LevelAccessor world, BlockPos pos, String breed) {
         return new CowGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 
@@ -1597,7 +1599,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 //                speed = speed - 0.1;
 //            }
             this.wanderEatingGoal = new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50);
-            this.goalSelector.addGoal(0, new SwimGoal(this));
+            this.goalSelector.addGoal(0, new FloatGoal(this));
             this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
             this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, speed));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D, false, Items.CARROT_ON_A_STICK));

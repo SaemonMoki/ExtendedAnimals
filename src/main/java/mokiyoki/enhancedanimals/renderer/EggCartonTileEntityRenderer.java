@@ -1,105 +1,104 @@
 package mokiyoki.enhancedanimals.renderer;
 
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
 import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.tileentity.DualBrightnessCallback;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.state.properties.ChestType;
-import net.minecraft.tileentity.IChestLid;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityMerger;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.blockentity.BrightnessCombiner;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.world.level.block.state.properties.ChestType;
+import net.minecraft.world.level.block.entity.LidBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.DoubleBlockCombiner;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import com.mojang.math.Vector3f;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class EggCartonTileEntityRenderer<T extends TileEntity & IChestLid> extends TileEntityRenderer<T> {
+public class EggCartonTileEntityRenderer<T extends BlockEntity & LidBlockEntity> implements BlockEntityRenderer<T> {
     public static final ResourceLocation EGG_CARTON_TEXTURE = new ResourceLocation(Reference.MODID, "block/egg_carton");
 
-    private final ModelRenderer base;
-    private final ModelRenderer inside;
-    private final ModelRenderer lid;
+    private final ModelPart base;
+    private final ModelPart inside;
+    private final ModelPart lid;
 
-    public EggCartonTileEntityRenderer(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
+    public EggCartonTileEntityRenderer(BlockEntityRenderDispatcher tileEntityRendererDispatcher) {
         super(tileEntityRendererDispatcher);
 
-        base = new ModelRenderer(64, 64, 0, 0);
+        base = new ModelPart(64, 64, 0, 0);
         base.addBox(1.0F, -5.0F, -14.0F, 14, 5, 12, 0.0F);
 //        base.setRotationPoint(0.0F, 0.0F, 0.0F);
 
-        inside = new ModelRenderer(64, 64, 0, 35);
+        inside = new ModelPart(64, 64, 0, 35);
         inside.addBox( 0.5F, -6.0F, -14.0F, 15, 3, 12, -2.0F);
 
-        lid = new ModelRenderer(64, 64, 0, 19);
+        lid = new ModelPart(64, 64, 0, 19);
         lid.addBox(1.0F, -12.0F, 0.0F, 14, 12, 4, 0.0F);
-        lid.setRotationPoint(0.0F, 4.0F, 2.0F);
+        lid.setPos(0.0F, 4.0F, 2.0F);
 //        this.setLidRotationAngle(this.lid, 0.0F, 0.0F, 0.0F);
 
     }
 
     @Override
-    public void render(T tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(T tileEntityIn, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
         EggCartonTileEntity tileEntity = (EggCartonTileEntity) tileEntityIn;
 
-        World world = tileEntityIn.getWorld();
+        Level world = tileEntityIn.getLevel();
         boolean flag = world != null;
 
-        BlockState blockstate = flag ? tileEntityIn.getBlockState() : Blocks.CHEST.getDefaultState().with(ChestBlock.FACING, Direction.SOUTH);
+        BlockState blockstate = flag ? tileEntityIn.getBlockState() : Blocks.CHEST.defaultBlockState().setValue(ChestBlock.FACING, Direction.SOUTH);
         Block block = blockstate.getBlock();
         ChestType chestType = ChestType.SINGLE;
 
         EggCartonBlock eggCartonBlock = (EggCartonBlock) block;
 
-        matrixStackIn.push();
-        float f = blockstate.get(EggCartonBlock.FACING).getHorizontalAngle();
+        matrixStackIn.pushPose();
+        float f = blockstate.getValue(EggCartonBlock.FACING).toYRot();
         matrixStackIn.translate(0.5D, 0.5D, 0.5D);
-        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-f));
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-f));
         matrixStackIn.translate(-0.5D, -0.5D, -0.5D);
 
-        TileEntityMerger.ICallbackWrapper<? extends EggCartonTileEntity> iCallbackWrapper;
+        DoubleBlockCombiner.NeighborCombineResult<? extends EggCartonTileEntity> iCallbackWrapper;
         if (flag) {
-            iCallbackWrapper = eggCartonBlock.getWrapper(blockstate, world, tileEntity.getPos(), true);
+            iCallbackWrapper = eggCartonBlock.getWrapper(blockstate, world, tileEntity.getBlockPos(), true);
         } else {
-            iCallbackWrapper = TileEntityMerger.ICallback::func_225537_b_;
+            iCallbackWrapper = DoubleBlockCombiner.Combiner::acceptNone;
         }
 
-        float f1 = iCallbackWrapper.apply(EggCartonBlock.getLid((IChestLid) tileEntity)).get(partialTicks);
+        float f1 = iCallbackWrapper.apply(EggCartonBlock.getLid((LidBlockEntity) tileEntity)).get(partialTicks);
         f1 = 1.0F - f1;
         f1 = 1.0F - f1 * f1 * f1;
-        int i = iCallbackWrapper.apply(new DualBrightnessCallback<>()).applyAsInt(combinedLightIn);
+        int i = iCallbackWrapper.apply(new BrightnessCombiner<>()).applyAsInt(combinedLightIn);
 
-        RenderMaterial rendermaterial = new RenderMaterial(Atlases.CHEST_ATLAS, EGG_CARTON_TEXTURE);
-        IVertexBuilder ivertexbuilder = rendermaterial.getBuffer(bufferIn, RenderType::getEntityCutoutNoCull);
+        Material rendermaterial = new Material(Sheets.CHEST_SHEET, EGG_CARTON_TEXTURE);
+        VertexConsumer ivertexbuilder = rendermaterial.buffer(bufferIn, RenderType::entityCutoutNoCull);
         this.handleModelRender(matrixStackIn, ivertexbuilder, f1, i, combinedOverlayIn);
 
-        matrixStackIn.pop();
+        matrixStackIn.popPose();
     }
 
 
-    private void handleModelRender(MatrixStack matrixStackIn, IVertexBuilder iVertexBuilder, float f1, int p_228871_7_, int p_228871_8_) {
-        this.lid.rotateAngleX = (f1 * ((float)Math.PI/2.0F)) + (float)Math.PI/2.0F;
-        this.lid.rotateAngleZ = (float)Math.PI;
-        this.lid.rotateAngleY = (float)Math.PI;
-        this.inside.rotateAngleX = (float)Math.PI;
-        this.base.rotateAngleX = (float)Math.PI;
+    private void handleModelRender(PoseStack matrixStackIn, VertexConsumer iVertexBuilder, float f1, int p_228871_7_, int p_228871_8_) {
+        this.lid.xRot = (f1 * ((float)Math.PI/2.0F)) + (float)Math.PI/2.0F;
+        this.lid.zRot = (float)Math.PI;
+        this.lid.yRot = (float)Math.PI;
+        this.inside.xRot = (float)Math.PI;
+        this.base.xRot = (float)Math.PI;
         //Math.PI / 2F
 //        secondModel.rotateAngleX = firstModel.rotateAngleX;
         this.lid.render(matrixStackIn, iVertexBuilder, p_228871_7_, p_228871_8_);
@@ -107,10 +106,10 @@ public class EggCartonTileEntityRenderer<T extends TileEntity & IChestLid> exten
         this.base.render(matrixStackIn, iVertexBuilder, p_228871_7_, p_228871_8_);
     }
 
-    public void setLidRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = modelRenderer.rotateAngleX + x;
-        modelRenderer.rotateAngleY = modelRenderer.rotateAngleY + y;
-        modelRenderer.rotateAngleZ = modelRenderer.rotateAngleZ + z;
+    public void setLidRotationAngle(ModelPart modelRenderer, float x, float y, float z) {
+        modelRenderer.xRot = modelRenderer.xRot + x;
+        modelRenderer.yRot = modelRenderer.yRot + y;
+        modelRenderer.zRot = modelRenderer.zRot + z;
     }
 
 }

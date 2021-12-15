@@ -4,21 +4,22 @@ import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.Genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.util.Genes;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -26,7 +27,7 @@ import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOBLOOM;
 
 public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.common.IForgeShearable {
-    private static final DataParameter<String> MOOBLOOM_TYPE = EntityDataManager.createKey(EnhancedMoobloom.class, DataSerializers.STRING);
+    private static final EntityDataAccessor<String> MOOBLOOM_TYPE = SynchedEntityData.defineId(EnhancedMoobloom.class, EntityDataSerializers.STRING);
 
     private static final String[] COW_TEXTURES_RED = new String[] {
             "", "r_solid.png", "r_shaded.png"
@@ -40,12 +41,12 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
             "yellow_flower.png"
     };
 
-    public EnhancedMoobloom(EntityType<? extends EnhancedCow> entityType, World worldIn) {
+    public EnhancedMoobloom(EntityType<? extends EnhancedCow> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
 
-    protected void registerData() {
-        super.registerData();
+    protected void defineSynchedData() {
+        super.defineSynchedData();
     }
 
     @Override
@@ -68,25 +69,25 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild(World inWorld) {
-        EnhancedMoobloom enhancedmoobloom = ENHANCED_MOOBLOOM.create(this.world);
+    protected void createAndSpawnEnhancedChild(Level inWorld) {
+        EnhancedMoobloom enhancedmoobloom = ENHANCED_MOOBLOOM.create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedmoobloom, inWorld, babyGenes, -this.getAdultAge());
         enhancedmoobloom.configureAI();
-        this.world.addEntity(enhancedmoobloom);
+        this.level.addFreshEntity(enhancedmoobloom);
     }
 
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
     }
 
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
     @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
     }
 
     //TODO do I want to add more flower types?
@@ -99,49 +100,49 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
 //    }
 
     @Override
-    public EnhancedMoobloom func_241840_a(ServerWorld serverWorld, AgeableEntity ageable) {
-        super.func_241840_a(serverWorld, ageable);
+    public EnhancedMoobloom getBreedOffspring(ServerLevel serverWorld, AgeableMob ageable) {
+        super.getBreedOffspring(serverWorld, ageable);
         return null;
     }
 
     @Override
-    public boolean isShearable(ItemStack item, World world, net.minecraft.util.math.BlockPos pos) {
+    public boolean isShearable(ItemStack item, Level world, net.minecraft.core.BlockPos pos) {
         return !this.isChild();
     }
 
     @Override
-    public java.util.List<ItemStack> onSheared(PlayerEntity playerEntity, ItemStack item, World world, net.minecraft.util.math.BlockPos pos, int fortune) {
+    public java.util.List<ItemStack> onSheared(Player playerEntity, ItemStack item, Level world, net.minecraft.core.BlockPos pos, int fortune) {
         java.util.List<ItemStack> ret = new java.util.ArrayList<>();
-        this.world.addParticle(ParticleTypes.EXPLOSION, this.getPosX(), this.getPosY() + (double)(this.getHeight() / 2.0F), this.getPosZ(), 0.0D, 0.0D, 0.0D);
-        if (!this.world.isRemote) {
-            this.remove();
-            EnhancedCow enhancedcow = ENHANCED_COW.create(this.world);
-            enhancedcow.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), (this.rotationYaw), this.rotationPitch);
+        this.level.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ(), 0.0D, 0.0D, 0.0D);
+        if (!this.level.isClientSide) {
+            this.remove(RemovalReason.DISCARDED);
+            EnhancedCow enhancedcow = ENHANCED_COW.create(this.level);
+            enhancedcow.moveTo(this.getX(), this.getY(), this.getZ(), (this.getYRot()), this.getXRot());
             enhancedcow.initializeHealth(this, 0.0F);
             enhancedcow.setHealth(this.getHealth());
-            enhancedcow.renderYawOffset = this.renderYawOffset;
+            enhancedcow.yBodyRot = this.yBodyRot;
 
             enhancedcow.setGenes(this.getGenes());
             enhancedcow.setSharedGenes(this.getGenes());
             enhancedcow.initilizeAnimalSize();
-            enhancedcow.setGrowingAge(this.growingAge);
+            enhancedcow.setAge(this.age);
             enhancedcow.setEntityStatus(this.getEntityStatus());
             enhancedcow.configureAI();
-            enhancedcow.setMooshroomUUID(this.getCachedUniqueIdString());
+            enhancedcow.setMooshroomUUID(this.getStringUUID());
             enhancedcow.setBirthTime(this.getBirthTime());
 
             if (this.hasCustomName()) {
                 enhancedcow.setCustomName(this.getCustomName());
             }
-            this.world.addEntity(enhancedcow);
+            this.level.addFreshEntity(enhancedcow);
             for(int i = 0; i < 5; ++i) {
-                if (rand.nextInt(5) == 0) {
+                if (random.nextInt(5) == 0) {
                     ret.add(new ItemStack(Blocks.SUNFLOWER));
                 } else {
                     ret.add(new ItemStack(Blocks.DANDELION));
                 }
             }
-            this.playSound(SoundEvents.ENTITY_MOOSHROOM_SHEAR, 1.0F, 1.0F);
+            this.playSound(SoundEvents.MOOSHROOM_SHEAR, 1.0F, 1.0F);
         }
         return ret;
     }
@@ -210,7 +211,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
     }
 
     @Override
-    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+    protected Genes createInitialGenes(LevelAccessor world, BlockPos pos, boolean isDomestic) {
         Genes moobloomGenetics = new CowGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
         moobloomGenetics.setAutosomalGene(118, 2);
         moobloomGenetics.setAutosomalGene(119, 2);

@@ -8,9 +8,9 @@ import mokiyoki.enhancedanimals.capability.turtleegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -28,7 +28,7 @@ public class CapabilityEvents {
     public static final ResourceLocation NEST_CAP = new ResourceLocation(Reference.MODID, "nestcap");
 
     @SubscribeEvent
-    public void onAddCapabilitiesWorld(AttachCapabilitiesEvent<World> event) {
+    public void onAddCapabilitiesWorld(AttachCapabilitiesEvent<Level> event) {
         event.addCapability(POST_CAP, new PostCapabilityProvider());
         event.addCapability(HAY_CAP, new HayCapabilityProvider());
         event.addCapability(NEST_CAP, new NestCapabilityProvider());

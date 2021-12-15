@@ -24,50 +24,50 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.passive.ChickenEntity;
-import net.minecraft.entity.passive.FoxEntity;
-import net.minecraft.entity.passive.OcelotEntity;
-import net.minecraft.entity.passive.WolfEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.animal.Chicken;
+import net.minecraft.world.entity.animal.Fox;
+import net.minecraft.world.entity.animal.Ocelot;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -76,6 +76,9 @@ import java.util.*;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
 
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.FollowParentGoal;
+
 /**
  * Created by saemon and moki on 30/08/2018.
  */
@@ -83,7 +86,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     //avalible UUID spaces : [ S 1 2 3 4 5 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
-    private static final DataParameter<Boolean> ROOSTING = EntityDataManager.<Boolean>createKey(EnhancedChicken.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> ROOSTING = SynchedEntityData.<Boolean>defineId(EnhancedChicken.class, EntityDataSerializers.BOOLEAN);
 
     /** [4] duckwing, partridge, wheaten, solid
      [5] silver, salmon, lemon, gold, mahogany */
@@ -262,11 +265,11 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     private String dropMeatType;
     public boolean chickenJockey;
 
-    public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, World worldIn) {
+    public EnhancedChicken(EntityType<? extends EnhancedChicken> entityType, Level worldIn) {
         super(entityType, worldIn, Reference.CHICKEN_SEXLINKED_GENES_LENGTH, Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH, false);
 //        this.setSize(0.4F, 0.7F); //I think its the height and width of a chicken
-        this.timeUntilNextEgg = this.rand.nextInt(this.rand.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
-        this.setPathPriority(PathNodeType.WATER, 0.0F);
+        this.timeUntilNextEgg = this.random.nextInt(this.random.nextInt(6000) + 6000); //TODO make some genes to alter these numbers
+        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
     }
 
     private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
@@ -304,16 +307,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected void registerGoals() {
-        int napmod = this.rand.nextInt(1200);
+        int napmod = this.random.nextInt(1200);
         this.grazingGoal = new GrazingGoalChicken(this, 1.0D);
         this.ecSandBath = new ECSandBath(this);
-        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, WolfEntity.class, 10.0F, 1.0D, 2.0D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, FoxEntity.class, 10.0F, 1.0D, 2.0D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, OcelotEntity.class, 10.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Wolf.class, 10.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Fox.class, 10.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Ocelot.class, 10.0F, 1.0D, 2.0D, null));
         this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 4.0F, 1.0D, 1.8D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, MonsterEntity.class, 4.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Monster.class, 4.0F, 1.0D, 2.0D, null));
         this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
         this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, Items.AIR));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
@@ -324,16 +327,16 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.goalSelector.addGoal(11, new EnhancedEatPlantsGoal(this, createGrazingMap()));
         this.goalSelector.addGoal(12, this.grazingGoal);
         this.goalSelector.addGoal(14, new EnhancedWanderingGoal(this, 1.0D));
-        this.goalSelector.addGoal(15, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
-        this.goalSelector.addGoal(16, new EnhancedLookAtGoal(this, ChickenEntity.class, 6.0F));
+        this.goalSelector.addGoal(15, new EnhancedLookAtGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(16, new EnhancedLookAtGoal(this, Chicken.class, 6.0F));
         this.goalSelector.addGoal(17, new EnhancedLookRandomlyGoal(this));
 
     }
 
-    protected void updateAITasks() {
+    protected void customServerAiStep() {
         this.grassTimer = this.grazingGoal.getEatingGrassTimer();
         this.sandBathTimer = this.ecSandBath.getSandBathTimer();
-        super.updateAITasks();
+        super.customServerAiStep();
     }
 
     @Override
@@ -342,21 +345,21 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(0.4F, 0.7F).scale(this.getRenderScale());
+    public EntityDimensions getDimensions(Pose poseIn) {
+        return EntityDimensions.scalable(0.4F, 0.7F).scale(this.getScale());
     }
 
     @Override
-    public float getRenderScale() {
+    public float getScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
         float newbornSize = 0.2F;
         return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(ROOSTING, new Boolean(false));
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(ROOSTING, new Boolean(false));
     }
 
     @Override
@@ -373,14 +376,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
-        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
+        ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
 
         if (item instanceof EnhancedEgg && hunger >= 6000) {
             //enhancedegg egg eating
             decreaseHunger(200);
-            if (!entityPlayer.abilities.isCreativeMode) {
+            if (!entityPlayer.getAbilities().instabuild) {
                 itemStack.shrink(1);
             } else {
                 if (itemStack.getCount() > 1) {
@@ -389,49 +392,49 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             }
         }
 
-        return super.func_230254_b_(entityPlayer, hand);
+        return super.mobInteract(entityPlayer, hand);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id) {
+    public void handleEntityEvent(byte id) {
         if (id == 10) {
             this.grassTimer = 40;
         } else {
-            super.handleStatusUpdate(id);
+            super.handleEntityEvent(id);
         }
     }
 
     public void setSharedGenesFromEntityEgg(String genes) {
-        this.dataManager.set(SHARED_GENES, genes);
+        this.entityData.set(SHARED_GENES, genes);
     }
 
     public boolean isRoosting() {
-        return this.dataManager.get(ROOSTING);
+        return this.entityData.get(ROOSTING);
     }
 
     public void setRoosting(boolean isRoosting) {
-        this.dataManager.set(ROOSTING, isRoosting);
+        this.entityData.set(ROOSTING, isRoosting);
     }
 
-    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
-        return this.isChild() ? sizeIn.height * 0.85F : sizeIn.height * 0.92F;
+    protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
+        return this.isBaby() ? sizeIn.height * 0.85F : sizeIn.height * 0.92F;
     }
 
-    public static AttributeModifierMap.MutableAttribute prepareAttributes() {
-        return MobEntity.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 3.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+    public static AttributeSupplier.Builder prepareAttributes() {
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 3.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
-    public void updatePassenger(Entity passenger) {
-        super.updatePassenger(passenger);
-        float f = MathHelper.sin(this.renderYawOffset * ((float)Math.PI / 180F));
-        float f1 = MathHelper.cos(this.renderYawOffset * ((float)Math.PI / 180F));
+    public void positionRider(Entity passenger) {
+        super.positionRider(passenger);
+        float f = Mth.sin(this.yBodyRot * ((float)Math.PI / 180F));
+        float f1 = Mth.cos(this.yBodyRot * ((float)Math.PI / 180F));
         float f2 = 0.1F;
         float f3 = 0.0F;
-        passenger.setPosition(this.getPosX() + (double)(0.1F * f), this.getPosYHeight(0.5D) + passenger.getYOffset() + 0.0D, this.getPosZ() - (double)(0.1F * f1));
+        passenger.setPos(this.getX() + (double)(0.1F * f), this.getY(0.5D) + passenger.getMyRidingOffset() + 0.0D, this.getZ() - (double)(0.1F * f1));
         if (passenger instanceof LivingEntity) {
-            ((LivingEntity)passenger).renderYawOffset = this.renderYawOffset;
+            ((LivingEntity)passenger).yBodyRot = this.yBodyRot;
         }
 
     }
@@ -451,21 +454,21 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    public void livingTick() {
-        super.livingTick();
+    public void aiStep() {
+        super.aiStep();
         this.oFlap = this.wingRotation;
         this.oFlapSpeed = this.destPos;
         this.destPos = (float)((double)this.destPos + (double)(this.onGround ? -1 : 4) * 0.3D);
-        this.destPos = MathHelper.clamp(this.destPos, 0.0F, 1.0F);
+        this.destPos = Mth.clamp(this.destPos, 0.0F, 1.0F);
 
         if (!this.onGround && this.wingRotDelta < 1.0F) {
             this.wingRotDelta = 1.0F;
         }
 
         this.wingRotDelta = (float)((double)this.wingRotDelta * 0.9D);
-        Vector3d vec3d = this.getMotion();
+        Vec3 vec3d = this.getDeltaMovement();
         if (!this.onGround && vec3d.y < 0.0D) {
-            this.setMotion(vec3d.mul(1.0D, this.genetics.isHomozygousFor(106,   2) ? 1.0D : 0.6D, 1.0D));
+            this.setDeltaMovement(vec3d.multiply(1.0D, this.genetics.isHomozygousFor(106,   2) ? 1.0D : 0.6D, 1.0D));
         }
 
         this.wingRotation += this.wingRotDelta * 2.0F;
@@ -495,15 +498,15 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             if (hunger <= 24000) {
                 --this.timeUntilNextEgg;
             } else if (hunger >= 48000) {
-                this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
+                this.timeUntilNextEgg = this.random.nextInt(6000) + 6000;
             }
         }
     }
 
     @Override
     protected void runPregnancyTick() {
-        if (!this.isChild() && this.timeUntilNextEgg <= 0) {
-            this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F + 1.0F);
+        if (!this.isBaby() && this.timeUntilNextEgg <= 0) {
+            this.playSound(SoundEvents.CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
             ItemStack eggItem = new ItemStack(getEggColour(resolveEggColour()), 1, null);
             ((EnhancedEgg) eggItem.getItem()).setHasParents(eggItem, true);
             if (this.gestationTimer > 0) {
@@ -512,25 +515,26 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                     damName = this.getCustomName().getString();
                 }
                 eggItem.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(new Genes(this.mateGenetics).makeChild(!this.mateGender, this.genetics, !this.getOrSetIsFemale(), Genes.Species.CHICKEN), this.mateName, damName);
-                CompoundNBT nbtTagCompound = eggItem.serializeNBT();
+                CompoundTag nbtTagCompound = eggItem.serializeNBT();
                 eggItem.deserializeNBT(nbtTagCompound);
-                if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
+                if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
                     int i = 1;
                     while (i > 0) {
-                        int j = ExperienceOrbEntity.getXPSplit(i);
+                        int j = ExperienceOrb.getExperienceValue(i);
                         i -= j;
-                        this.world.addEntity(new ExperienceOrbEntity(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), j));
+                        this.level.addFreshEntity(new ExperienceOrb(this.level, this.getX(), this.getY(), this.getZ(), j));
                     }
                 }
             }
-            this.entityDropItem(eggItem, 1);
-            this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
+            this.spawnAtLocation(eggItem, 1);
+            this.timeUntilNextEgg = this.random.nextInt(6000) + 6000;
         }
     }
 
-    public boolean onLivingFall(float distance, float damageMultiplier) {
+    @Override
+    public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource damageSource) {
         if (this.genetics.isHomozygousFor(106, 2)) {
-            return super.onLivingFall(distance, damageMultiplier);
+            return super.causeFallDamage(distance, damageMultiplier, damageSource);
         }
             return false;
     }
@@ -539,13 +543,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected void lethalGenes() {
         int[] genes = this.genetics.getAutosomalGenes();
         if(genes[70] == 2 && genes[71] == 2) {
-                this.remove();
+                this.remove(RemovalReason.DISCARDED);
         } else if(genes[72] == 2 && genes[73] == 2){
-                this.remove();
+                this.remove(RemovalReason.DISCARDED);
         } else if(genes[104] == 2 && genes[105] == 2){
-                this.remove();
+                this.remove(RemovalReason.DISCARDED);
         } else if (genes[150] == 2 && genes[151] == 2){
-                this.remove();
+                this.remove(RemovalReason.DISCARDED);
         }
     }
 
@@ -555,22 +559,22 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         if (isAnimalSleeping()) {
             return null;
         }
-        return SoundEvents.ENTITY_CHICKEN_AMBIENT;
+        return SoundEvents.CHICKEN_AMBIENT;
     }
 
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-        return SoundEvents.ENTITY_CHICKEN_HURT;
+        return SoundEvents.CHICKEN_HURT;
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_CHICKEN_DEATH;
+        return SoundEvents.CHICKEN_DEATH;
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 2.0F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 2.0F);
         }
     }
 
@@ -582,7 +586,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     //TODO make the sand bathing actions
 
     //also provides sand bath bonus
-    public void eatGrassBonus() {
+    public void ate() {
 //        if (this.isChild())
 //        {
 //            this.addGrowth(60);
@@ -590,7 +594,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected void handlePartnerBreeding(AgeableEntity ageable) {
+    protected void handlePartnerBreeding(AgeableMob ageable) {
         if (EanimodCommonConfig.COMMON.omnigenders.get()) {
             this.mateGenetics = ((EnhancedChicken)ageable).getGenes();
             this.setFertile();
@@ -2337,7 +2341,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected boolean canDropLoot() {
+    protected boolean shouldDropExperience() {
         if (getAge() > 10000) {
             return true;
         } else {
@@ -2345,13 +2349,13 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
     }
 
-    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
-        super.dropSpecialItems(source, looting, recentlyHitIn);
+    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
+        super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
         int age = this.getAge();
         int bodyType;
         int meatSize;
-        int featherCount = rand.nextInt(4+looting)-1;
+        int featherCount = random.nextInt(4+looting)-1;
 
         if (genes[146] == 2 && genes[147] == 2) {
             if (genes[148] == 2 && genes[149] == 2) {
@@ -2379,7 +2383,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 bodyType = bodyType - 1;
                 featherCount = featherCount - 1;
             } else if (age > 20000){
-                bodyType = bodyType - (rand.nextInt(2)+1);
+                bodyType = bodyType - (random.nextInt(2)+1);
                 featherCount = featherCount - 2;
             } else {
                 bodyType = bodyType - 2;
@@ -2401,21 +2405,21 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
             if (genes[4] == 1 && genes[20] != 3 && genes[21] != 3 && (genes[42] == 1 || genes[43] == 1)) {
                 if (meatSize == 1) {
-                    if (this.isBurning()) {
+                    if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARKSMALL, 1 + looting);
                     } else {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_DARKSMALL, 1 + looting);
                     }
                 } else if (meatSize == 2) {
                     dropMeatType = "rawchicken_darkbig";
-                    if (this.isBurning()) {
+                    if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARKBIG,1 + looting);
                     } else {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_DARKBIG, 1 + looting);
                     }
                 } else {
                     dropMeatType = "rawchicken_dark";
-                    if (this.isBurning()) {
+                    if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_DARK, 1 + looting);
                     } else {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_DARK, 1 + looting);
@@ -2424,37 +2428,37 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             } else {
                 if (meatSize == 1) {
                     dropMeatType = "rawchicken_palesmall";
-                    if (this.isBurning()) {
+                    if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_PALESMALL, 1 + looting);
                     } else {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_PALESMALL, 1 + looting);
                     }
                 } else if (meatSize == 2) {
                     dropMeatType = "rawchicken";
-                    if (this.isBurning()) {
+                    if (this.isOnFire()) {
                         meatStack = new ItemStack(ModItems.COOKEDCHICKEN_PALE, 1 + looting);
                     } else {
                         meatStack = new ItemStack(ModItems.RAWCHICKEN_PALE, 1 + looting);
                     }
                 } else {
                     dropMeatType = "rawchicken_pale";
-                    if (this.isBurning()) {
+                    if (this.isOnFire()) {
                         meatStack = new ItemStack(Items.COOKED_CHICKEN, 1 + looting);
                     }
                 }
             }
 
-            this.entityDropItem(meatStack);
+            this.spawnAtLocation(meatStack);
         }
 
         if (featherCount > 0) {
             ItemStack featherStack = new ItemStack(Items.FEATHER, featherCount);
-            this.entityDropItem(featherStack);
+            this.spawnAtLocation(featherStack);
         }
     }
 
     @Override
-    protected void readLegacyGenes(ListNBT geneList, Genes genetics) {
+    protected void readLegacyGenes(ListTag geneList, Genes genetics) {
         if (geneList.getCompound(0).contains("Sgene")) {
             super.readLegacyGenes(geneList, genetics);
         } else {
@@ -2475,7 +2479,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild(World world) {}
+    protected void createAndSpawnEnhancedChild(Level world) {}
 
     @Override
     protected boolean canBePregnant() {
@@ -2489,7 +2493,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
         livingdata = commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 10000, 120000, spawnReason);
         if (this.mateGenetics != null && this.mateGenetics.getSexlinkedGene(0) != 0) {
             this.setFertile();
@@ -2498,12 +2502,12 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     @Override
-    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+    protected Genes createInitialGenes(LevelAccessor world, BlockPos pos, boolean isDomestic) {
         return new ChickenGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
 
     @Override
-    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(LevelAccessor world, BlockPos pos, String breed) {
         return new ChickenGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 

@@ -1,21 +1,23 @@
 package mokiyoki.enhancedanimals.ai;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.EnumSet;
+
+import net.minecraft.world.entity.ai.goal.Goal.Flag;
 
 public class ECSandBath  extends Goal
 {
     /** The entity owner of this AITask */
-    private final MobEntity sandBatherEntity;
+    private final Mob sandBatherEntity;
     /** The world the sand bather entity is bathing from */
-    private final World entityWorld;
+    private final Level entityWorld;
     /** Number of ticks since the entity started to bathe */
     int sandBathTimer;
     //TODO needs to tell what kind of sand they are bathing on
@@ -24,42 +26,42 @@ public class ECSandBath  extends Goal
 
     }
 
-    public ECSandBath(MobEntity sandBatherEntityIn) {
+    public ECSandBath(Mob sandBatherEntityIn) {
         this.sandBatherEntity = sandBatherEntityIn;
-        this.entityWorld = sandBatherEntityIn.world;
-        this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.JUMP));
+        this.entityWorld = sandBatherEntityIn.level;
+        this.setFlags(EnumSet.of(Flag.MOVE, Flag.JUMP));
     }
 
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
-    public boolean shouldExecute()
+    public boolean canUse()
     {
-        if (this.sandBatherEntity.getRNG().nextInt(this.sandBatherEntity.isChild() ? 50 : 1000) != 0)
+        if (this.sandBatherEntity.getRandom().nextInt(this.sandBatherEntity.isBaby() ? 50 : 1000) != 0)
         {
             return false;
         }
         else
         {
-            BlockPos blockpos = new BlockPos(this.sandBatherEntity.getPosX(), this.sandBatherEntity.getPosY(), this.sandBatherEntity.getPosZ());
-            return this.entityWorld.getBlockState(blockpos.down()).getBlock() == Blocks.SAND;
+            BlockPos blockpos = new BlockPos(this.sandBatherEntity.getX(), this.sandBatherEntity.getY(), this.sandBatherEntity.getZ());
+            return this.entityWorld.getBlockState(blockpos.below()).getBlock() == Blocks.SAND;
         }
     }
 
     /**
      * Execute a one shot task or start executing a continuous task
      */
-    public void startExecuting()
+    public void start()
     {
         this.sandBathTimer = 40;
-        this.entityWorld.setEntityState(this.sandBatherEntity, (byte)10);
-        this.sandBatherEntity.getNavigator().clearPath();
+        this.entityWorld.broadcastEntityEvent(this.sandBatherEntity, (byte)10);
+        this.sandBatherEntity.getNavigation().stop();
     }
 
     /**
      * Reset the task's internal state. Called when this task is interrupted by another one
      */
-    public void resetTask()
+    public void stop()
     {
         this.sandBathTimer = 0;
     }
@@ -67,7 +69,7 @@ public class ECSandBath  extends Goal
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
-    public boolean shouldContinueExecuting()
+    public boolean canContinueToUse()
     {
         return this.sandBathTimer > 0;
     }
@@ -87,15 +89,15 @@ public class ECSandBath  extends Goal
         this.sandBathTimer = Math.max(0, this.sandBathTimer - 1);
 
         if (this.sandBathTimer == 4) {
-            BlockPos blockpos = new BlockPos(this.sandBatherEntity.getPosX(), this.sandBatherEntity.getPosY(), this.sandBatherEntity.getPosZ());
-                BlockPos blockpos1 = blockpos.down();
+            BlockPos blockpos = new BlockPos(this.sandBatherEntity.getX(), this.sandBatherEntity.getY(), this.sandBatherEntity.getZ());
+                BlockPos blockpos1 = blockpos.below();
 
                 if (this.entityWorld.getBlockState(blockpos1).getBlock() == Blocks.SAND) {
                     if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.sandBatherEntity)) {
-                        this.entityWorld.playEvent(2001, blockpos1, Block.getStateId(Blocks.SAND.getDefaultState()));
-                        this.entityWorld.setBlockState(blockpos1, Blocks.SAND.getDefaultState(), 2);
+                        this.entityWorld.levelEvent(2001, blockpos1, Block.getId(Blocks.SAND.defaultBlockState()));
+                        this.entityWorld.setBlock(blockpos1, Blocks.SAND.defaultBlockState(), 2);
                     }
-                    this.sandBatherEntity.eatGrassBonus();
+                    this.sandBatherEntity.ate();
                 }
 
         }

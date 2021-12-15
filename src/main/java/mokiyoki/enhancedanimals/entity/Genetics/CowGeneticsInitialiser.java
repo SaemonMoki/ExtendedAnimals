@@ -4,9 +4,9 @@ import mokiyoki.enhancedanimals.init.breeds.CowBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.biome.Biome;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +33,11 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(CowBreeds.DARK_JERSEY);
     }
 
-    public Genes generateNewGenetics(IWorld world, BlockPos pos, boolean generateBreed) {
+    public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
         return super.generateNewGenetics(world, pos, generateBreed, this.breeds);
     }
 
-    public Genes generateWithBreed(IWorld world, BlockPos pos, String breed) {
+    public Genes generateWithBreed(LevelAccessor world, BlockPos pos, String breed) {
         return super.generateWithBreed(world, pos, this.breeds, breed);
     }
 
@@ -46,9 +46,9 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         int[] autosomalGenes = new int[Reference.COW_AUTOSOMAL_GENES_LENGTH];
 
         int wildType = 2;
-        if (biome.getCategory().equals(Biome.Category.PLAINS)) {
+        if (biome.getBiomeCategory().equals(Biome.BiomeCategory.PLAINS)) {
             wildType = 3;
-        } else if (biome.getTemperature() >= 0.9F){
+        } else if (biome.getBaseTemperature() >= 0.9F){
             wildType = 1;
         }
 

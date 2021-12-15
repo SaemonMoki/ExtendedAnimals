@@ -12,29 +12,30 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.FollowParentGoal;
-import net.minecraft.entity.ai.goal.PanicGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FollowParentGoal;
+import net.minecraft.world.entity.ai.goal.PanicGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -135,11 +136,11 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
 //    private final List<String> horseTextures = new ArrayList<>();
 
-    private static final Ingredient MILK_ITEMS = Ingredient.fromItems(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
+    private static final Ingredient MILK_ITEMS = Ingredient.of(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
 
     private static final int SEXLINKED_GENES_LENGTH = 2;
 
-    public EnhancedHorse(EntityType<? extends EnhancedHorse> entityType, World worldIn) {
+    public EnhancedHorse(EntityType<? extends EnhancedHorse> entityType, Level worldIn) {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.HORSE_AUTOSOMAL_GENES_LENGTH, true);
     }
 
@@ -150,20 +151,20 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     @Override
     protected void registerGoals() {
         //Todo add the temperamants
-        this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(7, new EnhancedLookAtGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(8, new EnhancedLookRandomlyGoal(this));
     }
 
-    protected void updateAITasks()
+    protected void customServerAiStep()
     {
         //TODO move this up
         this.animalEatingTimer = this.grazingGoal.getEatingGrassTimer();
-        super.updateAITasks();
+        super.customServerAiStep();
     }
 
-    protected void registerData() {
-        super.registerData();
+    protected void defineSynchedData() {
+        super.defineSynchedData();
     }
 
     protected String getSpecies() {
@@ -214,13 +215,13 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     /**
      * Returns the Y offset from the entity's position for any entity riding this one.
      */
-    public double getMountedYOffset() {
-        return (double)this.getHeight() * 0.725D;
+    public double getPassengersRidingOffset() {
+        return (double)this.getBbHeight() * 0.725D;
     }
 
     @Override
     protected float getJumpHeight() {
-        if (this.dwarf > 0 || this.getEnhancedInventory().getStackInSlot(0).getItem() == Items.CHEST) {
+        if (this.dwarf > 0 || this.getEnhancedInventory().getItem(0).getItem() == Items.CHEST) {
             return 0.45F;
         } else {
             float jump = 0.48F;
@@ -252,7 +253,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         }
 
         float chestMod = 0.0F;
-        ItemStack chestSlot = this.getEnhancedInventory().getStackInSlot(0);
+        ItemStack chestSlot = this.getEnhancedInventory().getItem(0);
         if (chestSlot.getItem() == Items.CHEST) {
             chestMod = (1.0F-((size-0.7F)*1.25F)) * 0.4F;
         }
@@ -264,19 +265,19 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         if (isAnimalSleeping()) {
             return null;
         }
-        return SoundEvents.ENTITY_HORSE_AMBIENT;
+        return SoundEvents.HORSE_AMBIENT;
     }
 
-    protected SoundEvent getHurtSound(DamageSource damageSourceIn) { return SoundEvents.ENTITY_HORSE_HURT; }
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) { return SoundEvents.HORSE_HURT; }
 
-    protected SoundEvent getDeathSound() { return SoundEvents.ENTITY_HORSE_DEATH; }
+    protected SoundEvent getDeathSound() { return SoundEvents.HORSE_DEATH; }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         super.playStepSound(pos, blockIn);
-        this.playSound(SoundEvents.ENTITY_HORSE_STEP, 0.15F, 1.0F);
+        this.playSound(SoundEvents.HORSE_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 0.1F);
-            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BELL, 1.0F, 0.1F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 0.1F);
+            this.playSound(SoundEvents.NOTE_BLOCK_BELL, 1.0F, 0.1F);
         }
     }
 
@@ -287,16 +288,16 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         return 0.4F;
     }
 
-    public static AttributeModifierMap.MutableAttribute prepareAttributes() {
-        return MobEntity.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 8.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.23D)
-                .createMutableAttribute(JUMP_STRENGTH);
+    public static AttributeSupplier.Builder prepareAttributes() {
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 8.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.23D)
+                .add(JUMP_STRENGTH);
     }
 
     @Override
     public boolean sleepingConditional() {
-        return (((this.world.getDayTime()%24000 >= 12600 && this.world.getDayTime()%24000 <= 22000) || this.world.isThundering()) && awokenTimer == 0 && !sleeping);
+        return (((this.level.getDayTime()%24000 >= 12600 && this.level.getDayTime()%24000 <= 22000) || this.level.isThundering()) && awokenTimer == 0 && !sleeping);
     }
 
     @Override
@@ -312,12 +313,12 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     protected void runExtraIdleTimeTick() {
     }
 
-    protected void createAndSpawnEnhancedChild(World inWorld) {
-        EnhancedHorse enhancedhorse = ENHANCED_HORSE.create(this.world);
+    protected void createAndSpawnEnhancedChild(Level inWorld) {
+        EnhancedHorse enhancedhorse = ENHANCED_HORSE.create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedhorse, inWorld, babyGenes, -this.getAdultAge());
         enhancedhorse.configureAI();
-        this.world.addEntity(enhancedhorse);
+        this.level.addFreshEntity(enhancedhorse);
     }
 
     @Override
@@ -332,10 +333,10 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         int[] genes = this.genetics.getAutosomalGenes();
         //put in the lethal combinations of dominant white
         if((genes[18] != 20 && genes[19] != 20 && genes[18] != 28 && genes[19] != 28 && genes[18] != 29 && genes[19] != 29) || (genes[18] == 12 || genes[19] == 12)) {
-            this.remove();
+            this.remove(RemovalReason.DISCARDED);
         } else if (genes[32] == 2 && genes[33] == 2) {
             //TODO change the foal to a skeleton horse that attacks
-            this.remove();
+            this.remove(RemovalReason.DISCARDED);
         }
     }
 
@@ -347,14 +348,14 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         return this.motherUUID;
     }
 
-    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
-        super.dropSpecialItems(source, looting, recentlyHitIn);
+    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
+        super.dropCustomDeathLoot(source, looting, recentlyHitIn);
 
-        int leatherDrop = this.rand.nextInt(3);
+        int leatherDrop = this.random.nextInt(3);
 
-        if (!this.isBurning()){
+        if (!this.isOnFire()){
             ItemStack leatherStack = new ItemStack(Items.LEATHER, leatherDrop);
-            this.entityDropItem(leatherStack);
+            this.spawnAtLocation(leatherStack);
         }
     }
 
@@ -393,7 +394,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
                 int letter = 0;
                 int sclera = 0;
                 boolean silver = false;
-                char[] uuidArry = getCachedUniqueIdString().toCharArray();
+                char[] uuidArry = getStringUUID().toCharArray();
 
                 if ((genesForText[18] == 20 || genesForText[18] == 28 || genesForText[18] == 29) && (genesForText[19] == 20 || genesForText[19] == 28 || genesForText[19] == 29)) {
 
@@ -589,26 +590,26 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
 //    @Override
-//    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
+//    public ActionResultType mobInteract(PlayerEntity entityPlayer, Hand hand) {
 //        ItemStack itemStack = entityPlayer.getHeldItem(hand);
 //        Item item = itemStack.getItem();
 //
 //        if (this.isBeingRidden()) {
-//            return super.func_230254_b_(entityPlayer, hand);
+//            return super.mobInteract(entityPlayer, hand);
 //        }
-//        return super.func_230254_b_(entityPlayer, hand);
+//        return super.mobInteract(entityPlayer, hand);
 //    }
 
 
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
     }
 
     /**
      * (abstract) Protected helper method to read subclass entity assets from NBT.
      */
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
         configureAI();
     }
 
@@ -621,7 +622,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
         return commonInitialSpawnSetup(inWorld, livingdata, getAdultAge(), 30000, 108000, spawnReason);
     }
 
@@ -632,12 +633,12 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+    protected Genes createInitialGenes(LevelAccessor world, BlockPos pos, boolean isDomestic) {
         return new HorseGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
 
     @Override
-    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(LevelAccessor world, BlockPos pos, String breed) {
         return new HorseGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 
@@ -657,7 +658,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
         aiConfigured = true;
     }
 
-    public static class GroupData implements ILivingEntityData {
+    public static class GroupData implements SpawnGroupData {
 
         public int[] groupGenes;
 

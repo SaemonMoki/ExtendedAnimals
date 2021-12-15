@@ -93,15 +93,34 @@ public class Genes {
     }
 
     public Genes setGenes(int[] sexlinked, int[] autosomal) {
-        this.sexlinked = sexlinked;
-        this.autosomal = autosomal;
+        if (this.sexlinked == null || this.sexlinked.length <= sexlinked.length) {
+            this.sexlinked = sexlinked;
+        } else {
+            for (int i = 0; sexlinked.length > i; i++) {
+                this.setSexlinkedGene(i, sexlinked[i]);
+            }
+        }
+
+        if (this.autosomal == null || this.autosomal.length <= autosomal.length) {
+            this.autosomal = autosomal;
+        } else {
+            for (int i = 0; autosomal.length > i; i++) {
+                this.setAutosomalGene(i, autosomal[i]);
+            }
+        }
         return this;
     }
 
     public Genes setGenes(int[] autosomal) {
         //only to be used when there are no sexlinked genes
         this.sexlinked = new int[]{1, 1};
-        this.autosomal = autosomal;
+        if (this.autosomal == null || this.autosomal.length <= autosomal.length) {
+            this.autosomal = autosomal;
+        } else {
+            for (int i = 0; autosomal.length > i; i++) {
+                this.setAutosomalGene(i, autosomal[i]);
+            }
+        }
         return this;
     }
 

@@ -118,7 +118,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     protected String mateName = "???";
     protected String sireName = "???";
     protected String damName = "???";
-    public Boolean isFemale;
+    protected Boolean isFemale;
 
     //Hunger
     protected float hunger = 0F;
@@ -255,7 +255,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
     }
 
     //returns how grown the animal is
-    protected float growthAmount() {
+    public float growthAmount() {
         return this.getAge() > this.getFullSizeAge() ? 1.0F : this.getAge()/(float)this.getFullSizeAge();
     }
 
@@ -988,7 +988,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
         compound.putBoolean("Collared", this.hasCollar());
 
-        compound.putBoolean("IsFemale", this.isFemale);
+        compound.putBoolean("IsFemale", this.getOrSetIsFemale());
 
         writeInventory(compound);
     }
@@ -1598,6 +1598,12 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             this.enhancedAnimalTextures.add(texture[geneValue]);
             this.texturesIndexes.add(String.valueOf(geneValue));
         }
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    protected void addTextureToAnimal(String texture) {
+        this.enhancedAnimalTextures.add(texture);
+        this.texturesIndexes.add(String.valueOf(0));
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 

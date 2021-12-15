@@ -1,15 +1,13 @@
 package mokiyoki.enhancedanimals.entity.Genetics;
 
-import javafx.util.Pair;
+import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.gen.carver.WorldCarver;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -105,7 +103,7 @@ public abstract class AbstractGeneticsInitialiser {
             if (breedsByChance.size() >= listSize) {
                 break;
             }
-            float comparison = breedsByChance.getFirst().getKey();
+            float comparison = breedsByChance.getFirst().getFirst();
             float breedLikelyHood = breed.likelyhood(biome, forTrader);
             if (breedLikelyHood < comparison) {
                 breedsByChance.addFirst(new Pair<>(breedLikelyHood, breed));
@@ -115,12 +113,12 @@ public abstract class AbstractGeneticsInitialiser {
         }
 
         for (Pair<Float, Breed> breed : breedsByChance) {
-            if (random.nextFloat() <= breed.getKey()) {
-                return breed.getValue();
+            if (random.nextFloat() <= breed.getFirst()) {
+                return breed.getSecond();
             }
         }
 
-        return breedsByChance.getLast().getValue();
+        return breedsByChance.getLast().getSecond();
 
     }
 

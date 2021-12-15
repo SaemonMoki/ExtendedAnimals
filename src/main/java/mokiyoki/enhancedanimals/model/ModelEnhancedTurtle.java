@@ -37,6 +37,7 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EntityModel<T
     public ModelEnhancedTurtle(float scale) {
         this.textureWidth = 128;
         this.textureHeight = 64;
+
         this.headModel = new ModelRenderer(this, 3, 0);
         this.headModel.addBox(-3.0F, -1.0F, -3.0F, 6.0F, 5.0F, 6.0F, 0.0F);
         this.headModel.setRotationPoint(0.0F, 19.0F, -10.0F);
@@ -46,14 +47,16 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EntityModel<T
         this.eyelids.addBox(0.0F, 1.0F, -3.0F, 2.0F, 1.0F, 1.0F, 0.001F);
         this.eyelids.rotateAngleY = (float) Math.PI * 0.5F;
         this.headModel.addChild(this.eyelids);
+
         this.body = new ModelRenderer(this);
         this.body.setTextureOffset(7, 37).addBox(-9.5F, 3.0F, -10.0F, 19.0F, 20.0F, 6.0F, 0.0F);
         this.body.setTextureOffset(31, 1).addBox(-5.5F, 3.0F, -13.0F, 11.0F, 18.0F, 3.0F, 0.0F);
+
         this.body.setRotationPoint(0.0F, 11.0F, -10.0F);
         this.pregnant = new ModelRenderer(this);
         this.pregnant.setTextureOffset(70, 33).addBox(-4.5F, 3.0F, -14.0F, 9.0F, 18.0F, 1.0F, 0.0F);
         this.pregnant.setRotationPoint(0.0F, 11.0F, -10.0F);
-        int i = 1;
+
         this.legBackRight = new ModelRenderer(this, 1, 23);
         this.legBackRight.addBox(-2.0F, 0.0F, 0.0F, 4.0F, 1.0F, 10.0F, 0.0F);
         this.legBackRight.setRotationPoint(-3.5F, 22.0F, 11.0F);
@@ -87,34 +90,33 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EntityModel<T
         this.headModel.rotateAngleX = headPitch * ((float)Math.PI / 180F);
         this.headModel.rotateAngleY = netHeadYaw * ((float)Math.PI / 180F);
         this.body.rotateAngleX = ((float)Math.PI / 2F);
-        this.legBackRight.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
-        this.legBackLeft.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-        this.legFrontRight.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * 1.4F * limbSwingAmount;
-        this.legFrontLeft.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
 
-        this.legBackRight.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F * 0.6F) * 0.5F * limbSwingAmount;
-        this.legBackLeft.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F * 0.6F + (float)Math.PI) * 0.5F * limbSwingAmount;
-        this.legFrontRight.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F * 0.6F + (float)Math.PI) * 0.5F * limbSwingAmount;
-        this.legFrontLeft.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F * 0.6F) * 0.5F * limbSwingAmount;
         this.legFrontRight.rotateAngleX = 0.0F;
         this.legFrontLeft.rotateAngleX = 0.0F;
-        this.legFrontRight.rotateAngleY = 0.0F;
-        this.legFrontLeft.rotateAngleY = 0.0F;
-        this.legBackRight.rotateAngleY = 0.0F;
-        this.legBackLeft.rotateAngleY = 0.0F;
+
         this.pregnant.rotateAngleX = ((float)Math.PI / 2F);
+
         if (!entityIn.isInWater() && entityIn.isOnGround()) {
             float f = entityIn.isDigging() ? 4.0F : 1.0F;
             float f1 = entityIn.isDigging() ? 2.0F : 1.0F;
             float f2 = 5.0F;
-            this.legFrontRight.rotateAngleY = MathHelper.cos(f * limbSwing * 5.0F + (float)Math.PI) * 8.0F * limbSwingAmount * f1;
-            this.legFrontRight.rotateAngleZ = 0.0F;
             this.legFrontLeft.rotateAngleY = MathHelper.cos(f * limbSwing * 5.0F) * 8.0F * limbSwingAmount * f1;
             this.legFrontLeft.rotateAngleZ = 0.0F;
-            this.legBackRight.rotateAngleY = MathHelper.cos(limbSwing * 5.0F + (float)Math.PI) * 3.0F * limbSwingAmount;
-            this.legBackRight.rotateAngleX = 0.0F;
-            this.legBackLeft.rotateAngleY = MathHelper.cos(limbSwing * 5.0F) * 3.0F * limbSwingAmount;
+            this.legFrontRight.rotateAngleY = MathHelper.cos(f * limbSwing * 5.0F + (float)Math.PI) * 8.0F * limbSwingAmount * f1;
+            this.legFrontRight.rotateAngleZ = 0.0F;
             this.legBackLeft.rotateAngleX = 0.0F;
+            this.legBackLeft.rotateAngleY = MathHelper.cos(limbSwing * 5.0F) * 3.0F * limbSwingAmount;
+            this.legBackRight.rotateAngleX = 0.0F;
+            this.legBackRight.rotateAngleY = MathHelper.cos(limbSwing * 5.0F + (float)Math.PI) * 3.0F * limbSwingAmount;
+        } else {
+            this.legFrontLeft.rotateAngleY = 0.0F;
+            this.legFrontLeft.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F * 0.6F) * 0.5F * limbSwingAmount;
+            this.legFrontRight.rotateAngleY = 0.0F;
+            this.legFrontRight.rotateAngleZ = MathHelper.cos(limbSwing * 0.6662F * 0.6F + (float)Math.PI) * 0.5F * limbSwingAmount;
+            this.legBackLeft.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F * 0.6F + (float)Math.PI) * 0.5F * limbSwingAmount;
+            this.legBackLeft.rotateAngleY = 0.0F;
+            this.legBackRight.rotateAngleX = MathHelper.cos(limbSwing * 0.6662F * 0.6F) * 0.5F * limbSwingAmount;
+            this.legBackRight.rotateAngleY = 0.0F;
         }
     }
 

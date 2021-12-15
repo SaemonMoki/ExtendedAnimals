@@ -7,8 +7,8 @@ public class Reference {
 
     public static final String MODID = "eanimod";
     public static final String NAME = "Genetic Animals Mod";
-    public static final String VERSION = "0.6.34";
-    public static final String ACCEPTED_VERSIONS = "[1.16.3]";
+    public static final String VERSION = "0.6.39";
+    public static final String ACCEPTED_VERSIONS = "[1.16.5]";
     public static final String CLIENT_PROXY_CLASS = "mokiyoki.enhancedanimals.proxy.ClientProxy";
     public static final String SERVER_PROXY_CLASS = "mokiyoki.enhancedanimals.proxy.ServerProxy";
     public static final int CHICKEN_SEXLINKED_GENES_LENGTH = 20;
@@ -20,4 +20,5 @@ public class Reference {
     public static final int SHEEP_AUTOSOMAL_GENES_LENGTH = 72;
     public static final int HORSE_AUTOSOMAL_GENES_LENGTH = 72;
     public static final int TURTLE_AUTOSOMAL_GENES_LENGTH = 12;
+    public static final int AXOLOTL_AUTOSOMAL_GENES_LENGTH = 34;
 }

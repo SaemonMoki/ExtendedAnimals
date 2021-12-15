@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -707,55 +708,59 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         HorseModelData horseModelData = getHorseModelData();
-        int heightMod = horseModelData.heightMod;
-        this.neck.rotateAngleX = headPitch * 0.017453292F + 0.8F;
-        this.neck.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.40F);
-        this.head.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.14F);
-        this.maneJoiner.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.07F);
 
-        this.tail.rotateAngleX = 0.6F;
+        if (horseModelData!=null) {
+            int heightMod = horseModelData.heightMod;
+            this.neck.rotateAngleX = headPitch * 0.017453292F + 0.8F;
+            this.neck.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.40F);
+            this.head.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.14F);
+            this.maneJoiner.rotateAngleY = ((netHeadYaw * 0.017453292F) * 0.07F);
 
-        this.leg1A.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
-        this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        this.hock3.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
-        this.hock4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
-        this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
+            this.tail.rotateAngleX = 0.6F;
+
+            this.leg1A.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
+            this.leg2.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
+            this.hock3.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
+            this.leg3.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F + (float) Math.PI) * 1.4F * limbSwingAmount;
+            this.hock4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
+            this.leg4.rotateAngleX = MathHelper.cos(limbSwing * 0.3332F) * 1.4F * limbSwingAmount;
 
 //        ModelHelper.copyModelPositioning(leg1A, hoof1);
-        ModelHelper.copyModelPositioning(leg2, hoof2);
-        ModelHelper.copyModelPositioning(leg3, hoof3);
-        ModelHelper.copyModelPositioning(leg4, hoof4);
+            ModelHelper.copyModelPositioning(leg2, hoof2);
+            ModelHelper.copyModelPositioning(leg3, hoof3);
+            ModelHelper.copyModelPositioning(leg4, hoof4);
 
-        this.hoof1.rotationPointY = this.hoof1.rotationPointY - heightMod;
-        this.hoof2.rotationPointY = this.hoof2.rotationPointY - heightMod;
-        this.hoof3.rotationPointY = this.hoof3.rotationPointY - heightMod;
-        this.hoof4.rotationPointY = this.hoof4.rotationPointY - heightMod;
+            this.hoof1.rotationPointY = this.hoof1.rotationPointY - heightMod;
+            this.hoof2.rotationPointY = this.hoof2.rotationPointY - heightMod;
+            this.hoof3.rotationPointY = this.hoof3.rotationPointY - heightMod;
+            this.hoof4.rotationPointY = this.hoof4.rotationPointY - heightMod;
 
-        this.earL.rotateAngleZ = -0.15F;
-        this.earR.rotateAngleZ = 0.15F;
+            this.earL.rotateAngleZ = -0.15F;
+            this.earR.rotateAngleZ = 0.15F;
 
-        if (getHorseModelData().saddle.getItem() instanceof CustomizableSaddleWestern) {
-            this.saddleSideL.setRotationPoint(5.0F, -1.0F, -5.25F);
-            this.saddleSideR.setRotationPoint(-5.0F, -1.0F, -5.25F);
-            this.saddleHorn.setRotationPoint(0.0F, -2.0F, -2.0F);
-            this.saddleHorn.rotateAngleX = (float)Math.PI / 8.0F;
-            this.saddlePomel.setRotationPoint(0.0F, -1.5F, -0.5F);
-            this.saddlePomel.rotateAngleX = -0.2F;
-            this.stirrup2DWideL.setRotationPoint(7.5F, 0.0F, -3.5F);
-            this.stirrup2DWideR.setRotationPoint(-7.5F, 0.0F, -3.5F);
-        } else if (getHorseModelData().saddle.getItem() instanceof CustomizableSaddleEnglish) {
-            this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
-            this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
-            this.saddleHorn.setRotationPoint(0.0F, -1.0F, -1.0F);
-            this.saddleHorn.rotateAngleX = (float)Math.PI / 4.5F;
-            this.stirrup3DNarrowL.setRotationPoint(7.25F, -0.25F, -1.5F);
-            this.stirrup3DNarrowR.setRotationPoint(-7.25F, -0.25F, -1.5F);
-        } else if (getHorseModelData().saddle.getItem() instanceof CustomizableSaddleVanilla){
-            this.stirrup3DNarrowL.setRotationPoint(8.0F, 0.0F, 0.0F);
-            this.stirrup3DNarrowR.setRotationPoint(-8.0F, 0.0F, 0.0F);
+
+            Item saddle = horseModelData.saddle.getItem();
+            if (saddle instanceof CustomizableSaddleWestern) {
+                this.saddleSideL.setRotationPoint(5.0F, -1.0F, -5.25F);
+                this.saddleSideR.setRotationPoint(-5.0F, -1.0F, -5.25F);
+                this.saddleHorn.setRotationPoint(0.0F, -2.0F, -2.0F);
+                this.saddleHorn.rotateAngleX = (float) Math.PI / 8.0F;
+                this.saddlePomel.setRotationPoint(0.0F, -1.5F, -0.5F);
+                this.saddlePomel.rotateAngleX = -0.2F;
+                this.stirrup2DWideL.setRotationPoint(7.5F, 0.0F, -3.5F);
+                this.stirrup2DWideR.setRotationPoint(-7.5F, 0.0F, -3.5F);
+            } else if (saddle instanceof CustomizableSaddleEnglish) {
+                this.saddleSideL.setRotationPoint(3.25F, -0.5F, -4.0F);
+                this.saddleSideR.setRotationPoint(-3.25F, -0.5F, -4.0F);
+                this.saddleHorn.setRotationPoint(0.0F, -1.0F, -1.0F);
+                this.saddleHorn.rotateAngleX = (float) Math.PI / 4.5F;
+                this.stirrup3DNarrowL.setRotationPoint(7.25F, -0.25F, -1.5F);
+                this.stirrup3DNarrowR.setRotationPoint(-7.25F, -0.25F, -1.5F);
+            } else if (saddle instanceof CustomizableSaddleVanilla) {
+                this.stirrup3DNarrowL.setRotationPoint(8.0F, 0.0F, 0.0F);
+                this.stirrup3DNarrowR.setRotationPoint(-8.0F, 0.0F, 0.0F);
+            }
         }
-
     }
 
     private class HorseModelData {
@@ -824,7 +829,6 @@ public class ModelEnhancedHorse <T extends EnhancedHorse> extends EntityModel<T>
             horseModelData.blink = enhancedHorse.getBlink();
             horseModelData.uuidArray = enhancedHorse.getCachedUniqueIdString().toCharArray();
             horseModelData.birthTime = enhancedHorse.getBirthTime();
-            horseModelData.isFemale = !Character.isLetter(horseModelData.uuidArray[0]) && horseModelData.uuidArray[0] - 48 < 8;
             horseModelData.clientGameTime = ((((ClientWorld)enhancedHorse.world).getWorldInfo()).getGameTime());
 
             int collarSlot = hasCollar(enhancedHorse.getEnhancedInventory());

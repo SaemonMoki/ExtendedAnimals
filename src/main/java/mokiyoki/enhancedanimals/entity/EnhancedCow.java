@@ -749,13 +749,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 }
             }
 
-            //standard dilution
-            if (gene[2] == 2 || gene[3] == 2){
-                if (gene[2] == 2 && gene[3] == 2){
-                    //full dilute
-                    skin = 2;
-                }
-            } //not dilute
+//            //standard dilution
+//            if (gene[2] == 2 || gene[3] == 2){
+//                if (gene[2] == 2 && gene[3] == 2){
+//                    //full dilute
+//                    skin = 2;
+//                }
+//            } //not dilute
 
             //roan
             if (gene[8] == 2 || gene[9] == 2){

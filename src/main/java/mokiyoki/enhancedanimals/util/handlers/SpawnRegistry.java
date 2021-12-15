@@ -42,54 +42,54 @@ public class SpawnRegistry {
             //add pigs
             if (entry.type == EntityType.PIG) {
                 if(config.spawnGeneticPigs.get()) {
-                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_PIG, config.spawnWeightPigs.get(), config.minimumPigGroup.get(), config.maximumPigGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_PIG.get(), config.spawnWeightPigs.get(), config.minimumPigGroup.get(), config.maximumPigGroup.get()));
                 }
             }
             //add sheep
             if (entry.type == EntityType.SHEEP) {
                 if (config.spawnGeneticSheep.get()) {
-                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_SHEEP, config.spawnWeightSheep.get(), config.minimumSheepGroup.get(), config.maximumSheepGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_SHEEP.get(), config.spawnWeightSheep.get(), config.minimumSheepGroup.get(), config.maximumSheepGroup.get()));
                 }
             }
             //add cow
             if (entry.type == EntityType.COW) {
                 if(config.spawnGeneticCows.get()) {
-                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_COW,config.spawnWeightCows.get(), config.minimumCowGroup.get(), config.maximumCowGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_COW.get(),config.spawnWeightCows.get(), config.minimumCowGroup.get(), config.maximumCowGroup.get()));
                 }
             }
             //add llama
             if (entry.type == EntityType.LLAMA) {
                 if(config.spawnGeneticLlamas.get()) {
-                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_LLAMA, config.spawnWeightLlamas.get(), config.minimumLlamaGroup.get(), config.maximumLlamaGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_LLAMA.get(), config.spawnWeightLlamas.get(), config.minimumLlamaGroup.get(), config.maximumLlamaGroup.get()));
                 }
             }
             //add chicken
             if (entry.type == EntityType.CHICKEN) {
                 if (config.spawnGeneticChickens.get()) {
-                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_CHICKEN, config.spawnWeightChickens.get(), config.minimumChickenGroup.get(), config.maximumChickenGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_CHICKEN.get(), config.spawnWeightChickens.get(), config.minimumChickenGroup.get(), config.maximumChickenGroup.get()));
                 }
             }
             //add rabbit
             if (entry.type == EntityType.RABBIT) {
                 if (config.spawnGeneticRabbits.get()) {
-                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_RABBIT, config.spawnWeightRabbits.get(), config.minimumRabbitGroup.get(), config.maximumRabbitGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_RABBIT.get(), config.spawnWeightRabbits.get(), config.minimumRabbitGroup.get(), config.maximumRabbitGroup.get()));
                 }
             }
             //add mooshroom
             if (entry.type == EntityType.MOOSHROOM) {
                 if (config.spawnGeneticMooshroom.get()) {
-                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_MOOSHROOM, config.spawnWeightMooshrooms.get(), config.minimumMooshroomGroup.get(), config.maximumMooshroomGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_MOOSHROOM.get(), config.spawnWeightMooshrooms.get(), config.minimumMooshroomGroup.get(), config.maximumMooshroomGroup.get()));
                 }
             }
             //add moobloom
             if (entry.type.toString().contains("moobloom")) {
                 if (config.spawnGeneticMoobloom.get()) {
-                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_MOOBLOOM, entry.minCount, entry.maxCount, entry.weight));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_MOOBLOOM.get(), entry.getWeight(), entry.minCount, entry.maxCount));
                 }
             }
             if (entry.type == EntityType.TURTLE) {
                 if(config.spawnGeneticTurtles.get()) {
-                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_TURTLE, config.spawnWeightTurtles.get(), config.minimumTurtleGroup.get(), config.maximumTurtleGroup.get()));
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_TURTLE.get(), config.spawnWeightTurtles.get(), config.minimumTurtleGroup.get(), config.maximumTurtleGroup.get()));
                 }
             }
         }
@@ -103,8 +103,8 @@ public class SpawnRegistry {
 
         //documentation says this miiiiight be null on super rare occurances
         if (event.getName() != null) {
-            if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get() && (event.getName().equals(Biomes.SNOWY_MOUNTAINS.getRegistryName()) || event.getName().equals(Biomes.SNOWY_TAIGA_HILLS.getRegistryName()) || event.getName().equals(Biomes.SNOWY_TAIGA_MOUNTAINS.getRegistryName()) || event.getName().equals(Biomes.TAIGA_HILLS.getRegistryName()) || event.getName().equals(Biomes.TAIGA_MOUNTAINS.getRegistryName()) || event.getName().equals(Biomes.GIANT_TREE_TAIGA_HILLS.getRegistryName()))) {
-                spawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_RABBIT, EanimodCommonConfig.COMMON.spawnWeightRabbits.get(), EanimodCommonConfig.COMMON.minimumRabbitGroup.get(), EanimodCommonConfig.COMMON.maximumRabbitGroup.get()));
+            if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get() && (event.getName().equals(Biomes.SNOWY_TAIGA.getRegistryName()) || event.getName().equals(Biomes.WINDSWEPT_HILLS.getRegistryName()))) {
+                spawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_RABBIT.get(), EanimodCommonConfig.COMMON.spawnWeightRabbits.get(), EanimodCommonConfig.COMMON.minimumRabbitGroup.get(), EanimodCommonConfig.COMMON.maximumRabbitGroup.get()));
             }
         }
 

@@ -30,26 +30,26 @@ public class SparseGrassBlock extends SpreadingSnowyDirtBlock {
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random) {
-        super.randomTick(state, worldIn, pos, random);
-        if (!worldIn.isClientSide) {
-            if (!worldIn.isAreaLoaded(pos, 3))
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+        super.randomTick(state, level, pos, random);
+        if (!level.isClientSide) {
+            if (!level.isAreaLoaded(pos, 3))
                 return; // Forge: prevent loading unloaded chunks when checking neighbor's light and spreading
-            if (worldIn.getMaxLocalRawBrightness(pos.above()) >= 4) {
-                if (worldIn.getMaxLocalRawBrightness(pos.above()) >= 9) {
+            if (level.getMaxLocalRawBrightness(pos.above()) >= 4) {
+                if (level.getMaxLocalRawBrightness(pos.above()) >= 9) {
                     BlockState blockstate = this.defaultBlockState();
 
                     for (int i = 0; i < 4; ++i) {
                         BlockPos blockpos = pos.offset(random.nextInt(3) - 1, random.nextInt(5) - 3, random.nextInt(3) - 1);
-                        if (worldIn.getBlockState(blockpos).getBlock() == Blocks.DIRT) {
-                            worldIn.setBlockAndUpdate(blockpos, blockstate.setValue(SNOWY, Boolean.valueOf(worldIn.getBlockState(blockpos.above()).getBlock() == Blocks.SNOW)));
+                        if (level.getBlockState(blockpos).getBlock() == Blocks.DIRT) {
+                            level.setBlockAndUpdate(blockpos, blockstate.setValue(SNOWY, Boolean.valueOf(level.getBlockState(blockpos.above()).getBlock() == Blocks.SNOW)));
                         }
                     }
                 }
 
             }
-//            worldIn.removeBlock(pos, false);
-            worldIn.setBlockAndUpdate(pos, Blocks.GRASS_BLOCK.defaultBlockState());
+//            level.removeBlock(pos, false);
+            level.setBlockAndUpdate(pos, Blocks.GRASS_BLOCK.defaultBlockState());
         }
     }
 

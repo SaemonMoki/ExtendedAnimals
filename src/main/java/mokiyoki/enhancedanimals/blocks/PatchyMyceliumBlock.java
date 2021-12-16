@@ -65,9 +65,10 @@ public class PatchyMyceliumBlock extends SpreadingSnowyDirtBlock {
         return false;
     }
 
-    @Nullable
-    @Override
-    public ToolType getHarvestTool(BlockState p_getHarvestTool_1_) {
-        return ToolType.SHOVEL;
-    }
+    //TODO find out what the new way is
+//    @Nullable
+//    @Override
+//    public ToolType getHarvestTool(BlockState p_getHarvestTool_1_) {
+//        return ToolType.SHOVEL;
+//    }
 }

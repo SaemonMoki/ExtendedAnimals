@@ -224,7 +224,7 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
 
             if (enhancedAnimal.canHaveSaddle()) {
                 if (!equipmentSlotEmpty(1)) {
-                    if (this.inventory.getItem(1).getStack().getItem() instanceof CustomizableCollar) {
+                    if (this.inventory.getItem(1).getItem() instanceof CustomizableCollar) {
                         return false;
                     }
                 } else {
@@ -234,7 +234,7 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
             }
             if (enhancedAnimal.canHaveBridle()) {
                 if (!equipmentSlotEmpty(3)) {
-                    if (this.inventory.getItem(3).getStack().getItem() instanceof CustomizableCollar) {
+                    if (this.inventory.getItem(3).getItem() instanceof CustomizableCollar) {
                         return false;
                     }
                 } else {
@@ -244,7 +244,7 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
 
             if (enhancedAnimal.canHaveArmour()) {
                 if (!equipmentSlotEmpty(2)) {
-                    if (this.inventory.getItem(2).getStack().getItem() instanceof CustomizableCollar) {
+                    if (this.inventory.getItem(2).getItem() instanceof CustomizableCollar) {
                         return false;
                     }
                 } else {
@@ -254,7 +254,7 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
 
             if (enhancedAnimal.canHaveBlanket() ) {
                 if (!equipmentSlotEmpty(4)) {
-                    if (this.inventory.getItem(4).getStack().getItem() instanceof CustomizableCollar) {
+                    if (this.inventory.getItem(4).getItem() instanceof CustomizableCollar) {
                         return false;
                     }
                 } else {
@@ -264,7 +264,7 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
 
             if (enhancedAnimal.canHaveBanner()) {
                 if (!equipmentSlotEmpty(6)) {
-                    if (this.inventory.getItem(6).getStack().getItem() instanceof CustomizableCollar) {
+                    if (this.inventory.getItem(6).getItem() instanceof CustomizableCollar) {
                         return false;
                     }
                 } else {
@@ -274,7 +274,7 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
 
             if (enhancedAnimal.canHaveHarness()) {
                 if (!equipmentSlotEmpty(5)) {
-                    if (this.inventory.getItem(5).getStack().getItem() instanceof CustomizableCollar) {
+                    if (this.inventory.getItem(5).getItem() instanceof CustomizableCollar) {
                         return false;
                     }
                 } else {
@@ -313,7 +313,7 @@ public class EnhancedAnimalContainer extends AbstractContainerMenu {
     }
 
     private boolean equipmentSlotEmpty(int slotIndex) {
-        return this.inventory.getItem(slotIndex).getStack().getItem() == Items.AIR;
+        return this.inventory.getItem(slotIndex).getItem() == Items.AIR;
     }
 
     private boolean checkSaddle(Item item) {

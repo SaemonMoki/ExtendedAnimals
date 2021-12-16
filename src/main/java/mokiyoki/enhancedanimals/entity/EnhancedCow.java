@@ -38,9 +38,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -387,7 +385,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         if (compound.contains("IsFemale")) {
             this.isFemale = compound.getBoolean("IsFemale");
         } else {
-            this.isFemale = (this.mooshroomUUID.equals("0") ? getCachedUniqueIdString() : this.mooshroomUUID).toCharArray()[0] - 48 < 8;
+            this.isFemale = (this.mooshroomUUID.equals("0") ? this.getStringUUID() : this.mooshroomUUID).toCharArray()[0] - 48 < 8;
         }
     }
 
@@ -456,9 +454,9 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
 
 
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedCow enhancedcow = ENHANCED_COW.create(this.level);
+        EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -this.getAdultAge);
+        defaultCreateAndSpawn(enhancedcow, inWorld, babyGenes, -this.getAdultAge());
         enhancedcow.configureAI();
 
         this.level.addFreshEntity(enhancedcow);
@@ -467,7 +465,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     public void lethalGenes(){
         int[] genes = this.genetics.getAutosomalGenes();
         if(genes[26] == 1 && genes[27] == 1) {
-            this.remove();
+            this.remove(RemovalReason.KILLED);
         }
     }
 
@@ -1237,7 +1235,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], shadeIntensity));
                 this.colouration.setPheomelaninColour(Colouration.HSBtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2]));
 
-            } else if (this.isChild() && !genes.has(0,0)) {
+            } else if (this.isBaby() && !genes.has(0,0)) {
                 this.colouration.setBabyAlpha(this.growthAmount());
             }
         }
@@ -1445,7 +1443,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             itemStack.shrink(1);
             if (itemStack.isEmpty()) {
                 entityPlayer.setItemInHand(hand, resultItem);
-            } else if (!entityPlayer.inventory.add(resultItem)) {
+            } else if (!entityPlayer.getInventory().add(resultItem)) {
                 entityPlayer.drop(resultItem, false);
             }
 
@@ -1615,7 +1613,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
             this.goalSelector.addGoal(8, grazingGoal);
             this.goalSelector.addGoal(9, this.wanderEatingGoal);
             this.goalSelector.addGoal(10, new EnhancedWanderingGoal(this, speed));
-            this.goalSelector.addGoal(11, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+            this.goalSelector.addGoal(11, new EnhancedLookAtGoal(this, Player.class, 6.0F));
             this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, EnhancedAnimalAbstract.class, 6.0F));
             this.goalSelector.addGoal(13, new EnhancedLookRandomlyGoal(this));
         }

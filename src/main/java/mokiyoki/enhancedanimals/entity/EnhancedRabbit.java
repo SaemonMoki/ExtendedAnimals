@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.entity.IShearable;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.MobSpawnType;
@@ -32,19 +31,14 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.JumpControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.entity.ai.goal.BreedGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -52,7 +46,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
@@ -303,7 +296,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         super.jumpFromGround();
         double d0 = this.moveControl.getSpeedModifier();
         if (d0 > 0.0D) {
-            double d1 = getHorizontalDistanceSqr(this.getDeltaMovement());
+            double d1 = this.distanceToSqr(this.getDeltaMovement());
             if (d1 < 0.01D) {
                 this.moveRelative(0.1F, new Vec3(0.0D, 0.0D, 1.0D));
             }
@@ -411,7 +404,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     private void calculateRotationYaw(double x, double z) {
-        this.yRot = (float)(Mth.atan2(z - this.getZ(), x - this.getX()) * (double)(180F / (float)Math.PI)) - 90.0F;
+        this.setYRot((float)(Mth.atan2(z - this.getZ(), x - this.getX()) * (double)(180F / (float)Math.PI)) - 90.0F);
     }
 
     private void enableJumpControl() {
@@ -610,7 +603,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     }
 
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.create(this.level);
+        EnhancedRabbit enhancedrabbit = ENHANCED_RABBIT.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedrabbit, inWorld, babyGenes, -this.getAdultAge());
         enhancedrabbit.setMaxCoatLength();
@@ -781,7 +774,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     public void lethalGenes(){
         int[] genes = this.genetics.getAutosomalGenes();
         if(genes[34] == 2 && genes[35] == 2) {
-            this.remove();
+            this.remove(RemovalReason.KILLED);
         }
     }
 

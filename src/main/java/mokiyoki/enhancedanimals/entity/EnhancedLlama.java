@@ -368,7 +368,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedLlama enhancedllama = ENHANCED_LLAMA.create(this.level);
+        EnhancedLlama enhancedllama = ENHANCED_LLAMA.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedllama, inWorld, babyGenes, -this.getAdultAge());
         enhancedllama.setStrengthAndInventory();
@@ -602,7 +602,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     }
 
     private boolean canDespawn() {
-        return !this.isTame() && !this.isLeashedToStranger() && !this.hasOnePlayerPassenger();
+        return false;
     }
 
     private boolean isLeashedToTrader() {
@@ -1078,7 +1078,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         double d0 = target.getX() - this.getX();
         double d1 = target.getBoundingBox().minY + (double)(target.getBbHeight() / 3.0F) - entityllamaspit.getY();
         double d2 = target.getZ() - this.getZ();
-        float f = Mth.sqrt(d0 * d0 + d2 * d2) * 0.2F;
+        float f = Mth.sqrt((float) (d0 * d0 + d2 * d2)) * 0.2F;
         entityllamaspit.shoot(d0, d1 + (double)f, d2, 1.5F, 10.0F);
         this.level.playSound((Player)null, this.getX(), this.getY(), this.getZ(), SoundEvents.LLAMA_SPIT, this.getSoundSource(), 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
         this.level.addFreshEntity(entityllamaspit);

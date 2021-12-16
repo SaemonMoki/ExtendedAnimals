@@ -1,24 +1,14 @@
 package mokiyoki.enhancedanimals.blocks;
 
-import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
 import net.minecraft.world.level.material.Material;
-//import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.PlantType;
-import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -83,9 +73,9 @@ public class SparseGrassBlock extends SpreadingSnowyDirtBlock {
         return false;
     }
 
-    @Nullable
-    @Override
-    public ToolType getHarvestTool(BlockState p_getHarvestTool_1_) {
-        return ToolType.SHOVEL;
-    }
+//    @Nullable
+//    @Override
+//    public ToolType getHarvestTool(BlockState p_getHarvestTool_1_) {
+//        return ToolType.SHOVEL;
+//    }
 }

@@ -47,7 +47,7 @@ public class EnhancedAnimals {
     public static final CreativeModeTab GENETICS_ANIMALS_GROUP = new CreativeModeTab(MODID) {
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(ModItems.Egg_Blue);
+            return new ItemStack(ModItems.EGG_BLUE);
         }
     };
 

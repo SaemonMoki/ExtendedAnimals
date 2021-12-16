@@ -88,6 +88,8 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     private int totalBoostTime;
     private int maxRideTime;
     private int rideTime;
+    protected float playerJumpPendingScale;
+    protected int gallopSoundCounter;
     protected float dwarf = -1.0F;
 
     protected int temper;
@@ -108,7 +110,6 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.CARROT_ON_A_STICK));
     }
 
     protected void defineSynchedData() {
@@ -445,10 +446,10 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                     float f1 = livingentity.zza;
                     if (f1 <= 0.0F) {
                         f1 *= 0.25F;
-               this.gallopSoundCounter = 0;
+                        this.gallopSoundCounter = 0;
                     }
 
-            if (this.onGround && this.playerJumpPendingScale == 0.0F && this.isStanding() && !this.allowStandSliding) {
+                    if (this.onGround && this.playerJumpPendingScale == 0.0F && !this.allowStandSliding) {
                         f = 0.0F;
                         f1 = 0.0F;
                     }
@@ -492,7 +493,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                     this.animationSpeedOld = this.animationSpeed;
                     double d2 = this.getX() - this.xo;
                     double d3 = this.getZ() - this.zo;
-                    float f4 = Mth.sqrt(d2 * d2 + d3 * d3) * 4.0F;
+                    float f4 = Mth.sqrt((float) (d2 * d2 + d3 * d3)) * 4.0F;
                     if (f4 > 1.0F) {
                         f4 = 1.0F;
                     }
@@ -528,7 +529,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                     this.animationSpeedOld = this.animationSpeed;
                     double d1 = this.getX() - this.xo;
                     double d0 = this.getZ() - this.zo;
-                    float f1 = Mth.sqrt(d1 * d1 + d0 * d0) * 4.0F;
+                    float f1 = Mth.sqrt((float) (d1 * d1 + d0 * d0)) * 4.0F;
                     if (f1 > 1.0F) {
                         f1 = 1.0F;
                     }

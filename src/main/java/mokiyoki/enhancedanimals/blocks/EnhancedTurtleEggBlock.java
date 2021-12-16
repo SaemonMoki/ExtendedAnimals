@@ -6,6 +6,7 @@ import mokiyoki.enhancedanimals.capability.turtleegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,9 +58,9 @@ public class EnhancedTurtleEggBlock extends NestBlock {
     /**
      * Called when the given entity walks on this Block
      */
-    public void stepOn(Level worldIn, BlockPos pos, Entity entityIn) {
-        this.tryTrample(worldIn, pos, entityIn, 100);
-        super.stepOn(worldIn, pos, entityIn);
+    public void stepOn(Level level, BlockPos pos, BlockState blockState, Entity entity) {
+        this.tryTrample(level, pos, entity, 100);
+        super.stepOn(level, pos, blockState, entity);
     }
 
     /**
@@ -110,23 +111,23 @@ public class EnhancedTurtleEggBlock extends NestBlock {
     /**
      * Performs a random tick on a block.
      */
-    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random) {
-        if (this.canGrow(worldIn) && hasProperHabitat(worldIn, pos)) {
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+        if (this.canGrow(level) && hasProperHabitat(level, pos)) {
             int i = state.getValue(HATCH);
             if (i < 2) {
-                worldIn.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_CRACK, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
-                worldIn.setBlock(pos, state.setValue(HATCH, Integer.valueOf(i + 1)), 2);
+                level.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_CRACK, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
+                level.setBlock(pos, state.setValue(HATCH, Integer.valueOf(i + 1)), 2);
             } else {
-                worldIn.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
-                worldIn.removeBlock(pos, false);
+                level.playSound((Player)null, pos, SoundEvents.TURTLE_EGG_HATCH, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
+                level.removeBlock(pos, false);
 
-                List<EggHolder> eggList = worldIn.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggsFromNest(pos);
+                List<EggHolder> eggList = level.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggsFromNest(pos);
                 int j = 1;
 
                 if (eggList!=null) {
                     for (EggHolder egg : eggList) {
-                        worldIn.levelEvent(2001, pos, Block.getId(state));
-                        EnhancedTurtle turtle = ENHANCED_TURTLE.create(worldIn);
+                        level.levelEvent(2001, pos, Block.getId(state));
+                        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
                         turtle.setGenes(egg.getGenes());
                         turtle.setSharedGenes(egg.getGenes());
                         turtle.setSireName(egg.getSire());
@@ -137,12 +138,12 @@ public class EnhancedTurtleEggBlock extends NestBlock {
                         turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
                         turtle.setHome(pos);
                         turtle.setHasScute();
-                        worldIn.addFreshEntity(turtle);
+                        level.addFreshEntity(turtle);
                     }
                 } else {
                     for (int k = 0; k < state.getValue(EGGS); k++) {
-                        worldIn.levelEvent(2001, pos, Block.getId(state));
-                        EnhancedTurtle turtle = ENHANCED_TURTLE.create(worldIn);
+                        level.levelEvent(2001, pos, Block.getId(state));
+                        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
                         Genes turtleGenes = turtle.createInitialBreedGenes(turtle.getCommandSenderWorld(), turtle.blockPosition(), "WanderingTrader");
                         turtle.setGenes(turtleGenes);
                         turtle.setSharedGenes(turtleGenes);
@@ -154,7 +155,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
                         turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
                         turtle.setHome(pos);
                         turtle.setHasScute();
-                        worldIn.addFreshEntity(turtle);
+                        level.addFreshEntity(turtle);
                     }
                 }
             }
@@ -240,8 +241,8 @@ public class EnhancedTurtleEggBlock extends NestBlock {
     }
 
     @Override
-    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
-        ItemStack itemStack = super.getPickBlock(state, target, world, pos, player);
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+        ItemStack itemStack = super.getCloneItemStack(state, target, world, pos, player);
         EggHolder egg = itemStack.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).getEggInNest(pos);
         if (egg!=null) {
             itemStack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(new EggCapabilityProvider()).setEggData(egg);

@@ -314,7 +314,7 @@ public class EnhancedHorse extends EnhancedAnimalRideableAbstract {
     }
 
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedHorse enhancedhorse = ENHANCED_HORSE.create(this.level);
+        EnhancedHorse enhancedhorse = ENHANCED_HORSE.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedhorse, inWorld, babyGenes, -this.getAdultAge());
         enhancedhorse.configureAI();

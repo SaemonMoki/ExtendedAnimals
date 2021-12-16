@@ -26,31 +26,31 @@ public class EnhancedEgg extends Item {
 
     public EnhancedEgg(Properties properties) { super(properties); }
 
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn){
-        ItemStack itemstack = playerIn.getItemInHand(handIn);
-        if (!playerIn.abilities.instabuild) {
-            itemstack.shrink(1);
-        }
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand){
+        ItemStack itemstack = player.getItemInHand(hand);
+        level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.EGG_THROW, SoundSource.PLAYERS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 
-        worldIn.playSound((Player)null, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundEvents.EGG_THROW, SoundSource.PLAYERS, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
-
-        if (!worldIn.isClientSide) {
+        if (!level.isClientSide) {
             EggHolder egg = itemstack.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(itemstack);
             Genes eggGenes = egg.getGenes();
             String sireName = egg.getSire();
             String damName = egg.getDam();
             EnhancedEntityEgg entityegg;
             if (eggGenes != null) {
-                entityegg = new EnhancedEntityEgg(worldIn, playerIn, eggGenes, sireName, damName, this.getItem(), this.getHasParents(itemstack));
+                entityegg = new EnhancedEntityEgg(level, player, eggGenes, sireName, damName, this.asItem(), this.getHasParents(itemstack));
             } else {
-                entityegg = new EnhancedEntityEgg(worldIn, playerIn, null, null, null, this.getItem(), this.getHasParents(itemstack));
+                entityegg = new EnhancedEntityEgg(level, player, null, null, null, this.asItem(), this.getHasParents(itemstack));
             }
 
-            entityegg.shootFromRotation(playerIn, playerIn.xRot, playerIn.yRot, 0.0F, 1.5F, 1.0F);
-            worldIn.addFreshEntity(entityegg);
+            entityegg.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
+            level.addFreshEntity(entityegg);
         }
 
-        playerIn.awardStat(Stats.ITEM_USED.get(this));
+        player.awardStat(Stats.ITEM_USED.get(this));
+        if (!player.getAbilities().instabuild) {
+            itemstack.shrink(1);
+        }
+
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemstack);
     }
 

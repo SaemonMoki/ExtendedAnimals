@@ -10,9 +10,10 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.entity.AgableMob;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.EntityDimensions;
@@ -34,22 +35,20 @@ import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.ExperienceOrb;
-import net.minecraft.entity.item.LeashKnotEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
 import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
-import net.minecraft.world.level.pathfinder.TurtleNodeEvaluator;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.sounds.SoundSource;
@@ -70,10 +69,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.turtleFoodMap;
@@ -615,22 +611,22 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             }
 
             if (this.turtle.getNavigation().isDone()) {
-                Vec3 vector3d = Vec3.atBottomCenterOf(blockpos);
-                Vec3 vector3d1 = RandomPos.getPosTowards(this.turtle, 16, 3, vector3d, (double)((float)Math.PI / 10F));
-                if (vector3d1 == null) {
-                    vector3d1 = RandomPos.getPosTowards(this.turtle, 8, 7, vector3d);
+                Vec3 vec3 = Vec3.atBottomCenterOf(blockpos);
+                Vec3 vec31 = DefaultRandomPos.getPosTowards(this.turtle, 16, 3, vec3, (double)((float)Math.PI / 10F));
+                if (vec31 == null) {
+                    vec31 = DefaultRandomPos.getPosTowards(this.turtle, 8, 7, vec3, (double)((float)Math.PI / 2F));
                 }
 
-                if (vector3d1 != null && !flag && !this.turtle.level.getBlockState(new BlockPos(vector3d1)).is(Blocks.WATER)) {
-                    vector3d1 = RandomPos.getPosTowards(this.turtle, 16, 5, vector3d);
+                if (vec31 != null && !flag && !this.turtle.level.getBlockState(new BlockPos(vec31)).is(Blocks.WATER)) {
+                    vec31 = DefaultRandomPos.getPosTowards(this.turtle, 16, 5, vec3, (double)((float)Math.PI / 2F));
                 }
 
-                if (vector3d1 == null) {
+                if (vec31 == null) {
                     this.stuck = true;
                     return;
                 }
 
-                this.turtle.getNavigation().moveTo(vector3d1.x, vector3d1.y, vector3d1.z, this.speed);
+                this.turtle.getNavigation().moveTo(vec31.x, vec31.y, vec31.z, this.speed);
             }
 
         }
@@ -649,7 +645,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          * Returns whether an in-progress EntityAIBase should continue executing
          */
         public boolean canContinueToUse() {
-            return !this.turtle.isInWater() && this.tryTicks <= 1200 && this.isValidTarget(this.turtle.level, this.blockPos);
+            return !this.turtle.isInWater() && this.tryTicks <= 1200 && this.isValidTarget(this.turtle.level, this.getMoveToTarget());
         }
 
         /**
@@ -660,7 +656,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             if (this.turtle.isBaby() && !this.turtle.isInWater()) {
                 return super.canUse();
             } else {
-                return !this.turtle.isGoingHome() && !this.turtle.isInWater() && !this.turtle.hasEgg() ? super.canUse() : false;
+                return !this.turtle.isGoingHome() && !this.turtle.isInWater() && !this.turtle.hasEgg() && super.canUse();
             }
         }
 
@@ -789,7 +785,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
             if (entityplayermp != null) {
                 entityplayermp.awardStat(Stats.ANIMALS_BRED);
-                CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this.turtle, ((EnhancedAnimalAbstract) this.partner), (AgableMob) null);
+                CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this.turtle, ((EnhancedAnimalAbstract) this.partner), (AgeableMob) null);
             }
 
             Random random = this.animal.getRandom();
@@ -829,11 +825,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                 double d0 = this.wantedX - this.turtle.getX();
                 double d1 = this.wantedY - this.turtle.getY();
                 double d2 = this.wantedZ - this.turtle.getZ();
-                double d3 = (double)Mth.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+                double d3 = (double)Mth.sqrt((float) (d0 * d0 + d1 * d1 + d2 * d2));
                 d1 = d1 / d3;
                 float f = (float)(Mth.atan2(d2, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
-                this.turtle.yRot = this.rotlerp(this.turtle.yRot, f, 90.0F);
-                this.turtle.yBodyRot = this.turtle.yRot;
+                this.turtle.setYRot(this.rotlerp(this.turtle.getYRot(), f, 90.0F));
+                this.turtle.setYBodyRot(this.turtle.getYRot());
                 float f1 = (float)(this.speedModifier * this.turtle.getAttributeValue(Attributes.MOVEMENT_SPEED));
                 this.turtle.setSpeed(Mth.lerp(0.125F, this.turtle.getSpeed(), f1));
                 this.turtle.setDeltaMovement(this.turtle.getDeltaMovement().add(0.0D, (double)this.turtle.getSpeed() * d1 * 0.1D, 0.0D));
@@ -856,7 +852,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         }
 
         protected PathFinder createPathFinder(int p_179679_1_) {
-            this.nodeEvaluator = new TurtleNodeEvaluator();
+            this.nodeEvaluator = new AmphibiousNodeEvaluator(true);
             return new PathFinder(this.nodeEvaluator, p_179679_1_);
         }
 
@@ -885,7 +881,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             if (this.mob.getLastHurtByMob() == null && !this.mob.isOnFire()) {
                 return false;
             } else {
-                BlockPos blockpos = this.lookForWater(this.mob.level, this.mob, 7, 4);
+                BlockPos blockpos = this.lookForWater(this.mob.level, this.mob, 7);
                 if (blockpos != null) {
                     this.posX = (double)blockpos.getX();
                     this.posY = (double)blockpos.getY();
@@ -899,7 +895,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     static class PlayerTemptGoal extends Goal {
-        private static final TargetingConditions TEMPT_TARGETING = (new TargetingConditions()).range(10.0D).allowSameTeam().allowInvulnerable();
+        private static final TargetingConditions TEMPT_TARGETING = TargetingConditions.forNonCombat().range(10.0D).ignoreLineOfSight();
         private final EnhancedTurtle turtle;
         private final double speed;
         private Player tempter;
@@ -1006,27 +1002,27 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          */
         public void tick() {
             if (this.turtle.getNavigation().isDone()) {
-                Vec3 vector3d = Vec3.atBottomCenterOf(this.turtle.getTravelPos());
-                Vec3 vector3d1 = RandomPos.getPosTowards(this.turtle, 16, 3, vector3d, (double)((float)Math.PI / 10F));
-                if (vector3d1 == null) {
-                    vector3d1 = RandomPos.getPosTowards(this.turtle, 8, 7, vector3d);
+                Vec3 vec3 = Vec3.atBottomCenterOf(this.turtle.getTravelPos());
+                Vec3 vec31 = DefaultRandomPos.getPosTowards(this.turtle, 16, 3, vec3, (double)((float)Math.PI / 10F));
+                if (vec31 == null) {
+                    vec31 = DefaultRandomPos.getPosTowards(this.turtle, 8, 7, vec3, (double)((float)Math.PI / 2F));
                 }
 
-                if (vector3d1 != null) {
-                    int i = Mth.floor(vector3d1.x);
-                    int j = Mth.floor(vector3d1.z);
+                if (vec31 != null) {
+                    int i = Mth.floor(vec31.x);
+                    int j = Mth.floor(vec31.z);
                     int k = 34;
-                    if (!this.turtle.level.hasChunksAt(i - 34, 0, j - 34, i + 34, 0, j + 34)) {
-                        vector3d1 = null;
+                    if (!this.turtle.level.hasChunksAt(i - 34, j - 34, i + 34, j + 34)) {
+                        vec31 = null;
                     }
                 }
 
-                if (vector3d1 == null) {
+                if (vec31 == null) {
                     this.stuck = true;
                     return;
                 }
 
-                this.turtle.getNavigation().moveTo(vector3d1.x, vector3d1.y, vector3d1.z, this.speed);
+                this.turtle.getNavigation().moveTo(vec31.x, vec31.y, vec31.z, this.speed);
             }
 
         }

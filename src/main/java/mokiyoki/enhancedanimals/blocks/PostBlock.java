@@ -230,21 +230,21 @@ public class PostBlock extends Block implements SimpleWaterloggedBlock {
     public boolean canConnect(BlockState state, Direction facing) {
         Block block = state.getBlock();
         if (facing == Direction.UP) {
-            return this.isFence(block);
+            return this.isFence(state);
         } else if (block instanceof PostBlock) {
             return state.getValue(FACING) != facing;
         }
-            return this.isFence(block);
+            return this.isFence(state);
     }
 
-    private boolean isFence(Block block) {
+    private boolean isFence(BlockState block) {
         return block.is(BlockTags.FENCES) || block.is(BlockTags.WALLS);
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos pos, BlockPos facingPos) {
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos pos, BlockPos facingPos) {
         if (state.getValue(WATERLOGGED)) {
-            worldIn.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
+            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
             Direction orientation = state.getValue(FACING);

@@ -219,7 +219,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             --this.angerLevel;
             LivingEntity livingentity1 = livingentity != null ? livingentity : this.getTarget();
             if (!this.isAngry() && livingentity1 != null) {
-                if (!this.canSee(livingentity1)) {
+                if (!this.hasLineOfSight(livingentity1)) {
                     this.setLastHurtByMob((LivingEntity)null);
                     this.setTarget((LivingEntity)null);
                 } else {
@@ -297,7 +297,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }else if ((!this.isBaby() || !bottleFeedable) && item instanceof EnhancedEgg && hunger >= 6000) {
             //enhancedegg egg eating
             decreaseHunger(100);
-            if (!entityPlayer.abilities.instabuild) {
+            if (!entityPlayer.getAbilities().instabuild) {
                 itemStack.shrink(1);
             } else {
                 if (itemStack.getCount() > 1) {
@@ -307,10 +307,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
 
         return super.mobInteract(entityPlayer, hand);
-    }
-
-    protected void dropInventory() {
-        super.dropInventory();
     }
 
     protected SoundEvent getAmbientSound() {
@@ -406,7 +402,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedPig enhancedpig = ENHANCED_PIG.create(this.level);
+        EnhancedPig enhancedpig = ENHANCED_PIG.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedpig, inWorld, babyGenes, -this.getAdultAge());
 
@@ -431,7 +427,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
 
         protected void alertOther(Mob mobIn, LivingEntity targetIn) {
-            if (mobIn instanceof EnhancedPig && this.mob.canSee(targetIn) && ((EnhancedPig)mobIn).becomeAngryAt(targetIn)) {
+            if (mobIn instanceof EnhancedPig && this.mob.hasLineOfSight(targetIn) && ((EnhancedPig)mobIn).becomeAngryAt(targetIn)) {
                 mobIn.setTarget(targetIn);
             }
 
@@ -467,7 +463,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             return false;
         } else {
             Entity entity = source.getEntity();
-            if (entity instanceof Player && !((Player)entity).isCreative() && this.canSee(entity)) {
+            if (entity instanceof Player && !((Player)entity).isCreative() && this.hasLineOfSight(entity)) {
                 this.becomeAngryAt(entity);
             }
 

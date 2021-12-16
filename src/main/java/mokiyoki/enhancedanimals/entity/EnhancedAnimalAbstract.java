@@ -420,7 +420,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.entityData.set(SLEEPING, sleeping); }
 
     public Boolean isAnimalSleeping() {
-        if (this.isWet()) {
+        if (this.isInWaterRainOrBubble()) {
             return false;
         } else if (!(this.getLeashHolder() instanceof LeashFenceKnotEntity) && this.getLeashHolder() != null) {
             return false;
@@ -594,7 +594,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         return this.isFemale;
     }
 
-    protected void setIsFemale(CompoundNBT compound) {
+    protected void setIsFemale(CompoundTag compound) {
         this.isFemale = compound.contains("IsFemale") ? compound.getBoolean("IsFemale") : getStringUUID().toCharArray()[0] - 48 < 8;
     }
 
@@ -848,10 +848,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         }
 
         if (!this.level.isClientSide && !hand.equals(InteractionHand.OFF_HAND)) {
-            boolean isChild = this.isChild();
+            boolean isChild = this.isBaby();
             if (item instanceof DebugGenesBook) {
                 Minecraft.getInstance().keyboardHandler.setClipboard(this.entityData.get(SHARED_GENES));
-            } else if (!this.isChild() && isBreedingItem(itemStack)) {
+            } else if (!isChild && isBreedingItem(itemStack)) {
                 if (this.hunger >= 4000 || (!this.pregnant && !isChild && this.canFallInLove())) {
                     decreaseHunger(getHungerRestored(itemStack));
                     shrinkItemStack(entityPlayer, itemStack);
@@ -1095,7 +1095,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     protected void resetGrowingAgeToAge() {
         int resetAge = this.getAge() - this.getAdultAge();
-        super.setGrowingAge(Math.min(resetAge, 0));
+        super.setAge(Math.min(resetAge, 0));
     }
 
     private void readInventory(CompoundTag compound) {
@@ -1566,6 +1566,10 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     public boolean isFoodItem(ItemStack stack) {
         return getAnimalFoodType().isFoodItem(stack.getItem());
+    }
+
+    public boolean isBreedingItem(ItemStack stack) {
+        return getAnimalFoodType().isBreedingItem(stack.getItem());
     }
 
     public int getHungerRestored(ItemStack stack) {

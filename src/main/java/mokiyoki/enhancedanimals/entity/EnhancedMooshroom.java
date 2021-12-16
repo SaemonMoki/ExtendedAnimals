@@ -118,7 +118,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     @Override
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.create(this.level);
+        EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         enhancedmooshroom.setMooshroomType(this.setChildMushroomType((enhancedmooshroom)));
         defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -this.getAdultAge());
@@ -129,7 +129,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     @Override
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
         ItemStack itemstack = entityPlayer.getItemInHand(hand);
-        if (itemstack.getItem() == Items.BOWL && !this.isChild() && !entityPlayer.getAbilities().instabuild && getEntityStatus().equals(EntityState.MOTHER.toString())) {
+        if (itemstack.getItem() == Items.BOWL && !this.isBaby() && !entityPlayer.getAbilities().instabuild && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int milk = getMilkAmount();
             if (milk <= 3) {
                 entityPlayer.playSound(SoundEvents.COW_HURT, 1.0F, 1.0F);
@@ -227,7 +227,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
             this.goalSelector.addGoal(0, new FloatGoal(this));
             this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, speed*1.5D));
             this.goalSelector.addGoal(2, new EnhancedBreedGoal(this, speed));
-            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D, false, Ingredient.of(Items.CARROT_ON_A_STICK)));
+            this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed, speed*1.25D, false, Items.CARROT_ON_A_STICK));
             this.goalSelector.addGoal(3, new EnhancedTemptGoal(this, speed,speed*1.25D, false, Items.AIR));
             this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.1D));
 //            this.goalSelector.addGoal(4, new EnhancedFollowParentGoal(this, this.parent,speed*1.25D));
@@ -278,7 +278,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
 
     @Override
     public boolean isShearable(ItemStack item, Level world, net.minecraft.core.BlockPos pos) {
-        return !this.isChild();
+        return !this.isBaby();
     }
 
     @Override
@@ -287,7 +287,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         this.level.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ(), 0.0D, 0.0D, 0.0D);
         if (!this.level.isClientSide) {
             this.remove(RemovalReason.DISCARDED);
-            EnhancedCow enhancedcow = ENHANCED_COW.create(this.level);
+            EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
             enhancedcow.moveTo(this.getX(), this.getY(), this.getZ(), (this.getYRot()), this.getXRot());
             enhancedcow.initializeHealth(this, 0.0F);
             enhancedcow.setHealth(this.getHealth());

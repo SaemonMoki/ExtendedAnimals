@@ -70,7 +70,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
 
     @Override
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedMoobloom enhancedmoobloom = ENHANCED_MOOBLOOM.create(this.level);
+        EnhancedMoobloom enhancedmoobloom = ENHANCED_MOOBLOOM.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedmoobloom, inWorld, babyGenes, -this.getAdultAge());
         enhancedmoobloom.configureAI();
@@ -107,7 +107,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
 
     @Override
     public boolean isShearable(ItemStack item, Level world, net.minecraft.core.BlockPos pos) {
-        return !this.isChild();
+        return !this.isBaby();
     }
 
     @Override
@@ -116,7 +116,7 @@ public class EnhancedMoobloom extends EnhancedCow implements net.minecraftforge.
         this.level.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY() + (double)(this.getBbHeight() / 2.0F), this.getZ(), 0.0D, 0.0D, 0.0D);
         if (!this.level.isClientSide) {
             this.remove(RemovalReason.DISCARDED);
-            EnhancedCow enhancedcow = ENHANCED_COW.create(this.level);
+            EnhancedCow enhancedcow = ENHANCED_COW.get().create(this.level);
             enhancedcow.moveTo(this.getX(), this.getY(), this.getZ(), (this.getYRot()), this.getXRot());
             enhancedcow.initializeHealth(this, 0.0F);
             enhancedcow.setHealth(this.getHealth());

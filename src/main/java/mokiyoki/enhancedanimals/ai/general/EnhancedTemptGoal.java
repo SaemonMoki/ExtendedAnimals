@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -11,8 +13,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import java.util.EnumSet;
 
 public class EnhancedTemptGoal extends Goal {
-    private static final TargetingConditions CLOSE_SEARCH_ENTITY_PREDICATE = (new TargetingConditions()).range(5.0D).allowInvulnerable().allowSameTeam().allowNonAttackable().allowUnseeable();
-    private static final TargetingConditions REGULAR_ENTITY_PREDICATE = (new TargetingConditions()).range(10.0D).allowInvulnerable().allowSameTeam().allowNonAttackable().allowUnseeable();
+    private static final TargetingConditions CLOSE_SEARCH_ENTITY_PREDICATE = TargetingConditions.forNonCombat().range(5.0D).ignoreLineOfSight();
+    private static final TargetingConditions REGULAR_ENTITY_PREDICATE = TargetingConditions.forNonCombat().range(10.0D).ignoreLineOfSight();
 
     private final double speed;
     private final double fastspeed;
@@ -50,7 +52,7 @@ public class EnhancedTemptGoal extends Goal {
             this.closestPlayer = this.eanimal.level.getNearestPlayer(getSearchPredicate(), this.eanimal);
             if (this.closestPlayer == null) {
                 return false;
-            } else if (this.temptItem != Items.AIR && (this.temptItem == this.closestPlayer.getHeldItemMainhand().getItem() || this.temptItem == this.closestPlayer.getHeldItemOffhand().getItem())) {
+            } else if (this.temptItem != Items.AIR && (this.temptItem == this.closestPlayer.getMainHandItem().getItem() || this.temptItem == this.closestPlayer.getOffhandItem().getItem())) {
                 return true;
             } else {
                  if (this.eanimal.level.getBlockState(this.eanimal.blockPosition().below()).getBlock() instanceof GrassBlock) {
@@ -83,7 +85,7 @@ public class EnhancedTemptGoal extends Goal {
                     return false;
                 }
 
-                if (Math.abs((double)this.closestPlayer.xRot - this.pitch) > 5.0D || Math.abs((double)this.closestPlayer.yRot - this.yaw) > 5.0D) {
+                if (Math.abs((double)this.closestPlayer.getXRot() - this.pitch) > 5.0D || Math.abs((double)this.closestPlayer.getYRot() - this.yaw) > 5.0D) {
                     return false;
                 }
             } else {
@@ -92,8 +94,8 @@ public class EnhancedTemptGoal extends Goal {
                 this.targetZ = this.closestPlayer.getZ();
             }
 
-            this.pitch = (double)this.closestPlayer.xRot;
-            this.yaw = (double)this.closestPlayer.yRot;
+            this.pitch = (double)this.closestPlayer.getXRot();
+            this.yaw = (double)this.closestPlayer.getYRot();
         }
 
         return this.canUse();

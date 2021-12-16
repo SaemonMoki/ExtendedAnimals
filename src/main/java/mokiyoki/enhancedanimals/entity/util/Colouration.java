@@ -285,4 +285,16 @@ public class Colouration {
 
         return a << 24 | b << 16 | g << 8 | r;
     }
+
+    public static int getABGRFromBGR(float[] bgr) {
+        return getABGRFromBGR(bgr[0], bgr[1], bgr[2]);
+    }
+    public static int getABGRFromBGR(float blue, float green, float red) {
+        int b = (int) (blue * 255.0f + 0.5f);
+        int g = (int) (green * 255.0f + 0.5f);
+        int r = (int) (red * 255.0f + 0.5f);
+        int a = 255;
+
+        return a << 24 | b << 16 | g << 8 | r;
+    }
 }

@@ -19,6 +19,7 @@ import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -26,16 +27,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.entity.IShearable;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
-import net.minecraft.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AirItem;
@@ -44,12 +42,10 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -174,7 +170,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @OnlyIn(Dist.CLIENT)
     public static int getDyeRgb(DyeColor dyeColour) {
-        return Colouration.getABGRFromARGB(dyeColour.getColorValue());
+        return Colouration.getABGRFromBGR(dyeColour.getTextureDiffuseColors());
     }
 
     /**
@@ -360,7 +356,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     protected void lethalGenes() {
         int[] genes = this.genetics.getAutosomalGenes();
         if(genes[68] == 2 && genes[69] == 2) {
-            this.remove();
+            this.remove(RemovalReason.KILLED);
         }
     }
 
@@ -406,7 +402,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     }
 
     protected void createAndSpawnEnhancedChild(Level inWorld) {
-        EnhancedSheep enhancedsheep = ENHANCED_SHEEP.create(this.level);
+        EnhancedSheep enhancedsheep = ENHANCED_SHEEP.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedsheep, inWorld, babyGenes, -this.getAdultAge());
         enhancedsheep.setMaxCoatLength();
@@ -1276,7 +1272,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             itemStack.shrink(1);
             if (itemStack.isEmpty()) {
                 entityPlayer.setItemInHand(hand, resultItem);
-            } else if (!entityPlayer.inventory.add(resultItem)) {
+            } else if (!entityPlayer.getInventory().add(resultItem)) {
                 entityPlayer.drop(resultItem, false);
             }
 
@@ -1300,7 +1296,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 DyeColor enumdyecolor = ((DyeItem)item).getDyeColor();
                 if (enumdyecolor != this.getFleeceDyeColour()) {
                     this.setFleeceDyeColour(enumdyecolor);
-                    if (!entityPlayer.abilities.instabuild) {
+                    if (!entityPlayer.getAbilities().instabuild) {
                         itemStack.shrink(1);
                     }
                 }

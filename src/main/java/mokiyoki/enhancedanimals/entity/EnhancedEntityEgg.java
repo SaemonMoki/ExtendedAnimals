@@ -50,12 +50,12 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
     }
 
     public EnhancedEntityEgg(Level worldIn, double x, double y, double z, Item egg) {
-        super(ENHANCED_ENTITY_EGG_ENTITY_TYPE, x, y, z,worldIn);
+        super(ENHANCED_ENTITY_EGG_ENTITY_TYPE.get(), x, y, z,worldIn);
         this.setItem(new ItemStack(egg, 1));
     }
 
     public EnhancedEntityEgg(Level worldIn, Player playerIn, Genes eggGenes, String sireName, String damName, Item egg, boolean hasParents) {
-        super(ENHANCED_ENTITY_EGG_ENTITY_TYPE, playerIn, worldIn);
+        super(ENHANCED_ENTITY_EGG_ENTITY_TYPE.get(), playerIn, worldIn);
         this.setGenes(eggGenes);
         this.setParentNames(sireName, damName);
         this.setItem(new ItemStack(egg, 1));
@@ -149,7 +149,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
                 }
             }
         } else if (this.level instanceof ServerLevel && !this.hasParents) {
-            EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.create(this.level);
+            EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
             Genes chickenGenes = enhancedchicken.createInitialBreedGenes((ServerLevel) this.level, this.blockPosition(), "WanderingTrader");
             enhancedchicken.setGenes(chickenGenes);
             enhancedchicken.setSharedGenesFromEntityEgg(chickenGenes.getGenesAsString());
@@ -165,7 +165,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
         if (!this.level.isClientSide) {
             if (!getGenes().equals("INFERTILE")) {
                 if (!isCreeper) {
-                    EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.create(this.level);
+                    EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
                     enhancedchicken.setGenes(new Genes(getGenes()));
                     enhancedchicken.setSharedGenesFromEntityEgg(getGenes());
                     enhancedchicken.setGrowingAge();

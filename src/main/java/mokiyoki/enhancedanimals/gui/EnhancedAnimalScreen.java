@@ -7,7 +7,9 @@ import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.ClickType;
@@ -233,7 +235,8 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
         }
 
         this.font.draw(matrixStack, name, 8.0F, (float)(this.imageHeight - 160), 4210752);
-        this.font.draw(matrixStack, this.inventory.getDisplayName().getString(), 8.0F, (float)(this.imageHeight - 94), 4210752);
+        //TODO how to get the correct inventory name? old : this.inventory.toString().getDisplayName().getString()
+        this.font.draw(matrixStack, "Inventory", 8.0F, (float)(this.imageHeight - 94), 4210752);
 
         //(health points / max health points * 10) + "/" + "10"
         /**
@@ -250,8 +253,9 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
 
     @Override
     protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bind(GUI_TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, GUI_TEXTURE);
         Container retrievedInventory = this.menu.getEnhancedAnimalInventory();
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
@@ -414,38 +418,38 @@ public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimal
 //            Float ageFloat = ageInt >= 20 ? (float)(ageInt/10) : (float)ageInt/10.0F;
             String age = "";
             if (ageInt < 8) {
-                age = ageInt.toString() + (new TranslationTextComponent("eanimod.animalinfocontainer.days").getString());
+                age = ageInt.toString() + (new TranslatableComponent("eanimod.animalinfocontainer.days").getString());
             } else if (ageInt < 96) {
                 ageInt = ageInt/8;
-                age = ageInt.toString() + (new TranslationTextComponent("eanimod.animalinfocontainer.months").getString());
+                age = ageInt.toString() + (new TranslatableComponent("eanimod.animalinfocontainer.months").getString());
             } else if (ageInt < 959040) {
                 ageInt = ageInt/96;
-                age = ageInt.toString() + (new TranslationTextComponent("eanimod.animalinfocontainer.years").getString());
+                age = ageInt.toString() + (new TranslatableComponent("eanimod.animalinfocontainer.years").getString());
             } else {
-                age = new TranslationTextComponent("eanimod.animalinfocontainer.ancient").getString();
+                age = new TranslatableComponent("eanimod.animalinfocontainer.ancient").getString();
             }
-            this.font.draw(matrixStack, (new TranslationTextComponent("eanimod.animalinfocontainer.age").getString()) + ":" + age, i + 99, j + 20, 4210752);
+            this.font.draw(matrixStack, (new TranslatableComponent("eanimod.animalinfocontainer.age").getString()) + ":" + age, i + 99, j + 20, 4210752);
 
             String sireName = this.enhancedAnimalInfo.sire;
             int s = sireName.length();
             String damName = this.enhancedAnimalInfo.dam;
             int d = damName.length();
             if (s > 8) {
-                this.font.draw(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.sire").getString()+":", i + 99, j + 30, 4210752);
+                this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.sire").getString()+":", i + 99, j + 30, 4210752);
                 this.font.draw(matrixStack, s > 12 ? sireName.substring(0, 12) : sireName, i + 99, j + 40, 4210752);
                 if (d > 8) {
-                    this.font.draw(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 51, 4210752);
+                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 51, 4210752);
                     this.font.draw(matrixStack, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 60, 4210752);
                 } else {
-                    this.font.draw(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 50, 4210752);
+                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 50, 4210752);
                 }
             } else {
-                this.font.draw(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.sire").getString()+":" + sireName, i + 99, j + 30, 4210752);
+                this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.sire").getString()+":" + sireName, i + 99, j + 30, 4210752);
                 if (d > 8) {
-                    this.font.draw(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 41, 4210752);
+                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 41, 4210752);
                     this.font.draw(matrixStack, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 50, 4210752);
                 } else {
-                    this.font.draw(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 40, 4210752);
+                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 40, 4210752);
                 }
             }
         }

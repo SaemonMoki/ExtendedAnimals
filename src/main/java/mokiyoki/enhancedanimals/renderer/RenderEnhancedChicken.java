@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -24,9 +25,8 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
     private static final String ENHANCED_CHICKENSILKIE_TEXTURE_LOCATION = "eanimod:textures/entities/chickensilkie/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/chicken/chickenbase.png");
 
-    public RenderEnhancedChicken(EntityRenderDispatcher render)
-    {
-        super(render, new ModelEnhancedChicken<>(), 0.5F);
+    public RenderEnhancedChicken(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new ModelEnhancedChicken<>(), 0.5F);
 //        this.addLayer(new SilkieChickenLayer(this));
     }
 

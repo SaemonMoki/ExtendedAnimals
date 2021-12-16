@@ -9,6 +9,7 @@ import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
@@ -17,8 +18,8 @@ public class RenderEnhancedTurtle extends MobRenderer<EnhancedTurtle, ModelEnhan
     private static final String ENHANCED_TURTLE_TEXTURE_LOCATION = "eanimod:textures/entities/turtle/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/turtle/turtlebase.png");
 
-    public RenderEnhancedTurtle(EntityRenderDispatcher render) {
-        super(render, new ModelEnhancedTurtle<>(0.0F), 0.5F);
+    public RenderEnhancedTurtle(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new ModelEnhancedTurtle<>(0.0F), 0.5F);
     }
 
     public void render(EnhancedTurtle entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {

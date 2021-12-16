@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,9 +19,8 @@ public class RenderEnhancedHorse extends MobRenderer<EnhancedHorse, ModelEnhance
     private static final String ENHANCED_HORSE_TEXTURE_LOCATION = "eanimod:textures/entities/horse/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/horse/horsebase.png");
 
-    public RenderEnhancedHorse(EntityRenderDispatcher render)
-    {
-        super(render, new ModelEnhancedHorse<>(), 0.8F);
+    public RenderEnhancedHorse(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new ModelEnhancedHorse<>(), 0.8F);
     }
 
     /**

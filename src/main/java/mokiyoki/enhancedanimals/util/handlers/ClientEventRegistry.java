@@ -14,7 +14,7 @@ public class ClientEventRegistry {
 
     @SubscribeEvent
     public static void onStitchEvent(TextureStitchEvent.Pre event) {
-        if (event.getMap().location().equals(Sheets.CHEST_SHEET)) {
+        if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
             event.addSprite(EGG_CARTON_TEXTURE);
         }
     }

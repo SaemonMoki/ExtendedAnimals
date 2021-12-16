@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
 import mokiyoki.enhancedanimals.tileentity.EggCartonTileEntity;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -37,8 +38,7 @@ public class EggCartonTileEntityRenderer<T extends BlockEntity & LidBlockEntity>
     private final ModelPart inside;
     private final ModelPart lid;
 
-    public EggCartonTileEntityRenderer(BlockEntityRenderDispatcher tileEntityRendererDispatcher) {
-        super(tileEntityRendererDispatcher);
+    public EggCartonTileEntityRenderer(BlockEntityRendererProvider.Context tileEntityRendererDispatcher) {
 
         base = new ModelPart(64, 64, 0, 0);
         base.addBox(1.0F, -5.0F, -14.0F, 14, 5, 12, 0.0F);

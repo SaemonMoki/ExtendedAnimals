@@ -1,12 +1,9 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
-import mokiyoki.enhancedanimals.blocks.EnhancedTurtleEggBlock;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.turtleegg.NestCapabilityProvider;
-import mokiyoki.enhancedanimals.init.ModBlocks;
-import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +16,6 @@ import static mokiyoki.enhancedanimals.init.ModBlocks.TURTLE_EGG;
 /**
  * Created by saemon on 29/09/2018.
  */
-//@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class CapabilityEvents {
 
     public static final ResourceLocation POST_CAP = new ResourceLocation(Reference.MODID, "postcap");

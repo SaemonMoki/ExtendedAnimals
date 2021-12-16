@@ -235,7 +235,7 @@ public class EventSubscriber {
             if (entity instanceof Sheep) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaSheep.get() && EanimodCommonConfig.COMMON.spawnGeneticSheep.get()) {
                     if (entity.getClass().getName().toLowerCase().contains("sheep")) {
-                        EnhancedSheep enhancedSheep = ENHANCED_SHEEP.spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                        EnhancedSheep enhancedSheep = ENHANCED_SHEEP.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
                         if (enhancedSheep != null) {
                             enhancedSheep.setFleeceDyeColour(((Sheep) entity).getColor());
                             if (entity.hasCustomName()) {
@@ -259,7 +259,7 @@ public class EventSubscriber {
             } else if (entity instanceof Chicken) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaChickens.get() && EanimodCommonConfig.COMMON.spawnGeneticChickens.get()) {
                     if (entity.getClass().getName().toLowerCase().contains("chicken")) {
-                        EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                        EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
                         if (enhancedChicken != null) {
                             if (entity.hasCustomName()) {
                                 enhancedChicken.setCustomName(entity.getCustomName());
@@ -290,7 +290,7 @@ public class EventSubscriber {
             } else if (entity instanceof Pig) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaPigs.get() && EanimodCommonConfig.COMMON.spawnGeneticPigs.get()) {
                     if (entity.getClass().getName().toLowerCase().contains("pig")) {
-                        EnhancedPig enhancedPig = ENHANCED_PIG.spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                        EnhancedPig enhancedPig = ENHANCED_PIG.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
                         if (enhancedPig != null) {
                             if (entity.hasCustomName()) {
                                 enhancedPig.setCustomName(entity.getCustomName());
@@ -317,7 +317,7 @@ public class EventSubscriber {
             } else if (entity instanceof MushroomCow) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaMooshroom.get() && EanimodCommonConfig.COMMON.spawnGeneticMooshroom.get()) {
                     if (entity.getClass().getName().toLowerCase().contains("mooshroom")) {
-                        EnhancedMooshroom enhancedMooshroom = ENHANCED_MOOSHROOM.spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                        EnhancedMooshroom enhancedMooshroom = ENHANCED_MOOSHROOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
                         if (enhancedMooshroom != null) {
                             if (entity.hasCustomName()) {
                                 enhancedMooshroom.setCustomName(entity.getCustomName());
@@ -345,13 +345,13 @@ public class EventSubscriber {
                     boolean flag = true;
                     if (entity.getClass().getName().toLowerCase().contains("moobloom")) {
                         if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get()) {
-                            enhancedCow = ENHANCED_MOOBLOOM.spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                            enhancedCow = ENHANCED_MOOBLOOM.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
                         } else {
                             enhancedCow = null;
                             flag = false;
                         }
                     } else if (entity.getClass().getName().toLowerCase().contains("cow")) {
-                        enhancedCow = ENHANCED_COW.spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                        enhancedCow = ENHANCED_COW.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
                     } else {
                         enhancedCow = null;
                         flag = false;
@@ -382,7 +382,7 @@ public class EventSubscriber {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get() && EanimodCommonConfig.COMMON.spawnGeneticLlamas.get()) {
                     if (entity.getClass().getName().toLowerCase().contains("llama")) {
                         if (!(((Llama) entity).getLeashHolder() instanceof WanderingTrader)) {
-                            EnhancedLlama enhancedLlama = ENHANCED_LLAMA.create(entity.getCommandSenderWorld());
+                            EnhancedLlama enhancedLlama = ENHANCED_LLAMA.get().create(entity.getCommandSenderWorld());
                             enhancedLlama.moveTo(entity.getX(), entity.getY(), entity.getZ(), (entity.getYRot()), entity.getXRot());
                             enhancedLlama.yBodyRot = ((Llama) entity).yBodyRot;
                             String breed = "";
@@ -456,7 +456,7 @@ public class EventSubscriber {
             } else if (entity instanceof Rabbit) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaRabbits.get() && EanimodCommonConfig.COMMON.spawnGeneticRabbits.get()) {
                     if (entity.getClass().getName().toLowerCase().contains("rabbit")) {
-                        EnhancedRabbit enhancedRabbit = ENHANCED_RABBIT.create(entity.getCommandSenderWorld());
+                        EnhancedRabbit enhancedRabbit = ENHANCED_RABBIT.get().create(entity.getCommandSenderWorld());
                         if (enhancedRabbit != null) {
                             enhancedRabbit.moveTo(entity.getX(), entity.getY(), entity.getZ(), (entity.getYRot()), entity.getXRot());
                             enhancedRabbit.yBodyRot = ((Rabbit) entity).yBodyRot;
@@ -524,7 +524,7 @@ public class EventSubscriber {
                 if(!EanimodCommonConfig.COMMON.spawnVanillaLlamas.get()) {
                     for (int i = 0; i < 2; i++) {
                         BlockPos blockPos = nearbySpawn(((ServerLevel)world), new BlockPos(entity.blockPosition()));
-                        EnhancedLlama enhancedLlama = ENHANCED_LLAMA.spawn((ServerLevel)world, null, null, null, blockPos, MobSpawnType.EVENT, false, false);
+                        EnhancedLlama enhancedLlama = ENHANCED_LLAMA.get().spawn((ServerLevel)world, null, null, null, blockPos, MobSpawnType.EVENT, false, false);
                         if(enhancedLlama != null) {
                             enhancedLlama.getGenes().setAutosomalGene(2, 2, 3, 2, 3, 2, 3);
                             enhancedLlama.setLeashedTo(entity, true);
@@ -539,32 +539,32 @@ public class EventSubscriber {
                     int r = ThreadLocalRandom.current().nextInt(2) + 1;
                     List<EntityType> animals = new ArrayList<>();
                     if (EanimodCommonConfig.COMMON.spawnGeneticCows.get() && EanimodCommonConfig.COMMON.wanderingTraderCow.get()) {
-                        animals.add(ENHANCED_COW);
+                        animals.add(ENHANCED_COW.get());
                     }
                     if (EanimodCommonConfig.COMMON.spawnGeneticSheep.get() && EanimodCommonConfig.COMMON.wanderingTraderSheep.get()) {
-                        animals.add(ENHANCED_SHEEP);
+                        animals.add(ENHANCED_SHEEP.get());
                     }
                     if (EanimodCommonConfig.COMMON.spawnGeneticChickens.get() && EanimodCommonConfig.COMMON.wanderingTraderChicken.get()) {
-                        animals.add(ENHANCED_CHICKEN);
+                        animals.add(ENHANCED_CHICKEN.get());
                     }
                     if (EanimodCommonConfig.COMMON.spawnGeneticPigs.get() && EanimodCommonConfig.COMMON.wanderingTraderPig.get()) {
-                        animals.add(ENHANCED_PIG);
+                        animals.add(ENHANCED_PIG.get());
                     }
                     if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get() && EanimodCommonConfig.COMMON.wanderingTraderRabbit.get()) {
-                        animals.add(ENHANCED_RABBIT);
+                        animals.add(ENHANCED_RABBIT.get());
                     }
                     if (EanimodCommonConfig.COMMON.spawnGeneticLlamas.get() && EanimodCommonConfig.COMMON.wanderingTraderLlama.get()) {
-                        animals.add(ENHANCED_LLAMA);
+                        animals.add(ENHANCED_LLAMA.get());
                         r = 1;
                     }
                     if (EanimodCommonConfig.COMMON.spawnGeneticTurtles.get() && EanimodCommonConfig.COMMON.wanderingTraderTurtle.get()) {
-                        animals.add(ENHANCED_TURTLE);
+                        animals.add(ENHANCED_TURTLE.get());
                     }
                     if (EanimodCommonConfig.COMMON.spawnGeneticMooshroom.get() && EanimodCommonConfig.COMMON.wanderingTraderMooshroom.get()) {
-                        animals.add(ENHANCED_MOOSHROOM);
+                        animals.add(ENHANCED_MOOSHROOM.get());
                     }
                     if (EanimodCommonConfig.COMMON.spawnGeneticMoobloom.get() && EanimodCommonConfig.COMMON.wanderingTraderMoobloom.get()) {
-                        animals.add(ENHANCED_MOOBLOOM);
+                        animals.add(ENHANCED_MOOBLOOM.get());
                     }
 
                     Collections.shuffle(animals);
@@ -617,9 +617,9 @@ public class EventSubscriber {
     public void onLivingHurtEvent(LivingHurtEvent event) {
         if (EanimodCommonConfig.COMMON.onlyKilledWithAxe.get()) {
             if (event.getEntity() instanceof EnhancedAnimalAbstract) {
-                Entity damageSource = event.getSource().getTrueSource();
-                if (damageSource instanceof PlayerEntity) {
-                    if (!(((PlayerEntity) damageSource).getHeldItemMainhand().getItem() instanceof AxeItem)) {
+                Entity damageSource = event.getSource().getDirectEntity();
+                if (damageSource instanceof Player) {
+                    if (!(((Player) damageSource).getMainHandItem().getItem() instanceof AxeItem)) {
                         event.setCanceled(true);
                     }
                 } else {

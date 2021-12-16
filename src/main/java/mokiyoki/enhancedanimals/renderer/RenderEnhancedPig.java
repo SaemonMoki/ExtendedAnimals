@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,9 +21,9 @@ public class RenderEnhancedPig extends MobRenderer<EnhancedPig, ModelEnhancedPig
     private static final String ENHANCED_PIG_TEXTURE_LOCATION = "eanimod:textures/entities/pig/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/pig/pigbase.png");
 
-    public RenderEnhancedPig(EntityRenderDispatcher render)
+    public RenderEnhancedPig(EntityRendererProvider.Context renderManager)
     {
-        super(render, new ModelEnhancedPig<>(), 0.8F);
+        super(renderManager, new ModelEnhancedPig<>(), 0.8F);
     }
 
     /**

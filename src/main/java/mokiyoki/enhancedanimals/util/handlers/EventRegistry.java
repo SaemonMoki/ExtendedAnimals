@@ -29,8 +29,23 @@ import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.ModTileEntities;
+import mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer;
+import mokiyoki.enhancedanimals.renderer.EnhancedLlamaSpitRenderer;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedChicken;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedCow;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedHorse;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedLlama;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedMoobloom;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedMooshroom;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedPig;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedRabbit;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedSheep;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedTurtle;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.level.block.Block;
@@ -55,6 +70,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -73,6 +90,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
 import static mokiyoki.enhancedanimals.init.ModBlocks.TURTLE_EGG;
+import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
 
 //import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
@@ -122,18 +140,6 @@ public class EventRegistry {
             new ForgeSpawnEggItem(ENHANCED_TURTLE, 0xFFFFDD,0x00DDCC, new Item.Properties()
                     .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP))
     );
-
-
-    @SubscribeEvent
-    public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-        final Block[] blocks = {ModBlocks.POST_ACACIA, ModBlocks.POST_BIRCH, ModBlocks.POST_DARK_OAK, ModBlocks.POST_JUNGLE, ModBlocks.POST_OAK,
-                ModBlocks.POST_SPRUCE, ModBlocks.UNBOUNDHAY_BLOCK, ModBlocks.SPARSEGRASS_BLOCK, ModBlocks.PATCHYMYCELIUM_BLOCK, ModBlocks.EGG_CARTON,
-                ModBlocks.TURTLE_EGG, ModBlocks.GROWABLE_ALLIUM, ModBlocks.GROWABLE_AZURE_BLUET, ModBlocks.GROWABLE_BLUE_ORCHID, ModBlocks.GROWABLE_CORNFLOWER,
-                ModBlocks.GROWABLE_DANDELION, ModBlocks.GROWABLE_OXEYE_DAISY, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_ROSE_BUSH,
-                ModBlocks.GROWABLE_SUNFLOWER, ModBlocks.GROWABLE_TALL_GRASS, ModBlocks.GROWABLE_LARGE_FERN
-        };
-            event.getRegistry().registerAll(blocks);
-    }
 
     @SubscribeEvent
     public static void onRegisterItems(final RegistryEvent.Register<Item> event) {
@@ -261,6 +267,25 @@ public class EventRegistry {
         event.register(IEggCapability.class);
         event.register(INestEggCapability.class);
     }
+
+    @SubscribeEvent
+    public static void onEntityRenderersRegistry(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(ENHANCED_CHICKEN.get(), RenderEnhancedChicken::new);
+        event.registerEntityRenderer(ENHANCED_RABBIT.get(), RenderEnhancedRabbit::new);
+        event.registerEntityRenderer(ENHANCED_SHEEP.get(), RenderEnhancedSheep::new);
+        event.registerEntityRenderer(ENHANCED_LLAMA.get(), RenderEnhancedLlama::new);
+        event.registerEntityRenderer(ENHANCED_COW.get(), RenderEnhancedCow::new);
+        event.registerEntityRenderer(ENHANCED_PIG.get(), RenderEnhancedPig::new);
+        event.registerEntityRenderer(ENHANCED_HORSE.get(), RenderEnhancedHorse::new);
+        event.registerEntityRenderer(ENHANCED_MOOSHROOM.get(), RenderEnhancedMooshroom::new);
+        event.registerEntityRenderer(ENHANCED_MOOBLOOM.get(), RenderEnhancedMoobloom::new);
+        event.registerEntityRenderer(ENHANCED_TURTLE.get(), RenderEnhancedTurtle::new);
+        event.registerEntityRenderer(ENHANCED_LLAMA_SPIT.get(), EnhancedLlamaSpitRenderer::new);
+        event.registerEntityRenderer(ENHANCED_ENTITY_EGG_ENTITY_TYPE.get(), ThrownItemRenderer::new);
+
+        event.registerBlockEntityRenderer(EGG_CARTON_TILE_ENTITY, EggCartonTileEntityRenderer::new);
+    }
+
 
     @SubscribeEvent
     public static void onEntityAttributeCreationRegistry(EntityAttributeCreationEvent event) {

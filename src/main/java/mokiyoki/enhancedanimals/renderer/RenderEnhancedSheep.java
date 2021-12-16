@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,8 +20,8 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
     private static final String ENHANCED_SHEEP_TEXTURE_LOCATION = "eanimod:textures/entities/sheep/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/sheep/sheep.png");
 
-    public RenderEnhancedSheep(EntityRenderDispatcher render) {
-        super(render, new ModelEnhancedSheep<>(), 0.6F);
+    public RenderEnhancedSheep(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new ModelEnhancedSheep<>(), 0.6F);
     }
 
     /**

@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,8 +19,8 @@ public class RenderEnhancedMooshroom extends MobRenderer<EnhancedMooshroom, Mode
     private static final String ENHANCED_COW_TEXTURE_LOCATION = "eanimod:textures/entities/cow/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/cow/cowbase.png");
 
-    public RenderEnhancedMooshroom(EntityRenderDispatcher renderManagerIn) {
-        super(renderManagerIn, new ModelEnhancedCow<>(), 0.7F);
+    public RenderEnhancedMooshroom(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new ModelEnhancedCow<>(), 0.7F);
 //        this.addLayer(new EnhancedMooshroomMushroomLayer<>(this));
     }
 

@@ -25,6 +25,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static mokiyoki.enhancedanimals.init.ModBlocks.BLOCKS_DEFERRED_REGISTRY;
 import static mokiyoki.enhancedanimals.util.Reference.MODID;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENTITIES_DEFERRED_REGISTRY;
 
@@ -71,7 +72,7 @@ public class EnhancedAnimals {
         MinecraftForge.EVENT_BUS.register(instance);
 
         ENTITIES_DEFERRED_REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
-
+        BLOCKS_DEFERRED_REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     private void setup(final FMLCommonSetupEvent event) {

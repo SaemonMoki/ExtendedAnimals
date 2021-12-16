@@ -5,7 +5,6 @@ import mokiyoki.enhancedanimals.gui.EncyclopediaScreen;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.renderer.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -13,8 +12,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.client.renderer.entity.LlamaSpitRenderer;
-import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
@@ -23,29 +20,12 @@ import net.minecraft.client.renderer.BiomeColors;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
-import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ANIMAL_CONTAINER;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_COW;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ENTITY_EGG_ENTITY_TYPE;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_LLAMA_SPIT;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOSHROOM;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_MOOBLOOM;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_RABBIT;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_SHEEP;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_HORSE;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_TURTLE;
-//import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CAT;
-//import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_BEE;
 
 /**
  * Created by moki on 24/08/2018.
@@ -57,47 +37,32 @@ public class ClientProxy implements IProxy {
 
     @OnlyIn(Dist.CLIENT)
     public void initClientSetup(FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_CHICKEN, RenderEnhancedChicken::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_RABBIT, RenderEnhancedRabbit::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_SHEEP, RenderEnhancedSheep::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_LLAMA, RenderEnhancedLlama::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_COW, RenderEnhancedCow::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_PIG, RenderEnhancedPig::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_HORSE, RenderEnhancedHorse::new);
-//        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_CAT, RenderEnhancedCat::new);
-//        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_BEE, RenderEnhancedBee::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOSHROOM, RenderEnhancedMooshroom::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_MOOBLOOM, RenderEnhancedMoobloom::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_TURTLE, RenderEnhancedTurtle::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_LLAMA_SPIT, EnhancedLlamaSpitRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(ENHANCED_ENTITY_EGG_ENTITY_TYPE, renderManager -> new ThrownItemRenderer(renderManager, Minecraft.getInstance().getItemRenderer()));
 
         MenuScreens.register(EGG_CARTON_CONTAINER, EggCartonScreen::new);
         MenuScreens.register(ENHANCED_ANIMAL_CONTAINER, EnhancedAnimalScreen::new);
-        ClientRegistry.bindTileEntityRenderer(EGG_CARTON_TILE_ENTITY, EggCartonTileEntityRenderer::new);
 
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.SPARSEGRASS_BLOCK, RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.PATCHYMYCELIUM_BLOCK, RenderType.cutoutMipped());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.TURTLE_EGG, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.UNBOUNDHAY_BLOCK, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_ALLIUM, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_AZURE_BLUET, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_BLUE_ORCHID, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_CORNFLOWER, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_DANDELION, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_OXEYE_DAISY, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_GRASS, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_FERN, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_ROSE_BUSH, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_SUNFLOWER, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_TALL_GRASS, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_LARGE_FERN, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_ACACIA, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_BIRCH, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_DARK_OAK, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_JUNGLE, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_OAK, RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_SPRUCE, RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.SPARSEGRASS_BLOCK.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.PATCHYMYCELIUM_BLOCK.get(), RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.TURTLE_EGG.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.UNBOUNDHAY_BLOCK.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_ALLIUM.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_AZURE_BLUET.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_BLUE_ORCHID.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_CORNFLOWER.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_DANDELION.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_OXEYE_DAISY.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_GRASS.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_FERN.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_ROSE_BUSH.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_SUNFLOWER.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_TALL_GRASS.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_LARGE_FERN.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_ACACIA.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_BIRCH.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_DARK_OAK.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_JUNGLE.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_OAK.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.POST_SPRUCE.get(), RenderType.cutout());
     }
 
     @Override
@@ -108,13 +73,13 @@ public class ClientProxy implements IProxy {
         //Grass Colouring
         blockColours.register((state, world, pos, tintIndex) ->
                 world != null && pos != null ? BiomeColors.getAverageGrassColor(world, pos) : GrassColor.get(0.5D, 1.0D),
-            ModBlocks.SPARSEGRASS_BLOCK, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_TALL_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_LARGE_FERN);
+            ModBlocks.SPARSEGRASS_BLOCK.get(), ModBlocks.GROWABLE_GRASS.get(), ModBlocks.GROWABLE_TALL_GRASS.get(), ModBlocks.GROWABLE_FERN.get(), ModBlocks.GROWABLE_LARGE_FERN.get());
 
         //Item Colouring
         itemColours.register((stack, tintIndex) -> {
                 BlockState BlockState = ((BlockItem)stack.getItem()).getBlock().defaultBlockState();
                 return blockColours.getColor(BlockState, null, null, tintIndex); },
-            ModBlocks.SPARSEGRASS_BLOCK, ModBlocks.GROWABLE_GRASS, ModBlocks.GROWABLE_TALL_GRASS, ModBlocks.GROWABLE_FERN, ModBlocks.GROWABLE_LARGE_FERN);
+            ModBlocks.SPARSEGRASS_BLOCK.get(), ModBlocks.GROWABLE_GRASS.get(), ModBlocks.GROWABLE_TALL_GRASS.get(), ModBlocks.GROWABLE_FERN.get(), ModBlocks.GROWABLE_LARGE_FERN.get());
 
         //Dyeable Item colouring
         //TODO figure out how to use colour map for some items

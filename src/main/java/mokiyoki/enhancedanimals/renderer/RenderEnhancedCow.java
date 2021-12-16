@@ -7,6 +7,7 @@ import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,9 +19,8 @@ public class RenderEnhancedCow extends MobRenderer<EnhancedCow, ModelEnhancedCow
     private static final String ENHANCED_COW_TEXTURE_LOCATION = "eanimod:textures/entities/cow/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/cow/cowbase.png");
 
-    public RenderEnhancedCow(EntityRenderDispatcher render)
-    {
-        super(render, new ModelEnhancedCow<>(), 0.8F);
+    public RenderEnhancedCow(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new ModelEnhancedCow<>(), 0.8F);
     }
 
     /**

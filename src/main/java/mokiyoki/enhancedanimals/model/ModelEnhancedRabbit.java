@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<T> {
+public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EnhancedAnimalModel<T> {
 
     private Map<Integer, RabbitModelData> rabbitModelDataCache = new HashMap<>();
     private int clearCacheTimer = 0;
@@ -283,7 +283,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     @Override
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         RabbitModelData rabbitModelData = getRabbitModelData();
-        Phenotype rabbit = rabbitModelData.phenotype;
+        RabbitPhenotype rabbit = rabbitModelData.rabbitPhenotype;
 
         if (rabbit!=null) {
             int coatLength = rabbitModelData.coatlength;
@@ -408,7 +408,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         float f = ageInTicks - (float)entityIn.tickCount;
 
         RabbitModelData rabbitModelData = getRabbitModelData();
-        Phenotype rabbit = rabbitModelData.phenotype;
+        RabbitPhenotype rabbit = rabbitModelData.rabbitPhenotype;
 
         if (rabbit!=null) {
 
@@ -536,7 +536,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
     }
 
     private class RabbitModelData {
-        Phenotype phenotype;
+        RabbitPhenotype rabbitPhenotype;
         String birthTime;
         int coatlength = 0;
         boolean sleeping = false;
@@ -580,7 +580,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         } else {
             RabbitModelData rabbitModelData = new RabbitModelData();
             if (enhancedRabbit.getSharedGenes()!=null) {
-                rabbitModelData.phenotype = new Phenotype(enhancedRabbit.getSharedGenes().getAutosomalGenes(), enhancedRabbit.getAnimalSize());
+                rabbitModelData.rabbitPhenotype = new RabbitPhenotype(enhancedRabbit.getSharedGenes().getAutosomalGenes(), enhancedRabbit.getAnimalSize());
             }
             rabbitModelData.coatlength = enhancedRabbit.getCoatLength();
             rabbitModelData.sleeping = enhancedRabbit.isAnimalSleeping();
@@ -590,7 +590,7 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
             rabbitModelData.clientGameTime = (((ClientLevel)enhancedRabbit.level).getLevelData()).getGameTime();
             rabbitModelData.adultAge = EanimodCommonConfig.COMMON.adultAgeRabbit.get();
 
-            if(rabbitModelData.phenotype != null) {
+            if(rabbitModelData.rabbitPhenotype != null) {
                 rabbitModelDataCache.put(enhancedRabbit.getId(), rabbitModelData);
             }
 
@@ -607,13 +607,13 @@ public class ModelEnhancedRabbit <T extends EnhancedRabbit> extends EntityModel<
         return false;
     }
 
-    private class Phenotype {
+    private class RabbitPhenotype implements Phenotype{
         boolean dwarf = false;
         LionsMane lionsmane = LionsMane.NONE;
         float size;
         float lop = 0;
 
-        Phenotype(int[] gene, float size) {
+        RabbitPhenotype(int[] gene, float size) {
             if (gene[34] == 2 || gene[35] == 2) {
                 this.dwarf = true;
                 size = 0.3F + ((size - 0.3F)/2F);

@@ -18,6 +18,7 @@ import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Genes;
+ import mokiyoki.enhancedanimals.util.handlers.ClientTickScheduler;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -80,6 +81,8 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static mokiyoki.enhancedanimals.util.handlers.ClientTickScheduler.scheduledClientTasks;
 
 public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IInventoryChangedListener {
 
@@ -1500,16 +1503,23 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     public void notifyDataManagerChange(DataParameter<?> key) {
         if (ANIMAL_SIZE.equals(key) && this.world.isRemote) {
-            if (this.isGrowing()) {
-                this.reloadSizeTime = (int) (this.getFullSizeAge() * 0.05);
+            if (this.world.getGameTime() == 0) {
+                scheduledClientTasks.add(new ClientTickScheduler.Task(50, () -> sizeRecalculate(this)));
             } else {
-                this.recalculateSize();
+                sizeRecalculate(this);
             }
         }
 
         super.notifyDataManagerChange(key);
     }
 
+    public void sizeRecalculate(EnhancedAnimalAbstract eae) {
+        if (eae.isGrowing()) {
+            eae.reloadSizeTime = (int) (eae.getFullSizeAge() * 0.05);
+        } else {
+            eae.recalculateSize();
+        }
+    }
 
     /*
     Client Sided Work
@@ -1741,7 +1751,7 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
         boolean canBePregnant = false;
         if (this.rand.nextInt(20) == 0) {
             int age = this.rand.nextInt(childAge);
-            this.setGrowingAge(age);
+            this.setGrowingAge(-age);
             this.setBirthTime(this.world, -age);
         } else {
             this.setGrowingAge(0);

@@ -361,6 +361,11 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
 
     protected abstract FoodSerialiser.AnimalFoodMap getAnimalFoodType();
 
+    public void setBirthTimeFromVanillaAge(int vanillaAge, World world) {
+        this.setGrowingAge(vanillaAge >= 0 ? vanillaAge : (vanillaAge / 24000) * -this.getAdultAge());
+        this.setBirthTime(world, vanillaAge >= 0 ? -(this.getAdultAge() + (this.rand.nextInt(32)*24000)) : -((vanillaAge / 24000) * this.getAdultAge()));
+    }
+
     public void setBirthTime() {
         this.setBirthTime(String.valueOf(this.world.getWorldInfo().getGameTime()));
     }
@@ -1601,6 +1606,14 @@ public abstract class EnhancedAnimalAbstract extends AnimalEntity implements IIn
             return genes;
         }
         return this.genesSplitForClient;
+    }
+
+    protected void addTextureToAnimal(String[][][] texture, int geneValue0, int geneValue1, int geneValue2, boolean check) {
+        if(check) {
+            this.enhancedAnimalTextures.add(texture[geneValue0][geneValue1][geneValue2]);
+            this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1)+String.valueOf(geneValue2));
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
     protected void addTextureToAnimal(String[] texture, int geneValue, Predicate<Integer> check) {

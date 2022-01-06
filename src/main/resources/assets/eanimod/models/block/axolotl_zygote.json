@@ -1,0 +1,20 @@
+{
+  "texture_size": [32, 32],
+  "textures": {
+    "egg": "eanimod:block/axolotl_egg"
+  },
+  "elements": [
+    {
+      "from": [3, 3, 3],
+      "to": [5, 5, 5],
+      "faces": {
+        "north": {"uv": [2, 8, 4, 10], "texture": "#egg"},
+        "east": {"uv": [0, 8, 2, 10], "texture": "#egg"},
+        "south": {"uv": [6, 8, 8, 10], "texture": "#egg"},
+        "west": {"uv": [4, 8, 6, 10], "texture": "#egg"},
+        "up": {"uv": [4, 8, 2, 6], "texture": "#egg"},
+        "down": {"uv": [6, 6, 4, 8], "texture": "#egg"}
+      }
+    }
+  ]
+}

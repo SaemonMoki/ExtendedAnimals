@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 
-public class CustomizableCollar extends CustomizableAnimalEquipment{
+public class CustomizableCollar extends CustomizableAnimalEquipment {
     private boolean isBellCollar = false;
     public CustomizableCollar(Properties builder, int originalColour, boolean hasBells) {
         super(builder, originalColour);

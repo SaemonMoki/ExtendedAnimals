@@ -230,8 +230,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @Override
     public float getRenderScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
-        float newbornSize = 0.325F;
-        return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
+        return this.isGrowing() ? (0.325F + ((size-0.325F) * (this.growthAmount()))) : size;
     }
 
     protected void registerData() {

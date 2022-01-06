@@ -1,0 +1,41 @@
+{
+  "multipart": [
+
+    {   "when": { "eggs": "1" },
+      "apply": { "model": "eanimod:block/axolotl_egg"}
+    },
+    {   "when": { "eggs": "2" },
+      "apply": { "model": "eanimod:block/two_axolotl_eggs"}
+    },
+    {   "when": { "eggs": "3" },
+      "apply": { "model": "eanimod:block/three_axolotl_eggs"}
+    },
+    {   "when": { "eggs": "4" },
+      "apply": { "model": "eanimod:block/four_axolotl_eggs"}
+    },
+    {   "when": { "eggs": "1", "hatch": "1"},
+      "apply": { "model": "eanimod:block/axolotl_zygote" }
+    },
+    {   "when": { "eggs": "1", "hatch": "2"},
+      "apply": { "model": "eanimod:block/axolotl_embryo" }
+    },
+    {   "when": { "eggs": "2", "hatch": "1"},
+      "apply": { "model": "eanimod:block/two_axolotl_zygotes" }
+    },
+    {   "when": { "eggs": "2", "hatch": "2"},
+      "apply": { "model": "eanimod:block/two_axolotl_embryos" }
+    },
+    {   "when": { "eggs": "3", "hatch": "1"},
+      "apply": { "model": "eanimod:block/three_axolotl_zygotes" }
+    },
+    {   "when": { "eggs": "3", "hatch": "2"},
+      "apply": { "model": "eanimod:block/three_axolotl_embryos" }
+    },
+    {   "when": { "eggs": "4", "hatch": "1"},
+      "apply": { "model": "eanimod:block/four_axolotl_zygotes" }
+    },
+    {   "when": { "eggs": "4", "hatch": "2"},
+      "apply": { "model": "eanimod:block/four_axolotl_embryos" }
+    }
+  ]
+}

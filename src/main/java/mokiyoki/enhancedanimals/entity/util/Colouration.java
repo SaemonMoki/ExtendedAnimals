@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.entity.util;
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
 
@@ -154,6 +155,28 @@ public class Colouration {
         return colour1;
     }
 
+    public static int mixAxolotlHue(float hue1, float hue2) {
+        int[] color1 = getRGBFromHSB(hue1, 0.8F, 0.6F);
+        int[] color2 = getRGBFromHSB(hue2, 0.8F, 0.6F);
+
+        int r = color1[0] + color2[0];
+        int g = color1[1] + color2[1];
+        int b = color1[2] + color2[2];
+
+        return 128 << 24 | (Math.min(b, 255)) << 16 | (Math.min(g, 255)) << 8 | (Math.min(r, 255));
+    }
+
+    public static float[] getAxolotlLightEyes(float hue1, float hue2) {
+        int[] color1 = getRGBFromHSB(hue1, 0.8F, 0.6F);
+        int[] color2 = getRGBFromHSB(hue2, 0.8F, 0.6F);
+
+        int r = color1[0] + color2[0];
+        int g = color1[1] + color2[1];
+        int b = color1[2] + color2[2];
+
+        return Color.RGBtoHSB(r, g, b, null);
+    }
+
     public static float mixHueComponent(float colour1, float colour2, float percentage) {
         if (colour2 > colour1) {
             if (colour2 > 0.1F) {
@@ -184,6 +207,31 @@ public class Colouration {
     }
 
     public static int HSBAtoABGR(float hue, float saturation, float brightness, float alpha) {
+        int[] rgb = getRGBFromHSB(hue, saturation, brightness);
+
+        int a = (int)(alpha * 255.0f);
+
+        return a << 24 | rgb[2] << 16 | rgb[1] << 8 | rgb[0];
+    }
+
+    public static float[] getHSBFromABGR(int colourABGR) {
+        int colour[] = getRGBFromABGR(colourABGR);
+        int r = colour[0];
+        int g = colour[1];
+        int b = colour[2];
+        return Color.RGBtoHSB(r, g, b, null);
+    }
+
+    private static int[] getRGBFromABGR(int colourABGR) {
+        int[] colour = {0,0,0};
+        colour[0] = colourABGR & 255;
+        colour[1] = colourABGR >> 8 & 255;
+        colour[2] = colourABGR >> 16 & 255;
+
+        return colour;
+    }
+
+    private static int[] getRGBFromHSB(float hue, float saturation, float brightness) {
         int r = 0, g = 0, b = 0;
         if (saturation == 0) {
             r = g = b = (int) (brightness * 255.0f + 0.5f);
@@ -227,26 +275,7 @@ public class Colouration {
             }
         }
 
-        int a = (int)(alpha * 255.0f);
-
-        return a << 24 | b << 16 | g << 8 | r;
-    }
-
-    public static float[] getHSBFromABGR(int colourABGR) {
-        int colour[] = getRGBFromABGR(colourABGR);
-        int r = colour[0];
-        int g = colour[1];
-        int b = colour[2];
-        return Color.RGBtoHSB(r, g, b, null);
-    }
-
-    private static int[] getRGBFromABGR(int colourABGR) {
-        int[] colour = {0,0,0};
-        colour[0] = colourABGR & 255;
-        colour[1] = colourABGR >> 8 & 255;
-        colour[2] = colourABGR >> 16 & 255;
-
-        return colour;
+        return new int[]{r,g,b};
     }
 
     private static int[] getRGBAFromABGR(int colourABGR) {

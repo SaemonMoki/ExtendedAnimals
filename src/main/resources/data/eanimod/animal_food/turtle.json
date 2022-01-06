@@ -2,7 +2,7 @@
   "replaceDefault": false,
   "values": [
     {
-      "tag": "minecraft:seagrass",
+      "registryName": "minecraft:seagrass",
       "hungerRestored": 6000,
       "isBreedingItem": true
     }

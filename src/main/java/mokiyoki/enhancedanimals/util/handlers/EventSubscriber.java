@@ -247,11 +247,9 @@ public class EventSubscriber {
                             }
                             if (((SheepEntity) entity).isChild()) {
                                 int age = ((SheepEntity) entity).getGrowingAge();
-                                enhancedSheep.setGrowingAge(age);
-                                enhancedSheep.setBirthTime(entity.getEntityWorld(), (-age / 24000) * 72000);
+                                enhancedSheep.setBirthTimeFromVanillaAge(age, entity.getEntityWorld());
                             } else {
-                                enhancedSheep.setGrowingAge(0);
-                                enhancedSheep.setBirthTime(entity.getEntityWorld(), -500000);
+                                enhancedSheep.setBirthTimeFromVanillaAge(0, entity.getEntityWorld());
                             }
                             if (((SheepEntity) entity).getLeashed()) {
                                 enhancedSheep.setLeashHolder(((SheepEntity) entity).getLeashHolder(), true);

@@ -5,7 +5,10 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotl;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
+import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -15,9 +18,10 @@ public class RenderEnhancedAxolotl extends MobRenderer<EnhancedAxolotl, ModelEnh
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_AXOLOTL_TEXTURE_LOCATION = "eanimod:textures/entities/axolotl/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/axolotl/axolotlbase.png");
+    public static final ModelLayerLocation AXOLOTL_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "axolotl"), "axolotl");
 
     public RenderEnhancedAxolotl(EntityRendererProvider.Context renderManager) {
-        super(renderManager, new ModelEnhancedAxolotl<>(), 0.5F);
+        super(renderManager, new ModelEnhancedAxolotl<>(renderManager.bakeLayer(AXOLOTL_LAYER)), 0.5F);
     }
 
     /**

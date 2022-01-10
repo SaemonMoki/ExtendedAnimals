@@ -70,9 +70,9 @@ public abstract class AbstractGeneticsInitialiser {
         } else if (biome.contains("desert")) {
             return generateLocalWildGenetics(ForgeRegistries.BIOMES.getValue(Biomes.DESERT.location()), false);
         } else if (biome.contains("tundra") || biome.contains("snow")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getValue(Biomes.SNOWY_TUNDRA.location()), false);
+            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getValue(Biomes.SNOWY_PLAINS.location()), false);
         } else if (biome.contains("mountains")) {
-            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getValue(Biomes.MOUNTAINS.location()), false);
+            return generateLocalWildGenetics(ForgeRegistries.BIOMES.getValue(Biomes.WINDSWEPT_HILLS.location()), false);
         } else if (biome.contains("sunflower")) {
             return generateLocalWildGenetics(ForgeRegistries.BIOMES.getValue(Biomes.SUNFLOWER_PLAINS.location()), false);
         } else if (biome.contains("marsh") || biome.equals("swamp")) {
@@ -127,7 +127,7 @@ public abstract class AbstractGeneticsInitialiser {
     }
 
     public Breed selectBreed(List<Breed> selection, boolean forTrader) {
-        return selectBreed(selection, ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.getLocation()), new Random(), forTrader);
+        return selectBreed(selection, ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.location()), new Random(), forTrader);
     }
 
     public Boolean hasBreed(List<Breed> listOfBreeds, String selectedBreed) {

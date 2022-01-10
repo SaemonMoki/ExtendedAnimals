@@ -47,10 +47,10 @@ public class ModelHelper {
         }
     }
 
-    public static void copyModelRotations(ModelRenderer source, ModelRenderer dest, float percent) {
-        dest.rotateAngleX = source.rotateAngleX * percent;
-        dest.rotateAngleY = source.rotateAngleY * percent;
-        dest.rotateAngleZ = source.rotateAngleZ * percent;
+    public static void copyModelRotations(ModelPart source, ModelPart dest, float percent) {
+        dest.xRot = source.xRot * percent;
+        dest.yRot = source.yRot * percent;
+        dest.zRot = source.zRot * percent;
     }
 
     public static void copyModelPositioning(ModelPart source, ModelPart dest) {
@@ -73,13 +73,13 @@ public class ModelHelper {
         }
     }
 
-    public static void copyModelPositioning(ModelRenderer source, ModelRenderer dest, float percent) {
-        dest.rotateAngleX = source.rotateAngleX * percent;
-        dest.rotateAngleY = source.rotateAngleY * percent;
-        dest.rotateAngleZ = source.rotateAngleZ * percent;
-        dest.rotationPointX = source.rotationPointX;
-        dest.rotationPointY = source.rotationPointY;
-        dest.rotationPointZ = source.rotationPointZ;
+    public static void copyModelPositioning(ModelPart source, ModelPart dest, float percent) {
+        dest.xRot = source.xRot * percent;
+        dest.yRot = source.yRot * percent;
+        dest.zRot = source.zRot * percent;
+        dest.x = source.x;
+        dest.y = source.y;
+        dest.z = source.z;
     }
 
 }

@@ -105,7 +105,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             "collar_belliron.png", "collar_bellgold.png", "collar_belldiamond.png"
     };
 
-    private static final Ingredient MILK_ITEMS = Ingredient.of(ModItems.MILK_BOTTLE, ModItems.HALF_MILK_BOTTLE);
+    private static final Ingredient MILK_ITEMS = Ingredient.of(ModItems.MILK_BOTTLE.get(), ModItems.HALF_MILK_BOTTLE.get());
 
 
     // Genetic Info
@@ -869,12 +869,12 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                         this.ageUp((int) ((float) (-this.getAge() / 20) * 0.1F), true);
                     }
                     if (MILK_ITEMS.test(itemStack)) {
-                        if (item == ModItems.HALF_MILK_BOTTLE) {
+                        if (item == ModItems.HALF_MILK_BOTTLE.get()) {
                             if (isHungry) {
                                 decreaseHunger(6000);
                             }
                             swapItemStack(entityPlayer, hand, itemStack, Items.GLASS_BOTTLE);
-                        } else if (item == ModItems.MILK_BOTTLE) {
+                        } else if (item == ModItems.MILK_BOTTLE.get() ) {
                             if (hunger >= 12000) {
                                 decreaseHunger(12000);
                                 swapItemStack(entityPlayer, hand, itemStack, Items.GLASS_BOTTLE);
@@ -882,7 +882,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                                 if (isHungry) {
                                     decreaseHunger(6000);
                                 }
-                                swapItemStack(entityPlayer, hand, itemStack, ModItems.HALF_MILK_BOTTLE);
+                                swapItemStack(entityPlayer, hand, itemStack, ModItems.HALF_MILK_BOTTLE.get());
                             }
                         }
                     } else {
@@ -1596,6 +1596,14 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         return this.genesSplitForClient;
     }
 
+    protected void addTextureToAnimal(String[][][] texture, int geneValue0, int geneValue1, int geneValue2, boolean check) {
+        if(check) {
+            this.enhancedAnimalTextures.add(texture[geneValue0][geneValue1][geneValue2]);
+            this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1)+String.valueOf(geneValue2));
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
     protected void addTextureToAnimal(String[] texture, int geneValue, Predicate<Integer> check) {
         if(check == null || check.test(geneValue)) {
             this.enhancedAnimalTextures.add(texture[geneValue]);
@@ -1816,36 +1824,36 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             if (collarSlot != ItemStack.EMPTY) {
                 Item collar = collarSlot.getItem();
                 collarTextures.add(COLLAR);
-                if (collar == ModItems.COLLAR_BASIC_CLOTH_IRONRING) {
+                if (collar == ModItems.COLLAR_BASIC_CLOTH_IRONRING.get()) {
                     collarTextures.add(COLLAR_HARDWARE[0]);
-                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_GOLDRING) {
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_GOLDRING.get()) {
                     collarTextures.add(COLLAR_HARDWARE[1]);
-                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING) {
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING.get()) {
                     collarTextures.add(COLLAR_HARDWARE[2]);
-                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_IRONBELL) {
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_IRONBELL.get()) {
                     collarTextures.add(COLLAR_HARDWARE[3]);
-                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_GOLDBELL) {
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_GOLDBELL.get()) {
                     collarTextures.add(COLLAR_HARDWARE[4]);
-                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL) {
+                } else if (collar == ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL.get()) {
                     collarTextures.add(COLLAR_HARDWARE[5]);
-                } else if (collar == ModItems.COLLAR_BASIC_LEATHER) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER.get()) {
                     collarTextures.add(COLLAR_TEXTURE);
-                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_IRONRING) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_IRONRING.get()) {
                     collarTextures.add(COLLAR_TEXTURE);
                     collarTextures.add(COLLAR_HARDWARE[0]);
-                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_GOLDRING) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_GOLDRING.get()) {
                     collarTextures.add(COLLAR_TEXTURE);
                     collarTextures.add(COLLAR_HARDWARE[1]);
-                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING.get()) {
                     collarTextures.add(COLLAR_TEXTURE);
                     collarTextures.add(COLLAR_HARDWARE[2]);
-                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_IRONBELL) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_IRONBELL.get()) {
                     collarTextures.add(COLLAR_TEXTURE);
                     collarTextures.add(COLLAR_HARDWARE[3]);
-                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_GOLDBELL) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_GOLDBELL.get()) {
                     collarTextures.add(COLLAR_TEXTURE);
                     collarTextures.add(COLLAR_HARDWARE[4]);
-                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL) {
+                } else if (collar == ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL.get()) {
                     collarTextures.add(COLLAR_TEXTURE);
                     collarTextures.add(COLLAR_HARDWARE[5]);
                 }

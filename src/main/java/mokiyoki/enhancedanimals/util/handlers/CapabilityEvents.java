@@ -11,7 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import static mokiyoki.enhancedanimals.init.ModBlocks.TURTLE_EGG;
+//import static mokiyoki.enhancedanimals.init.ModBlocks.TURTLE_EGG;
 
 /**
  * Created by saemon on 29/09/2018.
@@ -32,9 +32,9 @@ public class CapabilityEvents {
 
     @SubscribeEvent
     public void onAddCapabilitiesItemStack(AttachCapabilitiesEvent<ItemStack> event) {
-        if (event.getObject().getItem() == TURTLE_EGG.asItem()) {
-            event.addCapability(EGG_CAP, new EggCapabilityProvider());
-        }
+//        if (event.getObject().getItem() == TURTLE_EGG.asItem()) {
+//            event.addCapability(EGG_CAP, new EggCapabilityProvider());
+//        }
     }
 
 }

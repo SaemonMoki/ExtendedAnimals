@@ -167,7 +167,7 @@ public class MixableMilkBucket extends Item {
             serverplayerentity.awardStat(Stats.ITEM_USED.get(this));
         }
 
-        if (entityLiving instanceof Player && !((Player)entityLiving).abilities.instabuild) {
+        if (entityLiving instanceof Player && !((Player)entityLiving).getAbilities().instabuild) {
             stack.shrink(1);
         }
 

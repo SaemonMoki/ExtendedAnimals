@@ -74,10 +74,10 @@ public class GeneticsEncyclopedia extends Item {
 
         testString = "SUCCESS";
 
-        EnhancedAnimals.proxy.setEncylopediaInfo(itemstack);
+//        EnhancedAnimals.proxy.setEncylopediaInfo(itemstack);
 
         if(worldIn.isClientSide) {
-            EnhancedAnimals.proxy.openEncyclodepia();
+//            EnhancedAnimals.proxy.openEncyclodepia();
         }
 
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemstack);

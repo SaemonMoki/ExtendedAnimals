@@ -26,4 +26,65 @@ public class WrappedModelPart {
     public void addChild(WrappedModelPart wrappedModelPart) {
         this.children.add(wrappedModelPart);
     }
+
+    public void setX(float point) {
+        this.modelPart.x = point;
+    }
+
+    public float getX() {
+        return this.modelPart.x;
+    }
+
+    public void setY(float point) {
+        this.modelPart.y = point;
+    }
+
+    public float getY() {
+        return this.modelPart.y;
+    }
+
+    public void setZ(float point) {
+        this.modelPart.z = point;
+    }
+
+    public float getZ() {
+        return this.modelPart.z;
+    }
+
+    public void setXRot(float point) {
+        this.modelPart.xRot = point;
+    }
+
+    public float getXRot() {
+        return this.modelPart.xRot;
+    }
+
+    public void setYRot(float point) {
+        this.modelPart.yRot = point;
+    }
+
+    public float getYRot() {
+        return this.modelPart.yRot;
+    }
+
+    public void setZRot(float point) {
+        this.modelPart.zRot = point;
+    }
+
+    public float getZRot() {
+        return this.modelPart.zRot;
+    }
+
+    public void setRotation(float xRot, float yRot, float zRot) {
+        this.modelPart.setRotation(xRot, yRot, zRot);
+    }
+
+    public void setRotation(float xRot, float yRot, float zRot, float percent) {
+        float negPercent = 1.0F - percent;
+        xRot = (this.modelPart.xRot * negPercent) + (xRot * percent);
+        yRot = (this.modelPart.yRot * negPercent) + (yRot * percent);
+        zRot = (this.modelPart.zRot * negPercent) + (zRot * percent);
+
+        this.modelPart.setRotation(xRot, yRot, zRot);
+    }
 }

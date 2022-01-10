@@ -5,7 +5,7 @@ import mokiyoki.enhancedanimals.util.GeneSketch;
 import net.minecraft.world.level.biome.Biomes;
 
 public class CowBreeds {
-    public static final Breed HEREFORD = new Breed(new Breed.Properties().setData("Hereford", Biomes.BIRCH_FOREST_HILLS, Breed.Rarity.ORDINARY)
+    public static final Breed HEREFORD = new Breed(new Breed.Properties().setData("Hereford", Biomes.OLD_GROWTH_BIRCH_FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3", "1", "4").add(8, "1").add(12, "1", "2", "1", "4", "2").add(24, "1", "2", "1", "1-5", "5-10", "1", "3", "1", "4", "1", "1").add(54, "3").add(70, "1", "1", "2", "2", "2", "3", "2").add(86, "1", "1", "1").add(120, "1")));
 
     public static final Breed ANGUS = new Breed(new Breed.Properties().setData("Angus", Biomes.JUNGLE, Breed.Rarity.ORDINARY)
@@ -138,7 +138,7 @@ public class CowBreeds {
                     .add(150, "2","2","2","2","2","2","2","2","2","2")
             ));
 
-    public static final Breed HUNGARIAN_GREY = new Breed(new Breed.Properties().setData("hungariangrey", Biomes.TAIGA_MOUNTAINS, Breed.Rarity.EXOTIC)
+    public static final Breed HUNGARIAN_GREY = new Breed(new Breed.Properties().setData("hungariangrey", Biomes.WINDSWEPT_HILLS, Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2","1","3").add(12, "2","2","3","4","2","_","2","2").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
                     .add(84, "2-4")
                     .add(92,"1988")/*.add(92,"1-9999")*/  //170-199, 1091, 2091,

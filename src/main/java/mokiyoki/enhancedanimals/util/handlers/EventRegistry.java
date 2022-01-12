@@ -2,7 +2,7 @@ package mokiyoki.enhancedanimals.util.handlers;
 
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
-//import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
+import mokiyoki.enhancedanimals.blocks.EggCartonContainer;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 //import mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
@@ -13,23 +13,22 @@ import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 //import mokiyoki.enhancedanimals.entity.EnhancedBee;
 //import mokiyoki.enhancedanimals.entity.EnhancedCat;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
-//import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-//import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
-//import mokiyoki.enhancedanimals.entity.EnhancedEntityLlamaSpit;
-//import mokiyoki.enhancedanimals.entity.EnhancedHorse;
+import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
+import mokiyoki.enhancedanimals.entity.EnhancedEntityLlamaSpit;
 //import mokiyoki.enhancedanimals.entity.EnhancedHorse;
 //import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
 //import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 //import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
-//import mokiyoki.enhancedanimals.entity.EnhancedLlama;
-//import mokiyoki.enhancedanimals.entity.EnhancedCow;
+import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.entity.EnhancedCow;
 //import mokiyoki.enhancedanimals.entity.EnhancedPig;
 //import mokiyoki.enhancedanimals.entity.EnhancedSheep;
-//import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-//import mokiyoki.enhancedanimals.init.ModTileEntities;
+import mokiyoki.enhancedanimals.init.ModTileEntities;
 //import mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer;
 //import mokiyoki.enhancedanimals.renderer.EnhancedLlamaSpitRenderer;
 //import mokiyoki.enhancedanimals.renderer.RenderEnhancedChicken;
@@ -90,9 +89,9 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-//import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
-//import static mokiyoki.enhancedanimals.init.ModBlocks.TURTLE_EGG;
-//import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
+import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
+import static mokiyoki.enhancedanimals.init.ModBlocks.TURTLE_EGG;
+import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
 
 //import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
@@ -109,23 +108,23 @@ public class EventRegistry {
 
     public static final DeferredRegister<EntityType<?>> ENTITIES_DEFERRED_REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MODID);
 
-//    public static final RegistryObject<EntityType<EnhancedEntityLlamaSpit>> ENHANCED_LLAMA_SPIT = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.<EnhancedEntityLlamaSpit>of(EnhancedEntityLlamaSpit::new, MobCategory.MISC).sized(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_llama_spit"));
-//    public static final RegistryObject<EntityType<EnhancedEntityEgg>> ENHANCED_ENTITY_EGG_ENTITY_TYPE = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.<EnhancedEntityEgg>of(EnhancedEntityEgg::new, MobCategory.MISC).sized(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_egg"));
-//    public static final RegistryObject<EntityType<EnhancedChicken>> ENHANCED_CHICKEN = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedChicken::new, MobCategory.CREATURE).sized(0.4F, 0.7F).setTrackingRange(64).setUpdateInterval(1).build(Reference.MODID + ":enhanced_chicken"));
+    public static final RegistryObject<EntityType<EnhancedEntityLlamaSpit>> ENHANCED_LLAMA_SPIT = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.<EnhancedEntityLlamaSpit>of(EnhancedEntityLlamaSpit::new, MobCategory.MISC).sized(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_llama_spit"));
+    public static final RegistryObject<EntityType<EnhancedEntityEgg>> ENHANCED_ENTITY_EGG_ENTITY_TYPE = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.<EnhancedEntityEgg>of(EnhancedEntityEgg::new, MobCategory.MISC).sized(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_egg"));
+    public static final RegistryObject<EntityType<EnhancedChicken>> ENHANCED_CHICKEN = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedChicken::new, MobCategory.CREATURE).sized(0.4F, 0.7F).setTrackingRange(64).setUpdateInterval(1).build(Reference.MODID + ":enhanced_chicken"));
 //    public static final RegistryObject<EntityType<EnhancedRabbit>> ENHANCED_RABBIT = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedRabbit::new, MobCategory.CREATURE).sized(0.4F, 0.5F).build(Reference.MODID + ":enhanced_rabbit"));
 //    public static final RegistryObject<EntityType<EnhancedSheep>> ENHANCED_SHEEP = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedSheep::new, MobCategory.CREATURE).sized(0.9F, 1.3F).build(Reference.MODID + ":enhanced_sheep"));
-//    public static final RegistryObject<EntityType<EnhancedLlama>> ENHANCED_LLAMA = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedLlama::new, MobCategory.CREATURE).sized(0.9F, 1.87F).build(Reference.MODID + ":enhanced_llama"));
-//    public static final RegistryObject<EntityType<EnhancedCow>> ENHANCED_COW = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedCow::new, MobCategory.CREATURE).sized(1.0F, 1.5F).build(Reference.MODID + ":enhanced_cow"));
+    public static final RegistryObject<EntityType<EnhancedLlama>> ENHANCED_LLAMA = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedLlama::new, MobCategory.CREATURE).sized(0.9F, 1.87F).build(Reference.MODID + ":enhanced_llama"));
+    public static final RegistryObject<EntityType<EnhancedCow>> ENHANCED_COW = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedCow::new, MobCategory.CREATURE).sized(1.0F, 1.5F).build(Reference.MODID + ":enhanced_cow"));
 //    public static final RegistryObject<EntityType<EnhancedMooshroom>> ENHANCED_MOOSHROOM = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedMooshroom::new, MobCategory.CREATURE).sized(1.0F, 1.5F).build(Reference.MODID + ":enhanced_mooshroom"));
 //    public static final RegistryObject<EntityType<EnhancedMoobloom>> ENHANCED_MOOBLOOM = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedMoobloom::new, MobCategory.CREATURE).sized(1.0F, 1.5F).build(Reference.MODID + ":enhanced_moobloom"));
 //    public static final RegistryObject<EntityType<EnhancedPig>> ENHANCED_PIG = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedPig::new, MobCategory.CREATURE).sized(0.9F, 0.9F).build(Reference.MODID + ":enhanced_pig"));
 //    public static final RegistryObject<EntityType<EnhancedHorse>> ENHANCED_HORSE = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedHorse::new, MobCategory.CREATURE).sized(1.0F, 1.6F).build(Reference.MODID + ":enhanced_horse"));
-//    public static final RegistryObject<EntityType<EnhancedTurtle>> ENHANCED_TURTLE = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedTurtle::new, MobCategory.CREATURE).sized(1.2F, 0.4F).build(Reference.MODID + ":enhanced_turtle"));
+    public static final RegistryObject<EntityType<EnhancedTurtle>> ENHANCED_TURTLE = ENTITIES_DEFERRED_REGISTRY.register("test_entity", () -> EntityType.Builder.of(EnhancedTurtle::new, MobCategory.CREATURE).sized(1.2F, 0.4F).build(Reference.MODID + ":enhanced_turtle"));
     public static final RegistryObject<EntityType<EnhancedAxolotl>> ENHANCED_AXOLOTL = ENTITIES_DEFERRED_REGISTRY.register("enhanced_axolotl", () -> EntityType.Builder.of(EnhancedAxolotl::new, MobCategory.CREATURE).sized(1.2F, 0.4F).build(Reference.MODID + ":enhanced_axolotl"));
 //    public static final EntityType<EnhancedCat> ENHANCED_CAT = EntityType.Builder.create(EnhancedCat::new, EntityClassification.CREATURE).size(0.6F, 0.7F).build(Reference.MODID + ":enhanced_cat");
 //    public static final EntityType<EnhancedBee> ENHANCED_BEE = EntityType.Builder.create(EnhancedBee::new, EntityClassification.CREATURE).size(0.4F, 0.4F).build(Reference.MODID + ":enhanced_bee");
 
-//    public static final MenuType<EggCartonContainer> EGG_CARTON_CONTAINER = IForgeMenuType.create(EggCartonContainer::new);
+    public static final MenuType<EggCartonContainer> EGG_CARTON_CONTAINER = IForgeMenuType.create(EggCartonContainer::new);
     public static final MenuType<EnhancedAnimalContainer> ENHANCED_ANIMAL_CONTAINER = IForgeMenuType.create((windowId, inv, data) -> {
         Entity entity = inv.player.level.getEntity(data.readInt());
         EnhancedAnimalInfo animalInfo = new EnhancedAnimalInfo(data.readUtf());
@@ -138,88 +137,88 @@ public class EventRegistry {
 
 
 //    private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_TURTLE_EGG = ModItems.register("enhanced_turtle_spawn_egg", () ->
-//            new ForgeSpawnEggItem(ENHANCED_AXOLOTL, 0xFFFFDD,0x00DDCC, new Item.Properties()
+//            new ForgeSpawnEggItem(ENHANCED_AXOLOTL, 0xFFFFDD,0x00DDCC.get(), new Item.Properties()
 //                    .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP))
 //    );
 
     @SubscribeEvent
     public static void onRegisterItems(final RegistryEvent.Register<Item> event) {
-//        final Item[] itemEggs = {ModItems.EGG_WHITE, ModItems.EGG_CREAMLIGHT, ModItems.EGG_CREAM, ModItems.EGG_CREAMDARK, ModItems.EGG_CREAMDARKEST, ModItems.EGG_CARMELDARK, ModItems.EGG_GARNET, ModItems.EGG_PINKLIGHT, ModItems.EGG_PINK, ModItems.EGG_PINKDARK, ModItems.EGG_PINKDARKEST, ModItems.EGG_CHERRYDARK, ModItems.EGG_PLUM, ModItems.EGG_BROWNLIGHT, ModItems.EGG_BROWN, ModItems.EGG_BROWNDARK, ModItems.EGG_CHOCOLATE, ModItems.EGG_CHOCOLATEDARK, ModItems.EGG_CHOCOLATECOSMOS,
-//                 ModItems.EGG_BLUE, ModItems.EGG_GREENLIGHT, ModItems.EGG_GREENYELLOW, ModItems.EGG_OLIVELIGHT, ModItems.EGG_OLIVE, ModItems.EGG_OLIVEDARK, ModItems.EGG_ARMY, ModItems.EGG_MINT, ModItems.EGG_GREEN, ModItems.EGG_GREENDARK, ModItems.EGG_PINE, ModItems.EGG_PINEDARK, ModItems.EGG_PINEBLACK, ModItems.EGG_BLUEGREY, ModItems.EGG_GREY, ModItems.EGG_GREYGREEN, ModItems.EGG_AVOCADO, ModItems.EGG_AVOCADODARK, ModItems.EGG_FELDGRAU,
-//                 ModItems.EGG_POWDERBLUE, ModItems.EGG_TEA, ModItems.EGG_MATCHA, ModItems.EGG_MATCHADARK, ModItems.EGG_MOSS, ModItems.EGG_MOSSDARK, ModItems.EGG_GREENUMBER, ModItems.EGG_CELADON, ModItems.EGG_FERN, ModItems.EGG_ASPARAGUS, ModItems.EGG_HUNTER, ModItems.EGG_HUNTERDARK, ModItems.EGG_TREEDARK, ModItems.EGG_GREYBLUE, ModItems.EGG_GREYNEUTRAL, ModItems.EGG_LAUREL, ModItems.EGG_RESEDA, ModItems.EGG_GREENPEWTER, ModItems.EGG_GREYDARK,
-//                 ModItems.EGG_PALEBLUE, ModItems.EGG_HONEYDEW, ModItems.EGG_EARTH, ModItems.EGG_KHAKI, ModItems.EGG_GRULLO, ModItems.EGG_KHAKIDARK, ModItems.EGG_CAROB, ModItems.EGG_JADE, ModItems.EGG_PISTACHIO, ModItems.EGG_SAGE, ModItems.EGG_ROSEMARY, ModItems.EGG_GREENBROWN, ModItems.EGG_UMBER, ModItems.EGG_COOLGREY, ModItems.EGG_PINKGREY, ModItems.EGG_WARMGREY, ModItems.EGG_ARTICHOKE, ModItems.EGG_MYRTLEGREY, ModItems.EGG_RIFLE,
-//                 ModItems.Egg_Cream_Spot, ModItems.Egg_CreamDark_Spot, ModItems.Egg_Carmel_Spot, ModItems.Egg_CarmelDark_Spot, ModItems.Egg_Garnet_Spot, ModItems.Egg_Pink_Spot, ModItems.Egg_PinkDark_Spot, ModItems.Egg_Cherry_Spot, ModItems.Egg_CherryDark_Spot, ModItems.Egg_Plum_Spot, ModItems.Egg_BrownLight_Spot, ModItems.Egg_Brown_Spot, ModItems.Egg_BrownDark_Spot, ModItems.Egg_Chocolate_Spot, ModItems.Egg_ChocolateDark_Spot,
-//                 ModItems.Egg_GreenYellow_Spot, ModItems.Egg_OliveLight_Spot, ModItems.Egg_Olive_Spot, ModItems.Egg_OliveDark_Spot, ModItems.Egg_Army_Spot, ModItems.Egg_Mint_Spot, ModItems.Egg_Green_Spot, ModItems.Egg_GreenDark_Spot, ModItems.Egg_Pine_Spot, ModItems.Egg_PineDark_Spot, ModItems.Egg_PineBlack_Spot, ModItems.Egg_Grey_Spot, ModItems.Egg_GreyGreen_Spot, ModItems.Egg_Avocado_Spot, ModItems.Egg_AvocadoDark_Spot, ModItems.Egg_Feldgrau_Spot,
-//                 ModItems.Egg_Matcha_Spot, ModItems.Egg_MatchaDark_Spot, ModItems.EGG_MOSS_SPOT, ModItems.EGG_MOSSDARK_SPOT, ModItems.EGG_GREENUMBER_SPOT, ModItems.EGG_CELADON_SPOT, ModItems.EGG_FERN_SPOT, ModItems.EGG_ASPARAGUS_SPOT, ModItems.EGG_HUNTER_SPOT, ModItems.EGG_HUNTERDARK_SPOT, ModItems.EGG_TREEDARK_SPOT, ModItems.EGG_GREYNEUTRAL_SPOT, ModItems.EGG_LAUREL_SPOT, ModItems.EGG_RESEDA_SPOT, ModItems.EGG_GREENPEWTER_SPOT, ModItems.EGG_GREYDARK_SPOT,
-//                 ModItems.EGG_EARTH_SPOT, ModItems.EGG_KHAKI_SPOT, ModItems.EGG_GRULLO_SPOT, ModItems.EGG_KHAKIDARK_SPOT, ModItems.EGG_CAROB_SPOT, ModItems.EGG_JADE_SPOT, ModItems.EGG_PISTACHIO_SPOT, ModItems.EGG_SAGE_SPOT, ModItems.EGG_ROSEMARY_SPOT, ModItems.EGG_GREENBROWN_SPOT, ModItems.EGG_UMBER_SPOT, ModItems.EGG_PINKGREY_SPOT, ModItems.EGG_WARMGREY_SPOT, ModItems.EGG_ARTICHOKE_SPOT, ModItems.EGG_MYRTLEGREY_SPOT, ModItems.EGG_RIFLE_SPOT,
-//                 ModItems.Egg_Cream_Speckle, ModItems.Egg_CreamDark_Speckle, ModItems.Egg_Carmel_Speckle, ModItems.Egg_CarmelDark_Speckle, ModItems.Egg_Garnet_Speckle, ModItems.Egg_Pink_Speckle, ModItems.Egg_PinkDark_Speckle, ModItems.Egg_Cherry_Speckle, ModItems.Egg_CherryDark_Speckle, ModItems.Egg_Plum_Speckle, ModItems.Egg_BrownLight_Speckle, ModItems.Egg_Brown_Speckle, ModItems.Egg_BrownDark_Speckle, ModItems.Egg_Chocolate_Speckle, ModItems.Egg_ChocolateDark_Speckle,
-//                 ModItems.Egg_GreenYellow_Speckle, ModItems.Egg_OliveLight_Speckle, ModItems.Egg_Olive_Speckle, ModItems.Egg_OliveDark_Speckle, ModItems.Egg_Army_Speckle, ModItems.Egg_Mint_Speckle, ModItems.Egg_Green_Speckle, ModItems.Egg_GreenDark_Speckle, ModItems.Egg_Pine_Speckle, ModItems.Egg_PineDark_Speckle, ModItems.Egg_PineBlack_Speckle, ModItems.Egg_Grey_Speckle, ModItems.Egg_GreyGreen_Speckle, ModItems.Egg_Avocado_Speckle, ModItems.Egg_AvocadoDark_Speckle, ModItems.Egg_Feldgrau_Speckle,
-//                 ModItems.EGG_MATCHA_SPECKLE, ModItems.EGG_MATCHADARK_SPECKLE, ModItems.EGG_MOSS_SPECKLE, ModItems.EGG_MOSSDARK_SPECKLE, ModItems.EGG_GREENUMBER_SPECKLE, ModItems.EGG_CELADON_SPECKLE, ModItems.EGG_FERN_SPECKLE, ModItems.EGG_ASPARAGUS_SPECKLE, ModItems.EGG_HUNTER_SPECKLE, ModItems.EGG_HUNTERDARK_SPECKLE, ModItems.EGG_TREEDARK_SPECKLE, ModItems.EGG_GREYNEUTRAL_SPECKLE, ModItems.EGG_LAUREL_SPECKLE, ModItems.EGG_RESEDA_SPECKLE, ModItems.EGG_GREENPEWTER_SPECKLE, ModItems.EGG_GREYDARK_SPECKLE,
-//                 ModItems.EGG_EARTH_SPECKLE, ModItems.EGG_KHAKI_SPECKLE, ModItems.EGG_GRULLO_SPECKLE, ModItems.EGG_KHAKIDARK_SPECKLE, ModItems.EGG_CAROB_SPECKLE, ModItems.EGG_JADE_SPECKLE, ModItems.EGG_PISTACHIO_SPECKLE, ModItems.EGG_SAGE_SPECKLE, ModItems.EGG_ROSEMARY_SPECKLE, ModItems.EGG_GREENBROWN_SPECKLE, ModItems.EGG_UMBER_SPECKLE, ModItems.EGG_PINKGREY_SPECKLE, ModItems.EGG_WARMGREY_SPECKLE, ModItems.EGG_ARTICHOKE_SPECKLE, ModItems.EGG_MYRTLEGREY_SPECKLE, ModItems.EGG_RIFLE_SPECKLE,
-//                 ModItems.Egg_Cream_Spatter, ModItems.Egg_CreamDark_Spatter, ModItems.Egg_Carmel_Spatter, ModItems.Egg_CarmelDark_Spatter, ModItems.Egg_Garnet_Spatter, ModItems.Egg_Pink_Spatter, ModItems.Egg_PinkDark_Spatter, ModItems.Egg_Cherry_Spatter, ModItems.Egg_CherryDark_Spatter, ModItems.Egg_Plum_Spatter, ModItems.Egg_BrownLight_Spatter, ModItems.Egg_Brown_Spatter, ModItems.Egg_BrownDark_Spatter, ModItems.Egg_Chocolate_Spatter, ModItems.Egg_ChocolateDark_Spatter,
-//                 ModItems.Egg_GreenYellow_Spatter, ModItems.Egg_OliveLight_Spatter, ModItems.Egg_Olive_Spatter, ModItems.Egg_OliveDark_Spatter, ModItems.Egg_Army_Spatter, ModItems.Egg_Mint_Spatter, ModItems.Egg_Green_Spatter, ModItems.Egg_GreenDark_Spatter, ModItems.Egg_Pine_Spatter, ModItems.Egg_PineDark_Spatter, ModItems.Egg_PineBlack_Spatter, ModItems.Egg_Grey_Spatter, ModItems.Egg_GreyGreen_Spatter, ModItems.Egg_Avocado_Spatter, ModItems.Egg_AvocadoDark_Spatter, ModItems.Egg_Feldgrau_Spatter,
-//                 ModItems.EGG_MATCHA_SPATTER, ModItems.EGG_MATCHADARK_SPATTER, ModItems.EGG_MOSS_SPATTER, ModItems.EGG_MOSSDARK_SPATTER, ModItems.EGG_GREENUMBER_SPATTER, ModItems.EGG_CELADON_SPATTER, ModItems.EGG_FERN_SPATTER, ModItems.EGG_ASPARAGUS_SPATTER, ModItems.EGG_HUNTER_SPATTER, ModItems.EGG_HUNTERDARK_SPATTER, ModItems.EGG_TREEDARK_SPATTER, ModItems.EGG_GREYNEUTRAL_SPATTER, ModItems.EGG_LAUREL_SPATTER, ModItems.EGG_RESEDA_SPATTER, ModItems.EGG_GREENPEWTER_SPATTER, ModItems.EGG_GREYDARK_SPATTER,
-//                 ModItems.EGG_EARTH_SPATTER, ModItems.EGG_KHAKI_SPATTER, ModItems.EGG_GRULLO_SPATTER, ModItems.EGG_KHAKIDARK_SPATTER, ModItems.EGG_CAROB_SPATTER, ModItems.EGG_JADE_SPATTER, ModItems.EGG_PISTACHIO_SPATTER, ModItems.EGG_SAGE_SPATTER, ModItems.EGG_ROSEMARY_SPATTER, ModItems.EGG_GREENBROWN_SPATTER, ModItems.EGG_UMBER_SPATTER, ModItems.EGG_PINKGREY_SPATTER, ModItems.EGG_WARMGREY_SPATTER, ModItems.EGG_ARTICHOKE_SPATTER, ModItems.EGG_MYRTLEGREY_SPATTER, ModItems.EGG_RIFLE_SPATTER};
+        final Item[] itemEggs = {ModItems.EGG_WHITE.get(), ModItems.EGG_CREAMLIGHT.get(), ModItems.EGG_CREAM.get(), ModItems.EGG_CREAMDARK.get(), ModItems.EGG_CREAMDARKEST.get(), ModItems.EGG_CARMELDARK.get(), ModItems.EGG_GARNET.get(), ModItems.EGG_PINKLIGHT.get(), ModItems.EGG_PINK.get(), ModItems.EGG_PINKDARK.get(), ModItems.EGG_PINKDARKEST.get(), ModItems.EGG_CHERRYDARK.get(), ModItems.EGG_PLUM.get(), ModItems.EGG_BROWNLIGHT.get(), ModItems.EGG_BROWN.get(), ModItems.EGG_BROWNDARK.get(), ModItems.EGG_CHOCOLATE.get(), ModItems.EGG_CHOCOLATEDARK.get(), ModItems.EGG_CHOCOLATECOSMOS.get(),
+                 ModItems.EGG_BLUE.get(), ModItems.EGG_GREENLIGHT.get(), ModItems.EGG_GREENYELLOW.get(), ModItems.EGG_OLIVELIGHT.get(), ModItems.EGG_OLIVE.get(), ModItems.EGG_OLIVEDARK.get(), ModItems.EGG_ARMY.get(), ModItems.EGG_MINT.get(), ModItems.EGG_GREEN.get(), ModItems.EGG_GREENDARK.get(), ModItems.EGG_PINE.get(), ModItems.EGG_PINEDARK.get(), ModItems.EGG_PINEBLACK.get(), ModItems.EGG_BLUEGREY.get(), ModItems.EGG_GREY.get(), ModItems.EGG_GREYGREEN.get(), ModItems.EGG_AVOCADO.get(), ModItems.EGG_AVOCADODARK.get(), ModItems.EGG_FELDGRAU.get(),
+                 ModItems.EGG_POWDERBLUE.get(), ModItems.EGG_TEA.get(), ModItems.EGG_MATCHA.get(), ModItems.EGG_MATCHADARK.get(), ModItems.EGG_MOSS.get(), ModItems.EGG_MOSSDARK.get(), ModItems.EGG_GREENUMBER.get(), ModItems.EGG_CELADON.get(), ModItems.EGG_FERN.get(), ModItems.EGG_ASPARAGUS.get(), ModItems.EGG_HUNTER.get(), ModItems.EGG_HUNTERDARK.get(), ModItems.EGG_TREEDARK.get(), ModItems.EGG_GREYBLUE.get(), ModItems.EGG_GREYNEUTRAL.get(), ModItems.EGG_LAUREL.get(), ModItems.EGG_RESEDA.get(), ModItems.EGG_GREENPEWTER.get(), ModItems.EGG_GREYDARK.get(),
+                 ModItems.EGG_PALEBLUE.get(), ModItems.EGG_HONEYDEW.get(), ModItems.EGG_EARTH.get(), ModItems.EGG_KHAKI.get(), ModItems.EGG_GRULLO.get(), ModItems.EGG_KHAKIDARK.get(), ModItems.EGG_CAROB.get(), ModItems.EGG_JADE.get(), ModItems.EGG_PISTACHIO.get(), ModItems.EGG_SAGE.get(), ModItems.EGG_ROSEMARY.get(), ModItems.EGG_GREENBROWN.get(), ModItems.EGG_UMBER.get(), ModItems.EGG_COOLGREY.get(), ModItems.EGG_PINKGREY.get(), ModItems.EGG_WARMGREY.get(), ModItems.EGG_ARTICHOKE.get(), ModItems.EGG_MYRTLEGREY.get(), ModItems.EGG_RIFLE.get(),
+                 ModItems.Egg_Cream_Spot.get(), ModItems.Egg_CreamDark_Spot.get(), ModItems.Egg_Carmel_Spot.get(), ModItems.Egg_CarmelDark_Spot.get(), ModItems.Egg_Garnet_Spot.get(), ModItems.Egg_Pink_Spot.get(), ModItems.Egg_PinkDark_Spot.get(), ModItems.Egg_Cherry_Spot.get(), ModItems.Egg_CherryDark_Spot.get(), ModItems.Egg_Plum_Spot.get(), ModItems.Egg_BrownLight_Spot.get(), ModItems.Egg_Brown_Spot.get(), ModItems.Egg_BrownDark_Spot.get(), ModItems.Egg_Chocolate_Spot.get(), ModItems.Egg_ChocolateDark_Spot.get(),
+                 ModItems.Egg_GreenYellow_Spot.get(), ModItems.Egg_OliveLight_Spot.get(), ModItems.Egg_Olive_Spot.get(), ModItems.Egg_OliveDark_Spot.get(), ModItems.Egg_Army_Spot.get(), ModItems.Egg_Mint_Spot.get(), ModItems.Egg_Green_Spot.get(), ModItems.Egg_GreenDark_Spot.get(), ModItems.Egg_Pine_Spot.get(), ModItems.Egg_PineDark_Spot.get(), ModItems.Egg_PineBlack_Spot.get(), ModItems.Egg_Grey_Spot.get(), ModItems.Egg_GreyGreen_Spot.get(), ModItems.Egg_Avocado_Spot.get(), ModItems.Egg_AvocadoDark_Spot.get(), ModItems.Egg_Feldgrau_Spot.get(),
+                 ModItems.Egg_Matcha_Spot.get(), ModItems.Egg_MatchaDark_Spot.get(), ModItems.EGG_MOSS_SPOT.get(), ModItems.EGG_MOSSDARK_SPOT.get(), ModItems.EGG_GREENUMBER_SPOT.get(), ModItems.EGG_CELADON_SPOT.get(), ModItems.EGG_FERN_SPOT.get(), ModItems.EGG_ASPARAGUS_SPOT.get(), ModItems.EGG_HUNTER_SPOT.get(), ModItems.EGG_HUNTERDARK_SPOT.get(), ModItems.EGG_TREEDARK_SPOT.get(), ModItems.EGG_GREYNEUTRAL_SPOT.get(), ModItems.EGG_LAUREL_SPOT.get(), ModItems.EGG_RESEDA_SPOT.get(), ModItems.EGG_GREENPEWTER_SPOT.get(), ModItems.EGG_GREYDARK_SPOT.get(),
+                 ModItems.EGG_EARTH_SPOT.get(), ModItems.EGG_KHAKI_SPOT.get(), ModItems.EGG_GRULLO_SPOT.get(), ModItems.EGG_KHAKIDARK_SPOT.get(), ModItems.EGG_CAROB_SPOT.get(), ModItems.EGG_JADE_SPOT.get(), ModItems.EGG_PISTACHIO_SPOT.get(), ModItems.EGG_SAGE_SPOT.get(), ModItems.EGG_ROSEMARY_SPOT.get(), ModItems.EGG_GREENBROWN_SPOT.get(), ModItems.EGG_UMBER_SPOT.get(), ModItems.EGG_PINKGREY_SPOT.get(), ModItems.EGG_WARMGREY_SPOT.get(), ModItems.EGG_ARTICHOKE_SPOT.get(), ModItems.EGG_MYRTLEGREY_SPOT.get(), ModItems.EGG_RIFLE_SPOT.get(),
+                 ModItems.Egg_Cream_Speckle.get(), ModItems.Egg_CreamDark_Speckle.get(), ModItems.Egg_Carmel_Speckle.get(), ModItems.Egg_CarmelDark_Speckle.get(), ModItems.Egg_Garnet_Speckle.get(), ModItems.Egg_Pink_Speckle.get(), ModItems.Egg_PinkDark_Speckle.get(), ModItems.Egg_Cherry_Speckle.get(), ModItems.Egg_CherryDark_Speckle.get(), ModItems.Egg_Plum_Speckle.get(), ModItems.Egg_BrownLight_Speckle.get(), ModItems.Egg_Brown_Speckle.get(), ModItems.Egg_BrownDark_Speckle.get(), ModItems.Egg_Chocolate_Speckle.get(), ModItems.Egg_ChocolateDark_Speckle.get(),
+                 ModItems.Egg_GreenYellow_Speckle.get(), ModItems.Egg_OliveLight_Speckle.get(), ModItems.Egg_Olive_Speckle.get(), ModItems.Egg_OliveDark_Speckle.get(), ModItems.Egg_Army_Speckle.get(), ModItems.Egg_Mint_Speckle.get(), ModItems.Egg_Green_Speckle.get(), ModItems.Egg_GreenDark_Speckle.get(), ModItems.Egg_Pine_Speckle.get(), ModItems.Egg_PineDark_Speckle.get(), ModItems.Egg_PineBlack_Speckle.get(), ModItems.Egg_Grey_Speckle.get(), ModItems.Egg_GreyGreen_Speckle.get(), ModItems.Egg_Avocado_Speckle.get(), ModItems.Egg_AvocadoDark_Speckle.get(), ModItems.Egg_Feldgrau_Speckle.get(),
+                 ModItems.EGG_MATCHA_SPECKLE.get(), ModItems.EGG_MATCHADARK_SPECKLE.get(), ModItems.EGG_MOSS_SPECKLE.get(), ModItems.EGG_MOSSDARK_SPECKLE.get(), ModItems.EGG_GREENUMBER_SPECKLE.get(), ModItems.EGG_CELADON_SPECKLE.get(), ModItems.EGG_FERN_SPECKLE.get(), ModItems.EGG_ASPARAGUS_SPECKLE.get(), ModItems.EGG_HUNTER_SPECKLE.get(), ModItems.EGG_HUNTERDARK_SPECKLE.get(), ModItems.EGG_TREEDARK_SPECKLE.get(), ModItems.EGG_GREYNEUTRAL_SPECKLE.get(), ModItems.EGG_LAUREL_SPECKLE.get(), ModItems.EGG_RESEDA_SPECKLE.get(), ModItems.EGG_GREENPEWTER_SPECKLE.get(), ModItems.EGG_GREYDARK_SPECKLE.get(),
+                 ModItems.EGG_EARTH_SPECKLE.get(), ModItems.EGG_KHAKI_SPECKLE.get(), ModItems.EGG_GRULLO_SPECKLE.get(), ModItems.EGG_KHAKIDARK_SPECKLE.get(), ModItems.EGG_CAROB_SPECKLE.get(), ModItems.EGG_JADE_SPECKLE.get(), ModItems.EGG_PISTACHIO_SPECKLE.get(), ModItems.EGG_SAGE_SPECKLE.get(), ModItems.EGG_ROSEMARY_SPECKLE.get(), ModItems.EGG_GREENBROWN_SPECKLE.get(), ModItems.EGG_UMBER_SPECKLE.get(), ModItems.EGG_PINKGREY_SPECKLE.get(), ModItems.EGG_WARMGREY_SPECKLE.get(), ModItems.EGG_ARTICHOKE_SPECKLE.get(), ModItems.EGG_MYRTLEGREY_SPECKLE.get(), ModItems.EGG_RIFLE_SPECKLE.get(),
+                 ModItems.Egg_Cream_Spatter.get(), ModItems.Egg_CreamDark_Spatter.get(), ModItems.Egg_Carmel_Spatter.get(), ModItems.Egg_CarmelDark_Spatter.get(), ModItems.Egg_Garnet_Spatter.get(), ModItems.Egg_Pink_Spatter.get(), ModItems.Egg_PinkDark_Spatter.get(), ModItems.Egg_Cherry_Spatter.get(), ModItems.Egg_CherryDark_Spatter.get(), ModItems.Egg_Plum_Spatter.get(), ModItems.Egg_BrownLight_Spatter.get(), ModItems.Egg_Brown_Spatter.get(), ModItems.Egg_BrownDark_Spatter.get(), ModItems.Egg_Chocolate_Spatter.get(), ModItems.Egg_ChocolateDark_Spatter.get(),
+                 ModItems.Egg_GreenYellow_Spatter.get(), ModItems.Egg_OliveLight_Spatter.get(), ModItems.Egg_Olive_Spatter.get(), ModItems.Egg_OliveDark_Spatter.get(), ModItems.Egg_Army_Spatter.get(), ModItems.Egg_Mint_Spatter.get(), ModItems.Egg_Green_Spatter.get(), ModItems.Egg_GreenDark_Spatter.get(), ModItems.Egg_Pine_Spatter.get(), ModItems.Egg_PineDark_Spatter.get(), ModItems.Egg_PineBlack_Spatter.get(), ModItems.Egg_Grey_Spatter.get(), ModItems.Egg_GreyGreen_Spatter.get(), ModItems.Egg_Avocado_Spatter.get(), ModItems.Egg_AvocadoDark_Spatter.get(), ModItems.Egg_Feldgrau_Spatter.get(),
+                 ModItems.EGG_MATCHA_SPATTER.get(), ModItems.EGG_MATCHADARK_SPATTER.get(), ModItems.EGG_MOSS_SPATTER.get(), ModItems.EGG_MOSSDARK_SPATTER.get(), ModItems.EGG_GREENUMBER_SPATTER.get(), ModItems.EGG_CELADON_SPATTER.get(), ModItems.EGG_FERN_SPATTER.get(), ModItems.EGG_ASPARAGUS_SPATTER.get(), ModItems.EGG_HUNTER_SPATTER.get(), ModItems.EGG_HUNTERDARK_SPATTER.get(), ModItems.EGG_TREEDARK_SPATTER.get(), ModItems.EGG_GREYNEUTRAL_SPATTER.get(), ModItems.EGG_LAUREL_SPATTER.get(), ModItems.EGG_RESEDA_SPATTER.get(), ModItems.EGG_GREENPEWTER_SPATTER.get(), ModItems.EGG_GREYDARK_SPATTER.get(),
+                 ModItems.EGG_EARTH_SPATTER.get(), ModItems.EGG_KHAKI_SPATTER.get(), ModItems.EGG_GRULLO_SPATTER.get(), ModItems.EGG_KHAKIDARK_SPATTER.get(), ModItems.EGG_CAROB_SPATTER.get(), ModItems.EGG_JADE_SPATTER.get(), ModItems.EGG_PISTACHIO_SPATTER.get(), ModItems.EGG_SAGE_SPATTER.get(), ModItems.EGG_ROSEMARY_SPATTER.get(), ModItems.EGG_GREENBROWN_SPATTER.get(), ModItems.EGG_UMBER_SPATTER.get(), ModItems.EGG_PINKGREY_SPATTER.get(), ModItems.EGG_WARMGREY_SPATTER.get(), ModItems.EGG_ARTICHOKE_SPATTER.get(), ModItems.EGG_MYRTLEGREY_SPATTER.get(), ModItems.EGG_RIFLE_SPATTER.get()};
+
+        final Item[] items = {ModItems.RAWCHICKEN_DARKSMALL.get(), ModItems.RAWCHICKEN_DARKBIG.get(), ModItems.RAWCHICKEN_DARK.get(), ModItems.COOKEDCHICKEN_DARKSMALL.get(), ModItems.COOKEDCHICKEN_DARK.get(),
+                ModItems.COOKEDCHICKEN_DARKBIG.get(), ModItems.RAWCHICKEN_PALESMALL.get(), ModItems.RAWCHICKEN_PALE.get(), ModItems.COOKEDCHICKEN_PALESMALL.get(), ModItems.COOKEDCHICKEN_PALE.get(),
+                ModItems.RAWRABBIT_SMALL.get(), ModItems.COOKEDRABBIT_SMALL.get(), ModItems.RABBITSTEW_WEAK.get(), ModItems.HALF_MILK_BOTTLE.get(), ModItems.MILK_BOTTLE.get(), ModItems.ONESIXTH_MILK_BUCKET.get(),
+                ModItems.ONETHIRD_MILK_BUCKET.get(), ModItems.HALF_MILK_BUCKET.get(), ModItems.TWOTHIRDS_MILK_BUCKET.get(), ModItems.FIVESIXTHS_MILK_BUCKET.get(),
+                ModItems.BRIDLE_BASIC_LEATHER.get(), ModItems.BRIDLE_BASIC_LEATHER_GOLD.get(), ModItems.BRIDLE_BASIC_LEATHER_DIAMOND.get(),
+                ModItems.BRIDLE_BASIC_CLOTH.get(), ModItems.BRIDLE_BASIC_CLOTH_GOLD.get(), ModItems.BRIDLE_BASIC_CLOTH_DIAMOND.get(),
+                ModItems.SADDLE_BASIC_LEATHER.get(), ModItems.SADDLE_BASIC_LEATHER_DIAMOND.get(), ModItems.SADDLE_BASIC_LEATHER_GOLD.get(), ModItems.SADDLE_BASIC_LEATHER_WOOD.get(),
+                ModItems.SADDLE_BASIC_CLOTH.get(), ModItems.SADDLE_BASIC_CLOTH_GOLD.get(), ModItems.SADDLE_BASIC_CLOTH_DIAMOND.get(), ModItems.SADDLE_BASIC_CLOTH_WOOD.get(),
+                ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT.get(), ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_GOLD.get(), ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_DIAMOND.get(), ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_WOOD.get(),
+                ModItems.SADDLE_BASICPOMEL_LEATHER.get(), ModItems.SADDLE_BASICPOMEL_LEATHER_GOLD.get(), ModItems.SADDLE_BASICPOMEL_LEATHER_DIAMOND.get(), ModItems.SADDLE_BASICPOMEL_LEATHER_WOOD.get(),
+                ModItems.SADDLE_BASICPOMEL_CLOTH.get(), ModItems.SADDLE_BASICPOMEL_CLOTH_GOLD.get(), ModItems.SADDLE_BASICPOMEL_CLOTH_DIAMOND.get(), ModItems.SADDLE_BASICPOMEL_CLOTH_WOOD.get(),
+                ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT.get(), ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_GOLD.get(), ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_DIAMOND.get(), ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_WOOD.get(),
+                ModItems.SADDLE_ENGLISH_LEATHER.get(), ModItems.SADDLE_ENGLISH_LEATHER_GOLD.get(), ModItems.SADDLE_ENGLISH_LEATHER_DIAMOND.get(), ModItems.SADDLE_ENGLISH_LEATHER_WOOD.get(),
+                ModItems.SADDLE_ENGLISH_CLOTH.get(), ModItems.SADDLE_ENGLISH_CLOTH_GOLD.get(), ModItems.SADDLE_ENGLISH_CLOTH_DIAMOND.get(), ModItems.SADDLE_ENGLISH_CLOTH_WOOD.get(),
+                ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT.get(), ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_GOLD.get(), ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_DIAMOND.get(), ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_WOOD.get(),
+                ModItems.COLLAR_BASIC_LEATHER.get(), ModItems.COLLAR_BASIC_LEATHER_IRONBELL.get(), ModItems.COLLAR_BASIC_LEATHER_IRONRING.get(), ModItems.COLLAR_BASIC_LEATHER_GOLDBELL.get(), ModItems.COLLAR_BASIC_LEATHER_GOLDRING.get(), ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL.get(), ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING.get(),
+                ModItems.COLLAR_BASIC_CLOTH.get(), ModItems.COLLAR_BASIC_CLOTH_IRONBELL.get(), ModItems.COLLAR_BASIC_CLOTH_IRONRING.get(), ModItems.COLLAR_BASIC_CLOTH_GOLDBELL.get(), ModItems.COLLAR_BASIC_CLOTH_GOLDRING.get(), ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL.get(), ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING.get(), ModItems.DEBUG_GENE_BOOK.get()};
+
+        final Item[] itemBlocks = {
+                new BlockItem(ModBlocks.POST_ACACIA.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_ACACIA.get().getRegistryName()),
+                new BlockItem(ModBlocks.POST_BIRCH.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_BIRCH.get().getRegistryName()),
+                new BlockItem(ModBlocks.POST_DARK_OAK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_DARK_OAK.get().getRegistryName()),
+                new BlockItem(ModBlocks.POST_JUNGLE.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_JUNGLE.get().getRegistryName()),
+                new BlockItem(ModBlocks.POST_OAK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_OAK.get().getRegistryName()),
+                new BlockItem(ModBlocks.POST_SPRUCE.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_SPRUCE.get().getRegistryName()),
+                new BlockItem(ModBlocks.UNBOUNDHAY_BLOCK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.UNBOUNDHAY_BLOCK.get().getRegistryName()),
+                new BlockItem(ModBlocks.SPARSEGRASS_BLOCK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.SPARSEGRASS_BLOCK.get().getRegistryName()),
+                new BlockItem(ModBlocks.PATCHYMYCELIUM_BLOCK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.PATCHYMYCELIUM_BLOCK.get().getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_ALLIUM.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_ALLIUM.get().getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_AZURE_BLUET.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_AZURE_BLUET.get().getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_BLUE_ORCHID.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_BLUE_ORCHID.get().getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_CORNFLOWER.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_CORNFLOWER.get().getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_DANDELION.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_DANDELION.get().getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_OXEYE_DAISY.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_OXEYE_DAISY.get().getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_GRASS.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_GRASS.get().getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_FERN.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_FERN.get().getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_ROSE_BUSH.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_ROSE_BUSH.get().getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_SUNFLOWER.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_SUNFLOWER.get().getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_TALL_GRASS.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_TALL_GRASS.get().getRegistryName()),
+                new BlockItem(ModBlocks.GROWABLE_LARGE_FERN.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_LARGE_FERN.get().getRegistryName()),
+                new BlockItem(TURTLE_EGG.get(), new Item.Properties().stacksTo(1).tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(TURTLE_EGG.get().getRegistryName()),
+                new BlockItem(EGG_CARTON.get(), new Item.Properties().stacksTo(1).tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(EGG_CARTON.get().getRegistryName()),
+        };
 //
-//        final Item[] items = {ModItems.RAWCHICKEN_DARKSMALL, ModItems.RAWCHICKEN_DARKBIG, ModItems.RAWCHICKEN_DARK, ModItems.COOKEDCHICKEN_DARKSMALL, ModItems.COOKEDCHICKEN_DARK,
-//                ModItems.COOKEDCHICKEN_DARKBIG, ModItems.RAWCHICKEN_PALESMALL, ModItems.RAWCHICKEN_PALE, ModItems.COOKEDCHICKEN_PALESMALL, ModItems.COOKEDCHICKEN_PALE,
-//                ModItems.RAWRABBIT_SMALL, ModItems.COOKEDRABBIT_SMALL, ModItems.RABBITSTEW_WEAK, ModItems.HALF_MILK_BOTTLE, ModItems.MILK_BOTTLE, ModItems.ONESIXTH_MILK_BUCKET,
-//                ModItems.ONETHIRD_MILK_BUCKET, ModItems.HALF_MILK_BUCKET, ModItems.TWOTHIRDS_MILK_BUCKET, ModItems.FIVESIXTHS_MILK_BUCKET,
-//                ModItems.BRIDLE_BASIC_LEATHER, ModItems.BRIDLE_BASIC_LEATHER_GOLD, ModItems.BRIDLE_BASIC_LEATHER_DIAMOND,
-//                ModItems.BRIDLE_BASIC_CLOTH, ModItems.BRIDLE_BASIC_CLOTH_GOLD, ModItems.BRIDLE_BASIC_CLOTH_DIAMOND,
-//                ModItems.SADDLE_BASIC_LEATHER, ModItems.SADDLE_BASIC_LEATHER_DIAMOND, ModItems.SADDLE_BASIC_LEATHER_GOLD, ModItems.SADDLE_BASIC_LEATHER_WOOD,
-//                ModItems.SADDLE_BASIC_CLOTH, ModItems.SADDLE_BASIC_CLOTH_GOLD, ModItems.SADDLE_BASIC_CLOTH_DIAMOND, ModItems.SADDLE_BASIC_CLOTH_WOOD,
-//                ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT, ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_GOLD, ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_DIAMOND, ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_WOOD,
-//                ModItems.SADDLE_BASICPOMEL_LEATHER, ModItems.SADDLE_BASICPOMEL_LEATHER_GOLD, ModItems.SADDLE_BASICPOMEL_LEATHER_DIAMOND, ModItems.SADDLE_BASICPOMEL_LEATHER_WOOD,
-//                ModItems.SADDLE_BASICPOMEL_CLOTH, ModItems.SADDLE_BASICPOMEL_CLOTH_GOLD, ModItems.SADDLE_BASICPOMEL_CLOTH_DIAMOND, ModItems.SADDLE_BASICPOMEL_CLOTH_WOOD,
-//                ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT, ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_GOLD, ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_DIAMOND, ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_WOOD,
-//                ModItems.SADDLE_ENGLISH_LEATHER, ModItems.SADDLE_ENGLISH_LEATHER_GOLD, ModItems.SADDLE_ENGLISH_LEATHER_DIAMOND, ModItems.SADDLE_ENGLISH_LEATHER_WOOD,
-//                ModItems.SADDLE_ENGLISH_CLOTH,ModItems.SADDLE_ENGLISH_CLOTH_GOLD, ModItems.SADDLE_ENGLISH_CLOTH_DIAMOND, ModItems.SADDLE_ENGLISH_CLOTH_WOOD,
-//                ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_GOLD, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_DIAMOND, ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_WOOD,
-//                ModItems.COLLAR_BASIC_LEATHER, ModItems.COLLAR_BASIC_LEATHER_IRONBELL, ModItems.COLLAR_BASIC_LEATHER_IRONRING, ModItems.COLLAR_BASIC_LEATHER_GOLDBELL, ModItems.COLLAR_BASIC_LEATHER_GOLDRING, ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL, ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING,
-//                ModItems.COLLAR_BASIC_CLOTH, ModItems.COLLAR_BASIC_CLOTH_IRONBELL, ModItems.COLLAR_BASIC_CLOTH_IRONRING, ModItems.COLLAR_BASIC_CLOTH_GOLDBELL, ModItems.COLLAR_BASIC_CLOTH_GOLDRING, ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL, ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING, ModItems.DEBUG_GENE_BOOK};
-//
-//        final Item[] itemBlocks = {
-//                new BlockItem(ModBlocks.POST_ACACIA, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_ACACIA.getRegistryName()),
-//                new BlockItem(ModBlocks.POST_BIRCH, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_BIRCH.getRegistryName()),
-//                new BlockItem(ModBlocks.POST_DARK_OAK, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_DARK_OAK.getRegistryName()),
-//                new BlockItem(ModBlocks.POST_JUNGLE, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_JUNGLE.getRegistryName()),
-//                new BlockItem(ModBlocks.POST_OAK, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_OAK.getRegistryName()),
-//                new BlockItem(ModBlocks.POST_SPRUCE, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.POST_SPRUCE.getRegistryName()),
-//                new BlockItem(ModBlocks.UNBOUNDHAY_BLOCK, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.UNBOUNDHAY_BLOCK.getRegistryName()),
-//                new BlockItem(ModBlocks.SPARSEGRASS_BLOCK, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.SPARSEGRASS_BLOCK.getRegistryName()),
-//                new BlockItem(ModBlocks.PATCHYMYCELIUM_BLOCK, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.PATCHYMYCELIUM_BLOCK.getRegistryName()),
-//                new BlockItem(ModBlocks.GROWABLE_ALLIUM, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_ALLIUM.getRegistryName()),
-//                new BlockItem(ModBlocks.GROWABLE_AZURE_BLUET, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_AZURE_BLUET.getRegistryName()),
-//                new BlockItem(ModBlocks.GROWABLE_BLUE_ORCHID, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_BLUE_ORCHID.getRegistryName()),
-//                new BlockItem(ModBlocks.GROWABLE_CORNFLOWER, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_CORNFLOWER.getRegistryName()),
-//                new BlockItem(ModBlocks.GROWABLE_DANDELION, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_DANDELION.getRegistryName()),
-//                new BlockItem(ModBlocks.GROWABLE_OXEYE_DAISY, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_OXEYE_DAISY.getRegistryName()),
-//                new BlockItem(ModBlocks.GROWABLE_GRASS, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_GRASS.getRegistryName()),
-//                new BlockItem(ModBlocks.GROWABLE_FERN, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_FERN.getRegistryName()),
-//                new BlockItem(ModBlocks.GROWABLE_ROSE_BUSH, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_ROSE_BUSH.getRegistryName()),
-//                new BlockItem(ModBlocks.GROWABLE_SUNFLOWER, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_SUNFLOWER.getRegistryName()),
-//                new BlockItem(ModBlocks.GROWABLE_TALL_GRASS, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_TALL_GRASS.getRegistryName()),
-//                new BlockItem(ModBlocks.GROWABLE_LARGE_FERN, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(ModBlocks.GROWABLE_LARGE_FERN.getRegistryName()),
-//                new BlockItem(TURTLE_EGG, new Item.Properties().stacksTo(1).tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(TURTLE_EGG.getRegistryName()),
-//                new BlockItem(EGG_CARTON, new Item.Properties().stacksTo(1).tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(EGG_CARTON.getRegistryName()),
-//        };
-//
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_TURTLE, 0xFFFFDD,0x00DDCC, new Item.Properties()
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_TURTLE, 0xFFFFDD,0x00DDCC.get(), new Item.Properties()
 //                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_turtle_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000, new Item.Properties()
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000.get(), new Item.Properties()
 //                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_chicken_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34, new Item.Properties()
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34.get(), new Item.Properties()
 //                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_llama_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_SHEEP, 0xFFFFFF,0xFF8C8C, new Item.Properties()
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_SHEEP, 0xFFFFFF,0xFF8C8C.get(), new Item.Properties()
 //                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_sheep_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_RABBIT, 0xCA8349,0x553C36, new Item.Properties()
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_RABBIT, 0xCA8349,0x553C36.get(), new Item.Properties()
 //                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_rabbit_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_COW, 0x260800,0xf9f9f7, new Item.Properties()
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_COW, 0x260800,0xf9f9f7.get(), new Item.Properties()
 //                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_cow_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC, new Item.Properties()
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC.get(), new Item.Properties()
 //                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_mooshroom_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_PIG, 0xFFA4A4,0xB34d4d, new Item.Properties()
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_PIG, 0xFFA4A4,0xB34d4d.get(), new Item.Properties()
 //                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_pig_spawn_egg"));
 
 

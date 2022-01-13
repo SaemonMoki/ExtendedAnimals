@@ -23,7 +23,7 @@ import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
-//import mokiyoki.enhancedanimals.entity.EnhancedSheep;
+import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -112,7 +112,7 @@ public class EventRegistry {
     public static final RegistryObject<EntityType<EnhancedEntityEgg>> ENHANCED_ENTITY_EGG_ENTITY_TYPE = ENTITIES_DEFERRED_REGISTRY.register("enhanced_entity_egg", () -> EntityType.Builder.<EnhancedEntityEgg>of(EnhancedEntityEgg::new, MobCategory.MISC).sized(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_egg"));
     public static final RegistryObject<EntityType<EnhancedChicken>> ENHANCED_CHICKEN = ENTITIES_DEFERRED_REGISTRY.register("enhanced_chicken", () -> EntityType.Builder.of(EnhancedChicken::new, MobCategory.CREATURE).sized(0.4F, 0.7F).setTrackingRange(64).setUpdateInterval(1).build(Reference.MODID + ":enhanced_chicken"));
     public static final RegistryObject<EntityType<EnhancedRabbit>> ENHANCED_RABBIT = ENTITIES_DEFERRED_REGISTRY.register("enhanced_rabbit", () -> EntityType.Builder.of(EnhancedRabbit::new, MobCategory.CREATURE).sized(0.4F, 0.5F).build(Reference.MODID + ":enhanced_rabbit"));
-//    public static final RegistryObject<EntityType<EnhancedSheep>> ENHANCED_SHEEP = ENTITIES_DEFERRED_REGISTRY.register("enhanced_sheep", () -> EntityType.Builder.of(EnhancedSheep::new, MobCategory.CREATURE).sized(0.9F, 1.3F).build(Reference.MODID + ":enhanced_sheep"));
+    public static final RegistryObject<EntityType<EnhancedSheep>> ENHANCED_SHEEP = ENTITIES_DEFERRED_REGISTRY.register("enhanced_sheep", () -> EntityType.Builder.of(EnhancedSheep::new, MobCategory.CREATURE).sized(0.9F, 1.3F).build(Reference.MODID + ":enhanced_sheep"));
     public static final RegistryObject<EntityType<EnhancedLlama>> ENHANCED_LLAMA = ENTITIES_DEFERRED_REGISTRY.register("enhanced_llama", () -> EntityType.Builder.of(EnhancedLlama::new, MobCategory.CREATURE).sized(0.9F, 1.87F).build(Reference.MODID + ":enhanced_llama"));
     public static final RegistryObject<EntityType<EnhancedCow>> ENHANCED_COW = ENTITIES_DEFERRED_REGISTRY.register("enhanced_cow", () -> EntityType.Builder.of(EnhancedCow::new, MobCategory.CREATURE).sized(1.0F, 1.5F).build(Reference.MODID + ":enhanced_cow"));
     public static final RegistryObject<EntityType<EnhancedMooshroom>> ENHANCED_MOOSHROOM = ENTITIES_DEFERRED_REGISTRY.register("enhanced_mooshroom", () -> EntityType.Builder.of(EnhancedMooshroom::new, MobCategory.CREATURE).sized(1.0F, 1.5F).build(Reference.MODID + ":enhanced_mooshroom"));
@@ -203,43 +203,43 @@ public class EventRegistry {
                 new BlockItem(TURTLE_EGG.get(), new Item.Properties().stacksTo(1).tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(TURTLE_EGG.get().getRegistryName()),
                 new BlockItem(EGG_CARTON.get(), new Item.Properties().stacksTo(1).tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(EGG_CARTON.get().getRegistryName()),
         };
-//
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_TURTLE, 0xFFFFDD,0x00DDCC.get(), new Item.Properties()
-//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_turtle_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000.get(), new Item.Properties()
-//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_chicken_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34.get(), new Item.Properties()
-//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_llama_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_SHEEP, 0xFFFFFF,0xFF8C8C.get(), new Item.Properties()
-//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_sheep_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_RABBIT, 0xCA8349,0x553C36.get(), new Item.Properties()
-//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_rabbit_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_COW, 0x260800,0xf9f9f7.get(), new Item.Properties()
-//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_cow_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC.get(), new Item.Properties()
-//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_mooshroom_spawn_egg"));
-//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_PIG, 0xFFA4A4,0xB34d4d.get(), new Item.Properties()
-//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_pig_spawn_egg"));
+
+        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_TURTLE, 0xFFFFDD,0x00DDCC, new Item.Properties()
+                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_turtle_spawn_egg"));
+        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000, new Item.Properties()
+                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_chicken_spawn_egg"));
+        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34, new Item.Properties()
+                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_llama_spawn_egg"));
+        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_SHEEP, 0xFFFFFF,0xFF8C8C, new Item.Properties()
+                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_sheep_spawn_egg"));
+        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_RABBIT, 0xCA8349,0x553C36, new Item.Properties()
+                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_rabbit_spawn_egg"));
+        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_COW, 0x260800,0xf9f9f7, new Item.Properties()
+                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_cow_spawn_egg"));
+        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC, new Item.Properties()
+                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_mooshroom_spawn_egg"));
+        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_PIG, 0xFFA4A4,0xB34d4d, new Item.Properties()
+                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_pig_spawn_egg"));
 
 
 //        event.getRegistry().registerAll(itemEggs);
 //        event.getRegistry().registerAll(items);
 //        event.getRegistry().registerAll(itemBlocks);
 //
-//        for (Item egg : itemEggs) {
-//            DispenserBlock.registerBehavior(egg,  new AbstractProjectileDispenseBehavior() {
-//                /**
-//                 * Return the projectile entity spawned by this dispense behavior.
-//                 */
-//                protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
-//                    EnhancedEntityEgg eggItem = new EnhancedEntityEgg(worldIn, position.x(), position.y(), position.z(), egg);
-//                    eggItem.setEggData(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(stackIn));
-//                    return eggItem;
-//                }
-//            });
-//        }
-//
-//        DispenserBlock.registerBehavior(Items.SHEARS.asItem(), new GeneticShearDispenseBehavior());
+        for (Item egg : itemEggs) {
+            DispenserBlock.registerBehavior(egg,  new AbstractProjectileDispenseBehavior() {
+                /**
+                 * Return the projectile entity spawned by this dispense behavior.
+                 */
+                protected Projectile getProjectile(Level worldIn, Position position, ItemStack stackIn) {
+                    EnhancedEntityEgg eggItem = new EnhancedEntityEgg(worldIn, position.x(), position.y(), position.z(), egg);
+                    eggItem.setEggData(stackIn.getCapability(EggCapabilityProvider.EGG_CAP, null).orElse(null).getEggHolder(stackIn));
+                    return eggItem;
+                }
+            });
+        }
+
+        DispenserBlock.registerBehavior(Items.SHEARS.asItem(), new GeneticShearDispenseBehavior());
 
         //TODO dispensers should be able to turn hay to unbound hay if they contain a sharp tool and are facing a hay block
     }
@@ -255,16 +255,16 @@ public class EventRegistry {
     @SubscribeEvent
     public static void onEntityAttributeCreationRegistry(EntityAttributeCreationEvent event) {
         event.put(ENHANCED_AXOLOTL.get(), EnhancedAxolotl.prepareAttributes().build());
-//        event.put(ENHANCED_CHICKEN.get(), EnhancedChicken.prepareAttributes().build());
-//        event.put(ENHANCED_RABBIT.get(), EnhancedRabbit.prepareAttributes().build());
-//        event.put(ENHANCED_SHEEP.get(), EnhancedSheep.prepareAttributes().build());
-//        event.put(ENHANCED_LLAMA.get(), EnhancedLlama.prepareAttributes().build());
-//        event.put(ENHANCED_COW.get(), EnhancedCow.prepareAttributes().build());
-//        event.put(ENHANCED_MOOSHROOM.get(), EnhancedMooshroom.prepareAttributes().build());
-//        event.put(ENHANCED_MOOBLOOM.get(), EnhancedMoobloom.prepareAttributes().build());
-//        event.put(ENHANCED_PIG.get(), EnhancedPig.prepareAttributes().build());
-//        event.put(ENHANCED_HORSE.get(), EnhancedHorse.prepareAttributes().build());
-//        event.put(ENHANCED_TURTLE.get(), EnhancedTurtle.prepareAttributes().build());
+        event.put(ENHANCED_CHICKEN.get(), EnhancedChicken.prepareAttributes().build());
+        event.put(ENHANCED_RABBIT.get(), EnhancedRabbit.prepareAttributes().build());
+        event.put(ENHANCED_SHEEP.get(), EnhancedSheep.prepareAttributes().build());
+        event.put(ENHANCED_LLAMA.get(), EnhancedLlama.prepareAttributes().build());
+        event.put(ENHANCED_COW.get(), EnhancedCow.prepareAttributes().build());
+        event.put(ENHANCED_MOOSHROOM.get(), EnhancedMooshroom.prepareAttributes().build());
+        event.put(ENHANCED_MOOBLOOM.get(), EnhancedMoobloom.prepareAttributes().build());
+        event.put(ENHANCED_PIG.get(), EnhancedPig.prepareAttributes().build());
+        event.put(ENHANCED_HORSE.get(), EnhancedHorse.prepareAttributes().build());
+        event.put(ENHANCED_TURTLE.get(), EnhancedTurtle.prepareAttributes().build());
 
     }
 
@@ -309,15 +309,15 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onEntitiesRegistry(RegistryEvent.Register<EntityType<?>> event) {
-//        SpawnPlacements.register(ENHANCED_AXOLOTL.get(), SpawnPlacements.Type.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-//        SpawnPlacements.register(ENHANCED_PIG.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-//        SpawnPlacements.register(ENHANCED_SHEEP.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-//        SpawnPlacements.register(ENHANCED_COW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-//        SpawnPlacements.register(ENHANCED_LLAMA.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-//        SpawnPlacements.register(ENHANCED_CHICKEN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-//        SpawnPlacements.register(ENHANCED_RABBIT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-//        SpawnPlacements.register(ENHANCED_MOOSHROOM.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedMooshroom::canMooshroomSpawn);
-//        SpawnPlacements.register(ENHANCED_TURTLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedTurtle::canTurtleSpawn);
+        SpawnPlacements.register(ENHANCED_AXOLOTL.get(), SpawnPlacements.Type.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+        SpawnPlacements.register(ENHANCED_PIG.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+        SpawnPlacements.register(ENHANCED_SHEEP.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+        SpawnPlacements.register(ENHANCED_COW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+        SpawnPlacements.register(ENHANCED_LLAMA.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+        SpawnPlacements.register(ENHANCED_CHICKEN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+        SpawnPlacements.register(ENHANCED_RABBIT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+        SpawnPlacements.register(ENHANCED_MOOSHROOM.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedMooshroom::canMooshroomSpawn);
+        SpawnPlacements.register(ENHANCED_TURTLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedTurtle::canTurtleSpawn);
     }
 
     private static class GeneticShearDispenseBehavior extends ShearsDispenseItemBehavior {

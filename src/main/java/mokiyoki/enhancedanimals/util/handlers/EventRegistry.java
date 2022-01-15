@@ -224,8 +224,8 @@ public class EventRegistry {
 
 //        event.getRegistry().registerAll(itemEggs);
 //        event.getRegistry().registerAll(items);
-//        event.getRegistry().registerAll(itemBlocks);
-//
+        event.getRegistry().registerAll(itemBlocks);
+
         for (Item egg : itemEggs) {
             DispenserBlock.registerBehavior(egg,  new AbstractProjectileDispenseBehavior() {
                 /**
@@ -275,7 +275,7 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onContainerTypeRegistry(final RegistryEvent.Register<MenuType<?>> event) {
-//        event.getRegistry().register(EGG_CARTON_CONTAINER.setRegistryName("egg_carton_container_box"));
+        event.getRegistry().register(EGG_CARTON_CONTAINER.setRegistryName("egg_carton_container_box"));
         event.getRegistry().register(ENHANCED_ANIMAL_CONTAINER.setRegistryName("enhanced_animal_container"));
     }
 

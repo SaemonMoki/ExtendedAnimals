@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.init;
 
-//import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
-//import mokiyoki.enhancedanimals.blocks.EnhancedTurtleEggBlock;
+import mokiyoki.enhancedanimals.blocks.EggCartonBlock;
+import mokiyoki.enhancedanimals.blocks.EnhancedTurtleEggBlock;
 import mokiyoki.enhancedanimals.blocks.GrowableDoubleHigh;
 import mokiyoki.enhancedanimals.blocks.GrowablePlant;
 import mokiyoki.enhancedanimals.blocks.PatchyMyceliumBlock;
@@ -35,8 +35,8 @@ public class ModBlocks {
     public static final RegistryObject<Block> POST_OAK = createDeferred("post_oak", new PostBlock(Block.Properties.of(Material.WOOD, MaterialColor.WOOD).strength(2.0F,15.0F).sound(SoundType.WOOD)));
     public static final RegistryObject<Block> POST_SPRUCE = createDeferred("post_spruce", new PostBlock(Block.Properties.of(Material.WOOD, MaterialColor.PODZOL).strength(2.0F,15.0F).sound(SoundType.WOOD)));
 
-//    public static final RegistryObject<Block> EGG_CARTON = createDeferred(new EggCartonBlock(Block.Properties.of(Material.WOOL, MaterialColor.COLOR_LIGHT_GRAY).strength(0.0F).sound(SoundType.WOOL).noOcclusion()).setRegistryName("eanimod:egg_carton"));
-//    public static final RegistryObject<Block> TURTLE_EGG = createDeferred(new EnhancedTurtleEggBlock(BlockBehaviour.Properties.of(Material.EGG, MaterialColor.SAND).strength(0.5F).sound(SoundType.METAL).randomTicks().noOcclusion()).setRegistryName("eanimod:turtle_egg"));
+    public static final RegistryObject<Block> EGG_CARTON = createDeferred("egg_carton", new EggCartonBlock(Block.Properties.of(Material.WOOL, MaterialColor.COLOR_LIGHT_GRAY).strength(0.0F).sound(SoundType.WOOL).noOcclusion()));
+    public static final RegistryObject<Block> TURTLE_EGG = createDeferred("turtle_egg", new EnhancedTurtleEggBlock(BlockBehaviour.Properties.of(Material.EGG, MaterialColor.SAND).strength(0.5F).sound(SoundType.METAL).randomTicks().noOcclusion()));
     public static final RegistryObject<Block> UNBOUNDHAY_BLOCK = createDeferred("unboundhay_block", new UnboundHayBlock(Block.Properties.of(Material.GRASS, MaterialColor.COLOR_YELLOW).strength(0.5F).sound(SoundType.GRASS).noOcclusion()));
     public static final RegistryObject<Block> SPARSEGRASS_BLOCK = createDeferred("sparsegrass_block", new SparseGrassBlock(Block.Properties.of(Material.GRASS, MaterialColor.DIRT).randomTicks().strength(0.5F).sound(SoundType.GRASS)));
     public static final RegistryObject<Block> PATCHYMYCELIUM_BLOCK = createDeferred("patchymycelium_block", new PatchyMyceliumBlock(Block.Properties.of(Material.GRASS, MaterialColor.COLOR_PURPLE).randomTicks().strength(0.5F).sound(SoundType.GRASS)));

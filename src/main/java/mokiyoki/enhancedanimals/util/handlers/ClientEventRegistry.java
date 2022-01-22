@@ -1,13 +1,16 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
+import mokiyoki.enhancedanimals.gui.EggCartonScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotl;
+import mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotl;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -27,23 +30,24 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_AXOLOTL;
 
-//
-//import static mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer.EGG_CARTON_TEXTURE;
-//
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
+import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
+import static mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer.EGG_CARTON_TEXTURE;
+
 @Mod.EventBusSubscriber(modid = Reference.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientEventRegistry {
-//
-//    @SubscribeEvent
-//    public static void onStitchEvent(TextureStitchEvent.Pre event) {
-//        if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
-//            event.addSprite(EGG_CARTON_TEXTURE);
-//        }
-//    }
-//
+
+    @SubscribeEvent
+    public static void onStitchEvent(TextureStitchEvent.Pre event) {
+        if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
+            event.addSprite(EGG_CARTON_TEXTURE);
+        }
+    }
+
     @SubscribeEvent
     public static void initClientSetup(FMLClientSetupEvent event) {
 
-//        MenuScreens.register(EGG_CARTON_CONTAINER, EggCartonScreen::new);
+        MenuScreens.register(EGG_CARTON_CONTAINER, EggCartonScreen::new);
 //        MenuScreens.register(ENHANCED_ANIMAL_CONTAINER, EnhancedAnimalScreen::new);
 
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.SPARSEGRASS_BLOCK.get(), RenderType.cutoutMipped());
@@ -123,13 +127,14 @@ public class ClientEventRegistry {
 //        event.registerEntityRenderer(ENHANCED_LLAMA_SPIT.get(), EnhancedLlamaSpitRenderer::new);
 //        event.registerEntityRenderer(ENHANCED_ENTITY_EGG_ENTITY_TYPE.get(), ThrownItemRenderer::new);
 
-//        event.registerBlockEntityRenderer(EGG_CARTON_TILE_ENTITY, EggCartonTileEntityRenderer::new);
+        event.registerBlockEntityRenderer(EGG_CARTON_TILE_ENTITY, EggCartonTileEntityRenderer::new);
     }
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RenderEnhancedAxolotl.AXOLOTL_LAYER, ModelEnhancedAxolotl::createBodyLayer);
+        event.registerLayerDefinition(EggCartonTileEntityRenderer.EGG_CARTON, EggCartonTileEntityRenderer::createBodyLayer);
     }
 
 }

@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.capability.egg;
 
 import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
-//import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.nbt.CompoundTag;
@@ -83,9 +83,9 @@ public class EggCapabilityProvider implements IEggCapability, ICapabilitySeriali
     @Override
     public EggHolder getEggHolder(ItemStack stack) {
         boolean hasParents = false;
-//        if (stack.getItem() instanceof EnhancedEgg) {
-//            hasParents = ((EnhancedEgg) stack.getItem()).getHasParents(stack);
-//        }
+        if (stack.getItem() instanceof EnhancedEgg) {
+            hasParents = ((EnhancedEgg) stack.getItem()).getHasParents(stack);
+        }
         return new EggHolder(this.sireName, this.damName, this.genes, hasParents);
     }
 

@@ -1,7 +1,6 @@
 package mokiyoki.enhancedanimals.ai;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalRideableAbstract;
-import mokiyoki.enhancedanimals.entity.EnhancedLlama;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;

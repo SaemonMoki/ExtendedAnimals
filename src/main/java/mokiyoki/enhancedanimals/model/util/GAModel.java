@@ -36,7 +36,7 @@ public abstract class GAModel<E extends Entity> extends EntityModel<E> {
 
     public void gaRender(WrappedModelPart wrapped, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha, boolean pushPopChildren) {
         if (wrapped.modelPart.visible) {
-            if (!wrapped.modelPart.cubes.isEmpty() || !wrapped.modelPart.children.isEmpty()) {
+            if (!wrapped.modelPart.cubes.isEmpty() || !wrapped.children.isEmpty()) {
 
                 if (!pushPopChildren) {
                     if (!boxesToNotRender.contains(wrapped.boxName)) {

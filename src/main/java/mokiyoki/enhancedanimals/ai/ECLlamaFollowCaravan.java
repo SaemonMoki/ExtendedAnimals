@@ -65,9 +65,6 @@ public class ECLlamaFollowCaravan extends Goal {
         }
     }
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
     public boolean canContinueToUse() {
         if (this.llama.inCaravan() && this.llama.getCaravanHead().isAlive() && this.firstIsLeashed(this.llama, 0)) {
             double d0 = this.llama.distanceToSqr(this.llama.getCaravanHead());
@@ -93,17 +90,11 @@ public class ECLlamaFollowCaravan extends Goal {
         }
     }
 
-    /**
-     * Reset the task's internal state. Called when this task is interrupted by another one
-     */
     public void stop() {
         this.llama.leaveCaravan();
         this.speedModifier = 2.1D;
     }
 
-    /**
-     * Keep ticking a continuous task that has already been started
-     */
     public void tick() {
         if (this.llama.inCaravan()) {
             EnhancedLlama entityllama = this.llama.getCaravanHead();

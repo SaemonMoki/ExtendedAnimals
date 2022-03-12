@@ -594,25 +594,26 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         ModelPart base = modelPart.getChild("base");
         this.theChicken = new WrappedModelPart(base, "bChicken");
         ModelPart bChicken = base.getChild("bChicken");
-        this.theBody = new WrappedModelPart(bChicken, "bBody");
-        this.theLeftLeg = new WrappedModelPart(bChicken, "bLeftLeg", false);
-        this.theRightLeg = new WrappedModelPart(bChicken, "bRightLeg", false);
+        this.theBody = new WrappedModelPart("bBody", bChicken);
+        this.theLeftLeg = new WrappedModelPart("bLeftLeg", bChicken);
+        this.theRightLeg = new WrappedModelPart("bRightLeg", bChicken);
         ModelPart bLeftLeg = bChicken.getChild("bLeftLeg");
         ModelPart bRightLeg = bChicken.getChild("bRightLeg");
         ModelPart bBody = bChicken.getChild("bBody");
 //        this.theNeck = new WrappedModelPart(bBody, "bNeck");
-        this.theHead = new WrappedModelPart(bBody, "bHead");
-        this.theLeftWing = new WrappedModelPart(bBody, "bLeftWing");
-        this.theRightWing = new WrappedModelPart(bBody, "bLeftWing");
-        this.theSaddle = new WrappedModelPart(bBody, "bSaddle");
+        this.theHead = new WrappedModelPart("bHead", bBody);
+        this.theLeftWing = new WrappedModelPart("bLeftWing", bBody);
+        this.theRightWing = new WrappedModelPart("bLeftWing", bBody);
+        this.theSaddle = new WrappedModelPart("bSaddle", bBody);
         ModelPart bSaddle = bBody.getChild("bSaddle");
-        this.theTail = new WrappedModelPart(bSaddle, "bTail");
+        this.theTail = new WrappedModelPart("bTail", bSaddle);
 //        ModelPart bNeck = bBody.getChild("bNeck");
         ModelPart bHead = bBody.getChild("bHead");
-        this.theComb = new WrappedModelPart(bHead, "bComb");
-        this.theWaddles = new WrappedModelPart(bHead, "bWaddles");
-        this.theCrest = new WrappedModelPart(bHead, "bCrest");
-        this.theBeard = new WrappedModelPart(bHead, "bBeard");
+
+        this.theComb = new WrappedModelPart("bComb", bHead);
+        this.theWaddles = new WrappedModelPart("bWaddles", bHead);
+        this.theCrest = new WrappedModelPart("bCrest", bHead);
+        this.theBeard = new WrappedModelPart("bBeard", bHead);
         ModelPart bComb = bHead.getChild("bComb");
         ModelPart bWaddles = bHead.getChild("bWaddles");
         ModelPart bCrest = bHead.getChild("bCrest");
@@ -1222,11 +1223,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.currentAnimal = entityIn.getId();
         ChickenModelData chickenModelData = getCreateChickenModelData(entityIn);
 
-        this.theRightLeg.modelPart.y = -5.0F;
+//        this.theRightLeg.modelPart.y = -5.0F;
 
-        this.legLeftShort.modelPart.y = -5.0F;
-        this.legLeftMedium.modelPart.y = -5.0F;
-        this.legLeftLong.modelPart.y = -5.0F;
+//        this.legLeftShort.modelPart.y = -5.0F;
+//        this.legLeftMedium.modelPart.y = -5.0F;
+//        this.legLeftLong.modelPart.y = -5.0F;
 
 //        ChickenPhenotype chicken = (ChickenPhenotype) chickenModelData.phenotype;
 //

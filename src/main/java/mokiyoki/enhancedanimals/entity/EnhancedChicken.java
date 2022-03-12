@@ -59,7 +59,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
 import static net.minecraft.world.entity.ai.attributes.AttributeSupplier.*;
 
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -342,7 +341,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(ROOSTING, new Boolean(false));
+        this.entityData.define(ROOSTING, Boolean.FALSE);
     }
 
     @Override

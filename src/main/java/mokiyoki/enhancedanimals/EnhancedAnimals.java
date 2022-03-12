@@ -1,6 +1,7 @@
 package mokiyoki.enhancedanimals;
 
 import mokiyoki.enhancedanimals.init.ModBlocks;
+import mokiyoki.enhancedanimals.init.ModEntities;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 //import mokiyoki.enhancedanimals.proxy.ClientProxy;
@@ -14,20 +15,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import static mokiyoki.enhancedanimals.util.Reference.MODID;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENTITIES_DEFERRED_REGISTRY;
-//import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ITEMS_DEFERRED_REGISTRY;
 
 /**
  * Created by moki on 24/08/2018.
@@ -73,7 +69,7 @@ public class EnhancedAnimals {
 
         ModItems.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModBlocks.register(FMLJavaModLoadingContext.get().getModEventBus());
-        ENTITIES_DEFERRED_REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     private void setup(final FMLCommonSetupEvent event) {

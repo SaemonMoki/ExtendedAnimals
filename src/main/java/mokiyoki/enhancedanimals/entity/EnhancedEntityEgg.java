@@ -30,8 +30,8 @@ import net.minecraftforge.network.NetworkHooks;
 
 import java.util.List;
 
-//import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ENTITY_EGG_ENTITY_TYPE;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_ENTITY_EGG_ENTITY_TYPE;
 
 public class EnhancedEntityEgg extends ThrowableItemProjectile {
 

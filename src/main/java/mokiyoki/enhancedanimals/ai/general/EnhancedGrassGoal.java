@@ -1,7 +1,7 @@
+/*
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
-import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.entity.Temperament;
 import mokiyoki.enhancedanimals.init.ModBlocks;
@@ -35,9 +35,11 @@ public class EnhancedGrassGoal extends Goal {
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
     }
 
-    /**
+    */
+/**
      * Returns whether the EntityAIBase should begin execution.
-     */
+     *//*
+
     public boolean canUse() {
         //TODO make the amount needed before 'hungry' using temperaments
         if (grassEaterEntity instanceof EnhancedCow && ((EnhancedCow)grassEaterEntity).getEntityStatus().equals(EntityState.CHILD_STAGE_ONE)) {
@@ -71,9 +73,11 @@ public class EnhancedGrassGoal extends Goal {
         }
     }
 
-    /**
+    */
+/**
      * Execute a one shot task or start executing a continuous task
-     */
+     *//*
+
     public void start() {
         ((EnhancedAnimalAbstract)this.grassEaterEntity).decreaseHunger(3000);
         this.eatingGrassTimer = 40;
@@ -81,30 +85,38 @@ public class EnhancedGrassGoal extends Goal {
         this.grassEaterEntity.getNavigation().stop();
     }
 
-    /**
+    */
+/**
      * Reset the task's internal state. Called when this task is interrupted by another one
-     */
+     *//*
+
     public void stop() {
         this.eatingGrassTimer = 0;
     }
 
-    /**
+    */
+/**
      * Returns whether an in-progress EntityAIBase should continue executing
-     */
+     *//*
+
     public boolean canContinueToUse() {
         return this.eatingGrassTimer > 0;
     }
 
-    /**
+    */
+/**
      * Number of ticks since the entity started to eat grass
-     */
+     *//*
+
     public int getEatingGrassTimer() {
         return this.eatingGrassTimer;
     }
 
-    /**
+    */
+/**
      * Keep ticking a continuous task that has already been started
-     */
+     *//*
+
     public void tick() {
         this.eatingGrassTimer = Math.max(0, this.eatingGrassTimer - 1);
         if (this.eatingGrassTimer == 4) {
@@ -148,3 +160,4 @@ public class EnhancedGrassGoal extends Goal {
     }
 
 }
+*/

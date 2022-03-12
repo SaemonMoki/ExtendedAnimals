@@ -1,8 +1,9 @@
+
 package mokiyoki.enhancedanimals.blocks;
 
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
-//import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -33,7 +34,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-//import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_TURTLE;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_TURTLE;
 
 public class EnhancedTurtleEggBlock extends NestBlock {
     private static final VoxelShape ONE_EGG_SHAPE = Block.box(3.0D, 0.0D, 3.0D, 12.0D, 7.0D, 12.0D);
@@ -72,17 +73,11 @@ public class EnhancedTurtleEggBlock extends NestBlock {
         return SoundEvents.TURTLE_EGG_BREAK;
     }
 
-    /**
-     * Called when the given entity walks on this Block
-     */
     public void stepOn(Level level, BlockPos pos, BlockState blockState, Entity entity) {
         this.tryTrample(level, pos, entity, 100);
         super.stepOn(level, pos, blockState, entity);
     }
 
-    /**
-     * Block's chance to react to a living entity falling on it.
-     */
     @Override
     public void fallOn(Level worldIn, BlockState blockState, BlockPos pos, Entity entityIn, float fallDistance) {
         if (!(entityIn instanceof Zombie)) {
@@ -125,9 +120,6 @@ public class EnhancedTurtleEggBlock extends NestBlock {
         }
     }
 
-    /**
-     * Performs a random tick on a block.
-     */
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
         if (this.canGrow(level) && hasProperHabitat(level, pos)) {
             int i = state.getValue(HATCH);
@@ -223,7 +215,9 @@ public class EnhancedTurtleEggBlock extends NestBlock {
     }
 
     private boolean canTrample(Level worldIn, Entity trampler) {
-        if (!(trampler instanceof Turtle) && !(trampler instanceof Bat)/* && !(trampler instanceof EnhancedTurtle)*/) {
+        if (!(trampler instanceof Turtle) && !(trampler instanceof Bat)
+       && !(trampler instanceof EnhancedTurtle)
+    ) {
             if (!(trampler instanceof LivingEntity)) {
                 return false;
             } else {

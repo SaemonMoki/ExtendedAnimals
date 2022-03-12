@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_AXOLOTL;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 
 public class EnhancedAxolotlEggBlock extends NestBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;

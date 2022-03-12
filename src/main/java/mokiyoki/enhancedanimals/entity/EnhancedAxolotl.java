@@ -57,7 +57,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.axolotlFoodMap;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_AXOLOTL;
 import static net.minecraft.world.entity.ai.attributes.AttributeSupplier.*;
 import static net.minecraft.world.entity.ai.attributes.Attributes.JUMP_STRENGTH;
 

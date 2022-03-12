@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.items;
 
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
-import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
+import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.entity.player.Player;
@@ -16,8 +16,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-
-import net.minecraft.world.item.Item.Properties;
 
 /**
  * Created by moki on 24/08/2018.

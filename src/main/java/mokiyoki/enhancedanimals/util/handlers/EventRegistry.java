@@ -8,27 +8,27 @@ import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.egg.IEggCapability;
 import mokiyoki.enhancedanimals.capability.hay.IHayCapability;
 import mokiyoki.enhancedanimals.capability.post.IPostCapability;
-import mokiyoki.enhancedanimals.capability.turtleegg.INestEggCapability;
+import mokiyoki.enhancedanimals.capability.nestegg.INestEggCapability;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 //import mokiyoki.enhancedanimals.entity.EnhancedBee;
 //import mokiyoki.enhancedanimals.entity.EnhancedCat;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
+//import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedEntityEgg;
-import mokiyoki.enhancedanimals.entity.EnhancedEntityLlamaSpit;
-import mokiyoki.enhancedanimals.entity.EnhancedHorse;
-import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
-import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
-import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
-import mokiyoki.enhancedanimals.entity.EnhancedLlama;
-import mokiyoki.enhancedanimals.entity.EnhancedCow;
-import mokiyoki.enhancedanimals.entity.EnhancedPig;
-import mokiyoki.enhancedanimals.entity.EnhancedSheep;
-import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+//import mokiyoki.enhancedanimals.entity.EnhancedEntityLlamaSpit;
+//import mokiyoki.enhancedanimals.entity.EnhancedHorse;
+//import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
+//import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
+//import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
+//import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+//import mokiyoki.enhancedanimals.entity.EnhancedCow;
+//import mokiyoki.enhancedanimals.entity.EnhancedPig;
+//import mokiyoki.enhancedanimals.entity.EnhancedSheep;
+//import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.init.ModTileEntities;
 //import mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer;
 //import mokiyoki.enhancedanimals.renderer.EnhancedLlamaSpitRenderer;
 //import mokiyoki.enhancedanimals.renderer.RenderEnhancedChicken;
@@ -41,15 +41,8 @@ import mokiyoki.enhancedanimals.init.ModTileEntities;
 //import mokiyoki.enhancedanimals.renderer.RenderEnhancedRabbit;
 //import mokiyoki.enhancedanimals.renderer.RenderEnhancedSheep;
 //import mokiyoki.enhancedanimals.renderer.RenderEnhancedTurtle;
-import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotl;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
-import net.minecraft.world.entity.animal.Pig;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.core.dispenser.ShearsDispenseItemBehavior;
 import net.minecraft.core.BlockSource;
@@ -64,15 +57,12 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.client.ClientRegistry;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -91,7 +81,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
 import static mokiyoki.enhancedanimals.init.ModBlocks.TURTLE_EGG;
-import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
 
 //import static mokiyoki.enhancedanimals.capability.woolcolour.WoolColourCapabilityProvider.WOOL_COLOUR_CAP;
 
@@ -108,18 +97,18 @@ public class EventRegistry {
 
     public static final DeferredRegister<EntityType<?>> ENTITIES_DEFERRED_REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MODID);
 
-    public static final RegistryObject<EntityType<EnhancedEntityLlamaSpit>> ENHANCED_LLAMA_SPIT = ENTITIES_DEFERRED_REGISTRY.register("enhanced_entity_llama_spit", () -> EntityType.Builder.<EnhancedEntityLlamaSpit>of(EnhancedEntityLlamaSpit::new, MobCategory.MISC).sized(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_llama_spit"));
+//    public static final RegistryObject<EntityType<EnhancedEntityLlamaSpit>> ENHANCED_LLAMA_SPIT = ENTITIES_DEFERRED_REGISTRY.register("enhanced_entity_llama_spit", () -> EntityType.Builder.<EnhancedEntityLlamaSpit>of(EnhancedEntityLlamaSpit::new, MobCategory.MISC).sized(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_llama_spit"));
     public static final RegistryObject<EntityType<EnhancedEntityEgg>> ENHANCED_ENTITY_EGG_ENTITY_TYPE = ENTITIES_DEFERRED_REGISTRY.register("enhanced_entity_egg", () -> EntityType.Builder.<EnhancedEntityEgg>of(EnhancedEntityEgg::new, MobCategory.MISC).sized(0.25F, 0.25F).build(Reference.MODID + ":enhanced_entity_egg"));
     public static final RegistryObject<EntityType<EnhancedChicken>> ENHANCED_CHICKEN = ENTITIES_DEFERRED_REGISTRY.register("enhanced_chicken", () -> EntityType.Builder.of(EnhancedChicken::new, MobCategory.CREATURE).sized(0.4F, 0.7F).setTrackingRange(64).setUpdateInterval(1).build(Reference.MODID + ":enhanced_chicken"));
-    public static final RegistryObject<EntityType<EnhancedRabbit>> ENHANCED_RABBIT = ENTITIES_DEFERRED_REGISTRY.register("enhanced_rabbit", () -> EntityType.Builder.of(EnhancedRabbit::new, MobCategory.CREATURE).sized(0.4F, 0.5F).build(Reference.MODID + ":enhanced_rabbit"));
-    public static final RegistryObject<EntityType<EnhancedSheep>> ENHANCED_SHEEP = ENTITIES_DEFERRED_REGISTRY.register("enhanced_sheep", () -> EntityType.Builder.of(EnhancedSheep::new, MobCategory.CREATURE).sized(0.9F, 1.3F).build(Reference.MODID + ":enhanced_sheep"));
-    public static final RegistryObject<EntityType<EnhancedLlama>> ENHANCED_LLAMA = ENTITIES_DEFERRED_REGISTRY.register("enhanced_llama", () -> EntityType.Builder.of(EnhancedLlama::new, MobCategory.CREATURE).sized(0.9F, 1.87F).build(Reference.MODID + ":enhanced_llama"));
-    public static final RegistryObject<EntityType<EnhancedCow>> ENHANCED_COW = ENTITIES_DEFERRED_REGISTRY.register("enhanced_cow", () -> EntityType.Builder.of(EnhancedCow::new, MobCategory.CREATURE).sized(1.0F, 1.5F).build(Reference.MODID + ":enhanced_cow"));
-    public static final RegistryObject<EntityType<EnhancedMooshroom>> ENHANCED_MOOSHROOM = ENTITIES_DEFERRED_REGISTRY.register("enhanced_mooshroom", () -> EntityType.Builder.of(EnhancedMooshroom::new, MobCategory.CREATURE).sized(1.0F, 1.5F).build(Reference.MODID + ":enhanced_mooshroom"));
-    public static final RegistryObject<EntityType<EnhancedMoobloom>> ENHANCED_MOOBLOOM = ENTITIES_DEFERRED_REGISTRY.register("enhanced_moobloom", () -> EntityType.Builder.of(EnhancedMoobloom::new, MobCategory.CREATURE).sized(1.0F, 1.5F).build(Reference.MODID + ":enhanced_moobloom"));
-    public static final RegistryObject<EntityType<EnhancedPig>> ENHANCED_PIG = ENTITIES_DEFERRED_REGISTRY.register("enhanced_pig", () -> EntityType.Builder.of(EnhancedPig::new, MobCategory.CREATURE).sized(0.9F, 0.9F).build(Reference.MODID + ":enhanced_pig"));
-    public static final RegistryObject<EntityType<EnhancedHorse>> ENHANCED_HORSE = ENTITIES_DEFERRED_REGISTRY.register("enhanced_horse", () -> EntityType.Builder.of(EnhancedHorse::new, MobCategory.CREATURE).sized(1.0F, 1.6F).build(Reference.MODID + ":enhanced_horse"));
-    public static final RegistryObject<EntityType<EnhancedTurtle>> ENHANCED_TURTLE = ENTITIES_DEFERRED_REGISTRY.register("enhanced_turtle", () -> EntityType.Builder.of(EnhancedTurtle::new, MobCategory.CREATURE).sized(1.2F, 0.4F).build(Reference.MODID + ":enhanced_turtle"));
+//    public static final RegistryObject<EntityType<EnhancedRabbit>> ENHANCED_RABBIT = ENTITIES_DEFERRED_REGISTRY.register("enhanced_rabbit", () -> EntityType.Builder.of(EnhancedRabbit::new, MobCategory.CREATURE).sized(0.4F, 0.5F).build(Reference.MODID + ":enhanced_rabbit"));
+//    public static final RegistryObject<EntityType<EnhancedSheep>> ENHANCED_SHEEP = ENTITIES_DEFERRED_REGISTRY.register("enhanced_sheep", () -> EntityType.Builder.of(EnhancedSheep::new, MobCategory.CREATURE).sized(0.9F, 1.3F).build(Reference.MODID + ":enhanced_sheep"));
+//    public static final RegistryObject<EntityType<EnhancedLlama>> ENHANCED_LLAMA = ENTITIES_DEFERRED_REGISTRY.register("enhanced_llama", () -> EntityType.Builder.of(EnhancedLlama::new, MobCategory.CREATURE).sized(0.9F, 1.87F).build(Reference.MODID + ":enhanced_llama"));
+//    public static final RegistryObject<EntityType<EnhancedCow>> ENHANCED_COW = ENTITIES_DEFERRED_REGISTRY.register("enhanced_cow", () -> EntityType.Builder.of(EnhancedCow::new, MobCategory.CREATURE).sized(1.0F, 1.5F).build(Reference.MODID + ":enhanced_cow"));
+//    public static final RegistryObject<EntityType<EnhancedMooshroom>> ENHANCED_MOOSHROOM = ENTITIES_DEFERRED_REGISTRY.register("enhanced_mooshroom", () -> EntityType.Builder.of(EnhancedMooshroom::new, MobCategory.CREATURE).sized(1.0F, 1.5F).build(Reference.MODID + ":enhanced_mooshroom"));
+//    public static final RegistryObject<EntityType<EnhancedMoobloom>> ENHANCED_MOOBLOOM = ENTITIES_DEFERRED_REGISTRY.register("enhanced_moobloom", () -> EntityType.Builder.of(EnhancedMoobloom::new, MobCategory.CREATURE).sized(1.0F, 1.5F).build(Reference.MODID + ":enhanced_moobloom"));
+//    public static final RegistryObject<EntityType<EnhancedPig>> ENHANCED_PIG = ENTITIES_DEFERRED_REGISTRY.register("enhanced_pig", () -> EntityType.Builder.of(EnhancedPig::new, MobCategory.CREATURE).sized(0.9F, 0.9F).build(Reference.MODID + ":enhanced_pig"));
+//    public static final RegistryObject<EntityType<EnhancedHorse>> ENHANCED_HORSE = ENTITIES_DEFERRED_REGISTRY.register("enhanced_horse", () -> EntityType.Builder.of(EnhancedHorse::new, MobCategory.CREATURE).sized(1.0F, 1.6F).build(Reference.MODID + ":enhanced_horse"));
+//    public static final RegistryObject<EntityType<EnhancedTurtle>> ENHANCED_TURTLE = ENTITIES_DEFERRED_REGISTRY.register("enhanced_turtle", () -> EntityType.Builder.of(EnhancedTurtle::new, MobCategory.CREATURE).sized(1.2F, 0.4F).build(Reference.MODID + ":enhanced_turtle"));
     public static final RegistryObject<EntityType<EnhancedAxolotl>> ENHANCED_AXOLOTL = ENTITIES_DEFERRED_REGISTRY.register("enhanced_axolotl", () -> EntityType.Builder.of(EnhancedAxolotl::new, MobCategory.CREATURE).sized(1.2F, 0.4F).build(Reference.MODID + ":enhanced_axolotl"));
 //    public static final EntityType<EnhancedCat> ENHANCED_CAT = EntityType.Builder.create(EnhancedCat::new, EntityClassification.CREATURE).size(0.6F, 0.7F).build(Reference.MODID + ":enhanced_cat");
 //    public static final EntityType<EnhancedBee> ENHANCED_BEE = EntityType.Builder.create(EnhancedBee::new, EntityClassification.CREATURE).size(0.4F, 0.4F).build(Reference.MODID + ":enhanced_bee");
@@ -147,16 +136,16 @@ public class EventRegistry {
                  ModItems.EGG_BLUE.get(), ModItems.EGG_GREENLIGHT.get(), ModItems.EGG_GREENYELLOW.get(), ModItems.EGG_OLIVELIGHT.get(), ModItems.EGG_OLIVE.get(), ModItems.EGG_OLIVEDARK.get(), ModItems.EGG_ARMY.get(), ModItems.EGG_MINT.get(), ModItems.EGG_GREEN.get(), ModItems.EGG_GREENDARK.get(), ModItems.EGG_PINE.get(), ModItems.EGG_PINEDARK.get(), ModItems.EGG_PINEBLACK.get(), ModItems.EGG_BLUEGREY.get(), ModItems.EGG_GREY.get(), ModItems.EGG_GREYGREEN.get(), ModItems.EGG_AVOCADO.get(), ModItems.EGG_AVOCADODARK.get(), ModItems.EGG_FELDGRAU.get(),
                  ModItems.EGG_POWDERBLUE.get(), ModItems.EGG_TEA.get(), ModItems.EGG_MATCHA.get(), ModItems.EGG_MATCHADARK.get(), ModItems.EGG_MOSS.get(), ModItems.EGG_MOSSDARK.get(), ModItems.EGG_GREENUMBER.get(), ModItems.EGG_CELADON.get(), ModItems.EGG_FERN.get(), ModItems.EGG_ASPARAGUS.get(), ModItems.EGG_HUNTER.get(), ModItems.EGG_HUNTERDARK.get(), ModItems.EGG_TREEDARK.get(), ModItems.EGG_GREYBLUE.get(), ModItems.EGG_GREYNEUTRAL.get(), ModItems.EGG_LAUREL.get(), ModItems.EGG_RESEDA.get(), ModItems.EGG_GREENPEWTER.get(), ModItems.EGG_GREYDARK.get(),
                  ModItems.EGG_PALEBLUE.get(), ModItems.EGG_HONEYDEW.get(), ModItems.EGG_EARTH.get(), ModItems.EGG_KHAKI.get(), ModItems.EGG_GRULLO.get(), ModItems.EGG_KHAKIDARK.get(), ModItems.EGG_CAROB.get(), ModItems.EGG_JADE.get(), ModItems.EGG_PISTACHIO.get(), ModItems.EGG_SAGE.get(), ModItems.EGG_ROSEMARY.get(), ModItems.EGG_GREENBROWN.get(), ModItems.EGG_UMBER.get(), ModItems.EGG_COOLGREY.get(), ModItems.EGG_PINKGREY.get(), ModItems.EGG_WARMGREY.get(), ModItems.EGG_ARTICHOKE.get(), ModItems.EGG_MYRTLEGREY.get(), ModItems.EGG_RIFLE.get(),
-                 ModItems.Egg_Cream_Spot.get(), ModItems.Egg_CreamDark_Spot.get(), ModItems.Egg_Carmel_Spot.get(), ModItems.Egg_CarmelDark_Spot.get(), ModItems.Egg_Garnet_Spot.get(), ModItems.Egg_Pink_Spot.get(), ModItems.Egg_PinkDark_Spot.get(), ModItems.Egg_Cherry_Spot.get(), ModItems.Egg_CherryDark_Spot.get(), ModItems.Egg_Plum_Spot.get(), ModItems.Egg_BrownLight_Spot.get(), ModItems.Egg_Brown_Spot.get(), ModItems.Egg_BrownDark_Spot.get(), ModItems.Egg_Chocolate_Spot.get(), ModItems.Egg_ChocolateDark_Spot.get(),
-                 ModItems.Egg_GreenYellow_Spot.get(), ModItems.Egg_OliveLight_Spot.get(), ModItems.Egg_Olive_Spot.get(), ModItems.Egg_OliveDark_Spot.get(), ModItems.Egg_Army_Spot.get(), ModItems.Egg_Mint_Spot.get(), ModItems.Egg_Green_Spot.get(), ModItems.Egg_GreenDark_Spot.get(), ModItems.Egg_Pine_Spot.get(), ModItems.Egg_PineDark_Spot.get(), ModItems.Egg_PineBlack_Spot.get(), ModItems.Egg_Grey_Spot.get(), ModItems.Egg_GreyGreen_Spot.get(), ModItems.Egg_Avocado_Spot.get(), ModItems.Egg_AvocadoDark_Spot.get(), ModItems.Egg_Feldgrau_Spot.get(),
+                 ModItems.EGG_CREAM_SPOT.get(), ModItems.EGG_CREAMDARK_SPOT.get(), ModItems.EGG_CARMEL_SPOT.get(), ModItems.EGG_CARMELDARK_SPOT.get(), ModItems.EGG_GARNET_SPOT.get(), ModItems.EGG_PINK_SPOT.get(), ModItems.EGG_PINKDARK_SPOT.get(), ModItems.EGG_CHERRY_SPOT.get(), ModItems.EGG_CHERRYDARK_SPOT.get(), ModItems.EGG_PLUM_SPOT.get(), ModItems.EGG_BROWNLIGHT_SPOT.get(), ModItems.EGG_BROWN_SPOT.get(), ModItems.EGG_BROWNDARK_SPOT.get(), ModItems.EGG_CHOCOLATE_SPOT.get(), ModItems.EGG_CHOCOLATEDARK_SPOT.get(),
+                 ModItems.EGG_GREENYELLOW_SPOT.get(), ModItems.EGG_OLIVELIGHT_SPOT.get(), ModItems.EGG_OLIVE_SPOT.get(), ModItems.EGG_OLIVEDARK_SPOT.get(), ModItems.EGG_ARMY_SPOT.get(), ModItems.EGG_MINT_SPOT.get(), ModItems.EGG_GREEN_SPOT.get(), ModItems.EGG_GREENDARK_SPOT.get(), ModItems.EGG_PINE_SPOT.get(), ModItems.EGG_PINEDARK_SPOT.get(), ModItems.EGG_PINEBLACK_SPOT.get(), ModItems.EGG_GREY_SPOT.get(), ModItems.EGG_GREYGREEN_SPOT.get(), ModItems.EGG_AVOCADO_SPOT.get(), ModItems.EGG_AVOCADODARK_SPOT.get(), ModItems.EGG_FELDGRAU_SPOT.get(),
                  ModItems.Egg_Matcha_Spot.get(), ModItems.Egg_MatchaDark_Spot.get(), ModItems.EGG_MOSS_SPOT.get(), ModItems.EGG_MOSSDARK_SPOT.get(), ModItems.EGG_GREENUMBER_SPOT.get(), ModItems.EGG_CELADON_SPOT.get(), ModItems.EGG_FERN_SPOT.get(), ModItems.EGG_ASPARAGUS_SPOT.get(), ModItems.EGG_HUNTER_SPOT.get(), ModItems.EGG_HUNTERDARK_SPOT.get(), ModItems.EGG_TREEDARK_SPOT.get(), ModItems.EGG_GREYNEUTRAL_SPOT.get(), ModItems.EGG_LAUREL_SPOT.get(), ModItems.EGG_RESEDA_SPOT.get(), ModItems.EGG_GREENPEWTER_SPOT.get(), ModItems.EGG_GREYDARK_SPOT.get(),
                  ModItems.EGG_EARTH_SPOT.get(), ModItems.EGG_KHAKI_SPOT.get(), ModItems.EGG_GRULLO_SPOT.get(), ModItems.EGG_KHAKIDARK_SPOT.get(), ModItems.EGG_CAROB_SPOT.get(), ModItems.EGG_JADE_SPOT.get(), ModItems.EGG_PISTACHIO_SPOT.get(), ModItems.EGG_SAGE_SPOT.get(), ModItems.EGG_ROSEMARY_SPOT.get(), ModItems.EGG_GREENBROWN_SPOT.get(), ModItems.EGG_UMBER_SPOT.get(), ModItems.EGG_PINKGREY_SPOT.get(), ModItems.EGG_WARMGREY_SPOT.get(), ModItems.EGG_ARTICHOKE_SPOT.get(), ModItems.EGG_MYRTLEGREY_SPOT.get(), ModItems.EGG_RIFLE_SPOT.get(),
-                 ModItems.Egg_Cream_Speckle.get(), ModItems.Egg_CreamDark_Speckle.get(), ModItems.Egg_Carmel_Speckle.get(), ModItems.Egg_CarmelDark_Speckle.get(), ModItems.Egg_Garnet_Speckle.get(), ModItems.Egg_Pink_Speckle.get(), ModItems.Egg_PinkDark_Speckle.get(), ModItems.Egg_Cherry_Speckle.get(), ModItems.Egg_CherryDark_Speckle.get(), ModItems.Egg_Plum_Speckle.get(), ModItems.Egg_BrownLight_Speckle.get(), ModItems.Egg_Brown_Speckle.get(), ModItems.Egg_BrownDark_Speckle.get(), ModItems.Egg_Chocolate_Speckle.get(), ModItems.Egg_ChocolateDark_Speckle.get(),
-                 ModItems.Egg_GreenYellow_Speckle.get(), ModItems.Egg_OliveLight_Speckle.get(), ModItems.Egg_Olive_Speckle.get(), ModItems.Egg_OliveDark_Speckle.get(), ModItems.Egg_Army_Speckle.get(), ModItems.Egg_Mint_Speckle.get(), ModItems.Egg_Green_Speckle.get(), ModItems.Egg_GreenDark_Speckle.get(), ModItems.Egg_Pine_Speckle.get(), ModItems.Egg_PineDark_Speckle.get(), ModItems.Egg_PineBlack_Speckle.get(), ModItems.Egg_Grey_Speckle.get(), ModItems.Egg_GreyGreen_Speckle.get(), ModItems.Egg_Avocado_Speckle.get(), ModItems.Egg_AvocadoDark_Speckle.get(), ModItems.Egg_Feldgrau_Speckle.get(),
+                 ModItems.EGG_CREAM_SPECKLE.get(), ModItems.EGG_CREAMDARK_SPECKLE.get(), ModItems.EGG_CARMEL_SPECKLE.get(), ModItems.EGG_CARMELDARK_SPECKLE.get(), ModItems.EGG_GARNET_SPECKLE.get(), ModItems.EGG_PINK_SPECKLE.get(), ModItems.EGG_PINKDARK_SPECKLE.get(), ModItems.EGG_CHERRY_SPECKLE.get(), ModItems.EGG_CHERRYDARK_SPECKLE.get(), ModItems.EGG_PLUM_SPECKLE.get(), ModItems.EGG_BROWNLIGHT_SPECKLE.get(), ModItems.EGG_BROWN_SPECKLE.get(), ModItems.EGG_BROWNDARK_SPECKLE.get(), ModItems.EGG_CHOCOLATE_SPECKLE.get(), ModItems.EGG_CHOCOLATEDARK_SPECKLE.get(),
+                 ModItems.EGG_GREENYELLOW_SPECKLE.get(), ModItems.EGG_OLIVELIGHT_SPECKLE.get(), ModItems.EGG_OLIVE_SPECKLE.get(), ModItems.EGG_OLIVEDARK_SPECKLE.get(), ModItems.EGG_ARMY_SPECKLE.get(), ModItems.EGG_MINT_SPECKLE.get(), ModItems.EGG_GREEN_SPECKLE.get(), ModItems.EGG_GREENDARK_SPECKLE.get(), ModItems.EGG_PINE_SPECKLE.get(), ModItems.EGG_PINEDARK_SPECKLE.get(), ModItems.EGG_PINEBLACK_SPECKLE.get(), ModItems.EGG_GREY_SPECKLE.get(), ModItems.EGG_GREYGREEN_SPECKLE.get(), ModItems.EGG_AVOCADO_SPECKLE.get(), ModItems.EGG_AVOCADODARK_SPECKLE.get(), ModItems.EGG_FELDGRAU_SPECKLE.get(),
                  ModItems.EGG_MATCHA_SPECKLE.get(), ModItems.EGG_MATCHADARK_SPECKLE.get(), ModItems.EGG_MOSS_SPECKLE.get(), ModItems.EGG_MOSSDARK_SPECKLE.get(), ModItems.EGG_GREENUMBER_SPECKLE.get(), ModItems.EGG_CELADON_SPECKLE.get(), ModItems.EGG_FERN_SPECKLE.get(), ModItems.EGG_ASPARAGUS_SPECKLE.get(), ModItems.EGG_HUNTER_SPECKLE.get(), ModItems.EGG_HUNTERDARK_SPECKLE.get(), ModItems.EGG_TREEDARK_SPECKLE.get(), ModItems.EGG_GREYNEUTRAL_SPECKLE.get(), ModItems.EGG_LAUREL_SPECKLE.get(), ModItems.EGG_RESEDA_SPECKLE.get(), ModItems.EGG_GREENPEWTER_SPECKLE.get(), ModItems.EGG_GREYDARK_SPECKLE.get(),
                  ModItems.EGG_EARTH_SPECKLE.get(), ModItems.EGG_KHAKI_SPECKLE.get(), ModItems.EGG_GRULLO_SPECKLE.get(), ModItems.EGG_KHAKIDARK_SPECKLE.get(), ModItems.EGG_CAROB_SPECKLE.get(), ModItems.EGG_JADE_SPECKLE.get(), ModItems.EGG_PISTACHIO_SPECKLE.get(), ModItems.EGG_SAGE_SPECKLE.get(), ModItems.EGG_ROSEMARY_SPECKLE.get(), ModItems.EGG_GREENBROWN_SPECKLE.get(), ModItems.EGG_UMBER_SPECKLE.get(), ModItems.EGG_PINKGREY_SPECKLE.get(), ModItems.EGG_WARMGREY_SPECKLE.get(), ModItems.EGG_ARTICHOKE_SPECKLE.get(), ModItems.EGG_MYRTLEGREY_SPECKLE.get(), ModItems.EGG_RIFLE_SPECKLE.get(),
-                 ModItems.Egg_Cream_Spatter.get(), ModItems.Egg_CreamDark_Spatter.get(), ModItems.Egg_Carmel_Spatter.get(), ModItems.Egg_CarmelDark_Spatter.get(), ModItems.Egg_Garnet_Spatter.get(), ModItems.Egg_Pink_Spatter.get(), ModItems.Egg_PinkDark_Spatter.get(), ModItems.Egg_Cherry_Spatter.get(), ModItems.Egg_CherryDark_Spatter.get(), ModItems.Egg_Plum_Spatter.get(), ModItems.Egg_BrownLight_Spatter.get(), ModItems.Egg_Brown_Spatter.get(), ModItems.Egg_BrownDark_Spatter.get(), ModItems.Egg_Chocolate_Spatter.get(), ModItems.Egg_ChocolateDark_Spatter.get(),
-                 ModItems.Egg_GreenYellow_Spatter.get(), ModItems.Egg_OliveLight_Spatter.get(), ModItems.Egg_Olive_Spatter.get(), ModItems.Egg_OliveDark_Spatter.get(), ModItems.Egg_Army_Spatter.get(), ModItems.Egg_Mint_Spatter.get(), ModItems.Egg_Green_Spatter.get(), ModItems.Egg_GreenDark_Spatter.get(), ModItems.Egg_Pine_Spatter.get(), ModItems.Egg_PineDark_Spatter.get(), ModItems.Egg_PineBlack_Spatter.get(), ModItems.Egg_Grey_Spatter.get(), ModItems.Egg_GreyGreen_Spatter.get(), ModItems.Egg_Avocado_Spatter.get(), ModItems.Egg_AvocadoDark_Spatter.get(), ModItems.Egg_Feldgrau_Spatter.get(),
+                 ModItems.EGG_CREAM_SPATTER.get(), ModItems.EGG_CREAMDARK_SPATTER.get(), ModItems.EGG_CARMEL_SPATTER.get(), ModItems.EGG_CARMELDARK_SPATTER.get(), ModItems.EGG_GARNET_SPATTER.get(), ModItems.EGG_PINK_SPATTER.get(), ModItems.EGG_PINKDARK_SPATTER.get(), ModItems.EGG_CHERRY_SPATTER.get(), ModItems.EGG_CHERRYDARK_SPATTER.get(), ModItems.EGG_PLUM_SPATTER.get(), ModItems.EGG_BROWNLIGHT_SPATTER.get(), ModItems.EGG_BROWN_SPATTER.get(), ModItems.EGG_BROWNDARK_SPATTER.get(), ModItems.EGG_CHOCOLATE_SPATTER.get(), ModItems.EGG_CHOCOLATEDARK_SPATTER.get(),
+                 ModItems.EGG_GREENYELLOW_SPATTER.get(), ModItems.EGG_OLIVELIGHT_SPATTER.get(), ModItems.EGG_OLIVE_SPATTER.get(), ModItems.EGG_OLIVEDARK_SPATTER.get(), ModItems.EGG_ARMY_SPATTER.get(), ModItems.EGG_MINT_SPATTER.get(), ModItems.EGG_GREEN_SPATTER.get(), ModItems.EGG_GREENDARK_SPATTER.get(), ModItems.EGG_PINE_SPATTER.get(), ModItems.EGG_PINEDARK_SPATTER.get(), ModItems.EGG_PINEBLACK_SPATTER.get(), ModItems.EGG_GREY_SPATTER.get(), ModItems.EGG_GREYGREEN_SPATTER.get(), ModItems.EGG_AVOCADO_SPATTER.get(), ModItems.EGG_AVOCADODARK_SPATTER.get(), ModItems.EGG_FELDGRAU_SPATTER.get(),
                  ModItems.EGG_MATCHA_SPATTER.get(), ModItems.EGG_MATCHADARK_SPATTER.get(), ModItems.EGG_MOSS_SPATTER.get(), ModItems.EGG_MOSSDARK_SPATTER.get(), ModItems.EGG_GREENUMBER_SPATTER.get(), ModItems.EGG_CELADON_SPATTER.get(), ModItems.EGG_FERN_SPATTER.get(), ModItems.EGG_ASPARAGUS_SPATTER.get(), ModItems.EGG_HUNTER_SPATTER.get(), ModItems.EGG_HUNTERDARK_SPATTER.get(), ModItems.EGG_TREEDARK_SPATTER.get(), ModItems.EGG_GREYNEUTRAL_SPATTER.get(), ModItems.EGG_LAUREL_SPATTER.get(), ModItems.EGG_RESEDA_SPATTER.get(), ModItems.EGG_GREENPEWTER_SPATTER.get(), ModItems.EGG_GREYDARK_SPATTER.get(),
                  ModItems.EGG_EARTH_SPATTER.get(), ModItems.EGG_KHAKI_SPATTER.get(), ModItems.EGG_GRULLO_SPATTER.get(), ModItems.EGG_KHAKIDARK_SPATTER.get(), ModItems.EGG_CAROB_SPATTER.get(), ModItems.EGG_JADE_SPATTER.get(), ModItems.EGG_PISTACHIO_SPATTER.get(), ModItems.EGG_SAGE_SPATTER.get(), ModItems.EGG_ROSEMARY_SPATTER.get(), ModItems.EGG_GREENBROWN_SPATTER.get(), ModItems.EGG_UMBER_SPATTER.get(), ModItems.EGG_PINKGREY_SPATTER.get(), ModItems.EGG_WARMGREY_SPATTER.get(), ModItems.EGG_ARTICHOKE_SPATTER.get(), ModItems.EGG_MYRTLEGREY_SPATTER.get(), ModItems.EGG_RIFLE_SPATTER.get()};
 
@@ -204,22 +193,22 @@ public class EventRegistry {
                 new BlockItem(EGG_CARTON.get(), new Item.Properties().stacksTo(1).tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName(EGG_CARTON.get().getRegistryName()),
         };
 
-        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_TURTLE, 0xFFFFDD,0x00DDCC, new Item.Properties()
-                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_turtle_spawn_egg"));
-        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000, new Item.Properties()
-                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_chicken_spawn_egg"));
-        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34, new Item.Properties()
-                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_llama_spawn_egg"));
-        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_SHEEP, 0xFFFFFF,0xFF8C8C, new Item.Properties()
-                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_sheep_spawn_egg"));
-        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_RABBIT, 0xCA8349,0x553C36, new Item.Properties()
-                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_rabbit_spawn_egg"));
-        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_COW, 0x260800,0xf9f9f7, new Item.Properties()
-                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_cow_spawn_egg"));
-        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC, new Item.Properties()
-                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_mooshroom_spawn_egg"));
-        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_PIG, 0xFFA4A4,0xB34d4d, new Item.Properties()
-                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_pig_spawn_egg"));
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_TURTLE, 0xFFFFDD,0x00DDCC, new Item.Properties()
+//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_turtle_spawn_egg"));
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000, new Item.Properties()
+//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_chicken_spawn_egg"));
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_LLAMA, 0xCDB29C,0x7B4B34, new Item.Properties()
+//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_llama_spawn_egg"));
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_SHEEP, 0xFFFFFF,0xFF8C8C, new Item.Properties()
+//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_sheep_spawn_egg"));
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_RABBIT, 0xCA8349,0x553C36, new Item.Properties()
+//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_rabbit_spawn_egg"));
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_COW, 0x260800,0xf9f9f7, new Item.Properties()
+//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_cow_spawn_egg"));
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC, new Item.Properties()
+//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_mooshroom_spawn_egg"));
+//        event.getRegistry().register(new ForgeSpawnEggItem(ENHANCED_PIG, 0xFFA4A4,0xB34d4d, new Item.Properties()
+//                .tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)).setRegistryName("enhanced_pig_spawn_egg"));
 
 
 //        event.getRegistry().registerAll(itemEggs);
@@ -256,15 +245,15 @@ public class EventRegistry {
     public static void onEntityAttributeCreationRegistry(EntityAttributeCreationEvent event) {
         event.put(ENHANCED_AXOLOTL.get(), EnhancedAxolotl.prepareAttributes().build());
         event.put(ENHANCED_CHICKEN.get(), EnhancedChicken.prepareAttributes().build());
-        event.put(ENHANCED_RABBIT.get(), EnhancedRabbit.prepareAttributes().build());
-        event.put(ENHANCED_SHEEP.get(), EnhancedSheep.prepareAttributes().build());
-        event.put(ENHANCED_LLAMA.get(), EnhancedLlama.prepareAttributes().build());
-        event.put(ENHANCED_COW.get(), EnhancedCow.prepareAttributes().build());
-        event.put(ENHANCED_MOOSHROOM.get(), EnhancedMooshroom.prepareAttributes().build());
-        event.put(ENHANCED_MOOBLOOM.get(), EnhancedMoobloom.prepareAttributes().build());
-        event.put(ENHANCED_PIG.get(), EnhancedPig.prepareAttributes().build());
-        event.put(ENHANCED_HORSE.get(), EnhancedHorse.prepareAttributes().build());
-        event.put(ENHANCED_TURTLE.get(), EnhancedTurtle.prepareAttributes().build());
+//        event.put(ENHANCED_RABBIT.get(), EnhancedRabbit.prepareAttributes().build());
+//        event.put(ENHANCED_SHEEP.get(), EnhancedSheep.prepareAttributes().build());
+//        event.put(ENHANCED_LLAMA.get(), EnhancedLlama.prepareAttributes().build());
+//        event.put(ENHANCED_COW.get(), EnhancedCow.prepareAttributes().build());
+//        event.put(ENHANCED_MOOSHROOM.get(), EnhancedMooshroom.prepareAttributes().build());
+//        event.put(ENHANCED_MOOBLOOM.get(), EnhancedMoobloom.prepareAttributes().build());
+//        event.put(ENHANCED_PIG.get(), EnhancedPig.prepareAttributes().build());
+//        event.put(ENHANCED_HORSE.get(), EnhancedHorse.prepareAttributes().build());
+//        event.put(ENHANCED_TURTLE.get(), EnhancedTurtle.prepareAttributes().build());
 
     }
 
@@ -310,14 +299,14 @@ public class EventRegistry {
     @SubscribeEvent
     public static void onEntitiesRegistry(RegistryEvent.Register<EntityType<?>> event) {
         SpawnPlacements.register(ENHANCED_AXOLOTL.get(), SpawnPlacements.Type.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-        SpawnPlacements.register(ENHANCED_PIG.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-        SpawnPlacements.register(ENHANCED_SHEEP.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-        SpawnPlacements.register(ENHANCED_COW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-        SpawnPlacements.register(ENHANCED_LLAMA.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+//        SpawnPlacements.register(ENHANCED_PIG.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+//        SpawnPlacements.register(ENHANCED_SHEEP.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+//        SpawnPlacements.register(ENHANCED_COW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+//        SpawnPlacements.register(ENHANCED_LLAMA.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
         SpawnPlacements.register(ENHANCED_CHICKEN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-        SpawnPlacements.register(ENHANCED_RABBIT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-        SpawnPlacements.register(ENHANCED_MOOSHROOM.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedMooshroom::canMooshroomSpawn);
-        SpawnPlacements.register(ENHANCED_TURTLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedTurtle::canTurtleSpawn);
+//        SpawnPlacements.register(ENHANCED_RABBIT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+//        SpawnPlacements.register(ENHANCED_MOOSHROOM.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedMooshroom::canMooshroomSpawn);
+//        SpawnPlacements.register(ENHANCED_TURTLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedTurtle::canTurtleSpawn);
     }
 
     private static class GeneticShearDispenseBehavior extends ShearsDispenseItemBehavior {

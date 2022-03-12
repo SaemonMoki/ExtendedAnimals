@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.capability.egg;
 
-import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
+import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.world.item.ItemStack;
 

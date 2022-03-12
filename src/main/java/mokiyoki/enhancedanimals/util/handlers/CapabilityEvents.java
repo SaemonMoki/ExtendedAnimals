@@ -1,9 +1,8 @@
 package mokiyoki.enhancedanimals.util.handlers;
 
-import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
-import mokiyoki.enhancedanimals.capability.turtleegg.NestCapabilityProvider;
+import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;

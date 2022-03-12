@@ -12,6 +12,11 @@ public class WrappedModelPart {
     public boolean pushPopChildren = true;
     public List<WrappedModelPart> children = new ArrayList<>();
 
+    public WrappedModelPart(String boxName, ModelPart parentModelPart) {
+        this.modelPart = parentModelPart.getChild(boxName);
+        this.boxName = boxName;
+    }
+
     public WrappedModelPart(ModelPart modelPart, String boxName) {
         this.modelPart = modelPart;
         this.boxName = boxName;
@@ -86,5 +91,17 @@ public class WrappedModelPart {
         zRot = (this.modelPart.zRot * negPercent) + (zRot * percent);
 
         this.modelPart.setRotation(xRot, yRot, zRot);
+    }
+
+    public void show() {
+        this.modelPart.visible = true;
+    }
+
+    public void hide() {
+        this.modelPart.visible = false;
+    }
+
+    public void show(boolean show) {
+        this.modelPart.visible = show;
     }
 }

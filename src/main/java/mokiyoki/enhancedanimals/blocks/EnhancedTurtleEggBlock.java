@@ -1,40 +1,30 @@
 package mokiyoki.enhancedanimals.blocks;
 
-import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
-import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
-import mokiyoki.enhancedanimals.capability.turtleegg.NestCapabilityProvider;
-import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
-import mokiyoki.enhancedanimals.items.EnhancedEgg;
+import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
+import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
+//import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
@@ -43,7 +33,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_TURTLE;
+//import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_TURTLE;
 
 public class EnhancedTurtleEggBlock extends NestBlock {
     private static final VoxelShape ONE_EGG_SHAPE = Block.box(3.0D, 0.0D, 3.0D, 12.0D, 7.0D, 12.0D);
@@ -151,40 +141,40 @@ public class EnhancedTurtleEggBlock extends NestBlock {
                 List<EggHolder> eggList = level.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggsFromNest(pos);
                 int j = 1;
 
-                if (eggList!=null) {
-                    for (EggHolder egg : eggList) {
-                        level.levelEvent(2001, pos, Block.getId(state));
-                        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
-                        turtle.setGenes(egg.getGenes());
-                        turtle.setSharedGenes(egg.getGenes());
-                        turtle.setSireName(egg.getSire());
-                        turtle.setDamName(egg.getDam());
-                        turtle.setGrowingAge();
-                        turtle.initilizeAnimalSize();
-                        turtle.setBirthTime();
-                        turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
-                        turtle.setHome(pos);
-                        turtle.setHasScute();
-                        level.addFreshEntity(turtle);
-                    }
-                } else {
-                    for (int k = 0; k < state.getValue(EGGS); k++) {
-                        level.levelEvent(2001, pos, Block.getId(state));
-                        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
-                        Genes turtleGenes = turtle.createInitialBreedGenes(turtle.getCommandSenderWorld(), turtle.blockPosition(), "WanderingTrader");
-                        turtle.setGenes(turtleGenes);
-                        turtle.setSharedGenes(turtleGenes);
-                        turtle.setSireName("???");
-                        turtle.setDamName("???");
-                        turtle.setGrowingAge();
-                        turtle.initilizeAnimalSize();
-                        turtle.setBirthTime();
-                        turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
-                        turtle.setHome(pos);
-                        turtle.setHasScute();
-                        level.addFreshEntity(turtle);
-                    }
-                }
+//                if (eggList!=null) {
+//                    for (EggHolder egg : eggList) {
+//                        level.levelEvent(2001, pos, Block.getId(state));
+//                        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
+//                        turtle.setGenes(egg.getGenes());
+//                        turtle.setSharedGenes(egg.getGenes());
+//                        turtle.setSireName(egg.getSire());
+//                        turtle.setDamName(egg.getDam());
+//                        turtle.setGrowingAge();
+//                        turtle.initilizeAnimalSize();
+//                        turtle.setBirthTime();
+//                        turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
+//                        turtle.setHome(pos);
+//                        turtle.setHasScute();
+//                        level.addFreshEntity(turtle);
+//                    }
+//                } else {
+//                    for (int k = 0; k < state.getValue(EGGS); k++) {
+//                        level.levelEvent(2001, pos, Block.getId(state));
+//                        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
+//                        Genes turtleGenes = turtle.createInitialBreedGenes(turtle.getCommandSenderWorld(), turtle.blockPosition(), "WanderingTrader");
+//                        turtle.setGenes(turtleGenes);
+//                        turtle.setSharedGenes(turtleGenes);
+//                        turtle.setSireName("???");
+//                        turtle.setDamName("???");
+//                        turtle.setGrowingAge();
+//                        turtle.initilizeAnimalSize();
+//                        turtle.setBirthTime();
+//                        turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
+//                        turtle.setHome(pos);
+//                        turtle.setHasScute();
+//                        level.addFreshEntity(turtle);
+//                    }
+//                }
             }
         }
 
@@ -233,7 +223,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
     }
 
     private boolean canTrample(Level worldIn, Entity trampler) {
-        if (!(trampler instanceof Turtle) && !(trampler instanceof Bat) && !(trampler instanceof EnhancedTurtle)) {
+        if (!(trampler instanceof Turtle) && !(trampler instanceof Bat)/* && !(trampler instanceof EnhancedTurtle)*/) {
             if (!(trampler instanceof LivingEntity)) {
                 return false;
             } else {

@@ -1,4 +1,4 @@
-package mokiyoki.enhancedanimals.capability.turtleegg;
+package mokiyoki.enhancedanimals.capability.nestegg;
 
 import mokiyoki.enhancedanimals.util.Genes;
 

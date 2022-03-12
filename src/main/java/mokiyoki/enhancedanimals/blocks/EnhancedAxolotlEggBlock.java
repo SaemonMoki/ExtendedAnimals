@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.blocks;
 
-import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
+import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
@@ -24,7 +24,6 @@ import net.minecraft.world.level.material.Fluids;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_AXOLOTL;

@@ -1,4 +1,10 @@
 package mokiyoki.enhancedanimals.model;
 
-public interface Phenotype {
+import mokiyoki.enhancedanimals.util.Genes;
+
+public abstract class Phenotype {
+
+    Phenotype(Genes genes) {
+
+    }
 }

@@ -5,9 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
-import mokiyoki.enhancedanimals.model.util.GAModel;
-import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
+import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -15,25 +14,16 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.LerpingModel;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends GAModel<T> {
-
-    private Map<Integer, AxolotlModelData> axolotlModelDataCache = new HashMap<>();
-    private int clearCacheTimer = 0;
-
+public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAnimalModel<T> {
     protected WrappedModelPart theAxolotl;
 
     protected WrappedModelPart theHead;
@@ -60,8 +50,6 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends GAModel<T> 
     protected WrappedModelPart legBackLeft;
     protected WrappedModelPart legBackRight;
     protected WrappedModelPart collar;
-
-    private Integer currentAxolotl = null;
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
@@ -174,14 +162,13 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends GAModel<T> 
                 PartPose.ZERO
         );
 
-        CubeDeformation collarDeformation = new CubeDeformation(-0.5F);
         base.addOrReplaceChild("collar", CubeListBuilder.create()
                         .texOffs(36, 57)
                         .addBox(-4.5F, -1.0F, -0.5F, 9, 2, 5)
                         .texOffs(35, 51)
                         .addBox(0.0F, -1.5F, 3.5F, 0,  3, 3)
                         .texOffs(12, 37)
-                        .addBox(-1.5F, -1.5F, 5.0F, 3, 3, 3, collarDeformation),
+                        .addBox(-1.5F, -1.5F, 5.0F, 3, 3, 3, new CubeDeformation(-0.5F)),
                 PartPose.offset(0.0F, -2.0F, -4.0F)
         );
 
@@ -189,6 +176,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends GAModel<T> 
     }
 
     public ModelEnhancedAxolotl(ModelPart modelPart) {
+        super(modelPart);
         ModelPart base = modelPart.getChild("base");
         this.theAxolotl = new WrappedModelPart(base, "base");
         ModelPart bHead = base.getChild("bHead");
@@ -201,9 +189,9 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends GAModel<T> 
         this.theBody = new WrappedModelPart(bBody, "bBody");
         this.theTail = new WrappedModelPart(bTail, "bTail");
 
-        this.head = new WrappedModelPart(bHead.getChild("head"), "head");
-        this.headLong = new WrappedModelPart(bHead.getChild("headLong"), "headLong");
-        this.gillsTop = new WrappedModelPart(bGills.getChild("gillsTop"), "gillsTop");
+        this.head = new WrappedModelPart("head", bHead);
+        this.headLong = new WrappedModelPart("headLong", bHead);
+        this.gillsTop = new WrappedModelPart("gillsTop", bGills);
         this.gillsLeft = new WrappedModelPart(bGills.getChild("gillsLeft"), "gillsLeft");
         this.gillsRight = new WrappedModelPart(bGills.getChild("gillsRight"), "gillsRight");
         this.body = new WrappedModelPart(bBody.getChild("body"), "body");
@@ -253,9 +241,9 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends GAModel<T> 
 
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.currentAnimal = entityIn.getId();
         AxolotlModelData axolotlModelData = getCreateAxolotlModelData(entityIn);
-        Phenotype axolotl = axolotlModelData.phenotype;
-        this.currentAxolotl = entityIn.getId();
+        AxolotlPhenotype axolotl = (AxolotlPhenotype) axolotlModelData.phenotype;
         int randomAnimationOffset = (int)(2000 * axolotlModelData.random);
         if (axolotl!=null) {
 
@@ -325,7 +313,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends GAModel<T> 
 
     }
 
-    private void setRotationPointOffsets(Phenotype axolotl) {
+    private void setRotationPointOffsets(AxolotlPhenotype axolotl) {
         this.legBackLeft.modelPart.y = axolotl.isLong ? -11.5F : -9.5F;
         this.legBackRight.modelPart.y = axolotl.isLong ? -11.5F : -9.5F;
     }
@@ -501,12 +489,12 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends GAModel<T> 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         AxolotlModelData axolotlModelData = getAxolotlModelData();
-        Phenotype axolotl = axolotlModelData.phenotype;
+        AxolotlPhenotype axolotl = (AxolotlPhenotype) axolotlModelData.phenotype;
 
         if (axolotl!=null) {
 
             for (WrappedModelPart part : this.theTail.children) {
-                part.modelPart.visible = false;
+                part.show(false);
             }
 
             if (axolotl.isLong) {
@@ -529,98 +517,56 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends GAModel<T> 
                 this.bodyLong.modelPart.visible = false;
                 this.bodyFinLong.modelPart.visible = false;
                 switch (axolotl.tailLength) {
-                    case EXTRALONG -> this.tail14.modelPart.visible = true;
-                    case LONG -> this.tail13.modelPart.visible = true;
-                    case NORMAL -> this.tail12.modelPart.visible = true;
-                    default -> this.tail12.modelPart.visible = true;
+                    case EXTRALONG -> this.tail14.show(true);
+                    case LONG -> this.tail13.show(true);
+                    case NORMAL -> this.tail12.show(true);
+                    default -> this.tail12.show(true);
                 }
             }
-
-            this.collar.modelPart.visible = axolotlModelData.collar;
 
             gaRender(this.theAxolotl, null, Collections.emptyList(), poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha, false);
         }
     }
 
-    private class AxolotlModelData {
-        Phenotype phenotype;
-        boolean sleeping = false;
+    private class AxolotlModelData extends AnimalModelData {
         boolean hasEggs = false;
-        int blink = 0;
-        boolean collar = false;
-        int lastAccessed = 0;
-        int dataReset = 0;
-        long clientGameTime = 0;
-        float age = 0.0F;
-        float random;
     }
 
     private AxolotlModelData getAxolotlModelData() {
-        if (this.currentAxolotl == null || !axolotlModelDataCache.containsKey(this.currentAxolotl)) {
-            return new AxolotlModelData();
-        }
-        return axolotlModelDataCache.get(this.currentAxolotl);
+        return (AxolotlModelData) getAnimalModelData();
     }
 
     private AxolotlModelData getCreateAxolotlModelData(T enhancedAxolotl) {
-        clearCacheTimer++;
-        if(clearCacheTimer > 50000) {
-            axolotlModelDataCache.values().removeIf(value -> value.lastAccessed==1);
-            for (AxolotlModelData turtleModelData : axolotlModelDataCache.values()){
-                turtleModelData.lastAccessed = 1;
-            }
-            clearCacheTimer = 0;
-        }
-
-        if (axolotlModelDataCache.containsKey(enhancedAxolotl.getId())) {
-            AxolotlModelData axolotlModelData = axolotlModelDataCache.get(enhancedAxolotl.getId());
-            axolotlModelData.lastAccessed = 0;
-            axolotlModelData.dataReset++;
-//            turtleModelData.sleeping = enhancedTurtle.isAnimalSleeping();
-            axolotlModelData.collar = hasCollar(enhancedAxolotl.getEnhancedInventory());
-            axolotlModelData.blink = enhancedAxolotl.getBlink();
-            axolotlModelData.hasEggs = enhancedAxolotl.hasEgg();
-            if (axolotlModelData.age != 1.0F) {
-                axolotlModelData.age = enhancedAxolotl.growthAmount();
-            }
-            axolotlModelData.clientGameTime = ((ClientLevel)enhancedAxolotl.level).getLevelData().getGameTime();
-
-            return axolotlModelData;
-        } else {
-            AxolotlModelData axolotlModelData = new AxolotlModelData();
-            if (enhancedAxolotl.getSharedGenes()!=null) {
-                axolotlModelData.phenotype = new Phenotype(enhancedAxolotl.getSharedGenes().getAutosomalGenes());
-            }
-            axolotlModelData.sleeping = enhancedAxolotl.isAnimalSleeping();
-            axolotlModelData.blink = enhancedAxolotl.getBlink();
-            axolotlModelData.hasEggs = enhancedAxolotl.hasEgg();
-            axolotlModelData.age = enhancedAxolotl.growthAmount();
-            axolotlModelData.collar = hasCollar(enhancedAxolotl.getEnhancedInventory());
-            axolotlModelData.clientGameTime = ((ClientLevel)enhancedAxolotl.level).getLevelData().getGameTime();
-            axolotlModelData.random = ThreadLocalRandom.current().nextFloat();
-
-            if(axolotlModelData.phenotype != null) {
-                axolotlModelDataCache.put(enhancedAxolotl.getId(), axolotlModelData);
-            }
-
-            return axolotlModelData;
-        }
+        return (AxolotlModelData) getCreateAnimalModelData(enhancedAxolotl);
     }
 
-    private boolean hasCollar(SimpleContainer inventory) {
-        for (int i = 1; i < 6; i++) {
-            if (inventory.getItem(i).getItem() instanceof CustomizableCollar) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    protected AnimalModelData setInitialData(T enhancedAxolotl) {
+        AxolotlModelData axolotlModelData = new AxolotlModelData();
+        setBaseInitialData(axolotlModelData, enhancedAxolotl);
+        axolotlModelData.hasEggs = enhancedAxolotl.hasEgg();
+        return axolotlModelData;
     }
 
-    private class Phenotype {
+    @Override
+    protected AnimalModelData updateData(T enhancedAnimal) {
+        AxolotlModelData axolotlModelData = (AxolotlModelData) super.updateData(enhancedAnimal);
+        axolotlModelData.hasEggs = enhancedAnimal.hasEgg();
+        return axolotlModelData;
+    }
+
+    @Override
+    protected Phenotype getPhenotype(T enhancedAnimal) {
+        return new AxolotlPhenotype(enhancedAnimal.getSharedGenes());
+    }
+
+    protected class AxolotlPhenotype extends Phenotype {
         boolean isLong;
         TailLength tailLength;
 
-        Phenotype(int[] gene) {
+        AxolotlPhenotype(Genes genes) {
+            super(genes);
+            int[] gene = genes.getAutosomalGenes();
             this.isLong = gene[32] == 2 && gene[33] == 2;
 
             if (gene[26] == gene[27]) {

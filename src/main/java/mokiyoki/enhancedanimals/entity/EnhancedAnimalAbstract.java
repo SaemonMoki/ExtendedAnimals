@@ -526,8 +526,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     @OnlyIn(Dist.CLIENT)
-    public int getBlink() {
-        return this.blink;
+    public boolean getBlink() {
+        return this.blink == 0 || this.blink >= 6;
     }
 
     @OnlyIn(Dist.CLIENT)

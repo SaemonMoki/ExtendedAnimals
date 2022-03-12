@@ -1,20 +1,5 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.ai.ECRoost;
-import mokiyoki.enhancedanimals.ai.ECSandBath;
-import mokiyoki.enhancedanimals.ai.EnhancedEatPlantsGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
-import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
-import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
-import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
-import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
-import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
-import mokiyoki.enhancedanimals.ai.general.chicken.GrazingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.Genetics.ChickenGeneticsInitialiser;
@@ -48,7 +33,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -75,6 +59,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.chickenFoodMap;
+import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
+import static net.minecraft.world.entity.ai.attributes.AttributeSupplier.*;
 
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
@@ -259,9 +245,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     private int grassTimer;
     private int sandBathTimer;
 
-    protected GrazingGoal grazingGoal;
-
-    private ECSandBath ecSandBath;
     private String dropMeatType;
     public boolean chickenJockey;
 
@@ -272,70 +255,70 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
     }
 
-    private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
-        Map<Block, EnhancedEatPlantsGoal.EatValues> ediblePlants = new HashMap<>();
-        ediblePlants.put(Blocks.CARROTS, new EnhancedEatPlantsGoal.EatValues(7, 1, 750));
-        ediblePlants.put(Blocks.BEETROOTS, new EnhancedEatPlantsGoal.EatValues(3, 1, 750));
-        ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(2, 1, 750));
-        ediblePlants.put(Blocks.AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET.get(), new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
-        ediblePlants.put(Blocks.ALLIUM, new EnhancedEatPlantsGoal.EatValues(3, 3, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_ALLIUM.get(), new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
-        ediblePlants.put(Blocks.BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
-        ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID.get(), new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
-        ediblePlants.put(Blocks.CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
-        ediblePlants.put(ModBlocks.GROWABLE_CORNFLOWER.get(), new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
-        ediblePlants.put(Blocks.DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_DANDELION.get(), new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
-        ediblePlants.put(Blocks.ROSE_BUSH, new EnhancedEatPlantsGoal.EatValues(4, 3, 375));
-        ediblePlants.put(ModBlocks.GROWABLE_ROSE_BUSH.get(), new EnhancedEatPlantsGoal.EatValues(4, 2, 375));
-        ediblePlants.put(Blocks.SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(4, 3, 375));
-        ediblePlants.put(ModBlocks.GROWABLE_SUNFLOWER.get(), new EnhancedEatPlantsGoal.EatValues(4, 2, 375));
-        ediblePlants.put(Blocks.GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_GRASS.get(), new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-        ediblePlants.put(Blocks.TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS.get(), new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-        ediblePlants.put(Blocks.FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_FERN.get(), new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-        ediblePlants.put(Blocks.LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN.get(), new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
-        ediblePlants.put(Blocks.SWEET_BERRY_BUSH, new EnhancedEatPlantsGoal.EatValues(1, 1, 1000));
-        ediblePlants.put(Blocks.CACTUS, new EnhancedEatPlantsGoal.EatValues(1, 1, 3000));
-
-        return ediblePlants;
-    }
+//    private Map<Block, EnhancedEatPlantsGoal.EatValues> createGrazingMap() {
+//        Map<Block, EnhancedEatPlantsGoal.EatValues> ediblePlants = new HashMap<>();
+//        ediblePlants.put(Blocks.CARROTS, new EnhancedEatPlantsGoal.EatValues(7, 1, 750));
+//        ediblePlants.put(Blocks.BEETROOTS, new EnhancedEatPlantsGoal.EatValues(3, 1, 750));
+//        ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(2, 1, 750));
+//        ediblePlants.put(Blocks.AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+//        ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET.get(), new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+//        ediblePlants.put(Blocks.ALLIUM, new EnhancedEatPlantsGoal.EatValues(3, 3, 750));
+//        ediblePlants.put(ModBlocks.GROWABLE_ALLIUM.get(), new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+//        ediblePlants.put(Blocks.BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
+//        ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID.get(), new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+//        ediblePlants.put(Blocks.CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 3, 375));
+//        ediblePlants.put(ModBlocks.GROWABLE_CORNFLOWER.get(), new EnhancedEatPlantsGoal.EatValues(7, 2, 375));
+//        ediblePlants.put(Blocks.DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+//        ediblePlants.put(ModBlocks.GROWABLE_DANDELION.get(), new EnhancedEatPlantsGoal.EatValues(3, 2, 750));
+//        ediblePlants.put(Blocks.ROSE_BUSH, new EnhancedEatPlantsGoal.EatValues(4, 3, 375));
+//        ediblePlants.put(ModBlocks.GROWABLE_ROSE_BUSH.get(), new EnhancedEatPlantsGoal.EatValues(4, 2, 375));
+//        ediblePlants.put(Blocks.SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(4, 3, 375));
+//        ediblePlants.put(ModBlocks.GROWABLE_SUNFLOWER.get(), new EnhancedEatPlantsGoal.EatValues(4, 2, 375));
+//        ediblePlants.put(Blocks.GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+//        ediblePlants.put(ModBlocks.GROWABLE_GRASS.get(), new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+//        ediblePlants.put(Blocks.TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+//        ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS.get(), new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+//        ediblePlants.put(Blocks.FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+//        ediblePlants.put(ModBlocks.GROWABLE_FERN.get(), new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+//        ediblePlants.put(Blocks.LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+//        ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN.get(), new EnhancedEatPlantsGoal.EatValues(1, 1, 750));
+//        ediblePlants.put(Blocks.SWEET_BERRY_BUSH, new EnhancedEatPlantsGoal.EatValues(1, 1, 1000));
+//        ediblePlants.put(Blocks.CACTUS, new EnhancedEatPlantsGoal.EatValues(1, 1, 3000));
+//
+//        return ediblePlants;
+//    }
 
     @Override
     protected void registerGoals() {
-        int napmod = this.random.nextInt(1200);
-        this.grazingGoal = new GrazingGoalChicken(this, 1.0D);
-        this.ecSandBath = new ECSandBath(this);
+//        int napmod = this.random.nextInt(1200);
+//        this.grazingGoal = new GrazingGoalChicken(this, 1.0D);
+//        this.ecSandBath = new ECSandBath(this);
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Wolf.class, 10.0F, 1.0D, 2.0D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Fox.class, 10.0F, 1.0D, 2.0D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Ocelot.class, 10.0F, 1.0D, 2.0D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 4.0F, 1.0D, 1.8D, null));
-        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Monster.class, 4.0F, 1.0D, 2.0D, null));
-        this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, Items.AIR));
+//        this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
+//        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Wolf.class, 10.0F, 1.0D, 2.0D, null));
+//        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Fox.class, 10.0F, 1.0D, 2.0D, null));
+//        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Ocelot.class, 10.0F, 1.0D, 2.0D, null));
+//        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 4.0F, 1.0D, 1.8D, null));
+//        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Monster.class, 4.0F, 1.0D, 2.0D, null));
+//        this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
+//        this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, Items.AIR));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
-        this.goalSelector.addGoal(7, new ECRoost(this));
-        this.goalSelector.addGoal(8, new StayShelteredGoal(this, 6000, 7500, napmod));
-        this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
-        this.goalSelector.addGoal(10, new ECWanderAvoidWater(this, 1.0D));
-        this.goalSelector.addGoal(11, new EnhancedEatPlantsGoal(this, createGrazingMap()));
-        this.goalSelector.addGoal(12, this.grazingGoal);
-        this.goalSelector.addGoal(14, new EnhancedWanderingGoal(this, 1.0D));
-        this.goalSelector.addGoal(15, new EnhancedLookAtGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(16, new EnhancedLookAtGoal(this, Chicken.class, 6.0F));
-        this.goalSelector.addGoal(17, new EnhancedLookRandomlyGoal(this));
+//        this.goalSelector.addGoal(7, new ECRoost(this));
+//        this.goalSelector.addGoal(8, new StayShelteredGoal(this, 6000, 7500, napmod));
+//        this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
+//        this.goalSelector.addGoal(10, new ECWanderAvoidWater(this, 1.0D));
+//        this.goalSelector.addGoal(11, new EnhancedEatPlantsGoal(this, createGrazingMap()));
+//        this.goalSelector.addGoal(12, this.grazingGoal);
+//        this.goalSelector.addGoal(14, new EnhancedWanderingGoal(this, 1.0D));
+//        this.goalSelector.addGoal(15, new EnhancedLookAtGoal(this, Player.class, 6.0F));
+//        this.goalSelector.addGoal(16, new EnhancedLookAtGoal(this, Chicken.class, 6.0F));
+//        this.goalSelector.addGoal(17, new EnhancedLookRandomlyGoal(this));
 
     }
 
     protected void customServerAiStep() {
-        this.grassTimer = this.grazingGoal.getEatingGrassTimer();
-        this.sandBathTimer = this.ecSandBath.getSandBathTimer();
+//        this.grassTimer = this.grazingGoal.getEatingGrassTimer();
+//        this.sandBathTimer = this.ecSandBath.getSandBathTimer();
         super.customServerAiStep();
     }
 
@@ -2742,37 +2725,37 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             case 77:
                 return ModItems.EGG_CREAMLIGHT.get();
             case 78:
-                return ModItems.Egg_Cream_Speckle.get();
+                return ModItems.EGG_CREAM_SPECKLE.get();
             case 79:
-                return ModItems.Egg_CreamDark_Speckle.get();
+                return ModItems.EGG_CREAMDARK_SPECKLE.get();
             case 80:
-                return ModItems.Egg_Carmel_Speckle.get();
+                return ModItems.EGG_CARMEL_SPECKLE.get();
             case 81:
-                return ModItems.Egg_CarmelDark_Speckle.get();
+                return ModItems.EGG_CARMELDARK_SPECKLE.get();
             case 82:
-                return ModItems.Egg_Garnet_Speckle.get();
+                return ModItems.EGG_GARNET_SPECKLE.get();
             case 83:
                 return ModItems.EGG_PINKLIGHT.get();
             case 84:
-                return ModItems.Egg_Pink_Speckle.get();
+                return ModItems.EGG_PINK_SPECKLE.get();
             case 85:
-                return ModItems.Egg_PinkDark_Speckle.get();
+                return ModItems.EGG_PINKDARK_SPECKLE.get();
             case 86:
-                return ModItems.Egg_Cherry_Speckle.get();
+                return ModItems.EGG_CHERRY_SPECKLE.get();
             case 87:
-                return ModItems.Egg_CherryDark_Speckle.get();
+                return ModItems.EGG_CHERRYDARK_SPECKLE.get();
             case 88:
-                return ModItems.Egg_Plum_Speckle.get();
+                return ModItems.EGG_PLUM_SPECKLE.get();
             case 89:
-                return ModItems.Egg_BrownLight_Speckle.get();
+                return ModItems.EGG_BROWNLIGHT_SPECKLE.get();
             case 90:
-                return ModItems.Egg_Brown_Speckle.get();
+                return ModItems.EGG_BROWN_SPECKLE.get();
             case 91:
-                return ModItems.Egg_BrownDark_Speckle.get();
+                return ModItems.EGG_BROWNDARK_SPECKLE.get();
             case 92:
-                return ModItems.Egg_Chocolate_Speckle.get();
+                return ModItems.EGG_CHOCOLATE_SPECKLE.get();
             case 93:
-                return ModItems.Egg_ChocolateDark_Speckle.get();
+                return ModItems.EGG_CHOCOLATEDARK_SPECKLE.get();
             case 94:
                 return ModItems.EGG_CHOCOLATECOSMOS.get();
             case 95:
@@ -2780,39 +2763,39 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             case 96:
                 return ModItems.EGG_GREENLIGHT.get();
             case 97:
-                return ModItems.Egg_GreenYellow_Speckle.get();
+                return ModItems.EGG_GREENYELLOW_SPECKLE.get();
             case 98:
-                return ModItems.Egg_OliveLight_Speckle.get();
+                return ModItems.EGG_OLIVELIGHT_SPECKLE.get();
             case 99:
-                return ModItems.Egg_Olive_Speckle.get();
+                return ModItems.EGG_OLIVE_SPECKLE.get();
             case 100:
-                return ModItems.Egg_OliveDark_Speckle.get();
+                return ModItems.EGG_OLIVEDARK_SPECKLE.get();
             case 101:
-                return ModItems.Egg_Army_Speckle.get();
+                return ModItems.EGG_ARMY_SPECKLE.get();
             case 102:
                 return ModItems.EGG_BLUEGREY.get();
             case 103:
-                return ModItems.Egg_Grey_Speckle.get();
+                return ModItems.EGG_GREY_SPECKLE.get();
             case 104:
-                return ModItems.Egg_GreyGreen_Speckle.get();
+                return ModItems.EGG_GREYGREEN_SPECKLE.get();
             case 105:
-                return ModItems.Egg_Avocado_Speckle.get();
+                return ModItems.EGG_AVOCADO_SPECKLE.get();
             case 106:
-                return ModItems.Egg_AvocadoDark_Speckle.get();
+                return ModItems.EGG_AVOCADODARK_SPECKLE.get();
             case 107:
-                return ModItems.Egg_Feldgrau_Speckle.get();
+                return ModItems.EGG_FELDGRAU_SPECKLE.get();
             case 108:
-                return ModItems.Egg_Mint_Speckle.get();
+                return ModItems.EGG_MINT_SPECKLE.get();
             case 109:
-                return ModItems.Egg_Green_Speckle.get();
+                return ModItems.EGG_GREEN_SPECKLE.get();
             case 110:
-                return ModItems.Egg_GreenDark_Speckle.get();
+                return ModItems.EGG_GREENDARK_SPECKLE.get();
             case 111:
-                return ModItems.Egg_Pine_Speckle.get();
+                return ModItems.EGG_PINE_SPECKLE.get();
             case 112:
-                return ModItems.Egg_PineDark_Speckle.get();
+                return ModItems.EGG_PINEDARK_SPECKLE.get();
             case 113:
-                return ModItems.Egg_PineBlack_Speckle.get();
+                return ModItems.EGG_PINEBLACK_SPECKLE.get();
             case 114:
                 return ModItems.EGG_POWDERBLUE.get();
             case 115:
@@ -2894,37 +2877,37 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             case 153:
                 return ModItems.EGG_CREAMLIGHT.get();
             case 154:
-                return ModItems.Egg_Cream_Spatter.get();
+                return ModItems.EGG_CREAM_SPATTER.get();
             case 155:
-                return ModItems.Egg_CreamDark_Spatter.get();
+                return ModItems.EGG_CREAMDARK_SPATTER.get();
             case 156:
-                return ModItems.Egg_Carmel_Spatter.get();
+                return ModItems.EGG_CARMEL_SPATTER.get();
             case 157:
-                return ModItems.Egg_CarmelDark_Spatter.get();
+                return ModItems.EGG_CARMELDARK_SPATTER.get();
             case 158:
-                return ModItems.Egg_Garnet_Spatter.get();
+                return ModItems.EGG_GARNET_SPATTER.get();
             case 159:
                 return ModItems.EGG_PINKLIGHT.get();
             case 160:
-                return ModItems.Egg_Pink_Spatter.get();
+                return ModItems.EGG_PINK_SPATTER.get();
             case 161:
-                return ModItems.Egg_PinkDark_Spatter.get();
+                return ModItems.EGG_PINKDARK_SPATTER.get();
             case 162:
-                return ModItems.Egg_Cherry_Spatter.get();
+                return ModItems.EGG_CHERRY_SPATTER.get();
             case 163:
-                return ModItems.Egg_CherryDark_Spatter.get();
+                return ModItems.EGG_CHERRYDARK_SPATTER.get();
             case 164:
-                return ModItems.Egg_Plum_Spatter.get();
+                return ModItems.EGG_PLUM_SPATTER.get();
             case 165:
-                return ModItems.Egg_BrownLight_Spatter.get();
+                return ModItems.EGG_BROWNLIGHT_SPATTER.get();
             case 166:
-                return ModItems.Egg_Brown_Spatter.get();
+                return ModItems.EGG_BROWN_SPATTER.get();
             case 167:
-                return ModItems.Egg_BrownDark_Spatter.get();
+                return ModItems.EGG_BROWNDARK_SPATTER.get();
             case 168:
-                return ModItems.Egg_Chocolate_Spatter.get();
+                return ModItems.EGG_CHOCOLATE_SPATTER.get();
             case 169:
-                return ModItems.Egg_ChocolateDark_Spatter.get();
+                return ModItems.EGG_CHOCOLATEDARK_SPATTER.get();
             case 170:
                 return ModItems.EGG_CHOCOLATECOSMOS.get();
             case 171:
@@ -2932,39 +2915,39 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             case 172:
                 return ModItems.EGG_GREENLIGHT.get();
             case 173:
-                return ModItems.Egg_GreenYellow_Spatter.get();
+                return ModItems.EGG_GREENYELLOW_SPATTER.get();
             case 174:
-                return ModItems.Egg_OliveLight_Spatter.get();
+                return ModItems.EGG_OLIVELIGHT_SPATTER.get();
             case 175:
-                return ModItems.Egg_Olive_Spatter.get();
+                return ModItems.EGG_OLIVE_SPATTER.get();
             case 176:
-                return ModItems.Egg_OliveDark_Spatter.get();
+                return ModItems.EGG_OLIVEDARK_SPATTER.get();
             case 177:
-                return ModItems.Egg_Army_Spatter.get();
+                return ModItems.EGG_ARMY_SPATTER.get();
             case 178:
                 return ModItems.EGG_BLUEGREY.get();
             case 179:
-                return ModItems.Egg_Grey_Spatter.get();
+                return ModItems.EGG_GREY_SPATTER.get();
             case 180:
-                return ModItems.Egg_GreyGreen_Spatter.get();
+                return ModItems.EGG_GREYGREEN_SPATTER.get();
             case 181:
-                return ModItems.Egg_Avocado_Spatter.get();
+                return ModItems.EGG_AVOCADO_SPATTER.get();
             case 182:
-                return ModItems.Egg_AvocadoDark_Spatter.get();
+                return ModItems.EGG_AVOCADODARK_SPATTER.get();
             case 183:
-                return ModItems.Egg_Feldgrau_Spatter.get();
+                return ModItems.EGG_FELDGRAU_SPATTER.get();
             case 184:
-                return ModItems.Egg_Mint_Spatter.get();
+                return ModItems.EGG_MINT_SPATTER.get();
             case 185:
-                return ModItems.Egg_Green_Spatter.get();
+                return ModItems.EGG_GREEN_SPATTER.get();
             case 186:
-                return ModItems.Egg_GreenDark_Spatter.get();
+                return ModItems.EGG_GREENDARK_SPATTER.get();
             case 187:
-                return ModItems.Egg_Pine_Spatter.get();
+                return ModItems.EGG_PINE_SPATTER.get();
             case 188:
-                return ModItems.Egg_PineDark_Spatter.get();
+                return ModItems.EGG_PINEDARK_SPATTER.get();
             case 189:
-                return ModItems.Egg_PineBlack_Spatter.get();
+                return ModItems.EGG_PINEBLACK_SPATTER.get();
             case 190:
                 return ModItems.EGG_POWDERBLUE.get();
             case 191:
@@ -3046,37 +3029,37 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             case 229:
                 return ModItems.EGG_CREAMLIGHT.get();
             case 230:
-                return ModItems.Egg_Cream_Spot.get();
+                return ModItems.EGG_CREAM_SPOT.get();
             case 231:
-                return ModItems.Egg_CreamDark_Spot.get();
+                return ModItems.EGG_CREAMDARK_SPOT.get();
             case 232:
-                return ModItems.Egg_Carmel_Spot.get();
+                return ModItems.EGG_CARMEL_SPOT.get();
             case 233:
-                return ModItems.Egg_CarmelDark_Spot.get();
+                return ModItems.EGG_CARMELDARK_SPOT.get();
             case 234:
-                return ModItems.Egg_Garnet_Spot.get();
+                return ModItems.EGG_GARNET_SPOT.get();
             case 235:
                 return ModItems.EGG_PINKLIGHT.get();
             case 236:
-                return ModItems.Egg_Pink_Spot.get();
+                return ModItems.EGG_PINK_SPOT.get();
             case 237:
-                return ModItems.Egg_PinkDark_Spot.get();
+                return ModItems.EGG_PINKDARK_SPOT.get();
             case 238:
-                return ModItems.Egg_Cherry_Spot.get();
+                return ModItems.EGG_CHERRY_SPOT.get();
             case 239:
-                return ModItems.Egg_CherryDark_Spot.get();
+                return ModItems.EGG_CHERRYDARK_SPOT.get();
             case 240:
-                return ModItems.Egg_Plum_Spot.get();
+                return ModItems.EGG_PLUM_SPOT.get();
             case 241:
-                return ModItems.Egg_BrownLight_Spot.get();
+                return ModItems.EGG_BROWNLIGHT_SPOT.get();
             case 242:
-                return ModItems.Egg_Brown_Spot.get();
+                return ModItems.EGG_BROWN_SPOT.get();
             case 243:
-                return ModItems.Egg_BrownDark_Spot.get();
+                return ModItems.EGG_BROWNDARK_SPOT.get();
             case 244:
-                return ModItems.Egg_Chocolate_Spot.get();
+                return ModItems.EGG_CHOCOLATE_SPOT.get();
             case 245:
-                return ModItems.Egg_ChocolateDark_Spot.get();
+                return ModItems.EGG_CHOCOLATEDARK_SPOT.get();
             case 246:
                 return ModItems.EGG_CHOCOLATECOSMOS.get();
             case 247:
@@ -3084,39 +3067,39 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             case 248:
                 return ModItems.EGG_GREENLIGHT.get();
             case 249:
-                return ModItems.Egg_GreenYellow_Spot.get();
+                return ModItems.EGG_GREENYELLOW_SPOT.get();
             case 250:
-                return ModItems.Egg_OliveLight_Spot.get();
+                return ModItems.EGG_OLIVELIGHT_SPOT.get();
             case 251:
-                return ModItems.Egg_Olive_Spot.get();
+                return ModItems.EGG_OLIVE_SPOT.get();
             case 252:
-                return ModItems.Egg_OliveDark_Spot.get();
+                return ModItems.EGG_OLIVEDARK_SPOT.get();
             case 253:
-                return ModItems.Egg_Army_Spot.get();
+                return ModItems.EGG_ARMY_SPOT.get();
             case 254:
                 return ModItems.EGG_BLUEGREY.get();
             case 255:
-                return ModItems.Egg_Grey_Spot.get();
+                return ModItems.EGG_GREY_SPOT.get();
             case 256:
-                return ModItems.Egg_GreyGreen_Spot.get();
+                return ModItems.EGG_GREYGREEN_SPOT.get();
             case 257:
-                return ModItems.Egg_Avocado_Spot.get();
+                return ModItems.EGG_AVOCADO_SPOT.get();
             case 258:
-                return ModItems.Egg_AvocadoDark_Spot.get();
+                return ModItems.EGG_AVOCADODARK_SPOT.get();
             case 259:
-                return ModItems.Egg_Feldgrau_Spot.get();
+                return ModItems.EGG_FELDGRAU_SPOT.get();
             case 260:
-                return ModItems.Egg_Mint_Spot.get();
+                return ModItems.EGG_MINT_SPOT.get();
             case 261:
-                return ModItems.Egg_Green_Spot.get();
+                return ModItems.EGG_GREEN_SPOT.get();
             case 262:
-                return ModItems.Egg_GreenDark_Spot.get();
+                return ModItems.EGG_GREENDARK_SPOT.get();
             case 263:
-                return ModItems.Egg_Pine_Spot.get();
+                return ModItems.EGG_PINE_SPOT.get();
             case 264:
-                return ModItems.Egg_PineDark_Spot.get();
+                return ModItems.EGG_PINEDARK_SPOT.get();
             case 265:
-                return ModItems.Egg_PineBlack_Spot.get();
+                return ModItems.EGG_PINEBLACK_SPOT.get();
             case 266:
                 return ModItems.EGG_POWDERBLUE.get();
             case 267:

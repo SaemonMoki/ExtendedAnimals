@@ -1,11 +1,10 @@
-package mokiyoki.enhancedanimals.capability.turtleegg;
+package mokiyoki.enhancedanimals.capability.nestegg;
 
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface INestEggCapability {
 

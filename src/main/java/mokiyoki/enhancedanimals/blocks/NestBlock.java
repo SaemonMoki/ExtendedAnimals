@@ -1,8 +1,8 @@
 package mokiyoki.enhancedanimals.blocks;
 
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
-import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
-import mokiyoki.enhancedanimals.capability.turtleegg.NestCapabilityProvider;
+import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
+import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.core.BlockPos;

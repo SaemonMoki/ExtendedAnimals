@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FoodSerialiser  extends SimpleJsonResourceReloadListener {
+public class FoodSerialiser extends SimpleJsonResourceReloadListener {
 
     private static Map<String, AnimalFoodMap> compiledAnimalFoodMap = new HashMap<>();
 

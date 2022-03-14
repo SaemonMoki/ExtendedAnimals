@@ -10,6 +10,7 @@ import mokiyoki.enhancedanimals.proxy.IProxy;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 //import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
+import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
@@ -63,7 +64,7 @@ public class EnhancedAnimals {
 //        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 
         MinecraftForge.EVENT_BUS.register(this);
-//        MinecraftForge.EVENT_BUS.register(new EventSubscriber());
+        MinecraftForge.EVENT_BUS.register(new EventSubscriber());
         MinecraftForge.EVENT_BUS.register(new CapabilityEvents());
         MinecraftForge.EVENT_BUS.register(instance);
 

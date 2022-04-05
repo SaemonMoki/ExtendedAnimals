@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.renderer;
 
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
-import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotl;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;

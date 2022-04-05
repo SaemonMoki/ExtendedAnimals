@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.model.util;
 
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,19 @@ public class WrappedModelPart {
         this.pushPopChildren = pushPopChildren;
     }
 
+    public WrappedModelPart(String boxName, ModelPart parentModelPart, boolean pushPopChildren) {
+        this.modelPart = parentModelPart.getChild(boxName);
+        this.boxName = boxName;
+        this.pushPopChildren = pushPopChildren;
+    }
+
+    public WrappedModelPart(String boxName, ModelPart parentModelPart, boolean pushPopChildren, WrappedModelPart child) {
+        this.modelPart = parentModelPart.getChild(boxName);
+        this.boxName = boxName;
+        this.pushPopChildren = pushPopChildren;
+        addChild(child);
+    }
+
     public void addChild(WrappedModelPart wrappedModelPart) {
         this.children.add(wrappedModelPart);
     }
@@ -41,6 +56,11 @@ public class WrappedModelPart {
     }
 
     public void setY(float point) {
+        this.modelPart.y = point;
+    }
+
+    public void setYAndSeen(float point, boolean isSeen) {
+        this.show(isSeen);
         this.modelPart.y = point;
     }
 
@@ -78,6 +98,10 @@ public class WrappedModelPart {
 
     public float getZRot() {
         return this.modelPart.zRot;
+    }
+
+    public void setPos(float xRot, float yRot, float zRot) {
+        this.modelPart.setPos(xRot, yRot, zRot);
     }
 
     public void setRotation(float xRot, float yRot, float zRot) {

@@ -6,9 +6,12 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotl;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
+import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
 import mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotl;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedChicken;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedCow;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedMooshroom;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
@@ -32,9 +35,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
-import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
-import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
-import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_ENTITY_EGG_ENTITY_TYPE;
+import static mokiyoki.enhancedanimals.init.ModEntities.*;
 import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.EGG_CARTON_CONTAINER;
 import static mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer.EGG_CARTON_TEXTURE;
 import static mokiyoki.enhancedanimals.init.ModTileEntities.EGG_CARTON_TILE_ENTITY;
@@ -121,13 +122,13 @@ public class ClientEventRegistry {
     public static void onEntityRenderersRegistry(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ENHANCED_AXOLOTL.get(), RenderEnhancedAxolotl::new);
         event.registerEntityRenderer(ENHANCED_CHICKEN.get(), RenderEnhancedChicken::new);
+        event.registerEntityRenderer(ENHANCED_COW.get(), RenderEnhancedCow::new);
+        event.registerEntityRenderer(ENHANCED_MOOSHROOM.get(), RenderEnhancedMooshroom::new);
 //        event.registerEntityRenderer(ENHANCED_RABBIT.get(), RenderEnhancedRabbit::new);
 //        event.registerEntityRenderer(ENHANCED_SHEEP.get(), RenderEnhancedSheep::new);
 //        event.registerEntityRenderer(ENHANCED_LLAMA.get(), RenderEnhancedLlama::new);
-//        event.registerEntityRenderer(ENHANCED_COW.get(), RenderEnhancedCow::new);
 //        event.registerEntityRenderer(ENHANCED_PIG.get(), RenderEnhancedPig::new);
 //        event.registerEntityRenderer(ENHANCED_HORSE.get(), RenderEnhancedHorse::new);
-//        event.registerEntityRenderer(ENHANCED_MOOSHROOM.get(), RenderEnhancedMooshroom::new);
 //        event.registerEntityRenderer(ENHANCED_MOOBLOOM.get(), RenderEnhancedMoobloom::new);
 //        event.registerEntityRenderer(ENHANCED_TURTLE.get(), RenderEnhancedTurtle::new);
 //        event.registerEntityRenderer(ENHANCED_LLAMA_SPIT.get(), EnhancedLlamaSpitRenderer::new);
@@ -141,6 +142,8 @@ public class ClientEventRegistry {
     public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(RenderEnhancedAxolotl.AXOLOTL_LAYER, ModelEnhancedAxolotl::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedChicken.CHICKEN_LAYER, ModelEnhancedChicken::createBodyLayer);
+        event.registerLayerDefinition(RenderEnhancedCow.COW_LAYER, ModelEnhancedCow::createBodyLayer);
+        event.registerLayerDefinition(RenderEnhancedMooshroom.MOOSHROOM_LAYER, ModelEnhancedCow::createBodyLayer);
         event.registerLayerDefinition(EggCartonTileEntityRenderer.EGG_CARTON, EggCartonTileEntityRenderer::createBodyLayer);
     }
 

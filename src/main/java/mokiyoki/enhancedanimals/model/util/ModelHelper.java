@@ -21,6 +21,20 @@ public class ModelHelper {
         return scalings;
     }
 
+    public static List<Float> createScalings(Float scaling, Float translateX, Float translateY, Float translateZ) {
+        List<Float> scalings = new ArrayList<>();
+        //scaling
+        scalings.add(scaling);
+        scalings.add(scaling);
+        scalings.add(scaling);
+
+        //translations
+        scalings.add(translateX);
+        scalings.add(translateY);
+        scalings.add(translateZ);
+        return scalings;
+    }
+
     public static List<Float> mirrorX(List<Float> scalings) {
         List<Float> reversedNegative = new ArrayList<>();
         reversedNegative.add(scalings.get(0));

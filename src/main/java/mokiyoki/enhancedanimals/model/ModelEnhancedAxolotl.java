@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
-import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.client.model.geom.ModelPart;
@@ -15,7 +14,6 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -530,6 +528,10 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
 
     private class AxolotlModelData extends AnimalModelData {
         boolean hasEggs = false;
+
+        public AxolotlPhenotype getPhenotype() {
+            return (AxolotlPhenotype) this.phenotype;
+        }
     }
 
     private AxolotlModelData getAxolotlModelData() {
@@ -541,31 +543,27 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
     }
 
     @Override
-    protected AnimalModelData setInitialData(T enhancedAxolotl) {
+    protected void setInitialModelData(T enhancedAxolotl) {
         AxolotlModelData axolotlModelData = new AxolotlModelData();
-        setBaseInitialData(axolotlModelData, enhancedAxolotl);
         axolotlModelData.hasEggs = enhancedAxolotl.hasEgg();
-        return axolotlModelData;
+        setBaseInitialModelData(axolotlModelData, enhancedAxolotl);
     }
 
     @Override
-    protected AnimalModelData updateData(T enhancedAnimal) {
-        AxolotlModelData axolotlModelData = (AxolotlModelData) super.updateData(enhancedAnimal);
-        axolotlModelData.hasEggs = enhancedAnimal.hasEgg();
-        return axolotlModelData;
+    protected void additionalModelDataInfo(AnimalModelData axolotlModelData, T enhancedAxolotl) {
+        ((AxolotlModelData)axolotlModelData).hasEggs = enhancedAxolotl.hasEgg();
     }
 
     @Override
-    protected Phenotype getPhenotype(T enhancedAnimal) {
-        return new AxolotlPhenotype(enhancedAnimal.getSharedGenes());
+    protected Phenotype createPhenotype(T enhancedAxolotl) {
+        return new AxolotlPhenotype(enhancedAxolotl.getSharedGenes());
     }
 
-    protected class AxolotlPhenotype extends Phenotype {
+    protected class AxolotlPhenotype implements Phenotype {
         boolean isLong;
         TailLength tailLength;
 
         AxolotlPhenotype(Genes genes) {
-            super(genes);
             int[] gene = genes.getAutosomalGenes();
             this.isLong = gene[32] == 2 && gene[33] == 2;
 

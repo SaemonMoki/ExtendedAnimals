@@ -23,6 +23,8 @@ import java.util.Collections;
  */
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAnimalModel<T> {
+
+    boolean old = false;
 //    private int clearCacheTimer = 0;
 //
 //    private float headRotationAngleX;
@@ -31,6 +33,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
     //the below is all chicken parts
     private WrappedModelPart theChicken;
+
     private WrappedModelPart theHead;
     private WrappedModelPart theComb;
     private WrappedModelPart theWaddles;
@@ -43,9 +46,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     private WrappedModelPart theLeftLeg;
     private WrappedModelPart theRightLeg;
     private WrappedModelPart theSaddle;
+    private WrappedModelPart theTailCoverts;
     private WrappedModelPart theTail;
 
     private WrappedModelPart head;
+    private WrappedModelPart headOld;
     private WrappedModelPart headNakedNeck;
 
     private WrappedModelPart beak;
@@ -87,8 +92,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     private WrappedModelPart beardNakedNeck;
     private WrappedModelPart beardLarge;
 
-//    private WrappedModelPart neck;
-//    private WrappedModelPart hackle;
+    private WrappedModelPart earTuftLeft;
+    private WrappedModelPart earTuftRight;
+
+    private WrappedModelPart neck;
+    private WrappedModelPart hackle;
 //    private WrappedModelPart bowtie;
 
     private WrappedModelPart bodySmall;
@@ -100,6 +108,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     private WrappedModelPart wingLeftMedium;
     private WrappedModelPart wingRightMedium;
 
+    private WrappedModelPart bloomersLeft;
+    private WrappedModelPart bloomersRight;
+
     private WrappedModelPart legLeftShort;
     private WrappedModelPart legLeftMedium;
     private WrappedModelPart legLeftLong;
@@ -107,37 +118,57 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     private WrappedModelPart legRightMedium;
     private WrappedModelPart legRightLong;
 
+    private WrappedModelPart pantsLeft;
+    private WrappedModelPart pantsLeftLong;
+    private WrappedModelPart pantsRight;
+    private WrappedModelPart pantsRightLong;
+    private WrappedModelPart bootsLeft;
+    private WrappedModelPart bootsRight;
+    private WrappedModelPart toeFeathersLeft;
+    private WrappedModelPart toeFeathersRight;
+    private WrappedModelPart vultureHockLeft;
+    private WrappedModelPart vultureHockRight;
+
+    private WrappedModelPart tail;
+
     private WrappedModelPart cushion;
     private WrappedModelPart saddle;
-    private WrappedModelPart shortTailCover;
-    private WrappedModelPart shortTail;
-    private WrappedModelPart mediumTailCover;
-    private WrappedModelPart mediumTail;
-    private WrappedModelPart longTailCover;
-    private WrappedModelPart longTail;
+    private WrappedModelPart tailCoverShort;
+    private WrappedModelPart tailCoverMedium;
+    private WrappedModelPart tailCoverLong;
+    private WrappedModelPart tailShort;
+    private WrappedModelPart tailMedium;
+    private WrappedModelPart tailLong;
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bChicken = base.addOrReplaceChild("bChicken", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bBody = bChicken.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-//        PartDefinition bNeck = bBody.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bHead = bBody.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -5.0F));
-        PartDefinition bComb = bHead.addOrReplaceChild("bComb", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bWaddles = bHead.addOrReplaceChild("bWaddles", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bChicken = base.addOrReplaceChild("bChicken", CubeListBuilder.create(), PartPose.offset(0.0F, 17.5F, 0.0F));
+        PartDefinition bBody = bChicken.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 2.0F, 0.0F));
+        PartDefinition bNeck = bBody.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, 1.0F, -0.5F));
+        PartDefinition bHead = bNeck.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, -5.0F, -2.75F));
+        PartDefinition bComb = bHead.addOrReplaceChild("bComb", CubeListBuilder.create(), PartPose.offset(0.0F, -4.5F, 0.0F));
+        PartDefinition bWaddles = bHead.addOrReplaceChild("bWaddles", CubeListBuilder.create(), PartPose.offset(0.0F, -3.5F, -1.0F));
         PartDefinition bCrest = bHead.addOrReplaceChild("bCrest", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bBeard = bHead.addOrReplaceChild("bBeard", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bLeftWing = bBody.addOrReplaceChild("bLeftWing", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, 0.0F));
-        PartDefinition bRightWing = bBody.addOrReplaceChild("bRightWing", CubeListBuilder.create(), PartPose.offset(-3.0F, 0.0F, 0.0F));
-        PartDefinition bLeftLeg = bChicken.addOrReplaceChild("bLeftLeg", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bRightLeg = bChicken.addOrReplaceChild("bRightLeg", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bSaddle = bBody.addOrReplaceChild("bSaddle", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bTail = bSaddle.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bBeard = bHead.addOrReplaceChild("bBeard", CubeListBuilder.create(), PartPose.offset(0.0F, -0.5F, 0.0F));
+        PartDefinition bLeftWing = bBody.addOrReplaceChild("bLeftWing", CubeListBuilder.create(), PartPose.offset(2.5F, -5.0F, -3.0F));
+        PartDefinition bRightWing = bBody.addOrReplaceChild("bRightWing", CubeListBuilder.create(), PartPose.offset(-2.5F, -5.0F, -3.0F));
+        PartDefinition bLeftLeg = bChicken.addOrReplaceChild("bLeftLeg", CubeListBuilder.create(), PartPose.offset(0.0F, -2.5F, 0.0F));
+        PartDefinition bRightLeg = bChicken.addOrReplaceChild("bRightLeg", CubeListBuilder.create(), PartPose.offset(0.0F, -2.5F, 0.0F));
+        PartDefinition bSaddle = bBody.addOrReplaceChild("bSaddle", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -5.5F, 1.0F, Mth.PI * -0.3F, 0.0F, 0.0F));
+        PartDefinition bCoverts = bSaddle.addOrReplaceChild("bCoverts", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -1.0F, 0.0F, (float) Mth.PI * -0.1F, 0.0F, 0.0F));
+        PartDefinition bTail = bCoverts.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, Mth.PI * 0.25F, 0.0F, 0.0F));
 
         /**
          *      - Heads and HeadParts
          */
         bHead.addOrReplaceChild("head",
+                CubeListBuilder.create()
+                        .texOffs(12, 0)
+                        .addBox(-2.0F, -6.0F, -2.5F, 4, 4, 4, new CubeDeformation(-0.5F)),
+                PartPose.ZERO
+        );
+        bHead.addOrReplaceChild("headOld",
                 CubeListBuilder.create()
                         .texOffs(12, 0)
                         .addBox(-2.0F, -6.0F, -2.0F, 4, 6, 3),
@@ -154,9 +185,17 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         bHead.addOrReplaceChild("beak",
                 CubeListBuilder.create()
                         .texOffs(0, 18)
-                        .addBox(-0.5F, 0.0F, -1.5F, 1, 1, 2)
+                        .addBox(-0.5F, 0.0F, -1.51F, 1, 1, 2)
                         .texOffs(0, 19)
-                        .addBox(-0.5F, 0.25F, -1.5F, 1, 1, 2, new CubeDeformation(-0.01F)),
+                        .addBox(-0.5F, 0.25F, -1.51F, 1, 1, 2, new CubeDeformation(-0.005F)),
+                PartPose.offset(0.0F,  -4.5F, -2.0F)
+        );
+        bHead.addOrReplaceChild("beakOld",
+                CubeListBuilder.create()
+                        .texOffs(0, 18)
+                        .addBox(-1.0F, 0.0F, -2.0F, 2, 1.5F, 2, new CubeDeformation(0.005F))
+                        .texOffs(0, 19)
+                        .addBox(-1.0F, 0.75F, -2.0F, 2, 1, 2, new CubeDeformation(-0.005F)),
                 PartPose.offset(0.0F,  -4.0F, -2.0F)
         );
         bHead.addOrReplaceChild("ears",
@@ -169,84 +208,93 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         bHead.addOrReplaceChild("eyes",
                 CubeListBuilder.create()
                         .texOffs(23, 0)
-                        .addBox(1.0F, -5.0F, -2.0F, 1, 1, 1, new CubeDeformation(0.01F))
+                        .addBox(1.0F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F))
                         .texOffs(11, 0)
-                        .addBox(1.0F, -5.0F, -2.0F, 1, 1, 1, new CubeDeformation(0.01F)),
-                PartPose.ZERO
+                        .addBox(-2.0F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F)),
+                PartPose.offset(0.0F, -5.0F, -2.0F)
         );
-        bHead.addOrReplaceChild("earTuft",
+        bHead.addOrReplaceChild("eyesNew",
                 CubeListBuilder.create()
-                        .texOffs(12, 47)
-                        .addBox(-2.0F, 0.0F, 0.0F, 2, 1, 3F),
-                PartPose.ZERO
+                        .texOffs(23, 0)
+                        .addBox(0.61F, 0.05F, -0.201F, 1, 1, 1, new CubeDeformation(-0.1F))
+                        .texOffs(11, 0)
+                        .addBox(-1.61F, 0.05F, -0.201F, 1, 1, 1, new CubeDeformation(-0.1F)),
+                PartPose.offset(0.0F, -5.0F, -2.0F)
         );
 
-            bWaddles.addOrReplaceChild("waddlesS",
-                    CubeListBuilder.create()
+        bWaddles.addOrReplaceChild("waddlesS",
+                CubeListBuilder.create()
                         .texOffs(21, 10)
-                        .addBox(-0.505F, -1.0F, -2.0F, 0, 1, 2)
-                        .addBox(0.505F, -1.0F, -2.0F, 0, 1, 2),
-                    PartPose.ZERO
-            );
+                        .addBox(-0.5F, 0.0F, -2.0F, 0, 1, 2)
+                        .addBox(0.5F, 0.0F, -2.0F, 0, 1, 2),
+                PartPose.ZERO
+        );
         bWaddles.addOrReplaceChild("waddlesM",
-                    CubeListBuilder.create()
-                            .texOffs(21, 10)
-                            .addBox(-0.505F, -2.0F, -2.0F, 0, 2, 2)
-                            .addBox(0.505F, -2.0F, -2.0F, 0, 2, 2),
-                    PartPose.ZERO
-            );
+                CubeListBuilder.create()
+                        .texOffs(21, 10)
+                        .addBox(-0.5F, 0.0F, -2.0F, 0, 2, 2)
+                        .addBox(0.5F, 0.0F, -2.0F, 0, 2, 2),
+                PartPose.ZERO
+        );
         bWaddles.addOrReplaceChild("waddlesL",
                     CubeListBuilder.create()
                             .texOffs(21, 10)
-                            .addBox(-0.505F, -3.0F, -2.0F, 0, 3, 2)
-                            .addBox(0.505F, -3.0F, -2.0F, 0, 3, 2),
+                            .addBox(-0.5F, 0.0F, -2.0F, 0, 3, 2)
+                            .addBox(0.5F, 0.0F, -2.0F, 0, 3, 2),
                     PartPose.ZERO
-            );
+        );
         bWaddles.addOrReplaceChild("waddlesP",
                     CubeListBuilder.create()
                             .texOffs(21, 10)
-                            .addBox(0.0F, -2.0F, -2.0F, 0, 2, 2),
+                            .addBox(0.0F, 0.0F, -2.0F, 0, 2, 2),
                     PartPose.ZERO
-            );
+        );
         bWaddles.addOrReplaceChild("waddlesB",
                     CubeListBuilder.create()
                             .texOffs(14, 10)
-                            .addBox(-1.5F, -1.0F, -1.0F, 3, 1, 1),
+                            .addBox(-1.5F, 0.0F, -1.0F, 3, 1, 1),
                     PartPose.ZERO
-            );
+        );
 
-            bBeard.addOrReplaceChild("beardL",
-                CubeListBuilder.create()
+        bBeard.addOrReplaceChild("beardL",
+            CubeListBuilder.create()
+                .texOffs(2, 29)
+                .addBox(-3.0F, -4.0F, -2.0F, 2, 2, 2)
+                .addBox(-2.5F, -3.5F, -2.75F, 2, 2, 2)
+                .texOffs(3, 30)
+                .addBox(-1.0F, -2.25F, -3.25F, 2, 2, 2)
+//                .addBox(-0.5F, -2.25F, -3.75F, 1, 1, 1)
+                .texOffs(2, 29)
+                .addBox(1F, -4.0F, -2F, 2, 2, 2)
+                .addBox(0.5F, -3.5F, -2.75F, 2, 2, 2),
+            PartPose.ZERO
+        );
+        bBeard.addOrReplaceChild("beardNN", CubeListBuilder.create()
                     .texOffs(2, 29)
-                    .addBox(-3.0F, -4.0F, -2.0F, 1, 2, 2)
-                    .addBox(-2.5F, -3.0F, -2.75F, 2, 2, 2)
+                    .addBox(-3F, -4F, -2F, 1, 2, 2)
+                    .addBox(-2F, -3.0F, -2.75F, 2, 2, 2)
                     .texOffs(3, 30)
-                    .addBox(-1.0F, -2.25F, -2.9F, 2, 2, 2)
-                    .addBox(-0.5F, -2F, -3.75F, 1, 1, 1)
+                    .addBox(-0.5F, -2.0F, -3.5F, 1, 1, 1)
                     .texOffs(2, 29)
                     .addBox(2F, -4F, -2F, 1, 2, 2)
-                    .addBox(0.5F, -3F, -2.75F, 2, 2, 2),
-                PartPose.ZERO
-            );
-        bBeard.addOrReplaceChild("beardNN", CubeListBuilder.create()
-                        .texOffs(2, 29)
-                        .addBox(-3F, -4F, -2F, 1, 2, 2)
-                        .addBox(-2F, -3F, -2.75F, 2, 2, 2)
-                        .texOffs(3, 30)
-                        .addBox(-0.5F, -2F, -3.5F, 1, 1, 1)
-                        .texOffs(2, 29)
-                        .addBox(2F, -4F, -2F, 1, 2, 2)
-                        .addBox(0F, -3F, -2.75F, 2, 2, 2),
-                PartPose.ZERO
+                    .addBox(0F, -3F, -2.75F, 2, 2, 2),
+            PartPose.ZERO
         );
-//        this.earTuftL = new EnhancedRendererModelNew(this, 12, 47, "LeftEarTuft");
-//        this.earTuftL.addBox(-2.0F, 0.0F, 0.0F, 2, 1, 3F);
-//        this.earTuftL.setPos(-1.5F, -4.5F, -1.0F);
-//
-//        this.earTuftR = new EnhancedRendererModelNew(this, 12, 47, "RightEarTuft");
-//        this.earTuftR.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3F);
-//        this.earTuftR.setPos(1.5F, -4.5F, -1.0F);
-//        this.earR.mirror = true;
+
+        /**
+         *      EarTufts
+         */
+        bHead.addOrReplaceChild("earTuftL", CubeListBuilder.create()
+                .texOffs(54, 26)
+                .addBox(-2.0F, 0.0F, 0.0F, 2, 0, 3),
+            PartPose.offsetAndRotation(-1.5F, -4.5F, -1.0F, 1.4F, 0.0F, -1.4F)
+        );
+        bHead.addOrReplaceChild("earTuftR", CubeListBuilder.create()
+                .mirror(true)
+                .texOffs(54, 26)
+                .addBox(0.0F, 0.0F, 0.0F, 2, 0, 3),
+            PartPose.offsetAndRotation(1.5F, -4.5F, -1.0F, 1.4F, 0.0F, 1.4F)
+        );
 
         /**
          *      Crests
@@ -325,8 +373,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     .addBox(-0.5F, -3.5F, -1.0F, 1, 3, 1)
                     .addBox(-0.5F, -4.5F, 0.0F, 1, 4, 1)
                     .addBox(-0.5F, -5.5F, 0.5F, 1, 1, 1)
-                    .addBox(-0.5F, -3.5F, -1.0F, 1, 3, 1)
-                    .addBox(-0.5F, -4.5F, -2.0F, 1, 4, 1)
+                    .addBox(-0.5F, -3.5F, 1.0F, 1, 3, 1)
+                    .addBox(-0.5F, -4.5F, 2.0F, 1, 4, 1)
                     .addBox(-0.5F, -5.0F, 2.5F, 1, 1, 1)
                     .addBox(-0.5F, -3.0F, 3.0F, 1, 2, 1)
                     .addBox(-0.5F, -3.5F, 4.0F, 1, 2, 1),
@@ -343,9 +391,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         bComb.addOrReplaceChild("combRoseTallM",
                 CubeListBuilder.create()
                     .texOffs(0, 0)
-                    .addBox(-0.5F, -1.0F, -3F, 1, 1, 1, new CubeDeformation(0.5F))
-                    .addBox(-0.5F, -2.0F, -2F, 1, 1, 1, new CubeDeformation(0.25F))
-                    .addBox(-0.5F, -3.0F, -1F, 1, 1, 1),
+                    .addBox(-0.5F, -1.0F, -3.0F, 1, 1, 1, new CubeDeformation(0.5F))
+                    .addBox(-0.5F, -2.0F, -2.0F, 1, 1, 1, new CubeDeformation(0.25F))
+                    .addBox(-0.5F, -3.0F, -1.0F, 1, 1, 1),
                 PartPose.ZERO
             );
         bComb.addOrReplaceChild("combRoseTallL",
@@ -441,11 +489,11 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         /**
          *      Necks
          */
-//        bBody.addOrReplaceChild("hackle", CubeListBuilder.create()
-//                        .texOffs(12, 0)
-//                        .addBox(-2.0F, -6.0F, -4.0F, 4, 4, 3, new CubeDeformation(-0.5F)),
-//                PartPose.offset(0.0F, 0.0F, 1.0F)
-//        );
+        bNeck.addOrReplaceChild("hackle", CubeListBuilder.create()
+                        .texOffs(28, 24)
+                        .addBox(-2.0F, -8.0F, -5.0F, 4, 6, 4, new CubeDeformation(-0.4F)),
+                PartPose.ZERO
+        );
 
         /**
          *      Bodies
@@ -473,23 +521,23 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
          */
         bLeftWing.addOrReplaceChild("wingLM", CubeListBuilder.create()
                         .texOffs(45, 19)
-                        .addBox(0.0F, 0.0F, -3.0F, 1, 4, 6),
+                        .addBox(0.0F, 0.0F, 0.0F, 1, 4, 6),
                 PartPose.ZERO
         );
         bLeftWing.addOrReplaceChild("wingLS", CubeListBuilder.create()
                         .texOffs(46, 20)
-                        .addBox(-1.0F, 0F, -3.0F, 1, 3, 5),
+                        .addBox(0.0F, 0F, 0.0F, 1, 3, 5),
                 PartPose.ZERO
         );
 
         bRightWing.addOrReplaceChild("wingRM", CubeListBuilder.create()
-                        .texOffs(45, 19)
-                        .addBox(0.0F, 0.0F, -3.0F, 1, 4, 6),
+                        .texOffs(13, 19)
+                        .addBox(-1.0F, 0.0F, 0.0F, 1, 4, 6),
                 PartPose.ZERO
         );
         bRightWing.addOrReplaceChild("wingRS", CubeListBuilder.create()
-                        .texOffs(46, 20)
-                        .addBox(-1.0F, 0F, -3.0F, 1, 3, 5),
+                        .texOffs(14, 20)
+                        .addBox(-1.0F, 0F, 0.0F, 1, 3, 5),
                 PartPose.ZERO
         );
 
@@ -555,12 +603,110 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         );
 
         /**
+         *      Leg Feathers
+         */
+        bLeftLeg.addOrReplaceChild("bloomersL", CubeListBuilder.create()
+                        .texOffs(32, 42)
+                        .addBox(-3.25F, 3.0F, 0.0F, 3, 3, 4),
+                PartPose.ZERO
+        );
+        bLeftLeg.addOrReplaceChild("pantsL", CubeListBuilder.create()
+                        .mirror(true)
+                        .texOffs(1, 35)
+                        .addBox(-3.1F, 4.0F, -0.001F, 2, 3, 3),
+                PartPose.ZERO
+        );
+        bLeftLeg.addOrReplaceChild("pantsLL", CubeListBuilder.create()
+                        .mirror(true)
+                        .texOffs(1, 35)
+                        .addBox(-3.1F, 4.0F, 0.0F, 2, 3, 3)
+                        .addBox(-3.1F, 1.0F, 0.0F, 2, 1, 3),
+                PartPose.ZERO
+        );
+        bLeftLeg.addOrReplaceChild("bootsL", CubeListBuilder.create()
+                        .mirror(true)
+                        .texOffs(12, 34)
+                        .addBox(-3.5F, 7.0F, -2.5F, 2, 2, 5),
+                PartPose.ZERO
+        );
+        bLeftLeg.addOrReplaceChild("toeFeathersL", CubeListBuilder.create()
+                        .mirror(true)
+                        .texOffs(28, 36)
+                        .addBox(-7.5F, 8.9F, -2.5F, 4, 1, 5),
+                PartPose.ZERO
+        );
+        bLeftLeg.addOrReplaceChild("vultureHocksL", CubeListBuilder.create()
+                        .texOffs(33, 32)
+                        .addBox(-3.5F, 3.0F, 2.5F, 0, 3, 4, new CubeDeformation(-0.2F)),
+                PartPose.ZERO
+        );
+
+        bLeftLeg.addOrReplaceChild("bloomersR", CubeListBuilder.create()
+                        .texOffs(18, 42)
+                        .addBox(0.25F, 3.0F, 0.0F, 3, 3, 4),
+                PartPose.ZERO
+        );
+        bRightLeg.addOrReplaceChild("pantsR", CubeListBuilder.create()
+                        .texOffs(1, 35)
+                        .addBox(1.1F, 4.0F, -0.001F, 2, 3, 3),
+                PartPose.ZERO
+        );
+        bRightLeg.addOrReplaceChild("pantsLR", CubeListBuilder.create()
+                        .texOffs(1, 35)
+                        .addBox(1.1F, 4.0F, 0.0F, 2, 3, 3)
+                        .addBox(1.1F, 1.0F, 0.0F, 2, 1, 3),
+                PartPose.ZERO
+        );
+        bRightLeg.addOrReplaceChild("bootsR", CubeListBuilder.create()
+                        .texOffs(12, 34)
+                        .addBox(1.5F, 7.0F, -2.5F, 2, 2, 5),
+                PartPose.ZERO
+        );
+        bRightLeg.addOrReplaceChild("toeFeathersR", CubeListBuilder.create()
+                        .texOffs(28, 36)
+                        .addBox(3.5F, 8.9F, -2.5F, 4, 1, 5),
+                PartPose.ZERO
+        );
+        bRightLeg.addOrReplaceChild("vultureHocksR", CubeListBuilder.create()
+                        .mirror(true)
+                        .texOffs(33, 32)
+                        .addBox(3.5F, 3.0F, 2.5F, 1, 3, 4, new CubeDeformation(-0.2F)),
+                PartPose.ZERO
+        );
+
+        /**
          *      Saddles
          */
+        bSaddle.addOrReplaceChild("cushionM", CubeListBuilder.create()
+                        .texOffs(44, 44)
+                        .addBox(-2.5F, -5.0F, 0.0F, 5, 5, 5, new CubeDeformation(-0.001F)),
+                PartPose.ZERO
+        );
+
+        /**
+         *      Tail Coverts
+         */
+        bCoverts.addOrReplaceChild("covertsMF", CubeListBuilder.create()
+                        .texOffs(31, 51)
+                        .addBox(-1.0F, -7.0F, 0.0F, 2, 7, 6),
+                PartPose.ZERO
+        );
 
         /**
          *      Tails
          */
+        bTail.addOrReplaceChild("tail", CubeListBuilder.create()
+                        .texOffs(44, 3)
+                        .addBox(-0.5F, -2.0F, 1.0F, 1, 1, 4)
+                        .texOffs(30, 0)
+                        .addBox(-0.5F, -1.0F, 0.0F, 1, 4, 5),
+                PartPose.ZERO
+        );
+        bTail.addOrReplaceChild("tailMF", CubeListBuilder.create()
+                        .texOffs(48, 50)
+                        .addBox(0.0F, -6.0F, 0.0F, 0, 6, 8),
+                PartPose.ZERO
+        );
 
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
@@ -592,43 +738,48 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     public ModelEnhancedChicken(ModelPart modelPart) {
         super(modelPart);
         ModelPart base = modelPart.getChild("base");
-        this.theChicken = new WrappedModelPart(base, "bChicken");
         ModelPart bChicken = base.getChild("bChicken");
-        this.theBody = new WrappedModelPart("bBody", bChicken);
-        this.theLeftLeg = new WrappedModelPart("bLeftLeg", bChicken);
-        this.theRightLeg = new WrappedModelPart("bRightLeg", bChicken);
         ModelPart bLeftLeg = bChicken.getChild("bLeftLeg");
         ModelPart bRightLeg = bChicken.getChild("bRightLeg");
         ModelPart bBody = bChicken.getChild("bBody");
-//        this.theNeck = new WrappedModelPart(bBody, "bNeck");
-        this.theHead = new WrappedModelPart("bHead", bBody);
-        this.theLeftWing = new WrappedModelPart("bLeftWing", bBody);
-        this.theRightWing = new WrappedModelPart("bLeftWing", bBody);
-        this.theSaddle = new WrappedModelPart("bSaddle", bBody);
-        ModelPart bSaddle = bBody.getChild("bSaddle");
-        this.theTail = new WrappedModelPart("bTail", bSaddle);
-//        ModelPart bNeck = bBody.getChild("bNeck");
-        ModelPart bHead = bBody.getChild("bHead");
-
-        this.theComb = new WrappedModelPart("bComb", bHead);
-        this.theWaddles = new WrappedModelPart("bWaddles", bHead);
-        this.theCrest = new WrappedModelPart("bCrest", bHead);
-        this.theBeard = new WrappedModelPart("bBeard", bHead);
+        ModelPart bNeck = bBody.getChild("bNeck");
+        ModelPart bHead = bNeck.getChild("bHead");
         ModelPart bComb = bHead.getChild("bComb");
         ModelPart bWaddles = bHead.getChild("bWaddles");
         ModelPart bCrest = bHead.getChild("bCrest");
         ModelPart bBeard = bHead.getChild("bBeard");
         ModelPart bLeftWing = bBody.getChild("bLeftWing");
         ModelPart bRightWing = bBody.getChild("bRightWing");
-        ModelPart bTail = bSaddle.getChild("bTail");
+        ModelPart bSaddle = bBody.getChild("bSaddle");
+        ModelPart bCoverts = bSaddle.getChild("bCoverts");
+        ModelPart bTail = bCoverts.getChild("bTail");
+
+        this.theChicken = new WrappedModelPart(bChicken, "bChicken");
+        this.theBody = new WrappedModelPart(bBody, "bBody");
+        this.theLeftLeg = new WrappedModelPart(bLeftLeg, "bLeftLeg");
+        this.theRightLeg = new WrappedModelPart(bRightLeg, "bRightLeg");
+        this.theNeck = new WrappedModelPart(bNeck, "bNeck");
+        this.theHead = new WrappedModelPart(bHead,"bHead");
+        this.theLeftWing = new WrappedModelPart(bLeftWing, "bLeftWing");
+        this.theRightWing = new WrappedModelPart(bRightWing, "bRightWing");
+        this.theSaddle = new WrappedModelPart(bSaddle, "bSaddle");
+        this.theTailCoverts = new WrappedModelPart(bCoverts, "bCoverts");
+        this.theTail = new WrappedModelPart(bTail, "bTail");
+        this.theComb = new WrappedModelPart(bComb, "bComb");
+        this.theWaddles = new WrappedModelPart(bWaddles,"bWaddles");
+        this.theCrest = new WrappedModelPart(bCrest, "bCrest");
+        this.theBeard = new WrappedModelPart(bBeard,"bBeard");
 
 
         this.head = new WrappedModelPart("head", bHead);
+        this.headOld = new WrappedModelPart("headOld", bHead);
         this.headNakedNeck = new WrappedModelPart("headNN", bHead);
 
-        this.beak = new WrappedModelPart("beak", bHead);
-        this.eyes = new WrappedModelPart("eyes", bHead);
+        this.beak = new WrappedModelPart(old ? "beakOld" : "beak", bHead);
+        this.eyes = new WrappedModelPart(old ? "eyes" : "eyesNew", bHead);
         this.ears = new WrappedModelPart("ears", bHead);
+
+        this.hackle = new WrappedModelPart("hackle", bNeck);
 
         this.combSingleXs = new WrappedModelPart("combSingleXs", bComb);
         this.combSingleS = new WrappedModelPart("combSingleS", bComb);
@@ -660,6 +811,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.crestMediumF = new WrappedModelPart("crestMF", bCrest);
         this.crestLargeF = new WrappedModelPart("crestLF", bCrest);
 
+        this.earTuftLeft = new WrappedModelPart("earTuftL", bHead);
+        this.earTuftRight = new WrappedModelPart("earTuftR", bHead);
+
         this.beardNakedNeck = new WrappedModelPart("beardNN", bBeard);
         this.beardLarge = new WrappedModelPart("beardL", bBeard);
 
@@ -680,22 +834,50 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.legRightMedium = new WrappedModelPart("legRM", bRightLeg);
         this.legRightLong = new WrappedModelPart("legRL", bRightLeg);
 
+        this.bloomersLeft = new WrappedModelPart("bloomersL", bLeftLeg);
+        this.bloomersRight = new WrappedModelPart("bloomersR", bLeftLeg);
+
+        this.pantsLeft = new WrappedModelPart("pantsL", bLeftLeg);
+        this.pantsLeftLong = new WrappedModelPart("pantsLL", bLeftLeg);
+        this.pantsRight = new WrappedModelPart("pantsR", bRightLeg);
+        this.pantsRightLong = new WrappedModelPart("pantsLR", bRightLeg);
+        this.bootsLeft = new WrappedModelPart("bootsL", bLeftLeg);
+        this.bootsRight = new WrappedModelPart("bootsR", bRightLeg);
+        this.toeFeathersLeft = new WrappedModelPart("toeFeathersL", bLeftLeg);
+        this.toeFeathersRight = new WrappedModelPart("toeFeathersR", bRightLeg);
+        this.vultureHockLeft = new WrappedModelPart("vultureHocksL", bLeftLeg);
+        this.vultureHockRight = new WrappedModelPart("vultureHocksR", bRightLeg);
+
+        this.cushion = new WrappedModelPart("cushionM", bSaddle);
+
+        this.tailCoverMedium = new WrappedModelPart("covertsMF", bCoverts);
+
+        this.tailMedium = new WrappedModelPart("tailMF", bTail);
+        this.tail = new WrappedModelPart("tail", bTail);
+
         this.theChicken.addChild(this.theBody);
         this.theChicken.addChild(this.theLeftLeg);
         this.theChicken.addChild(this.theRightLeg);
-        this.theBody.addChild(this.theHead);
+        this.theBody.addChild(this.theNeck);
         this.theBody.addChild(this.theLeftWing);
         this.theBody.addChild(this.theRightWing);
-//        this.theNeck.addChild(this.theHead);
+        this.theBody.addChild(this.theSaddle);
+        this.theNeck.addChild(this.theHead);
         this.theHead.addChild(this.theComb);
         this.theHead.addChild(this.theWaddles);
         this.theHead.addChild(this.theCrest);
         this.theHead.addChild(this.theBeard);
 
+        this.theNeck.addChild(this.hackle);
+
         this.theHead.addChild(this.head);
+        this.theHead.addChild(this.headOld);
         this.theHead.addChild(this.headNakedNeck);
         this.theHead.addChild(this.beak);
-//        this.theHead.addChild(this.eyes);
+        this.theHead.addChild(this.eyes);
+        this.theHead.addChild(this.ears);
+        this.theHead.addChild(this.earTuftLeft);
+        this.theHead.addChild(this.earTuftRight);
 //        this.theHead.addChild(this.collar);
 
         this.theComb.addChild(this.combSingleXs);
@@ -741,8 +923,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.theBody.addChild(this.bodySmall);
         this.theBody.addChild(this.bodyMedium);
         this.theBody.addChild(this.bodyLarge);
-        this.theBody.addChild(this.theSaddle);
-        
+
         this.theLeftWing.addChild(this.wingLeftSmall);
         this.theLeftWing.addChild(this.wingLeftMedium);
 
@@ -752,11 +933,30 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.theLeftLeg.addChild(this.legLeftShort);
         this.theLeftLeg.addChild(this.legLeftMedium);
         this.theLeftLeg.addChild(this.legLeftLong);
+        this.theLeftLeg.addChild(this.bloomersLeft);
+        this.theLeftLeg.addChild(this.pantsLeft);
+        this.theLeftLeg.addChild(this.pantsLeftLong);
+        this.theLeftLeg.addChild(this.bootsLeft);
+        this.theLeftLeg.addChild(this.toeFeathersLeft);
+        this.theLeftLeg.addChild(this.vultureHockLeft);
         this.theRightLeg.addChild(this.legRightShort);
         this.theRightLeg.addChild(this.legRightMedium);
         this.theRightLeg.addChild(this.legRightLong);
-        
-        this.theSaddle.addChild(this.theTail);
+        this.theRightLeg.addChild(this.bloomersRight);
+        this.theRightLeg.addChild(this.pantsRight);
+        this.theRightLeg.addChild(this.pantsRightLong);
+        this.theRightLeg.addChild(this.bootsRight);
+        this.theRightLeg.addChild(this.toeFeathersRight);
+        this.theRightLeg.addChild(this.vultureHockRight);
+
+        this.theSaddle.addChild(this.theTailCoverts);
+        this.theSaddle.addChild(this.cushion);
+
+        this.theTailCoverts.addChild(this.theTail);
+        this.theTailCoverts.addChild(this.tailCoverMedium);
+
+        this.theTail.addChild(this.tail);
+        this.theTail.addChild(this.tailMedium);
 
 
         /**
@@ -796,75 +996,21 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.xtraLongTail.addBox(-0.5F, 18F, 11F, 1, 1, 1F);
         this.xtraLongTail.addBox(-0.5F, 16F, 5F, 1, 1, 1F);
          **/
-
-//        this.rightFeather1 = new ModelPart(this, 1, 35);
-//        this.rightFeather1.addBox(1.1F, 4F, 0F, 2, 3, 3F);
-//
-//        this.rightFeather1Extend = new ModelPart(this, 1, 35);
-//        this.rightFeather1Extend.addBox(1.1F, 2F, 0F, 2, 2, 3F);
-//
-//        this.leftFeather1 = new ModelPart(this, 1, 35);
-//        this.leftFeather1.mirror = true;
-//        this.leftFeather1.addBox(-3.1F, 4F, 0F, 2, 3, 3F);
-//
-//        this.leftFeather1Extend = new ModelPart(this, 1, 35);
-//        this.leftFeather1Extend.mirror = true;
-//        this.leftFeather1Extend.addBox(-3.1F, 2F, 0F, 2, 2, 3F);
-
-//        this.rightFeatherTall1 = new ModelRenderer(this,1,35);
-//        this.rightFeatherTall1.addBox(1.1F, 3F, 0F, 2, 1, 3);
-//        this.rightFeatherTall1.addBox(1.1F, 4F, 0F, 2, 3, 3);
-//
-//        this.leftFeatherTall1 = new ModelRenderer(this,1,35);
-//        this.leftFeatherTall1.mirror = true;
-//        this.leftFeatherTall1.addBox(-3.1F, 3F, 0F, 2, 1, 3);
-//        this.leftFeatherTall1.addBox(-3.1F, 4F, 0F, 2, 3, 3);
-
-//        this.rightFeather2 = new ModelPart(this, 12, 34);
-//        this.rightFeather2.addBox(1.5F, 7F, -2.5F, 2, 2, 5F);
-//
-//        this.leftFeather2 = new ModelPart(this, 12, 34);
-//        this.leftFeather2.mirror = true;
-//        this.leftFeather2.addBox(-3.5F, 7F, -2.5F, 2, 2, 5F);
-//
-//        this.rightFeather3 = new ModelPart(this, 28, 36);
-//        this.rightFeather3.addBox(3.5F, 8.9F, -2.5F, 4, 1, 5F);
-//
-//        this.leftFeather3 = new ModelPart(this, 28, 36);
-//        this.leftFeather3.mirror = true;
-//        this.leftFeather3.addBox(-7.5F, 8.9F, -2.5F, 4, 1, 5F);
-//
-//        this.rightVultureHock = new ModelPart(this, 33, 32);
-//        this.rightVultureHock.mirror = true;
-//        this.rightVultureHock.addBox(2.5F, 3.0F, 2.5F, 1, 3, 4, -0.2F);
-//
-//        this.leftVultureHock = new ModelPart(this, 33, 32);
-//        this.leftVultureHock.addBox(-3.5F, 3.0F, 2.5F, 1, 3, 4, -0.2F);
-
     }
 
     private void resetCubes() {
-        this.ears.show();
 
-        this.combDuplex.hide();
-        this.combSingleXs.hide();
-        this.combSingleS.hide();
-        this.combSingleM.hide();
-        this.combSingleL.hide();
-        this.combSingleXl.hide();
-        this.combRoseTallS.hide();
-        this.combRoseTallM.hide();
-        this.combRoseTallL.hide();
-        this.combRoseFlatS.hide();
-        this.combRoseFlatM.hide();
-        this.combRoseFlatL.hide();
-        this.combPeaS.hide();
-        this.combPeaM.hide();
-        this.combPeaL.hide();
-        this.combWalnutS.hide();
-        this.combWalnutM.hide();
-        this.combWalnutL.hide();
-        this.combV.hide();
+        this.head.hide();
+        this.headOld.hide();
+        this.headNakedNeck.hide();
+
+        for (WrappedModelPart comb : this.theComb.children) {
+            comb.hide();
+        }
+
+        for (WrappedModelPart waddles : this.theWaddles.children) {
+            waddles.hide();
+        }
 
         this.crestSmallF.hide();
         this.crestMediumF.hide();
@@ -882,12 +1028,22 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.wingRightSmall.hide();
         this.wingRightMedium.hide();
 
-        this.legLeftShort.hide();
-        this.legLeftMedium.hide();
-        this.legLeftLong.hide();
-        this.legRightShort.hide();
-        this.legRightMedium.hide();
-        this.legRightLong.hide();
+        for (WrappedModelPart legPart : this.theLeftLeg.children) {
+            legPart.hide();
+        }
+        for (WrappedModelPart legPart : this.theRightLeg.children) {
+            legPart.hide();
+        }
+
+        this.cushion.hide();
+        this.tailMedium.hide();
+
+        for (WrappedModelPart tail : this.theTail.children) {
+            tail.hide();
+        }
+
+        this.ears.show();
+
     }
 
     @Override
@@ -899,76 +1055,27 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
         if (chicken != null) {
 
-            if (this.eyes != null) {
-                this.eyes.show(chickenModelData.blink);
-            }
-            if (this.collar != null) {
-                this.collar.show(chickenModelData.collar);
-            }
-//            this.resetAllCubes();
+            super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-//            boolean longLegs = false;
-
-//            if (!chickenModelData.sleeping) {
-//                //long legs
-//                longLegs = chicken.hasLongLegs();
-//            }
-
-
-//            wingAngle = 0;   //do not use this to debug wingAngle scroll down
-    //
-    //        if(genes[88] == 2){
-    //            this.wingAngle = this.wingAngle + 0.1F;
-    //        }else if(genes[88] == 3) {
-    //            this.wingAngle = this.wingAngle + 0.15F;
-    //        }else{
-    //
-    //        }
-    //        if(genes[89] == 2){
-    //            this.wingAngle = this.wingAngle + 0.1F;
-    //        }else if(genes[89] == 3) {
-    //            this.wingAngle = this.wingAngle + 0.15F;
-    //        }
-    //        if(genes[86] == 2){
-    //            this.wingAngle = this.wingAngle + 0.1F;
-    //        }else if(genes[86] == 3) {
-    //            this.wingAngle = this.wingAngle + 0.15F;
-    //        }
-    //        if(genes[87] == 2){
-    //            this.wingAngle = this.wingAngle + 0.1F;
-    //        }else if(genes[87] == 3) {
-    //            this.wingAngle = this.wingAngle + 0.15F;
-    //        }
-    //
-    //        if(genes[94] == 2 && genes[95] == 2){
-    //            this.wingAngle = this.wingAngle * 1.2F;
-    //        }else if(genes[94] == 3 && genes[95] == 3) {
-    //            this.wingAngle = this.wingAngle * 1.5F;
-    //        }else if(genes[94] != 1 || genes[95] != 1) {
-    //            this.wingAngle = this.wingAngle * 1.1F;
-    //        }
-    //
-    //        if(genes[96] == 2 && genes[97] == 2){
-    //            this.wingAngle = this.wingAngle * 1.2F;
-    //        }else if(genes[96] == 3 && genes[97] == 3) {
-    //            wingAngle = this.wingAngle * 1.5F;
-    //        }else if(genes[96] != 1 || genes[97] != 1) {
-    //            this.wingAngle = this.wingAngle * 1.1F;
-    //        }
-
-    //        wingAngle = 1.5F;   // used for debugging wingAngle  [ 0 to 1.5 ]
             float size = chickenModelData.size;
             float finalChickenSize = ((3.0F * size * chickenModelData.growthAmount) + size) / 4.0F;
 
             /**
              *      Head
              */
-            this.head.show(!chicken.isNakedNeck);
-            this.headNakedNeck.show(chicken.isNakedNeck);
+
+            if (old) {
+                this.headOld.show(!chicken.isNakedNeck);
+                this.headNakedNeck.show(chicken.isNakedNeck);
+            } else {
+                this.head.show();
+                this.hackle.show();
+            }
 
             /**
              *      Neck
              */
+
             /**
              *      Beard
              */
@@ -985,10 +1092,16 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             }
 
             /**
+             *      EarTufts
+             */
+            this.earTuftLeft.show(chicken.earTufts);
+            this.earTuftRight.show(chicken.earTufts);
+
+            /**
              *      Comb
              */
             if (chickenModelData.growthAmount <= 0.3F) {
-                this.ears.hide();
+//                this.ears.hide();
             } else if (chicken.isCombed()){
                 this.theComb.show();
 
@@ -1099,6 +1212,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 }
             }
 
+            /**
+             *      Crest
+             */
             if ((chicken.crestType == Crested.SMALL_CREST || chicken.crestType == Crested.SMALL_FORWARDCREST) || (chicken.crestType != Crested.NONE && chickenModelData.growthAmount > 0.5F)) {
                 this.crestSmallF.show();
             } else if (chicken.crestType == Crested.BIG_FORWARDCREST) {
@@ -1106,8 +1222,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             } else if (chicken.crestType == Crested.BIG_CREST) {
                 this.crestLargeF.show();
             }
-
-            this.theSaddle.show(chicken.rumpless || chickenModelData.growthAmount < 0.15F);
 
             /**
              *      Wings
@@ -1123,23 +1237,54 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             /**
              *      Legs
              */
-            if (chicken.creeper) {
-                if (chicken.hasLongLegs()) {
-                    this.legLeftMedium.show();
-                    this.legRightMedium.show();
+            if (!chickenModelData.sleeping) {
+                if (chicken.creeper) {
+                    if (chicken.hasLongLegs()) {
+                        this.legLeftMedium.show();
+                        this.legRightMedium.show();
+                    } else {
+                        this.legLeftShort.show();
+                        this.legRightShort.show();
+                    }
                 } else {
-                    this.legLeftShort.show();
-                    this.legRightShort.show();
+                    if (chicken.hasLongLegs()) {
+                        this.legLeftLong.show();
+                        this.legRightLong.show();
+                    } else {
+                        this.legLeftMedium.show();
+                        this.legRightMedium.show();
+                    }
                 }
             } else {
-                if (chicken.hasLongLegs()) {
-                    this.legLeftLong.show();
-                    this.legRightLong.show();
-                } else {
-                    this.legLeftMedium.show();
-                    this.legRightMedium.show();
-                }
+                this.legLeftShort.show();
+                this.legRightShort.show();
             }
+
+            switch (chicken.footFeatherType) {
+                case BIG_TOEFEATHERS:
+                case TOEFEATHERS:
+                    this.toeFeathersLeft.show();
+                    this.toeFeathersRight.show();
+                case FOOTFEATHERS:
+                    this.bootsLeft.show();
+                    this.bootsRight.show();
+                case LEGFEATHERS:
+                    if (!chickenModelData.sleeping) {
+                        this.pantsLeft.show();
+                        this.pantsRight.show();
+                        if (chicken.longHockFeathers || chicken.hasLongLegs()) {
+                            this.pantsLeftLong.show();
+                            this.pantsRightLong.show();
+                        }
+                    }
+
+                    if (chicken.isVultureHocked) {
+                        this.vultureHockLeft.show();
+                        this.vultureHockRight.show();
+                    }
+                    break;
+            }
+
 
             /**
              *      Body
@@ -1162,50 +1307,24 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     break;
             }
 
+            /**
+             *      Tail
+             */
+            if (old) {
+                this.theTail.show(!chicken.rumpless || chickenModelData.growthAmount > 0.15F);
+                this.tail.show();
+            } else {
+                this.bloomersLeft.show();
+                this.bloomersRight.show();
+                this.theSaddle.show(!chicken.rumpless || chickenModelData.growthAmount > 0.15F);
+                this.cushion.show();
+                this.tailCoverMedium.show();
+                this.tailMedium.show();
+            }
+
             poseStack.pushPose();
             poseStack.scale(finalChickenSize, finalChickenSize, finalChickenSize);
             poseStack.translate(0.0F, -1.5F + 1.5F / finalChickenSize, 0.0F);
-
-//            switch (chicken.footFeatherType) {
-//                case BIG_TOEFEATHERS:
-//                case TOEFEATHERS:
-//                    this.leftFeather3.visible = true;
-//                    this.rightFeather3.visible = true;
-//                    this.leftFeather3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//                    this.rightFeather3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//                case FOOTFEATHERS:
-//                    this.leftFeather2.visible = true;
-//                    this.rightFeather2.visible = true;
-//                    this.leftFeather2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//                    this.rightFeather2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//                case LEGFEATHERS:
-//                    if (!chickenModelData.sleeping && !nesting) {
-//                        this.leftFeather1.visible = true;
-//                        this.rightFeather1.visible = true;
-//                        this.leftFeather1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//                        this.rightFeather1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//                        if (chicken.longHockFeathers || longLegs) {
-//                            this.leftFeather1Extend.visible = true;
-//                            this.rightFeather1Extend.visible = true;
-//                            this.leftFeather1Extend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//                            this.rightFeather1Extend.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//                        }
-//                    }
-//
-//                    if (chicken.isVultureHocked) {
-//                        this.leftVultureHock.visible = true;
-//                        this.rightVultureHock.visible = true;
-//                        this.leftVultureHock.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//                        this.rightVultureHock.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//                    }
-//                    break;
-//            }
-//
-//
-//                if (chicken.earTufts) {
-//                    this.earTuftL.visible = true;
-//                    this.earTuftR.visible = true;
-//                }
 
             gaRender(this.theChicken, null, Collections.emptyList(), poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha, false);
 
@@ -1214,20 +1333,78 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
   }
 
     /**
-     * Sets the model's various rotation angles. For bipeds, par1 and par2 are used for animating the movement of arms
-     * and legs, where par1 represents the time(so that arms and legs swing back and forth) and par2 represents how
-     * "far" arms and legs can swing at most.
+     *
      */
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.currentAnimal = entityIn.getId();
         ChickenModelData chickenModelData = getCreateChickenModelData(entityIn);
+        ChickenPhenotype chicken = ((ChickenPhenotype) (chickenModelData.phenotype));
+
+        this.theChicken.setY(chicken.height);
+
+        if (chickenModelData.sleeping) {
+            this.theBody.setY(5.5F);
+            this.theBody.setXRot(0.0F);
+        } else {
+            this.theBody.setY(2.0F);
+            this.theBody.setXRot(chicken.bodyAngle);
+        }
+
+        switch (chicken.bodyType) {
+            case -1:
+                this.theLeftWing.setX(2.5F);
+                this.theRightWing.setX(-2.5F);
+                break;
+            case 0:
+                this.theLeftWing.setX(3.0F);
+                this.theRightWing.setX(-3.0F);
+            break;
+            case 1:
+                this.theLeftWing.setX(3.5F);
+                this.theRightWing.setX(-3.5F);
+            break;
+        }
+
+//        if (!old) {
+//            this.theHead.setY(-5.0F);
+//        }
+
+        this.theHead.setXRot(-chicken.bodyAngle);
+//        this.theTail.setXRot(chicken.tailAngle);
+
+        this.theLeftWing.setY(chicken.wingPlacement);
+        this.theRightWing.setY(chicken.wingPlacement);
+
+        this.theLeftWing.setXRot(chicken.wingAngle);
+        this.theRightWing.setXRot(chicken.wingAngle);
+
+        this.theRightLeg.setXRot(Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount);
+        this.theLeftLeg.setXRot(Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount);
+
+        if (!entityIn.isOnGround()) {
+            animateFalling(chickenModelData, ageInTicks, chickenModelData.random);
+        } else {
+            if (this.theLeftWing.getZRot() > 0.001F) {
+                float flap = 1.2F * Mth.cos(ageInTicks + chickenModelData.random);
+                this.theLeftWing.setZRot(-flap);
+                this.theRightWing.setZRot(flap);
+                if (this.theLeftWing.getXRot() < 0.0F) {
+                    this.theLeftWing.setXRot(-flap);
+                    this.theRightWing.setXRot(-flap);
+                } else {
+                    this.theLeftWing.setXRot(0.0F);
+                    this.theRightWing.setXRot(0.0F);
+                }
+            } else {
+                this.theLeftWing.setZRot(0.0F);
+                this.theRightWing.setZRot(0.0F);
+                this.theLeftWing.setXRot(0.0F);
+                this.theRightWing.setXRot(0.0F);
+            }
+        }
 
 //        this.theRightLeg.modelPart.y = -5.0F;
-
-//        this.legLeftShort.modelPart.y = -5.0F;
-//        this.legLeftMedium.modelPart.y = -5.0F;
-//        this.legLeftLong.modelPart.y = -5.0F;
 
 //        ChickenPhenotype chicken = (ChickenPhenotype) chickenModelData.phenotype;
 //
@@ -1250,8 +1427,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 //            //leg stuff
 //            this.theRightLeg.setY(15F);
 //            this.theLeftLeg.setY(15F);
-//            this.theRightLeg.setXRot(Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount);
-//            this.theLeftLeg.setXRot(Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount);
+
 //
 //            //body angle
 //
@@ -1265,8 +1441,24 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 //        }
     }
 
+    public void animateFalling(ChickenModelData modelData, float ageInTicks, float random) {
+        float flap = 1.2F * Mth.cos(ageInTicks + random);
+        if (this.theLeftWing.getXRot() > (Math.PI * -0.25F)) {
+            this.theLeftWing.setXRot(-flap);
+            this.theRightWing.setXRot(-flap);
+        } else {
+            this.theLeftWing.setXRot((float) Math.PI * -0.25F);
+            this.theRightWing.setXRot((float) Math.PI * -0.25F);
+        }
+        this.theLeftWing.setZRot(-flap);
+        this.theRightWing.setZRot(flap);
+    }
+
     private class ChickenModelData extends AnimalModelData {
         boolean isFemale = true;
+        public ChickenPhenotype getPhenotype() {
+            return (ChickenPhenotype) this.phenotype;
+        }
     }
 
     private ChickenModelData getChickenModelData() {
@@ -1278,25 +1470,18 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     }
 
     @Override
-    protected AnimalModelData setInitialData(T enhancedChicken) {
+    protected void setInitialModelData(T enhancedChicken) {
         ChickenModelData chickenModelData = new ChickenModelData();
-        setBaseInitialData(chickenModelData, enhancedChicken);
         chickenModelData.isFemale = enhancedChicken.getOrSetIsFemale();
-        return chickenModelData;
+        setBaseInitialModelData(chickenModelData, enhancedChicken);
     }
 
     @Override
-    protected AnimalModelData updateData(T enhancedChicken) {
-        ChickenModelData chickenModelData = (ChickenModelData) super.updateData(enhancedChicken);
-        return chickenModelData;
-    }
-
-    @Override
-    protected Phenotype getPhenotype(T enhancedAnimal) {
+    protected ChickenPhenotype createPhenotype(T enhancedAnimal) {
         return new ChickenPhenotype(enhancedAnimal.getSharedGenes());
     }
 
-    protected class ChickenPhenotype extends Phenotype {
+    protected class ChickenPhenotype implements Phenotype {
         private Crested crestType = Crested.NONE;
         private FootFeathers footFeatherType = FootFeathers.NONE;
         private Comb comb = Comb.SINGLE;
@@ -1313,10 +1498,13 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         private int waddleSize;
         private int bodyType;
         private int wingSize;
-        private int wingPlacement = 0;
+        private float wingPlacement = -5.5F;
+        private float wingAngle = 0;
+        private float bodyAngle = 0;
+        private float tailAngle = 0;
+        private float height;
 
         ChickenPhenotype(Genes genes) {
-            super(genes);
             int[] gene = genes.getAutosomalGenes();
             this.isNakedNeck = gene[52] == 1 || gene[53] == 1;
             this.rumpless = gene[72] == 2 || gene[73] == 2;
@@ -1416,9 +1604,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             }
 
             if ((gene[86] == 1 && gene[87] == 1) || (gene[86] == 3 && gene[87] == 3)){
-                wingPlacement = 2;
+                wingPlacement = -4.5F;
             } else if (gene[86] == 1 || gene[87] == 1){
-                wingPlacement = 1;
+                wingPlacement = -5.0F;
             }
 
             //comb size [80 and 81 small / 82 and 83 large]
@@ -1478,6 +1666,52 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             }
             if (gene[169] == 2) {
                 this.longLegs++;
+            }
+
+            //      wingAngle  [ 0 to 1.5 ]
+            if(gene[88] == 2){
+                this.wingAngle = this.wingAngle + 0.1F;
+            }else if(gene[88] == 3) {
+                this.wingAngle = this.wingAngle + 0.15F;
+            }
+            if(gene[89] == 2){
+                this.wingAngle = this.wingAngle + 0.1F;
+            }else if(gene[89] == 3) {
+                this.wingAngle = this.wingAngle + 0.15F;
+            }
+//            if(gene[86] == 2){
+//                this.wingAngle = this.wingAngle + 0.1F;
+//            }else if(gene[86] == 3) {
+//                this.wingAngle = this.wingAngle + 0.15F;
+//            }
+//            if(gene[87] == 2){
+//                this.wingAngle = this.wingAngle + 0.1F;
+//            }else if(gene[87] == 3) {
+//                this.wingAngle = this.wingAngle + 0.15F;
+//            }
+
+            if(gene[94] == 2 && gene[95] == 2){
+                this.wingAngle = this.wingAngle * 1.2F;
+            }else if(gene[94] == 3 && gene[95] == 3) {
+                this.wingAngle = this.wingAngle * 1.5F;
+            }else if(gene[94] != 1 && gene[95] != 1) {
+                this.wingAngle = this.wingAngle * 1.1F;
+            }
+
+            if(gene[96] == 2 && gene[97] == 2){
+                this.wingAngle = this.wingAngle * 1.2F;
+            }else if(gene[96] == 3 && gene[97] == 3) {
+                this.wingAngle = this.wingAngle * 1.5F;
+            }else if(gene[96] != 1 || gene[97] != 1) {
+                this.wingAngle = this.wingAngle * 1.1F;
+            }
+
+            this.wingAngle = -this.wingAngle;
+
+            if (this.creeper) {
+                this.height = this.hasLongLegs() ? 18.5F : 19.5F;
+            } else {
+                this.height = this.hasLongLegs() ? 15.5F : 17.5F;
             }
         }
 

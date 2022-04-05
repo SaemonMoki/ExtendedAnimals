@@ -71,7 +71,7 @@ public class GeneSketch {
 
     private void setWeightedGeneSketch(int gene, String sketch) {
         String[] weightedsketch = sketch.split("%");
-        setWeightedGeneSketches(gene, Float.valueOf(weightedsketch[0])/100F, weightedsketch[1]);
+        setWeightedGeneSketches(gene, Float.valueOf(weightedsketch[0])*0.01F, weightedsketch[1]);
     }
 
     private void setWeightedGeneSketches(int gene, float weight, String sketch) {

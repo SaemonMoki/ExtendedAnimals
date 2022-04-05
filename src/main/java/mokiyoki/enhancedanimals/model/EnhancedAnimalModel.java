@@ -52,7 +52,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract> exte
     }
 
     protected class AnimalModelData {
-        Phenotype phenotype;
+        public Phenotype phenotype;
         float growthAmount;
         float size = 1.0F;
         boolean sleeping = false;
@@ -81,12 +81,18 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract> exte
             clearCacheTimer = 0;
         }
 
-        return animalModelDataCache.containsKey(enhancedAnimal.getId()) ? updateData(enhancedAnimal) : setInitialData(enhancedAnimal);
+        if (animalModelDataCache.containsKey(enhancedAnimal.getId())) {
+            updateModelData(enhancedAnimal);
+        } else {
+            setInitialModelData(enhancedAnimal);
+        }
+
+        return animalModelDataCache.get(enhancedAnimal.getId());
     }
 
-    protected void setBaseInitialData(AnimalModelData animalModelData, T enhancedAnimal) {
+    protected void setBaseInitialModelData(AnimalModelData animalModelData, T enhancedAnimal) {
         if (enhancedAnimal.getSharedGenes()!=null) {
-            animalModelData.phenotype = getPhenotype(enhancedAnimal);
+            animalModelData.phenotype = createPhenotype(enhancedAnimal);
         }
 
         if(animalModelData.phenotype != null) {
@@ -98,18 +104,20 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract> exte
             animalModelData.clientGameTime = (((ClientLevel)enhancedAnimal.level).getLevelData()).getGameTime();
             animalModelData.random = ThreadLocalRandom.current().nextFloat();
 
+            additionalModelDataInfo(animalModelData, enhancedAnimal);
+
             animalModelDataCache.put(enhancedAnimal.getId(), animalModelData);
         }
     }
 
-    protected AnimalModelData setInitialData(T enhancedAnimal) {
-        AnimalModelData animalModelData = new AnimalModelData();
-        setBaseInitialData(animalModelData, enhancedAnimal);
+    protected void additionalModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) { }
 
-        return animalModelData;
+    protected void setInitialModelData(T enhancedAnimal) {
+        AnimalModelData animalModelData = new AnimalModelData();
+        setBaseInitialModelData(animalModelData, enhancedAnimal);
     }
 
-    protected AnimalModelData updateData(T enhancedAnimal) {
+    protected void updateModelData(T enhancedAnimal) {
         AnimalModelData animalModelData = animalModelDataCache.get(enhancedAnimal.getId());
         animalModelData.lastAccessed = 0;
         animalModelData.dataReset++;
@@ -120,11 +128,9 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract> exte
         animalModelData.sleeping = enhancedAnimal.isAnimalSleeping();
         animalModelData.blink = enhancedAnimal.getBlink();
         animalModelData.collar = hasCollar(enhancedAnimal.getEnhancedInventory());
-
-        return animalModelData;
     }
 
-    protected abstract Phenotype getPhenotype(T enhancedAnimal);
+    protected abstract Phenotype createPhenotype(T enhancedAnimal);
 
     private boolean hasCollar(SimpleContainer inventory) {
         for (int i = 1; i < 6; i++) {

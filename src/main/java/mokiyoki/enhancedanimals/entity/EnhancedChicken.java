@@ -731,7 +731,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-        } else if (this.reload && this.getAge() >= (int)(this.getFullSizeAge()*0.3331F)) {
+        } else if (this.reload && this.getEnhancedAnimalAge() >= (int)(this.getFullSizeAge()*0.3331F)) {
             this.reload = false;
             this.reloadTextures();
         }
@@ -746,7 +746,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
             int[] sexlinkedGenes = getSharedGenes().getSexlinkedGenes();
             int[] autosomalGenes = getSharedGenes().getAutosomalGenes();
             boolean isFemale = this.getOrSetIsFemale();
-            if (this.getAge() >= (int)(this.getFullSizeAge()*0.333F)) {
+            if (this.getEnhancedAnimalAge() >= (int)(this.getFullSizeAge()*0.333F)) {
                 int ground = 0;
                 int pattern = 0;
                 int moorhead = 0;
@@ -2324,7 +2324,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected boolean shouldDropExperience() {
-        if (getAge() > 10000) {
+        if (this.getEnhancedAnimalAge() > 10000) {
             return true;
         } else {
             return false;
@@ -2334,7 +2334,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
-        int age = this.getAge();
+        int age = this.getEnhancedAnimalAge();
         int bodyType;
         int meatSize;
         int featherCount = random.nextInt(4+looting)-1;

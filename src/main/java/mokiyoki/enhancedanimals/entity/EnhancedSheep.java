@@ -333,7 +333,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             this.timeForGrowth++;
         }
 
-        int maxcoat = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+        int age = this.getEnhancedAnimalAge();
+
+        int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
 
         if (maxcoat > 0) {
             int[] genes = this.genetics.getAutosomalGenes();
@@ -860,7 +862,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         float size = this.getAnimalSize();
-        int age = this.getAge();
+        int age = this.getEnhancedAnimalAge();
         int meatDrop = this.random.nextInt(4)+1;
         boolean woolDrop = false;
         boolean leatherDrop = false;
@@ -1379,7 +1381,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     public void setInitialCoat() {
         setMaxCoatLength();
-        this.currentCoatLength = (int)(this.maxCoatLength*(this.getAge() >= this.getAdultAge() ? 1 : ((float)this.getAge()/(float)this.getAdultAge())));
+        int age = this.getEnhancedAnimalAge();
+        this.currentCoatLength = (int)(this.maxCoatLength*(age >= this.getAdultAge() ? 1 : ((float)age/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }
 

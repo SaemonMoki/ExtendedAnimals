@@ -518,7 +518,9 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             timeForGrowth++;
         }
 
-        int maxcoat = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+        int age = this.getEnhancedAnimalAge();
+
+        int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
 
         if (maxcoat == 1){
             if (timeForGrowth >= 48000) {
@@ -698,7 +700,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     @Override
     protected boolean shouldDropExperience() {
         int i = random.nextInt(100);
-        if (getAge()/480 >= i) {
+        if (this.getEnhancedAnimalAge()/480 >= i) {
             return true;
         } else {
             return false;
@@ -707,12 +709,12 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
-        int age = this.getAge();
+        int age = this.getEnhancedAnimalAge();
         float size = getAnimalSize();
 
         if ((((size-0.3F) * 71.4286F) + 25) > random.nextInt(100)) {
             ItemStack meatStack = new ItemStack(Items.RABBIT, 1 + looting);
-            if (size <= 0.65F || getAge() < 48000 || (size < 0.8F && (size-0.65F)/0.0015F < random.nextInt(100))) {
+            if (size <= 0.65F || age < 48000 || (size < 0.8F && (size-0.65F)/0.0015F < random.nextInt(100))) {
                 //small meat
                 if (isOnFire()) {
                     meatStack = new ItemStack(ModItems.COOKEDRABBIT_SMALL.get(), 1 + looting);
@@ -761,7 +763,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
     protected ResourceLocation getDefaultLootTable() {
 
         if (!this.level.isClientSide) {
-            if (this.getAnimalSize() <= 0.8F || getAge() < 48000) {
+            if (this.getAnimalSize() <= 0.8F || this.getEnhancedAnimalAge() < 48000) {
                 dropMeatType = "rawrabbit_small";
             } else {
                 dropMeatType = "rawrabbit";
@@ -870,7 +872,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
         setMaxCoatLength();
 
         if (!compound.getString("breed").isEmpty()) {
-            this.currentCoatLength = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+            int age = this.getEnhancedAnimalAge();
+            this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
         }
     }
@@ -1407,7 +1410,8 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     public void setInitialCoat() {
         setMaxCoatLength();
-        this.currentCoatLength = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+        int age = this.getEnhancedAnimalAge();
+        this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }
 }

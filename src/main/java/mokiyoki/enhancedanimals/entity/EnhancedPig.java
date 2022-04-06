@@ -370,7 +370,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         int[] genes = this.genetics.getAutosomalGenes();
         int pigletAverage = 11;
         int pigletRange = 4;
-        int age = getAge();
+        int age = this.getEnhancedAnimalAge();
 
         if (genes[58] == 1 || genes[59] == 1) {
             pigletAverage = 4;
@@ -531,7 +531,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
         int size = (int)((this.getAnimalSize()-0.7F)*10);
-        int age = this.getAge();
+        int age = this.getEnhancedAnimalAge();
         int meatDrop;
         int meatChanceMod;
 

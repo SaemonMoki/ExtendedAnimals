@@ -75,7 +75,7 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
 
     @Override
     public boolean canHaveChest() {
-        return this.getAge() >= this.getAdultAge();
+        return this.getEnhancedAnimalAge() >= this.getAdultAge();
     }
 
     public boolean hasChest() {

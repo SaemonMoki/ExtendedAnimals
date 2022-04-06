@@ -251,12 +251,13 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     //returns if the animal is still growing
     protected boolean isGrowing() {
-        return this.getAge()<(float)this.getFullSizeAge();
+        return this.getEnhancedAnimalAge()<(float)this.getFullSizeAge();
     }
 
     //returns how grown the animal is
     public float growthAmount() {
-        return this.getAge() > this.getFullSizeAge() ? 1.0F : this.getAge()/(float)this.getFullSizeAge();
+        int age = this.getEnhancedAnimalAge();
+        return age > this.getFullSizeAge() ? 1.0F : age/(float)this.getFullSizeAge();
     }
 
     //returns the config for the animals gestation or any overrides
@@ -479,6 +480,13 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     public int getAge() {
+        if (getEnhancedAnimalAge() < getAdultAge()) {
+            return -1;
+        } else return 0;
+    }
+
+    //overloaded version of getAge
+    public int getEnhancedAnimalAge() {
         if (!(getBirthTime() == null) && !getBirthTime().equals("") && !getBirthTime().equals(0)) {
             return (int)(this.level.getLevelData().getGameTime() - Long.parseLong(getBirthTime()));
         } else {
@@ -670,7 +678,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
         if (this.reloadSizeTime != 0) {
             if (this.isGrowing()) {
-                if (this.getAge() % this.reloadSizeTime == 0) {
+                if (this.getEnhancedAnimalAge() % this.reloadSizeTime == 0) {
                     this.refreshDimensions();
                 }
             } else {
@@ -866,7 +874,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                 if (this.hunger >= 4000 || EanimodCommonConfig.COMMON.feedGrowth.get()) {
                     boolean isHungry = this.hunger >= 4000;
                     if (EanimodCommonConfig.COMMON.feedGrowth.get()) {
-                        this.ageUp((int) ((float) (-this.getAge() / 20) * 0.1F), true);
+                        this.ageUp((int) ((float) (-this.getEnhancedAnimalAge() / 20) * 0.1F), true);
                     }
                     if (MILK_ITEMS.test(itemStack)) {
                         if (item == ModItems.HALF_MILK_BOTTLE.get()) {
@@ -1094,7 +1102,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     protected void resetGrowingAgeToAge() {
-        int resetAge = this.getAge() - this.getAdultAge();
+        int resetAge = this.getEnhancedAnimalAge() - this.getAdultAge();
         super.setAge(Math.min(resetAge, 0));
     }
 
@@ -1211,7 +1219,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     @Override
     public boolean canBreed() {
-        if (this.getAge() < this.getAdultAge()) {
+        if (this.getEnhancedAnimalAge() < this.getAdultAge()) {
             return false;
         } else {
             return super.canBreed();
@@ -1220,7 +1228,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageable) {
-        if (this.getAdultAge() <= this.getAge()) {
+        if (this.getAdultAge() <= this.getEnhancedAnimalAge()) {
             handlePartnerBreeding(ageable);
             this.setAge(10);
             this.resetLove();
@@ -1435,7 +1443,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             animalInfo.pregnant = getPregnancyProgression();
             animalInfo.name = this.getAnimalsName(getSpecies());
             animalInfo.agePrefix = this.getAnimalsAgeString();
-            animalInfo.age = this.getAge();
+            animalInfo.age = this.getEnhancedAnimalAge();
             animalInfo.sire = this.sireName;
             animalInfo.dam = this.damName;
 
@@ -1476,7 +1484,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     protected String getAnimalsAgeString() {
-        int age = this.getAge();
+        int age = this.getEnhancedAnimalAge();
         int adultAge = getAdultAge();
         if (age < adultAge) {
             if (age > (adultAge*3)/4) {
@@ -1492,7 +1500,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     @Override
     public boolean isBaby() {
-        int age = this.getAge();
+        int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
         int adultAge = getAdultAge();
         return age < adultAge;
     }
@@ -1730,7 +1738,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         int newBirthTime = Integer.valueOf(getBirthTime()) - ((int)(getAdultAge()*0.1));
         this.setBirthTime(String.valueOf(newBirthTime));
         super.ageUp(growthSeconds, updateForcedAge);
-        if (!this.isBaby() && getAge() <= -1) {
+        if (!this.isBaby() && this.getEnhancedAnimalAge() <= -1) {
             this.setAge(0);
         }
     }

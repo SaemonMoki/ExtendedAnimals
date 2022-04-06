@@ -265,7 +265,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     @Override
     public boolean canHaveSaddle() {
-        return getAge() >= (3*getAdultAge()/4);
+        return getEnhancedAnimalAge() >= (3*getAdultAge()/4);
     }
 
     public void setSaddled(boolean saddled) {

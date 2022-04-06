@@ -477,7 +477,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         int[] genes = this.genetics.getAutosomalGenes();
         this.isOnFire();
         float cowSize = this.getAnimalSize();
-        float age = this.getAge();
+        float age = this.getEnhancedAnimalAge(); //overloaded version of getAge
         int cowThickness = (genes[54] + genes[55]);
 
         int meatDrop;

@@ -345,7 +345,9 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         if (timeForGrowth >= 24000) {
             timeForGrowth = 0;
 
-            int maxcoat = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+            int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
+
+            int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
 
             if (maxcoat > currentCoatLength) {
                 currentCoatLength++;
@@ -540,7 +542,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
-        int age = this.getAge();
+        int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
         boolean woolDrop = false;
         int lootCount = 0;
 
@@ -885,7 +887,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         setMaxCoatLength();
 
         if (!compound.getString("breed").isEmpty()) {
-            this.currentCoatLength = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+            int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
+            this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
             this.setCoatLength(this.currentCoatLength);
         }
     }
@@ -1069,7 +1072,8 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
     public void setInitialCoat() {
         setMaxCoatLength();
-        this.currentCoatLength = this.getAge() >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)this.getAge()/(float)this.getAdultAge())));
+        int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
+        this.currentCoatLength = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
         setCoatLength(this.currentCoatLength);
     }
 

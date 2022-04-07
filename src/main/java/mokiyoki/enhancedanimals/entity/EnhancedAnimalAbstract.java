@@ -18,6 +18,7 @@ import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Genes;
+import mokiyoki.enhancedanimals.util.AnimalScheduledFunction;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.AgeableMob;
@@ -171,6 +172,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     //Overrides
     @Nullable
     private CompoundTag leashNBTTag;
+
+    List<AnimalScheduledFunction> scheduledToRun = new ArrayList<>();
 
     /*
     Entity Construction
@@ -676,14 +679,14 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     public void aiStep() {
         super.aiStep();
 
-        if (this.reloadSizeTime != 0) {
-            if (this.isGrowing()) {
-                if (this.getEnhancedAnimalAge() % this.reloadSizeTime == 0) {
-                    this.refreshDimensions();
+        if (!scheduledToRun.isEmpty()) {
+            scheduledToRun.forEach(scheduledFunction -> {
+                scheduledFunction.tick();
+                if (scheduledFunction.getTicksToWait() <= 0) {
+                    scheduledFunction.runFunction(this);
                 }
-            } else {
-                this.reloadSizeTime = 0;
-            }
+            });
+            scheduledToRun.removeIf(scheduledFunction -> scheduledFunction.getTicksToWait() <= 0);
         }
 
         //run client-sided tick stuff
@@ -1507,11 +1510,11 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
         if (ANIMAL_SIZE.equals(key) && this.level.isClientSide) {
-            if (this.isGrowing()) {
-                this.reloadSizeTime = (int) (this.getFullSizeAge() * 0.05);
-            } else {
-                this.refreshDimensions();
-            }
+            this.scheduledToRun.add(new AnimalScheduledFunction(50, (eaa) -> {
+                if (eaa.getEnhancedAnimalAge() > 0 && eaa.level.getLevelData().getGameTime() > 0  ) {
+                    eaa.refreshDimensions();
+                }
+            }));
         }
 
         super.onSyncedDataUpdated(key);

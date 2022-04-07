@@ -1615,7 +1615,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
-    protected void addTextureToAnimal(String[] texture, int geneValue, Predicate<Integer> check) {
+    public void addTextureToAnimal(String[] texture, int geneValue, Predicate<Integer> check) {
         if(check == null || check.test(geneValue)) {
             this.enhancedAnimalTextures.add(texture[geneValue]);
             this.texturesIndexes.add(String.valueOf(geneValue));

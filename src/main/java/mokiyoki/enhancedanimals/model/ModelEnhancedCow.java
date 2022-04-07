@@ -898,7 +898,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             poseStack.scale(finalCowSize + (finalCowSize * cow.bodyWidth * cowModelData.growthAmount), finalCowSize, finalCowSize + (finalCowSize * cow.bodyLength * cowModelData.growthAmount));
             poseStack.translate(0.0F, -1.5F + 1.5F / finalCowSize, 0.0F);
 
-            gaRender(this.theCow, mapOfScale, Collections.emptyList(), poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha, false);
+            gaRender(this.theCow, mapOfScale, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             poseStack.popPose();
         }

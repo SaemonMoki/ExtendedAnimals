@@ -1,10 +1,11 @@
-package mokiyoki.enhancedanimals.entity.Genetics;
+package mokiyoki.enhancedanimals.entity.genetics;
 
 import mokiyoki.enhancedanimals.init.breeds.CowBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 
@@ -49,7 +50,7 @@ public class CowGeneticsInitialiser extends AbstractGeneticsInitialiser {
         int[] autosomalGenes = new int[Reference.COW_AUTOSOMAL_GENES_LENGTH];
 
         int wildType = 2;
-        if (biome.getBiomeCategory().equals(Biome.BiomeCategory.PLAINS)) {
+        if (Biome.getBiomeCategory(Holder.direct(biome)).equals(Biome.BiomeCategory.PLAINS)) {
             wildType = 3;
         } else if (biome.getBaseTemperature() >= 0.9F){
             wildType = 1;

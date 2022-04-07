@@ -1,10 +1,9 @@
 package mokiyoki.enhancedanimals.entity;
 
-import com.google.common.collect.Sets;
 import mokiyoki.enhancedanimals.blocks.EnhancedTurtleEggBlock;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
-import mokiyoki.enhancedanimals.entity.Genetics.TurtleGeneticsInitialiser;
+import mokiyoki.enhancedanimals.entity.genetics.TurtleGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.util.Genes;
@@ -24,7 +23,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.ai.util.RandomPos;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
@@ -537,7 +535,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             this.moveRelative(0.1F, travelVector);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
-            if (this.getTarget() == null && (!this.isGoingHome() || !this.getHome().closerThan(this.position(), 20.0D))) {
+            if (this.getTarget() == null && (!this.isGoingHome() || !this.getHome().closerToCenterThan(this.position(), 20.0D))) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.005D, 0.0D));
             }
         } else {
@@ -573,7 +571,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             } else if (this.turtle.getRandom().nextInt(700) != 0) {
                 return false;
             } else {
-                return !this.turtle.getHome().closerThan(this.turtle.position(), 64.0D);
+                return !this.turtle.getHome().closerToCenterThan(this.turtle.position(), 64.0D);
             }
         }
 
@@ -597,7 +595,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          * Returns whether an in-progress EntityAIBase should continue executing
          */
         public boolean canContinueToUse() {
-            return !this.turtle.getHome().closerThan(this.turtle.position(), 7.0D) && !this.stuck && this.closeToHomeTryTicks <= 600;
+            return !this.turtle.getHome().closerToCenterThan(this.turtle.position(), 7.0D) && !this.stuck && this.closeToHomeTryTicks <= 600;
         }
 
         /**
@@ -605,7 +603,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          */
         public void tick() {
             BlockPos blockpos = this.turtle.getHome();
-            boolean flag = blockpos.closerThan(this.turtle.position(), 16.0D);
+            boolean flag = blockpos.closerToCenterThan(this.turtle.position(), 16.0D);
             if (flag) {
                 ++this.closeToHomeTryTicks;
             }
@@ -689,7 +687,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                 this.turtle.setHasEgg(false);
                 return false;
             }
-            return (this.turtle.hasEgg()) && this.turtle.getHome().closerThan(this.turtle.position(), 9.0D) ? super.canUse() : false;
+            return (this.turtle.hasEgg()) && this.turtle.getHome().closerToCenterThan(this.turtle.position(), 9.0D) ? super.canUse() : false;
         }
 
         /**
@@ -700,7 +698,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
                 this.turtle.setHasEgg(false);
                 return false;
             }
-            return super.canContinueToUse() && this.turtle.hasEgg() && this.turtle.getHome().closerThan(this.turtle.position(), 9.0D);
+            return super.canContinueToUse() && this.turtle.hasEgg() && this.turtle.getHome().closerToCenterThan(this.turtle.position(), 9.0D);
         }
 
         /**
@@ -806,7 +804,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         private void updateSpeed() {
             if (this.turtle.isInWater()) {
                 this.turtle.setDeltaMovement(this.turtle.getDeltaMovement().add(0.0D, 0.005D, 0.0D));
-                if (!this.turtle.getHome().closerThan(this.turtle.position(), 16.0D)) {
+                if (!this.turtle.getHome().closerToCenterThan(this.turtle.position(), 16.0D)) {
                     this.turtle.setSpeed(Math.max(this.turtle.getSpeed() / 2.0F, 0.08F));
                 }
 

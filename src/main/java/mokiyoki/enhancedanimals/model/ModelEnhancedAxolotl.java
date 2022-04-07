@@ -522,7 +522,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
                 }
             }
 
-            gaRender(this.theAxolotl, null, Collections.emptyList(), poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha, false);
+            gaRender(this.theAxolotl, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
     }
 

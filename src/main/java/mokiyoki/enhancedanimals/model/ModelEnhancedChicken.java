@@ -1326,7 +1326,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             poseStack.scale(finalChickenSize, finalChickenSize, finalChickenSize);
             poseStack.translate(0.0F, -1.5F + 1.5F / finalChickenSize, 0.0F);
 
-            gaRender(this.theChicken, null, Collections.emptyList(), poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha, false);
+            gaRender(this.theChicken, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             poseStack.popPose();
         }

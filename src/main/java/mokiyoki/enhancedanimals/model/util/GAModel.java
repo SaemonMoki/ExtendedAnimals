@@ -34,19 +34,11 @@ public abstract class GAModel<E extends Entity> extends EntityModel<E> {
         this(false, 5.0F, 2.0F);
     }
 
-    public void gaRender(WrappedModelPart wrapped, Map<String, List<Float>> mapOfScale, List<String> boxesToNotRender, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha, boolean pushPopChildren) {
+    public void gaRender(WrappedModelPart wrapped, Map<String, List<Float>> mapOfScale, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (wrapped.modelPart.visible) {
             if (!wrapped.modelPart.cubes.isEmpty() || !wrapped.children.isEmpty()) {
-
-                if (!pushPopChildren) {
-//                    if (!boxesToNotRender.contains(wrapped.boxName)) {
-//                        poseStack.pushPose();
-//                        wrapped.modelPart.translateAndRotate(poseStack);
-//                    }
-//                } else {
-                    poseStack.pushPose();
-                    wrapped.modelPart.translateAndRotate(poseStack);
-                }
+                poseStack.pushPose();
+                wrapped.modelPart.translateAndRotate(poseStack);
 
                 if (mapOfScale != null) {
                     if (mapOfScale.containsKey(wrapped.boxName)) {
@@ -60,58 +52,17 @@ public abstract class GAModel<E extends Entity> extends EntityModel<E> {
                     }
                 }
 
-
-                if (wrapped.boxName == null || !(boxesToNotRender.contains(wrapped.boxName))) {
+                if (wrapped.boxIsRendered) {
                     compile(wrapped.modelPart, poseStack.last(), vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
 
                 for(WrappedModelPart childPart : wrapped.children) {
-                    if(!wrapped.pushPopChildren || !pushPopChildren) {
-                        gaRender(childPart, mapOfScale, boxesToNotRender, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha, false);
-                    } else {
-                        gaRender(childPart, mapOfScale, boxesToNotRender, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha, true);
-                    }
+                    gaRender(childPart, mapOfScale, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }
-
-                if (!pushPopChildren) {
-//                    if (!boxesToNotRender.contains(wrapped.boxName)) {
-//                        poseStack.popPose();
-//                    }
-//                } else {
-                    poseStack.popPose();
-                }
-            }
-        } else if (!pushPopChildren && !wrapped.modelPart.cubes.isEmpty() || !wrapped.children.isEmpty()) {
-            poseStack.pushPose();
-            wrapped.modelPart.translateAndRotate(poseStack);
-
-            if (mapOfScale != null) {
-                if (mapOfScale.containsKey(wrapped.boxName)) {
-                    List<Float> scaleAmounts = mapOfScale.get(wrapped.boxName);
-                    if (scaleAmounts.get(0) != null && scaleAmounts.get(1) != null && scaleAmounts.get(2) != null) {
-                        poseStack.scale(scaleAmounts.get(0), scaleAmounts.get(1), scaleAmounts.get(2));
-                    }
-                    if (scaleAmounts.get(3) != null && scaleAmounts.get(4) != null && scaleAmounts.get(5) != null) {
-                        poseStack.translate(scaleAmounts.get(3), scaleAmounts.get(4), scaleAmounts.get(5));
-                    }
-                }
-            }
-
-
-//            if (wrapped.boxName == null || !(boxesToNotRender.contains(wrapped.boxName))) {
-//                compile(wrapped.modelPart, poseStack.last(), vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//            }
-
-            for(WrappedModelPart childPart : wrapped.children) {
-                if(!wrapped.pushPopChildren || !pushPopChildren) {
-                    gaRender(childPart, mapOfScale, boxesToNotRender, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha, false);
-                } else {
-                    gaRender(childPart, mapOfScale, boxesToNotRender, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha, true);
-                }
-            }
 
                 poseStack.popPose();
             }
+        }
     }
 
     private void compile(ModelPart modelPart, PoseStack.Pose posestack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {

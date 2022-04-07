@@ -11,6 +11,7 @@ public class WrappedModelPart {
 
     public final ModelPart modelPart;
     public final String boxName;
+    public boolean boxIsRendered = true;
     public boolean pushPopChildren = true;
     public List<WrappedModelPart> children = new ArrayList<>();
 

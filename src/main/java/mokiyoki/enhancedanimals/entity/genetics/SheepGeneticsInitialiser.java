@@ -1,10 +1,11 @@
-package mokiyoki.enhancedanimals.entity.Genetics;
+package mokiyoki.enhancedanimals.entity.genetics;
 
 import mokiyoki.enhancedanimals.init.breeds.SheepBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 
@@ -197,7 +198,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         Collections.shuffle(woolShuffle);
         woolShuffle.toArray(woolmod);
 
-        if (biome.getBiomeCategory() == Biome.BiomeCategory.PLAINS || biome.getPrecipitation() == Biome.Precipitation.SNOW ) {
+        if (Biome.getBiomeCategory(Holder.direct(biome)) == Biome.BiomeCategory.PLAINS || biome.getPrecipitation() == Biome.Precipitation.SNOW ) {
             for (int i = 0; i < woolmod.length; i++) {
                 woolmod[i] = woolmod[i] * 2;
             }

@@ -43,7 +43,7 @@ public class StayShelteredGoal extends Goal {
     }
 
     private void getData(PathfinderMob animal) {
-        Biome biome = this.world.getBiome(animal.blockPosition());
+        Biome biome = this.world.getBiome(animal.blockPosition()).value();
         this.isRaining = this.world.isRaining() && biome.getPrecipitation() == Biome.Precipitation.RAIN && biome.warmEnoughToRain(animal.blockPosition());
         if (this.world.isDay()) {
             this.isHungry = ((EnhancedAnimalAbstract)animal).getHunger() > 6000;

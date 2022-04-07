@@ -1,6 +1,5 @@
-package mokiyoki.enhancedanimals.entity.Genetics;
+package mokiyoki.enhancedanimals.entity.genetics;
 
-import mokiyoki.enhancedanimals.init.breeds.SheepBreeds;
 import mokiyoki.enhancedanimals.init.breeds.TurtleBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;

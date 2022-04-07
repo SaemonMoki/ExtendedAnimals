@@ -177,7 +177,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
         if (eatingSearch) {
             if (searchHay) {
-                if (this.destinationBlock.closerThan(this.creature.position(), getHayBlockTargetDistanceSq())) {
+                if (this.destinationBlock.closerToCenterThan(this.creature.position(), getHayBlockTargetDistanceSq())) {
                     eatingHay = true;
                     searchHay = false;
                     eatingSearch = false;
@@ -282,14 +282,14 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         if (eatingSearch) {
             ++this.timeoutCounter;
             if(searchHay) {
-                if (!this.destinationBlock.closerThan(this.creature.position(), getHayBlockTargetDistanceSq())) {
+                if (!this.destinationBlock.closerToCenterThan(this.creature.position(), getHayBlockTargetDistanceSq())) {
                     if (this.shouldMove()) {
                         this.creature.getNavigation().moveTo((double)((float)this.destinationBlock.getX()), (double)(this.destinationBlock.getY()), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
                     }
                 } else {
                     this.isAtDestination = true;
                 }
-            } else if (!this.destinationBlock.above().closerThan(this.creature.position(), this.getGoundBlockTargetDistanceSq())) {
+            } else if (!this.destinationBlock.above().closerToCenterThan(this.creature.position(), this.getGoundBlockTargetDistanceSq())) {
                 if (this.shouldMove()) {
                     this.creature.getNavigation().moveTo((double)((float)this.destinationBlock.getX()), (double)(this.destinationBlock.getY() + 1), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
                 }

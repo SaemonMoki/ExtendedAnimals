@@ -1,4 +1,4 @@
-package mokiyoki.enhancedanimals.entity.Genetics;
+package mokiyoki.enhancedanimals.entity.genetics;
 
 import mokiyoki.enhancedanimals.init.breeds.RabbitBreeds;
 import mokiyoki.enhancedanimals.util.Breed;

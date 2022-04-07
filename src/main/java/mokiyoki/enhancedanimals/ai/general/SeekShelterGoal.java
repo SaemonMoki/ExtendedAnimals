@@ -51,7 +51,7 @@ public class SeekShelterGoal extends FleeSunGoal {
     }
 
     private void getData(PathfinderMob animal) {
-        Biome biome = this.world.getBiome(animal.blockPosition());
+        Biome biome = this.world.getBiome(animal.blockPosition()).value();
         this.isLeashedToEntity = !(animal.getLeashHolder() instanceof LeashFenceKnotEntity) && animal.getLeashHolder() != null;
         if (!this.isLeashedToEntity) {
             this.isBeingRainedOn = animal.isInWaterOrRain() && !animal.isInWater();

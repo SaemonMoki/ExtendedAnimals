@@ -1,10 +1,11 @@
-package mokiyoki.enhancedanimals.entity.Genetics;
+package mokiyoki.enhancedanimals.entity.genetics;
 
 import mokiyoki.enhancedanimals.init.breeds.PigBreeds;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 
@@ -41,7 +42,7 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         int[] autosomalGenes = new int[Reference.PIG_AUTOSOMAL_GENES_LENGTH];
 
         int wildType = 2;
-        if (biome.getBiomeCategory().equals(Biome.BiomeCategory.PLAINS)) {
+        if (Biome.getBiomeCategory(Holder.direct(biome)).equals(Biome.BiomeCategory.PLAINS)) {
             wildType = 1;
         }
         if (isFlat) {

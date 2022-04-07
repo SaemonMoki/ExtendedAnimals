@@ -1,4 +1,4 @@
-package mokiyoki.enhancedanimals.entity.Genetics;
+package mokiyoki.enhancedanimals.entity.genetics;
 
 import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
@@ -21,7 +21,7 @@ public abstract class AbstractGeneticsInitialiser {
     int WTC = EanimodCommonConfig.COMMON.wildTypeChance.get();
 
     protected Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed, List<Breed> breeds) {
-        Biome biome = world.getBiome(pos);
+        Biome biome = world.getBiome(pos).value();
 
         Genes localWildType = generateLocalWildGenetics(biome,biome == ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.location()) || EanimodCommonConfig.COMMON.spawnWithRandomBiome.get());
 
@@ -42,7 +42,7 @@ public abstract class AbstractGeneticsInitialiser {
             return generateWithBiome(breedAsString);
         }
 
-        Biome biome = world.getBiome(pos);
+        Biome biome = world.getBiome(pos).value();
 
         if (breedAsString.equals("WanderingTrader")) {
             Collections.shuffle(breeds);

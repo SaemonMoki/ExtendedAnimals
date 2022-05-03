@@ -1,5 +1,7 @@
 package mokiyoki.enhancedanimals.entity;
 
+import com.google.common.collect.Maps;
+import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.ai.general.AIStatus;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
@@ -22,6 +24,7 @@ import mokiyoki.enhancedanimals.util.AnimalScheduledFunction;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.LerpingModel;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -82,7 +85,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class EnhancedAnimalAbstract extends Animal implements ContainerListener {
+public abstract class EnhancedAnimalAbstract extends Animal implements ContainerListener, LerpingModel {
 
     protected static final EntityDataAccessor<String> SHARED_GENES = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.STRING);
     protected static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(EnhancedAnimalAbstract.class, EntityDataSerializers.BOOLEAN);
@@ -107,7 +110,6 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     };
 
     private static final Ingredient MILK_ITEMS = Ingredient.of(ModItems.MILK_BOTTLE.get(), ModItems.HALF_MILK_BOTTLE.get());
-
 
     // Genetic Info
     protected Genes genetics;
@@ -134,6 +136,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected int awokenTimer = 0;
 
     //Animations
+    private final Map<String, Vector3f> modelRotationValues = Maps.newHashMap();
     private int blink = 0;
     private int earTwitchTicker = 0;
     private int earTwitch = 0;
@@ -534,6 +537,11 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     public Genes getGenes(){
         return this.genetics;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public Map<String, Vector3f> getModelRotationValues() {
+        return this.modelRotationValues;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1232,7 +1240,17 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverWorld, AgeableMob ageable) {
         if (this.getAdultAge() <= this.getEnhancedAnimalAge()) {
-            handlePartnerBreeding(ageable);
+            if (EanimodCommonConfig.COMMON.omnigenders.get()) {
+                if (this.pregnant) {
+                    ((EnhancedAnimalAbstract)ageable).handlePartnerBreeding(this);
+                } else {
+                    this.handlePartnerBreeding(ageable);
+                }
+            } else if (this.getOrSetIsFemale()) {
+                this.handlePartnerBreeding(ageable);
+            } else {
+                ((EnhancedAnimalAbstract)ageable).handlePartnerBreeding(this);
+            }
             this.setAge(10);
             this.resetLove();
             ageable.setAge(10);
@@ -1253,38 +1271,11 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     protected void handlePartnerBreeding(AgeableMob ageable) {
-        if (EanimodCommonConfig.COMMON.omnigenders.get()) {
-            if(this.pregnant) {
-                ((EnhancedAnimalAbstract)ageable).pregnant = true;
-                ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
-                ((EnhancedAnimalAbstract)ageable).setMateGender(this.getOrSetIsFemale());
-                if (this.hasCustomName()) {
-                    ((EnhancedAnimalAbstract)ageable).setMateName(this.getCustomName().getString());
-                }
-            } else {
-                this.pregnant = true;
-                this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
-                this.mateGender = ((EnhancedAnimalAbstract)ageable).getOrSetIsFemale();
-                if (ageable.hasCustomName()) {
-                    this.setMateName(ageable.getCustomName().getString());
-                }
-            }
-        } else if (this.getOrSetIsFemale()) {
-           //is female
-           this.pregnant = true;
-           this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
-           this.mateGender = false;
-            if (ageable.hasCustomName()) {
-                this.setMateName(ageable.getCustomName().getString());
-            }
-        } else {
-            //is male
-            ((EnhancedAnimalAbstract)ageable).pregnant = true;
-            ((EnhancedAnimalAbstract)ageable).setMateGenes(this.genetics);
-            ((EnhancedAnimalAbstract)ageable).setMateGender(false);
-            if (this.hasCustomName()) {
-                ((EnhancedAnimalAbstract)ageable).setMateName(this.getCustomName().getString());
-            }
+        this.pregnant = true;
+        this.mateGenetics = ((EnhancedAnimalAbstract)ageable).getGenes();
+        this.mateGender = ((EnhancedAnimalAbstract)ageable).getOrSetIsFemale();
+        if (ageable.hasCustomName()) {
+            this.setMateName(ageable.getCustomName().getString());
         }
     }
 

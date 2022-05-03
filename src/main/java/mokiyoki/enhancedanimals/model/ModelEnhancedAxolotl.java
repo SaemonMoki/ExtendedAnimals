@@ -442,7 +442,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         this.lerpPart(this.gillsRight, 0.0F, 0.0F, 0.0F);
     }
 
-    private void saveAnimationValues(T p_170389_) {
+    protected void saveAnimationValues(T p_170389_, Phenotype axolotl) {
         Map<String, Vector3f> map = p_170389_.getModelRotationValues();
 //        map.put("axolotl", this.getRotationVector(this.theAxolotl));
         map.put("head", this.getRotationVector(this.theHead));
@@ -460,28 +460,6 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
     private void applyMirrorLegRotations() {
         this.lerpPart(this.legBackRight, this.legBackLeft.modelPart.xRot, -this.legBackLeft.modelPart.yRot, -this.legBackLeft.modelPart.zRot);
         this.lerpPart(this.legFrontRight, this.legFrontLeft.modelPart.xRot, -this.legFrontLeft.modelPart.yRot, -this.legFrontLeft.modelPart.zRot);
-    }
-
-    private Vector3f getRotationVector(WrappedModelPart wrappedModelPart) {
-        ModelPart modelPart = wrappedModelPart.modelPart;
-        return new Vector3f(modelPart.xRot, modelPart.yRot, modelPart.zRot);
-    }
-
-    private void setRotationFromVector(WrappedModelPart modelPart, Vector3f vector3f) {
-        modelPart.setRotation(vector3f.x(), vector3f.y(), vector3f.z());
-    }
-
-    private float lerpTo(float p_170375_, float p_170376_) {
-        return this.lerpTo(0.05F, p_170375_, p_170376_);
-    }
-
-    private float lerpTo(float p_170378_, float p_170379_, float p_170380_) {
-        return Mth.rotLerp(p_170378_, p_170379_, p_170380_);
-    }
-
-    private void lerpPart(WrappedModelPart wrappedModelPart, float xRotation, float yRotation, float zRotation) {
-        ModelPart modelPart = wrappedModelPart.modelPart;
-        modelPart.setRotation(this.lerpTo(modelPart.xRot, xRotation), this.lerpTo(modelPart.yRot, yRotation), this.lerpTo(modelPart.zRot, zRotation));
     }
 
     @Override
@@ -550,8 +528,8 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
     }
 
     @Override
-    protected void additionalModelDataInfo(AnimalModelData axolotlModelData, T enhancedAxolotl) {
-        ((AxolotlModelData)axolotlModelData).hasEggs = enhancedAxolotl.hasEgg();
+    protected void additionalModelDataInfo(AnimalModelData animalModelData, T enhancedAxolotl) {
+        ((AxolotlModelData)animalModelData).hasEggs = enhancedAxolotl.hasEgg();
     }
 
     @Override

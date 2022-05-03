@@ -187,14 +187,11 @@ public class CowTextureHelper {
                 if (gene[24] != 1 && gene[25] != 1) {
                     if (!cow.getOrSetIsFemale() || gene[24] == 2 || gene[25] == 2) {
                         mealy = 2;
-                        if (red < 3) {
-                            red++;
-                        }
                     } else {
                         mealy = 1;
-                        if (red < 3) {
-                            red++;
-                        }
+                    }
+                    if (red < 3) {
+                        red++;
                     }
                     if (gene[120] == 1 && gene[121] == 1) {
                         eelstripe = 1;

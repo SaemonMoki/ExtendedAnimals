@@ -2,25 +2,35 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.model.util.GAModel;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.LerpingModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 @OnlyIn(Dist.CLIENT)
-public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract> extends GAModel<T> {
+public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & LerpingModel> extends GAModel<T> {
 
-    protected WrappedModelPart collar;
     protected WrappedModelPart eyes;
+    protected WrappedModelPart chests;
+    protected WrappedModelPart collar;
+    protected WrappedModelPart saddleEnglish;
+    protected WrappedModelPart saddleWestern;
+    protected WrappedModelPart bridle;
+    protected WrappedModelPart blanket;
 
     private Map<Integer, AnimalModelData> animalModelDataCache = new HashMap<>();
     private int clearCacheTimer = 0;
@@ -34,6 +44,63 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract> exte
         renderer.xRot = x;
         renderer.yRot = y;
         renderer.zRot = z;
+    }
+
+//    protected abstract void saveAnimationValues(T animal, Phenotype phenotype);
+
+    protected Vector3f getRotationVector(WrappedModelPart part) {
+        return new Vector3f(part.getXRot(), part.getYRot(), part.getZRot());
+    }
+
+    protected void setRotationFromVector(WrappedModelPart part, Vector3f v3f) {
+        part.setRotation(v3f.x(), v3f.y(), v3f.z());
+    }
+
+    protected float lerpTo(float currentRot, float goalRot) {
+        return this.lerpTo(0.05F, currentRot, goalRot);
+    }
+
+    protected float lerpTo(float speed, float currentRot, float goalRot) {
+        return Mth.rotLerp(speed, currentRot, goalRot);
+    }
+
+    protected void lerpPart(WrappedModelPart part, float xGoalRot, float yGoalRot, float zGoalRot) {
+        part.setRotation(this.lerpTo(part.getXRot(), xGoalRot), this.lerpTo(part.getYRot(), yGoalRot), this.lerpTo(part.getZRot(), zGoalRot));
+    }
+
+    protected void animatePart(WrappedModelPart part,Map<String, Vector3f> rotationMap, float driver, Animation animation) {
+        animatePart(part, rotationMap.get(part.boxName), (driver%animation.length)*0.05F, animation.getFramesFor(part.boxName));
+    }
+
+    protected void animatePart(WrappedModelPart part,Vector3f baseRot, float driver, List<Frame> animation) {
+        if (animation!=null) {
+            boolean flag = true;
+            for (int i = 0, animationSize = animation.size(); i < animationSize; i++) {
+                if (animation.get(i).getRunning(driver)) {
+                    Frame frame = animation.get(i);
+                    Vector3f pRot = baseRot.copy();
+                    if (i != 0) {
+                        Frame pf = animation.get(i - 1);
+                        if (pf.x != null) pRot.setX(pf.x);
+                        if (pf.y != null) pRot.setY(pf.y);
+                        if (pf.z != null) pRot.setZ(pf.z);
+                    }
+                    float time = (driver - frame.getStart()) / frame.getLength();
+                    time = (float) Math.pow(time, 1.5D);
+                    part.setXRot((pRot.x()) + ((frame.xOrElse(baseRot.x()) - pRot.x()) * time));
+                    part.setYRot((pRot.y()) + ((frame.yOrElse(baseRot.y()) - pRot.y()) * time));
+                    part.setZRot((pRot.z()) + ((frame.zOrElse(baseRot.z()) - pRot.z()) * time));
+                    flag = false;
+                    break;
+                }
+            }
+
+            if (flag) {
+                part.setRotation(baseRot.x(), baseRot.y(), baseRot.z(), 0.05F);
+            }
+        } else {
+            part.setRotation(baseRot.x(), baseRot.y(), baseRot.z(), 0.05F);
+        }
     }
 
     @Override
@@ -52,6 +119,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract> exte
     }
 
     protected class AnimalModelData {
+        Map<String, Vector3f> offsets = new HashMap<>();
         public Phenotype phenotype;
         float growthAmount;
         float size = 1.0F;
@@ -62,6 +130,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract> exte
         int dataReset = 0;
         long clientGameTime = 0;
         float random;
+        String animation = "idle";
     }
 
     protected AnimalModelData getAnimalModelData() {
@@ -139,5 +208,93 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract> exte
             }
         }
         return false;
+    }
+
+    static class Animation {
+        float length;
+        Map<String, List<Frame>> frames = new HashMap<>();
+
+        Animation(float length, Frame... frames) {
+            this.length = length;
+            int i = 1;
+            for (Frame frame : frames) {
+                frame.setLength(i >= frames.length ? this.length : frames[i++].start);
+                List<Frame> list = this.frames.getOrDefault(frame.getName(), new ArrayList<>());
+                list.add(frame);
+                this.frames.put(frame.getName(), list);
+            }
+        }
+
+        public List<Frame> getFramesFor(String partName) {
+            return this.frames.get(partName);
+        }
+    }
+
+    static class Frame {
+        private static final float degree = Mth.PI/180;
+        String name;
+        float start;
+        float length = 5.0F;
+        Float x;
+        Float y;
+        Float z;
+
+        Frame(String name, float start, Float targetX, Float targetY, Float z){
+            this.name = name;
+            this.start = start;
+            if (targetX!=null) this.x = targetX * degree;
+            if (targetY!=null) this.y = targetY * degree;
+            if (z !=null) this.z = z * degree;
+        }
+
+        Frame(String name, float start) {
+            this.name = name;
+            this.start = start;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public float getStart() {
+            return this.start;
+        }
+
+        public void setLength(float nextFrameStart) {
+            this.length = nextFrameStart-this.start;
+        }
+
+        public float getLength() {
+            return this.length;
+        }
+
+        public Frame x(float target) {
+            this.x = target * degree;
+            return this;
+        }
+        public Frame y(float target) {
+            this.y = target * degree;
+            return this;
+        }
+        public Frame z(float target) {
+            this.z = target * degree;
+            return this;
+        }
+
+        public float xOrElse(float alt) {
+            return this.x == null ? alt : this.x;
+        }
+
+        public float yOrElse(float alt) {
+            return this.y == null ? alt : this.y;
+        }
+
+        public float zOrElse(float alt) {
+            return this.z == null ? alt : this.z;
+        }
+
+        public boolean getRunning(float time) {
+            return time >= this.start && time < this.start+this.length;
+        }
     }
 }

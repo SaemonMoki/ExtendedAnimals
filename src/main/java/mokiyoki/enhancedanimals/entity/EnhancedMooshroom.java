@@ -116,10 +116,16 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
     }
 
     @Override
+    protected void handlePartnerBreeding(AgeableMob ageable) {
+        super.handlePartnerBreeding(ageable);
+        this.mateMushroomType = ((EnhancedMooshroom)ageable).getMooshroomType();
+    }
+
+    @Override
     protected void createAndSpawnEnhancedChild(Level inWorld) {
         EnhancedMooshroom enhancedmooshroom = ENHANCED_MOOSHROOM.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-        enhancedmooshroom.setMooshroomType(this.setChildMushroomType((enhancedmooshroom)));
+        enhancedmooshroom.setMooshroomType(this.setChildMushroomType((this.mateMushroomType)));
         defaultCreateAndSpawn(enhancedmooshroom, inWorld, babyGenes, -this.getAdultAge());
         enhancedmooshroom.configureAI();
         this.level.addFreshEntity(enhancedmooshroom);
@@ -248,7 +254,7 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         return Pair.of(flowerblock.getSuspiciousStewEffect(), flowerblock.getEffectDuration());
     }
 
-    public void setMooshroomType(EnhancedMooshroom.Type typeIn) {
+    public void setMooshroomType(Type typeIn) {
         this.entityData.set(MOOSHROOM_TYPE, typeIn.name);
     }
 
@@ -262,17 +268,13 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         return null;
     }
 
-    private EnhancedMooshroom.Type setChildMushroomType(EnhancedMooshroom fatherMooshroom) {
-        EnhancedMooshroom.Type EnhancedMooshroom$type = this.getMooshroomType();
-        EnhancedMooshroom.Type EnhancedMooshroom$type1 = fatherMooshroom.getMooshroomType();
-        EnhancedMooshroom.Type EnhancedMooshroom$type2;
-        if (EnhancedMooshroom$type == EnhancedMooshroom$type1 && this.random.nextInt(1024) == 0) {
-            EnhancedMooshroom$type2 = EnhancedMooshroom$type == EnhancedMooshroom.Type.BROWN ? EnhancedMooshroom.Type.RED : EnhancedMooshroom.Type.BROWN;
+    private Type setChildMushroomType(Type otherMooshroom) {
+        Type thisMooshroom = this.getMooshroomType();
+        if (thisMooshroom == otherMooshroom && this.random.nextInt(1024) == 0) {
+            return thisMooshroom == Type.BROWN ? Type.RED : Type.BROWN;
         } else {
-            EnhancedMooshroom$type2 = this.random.nextBoolean() ? EnhancedMooshroom$type : EnhancedMooshroom$type1;
+            return this.random.nextBoolean() ? thisMooshroom : otherMooshroom;
         }
-
-        return EnhancedMooshroom$type2;
     }
 
     @Override

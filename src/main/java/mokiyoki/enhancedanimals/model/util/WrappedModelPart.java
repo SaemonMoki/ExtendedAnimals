@@ -129,4 +129,13 @@ public class WrappedModelPart {
     public void show(boolean show) {
         this.modelPart.visible = show;
     }
+
+    public void showAndPos(boolean show, float x, float y, float z) {
+        this.modelPart.visible = show;
+        if (show) {
+            this.modelPart.x = x;
+            this.modelPart.y = y;
+            this.modelPart.z = z;
+        }
+    }
 }

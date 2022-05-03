@@ -1,4 +1,100 @@
-//package mokiyoki.enhancedanimals.model;
+package mokiyoki.enhancedanimals.model;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
+import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
+import mokiyoki.enhancedanimals.entity.EnhancedPig;
+import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.Map;
+
+@OnlyIn(Dist.CLIENT)
+public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel<T> {
+    protected WrappedModelPart thePig;
+
+    public static LayerDefinition createBodyLayer() {
+        MeshDefinition meshdefinition = new MeshDefinition();
+        PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bCow = base.addOrReplaceChild("bPig", CubeListBuilder.create(), PartPose.offset(0.0F, 14.0F, 0.0F));
+
+        return LayerDefinition.create(meshdefinition, 256, 256);
+    }
+
+    public ModelEnhancedPig(ModelPart modelPart) {
+        super(modelPart);
+        ModelPart base = modelPart.getChild("base");
+    }
+
+    private void resetCubes() {
+        
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        PigModelData pigModelData = getPigModelData();
+        PigPhenotype pig = pigModelData.getPhenotype();
+
+        resetCubes();
+    }
+
+    protected Map<String, Vector3f> saveAnimationValues(T animal, PigPhenotype pig) {
+        Map<String, Vector3f> map = animal.getModelRotationValues();
+        return map;
+    }
+
+    private void setupInitialAnimationValues(T entityIn, PigModelData modelData, PigPhenotype pig) {
+        
+    }
+    
+    @Override
+    public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.currentAnimal = entityIn.getId();
+        PigModelData pigModelData = getCreatePigModelData(entityIn);
+        PigPhenotype pig = pigModelData.getPhenotype();
+        float drive = ageInTicks + (1000 * pigModelData.random);
+
+        if (pig != null) {
+
+        }
+
+    }
+
+    private class PigModelData extends AnimalModelData {
+        public PigPhenotype getPhenotype() {
+            return (PigPhenotype) this.phenotype;
+        }
+    }
+
+    private PigModelData getPigModelData() {
+        return (PigModelData) getAnimalModelData();
+    }
+
+    private PigModelData getCreatePigModelData(T enhancedPig) {
+        return (PigModelData) getCreateAnimalModelData(enhancedPig);
+    }
+
+    @Override
+    protected PigPhenotype createPhenotype(T enhancedAnimal) {
+        return new PigPhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes(), enhancedAnimal.getOrSetIsFemale());
+    }
+
+    protected class PigPhenotype implements Phenotype {
+
+        PigPhenotype(int[] genes, boolean isFemale) {
+
+        }
+    }
+}
 //
 //import com.mojang.blaze3d.vertex.PoseStack;
 //import com.mojang.blaze3d.vertex.VertexConsumer;

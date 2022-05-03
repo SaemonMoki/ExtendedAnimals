@@ -45,7 +45,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     private static final EntityDataAccessor<Boolean> HAS_EGG = SynchedEntityData.defineId(EnhancedAxolotl.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_PLAYING_DEAD = SynchedEntityData.defineId(EnhancedAxolotl.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(EnhancedAxolotl.class, EntityDataSerializers.BOOLEAN);
-    private final Map<String, Vector3f> modelRotationValues = Maps.newHashMap();
     private static final int AXOLOTL_TOTAL_AIR_SUPPLY = 6000;
     private int sleepTimer;
     private boolean isTempted = false;
@@ -530,9 +529,5 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     @Override
     public SoundEvent getPickupSound() {
         return null;
-    }
-    
-    public Map<String, Vector3f> getModelRotationValues() {
-        return this.modelRotationValues;
     }
 }

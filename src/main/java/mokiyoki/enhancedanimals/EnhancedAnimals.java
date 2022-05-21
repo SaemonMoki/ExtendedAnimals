@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.init.ModEntities;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 //import mokiyoki.enhancedanimals.proxy.ClientProxy;
+import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.proxy.IProxy;
 //import mokiyoki.enhancedanimals.proxy.ServerProxy;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
@@ -45,7 +46,7 @@ public class EnhancedAnimals {
     public static final CreativeModeTab GENETICS_ANIMALS_GROUP = new CreativeModeTab(MODID) {
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(/*ModItems.EGG_BLUE*/Items.EGG);
+            return new ItemStack(ModItems.EGG_BLUE.get());
         }
     };
 
@@ -78,6 +79,7 @@ public class EnhancedAnimals {
 
         int messageNumber = 0;
         channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumer(EAEquipmentPacket::processPacket).add();
+        channel.messageBuilder(AxolotlBucketTexturePacket.class, messageNumber++).encoder(AxolotlBucketTexturePacket::writePacketData).decoder(AxolotlBucketTexturePacket::new).consumer(AxolotlBucketTexturePacket::processPacket).add();
     }
 
 //    private void doClientSetup(final FMLClientSetupEvent event) {

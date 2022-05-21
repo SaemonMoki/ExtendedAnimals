@@ -6,12 +6,12 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
+import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -42,6 +42,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+import static mokiyoki.enhancedanimals.EnhancedAnimals.channel;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.axolotlFoodMap;
 import static net.minecraft.world.entity.ai.attributes.AttributeSupplier.*;
 
@@ -158,8 +159,12 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         this.entityData.define(BUCKET_IMG, "");
     }
 
-    public void setBucketImage(String image) {
-        this.entityData.set(BUCKET_IMG, image);
+    public void setBucketImageData(String imageArray) {
+        this.entityData.set(BUCKET_IMG, imageArray);
+    }
+
+    public void setBucketImageData(int[] imageArray) {
+        this.entityData.set(BUCKET_IMG, getImageString(imageArray));
     }
 
     public String getBucketImage() {
@@ -511,7 +516,7 @@ NBT read/write
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setBucketImage(compound.getString("BucketImage"));
+        this.setBucketImageData(compound.getString("BucketImage"));
     }
 
     @Override
@@ -541,7 +546,7 @@ NBT read/write
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void setBucketImage(EnhancedLayeredTexture texture) {
+    public void setBucketImageData(EnhancedLayeredTexture texture) {
         if (this.getBucketImage().isEmpty() && this.isAlive()) {
             if (this.genetics != null && texture.hasImage()) {
                 boolean longGills = this.genetics.isHomozygousFor(34, 2) ^ this.genetics.isHomozygousFor(36, 2);
@@ -572,7 +577,7 @@ NBT read/write
                         axolotlBucketImage[i] = (rgba >> 24 & 255) == 0 ? -1 : rgba;
                     }
                 }
-                this.setBucketImage(getImageString(axolotlBucketImage));
+                sendBucketTextureToServer(axolotlBucketImage);
                 texture.closeImage();
             }
         }
@@ -597,6 +602,10 @@ NBT read/write
         }
         return image;
     };
+
+    public void sendBucketTextureToServer(int[] bucketImageTexture) {
+        channel.sendToServer(new AxolotlBucketTexturePacket(this.getId(), bucketImageTexture));
+    }
 
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {

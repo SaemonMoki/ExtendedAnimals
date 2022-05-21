@@ -1,6 +1,5 @@
 package mokiyoki.enhancedanimals.renderer;
 
-import com.mojang.blaze3d.platform.NativeImage;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotl;
@@ -9,20 +8,11 @@ import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.MinecraftForgeClient;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderEnhancedAxolotl extends MobRenderer<EnhancedAxolotl, ModelEnhancedAxolotl<EnhancedAxolotl>> {
@@ -62,7 +52,7 @@ public class RenderEnhancedAxolotl extends MobRenderer<EnhancedAxolotl, ModelEnh
                 EnhancedLayeredTexture texture = new EnhancedLayeredTexture(ENHANCED_AXOLOTL_TEXTURE_LOCATION, textures, null, entity.colouration);
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, texture);
                 textureCache.putInCache(s, resourcelocation);
-                entity.setBucketImage(texture);
+                entity.setBucketImageData(texture);
             } catch (IllegalStateException e) {
                 return ERROR_TEXTURE_LOCATION;
             }

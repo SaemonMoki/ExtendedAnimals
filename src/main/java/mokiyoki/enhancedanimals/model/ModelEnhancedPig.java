@@ -3,12 +3,11 @@ package mokiyoki.enhancedanimals.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
-import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
-import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
 import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
@@ -22,10 +21,294 @@ import java.util.Map;
 public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel<T> {
     protected WrappedModelPart thePig;
 
+    protected WrappedModelPart theHead;
+    protected WrappedModelPart theEarLeft;
+    protected WrappedModelPart theEarRight;
+    protected WrappedModelPart theNeck;
+    protected WrappedModelPart theBody;
+    protected WrappedModelPart theButt;
+    protected WrappedModelPart theLegFrontLeft;
+    protected WrappedModelPart theLegFrontRight;
+    protected WrappedModelPart theLegBackLeft;
+    protected WrappedModelPart theLegBackRight;
+    protected WrappedModelPart theTail;
+    
+    protected WrappedModelPart head;
+    protected WrappedModelPart cheeks;
+    protected WrappedModelPart snout;
+    protected WrappedModelPart jaw;
+    protected WrappedModelPart tusksTopLeft;
+    protected WrappedModelPart tusksTopRight;
+    protected WrappedModelPart tusksBottomLeft;
+    protected WrappedModelPart tusksBottomRight;
+    
+    protected WrappedModelPart earSmallLeft;
+    protected WrappedModelPart earMediumLeft;
+    protected WrappedModelPart earLargeLeft;
+
+    protected WrappedModelPart earSmallRight;
+    protected WrappedModelPart earMediumRight;
+    protected WrappedModelPart earLargeRight;
+    
+    protected WrappedModelPart neckShort;
+    protected WrappedModelPart neckLong;
+    protected WrappedModelPart neckShortBig;
+    protected WrappedModelPart neckLongBig;
+    
+    protected WrappedModelPart waddleLeft;
+    protected WrappedModelPart waddleRight;
+    
+    protected WrappedModelPart body11;
+    protected WrappedModelPart body12;
+    protected WrappedModelPart body13;
+    protected WrappedModelPart body14;
+    protected WrappedModelPart body15;
+    
+    protected WrappedModelPart butt5;
+    protected WrappedModelPart butt6;
+    protected WrappedModelPart butt7;
+    protected WrappedModelPart butt8;
+
+    private WrappedModelPart legFrontLeft;
+    private WrappedModelPart legFrontRight;
+    private WrappedModelPart legBackLeft;
+    private WrappedModelPart legBackRight;
+    
+    private WrappedModelPart tail0;
+    private WrappedModelPart tail1;
+    private WrappedModelPart tail2;
+    private WrappedModelPart tail3;
+    private WrappedModelPart tail4;
+    private WrappedModelPart tail5;
+
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bCow = base.addOrReplaceChild("bPig", CubeListBuilder.create(), PartPose.offset(0.0F, 14.0F, 0.0F));
+        PartDefinition bPig = base.addOrReplaceChild("bPig", CubeListBuilder.create(), PartPose.offset(0.0F, 14.0F, 0.0F));
+        PartDefinition bBody = bPig.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bButt = bBody.addOrReplaceChild("bButt", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bNeck = bBody.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bHead = bNeck.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bEarLeft = bHead.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(4.0F, 0.0F, -3.0F));
+        PartDefinition bEarRight = bHead.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(-4.0F, 0.0F, -3.0F));
+        PartDefinition bLegFrontLeft = bPig.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, -10.0F));
+        PartDefinition bLegFrontRight = bPig.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(-3.0F, 0.0F, -10.0F));
+        PartDefinition bLegBackLeft = bPig.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, 9.0F));
+        PartDefinition bLegBackRight = bPig.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(-3.0F, 0.0F, 9.0F));
+        PartDefinition bTail = bBody.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 22.0F));
+
+        bHead.addOrReplaceChild("eyes", CubeListBuilder.create()
+                        .texOffs(69, 15)
+                        .addBox(2.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F))
+                        .texOffs(0, 40)
+                        .addBox(-3.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F)),
+                PartPose.ZERO
+        );
+
+        bHead.addOrReplaceChild("head", CubeListBuilder.create()
+                        .texOffs(49, 0)
+                        .addBox(-3.5F, -5.0F, -4.0F, 7, 6, 7),
+                PartPose.ZERO
+        );
+        bHead.addOrReplaceChild("cheeks", CubeListBuilder.create()
+                        .texOffs(49, 13)
+                        .addBox(-4.0F, -0.5F, 0.0F, 8, 5, 4, new CubeDeformation(0.25F)),
+                PartPose.ZERO
+        );
+        bHead.addOrReplaceChild("snout", CubeListBuilder.create()
+                        .texOffs(49, 22)
+                        .addBox(-2.0F, -5.0F, -3.0F, 4, 6, 3),
+                PartPose.ZERO
+        );
+        bHead.addOrReplaceChild("jaw", CubeListBuilder.create()
+                        .texOffs(49, 22)
+                        .addBox(-2.0F, -5.0F, -3.0F, 4, 6, 3),
+                PartPose.offset(0.0F, 1.0F, -4.0F)
+        );
+        bHead.addOrReplaceChild("tuskTL", CubeListBuilder.create()
+                        .texOffs(69, 22)
+                        .addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, new CubeDeformation(-0.1F)),
+                PartPose.offset(0.5F, 0.0F, 0.0F)
+        );
+        bHead.addOrReplaceChild("tuskTR", CubeListBuilder.create()
+                        .texOffs(69, 22)
+                        .addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, new CubeDeformation(-0.1F)),
+                PartPose.offset(-0.5F, 0.0F, 0.0F)
+        );
+        bHead.addOrReplaceChild("tuskBL", CubeListBuilder.create()
+                        .texOffs(69, 22)
+                        .addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, new CubeDeformation(-0.1F))
+                        .addBox(-0.5F, -2.8F, -0.5F, 1, 1, 2, new CubeDeformation(-0.1F)),
+                PartPose.offset(0.5F, 0.0F, 0.0F)
+        );
+        bHead.addOrReplaceChild("tuskBR", CubeListBuilder.create()
+                        .texOffs(69, 22)
+                        .addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, new CubeDeformation(-0.1F))
+                        .addBox(-0.5F, -2.8F, -0.5F, 1, 1, 2, new CubeDeformation(-0.1F)),
+                PartPose.offset(-0.5F, 0.0F, 0.0F)
+        );
+
+        bEarLeft.addOrReplaceChild("earSL", CubeListBuilder.create()
+                        .texOffs(46, 0)
+                        .addBox(-1.0F, -2.0F, 0.0F, 3, 4, 1),
+                PartPose.ZERO
+        );
+        bEarLeft.addOrReplaceChild("earML", CubeListBuilder.create()
+                        .texOffs(46, 0)
+                        .addBox(-1.0F, -3.0F, 0.0F, 3.5F, 5, 1),
+                PartPose.ZERO
+        );
+        bEarLeft.addOrReplaceChild("earLL", CubeListBuilder.create()
+                        .texOffs(46, 0)
+                        .addBox(-1.0F, -4.0F, 0.0F, 4, 6, 1),
+                PartPose.ZERO
+        );
+
+        bEarRight.addOrReplaceChild("earSR", CubeListBuilder.create()
+                        .texOffs(70, 0)
+                        .addBox(-2.0F, -2.0F, 0.0F, 3, 4, 1),
+                PartPose.ZERO
+        );
+        bEarRight.addOrReplaceChild("earMR", CubeListBuilder.create()
+                        .texOffs(70, 0)
+                        .addBox(-2.5F, -3.0F, 0.0F, 3.5F, 5, 1),
+                PartPose.ZERO
+        );
+        bEarRight.addOrReplaceChild("earLR", CubeListBuilder.create()
+                        .texOffs(70, 0)
+                        .addBox(-3.0F, -4.0F, 0.0F, 4, 6, 1),
+                PartPose.ZERO
+        );
+
+        bNeck.addOrReplaceChild("neckS", CubeListBuilder.create()
+                        .texOffs(0, 0)
+                        .addBox(-4.5F, -6.75F, -9.0F, 9, 7, 9),
+                PartPose.ZERO
+        );
+        bNeck.addOrReplaceChild("neckL", CubeListBuilder.create()
+                        .texOffs(0, 0)
+                        .addBox(-4.5F, -6.75F, -9.0F, 9, 8, 9),
+                PartPose.ZERO
+        );
+        bNeck.addOrReplaceChild("neckSB", CubeListBuilder.create()
+                        .texOffs(0, 0)
+                        .addBox(-4.5F, -5.75F, -9.0F, 9, 7, 9, new CubeDeformation(1.0F)),
+                PartPose.ZERO
+        );
+        bNeck.addOrReplaceChild("neckLB", CubeListBuilder.create()
+                        .texOffs(0, 0)
+                        .addBox(-4.5F, -5.75F, -9.0F, 9, 7, 9, new CubeDeformation(1.0F)),
+                PartPose.ZERO
+        );
+        bNeck.addOrReplaceChild("waddleL", CubeListBuilder.create()
+                        .texOffs(3, 9)
+                        .addBox(2.5F, 0.0F, -9.0F, 2, 4, 2),
+                PartPose.ZERO
+        );
+        bNeck.addOrReplaceChild("waddleR", CubeListBuilder.create()
+                        .texOffs(25,9)
+                        .addBox(-4.5F, 0.0F, -9.0F, 2, 4, 2),
+                PartPose.ZERO
+        );
+
+        bBody.addOrReplaceChild("body11", CubeListBuilder.create()
+                        .texOffs(0, 23)
+                        .addBox(-5.0F, 0.0F, 0.0F, 10, 11, 10),
+                PartPose.offset(0.0F, 18.1F, -4.0F)
+        );
+        bBody.addOrReplaceChild("body12", CubeListBuilder.create()
+                        .texOffs(0, 23)
+                        .addBox(-5.0F, 0.0F, 0.0F, 10, 12, 10),
+                PartPose.offset(0.0F, 18.1F, -5.0F)
+        );
+        bBody.addOrReplaceChild("body13", CubeListBuilder.create()
+                        .texOffs(0, 23)
+                        .addBox(-5.0F, 0.0F, 0.0F, 10, 13, 10),
+                PartPose.offset(0.0F, 18.1F, -6.0F)
+        );
+        bBody.addOrReplaceChild("body14", CubeListBuilder.create()
+                        .texOffs(0, 23)
+                        .addBox(-5.0F, 0.0F, 0.0F, 10, 14, 10),
+                PartPose.offset(0.0F, 18.1F, -7.0F)
+        );
+        bBody.addOrReplaceChild("body15", CubeListBuilder.create()
+                        .texOffs(0, 23)
+                        .addBox(-5.0F, 0.0F, 0.0F, 10, 15, 10),
+                PartPose.offset(0.0F, 18.1F, -8.0F)
+        );
+
+        bButt.addOrReplaceChild("butt5", CubeListBuilder.create()
+                        .texOffs(0, 53)
+                        .addBox(-4.5F, 0.0F, 0.0F, 9, 5, 9),
+                PartPose.offset(0.0F, 18.0F, 5.5F)
+        );
+        bButt.addOrReplaceChild("butt6", CubeListBuilder.create()
+                        .texOffs(0, 53)
+                        .addBox(-4.5F, 0.0F, 0.0F, 9, 6, 9),
+                PartPose.offset(0.0F, 18.0F, 6.5F)
+        );
+        bButt.addOrReplaceChild("butt7", CubeListBuilder.create()
+                        .texOffs(0, 53)
+                        .addBox(-4.5F, 0.0F, 0.0F, 9, 7, 9),
+                PartPose.offset(0.0F, 18.0F, 7.5F)
+        );
+        bButt.addOrReplaceChild("butt8", CubeListBuilder.create()
+                        .texOffs(0, 53)
+                        .addBox(-4.5F, 0.0F, 0.0F, 9, 8, 9),
+                PartPose.offset(0.0F, 18.0F, 8.5F)
+        );
+
+        bLegFrontLeft.addOrReplaceChild("legFL", CubeListBuilder.create()
+                        .texOffs(49, 32)
+                        .addBox(-3.0F, 0.0F, 0.0F, 3, 8, 3),
+                PartPose.ZERO
+        );
+        bLegFrontRight.addOrReplaceChild("legFR", CubeListBuilder.create()
+                        .texOffs(61, 32)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 8, 3),
+                PartPose.ZERO
+        );
+        bLegBackLeft.addOrReplaceChild("legBL", CubeListBuilder.create()
+                        .texOffs(49, 44)
+                        .addBox(-3.0F, 0.0F, 0.0F, 3, 8, 3),
+                PartPose.ZERO
+        );
+        bLegBackRight.addOrReplaceChild("legBR", CubeListBuilder.create()
+                        .texOffs(61, 44)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 8, 3),
+                PartPose.ZERO
+        );
+
+        bTail.addOrReplaceChild("tail0", CubeListBuilder.create()
+                        .texOffs(36, 0)
+                        .addBox(-0.5F, 0.0F, 0.0F, 1, 2, 1, new CubeDeformation(-0.05F)),
+                PartPose.ZERO
+        );
+        bTail.addOrReplaceChild("tail1", CubeListBuilder.create()
+                        .texOffs(36, 3)
+                        .addBox(-0.5F, 0.0F, 0.0F, 1, 2, 1, new CubeDeformation(-0.05F)),
+                PartPose.ZERO
+        );
+        bTail.addOrReplaceChild("tail2", CubeListBuilder.create()
+                        .texOffs(36, 6)
+                        .addBox(-0.5F, 0.0F, 0.0F, 1, 2, 1, new CubeDeformation(-0.05F)),
+                PartPose.ZERO
+        );
+        bTail.addOrReplaceChild("tail3", CubeListBuilder.create()
+                        .texOffs(36, 9)
+                        .addBox(-0.5F, 0.0F, 0.0F, 1, 2, 1, new CubeDeformation(-0.05F)),
+                PartPose.ZERO
+        );
+        bTail.addOrReplaceChild("tail4", CubeListBuilder.create()
+                        .texOffs(36, 12)
+                        .addBox(-0.5F, 0.0F, 0.0F, 1, 2, 1, new CubeDeformation(-0.05F)),
+                PartPose.ZERO
+        );
+        bTail.addOrReplaceChild("tail5", CubeListBuilder.create()
+                        .texOffs(36, 15)
+                        .addBox(-0.5F, 0.0F, 0.0F, 1, 2, 1, new CubeDeformation(-0.05F)),
+                PartPose.ZERO
+        );
 
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
@@ -33,10 +316,138 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     public ModelEnhancedPig(ModelPart modelPart) {
         super(modelPart);
         ModelPart base = modelPart.getChild("base");
+        ModelPart bPig = base.getChild("bPig");
+        ModelPart bBody = bPig.getChild("bBody");
+        ModelPart bButt = bBody.getChild("bButt");
+        ModelPart bNeck = bBody.getChild("bNeck");
+        ModelPart bHead = bNeck.getChild("bHead");
+        ModelPart bEarLeft = bHead.getChild("bEarL");
+        ModelPart bEarRight = bHead.getChild("bEarR");
+        ModelPart bLegFL = bPig.getChild("bLegFL");
+        ModelPart bLegFR = bPig.getChild("bLegFR");
+        ModelPart bLegBL = bPig.getChild("bLegBL");
+        ModelPart bLegBR = bPig.getChild("bLegBR");
+        ModelPart bTail = bBody.getChild("bTail");
+
+        this.thePig = new WrappedModelPart(bPig, "bPig");
+        this.theBody = new WrappedModelPart(bBody, "bBody");
+        this.theButt = new WrappedModelPart(bButt, "bButt");
+        this.theNeck = new WrappedModelPart(bNeck, "bNeck");
+        this.theHead = new WrappedModelPart(bHead, "bHead");
+        this.theEarLeft = new WrappedModelPart(bEarLeft, "bEarL");
+        this.theEarRight = new WrappedModelPart(bEarRight, "bEarR");
+        this.theLegFrontLeft = new WrappedModelPart(bLegFL, "bLegFL");
+        this.theLegFrontRight = new WrappedModelPart(bLegFR, "bLegFR");
+        this.theLegBackLeft = new WrappedModelPart(bLegBL, "bLegBL");
+        this.theLegBackRight = new WrappedModelPart(bLegBR, "bLegBR");
+        this.theTail = new WrappedModelPart(bTail, "bTail");
+        
+        this.eyes = new WrappedModelPart("eyes", bHead);
+
+        this.head = new WrappedModelPart("head", bHead);
+        this.cheeks = new WrappedModelPart("cheeks", bHead);
+        this.snout = new WrappedModelPart("snout", bHead);
+        this.tusksTopLeft = new WrappedModelPart("tuskTL", bHead);
+        this.tusksTopRight = new WrappedModelPart("tuskTR", bHead);
+        
+        this.jaw = new WrappedModelPart("jaw", bHead);
+        this.tusksBottomLeft = new WrappedModelPart("tuskBL", bHead);
+        this.tusksBottomRight = new WrappedModelPart("tuskBR", bHead);
+        
+        this.earSmallLeft = new WrappedModelPart("earSL", bEarLeft);
+        this.earMediumLeft = new WrappedModelPart("earML", bEarLeft);
+        this.earLargeLeft = new WrappedModelPart("earLL", bEarLeft);
+
+        this.earSmallRight = new WrappedModelPart("earSR", bEarRight);
+        this.earMediumRight = new WrappedModelPart("earMR", bEarRight);
+        this.earLargeRight = new WrappedModelPart("earLR", bEarRight);
+        
+        this.neckShort = new WrappedModelPart("neckS", bNeck);
+        this.neckLong = new WrappedModelPart("neckL", bNeck);
+        this.neckShortBig = new WrappedModelPart("neckSB", bNeck);
+        this.neckLongBig = new WrappedModelPart("neckLB", bNeck);
+        
+        this.waddleLeft = new WrappedModelPart("waddleL", bNeck);
+        this.waddleRight = new WrappedModelPart("waddleR", bNeck);
+        
+        this.body11 = new WrappedModelPart("body11", bBody);
+        this.body12 = new WrappedModelPart("body12", bBody);
+        this.body13 = new WrappedModelPart("body13", bBody);
+        this.body14 = new WrappedModelPart("body14", bBody);
+        this.body15 = new WrappedModelPart("body15", bBody);
+        
+        this.butt5 = new WrappedModelPart("butt5", bButt);
+        this.butt6 = new WrappedModelPart("butt6", bButt);
+        this.butt7 = new WrappedModelPart("butt7", bButt);
+        this.butt8 = new WrappedModelPart("butt8", bButt);
+        
+        this.legFrontLeft = new WrappedModelPart("legFL", bLegFL);
+        this.legFrontRight = new WrappedModelPart("legFR", bLegFR);
+        this.legBackLeft = new WrappedModelPart("legBL", bLegBL);
+        this.legBackRight = new WrappedModelPart("legBR", bLegBR);
+        
+        this.tail0 = new WrappedModelPart("tail0", bTail);
+        this.tail1 = new WrappedModelPart("tail1", bTail);
+        this.tail2 = new WrappedModelPart("tail2", bTail);
+        this.tail3 = new WrappedModelPart("tail3", bTail);
+        this.tail4 = new WrappedModelPart("tail4", bTail);
+        this.tail5 = new WrappedModelPart("tail5", bTail);
+        
+        this.thePig.addChild(this.theBody);
+        this.theBody.addChild(this.theNeck);
+        this.theBody.addChild(this.theButt);
+        this.theButt.addChild(this.theTail);
+        this.theNeck.addChild(this.theHead);
+        this.theHead.addChild(this.theEarLeft);
+        this.theHead.addChild(this.theEarRight);
+        this.thePig.addChild(this.legFrontLeft);
+        this.thePig.addChild(this.legFrontRight);
+        this.thePig.addChild(this.legBackLeft);
+        this.thePig.addChild(this.legBackRight);
+        
+        this.theHead.addChild(this.head);
+        this.theHead.addChild(this.eyes);
+        this.theHead.addChild(this.snout);
+        this.theHead.addChild(this.cheeks);
+        this.theHead.addChild(this.jaw);
+        
+        this.snout.addChild(this.tusksTopLeft);
+        this.snout.addChild(this.tusksTopRight);
+        
+        this.jaw.addChild(this.tusksBottomLeft);
+        this.jaw.addChild(this.tusksBottomRight);
+        
+        this.theNeck.addChild(this.waddleLeft);
+        this.theNeck.addChild(this.waddleRight);
+        
+        this.theBody.addChild(this.body11);
+        this.theBody.addChild(this.body12);
+        this.theBody.addChild(this.body13);
+        this.theBody.addChild(this.body14);
+        this.theBody.addChild(this.body15);
+        
+        this.theButt.addChild(this.butt5);
+        this.theButt.addChild(this.butt6);
+        this.theButt.addChild(this.butt7);
+        this.theButt.addChild(this.butt8);
+
+        this.theLegFrontLeft.addChild(this.legFrontLeft);
+
+        this.theLegFrontRight.addChild(this.legFrontRight);
+
+        this.theLegBackLeft.addChild(this.legBackLeft);
+
+        this.theLegBackRight.addChild(this.legBackRight);
+        
+        this.tail0.addChild(this.tail1);
+        this.tail1.addChild(this.tail2);
+        this.tail2.addChild(this.tail3);
+        this.tail3.addChild(this.tail4);
+        this.tail4.addChild(this.tail5);
     }
 
     private void resetCubes() {
-        
+
     }
 
     @Override
@@ -45,6 +456,43 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         PigPhenotype pig = pigModelData.getPhenotype();
 
         resetCubes();
+        
+        if (pig!=null) {
+            this.waddleLeft.show(pig.hasWaddles);
+            this.waddleRight.show(pig.hasWaddles);
+            
+            this.earSmallLeft.show(pig.earSizeMod == 0);
+            this.earMediumLeft.show(pig.earSizeMod == 1);
+            this.earLargeLeft.show(pig.earSizeMod == 2);
+
+            this.earSmallRight.show(pig.earSizeMod == 0);
+            this.earMediumRight.show(pig.earSizeMod == 1);
+            this.earLargeRight.show(pig.earSizeMod == 2);
+            
+            this.neckShortBig.show(pig.shape == 0 || pig.shape == 1);
+            this.neckShort.show(pig.shape == 2);
+            this.neckLongBig.show(pig.shape == 3);
+            this.neckLong.show(pig.shape == 4);
+            
+            this.body11.show(pig.shape == 0);
+            this.body12.show(pig.shape == 1);
+            this.body13.show(pig.shape == 2);
+            this.body14.show(pig.shape == 3);
+            this.body15.show(pig.shape == 4);
+            
+            this.butt5.show(pig.shape == 0 || pig.shape == 1);
+            this.butt6.show(pig.shape == 2);
+            this.butt7.show(pig.shape == 3);
+            this.butt8.show(pig.shape == 4);
+
+            poseStack.pushPose();
+            poseStack.scale(1.0F, 1.0F, 1.0F);
+            poseStack.translate(0.0F, 0.0F, 0.0F);
+
+            gaRender(this.thePig, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+            poseStack.popPose();
+        }
     }
 
     protected Map<String, Vector3f> saveAnimationValues(T animal, PigPhenotype pig) {
@@ -84,14 +532,210 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     }
 
     @Override
-    protected PigPhenotype createPhenotype(T enhancedAnimal) {
-        return new PigPhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes(), enhancedAnimal.getOrSetIsFemale());
+    protected void setInitialModelData(T enhancedPig) {
+        PigModelData pigModelData = new PigModelData();
+        setBaseInitialModelData(pigModelData, enhancedPig);
+    }
+
+    @Override
+    protected Phenotype createPhenotype(T enhancedAnimal) {
+        return new PigPhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes(), enhancedAnimal.getStringUUID().charAt(1));
     }
 
     protected class PigPhenotype implements Phenotype {
+        float earFlopMod;
+        int earSizeMod = 0;
+        boolean tailCurl;
+        boolean hasWaddles;
+        float snoutLength;
+        float tailCurlAmount;
+        int shape;
 
-        PigPhenotype(int[] genes, boolean isFemale) {
+        PigPhenotype(int[] gene,char uuid) {
+            this.tailCurl = Character.isLetter(uuid);
 
+            float earSize = 0.0F;
+            float earFlop = 1.0F;
+            //SSC1
+            if (gene[68] == 2 || gene[69] == 2) {
+                earSize = earSize + 0.12F;
+                earFlop = earFlop - 0.44F;
+            } else if (gene[68] == 3 || gene[69] == 3) {
+                earSize = earSize + 0.03F;
+            }
+            //SSC5
+            if (gene[70] == 2 || gene[71] == 2) {
+                earSize = earSize + 0.35F;
+                earFlop = earFlop - 0.48F;
+            } else if (gene[70] == 3 && gene[71] == 3) {
+                earSize = earSize + 0.09F;
+            }
+            //SSC6
+            if (gene[72] == 2 || gene[73] == 2) {
+                earSize = earSize - 0.031F;
+            }
+            //SSC7
+            if (gene[74] == 2 || gene[75] == 2) {
+                earSize = earSize + 0.29F;
+                earFlop = earFlop - 0.62F;
+            } else if (gene[70] == 3 && gene[71] == 3) {
+                earSize = earSize + 0.09F;
+            }
+            //SSC9
+            if (gene[76] == 2 || gene[77] == 2) {
+                earSize = earSize + 0.11F;
+                earFlop = earFlop - 0.32F;
+            } else if (gene[70] == 3 && gene[71] == 3) {
+                earSize = earSize + 0.03F;
+            }
+            //SSC12
+            if (gene[78] == 2 || gene[79] == 2) {
+                earSize = earSize + 0.11F;
+                earFlop = earFlop - 0.14F;
+            } else if (gene[78] == 3 && gene[79] == 3) {
+                earSize = earSize + 0.03F;
+            }
+
+            for (int i = 80; i < 100; i+= 2) {
+                if (gene[i] != 1 && gene[i+1] != 1) {
+                    if (gene[i] == 2 || gene[i+1] == 2) {
+                        earSize = earSize + 0.007F;
+                    } else if (gene[i] == 3 || gene[i+1] == 3){
+                        earSize = earSize + 0.007F;
+                        earFlop = earFlop - 0.004F;
+                    } else {
+                        earSize = earSize + 0.007F;
+                        earFlop = earFlop - 0.007F;
+                    }
+                }
+            }
+            for (int i = 100; i < 120; i+= 2) {
+                if (gene[i] != 1 && gene[i+1] != 1) {
+                    if (gene[i] == 2 || gene[i+1] == 2) {
+                        earSize = earSize - 0.007F;
+                    } else if (gene[i] == 3 || gene[i+1] == 3){
+                        earSize = earSize - 0.007F;
+                        earFlop = earFlop + 0.004F;
+                    } else {
+                        earSize = earSize - 0.007F;
+                        earFlop = earFlop + 0.007F;
+                    }
+                }
+            }
+
+            if (earFlop > 1.0F) {
+                this.earFlopMod = 1.0F;
+            } else {
+                this.earFlopMod = earFlop < -1.0F ? -1.0F : earFlop;
+            }
+
+            if (earSize > 0.2F) {
+                if (earSize > 0.5F) {
+                    this.earSizeMod = 2;
+                } else {
+                    this.earSizeMod = 1;
+                }
+            }
+
+            //snoutLength
+            float snoutlength1 = 1.0F;
+            float snoutlength2 = 1.0F;
+            float snoutlength = 0.0F;
+
+            // 1 - 5, longest - shortest
+            for (int i = 1; i < gene[18];i++){
+                snoutlength1 = snoutlength1 - 0.1F;
+            }
+
+            for (int i = 1; i < gene[19];i++){
+                snoutlength2 = snoutlength2 - 0.1F;
+            }
+
+            for (int i = 1; i < gene[66];i++){
+                snoutlength1 = snoutlength1 - 0.1F;
+            }
+
+            for (int i = 1; i < gene[67];i++){
+                snoutlength2 = snoutlength2 - 0.1F;
+            }
+
+            //causes partial dominance of longer nose over shorter nose.
+            if (snoutlength1 > snoutlength2){
+                snoutlength = (snoutlength1*0.75F) + (snoutlength2*0.25F);
+            }else if (snoutlength1 < snoutlength2){
+                snoutlength = (snoutlength1*0.25F) + (snoutlength2*0.75F);
+            }else{
+                snoutlength = snoutlength1;
+            }
+
+            // 1 - 4, longest - shortest
+            if (gene[42] >= gene[43]) {
+                snoutlength = snoutlength + ((4 - gene[42])/8.0F);
+            } else {
+                snoutlength = snoutlength + ((4 - gene[43])/8.0F);
+            }
+
+            if (gene[44] >= 2 && gene[45] >= 2) {
+                if (gene[44] == 2 || gene[45] == 2) {
+                    snoutlength = snoutlength * 0.9F;
+                } else {
+                    snoutlength = snoutlength * 0.75F;
+                }
+            }
+
+            if (gene[46] == 2 && gene[47] == 2) {
+                snoutlength = snoutlength * 0.6F;
+            }
+
+            if (snoutlength > 1.0F) {
+                this.snoutLength = 1.0F;
+            } else if (snoutlength < 0.0F) {
+                this.snoutLength = 0.0F;
+            } else {
+                this.snoutLength = snoutlength;
+            }
+
+            float inbreedingFactor = 0.0F;
+
+            if (gene[20] == gene[21]) {
+                inbreedingFactor = 0.1667F;
+            }
+            if (gene[22] == gene[23]) {
+                inbreedingFactor = inbreedingFactor + 0.1667F;
+            }
+            if (gene[24] == gene[25]) {
+                inbreedingFactor = inbreedingFactor + 0.1667F;
+            }
+            if (gene[26] == gene[27]) {
+                inbreedingFactor = inbreedingFactor + 0.1667F;
+            }
+            if (gene[28] == gene[29]) {
+                inbreedingFactor = inbreedingFactor + 0.1667F;
+            }
+            if (gene[30] == gene[31]) {
+                inbreedingFactor = inbreedingFactor + 0.1667F;
+            }
+
+            this.tailCurlAmount = inbreedingFactor;
+
+            int shape = 1;
+
+            if (gene != null) {
+                if (gene[56] != 1 && gene[57] != 1) {
+                    if (gene[56] + gene[57] <= 8) {
+                        shape = 0;
+                    } else if (gene[56] == 5 || gene[57] == 5) {
+                        shape = 2;
+                    } else if (gene[56] == 6 || gene[57] == 6) {
+                        shape = 3;
+                    } else if (gene[56] == 7 && gene[57] == 7) {
+                        shape = 4;
+                    }
+                }
+            }
+            this.shape = shape;
+
+            this.hasWaddles = gene[32] == 1 || gene[33] == 1;
         }
     }
 }
@@ -126,310 +770,6 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
 //    private Map<Integer, PigModelData> pigModelDataCache = new HashMap<>();
 //    private int clearCacheTimer = 0;
 //    private float headRotationAngleX;
-//
-//    private final ModelPart chest1;
-//    private final ModelPart chest2;
-//
-//    private final EnhancedRendererModelNew thePig;
-//    private final EnhancedRendererModelNew head;
-//    private final EnhancedRendererModelNew cheeks;
-//    private final EnhancedRendererModelNew snout;
-//    private final EnhancedRendererModelNew mouth;
-//    private final EnhancedRendererModelNew tuskTL;
-//    private final EnhancedRendererModelNew tuskTR;
-//    private final EnhancedRendererModelNew tuskBL;
-//    private final EnhancedRendererModelNew tuskBR;
-//    private final EnhancedRendererModelNew earSmallL;
-//    private final EnhancedRendererModelNew earSmallR;
-//    private final EnhancedRendererModelNew earMediumL;
-//    private final EnhancedRendererModelNew earMediumR;
-//    private final EnhancedRendererModelNew earLargeL;
-//    private final EnhancedRendererModelNew earLargeR;
-//    private final EnhancedRendererModelNew neck;
-//    private final EnhancedRendererModelNew neckBigger;
-//    private final EnhancedRendererModelNew neckLong;
-//    private final EnhancedRendererModelNew neckBiggerLong;
-//    private final EnhancedRendererModelNew wattles;
-//    private final EnhancedRendererModelNew body11;
-//    private final EnhancedRendererModelNew body12;
-//    private final EnhancedRendererModelNew body13;
-//    private final EnhancedRendererModelNew body14;
-//    private final EnhancedRendererModelNew body15;
-//    private final EnhancedRendererModelNew butt5;
-//    private final EnhancedRendererModelNew butt6;
-//    private final EnhancedRendererModelNew butt7;
-//    private final EnhancedRendererModelNew butt8;
-//    private final EnhancedRendererModelNew tail0;
-//    private final EnhancedRendererModelNew tail1;
-//    private final EnhancedRendererModelNew tail2;
-//    private final EnhancedRendererModelNew tail3;
-//    private final EnhancedRendererModelNew tail4;
-//    private final EnhancedRendererModelNew tail5;
-//    private final EnhancedRendererModelNew leg1;
-//    private final EnhancedRendererModelNew leg2;
-//    private final EnhancedRendererModelNew leg3;
-//    private final EnhancedRendererModelNew leg4;
-//    private final EnhancedRendererModelNew eyeLeft;
-//    private final EnhancedRendererModelNew eyeRight;
-//
-//    private final EnhancedRendererModelNew saddle;
-//    private final EnhancedRendererModelNew saddleWestern;
-//    private final EnhancedRendererModelNew saddleEnglish;
-//    private final EnhancedRendererModelNew saddleHorn;
-//    private final EnhancedRendererModelNew saddlePomel;
-//    private final EnhancedRendererModelNew saddleSideL;
-//    private final EnhancedRendererModelNew stirrup2DWideL;
-//    private final EnhancedRendererModelNew stirrup2DWideR;
-//    private final EnhancedRendererModelNew stirrup3DNarrowL;
-//    private final EnhancedRendererModelNew stirrup3DNarrowR;
-//    private final EnhancedRendererModelNew stirrup;
-//    private final EnhancedRendererModelNew saddleSideR;
-//    private final EnhancedRendererModelNew saddlePad;
-//    private final EnhancedRendererModelNew collar;
-//
-//    private final List<EnhancedRendererModelNew> saddles = new ArrayList<>();
-//
-//    private Integer currentPig = null;
-//
-//    public ModelEnhancedPig() {
-//
-//        this.texWidth = 256;
-//        this.texHeight = 256;
-//
-//        this.thePig = new EnhancedRendererModelNew(this, 49, 0);
-//        this.thePig.setPos(0.0F, 0.0F, 0.0F);
-//
-//        this.head = new EnhancedRendererModelNew(this, 49, 0);
-//        this.head.addBox(-3.5F, -5.0F, -4.0F, 7, 6, 7);
-//        this.head.setPos(0.0F, -5.0F, -4.0F);
-//
-//        this.cheeks = new EnhancedRendererModelNew(this, 49, 13);
-//        this.cheeks.addBox(-4.0F, 0.0F, 0.0F, 8, 5, 4, 0.25F);
-//        this.cheeks.setPos(0.0F, -5.5F, -4.0F);
-//
-//        this.snout = new EnhancedRendererModelNew(this, 49, 22);
-//        this.snout.addBox(-2.0F, -5.0F, -3.0F, 4, 6, 3);
-//        this.snout.setPos(0.0F, -6.0F, 0.0F);
-//
-//        this.mouth = new EnhancedRendererModelNew(this, 63, 22);
-//        this.mouth.addBox(-1.0F, -5.0F, 0.0F, 2, 6, 1);
-//        this.mouth.setPos(0.0F, 1.0F, -4.0F);
-//
-//        this.tuskTL = new EnhancedRendererModelNew(this, 69, 22);
-//        this.tuskTL.addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, -0.1F);
-//        this.tuskTL.setPos(0.5F, 0.0F, -2.0F);
-//
-//        this.tuskTR = new EnhancedRendererModelNew(this, 69, 22);
-//        this.tuskTR.addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, -0.1F);
-//        this.tuskTR.setPos(-0.5F, 0.0F, -2.0F);
-//
-//        this.tuskBL = new EnhancedRendererModelNew(this, 69, 22);
-//        this.tuskBL.addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, -0.1F);
-//        this.tuskBL.addBox(-0.5F, -2.8F, -0.5F, 1, 1, 2, -0.1F);
-//        this.tuskBL.setPos(0.5F, 0.0F, 1F);
-//
-//        this.tuskBR = new EnhancedRendererModelNew(this, 69, 22);
-//        this.tuskBR.addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, -0.1F);
-//        this.tuskBR.addBox(-0.5F, -2.8F, -0.5F, 1, 1, 2, -0.1F);
-//        this.tuskBR.setPos(-0.5F, 0.0F, 1F);
-//
-//        this.earSmallL = new EnhancedRendererModelNew(this, 46, 0);
-//        this.earSmallL.addBox(-1.0F, -2.0F, 0.0F, 3, 4, 1);
-//        this.earSmallL.setPos(3.5F, -4.0F, 3.0F);
-//
-//        this.earSmallR = new EnhancedRendererModelNew(this, 70, 0);
-//        this.earSmallR.addBox(-2.0F, -2.0F, 0.0F, 3, 4, 1);
-//        this.earSmallR.setPos(-3.5F, -4.0F, 3.0F);
-//
-//        this.earMediumL = new EnhancedRendererModelNew(this, 46, 0);
-//        this.earMediumL.addBox(-1.0F, -3.0F, 0.0F, 3.5F, 5, 1);
-//        this.earMediumL.setPos(3.5F, -4.0F, 3.0F);
-//
-//        this.earMediumR = new EnhancedRendererModelNew(this, 70, 0);
-//        this.earMediumR.addBox(-2.5F, -3.0F, 0.0F, 3.5F, 5, 1);
-//        this.earMediumR.setPos(-3.0F, -4.0F, 3.0F);
-//
-//        this.earLargeL = new EnhancedRendererModelNew(this, 46, 0);
-//        this.earLargeL.addBox(-1.0F, -4.0F, 0.0F, 4, 6, 1);
-//        this.earLargeL.setPos(3.5F, -4.0F, 3.0F);
-//
-//        this.earLargeR = new EnhancedRendererModelNew(this, 70, 0);
-//        this.earLargeR.addBox(-3.0F, -4.0F, 0.0F, 4, 6, 1);
-//        this.earLargeR.setPos(-3.0F, -4.0F, 3.0F);
-//
-//        this.neck = new EnhancedRendererModelNew(this, 0, 0);
-//        this.neck.addBox(-4.5F, -6.75F, -9.0F, 9, 7, 9);
-//        this.neck.setPos(0.0F, 0.0F, 9.1F);
-//
-//        this.neckLong = new EnhancedRendererModelNew(this, 0, 0);
-//        this.neckLong.addBox(-4.5F, -6.75F, -9.0F, 9, 8, 9);
-//        this.neckLong.setPos(0.0F, 0.0F, 9.1F);
-//
-//        this.neckBigger = new EnhancedRendererModelNew(this, 0, 0);
-//        this.neckBigger.addBox(-4.5F, -5.75F, -9.0F, 9, 7, 9, 1.0F);
-//        this.neckBigger.setPos(0.0F, 0.0F, 9.1F);
-//
-//        this.neckBiggerLong = new EnhancedRendererModelNew(this, 0, 0);
-//        this.neckBiggerLong.addBox(-4.5F, -6.75F, -9.0F, 9, 8, 9, 1.0F);
-//        this.neckBiggerLong.setPos(0.0F, 0.0F, 9.1F);
-//
-//        this.wattles = new EnhancedRendererModelNew(this, 3, 9);
-//        this.wattles.addBox(2.5F, 0.0F, -9.0F, 2, 4, 2);
-//        this.wattles.texOffs(25,9);
-//        this.wattles.addBox(-4.5F, 0.0F, -9.0F, 2, 4, 2);
-//        this.wattles.setPos(0.0F, 2.5F, -9.0F);
-//        this.wattles.xRot = (float)Math.PI/-2.0F;
-//
-//        this.body11 = new EnhancedRendererModelNew(this, 0, 23);
-//        this.body11.addBox(-5.0F, 0.0F, 0.0F, 10, 11, 10);
-//        this.body11.setPos(0.0F, 18.1F, -4.0F);
-//
-//        this.body12 = new EnhancedRendererModelNew(this, 0, 23);
-//        this.body12.addBox(-5.0F, 0.0F, 0.0F, 10, 12, 10);
-//        this.body12.setPos(0.0F, 18.1F, -5.0F);
-//
-//        this.body13 = new EnhancedRendererModelNew(this, 0, 23);
-//        this.body13.addBox(-5.0F, 0.0F, 0.0F, 10, 13, 10);
-//        this.body13.setPos(0.0F, 18.1F, -6.0F);
-//
-//        this.body14 = new EnhancedRendererModelNew(this, 0, 23);
-//        this.body14.addBox(-5.0F, 0.0F, 0.0F, 10, 14, 10);
-//        this.body14.setPos(0.0F, 18.1F, -7.0F);
-//
-//        this.body15 = new EnhancedRendererModelNew(this, 0, 23);
-//        this.body15.addBox(-5.0F, 0.0F, 0.0F, 10, 15, 10);
-//        this.body15.setPos(0.0F, 18.1F, -8.0F);
-//
-//        this.butt5 = new EnhancedRendererModelNew(this, 0, 53);
-//        this.butt5.addBox(-4.5F, 0.0F, 0.0F, 9, 5, 9);
-//        this.butt5.setPos(0.0F, 18.0F, 5.5F);
-//
-//        this.butt6 = new EnhancedRendererModelNew(this, 0, 53);
-//        this.butt6.addBox(-4.5F, 0.0F, 0.0F, 9, 6, 9);
-//        this.butt6.setPos(0.0F, 18.0F, 6.5F);
-//
-//        this.butt7 = new EnhancedRendererModelNew(this, 0, 53);
-//        this.butt7.addBox(-4.5F, 0.0F, 0.0F, 9, 7, 9);
-//        this.butt7.setPos(0.0F, 18.0F, 7.5F);
-//
-//        this.butt8 = new EnhancedRendererModelNew(this, 0, 53);
-//        this.butt8.addBox(-4.5F, 0.0F, 0.0F, 9, 8, 9);
-//        this.butt8.setPos(0.0F, 18.0F, 8.5F);
-//
-//        this.tail0 = new EnhancedRendererModelNew(this, 36, 0);
-//        this.tail0.addBox(-0.5F, 0.0F, 0.0F, 1, 2, 1, -0.05F);
-//        this.tail0.setPos(0.0F, 5.0F, 7.5F);
-//
-//        this.tail1 = new EnhancedRendererModelNew(this, 36, 0);
-//        this.tail1.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1, -0.1F);
-//        this.tail1.setPos(0.0F, 1.9F, 0.5F);
-//
-//        this.tail2 = new EnhancedRendererModelNew(this, 36, 3);
-//        this.tail2.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1, -0.15F);
-//        this.tail2.setPos(0.0F, 1.8F, 0.0F);
-//
-//        this.tail3 = new EnhancedRendererModelNew(this, 36, 6);
-//        this.tail3.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1, -0.2F);
-//        this.tail3.setPos(0.0F, 1.7F, 0.0F);
-//
-//        this.tail4 = new EnhancedRendererModelNew(this, 36, 9);
-//        this.tail4.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1, -0.25F);
-//        this.tail4.setPos(0.0F, 1.6F, 0.0F);
-//
-//        this.tail5 = new EnhancedRendererModelNew(this, 36, 12);
-//        this.tail5.addBox(-0.5F, 0.0F, -0.5F, 1, 2, 1, -0.3F);
-//        this.tail5.setPos(0.0F, 1.5F, 0.0F);
-//
-//        this.leg1 = new EnhancedRendererModelNew(this, 49, 32);
-//        this.leg1.addBox(-3.0F, 0.0F, 0.0F, 3, 8, 3);
-//        this.leg1.setPos(-2.001F, 16.0F, -7.0F);
-//
-//        this.leg2 = new EnhancedRendererModelNew(this, 61, 32);
-//        this.leg2.addBox(0.0F, 0.0F, 0.0F, 3, 8, 3);
-//        this.leg2.setPos(2.001F, 16.0F, -7.0F);
-//
-//        this.leg3 = new EnhancedRendererModelNew(this, 49, 44);
-//        this.leg3.addBox(-3.0F, 0.0F, 0.0F, 3, 8, 3);
-//        this.leg3.setPos(-2.001F, 16.0F, 7.0F);
-//
-//        this.leg4 = new EnhancedRendererModelNew(this, 61, 44);
-//        this.leg4.addBox(0.0F, 0.0F, 0.0F, 3, 8, 3);
-//        this.leg4.setPos(2.001F, 16.0F, 7.0F);
-//
-//        this.eyeLeft = new EnhancedRendererModelNew(this, 69, 15);
-//        this.eyeLeft.addBox(0.0F, 0.0F, 0.0F, 1, 1, 1, 0.01F);
-//        this.eyeLeft.setPos(2.5F, -5.0F, 0.0F);
-//
-//        this.eyeRight = new EnhancedRendererModelNew(this, 49, 15);
-//        this.eyeRight.addBox(0.0F, 0.0F, 0.0F, 1, 1, 1, 0.01F);
-//        this.eyeRight.setPos(-3.5F, -5.0F, 0.0F);
-//
-//        this.body11.addChild(this.neck);
-//        this.body11.addChild(this.neckBigger);
-//        this.body11.addChild(this.neckLong);
-//        this.body11.addChild(this.neckBiggerLong);
-//        this.body12.addChild(this.neck);
-//        this.body12.addChild(this.neckLong);
-//        this.body12.addChild(this.neckBigger);
-//        this.body12.addChild(this.neckBiggerLong);
-//        this.body13.addChild(this.neck);
-//        this.body13.addChild(this.neckLong);
-//        this.body13.addChild(this.neckBigger);
-//        this.body13.addChild(this.neckBiggerLong);
-//        this.body14.addChild(this.neck);
-//        this.body14.addChild(this.neckLong);
-//        this.body14.addChild(this.neckBigger);
-//        this.body14.addChild(this.neckBiggerLong);
-//        this.body15.addChild(this.neck);
-//        this.body15.addChild(this.neckBigger);
-//        this.body15.addChild(this.neckLong);
-//        this.body15.addChild(this.neckBiggerLong);
-//        this.neck.addChild(this.head);
-//        this.neck.addChild(this.wattles);
-//        this.neckBigger.addChild(this.head);
-//        this.neckBigger.addChild(this.wattles);
-//        this.neckLong.addChild(this.head);
-//        this.neckLong.addChild(this.wattles);
-//        this.neckBiggerLong.addChild(this.head);
-//        this.neckBiggerLong.addChild(this.wattles);
-//        this.head.addChild(this.cheeks);
-//        this.head.addChild(this.snout);
-//        this.snout.addChild(this.tuskTL);
-//        this.snout.addChild(this.tuskTR);
-//        this.snout.addChild(this.mouth);
-//        this.mouth.addChild(this.tuskBL);
-//        this.mouth.addChild(this.tuskBR);
-//        this.head.addChild(this.earSmallL);
-//        this.head.addChild(this.earSmallR);
-//        this.head.addChild(this.earMediumL);
-//        this.head.addChild(this.earMediumR);
-//        this.head.addChild(this.earLargeL);
-//        this.head.addChild(this.earLargeR);
-//        this.head.addChild(this.eyeLeft);
-//        this.head.addChild(this.eyeRight);
-//        this.butt5.addChild(this.tail0);
-//        this.butt6.addChild(this.tail0);
-//        this.butt7.addChild(this.tail0);
-//        this.butt8.addChild(this.tail0);
-//        this.tail0.addChild(this.tail1);
-//        this.tail1.addChild(this.tail2);
-//        this.tail2.addChild(this.tail3);
-//        this.tail3.addChild(this.tail4);
-//        this.tail4.addChild(this.tail5);
-//
-//        this.thePig.addChild(this.body11);
-//        this.thePig.addChild(this.body12);
-//        this.thePig.addChild(this.body13);
-//        this.thePig.addChild(this.body14);
-//        this.thePig.addChild(this.body15);
-//        this.thePig.addChild(this.butt5);
-//        this.thePig.addChild(this.butt6);
-//        this.thePig.addChild(this.butt7);
-//        this.thePig.addChild(this.butt8);
-//        this.thePig.addChild(this.leg1);
-//        this.thePig.addChild(this.leg2);
-//        this.thePig.addChild(this.leg3);
-//        this.thePig.addChild(this.leg4);
 //
 //        /**
 //         * Equipment stuff

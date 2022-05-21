@@ -52,7 +52,6 @@ public class EggCartonTileEntityRenderer<T extends BlockEntity & LidBlockEntity>
         this.lid = root.getChild("lid");
     }
 
-
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();

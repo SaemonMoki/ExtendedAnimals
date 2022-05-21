@@ -3,13 +3,17 @@ package mokiyoki.enhancedanimals.init;
 import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.items.*;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -373,6 +377,8 @@ public class ModItems {
     public static final RegistryObject<Item> COLLAR_BASIC_LEATHER_GOLDBELL = ITEMS_DEFERRED_REGISTRY.register("collar_basic_leather_goldbell", () -> new CustomizableCollar(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1),10511680, true));
     public static final RegistryObject<Item> COLLAR_BASIC_LEATHER_DIAMONDRING = ITEMS_DEFERRED_REGISTRY.register("collar_basic_leather_diamondring", () -> new CustomizableCollar(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1),10511680, false));
     public static final RegistryObject<Item> COLLAR_BASIC_LEATHER_DIAMONDBELL = ITEMS_DEFERRED_REGISTRY.register("collar_basic_leather_diamondbell", () -> new CustomizableCollar(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1),10511680, true));
+
+    public static final RegistryObject<Item> ENHANCED_AXOLOTL_BUCKET = ITEMS_DEFERRED_REGISTRY.register("enhanced_axolotl_bucket", () -> new EnhancedAxolotlBucket(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1), ModEntities.ENHANCED_AXOLOTL, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_AXOLOTL));
 
     public static final RegistryObject<Item> GENETICS_ENCYCLOPEDIA = ITEMS_DEFERRED_REGISTRY.register("genetics_encyclopedia", () -> new GeneticsEncyclopedia(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1)));
     public static final RegistryObject<Item> DEBUG_GENE_BOOK = ITEMS_DEFERRED_REGISTRY.register("debug_gene_book", () -> new DebugGenesBook(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1)));

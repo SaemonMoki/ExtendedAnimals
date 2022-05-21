@@ -42,6 +42,8 @@ public class EnhancedLayeredTexture extends AbstractTexture {
     protected  int dyeCollarRGB = 0;
     //TODO add banner part colouring? will probably need an array
     protected String modLocation = "";
+    private boolean hasImage = false;
+    private NativeImage image;
 
     public EnhancedLayeredTexture(String modLocation, String[] textureNames, String[] maskingTextureNames, Colouration colouration) {
         this.layeredTextureNames = Lists.newArrayList(textureNames);
@@ -265,6 +267,9 @@ public class EnhancedLayeredTexture extends AbstractTexture {
                     }
                 }
             }
+            this.image = new NativeImage(nativeimage.format(), nativeimage.getWidth(), nativeimage.getHeight(), true);
+            this.image.copyFrom(nativeimage);
+            this.hasImage = true;
         } catch (IOException ioexception) {
             LOGGER.error("Couldn't load layered image", (Throwable)ioexception);
         }
@@ -525,7 +530,7 @@ public class EnhancedLayeredTexture extends AbstractTexture {
             int l = (int) (green);
             int i1 = (int) (f12);
 
-            nativeimage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
+            nativeimage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1);
         }
     }
 
@@ -539,6 +544,8 @@ public class EnhancedLayeredTexture extends AbstractTexture {
         float f6 = (float)(i >> 8 & 255) / 255.0F;
         float f7 = (float)(i >> 0 & 255) / 255.0F;
 
+        //TODO bgr doesn't need to be unpacked and repacked here
+
         if(originalAlpha != 0.0) {
 
             int j = (int)(maskingAlpha * 255.0F);
@@ -546,7 +553,7 @@ public class EnhancedLayeredTexture extends AbstractTexture {
             int l = (int)(f6*255);
             int i1 = (int)(f7*255);
 
-            nativeImage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
+            nativeImage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1);
         }
     }
 
@@ -626,4 +633,16 @@ public class EnhancedLayeredTexture extends AbstractTexture {
         baseImage.setPixelRGBA(xIn, yIn, combine(j, k, l, i1));
     }
 
+    public NativeImage getImage() {
+        return image;
+    }
+
+    public boolean hasImage() {
+        return hasImage;
+    }
+
+    public void closeImage() {
+        this.hasImage = false;
+        this.image.close();
+    }
 }

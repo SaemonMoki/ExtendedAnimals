@@ -1,3 +1,314 @@
+package mokiyoki.enhancedanimals.model;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
+import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.Map;
+
+@OnlyIn(Dist.CLIENT)
+public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnimalModel<T> {
+    protected WrappedModelPart theRabbit;
+
+    protected WrappedModelPart theHead;
+    protected WrappedModelPart theEarLeft;
+    protected WrappedModelPart theEarRight;
+    protected WrappedModelPart theNeck;
+    protected WrappedModelPart theBody;
+    protected WrappedModelPart theLegFrontLeft;
+    protected WrappedModelPart theLegFrontRight;
+    protected WrappedModelPart theLegBackLeft;
+    protected WrappedModelPart theLegBackRight;
+    protected WrappedModelPart theTail;
+
+    protected WrappedModelPart head;
+    protected WrappedModelPart nose;
+    protected WrappedModelPart jaw;
+
+    protected WrappedModelPart earLeft;
+    protected WrappedModelPart earTopLeft;
+
+    protected WrappedModelPart earRight;
+    protected WrappedModelPart earTopRight;
+
+    protected WrappedModelPart neck;
+    protected WrappedModelPart body;
+
+    private WrappedModelPart legFrontLeft;
+    private WrappedModelPart legFrontRight;
+    private WrappedModelPart legBackLeft;
+    private WrappedModelPart legBackRight;
+
+    private WrappedModelPart tail;
+
+    public static LayerDefinition createBodyLayer() {
+        MeshDefinition meshdefinition = new MeshDefinition();
+        PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bRabbit = base.addOrReplaceChild("bRabbit", CubeListBuilder.create(), PartPose.offset(0.0F, 14.0F, 0.0F));
+        PartDefinition bBody = bRabbit.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bNeck = bBody.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bHead = bNeck.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bEarLeft = bHead.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(4.0F, 0.0F, -3.0F));
+        PartDefinition bEarRight = bHead.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(-4.0F, 0.0F, -3.0F));
+        PartDefinition bLegFrontLeft = bRabbit.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, -10.0F));
+        PartDefinition bLegFrontRight = bRabbit.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(-3.0F, 0.0F, -10.0F));
+        PartDefinition bLegBackLeft = bRabbit.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, 9.0F));
+        PartDefinition bLegBackRight = bRabbit.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(-3.0F, 0.0F, 9.0F));
+        PartDefinition bTail = bBody.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 22.0F));
+
+        bHead.addOrReplaceChild("eyes", CubeListBuilder.create()
+                        .texOffs(69, 15)
+                        .addBox(2.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F))
+                        .texOffs(0, 40)
+                        .addBox(-3.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F)),
+                PartPose.ZERO
+        );
+
+        bHead.addOrReplaceChild("head", CubeListBuilder.create()
+                        .texOffs(49, 0)
+                        .addBox(-3.5F, -5.0F, -4.0F, 7, 6, 7),
+                PartPose.ZERO
+        );
+        bHead.addOrReplaceChild("nose", CubeListBuilder.create()
+                        .texOffs(49, 22)
+                        .addBox(-2.0F, -5.0F, -3.0F, 4, 6, 3),
+                PartPose.ZERO
+        );
+        bHead.addOrReplaceChild("jaw", CubeListBuilder.create()
+                        .texOffs(49, 22)
+                        .addBox(-2.0F, -5.0F, -3.0F, 4, 6, 3),
+                PartPose.offset(0.0F, 1.0F, -4.0F)
+        );
+
+        bEarLeft.addOrReplaceChild("earL", CubeListBuilder.create()
+                        .texOffs(46, 0)
+                        .addBox(-1.0F, -2.0F, 0.0F, 3, 4, 1),
+                PartPose.ZERO
+        );
+        bEarLeft.addOrReplaceChild("earTL", CubeListBuilder.create()
+                        .texOffs(46, 0)
+                        .addBox(-1.0F, -3.0F, 0.0F, 3.5F, 5, 1),
+                PartPose.ZERO
+        );
+
+        bEarRight.addOrReplaceChild("earR", CubeListBuilder.create()
+                        .texOffs(70, 0)
+                        .addBox(-2.0F, -2.0F, 0.0F, 3, 4, 1),
+                PartPose.ZERO
+        );
+        bEarRight.addOrReplaceChild("earTR", CubeListBuilder.create()
+                        .texOffs(70, 0)
+                        .addBox(-2.5F, -3.0F, 0.0F, 3.5F, 5, 1),
+                PartPose.ZERO
+        );
+
+        bNeck.addOrReplaceChild("neck", CubeListBuilder.create()
+                        .texOffs(0, 0)
+                        .addBox(-4.5F, -6.75F, -9.0F, 9, 7, 9),
+                PartPose.ZERO
+        );
+
+        bBody.addOrReplaceChild("body", CubeListBuilder.create()
+                        .texOffs(0, 23)
+                        .addBox(-5.0F, 0.0F, 0.0F, 10, 11, 10),
+                PartPose.offset(0.0F, 18.1F, -4.0F)
+        );
+
+        bLegFrontLeft.addOrReplaceChild("legFL", CubeListBuilder.create()
+                        .texOffs(49, 32)
+                        .addBox(-3.0F, 0.0F, 0.0F, 3, 8, 3),
+                PartPose.ZERO
+        );
+        bLegFrontRight.addOrReplaceChild("legFR", CubeListBuilder.create()
+                        .texOffs(61, 32)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 8, 3),
+                PartPose.ZERO
+        );
+        bLegBackLeft.addOrReplaceChild("legBL", CubeListBuilder.create()
+                        .texOffs(49, 44)
+                        .addBox(-3.0F, 0.0F, 0.0F, 3, 8, 3),
+                PartPose.ZERO
+        );
+        bLegBackRight.addOrReplaceChild("legBR", CubeListBuilder.create()
+                        .texOffs(61, 44)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 8, 3),
+                PartPose.ZERO
+        );
+
+        bTail.addOrReplaceChild("tail", CubeListBuilder.create()
+                        .texOffs(36, 0)
+                        .addBox(-0.5F, 0.0F, 0.0F, 1, 2, 1, new CubeDeformation(-0.05F)),
+                PartPose.ZERO
+        );
+
+        return LayerDefinition.create(meshdefinition, 256, 256);
+    }
+
+    public ModelEnhancedRabbit(ModelPart modelPart) {
+        super(modelPart);
+        ModelPart base = modelPart.getChild("base");
+        ModelPart bRabbit = base.getChild("bRabbit");
+        ModelPart bBody = bRabbit.getChild("bBody");
+        ModelPart bNeck = bBody.getChild("bNeck");
+        ModelPart bHead = bNeck.getChild("bHead");
+        ModelPart bEarLeft = bHead.getChild("bEarL");
+        ModelPart bEarRight = bHead.getChild("bEarR");
+        ModelPart bLegFL = bRabbit.getChild("bLegFL");
+        ModelPart bLegFR = bRabbit.getChild("bLegFR");
+        ModelPart bLegBL = bRabbit.getChild("bLegBL");
+        ModelPart bLegBR = bRabbit.getChild("bLegBR");
+        ModelPart bTail = bBody.getChild("bTail");
+
+        this.theRabbit = new WrappedModelPart(bRabbit, "bRabbit");
+        this.theBody = new WrappedModelPart(bBody, "bBody");
+        this.theNeck = new WrappedModelPart(bNeck, "bNeck");
+        this.theHead = new WrappedModelPart(bHead, "bHead");
+        this.theEarLeft = new WrappedModelPart(bEarLeft, "bEarL");
+        this.theEarRight = new WrappedModelPart(bEarRight, "bEarR");
+        this.theLegFrontLeft = new WrappedModelPart(bLegFL, "bLegFL");
+        this.theLegFrontRight = new WrappedModelPart(bLegFR, "bLegFR");
+        this.theLegBackLeft = new WrappedModelPart(bLegBL, "bLegBL");
+        this.theLegBackRight = new WrappedModelPart(bLegBR, "bLegBR");
+        this.theTail = new WrappedModelPart(bTail, "bTail");
+
+        this.eyes = new WrappedModelPart("eyes", bHead);
+
+        this.head = new WrappedModelPart("head", bHead);
+
+        this.jaw = new WrappedModelPart("jaw", bHead);
+
+        this.earLeft = new WrappedModelPart("earL", bEarLeft);
+        this.earTopLeft = new WrappedModelPart("earTL", bEarLeft);
+
+        this.earRight = new WrappedModelPart("earR", bEarRight);
+        this.earTopRight = new WrappedModelPart("earTR", bEarRight);
+
+        this.neck = new WrappedModelPart("neck", bNeck);
+
+        this.body = new WrappedModelPart("body", bBody);
+
+        this.legFrontLeft = new WrappedModelPart("legFL", bLegFL);
+        this.legFrontRight = new WrappedModelPart("legFR", bLegFR);
+        this.legBackLeft = new WrappedModelPart("legBL", bLegBL);
+        this.legBackRight = new WrappedModelPart("legBR", bLegBR);
+
+        this.tail = new WrappedModelPart("tail", bTail);
+
+        this.theRabbit.addChild(this.theBody);
+        this.theBody.addChild(this.theNeck);
+        this.theNeck.addChild(this.theHead);
+        this.theHead.addChild(this.theEarLeft);
+        this.theHead.addChild(this.theEarRight);
+        this.theRabbit.addChild(this.legFrontLeft);
+        this.theRabbit.addChild(this.legFrontRight);
+        this.theRabbit.addChild(this.legBackLeft);
+        this.theRabbit.addChild(this.legBackRight);
+
+        this.theHead.addChild(this.head);
+        this.theHead.addChild(this.eyes);
+        this.theHead.addChild(this.nose);
+        this.theHead.addChild(this.jaw);
+
+        this.theBody.addChild(this.body);
+
+        this.theLegFrontLeft.addChild(this.legFrontLeft);
+
+        this.theLegFrontRight.addChild(this.legFrontRight);
+
+        this.theLegBackLeft.addChild(this.legBackLeft);
+
+        this.theLegBackRight.addChild(this.legBackRight);
+    }
+
+    private void resetCubes() {
+
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        RabbitModelData rabbitModelData = getRabbitModelData();
+        RabbitPhenotype rabbit = rabbitModelData.getPhenotype();
+
+        resetCubes();
+
+        if (rabbit!=null) {
+
+            poseStack.pushPose();
+            poseStack.scale(1.0F, 1.0F, 1.0F);
+            poseStack.translate(0.0F, 0.0F, 0.0F);
+
+            gaRender(this.theRabbit, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+            poseStack.popPose();
+        }
+    }
+
+    protected Map<String, Vector3f> saveAnimationValues(T animal, RabbitPhenotype rabbit) {
+        Map<String, Vector3f> map = animal.getModelRotationValues();
+        return map;
+    }
+
+    private void setupInitialAnimationValues(T entityIn, RabbitModelData modelData, RabbitPhenotype rabbit) {
+
+    }
+
+    @Override
+    public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.currentAnimal = entityIn.getId();
+        RabbitModelData rabbitModelData = getCreateRabbitModelData(entityIn);
+        RabbitPhenotype rabbit = rabbitModelData.getPhenotype();
+        float drive = ageInTicks + (1000 * rabbitModelData.random);
+
+        if (rabbit != null) {
+
+        }
+
+    }
+
+    private class RabbitModelData extends AnimalModelData {
+        public RabbitPhenotype getPhenotype() {
+            return (RabbitPhenotype) this.phenotype;
+        }
+    }
+
+    private RabbitModelData getRabbitModelData() {
+        return (RabbitModelData) getAnimalModelData();
+    }
+
+    private RabbitModelData getCreateRabbitModelData(T enhancedRabbit) {
+        return (RabbitModelData) getCreateAnimalModelData(enhancedRabbit);
+    }
+
+    @Override
+    protected void setInitialModelData(T enhancedRabbit) {
+        RabbitModelData rabbitModelData = new RabbitModelData();
+        setBaseInitialModelData(rabbitModelData, enhancedRabbit);
+    }
+
+    @Override
+    protected Phenotype createPhenotype(T enhancedAnimal) {
+        return new RabbitPhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes(), enhancedAnimal.getStringUUID().charAt(1));
+    }
+
+    protected class RabbitPhenotype implements Phenotype {
+
+        RabbitPhenotype(int[] gene,char uuid) {
+
+        }
+    }
+}
+
 //package mokiyoki.enhancedanimals.model;
 //
 //import com.mojang.blaze3d.vertex.PoseStack;

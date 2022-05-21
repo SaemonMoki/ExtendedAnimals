@@ -1,10 +1,12 @@
 package mokiyoki.enhancedanimals.model.util;
 
+import com.mojang.math.Vector3f;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class WrappedModelPart {
@@ -46,6 +48,10 @@ public class WrappedModelPart {
 
     public void addChild(WrappedModelPart wrappedModelPart) {
         this.children.add(wrappedModelPart);
+    }
+
+    public void addChild(WrappedModelPart... wrappedModelParts) {
+        this.children.addAll(Arrays.asList(wrappedModelParts));
     }
 
     public void setX(float point) {
@@ -101,8 +107,8 @@ public class WrappedModelPart {
         return this.modelPart.zRot;
     }
 
-    public void setPos(float xRot, float yRot, float zRot) {
-        this.modelPart.setPos(xRot, yRot, zRot);
+    public void setPos(float xPos, float yPos, float zPos) {
+        this.modelPart.setPos(xPos, yPos, zPos);
     }
 
     public void setRotation(float xRot, float yRot, float zRot) {
@@ -136,6 +142,35 @@ public class WrappedModelPart {
             this.modelPart.x = x;
             this.modelPart.y = y;
             this.modelPart.z = z;
+        }
+    }
+
+    public void setFromVector(Vector3f vector3f) {
+        if (vector3f != null) {
+            this.modelPart.setRotation(vector3f.x(), vector3f.y(), vector3f.z());
+        } else {
+            this.modelPart.setRotation(0.0F, 0.0F, 0.0F);
+        }
+    }
+
+    public void setPosFromVector(Vector3f vector3f) {
+        if (vector3f != null) {
+            this.modelPart.setPos(vector3f.x(), vector3f.y(), vector3f.z());
+        } else {
+            this.modelPart.setPos(0.0F, 0.0F, 0.0F);
+        }
+    }
+
+    public void setFromVector(Vector3f pos, Vector3f rot) {
+        if (pos != null) {
+            this.modelPart.y = pos.y();
+        } else {
+            this.modelPart.y = 0.0F;
+        }
+        if (rot != null) {
+            this.modelPart.setRotation(rot.x(), rot.y(), rot.z());
+        } else {
+            this.modelPart.setRotation(0.0F, 0.0F, 0.0F);
         }
     }
 }

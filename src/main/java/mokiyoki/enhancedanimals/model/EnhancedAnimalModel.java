@@ -27,6 +27,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
     protected WrappedModelPart eyes;
     protected WrappedModelPart chests;
     protected WrappedModelPart collar;
+    protected WrappedModelPart saddleVanilla;
     protected WrappedModelPart saddleEnglish;
     protected WrappedModelPart saddleWestern;
     protected WrappedModelPart bridle;
@@ -37,7 +38,6 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
     protected Integer currentAnimal = null;
 
     public EnhancedAnimalModel(ModelPart modelPart) {
-        // can equipment stuff go here??? probably...
     }
 
     protected void setRotationOffset(ModelPart renderer, float x, float y, float z) {
@@ -45,8 +45,6 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         renderer.yRot = y;
         renderer.zRot = z;
     }
-
-//    protected abstract void saveAnimationValues(T animal, Phenotype phenotype);
 
     protected Vector3f getRotationVector(WrappedModelPart part) {
         return new Vector3f(part.getXRot(), part.getYRot(), part.getZRot());
@@ -114,6 +112,20 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
             if (this.collar != null) {
                 this.collar.show(animalModelData.collar);
             }
+            if (this.bridle != null) {
+                this.bridle.show(animalModelData.bridle);
+            }
+            if (this.chests != null) {
+                this.chests.show(animalModelData.chests);
+            }
+            if (this.blanket != null) {
+                this.blanket.show(animalModelData.blanket);
+            }
+            if (animalModelData.saddle != SaddleType.NONE) {
+                if (this.saddleVanilla!=null) { this.saddleVanilla.show(animalModelData.saddle == SaddleType.VANILLA); }
+                if (this.saddleEnglish!=null) { this.saddleEnglish.show(animalModelData.saddle == SaddleType.ENGLISH); }
+                if (this.saddleWestern!=null) { this.saddleWestern.show(animalModelData.saddle == SaddleType.WESTERN); }
+            }
         }
 
     }
@@ -126,6 +138,10 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         boolean sleeping = false;
         boolean blink = false;
         boolean collar = false;
+        boolean bridle = false;
+        boolean blanket = false;
+        SaddleType saddle = SaddleType.NONE;
+        boolean chests = false;
         int lastAccessed = 0;
         int dataReset = 0;
         long clientGameTime = 0;
@@ -181,6 +197,8 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
     protected void additionalModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) { }
 
+    protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) { }
+
     protected void setInitialModelData(T enhancedAnimal) {
         AnimalModelData animalModelData = new AnimalModelData();
         setBaseInitialModelData(animalModelData, enhancedAnimal);
@@ -197,6 +215,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         animalModelData.sleeping = enhancedAnimal.isAnimalSleeping();
         animalModelData.blink = enhancedAnimal.getBlink();
         animalModelData.collar = hasCollar(enhancedAnimal.getEnhancedInventory());
+        additionalUpdateModelDataInfo(animalModelData, enhancedAnimal);
     }
 
     protected abstract Phenotype createPhenotype(T enhancedAnimal);
@@ -296,5 +315,12 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         public boolean getRunning(float time) {
             return time >= this.start && time < this.start+this.length;
         }
+    }
+
+    protected enum SaddleType {
+        NONE,
+        VANILLA,
+        ENGLISH,
+        WESTERN
     }
 }

@@ -1086,7 +1086,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
             this.leashNBTTag = compound.getCompound("Leash");
         }
 
-        geneFixer();
+        if (this.level instanceof ServerLevel) {
+            geneFixer();
+        }
 
         this.setIsFemale(compound);
 

@@ -28,41 +28,42 @@ public class ECLlamaFollowCaravan extends Goal {
             EnhancedLlama entityllama = null;
             double d0 = Double.MAX_VALUE;
 
-            for(EnhancedLlama entityllama1 : list) {
-                if (entityllama1.inCaravan() && !entityllama1.hasCaravanTrail()) {
-                    double d1 = this.llama.distanceToSqr(entityllama1);
-                    if (!(d1 > d0)) {
-                        d0 = d1;
-                        entityllama = entityllama1;
-                    }
-                }
-            }
-
-            if (entityllama == null) {
-                for(EnhancedLlama entityllama2 : list) {
-                    if (entityllama2.isLeashed() && !entityllama2.hasCaravanTrail()) {
-                        double d2 = this.llama.distanceToSqr(entityllama2);
-                        if (!(d2 > d0)) {
-                            d0 = d2;
-                            entityllama = entityllama2;
+            if (list !=null) {
+                for (EnhancedLlama entityllama1 : list) {
+                    if (entityllama1.inCaravan() && !entityllama1.hasCaravanTrail()) {
+                        double d1 = this.llama.distanceToSqr(entityllama1);
+                        if (!(d1 > d0)) {
+                            d0 = d1;
+                            entityllama = entityllama1;
                         }
                     }
                 }
-            }
 
-            if (entityllama == null) {
-                return false;
-            } else if (d0 < 4.0D) {
-                return false;
-            } else if (!entityllama.isLeashed() && !this.firstIsLeashed(entityllama, 1)) {
-                return false;
-            } else {
-                this.llama.joinCaravan(entityllama);
-                return true;
+                if (entityllama == null) {
+                    for (EnhancedLlama entityllama2 : list) {
+                        if (entityllama2.isLeashed() && !entityllama2.hasCaravanTrail()) {
+                            double d2 = this.llama.distanceToSqr(entityllama2);
+                            if (!(d2 > d0)) {
+                                d0 = d2;
+                                entityllama = entityllama2;
+                            }
+                        }
+                    }
+                }
+
+                if (entityllama == null) {
+                    return false;
+                } else if (d0 < 4.0D) {
+                    return false;
+                } else if (!entityllama.isLeashed() && !this.firstIsLeashed(entityllama, 1)) {
+                    return false;
+                } else {
+                    this.llama.joinCaravan(entityllama);
+                    return true;
+                }
             }
-        } else {
-            return false;
         }
+            return false;
     }
 
     public boolean canContinueToUse() {

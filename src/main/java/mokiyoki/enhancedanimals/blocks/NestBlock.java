@@ -45,8 +45,6 @@ public abstract class NestBlock extends Block {
         return world.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggsFromNest(pos);
     }
 
-
-
     protected void removeOneEgg(Level world, BlockPos pos, BlockState state) {
         removeOneEgg(world, pos, state, true);
     }

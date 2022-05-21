@@ -180,9 +180,9 @@ public class EnhancedTurtleEggBlock extends NestBlock {
         return reader.getBlockState(pos).is(BlockTags.SAND);
     }
 
-    public void onPlace(BlockState state, Level worldIn, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (hasProperHabitat(worldIn, pos) && !worldIn.isClientSide) {
-            worldIn.levelEvent(2005, pos, 0);
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        if (hasProperHabitat(level, pos) && !level.isClientSide) {
+            level.levelEvent(2005, pos, 0);
         }
 
     }

@@ -4,14 +4,22 @@ import mokiyoki.enhancedanimals.gui.EggCartonScreen;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalScreen;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
+import mokiyoki.enhancedanimals.model.EnhancedAxolotlBucketModel;
 import mokiyoki.enhancedanimals.model.ModelEnhancedAxolotl;
 import mokiyoki.enhancedanimals.model.ModelEnhancedChicken;
 import mokiyoki.enhancedanimals.model.ModelEnhancedCow;
+import mokiyoki.enhancedanimals.model.ModelEnhancedLlama;
+import mokiyoki.enhancedanimals.model.ModelEnhancedPig;
 import mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer;
+import mokiyoki.enhancedanimals.renderer.ModelLayers;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotl;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedChicken;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedCow;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedLlama;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedMooshroom;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedPig;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
@@ -110,6 +118,10 @@ public class ClientEventRegistry {
                 ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT.get(), ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_GOLD.get(), ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_DIAMOND.get(), ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_WOOD.get(),
                 ModItems.COLLAR_BASIC_LEATHER.get(), ModItems.COLLAR_BASIC_LEATHER_IRONBELL.get(), ModItems.COLLAR_BASIC_LEATHER_IRONRING.get(), ModItems.COLLAR_BASIC_LEATHER_GOLDBELL.get(), ModItems.COLLAR_BASIC_LEATHER_GOLDRING.get(), ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL.get(), ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING.get(),
                 ModItems.COLLAR_BASIC_CLOTH.get(), ModItems.COLLAR_BASIC_CLOTH_IRONBELL.get(), ModItems.COLLAR_BASIC_CLOTH_IRONRING.get(), ModItems.COLLAR_BASIC_CLOTH_GOLDBELL.get(), ModItems.COLLAR_BASIC_CLOTH_GOLDRING.get(), ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL.get(), ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING.get());
+
+        //axolotlbucket
+//        event.getItemColors().register((itemStack, tintIndex) -> tintIndex == 0 ? -1 : ((EnhancedAxolotlBucket)itemStack.getItem()).getColor(itemStack, tintIndex),
+//            ModItems.ENHNACED_AXOLOTL_BUCKET.get());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -121,8 +133,8 @@ public class ClientEventRegistry {
         event.registerEntityRenderer(ENHANCED_MOOSHROOM.get(), RenderEnhancedMooshroom::new);
 //        event.registerEntityRenderer(ENHANCED_RABBIT.get(), RenderEnhancedRabbit::new);
 //        event.registerEntityRenderer(ENHANCED_SHEEP.get(), RenderEnhancedSheep::new);
-//        event.registerEntityRenderer(ENHANCED_LLAMA.get(), RenderEnhancedLlama::new);
-//        event.registerEntityRenderer(ENHANCED_PIG.get(), RenderEnhancedPig::new);
+        event.registerEntityRenderer(ENHANCED_LLAMA.get(), RenderEnhancedLlama::new);
+        event.registerEntityRenderer(ENHANCED_PIG.get(), RenderEnhancedPig::new);
 //        event.registerEntityRenderer(ENHANCED_HORSE.get(), RenderEnhancedHorse::new);
 //        event.registerEntityRenderer(ENHANCED_MOOBLOOM.get(), RenderEnhancedMoobloom::new);
 //        event.registerEntityRenderer(ENHANCED_TURTLE.get(), RenderEnhancedTurtle::new);
@@ -139,7 +151,10 @@ public class ClientEventRegistry {
         event.registerLayerDefinition(RenderEnhancedChicken.CHICKEN_LAYER, ModelEnhancedChicken::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedCow.COW_LAYER, ModelEnhancedCow::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedMooshroom.MOOSHROOM_LAYER, ModelEnhancedCow::createBodyLayer);
+        event.registerLayerDefinition(RenderEnhancedPig.PIG_LAYER, ModelEnhancedPig::createBodyLayer);
+        event.registerLayerDefinition(RenderEnhancedLlama.LLAMA_LAYER, ModelEnhancedLlama::createBodyLayer);
         event.registerLayerDefinition(EggCartonTileEntityRenderer.EGG_CARTON, EggCartonTileEntityRenderer::createBodyLayer);
+        event.registerLayerDefinition(ModelLayers.AXOLOTL_BUCKET_LAYER, EnhancedAxolotlBucketModel::createLayer);
     }
 
 }

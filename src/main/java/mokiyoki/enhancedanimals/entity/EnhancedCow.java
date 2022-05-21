@@ -149,6 +149,13 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
     @Override
     protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeCow.get();}
 
+    //returns how grown the horns are
+    public float hornGrowthAmount() {
+        int age = this.getEnhancedAnimalAge();
+        int hornFullSizedAge = this.getFullSizeAge() * 2;
+        return age > hornFullSizedAge ? 1.0F : age/(float)hornFullSizedAge;
+    }
+
     @Override
     protected int gestationConfig() {
         return EanimodCommonConfig.COMMON.gestationDaysCow.get();

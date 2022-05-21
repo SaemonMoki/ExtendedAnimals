@@ -266,6 +266,10 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
         return this.entityData.get(COAT_LENGTH);
     }
 
+    public int getMaxCoatLength() {
+        return this.maxCoatLength;
+    }
+
     @Override
     public double getPassengersRidingOffset() {
         ItemStack saddleSlot = this.getEnhancedInventory().getItem(1);
@@ -346,7 +350,7 @@ public class EnhancedLlama extends EnhancedAnimalRideableAbstract implements Ran
 
             int age = this.getEnhancedAnimalAge(); //overloaded version of getAge
 
-            int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*(((float)age/(float)this.getAdultAge())));
+            int maxcoat = age >= this.getAdultAge() ? this.maxCoatLength : (int)(this.maxCoatLength*this.growthAmount());
 
             if (maxcoat > currentCoatLength) {
                 currentCoatLength++;

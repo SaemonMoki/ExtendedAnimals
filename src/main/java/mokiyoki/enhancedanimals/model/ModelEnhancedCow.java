@@ -245,11 +245,6 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
     private WrappedModelPart mushroom5;
     private WrappedModelPart mushroom6;
     private WrappedModelPart mushroom7;
-//    private WrappedModelPart mushroom8;
-//    private WrappedModelPart mushroom9;
-//    private WrappedModelPart mushroom10;
-//    private WrappedModelPart mushroom11;
-//    private WrappedModelPart mushroom12;
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
@@ -258,7 +253,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         PartDefinition bBody = bCow.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, -11.0F, -10.0F));
         PartDefinition bHump = bBody.addOrReplaceChild("bHump", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 1.0F));
         PartDefinition bNeck = bBody.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 2.0F));
-        PartDefinition bHead = bNeck.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -9.0F));
+        PartDefinition bHead = bNeck.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -10.0F));
         PartDefinition bEarLeft = bHead.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(4.0F, 0.0F, -3.0F));
         PartDefinition bEarRight = bHead.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(-4.0F, 0.0F, -3.0F));
         PartDefinition bHornNub = bHead.addOrReplaceChild("bHornNub", CubeListBuilder.create(), PartPose.offset(0.0F, -1.0F, -0.5F));
@@ -1033,6 +1028,31 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             /**
              *      Horns
              */
+
+            this.theHornLeft.show(cowModelData.offsets.containsKey("bHornL"));
+            this.hornL0.show(cowModelData.offsets.containsKey("hornL0"));
+            this.hornL1.show(cowModelData.offsets.containsKey("hornL1"));
+            this.hornL2.show(cowModelData.offsets.containsKey("hornL2"));
+            this.hornL3.show(cowModelData.offsets.containsKey("hornL3"));
+            this.hornL4.show(cowModelData.offsets.containsKey("hornL4"));
+            this.hornL5.show(cowModelData.offsets.containsKey("hornL5"));
+            this.hornL6.show(cowModelData.offsets.containsKey("hornL6"));
+            this.hornL7.show(cowModelData.offsets.containsKey("hornL7"));
+            this.hornL8.show(cowModelData.offsets.containsKey("hornL8"));
+            this.hornL9.show(cowModelData.offsets.containsKey("hornL9"));
+
+            this.theHornRight.show(cowModelData.offsets.containsKey("bHornR"));
+            this.hornR0.show(cowModelData.offsets.containsKey("hornR0"));
+            this.hornR1.show(cowModelData.offsets.containsKey("hornR1"));
+            this.hornR2.show(cowModelData.offsets.containsKey("hornR2"));
+            this.hornR3.show(cowModelData.offsets.containsKey("hornR3"));
+            this.hornR4.show(cowModelData.offsets.containsKey("hornR4"));
+            this.hornR5.show(cowModelData.offsets.containsKey("hornR5"));
+            this.hornR6.show(cowModelData.offsets.containsKey("hornR6"));
+            this.hornR7.show(cowModelData.offsets.containsKey("hornR7"));
+            this.hornR8.show(cowModelData.offsets.containsKey("hornR8"));
+            this.hornR9.show(cowModelData.offsets.containsKey("hornR9"));
+
             List<Float> scalingsForHorn = ModelHelper.createScalings(cow.hornScale,0.0F, 0.0F, 0.0F);
             mapOfScale.put("bHornL", scalingsForHorn);
             mapOfScale.put("bHornR", ModelHelper.mirrorX(scalingsForHorn));
@@ -1163,8 +1183,8 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         }
     }
 
-    protected Map<String, Vector3f> saveAnimationValues(T animal, CowPhenotype cow) {
-        Map<String, Vector3f> map = animal.getModelRotationValues();
+    protected Map<String, Vector3f> saveAnimationValues(CowPhenotype cow, float hornGrowthAmount) {
+        Map<String, Vector3f> map = new HashMap<>();
         Vector3f blank = new Vector3f(0.0F, 0.0F, 0.0F);
         map.put("bCowPos", new Vector3f(0.0F, cow.dwarf ? 16.0F : 14.0F, 0.0F));
         map.put("bHumpPos", new Vector3f(0.0F, cow.humpPlacement, 0.0F));
@@ -1185,6 +1205,16 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         map.put("tail1", blank.copy());
         map.put("tail2", blank.copy());
         map.put("tailB", blank.copy());
+
+        if (cow.hornType != HornType.POLLED) {
+            map.put("bHornNubPos", new Vector3f(0.0F, cow.hornType.placement, 0.0F));
+            map.put("bHornL", new Vector3f(Mth.HALF_PI, 0.0F, 0.0F));
+            map.put("bHornR", new Vector3f(Mth.HALF_PI, 0.0F, 0.0F));
+
+            saveHornRotations(cow, hornGrowthAmount, map);
+            updateHornRotations(cow, hornGrowthAmount, map);
+        }
+
         if (cow.mushrooms != null) {
             //body
             if (cow.mushrooms[0]!=-1) map.put("mushroom0", new Vector3f(cow.mushrooms[0]-6, 0.0F, cow.mushrooms[1]+1));
@@ -1204,129 +1234,134 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         return map;
     }
 
-    private void setupInitialAnimationValues(T entityIn, CowModelData modelData, CowPhenotype cow) {
-            this.theCow.setY(cow.dwarf ? 16.0F : 14.0F);
-            this.theHead.setXRot(0.5F);
-            this.jaw.setXRot(-0.3F);
-            this.theEarLeft.setZRot(cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness);
-            this.theEarRight.setZRot(-(cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness));
-            this.theHump.setXRot(-0.2F);
-            saveAnimationValues(entityIn, cow);
+    private void saveHornRotations(CowPhenotype cow, float hornGrowthAmount, Map<String, Vector3f> map) {
+        if (cow.hornType != HornType.POLLED) {
+            for (int i = 0; i <= 9; i++) {
+                map.put("hL"+i, new Vector3f(-cow.hornGeneticsX[i], cow.hornGeneticsY[i], cow.hornGeneticsZ[i]));
+                map.put("hR"+i, new Vector3f(-cow.hornGeneticsX[i], -cow.hornGeneticsY[i], -cow.hornGeneticsZ[i]));
+            }
+        }
     }
 
-    private void setHornRotations(CowModelData cowModelData) {
-        CowPhenotype cow = cowModelData.getPhenotype();
-        HornType horns = cow.hornType;
-
-        Float[] hornGrowthL = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
-        Float[] hornGrowthR = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
-
+    private void updateHornRotations(CowPhenotype cow, float hornGrowthAmount, Map<String, Vector3f> map) {
+        Float[] hornY = {0.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
         int lengthL = cow.leftHornLength;
         int lengthR = cow.rightHornLength;
-
-        if (cowModelData.growthAmount < 1.0F) {
-            //this grows the horns from nothing to their adult size
-            float age = (float)cowModelData.growthAmount/(cowModelData.growthAmount * 1.2857F);
-            lengthL = lengthL + ((int)((12-lengthL) * (1.0F-(age))));
-            lengthR = lengthR + ((int)((12-lengthR) * (1.0F-(age))));
-        }
-
-        if (horns != HornType.POLLED) {
-            switch (lengthL) {
-                case 0 -> this.hornL0.setPos(0.0F, 0.0F, 0.0F);
-                case 1 -> this.hornL1.setPos(0.0F, 0.0F, 0.0F);
-                case 2 -> this.hornL2.setPos(0.0F, 0.0F, 0.0F);
-                case 3 -> this.hornL3.setPos(0.0F, 0.0F, 0.0F);
-                case 4 -> this.hornL4.setPos(0.0F, 0.0F, 0.0F);
-                case 5 -> this.hornL5.setPos(0.0F, 0.0F, 0.0F);
-                case 6 -> this.hornL6.setPos(0.0F, 0.0F, 0.0F);
-                case 7 -> this.hornL7.setPos(0.0F, 0.0F, 0.0F);
-                case 8 -> this.hornL8.setPos(0.0F, 0.0F, 0.0F);
-                case 9 -> this.hornL9.setPos(0.0F, 0.0F, 0.0F);
+        lengthL = lengthL + ((int)((12-lengthL) * (1.0F-(hornGrowthAmount))));
+        lengthR = lengthR + ((int)((12-lengthR) * (1.0F-(hornGrowthAmount))));
+        for (int i = 0; i <= 9; i++) {
+            if (map.containsKey("hL"+i)) {
+                if (lengthL <= i) {
+                    map.put("hornL" + i, map.get("hL" + i));
+                    map.remove("hL" + i);
+                }
+                map.put("hornPosL"+(i), new Vector3f(0.0F, hornY[i], 0.0F));
+            }
+            if (map.containsKey("hR"+i)) {
+                if (lengthR <= i){
+                    map.put("hornR" + i, map.get("hR" + i));
+                    map.remove("hR" + i);
+                }
+                map.put("hornPosR"+(i), new Vector3f(0.0F, hornY[i], 0.0F));
             }
         }
-
-            this.theHornLeft.setYAndSeen(0.0F, cow.hornType != HornType.POLLED);
-            this.hornL0.setYAndSeen(0.0F, cow.hornType != HornType.POLLED && lengthL <= 0);
-            this.hornL1.setYAndSeen(lengthL <= 0 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 1);
-            this.hornL2.setYAndSeen(lengthL <= 1 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 2);
-            this.hornL3.setYAndSeen(lengthL <= 2 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 3);
-            this.hornL4.setYAndSeen(lengthL <= 3 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 4);
-            this.hornL5.setYAndSeen(lengthL <= 4 ? -1.8F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 5);
-            this.hornL6.setYAndSeen(lengthL <= 5 ? -1.6F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 6);
-            this.hornL7.setYAndSeen(lengthL <= 6 ? -1.4F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 7);
-            this.hornL8.setYAndSeen(lengthL <= 7 ? -1.2F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 8);
-            this.hornL9.setYAndSeen(lengthL <= 8 ? -1.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 9);
-
-            this.theHornRight.setYAndSeen(0.0F, cow.hornType != HornType.POLLED);
-            this.hornR0.setYAndSeen(0.0F, cow.hornType != HornType.POLLED && lengthR <= 0);
-            this.hornR1.setYAndSeen(lengthR <= 0 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 1);
-            this.hornR2.setYAndSeen(lengthR <= 1 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 2);
-            this.hornR3.setYAndSeen(lengthR <= 2 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 3);
-            this.hornR4.setYAndSeen(lengthR <= 3 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 4);
-            this.hornR5.setYAndSeen(lengthR <= 4 ? -1.8F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 5);
-            this.hornR6.setYAndSeen(lengthR <= 5 ? -1.6F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 6);
-            this.hornR7.setYAndSeen(lengthR <= 6 ? -1.4F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 7);
-            this.hornR8.setYAndSeen(lengthR <= 7 ? -1.2F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 8);
-            this.hornR9.setYAndSeen(lengthR <= 8 ? -1.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 9);
-
-        this.theHornNub.setY(horns.getPlacement());
-
-        //horn shape controllers
-        if (horns != HornType.POLLED) {
-
-            float[] hornCalculationsZ = cow.hornGeneticsZ;
-            float[] hornCalculationsX = cow.hornGeneticsX;
-            float[] hornCalculationsY = cow.hornGeneticsY;
-
-            for (int z = 0; z <= 9; z++) {
-                hornGrowthL[z] = lengthL <= z ? 1.0F : 0.0F;
-                hornGrowthR[z] = lengthR <= z ? 1.0F : 0.0F;
-            }
-
-            this.theHornLeft.setXRot((float)Math.PI * 0.5F);
-            this.theHornRight.setXRot((float)Math.PI * 0.5F);
-
-            this.hornL0.setRotation(hornCalculationsX[0], -hornCalculationsY[0], hornCalculationsZ[0]);
-            this.hornR0.setRotation(hornCalculationsX[0], hornCalculationsY[0], -hornCalculationsZ[0]);
-
-            this.hornL1.setRotation(-hornCalculationsX[1] * hornGrowthL[1],hornCalculationsY[1] * hornGrowthL[1],hornCalculationsZ[1] * hornGrowthL[1]);
-            this.hornL2.setRotation(-hornCalculationsX[2] * hornGrowthL[2],hornCalculationsY[2] * hornGrowthL[2],hornCalculationsZ[2] * hornGrowthL[2]);
-            this.hornL3.setRotation(-hornCalculationsX[3] * hornGrowthL[3],hornCalculationsY[3] * hornGrowthL[3],hornCalculationsZ[3] * hornGrowthL[3]);
-            this.hornL4.setRotation(-hornCalculationsX[4] * hornGrowthL[4],hornCalculationsY[4] * hornGrowthL[4],hornCalculationsZ[4] * hornGrowthL[4]);
-            this.hornL5.setRotation(-hornCalculationsX[5] * hornGrowthL[5],hornCalculationsY[5] * hornGrowthL[5],hornCalculationsZ[5] * hornGrowthL[5]);
-            this.hornL6.setRotation(-hornCalculationsX[6] * hornGrowthL[6],hornCalculationsY[6] * hornGrowthL[6],hornCalculationsZ[6] * hornGrowthL[6]);
-            this.hornL7.setRotation(-hornCalculationsX[7] * hornGrowthL[7],hornCalculationsY[7] * hornGrowthL[7],hornCalculationsZ[7] * hornGrowthL[7]);
-            this.hornL8.setRotation(-hornCalculationsX[8] * hornGrowthL[8],hornCalculationsY[8] * hornGrowthL[8],hornCalculationsZ[8] * hornGrowthL[8]);
-            this.hornL9.setRotation(-hornCalculationsX[9] * hornGrowthL[9],hornCalculationsY[9] * hornGrowthL[9],hornCalculationsZ[9] * hornGrowthL[9]);
-
-            this.hornR1.setRotation(-hornCalculationsX[1] * hornGrowthR[1],-hornCalculationsY[1] * hornGrowthR[1],-hornCalculationsZ[1] * hornGrowthR[1]);
-            this.hornR2.setRotation(-hornCalculationsX[2] * hornGrowthR[2],-hornCalculationsY[2] * hornGrowthR[2],-hornCalculationsZ[2] * hornGrowthR[2]);
-            this.hornR3.setRotation(-hornCalculationsX[3] * hornGrowthR[3],-hornCalculationsY[3] * hornGrowthR[3],-hornCalculationsZ[3] * hornGrowthR[3]);
-            this.hornR4.setRotation(-hornCalculationsX[4] * hornGrowthR[4],-hornCalculationsY[4] * hornGrowthR[4],-hornCalculationsZ[4] * hornGrowthR[4]);
-            this.hornR5.setRotation(-hornCalculationsX[5] * hornGrowthR[5],-hornCalculationsY[5] * hornGrowthR[5],-hornCalculationsZ[5] * hornGrowthR[5]);
-            this.hornR6.setRotation(-hornCalculationsX[6] * hornGrowthR[6],-hornCalculationsY[6] * hornGrowthR[6],-hornCalculationsZ[6] * hornGrowthR[6]);
-            this.hornR7.setRotation(-hornCalculationsX[7] * hornGrowthR[7],-hornCalculationsY[7] * hornGrowthR[7],-hornCalculationsZ[7] * hornGrowthR[7]);
-            this.hornR8.setRotation(-hornCalculationsX[8] * hornGrowthR[8],-hornCalculationsY[8] * hornGrowthR[8],-hornCalculationsZ[8] * hornGrowthR[8]);
-            this.hornR9.setRotation(-hornCalculationsX[9] * hornGrowthR[9],-hornCalculationsY[9] * hornGrowthR[9],-hornCalculationsZ[9] * hornGrowthR[9]);
-        }
     }
-    
-    private void setMushroomArrangement(int[] mushrooms) {
-        //body
-        this.mushroom0.showAndPos(mushrooms[0]!=-1, mushrooms[0]-6, 0.0F, mushrooms[1]+1);
-        this.mushroom1.showAndPos(mushrooms[2]!=-1, mushrooms[2]+1, 0.0F, mushrooms[3]+5);
-        this.mushroom2.showAndPos(mushrooms[4]!=-1, mushrooms[4]-6, 0.0F, mushrooms[5]+9);
-        this.mushroom3.showAndPos(mushrooms[6]!=-1, mushrooms[6]+1, 0.0F, mushrooms[7]+13);
-        this.mushroom4.showAndPos(mushrooms[8]!=-1, (mushrooms[8]*2.0F)-3, 0.0F, mushrooms[9]+17);
 
-        //neck
-        this.mushroom5.showAndPos(mushrooms[10]!=-1, mushrooms[10]-3.0F, 0.0F, mushrooms[11]*2.0F);
-        this.mushroom6.showAndPos(mushrooms[12]!=-1, mushrooms[12], 0.0F, (mushrooms[13]*2.0F)+2.0F);
-
-        //headnub
-        this.mushroom7.showAndPos(mushrooms[14]!=-1, mushrooms[14]-2.0F, -0.5F, -2.0F);
-    }
+//    private void setHornRotations(CowPhenotype cow, float hornGrowthAmount) {
+//        HornType horns = cow.hornType;
+//
+//        Float[] hornGrowthL = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
+//        Float[] hornGrowthR = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
+//
+//        int lengthL = cow.leftHornLength;
+//        int lengthR = cow.rightHornLength;
+//
+//        if (hornGrowthAmount < 1.0F) {
+//            //this grows the horns from nothing to their adult size
+//            lengthL = lengthL + ((int)((12-lengthL) * (1.0F-(hornGrowthAmount))));
+//            lengthR = lengthR + ((int)((12-lengthR) * (1.0F-(hornGrowthAmount))));
+//        }
+//
+//        if (horns != HornType.POLLED) {
+//            switch (lengthL) {
+//                case 0 -> this.hornL0.setPos(0.0F, 0.0F, 0.0F);
+//                case 1 -> this.hornL1.setPos(0.0F, 0.0F, 0.0F);
+//                case 2 -> this.hornL2.setPos(0.0F, 0.0F, 0.0F);
+//                case 3 -> this.hornL3.setPos(0.0F, 0.0F, 0.0F);
+//                case 4 -> this.hornL4.setPos(0.0F, 0.0F, 0.0F);
+//                case 5 -> this.hornL5.setPos(0.0F, 0.0F, 0.0F);
+//                case 6 -> this.hornL6.setPos(0.0F, 0.0F, 0.0F);
+//                case 7 -> this.hornL7.setPos(0.0F, 0.0F, 0.0F);
+//                case 8 -> this.hornL8.setPos(0.0F, 0.0F, 0.0F);
+//                case 9 -> this.hornL9.setPos(0.0F, 0.0F, 0.0F);
+//            }
+//        }
+//
+//            this.theHornLeft.setYAndSeen(0.0F, cow.hornType != HornType.POLLED);
+//            this.hornL0.setYAndSeen(0.0F, cow.hornType != HornType.POLLED && lengthL <= 0);
+//            this.hornL1.setYAndSeen(lengthL <= 0 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 1);
+//            this.hornL2.setYAndSeen(lengthL <= 1 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 2);
+//            this.hornL3.setYAndSeen(lengthL <= 2 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 3);
+//            this.hornL4.setYAndSeen(lengthL <= 3 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 4);
+//            this.hornL5.setYAndSeen(lengthL <= 4 ? -1.8F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 5);
+//            this.hornL6.setYAndSeen(lengthL <= 5 ? -1.6F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 6);
+//            this.hornL7.setYAndSeen(lengthL <= 6 ? -1.4F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 7);
+//            this.hornL8.setYAndSeen(lengthL <= 7 ? -1.2F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 8);
+//            this.hornL9.setYAndSeen(lengthL <= 8 ? -1.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 9);
+//
+//            this.theHornRight.setYAndSeen(0.0F, cow.hornType != HornType.POLLED);
+//            this.hornR0.setYAndSeen(0.0F, cow.hornType != HornType.POLLED && lengthR <= 0);
+//            this.hornR1.setYAndSeen(lengthR <= 0 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 1);
+//            this.hornR2.setYAndSeen(lengthR <= 1 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 2);
+//            this.hornR3.setYAndSeen(lengthR <= 2 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 3);
+//            this.hornR4.setYAndSeen(lengthR <= 3 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 4);
+//            this.hornR5.setYAndSeen(lengthR <= 4 ? -1.8F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 5);
+//            this.hornR6.setYAndSeen(lengthR <= 5 ? -1.6F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 6);
+//            this.hornR7.setYAndSeen(lengthR <= 6 ? -1.4F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 7);
+//            this.hornR8.setYAndSeen(lengthR <= 7 ? -1.2F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 8);
+//            this.hornR9.setYAndSeen(lengthR <= 8 ? -1.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 9);
+//
+//        this.theHornNub.setY(horns.getPlacement());
+//
+//        //horn shape controllers
+//        if (horns != HornType.POLLED) {
+//
+//            float[] hornCalculationsZ = cow.hornGeneticsZ;
+//            float[] hornCalculationsX = cow.hornGeneticsX;
+//            float[] hornCalculationsY = cow.hornGeneticsY;
+//
+//            for (int z = 0; z <= 9; z++) {
+//                hornGrowthL[z] = lengthL <= z ? 1.0F : 0.0F;
+//                hornGrowthR[z] = lengthR <= z ? 1.0F : 0.0F;
+//            }
+//
+//            this.theHornLeft.setXRot((float)Math.PI * 0.5F);
+//            this.theHornRight.setXRot((float)Math.PI * 0.5F);
+//
+//            this.hornL0.setRotation(hornCalculationsX[0], -hornCalculationsY[0], hornCalculationsZ[0]);
+//            this.hornR0.setRotation(hornCalculationsX[0], hornCalculationsY[0], -hornCalculationsZ[0]);
+//
+//            this.hornL1.setRotation(-hornCalculationsX[1] * hornGrowthL[1],hornCalculationsY[1] * hornGrowthL[1],hornCalculationsZ[1] * hornGrowthL[1]);
+//            this.hornL2.setRotation(-hornCalculationsX[2] * hornGrowthL[2],hornCalculationsY[2] * hornGrowthL[2],hornCalculationsZ[2] * hornGrowthL[2]);
+//            this.hornL3.setRotation(-hornCalculationsX[3] * hornGrowthL[3],hornCalculationsY[3] * hornGrowthL[3],hornCalculationsZ[3] * hornGrowthL[3]);
+//            this.hornL4.setRotation(-hornCalculationsX[4] * hornGrowthL[4],hornCalculationsY[4] * hornGrowthL[4],hornCalculationsZ[4] * hornGrowthL[4]);
+//            this.hornL5.setRotation(-hornCalculationsX[5] * hornGrowthL[5],hornCalculationsY[5] * hornGrowthL[5],hornCalculationsZ[5] * hornGrowthL[5]);
+//            this.hornL6.setRotation(-hornCalculationsX[6] * hornGrowthL[6],hornCalculationsY[6] * hornGrowthL[6],hornCalculationsZ[6] * hornGrowthL[6]);
+//            this.hornL7.setRotation(-hornCalculationsX[7] * hornGrowthL[7],hornCalculationsY[7] * hornGrowthL[7],hornCalculationsZ[7] * hornGrowthL[7]);
+//            this.hornL8.setRotation(-hornCalculationsX[8] * hornGrowthL[8],hornCalculationsY[8] * hornGrowthL[8],hornCalculationsZ[8] * hornGrowthL[8]);
+//            this.hornL9.setRotation(-hornCalculationsX[9] * hornGrowthL[9],hornCalculationsY[9] * hornGrowthL[9],hornCalculationsZ[9] * hornGrowthL[9]);
+//
+//            this.hornR1.setRotation(-hornCalculationsX[1] * hornGrowthR[1],-hornCalculationsY[1] * hornGrowthR[1],-hornCalculationsZ[1] * hornGrowthR[1]);
+//            this.hornR2.setRotation(-hornCalculationsX[2] * hornGrowthR[2],-hornCalculationsY[2] * hornGrowthR[2],-hornCalculationsZ[2] * hornGrowthR[2]);
+//            this.hornR3.setRotation(-hornCalculationsX[3] * hornGrowthR[3],-hornCalculationsY[3] * hornGrowthR[3],-hornCalculationsZ[3] * hornGrowthR[3]);
+//            this.hornR4.setRotation(-hornCalculationsX[4] * hornGrowthR[4],-hornCalculationsY[4] * hornGrowthR[4],-hornCalculationsZ[4] * hornGrowthR[4]);
+//            this.hornR5.setRotation(-hornCalculationsX[5] * hornGrowthR[5],-hornCalculationsY[5] * hornGrowthR[5],-hornCalculationsZ[5] * hornGrowthR[5]);
+//            this.hornR6.setRotation(-hornCalculationsX[6] * hornGrowthR[6],-hornCalculationsY[6] * hornGrowthR[6],-hornCalculationsZ[6] * hornGrowthR[6]);
+//            this.hornR7.setRotation(-hornCalculationsX[7] * hornGrowthR[7],-hornCalculationsY[7] * hornGrowthR[7],-hornCalculationsZ[7] * hornGrowthR[7]);
+//            this.hornR8.setRotation(-hornCalculationsX[8] * hornGrowthR[8],-hornCalculationsY[8] * hornGrowthR[8],-hornCalculationsZ[8] * hornGrowthR[8]);
+//            this.hornR9.setRotation(-hornCalculationsX[9] * hornGrowthR[9],-hornCalculationsY[9] * hornGrowthR[9],-hornCalculationsZ[9] * hornGrowthR[9]);
+//        }
+//    }
 
     /**
      *      Animations
@@ -1334,21 +1369,36 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.currentAnimal = entityIn.getId();
-        System.out.println("limbSwing:"+limbSwing+" | limbSwingAmount:"+limbSwingAmount);
+//        System.out.println("limbSwing:"+limbSwing+" | limbSwingAmount:"+limbSwingAmount);
         CowModelData cowModelData = getCreateCowModelData(entityIn);
-        CowPhenotype cow = cowModelData.getPhenotype();
         float drive = ageInTicks + (1000*cowModelData.random);
 
-        if (cow!=null) {
-            setHornRotations(cowModelData);
-            saveAnimationValues(entityIn, cow);
-//            if (rotationValues.isEmpty()) {
-//                setupInitialAnimationValues(entityIn, cowModelData, cow);
-            Map<String, Vector3f> rotationValues = entityIn.getModelRotationValues();
-            rotationValues = entityIn.getModelRotationValues();
-//            }
+        if (!cowModelData.offsets.isEmpty()) {
+            Map<String, Vector3f> rotationValues = cowModelData.offsets;
             this.theCow.setY(rotationValues.get("bCowPos").y());
             this.theHump.setY(rotationValues.get("bHumpPos").y());
+
+            this.hornL0.setFromVector(rotationValues.get("hornL0"), new Vector3f(0.0F, 2.0F, 0.0F));
+            this.hornL1.setFromVector(rotationValues.get("hornL1"), new Vector3f(0.0F, 2.0F, 0.0F));
+            this.hornL2.setFromVector(rotationValues.get("hornL2"), new Vector3f(0.0F, 2.0F, 0.0F));
+            this.hornL3.setFromVector(rotationValues.get("hornL3"), new Vector3f(0.0F, 2.0F, 0.0F));
+            this.hornL4.setFromVector(rotationValues.get("hornL4"), new Vector3f(0.0F, 2.0F, 0.0F));
+            this.hornL5.setFromVector(rotationValues.get("hornL5"), new Vector3f(0.0F, 2.0F, 0.0F));
+            this.hornL6.setFromVector(rotationValues.get("hornL6"), new Vector3f(0.0F, 2.0F, 0.0F));
+            this.hornL7.setFromVector(rotationValues.get("hornL7"), new Vector3f(0.0F, 2.0F, 0.0F));
+            this.hornL8.setFromVector(rotationValues.get("hornL8"), new Vector3f(0.0F, 2.0F, 0.0F));
+            this.hornL9.setFromVector(rotationValues.get("hornL9"), new Vector3f(0.0F, 2.0F, 0.0F));
+
+            this.hornR0.setFromVector(rotationValues.get("hornR0"), rotationValues.get("hornPosR0"));
+            this.hornR1.setFromVector(rotationValues.get("hornR1"), rotationValues.get("hornPosR1"));
+            this.hornR2.setFromVector(rotationValues.get("hornR2"), rotationValues.get("hornPosR2"));
+            this.hornR3.setFromVector(rotationValues.get("hornR3"), rotationValues.get("hornPosR3"));
+            this.hornR4.setFromVector(rotationValues.get("hornR4"), rotationValues.get("hornPosR4"));
+            this.hornR5.setFromVector(rotationValues.get("hornR5"), rotationValues.get("hornPosR5"));
+            this.hornR6.setFromVector(rotationValues.get("hornR6"), rotationValues.get("hornPosR6"));
+            this.hornR7.setFromVector(rotationValues.get("hornR7"), rotationValues.get("hornPosR7"));
+            this.hornR8.setFromVector(rotationValues.get("hornR8"), rotationValues.get("hornPosR8"));
+            this.hornR9.setFromVector(rotationValues.get("hornR9"), rotationValues.get("hornPosR9"));
 
             Animation runningAnimation = ANIMATIONS.getOrDefault("eating", ANIMATIONS.get("idle"));
 
@@ -1413,6 +1463,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
 
     private class CowModelData extends AnimalModelData {
         float bagSize = 0.0F;
+        float hornGrowth = 0.0F;
         public CowPhenotype getPhenotype() {
             return (CowPhenotype) this.phenotype;
         }
@@ -1434,9 +1485,17 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
 
     @Override
     protected void additionalModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
-        animalModelData.offsets = saveAnimationValues(enhancedAnimal, ((CowModelData) animalModelData).getPhenotype());
-//        animalModelData.animation = "eating";
+        animalModelData.offsets = saveAnimationValues(((CowModelData) animalModelData).getPhenotype(), enhancedAnimal.hornGrowthAmount());
         ((CowModelData) animalModelData).bagSize = enhancedAnimal.getMilkAmount() != 0 ? enhancedAnimal.getBagSize() : 0.0F;
+    }
+
+    @Override
+    protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
+        if (((CowModelData)animalModelData).hornGrowth != 1.0F) {
+            updateHornRotations(((CowModelData) animalModelData).getPhenotype(), enhancedAnimal.hornGrowthAmount(), animalModelData.offsets);
+            ((CowModelData)animalModelData).hornGrowth = enhancedAnimal.hornGrowthAmount();
+        }
+
     }
 
     @Override

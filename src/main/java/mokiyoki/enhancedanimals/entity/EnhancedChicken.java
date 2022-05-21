@@ -2116,11 +2116,15 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 }
 
                 //after finished autosomalGenes
-                addTextureToAnimal(CHICKEN_TEXTURES_GROUND, ground, null);
-                addTextureToAnimal(CHICKEN_TEXTURES_PATTERN, pattern, p -> p <= 350);
-                addTextureToAnimal(CHICKEN_TEXTURES_MOORHEAD, moorhead, m -> m != 0);
-                addTextureToAnimal(CHICKEN_TEXTURES_MOTTLEMARKINGS, mottles, m -> m != 0);
-                addTextureToAnimal(CHICKEN_TEXTURES_WHITE, white, w -> w != 0);
+                addTextureToAnimal("new_ground.png");
+//                addTextureToAnimal("new_lace.png");
+//                addTextureToAnimal("new_mottles.png");
+//                addTextureToAnimal(CHICKEN_TEXTURES_GROUND, ground, null);
+//                addTextureToAnimal(CHICKEN_TEXTURES_PATTERN, pattern, p -> p <= 350);
+//                addTextureToAnimal(CHICKEN_TEXTURES_MOORHEAD, moorhead, m -> m != 0);
+//                addTextureToAnimal(CHICKEN_TEXTURES_MOTTLEMARKINGS, mottles, m -> m != 0);
+//                addTextureToAnimal(CHICKEN_TEXTURES_WHITE, white, w -> w != 0);
+
                 addTextureToAnimal(CHICKEN_TEXTURES_SHANKS, shanks, null);
                 addTextureToAnimal(CHICKEN_TEXTURES_FACE, face, f -> f >= 1);
                 addTextureToAnimal(CHICKEN_TEXTURES_EARS, ears, e -> e >= 1);

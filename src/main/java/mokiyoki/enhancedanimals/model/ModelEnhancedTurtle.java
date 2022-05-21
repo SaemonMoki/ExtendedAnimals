@@ -1,3 +1,253 @@
+package mokiyoki.enhancedanimals.model;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@OnlyIn(Dist.CLIENT)
+public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnimalModel<T> {
+    protected WrappedModelPart theTurtle;
+
+    protected WrappedModelPart theHead;
+    protected WrappedModelPart theBody;
+    protected WrappedModelPart theLegFrontLeft;
+    protected WrappedModelPart theLegFrontRight;
+    protected WrappedModelPart theLegBackLeft;
+    protected WrappedModelPart theLegBackRight;
+    protected WrappedModelPart theTail;
+
+    protected WrappedModelPart head;
+    protected WrappedModelPart body;
+    protected WrappedModelPart pregnantBody;
+
+    private WrappedModelPart legFrontLeft;
+    private WrappedModelPart legFrontRight;
+    private WrappedModelPart legBackLeft;
+    private WrappedModelPart legBackRight;
+
+    public static LayerDefinition createBodyLayer() {
+        MeshDefinition meshdefinition = new MeshDefinition();
+        PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bTurtle = base.addOrReplaceChild("bTurtle", CubeListBuilder.create(), PartPose.offset(0.0F, 14.0F, 0.0F));
+        PartDefinition bBody = bTurtle.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bHead = bBody.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bLegFrontLeft = bTurtle.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, -10.0F));
+        PartDefinition bLegFrontRight = bTurtle.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(-3.0F, 0.0F, -10.0F));
+        PartDefinition bLegBackLeft = bTurtle.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, 9.0F));
+        PartDefinition bLegBackRight = bTurtle.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(-3.0F, 0.0F, 9.0F));
+
+        bHead.addOrReplaceChild("eyes", CubeListBuilder.create()
+                        .texOffs(69, 15)
+                        .addBox(2.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F))
+                        .texOffs(0, 40)
+                        .addBox(-3.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F)),
+                PartPose.ZERO
+        );
+
+        bHead.addOrReplaceChild("head", CubeListBuilder.create()
+                        .texOffs(3, 0)
+                        .addBox(-3.0F, -1.0F, -3.0F, 6, 5, 6),
+                PartPose.ZERO
+        );
+
+        bBody.addOrReplaceChild("body", CubeListBuilder.create()
+                        .texOffs(7, 37)
+                        .addBox(-9.5F, 3.0F, -10.0F, 19, 20, 6)
+                        .texOffs(31, 1)
+                        .addBox(-5.5F, 3.0F, -13.0F, 11, 18, 3),
+                PartPose.offset(0.0F, 18.1F, -4.0F)
+        );
+        bBody.addOrReplaceChild("bodyP", CubeListBuilder.create()
+                        .texOffs(7, 37)
+                        .addBox(-9.5F, 3.0F, -10.0F, 19, 20, 6)
+                        .texOffs(31, 1)
+                        .addBox(-5.5F, 3.0F, -13.0F, 11, 18, 3)
+                        .texOffs(70, 33)
+                        .addBox(-4.5F, 3.0F, -14.0F, 9, 18, 1),
+                PartPose.offset(0.0F, 18.1F, -4.0F)
+        );
+
+        bLegFrontLeft.addOrReplaceChild("legFL", CubeListBuilder.create()
+                        .texOffs(27, 24)
+                        .addBox(0.0F, 0.0F, -2.0F, 13, 1, 5),
+                PartPose.ZERO
+        );
+        bLegFrontRight.addOrReplaceChild("legFR", CubeListBuilder.create()
+                        .texOffs(27, 30)
+                        .addBox(-13.0F, 0.0F, -2.0F, 13, 1, 5),
+                PartPose.ZERO
+        );
+        bLegBackLeft.addOrReplaceChild("legBL", CubeListBuilder.create()
+                        .texOffs(1, 12)
+                        .addBox(-2.0F, 0.0F, 0.0F, 4, 1, 10),
+                PartPose.ZERO
+        );
+        bLegBackRight.addOrReplaceChild("legBR", CubeListBuilder.create()
+                        .texOffs(1, 23)
+                        .addBox(-2.0F, 0.0F, 0.0F, 4, 1, 10),
+                PartPose.ZERO
+        );
+
+        base.addOrReplaceChild("collar", CubeListBuilder.create()
+                        .texOffs(59, 54)
+                        .addBox(-3.5F, -1.0F, -0.5F, 7, 2, 7)
+                        .texOffs(82, 14)
+                        .addBox(0.0F, -1.5F, 5.5F, 0,  3, 3)
+                        .texOffs(59, 0)
+                        .addBox(-1.5F, -1.5F, 7.0F, 3, 3, 3, new CubeDeformation(-0.5F)),
+                PartPose.offsetAndRotation(0.0F, -1.5F, 2.0F, -Mth.HALF_PI, 0.0F, 0.0F)
+        );
+        
+        return LayerDefinition.create(meshdefinition, 128, 64);
+    }
+
+    public ModelEnhancedTurtle(ModelPart modelPart) {
+        super(modelPart);
+        ModelPart base = modelPart.getChild("base");
+        ModelPart bTurtle = base.getChild("bTurtle");
+        ModelPart bBody = bTurtle.getChild("bBody");
+        ModelPart bHead = bBody.getChild("bHead");
+        ModelPart bLegFL = bTurtle.getChild("bLegFL");
+        ModelPart bLegFR = bTurtle.getChild("bLegFR");
+        ModelPart bLegBL = bTurtle.getChild("bLegBL");
+        ModelPart bLegBR = bTurtle.getChild("bLegBR");
+
+        this.theTurtle = new WrappedModelPart(bTurtle, "bTurtle");
+        this.theBody = new WrappedModelPart(bBody, "bBody");
+        this.theHead = new WrappedModelPart(bHead, "bHead");
+        this.theLegFrontLeft = new WrappedModelPart(bLegFL, "bLegFL");
+        this.theLegFrontRight = new WrappedModelPart(bLegFR, "bLegFR");
+        this.theLegBackLeft = new WrappedModelPart(bLegBL, "bLegBL");
+        this.theLegBackRight = new WrappedModelPart(bLegBR, "bLegBR");
+
+        this.eyes = new WrappedModelPart("eyes", bHead);
+
+        this.head = new WrappedModelPart("head", bHead);
+
+        this.body = new WrappedModelPart("body", bBody);
+        this.pregnantBody = new WrappedModelPart("bodyP", bBody);
+
+        this.legFrontLeft = new WrappedModelPart("legFL", bLegFL);
+        this.legFrontRight = new WrappedModelPart("legFR", bLegFR);
+        this.legBackLeft = new WrappedModelPart("legBL", bLegBL);
+        this.legBackRight = new WrappedModelPart("legBR", bLegBR);
+
+        this.theTurtle.addChild(this.theBody);
+        this.theBody.addChild(this.theHead);
+        this.theTurtle.addChild(this.legFrontLeft);
+        this.theTurtle.addChild(this.legFrontRight);
+        this.theTurtle.addChild(this.legBackLeft);
+        this.theTurtle.addChild(this.legBackRight);
+
+        this.theHead.addChild(this.head);
+        this.theHead.addChild(this.eyes);
+
+        this.theBody.addChild(this.body);
+
+        this.theLegFrontLeft.addChild(this.legFrontLeft);
+
+        this.theLegFrontRight.addChild(this.legFrontRight);
+
+        this.theLegBackLeft.addChild(this.legBackLeft);
+
+        this.theLegBackRight.addChild(this.legBackRight);
+
+        this.theHead.addChild(this.collar);
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        TurtleModelData turtleModelData = getTurtleModelData();
+        TurtlePhenotype turtle = turtleModelData.getPhenotype();
+
+        if (turtle!=null) {
+            super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            poseStack.pushPose();
+            poseStack.scale(1.0F, 1.0F, 1.0F);
+            poseStack.translate(0.0F, 0.0F, 0.0F);
+
+            gaRender(this.theTurtle, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+            poseStack.popPose();
+        }
+    }
+
+    protected Map<String, Vector3f> saveAnimationValues(TurtlePhenotype animal) {
+        Map<String, Vector3f> map = new HashMap<>();
+        return map;
+    }
+
+    private void setupInitialAnimationValues(T entityIn, TurtleModelData modelData, TurtlePhenotype turtle) {
+
+    }
+
+    @Override
+    public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.currentAnimal = entityIn.getId();
+        TurtleModelData turtleModelData = getCreateTurtleModelData(entityIn);
+        TurtlePhenotype turtle = turtleModelData.getPhenotype();
+        float drive = ageInTicks + (1000 * turtleModelData.random);
+
+        if (turtle != null) {
+
+        }
+
+    }
+
+    private class TurtleModelData extends AnimalModelData {
+        boolean hasEggs;
+        public TurtlePhenotype getPhenotype() {
+            return (TurtlePhenotype) this.phenotype;
+        }
+    }
+
+    private TurtleModelData getTurtleModelData() {
+        return (TurtleModelData) getAnimalModelData();
+    }
+
+    private TurtleModelData getCreateTurtleModelData(T enhancedTurtle) {
+        return (TurtleModelData) getCreateAnimalModelData(enhancedTurtle);
+    }
+
+    @Override
+    protected void setInitialModelData(T enhancedTurtle) {
+        TurtleModelData turtleModelData = new TurtleModelData();
+        setBaseInitialModelData(turtleModelData, enhancedTurtle);
+    }
+
+    @Override
+    protected void additionalModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
+        ((TurtleModelData)animalModelData).hasEggs = enhancedAnimal.hasEgg();
+    }
+
+    @Override
+    protected Phenotype createPhenotype(T enhancedAnimal) {
+        return new TurtlePhenotype(enhancedAnimal.getSharedGenes().getAutosomalGenes());
+    }
+
+    protected class TurtlePhenotype implements Phenotype {
+
+        TurtlePhenotype(int[] gene) {
+
+        }
+    }
+}
+
 //package mokiyoki.enhancedanimals.model;
 //
 //import com.mojang.blaze3d.vertex.PoseStack;

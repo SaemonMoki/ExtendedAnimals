@@ -12,9 +12,11 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
@@ -22,6 +24,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     protected WrappedModelPart thePig;
 
     protected WrappedModelPart theHead;
+    protected WrappedModelPart theMouth;
     protected WrappedModelPart theEarLeft;
     protected WrappedModelPart theEarRight;
     protected WrappedModelPart theNeck;
@@ -84,11 +87,12 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bPig = base.addOrReplaceChild("bPig", CubeListBuilder.create(), PartPose.offset(0.0F, 14.0F, 0.0F));
+        PartDefinition bPig = base.addOrReplaceChild("bPig", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 14.0F, 0.0F, 0.0F, 0.0F, Mth.HALF_PI));
         PartDefinition bBody = bPig.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition bButt = bBody.addOrReplaceChild("bButt", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
         PartDefinition bNeck = bBody.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-        PartDefinition bHead = bNeck.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition bHead = bNeck.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, -10.0F, 0.0F));
+        PartDefinition bMouth = bHead.addOrReplaceChild("bMouth", CubeListBuilder.create(), PartPose.offset(0.0F, -10.0F, 0.0F));
         PartDefinition bEarLeft = bHead.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(4.0F, 0.0F, -3.0F));
         PartDefinition bEarRight = bHead.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(-4.0F, 0.0F, -3.0F));
         PartDefinition bLegFrontLeft = bPig.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, -10.0F));
@@ -100,9 +104,9 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         bHead.addOrReplaceChild("eyes", CubeListBuilder.create()
                         .texOffs(69, 15)
                         .addBox(2.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F))
-                        .texOffs(0, 40)
+                        .texOffs(49, 15)
                         .addBox(-3.5F, 0.0F, 0.0F, 1, 1, 1, new CubeDeformation(0.01F)),
-                PartPose.ZERO
+                PartPose.offset(0.0F, -5.0F, 0.0F)
         );
 
         bHead.addOrReplaceChild("head", CubeListBuilder.create()
@@ -112,18 +116,19 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         );
         bHead.addOrReplaceChild("cheeks", CubeListBuilder.create()
                         .texOffs(49, 13)
-                        .addBox(-4.0F, -0.5F, 0.0F, 8, 5, 4, new CubeDeformation(0.25F)),
-                PartPose.ZERO
+                        .addBox(-4.0F, 0.0F, 0.0F, 8, 5, 4, new CubeDeformation(0.25F)),
+                PartPose.offset(0.0F, -5.5F, -3.0F)
         );
         bHead.addOrReplaceChild("snout", CubeListBuilder.create()
                         .texOffs(49, 22)
-                        .addBox(-2.0F, -5.0F, -3.0F, 4, 6, 3),
+                        .addBox(-2.0F, -5.0F, 0.0F, 4, 6, 3),
                 PartPose.ZERO
         );
+
         bHead.addOrReplaceChild("jaw", CubeListBuilder.create()
-                        .texOffs(49, 22)
-                        .addBox(-2.0F, -5.0F, -3.0F, 4, 6, 3),
-                PartPose.offset(0.0F, 1.0F, -4.0F)
+                        .texOffs(63, 22)
+                        .addBox(-1.0F, -5.0F, 0.0F, 2, 6, 1),
+                PartPose.offset(0.0F, 1.0F, 4.0F)
         );
         bHead.addOrReplaceChild("tuskTL", CubeListBuilder.create()
                         .texOffs(69, 22)
@@ -321,6 +326,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         ModelPart bButt = bBody.getChild("bButt");
         ModelPart bNeck = bBody.getChild("bNeck");
         ModelPart bHead = bNeck.getChild("bHead");
+        ModelPart bMouth = bHead.getChild("bMouth");
         ModelPart bEarLeft = bHead.getChild("bEarL");
         ModelPart bEarRight = bHead.getChild("bEarR");
         ModelPart bLegFL = bPig.getChild("bLegFL");
@@ -334,6 +340,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         this.theButt = new WrappedModelPart(bButt, "bButt");
         this.theNeck = new WrappedModelPart(bNeck, "bNeck");
         this.theHead = new WrappedModelPart(bHead, "bHead");
+        this.theMouth = new WrappedModelPart(bMouth, "bMouth");
         this.theEarLeft = new WrappedModelPart(bEarLeft, "bEarL");
         this.theEarRight = new WrappedModelPart(bEarRight, "bEarR");
         this.theLegFrontLeft = new WrappedModelPart(bLegFL, "bLegFL");
@@ -398,6 +405,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         this.theBody.addChild(this.theButt);
         this.theButt.addChild(this.theTail);
         this.theNeck.addChild(this.theHead);
+        this.theHead.addChild(this.theMouth);
         this.theHead.addChild(this.theEarLeft);
         this.theHead.addChild(this.theEarRight);
         this.thePig.addChild(this.legFrontLeft);
@@ -407,10 +415,11 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         
         this.theHead.addChild(this.head);
         this.theHead.addChild(this.eyes);
-        this.theHead.addChild(this.snout);
         this.theHead.addChild(this.cheeks);
-        this.theHead.addChild(this.jaw);
-        
+
+        this.theMouth.addChild(this.snout);
+        this.theMouth.addChild(this.jaw);
+
         this.snout.addChild(this.tusksTopLeft);
         this.snout.addChild(this.tusksTopRight);
         
@@ -458,6 +467,8 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         resetCubes();
         
         if (pig!=null) {
+            super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
             this.waddleLeft.show(pig.hasWaddles);
             this.waddleRight.show(pig.hasWaddles);
             
@@ -489,14 +500,15 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
             poseStack.scale(1.0F, 1.0F, 1.0F);
             poseStack.translate(0.0F, 0.0F, 0.0F);
 
-            gaRender(this.thePig, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            gaRender(this.theNeck, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             poseStack.popPose();
         }
     }
 
-    protected Map<String, Vector3f> saveAnimationValues(T animal, PigPhenotype pig) {
-        Map<String, Vector3f> map = animal.getModelRotationValues();
+    protected Map<String, Vector3f> saveAnimationValues(PigPhenotype pig) {
+        Map<String, Vector3f> map = new HashMap<>();
+
         return map;
     }
 
@@ -535,6 +547,11 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     protected void setInitialModelData(T enhancedPig) {
         PigModelData pigModelData = new PigModelData();
         setBaseInitialModelData(pigModelData, enhancedPig);
+    }
+
+    @Override
+    protected void additionalModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
+        animalModelData.offsets = saveAnimationValues(((PigModelData) animalModelData).getPhenotype());
     }
 
     @Override

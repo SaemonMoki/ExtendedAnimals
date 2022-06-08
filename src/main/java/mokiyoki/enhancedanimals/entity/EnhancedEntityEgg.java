@@ -111,6 +111,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
     public void setEggData(EggHolder eggHolder) {
         this.setGenes(eggHolder.getGenes());
         this.setParentNames(eggHolder.getSire(), eggHolder.getDam());
+        this.hasParents = eggHolder.hasParents();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -189,7 +190,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
         this.getEntityData().set(GENES, genes);
         this.getEntityData().set(SIRE, compound.getString("SireName"));
         this.getEntityData().set(DAM, compound.getString("DamName"));
-
+        this.hasParents = compound.getBoolean("hasParents");
     }
 
     @Override
@@ -201,8 +202,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
         }
         compound.putString("SireName", this.getSire());
         compound.putString("DamName", this.getDam());
-
-
+        compound.putBoolean("hasParents", this.hasParents);
     }
 
     private CompoundTag makeCreeperFirework() {

@@ -133,11 +133,11 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
     private static int[] buildImage(int[] colours) {
         List<Integer> image = new ArrayList();
         for (int i = 0, l=colours.length; i < l; i++) {
-            if (colours[i] != -1) {
+//            if (colours[i] != -1) {
                 image.add(x[i]);
                 image.add(y[i]);
-                image.add(colours[i]);
-            }
+                image.add( colours[i] == -1 ? Color.blue.getRGB() : Color.red.getRGB());
+//            }
         }
         int [] imageArray = new int[image.size()];
         for (int i = 0, l=imageArray.length; i < l; i++) imageArray[i] = image.get(i);
@@ -153,6 +153,13 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         return texture.toString();
     }
 
+    @Override
+    public void checkExtraContent(@Nullable Player player, Level level, ItemStack stack, BlockPos pos) {
+        if (level instanceof ServerLevel) {
+            this.spawnAxolotl((ServerLevel)level, stack, pos);
+            level.gameEvent(player, GameEvent.ENTITY_PLACE, pos);
+        }
+    }
 
     private void spawnAxolotl(ServerLevel level, ItemStack stack, BlockPos pos) {
         Entity entity = getFishType().spawn(level, stack, (Player)null, pos, MobSpawnType.BUCKET, true, false);
@@ -163,14 +170,6 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
             if (this.getGenes(stack).isValid()) {
                 axolotl.setSharedGenes(this.getGenes(stack));
             }
-        }
-    }
-
-    @Override
-    public void checkExtraContent(@org.jetbrains.annotations.Nullable Player player, Level level, ItemStack stack, BlockPos pos) {
-        if (level instanceof ServerLevel) {
-            this.spawnAxolotl((ServerLevel)level, stack, pos);
-            level.gameEvent(player, GameEvent.ENTITY_PLACE, pos);
         }
     }
 

@@ -21,7 +21,7 @@ public class EnhancedAxolotlBucketModel extends Model {
     public static LayerDefinition createLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
-        PartDefinition bucket = partdefinition.addOrReplaceChild("bucket", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 8.0F));
+        PartDefinition bucket = partdefinition.addOrReplaceChild("bucket", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 8.0F, 0.0F, Mth.PI, 0.0F));
         bucket.addOrReplaceChild("bucket_front", CubeListBuilder.create()
                 .texOffs(2, 4).addBox(2.0F, 4.0F, 0.0F, 12.0F, 8.0F, 0.0F)
                 .texOffs(3, 12).addBox(3.0F, 12.0F, 0.0F, 10.0F, 2.0F, 0.0F)

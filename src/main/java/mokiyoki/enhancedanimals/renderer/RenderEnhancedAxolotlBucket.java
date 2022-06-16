@@ -6,22 +6,18 @@ import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.model.EnhancedAxolotlBucketModel;
 import mokiyoki.enhancedanimals.renderer.texture.DrawnTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
@@ -40,12 +36,12 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
     }
 
     @Override
-    public void renderByItem(@Nonnull ItemStack stack, @Nonnull ItemTransforms.TransformType transformType, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight) {
+    public void renderByItem(@Nonnull ItemStack stack, @Nonnull ItemTransforms.TransformType transformType, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource multiBufferSource, int light, int overlayLight) {
         matrix.pushPose();
         matrix.scale(1, -1, 1);
-        matrix.translate(0, -1, 0);
-        VertexConsumer builder = ItemRenderer.getFoilBufferDirect(renderer, axolotlBucketModel.renderType(getTexture(stack)), false, stack.hasFoil());
-        axolotlBucketModel.renderToBuffer(matrix, builder, 16777215, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+        matrix.translate(1, -1, 0);
+        VertexConsumer builder = ItemRenderer.getFoilBufferDirect(multiBufferSource, axolotlBucketModel.renderType(getTexture(stack)), false, stack.hasFoil());
+        axolotlBucketModel.renderToBuffer(matrix, builder, light, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
         matrix.popPose();
     }
 

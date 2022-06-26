@@ -40,7 +40,7 @@ public class RenderEnhancedAxolotl extends MobRenderer<EnhancedAxolotl, ModelEnh
 
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
-        if (resourcelocation == null) {
+        if (resourcelocation == null || entity.getBucketImage().isEmpty()) {
             String[] textures = entity.getVariantTexturePaths();
 
             if (textures == null || textures.length == 0) {

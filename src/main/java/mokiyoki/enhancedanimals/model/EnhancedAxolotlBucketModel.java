@@ -22,50 +22,30 @@ public class EnhancedAxolotlBucketModel extends Model {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
         PartDefinition bucket = partdefinition.addOrReplaceChild("bucket", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 8.0F, 0.0F, Mth.PI, 0.0F));
-        bucket.addOrReplaceChild("bucket_front", CubeListBuilder.create()
-                .texOffs(2, 4).addBox(2.0F, 4.0F, 0.0F, 12.0F, 8.0F, 0.0F)
-                .texOffs(3, 12).addBox(3.0F, 12.0F, 0.0F, 10.0F, 2.0F, 0.0F)
-                .texOffs(4, 14).addBox(4.0F, 14.0F, 0.0F, 8.0F, 1.0F, 0.0F)
-                .texOffs(5, 15).addBox(5.0F, 15.0F, 0.0F, 6.0F, 1.0F, 0.0F)
-
-                .texOffs(13, 3).addBox(14.0F, 4.0F, -1.0F, 0.0F, 8.0F, 1.0F)
-                .texOffs(12, 11).addBox(13.0F, 12.0F, -1.0F, 0.0F, 2.0F, 1.0F)
-                .texOffs(11, 13).addBox(12.0F, 14.0F, -1.0F, 0.0F, 1.0F, 1.0F)
-                .texOffs(10, 14).addBox(11.0F, 15.0F, -1.0F, 0.0F, 1.0F, 1.0F)
+        bucket.addOrReplaceChild("front", CubeListBuilder.create()
+                .texOffs(0,0).addBox(0.0F, 0.0F, 0.0F, 16, 16, 0),
+                PartPose.offset(0.0F, 0.0F, 0.5F));
+        bucket.addOrReplaceChild("back", CubeListBuilder.create()
                 .mirror(true)
-                .texOffs(2, 3).addBox(2.0F, 4.0F, -1.0F, 0.0F, 8.0F, 1.0F)
-                .texOffs(3, 11).addBox(3.0F, 12.0F, -1.0F, 0.0F, 2.0F, 1.0F)
-                .texOffs(4, 13).addBox(4.0F, 14.0F, -1.0F, 0.0F, 1.0F, 1.0F)
-                .texOffs(5, 14).addBox(5.0F, 15.0F, -1.0F, 0.0F, 1.0F, 1.0F),
-                PartPose.offset(0.0F, 0.0F, 0.5F));
-        bucket.addOrReplaceChild("bucket_back", CubeListBuilder.create()
-                .texOffs(2, 4).addBox(2.0F, 4.0F, 0.0F, 12.0F, 8.0F, 0.0F)
-                .texOffs(3, 12).addBox(3.0F, 12.0F, 0.0F, 10.0F, 2.0F, 0.0F)
-                .texOffs(4, 14).addBox(4.0F, 14.0F, 0.0F, 8.0F, 1.0F, 0.0F)
-                .texOffs(5, 15).addBox(5.0F, 15.0F, 0.0F, 6.0F, 1.0F, 0.0F),
+                .texOffs(0,0).addBox(0.0F, 0.0F, 0.0F, 16, 16, 0),
                 PartPose.offsetAndRotation(16.0F, 0.0F, -0.5F, 0.0F, (float)Mth.PI, 0.0F));
-        bucket.addOrReplaceChild("head_front", CubeListBuilder.create()
-                .texOffs(3, 2).addBox(3.0F, 2.0F, 0.0F, 10.0F, 2.0F, 0.0F)
-                .texOffs(4, 0).addBox(4.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F)
-                .texOffs(11, 0).addBox(11.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F)
-                .texOffs(2, 1).addBox(2.0F, 1.0F, 0.0F, 1.0F, 2.0F, 0.0F)
-                .texOffs(4, 1).addBox(4.0F, 1.0F, 0.0F, 2.0F, 1.0F, 0.0F)
-                .texOffs(10, 1).addBox(10.0F, 1.0F, 0.0F, 2.0F, 1.0F, 0.0F)
-                .texOffs(13, 1).addBox(13.0F, 1.0F, 0.0F, 1.0F, 2.0F, 0.0F)
-
-                .texOffs(0, 3).addBox(3.0F, 2.0F, -1.0F, 10.0F, 0.0F, 1.0F)
-                ,
-                PartPose.offset(0.0F, 0.0F, 0.5F));
-        bucket.addOrReplaceChild("head_back", CubeListBuilder.create()
-                .texOffs(3, 2).addBox(3.0F, 2.0F, 0.0F, 10.0F, 2.0F, 0.0F)
-                .texOffs(4, 0).addBox(4.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F)
-                .texOffs(11, 0).addBox(11.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F)
-                .texOffs(2, 1).addBox(2.0F, 1.0F, 0.0F, 1.0F, 2.0F, 0.0F)
-                .texOffs(4, 1).addBox(4.0F, 1.0F, 0.0F, 2.0F, 1.0F, 0.0F)
-                .texOffs(10, 1).addBox(10.0F, 1.0F, 0.0F, 2.0F, 1.0F, 0.0F)
-                .texOffs(13, 1).addBox(13.0F, 1.0F, 0.0F, 1.0F, 2.0F, 0.0F),
-                PartPose.offsetAndRotation(16.0F, 0.0F, -0.5F, 0.0F, (float)Mth.PI, 0.0F));
-
+        bucket.addOrReplaceChild("side1", CubeListBuilder.create()
+                .texOffs(3, -1).addBox(4, 0, 0, 0, 2, 1)
+                .texOffs(9, 0).addBox(4, 0, 0, 0, 2, 1)
+                .texOffs(1, 0).addBox(2, 1, 0, 0, 2, 1)
+                .texOffs(2, 2).addBox(3, 3, 0, 0, 1, 1)
+                .texOffs(1, 3).addBox(2, 4, 0, 0, 8, 1)
+                .texOffs(2, 11).addBox(3, 12, 0, 0, 2, 1)
+                .texOffs(4, 13).addBox(4, 13, 0, 0, 1, 1)
+                .texOffs(5, 14).addBox(5, 14, 0, 0, 1, 1),
+                PartPose.offset(0, 0, -0.5F));
+        bucket.addOrReplaceChild("top", CubeListBuilder.create()
+                .texOffs(0, 1).addBox(2, 1, 0, 1, 0, 1)
+                .texOffs(1, 2).addBox(3, 2, 0, 1, 0, 1)
+                .texOffs(2, 0).addBox(4, 0, 0, 1, 0, 1)
+                .texOffs(3, 1).addBox(5, 1, 0, 1, 0, 1)
+                .texOffs(1, 2).addBox(6, 2, 0, 4, 0, 1),
+                PartPose.offset(0, 0, -0.5F));
         return LayerDefinition.create(meshdefinition, 16, 16);
     }
 

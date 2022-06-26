@@ -109,7 +109,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     };
 
     private static final String[] PIG_TEXTURES_SPOT_BERKSHIRE = new String[] {
-            "", "spot_tux.png", "spot_berkshire.png", "spot_extended_berkshire"
+            "", "spot_tux.png", "spot_berkshire.png", "spot_extended_berkshire.png"
     };
 
     private static final String[] PIG_TEXTURES_COAT = new String[] {
@@ -917,6 +917,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             addTextureToAnimal(PIG_TEXTURES_EYES, eyes, null);
             addTextureToAnimal(PIG_TEXTURES_HOOVES, hooves, null);
             addTextureToAnimal(PIG_TEXTURES_TUSKS, tusks ? 1 : 0, t -> t == 1);
+            addTextureToAnimal("pigbase.png");
         }
     }
 

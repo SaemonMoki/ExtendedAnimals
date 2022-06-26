@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.model.EnhancedAxolotlBucketModel;
 import mokiyoki.enhancedanimals.renderer.texture.DrawnTexture;
@@ -38,8 +39,29 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
     @Override
     public void renderByItem(@Nonnull ItemStack stack, @Nonnull ItemTransforms.TransformType transformType, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource multiBufferSource, int light, int overlayLight) {
         matrix.pushPose();
-        matrix.scale(1, -1, 1);
-        matrix.translate(1, -1, 0);
+
+        switch (transformType) {
+            case GUI, NONE, HEAD, FIXED -> {
+                matrix.scale(1F, -1F, 1F);
+                matrix.translate(1F, -1F, 0F);
+            }
+            case FIRST_PERSON_LEFT_HAND, FIRST_PERSON_RIGHT_HAND -> {
+                matrix.scale(0.75F, -0.75F, 0.75F);
+                matrix.translate(1.5F, -1.5F, 0.5F);
+                matrix.mulPose(Vector3f.XP.rotationDegrees(1F));
+                matrix.mulPose(Vector3f.YP.rotationDegrees(10F));
+            }
+            case THIRD_PERSON_LEFT_HAND, THIRD_PERSON_RIGHT_HAND -> {
+                matrix.scale(0.6F, -0.6F, 0.6F);
+                matrix.translate(1.4F, -1.5F, 0.5F);
+            }
+            case GROUND -> {
+                matrix.scale(0.5F, -0.5F, 0.5F);
+                matrix.translate(1.5F, -1.5F, 0.5F);
+            }
+        }
+//        matrix.scale(0.5F, -0.5F, 0.5F);
+//        matrix.translate(1.5F, -1.5F, 0);
         VertexConsumer builder = ItemRenderer.getFoilBufferDirect(multiBufferSource, axolotlBucketModel.renderType(getTexture(stack)), false, stack.hasFoil());
         axolotlBucketModel.renderToBuffer(matrix, builder, light, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
         matrix.popPose();
@@ -61,7 +83,7 @@ public class RenderEnhancedAxolotlBucket extends BlockEntityWithoutLevelRenderer
 
                 try {
                     resourcelocation = new ResourceLocation(s);
-                    DrawnTexture texture = new DrawnTexture(image, "minecraft:textures/item/axolotl_bucket.png");
+                    DrawnTexture texture = new DrawnTexture(image, "eanimod:textures/items/axolotl_bucket_base.png");
                     Minecraft.getInstance().getTextureManager().register(resourcelocation, texture);
                     textureCache.putInCache(s, resourcelocation);
                     resourcelocation = textureCache.getFromCache(s);

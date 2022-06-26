@@ -117,40 +117,44 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         bHead.addOrReplaceChild("cheeks", CubeListBuilder.create()
                         .texOffs(49, 13)
                         .addBox(-4.0F, 0.0F, 0.0F, 8, 5, 4, new CubeDeformation(0.25F)),
-                PartPose.offset(0.0F, -5.5F, -3.0F)
+                PartPose.offset(0.0F, -5.5F, -4.0F)
         );
+
+        float a = -3.0F;
+
         bHead.addOrReplaceChild("snout", CubeListBuilder.create()
                         .texOffs(49, 22)
                         .addBox(-2.0F, -5.0F, 0.0F, 4, 6, 3),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 3.5F, -3.0F)
         );
 
         bHead.addOrReplaceChild("jaw", CubeListBuilder.create()
                         .texOffs(63, 22)
                         .addBox(-1.0F, -5.0F, 0.0F, 2, 6, 1),
-                PartPose.offset(0.0F, 1.0F, 4.0F)
+                PartPose.offset(0.0F, 4.5F, -4.0F)
         );
+
         bHead.addOrReplaceChild("tuskTL", CubeListBuilder.create()
                         .texOffs(69, 22)
                         .addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, new CubeDeformation(-0.1F)),
-                PartPose.offset(0.5F, 0.0F, 0.0F)
+                PartPose.offsetAndRotation(0.5F, 0.0F, 0.5F, 0.0F, 0.0F, 1.3F)
         );
         bHead.addOrReplaceChild("tuskTR", CubeListBuilder.create()
                         .texOffs(69, 22)
                         .addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, new CubeDeformation(-0.1F)),
-                PartPose.offset(-0.5F, 0.0F, 0.0F)
+                PartPose.offsetAndRotation(-0.5F, 0.0F, 0.5F, 0.0F, 0.0F, -1.3F)
         );
         bHead.addOrReplaceChild("tuskBL", CubeListBuilder.create()
                         .texOffs(69, 22)
                         .addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, new CubeDeformation(-0.1F))
                         .addBox(-0.5F, -2.8F, -0.5F, 1, 1, 2, new CubeDeformation(-0.1F)),
-                PartPose.offset(0.5F, 0.0F, 0.0F)
+                PartPose.offsetAndRotation(0.5F, 0.0F, 1.0F, 0.0F, 0.0F, 1.5F)
         );
         bHead.addOrReplaceChild("tuskBR", CubeListBuilder.create()
                         .texOffs(69, 22)
                         .addBox(-0.5F, -2.0F, -0.5F, 1, 2, 1, new CubeDeformation(-0.1F))
                         .addBox(-0.5F, -2.8F, -0.5F, 1, 1, 2, new CubeDeformation(-0.1F)),
-                PartPose.offset(-0.5F, 0.0F, 0.0F)
+                PartPose.offsetAndRotation(-0.5F, 0.0F, 1.0F, 0.0F, 0.0F, -1.5F)
         );
 
         bEarLeft.addOrReplaceChild("earSL", CubeListBuilder.create()
@@ -509,12 +513,34 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     protected Map<String, Vector3f> saveAnimationValues(PigPhenotype pig) {
         Map<String, Vector3f> map = new HashMap<>();
 
+        /*
+            shortest nose Y rotation point:
+                snout = -2.0F
+                topTusks = -4.5F
+                bottomTusks = -5.0F
+
+            longest nose Y rotation point:
+                snout = -7.0F
+                topTusks = -1.0F
+                bottomTusks = -2.0F
+         */
+
+        map.put("bMouth", new Vector3f(0.0F, -(2.0F + (4.75F * pig.snoutLength)), -3.0F));
+        map.put("bMouthRot", new Vector3f((Mth.HALF_PI-(pig.snoutLength*Mth.HALF_PI)), 0.0F, 0.0F));
+        map.put("tuskTL", new Vector3f(0.5F, -(4.5F - (3.5F * pig.snoutLength)), 0.5F));
+        map.put("tuskTR", new Vector3f(-0.5F, -(4.5F - (3.5F * pig.snoutLength)), 0.5F));
+        map.put("tuskBL", new Vector3f(0.5F, -(5.0F - (3.0F * pig.snoutLength)), 1.0F));
+        map.put("tuskBR", new Vector3f(-0.5F, -(5.0F - (3.0F * pig.snoutLength)), 1.0F));
         return map;
     }
 
     private void setupInitialAnimationValues(T entityIn, PigModelData modelData, PigPhenotype pig) {
         
     }
+
+    /**
+     *      Animations
+     */
     
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
@@ -523,7 +549,14 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         PigPhenotype pig = pigModelData.getPhenotype();
         float drive = ageInTicks + (1000 * pigModelData.random);
 
-        if (pig != null) {
+        if (!pigModelData.offsets.isEmpty()) {
+            Map<String, Vector3f> rotationValues = pigModelData.offsets;
+
+            this.theMouth.setFromVector(rotationValues.get("bMouth"), rotationValues.get("bMouthRot"));
+            this.tusksTopLeft.setPosFromVector(rotationValues.get("tuskTL"));
+            this.tusksTopRight.setPosFromVector(rotationValues.get("tuskTR"));
+            this.tusksBottomLeft.setPosFromVector(rotationValues.get("tuskBL"));
+            this.tusksBottomRight.setPosFromVector(rotationValues.get("tuskBR"));
 
         }
 

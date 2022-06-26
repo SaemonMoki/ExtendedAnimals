@@ -29,6 +29,10 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(AxolotlBreeds.COPPER);
         this.breeds.add(AxolotlBreeds.GREATGILLS);
         this.breeds.add(AxolotlBreeds.GFP);
+        this.breeds.add(AxolotlBreeds.GOLDEN_GFP);
+        this.breeds.add(AxolotlBreeds.GOLDEN_GLOW_EYES);
+        this.breeds.add(AxolotlBreeds.ALBINO_GFP);
+        this.breeds.add(AxolotlBreeds.AXANTHIC_GFP);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {

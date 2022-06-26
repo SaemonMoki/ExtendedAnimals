@@ -145,7 +145,7 @@ public class WrappedModelPart {
         }
     }
 
-    public void setFromVector(Vector3f vector3f) {
+    public void setRotFromVector(Vector3f vector3f) {
         if (vector3f != null) {
             this.modelPart.setRotation(vector3f.x(), vector3f.y(), vector3f.z());
         } else {

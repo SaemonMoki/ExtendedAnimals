@@ -400,6 +400,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             addTextureToAnimal(AXOLOTL_TEXTURES_GILLS, gills, null);
             addTextureToAnimal(AXOLOTL_TEXTURES_BASE, base, null);
             addTextureToAnimal(AXOLOTL_TEXTURES_MELANIN, copper, pattern, 0, gene[0] == 1 || gene[1] == 1);
+            addTextureToAnimal("white_split.png");
             addTextureToAnimal("eyel_.png");
             addTextureToAnimal("eyer_.png");
         }
@@ -547,36 +548,65 @@ NBT read/write
 
     @OnlyIn(Dist.CLIENT)
     public void setBucketImageData(EnhancedLayeredTexture texture) {
-        if (this.getBucketImage().isEmpty() && this.isAlive()) {
-            if (this.genetics != null && texture.hasImage()) {
-                boolean longGills = this.genetics.isHomozygousFor(34, 2) ^ this.genetics.isHomozygousFor(36, 2);
-                boolean longLegs = this.genetics.isHomozygousFor(32, 2);
-                boolean hasCollar = this.hasCollar();
-                boolean hasBell = this.getBells();
-                int[] axolotlBucketImage = new int[84];
-                int[][] axolotlBucketImageMap = new int[][]{
-                        {longGills ? 40 : 39, 1}, {40, 2}, {41, 1}, {46, 1}, {47, 2}, {longGills ? 47 : 48, 1},
-                        {37, longGills ? 6 : 5}, {38, 6}, {41, 3}, {41, 4}, {46, 2}, {46, 3}, {49, 6}, {50, longGills ? 6 : 5},
-                        {38, 7}, {40, 8}, {2, 6}, {6, 1}, {7, 1}, {8, 0}, {9, 0}, {10, 1}, {11, 1}, {15, 6}, {47, 8}, {49, 7},
-                        {longGills ? 56 : 57, 10}, {39, 12}, {5, 2}, {6, 2}, {7, 2}, {8, 2}, {9, 2}, {10, 2}, {11, 2}, {12, 2}, {48, 12}, {longGills ? 51 : 50, 10},
-                        {38, 10}, {39, 11}, {5, 3}, {6, 3}, {7, 3}, {8, 3}, {9, 3}, {10, 3}, {11, 3}, {12, 3}, {48, 11}, {49, 10},
-                        {37, 12}, {5, 4}, {6, 6}, {7, 6}, {8, 5}, {9, 5}, {10, 6}, {11, 6}, {12, 4}, {50, 12},
-                        {hasCollar ? 42 : 59, hasCollar ? 62 : (longLegs ? 2 : 3)}, {hasCollar ? 44 : -1, 62}, {hasCollar?(hasBell?15:45):-1,(hasBell?18:62)}, {hasCollar?(hasBell?16:47):-1,(hasBell?37:62)}, {hasCollar ? 48 : -1, 63}, {hasCollar ? 49 : 59, hasCollar ? 62 : (longLegs ? 10 : 11)},
-                        {59, longLegs ? 3 : 4},{hasBell?15:-1,39},{hasBell?17:-1,39}, {59, longLegs ? 10 : 11},
-                        {longLegs ? -1 : 58, 6}, {59, longLegs ? 4 : 5}, {longLegs ? -1 : 60, 6}, {longLegs ? -1 : 58, 12}, {59, longLegs ? 11 : 12}, {longLegs ? -1 : 60, 12},
-                        {longLegs ? 58 : -1, 6}, {59, longLegs ? 5 : 6}, {longLegs ? 60 : -1, 6}, {longLegs ? 58 : -1, 12}, {59, longLegs ? 12 : 13}, {longLegs ? 60 : -1, 12},
-                        {longLegs ? 59 : -1, 6}, {longLegs ? 59 : -1, 13}
+        if (/*this.getBucketImage().isEmpty() && */this.isAlive()) {
+            if (this.getSharedGenes() != null && texture.hasImage()) {
+                boolean g = this.getSharedGenes().isHomozygousFor(34, 2) ^ this.getSharedGenes().isHomozygousFor(36, 2);
+                boolean l = this.getSharedGenes().isHomozygousFor(32, 2);
+                int[] axolotlBucketImage = new int[86];
+                int[] x = new int[]{
+                        g?40:39, 40, 41, 46, 47, g?47:48,
+                        37, 38, 41, 41, 46, 46, 49, 50,
+                        38, 40, 2, 6, 7, 8, 9, 10, 11, 15, 47, 49,
+                        g?56:57, 39, 5, 6, 7, 8, 9, 10, 11, 12, 48, g?51:50,
+                        38, 39, 5, 6, 7, 8, 9, 10, 11, 12, 48, 49,
+                        36, 37, 5, 6, 7, 8, 9, 10, 11, 12, 50, 51,
+                        59, 44, 45, 47, 48, 59,
+                        59, -1, -1, 59,
+                        l?-1:58, 59, l?-1:60, l?-1:58, 59, l?-1:60,
+                        l?58:-1, 59, l?60:-1, l?58:-1, 59, l?60:-1,
+                        l?59:-1, l?59:-1
+                };
+                int[] y = new int[]{
+                        1, 2, 1, 1, 2, 1,
+                        g?6:5, 6, 3, 4, 4, 3, 6, g?6:5, 
+                        7, 8, 6, 1, 1, 0, 0, 1, 1, 6, 8, 7, 
+                        10, 12, 2, 2, 2, 2, 2, 2, 2, 2, 12, 10, 
+                        10, 11, 3, 3, 3, 3, 3, 3, 3, 3, 11, 10, 
+                        10, 12, 4, 6, 6, 5, 5, 6, 6, 4, 12, 10,
+                        l?2:3, 62, 62, 62, 62, l?10:11,
+                        l?3:4, 39, 39, l?10:11,
+                        5, l?4:5, 5, 12, l?11:12, 12,
+                        5, l?5:6, 5, 12, l?12:13, 12,
+                        6, 13
                 };
                 NativeImage image = texture.getImage();
-                for (int i = 0; i < 84; i++) {
-                    int[] xy = axolotlBucketImageMap[i];
-                    if (xy[0] == -1) {
+                int rgba;
+                for (int i = 0; i < 86; i++) {
+                    if (x[i] == -1) {
                         axolotlBucketImage[i] = -1;
                     } else {
-                        int rgba = image.getPixelRGBA(xy[0], xy[1]);
+                        rgba = image.getPixelRGBA(x[i], y[i]);
                         axolotlBucketImage[i] = (rgba >> 24 & 255) == 0 ? -1 : rgba;
                     }
                 }
+
+                rgba = image.getPixelRGBA(41,62);
+                if ((rgba >> 24 & 255) != 0) {
+                    axolotlBucketImage[62] = rgba;
+                    axolotlBucketImage[63] = rgba;
+                    axolotlBucketImage[64] = rgba;
+                    axolotlBucketImage[65] = rgba;
+                    axolotlBucketImage[66] = rgba;
+                    axolotlBucketImage[67] = rgba;
+                }
+                rgba = image.getPixelRGBA(15,38);
+                if ((rgba >> 24 & 255) != 0) {
+                    axolotlBucketImage[64] = rgba;
+                    axolotlBucketImage[65] = rgba;
+                    axolotlBucketImage[69] = rgba;
+                    axolotlBucketImage[70] = rgba;
+                }
+
                 sendBucketTextureToServer(axolotlBucketImage);
                 texture.closeImage();
             }
@@ -597,7 +627,7 @@ NBT read/write
         int[] image = new int[imageStrings.length];
         int i = 0;
         for (String color:imageStrings) {
-            image[i] = Integer.parseInt(color);
+            image[i] = color.isEmpty()? -1 : Integer.parseInt(color);
             i++;
         }
         return image;
@@ -622,6 +652,14 @@ NBT read/write
         if (stack.getItem() instanceof EnhancedAxolotlBucket) {
             EnhancedAxolotlBucket.setImage(stack, getImageArrayFromString(this.getBucketImage()));
             EnhancedAxolotlBucket.setGenes(stack, getSharedGenes());
+            EnhancedAxolotlBucket.setParentNames(stack, this.sireName, this.damName);
+            EnhancedAxolotlBucket.setEquipment(stack, this.animalInventory.getItem(1));
+            if (this.mateGenetics != null) {
+                EnhancedAxolotlBucket.setMateGenes(stack, this.mateGenetics);
+                EnhancedAxolotlBucket.mateIsFemale(stack, this.mateGender);
+            }
+            EnhancedAxolotlBucket.setAxolotlUUID(stack, this.getUUID());
+            EnhancedAxolotlBucket.setBirthTime(stack, this.getBirthTime());
         }
     }
 

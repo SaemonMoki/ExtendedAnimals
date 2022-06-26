@@ -3,19 +3,15 @@ package mokiyoki.enhancedanimals;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModEntities;
 import mokiyoki.enhancedanimals.init.ModItems;
+import mokiyoki.enhancedanimals.init.ModTileEntities;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
-//import mokiyoki.enhancedanimals.proxy.ClientProxy;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
-import mokiyoki.enhancedanimals.proxy.IProxy;
-//import mokiyoki.enhancedanimals.proxy.ServerProxy;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
-//import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
 import mokiyoki.enhancedanimals.util.handlers.EventSubscriber;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -52,8 +48,6 @@ public class EnhancedAnimals {
 
     public static EnhancedAnimals instance;
 
-//    public static IProxy proxy = DistExecutor.safeRunForDist( () -> () -> new ClientProxy(), () -> () -> new ServerProxy() );
-
     public static final EanimodCommonConfig commonConfig = new EanimodCommonConfig();
 
     public EnhancedAnimals() {
@@ -61,8 +55,6 @@ public class EnhancedAnimals {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EanimodCommonConfig.getConfigSpecForLoader(), EanimodCommonConfig.getFileNameForLoader());
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-//        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientSetup);
-//        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new EventSubscriber());
@@ -72,23 +64,14 @@ public class EnhancedAnimals {
         ModItems.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModBlocks.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModTileEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-//        proxy.init(event);
-
         int messageNumber = 0;
         channel.messageBuilder(EAEquipmentPacket.class, messageNumber++).encoder(EAEquipmentPacket::writePacketData).decoder(EAEquipmentPacket::new).consumer(EAEquipmentPacket::processPacket).add();
         channel.messageBuilder(AxolotlBucketTexturePacket.class, messageNumber++).encoder(AxolotlBucketTexturePacket::writePacketData).decoder(AxolotlBucketTexturePacket::new).consumer(AxolotlBucketTexturePacket::processPacket).add();
     }
-
-//    private void doClientSetup(final FMLClientSetupEvent event) {
-//        proxy.initClientSetup(event);
-//    }
-//
-//    private void loadComplete(final FMLLoadCompleteEvent event) {
-//        proxy.initLoadComplete(event);
-//    }
 
 }
 

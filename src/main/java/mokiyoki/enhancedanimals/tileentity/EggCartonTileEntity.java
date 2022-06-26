@@ -66,7 +66,7 @@ public class EggCartonTileEntity extends RandomizableContainerBlockEntity implem
 
 
     public EggCartonTileEntity(BlockPos blockPos, BlockState blockState) {
-        super(ModTileEntities.EGG_CARTON_TILE_ENTITY, blockPos, blockState);
+        super(ModTileEntities.EGG_CARTON_TILE_ENTITY.get(), blockPos, blockState);
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, EggCartonTileEntity eggCartonTileEntity) {

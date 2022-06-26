@@ -37,10 +37,8 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
     protected WrappedModelPart jaw;
 
     protected WrappedModelPart earLeft;
-    protected WrappedModelPart earTopLeft;
 
     protected WrappedModelPart earRight;
-    protected WrappedModelPart earTopRight;
 
     protected WrappedModelPart neck;
     protected WrappedModelPart body;
@@ -80,11 +78,11 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
                         .addBox(-3.5F, -5.0F, -4.0F, 7, 6, 7),
                 PartPose.ZERO
         );
-        bHead.addOrReplaceChild("nose", CubeListBuilder.create()
-                        .texOffs(49, 22)
-                        .addBox(-2.0F, -5.0F, -3.0F, 4, 6, 3),
-                PartPose.ZERO
-        );
+//        bHead.addOrReplaceChild("nose", CubeListBuilder.create()
+//                        .texOffs(49, 22)
+//                        .addBox(-2.0F, -5.0F, -3.0F, 4, 6, 3),
+//                PartPose.ZERO
+//        );
         bHead.addOrReplaceChild("jaw", CubeListBuilder.create()
                         .texOffs(49, 22)
                         .addBox(-2.0F, -5.0F, -3.0F, 4, 6, 3),
@@ -189,10 +187,8 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         this.jaw = new WrappedModelPart("jaw", bHead);
 
         this.earLeft = new WrappedModelPart("earL", bEarLeft);
-        this.earTopLeft = new WrappedModelPart("earTL", bEarLeft);
 
         this.earRight = new WrappedModelPart("earR", bEarRight);
-        this.earTopRight = new WrappedModelPart("earTR", bEarRight);
 
         this.neck = new WrappedModelPart("neck", bNeck);
 
@@ -217,7 +213,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
 
         this.theHead.addChild(this.head);
         this.theHead.addChild(this.eyes);
-        this.theHead.addChild(this.nose);
+//        this.theHead.addChild(this.nose);
         this.theHead.addChild(this.jaw);
 
         this.theBody.addChild(this.body);

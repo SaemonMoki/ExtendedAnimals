@@ -87,7 +87,7 @@ public class EggCartonBlock extends BaseEntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, EGG_CARTON_TILE_ENTITY, EggCartonTileEntity::tick);
+        return createTickerHelper(blockEntityType, EGG_CARTON_TILE_ENTITY.get(), EggCartonTileEntity::tick);
     }
 
     public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
@@ -161,7 +161,7 @@ public class EggCartonBlock extends BaseEntityBlock {
             biPredicate = EggCartonBlock::isBlocked;
         }
 
-        return DoubleBlockCombiner.combineWithNeigbour(EGG_CARTON_TILE_ENTITY, EggCartonBlock::getMergerType, EggCartonBlock::getDirectionToAttached, FACING, blockState, world, blockPos, biPredicate);
+        return DoubleBlockCombiner.combineWithNeigbour(EGG_CARTON_TILE_ENTITY.get(), EggCartonBlock::getMergerType, EggCartonBlock::getDirectionToAttached, FACING, blockState, world, blockPos, biPredicate);
     }
 
     public static DoubleBlockCombiner.BlockType getMergerType(BlockState blockState) {

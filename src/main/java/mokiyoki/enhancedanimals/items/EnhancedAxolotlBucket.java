@@ -93,6 +93,30 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         });
     }
 
+    public static void setGillType(ItemStack stack, GillType type) {
+            stack.getOrCreateTagElement("display").putString("type", type.name());
+    }
+
+    public static void setGlowType(ItemStack stack, boolean eyes, boolean body, boolean gills) {
+        CompoundTag tag = new CompoundTag();
+        tag.putBoolean("eyes", eyes);
+        tag.putBoolean("body", body);
+        tag.putBoolean("gills", gills);
+        stack.getOrCreateTagElement("display").put("gfp", tag);
+    }
+
+    public static GillType getGillType(ItemStack stack) {
+        if (stack.getOrCreateTagElement("display").contains("type")) {
+            String type = stack.getOrCreateTagElement("display").getString("type");
+            if (type.equals("GREATER")) {
+                return GillType.GREATER;
+            } else if (type.equals("LONG")) {
+                return GillType.LONG;
+            }
+        }
+        return GillType.MINOR;
+    }
+
     public static void setEquipment(ItemStack stack, ItemStack equipment) {
         if (equipment != ItemStack.EMPTY) {
             stack.getOrCreateTagElement("display").put("collar", equipment.save(new CompoundTag()));
@@ -103,6 +127,9 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         if (genes != null) {
             stack.getOrCreateTagElement("Genetics").putIntArray("SGenes", genes.getSexlinkedGenes());
             stack.getOrCreateTagElement("Genetics").putIntArray("AGenes", genes.getAutosomalGenes());
+
+            setGillType(stack, (genes.isHomozygousFor(34, 2) && genes.isHomozygousFor(36, 2))? GillType.GREATER : (genes.isHomozygousFor(34, 2) || genes.isHomozygousFor(36, 2)? GillType.LONG : GillType.MINOR));
+            setGlowType(stack, genes.has(20, 6), genes.has(10, 3) && !genes.has(10, 2), genes.has(38, 3) && !genes.has(38, 2));
         }
     }
 
@@ -153,6 +180,59 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
     public static int[] getImage(ItemStack stack) {
         CompoundTag compoundTag = stack.getOrCreateTagElement("display");
         return buildImage(compoundTag.contains("image") ? compoundTag.getIntArray("image") : getBlankImage());
+    }
+
+    public static int[] getGlowingImage(ItemStack stack) {
+        if (stack.getOrCreateTagElement("display").contains("gfp")) {
+            int[] image = getImage(stack);
+            CompoundTag tag = stack.getOrCreateTagElement("display").getCompound("gfp");
+            boolean body = tag.getBoolean("body");
+            boolean eyes = body || tag.getBoolean("eyes");
+            boolean gills = body || tag.getBoolean("gills");
+            boolean hasEquipment = body && stack.getOrCreateTagElement("display").contains("collar");
+
+            List<Integer> glowImage = new ArrayList();
+
+            for (int i = 0, l = image.length; i < l; i = i + 3) {
+                int x = image[i];
+                int y = image[i + 1];
+                if (body) {
+                    if (hasEquipment) {
+                        if (y==7) {
+                            if (!(x==7||x==8)) {
+                                glowImage.add(x);
+                                glowImage.add(y);
+                                glowImage.add(image[i + 2]);
+                            }
+                        } else if (y!=6){
+                            glowImage.add(x);
+                            glowImage.add(y);
+                            glowImage.add(image[i + 2]);
+                        }
+                    } else {
+                        return image;
+                    }
+                } else if (((x == 4 || x == 11) && y == 3) && eyes) {
+                    glowImage.add(x);
+                    glowImage.add(y);
+                    glowImage.add(image[i + 2]);
+                } else if (y <= 5 && gills) {
+                    if (y <= 1) {
+                        glowImage.add(x);
+                        glowImage.add(y);
+                        glowImage.add(image[i + 2]);
+                    } else if (x < 4 || x > 11) {
+                        glowImage.add(x);
+                        glowImage.add(y);
+                        glowImage.add(image[i + 2]);
+                    }
+                }
+            }
+            int [] imageArray = new int[glowImage.size()];
+            for (int i = 0, l=imageArray.length; i < l; i++) imageArray[i] = glowImage.get(i);
+            return imageArray;
+        }
+            return new int[3];
     }
 
     private static int[] getBlankImage() {
@@ -232,4 +312,10 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
 
     @Override
     public void appendHoverText(ItemStack p_151155_, @Nullable Level p_151156_, List<Component> p_151157_, TooltipFlag p_151158_) { }
+
+    public enum GillType {
+        GREATER,
+        LONG,
+        MINOR
+    }
 }

@@ -13,12 +13,15 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAnimalModel<T> {
@@ -173,8 +176,12 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
-    public ModelEnhancedAxolotl(ModelPart modelPart) {
-        super(modelPart);
+    protected Function<ResourceLocation, RenderType> renderTypeFunction() {
+        return RenderType::entityCutoutNoCull;
+    }
+
+    public ModelEnhancedAxolotl(ModelPart modelPart, Function<ResourceLocation, RenderType> renderType) {
+        super(modelPart, renderType);
         ModelPart base = modelPart.getChild("base");
         this.theAxolotl = new WrappedModelPart(base, "base");
         ModelPart bHead = base.getChild("bHead");
@@ -303,6 +310,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
 //            this.theTail.modelPart.zRot = Mth.sin((ageInTicks+randomAnimationOffset) * 0.1F);
 
             if (axolotlModelData.collar) {
+                this.collar.setYRot(Mth.PI);
                 this.collar.setRotation(this.theHead.getXRot(), this.theHead.getYRot(), this.theHead.getZRot(), 0.5F);
 //                this.collar.modelPart.xRot = (float) Math.PI * -0.1F + (headPitch * (pi / 180F) * 0.5F);
 //                this.collar.modelPart.zRot = netHeadYaw * (pi / 180F) * 0.5F;
@@ -538,6 +546,9 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
     }
 
     protected class AxolotlPhenotype implements Phenotype {
+        boolean glowingBody;
+        boolean glowingEyes;
+        boolean glowingGills;
         boolean isLong;
         TailLength tailLength;
 
@@ -550,6 +561,10 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
             } else {
                 this.tailLength = TailLength.LONG;
             }
+
+            this.glowingBody = genes.has(10, 3) && !genes.has(10, 2);
+            this.glowingEyes = this.glowingBody || genes.has(20, 6);
+            this.glowingGills = this.glowingBody || (genes.has(38, 3) && !genes.has(38, 2));
         }
     }
 

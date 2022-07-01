@@ -20,5 +20,5 @@ public class Reference {
     public static final int SHEEP_AUTOSOMAL_GENES_LENGTH = 72;
     public static final int HORSE_AUTOSOMAL_GENES_LENGTH = 72;
     public static final int TURTLE_AUTOSOMAL_GENES_LENGTH = 12;
-    public static final int AXOLOTL_AUTOSOMAL_GENES_LENGTH = 38;
+    public static final int AXOLOTL_AUTOSOMAL_GENES_LENGTH = 42;
 }

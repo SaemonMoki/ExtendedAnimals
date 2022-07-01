@@ -34,7 +34,7 @@ public class RenderEnhancedAxolotl<T extends EnhancedAxolotl> extends MobRendere
 
     public RenderEnhancedAxolotl(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedAxolotl<>(renderManager.bakeLayer(AXOLOTL_LAYER), RenderType::entityCutoutNoCull), 0.5F);
-//        addLayer(new ModelEnhancedAxolotlGlowingLayer(this));
+        addLayer(new ModelEnhancedAxolotlGlowingLayer(this));
     }
 
 //    @Nullable

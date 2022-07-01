@@ -9,6 +9,8 @@ import mokiyoki.enhancedanimals.model.util.GAModel;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LerpingModel;
@@ -20,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & LerpingModel> extends GAModel<T> {
@@ -38,6 +41,11 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
     protected Integer currentAnimal = null;
 
     public EnhancedAnimalModel(ModelPart modelPart) {
+
+    }
+
+    public EnhancedAnimalModel(ModelPart modelPart, Function<ResourceLocation, RenderType> p_102015_) {
+        super(p_102015_);
     }
 
     protected void setRotationOffset(ModelPart renderer, float x, float y, float z) {

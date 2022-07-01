@@ -34,6 +34,10 @@ public abstract class GAModel<E extends Entity> extends EntityModel<E> {
         this(false, 5.0F, 2.0F);
     }
 
+    protected GAModel(Function<ResourceLocation, RenderType> p_102015_) {
+        super(p_102015_);
+    }
+
     public void gaRender(WrappedModelPart wrapped, Map<String, List<Float>> mapOfScale, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (wrapped.modelPart.visible) {
             if (!wrapped.modelPart.cubes.isEmpty() || !wrapped.children.isEmpty()) {

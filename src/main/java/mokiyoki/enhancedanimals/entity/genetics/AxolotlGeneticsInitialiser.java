@@ -60,7 +60,7 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         }
 
         /**
-         *      [10,11] - EP/GFP - WildType+ > EP(ExtraPigment) > GFP(FlorecentProtein)
+         *      [10,11] - EP/GFP - WildType+ < EP(ExtraPigment) > GFP(FlorecentProtein)
          */
         autosomalGenes[10] = getChance() ? (getChance() ? 3 : 2) : 1;
         autosomalGenes[11] = getChance() ? (getChance() ? 3 : 2) : 1;
@@ -142,6 +142,18 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
          */
         autosomalGenes[36] = getChance() ? 2 : 1;
         autosomalGenes[37] = getChance() ? 2 : 1;
+
+        /**
+         *      [38,39] - Gill GFP - WildType+ < EP(ExtraPigment) > GFP(FlorecentProtein)
+         */
+        autosomalGenes[38] = getChance() ? (getChance() ? 3 : 2) : 1;
+        autosomalGenes[39] = getChance() ? (getChance() ? 3 : 2) : 1;
+
+        /**
+         *      [40,41] - GillRGB base - Natural >< White >< Pink >< Red >< Orange >< Yellow >< Lime >< Green >< Cyan >< LightBlue >< Blue >< Purple >< Magenta
+         */
+        autosomalGenes[40] = ThreadLocalRandom.current().nextInt(13)+1;
+        autosomalGenes[41] = ThreadLocalRandom.current().nextInt(13)+1;
 
         return new Genes(autosomalGenes);
     }

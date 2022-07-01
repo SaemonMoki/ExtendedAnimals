@@ -400,7 +400,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             addTextureToAnimal(AXOLOTL_TEXTURES_GILLS, gills, null);
             addTextureToAnimal(AXOLOTL_TEXTURES_BASE, base, null);
             addTextureToAnimal(AXOLOTL_TEXTURES_MELANIN, copper, pattern, 0, gene[0] == 1 || gene[1] == 1);
-            addTextureToAnimal("white_split.png");
             addTextureToAnimal("eyel_.png");
             addTextureToAnimal("eyer_.png");
         }
@@ -548,7 +547,7 @@ NBT read/write
 
     @OnlyIn(Dist.CLIENT)
     public void setBucketImageData(EnhancedLayeredTexture texture) {
-        if (/*this.getBucketImage().isEmpty() && */this.isAlive()) {
+        if (this.isAlive()) {
             if (this.getSharedGenes() != null && texture.hasImage()) {
                 boolean g = this.getSharedGenes().isHomozygousFor(34, 2) ^ this.getSharedGenes().isHomozygousFor(36, 2);
                 boolean l = this.getSharedGenes().isHomozygousFor(32, 2);
@@ -557,7 +556,7 @@ NBT read/write
                         g?40:39, 40, 41, 46, 47, g?47:48,
                         37, 38, 41, 41, 46, 46, 49, 50,
                         38, 40, 2, 6, 7, 8, 9, 10, 11, 15, 47, 49,
-                        g?56:57, 39, 5, 6, 7, 8, 9, 10, 11, 12, 48, g?51:50,
+                        g?36:37, 39, 5, 6, 7, 8, 9, 10, 11, 12, 48, g?51:50,
                         38, 39, 5, 6, 7, 8, 9, 10, 11, 12, 48, 49,
                         36, 37, 5, 6, 7, 8, 9, 10, 11, 12, 50, 51,
                         59, 44, 45, 47, 48, 59,

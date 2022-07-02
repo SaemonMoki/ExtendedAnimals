@@ -77,12 +77,12 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
 
         bHead.addOrReplaceChild("head", CubeListBuilder.create()
                 .texOffs(0, 0)
-                .addBox(-4.0F, -5.0F, -4.0F, 8.0F, 5.0F, 5.0F),
+                .addBox(-4.0F, -5.0F, -4.0F, 8.0F, 5.0F, 5.0F, new CubeDeformation(0.01F)),
                 PartPose.ZERO
         );
         bHead.addOrReplaceChild("headLong", CubeListBuilder.create()
                 .texOffs(0, 1)
-                .addBox(-4.0F, -6.0F, -4.0F, 8.0F, 6.0F, 5.0F),
+                .addBox(-4.0F, -6.0F, -4.0F, 8.0F, 6.0F, 5.0F, new CubeDeformation(0.01F)),
                 PartPose.ZERO
         );
 
@@ -126,40 +126,68 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         );
 
         bBody.addOrReplaceChild("bodyFin", CubeListBuilder.create()
+                        .mirror(true)
                         .texOffs(26, 9)
-                        .addBox(0.0F, 0.0F, -5.0F, 0.0F, 9.0F, 5.0F),
+                        .addBox(0.01F, 0.0F, -5.0F, 0.0F, 9.0F, 5.0F)
+                        .mirror(false)
+                        .texOffs(26, 36)
+                        .addBox(-0.01F, 0.0F, -5.0F, 0.0F, 9.0F, 5.0F),
                 PartPose.offset(0.0F, -12.0F, 0.0F)
         );
 
         bBody.addOrReplaceChild("bodyFinLong", CubeListBuilder.create()
+                        .mirror(true)
                         .texOffs(26, 9)
-                        .addBox(0.0F, 0.0F, -5.0F, 0.0F, 11.0F, 5.0F),
+                        .addBox(0.01F, 0.0F, -5.0F, 0.0F, 11.0F, 5.0F)
+                        .mirror(false)
+                        .texOffs(26, 36)
+                        .addBox(-0.01F, 0.0F, -5.0F, 0.0F, 11.0F, 5.0F),
                 PartPose.offset(0.0F, -14.0F, 0.0F)
         );
 
         bTail.addOrReplaceChild("tail12", CubeListBuilder.create()
+                        .mirror(true)
                         .texOffs(26, -5)
-                        .addBox(0.0F, -12.0F, -5.0F, 0.0F, 12.0F, 5.0F),
+                        .addBox(0.01F, -12.0F, -5.0F, 0.0F, 12.0F, 5.0F)
+                        .mirror(false)
+                        .texOffs(26, 20)
+                        .addBox(-0.01F, -12.0F, -5.0F, 0.0F, 12.0F, 5.0F),
                 PartPose.ZERO
         );
         bTail.addOrReplaceChild("tail13", CubeListBuilder.create()
+                        .mirror(true)
                         .texOffs(26, -5)
-                        .addBox(0.0F, -13.0F, -5.0F, 0.0F, 13.0F, 5.0F),
+                        .addBox(0.01F, -13.0F, -5.0F, 0.0F, 13.0F, 5.0F)
+                        .mirror(false)
+                        .texOffs(26, 20)
+                        .addBox(-0.01F, -13.0F, -5.0F, 0.0F, 13.0F, 5.0F),
                 PartPose.ZERO
         );
         bTail.addOrReplaceChild("tail14", CubeListBuilder.create()
+                        .mirror(true)
                         .texOffs(26, -5)
-                        .addBox(0.0F, -14.0F, -5.0F, 0.0F, 14.0F, 5.0F),
+                        .addBox(0.01F, -14.0F, -5.0F, 0.0F, 14.0F, 5.0F)
+                        .mirror(false)
+                        .texOffs(26, 20)
+                        .addBox(-0.01F, -14.0F, -5.0F, 0.0F, 14.0F, 5.0F),
                 PartPose.ZERO
         );
         bTail.addOrReplaceChild("tail15", CubeListBuilder.create()
+                        .mirror(true)
                         .texOffs(26, -5)
-                        .addBox(0.0F, -15.0F, -5.0F, 0.0F, 15.0F, 5.0F),
+                        .addBox(0.01F, -15.0F, -5.0F, 0.0F, 15.0F, 5.0F)
+                        .mirror(false)
+                        .texOffs(26, 20)
+                        .addBox(-0.01F, -15.0F, -5.0F, 0.0F, 15.0F, 5.0F),
                 PartPose.ZERO
         );
         bTail.addOrReplaceChild("tail16", CubeListBuilder.create()
+                        .mirror(true)
                         .texOffs(26, -5)
-                        .addBox(0.0F, -16.0F, -5.0F, 0.0F, 16.0F, 5.0F),
+                        .addBox(0.01F, -16.0F, -5.0F, 0.0F, 16.0F, 5.0F)
+                        .mirror(false)
+                        .texOffs(26, 20)
+                        .addBox(-0.01F, -16.0F, -5.0F, 0.0F, 16.0F, 5.0F),
                 PartPose.ZERO
         );
 
@@ -310,8 +338,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
 //            this.theTail.modelPart.zRot = Mth.sin((ageInTicks+randomAnimationOffset) * 0.1F);
 
             if (axolotlModelData.collar) {
-                this.collar.setYRot(Mth.PI);
-                this.collar.setRotation(this.theHead.getXRot(), this.theHead.getYRot(), this.theHead.getZRot(), 0.5F);
+                this.collar.setRotation(this.theHead.getXRot(), this.theHead.getYRot(), this.theHead.getZRot()+Mth.PI);
 //                this.collar.modelPart.xRot = (float) Math.PI * -0.1F + (headPitch * (pi / 180F) * 0.5F);
 //                this.collar.modelPart.zRot = netHeadYaw * (pi / 180F) * 0.5F;
             }

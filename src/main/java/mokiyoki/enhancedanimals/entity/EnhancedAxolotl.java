@@ -400,6 +400,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             addTextureToAnimal(AXOLOTL_TEXTURES_GILLS, gills, null);
             addTextureToAnimal(AXOLOTL_TEXTURES_BASE, base, null);
             addTextureToAnimal(AXOLOTL_TEXTURES_MELANIN, copper, pattern, 0, gene[0] == 1 || gene[1] == 1);
+            addTextureToAnimal("c_spot_split.png");
             addTextureToAnimal("eyel_.png");
             addTextureToAnimal("eyer_.png");
         }

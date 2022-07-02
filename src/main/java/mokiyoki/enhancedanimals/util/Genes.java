@@ -313,23 +313,44 @@ public class Genes {
     }
 
     public boolean has(int gene, int allel) {
-        return this.autosomal[gene] == allel || this.autosomal[gene+1] == allel;
+        if (this.autosomal.length >= gene+1) {
+            return this.autosomal[gene] == allel || this.autosomal[gene + 1] == allel;
+        } else {
+            return false;
+        }
     }
 
     public boolean isHomozygousFor(int gene, int allel) {
-        return this.autosomal[gene] == allel && this.autosomal[gene+1] == allel;
+        if (this.autosomal.length >= gene+1) {
+            return this.autosomal[gene] == allel && this.autosomal[gene+1] == allel;
+        } else {
+            return false;
+        }
     }
 
     public boolean isHeterozygousFor(int gene, int allel) {
-        return this.autosomal[gene] == allel ^ this.autosomal[gene+1] == allel;
+        if (this.autosomal.length >= gene+1) {
+            return this.autosomal[gene] == allel ^ this.autosomal[gene+1] == allel;
+        } else {
+            return false;
+        }
+
     }
 
     public boolean isHeterozygous(int gene) {
-        return this.autosomal[gene] != this.autosomal[gene+1];
+        if (this.autosomal.length >= gene+1) {
+            return this.autosomal[gene] != this.autosomal[gene+1];
+        } else {
+            return false;
+        }
     }
 
     public boolean isHomozygous(int gene) {
-        return this.autosomal[gene] == this.autosomal[gene+1];
+        if (this.autosomal.length >= gene+1) {
+            return this.autosomal[gene] == this.autosomal[gene+1];
+        } else {
+            return false;
+        }
     }
 
     public boolean isComplete() {

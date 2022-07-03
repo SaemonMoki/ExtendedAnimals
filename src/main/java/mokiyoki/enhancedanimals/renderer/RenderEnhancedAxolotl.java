@@ -29,27 +29,13 @@ import org.jetbrains.annotations.Nullable;
 public class RenderEnhancedAxolotl<T extends EnhancedAxolotl> extends MobRenderer<EnhancedAxolotl, ModelEnhancedAxolotl<EnhancedAxolotl>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_AXOLOTL_TEXTURE_LOCATION = "eanimod:textures/entities/axolotl/";
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/axolotl/axolotlbase.png");
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/axolotl/base.png");
     public static final ModelLayerLocation AXOLOTL_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "axolotl"), "axolotl_layer");
 
     public RenderEnhancedAxolotl(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ModelEnhancedAxolotl<>(renderManager.bakeLayer(AXOLOTL_LAYER), RenderType::entityCutoutNoCull), 0.5F);
         addLayer(new ModelEnhancedAxolotlGlowingLayer(this));
     }
-
-//    @Nullable
-//    @Override
-//    protected RenderType getRenderType(EnhancedAxolotl axolotl, boolean p_115323_, boolean p_115324_, boolean p_115325_) {
-//        RenderType type = super.getRenderType(axolotl, p_115323_, p_115324_, p_115325_);
-//        return RenderType.eyes(getTextureLocation(axolotl));
-//    }
-
-//    @Override
-//    public void render(EnhancedAxolotl axolotl, float p_115456_, float p_115457_, PoseStack poseStack, MultiBufferSource multiBufferSource, int p_115460_) {
-//        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.eyes(getTextureLocation(axolotl)));
-//        this.getModel().renderToBuffer(poseStack, vertexconsumer, 15728640, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-//        super.render(axolotl, p_115456_, p_115457_, poseStack, multiBufferSource, p_115460_);
-//    }
 
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.

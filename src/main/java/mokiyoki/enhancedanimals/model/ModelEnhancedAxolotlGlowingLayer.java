@@ -36,7 +36,8 @@ import java.util.function.Function;
 
 public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl, ModelEnhancedAxolotl<EnhancedAxolotl>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
-    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/axolotl/axolotlbase.png");
+    private static final String ENHANCED_AXOLOTL_TEXTURE_LOCATION = "eanimod:textures/entities/axolotl/";
+    private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/axolotl/base.png");
 
     public ModelEnhancedAxolotlGlowingLayer(RenderLayerParent<EnhancedAxolotl, ModelEnhancedAxolotl<EnhancedAxolotl>> layerParent) {
         super(layerParent);
@@ -59,7 +60,7 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
         Colouration colourRGB = entity.getRgb();
         Genes genes = entity.getSharedGenes();
 
-        if (s == null || s.isEmpty() || colourRGB == null || genes == null) {
+        if (s == null || s.isEmpty() || colourRGB == null || !genes.isValid()) {
             return ERROR_TEXTURE_LOCATION;
         }
 
@@ -76,7 +77,9 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                DrawnTexture texture = new DrawnTexture(super.getTextureLocation(entity), getGlowingParts(genes));
+                EnhancedLayeredTexture layeredTexture = new EnhancedLayeredTexture(ENHANCED_AXOLOTL_TEXTURE_LOCATION, textures, null, entity.colouration);
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, layeredTexture);
+                DrawnTexture texture = new DrawnTexture("eanimod:textures/entities/axolotl/blank.png", layeredTexture, getGlowingParts(genes));
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, texture);
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {
@@ -104,37 +107,27 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
                     }
                 }
             }
+        } else {
+            if (genes.has(20, 6)) {
+                cutout[12][2] = true;
+                cutout[15][5] = true;
+                cutout[5][2] = true;
+                cutout[2][5] = true;
+            }
+            if (genes.has(38, 3) && !genes.has(38, 2)) {
+                int[] gillsList = new int[]{
+                        36, 51, 0, 12
+                };
+                for (int i = 0, l = gillsList.length; i < l; i+=4) {
+                    for (int x = gillsList[i], w = gillsList[i+1]; x <= w; x++) {
+                        for (int y = gillsList[i+2], h = gillsList[i+3]; y <= h; y++) {
+                            cutout[x][y] = true;
+                        }
+                    }
+                }
+            }
         }
 
         return cutout;
-
-//        List<int[]> image = new ArrayList();
-//        List<Integer> imageY = new ArrayList();
-//        if (genes.has(10, 3) && !genes.has(10, 2)) {
-//            int[] bodyList = new int[]{
-//                    0, 25, 0, 33,
-//                    26, 30, 0, 49,
-//                    36, 51, 0, 12,
-//                    58, 60, 1, 27
-//            };
-//            for (int i = 0, l = bodyList.length; i < l; i+=4) {
-//                for (int x = bodyList[i], w = bodyList[i+1]; x <= w; x++) {
-//                    imageY.add(x);
-//                    for (int y = bodyList[i+2], h = bodyList[i+3]; y <= h; y++) {
-//                        imageY.add(y);
-//                    }
-//                    int [] innerArray = new int[imageY.size()];
-//                    for (int j = 0, k=innerArray.length; j < k; j++) innerArray[j] = imageY.get(j);
-//                    image.add(innerArray);
-//                    imageY.clear();
-//                }
-//            }
-//            int [][] imageArray = new int[image.size()][];
-//            for (int j = 0, k=imageArray.length; j < k; j++) imageArray[j] = image.get(j);
-//            return imageArray;
-//        } else {
-//            return new int[1][1];
-//        }
     }
-
 }

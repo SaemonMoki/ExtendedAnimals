@@ -9,33 +9,31 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 public class DrawnTexture extends AbstractTexture {
     private static final Logger LOGGER = LogManager.getLogger();
     int[] imageArray;
     boolean[][] cuttoutArray;
-    private ResourceLocation resourceLocation;
+    private String resourceLocation;
+    private ResourceLocation resource;
+    private EnhancedLayeredTexture enhancedLayeredTexture;
 
     public DrawnTexture(int[] imageArray, String baseImageLocation) {
         this.imageArray = imageArray;
-        this.resourceLocation = new ResourceLocation(baseImageLocation);
+        this.resourceLocation = baseImageLocation;
     }
 
-    public DrawnTexture(ResourceLocation baseImageLocation, boolean[][] cuttoutArray) {
+    public DrawnTexture(String baseImageLocation, EnhancedLayeredTexture texture, boolean[][] cuttoutArray) {
         this.cuttoutArray = cuttoutArray;
+        this.enhancedLayeredTexture = texture;
         this.resourceLocation = baseImageLocation;
     }
 
     @Override
     public void load(ResourceManager manager) throws IOException {
         try (
-                Resource iresource = manager.getResource(this.resourceLocation);
+                Resource iresource = manager.getResource(new ResourceLocation(this.resourceLocation));
                 NativeImage nativeimage = NativeImage.read(iresource.getInputStream());
         ) {
             if (imageArray!=null) {
@@ -51,25 +49,21 @@ public class DrawnTexture extends AbstractTexture {
             } else {
                 int w = nativeimage.getWidth();
                 int h = nativeimage.getHeight();
+                NativeImage baseImage = this.enhancedLayeredTexture.getImage();
 
                 for (int x = 0; x < w; x++) {
                     for (int y = 0; y < h; y++) {
-                        if (cuttoutArray==null || !cuttoutArray[x][y]) {
-                            nativeimage.setPixelRGBA(x, y, -1);
+                        if (cuttoutArray == null) {
+                            nativeimage.setPixelRGBA(x, y, NativeImage.combine(0, 0, 0, 0));
+                        } else {
+                            nativeimage.setPixelRGBA(x, y, cuttoutArray[x][y] ? baseImage.getPixelRGBA(x, y) : NativeImage.combine(0, 0, 0, 0));
                         }
                     }
                 }
-//                NativeImage image = new NativeImage(w, h, true);
-//                for (int i = 0, l = cuttoutArray.length; i < l; i = i + 2) {
-//                    int x = cuttoutArray[i][0];
-//                    for (int j = 1, k = cuttoutArray[i].length; j < k; j++) {
-//                        int y = cuttoutArray[i][j];
-//                        image.setPixelRGBA(x, y, nativeimage.getPixelRGBA(x, y));
-//                    }
-//                }
-//                TextureUtil.prepareImage(this.getId(), image.getWidth(), image.getHeight());
-//                image.upload(0, 0, 0, true);
-//                nativeimage.close();
+            }
+
+            if (this.enhancedLayeredTexture!=null) {
+                this.enhancedLayeredTexture.closeImage();
             }
 
             TextureUtil.prepareImage(this.getId(), nativeimage.getWidth(), nativeimage.getHeight());

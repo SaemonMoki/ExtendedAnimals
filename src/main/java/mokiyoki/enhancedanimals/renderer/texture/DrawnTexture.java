@@ -56,7 +56,7 @@ public class DrawnTexture extends AbstractTexture {
                         if (cuttoutArray == null) {
                             nativeimage.setPixelRGBA(x, y, NativeImage.combine(0, 0, 0, 0));
                         } else {
-                            nativeimage.setPixelRGBA(x, y, cuttoutArray[x][y] ? baseImage.getPixelRGBA(x, y) : NativeImage.combine(0, 0, 0, 0));
+                            nativeimage.setPixelRGBA(x, y, cuttoutArray[x][y] ? baseImage.getPixelRGBA(x, y) : 0);
                         }
                     }
                 }

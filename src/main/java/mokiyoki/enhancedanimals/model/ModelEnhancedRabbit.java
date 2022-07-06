@@ -42,7 +42,6 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
     protected WrappedModelPart earRight;
     protected WrappedModelPart earTopRight;
 
-    protected WrappedModelPart neck;
     protected WrappedModelPart body;
 
     private WrappedModelPart legFrontLeft;
@@ -98,7 +97,7 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
         );
         bEarLeft.addOrReplaceChild("earTL", CubeListBuilder.create()
                         .texOffs(46, 0)
-                        .addBox(-1.0F, -3.0F, 0.0F, 3.5F, 5, 1),
+                        .addBox(-1.0F, -2.0F, 0.0F, 3, 4, 1),
                 PartPose.ZERO
         );
 
@@ -109,13 +108,7 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
         );
         bEarRight.addOrReplaceChild("earTR", CubeListBuilder.create()
                         .texOffs(70, 0)
-                        .addBox(-2.5F, -3.0F, 0.0F, 3.5F, 5, 1),
-                PartPose.ZERO
-        );
-
-        bNeck.addOrReplaceChild("neck", CubeListBuilder.create()
-                        .texOffs(0, 0)
-                        .addBox(-4.5F, -6.75F, -9.0F, 9, 7, 9),
+                        .addBox(-2.0F, -2.0F, 0.0F, 3, 4, 1),
                 PartPose.ZERO
         );
 
@@ -182,9 +175,11 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
         this.theLegBackRight = new WrappedModelPart(bLegBR, "bLegBR");
         this.theTail = new WrappedModelPart(bTail, "bTail");
 
+        this.head = new WrappedModelPart("head", bHead);
+
         this.eyes = new WrappedModelPart("eyes", bHead);
 
-        this.head = new WrappedModelPart("head", bHead);
+        this.nose = new WrappedModelPart("nose", bHead);
 
         this.jaw = new WrappedModelPart("jaw", bHead);
 
@@ -193,8 +188,6 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
 
         this.earRight = new WrappedModelPart("earR", bEarRight);
         this.earTopRight = new WrappedModelPart("earTR", bEarRight);
-
-        this.neck = new WrappedModelPart("neck", bNeck);
 
         this.body = new WrappedModelPart("body", bBody);
 

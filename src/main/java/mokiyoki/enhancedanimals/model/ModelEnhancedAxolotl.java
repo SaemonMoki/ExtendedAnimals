@@ -81,7 +81,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
                 PartPose.ZERO
         );
         bHead.addOrReplaceChild("headLong", CubeListBuilder.create()
-                .texOffs(0, 1)
+                .texOffs(0, 0)
                 .addBox(-4.0F, -6.0F, -4.0F, 8.0F, 6.0F, 5.0F, new CubeDeformation(0.01F)),
                 PartPose.ZERO
         );
@@ -338,7 +338,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
 //            this.theTail.modelPart.zRot = Mth.sin((ageInTicks+randomAnimationOffset) * 0.1F);
 
             if (axolotlModelData.collar) {
-                this.collar.setRotation(this.theHead.getXRot(), this.theHead.getYRot(), this.theHead.getZRot()+Mth.PI);
+                this.collar.setRotation(this.theHead.getXRot()+Mth.PI, this.theHead.getYRot(), this.theHead.getZRot());
 //                this.collar.modelPart.xRot = (float) Math.PI * -0.1F + (headPitch * (pi / 180F) * 0.5F);
 //                this.collar.modelPart.zRot = netHeadYaw * (pi / 180F) * 0.5F;
             }

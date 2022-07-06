@@ -3,6 +3,7 @@ package mokiyoki.enhancedanimals.util;
 import com.mojang.datafixers.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -77,6 +78,8 @@ public class GeneSketch {
     private void setWeightedGeneSketches(int gene, float weight, String sketch) {
         List<Pair<Float, String>> weightedListEntry = new ArrayList<>();
         List<Pair<Float, String>> removePair = new ArrayList<>();
+
+        //updates weighting of sketches if the same value is overwritten - ei: if gene 2 has a 30% chance of being 1 and the new data is setting it to a 40% chance of being 1
         if (this.weightedGeneSketches.containsKey(gene)) {
             for (Pair<Float, String> alleleSketch : this.weightedGeneSketches.get(gene)) {
                 if (alleleSketch.getSecond().equals(sketch)) {
@@ -223,7 +226,49 @@ public class GeneSketch {
     }
 
     private static int getAllele(String alleleData) {
-        if (alleleData.contains("-")) {
+        if (alleleData.contains("|")) {
+            String[] splitGene = alleleData.split("\\|");
+            int c = 0;
+            boolean flag = false;
+            for (int i = 0, l = splitGene.length; i < l; i++) {
+                if (splitGene[i].contains("-")) {
+                    String[] subSplit = splitGene[i].split("-");
+                    c+= Math.abs(Integer.valueOf(subSplit[0])-Integer.valueOf(subSplit[1]));
+                    if (!flag) {
+                        flag = true;
+                    }
+                } else {
+                    c+=1;
+                }
+            }
+
+            if (flag) {
+                int[] selections = new int[c];
+                for (int i = 0, l = 0, j = 0, k = splitGene.length; i < c && j < k;i++) {
+                    if (l!=0) {
+                        selections[i] = selections[i-1] + 1;
+                        l-=1;
+                    } else if (splitGene[j].contains("-")) {
+                        String[] subSplit = splitGene[j].split("-");
+                        l = Math.abs(Integer.valueOf(subSplit[0])-Integer.valueOf(subSplit[1]));
+                        selections[i] = Integer.valueOf(subSplit[0]);
+                        j++;
+                    } else {
+                        selections[i] = Integer.valueOf(splitGene[j]);
+                        j++;
+                    }
+                }
+
+                selections = Arrays.stream(selections).sorted().toArray();
+                c = ThreadLocalRandom.current().nextInt(0, c);
+
+                return selections[c];
+
+            } else {
+                return Integer.valueOf(splitGene[(ThreadLocalRandom.current().nextInt((splitGene.length)))]);
+            }
+
+        } else if (alleleData.contains("-")) {
             String[] splitGene = alleleData.split("-");
             int start = Integer.valueOf(splitGene[0]);
             int end = Integer.valueOf(splitGene[1]);
@@ -233,9 +278,6 @@ public class GeneSketch {
 //            } else {
 //                return ThreadLocalRandom.current().nextInt(Integer.valueOf(splitGene[0]), (Integer.valueOf(splitGene[1])));
 //            }
-        } else if (alleleData.contains("|")) {
-            String[] splitGene = alleleData.split("\\|");
-            return Integer.valueOf(splitGene[ThreadLocalRandom.current().nextInt((splitGene.length))]);
         } else {
             return Integer.valueOf(alleleData);
         }

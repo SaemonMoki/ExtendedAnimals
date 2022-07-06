@@ -254,7 +254,7 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
     private static int[] buildImage(int[] colours) {
         List<Integer> image = new ArrayList();
         for (int i = 0, l=colours.length; i < l; i++) {
-            if (colours[i] != -1) {
+            if (colours[i] != -2) {
                 image.add(x[i]);
                 image.add(y[i]);
                 image.add(colours[i]);

@@ -33,7 +33,7 @@ public class RenderEnhancedAxolotl<T extends EnhancedAxolotl> extends MobRendere
     public static final ModelLayerLocation AXOLOTL_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "axolotl"), "axolotl_layer");
 
     public RenderEnhancedAxolotl(EntityRendererProvider.Context renderManager) {
-        super(renderManager, new ModelEnhancedAxolotl<>(renderManager.bakeLayer(AXOLOTL_LAYER), RenderType::entityCutoutNoCull), 0.5F);
+        super(renderManager, new ModelEnhancedAxolotl<>(renderManager.bakeLayer(AXOLOTL_LAYER), RenderType::entityTranslucent), 0.5F);
         addLayer(new ModelEnhancedAxolotlGlowingLayer(this));
     }
 
@@ -61,7 +61,7 @@ public class RenderEnhancedAxolotl<T extends EnhancedAxolotl> extends MobRendere
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                EnhancedLayeredTexture texture = new EnhancedLayeredTexture(ENHANCED_AXOLOTL_TEXTURE_LOCATION, textures, null, entity.colouration);
+                EnhancedLayeredTexture texture = new EnhancedLayeredTexture(ENHANCED_AXOLOTL_TEXTURE_LOCATION, textures, entity.getVariantAlphaTexturePaths(), entity.colouration);
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, texture);
                 textureCache.putInCache(s, resourcelocation);
                 entity.setBucketImageData(texture);

@@ -33,6 +33,33 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(AxolotlBreeds.GOLDEN_GLOW_EYES);
         this.breeds.add(AxolotlBreeds.ALBINO_GFP);
         this.breeds.add(AxolotlBreeds.AXANTHIC_GFP);
+        this.breeds.add(AxolotlBreeds.GFP_GILLS);
+        this.breeds.add(AxolotlBreeds.GOLDEN_DRAGON);
+        this.breeds.add(AxolotlBreeds.WHITE_BELLY);
+        this.breeds.add(AxolotlBreeds.PIED);
+        this.breeds.add(AxolotlBreeds.HIGHWHITE_BELLY);
+        this.breeds.add(AxolotlBreeds.HIGHWHITE_PIED);
+        this.breeds.add(AxolotlBreeds.GOLD_KOI);
+        this.breeds.add(AxolotlBreeds.SILVER_KOI);
+        this.breeds.add(AxolotlBreeds.COPPER_KOI);
+        this.breeds.add(AxolotlBreeds.BLACK_KOI);
+        this.breeds.add(AxolotlBreeds.RED_KOI);
+        this.breeds.add(AxolotlBreeds.ORANGE_KOI);
+        this.breeds.add(AxolotlBreeds.GLOW_KOI);
+        this.breeds.add(AxolotlBreeds.RED);
+        this.breeds.add(AxolotlBreeds.ORANGE);
+        this.breeds.add(AxolotlBreeds.YELLOW);
+        this.breeds.add(AxolotlBreeds.MELONGREEN);
+        this.breeds.add(AxolotlBreeds.GREEN);
+        this.breeds.add(AxolotlBreeds.VERDEGRIS);
+        this.breeds.add(AxolotlBreeds.CYAN);
+        this.breeds.add(AxolotlBreeds.AZURE);
+        this.breeds.add(AxolotlBreeds.BLUE);
+        this.breeds.add(AxolotlBreeds.VIOLET);
+        this.breeds.add(AxolotlBreeds.MAGENTA);
+        this.breeds.add(AxolotlBreeds.HOT_PINK);
+        this.breeds.add(AxolotlBreeds.LAVENDER);
+        this.breeds.add(AxolotlBreeds.WHITE);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
@@ -80,8 +107,8 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         /**
          *      [16,17] - Splotchy - speckles >< splotches
          */
-        autosomalGenes[16] = ThreadLocalRandom.current().nextInt(2)+1;
-        autosomalGenes[17] = ThreadLocalRandom.current().nextInt(2)+1;
+        autosomalGenes[16] = ThreadLocalRandom.current().nextInt(6)+1;
+        autosomalGenes[17] = ThreadLocalRandom.current().nextInt(6)+1;
 
         /**
          *      [18,19] - Berkshire, Blaze - Berkshire > Blaze > Wildtype
@@ -150,10 +177,16 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[39] = getChance() ? (getChance() ? 3 : 2) : 1;
 
         /**
-         *      [40,41] - GillRGB base - Natural >< White >< Pink >< Red >< Orange >< Yellow >< Lime >< Green >< Cyan >< LightBlue >< Blue >< Purple >< Magenta
+         *      [40,41] - GillRGB base - Natural >< White >< LightGrey >< Grey >< Black >< Brown >< Pink >< Red >< Orange >< Yellow >< Lime >< Green >< Cyan >< LightBlue >< Blue >< Purple >< Magenta
          */
-        autosomalGenes[40] = ThreadLocalRandom.current().nextInt(13)+1;
-        autosomalGenes[41] = ThreadLocalRandom.current().nextInt(13)+1;
+        autosomalGenes[40] = ThreadLocalRandom.current().nextInt(17)+1;
+        autosomalGenes[41] = ThreadLocalRandom.current().nextInt(17)+1;
+
+        /**
+         *      [36,37] - Brindle - Wildtype < Brindle(melanin) < Harlequin(natural+gfp)
+         */
+        autosomalGenes[42] = getChance() ? ThreadLocalRandom.current().nextInt(2)+2 : 1;
+        autosomalGenes[43] = getChance() ? ThreadLocalRandom.current().nextInt(2)+2 : 1;
 
         return new Genes(autosomalGenes);
     }

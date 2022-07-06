@@ -167,7 +167,7 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
 
         this.theLegBackRight.addChild(this.legBackRight);
 
-        this.theHead.addChild(this.collar);
+//        this.theHead.addChild(this.collar);
     }
 
     @Override

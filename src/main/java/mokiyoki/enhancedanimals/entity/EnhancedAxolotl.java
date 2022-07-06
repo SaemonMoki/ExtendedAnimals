@@ -56,7 +56,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     private boolean isTempted = false;
 
     private static final String[] AXOLOTL_TEXTURES_BASE = new String[] {
-            "c_extrapigment.png", "c_natural_xanthic.png", "natural.png", "natural_xanthic.png"
+            "c_natural.png", "c_natural_xanthic.png", "natural.png", "natural_xanthic.png"
     };
 
     private static final String[] AXOLOTL_TEXTURES_GILLS = new String[] {
@@ -69,11 +69,11 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     private static final String[][][] AXOLOTL_TEXTURES_MELANIN = new String[][][] {
         {
-                {"natural_melanin.png"},
-                {"leutistic0.png"}
+            {"natural_melanin.png", "natural_melaninotic.png"},
+            {"leutistic0.png", "leutistic0.png"}
         }, {
-            {"copper_melanin.png"},
-            {"copper_leutistic0.png"}
+            {"copper_melanin.png", "copper_melaninotic.png"},
+            {"copper_leutistic0.png", "copper_leutistic0.png"}
         }
     };
 
@@ -81,11 +81,62 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             "", "low_iridophores.png", "natural_iridophores.png", "high_iridophores.png"
     };
 
-    private static final String[] AXOLOTL_TEXTURES_SPOTS = new String[] {
-            "",
-            "speckled_whitebelly.png", "speckled_pibaldbelly.png", "speckled_pibald.png",
-            "varigated_whitebelly.png", "varigated_pibaldbelly.png", "varigated_pibald.png",
-            "painted_whitebelly.png", "painted_pibaldbelly.png", "painted_pibald.png"
+    private static final String[][][] AXOLOTL_TEXTURES_PIED = new String[][][] {
+            {
+                    //white belly
+                    {
+                        /*weak*/
+                        "spot/whitebelly/weak_splotch.png","spot/whitebelly/weak_hardspeckle.png","spot/whitebelly/weak_softspeckle.png"
+                    }, {
+                        /*medium-weak*/
+                        "spot/whitebelly/mediumweak_splotch.png","spot/whitebelly/mediumweak_hardspeckle.png","spot/whitebelly/mediumweak_softspeckle.png"
+                    }, {
+                        /*medium*/
+                        "spot/whitebelly/medium_splotch.png","spot/whitebelly/medium_splotch.png","spot/whitebelly/medium_splotch.png"
+                    }, {
+                        /*medium-high*/
+                        "spot/whitebelly/mediumhigh_splotch.png","spot/whitebelly/mediumhigh_splotch.png","spot/whitebelly/mediumhigh_splotch.png"
+                    },{
+                        /*high*/
+                        "spot/whitebelly/high_splotch.png","spot/whitebelly/high_hardspeckle.png","spot/whitebelly/high_softspeckle.png"
+                    }
+            },{
+                    //pied belly
+                    {
+                            /*weak*/
+                            "spot/piedbelly/weak_splotch.png","spot/piedbelly/weak_hardspeckle.png","spot/piedbelly/weak_softspeckle.png"
+                    }, {
+                            /*medium-weak*/
+                            "spot/piedbelly/mediumweak_splotch.png","spot/piedbelly/mediumweak_hardspeckle.png","spot/piedbelly/mediumweak_softspeckle.png"
+                    }, {
+                            /*medium*/
+                            "spot/piedbelly/medium_splotch.png","spot/piedbelly/medium_hardspeckle.png","spot/piedbelly/medium_softspeckle.png"
+                    }, {
+                            /*medium-high*/
+                            "spot/piedbelly/mediumhigh_splotch.png","spot/piedbelly/mediumhigh_hardspeckle.png","spot/piedbelly/mediumhigh_softspeckle.png"
+                    }, {
+                            /*high*/
+                            "spot/piedbelly/high_splotch.png","spot/piedbelly/high_hardspeckle.png","spot/piedbelly/high_softspeckle.png"
+                    }
+            },{
+                    //pied
+                    {
+                            /*weak*/
+                            "spot/pied/weak_splotch.png","spot/pied/weak_hardspeckle.png","spot/pied/weak_softspeckle.png"
+                    }, {
+                            /*medium-weak*/
+                            "spot/pied/mediumweak_splotch.png","spot/pied/mediumweak_hardspeckle.png","spot/pied/mediumweak_softspeckle.png"
+                    }, {
+                            /*medium*/
+                            "spot/pied/medium_splotch.png","spot/pied/medium_hardspeckle.png","spot/pied/medium_softspeckle.png"
+                    }, {
+                            /*medium-high*/
+                            "spot/pied/mediumhigh_splotch.png","spot/pied/mediumhigh_hardspeckle.png","spot/pied/mediumhigh_softspeckle.png"
+                    }, {
+                            /*high*/
+                            "spot/pied/high_splotch.png","spot/pied/high_hardspeckle.png","spot/pied/high_softspeckle.png"
+                    }
+            }
     };
 
     private static final String[][][] AXOLOTL_TEXTURES_BERKSHIRE = new String[][][] {
@@ -368,7 +419,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         if (this.getSharedGenes() != null) {
             int[] gene = getSharedGenes().getAutosomalGenes();
             int gills = 0;
-            int base = 0;
+            int base = 2;
             int copper = gene[6] == 1 || gene[7] == 1 ? 0 : 1;
             int pattern = 0;
 //            char[] uuidArry = getCachedUniqueIdString().toCharArray();
@@ -385,22 +436,47 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                 //Non-Leucistic (wildtype)
                 if (gene[2] == 1 || gene[3] == 1) {
                     //xanthic (wildtype)
-                    base = gene[10] == 1 || gene[11] == 1 ? 3 : 1;
+                    base = gene[10] == 1 && gene[11] == 1 ? 3 : 1;
                 } else {
                     //axanthic
-                    base = gene[10] == 1 || gene[11] == 1 ? 2 : 0;
+                    base = gene[10] == 1 && gene[11] == 1 ? 2 : 0;
                 }
 
             } else if (gene[0] == 1 || gene[1] == 1) {
                 //Leucistic
-                base = gene[10] == 1 || gene[11] == 1 ? 2 : 0;
+                base = gene[10] == 1 && gene[11] == 1 ? 2 : 0;
                 pattern = 1;
+            } else {
+                base = gene[10] == 1 && gene[11] == 1 ? 2 : 0;
+            }
+
+            int melanoid = 0;
+            if (gene[4] == 2 && gene[5] == 2) {
+                melanoid = 1;
+            }
+
+            int pied = 0;
+            int piedStrength = 0;
+            int piedSplotchy = 0;
+            if (gene[12] !=1 && gene[13] != 1) {
+                pied = (gene[12] + gene[13])-3;
+                piedStrength = (int)((gene[14] + gene[15] - 2) * 0.3);
+                if (piedStrength >= 5) {
+                    piedStrength = 4;
+                }
+                if (gene[16] >= 5 || gene[17] >= 5) {
+                    piedSplotchy = 2;
+                } else if (gene[16] >= 3 || gene[17] >= 3) {
+                    piedSplotchy = 1;
+                }
             }
 
             addTextureToAnimal(AXOLOTL_TEXTURES_GILLS, gills, null);
+            this.enhancedAnimalTextures.add("alpha_group_start");
             addTextureToAnimal(AXOLOTL_TEXTURES_BASE, base, null);
-            addTextureToAnimal(AXOLOTL_TEXTURES_MELANIN, copper, pattern, 0, gene[0] == 1 || gene[1] == 1);
-            addTextureToAnimal("c_spot_split.png");
+            addTextureToAnimal(AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid, gene[0] == 1 || gene[1] == 1);
+            addTextureToAnimal(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
+            this.enhancedAnimalTextures.add("alpha_group_end");
             addTextureToAnimal("eyel_.png");
             addTextureToAnimal("eyer_.png");
         }
@@ -408,7 +484,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @Override
     protected void setAlphaTexturePaths() {
-
+        this.enhancedAnimalAlphaTextures.add("alpha_mask.png");
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -420,7 +496,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                 int[] gene = genes.getAutosomalGenes();
 
                 if (gene[10] != 1 || gene[11] != 1) {
-                    this.colouration.setDyeColour(Colouration.mixAxolotlHue((float) gene[24] / 255, (float) gene[25] / 255));
+                    this.colouration.setDyeColour(Colouration.mixAxolotlHue((float) (gene[24]-1) / 255, (float) (gene[25]-1) / 255));
                 }
 
                 float eyeHue = 0.75F;
@@ -431,7 +507,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                     if (gene[20] == 4 || gene[21] == 4) {
                         int genenum = gene[20] == 4 ? 21 : 20;
                         //light eyes
-                        float[] lightEyes = Colouration.getAxolotlLightEyes((float) gene[22] / 255, (float) gene[23] / 255);
+                        float[] lightEyes = Colouration.getAxolotlLightEyes((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255);
 
                         eyeHue = lightEyes[0];
 
@@ -454,7 +530,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                             eyeBrightness = lightEyes[2];
                         }
                     } else {
-                        eyeHue = Colouration.mixHueComponent((float) gene[22] / 255, (float) gene[23] / 255, 0.5F);
+                        eyeHue = Colouration.mixHueComponent((float) (gene[22]-1) / 255, (float) (gene[23]-1) / 255, 0.5F);
 
                         if (gene[20] == 2) {
                             //dark eyes
@@ -560,7 +636,7 @@ NBT read/write
                         g?36:37, 39, 5, 6, 7, 8, 9, 10, 11, 12, 48, g?51:50,
                         38, 39, 5, 6, 7, 8, 9, 10, 11, 12, 48, 49,
                         36, 37, 5, 6, 7, 8, 9, 10, 11, 12, 50, 51,
-                        59, 44, 45, 47, 48, 59,
+                        59, -1, -1, -1, -1, 59,
                         59, -1, -1, 59,
                         l?-1:58, 59, l?-1:60, l?-1:58, 59, l?-1:60,
                         l?58:-1, 59, l?60:-1, l?58:-1, 59, l?60:-1,
@@ -583,10 +659,9 @@ NBT read/write
                 int rgba;
                 for (int i = 0; i < 86; i++) {
                     if (x[i] == -1) {
-                        axolotlBucketImage[i] = -1;
+                        axolotlBucketImage[i] = -2;
                     } else {
-                        rgba = image.getPixelRGBA(x[i], y[i]);
-                        axolotlBucketImage[i] = (rgba >> 24 & 255) == 0 ? -1 : rgba;
+                        axolotlBucketImage[i] = image.getPixelRGBA(x[i], y[i]);
                     }
                 }
 
@@ -639,7 +714,7 @@ NBT read/write
 
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
-        if (getSharedGenes().isValid()/* && !this.getBucketImage().isEmpty()*/) {
+        if (getSharedGenes().isValid()) {
             return Bucketable.bucketMobPickup(player, hand, this).orElse(super.mobInteract(player, hand));
         } else {
             return super.mobInteract(player, hand);

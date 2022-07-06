@@ -155,14 +155,26 @@ public class Colouration {
     }
 
     public static int mixAxolotlHue(float hue1, float hue2) {
-        int[] color1 = getRGBFromHSB(hue1, 0.8F, 0.6F);
-        int[] color2 = getRGBFromHSB(hue2, 0.8F, 0.6F);
+//        int[] color1 = getRGBFromHSB(hue1, 0.8F, 0.6F);
+//        int[] color2 = getRGBFromHSB(hue2, 0.8F, 0.6F);
 
-        int r = color1[0] + color2[0];
-        int g = color1[1] + color2[1];
-        int b = color1[2] + color2[2];
+//        int r = color1[0] + color2[0];
+//        int g = color2[1] + color2[1];
+//        int b = color3[2] + color2[2];
 
-        return 128 << 24 | (Math.min(b, 255)) << 16 | (Math.min(g, 255)) << 8 | (Math.min(r, 255));
+        float hue = Math.abs(hue1-hue2);
+        float degreesDif = Math.min(hue, 1.0F-hue);
+        float saturation = 0.75F;
+        float brightness = 0.65F;
+            hue = hue!=degreesDif? Math.min(hue1, hue2)-(degreesDif*0.5F) : Math.min(hue1, hue2)+(degreesDif*0.5F);
+        if (degreesDif > 0.3333F){
+            saturation = saturation * (1.0F-((degreesDif-0.3333F)/0.1667F));
+            brightness = brightness + (((degreesDif-0.3333F)/0.1667F)*0.35F);
+        }
+
+        int[] color = getRGBFromHSB(hue, saturation, brightness);
+
+        return 128 << 24 | (Math.min(color[2], 255)) << 16 | (Math.min(color[1], 255)) << 8 | (Math.min(color[0], 255));
     }
 
     public static float[] getAxolotlLightEyes(float hue1, float hue2) {

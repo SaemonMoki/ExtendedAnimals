@@ -627,6 +627,14 @@ public class EventSubscriber {
                     event.setCanceled(true);
                 }
             }
+        } else if (event.getEntity().hasCustomName()) {
+            Entity entity = event.getEntity();
+            if (entity instanceof EnhancedPig || entity.getClass().getName().toLowerCase().contains("pig")) {
+                String name = entity.getCustomName().getString().toLowerCase();
+                if (name.equals("technoblade")) {
+                    event.setCanceled(true);
+                }
+            }
         }
     }
 

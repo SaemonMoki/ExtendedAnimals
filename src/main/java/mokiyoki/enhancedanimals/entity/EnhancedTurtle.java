@@ -278,7 +278,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Override
     public void initilizeAnimalSize() {
-
+        this.setAnimalSize(1.0F);
     }
 
     @Override

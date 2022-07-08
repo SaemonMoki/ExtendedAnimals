@@ -24,12 +24,29 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
+import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_ALLIUM;
+import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_AZURE_BLUET;
+import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_BLUE_ORCHID;
+import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_CORNFLOWER;
+import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_DANDELION;
+import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_FERN;
+import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_GRASS;
+import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_LARGE_FERN;
+import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_OXEYE_DAISY;
+import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_ROSE_BUSH;
+import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_SUNFLOWER;
+import static mokiyoki.enhancedanimals.init.ModBlocks.GROWABLE_TALL_GRASS;
+import static mokiyoki.enhancedanimals.init.ModBlocks.PATCHYMYCELIUM_BLOCK;
 import static mokiyoki.enhancedanimals.init.ModBlocks.POST_ACACIA;
 import static mokiyoki.enhancedanimals.init.ModBlocks.POST_BIRCH;
 import static mokiyoki.enhancedanimals.init.ModBlocks.POST_DARK_OAK;
 import static mokiyoki.enhancedanimals.init.ModBlocks.POST_JUNGLE;
 import static mokiyoki.enhancedanimals.init.ModBlocks.POST_OAK;
 import static mokiyoki.enhancedanimals.init.ModBlocks.POST_SPRUCE;
+import static mokiyoki.enhancedanimals.init.ModBlocks.SPARSEGRASS_BLOCK;
+import static mokiyoki.enhancedanimals.init.ModBlocks.TURTLE_EGG;
+import static mokiyoki.enhancedanimals.init.ModBlocks.UNBOUNDHAY_BLOCK;
 
 /**
  * Created by moki on 24/08/2018.
@@ -409,18 +426,36 @@ public class ModItems {
     public static final RegistryObject<Item> POST_OAK_ITEM = ITEMS_DEFERRED_REGISTRY.register("post_oak", () -> new BlockItem(POST_OAK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     public static final RegistryObject<Item> POST_SPRUCE_ITEM = ITEMS_DEFERRED_REGISTRY.register("post_spruce", () -> new BlockItem(POST_SPRUCE.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
 
+    public static final RegistryObject<Item> EGG_CARTON_ITEM = ITEMS_DEFERRED_REGISTRY.register("egg_carton", () -> new BlockItem(EGG_CARTON.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> TURTLE_EGG_ITEM = ITEMS_DEFERRED_REGISTRY.register("turtle_egg", () -> new BlockItem(TURTLE_EGG.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> UNBOUNDHAY_BLOCK_ITEM = ITEMS_DEFERRED_REGISTRY.register("unboundhay_block", () -> new BlockItem(UNBOUNDHAY_BLOCK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> SPARSEGRASS_BLOCK_ITEM = ITEMS_DEFERRED_REGISTRY.register("sparsegrass_block", () -> new BlockItem(SPARSEGRASS_BLOCK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> PATCHYMYCELIUM_BLOCK_ITEM = ITEMS_DEFERRED_REGISTRY.register("patchymycelium_block", () -> new BlockItem(PATCHYMYCELIUM_BLOCK.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_ALLIUM_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_allium", () -> new BlockItem(GROWABLE_ALLIUM.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_AZURE_BLUET_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_azure_bluet", () -> new BlockItem(GROWABLE_AZURE_BLUET.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_BLUE_ORCHID_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_blue_orchid", () -> new BlockItem(GROWABLE_BLUE_ORCHID.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_CORNFLOWER_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_cornflower", () -> new BlockItem(GROWABLE_CORNFLOWER.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_DANDELION_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_dandelion", () -> new BlockItem(GROWABLE_DANDELION.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_OXEYE_DAISY_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_oxeye_daisy", () -> new BlockItem(GROWABLE_OXEYE_DAISY.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_GRASS_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_grass", () -> new BlockItem(GROWABLE_GRASS.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_FERN_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_fern", () -> new BlockItem(GROWABLE_FERN.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_ROSE_BUSH_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_rose_bush", () -> new BlockItem(GROWABLE_ROSE_BUSH.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_SUNFLOWER_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_sunflower", () -> new BlockItem(GROWABLE_SUNFLOWER.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_TALL_GRASS_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_tall_grass", () -> new BlockItem(GROWABLE_TALL_GRASS.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    public static final RegistryObject<Item> GROWABLE_LARGE_FERN_ITEM = ITEMS_DEFERRED_REGISTRY.register("growable_large_fern", () -> new BlockItem(GROWABLE_LARGE_FERN.get(), new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+
     /*
     * Spawn Eggs
     */
     private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_AXOLOTL_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_axolotl_spawn_egg", () ->  new ForgeSpawnEggItem(ModEntities.ENHANCED_AXOLOTL, 0x632B63, 0xA62D74, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-//    private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_TURTLE_EGG = createDeferredSpawnEgg("enhanced_turtle_spawn_egg", new ForgeSpawnEggItem(ModEntities.ENHANCED_TURTLE, 0xFFFFDD, 0x00DDCC, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_TURTLE_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_turtle_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ENHANCED_TURTLE, 0xFFFFDD, 0x00DDCC, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_CHICKEN_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_chicken_spawn_egg", () ->  new ForgeSpawnEggItem(ModEntities.ENHANCED_CHICKEN, 0xFFFCF0,0xCC0000, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-//    private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_LLAMA_EGG = createDeferredSpawnEgg("enhanced_llama_spawn_egg", new ForgeSpawnEggItem(ModEntities.ENHANCED_LLAMA, 0xCDB29C, 0x7B4B34, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_LLAMA_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_llama_spawn_egg", () ->  new ForgeSpawnEggItem(ModEntities.ENHANCED_LLAMA, 0xCDB29C, 0x7B4B34, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_SHEEP_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_sheep_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ENHANCED_SHEEP, 0xFFFFFF, 0xFF8C8C, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-//    private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_RABBIT_EGG = createDeferredSpawnEgg("enhanced_rabbit_spawn_egg", new ForgeSpawnEggItem(ModEntities.ENHANCED_RABBIT, 0xCA8349, 0x553C36, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_RABBIT_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_rabbit_spawn_egg", () ->  new ForgeSpawnEggItem(ModEntities.ENHANCED_RABBIT, 0xCA8349, 0x553C36, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
     private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_COW_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_cow_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ENHANCED_COW, 0x260800,0xf9f9f7, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-//    private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_MOOSHROOM_EGG = createDeferredSpawnEgg("enhanced_mooshroom_spawn_egg", new ForgeSpawnEggItem(ModEntities.ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
-//    private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_PIG_EGG = createDeferredSpawnEgg("enhanced_pig_spawn_egg", new ForgeSpawnEggItem(ModEntities.ENHANCED_PIG, 0xFFA4A4,0xB34d4d, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_MOOSHROOM_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_mooshroom_spawn_egg", () ->  new ForgeSpawnEggItem(ModEntities.ENHANCED_MOOSHROOM, 0xFF0000,0xCCCCCC, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
+    private static final RegistryObject<ForgeSpawnEggItem> ENHANCED_PIG_EGG = ITEMS_DEFERRED_REGISTRY.register("enhanced_pig_spawn_egg", () ->  new ForgeSpawnEggItem(ModEntities.ENHANCED_PIG, 0xFFA4A4,0xB34d4d, new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP)));
 
     public static void register(IEventBus modEventBus) {
         ITEMS_DEFERRED_REGISTRY.register(modEventBus);

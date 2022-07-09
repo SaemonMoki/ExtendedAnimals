@@ -678,10 +678,6 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             this.turtle = turtle;
         }
 
-        /**
-         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
-         * method as well.
-         */
         public boolean canUse() {
             if (this.turtle.mateGenetics==null) {
                 this.turtle.setHasEgg(false);
@@ -690,9 +686,6 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             return (this.turtle.hasEgg()) && this.turtle.getHome().closerToCenterThan(this.turtle.position(), 9.0D) ? super.canUse() : false;
         }
 
-        /**
-         * Returns whether an in-progress EntityAIBase should continue executing
-         */
         public boolean canContinueToUse() {
             if (this.turtle.mateGenetics==null) {
                 this.turtle.setHasEgg(false);
@@ -701,9 +694,6 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             return super.canContinueToUse() && this.turtle.hasEgg() && this.turtle.getHome().closerToCenterThan(this.turtle.position(), 9.0D);
         }
 
-        /**
-         * Keep ticking a continuous task that has already been started
-         */
         public void tick() {
             super.tick();
             BlockPos blockpos = this.turtle.blockPosition();
@@ -762,7 +752,12 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          * Spawns a baby animal of the same type.
          */
         protected void breed() {
-            this.turtle.handlePartnerBreeding(this.partner);
+            if (this.turtle.getOrSetIsFemale()) {
+                this.turtle.handlePartnerBreeding(this.partner);
+            } else {
+                ((EnhancedTurtle) this.partner).handlePartnerBreeding(this.turtle);
+            }
+
             if (this.turtle.pregnant) {
                 this.turtle.setHasEgg(true);
                 this.turtle.pregnant = false;

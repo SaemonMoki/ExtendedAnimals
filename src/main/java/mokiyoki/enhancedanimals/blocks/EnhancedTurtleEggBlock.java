@@ -133,40 +133,40 @@ public class EnhancedTurtleEggBlock extends NestBlock {
                 List<EggHolder> eggList = level.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).removeEggsFromNest(pos);
                 int j = 1;
 
-//                if (eggList!=null) {
-//                    for (EggHolder egg : eggList) {
-//                        level.levelEvent(2001, pos, Block.getId(state));
-//                        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
-//                        turtle.setGenes(egg.getGenes());
-//                        turtle.setSharedGenes(egg.getGenes());
-//                        turtle.setSireName(egg.getSire());
-//                        turtle.setDamName(egg.getDam());
-//                        turtle.setGrowingAge();
-//                        turtle.initilizeAnimalSize();
-//                        turtle.setBirthTime();
-//                        turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
-//                        turtle.setHome(pos);
-//                        turtle.setHasScute();
-//                        level.addFreshEntity(turtle);
-//                    }
-//                } else {
-//                    for (int k = 0; k < state.getValue(EGGS); k++) {
-//                        level.levelEvent(2001, pos, Block.getId(state));
-//                        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
-//                        Genes turtleGenes = turtle.createInitialBreedGenes(turtle.getCommandSenderWorld(), turtle.blockPosition(), "WanderingTrader");
-//                        turtle.setGenes(turtleGenes);
-//                        turtle.setSharedGenes(turtleGenes);
-//                        turtle.setSireName("???");
-//                        turtle.setDamName("???");
-//                        turtle.setGrowingAge();
-//                        turtle.initilizeAnimalSize();
-//                        turtle.setBirthTime();
-//                        turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
-//                        turtle.setHome(pos);
-//                        turtle.setHasScute();
-//                        level.addFreshEntity(turtle);
-//                    }
-//                }
+                if (eggList!=null) {
+                    for (EggHolder egg : eggList) {
+                        level.levelEvent(2001, pos, Block.getId(state));
+                        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
+                        turtle.setGenes(egg.getGenes());
+                        turtle.setSharedGenes(egg.getGenes());
+                        turtle.setSireName(egg.getSire());
+                        turtle.setDamName(egg.getDam());
+                        turtle.setGrowingAge();
+                        turtle.initilizeAnimalSize();
+                        turtle.setBirthTime();
+                        turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
+                        turtle.setHome(pos);
+                        turtle.setHasScute();
+                        level.addFreshEntity(turtle);
+                    }
+                } else {
+                    for (int k = 0; k < state.getValue(EGGS); k++) {
+                        level.levelEvent(2001, pos, Block.getId(state));
+                        EnhancedTurtle turtle = ENHANCED_TURTLE.get().create(level);
+                        Genes turtleGenes = turtle.createInitialBreedGenes(turtle.getCommandSenderWorld(), turtle.blockPosition(), "WanderingTrader");
+                        turtle.setGenes(turtleGenes);
+                        turtle.setSharedGenes(turtleGenes);
+                        turtle.setSireName("???");
+                        turtle.setDamName("???");
+                        turtle.setGrowingAge();
+                        turtle.initilizeAnimalSize();
+                        turtle.setBirthTime();
+                        turtle.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
+                        turtle.setHome(pos);
+                        turtle.setHasScute();
+                        level.addFreshEntity(turtle);
+                    }
+                }
             }
         }
 

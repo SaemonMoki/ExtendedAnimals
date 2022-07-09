@@ -1,5 +1,17 @@
 package mokiyoki.enhancedanimals.entity;
 
+import mokiyoki.enhancedanimals.ai.ECRoost;
+import mokiyoki.enhancedanimals.ai.general.EnhancedAvoidEntityGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedBreedGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookAtGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
+import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
+import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
+import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
+import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
+import mokiyoki.enhancedanimals.ai.general.chicken.GrazingGoalChicken;
 import mokiyoki.enhancedanimals.capability.egg.EggCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.ChickenGeneticsInitialiser;
@@ -9,6 +21,10 @@ import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.animal.Fox;
+import net.minecraft.world.entity.animal.Ocelot;
+import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -279,29 +295,29 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
 
     @Override
     protected void registerGoals() {
-//        int napmod = this.random.nextInt(1200);
+        int napmod = this.random.nextInt(1200);
 //        this.grazingGoal = new GrazingGoalChicken(this, 1.0D);
 //        this.ecSandBath = new ECSandBath(this);
         this.goalSelector.addGoal(0, new FloatGoal(this));
-//        this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
-//        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Wolf.class, 10.0F, 1.0D, 2.0D, null));
-//        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Fox.class, 10.0F, 1.0D, 2.0D, null));
-//        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Ocelot.class, 10.0F, 1.0D, 2.0D, null));
-//        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 4.0F, 1.0D, 1.8D, null));
-//        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Monster.class, 4.0F, 1.0D, 2.0D, null));
-//        this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
-//        this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, Items.AIR));
+        this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Wolf.class, 10.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Fox.class, 10.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Ocelot.class, 10.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, EnhancedPig.class, 4.0F, 1.0D, 1.8D, null));
+        this.goalSelector.addGoal(3, new EnhancedAvoidEntityGoal<>(this, Monster.class, 4.0F, 1.0D, 2.0D, null));
+        this.goalSelector.addGoal(4, new EnhancedBreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new EnhancedTemptGoal(this, 1.0D, 1.3D, false, Items.AIR));
         this.goalSelector.addGoal(6, new FollowParentGoal(this, 1.1D));
-//        this.goalSelector.addGoal(7, new ECRoost(this));
-//        this.goalSelector.addGoal(8, new StayShelteredGoal(this, 6000, 7500, napmod));
-//        this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
-//        this.goalSelector.addGoal(10, new ECWanderAvoidWater(this, 1.0D));
+        this.goalSelector.addGoal(7, new ECRoost(this));
+        this.goalSelector.addGoal(8, new StayShelteredGoal(this, 6000, 7500, napmod));
+        this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
+        this.goalSelector.addGoal(10, new ECWanderAvoidWater(this, 1.0D));
 //        this.goalSelector.addGoal(11, new EnhancedEatPlantsGoal(this, createGrazingMap()));
 //        this.goalSelector.addGoal(12, this.grazingGoal);
-//        this.goalSelector.addGoal(14, new EnhancedWanderingGoal(this, 1.0D));
-//        this.goalSelector.addGoal(15, new EnhancedLookAtGoal(this, Player.class, 6.0F));
-//        this.goalSelector.addGoal(16, new EnhancedLookAtGoal(this, Chicken.class, 6.0F));
-//        this.goalSelector.addGoal(17, new EnhancedLookRandomlyGoal(this));
+        this.goalSelector.addGoal(14, new EnhancedWanderingGoal(this, 1.0D));
+        this.goalSelector.addGoal(15, new EnhancedLookAtGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(16, new EnhancedLookAtGoal(this, EnhancedChicken.class, 6.0F));
+        this.goalSelector.addGoal(17, new EnhancedLookRandomlyGoal(this));
 
     }
 

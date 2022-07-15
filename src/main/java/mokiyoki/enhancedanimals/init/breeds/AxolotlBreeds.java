@@ -97,4 +97,6 @@ public class AxolotlBreeds {
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(24,"255,148")));
     public static final Breed WHITE = new Breed(RAINBOW, new Breed.Properties().setData("hetwhite", Biomes.LUSH_CAVES, Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(24,"33%43,169","33%85,212","1,127")));
+    public static final Breed MICRO = new Breed(new Breed.Properties().setData("micro", Biomes.LUSH_CAVES, Breed.Rarity.EXOTIC)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(28, "5","10")));
 }

@@ -60,17 +60,17 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 22.0F, -8.0F, -Mth.PI * 0.5F, 0.0F, 0.0F));
         PartDefinition bHead = base.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -9.0F));
-        PartDefinition bGills = base.addOrReplaceChild("bGills", CubeListBuilder.create(), PartPose.ZERO);
+        PartDefinition bGills = base.addOrReplaceChild("bGills", CubeListBuilder.create(), PartPose.offset(0.0F, 2.0F, 0.0F));
         PartDefinition bBody = base.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.ZERO);
-        PartDefinition bLegFrontLeft = base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.ZERO);
-        PartDefinition bLegFrontRight = base.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.ZERO);
-        PartDefinition bLegBackLeft = base.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.ZERO);
-        PartDefinition bLegBackRight = base.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.ZERO);
-        PartDefinition bTail = base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, -12.0F, .0F));
+        PartDefinition bLegFrontLeft = base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(-3.5F, -2.0F, -1.0F));
+        PartDefinition bLegFrontRight = base.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(3.5F, -2.0F, -1.0F));
+        PartDefinition bLegBackLeft = base.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(-3.5F, 1.0F, -1.0F));
+        PartDefinition bLegBackRight = base.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(3.5F, 1.0F, -1.0F));
+        PartDefinition bTail = base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, -12.0F, 0.0F));
 
         bBody.addOrReplaceChild("body", CubeListBuilder.create()
                 .texOffs(0, 12)
-                .addBox(-4.0F, -6.0F, -4.0F, 8.0F, 6.0F, 4.0F)
+                .addBox(-4.0F, -6.0F, -4.0F, 8.0F, 4.0F, 4.0F)
                 .texOffs(0, 22)
                 .addBox(-4.0F, -12.0F, -4.0F, 8.0F, 6.0F, 4.0F),
                 PartPose.ZERO
@@ -113,24 +113,24 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         );
 
         bLegFrontLeft.addOrReplaceChild("legFrontLeft", CubeListBuilder.create()
-                        .texOffs(58, 2)
+                        .texOffs(55, 2)
                         .addBox(-1.0F, 0.0F, 0.0F, 3.0F, 5.0F, 0.0F),
-                PartPose.offset(3.5F, 1.0F, -8.0F)
+                PartPose.ZERO
         );
         bLegFrontRight.addOrReplaceChild("legFrontRight", CubeListBuilder.create()
-                        .texOffs(58, 9)
+                        .texOffs(55, 9)
                         .addBox(-2.0F, 0.0F, 0.0F, 3.0F, 5.0F, 0.0F),
-                PartPose.offset(-3.5F, 1.0F, -8.0F)
+                PartPose.ZERO
         );
         bLegBackLeft.addOrReplaceChild("legBackLeft", CubeListBuilder.create()
-                        .texOffs(58, 16)
+                        .texOffs(55, 16)
                         .addBox(-1.0F, 0.0F, 0.0F, 3.0F, 5.0F, 0.0F),
-                PartPose.offset(3.5F, 1.0F, -1.0F)
+                PartPose.ZERO
         );
         bLegBackRight.addOrReplaceChild("legBackRight", CubeListBuilder.create()
-                        .texOffs(58, 23)
+                        .texOffs(55, 23)
                         .addBox(-2.0F, 0.0F, 0.0F, 3.0F, 5.0F, 0.0F),
-                PartPose.offset(-3.5F, 1.0F, -1.0F)
+                PartPose.ZERO
         );
 
         bBody.addOrReplaceChild("bodyFin", CubeListBuilder.create()
@@ -259,6 +259,12 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         this.collar = new WrappedModelPart(base.getChild("collar"), "collar");
 
         this.theAxolotl.addChild(this.theBody);
+        this.theBody.addChild(this.theHead);
+        this.theBody.addChild(this.theLegFrontLeft);
+        this.theBody.addChild(this.theLegFrontRight);
+        this.theBody.addChild(this.theLegBackLeft);
+        this.theBody.addChild(this.theLegBackRight);
+        this.theBody.addChild(this.theTail);
 
         this.theHead.addChild(this.head);
         this.theHead.addChild(this.headLong);
@@ -268,16 +274,15 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         this.theGills.addChild(this.gillsLeft);
         this.theGills.addChild(this.gillsRight);
 
-        this.theBody.addChild(this.theHead);
         this.theBody.addChild(this.body);
         this.theBody.addChild(this.bodyLong);
         this.theBody.addChild(this.bodyFin);
         this.theBody.addChild(this.bodyFinLong);
-        this.theBody.addChild(this.legFrontLeft);
-        this.theBody.addChild(this.legFrontRight);
-        this.theBody.addChild(this.legBackLeft);
-        this.theBody.addChild(this.legBackRight);
-        this.theBody.addChild(this.theTail);
+
+        this.theLegFrontLeft.addChild(this.legFrontLeft);
+        this.theLegFrontRight.addChild(this.legFrontRight);
+        this.theLegBackLeft.addChild(this.legBackLeft);
+        this.theLegBackRight.addChild(this.legBackRight);
 
         this.theTail.addChild(this.tail12);
         this.theTail.addChild(this.tail13);
@@ -297,26 +302,26 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         if (axolotl!=null) {
             this.setupInitialAnimationValues(axolotlModelData, netHeadYaw, headPitch, axolotl);
 
-//            if (entityIn.isPlayingDead()) {
+            if (entityIn.isPlayingDead()) {
                 this.setupPlayDeadAnimation(ageInTicks);
-//            } else {
-//                boolean flag = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.getXRot() != entityIn.xRotO || entityIn.getYRot() != entityIn.yRotO || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
-//                if (entityIn.isInWaterOrBubble()) {
-//                    if (flag) {
-//                        this.setupSwimmingAnimation(ageInTicks, headPitch);
-//                    } else {
-//                        this.setupWaterHoveringAnimation(ageInTicks);
-//                    }
-//                } else {
-//                    if (entityIn.isOnGround()) {
-//                        if (flag) {
-//                            this.setupGroundCrawlingAnimation(ageInTicks, netHeadYaw);
-//                        } else {
-//                            this.setupLayStillOnGroundAnimation(ageInTicks, netHeadYaw);
-//                        }
-//                    }
-//                }
-//            }
+            } else {
+                boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.getXRot() != entityIn.xRotO || entityIn.getYRot() != entityIn.yRotO || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
+                if (entityIn.isInWaterOrBubble()) {
+                    if (isMoving) {
+                        this.setupSwimmingAnimation(ageInTicks, headPitch);
+                    } else {
+                        this.setupWaterHoveringAnimation(ageInTicks);
+                    }
+                } else {
+                    if (entityIn.isOnGround()) {
+                        if (isMoving) {
+                            this.setupGroundCrawlingAnimation(ageInTicks, netHeadYaw);
+                        } else {
+                            this.setupLayStillOnGroundAnimation(ageInTicks, netHeadYaw);
+                        }
+                    }
+                }
+            }
 
 
             this.saveAnimationValues(axolotlModelData);
@@ -331,15 +336,17 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
     private void setupInitialAnimationValues(AnimalModelData data, float netHeadYaw, float headPitch, AxolotlPhenotype axolotl) {
         this.theAxolotl.setX(0.0F);
         this.theAxolotl.setY(20.0F);
+        this.theAxolotl.setZ(0.0F);
         this.theHead.setZ(-4.0F);
+        this.theHead.setY(axolotl.isLong ? 2.0F : 0.0F);
         Map<String, Vector3f> map = data.offsets;
         if (map.isEmpty()) {
             this.theAxolotl.setRotation((headPitch * (-Mth.PI / 180F))-Mth.HALF_PI, netHeadYaw * (Mth.PI / 180F), 0.0F);
             this.theHead.setRotation(Mth.PI, 0.0F, 0.0F);
-            this.theLegFrontLeft.setRotation(Mth.PI * 0.2F, 0.0F, -Mth.HALF_PI);
-            this.theLegFrontRight.setRotation(Mth.PI * 0.2F, 0.0F, Mth.HALF_PI);
-            this.theLegBackLeft.setRotation(Mth.PI * 0.2F, 0.0F, -Mth.HALF_PI);
-            this.theLegBackRight.setRotation(Mth.PI * 0.2F, 0.0F, Mth.HALF_PI);
+            this.theLegFrontLeft.setRotation(Mth.HALF_PI, 0.0F, Mth.PI);
+            this.theLegFrontRight.setRotation(Mth.HALF_PI, 0.0F, Mth.PI);
+            this.theLegBackLeft.setRotation(Mth.HALF_PI, 0.0F, Mth.PI);
+            this.theLegBackRight.setRotation(Mth.HALF_PI, 0.0F, Mth.PI);
             this.gillsLeft.setRotation(-Mth.HALF_PI, 0.0F, Mth.HALF_PI);
             this.gillsRight.setRotation(-Mth.HALF_PI, 0.0F, Mth.HALF_PI);
             this.gillsTop.setRotation(Mth.PI * 1.5F, 0.0F, 0.0F);
@@ -357,8 +364,8 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
             this.setRotationFromVector(this.gillsLeft, map.get("left_gills"));
             this.setRotationFromVector(this.gillsRight, map.get("right_gills"));
             this.setRotationFromVector(this.theTail, map.get("bTail"));
-            this.theLegBackLeft.modelPart.y = map.get("backLeg").y();
-            this.theLegBackRight.modelPart.y = map.get("backLeg").y();
+            this.theLegBackLeft.setY(map.get("backLegs").y());
+            this.theLegBackRight.setY(map.get("backLegs").y());
         }
     }
 
@@ -369,17 +376,17 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         float f3 = f1 * f1 - 2.0F * f1;
         float f4 = f2 * f2 - 3.0F * f1;
         this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), (-0.09F * f3)+Mth.PI));
-        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
-        this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), -0.2F));
-        this.theTail.setYRot(this.lerpTo(this.theTail.getYRot(), -0.1F + 0.1F * f3));
-        this.gillsTop.setXRot(this.lerpTo(this.gillsTop.getXRot(), 0.6F + 0.05F * f4));
-        this.gillsLeft.setYRot(this.lerpTo(this.gillsLeft.getYRot(), -this.gillsTop.getXRot()));
-        this.gillsRight.setYRot(this.lerpTo(this.gillsRight.getYRot(), -this.gillsLeft.getYRot()));
-        this.lerpPart(this.legBackLeft, 1.1F, 0.0F, 1.0F);
-        this.lerpPart(this.legFrontLeft, 0.8F, -0.5F, 2.3F);
+        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), -0.2F));
+        this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), 0.0F));
+        this.theTail.setZRot(this.lerpTo(this.theTail.getZRot(), -0.1F + 0.1F * f3));
+        this.gillsTop.setXRot(this.lerpTo(this.gillsTop.getXRot(), (0.6F + 0.05F * f4)-Mth.HALF_PI));
+        this.gillsLeft.setZRot(this.lerpTo(this.gillsLeft.getZRot(), this.gillsTop.getXRot()+Mth.PI));
+        this.gillsRight.setZRot(this.lerpTo(this.gillsRight.getZRot(), -this.gillsLeft.getZRot()+Mth.PI));
+        this.lerpPart(this.theLegBackRight, 1.1F+Mth.HALF_PI, 0.0F, 1.0F);
+        this.lerpPart(this.theLegFrontRight, 0.8F+Mth.HALF_PI, -0.5F, 2.3F);
         this.applyMirrorLegRotations();
-        this.theAxolotl.setXRot(this.lerpTo(0.2F, this.theAxolotl.getXRot(), 0.0F));
-        this.theAxolotl.setYRot(this.lerpTo(this.theAxolotl.getYRot(), netHeadYaw * (Mth.PI / 180F) -Mth.HALF_PI));
+        this.theAxolotl.setXRot(this.lerpTo(0.2F, this.theAxolotl.getXRot(), -Mth.HALF_PI));
+        this.theAxolotl.setYRot(this.lerpTo(this.theAxolotl.getYRot(), netHeadYaw * (Mth.PI / 180F)));
         this.theAxolotl.setZRot(this.lerpTo(this.theAxolotl.getZRot(), 0.0F));
     }
 
@@ -389,17 +396,17 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         float f2 = (f1 * f1 - 2.0F * f1) / 5.0F;
         float f3 = 0.7F * f1;
         this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.PI));
-        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.09F * f1));
-        this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), 0.0F));
+        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
+        this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), 0.09F * f1));
         this.theTail.setYRot(this.lerpTo(this.theTail.getYRot(), this.theHead.getYRot()));
-        this.gillsTop.setXRot(this.lerpTo(this.gillsTop.getXRot(), 0.6F - 0.08F * (f1 * f1 + 2.0F * Mth.sin(f))));
-        this.gillsLeft.setYRot(this.lerpTo(this.gillsLeft.getYRot(), -this.gillsTop.getXRot()));
-        this.gillsRight.setYRot(this.lerpTo(this.gillsRight.getYRot(), -this.gillsLeft.getYRot()));
-        this.lerpPart(this.legBackLeft, 0.9424779F, -0.1F, 1.5F - f2);
-        this.lerpPart(this.legFrontLeft, 1.0995574F, 0.0F, (Mth.PI / 2F) - f3);
-        this.lerpPart(this.legBackRight, this.legBackLeft.getXRot(), 0.0F, -1.0F - f2);
-        this.lerpPart(this.legFrontRight, this.legFrontLeft.getXRot(), 0.0F, (-Mth.PI / 2F) - f3);
-        this.theAxolotl.setXRot(this.lerpTo(0.2F, this.theAxolotl.getXRot(), 0.0F));
+        this.gillsTop.setXRot(this.lerpTo(this.gillsTop.getXRot(), (0.6F - 0.08F * (f1 * f1 + 2.0F * Mth.sin(f)))-Mth.HALF_PI));
+        this.gillsRight.setZRot(this.lerpTo(this.gillsRight.getZRot(), 0.0F - this.gillsTop.getXRot()));
+        this.gillsLeft.setZRot(this.lerpTo(this.gillsLeft.getZRot(), -(this.gillsRight.getZRot()+Mth.PI)));
+        this.lerpPart(this.theLegBackLeft, 0.9424779F+Mth.HALF_PI, -0.1F, (1.5F - f2)+(Mth.PI * 1.25F));
+        this.lerpPart(this.theLegFrontLeft, 1.0995574F - Mth.HALF_PI, 0.0F+Mth.PI, ((Mth.PI / 2F) - f3));
+        this.lerpPart(this.theLegBackRight, this.theLegBackLeft.getXRot(), -0.1F, (1.5F - f2));
+        this.lerpPart(this.theLegFrontRight, this.theLegFrontLeft.getXRot(), 0.0F+Mth.PI, ((-Mth.PI / 2F) - f3));
+        this.theAxolotl.setXRot(this.lerpTo(0.2F, this.theAxolotl.getXRot(), -Mth.HALF_PI));
         this.theAxolotl.setYRot(this.lerpTo(this.theAxolotl.getYRot(), netHeadYaw * (Mth.PI / 180F)));
         this.theAxolotl.setZRot(this.lerpTo(this.theAxolotl.getZRot(), 0.0F));
     }
@@ -409,15 +416,15 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         float f1 = Mth.cos(f);
         float f2 = Mth.sin(f) * 0.015F;
         this.theAxolotl.modelPart.z -= f2;
-        this.theAxolotl.setXRot(this.lerpTo(this.theAxolotl.getXRot(), -0.15F + 0.075F * f1));
-        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), this.theAxolotl.getXRot()));
+        this.theAxolotl.setXRot(this.lerpTo(this.theAxolotl.getXRot(), (-0.15F + 0.075F * f1) - Mth.HALF_PI));
+        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI-this.theAxolotl.getXRot()));
         this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
         this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), 0.0F));
-        this.gillsTop.setXRot(this.lerpTo(this.gillsTop.getXRot(), (-0.2F * f1)-(Mth.PI * 0.5F) ));
-        this.gillsLeft.setYRot(this.lerpTo(this.gillsLeft.getYRot(), -0.3F * f1 - 0.19F));
-        this.gillsRight.setYRot(this.lerpTo(this.gillsRight.getYRot(), -this.gillsLeft.getYRot()));
-        this.lerpPart(this.theLegBackRight, 2.3561945F - f1 * 0.11F,1.7278761F, 0.47123894F);
-        this.lerpPart(this.theLegFrontRight, (Mth.PI / 4F) - f1 * 0.2F, 0.0F, 2.042035F);
+        this.gillsTop.setXRot(this.lerpTo(this.gillsTop.getXRot(), Mth.PI - ((-0.2F * f1)-(Mth.PI * 0.5F))));
+        this.gillsLeft.setZRot(this.lerpTo(this.gillsLeft.getZRot(), (0.3F * f1 + 0.19F) + Mth.HALF_PI));
+        this.gillsRight.setZRot(this.lerpTo(this.gillsRight.getZRot(), -this.gillsLeft.getZRot() + Mth.PI));
+        this.lerpPart(this.theLegBackRight, Mth.PI + (2.3561945F - f1 * 0.11F),1.7278761F, Mth.PI + 0.47123894F);
+        this.lerpPart(this.theLegFrontRight, Mth.HALF_PI + ((Mth.PI / 4F) - f1 * 0.2F), 0.0F, 2.042035F);
         this.applyMirrorLegRotations();
         this.theTail.setZRot(this.lerpTo(this.theTail.getZRot(), 0.5F * f1));
     }
@@ -427,34 +434,36 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         float f1 = Mth.sin(f);
         float f2 = Mth.cos(f);
         float f3 = 0.13F * f1;
-        this.theAxolotl.setXRot(this.lerpTo(0.1F, this.theAxolotl.getXRot(), headPitch * ((float)Math.PI / 180F) + f3));
+        this.theAxolotl.setXRot(this.lerpTo(0.1F, this.theAxolotl.getXRot(), (headPitch * ((float)Math.PI / 180F) + f3) - Mth.HALF_PI));
         this.theHead.setXRot((-f3 * 1.8F) + Mth.PI);
         this.theAxolotl.modelPart.y -= 0.45F * f2;
-        this.gillsTop.setXRot(this.lerpTo(this.gillsTop.getXRot(), -0.5F * f1 - 0.8F));
-        this.gillsLeft.setYRot(this.lerpTo(this.gillsLeft.getYRot(), 0.3F * f1 + 0.9F));
-        this.gillsRight.setYRot(this.lerpTo(this.gillsRight.getYRot(), -this.gillsLeft.getYRot()));
-        this.theTail.setYRot(this.lerpTo(this.theTail.getYRot(), 0.3F * Mth.cos(f * 0.9F)));
-        this.lerpPart(this.legBackLeft, 1.8849558F, (Mth.PI / 2F), -0.4F * f1);
-        this.lerpPart(this.legFrontLeft, 1.8849558F, (Mth.PI / 2F), -0.2F * f2 - 0.1F);
-        this.applyMirrorLegRotations();
+        this.gillsTop.setXRot(this.lerpTo(this.gillsTop.getXRot(), Mth.PI - (-0.5F * f1 - 0.8F)));
+        this.gillsLeft.setZRot(this.lerpTo(this.gillsLeft.getZRot(), 0.3F * f1 + 0.9F));
+        this.gillsRight.setZRot(this.lerpTo(this.gillsRight.getZRot(), -(0.3F * f1 + 0.9F) + Mth.PI));
+        this.theTail.setZRot(this.lerpTo(this.theTail.getZRot(), 0.3F * Mth.cos(f * 0.9F)));
+        this.lerpPart(this.theLegFrontLeft, 1.8849558F, Mth.HALF_PI, -(Mth.HALF_PI - (-0.4F * f1)));
+        this.lerpPart(this.theLegBackLeft, 1.8849558F,  Mth.HALF_PI, -(Mth.HALF_PI + (-0.2F * f2 - 0.1F)));
+        this.lerpPart(this.theLegBackRight, 1.8849558F,  -Mth.HALF_PI, (Mth.HALF_PI + (-0.2F * f2 - 0.1F)));
+        this.lerpPart(this.theLegFrontRight, 1.8849558F, -Mth.HALF_PI, (Mth.HALF_PI - (-0.4F * f1)));
         this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
         this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), 0.0F));
     }
 
     private void setupPlayDeadAnimation(float ageInTicks) {
-        this.lerpPart(this.legBackLeft, 1.4137167F, 1.0995574F, (Mth.PI / 4F));
-        this.lerpPart(this.legFrontLeft, (Mth.PI / 4F), 2.042035F, 0.0F);
-        this.theAxolotl.setXRot(this.lerpTo(this.theAxolotl.getXRot(), -0.15F + Mth.PI));
+        this.lerpPart(this.theLegFrontLeft, (Mth.PI * 0.25F) - Mth.HALF_PI, Mth.PI, Mth.PI - 2.042035F);
+        this.lerpPart(this.theLegFrontRight, (Mth.PI * 0.25F) - Mth.HALF_PI, Mth.PI, -(Mth.PI - 2.042035F));
+        this.lerpPart(this.theLegBackLeft, 1.4137167F - Mth.HALF_PI, -(Mth.PI * 0.25F) + (Mth.PI * 1.3F), -(1.0995574F - Mth.PI));
+        this.lerpPart(this.theLegBackRight, 1.4137167F - Mth.HALF_PI, (Mth.PI * 0.25F) - (Mth.PI * 1.3F), (1.0995574F - Mth.PI));
+        this.theAxolotl.setXRot(this.lerpTo(this.theAxolotl.getXRot(), -0.15F - Mth.HALF_PI));
         this.theAxolotl.setZRot(this.lerpTo(this.theAxolotl.getZRot(), 0.35F));
-        this.applyMirrorLegRotations();
-        this.theAxolotl.setYRot(this.lerpTo(this.theAxolotl.getYRot(), ageInTicks * (Mth.PI / 180F)));
+        this.theAxolotl.setYRot(this.lerpTo(this.theAxolotl.getYRot(), (ageInTicks * (Mth.PI / 180F))));
         this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.PI));
         this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
         this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), 0.0F));
         this.theTail.setYRot(this.lerpTo(this.theTail.modelPart.yRot, 0.0F));
-        this.lerpPart(this.gillsTop, 0.0F, 0.0F, 0.0F);
-        this.lerpPart(this.gillsLeft, 0.0F, 0.0F, 0.0F);
-        this.lerpPart(this.gillsRight, 0.0F, 0.0F, 0.0F);
+        this.lerpPart(this.gillsTop, Mth.PI * 1.5F, 0.0F, 0.0F);
+        this.lerpPart(this.gillsLeft, -Mth.HALF_PI, 0.0F, Mth.HALF_PI);
+        this.lerpPart(this.gillsRight, -Mth.HALF_PI, 0.0F, Mth.HALF_PI);
     }
 
     protected void saveAnimationValues(AnimalModelData data) {
@@ -469,12 +478,12 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         map.put("left_gills", this.getRotationVector(this.gillsLeft));
         map.put("right_gills", this.getRotationVector(this.gillsRight));
         map.put("bTail", this.getRotationVector(this.theTail));
-        map.put("backLeg", new Vector3f(0.0F, this.theLegBackLeft.getY(), 0.0F));
+        map.put("backLegs", new Vector3f(0.0F, this.theLegBackLeft.getY(), 0.0F));
     }
 
     private void applyMirrorLegRotations() {
-        this.lerpPart(this.theLegBackLeft, this.theLegBackRight.modelPart.xRot, -this.theLegBackRight.modelPart.yRot, -this.theLegBackRight.modelPart.zRot);
-        this.lerpPart(this.theLegFrontLeft, this.theLegFrontRight.modelPart.xRot, -this.theLegFrontRight.modelPart.yRot, -this.theLegFrontRight.modelPart.zRot);
+        this.lerpPart(this.theLegBackLeft, this.theLegBackRight.getXRot(), -this.theLegBackRight.getYRot(), -this.theLegBackRight.getZRot());
+        this.lerpPart(this.theLegFrontLeft, this.theLegFrontRight.getXRot(), -this.theLegFrontRight.getYRot(), -this.theLegFrontRight.getZRot());
     }
 
     @Override
@@ -515,7 +524,34 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
                 }
             }
 
+            this.theLegFrontLeft.show();
+            this.theLegFrontRight.show();
+            this.theLegBackLeft.show();
+            this.theLegBackRight.show();
+
+            if (axolotlModelData.growthAmount < 1.0F) {
+                if (axolotlModelData.growthAmount < 0.3F) {
+                    if (axolotlModelData.growthAmount < 0.15F) {
+                        this.theLegFrontLeft.hide();
+                        this.theLegFrontRight.hide();
+                        this.theLegBackLeft.hide();
+                        this.theLegBackRight.hide();
+                    } else {
+                        this.theLegBackLeft.hide();
+                        this.theLegBackRight.hide();
+                    }
+                }
+            }
+
+            float size = ((1.0F + (axolotlModelData.growthAmount * 11.0F))/12.0F) * axolotlModelData.size;
+
+            poseStack.pushPose();
+            poseStack.scale(size, size, size);
+            poseStack.translate(0.0F, -1.5F + 1.5F/(size), 0.0F);
+
             gaRender(this.theAxolotl, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+            poseStack.popPose();
         }
     }
 

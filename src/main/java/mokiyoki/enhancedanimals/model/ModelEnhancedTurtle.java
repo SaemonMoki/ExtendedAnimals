@@ -45,7 +45,7 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.ZERO);
-        PartDefinition bTurtle = base.addOrReplaceChild("bTurtle", CubeListBuilder.create(), PartPose.offset(0.0F, 26.0F, -10.0F));
+        PartDefinition bTurtle = base.addOrReplaceChild("bTurtle", CubeListBuilder.create(), PartPose.offset(0.0F, 21.0F, -10.0F));
         PartDefinition bBody = bTurtle.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, Mth.HALF_PI, 0.0F, 0.0F));
         PartDefinition bHead = bBody.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, -3.0F, 2.0F));
         PartDefinition bLegFrontLeft = bTurtle.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(5.0F, 0.0F, 3.0F));

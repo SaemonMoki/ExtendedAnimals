@@ -238,11 +238,15 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @Override
     public EntityDimensions getDimensions(Pose poseIn) {
-        return EntityDimensions.scalable(1.2F, 0.4F).scale(this.getRenderScale());
+        //0.75F, 0.42F
+        return EntityDimensions.scalable(0.75F, 0.42F).scale(this.getScale());
     }
 
-    public float getRenderScale() {
-        return this.isGrowing() ? (0.1F + (0.9F * (this.growthAmount()))) : 1.0F;
+    @Override
+    public float getScale() {
+        float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
+        float nbSize = 0.1F;
+        return this.isGrowing() ? (nbSize + ((size-nbSize) * (this.growthAmount()))) : size;
     }
 
     protected void defineSynchedData() {
@@ -352,10 +356,14 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         }
 
         switch (Math.min(gene[30], gene[31])) {
-            case 6: size = size * 0.5F; break;
-            case 5: size = size * 0.6F; break;
-            case 4: size = size * 0.7F; break;
-            case 3: size = size * 0.8F; break;
+            case 10: size = size * 0.5F; break;
+            case 9: size = size * 0.55F; break;
+            case 8: size = size * 0.6F; break;
+            case 7: size = size * 0.65F; break;
+            case 6: size = size * 0.7F; break;
+            case 5: size = size * 0.75F; break;
+            case 4: size = size * 0.8F; break;
+            case 3: size = size * 0.85F; break;
             case 2: size = size * 0.9F; break;
             default:
         }

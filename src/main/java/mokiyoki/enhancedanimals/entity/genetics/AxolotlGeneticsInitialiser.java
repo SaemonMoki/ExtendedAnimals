@@ -60,6 +60,7 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(AxolotlBreeds.HOT_PINK);
         this.breeds.add(AxolotlBreeds.LAVENDER);
         this.breeds.add(AxolotlBreeds.WHITE);
+        this.breeds.add(AxolotlBreeds.MICRO);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {
@@ -141,7 +142,7 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[27] = getChance() ? 2 : 1;
 
         /**
-         *      [28,29] - Size - (Small, Large)
+         *      [28,29] - Size - (Large, Small)
          */
         autosomalGenes[28] = ThreadLocalRandom.current().nextInt(5)+1;
         autosomalGenes[29] = ThreadLocalRandom.current().nextInt(5)+1;

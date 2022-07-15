@@ -63,7 +63,7 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
         Colouration colourRGB = entity.getRgb();
         Genes genes = entity.getSharedGenes();
 
-        if (s == null || s.isEmpty() || colourRGB == null || !genes.isValid()) {
+        if (s == null || s.isEmpty() || colourRGB == null || genes == null) {
             return ERROR_TEXTURE_LOCATION;
         }
 

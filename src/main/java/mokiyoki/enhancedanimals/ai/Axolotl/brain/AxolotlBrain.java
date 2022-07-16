@@ -68,57 +68,94 @@ public class AxolotlBrain {
     }
 
     private static void initFightActivity(Brain<EnhancedAxolotl> p_149303_) {
-        p_149303_.addActivityAndRemoveMemoryWhenStopped(Activity.FIGHT, 0, ImmutableList.of(new StopAttackingIfTargetInvalid<>(EnhancedAxolotl::onStopAttacking), new SetWalkTargetFromAttackTargetIfTargetOutOfReach(AxolotlBrain::getSpeedModifierChasing), new MeleeAttack(20), new EraseMemoryIf<EnhancedAxolotl>(AxolotlBrain::isBreeding, MemoryModuleType.ATTACK_TARGET)), MemoryModuleType.ATTACK_TARGET);
+        p_149303_.addActivityAndRemoveMemoryWhenStopped(
+                Activity.FIGHT,
+                0,
+                ImmutableList.of(
+                        new StopAttackingIfTargetInvalid<>(EnhancedAxolotl::onStopAttacking),
+                        new SetWalkTargetFromAttackTargetIfTargetOutOfReach(AxolotlBrain::getSpeedModifierChasing),
+                        new MeleeAttack(20),
+                        new EraseMemoryIf<EnhancedAxolotl>(AxolotlBrain::isBreeding, MemoryModuleType.ATTACK_TARGET)
+                ),
+                MemoryModuleType.ATTACK_TARGET
+        );
     }
 
     private static void initCoreActivity(Brain<EnhancedAxolotl> p_149307_) {
-        p_149307_.addActivity(Activity.CORE, 0, ImmutableList.of(new LookAtTargetSink(45, 90), new MoveToTargetSink(), new ValidatePlayDead(), new CountDownCooldownTicks(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS)));
+        p_149307_.addActivity(Activity.CORE, 0, ImmutableList.of(
+                new LookAtTargetSink(45, 90),
+                new MoveToTargetSink(),
+                new ValidatePlayDead(),
+                new CountDownCooldownTicks(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS))
+        );
     }
 
-    private static void initIdleActivity(Brain<EnhancedAxolotl> p_149309_) {
-        p_149309_.addActivity(Activity.IDLE, ImmutableList.of(Pair.of(0, new RunSometimes<>(new SetEntityLookTarget(EntityType.PLAYER, 6.0F), UniformInt.of(30, 60))), Pair.of(1, new AnimalMakeLove(EntityType.AXOLOTL, 0.2F)), Pair.of(2, new RunOne<>(ImmutableList.of(Pair.of(new FollowTemptation(AxolotlBrain::getSpeedModifier), 1), Pair.of(new BabyFollowAdult<>(ADULT_FOLLOW_RANGE, AxolotlBrain::getSpeedModifierFollowingAdult), 1)))), Pair.of(3, new StartAttacking<>(AxolotlBrain::findNearestValidAttackTarget)), Pair.of(3, new TryFindWater(6, 0.15F)), Pair.of(4, new GateBehavior<>(ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT), ImmutableSet.of(), GateBehavior.OrderPolicy.ORDERED, GateBehavior.RunningPolicy.TRY_ALL, ImmutableList.of(Pair.of(new RandomSwim(0.5F), 2), Pair.of(new RandomStroll(0.15F, false), 2), Pair.of(new SetWalkTargetFromLookTarget(AxolotlBrain::canSetWalkTargetFromLookTarget, AxolotlBrain::getSpeedModifier, 3), 3), Pair.of(new RunIf<>(Entity::isInWaterOrBubble, new DoNothing(30, 60)), 5), Pair.of(new RunIf<>(Entity::isOnGround, new DoNothing(200, 400)), 5))))));
+    private static void initIdleActivity(Brain<EnhancedAxolotl> brain) {
+        brain.addActivity(Activity.IDLE, ImmutableList.of(
+                Pair.of(0, new RunSometimes<>(new SetEntityLookTarget(EntityType.PLAYER, 6.0F), UniformInt.of(30, 60))),
+                Pair.of(1, new AnimalMakeLove(EntityType.AXOLOTL, 0.2F)),
+                Pair.of(2, new RunOne<>(ImmutableList.of(
+                        Pair.of(new FollowTemptation(AxolotlBrain::getSpeedModifier), 1),
+                        Pair.of(new BabyFollowAdult<>(ADULT_FOLLOW_RANGE, AxolotlBrain::getSpeedModifierFollowingAdult), 1)))
+                ),
+                Pair.of(3, new StartAttacking<>(AxolotlBrain::findNearestValidAttackTarget)),
+                Pair.of(3, new TryFindWater(6, 0.15F)),
+                Pair.of(4, new GateBehavior<>(
+                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT),
+                        ImmutableSet.of(),
+                        GateBehavior.OrderPolicy.ORDERED,
+                        GateBehavior.RunningPolicy.TRY_ALL,
+                        ImmutableList.of(
+                                Pair.of(new RandomSwim(0.5F), 2),
+                                Pair.of(new RandomStroll(0.15F, false), 2),
+                                Pair.of(new SetWalkTargetFromLookTarget(AxolotlBrain::canSetWalkTargetFromLookTarget, AxolotlBrain::getSpeedModifier, 3), 3),
+                                Pair.of(new RunIf<>(Entity::isInWaterOrBubble, new DoNothing(30, 60)), 5),
+                                Pair.of(new RunIf<>(Entity::isOnGround, new DoNothing(200, 400)), 5))
+                        )
+                )
+        ));
     }
 
-    private static boolean canSetWalkTargetFromLookTarget(LivingEntity p_182381_) {
-        Level level = p_182381_.level;
-        Optional<PositionTracker> optional = p_182381_.getBrain().getMemory(MemoryModuleType.LOOK_TARGET);
+    private static boolean canSetWalkTargetFromLookTarget(LivingEntity livingEntity) {
+        Level level = livingEntity.level;
+        Optional<PositionTracker> optional = livingEntity.getBrain().getMemory(MemoryModuleType.LOOK_TARGET);
         if (optional.isPresent()) {
             BlockPos blockpos = optional.get().currentBlockPosition();
-            return level.isWaterAt(blockpos) == p_182381_.isInWaterOrBubble();
+            return level.isWaterAt(blockpos) == livingEntity.isInWaterOrBubble();
         } else {
             return false;
         }
     }
 
-    public static void updateActivity(EnhancedAxolotl p_149293_) {
-        Brain<EnhancedAxolotl> brain = p_149293_.getBrain();
-        Activity activity = brain.getActiveNonCoreActivity().orElse((Activity)null);
+    public static void updateActivity(EnhancedAxolotl axolotl) {
+        Brain<EnhancedAxolotl> brain = axolotl.getBrain();
+        Activity activity = brain.getActiveNonCoreActivity().orElse((Activity) null);
         if (activity != Activity.PLAY_DEAD) {
             brain.setActiveActivityToFirstValid(ImmutableList.of(Activity.PLAY_DEAD, Activity.FIGHT, Activity.IDLE));
-            if (activity == Activity.FIGHT && brain.getActiveNonCoreActivity().orElse((Activity)null) != Activity.FIGHT) {
+            if (activity == Activity.FIGHT && brain.getActiveNonCoreActivity().orElse((Activity) null) != Activity.FIGHT) {
                 brain.setMemoryWithExpiry(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 2400L);
             }
         }
 
     }
 
-    private static float getSpeedModifierChasing(LivingEntity p_149289_) {
-        return p_149289_.isInWaterOrBubble() ? 0.6F : 0.15F;
+    private static float getSpeedModifierChasing(LivingEntity livingEntity) {
+        return livingEntity.isInWaterOrBubble() ? 0.6F : 0.15F;
     }
 
-    private static float getSpeedModifierFollowingAdult(LivingEntity p_149295_) {
-        return p_149295_.isInWaterOrBubble() ? 0.6F : 0.15F;
+    private static float getSpeedModifierFollowingAdult(LivingEntity livingEntity) {
+        return livingEntity.isInWaterOrBubble() ? 0.6F : 0.15F;
     }
 
-    private static float getSpeedModifier(LivingEntity p_149301_) {
-        return p_149301_.isInWaterOrBubble() ? 0.5F : 0.15F;
+    private static float getSpeedModifier(LivingEntity livingEntity) {
+        return livingEntity.isInWaterOrBubble() ? 0.5F : 0.15F;
     }
 
-    private static Optional<? extends LivingEntity> findNearestValidAttackTarget(EnhancedAxolotl p_149299_) {
-        return isBreeding(p_149299_) ? Optional.empty() : p_149299_.getBrain().getMemory(MemoryModuleType.NEAREST_ATTACKABLE);
+    private static Optional<? extends LivingEntity> findNearestValidAttackTarget(EnhancedAxolotl axolotl) {
+        return isBreeding(axolotl) ? Optional.empty() : axolotl.getBrain().getMemory(MemoryModuleType.NEAREST_ATTACKABLE);
     }
 
-    private static boolean isBreeding(EnhancedAxolotl p_149305_) {
-        return p_149305_.getBrain().hasMemoryValue(MemoryModuleType.BREED_TARGET);
+    private static boolean isBreeding(EnhancedAxolotl axolotl) {
+        return axolotl.getBrain().hasMemoryValue(MemoryModuleType.BREED_TARGET);
     }
 }

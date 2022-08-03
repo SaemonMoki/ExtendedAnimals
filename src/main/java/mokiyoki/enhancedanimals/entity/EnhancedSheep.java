@@ -254,6 +254,13 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     @Override
     protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeSheep.get();}
 
+    //returns how grown the horns are
+    public float hornGrowthAmount() {
+        int age = this.getEnhancedAnimalAge();
+        int hornFullSizedAge = this.getFullSizeAge() * 2;
+        return age > hornFullSizedAge ? 1.0F : age/(float)hornFullSizedAge;
+    }
+
     @Override
     protected int gestationConfig() {
         return EanimodCommonConfig.COMMON.gestationDaysSheep.get();
@@ -271,24 +278,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 8.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.23D);
-    }
-
-    protected void setMilkAmount(Integer milkAmount) {
-        this.entityData.set(MILK_AMOUNT, milkAmount);
-    }
-
-    public Integer getMilkAmount() { return this.entityData.get(MILK_AMOUNT); }
-
-    public boolean decreaseMilk(int decrease) {
-        int milk = getMilkAmount();
-        if (milk >= decrease) {
-            milk = milk - decrease;
-            setMilkAmount(milk);
-            return true;
-        } else {
-            this.playSound(SoundEvents.SHEEP_HURT, 1.0F, 1.0F);
-            return false;
-        }
     }
 
     @Override
@@ -319,6 +308,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 }
 
                 if (this.lactationTimer >= 0) {
+                    setMilkAmount(-1);
                     setEntityStatus(EntityState.ADULT.toString());
                 }
             }

@@ -345,6 +345,7 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
                 }
 
                 if (this.lactationTimer == 0) {
+                    this.setMilkAmount(-1);
                     setEntityStatus(EntityState.ADULT.toString());
                 }
             }

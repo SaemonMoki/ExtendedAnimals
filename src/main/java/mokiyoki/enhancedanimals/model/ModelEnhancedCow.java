@@ -6,6 +6,7 @@ import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
 import mokiyoki.enhancedanimals.entity.EnhancedMooshroom;
+import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
@@ -1486,7 +1487,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
     @Override
     protected void additionalModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
         animalModelData.offsets = saveAnimationValues(((CowModelData) animalModelData).getPhenotype(), enhancedAnimal.hornGrowthAmount());
-        ((CowModelData) animalModelData).bagSize = enhancedAnimal.getMilkAmount() != 0 ? enhancedAnimal.getBagSize() : 0.0F;
+        ((CowModelData) animalModelData).bagSize = (enhancedAnimal.getEntityStatus().equals(EntityState.MOTHER) || enhancedAnimal.getEntityStatus().equals(EntityState.PREGNANT)) ? enhancedAnimal.getBagSize() : -1.0F;
     }
 
     @Override
@@ -1495,7 +1496,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             updateHornRotations(((CowModelData) animalModelData).getPhenotype(), enhancedAnimal.hornGrowthAmount(), animalModelData.offsets);
             ((CowModelData)animalModelData).hornGrowth = enhancedAnimal.hornGrowthAmount();
         }
-
+        ((CowModelData) animalModelData).bagSize = (enhancedAnimal.getEntityStatus().equals(EntityState.MOTHER) || enhancedAnimal.getEntityStatus().equals(EntityState.PREGNANT)) ? enhancedAnimal.getBagSize() : -1.0F;
     }
 
     @Override
@@ -1506,19 +1507,19 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
 
     protected class CowPhenotype implements Phenotype {
         private boolean isFemale;
+        private float hornScale;
         private HornType hornType;
+        private float hornBaseHeight;
+        private int leftHornLength = 9;
+        private int rightHornLength = 9;
         private float[] hornGeneticsX;
         private float[] hornGeneticsY;
         private float[] hornGeneticsZ;
-        private float hornScale;
         private boolean dwarf;
         private float bodyWidth;
         private float bodyLength;
         private int hump;
         private float humpPlacement;
-        private float hornBaseHeight;
-        private int leftHornLength = 9;
-        private int rightHornLength = 9;
         private int hornNubLength;
         private boolean averageEars;
         private float earSize;

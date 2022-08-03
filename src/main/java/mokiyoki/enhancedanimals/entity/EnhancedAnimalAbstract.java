@@ -23,6 +23,7 @@ import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.AnimalScheduledFunction;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.LerpingModel;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -81,6 +82,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -513,15 +515,14 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     public Integer getMilkAmount() { return this.entityData.get(MILK_AMOUNT); }
 
-    public boolean decreaseMilk(int decrease) {
+    public int decreaseMilk(int decrease) {
         int milk = getMilkAmount();
-        if (milk >= decrease) {
-            milk = milk - decrease;
-            setMilkAmount(milk);
-            return true;
+        if (milk >= 1) {
+            setMilkAmount(milk - decrease);
+            return milk >= decrease ? 0 : decrease-milk;
         } else {
-//            entityPlayer.playSound(SoundEvents.ENTITY_COW_HURT, 1.0F, 1.0F);
-            return false;
+            this.playSound(Objects.requireNonNull(getHurtSound(DamageSource.GENERIC)), 1.0F, 1.0F);
+            return -1;
         }
     }
 

@@ -58,8 +58,16 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         return new Vector3f(part.getXRot(), part.getYRot(), part.getZRot());
     }
 
+    protected Vector3f getOffsetVector(WrappedModelPart part) {
+        return new Vector3f(part.getX(), part.getY(), part.getZ());
+    }
+
     protected void setRotationFromVector(WrappedModelPart part, Vector3f v3f) {
         part.setRotation(v3f.x(), v3f.y(), v3f.z());
+    }
+
+    protected void setOffsetFromVector(WrappedModelPart part, Vector3f v3f) {
+        part.setPos(v3f.x(), v3f.y(), v3f.z());
     }
 
     protected float lerpTo(float currentRot, float goalRot) {
@@ -72,6 +80,14 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
     protected void lerpPart(WrappedModelPart part, float xGoalRot, float yGoalRot, float zGoalRot) {
         part.setRotation(this.lerpTo(part.getXRot(), xGoalRot), this.lerpTo(part.getYRot(), yGoalRot), this.lerpTo(part.getZRot(), zGoalRot));
+    }
+
+    protected float limit(float value, float limit) {
+        return limit(value, limit, -limit);
+    }
+
+    protected float limit(float value, float valueA, float valueB) {
+        return value >= valueB ? Math.max(valueB, (Math.min(value, valueA))) : Math.max(valueA, (Math.min(value, valueB)));
     }
 
     protected void animatePart(WrappedModelPart part,Map<String, Vector3f> rotationMap, float driver, Animation animation) {

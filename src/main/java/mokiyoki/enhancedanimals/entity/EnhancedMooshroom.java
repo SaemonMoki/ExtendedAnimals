@@ -13,6 +13,7 @@ import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.genetics.CowGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
@@ -137,10 +138,12 @@ public class EnhancedMooshroom extends EnhancedCow implements net.minecraftforge
         if (itemstack.getItem() == Items.BOWL && !this.isBaby() && !entityPlayer.getAbilities().instabuild && getEntityStatus().equals(EntityState.MOTHER.toString())) {
             int milk = getMilkAmount();
             if (milk <= 3) {
+                //TODO commented version might be better, pls test
+                //getHurtSound(DamageSource.playerAttack(entityPlayer));
                 entityPlayer.playSound(SoundEvents.COW_HURT, 1.0F, 1.0F);
             } else {
                 itemstack.shrink(1);
-                setMilkAmount(milk - 3);
+                decreaseMilk(3);
                 boolean flag = false;
                 ItemStack itemstack1;
                 if (this.hasStewEffect != null) {

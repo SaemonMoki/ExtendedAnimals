@@ -298,7 +298,6 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         this.currentAnimal = entityIn.getId();
         AxolotlModelData axolotlModelData = getCreateAxolotlModelData(entityIn);
         AxolotlPhenotype axolotl = (AxolotlPhenotype) axolotlModelData.phenotype;
-        int randomAnimationOffset = (int)(2000 * axolotlModelData.random);
         if (axolotl!=null) {
             this.setupInitialAnimationValues(axolotlModelData, netHeadYaw, headPitch, axolotl);
 

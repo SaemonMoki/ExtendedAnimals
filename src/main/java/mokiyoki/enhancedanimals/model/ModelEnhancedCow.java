@@ -2,6 +2,7 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
@@ -27,123 +28,123 @@ import java.util.Map;
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel<T> {
 
-    private static final Map<String, Animation> ANIMATIONS = new HashMap<String, Animation>(Map.of(
-            "idle", new Animation(100.0F,
-                    new Frame("bEarL",0.3333F).x(0.0F),
-                    new Frame("bEarL",0.5F).x(5.0F),
-                    new Frame("bEarL",0.6667F).x(-5.0F),
-                    new Frame("bEarL",0.8333F).x(0.0F),
-                    new Frame("bEarL",1.125F).x(5.0F),
-                    new Frame("bEarL",1.2917F).x(-5.0F),
-                    new Frame("bEarL",1.4583F).x(0.0F),
-                    new Frame("bEarR",0.3333F).x(0.0F),
-                    new Frame("bEarR",0.5F).x(5.0F),
-                    new Frame("bEarR",0.6667F).x(0.0F),
-                    new Frame("bEarR",0.8333F).x(5.0F),
-                    new Frame("bEarR",1.125F).x(-5.0F),
-                    new Frame("bEarR",1.25F).x(0.0F),
-                    new Frame("bEarR",1.375F).x(-62.5F),
-                    new Frame("bEarR",1.458F).x(22.5F),
-                    new Frame("bEarR",1.6667F).x(0.0F),
-                    new Frame("bTail",0.3333F).z(0.0F),
-                    new Frame("bTail",0.5417F).z(-15.0F),
-                    new Frame("bTail",1.5F).z(0.0F),
-                    new Frame("tail0", 0.25F).z(-30.0F),
-                    new Frame("tail0", 0.5417F).z(-35.0F),
-                    new Frame("tail0", 1.0F).z(35.0F),
-                    new Frame("tail0", 1.5F).z(0.0F),
-                    new Frame("tail1", 0.25F).z(45.0F),
-                    new Frame("tail1", 0.5417F).z(-20.0F),
-                    new Frame("tail1", 1.0F).z(2.5F),
-                    new Frame("tail1", 1.5F).z(0.0F),
-                    new Frame("tail2", 0.25F).z(45.0F),
-                    new Frame("tail2", 0.5417F).z(-25.0F),
-                    new Frame("tail2", 1.0F).z(15.0F),
-                    new Frame("tail2", 1.5F).z(0.0F),
-                    new Frame("tail2", 1.75F),
-                    new Frame("tailB", 0.25F).z(32.5F),
-                    new Frame("tailB", 0.5417F).z(-22.5F),
-                    new Frame("tailB", 1.0F).z(17.5F),
-                    new Frame("tailB", 1.5F).z(0.0F),
-                    new Frame("tailB", 1.75F)),
-            "eating", new Animation(60.0F,
-                    new Frame("bNeck",0.0F),
-                    new Frame("bNeck",0.5F).x(40.0F),
-                    new Frame("bNeck",1.2917F).x(40.0F),
-                    new Frame("bNeck",1.8F),
-                    new Frame("bHead",0.3333F),
-                    new Frame("bHead",0.5833F).x(17.5F),
-                    new Frame("bHead",0.9167F),
-                    new Frame("bHead",1.25F).x(17.5F),
-                    new Frame("bHead",1.5417F),
-                    new Frame("jaw",0.75F),
-                    new Frame("jaw",0.9167F).x(-2.5F),
-                    new Frame("jaw",1.0833F),
-                    new Frame("jaw",1.25F),
-                    new Frame("jaw",1.4167F).x(-2.5F),
-                    new Frame("jaw",1.5833F),
-                    new Frame("bEarL",0.3333F).x(0.0F),
-                    new Frame("bEarL",0.5F).x(5.0F),
-                    new Frame("bEarL",0.6667F).x(-5.0F),
-                    new Frame("bEarL",0.8333F).x(0.0F),
-                    new Frame("bEarL",1.125F).x(5.0F),
-                    new Frame("bEarL",1.2917F).x(-5.0F),
-                    new Frame("bEarL",1.4583F).x(0.0F),
-                    new Frame("bEarL",1.5F),
-                    new Frame("bEarR",0.3333F).x(0.0F),
-                    new Frame("bEarR",0.5F).x(5.0F),
-                    new Frame("bEarR",0.6667F).x(0.0F),
-                    new Frame("bEarR",0.8333F).x(5.0F),
-                    new Frame("bEarR",1.125F).x(-5.0F),
-                    new Frame("bEarR",1.25F).x(0.0F),
-                    new Frame("bEarR",1.375F).x(-62.5F),
-                    new Frame("bEarR",1.458F).x(22.5F),
-                    new Frame("bEarR",1.6667F).x(0.0F),
-                    new Frame("bEarR",1.75F),
-                    new Frame("bTail",0.5417F).z(-15.0F),
-                    new Frame("bTail",1.5F).z(0.0F),
-                    new Frame("bTail",1.75F),
-                    new Frame("tail0", 0.25F).z(-30.0F),
-                    new Frame("tail0", 0.5417F).z(-35.0F),
-                    new Frame("tail0", 1.0F).z(35.0F),
-                    new Frame("tail0", 1.5F).z(0.0F),
-                    new Frame("tail0", 1.75F),
-                    new Frame("tail1", 0.25F).z(45.0F),
-                    new Frame("tail1", 0.5417F).z(-20.0F),
-                    new Frame("tail1", 1.0F).z(2.5F),
-                    new Frame("tail1", 1.5F).z(0.0F),
-                    new Frame("tail1", 1.75F),
-                    new Frame("tail2", 0.25F).z(45.0F),
-                    new Frame("tail2", 0.5417F).z(-25.0F),
-                    new Frame("tail2", 1.0F).z(15.0F),
-                    new Frame("tail2", 1.5F).z(0.0F),
-                    new Frame("tail2", 1.75F),
-                    new Frame("tailB", 0.25F).z(32.5F),
-                    new Frame("tailB", 0.5417F).z(-22.5F),
-                    new Frame("tailB", 1.0F).z(17.5F),
-                    new Frame("tailB", 1.5F).z(0.0F),
-                    new Frame("tailB", 1.75F)),
-            "walk", new Animation(1.29167F,
-                    new Frame("bLegFL", 0.0F).x(9.29F),
-                    new Frame("bLegFL", 0.5F).x(-25.0F),
-                    new Frame("bLegFL", 0.5833F).x(-25.0F),
-                    new Frame("bLegFL", 1.1667F).x(15.0F),
-                    new Frame("bLegFL", 1.25F).x(15.0F),
-                    new Frame("bLegFL", 1.2917F).x(12.14F),
-                    new Frame("bLegFR", 0.0F).x(-19.29F),
-                    new Frame("bLegFR", 0.5F).x(15.0F),
-                    new Frame("bLegFR", 0.5833F).x(15.0F),
-                    new Frame("bLegFR", 1.1667F).x(-25.0F),
-                    new Frame("bLegFR", 1.25F).x(-25.0F),
-                    new Frame("bLegFR", 1.2917F).x(-22.14F),
-                    new Frame("bLegBL", 0.0F).x(-19.29F),
-                    new Frame("bLegBL", 0.0833F).x(15.0F),
-                    new Frame("bLegBL", 0.1667F).x(15.0F),
-                    new Frame("bLegBL", 0.75F).x(-25.0F),
-                    new Frame("bLegBL", 0.8333F).x(-25.0F),
-                    new Frame("bLegBL", 1.2917F).x(6.43F))
-        )
-    );
+//    private static final Map<String, Animation> ANIMATIONS = new HashMap<String, Animation>(Map.of(
+//            "idle", new Animation(100.0F,
+//                    new Frame("bEarL",0.3333F).x(0.0F),
+//                    new Frame("bEarL",0.5F).x(5.0F),
+//                    new Frame("bEarL",0.6667F).x(-5.0F),
+//                    new Frame("bEarL",0.8333F).x(0.0F),
+//                    new Frame("bEarL",1.125F).x(5.0F),
+//                    new Frame("bEarL",1.2917F).x(-5.0F),
+//                    new Frame("bEarL",1.4583F).x(0.0F),
+//                    new Frame("bEarR",0.3333F).x(0.0F),
+//                    new Frame("bEarR",0.5F).x(5.0F),
+//                    new Frame("bEarR",0.6667F).x(0.0F),
+//                    new Frame("bEarR",0.8333F).x(5.0F),
+//                    new Frame("bEarR",1.125F).x(-5.0F),
+//                    new Frame("bEarR",1.25F).x(0.0F),
+//                    new Frame("bEarR",1.375F).x(-62.5F),
+//                    new Frame("bEarR",1.458F).x(22.5F),
+//                    new Frame("bEarR",1.6667F).x(0.0F),
+//                    new Frame("bTail",0.3333F).z(0.0F),
+//                    new Frame("bTail",0.5417F).z(-15.0F),
+//                    new Frame("bTail",1.5F).z(0.0F),
+//                    new Frame("tail0", 0.25F).z(-30.0F),
+//                    new Frame("tail0", 0.5417F).z(-35.0F),
+//                    new Frame("tail0", 1.0F).z(35.0F),
+//                    new Frame("tail0", 1.5F).z(0.0F),
+//                    new Frame("tail1", 0.25F).z(45.0F),
+//                    new Frame("tail1", 0.5417F).z(-20.0F),
+//                    new Frame("tail1", 1.0F).z(2.5F),
+//                    new Frame("tail1", 1.5F).z(0.0F),
+//                    new Frame("tail2", 0.25F).z(45.0F),
+//                    new Frame("tail2", 0.5417F).z(-25.0F),
+//                    new Frame("tail2", 1.0F).z(15.0F),
+//                    new Frame("tail2", 1.5F).z(0.0F),
+//                    new Frame("tail2", 1.75F),
+//                    new Frame("tailB", 0.25F).z(32.5F),
+//                    new Frame("tailB", 0.5417F).z(-22.5F),
+//                    new Frame("tailB", 1.0F).z(17.5F),
+//                    new Frame("tailB", 1.5F).z(0.0F),
+//                    new Frame("tailB", 1.75F)),
+//            "eating", new Animation(60.0F,
+//                    new Frame("bNeck",0.0F),
+//                    new Frame("bNeck",0.5F).x(40.0F),
+//                    new Frame("bNeck",1.2917F).x(40.0F),
+//                    new Frame("bNeck",1.8F),
+//                    new Frame("bHead",0.3333F),
+//                    new Frame("bHead",0.5833F).x(17.5F),
+//                    new Frame("bHead",0.9167F),
+//                    new Frame("bHead",1.25F).x(17.5F),
+//                    new Frame("bHead",1.5417F),
+//                    new Frame("jaw",0.75F),
+//                    new Frame("jaw",0.9167F).x(-2.5F),
+//                    new Frame("jaw",1.0833F),
+//                    new Frame("jaw",1.25F),
+//                    new Frame("jaw",1.4167F).x(-2.5F),
+//                    new Frame("jaw",1.5833F),
+//                    new Frame("bEarL",0.3333F).x(0.0F),
+//                    new Frame("bEarL",0.5F).x(5.0F),
+//                    new Frame("bEarL",0.6667F).x(-5.0F),
+//                    new Frame("bEarL",0.8333F).x(0.0F),
+//                    new Frame("bEarL",1.125F).x(5.0F),
+//                    new Frame("bEarL",1.2917F).x(-5.0F),
+//                    new Frame("bEarL",1.4583F).x(0.0F),
+//                    new Frame("bEarL",1.5F),
+//                    new Frame("bEarR",0.3333F).x(0.0F),
+//                    new Frame("bEarR",0.5F).x(5.0F),
+//                    new Frame("bEarR",0.6667F).x(0.0F),
+//                    new Frame("bEarR",0.8333F).x(5.0F),
+//                    new Frame("bEarR",1.125F).x(-5.0F),
+//                    new Frame("bEarR",1.25F).x(0.0F),
+//                    new Frame("bEarR",1.375F).x(-62.5F),
+//                    new Frame("bEarR",1.458F).x(22.5F),
+//                    new Frame("bEarR",1.6667F).x(0.0F),
+//                    new Frame("bEarR",1.75F),
+//                    new Frame("bTail",0.5417F).z(-15.0F),
+//                    new Frame("bTail",1.5F).z(0.0F),
+//                    new Frame("bTail",1.75F),
+//                    new Frame("tail0", 0.25F).z(-30.0F),
+//                    new Frame("tail0", 0.5417F).z(-35.0F),
+//                    new Frame("tail0", 1.0F).z(35.0F),
+//                    new Frame("tail0", 1.5F).z(0.0F),
+//                    new Frame("tail0", 1.75F),
+//                    new Frame("tail1", 0.25F).z(45.0F),
+//                    new Frame("tail1", 0.5417F).z(-20.0F),
+//                    new Frame("tail1", 1.0F).z(2.5F),
+//                    new Frame("tail1", 1.5F).z(0.0F),
+//                    new Frame("tail1", 1.75F),
+//                    new Frame("tail2", 0.25F).z(45.0F),
+//                    new Frame("tail2", 0.5417F).z(-25.0F),
+//                    new Frame("tail2", 1.0F).z(15.0F),
+//                    new Frame("tail2", 1.5F).z(0.0F),
+//                    new Frame("tail2", 1.75F),
+//                    new Frame("tailB", 0.25F).z(32.5F),
+//                    new Frame("tailB", 0.5417F).z(-22.5F),
+//                    new Frame("tailB", 1.0F).z(17.5F),
+//                    new Frame("tailB", 1.5F).z(0.0F),
+//                    new Frame("tailB", 1.75F)),
+//            "walk", new Animation(1.29167F,
+//                    new Frame("bLegFL", 0.0F).x(9.29F),
+//                    new Frame("bLegFL", 0.5F).x(-25.0F),
+//                    new Frame("bLegFL", 0.5833F).x(-25.0F),
+//                    new Frame("bLegFL", 1.1667F).x(15.0F),
+//                    new Frame("bLegFL", 1.25F).x(15.0F),
+//                    new Frame("bLegFL", 1.2917F).x(12.14F),
+//                    new Frame("bLegFR", 0.0F).x(-19.29F),
+//                    new Frame("bLegFR", 0.5F).x(15.0F),
+//                    new Frame("bLegFR", 0.5833F).x(15.0F),
+//                    new Frame("bLegFR", 1.1667F).x(-25.0F),
+//                    new Frame("bLegFR", 1.25F).x(-25.0F),
+//                    new Frame("bLegFR", 1.2917F).x(-22.14F),
+//                    new Frame("bLegBL", 0.0F).x(-19.29F),
+//                    new Frame("bLegBL", 0.0833F).x(15.0F),
+//                    new Frame("bLegBL", 0.1667F).x(15.0F),
+//                    new Frame("bLegBL", 0.75F).x(-25.0F),
+//                    new Frame("bLegBL", 0.8333F).x(-25.0F),
+//                    new Frame("bLegBL", 1.2917F).x(6.43F))
+//        )
+//    );
 
 
     protected WrappedModelPart theCow;
@@ -186,26 +187,8 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
     private WrappedModelPart earLongR;
     private WrappedModelPart earXLongR;
 
-    private WrappedModelPart hornL0;
-    private WrappedModelPart hornL1;
-    private WrappedModelPart hornL2;
-    private WrappedModelPart hornL3;
-    private WrappedModelPart hornL4;
-    private WrappedModelPart hornL5;
-    private WrappedModelPart hornL6;
-    private WrappedModelPart hornL7;
-    private WrappedModelPart hornL8;
-    private WrappedModelPart hornL9;
-    private WrappedModelPart hornR0;
-    private WrappedModelPart hornR1;
-    private WrappedModelPart hornR2;
-    private WrappedModelPart hornR3;
-    private WrappedModelPart hornR4;
-    private WrappedModelPart hornR5;
-    private WrappedModelPart hornR6;
-    private WrappedModelPart hornR7;
-    private WrappedModelPart hornR8;
-    private WrappedModelPart hornR9;
+    private WrappedModelPart hornLeft[] = new WrappedModelPart[10];
+    private WrappedModelPart hornRight[] = new WrappedModelPart[10];
 
     private WrappedModelPart neckFemale;
     private WrappedModelPart neckMale;
@@ -238,14 +221,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
     private WrappedModelPart tailEnd;
     private WrappedModelPart tailBrush;
 
-    private WrappedModelPart mushroom0;
-    private WrappedModelPart mushroom1;
-    private WrappedModelPart mushroom2;
-    private WrappedModelPart mushroom3;
-    private WrappedModelPart mushroom4;
-    private WrappedModelPart mushroom5;
-    private WrappedModelPart mushroom6;
-    private WrappedModelPart mushroom7;
+    private WrappedModelPart mushroom[] = new WrappedModelPart[8];
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
@@ -258,8 +234,8 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         PartDefinition bEarLeft = bHead.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(4.0F, 0.0F, -3.0F));
         PartDefinition bEarRight = bHead.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(-4.0F, 0.0F, -3.0F));
         PartDefinition bHornNub = bHead.addOrReplaceChild("bHornNub", CubeListBuilder.create(), PartPose.offset(0.0F, -1.0F, -0.5F));
-        PartDefinition bHornLeft = bHornNub.addOrReplaceChild("bHornL", CubeListBuilder.create(), PartPose.offset(1.0F, 1.5F, -2.0F));
-        PartDefinition bHornRight = bHornNub.addOrReplaceChild("bHornR", CubeListBuilder.create(), PartPose.offset(-1.0F, 1.5F, -2.0F));
+        PartDefinition bHornLeft = bHornNub.addOrReplaceChild("bHornL", CubeListBuilder.create(), PartPose.offsetAndRotation(1.0F, 0.5F, -2.5F, Mth.HALF_PI, -Mth.HALF_PI, 0.0F));
+        PartDefinition bHornRight = bHornNub.addOrReplaceChild("bHornR", CubeListBuilder.create(), PartPose.offsetAndRotation(-1.0F, 0.5F, -2.5F, Mth.HALF_PI, Mth.HALF_PI, 0.0F));
         PartDefinition bLegFrontLeft = bCow.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, -10.0F));
         PartDefinition bLegFrontRight = bCow.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(-3.0F, 0.0F, -10.0F));
         PartDefinition bLegBackLeft = bCow.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, 9.0F));
@@ -388,107 +364,17 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 PartPose.ZERO
         );
 
-        bHornLeft.addOrReplaceChild("hornL0", CubeListBuilder.create()
-                        .texOffs(57, 85)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.0F)),
-                PartPose.ZERO
-        );
-        bHornLeft.addOrReplaceChild("hornL1", CubeListBuilder.create()
-                        .texOffs(57, 93)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.001F)),
-                PartPose.ZERO
-        );
-        bHornLeft.addOrReplaceChild("hornL2", CubeListBuilder.create()
-                        .texOffs(57, 101)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.002F)),
-                PartPose.ZERO
-        );
-        bHornLeft.addOrReplaceChild("hornL3", CubeListBuilder.create()
-                        .texOffs(57, 109)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.003F)),
-                PartPose.ZERO
-        );
-        bHornLeft.addOrReplaceChild("hornL4", CubeListBuilder.create()
-                        .texOffs(57, 117)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.004F)),
-                PartPose.ZERO
-        );
-        bHornLeft.addOrReplaceChild("hornL5", CubeListBuilder.create()
-                        .texOffs(57, 117)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.1F)),
-                PartPose.ZERO
-        );
-        bHornLeft.addOrReplaceChild("hornL6", CubeListBuilder.create()
-                        .texOffs(57, 117)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.2F)),
-                PartPose.ZERO
-        );
-        bHornLeft.addOrReplaceChild("hornL7", CubeListBuilder.create()
-                        .texOffs(57, 117)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.3F)),
-                PartPose.ZERO
-        );
-        bHornLeft.addOrReplaceChild("hornL8", CubeListBuilder.create()
-                        .texOffs(57, 117)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.4F)),
-                PartPose.ZERO
-        );
-        bHornLeft.addOrReplaceChild("hornL9", CubeListBuilder.create()
-                        .texOffs(57, 117)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.5F)),
-                PartPose.ZERO
-        );
-
-        bHornRight.addOrReplaceChild("hornR0", CubeListBuilder.create()
-                        .texOffs(57, 85)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.0F)),
-                PartPose.ZERO
-        );
-        bHornRight.addOrReplaceChild("hornR1", CubeListBuilder.create()
-                        .texOffs(57, 93)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.001F)),
-                PartPose.ZERO
-        );
-        bHornRight.addOrReplaceChild("hornR2", CubeListBuilder.create()
-                        .texOffs(57, 101)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.002F)),
-                PartPose.ZERO
-        );
-        bHornRight.addOrReplaceChild("hornR3", CubeListBuilder.create()
-                        .texOffs(57, 109)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.003F)),
-                PartPose.ZERO
-        );
-        bHornRight.addOrReplaceChild("hornR4", CubeListBuilder.create()
-                        .texOffs(57, 117)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.004F)),
-                PartPose.ZERO
-        );
-        bHornRight.addOrReplaceChild("hornR5", CubeListBuilder.create()
-                        .texOffs(57, 117)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.1F)),
-                PartPose.ZERO
-        );
-        bHornRight.addOrReplaceChild("hornR6", CubeListBuilder.create()
-                        .texOffs(57, 117)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.2F)),
-                PartPose.ZERO
-        );
-        bHornRight.addOrReplaceChild("hornR7", CubeListBuilder.create()
-                        .texOffs(57, 117)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.3F)),
-                PartPose.ZERO
-        );
-        bHornRight.addOrReplaceChild("hornR8", CubeListBuilder.create()
-                        .texOffs(57, 117)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.4F)),
-                PartPose.ZERO
-        );
-        bHornRight.addOrReplaceChild("hornR9", CubeListBuilder.create()
-                        .texOffs(57, 117)
-                        .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(-1.5F)),
-                PartPose.ZERO
-        );
+        for (int i = 0; i < 10; i++) {
+            float scale = i < 5 ? -1.0F - (i*0.001F) : -1.0F - ((i-4)*0.1F);
+            CubeListBuilder hornBitL = CubeListBuilder.create()
+                    .texOffs(57, i < 5 ? 85 + (i*8) : 117)
+                    .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(scale));
+            CubeListBuilder hornBitR = CubeListBuilder.create()
+                    .texOffs(57, i < 5 ? 85 + (i*8) : 117)
+                    .addBox(-2.0F, -4.0F, -2.0F, 4, 4, 4, new CubeDeformation(scale));
+            bHornLeft.addOrReplaceChild("hornL"+i, hornBitL, PartPose.ZERO);
+            bHornRight.addOrReplaceChild("hornR"+i, hornBitR, PartPose.ZERO);
+        }
 
         bNeck.addOrReplaceChild("neckF", CubeListBuilder.create()
                         .texOffs(46, 0)
@@ -536,37 +422,37 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         bHump.addOrReplaceChild("humpXXS", CubeListBuilder.create()
                         .texOffs(0,8)
                         .addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, new CubeDeformation(-1.0F)),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 0.0F, -3.0F)
         );
         bHump.addOrReplaceChild("humpXS", CubeListBuilder.create()
                         .texOffs(0,8)
                         .addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, new CubeDeformation(-0.5F)),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 0.0F, -3.0F)
         );
         bHump.addOrReplaceChild("humpS", CubeListBuilder.create()
                         .texOffs(0,8)
                         .addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, new CubeDeformation(-0.25F)),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 0.0F, -3.0F)
         );
         bHump.addOrReplaceChild("humpM", CubeListBuilder.create()
                         .texOffs(0,8)
                         .addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 0.0F, -3.0F)
         );
         bHump.addOrReplaceChild("humpL", CubeListBuilder.create()
                         .texOffs(0,8)
                         .addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, new CubeDeformation(0.5F)),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 0.0F, -3.0F)
         );
         bHump.addOrReplaceChild("humpXL", CubeListBuilder.create()
                         .texOffs(0,8)
                         .addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, new CubeDeformation(1.0F)),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 0.0F, -3.0F)
         );
         bHump.addOrReplaceChild("humpXXL", CubeListBuilder.create()
                         .texOffs(0,8)
                         .addBox(-2.0F, 0.0F, 0.0F, 4, 8, 6, new CubeDeformation(1.5F)),
-                PartPose.ZERO
+                PartPose.offset(0.0F, 0.0F, -3.0F)
         );
 
         bLegFrontLeft.addOrReplaceChild("legFL", CubeListBuilder.create()
@@ -634,97 +520,14 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 PartPose.offset(0.0F, 3.0F, 0.0F)
         );
 
-        bCow.addOrReplaceChild("mushroom0", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
-        bCow.addOrReplaceChild("mushroom1", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
-        bCow.addOrReplaceChild("mushroom2", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
-        bCow.addOrReplaceChild("mushroom3", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
-        bCow.addOrReplaceChild("mushroom4", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
-        bCow.addOrReplaceChild("mushroom5", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
-        bCow.addOrReplaceChild("mushroom6", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
-        bCow.addOrReplaceChild("mushroom7", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
-        bCow.addOrReplaceChild("mushroom8", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
-        bCow.addOrReplaceChild("mushroom9", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
-        bCow.addOrReplaceChild("mushroom10", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
-        bCow.addOrReplaceChild("mushroom11", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
-        bCow.addOrReplaceChild("mushroom12", CubeListBuilder.create()
-                        .texOffs(54, 64)
-                        .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
-                        .texOffs(62, 71)
-                        .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1),
-                PartPose.ZERO
-        );
+        CubeListBuilder mushroomBox = CubeListBuilder.create()
+                .texOffs(54, 64)
+                .addBox(0.0F, -8.0F, -4.0F, 1, 8, 8)
+                .texOffs(62, 71)
+                .addBox(-3.0F, -8.0F, 0.0F, 8, 8, 1);
+        for (int i = 0; i < 8; i++) {
+            bCow.addOrReplaceChild("mushroom"+i, mushroomBox, PartPose.ZERO);
+        }
 
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
@@ -807,26 +610,10 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         this.earLongR = new WrappedModelPart("earLR", bEarRight);
         this.earXLongR = new WrappedModelPart("earXLR", bEarRight);
 
-        this.hornL9 = new WrappedModelPart("hornL9", bHornLeft, true);
-        this.hornL8 = new WrappedModelPart("hornL8", bHornLeft, true, this.hornL9);
-        this.hornL7 = new WrappedModelPart("hornL7", bHornLeft, true, this.hornL8);
-        this.hornL6 = new WrappedModelPart("hornL6", bHornLeft, true, this.hornL7);
-        this.hornL5 = new WrappedModelPart("hornL5", bHornLeft, true, this.hornL6);
-        this.hornL4 = new WrappedModelPart("hornL4", bHornLeft, true, this.hornL5);
-        this.hornL3 = new WrappedModelPart("hornL3", bHornLeft, true, this.hornL4);
-        this.hornL2 = new WrappedModelPart("hornL2", bHornLeft, true, this.hornL3);
-        this.hornL1 = new WrappedModelPart("hornL1", bHornLeft, true, this.hornL2);
-        this.hornL0 = new WrappedModelPart("hornL0", bHornLeft, true, this.hornL1);
-        this.hornR9 = new WrappedModelPart("hornR9", bHornRight, true);
-        this.hornR8 = new WrappedModelPart("hornR8", bHornRight, true, this.hornR9);
-        this.hornR7 = new WrappedModelPart("hornR7", bHornRight, true, this.hornR8);
-        this.hornR6 = new WrappedModelPart("hornR6", bHornRight, true, this.hornR7);
-        this.hornR5 = new WrappedModelPart("hornR5", bHornRight, true, this.hornR6);
-        this.hornR4 = new WrappedModelPart("hornR4", bHornRight, true, this.hornR5);
-        this.hornR3 = new WrappedModelPart("hornR3", bHornRight, true, this.hornR4);
-        this.hornR2 = new WrappedModelPart("hornR2", bHornRight, true, this.hornR3);
-        this.hornR1 = new WrappedModelPart("hornR1", bHornRight, true, this.hornR2);
-        this.hornR0 = new WrappedModelPart("hornR0", bHornRight, true, this.hornR1);
+        for (int i = 9; i >= 0; i--) {
+            this.hornLeft[i] = i !=9 ? new WrappedModelPart("hornL"+i, bHornLeft, this.hornLeft[i+1]) : new WrappedModelPart("hornL"+i, bHornLeft);
+            this.hornRight[i] = i !=9 ? new WrappedModelPart("hornR"+i, bHornRight, this.hornRight[i+1]) : new WrappedModelPart("hornR"+i, bHornRight);
+        }
 
         this.legFrontLeft = new WrappedModelPart("legFL", bLegFL);
         this.legFrontLeftDwarf = new WrappedModelPart("legFLD", bLegFL);
@@ -877,8 +664,8 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         this.theEarLeft.addChild(this.earLongL);
         this.theEarLeft.addChild(this.earXLongL);
 
-        this.theHornLeft.addChild(this.hornL0);
-        this.theHornRight.addChild(this.hornR0);
+        this.theHornLeft.addChild(this.hornLeft[0]);
+        this.theHornRight.addChild(this.hornRight[0]);
 
         this.theEarRight.addChild(this.earXShortR);
         this.theEarRight.addChild(this.earShortR);
@@ -920,24 +707,16 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         this.tailEnd.addChild(this.tailBrush);
 
         if (isMooshroom) {
-            this.mushroom0 = new WrappedModelPart("mushroom0", bCow);
-            this.theBody.addChild(this.mushroom0);
-            this.mushroom1 = new WrappedModelPart("mushroom1", bCow);
-            this.theBody.addChild(this.mushroom1);
-            this.mushroom2 = new WrappedModelPart("mushroom2", bCow);
-            this.theBody.addChild(this.mushroom2);
-            this.mushroom3 = new WrappedModelPart("mushroom3", bCow);
-            this.theBody.addChild(this.mushroom3);
-            this.mushroom4 = new WrappedModelPart("mushroom4", bCow);
-            this.theBody.addChild(this.mushroom4);
-
-            this.mushroom5 = new WrappedModelPart("mushroom5", bCow);
-            this.theNeck.addChild(this.mushroom5);
-            this.mushroom6 = new WrappedModelPart("mushroom6", bCow);
-            this.theNeck.addChild(this.mushroom6);
-
-            this.mushroom7 = new WrappedModelPart("mushroom7", bCow);
-            this.theHornNub.addChild(this.mushroom7);
+            for (int i = 0; i < 8; i++) {
+                this.mushroom[i] = new WrappedModelPart("mushroom"+i, bCow);
+                if (i < 5) {
+                    this.theCow.addChild(this.mushroom[i]);
+                } else if (i < 7) {
+                    this.theNeck.addChild(this.mushroom[i]);
+                } else {
+                    this.theHornNub.addChild(this.mushroom[i]);
+                }
+            }
         }
 
     }
@@ -995,6 +774,8 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
 
         resetCubes();
         if (cow != null) {
+            super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
             if (cow.isFemale) {
@@ -1030,29 +811,16 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
              *      Horns
              */
 
-            this.theHornLeft.show(cowModelData.offsets.containsKey("bHornL"));
-            this.hornL0.show(cowModelData.offsets.containsKey("hornL0"));
-            this.hornL1.show(cowModelData.offsets.containsKey("hornL1"));
-            this.hornL2.show(cowModelData.offsets.containsKey("hornL2"));
-            this.hornL3.show(cowModelData.offsets.containsKey("hornL3"));
-            this.hornL4.show(cowModelData.offsets.containsKey("hornL4"));
-            this.hornL5.show(cowModelData.offsets.containsKey("hornL5"));
-            this.hornL6.show(cowModelData.offsets.containsKey("hornL6"));
-            this.hornL7.show(cowModelData.offsets.containsKey("hornL7"));
-            this.hornL8.show(cowModelData.offsets.containsKey("hornL8"));
-            this.hornL9.show(cowModelData.offsets.containsKey("hornL9"));
-
-            this.theHornRight.show(cowModelData.offsets.containsKey("bHornR"));
-            this.hornR0.show(cowModelData.offsets.containsKey("hornR0"));
-            this.hornR1.show(cowModelData.offsets.containsKey("hornR1"));
-            this.hornR2.show(cowModelData.offsets.containsKey("hornR2"));
-            this.hornR3.show(cowModelData.offsets.containsKey("hornR3"));
-            this.hornR4.show(cowModelData.offsets.containsKey("hornR4"));
-            this.hornR5.show(cowModelData.offsets.containsKey("hornR5"));
-            this.hornR6.show(cowModelData.offsets.containsKey("hornR6"));
-            this.hornR7.show(cowModelData.offsets.containsKey("hornR7"));
-            this.hornR8.show(cowModelData.offsets.containsKey("hornR8"));
-            this.hornR9.show(cowModelData.offsets.containsKey("hornR9"));
+            if (this.theHornLeft.show(cowModelData.offsets.containsKey("bHornL"))) {
+                for (int i = 0; i < 10; i++) {
+                    this.hornLeft[i].boxIsRendered = cowModelData.offsets.containsKey("hL"+i);
+                }
+            }
+            if (this.theHornRight.show(cowModelData.offsets.containsKey("bHornR"))) {
+                for (int i = 0; i < 10; i++) {
+                    this.hornRight[i].boxIsRendered = cowModelData.offsets.containsKey("hR"+i);
+                }
+            }
 
             List<Float> scalingsForHorn = ModelHelper.createScalings(cow.hornScale,0.0F, 0.0F, 0.0F);
             mapOfScale.put("bHornL", scalingsForHorn);
@@ -1119,7 +887,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             /**
              *      Udder
              */
-            if (cowModelData.bagSize != 0.0F) {
+            if (cowModelData.bagSize != -1.0F) {
                 this.udder.show();
                 this.nipples.show();
                 float nipScale = 1.5F / (0.5F + cowModelData.bagSize);
@@ -1145,17 +913,15 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 mapOfScale.put("bLegFR", ModelHelper.createScalings(1.0F, babyScale, 1.0F, 0.0F, 0.0F, 0.0F));
                 mapOfScale.put("bLegBL", ModelHelper.createScalings(1.0F, babyScale, 1.0F, 0.0F, 0.0F, 0.0F));
                 mapOfScale.put("bLegBR", ModelHelper.createScalings(1.0F, babyScale, 1.0F, 0.0F, 0.0F, 0.0F));
+            }
 
-                if (cow.mushrooms != null) {
-                    scale = cowModelData.growthAmount;
-                    mapOfScale.put("mushroom0", ModelHelper.createScalings(scale, 0.0F, 0.0F, 0.0F));
-                    mapOfScale.put("mushroom1", ModelHelper.createScalings(scale, 0.0F, 0.0F, 0.0F));
-                    mapOfScale.put("mushroom2", ModelHelper.createScalings(scale, 0.0F, 0.0F, 0.0F));
-                    mapOfScale.put("mushroom3", ModelHelper.createScalings(scale, 0.0F, 0.0F, 0.0F));
-                    mapOfScale.put("mushroom4", ModelHelper.createScalings(scale, 0.0F, 0.0F, 0.0F));
-                    mapOfScale.put("mushroom5", ModelHelper.createScalings(scale, 0.0F, 0.0F, 0.0F));
-                    mapOfScale.put("mushroom6", ModelHelper.createScalings(scale, 0.0F, 0.0F, 0.0F));
-                    mapOfScale.put("mushroom7", ModelHelper.createScalings(scale, 0.0F, 0.0F, 0.0F));
+            if (cow.mushrooms != null) {
+                for (int i = 0; i < 8; i++) {
+                    if (this.mushroom[i].modelPart.visible = cowModelData.offsets.containsKey("mushroom"+i)) {
+                        if (cowModelData.growthAmount != 1.0F) {
+                            mapOfScale.put("mushroom" + i, ModelHelper.createScalings(cowModelData.growthAmount, 0.0F, 0.0F, 0.0F));
+                        }
+                    }
                 }
             }
 
@@ -1184,282 +950,415 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         }
     }
 
-    protected Map<String, Vector3f> saveAnimationValues(CowPhenotype cow, float hornGrowthAmount) {
-        Map<String, Vector3f> map = new HashMap<>();
-        Vector3f blank = new Vector3f(0.0F, 0.0F, 0.0F);
-        map.put("bCowPos", new Vector3f(0.0F, cow.dwarf ? 16.0F : 14.0F, 0.0F));
-        map.put("bHumpPos", new Vector3f(0.0F, cow.humpPlacement, 0.0F));
-        map.put("bCow", blank.copy());
-        map.put("bBody", blank.copy());
-        map.put("bHump", new Vector3f(-0.2F, 0.0F, 0.0F));
-        map.put("bNeck", blank.copy());
-        map.put("bHead", new Vector3f(0.5F, 0.0F, 0.0F));
-        map.put("jaw", new Vector3f(-0.3F, 0.0F, 0.0F));
-        map.put("bEarL", new Vector3f(0.0F, 0.0F, cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness));
-        map.put("bEarR", new Vector3f(0.0F, 0.0F, -(cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness)));
-        map.put("bLegFL", blank.copy());
-        map.put("bLegFR", blank.copy());
-        map.put("bLegBL", blank.copy());
-        map.put("bLegBR", blank.copy());
-        map.put("bTail", blank.copy());
-        map.put("tail0", blank.copy());
-        map.put("tail1", blank.copy());
-        map.put("tail2", blank.copy());
-        map.put("tailB", blank.copy());
+    protected void saveAnimationValues(CowModelData data, CowPhenotype cow) {
+        Map<String, Vector3f> map = data.offsets;
+        map.put("bCowPos", this.getOffsetVector(this.theCow));
+        map.put("bHumpPos", this.getOffsetVector(this.theHump));
+        map.put("bCow", this.getRotationVector(this.theCow));
+        map.put("bBody", this.getRotationVector(this.theBody));
+        map.put("bHump", this.getRotationVector(this.theHump));
+        map.put("bNeck", this.getRotationVector(this.theNeck));
+        map.put("bHead", this.getRotationVector(this.theHead));
+        map.put("jaw", this.getRotationVector(this.jaw));
+        map.put("bEarL", this.getRotationVector(this.theEarLeft));
+        map.put("bEarR", this.getRotationVector(this.theEarRight));
+        map.put("bLegFL", this.getRotationVector(this.theLegFrontLeft));
+        map.put("bLegFLPos", this.getOffsetVector(this.theLegFrontLeft));
+        map.put("bLegFR", this.getRotationVector(this.theLegFrontRight));
+        map.put("bLegFRPos", this.getOffsetVector(this.theLegFrontRight));
+        map.put("bLegBL", this.getRotationVector(this.theLegBackLeft));
+        map.put("bLegBLPos", this.getOffsetVector(this.theLegBackLeft));
+        map.put("bLegBR", this.getRotationVector(this.theLegBackRight));
+        map.put("bLegBRPos", this.getOffsetVector(this.theLegBackRight));
+        map.put("bTail", this.getRotationVector(this.theTail));
+        map.put("tail0", this.getRotationVector(this.tailBase));
+        map.put("tail1", this.getRotationVector(this.tailMiddle));
+        map.put("tail2", this.getRotationVector(this.tailEnd));
+        map.put("tailB", this.getRotationVector(this.tailBrush));
 
+        saveHorns(cow, data.hornGrowth, map);
+    }
+
+    private void saveHorns(CowPhenotype cow, float hornGrowth, Map<String, Vector3f> map) {
         if (cow.hornType != HornType.POLLED) {
-            map.put("bHornNubPos", new Vector3f(0.0F, cow.hornType.placement, 0.0F));
-            map.put("bHornL", new Vector3f(Mth.HALF_PI, 0.0F, 0.0F));
-            map.put("bHornR", new Vector3f(Mth.HALF_PI, 0.0F, 0.0F));
-
-            saveHornRotations(cow, hornGrowthAmount, map);
-            updateHornRotations(cow, hornGrowthAmount, map);
+            if (!map.containsKey("hL"+cow.leftHornLength)) {
+                for (int l = 10 - (int) ((float) (10 - cow.leftHornLength) * hornGrowth); l < 10; l++) {
+                    if (l >= 0) {
+                        if (map.containsKey("hL" + l)) {
+                            break;
+                        } else {
+                            map.put("hL" + l, new Vector3f(-cow.hornGeneticsX[l],cow.hornGeneticsY[l], cow.hornGeneticsZ[l]));
+                            map.put("hPosL" + (l + 1), new Vector3f(0.0F, l > 4 ? -(2.0F - ((l - 4) * 0.2F)) : -2.0F, 0.0F));
+                        }
+                    }
+                }
+            }
+            if (!map.containsKey("hR"+cow.rightHornLength)) {
+                for (int r = 10 - (int)(((10F - cow.rightHornLength) * hornGrowth)); r < 10; r++) {
+                    if (r >= 0) {
+                        if (map.containsKey("hR" + r)) {
+                            break;
+                        } else {
+                            map.put("hR" + r, new Vector3f(-cow.hornGeneticsX[r], -cow.hornGeneticsY[r], -cow.hornGeneticsZ[r]));
+                            map.put("hPosR" + (r + 1), new Vector3f(0.0F, r > 4 ? -(2.0F - ((r - 4) * 0.2F)) : -2.0F, 0.0F));
+                        }
+                    }
+                }
+            }
         }
+    }
 
+    private void saveSetMushrooms(CowPhenotype cow, Map<String, Vector3f> map) {
         if (cow.mushrooms != null) {
             //body
-            if (cow.mushrooms[0]!=-1) map.put("mushroom0", new Vector3f(cow.mushrooms[0]-6, 0.0F, cow.mushrooms[1]+1));
-            if (cow.mushrooms[2]!=-1) map.put("mushroom1", new Vector3f(cow.mushrooms[2]+1, 0.0F, cow.mushrooms[3]+5));
-            if (cow.mushrooms[4]!=-1) map.put("mushroom2", new Vector3f(cow.mushrooms[4]-6, 0.0F, cow.mushrooms[5]+9));
-            if (cow.mushrooms[6]!=-1) map.put("mushroom3", new Vector3f(cow.mushrooms[6]+1, 0.0F, cow.mushrooms[7]+13));
-            if (cow.mushrooms[8]!=-1) map.put("mushroom4", new Vector3f((cow.mushrooms[8]*2.0F)-3.0F, 0.0F, cow.mushrooms[9]+17));
+            if (cow.mushrooms[0]!=-1) map.put("mushroom0", new Vector3f(cow.mushrooms[0]-6, -10.5F, cow.mushrooms[1]-7));
+            if (cow.mushrooms[2]!=-1) map.put("mushroom1", new Vector3f(cow.mushrooms[2]+1, -10.5F, cow.mushrooms[3]-3));
+            if (cow.mushrooms[4]!=-1) map.put("mushroom2", new Vector3f(cow.mushrooms[4]-6, -10.5F, cow.mushrooms[5]+1));
+            if (cow.mushrooms[6]!=-1) map.put("mushroom3", new Vector3f(cow.mushrooms[6]+1, -10.5F, cow.mushrooms[7]+5));
+            if (cow.mushrooms[8]!=-1) map.put("mushroom4", new Vector3f((cow.mushrooms[8]*2.0F)-3.0F, -10.5F, cow.mushrooms[9]+9));
 
             //neck
-            if (cow.mushrooms[10]!=-1) map.put("mushroom0", new Vector3f(cow.mushrooms[10]-3.0F, 0.0F, cow.mushrooms[11]*2.0F));
-            if (cow.mushrooms[12]!=-1) map.put("mushroom0", new Vector3f(cow.mushrooms[12], 0.0F, (cow.mushrooms[13]*2.0F)+2.0F));
+            if (cow.mushrooms[10]!=-1) map.put("mushroom5", new Vector3f(cow.mushrooms[10]-3.0F, 0.5F, (cow.mushrooms[11]*2.0F) - 8));
+            if (cow.mushrooms[12]!=-1) map.put("mushroom6", new Vector3f(cow.mushrooms[12], 0.5F, ((cow.mushrooms[13]*2.0F)+2.0F) - 8));
 
             //headnub
-            if (cow.mushrooms[14]!=-1) map.put("mushroom0", new Vector3f(cow.mushrooms[14]-2.0F, -0.5F, -2.0F));
-        }
+            if (cow.mushrooms[14]!=-1) map.put("mushroom7", new Vector3f(cow.mushrooms[14]-2.0F, -0.5F, -2.0F));
 
-        return map;
-    }
-
-    private void saveHornRotations(CowPhenotype cow, float hornGrowthAmount, Map<String, Vector3f> map) {
-        if (cow.hornType != HornType.POLLED) {
-            for (int i = 0; i <= 9; i++) {
-                map.put("hL"+i, new Vector3f(-cow.hornGeneticsX[i], cow.hornGeneticsY[i], cow.hornGeneticsZ[i]));
-                map.put("hR"+i, new Vector3f(-cow.hornGeneticsX[i], -cow.hornGeneticsY[i], -cow.hornGeneticsZ[i]));
-            }
+            setMushrooms(map);
         }
     }
 
-    private void updateHornRotations(CowPhenotype cow, float hornGrowthAmount, Map<String, Vector3f> map) {
-        Float[] hornY = {0.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
-        int lengthL = cow.leftHornLength;
-        int lengthR = cow.rightHornLength;
-        lengthL = lengthL + ((int)((12-lengthL) * (1.0F-(hornGrowthAmount))));
-        lengthR = lengthR + ((int)((12-lengthR) * (1.0F-(hornGrowthAmount))));
-        for (int i = 0; i <= 9; i++) {
-            if (map.containsKey("hL"+i)) {
-                if (lengthL <= i) {
-                    map.put("hornL" + i, map.get("hL" + i));
-                    map.remove("hL" + i);
+    private void setMushrooms(Map<String, Vector3f> map) {
+            for (int i = 0; i < 8; i++) {
+                if (map.containsKey("mushroom"+i)) {
+                    this.mushroom[i].setPos(map.get("mushroom"+i));
                 }
-                map.put("hornPosL"+(i), new Vector3f(0.0F, hornY[i], 0.0F));
             }
-            if (map.containsKey("hR"+i)) {
-                if (lengthR <= i){
-                    map.put("hornR" + i, map.get("hR" + i));
-                    map.remove("hR" + i);
-                }
-                map.put("hornPosR"+(i), new Vector3f(0.0F, hornY[i], 0.0F));
-            }
-        }
     }
-
-//    private void setHornRotations(CowPhenotype cow, float hornGrowthAmount) {
-//        HornType horns = cow.hornType;
-//
-//        Float[] hornGrowthL = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
-//        Float[] hornGrowthR = {-1.0F, -2.0F, -2.0F, -2.0F, -2.0F, -1.8F, -1.6F, -1.4F, -1.2F, -1.0F};
-//
-//        int lengthL = cow.leftHornLength;
-//        int lengthR = cow.rightHornLength;
-//
-//        if (hornGrowthAmount < 1.0F) {
-//            //this grows the horns from nothing to their adult size
-//            lengthL = lengthL + ((int)((12-lengthL) * (1.0F-(hornGrowthAmount))));
-//            lengthR = lengthR + ((int)((12-lengthR) * (1.0F-(hornGrowthAmount))));
-//        }
-//
-//        if (horns != HornType.POLLED) {
-//            switch (lengthL) {
-//                case 0 -> this.hornL0.setPos(0.0F, 0.0F, 0.0F);
-//                case 1 -> this.hornL1.setPos(0.0F, 0.0F, 0.0F);
-//                case 2 -> this.hornL2.setPos(0.0F, 0.0F, 0.0F);
-//                case 3 -> this.hornL3.setPos(0.0F, 0.0F, 0.0F);
-//                case 4 -> this.hornL4.setPos(0.0F, 0.0F, 0.0F);
-//                case 5 -> this.hornL5.setPos(0.0F, 0.0F, 0.0F);
-//                case 6 -> this.hornL6.setPos(0.0F, 0.0F, 0.0F);
-//                case 7 -> this.hornL7.setPos(0.0F, 0.0F, 0.0F);
-//                case 8 -> this.hornL8.setPos(0.0F, 0.0F, 0.0F);
-//                case 9 -> this.hornL9.setPos(0.0F, 0.0F, 0.0F);
-//            }
-//        }
-//
-//            this.theHornLeft.setYAndSeen(0.0F, cow.hornType != HornType.POLLED);
-//            this.hornL0.setYAndSeen(0.0F, cow.hornType != HornType.POLLED && lengthL <= 0);
-//            this.hornL1.setYAndSeen(lengthL <= 0 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 1);
-//            this.hornL2.setYAndSeen(lengthL <= 1 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 2);
-//            this.hornL3.setYAndSeen(lengthL <= 2 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 3);
-//            this.hornL4.setYAndSeen(lengthL <= 3 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 4);
-//            this.hornL5.setYAndSeen(lengthL <= 4 ? -1.8F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 5);
-//            this.hornL6.setYAndSeen(lengthL <= 5 ? -1.6F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 6);
-//            this.hornL7.setYAndSeen(lengthL <= 6 ? -1.4F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 7);
-//            this.hornL8.setYAndSeen(lengthL <= 7 ? -1.2F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 8);
-//            this.hornL9.setYAndSeen(lengthL <= 8 ? -1.0F : 0.0F, cow.hornType != HornType.POLLED && lengthL <= 9);
-//
-//            this.theHornRight.setYAndSeen(0.0F, cow.hornType != HornType.POLLED);
-//            this.hornR0.setYAndSeen(0.0F, cow.hornType != HornType.POLLED && lengthR <= 0);
-//            this.hornR1.setYAndSeen(lengthR <= 0 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 1);
-//            this.hornR2.setYAndSeen(lengthR <= 1 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 2);
-//            this.hornR3.setYAndSeen(lengthR <= 2 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 3);
-//            this.hornR4.setYAndSeen(lengthR <= 3 ? -2.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 4);
-//            this.hornR5.setYAndSeen(lengthR <= 4 ? -1.8F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 5);
-//            this.hornR6.setYAndSeen(lengthR <= 5 ? -1.6F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 6);
-//            this.hornR7.setYAndSeen(lengthR <= 6 ? -1.4F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 7);
-//            this.hornR8.setYAndSeen(lengthR <= 7 ? -1.2F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 8);
-//            this.hornR9.setYAndSeen(lengthR <= 8 ? -1.0F : 0.0F, cow.hornType != HornType.POLLED && lengthR <= 9);
-//
-//        this.theHornNub.setY(horns.getPlacement());
-//
-//        //horn shape controllers
-//        if (horns != HornType.POLLED) {
-//
-//            float[] hornCalculationsZ = cow.hornGeneticsZ;
-//            float[] hornCalculationsX = cow.hornGeneticsX;
-//            float[] hornCalculationsY = cow.hornGeneticsY;
-//
-//            for (int z = 0; z <= 9; z++) {
-//                hornGrowthL[z] = lengthL <= z ? 1.0F : 0.0F;
-//                hornGrowthR[z] = lengthR <= z ? 1.0F : 0.0F;
-//            }
-//
-//            this.theHornLeft.setXRot((float)Math.PI * 0.5F);
-//            this.theHornRight.setXRot((float)Math.PI * 0.5F);
-//
-//            this.hornL0.setRotation(hornCalculationsX[0], -hornCalculationsY[0], hornCalculationsZ[0]);
-//            this.hornR0.setRotation(hornCalculationsX[0], hornCalculationsY[0], -hornCalculationsZ[0]);
-//
-//            this.hornL1.setRotation(-hornCalculationsX[1] * hornGrowthL[1],hornCalculationsY[1] * hornGrowthL[1],hornCalculationsZ[1] * hornGrowthL[1]);
-//            this.hornL2.setRotation(-hornCalculationsX[2] * hornGrowthL[2],hornCalculationsY[2] * hornGrowthL[2],hornCalculationsZ[2] * hornGrowthL[2]);
-//            this.hornL3.setRotation(-hornCalculationsX[3] * hornGrowthL[3],hornCalculationsY[3] * hornGrowthL[3],hornCalculationsZ[3] * hornGrowthL[3]);
-//            this.hornL4.setRotation(-hornCalculationsX[4] * hornGrowthL[4],hornCalculationsY[4] * hornGrowthL[4],hornCalculationsZ[4] * hornGrowthL[4]);
-//            this.hornL5.setRotation(-hornCalculationsX[5] * hornGrowthL[5],hornCalculationsY[5] * hornGrowthL[5],hornCalculationsZ[5] * hornGrowthL[5]);
-//            this.hornL6.setRotation(-hornCalculationsX[6] * hornGrowthL[6],hornCalculationsY[6] * hornGrowthL[6],hornCalculationsZ[6] * hornGrowthL[6]);
-//            this.hornL7.setRotation(-hornCalculationsX[7] * hornGrowthL[7],hornCalculationsY[7] * hornGrowthL[7],hornCalculationsZ[7] * hornGrowthL[7]);
-//            this.hornL8.setRotation(-hornCalculationsX[8] * hornGrowthL[8],hornCalculationsY[8] * hornGrowthL[8],hornCalculationsZ[8] * hornGrowthL[8]);
-//            this.hornL9.setRotation(-hornCalculationsX[9] * hornGrowthL[9],hornCalculationsY[9] * hornGrowthL[9],hornCalculationsZ[9] * hornGrowthL[9]);
-//
-//            this.hornR1.setRotation(-hornCalculationsX[1] * hornGrowthR[1],-hornCalculationsY[1] * hornGrowthR[1],-hornCalculationsZ[1] * hornGrowthR[1]);
-//            this.hornR2.setRotation(-hornCalculationsX[2] * hornGrowthR[2],-hornCalculationsY[2] * hornGrowthR[2],-hornCalculationsZ[2] * hornGrowthR[2]);
-//            this.hornR3.setRotation(-hornCalculationsX[3] * hornGrowthR[3],-hornCalculationsY[3] * hornGrowthR[3],-hornCalculationsZ[3] * hornGrowthR[3]);
-//            this.hornR4.setRotation(-hornCalculationsX[4] * hornGrowthR[4],-hornCalculationsY[4] * hornGrowthR[4],-hornCalculationsZ[4] * hornGrowthR[4]);
-//            this.hornR5.setRotation(-hornCalculationsX[5] * hornGrowthR[5],-hornCalculationsY[5] * hornGrowthR[5],-hornCalculationsZ[5] * hornGrowthR[5]);
-//            this.hornR6.setRotation(-hornCalculationsX[6] * hornGrowthR[6],-hornCalculationsY[6] * hornGrowthR[6],-hornCalculationsZ[6] * hornGrowthR[6]);
-//            this.hornR7.setRotation(-hornCalculationsX[7] * hornGrowthR[7],-hornCalculationsY[7] * hornGrowthR[7],-hornCalculationsZ[7] * hornGrowthR[7]);
-//            this.hornR8.setRotation(-hornCalculationsX[8] * hornGrowthR[8],-hornCalculationsY[8] * hornGrowthR[8],-hornCalculationsZ[8] * hornGrowthR[8]);
-//            this.hornR9.setRotation(-hornCalculationsX[9] * hornGrowthR[9],-hornCalculationsY[9] * hornGrowthR[9],-hornCalculationsZ[9] * hornGrowthR[9]);
-//        }
-//    }
 
     /**
      *      Animations
      */
+    private void readInitialAnimationValues(CowModelData data, CowPhenotype cow) {
+        Map<String, Vector3f> map = data.offsets;
+        if (map.isEmpty()) {
+            Vector3f vector3f = new Vector3f(0.0F, 0.0F, 0.0F);
+            this.theCow.setPosAndRot(new Vector3f(0.0F, cow.dwarf ? 16.0F : 14.0F, 0.0F), vector3f);
+            this.theHump.setPosAndRot(new Vector3f(0.0F, cow.humpPlacement, 3.0F), new Vector3f(-0.2F, 0.0F, 0.0F));
+            this.theHead.setRotation(new Vector3f(0.5F, 0.0F, 0.0F));
+            this.theNeck.setRotation(new Vector3f(0.5F, 0.0F, 0.0F));
+            this.jaw.setRotation(new Vector3f(-Mth.HALF_PI*0.2F, 0.0F, 0.0F));
+            this.theEarLeft.setRotation(new Vector3f(0.0F, 0.0F, cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness));
+            this.theEarRight.setRotation(new Vector3f(0.0F, 0.0F, -(cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness)));
+            this.theLegFrontLeft.setPosAndRot(vector3f, vector3f);
+            this.theLegFrontRight.setPosAndRot(vector3f, vector3f);
+            this.theLegBackLeft.setPosAndRot(vector3f, vector3f);
+            this.theLegBackRight.setPosAndRot(vector3f, vector3f);
+            this.theTail.setRotation(vector3f);
+            this.tailBase.setRotation(new Vector3f(0.4F, 0.0F,0.0F));
+            this.tailMiddle.setRotation(new Vector3f(-0.2F, 0.0F,0.0F));
+            this.tailEnd.setRotation(new Vector3f(-0.2F, 0.0F,0.0F));
+            this.tailBrush.setRotation(vector3f);
+
+            Vector3f base = new Vector3f(0.0F, cow.hornType.placement, 0.0F);
+            this.theHornNub.setPos(base);
+            map.put("bHornNubPos", base);
+
+            if (cow.hornType != HornType.POLLED) {
+                map.put("bHornL", vector3f);
+                map.put("bHornR", vector3f);
+            }
+
+            if (cow.mushrooms != null) {
+                saveSetMushrooms(cow, map);
+            }
+        } else {
+            this.theCow.setPos(map.get("bCowPos"));
+            this.theHump.setPosAndRot(map.get("bHumpPos"), map.get("bHump"));
+            this.theHead.setRotation(map.get("bHead"));
+            this.theNeck.setRotation(map.get("bNeck"));
+            this.jaw.setRotation(map.get("jaw"));
+            this.theEarLeft.setRotation(map.get("bEarL"));
+            this.theEarRight.setRotation(map.get("bEarR"));
+            this.theLegFrontLeft.setPosAndRot(map.get("bLegFLPos"), map.get("bLegFL"));
+            this.theLegFrontRight.setPosAndRot(map.get("bLegFRPos"), map.get("bLegFR"));
+            this.theLegBackLeft.setPosAndRot(map.get("bLegBLPos"), map.get("bLegBL"));
+            this.theLegBackRight.setPosAndRot(map.get("bLegBRPos"), map.get("bLegBR"));
+            this.theTail.setRotation(map.get("bTail"));
+            this.tailBase.setRotation(map.get("tail0"));
+            this.tailMiddle.setRotation(map.get("tail1"));
+            this.tailEnd.setRotation(map.get("tail2"));
+            this.tailBrush.setRotation(map.get("tailB"));
+
+            this.theHornNub.setPos(map.get("bHornNubPos"));
+            Vector3f vector3f = new Vector3f(0.0F, 0.0F, 0.0F);
+            boolean l = true;
+            boolean r = true;
+            for (int i = 0; i < 10; i++) {
+                if (map.containsKey("hL"+i)) {
+                    this.hornLeft[i].setPosAndRot(map.get("hPosL" + i), l ? vector3f : map.get("hL" + i));
+                    if (l) {
+                        l=false;
+                    }
+                } else {
+                    this.hornLeft[i].setPosAndRot(vector3f, vector3f);
+                }
+                if (map.containsKey("hR"+i)) {
+                    this.hornRight[i].setPosAndRot(map.get("hPosR" + i), r ? vector3f : map.get("hR" + i));
+                    if (r) {
+                        r=false;
+                    }
+                } else {
+                    this.hornRight[i].setPosAndRot(vector3f, vector3f);
+                }
+            }
+
+            if (cow.mushrooms != null) {
+                setMushrooms(map);
+            }
+        }
+    }
+
+
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.currentAnimal = entityIn.getId();
-//        System.out.println("limbSwing:"+limbSwing+" | limbSwingAmount:"+limbSwingAmount);
         CowModelData cowModelData = getCreateCowModelData(entityIn);
-        float drive = ageInTicks + (1000*cowModelData.random);
+        CowPhenotype cow = cowModelData.getPhenotype();
 
-        if (!cowModelData.offsets.isEmpty()) {
-            Map<String, Vector3f> rotationValues = cowModelData.offsets;
-            this.theCow.setY(rotationValues.get("bCowPos").y());
-            this.theHump.setY(rotationValues.get("bHumpPos").y());
+        if (cow!=null) {
+            readInitialAnimationValues(cowModelData, cow);
+            boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.getXRot() != entityIn.xRotO || entityIn.getYRot() != entityIn.yRotO || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 
-            this.hornL0.setFromVector(rotationValues.get("hornL0"), new Vector3f(0.0F, 2.0F, 0.0F));
-            this.hornL1.setFromVector(rotationValues.get("hornL1"), new Vector3f(0.0F, 2.0F, 0.0F));
-            this.hornL2.setFromVector(rotationValues.get("hornL2"), new Vector3f(0.0F, 2.0F, 0.0F));
-            this.hornL3.setFromVector(rotationValues.get("hornL3"), new Vector3f(0.0F, 2.0F, 0.0F));
-            this.hornL4.setFromVector(rotationValues.get("hornL4"), new Vector3f(0.0F, 2.0F, 0.0F));
-            this.hornL5.setFromVector(rotationValues.get("hornL5"), new Vector3f(0.0F, 2.0F, 0.0F));
-            this.hornL6.setFromVector(rotationValues.get("hornL6"), new Vector3f(0.0F, 2.0F, 0.0F));
-            this.hornL7.setFromVector(rotationValues.get("hornL7"), new Vector3f(0.0F, 2.0F, 0.0F));
-            this.hornL8.setFromVector(rotationValues.get("hornL8"), new Vector3f(0.0F, 2.0F, 0.0F));
-            this.hornL9.setFromVector(rotationValues.get("hornL9"), new Vector3f(0.0F, 2.0F, 0.0F));
+            if (cowModelData.earTwitchTimer <= ageInTicks) {
+                cowModelData.earTwitchSide = entityIn.getRandom().nextBoolean();
+                cowModelData.earTwitchTimer = (int)ageInTicks + (entityIn.getRandom().nextInt(cowModelData.sleeping?60:30)*20) + 30;
+            } else if (cowModelData.earTwitchTimer <= ageInTicks + 30) {
+                twitchEarAnimation(cowModelData.earTwitchSide, (int)ageInTicks);
+            } else if (this.theEarLeft.getXRot() != 0F || this.theEarRight.getXRot() != 0F) {
+                this.theEarLeft.setXRot(this.lerpTo(0.1F, this.theEarLeft.getXRot(), 0.0F));
+                this.theEarRight.setXRot(this.lerpTo(0.1F,this.theEarRight.getXRot(), 0.0F));
+                this.theEarLeft.setYRot(this.lerpTo(0.15F, this.theEarLeft.getYRot(), 0.0F));
+                this.theEarRight.setYRot(this.lerpTo(0.15F, this.theEarRight.getYRot(), 0.0F));
+            }
 
-            this.hornR0.setFromVector(rotationValues.get("hornR0"), rotationValues.get("hornPosR0"));
-            this.hornR1.setFromVector(rotationValues.get("hornR1"), rotationValues.get("hornPosR1"));
-            this.hornR2.setFromVector(rotationValues.get("hornR2"), rotationValues.get("hornPosR2"));
-            this.hornR3.setFromVector(rotationValues.get("hornR3"), rotationValues.get("hornPosR3"));
-            this.hornR4.setFromVector(rotationValues.get("hornR4"), rotationValues.get("hornPosR4"));
-            this.hornR5.setFromVector(rotationValues.get("hornR5"), rotationValues.get("hornPosR5"));
-            this.hornR6.setFromVector(rotationValues.get("hornR6"), rotationValues.get("hornPosR6"));
-            this.hornR7.setFromVector(rotationValues.get("hornR7"), rotationValues.get("hornPosR7"));
-            this.hornR8.setFromVector(rotationValues.get("hornR8"), rotationValues.get("hornPosR8"));
-            this.hornR9.setFromVector(rotationValues.get("hornR9"), rotationValues.get("hornPosR9"));
+            if (cowModelData.sleeping && !isMoving) {
+                sleepingAnimation();
+            } else {
+                notSleeping(cow.dwarf);
+                boolean flag = true;
+                if (cowModelData.isEating != 0) {
+                    if (cowModelData.isEating == -1) {
+                        cowModelData.isEating = (int)ageInTicks + 90;
+                    } else if (cowModelData.isEating < ageInTicks) {
+                        cowModelData.isEating = 0;
+                    }
+                    flag = grazingAnimation(cowModelData.isEating - (int)ageInTicks);
+                }
 
-            Animation runningAnimation = ANIMATIONS.getOrDefault("eating", ANIMATIONS.get("idle"));
+                if (flag) {
+                    if (netHeadYaw == 0 && headPitch == 0) {
+                        moveHeadAnimation();
+                    } else {
+                        headLookingAnimation(netHeadYaw, headPitch);
+                    }
+                }
 
-            animatePart(this.theCow, rotationValues, drive, runningAnimation);
-            animatePart(this.theHump, rotationValues, drive, runningAnimation);
-            animatePart(this.theNeck, rotationValues, drive, runningAnimation);
-            animatePart(this.theHead, rotationValues, drive, runningAnimation);
-            animatePart(this.theEarLeft, rotationValues, drive, runningAnimation);
-            animatePart(this.theEarRight, rotationValues, drive, runningAnimation);
-            animatePart(this.jaw, rotationValues, drive, runningAnimation);
-            animatePart(this.theTail, rotationValues, drive, runningAnimation);
-            animatePart(this.tailBase, rotationValues, drive, runningAnimation);
-            animatePart(this.tailMiddle, rotationValues, drive, runningAnimation);
-            animatePart(this.tailEnd, rotationValues, drive, runningAnimation);
-            animatePart(this.tailBrush, rotationValues, drive, runningAnimation);
-            animatePart(this.theLegFrontLeft, rotationValues, drive, runningAnimation);
-            animatePart(this.theLegFrontRight, rotationValues, drive, runningAnimation);
-            animatePart(this.theLegBackLeft, rotationValues, drive, runningAnimation);
-            animatePart(this.theLegBackRight, rotationValues, drive, runningAnimation);
+                flag = true;
+                if (cowModelData.tailSwishTimer <= ageInTicks) {
+                    cowModelData.tailSwishSide = entityIn.getRandom().nextBoolean();
+                    cowModelData.tailSwishTimer = (int)ageInTicks + (entityIn.getRandom().nextInt(30)*20) + 40;
+                } else if (cowModelData.tailSwishTimer <= ageInTicks + 40) {
+                    flag = swishTailAnimation(cowModelData.tailSwishSide, (int)ageInTicks);
+                }
 
-//            this.theTail.setZRot((drive*0.05F)%1);
-//            eatAnimation((drive*0.05F)%2.0F);
-
-
-
-
-//            float headRotationAngleX = (entityIn).getHeadRotationAngleX(ageInTicks);
-
-
-
-//            if (!cowModelData.sleeping) {
-//                float headYaw = netHeadYaw - Math.round(netHeadYaw / 180) * 180;
-//                this.theHead.setYRot(headYaw * 0.017453292F * 0.4F);
-//                this.theNeck.setYRot(headYaw * 0.017453292F * 0.6F);
-//                this.theNeck.setXRot(headPitch * 0.017453292F);
-//
-//
-//                this.theLegFrontLeft.setXRot(Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount);
-//                this.theLegFrontRight.setXRot(Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount);
-//                this.theLegBackLeft.setXRot(Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount);
-//                this.theLegBackRight.setXRot(Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount);
-//            }
-//
-//            this.jaw.setXRot(this.theNeck.getXRot() <= 0 ? -0.3F : -0.3F + (headRotationAngleX * 0.5F));
-//
-//            this.theHump.setY(cow.humpPlacement);
-//            this.theHump.setXRot((this.theNeck.getXRot() * 0.4F) - 0.2F);
-//            this.theHump.setYRot(this.theNeck.getYRot() * 0.4F);
-//
-//            this.tailBase.setZRot(Mth.cos(limbSwing * 0.6662F) * 0.4F * limbSwingAmount);
-//            this.tailMiddle.setZRot(Mth.cos(limbSwing * 0.6662F) * 0.4F * limbSwingAmount);
-//            this.tailEnd.setZRot(Mth.cos(limbSwing * 0.6662F) * 0.45F * limbSwingAmount);
-//            this.tailBrush.setZRot(Mth.cos(limbSwing * 0.6662F) * 0.6F * limbSwingAmount);
-//
-//            this.tailBase.setXRot(0.4F);
-//            this.tailMiddle.setXRot(-0.2F);
-//            this.tailEnd.setXRot(-0.2F);
-//            this.tailBrush.setXRot(0.0F);
-
+                if (isMoving) {
+                    movingAnimation(ageInTicks, limbSwing, limbSwingAmount);
+                    if (flag) {
+                        walkingTailAnimation(limbSwing, limbSwingAmount);
+                    }
+                } else {
+                    standingAnimation();
+                    if (flag) {
+                        stillTailAnimation();
+                    }
+                }
+            }
+            saveAnimationValues(cowModelData, cow);
         }
+    }
+
+    private void sleepingAnimation() {
+        this.theCow.setY(Mth.lerp(0.05F, this.theCow.getY(), 20.5F));
+
+        this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), 0.6F));
+        this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), 0.75F));
+        this.theNeck.setZRot(this.lerpTo(this.theNeck.getZRot(), 0.1F));
+
+        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), 0.3F));
+        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.5F));
+        this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), 0.3F));
+
+        this.theLegFrontLeft.setY(this.lerpTo(this.theLegFrontLeft.getY(), 3.0F));
+        this.theLegFrontRight.setY(this.lerpTo(this.theLegFrontRight.getY(), 3.0F));
+        this.theLegFrontLeft.setXRot(this.lerpTo(this.theLegFrontLeft.getXRot(), Mth.HALF_PI));
+        this.theLegFrontRight.setXRot(this.lerpTo(this.theLegFrontRight.getXRot(), Mth.HALF_PI));
+
+        this.theLegBackLeft.setZ(this.lerpTo(this.theLegBackLeft.getZ(), 12.0F));
+        this.theLegBackRight.setZ(this.lerpTo(this.theLegBackRight.getZ(), 12.0F));
+        this.theLegBackLeft.setXRot(this.lerpTo(this.theLegBackLeft.getXRot(), -Mth.HALF_PI));
+        this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), -Mth.HALF_PI));
+
+        stillTailAnimation();
+    }
+
+    private void notSleeping(boolean dwarf) {
+        this.theCow.setY(Mth.lerp(0.05F, this.theCow.getY(), dwarf ? 16.0F : 14.0F));
+
+        this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), 0.0F));
+        this.theNeck.setZRot(this.lerpTo(this.theNeck.getZRot(), 0.0F));
+
+        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
+        this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), 0.0F));
+
+        this.theLegFrontLeft.setY(this.lerpTo(this.theLegFrontLeft.getY(), 0.0F));
+        this.theLegFrontRight.setY(this.lerpTo(this.theLegFrontRight.getY(), 0.0F));
+        this.theLegBackLeft.setZ(this.lerpTo(this.theLegBackLeft.getZ(), 9.0F));
+        this.theLegBackRight.setZ(this.lerpTo(this.theLegBackRight.getZ(), 9.0F));
+    }
+
+    private void standingAnimation() {
+        standingLegsAnimation();
+    }
+
+    private void movingAnimation(float age, float limbSwing, float limbSwingAmount) {
+        walkingLegsAnimation(limbSwing, limbSwingAmount);
+    }
+
+    private void standingLegsAnimation() {
+        this.theLegFrontLeft.setXRot(this.lerpTo(this.theLegFrontLeft.getXRot(), 0.0F));
+        this.theLegFrontRight.setXRot(this.lerpTo(this.theLegFrontRight.getXRot(), 0.0F));
+        this.theLegBackLeft.setXRot(this.lerpTo(this.theLegBackLeft.getXRot(), 0.0F));
+        this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), 0.0F));
+    }
+
+    private void walkingLegsAnimation(float limbSwing, float limbSwingAmount) {
+        float f = (Mth.cos(limbSwing * 0.6662F)) * 1.4F * limbSwingAmount;
+        float f1 = (Mth.cos(limbSwing * 0.6662F + Mth.PI) * 1.4F * limbSwingAmount);
+
+        this.theLegFrontLeft.setXRot(f);
+        this.theLegFrontRight.setXRot(f1);
+        this.theLegBackLeft.setXRot(f);
+        this.theLegBackRight.setXRot(f1);
+    }
+
+    private void moveHeadAnimation() {
+        this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), 0.2F));
+        this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), 0.0F));
+        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI*0.2F));
+        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
+        this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.2F));
+        this.theHump.setYRot(this.lerpTo(this.theHump.getYRot(), 0.0F));
+    }
+
+    private void headLookingAnimation(float netHeadYaw, float headPitch) {
+            netHeadYaw = (netHeadYaw * 0.017453292F);
+            headPitch = ((headPitch * 0.017453292F));
+            float lookRotX = Math.min((headPitch * 0.65F)+0.2F, 0.0F);
+            float lookRotY = netHeadYaw * 0.65F;
+
+            this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), headPitch - lookRotX));
+            this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), lookRotY));
+            this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), lookRotX));
+            this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), limit(netHeadYaw - lookRotY, Mth.HALF_PI * 0.75F)));
+            this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.2F));
+            this.theHump.setYRot((this.theHead.getYRot()+this.theNeck.getYRot())*0.5F);
+    }
+
+    private boolean grazingAnimation(int ticks) {
+        if (ticks < 50) {
+            float neckRot = this.theNeck.getXRot();
+            if (neckRot < Mth.HALF_PI*0.4F) {
+                this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*0.55F));
+            } else if (neckRot < Mth.HALF_PI*0.5F){
+                this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*0.55F));
+                this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI*0.1F));
+                this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.1F));
+            } else {
+                float loop = (float) Math.cos(ticks*0.5F);
+                if (loop > 0) {
+                    this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*0.55F));
+                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI*0.2F));
+                    this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.2F));
+                } else {
+                    this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*0.5F));
+                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI*0.1F));
+                    this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.05F));
+                }
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void twitchEarAnimation(boolean side, int ticks) {
+        boolean direction = Math.cos(ticks*0.8F) > 0;
+        if (side) {
+            this.theEarLeft.setXRot(this.lerpTo(0.15F, this.theEarLeft.getXRot(), Mth.HALF_PI * 0.5F * (direction?-1F:0.5F)));
+            this.theEarLeft.setYRot(this.lerpTo(0.15F, this.theEarLeft.getYRot(), Mth.HALF_PI * 0.25F * (direction?-1F:0.5F)));
+            this.theEarRight.setXRot(this.lerpTo(0.15F, this.theEarRight.getXRot(), 0.0F));
+            this.theEarRight.setYRot(this.lerpTo(0.15F, this.theEarRight.getYRot(), 0.0F));
+        } else {
+            this.theEarRight.setXRot(this.lerpTo(0.15F, this.theEarRight.getXRot(), Mth.HALF_PI * 0.5F * (direction?-1F:0.5F)));
+            this.theEarRight.setYRot(this.lerpTo(0.15F, this.theEarRight.getYRot(), Mth.HALF_PI * 0.25F * (direction?1F:-0.5F)));
+            this.theEarLeft.setXRot(this.lerpTo(0.15F, this.theEarLeft.getXRot(), 0.0F));
+            this.theEarLeft.setYRot(this.lerpTo(0.15F, this.theEarLeft.getYRot(), 0.0F));
+        }
+    }
+
+    private void stillTailAnimation() {
+        this.tailBase.setZRot(this.lerpTo(0.1F, this.theTail.getZRot(), 0.0F));
+        this.tailMiddle.setZRot(this.lerpTo(0.1F, this.tailMiddle.getZRot(), 0.0F));
+        this.tailEnd.setZRot(this.lerpTo(0.1F, this.tailEnd.getZRot(), 0.0F));
+        this.tailBrush.setZRot(this.lerpTo(0.1F, this.tailBrush.getZRot(), 0.0F));
+    }
+
+    private void walkingTailAnimation(float limbSwing, float limbSwingAmount) {
+        float f = Mth.cos(limbSwing * 0.6662F);
+
+        this.theTail.setZRot(f * (1.3F - 0.9F) * limbSwingAmount);
+        this.tailMiddle.setZRot(f * (1.4F - 0.9F) * limbSwingAmount);
+        this.tailEnd.setZRot(f * (1.4F - 0.9F) * limbSwingAmount);
+        this.tailBrush.setZRot(f * (1.5F - 0.9F) * limbSwingAmount);
+    }
+
+    private boolean swishTailAnimation(boolean side, int ticks) {
+        float loop = (float) Math.cos(ticks*0.05F) + 1.0F;
+        int setSide = side?1:-1;
+
+        if (loop > 1.5F) {
+            return true;
+        } else if (loop > 1.0F) {
+            this.tailBase.setZRot(this.lerpTo(0.1F, this.theTail.getZRot(), 0.349F * setSide));
+            this.tailMiddle.setZRot(this.lerpTo(0.1F, this.tailMiddle.getZRot(), 0.0436F * setSide));
+            this.tailEnd.setZRot(this.lerpTo(0.1F, this.tailEnd.getZRot(), 0.2618F * setSide));
+            this.tailBrush.setZRot(this.lerpTo(0.1F, this.tailBrush.getZRot(), 0.3054F * setSide));
+        } else if (loop > 0.5417F) {
+            this.tailBase.setZRot(this.lerpTo(0.1F, this.theTail.getZRot(), -0.8726F * setSide));
+            this.tailMiddle.setZRot(this.lerpTo(0.1F, this.tailMiddle.getZRot(), -0.349F * setSide));
+            this.tailEnd.setZRot(this.lerpTo(0.1F, this.tailEnd.getZRot(), -0.4363F * setSide));
+            this.tailBrush.setZRot(this.lerpTo(0.1F, this.tailBrush.getZRot(), -0.3927F * setSide));
+        } else if (loop > 0.25) {
+            this.tailBase.setZRot(this.lerpTo(0.1F, this.theTail.getZRot(), 0.5236F * setSide));
+            this.tailMiddle.setZRot(this.lerpTo(0.1F, this.tailMiddle.getZRot(), 0.7854F * setSide));
+            this.tailEnd.setZRot(this.lerpTo(0.1F, this.tailEnd.getZRot(), 0.7854F * setSide));
+            this.tailBrush.setZRot(this.lerpTo(0.1F, this.tailBrush.getZRot(), 0.5672F * setSide));
+        } else {
+            return true;
+        }
+
+        return false;
     }
 
     private class CowModelData extends AnimalModelData {
@@ -1486,17 +1385,13 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
 
     @Override
     protected void additionalModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
-        animalModelData.offsets = saveAnimationValues(((CowModelData) animalModelData).getPhenotype(), enhancedAnimal.hornGrowthAmount());
-        ((CowModelData) animalModelData).bagSize = (enhancedAnimal.getEntityStatus().equals(EntityState.MOTHER) || enhancedAnimal.getEntityStatus().equals(EntityState.PREGNANT)) ? enhancedAnimal.getBagSize() : -1.0F;
+        ((CowModelData) animalModelData).bagSize = (enhancedAnimal.getEntityStatus().equals(EntityState.MOTHER.toString()) || enhancedAnimal.getEntityStatus().equals(EntityState.PREGNANT.toString())) ? enhancedAnimal.getBagSize() : -1.0F;
     }
 
     @Override
     protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
-        if (((CowModelData)animalModelData).hornGrowth != 1.0F) {
-            updateHornRotations(((CowModelData) animalModelData).getPhenotype(), enhancedAnimal.hornGrowthAmount(), animalModelData.offsets);
-            ((CowModelData)animalModelData).hornGrowth = enhancedAnimal.hornGrowthAmount();
-        }
-        ((CowModelData) animalModelData).bagSize = (enhancedAnimal.getEntityStatus().equals(EntityState.MOTHER) || enhancedAnimal.getEntityStatus().equals(EntityState.PREGNANT)) ? enhancedAnimal.getBagSize() : -1.0F;
+        ((CowModelData)animalModelData).hornGrowth = enhancedAnimal.hornGrowthAmount();
+        ((CowModelData) animalModelData).bagSize = (enhancedAnimal.getEntityStatus().equals(EntityState.MOTHER.toString()) || enhancedAnimal.getEntityStatus().equals(EntityState.PREGNANT.toString())) ? enhancedAnimal.getBagSize() : -1.0F;
     }
 
     @Override
@@ -1536,12 +1431,10 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             this.setHornGenetics(gene, this.hornType);
             this.dwarf = gene[26] == 1 || gene[27] == 1;
 
-//            float bodyWidth = isFemale ? -0.175F : 0.0F;
             float bodyWidth = isFemale ? -0.175F : 0.0F;
             float bodyLength = 0.0F;
             int hump = 0;
 
-//            float genderModifier = isFemale ? 0.01725F : 0.0825F;
             float genderModifier = isFemale ? 0.045F : 0.0825F;
             for (int i = 1; i < gene[54]; i++) {
                 bodyWidth = bodyWidth + genderModifier;
@@ -1667,9 +1560,9 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 hornGenetics[20] = hornGenetics[20] * (1 - b);
             }
 
+            this.hornGeneticsX = new float[]{-hornGenetics[10], hornGenetics[11], hornGenetics[12], hornGenetics[13], hornGenetics[14], hornGenetics[15], hornGenetics[16], hornGenetics[17], hornGenetics[18], hornGenetics[19]};
+            this.hornGeneticsY = new float[]{-hornGenetics[20], hornGenetics[21], hornGenetics[22], hornGenetics[23], hornGenetics[24], hornGenetics[25], hornGenetics[26], hornGenetics[27], hornGenetics[28], hornGenetics[29]};
             this.hornGeneticsZ = new float[]{hornGenetics[0], hornGenetics[1], hornGenetics[2], hornGenetics[3], hornGenetics[4], hornGenetics[5], hornGenetics[6], hornGenetics[7], hornGenetics[8], hornGenetics[9]};
-            this.hornGeneticsX = new float[]{hornGenetics[10], hornGenetics[11], hornGenetics[12], hornGenetics[13], hornGenetics[14], hornGenetics[15], hornGenetics[16], hornGenetics[17], hornGenetics[18], hornGenetics[19]};
-            this.hornGeneticsY = new float[]{hornGenetics[20], hornGenetics[21], hornGenetics[22], hornGenetics[23], hornGenetics[24], hornGenetics[25], hornGenetics[26], hornGenetics[27], hornGenetics[28], hornGenetics[29]};
 
         }
 

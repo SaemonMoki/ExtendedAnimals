@@ -72,7 +72,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[3] = 1;
         }
 
-        //Extention [ Dom.Black, wildtype+, Rec.Red ]
+        //Extension [ Dom.Black, wildtype+, Rec.Red ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[4] = (ThreadLocalRandom.current().nextInt(3) + 1);
 

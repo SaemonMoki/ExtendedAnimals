@@ -1,7 +1,9 @@
 package mokiyoki.enhancedanimals.model;
 
+import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
@@ -68,6 +70,11 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
     protected void setOffsetFromVector(WrappedModelPart part, Vector3f v3f) {
         part.setPos(v3f.x(), v3f.y(), v3f.z());
+    }
+
+    protected void setOffsetAndRotationFromVector(WrappedModelPart part, Vector3f offsets, Vector3f rotations) {
+        part.setPos(offsets.x(), offsets.y(), offsets.z());
+        part.setRotation(rotations.x(), rotations.y(), rotations.z());
     }
 
     protected float lerpTo(float currentRot, float goalRot) {
@@ -155,7 +162,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
     }
 
     protected class AnimalModelData {
-        Map<String, Vector3f> offsets = new HashMap<>();
+        Map<String, Vector3f> offsets = Maps.newHashMap();
         public Phenotype phenotype;
         float growthAmount;
         float size = 1.0F;
@@ -170,7 +177,11 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         int dataReset = 0;
         long clientGameTime = 0;
         float random;
-        String animation = "idle";
+        int isEating = 0;
+        boolean earTwitchSide = true;
+        int earTwitchTimer = 0;
+        boolean tailSwishSide = true;
+        int tailSwishTimer = 0;
     }
 
     protected AnimalModelData getAnimalModelData() {
@@ -211,7 +222,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
             animalModelData.blink = enhancedAnimal.getBlink();
             animalModelData.collar = hasCollar(enhancedAnimal.getEnhancedInventory());
             animalModelData.clientGameTime = (((ClientLevel)enhancedAnimal.level).getLevelData()).getGameTime();
-            animalModelData.random = ThreadLocalRandom.current().nextFloat();
+            animalModelData.random = enhancedAnimal.getRandom().nextFloat();
 
             additionalModelDataInfo(animalModelData, enhancedAnimal);
 
@@ -239,6 +250,9 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         animalModelData.sleeping = enhancedAnimal.isAnimalSleeping();
         animalModelData.blink = enhancedAnimal.getBlink();
         animalModelData.collar = hasCollar(enhancedAnimal.getEnhancedInventory());
+        if (animalModelData.isEating == 0 && enhancedAnimal.isGrazing()) {
+            animalModelData.isEating = -1;
+        }
         additionalUpdateModelDataInfo(animalModelData, enhancedAnimal);
     }
 

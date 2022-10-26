@@ -552,11 +552,11 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         if (!pigModelData.offsets.isEmpty()) {
             Map<String, Vector3f> rotationValues = pigModelData.offsets;
 
-            this.theMouth.setFromVector(rotationValues.get("bMouth"), rotationValues.get("bMouthRot"));
-            this.tusksTopLeft.setPosFromVector(rotationValues.get("tuskTL"));
-            this.tusksTopRight.setPosFromVector(rotationValues.get("tuskTR"));
-            this.tusksBottomLeft.setPosFromVector(rotationValues.get("tuskBL"));
-            this.tusksBottomRight.setPosFromVector(rotationValues.get("tuskBR"));
+            this.theMouth.setPosAndRot(rotationValues.get("bMouth"), rotationValues.get("bMouthRot"));
+            this.tusksTopLeft.setPos(rotationValues.get("tuskTL"));
+            this.tusksTopRight.setPos(rotationValues.get("tuskTR"));
+            this.tusksBottomLeft.setPos(rotationValues.get("tuskBL"));
+            this.tusksBottomRight.setPos(rotationValues.get("tuskBR"));
 
         }
 

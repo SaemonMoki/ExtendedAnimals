@@ -390,7 +390,6 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //size genes varient2 [wildtype, smaller, smallest]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[54] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
         } else {
             autosomalGenes[54] = (1);
         }
@@ -404,7 +403,6 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //body type [wildtype(middle), smallest to largest]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[56] = (ThreadLocalRandom.current().nextInt(7) + 1);
-
         } else {
             autosomalGenes[56] = (1);
         }
@@ -418,13 +416,11 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
         //litter size reduction [wildtype (half), weak reduction (2/3), prolific]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[58] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
         } else {
             autosomalGenes[58] = (1);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[59] = (ThreadLocalRandom.current().nextInt(3) + 1);
-
         } else {
             autosomalGenes[59] = (1);
         }

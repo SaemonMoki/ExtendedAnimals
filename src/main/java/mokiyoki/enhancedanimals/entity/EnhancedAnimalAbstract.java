@@ -1530,25 +1530,32 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     //Eating Animation
     @OnlyIn(Dist.CLIENT)
-    public float getHeadRotationPointY(float partialTickTime) {
-        if (this.animalEatingTimer <= 0) {
-            return 0.0F;
-        } else if (this.animalEatingTimer >= 4 && this.animalEatingTimer <= 36) {
-            return 0.2F;
-        } else {
-            return this.animalEatingTimer < 4 ? ((float)this.animalEatingTimer - partialTickTime) / 4.0F : -((float)(this.animalEatingTimer - 40) - partialTickTime) / 4.0F;
-        }
+    public boolean isGrazing() {
+        return this.animalEatingTimer > 0;
     }
-    //Eating Animation
-    @OnlyIn(Dist.CLIENT)
-    public float getHeadRotationAngleX(float partialTickTime) {
-        if (this.animalEatingTimer > 4 && this.animalEatingTimer <= 36) {
-            float f = ((float)(this.animalEatingTimer - 4) - partialTickTime) / 32.0F;
-            return ((float)Math.PI / 5F) + ((float)Math.PI * 7F / 100F) * Mth.sin(f * 28.7F);
-        } else {
-            return this.animalEatingTimer > 0 ? ((float)Math.PI / 5F) : this.getXRot() * 0.017453292F;
-        }
-    }
+
+//    //Eating Animation
+//    @OnlyIn(Dist.CLIENT)
+//    public float getHeadRotationPointY(float partialTickTime) {
+//        if (this.animalEatingTimer <= 0) {
+//            return 0.0F;
+//        } else if (this.animalEatingTimer >= 4 && this.animalEatingTimer <= 36) {
+//            return 0.2F;
+//        } else {
+//            return this.animalEatingTimer < 4 ? ((float)this.animalEatingTimer - partialTickTime) / 4.0F : -((float)(this.animalEatingTimer - 40) - partialTickTime) / 4.0F;
+//        }
+//    }
+//    //Eating Animation
+//
+//    @OnlyIn(Dist.CLIENT)
+//    public float getHeadRotationAngleX(float partialTickTime) {
+//        if (this.animalEatingTimer > 4 && this.animalEatingTimer <= 36) {
+//            float f = ((float)(this.animalEatingTimer - 4) - partialTickTime) / 32.0F;
+//            return ((float)Math.PI / 5F) + ((float)Math.PI * 7F / 100F) * Mth.sin(f * 28.7F);
+//        } else {
+//            return this.animalEatingTimer > 0 ? ((float)Math.PI / 5F) : this.getXRot() * 0.017453292F;
+//        }
+//    }
 
     //------------
 

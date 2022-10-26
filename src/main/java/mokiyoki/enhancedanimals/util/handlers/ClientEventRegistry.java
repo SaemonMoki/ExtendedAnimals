@@ -22,6 +22,7 @@ import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedChicken;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedCow;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedLlama;
+import mokiyoki.enhancedanimals.renderer.RenderEnhancedMoobloom;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedMooshroom;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedPig;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedRabbit;
@@ -125,10 +126,6 @@ public class ClientEventRegistry {
                 ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT.get(), ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_GOLD.get(), ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_DIAMOND.get(), ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_WOOD.get(),
                 ModItems.COLLAR_BASIC_LEATHER.get(), ModItems.COLLAR_BASIC_LEATHER_IRONBELL.get(), ModItems.COLLAR_BASIC_LEATHER_IRONRING.get(), ModItems.COLLAR_BASIC_LEATHER_GOLDBELL.get(), ModItems.COLLAR_BASIC_LEATHER_GOLDRING.get(), ModItems.COLLAR_BASIC_LEATHER_DIAMONDBELL.get(), ModItems.COLLAR_BASIC_LEATHER_DIAMONDRING.get(),
                 ModItems.COLLAR_BASIC_CLOTH.get(), ModItems.COLLAR_BASIC_CLOTH_IRONBELL.get(), ModItems.COLLAR_BASIC_CLOTH_IRONRING.get(), ModItems.COLLAR_BASIC_CLOTH_GOLDBELL.get(), ModItems.COLLAR_BASIC_CLOTH_GOLDRING.get(), ModItems.COLLAR_BASIC_CLOTH_DIAMONDBELL.get(), ModItems.COLLAR_BASIC_CLOTH_DIAMONDRING.get());
-
-        //axolotlbucket
-//        event.getItemColors().register((itemStack, tintIndex) -> tintIndex == 0 ? -1 : ((EnhancedAxolotlBucket)itemStack.getItem()).getColor(itemStack, tintIndex),
-//            ModItems.ENHNACED_AXOLOTL_BUCKET.get());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -143,7 +140,7 @@ public class ClientEventRegistry {
         event.registerEntityRenderer(ENHANCED_LLAMA.get(), RenderEnhancedLlama::new);
         event.registerEntityRenderer(ENHANCED_PIG.get(), RenderEnhancedPig::new);
 //        event.registerEntityRenderer(ENHANCED_HORSE.get(), RenderEnhancedHorse::new);
-//        event.registerEntityRenderer(ENHANCED_MOOBLOOM.get(), RenderEnhancedMoobloom::new);
+        event.registerEntityRenderer(ENHANCED_MOOBLOOM.get(), RenderEnhancedMoobloom::new);
         event.registerEntityRenderer(ENHANCED_TURTLE.get(), RenderEnhancedTurtle::new);
         event.registerEntityRenderer(ENHANCED_LLAMA_SPIT.get(), EnhancedLlamaSpitRenderer::new);
         event.registerEntityRenderer(ENHANCED_ENTITY_EGG_ENTITY_TYPE.get(), ThrownItemRenderer::new);
@@ -160,6 +157,7 @@ public class ClientEventRegistry {
         event.registerLayerDefinition(RenderEnhancedSheep.SHEEP_LAYER, ModelEnhancedSheep::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedRabbit.RABBIT_LAYER, ModelEnhancedRabbit::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedMooshroom.MOOSHROOM_LAYER, ModelEnhancedCow::createBodyLayer);
+        event.registerLayerDefinition(RenderEnhancedMoobloom.MOOBLOOM_LAYER, ModelEnhancedCow::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedPig.PIG_LAYER, ModelEnhancedPig::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedLlama.LLAMA_LAYER, ModelEnhancedLlama::createBodyLayer);
         event.registerLayerDefinition(RenderEnhancedTurtle.TURTLE_LAYER, ModelEnhancedTurtle::createBodyLayer);

@@ -537,8 +537,8 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         // max of 4
         meatDrop = size/2;
 
-        if (genes[45] != 1 && genes[46] != 1) {
-            meatChanceMod = (genes[45] + genes[46]) - 4;
+        if (genes[44] != 3 && genes[45] != 3) {
+            meatChanceMod = (genes[56] + genes[57]) - 6;
             if (meatChanceMod > 4) {
                 if (meatChanceMod == 8) {
                     //100% chance to + 1
@@ -582,10 +582,6 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 } else if (meatChanceMod == 1) {
                     if (this.random.nextInt(4) != 0) {
                         //75% chance to - 1
-                        meatDrop--;
-                    }
-                    if (this.random.nextInt(4) == 0) {
-                        //25% chance to - 1
                         meatDrop--;
                     }
                 } else {
@@ -1093,7 +1089,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
         size = size + 0.7F;
 
-        //        0.7F <= size <= 1.5F
+        // 0.7F <= size <= 1.5F
         this.setAnimalSize(size);
     }
 }

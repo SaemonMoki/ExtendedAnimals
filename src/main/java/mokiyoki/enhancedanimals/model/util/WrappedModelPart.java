@@ -39,10 +39,9 @@ public class WrappedModelPart {
         this.pushPopChildren = pushPopChildren;
     }
 
-    public WrappedModelPart(String boxName, ModelPart parentModelPart, boolean pushPopChildren, WrappedModelPart child) {
+    public WrappedModelPart(String boxName, ModelPart parentModelPart, WrappedModelPart child) {
         this.modelPart = parentModelPart.getChild(boxName);
         this.boxName = boxName;
-        this.pushPopChildren = pushPopChildren;
         addChild(child);
     }
 
@@ -132,20 +131,12 @@ public class WrappedModelPart {
         this.modelPart.visible = false;
     }
 
-    public void show(boolean show) {
+    public boolean show(boolean show) {
         this.modelPart.visible = show;
+        return show;
     }
 
-    public void showAndPos(boolean show, float x, float y, float z) {
-        this.modelPart.visible = show;
-        if (show) {
-            this.modelPart.x = x;
-            this.modelPart.y = y;
-            this.modelPart.z = z;
-        }
-    }
-
-    public void setRotFromVector(Vector3f vector3f) {
+    public void setRotation(Vector3f vector3f) {
         if (vector3f != null) {
             this.modelPart.setRotation(vector3f.x(), vector3f.y(), vector3f.z());
         } else {
@@ -153,7 +144,7 @@ public class WrappedModelPart {
         }
     }
 
-    public void setPosFromVector(Vector3f vector3f) {
+    public void setPos(Vector3f vector3f) {
         if (vector3f != null) {
             this.modelPart.setPos(vector3f.x(), vector3f.y(), vector3f.z());
         } else {
@@ -161,7 +152,7 @@ public class WrappedModelPart {
         }
     }
 
-    public void setFromVector(Vector3f pos, Vector3f rot) {
+    public void setPosAndRot(Vector3f pos, Vector3f rot) {
         if (pos != null) {
             this.modelPart.y = pos.y();
         } else {

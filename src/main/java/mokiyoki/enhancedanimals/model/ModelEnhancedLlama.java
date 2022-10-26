@@ -742,8 +742,8 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         float drive = ageInTicks + (1000 * llamaModelData.random);
 
         if (llama != null) {
-            this.earTopLeft.setPosFromVector(llamaModelData.offsets.get("earTL"));
-            this.earTopRight.setPosFromVector(llamaModelData.offsets.get("earTR"));
+            this.earTopLeft.setPos(llamaModelData.offsets.get("earTL"));
+            this.earTopRight.setPos(llamaModelData.offsets.get("earTR"));
             this.nose.setPos(0.0F, llamaModelData.offsets.get("nose").y(),llamaModelData.growthAmount - 1.0F);
 
             float bodyY = llama.suri ? Math.max(llamaModelData.coatlength, 0) : 0.0F;

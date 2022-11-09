@@ -51,14 +51,13 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
 
     protected WrappedModelPart head;
     protected WrappedModelPart nose;
-    protected WrappedModelPart cheekWool;
-    protected WrappedModelPart noseWool;
 
     protected WrappedModelPart earLeft;
 
     protected WrappedModelPart earRight;
 
     protected WrappedModelPart neck;
+
     protected WrappedModelPart body;
 
     protected WrappedModelPart udder;
@@ -78,6 +77,12 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
     private WrappedModelPart tailBase;
     private WrappedModelPart tailMiddle;
     private WrappedModelPart tailTip;
+
+    protected WrappedModelPart headWool;
+    protected WrappedModelPart noseWool;
+    protected WrappedModelPart cheekWool;
+
+    protected WrappedModelPart neckWool[] = new WrappedModelPart[7];
 
     private WrappedModelPart hornLeft[] = new WrappedModelPart[19];
     private WrappedModelPart hornRight[] = new WrappedModelPart[19];
@@ -128,15 +133,20 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
                         .addBox(-2.0F, 0.0F, -3.0F, 4, 3, 3),
                 PartPose.offset(0.0F, 0.0F, -4.0F)
         );
+        bHead.addOrReplaceChild("headW", CubeListBuilder.create()
+                        .texOffs(0, 55)
+                        .addBox(-2.5F, 0.0F, 0.0F, 5, 5, 4, new CubeDeformation(0.5F)),
+                PartPose.offsetAndRotation(0.0F, 4.0F, -4.0F, Mth.HALF_PI, 0.0F, 0.0F)
+        );
         bHead.addOrReplaceChild("cheekW", CubeListBuilder.create()
                         .texOffs(14, 47)
-                        .addBox(-2.5F, 0.0F, 0.0F, 5, 2, 2, new CubeDeformation(0.5F)),
-                PartPose.ZERO
+                        .addBox(-2.5F, 0.0F, 0.0F, 5, 2, 2, new CubeDeformation(0.51F)),
+                PartPose.offset(0.0F, 2.25F, -5.0F)
         );
         bHead.addOrReplaceChild("noseW", CubeListBuilder.create()
                         .texOffs(0, 47)
-                        .addBox(-2.0F, 0.0F, 0.0F, 4, 2, 3, new CubeDeformation(0.4F)),
-                PartPose.ZERO
+                        .addBox(-2.0F, 0.0F, 0.0F, 4, 2, 3, new CubeDeformation(0.5F)),
+                PartPose.offset(0.0F, -0.25F, -2.0F)
         );
 
 //        bHead.addOrReplaceChild("jaw", CubeListBuilder.create()
@@ -244,14 +254,22 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         );
         bBody.addOrReplaceChild("nippleL", CubeListBuilder.create()
                         .texOffs(46, 55)
-                        .addBox(-0.5F, 0.0F, -0.5F, 1, 3, 1),
-                PartPose.ZERO
+                        .addBox(-2.0F, 0.0F, 0.0F, 1, 3, 1),
+                PartPose.offset(0.0F, 3.0F, 0.0F)
         );
         bBody.addOrReplaceChild("nippleR", CubeListBuilder.create()
                         .texOffs(60, 55)
-                        .addBox(-0.5F, 0.0F, -0.5F, 1, 3, 1),
-                PartPose.ZERO
+                        .addBox(1.0F, 0.0F, 0.0F, 1, 3, 1),
+                PartPose.offset(0.0F, 3.0F, 0.0F)
         );
+
+        for (int i = 0; i < 7; i++) {
+            float[] f = {0.4F, 0.75F, 1.1F, 1.5F, 2.0F, 2.5F, 3.0F};
+            CubeListBuilder neckWool = CubeListBuilder.create()
+                    .texOffs(34, 0)
+                    .addBox(-2.0F, -5.0F, -2.5F, 4, 9-i, 4, new CubeDeformation(f[i]));
+            bNeck.addOrReplaceChild("neckW"+i, neckWool, PartPose.ZERO);
+        }
 
         for (int i = 0; i < 19; i++) {
             float scale = i < 10 ? -0.5F : -(0.5F + (((float)(i-10)*0.75F)/9F));
@@ -261,8 +279,8 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             CubeListBuilder hornBitR = CubeListBuilder.create()
                     .texOffs(50, 12)
                     .addBox(0.0F, -3.0F, -1.5F, 3, 3, 3, new CubeDeformation(scale));
-            bHornLeft.addOrReplaceChild("hornL"+i, hornBitL, PartPose.offset(0.0F,  0.0F, 0.0F));
-            bHornRight.addOrReplaceChild("hornR"+i, hornBitR, PartPose.offset(0.0F, 0.0F, 0.0F));
+            bHornLeft.addOrReplaceChild("hornL"+i, hornBitL, PartPose.ZERO);
+            bHornRight.addOrReplaceChild("hornR"+i, hornBitR, PartPose.ZERO);
         }
 
         return LayerDefinition.create(meshdefinition, 128, 64);
@@ -333,6 +351,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
 
         this.body = new WrappedModelPart("body", bBody);
 
+        this.headWool = new WrappedModelPart("headW", bHead);
         this.cheekWool = new WrappedModelPart("cheekW", bHead);
         this.noseWool = new WrappedModelPart("noseW", bHead);
 
@@ -354,7 +373,11 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         this.tailMiddle = new WrappedModelPart("tailM", bTail);
         this.tailTip = new WrappedModelPart("tailT", bTail);
 
-        for (int i = 0; i < 19;i++) {
+        for (int i = 0; i < 7; i++) {
+            this.neckWool[i] = new WrappedModelPart("neckW"+i, bNeck);
+        }
+
+        for (int i = 0; i < 19; i++) {
             this.hornLeft[i] = new WrappedModelPart("hornL"+i, bHornL);
             this.hornRight[i] = new WrappedModelPart("hornR"+i, bHornR);
         }
@@ -387,8 +410,9 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         this.theHead.addChild(this.head);
         this.theHead.addChild(this.eyes);
         this.theHead.addChild(this.nose);
+        this.theHead.addChild(this.headWool);
         this.theHead.addChild(this.cheekWool);
-        this.theHead.addChild(this.noseWool);
+        this.nose.addChild(this.noseWool);
 
         this.theEarLeft.addChild(this.earLeft);
         this.theEarRight.addChild(this.earRight);
@@ -421,10 +445,15 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
 
         this.theLegBackRightBottom.addChild(this.legBackRightBottom);
 
+        for (int i = 0; i < 7; i++) {
+            this.theNeck.addChild(this.neckWool[i]);
+        }
+
         this.theHornLeft.addChild(this.hornLeft[0]);
         this.theHornRight.addChild(this.hornRight[0]);
         this.theHornPolyLeft.addChild(this.hornLeft[10]);
         this.theHornPolyRight.addChild(this.hornRight[10]);
+
         for (int i = 0; i < 18; i++) {
             this.hornLeft[i].addChild(this.hornLeft[i+1]);
             this.hornRight[i].addChild(this.hornRight[i+1]);
@@ -447,28 +476,40 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
 
             Map<String, List<Float>> mapOfScale = new HashMap<>();
             /**
-             *      Wool Scaling
+             *      Wool
              */
             float woolScale = 1.0F + (sheepModelData.coatLength/22.5F);
             float woolScale2 = 1.0F + (sheepModelData.coatLength/45F);
             mapOfScale.put("body", ModelHelper.createScalings(woolScale, woolScale, woolScale2, 0.0F, 0.0F, 0.0F));
-            switch (sheep.faceWool) {
-                case 0 :
-                default: mapOfScale.put("neck", ModelHelper.createScalings(woolScale, 1.0F, woolScale, 0.0F, 0.0F, sheepModelData.coatLength*0.0025F));
-//                case 1 : mapOfScale.put("head", ModelHelper.createScalings(woolScale, woolScale, woolScale, 0.0F, 0.0F, 0.0F));
-                case 2 : mapOfScale.put("cheekW", ModelHelper.createScalings(woolScale, woolScale, woolScale, 0.0F, 0.0F, 0.0F));
-                case 3 : mapOfScale.put("noseW", ModelHelper.createScalings(woolScale, woolScale, woolScale, 0.0F, 0.0F, 0.0F));
+
+            for (int i = 0, l = neckWool.length; i < l; i++) {
+                this.neckWool[i].hide();
+            }
+            switch (sheepModelData.coatLength) {
+                case 1, 2 -> this.neckWool[0].show();
+                case 3, 4 -> this.neckWool[1].show();
+                case 5, 6 -> this.neckWool[2].show();
+                case 7, 8 -> this.neckWool[3].show();
+                case 9, 10 -> this.neckWool[4].show();
+                case 11, 12 -> this.neckWool[5].show();
+                case 13, 14, 15 -> this.neckWool[6].show();
             }
 
+            this.headWool.show(sheep.faceWool >= 1);
+            this.cheekWool.show(sheep.faceWool >= 2);
+            this.noseWool.show(sheep.faceWool >= 3);
 
             /**
              *      Udder
              */
             if (sheepModelData.bagSize != -1.0F) {
                 this.udder.show();
-                float nipScale = 1.5F / (0.5F + sheepModelData.bagSize);
                 float bagthickness = sheepModelData.bagSize * sheepModelData.bagSize;
                 mapOfScale.put("Udder", ModelHelper.createScalings(bagthickness, sheepModelData.bagSize, bagthickness, 0.0F, 0.0F, 0.0F));
+                if (bagthickness != 0.0F) {
+                    mapOfScale.put("NippleL", ModelHelper.createScalings(1.0F / bagthickness, -sheepModelData.bagSize, 1.0F / bagthickness, 0.0F, 0.0F, 0.0F));
+                    mapOfScale.put("NippleR", ModelHelper.createScalings(1.0F / bagthickness, -sheepModelData.bagSize, 1.0F / bagthickness, 0.0F, 0.0F, 0.0F));
+                }
             } else {
                 this.udder.hide();
             }
@@ -493,17 +534,35 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             }
 
             /**
+             *      Tail
+             */
+            this.tailBase.show(sheep.tailLength >= 1);
+            this.tailMiddle.show(sheep.tailLength >= 2);
+            this.tailTip.show(sheep.tailLength >= 3);
+
+
+            if (sheep.tailFat > 0.0F) {
+                float tailFat = (sheep.tailFat * 3.5F) + 1.0F;
+                mapOfScale.put("bTail", ModelHelper.createScalings(tailFat, (sheep.tailFat * 0.5F) + 1.0F, tailFat, 0.0F, 0.0F, 10.0F));
+            }
+
+            /**
              *      Growth scaling
              */
-            float babySize = 1.0F;
-            if (sheepModelData.growthAmount!=1.0F) {
-                babySize = ((sheepModelData.growthAmount * 2.0F) + 1.0F)/3.0F;
-                mapOfScale.put("bLegFL", ModelHelper.createScalings(1.0F, 2.0F - sheepModelData.growthAmount,1.0F,0.0F, 0.0F, 0.0F));
+            float sheepSize = ((2.0F * sheepModelData.size * sheepModelData.growthAmount) + sheepModelData.size) / 3.0F;
+            float d = 0.0F;
+            if (!sheepModelData.sleeping && sheepModelData.growthAmount != 1.0F) {
+                float babySize = (3.0F - sheepModelData.growthAmount) * 0.5F;
+                d = 0.33333F * (1.0F - sheepModelData.growthAmount);
+                mapOfScale.put("bLegFL", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
+                mapOfScale.put("bLegFR", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
+                mapOfScale.put("bLegBL", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
+                mapOfScale.put("bLegBR", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
             }
 
             poseStack.pushPose();
-            poseStack.scale(sheepModelData.size * babySize , sheepModelData.size * babySize, sheepModelData.size * babySize);
-            poseStack.translate(0.0F, -1.45F + 1.45F / (sheepModelData.size * babySize), 0.0F);
+            poseStack.scale(sheepSize, sheepSize, sheepSize);
+            poseStack.translate(0.0F, (-1.45F + 1.45F / (sheepSize))-d, 0.0F);
 
             gaRender(this.theSheep, mapOfScale, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
@@ -570,66 +629,6 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             }
         }
     }
-
-//    private void setupInitialHorns(SheepPhenotype sheep, float hornGrowthAmount) {
-//        if (sheep.hornType != HornType.POLLED) {
-////            int lengthL = 19 - (hornGrowthAmount==1.0F ? sheep.leftHornLength : Math.min(sheep.leftHornLength + ((int) ((20 - sheep.leftHornLength) * (1.0F - (hornGrowthAmount)))), 18));
-////            int lengthR = 19 - (hornGrowthAmount==1.0F ? sheep.rightHornLength : Math.min(sheep.rightHornLength + ((int) ((20 - sheep.rightHornLength) * (1.0F - (hornGrowthAmount)))), 18));
-//            float poly = sheep.polyHorns ? -0.001F : 1.0F;
-//            int l = 19 - 5;
-//            int r = 19 - 0;
-//            this.hornLeft[0].setRotation(0.0F, 0.0F, 0.0F);
-//            this.hornLeft[0].setPos(0.0F, 0.0F, 0.0F);
-//            this.hornRight[0].setRotation(0.0F, 0.0F, 0.0F);
-//            this.hornRight[0].setPos(0.0F, 0.0F, 0.0F);
-//            for (int i = 1; i < 19; i++) {
-//                if (l >= i) {
-//                    this.hornLeft[i].setRotation(-(sheep.hornGeneticsX[i] + (0.2F * poly)), -sheep.hornGeneticsY[i], sheep.hornGeneticsZ[i] - (0.3F * poly));
-//                    if (l == i) {
-//                        this.hornLeft[i].setPos(0.0F, 0.0F, 0.0F);
-//                    } else {
-//                        this.hornLeft[i].setPos(0.0F, i < 10 ? -1.95F : -(1.8F - (((i - 10) * 1.4F) / 9F)), 0.0F);
-//                    }
-//                } else {
-//                    this.hornLeft[i].setRotation(0.0F, 0.0F, 0.0F);
-//                    this.hornLeft[i].setPos(0.0F, 0.0F, 0.0F);
-//                }
-//
-//                if (r >= i) {
-//                    this.hornRight[i].setRotation(-(sheep.hornGeneticsX[i] + (0.2F * poly)), sheep.hornGeneticsY[i], -(sheep.hornGeneticsZ[i] - (0.3F * poly)));
-//                    if (r == i) {
-//                        this.hornRight[i].setPos(0.0F, 0.0F, 0.0F);
-//                    } else {
-//                        this.hornRight[i].setPos(0.0F, i < 10 ? -1.95F : -(1.8F - (((i - 10) * 1.4F) / 9F)), 0.0F);
-//                    }
-//                } else {
-//                    this.hornRight[i].setRotation(0.0F, 0.0F, 0.0F);
-//                    this.hornRight[i].setPos(0.0F, 0.0F, 0.0F);
-//                }
-//            }
-//        }
-//    }
-//
-//    private void saveHornValues(SheepPhenotype sheep, Map<String, Vector3f> map, float hornGrowthAmount) {
-//        if (sheep.hornType != HornType.POLLED) {
-//            for (int i = 0; i < 19; i++) {
-//                map.put("hL" + i, this.getRotationVector(this.hornLeft[i]));
-//                map.put("hPosL" + i, this.getOffsetVector(this.hornLeft[i]));
-//                map.put("hR" + i, this.getRotationVector(this.hornRight[i]));
-//                map.put("hPosR" + i, this.getOffsetVector(this.hornRight[i]));
-//            }
-//        }
-//    }
-//
-//    private void updateHornRotations(SheepPhenotype sheep, float hornGrowthAmount, Map<String, Vector3f> map) {
-//        if (hornGrowthAmount!=1.0F && sheep.hornType != HornType.POLLED) {
-//            int lengthL =  Math.min(sheep.leftHornLength + ((int) ((20 - sheep.leftHornLength) * (1.0F - (hornGrowthAmount)))), 18);
-//            int lengthR = Math.min(sheep.rightHornLength + ((int) ((20 - sheep.rightHornLength) * (1.0F - (hornGrowthAmount)))), 18);
-//
-//            if (!map.containsKey("hL"+lengthL)) {
-//            }
-//        }
-//    }
 
     private void setupInitialAnimationValues(SheepModelData data, SheepPhenotype sheep, float hornGrowthAmount) {
         Map<String, Vector3f> map = data.offsets;
@@ -788,7 +787,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), lookRotX));
         this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), limit(netHeadYaw-lookRotY,Mth.HALF_PI*0.75F)));
 
-        this.theTail.setZRot(this.lerpTo(this.theTail.getZRot(), 0.0F));
+        this.tailBase.setZRot(this.lerpTo(this.tailBase.getZRot(), 0.0F));
         this.tailMiddle.setZRot(this.lerpTo(this.tailMiddle.getZRot(), 0.0F));
         this.tailTip.setZRot(this.lerpTo(this.tailTip.getZRot(), 0.0F));
 
@@ -799,7 +798,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         float f = Mth.cos(limbSwing * 0.6662F);
         float f1 = Mth.cos(limbSwing * 0.6662F + Mth.PI);
 
-        this.theTail.setZRot(this.lerpTo(this.theTail.getZRot(), f * (1.3F - (0.9F * age)) * limbSwingAmount));
+        this.tailBase.setZRot(this.lerpTo(this.tailBase.getZRot(), f * (1.3F - (0.9F * age)) * limbSwingAmount));
         this.tailMiddle.setZRot(this.lerpTo(this.tailMiddle.getZRot(), f * (1.4F - (0.9F * age)) * limbSwingAmount));
         this.tailTip.setZRot(this.lerpTo(this.tailTip.getZRot(), f * (1.5F - (0.9F * age)) * limbSwingAmount));
 
@@ -899,9 +898,11 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
 
     protected class SheepPhenotype implements Phenotype {
         int faceWool;
+        int tailLength = 3;
+        float tailFat = 0.0F;
         float hornScale = 1.0F;
         boolean polyHorns;
-        HornType hornType;
+        HornType hornType = HornType.POLLED;
         private int leftHornLength;
         private int rightHornLength;
         private float[] hornGeneticsX;
@@ -928,7 +929,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             if (gene[6] == 2 || gene[7] == 2) {
                 this.hornType = gene[6] == 1 || gene[7] == 1 ? HornType.SCURRED : HornType.HORNED;
             } else if (gene[6] != 1 && gene[7] != 1){
-                // genderfied horns
+                // genderified horns
                 this.hornType = isFemale ? HornType.POLLED : HornType.HORNED;
             }
 

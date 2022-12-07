@@ -328,7 +328,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
         ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
-        int age = getAge();
+        int age = getEnhancedAnimalAge();
         int adultAge = getAdultAge();
 
         if (age >= (3*adultAge)/4 && (item == Items.SADDLE || item instanceof CustomizableSaddleVanilla || item instanceof CustomizableSaddleWestern || item instanceof CustomizableSaddleEnglish)){

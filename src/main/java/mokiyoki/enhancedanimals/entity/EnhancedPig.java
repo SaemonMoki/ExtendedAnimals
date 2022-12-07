@@ -913,7 +913,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             addTextureToAnimal(PIG_TEXTURES_EYES, eyes, null);
             addTextureToAnimal(PIG_TEXTURES_HOOVES, hooves, null);
             addTextureToAnimal(PIG_TEXTURES_TUSKS, tusks ? 1 : 0, t -> t == 1);
-            addTextureToAnimal("pigbase.png");
+//            addTextureToAnimal("pigbase.png");
         }
     }
 

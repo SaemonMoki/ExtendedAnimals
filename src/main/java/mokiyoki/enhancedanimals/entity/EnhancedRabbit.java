@@ -68,7 +68,7 @@ import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_RABBIT;
 
 public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecraftforge.common.IForgeShearable {
 
-    //avalible UUID spaces : [ S X X X X X 6 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
+    //avalible UUID spaces : [ S X X X X X X 7 - 8 9 10 11 - 12 13 14 15 - 16 17 18 19 - 20 21 22 23 24 25 26 27 28 29 30 31 ]
 
     private static final EntityDataAccessor<Integer> COAT_LENGTH = SynchedEntityData.defineId(EnhancedRabbit.class, EntityDataSerializers.INT);
 
@@ -337,7 +337,7 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
 
     @Override
     public EntityDimensions getDimensions(Pose poseIn) {
-        return EntityDimensions.scalable(0.5F, 0.5F).scale(this.getScale());
+        return EntityDimensions.scalable(0.6F, 0.6F).scale(this.getScale());
     }
 
     @Override
@@ -732,18 +732,18 @@ public class EnhancedRabbit extends EnhancedAnimalAbstract implements net.minecr
             ItemStack coatStack = new ItemStack(Items.RABBIT_HIDE, 1 + looting);
             if (maxCoatLength != 0 && currentCoatLength >= 1) {
                 if (currentCoatLength == 1) {
-                    int i = this.random.nextInt(3);
-                    if (i>2){
+                    int i = this.random.nextInt(4);
+                    if (i==0){
                         coatStack = new ItemStack(Blocks.WHITE_WOOL, 1 + looting);
                     }
                 } else if (currentCoatLength == 2) {
-                    int i = this.random.nextInt(1);
-                    if (i>0){
+                    int i = this.random.nextInt(2);
+                    if (i==1){
                         coatStack = new ItemStack(Blocks.WHITE_WOOL, 1 + looting);
                     }
                 } else if (currentCoatLength == 3) {
-                    int i = this.random.nextInt(3);
-                    if (i>0){
+                    int i = this.random.nextInt(4);
+                    if (i!=0){
                         coatStack = new ItemStack(Blocks.WHITE_WOOL, 1 + looting);
                     }
                 } else if (currentCoatLength == 4) {

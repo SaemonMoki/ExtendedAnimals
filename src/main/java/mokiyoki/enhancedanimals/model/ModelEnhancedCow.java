@@ -2,7 +2,6 @@ package mokiyoki.enhancedanimals.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedMoobloom;
@@ -1043,17 +1042,17 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         Map<String, Vector3f> map = data.offsets;
         if (map.isEmpty()) {
             Vector3f vector3f = new Vector3f(0.0F, 0.0F, 0.0F);
-            this.theCow.setPosAndRot(new Vector3f(0.0F, cow.dwarf ? 16.0F : 14.0F, 0.0F), vector3f);
-            this.theHump.setPosAndRot(new Vector3f(0.0F, cow.humpPlacement, 3.0F), new Vector3f(-0.2F, 0.0F, 0.0F));
+            this.theCow.setPosYAndRot(new Vector3f(0.0F, cow.dwarf ? 16.0F : 14.0F, 0.0F), vector3f);
+            this.theHump.setPosYAndRot(new Vector3f(0.0F, cow.humpPlacement, 3.0F), new Vector3f(-0.2F, 0.0F, 0.0F));
             this.theHead.setRotation(new Vector3f(0.5F, 0.0F, 0.0F));
             this.theNeck.setRotation(new Vector3f(0.5F, 0.0F, 0.0F));
             this.jaw.setRotation(new Vector3f(-Mth.HALF_PI*0.2F, 0.0F, 0.0F));
             this.theEarLeft.setRotation(new Vector3f(0.0F, 0.0F, cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness));
             this.theEarRight.setRotation(new Vector3f(0.0F, 0.0F, -(cow.averageEars ? 1.1F + (cow.earSize * 0.16F) : cow.earFloppiness)));
-            this.theLegFrontLeft.setPosAndRot(vector3f, vector3f);
-            this.theLegFrontRight.setPosAndRot(vector3f, vector3f);
-            this.theLegBackLeft.setPosAndRot(vector3f, vector3f);
-            this.theLegBackRight.setPosAndRot(vector3f, vector3f);
+            this.theLegFrontLeft.setPosYAndRot(vector3f, vector3f);
+            this.theLegFrontRight.setPosYAndRot(vector3f, vector3f);
+            this.theLegBackLeft.setPosYAndRot(vector3f, vector3f);
+            this.theLegBackRight.setPosYAndRot(vector3f, vector3f);
             this.theTail.setRotation(vector3f);
             this.tailBase.setRotation(new Vector3f(0.4F, 0.0F,0.0F));
             this.tailMiddle.setRotation(new Vector3f(-0.2F, 0.0F,0.0F));
@@ -1074,16 +1073,16 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             }
         } else {
             this.theCow.setPos(map.get("bCowPos"));
-            this.theHump.setPosAndRot(map.get("bHumpPos"), map.get("bHump"));
+            this.theHump.setPosYAndRot(map.get("bHumpPos"), map.get("bHump"));
             this.theHead.setRotation(map.get("bHead"));
             this.theNeck.setRotation(map.get("bNeck"));
             this.jaw.setRotation(map.get("jaw"));
             this.theEarLeft.setRotation(map.get("bEarL"));
             this.theEarRight.setRotation(map.get("bEarR"));
-            this.theLegFrontLeft.setPosAndRot(map.get("bLegFLPos"), map.get("bLegFL"));
-            this.theLegFrontRight.setPosAndRot(map.get("bLegFRPos"), map.get("bLegFR"));
-            this.theLegBackLeft.setPosAndRot(map.get("bLegBLPos"), map.get("bLegBL"));
-            this.theLegBackRight.setPosAndRot(map.get("bLegBRPos"), map.get("bLegBR"));
+            this.theLegFrontLeft.setPosYAndRot(map.get("bLegFLPos"), map.get("bLegFL"));
+            this.theLegFrontRight.setPosYAndRot(map.get("bLegFRPos"), map.get("bLegFR"));
+            this.theLegBackLeft.setPosYAndRot(map.get("bLegBLPos"), map.get("bLegBL"));
+            this.theLegBackRight.setPosYAndRot(map.get("bLegBRPos"), map.get("bLegBR"));
             this.theTail.setRotation(map.get("bTail"));
             this.tailBase.setRotation(map.get("tail0"));
             this.tailMiddle.setRotation(map.get("tail1"));
@@ -1096,20 +1095,20 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             boolean r = true;
             for (int i = 0; i < 10; i++) {
                 if (map.containsKey("hL"+i)) {
-                    this.hornLeft[i].setPosAndRot(map.get("hPosL" + i), l ? vector3f : map.get("hL" + i));
+                    this.hornLeft[i].setPosYAndRot(map.get("hPosL" + i), l ? vector3f : map.get("hL" + i));
                     if (l) {
                         l=false;
                     }
                 } else {
-                    this.hornLeft[i].setPosAndRot(vector3f, vector3f);
+                    this.hornLeft[i].setPosYAndRot(vector3f, vector3f);
                 }
                 if (map.containsKey("hR"+i)) {
-                    this.hornRight[i].setPosAndRot(map.get("hPosR" + i), r ? vector3f : map.get("hR" + i));
+                    this.hornRight[i].setPosYAndRot(map.get("hPosR" + i), r ? vector3f : map.get("hR" + i));
                     if (r) {
                         r=false;
                     }
                 } else {
-                    this.hornRight[i].setPosAndRot(vector3f, vector3f);
+                    this.hornRight[i].setPosYAndRot(vector3f, vector3f);
                 }
             }
 

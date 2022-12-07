@@ -3,10 +3,11 @@ package mokiyoki.enhancedanimals.model;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleEnglish;
+import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.model.util.GAModel;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
@@ -16,6 +17,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LerpingModel;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 @OnlyIn(Dist.CLIENT)
@@ -38,6 +40,18 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
     protected WrappedModelPart bridle;
     protected WrappedModelPart blanket;
 
+    protected WrappedModelPart saddlePad;
+    protected WrappedModelPart saddleHorn;
+    protected WrappedModelPart saddlePomel;
+    protected WrappedModelPart saddleSideLeft;
+    protected WrappedModelPart saddleSideRight;
+    protected WrappedModelPart stirrupWideLeft;
+    protected WrappedModelPart stirrupWideRight;
+    protected WrappedModelPart stirrupNarrowLeft;
+    protected WrappedModelPart stirrupNarrowRight;
+    protected WrappedModelPart stirrup;
+
+
     private Map<Integer, AnimalModelData> animalModelDataCache = new HashMap<>();
     private int clearCacheTimer = 0;
     protected Integer currentAnimal = null;
@@ -48,12 +62,6 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
     public EnhancedAnimalModel(ModelPart modelPart, Function<ResourceLocation, RenderType> p_102015_) {
         super(p_102015_);
-    }
-
-    protected void setRotationOffset(ModelPart renderer, float x, float y, float z) {
-        renderer.xRot = x;
-        renderer.yRot = y;
-        renderer.zRot = z;
     }
 
     protected Vector3f getRotationVector(WrappedModelPart part) {
@@ -152,11 +160,10 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
             if (this.blanket != null) {
                 this.blanket.show(animalModelData.blanket);
             }
-            if (animalModelData.saddle != SaddleType.NONE) {
-                if (this.saddleVanilla!=null) { this.saddleVanilla.show(animalModelData.saddle == SaddleType.VANILLA); }
-                if (this.saddleEnglish!=null) { this.saddleEnglish.show(animalModelData.saddle == SaddleType.ENGLISH); }
-                if (this.saddleWestern!=null) { this.saddleWestern.show(animalModelData.saddle == SaddleType.WESTERN); }
-            }
+            if (this.saddleVanilla!=null) { this.saddleVanilla.show(animalModelData.saddle == SaddleType.VANILLA); }
+            if (this.saddleEnglish!=null) { this.saddleEnglish.show(animalModelData.saddle == SaddleType.ENGLISH); }
+            if (this.saddleWestern!=null) { this.saddleWestern.show(animalModelData.saddle == SaddleType.WESTERN); }
+            if (this.saddlePomel!=null) { this.saddlePomel.show(animalModelData.saddle == SaddleType.WESTERN); }
         }
 
     }
@@ -266,6 +273,19 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         }
         return false;
     }
+    SaddleType getSaddle(SimpleContainer inventory) {
+        Item equipment = inventory.getItem(1).getItem();
+        if (!equipment.equals(Items.AIR)) {
+            if (equipment instanceof CustomizableSaddleWestern) {
+                return SaddleType.WESTERN;
+            } else if (equipment instanceof CustomizableSaddleEnglish) {
+                return SaddleType.ENGLISH;
+            } else if (!(equipment instanceof CustomizableCollar)) {
+                return SaddleType.VANILLA;
+            }
+        }
+        return SaddleType.NONE;
+    }
 
     static class Animation {
         float length;
@@ -356,9 +376,17 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
     }
 
     protected enum SaddleType {
-        NONE,
-        VANILLA,
-        ENGLISH,
-        WESTERN
+        NONE(""),
+        VANILLA("saddle"),
+        ENGLISH("saddleE"),
+        WESTERN("saddleW");
+        final String name;
+        SaddleType(String name) {
+            this.name = name;
+        }
+
+        String getName() {
+            return this.name;
+        }
     }
 }

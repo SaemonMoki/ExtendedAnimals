@@ -2,8 +2,6 @@ package mokiyoki.enhancedanimals.model.util;
 
 import com.mojang.math.Vector3f;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,7 +150,7 @@ public class WrappedModelPart {
         }
     }
 
-    public void setPosAndRot(Vector3f pos, Vector3f rot) {
+    public void setPosYAndRot(Vector3f pos, Vector3f rot) {
         if (pos != null) {
             this.modelPart.y = pos.y();
         } else {

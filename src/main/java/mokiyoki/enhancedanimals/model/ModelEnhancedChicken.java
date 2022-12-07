@@ -25,7 +25,7 @@ import java.util.Map;
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAnimalModel<T> {
 
-    boolean old = false;
+    boolean old = true;
 //    private int clearCacheTimer = 0;
 //
 //    private float headRotationAngleX;

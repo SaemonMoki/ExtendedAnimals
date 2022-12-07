@@ -634,7 +634,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         Map<String, Vector3f> map = data.offsets;
         if (map.isEmpty()) {
             Vector3f v3f = new Vector3f(0.0F, 0.0F, 0.0F);
-            this.theSheep.setPosAndRot(v3f, v3f);
+            this.theSheep.setPosYAndRot(v3f, v3f);
             this.theBody.setRotation(v3f);
             this.theNeck.setRotation(Mth.HALF_PI, 0.0F, 0.0F);
             this.theHead.setRotation(v3f);
@@ -666,7 +666,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
                 }
             }
         } else {
-            this.theSheep.setPosAndRot(map.get("bSheepPos"), map.get("bSheep"));
+            this.theSheep.setPosYAndRot(map.get("bSheepPos"), map.get("bSheep"));
             this.setRotationFromVector(this.theBody, map.get("bBody"));
             this.setRotationFromVector(this.theNeck, map.get("bNeck"));
             this.setRotationFromVector(this.theHead, map.get("bHead"));
@@ -697,20 +697,20 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             boolean r = true;
             for (int i = 0; i < 19; i++) {
                 if (map.containsKey("hL"+i)) {
-                    this.hornLeft[i].setPosAndRot(map.get("hPosL" + i), l ? vector3f : map.get("hL" + i));
+                    this.hornLeft[i].setPosYAndRot(map.get("hPosL" + i), l ? vector3f : map.get("hL" + i));
                     if (l) {
                         l=false;
                     }
                 } else {
-                    this.hornLeft[i].setPosAndRot(vector3f, vector3f);
+                    this.hornLeft[i].setPosYAndRot(vector3f, vector3f);
                 }
                 if (map.containsKey("hR"+i)) {
-                    this.hornRight[i].setPosAndRot(map.get("hPosR" + i), r ? vector3f : map.get("hR" + i));
+                    this.hornRight[i].setPosYAndRot(map.get("hPosR" + i), r ? vector3f : map.get("hR" + i));
                     if (r) {
                         r=false;
                     }
                 } else {
-                    this.hornRight[i].setPosAndRot(vector3f, vector3f);
+                    this.hornRight[i].setPosYAndRot(vector3f, vector3f);
                 }
             }
         }

@@ -707,6 +707,21 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 PartPose.ZERO
         );
 
+        bChicken.addOrReplaceChild("collar", CubeListBuilder.create()
+                        .texOffs(0, 155)
+                        .addBox(-2.5F, -1.0F, -1.5F, 5,  1, 4, new CubeDeformation(0.001F))
+                        .texOffs(30, 156)
+                        .addBox(0.0F, -1.3333F, -2.5F, 0,  2, 2),
+                PartPose.rotation((float)Math.PI/4.0F, 0.0F, 0.0F)
+        );
+        bChicken.addOrReplaceChild("collarH", CubeListBuilder.create()
+                        .texOffs(18, 154)
+                        .addBox(-1.5F, 0.0F, -1.5F, 3, 3, 3, new CubeDeformation(-1.0F))
+                        .texOffs(0, 22)
+                        .addBox(-4.0F, -12.0F, -4.0F, 8.0F, 6.0F, 4.0F),
+                PartPose.ZERO
+        );
+
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
@@ -1005,6 +1020,15 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.xtraLongTail.addBox(-0.5F, 18F, 11F, 1, 1, 1F);
         this.xtraLongTail.addBox(-0.5F, 16F, 5F, 1, 1, 1F);
          **/
+
+        /**
+         *      Equipment
+         */
+        this.collar = new WrappedModelPart("collar", bChicken);
+        this.collarHardware = new WrappedModelPart("collarH", bChicken);
+
+        this.theHead.addChild(this.collar);
+        this.collar.addChild(this.collarHardware);
     }
 
     private void resetCubes() {
@@ -1065,7 +1089,6 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         resetCubes();
 
         if (chicken != null) {
-
             super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             float size = data.size;
@@ -1627,9 +1650,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 h = ThreadLocalRandom.current().nextBoolean() ? 0.0001F : -0.0001F;
             }
             if (h > 0.0F) {
-                this.theHead.setYRot(this.lerpTo(h, Mth.HALF_PI * 1.8125F));
+                this.theHead.setYRot(this.lerpTo(h, Mth.HALF_PI * 1.85F));
             } else {
-                this.theHead.setYRot(this.lerpTo(h, Mth.HALF_PI * -1.8125F));
+                this.theHead.setYRot(this.lerpTo(h, Mth.HALF_PI * -1.85F));
             }
             if (Math.abs(this.theHead.getYRot()) > Mth.HALF_PI) {
                 this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI));

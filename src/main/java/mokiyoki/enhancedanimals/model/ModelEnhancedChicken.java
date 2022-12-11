@@ -1575,17 +1575,38 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
     private boolean grazingAnimation(int ticks) {
         if (ticks < 50) {
+            this.theLegLeft.setXRot(this.lerpTo(this.theLegLeft.getXRot(), 0.0F));
+            this.theLegRight.setXRot(this.lerpTo(this.theLegRight.getXRot(), 0.0F));
             float headRot = this.theHead.getXRot();
             if (headRot < Mth.HALF_PI*0.75F) {
                 this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI));
+                this.theHead.setY(this.lerpTo(this.theHead.getY(), -3.0F));
             } else {
                 float loop = (float) Math.cos(ticks*0.5F);
                 if (loop > 0) {
-                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI*1.3F));
-                    this.theHead.setZ(this.lerpTo(this.theHead.getZ(), -2.75F));
+                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI * 0.8F));
+                    this.theHead.setY(this.lerpTo(this.theHead.getY(), -2.0F));
                 } else {
-                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI));
-                    this.theHead.setZ(this.lerpTo(this.theHead.getZ(), 0.0F));
+                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI * 1.15F));
+                    this.theHead.setY(this.lerpTo(this.theHead.getY(), -0.0F));
+                }
+            }
+            return false;
+        }if (ticks < 100) {
+            float loop = (float) Math.cos(ticks*0.5F);
+            if (loop > 0) {
+                if (this.theLegLeft.getXRot() <= 0.0F) {
+                    this.theLegLeft.setXRot(0.0F);
+                    this.theLegRight.setXRot(this.lerpTo(0.1F,this.theLegRight.getXRot(), Mth.HALF_PI));
+                } else {
+                    this.theLegLeft.setXRot(this.lerpTo(0.1F, this.theLegLeft.getXRot(), -0.314159F));
+                }
+            } else {
+                if (this.theLegRight.getXRot() <= 0.0F) {
+                    this.theLegRight.setXRot(0.0F);
+                    this.theLegLeft.setXRot(this.lerpTo(0.1F, this.theLegLeft.getXRot(), Mth.HALF_PI));
+                } else {
+                    this.theLegRight.setXRot(this.lerpTo(0.1F,this.theLegRight.getXRot(), -0.314159F));
                 }
             }
             return false;

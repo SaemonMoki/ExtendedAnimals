@@ -141,7 +141,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
         }
 
         boolean isCreeper = false;
-        if (!getGenes().equals("INFERTILE")) {
+        if (!getGenes().equals("INFERTILE") && !getGenes().isEmpty()) {
             Genes genetics = new Genes(getGenes());
             if (genetics.isHomozygousFor(70, 2)) {
                 isCreeper = true;
@@ -164,7 +164,7 @@ public class EnhancedEntityEgg extends ThrowableItemProjectile {
         }
 
         if (!this.level.isClientSide) {
-            if (!getGenes().equals("INFERTILE")) {
+            if (!getGenes().equals("INFERTILE") && !getGenes().isEmpty()) {
                 if (!isCreeper) {
                     EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
                     enhancedchicken.setGenes(new Genes(getGenes()));

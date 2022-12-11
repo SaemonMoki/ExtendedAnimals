@@ -34,10 +34,12 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
     protected WrappedModelPart eyes;
     protected WrappedModelPart chests;
     protected WrappedModelPart collar;
+    protected WrappedModelPart collarHardware;
     protected WrappedModelPart saddleVanilla;
     protected WrappedModelPart saddleEnglish;
     protected WrappedModelPart saddleWestern;
     protected WrappedModelPart bridle;
+    protected WrappedModelPart bridleNose;
     protected WrappedModelPart blanket;
 
     protected WrappedModelPart saddlePad;
@@ -68,7 +70,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         return new Vector3f(part.getXRot(), part.getYRot(), part.getZRot());
     }
 
-    protected Vector3f getOffsetVector(WrappedModelPart part) {
+    protected Vector3f getPosVector(WrappedModelPart part) {
         return new Vector3f(part.getX(), part.getY(), part.getZ());
     }
 
@@ -153,6 +155,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
             }
             if (this.bridle != null) {
                 this.bridle.show(animalModelData.bridle);
+                this.bridleNose.show(animalModelData.bridle);
             }
             if (this.chests != null) {
                 this.chests.show(animalModelData.chests);
@@ -189,6 +192,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
         int earTwitchTimer = 0;
         boolean tailSwishSide = true;
         int tailSwishTimer = 0;
+        int sleepDelay = -1;
     }
 
     protected AnimalModelData getAnimalModelData() {
@@ -255,7 +259,7 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
             animalModelData.growthAmount = enhancedAnimal.growthAmount();
         }
         animalModelData.sleeping = enhancedAnimal.isAnimalSleeping();
-        animalModelData.blink = enhancedAnimal.getBlink();
+        animalModelData.blink = animalModelData.sleepDelay == -1.0F ? enhancedAnimal.getBlink() : animalModelData.sleepDelay != 0;
         animalModelData.collar = hasCollar(enhancedAnimal.getEnhancedInventory());
         if (animalModelData.isEating == 0 && enhancedAnimal.isGrazing()) {
             animalModelData.isEating = -1;

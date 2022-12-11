@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedRabbit;
-import mokiyoki.enhancedanimals.entity.EntityState;
 import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
@@ -515,11 +514,11 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
         map.put("bTibiaBR", this.getRotationVector(this.theTibiaBackRight));
         map.put("bFootBL", this.getRotationVector(this.theFootBackLeft));
         map.put("bFootBR", this.getRotationVector(this.theFootBackRight));
-        map.put("bEarLPos", this.getOffsetVector(this.theEarLeft));
+        map.put("bEarLPos", this.getPosVector(this.theEarLeft));
         map.put("bEarL", this.getRotationVector(this.theEarLeft));
-        map.put("bEarRPos", this.getOffsetVector(this.theEarRight));
+        map.put("bEarRPos", this.getPosVector(this.theEarRight));
         map.put("bEarR", this.getRotationVector(this.theEarRight));
-        map.put("bNose", this.getOffsetVector(this.theNose));
+        map.put("bNose", this.getPosVector(this.theNose));
     }
 
 

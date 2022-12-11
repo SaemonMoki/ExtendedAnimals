@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
+import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,10 +18,27 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalModel<T> {
+    private static final List<Float> SADDLE_SCALE = ModelHelper.createScalings(0.875F, 0.875F, 0.875F, 0.0F, -0.00875F, -0.005F);
+    private static final List<Float>[] COLLAR_SCALE = new List[] {
+            ModelHelper.createScalings(1.0F, 1.0F, 0.9F, 0.0F, 0.0F, 0.005F),
+            ModelHelper.createScalings(1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F),
+            ModelHelper.createScalings(1.125F, 1.0F, 1.125F, 0.0F, 0.0F, -0.00625F),
+            ModelHelper.createScalings(1.125F, 1.0F, 1.25F, 0.0F, 0.0F, -0.0125F),
+            ModelHelper.createScalings(1.25F, 1.0F, 1.3F, 0.0F, 0.0F, -0.015F)
+    };
+    private static final List<Float>[] COLLAR_HARDWARE_SCALE = new List[] {
+            ModelHelper.createScalings(1.0F, 1.0F, 1.111111F, 0.0F, 0.0F, 0.02F),
+            ModelHelper.createScalings(1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F),
+            ModelHelper.createScalings(0.888888F, 1.0F, 0.892857F, 0.0F, 0.0F, -0.02F),
+            ModelHelper.createScalings(0.888888F, 1.0F, 0.869565F, 0.0F, 0.0F, -0.029F),
+            ModelHelper.createScalings(0.8F, 1.0F, 0.769231F, 0.0F, 0.0F, -0.0565F)
+    };
     protected WrappedModelPart theLlama;
 
     protected WrappedModelPart theHead;
@@ -29,12 +47,16 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
     protected WrappedModelPart theNeck;
     protected WrappedModelPart theBody;
     protected WrappedModelPart theLegFrontLeft;
+    protected WrappedModelPart theLegBottomFrontLeft;
     protected WrappedModelPart theToeFrontLeft;
     protected WrappedModelPart theLegFrontRight;
+    protected WrappedModelPart theLegBottomFrontRight;
     protected WrappedModelPart theToeFrontRight;
     protected WrappedModelPart theLegBackLeft;
+    protected WrappedModelPart theLegBottomBackLeft;
     protected WrappedModelPart theToeBackLeft;
     protected WrappedModelPart theLegBackRight;
+    protected WrappedModelPart theLegBottomBackRight;
     protected WrappedModelPart theToeBackRight;
     protected WrappedModelPart theTail;
 
@@ -66,6 +88,11 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
     private WrappedModelPart legFrontRight;
     private WrappedModelPart legBackLeft;
     private WrappedModelPart legBackRight;
+
+    private WrappedModelPart legBottomFrontLeft;
+    private WrappedModelPart legBottomFrontRight;
+    private WrappedModelPart legBottomBackLeft;
+    private WrappedModelPart legBottomBackRight;
 
     private WrappedModelPart legWool1FrontLeft;
     private WrappedModelPart legWool1FrontRight;
@@ -115,57 +142,61 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         PartDefinition bLlama = base.addOrReplaceChild("bLlama", CubeListBuilder.create(), PartPose.offset(0.0F, 12.0F, -6.0F));
         PartDefinition bBody = bLlama.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, -10.0F, 0.0F));
         PartDefinition bNeck = bBody.addOrReplaceChild("bNeck", CubeListBuilder.create(), PartPose.offset(0.0F, 3.0F, -1.0F));
-        PartDefinition bHead = bNeck.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, -8.0F, -2.0F));
-        PartDefinition bEarLeft = bHead.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(-4.0F, -9.0F, 2.0F));
-        PartDefinition bEarRight = bHead.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(1.0F, -9.0F, 2.0F));
-        PartDefinition bLegFrontLeft = bLlama.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, 0.0F));
-        PartDefinition bLegFrontRight = bLlama.addOrReplaceChild( "bLegFR", CubeListBuilder.create(), PartPose.offset(-6.0F, 0.0F, 0.0F));
+        PartDefinition bHead = bNeck.addOrReplaceChild("bHead", CubeListBuilder.create(), PartPose.offset(0.0F, -8.0F, 0.0F));
+        PartDefinition bEarLeft = bHead.addOrReplaceChild("bEarL", CubeListBuilder.create(), PartPose.offset(-1.0F, -6.0F, 1.0F));
+        PartDefinition bEarRight = bHead.addOrReplaceChild("bEarR", CubeListBuilder.create(), PartPose.offset(1.0F, -6.0F, 1.0F));
+        PartDefinition bLegFrontLeft = bLlama.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, 3.0F));
+            bLlama.addOrReplaceChild("bLegBFL", CubeListBuilder.create(), PartPose.offset(0.0F, 6.0F, -3.0F));
+        PartDefinition bLegFrontRight = bLlama.addOrReplaceChild( "bLegFR", CubeListBuilder.create(), PartPose.offset(-6.0F, 0.0F, 3.0F));
+            bLlama.addOrReplaceChild( "bLegBFR", CubeListBuilder.create(), PartPose.offset(0.0F, 6.0F, -3.0F));
         PartDefinition bLegBackLeft = bLlama.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(3.0F, 0.0F, 15.0F));
+            bLlama.addOrReplaceChild("bLegBBL", CubeListBuilder.create(), PartPose.offset(0.0F, 6.0F, 0.0F));
         PartDefinition bLegBackRight = bLlama.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(-6.0F, 0.0F, 15.0F));
-        PartDefinition bToeFrontLeft = bLegFrontLeft.addOrReplaceChild("bToeFL", CubeListBuilder.create(), PartPose.offset(1.5F, 10.0F, 2.0F));
-        PartDefinition bToeFrontRight = bLegFrontRight.addOrReplaceChild("bToeFR", CubeListBuilder.create(), PartPose.offset(1.5F, 10.0F, 2.0F));
-        PartDefinition bToeBackLeft = bLegBackLeft.addOrReplaceChild("bToeBL", CubeListBuilder.create(), PartPose.offset(1.5F, 10.0F, 2.0F));
-        PartDefinition bToeBackRight = bLegBackRight.addOrReplaceChild("bToeBR", CubeListBuilder.create(), PartPose.offset(1.5F, 10.0F, 2.0F));
+            bLlama.addOrReplaceChild("bLegBBR", CubeListBuilder.create(), PartPose.offset(0.0F, 6.0F, 0.0F));
+        PartDefinition bToeFrontLeft = bLegFrontLeft.addOrReplaceChild("bToeFL", CubeListBuilder.create(), PartPose.offset(1.5F, 4.0F, 2.0F));
+        PartDefinition bToeFrontRight = bLegFrontRight.addOrReplaceChild("bToeFR", CubeListBuilder.create(), PartPose.offset(1.5F, 4.0F, 2.0F));
+        PartDefinition bToeBackLeft = bLegBackLeft.addOrReplaceChild("bToeBL", CubeListBuilder.create(), PartPose.offset(1.5F, 4.0F, 2.0F));
+        PartDefinition bToeBackRight = bLegBackRight.addOrReplaceChild("bToeBR", CubeListBuilder.create(), PartPose.offset(1.5F, 4.0F, 2.0F));
         PartDefinition bTail = bBody.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 16.0F));
 
         bHead.addOrReplaceChild("eyes", CubeListBuilder.create()
                         .texOffs(22, 3)
-                        .addBox(2.0F, -1.0F, -3.0F, 2, 2, 1, new CubeDeformation(0.01F))
+                        .addBox(2.0F, -1.0F, -6.0F, 2, 2, 1, new CubeDeformation(0.01F))
                         .texOffs(0, 3)
-                        .addBox(-4.0F, -1.0F, -3.0F, 2, 2, 1, new CubeDeformation(0.01F)),
+                        .addBox(-4.0F, -1.0F, -6.0F, 2, 2, 1, new CubeDeformation(0.01F)),
                 PartPose.offset(0.0F, -4.0F, 3.0F)
         );
         bHead.addOrReplaceChild("head", CubeListBuilder.create()
                         .texOffs(0, 0)
-                        .addBox(-4.0F, -6.0F, 0.0F, 8, 6, 6),
+                        .addBox(-4.0F, -6.0F, -3.0F, 8, 6, 6),
                 PartPose.ZERO
         );
         bHead.addOrReplaceChild("nose", CubeListBuilder.create()
                         .texOffs(28, 0)
-                        .addBox(-2.0F, -4.0F, -4.0F, 4, 4, 4),
+                        .addBox(-2.0F, -4.0F, -7.0F, 4, 4, 4),
                 PartPose.ZERO
         );
 
         bEarLeft.addOrReplaceChild("earL", CubeListBuilder.create()
                         .texOffs(54, 0)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 3, 2),
+                        .addBox(-3.0F, -3.0F, -2.0F, 3, 3, 2),
                 PartPose.ZERO
         );
         bEarLeft.addOrReplaceChild("earTL", CubeListBuilder.create()
                         .texOffs(74, 0)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 1, 2),
-                PartPose.offset(0.0F, -1.0F, 0.0F)
+                        .addBox(-3.0F, -1.0F, -2.0F, 3, 1, 2),
+                PartPose.offset(0.0F, -3.0F, 0.0F)
         );
 
         bEarRight.addOrReplaceChild("earR", CubeListBuilder.create()
                         .texOffs(44, 0)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 3, 2),
+                        .addBox(0.0F, -3.0F, -2.0F, 3, 3, 2),
                 PartPose.ZERO
         );
         bEarRight.addOrReplaceChild("earTR", CubeListBuilder.create()
                         .texOffs(64, 0)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 1, 2),
-                PartPose.offset(0.0F, -1.0F, 0.0F)
+                        .addBox(0.0F, -1.0F, -2.0F, 3, 1, 2),
+                PartPose.offset(0.0F, -3.0F, 0.0F)
         );
 
         bNeck.addOrReplaceChild("neck0", CubeListBuilder.create()
@@ -211,28 +242,33 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         );
         bBody.addOrReplaceChild("body2", CubeListBuilder.create()
                         .texOffs(0, 39)
-                        .addBox(-6.0F, 0.0F, 0.0F, 12, 10, 18, new CubeDeformation(0.5F)),
+                        .addBox(-6.0F, 0.0F, 0.0F, 12, 10, 18, new CubeDeformation(0.501F)),
                 PartPose.ZERO
         );
         bBody.addOrReplaceChild("body3", CubeListBuilder.create()
                         .texOffs(0, 39)
-                        .addBox(-6.0F, 0.0F, 0.0F, 12, 10, 18, new CubeDeformation(1.0F)),
+                        .addBox(-6.0F, 0.0F, 0.0F, 12, 10, 18, new CubeDeformation(1.001F)),
                 PartPose.ZERO
         );
         bBody.addOrReplaceChild("body4", CubeListBuilder.create()
                         .texOffs(0, 39)
-                        .addBox(-6.0F, 0.0F, 0.0F, 12, 10, 18, new CubeDeformation(1.5F)),
+                        .addBox(-6.0F, 0.0F, 0.0F, 12, 10, 18, new CubeDeformation(1.501F)),
                 PartPose.ZERO
         );
         bBody.addOrReplaceChild("body5", CubeListBuilder.create()
                         .texOffs(0, 39)
-                        .addBox(-6.0F, 0.0F, 0.0F, 12, 10, 18, new CubeDeformation(2.0F)),
+                        .addBox(-6.0F, 0.0F, 0.0F, 12, 10, 18, new CubeDeformation(2.001F)),
                 PartPose.ZERO
         );
 
         bLegFrontLeft.addOrReplaceChild("legFL", CubeListBuilder.create()
                         .texOffs(0, 68)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 11, 3),
+                        .addBox(0.0F, 0.0F, -3.0F, 3, 6, 3, new CubeDeformation(0.01F)),
+                PartPose.ZERO
+        );
+        bLegFrontLeft.addOrReplaceChild("legBFL", CubeListBuilder.create()
+                        .texOffs(0, 74)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 5, 3),
                 PartPose.ZERO
         );
         bLegFrontLeft.addOrReplaceChild("legFL1", CubeListBuilder.create()
@@ -247,44 +283,54 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         );
         bLegFrontLeft.addOrReplaceChild("legFL3", CubeListBuilder.create()
                         .texOffs(0, 68)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(1.5F)),
+                        .addBox(0.0F, 0.0F, -3.0F, 3, 7, 3, new CubeDeformation(1.5F)),
                 PartPose.ZERO
         );
         bLegFrontLeft.addOrReplaceChild("legFL4", CubeListBuilder.create()
                         .texOffs(0, 68)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(2.0F)),
+                        .addBox(0.0F, 0.0F, -3.0F, 3, 7, 3, new CubeDeformation(2.0F)),
                 PartPose.ZERO
         );
 
         bLegFrontRight.addOrReplaceChild("legFR", CubeListBuilder.create()
                         .texOffs(12, 68)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 11, 3),
+                        .addBox(0.0F, 0.0F, -3.0F, 3, 6, 3, new CubeDeformation(0.01F)),
+                PartPose.ZERO
+        );
+        bLegFrontRight.addOrReplaceChild("legBFR", CubeListBuilder.create()
+                        .texOffs(12, 74)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 5, 3),
                 PartPose.ZERO
         );
         bLegFrontRight.addOrReplaceChild("legFR1", CubeListBuilder.create()
                         .texOffs(12, 68)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(0.501F)),
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(0.5F)),
                 PartPose.ZERO
         );
         bLegFrontRight.addOrReplaceChild("legFR2", CubeListBuilder.create()
                         .texOffs(12, 68)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(1.001F)),
+                        .addBox(0.0F, 0.0F, -3.0F, 3, 7, 3, new CubeDeformation(1.0F)),
                 PartPose.ZERO
         );
         bLegFrontRight.addOrReplaceChild("legFR3", CubeListBuilder.create()
                         .texOffs(12, 68)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(1.501F)),
+                        .addBox(0.0F, 0.0F, -3.0F, 3, 7, 3, new CubeDeformation(1.5F)),
                 PartPose.ZERO
         );
         bLegFrontRight.addOrReplaceChild("legFR4", CubeListBuilder.create()
                         .texOffs(12, 68)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 7, 3, new CubeDeformation(2.001F)),
+                        .addBox(0.0F, 0.0F, -3.0F, 3, 7, 3, new CubeDeformation(2.0F)),
                 PartPose.ZERO
         );
 
         bLegBackLeft.addOrReplaceChild("legBL", CubeListBuilder.create()
                         .texOffs(0, 82)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 11, 3),
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 6, 3, new CubeDeformation(0.01F)),
+                PartPose.ZERO
+        );
+        bLegBackLeft.addOrReplaceChild("legBBL", CubeListBuilder.create()
+                        .texOffs(0, 88)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 5, 3),
                 PartPose.ZERO
         );
         bLegBackLeft.addOrReplaceChild("legBL1", CubeListBuilder.create()
@@ -310,7 +356,12 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
 
         bLegBackRight.addOrReplaceChild("legBR", CubeListBuilder.create()
                         .texOffs(12, 82)
-                        .addBox(0.0F, 0.0F, 0.0F, 3, 11, 3),
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 6, 3, new CubeDeformation(0.01F)),
+                PartPose.ZERO
+        );
+        bLegBackRight.addOrReplaceChild("legBBR", CubeListBuilder.create()
+                        .texOffs(12, 88)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 5, 3),
                 PartPose.ZERO
         );
         bLegBackRight.addOrReplaceChild("legBR1", CubeListBuilder.create()
@@ -404,11 +455,16 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
                 PartPose.ZERO
         );
 
+
+        /**
+         * Equipment stuff
+         */
+
         PartDefinition bBlanket = base.addOrReplaceChild("bBlanket", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
         bBlanket.addOrReplaceChild("blanketH", CubeListBuilder.create()
                         .texOffs(28, 8)
-                        .addBox(-4.0F, -6.0F, 0.0F, 8, 10, 6, new CubeDeformation(0.505F)),
+                        .addBox(-4.0F, -6.0F, -3.0F, 8, 10, 6, new CubeDeformation(0.505F)),
                 PartPose.ZERO
         );
         bBlanket.addOrReplaceChild("blanket0", CubeListBuilder.create()
@@ -453,6 +509,107 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
                 PartPose.offset(0.0F, 0.0F, 16.0F)
         );
 
+        base.addOrReplaceChild("collar", CubeListBuilder.create()
+                        .texOffs(88, 84)
+                        .addBox(-5.0F, -4.5F, -3.0F, 10, 2, 8),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("collarH", CubeListBuilder.create()
+                        .texOffs(127, 88)
+                        .addBox(0.0F, -5.0F, -5.0F, 0, 3, 3)
+                        .texOffs(116, 84)
+                        .addBox(-1.5F, -2.5F, -5.75F, 3, 3, 3),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("bridle", CubeListBuilder.create()
+                        .texOffs(0, 112)
+                        .addBox(-8.0F, -9.05F, -6.0F, 16, 12, 12, new CubeDeformation(-3.8F, -2.8F, -2.8F)),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("bridleN", CubeListBuilder.create()
+                        .texOffs(0, 96)
+                        .addBox(-4.0F, -6.0F, -9.0F, 8, 8, 8, new CubeDeformation(-1.8F)),
+                PartPose.ZERO
+        );
+
+        base.addOrReplaceChild("saddle", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 8.0F));
+        base.addOrReplaceChild("saddleW", CubeListBuilder.create()
+                        .texOffs(146, 0)
+                        .addBox(-5.0F, -2.0F, -5.0F, 10, 2, 13)
+                        .texOffs(146, 15)
+                        .addBox(-4.0F, -3.0F, 5.0F, 8, 2, 4)
+                        .texOffs(222, 15)
+                        .addBox(-3.5F, -4.0F, 8.0F, 7, 2, 2),
+                PartPose.offset(0.0F, 0.0F, 8.0F)
+        );
+        base.addOrReplaceChild("saddleE", CubeListBuilder.create()
+                        .texOffs(147, 1)
+                        .addBox(-5.0F, -1.0F, -4.0F, 10, 2, 12)
+                        .texOffs(146, 15)
+                        .addBox(-4.0F, -1.5F, 5.0F, 8, 2, 4)
+                        .texOffs(222, 15)
+                        .addBox(-3.5F, -2.0F, 7.5F, 7, 2, 2),
+                PartPose.offset(0.0F, 0.0F, 8.0F)
+        );
+        base.addOrReplaceChild("saddleH", CubeListBuilder.create()
+                        .texOffs(170, 19)
+                        .addBox(-4.0F, -2.0F, -3.0F, 8, 2, 3),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("saddleP", CubeListBuilder.create()
+                        .texOffs(179, 0)
+                        .addBox(-1.0F, -3.0F, -2.0F, 2, 4, 2, new CubeDeformation(-0.25F)),
+                PartPose.offsetAndRotation(0.0F, -1.5F, -0.5F, -0.2F, 0.0F, 0.0F)
+        );
+        base.addOrReplaceChild("saddleL", CubeListBuilder.create()
+                        .texOffs(170, 49)
+                        .addBox(0.0F, 0.0F, 0.0F, 3, 4, 8),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("saddleR", CubeListBuilder.create()
+                        .texOffs(170, 61)
+                        .addBox(-3.0F, 0.0F, 0.0F, 3, 4, 8),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("stirrupWL", CubeListBuilder.create()
+                        .texOffs(184, 24)
+                        .addBox(0.0F, 0.0F, 0.0F, 0, 10, 4),
+                PartPose.offset(0.0F, 0.0F, -3.5F)
+        );
+        base.addOrReplaceChild("stirrupWR", CubeListBuilder.create()
+                        .texOffs(184, 24)
+                        .addBox(0.0F, 0.0F, 0.0F, 0, 10, 4),
+                PartPose.offset(0.0F, 0.0F, -3.5F)
+        );
+        base.addOrReplaceChild("stirrupNL", CubeListBuilder.create()
+                        .texOffs(185, 27)
+                        .addBox(-1.0F, 0.0F, 0.0F, 1, 10, 1),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("stirrupNR", CubeListBuilder.create()
+                        .texOffs(187, 27)
+                        .addBox(0.0F, 0.0F, 0.0F, 1, 10, 1),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("stirrup", CubeListBuilder.create()
+                        .texOffs(146, 0)
+                        .addBox(-0.5F, 9.5F, -1.0F, 1, 1, 1)
+                        .texOffs(150, 0)
+                        .addBox(-0.5F, 9.5F, 1.0F, 1, 1, 1)
+                        .texOffs(146, 2)
+                        .addBox(-0.5F, 10.5F, -1.5F, 1, 3, 1)
+                        .texOffs(150, 2)
+                        .addBox(-0.5F, 10.5F, 1.5F, 1, 3, 1)
+                        .texOffs(147, 7)
+                        .addBox(-0.5F, 12.5F, -0.5F, 1, 1, 2),
+                PartPose.ZERO
+        );
+        base.addOrReplaceChild("saddlePad", CubeListBuilder.create()
+                        .texOffs(130, 24)
+                        .addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, new CubeDeformation(-1.0F)),
+                PartPose.ZERO
+        );
+
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
 
@@ -482,6 +639,10 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         this.theEarLeft = new WrappedModelPart(bEarLeft, "bEarL");
         this.theEarRight = new WrappedModelPart(bEarRight, "bEarR");
         this.theLegFrontLeft = new WrappedModelPart(bLegFL, "bLegFL");
+        this.theLegBottomFrontLeft = new WrappedModelPart("bLegBFL", bLlama);
+        this.theLegBottomFrontRight = new WrappedModelPart("bLegBFR", bLlama);
+        this.theLegBottomBackLeft = new WrappedModelPart("bLegBBL", bLlama);
+        this.theLegBottomBackRight = new WrappedModelPart("bLegBBR", bLlama);
         this.theLegFrontRight = new WrappedModelPart(bLegFR, "bLegFR");
         this.theLegBackLeft = new WrappedModelPart(bLegBL, "bLegBL");
         this.theLegBackRight = new WrappedModelPart(bLegBR, "bLegBR");
@@ -536,6 +697,11 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         this.legWool3BackRight = new WrappedModelPart("legBR3", bLegBR);
         this.legWool4BackRight = new WrappedModelPart("legBR4", bLegBR);
 
+        this.legBottomFrontLeft = new WrappedModelPart("legBFL", bLegFL);
+        this.legBottomFrontRight = new WrappedModelPart("legBFR", bLegFR);
+        this.legBottomBackLeft = new WrappedModelPart("legBBL", bLegBL);
+        this.legBottomBackRight = new WrappedModelPart("legBBR", bLegBR);
+
         this.toeFrontLeftInner = new WrappedModelPart("toeIFL", bToeFL);
         this.toeFrontLeftOuter = new WrappedModelPart("toeOFL", bToeFL);
         this.toeFrontRightInner = new WrappedModelPart("toeIFR", bToeFR);
@@ -560,10 +726,14 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         this.theLlama.addChild(this.theLegFrontRight);
         this.theLlama.addChild(this.theLegBackLeft);
         this.theLlama.addChild(this.theLegBackRight);
-        this.theLegFrontLeft.addChild(this.theToeFrontLeft);
-        this.theLegFrontRight.addChild(this.theToeFrontRight);
-        this.theLegBackLeft.addChild(this.theToeBackLeft);
-        this.theLegBackRight.addChild(this.theToeBackRight);
+        this.theLegFrontLeft.addChild(this.theLegBottomFrontLeft);
+        this.theLegFrontRight.addChild(this.theLegBottomFrontRight);
+        this.theLegBackLeft.addChild(this.theLegBottomBackLeft);
+        this.theLegBackRight.addChild(this.theLegBottomBackRight);
+        this.theLegBottomFrontLeft.addChild(this.theToeFrontLeft);
+        this.theLegBottomFrontRight.addChild(this.theToeFrontRight);
+        this.theLegBottomBackLeft.addChild(this.theToeBackLeft);
+        this.theLegBottomBackRight.addChild(this.theToeBackRight);
         this.theBody.addChild(this.theTail);
 
         this.theHead.addChild(this.head);
@@ -582,7 +752,7 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         this.theNeck.addChild(this.neckWool4);
         this.theNeck.addChild(this.neckWool5);
 
-        this.theBody.addChild(this.body);
+//        this.theBody.addChild(this.body);
         this.theBody.addChild(this.bodyWool1);
         this.theBody.addChild(this.bodyWool2);
         this.theBody.addChild(this.bodyWool3);
@@ -613,6 +783,11 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         this.theLegBackRight.addChild(this.legWool3BackRight);
         this.theLegBackRight.addChild(this.legWool4BackRight);
 
+        this.theLegBottomFrontLeft.addChild(this.legBottomFrontLeft);
+        this.theLegBottomFrontRight.addChild(this.legBottomFrontRight);
+        this.theLegBottomBackLeft.addChild(this.legBottomBackLeft);
+        this.theLegBottomBackRight.addChild(this.legBottomBackRight);
+
         this.theToeFrontLeft.addChild(this.toeFrontLeftInner);
         this.theToeFrontLeft.addChild(this.toeFrontLeftOuter);
         this.theToeFrontRight.addChild(this.toeFrontRightInner);
@@ -628,9 +803,12 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         this.theTail.addChild(this.tail3);
         this.theTail.addChild(this.tail4);
 
+        /**
+         *      Equipment
+         */
         ModelPart bBlanket = base.getChild("bBlanket");
 
-        this.blanket = new WrappedModelPart(bBlanket, "bBlanket");
+        this.blanket = new WrappedModelPart("bBlanket", base);
 
         this.blanketH = new WrappedModelPart("blanketH", bBlanket);
         this.blanket0 = new WrappedModelPart("blanket0", bBlanket);
@@ -643,12 +821,61 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
 
         this.chests = new WrappedModelPart("chestL", base);
         this.chestR = new WrappedModelPart("chestR", base);
-        this.chests.addChild(this.chestR);
 
-        this.theNeck.addChild(this.blanket);
-        this.theHead.addChild(this.blanketH);
+        this.collar = new WrappedModelPart("collar", base);
+        this.collarHardware = new WrappedModelPart("collarH", base);
+
+        this.bridle = new WrappedModelPart("bridle", base);
+        this.bridleNose = new WrappedModelPart("bridleN", base);
+
+        this.saddleWestern = new WrappedModelPart("saddleW", base);
+        this.saddleEnglish = new WrappedModelPart("saddleE", base);
+        this.saddleVanilla = new WrappedModelPart("saddle", base);
+        this.saddleSideLeft = new WrappedModelPart("saddleL", base);
+        this.saddleSideRight = new WrappedModelPart("saddleR", base);
+        this.saddlePad = new WrappedModelPart("saddlePad", base);
+        this.saddleHorn = new WrappedModelPart("saddleH", base);
+        this.saddlePomel = new WrappedModelPart("saddleP", base);
+        this.stirrupWideLeft = new WrappedModelPart("stirrupWL", base);
+        this.stirrupWideRight = new WrappedModelPart("stirrupWR", base);
+        this.stirrupNarrowLeft = new WrappedModelPart("stirrupNL", base);
+        this.stirrupNarrowRight = new WrappedModelPart("stirrupNR", base);
+        this.stirrup = new WrappedModelPart("stirrup", base);
+
         this.theLlama.addChild(this.chests);
+        this.theBody.addChild(this.saddleVanilla);
+        this.theBody.addChild(this.saddleWestern);
+        this.theBody.addChild(this.saddleEnglish);
+        this.theNeck.addChild(this.blanket);
+        this.theNeck.addChild(this.collar);
+        this.theHead.addChild(this.blanketH);
+        this.theHead.addChild(this.bridle);
 
+        this.chests.addChild(this.chestR);
+        this.nose.addChild(this.bridleNose);
+
+        this.saddleVanilla.addChild(this.saddlePad);
+        this.saddleVanilla.addChild(this.stirrupNarrowLeft);
+        this.saddleVanilla.addChild(this.stirrupNarrowRight);
+
+        this.saddleWestern.addChild(this.saddleHorn);
+        this.saddleWestern.addChild(this.saddlePad);
+        this.saddleWestern.addChild(this.stirrupWideLeft);
+        this.saddleWestern.addChild(this.stirrupWideRight);
+
+        this.saddleEnglish.addChild(this.saddleHorn);
+        this.saddleEnglish.addChild(this.saddlePad);
+        this.saddleEnglish.addChild(this.stirrupNarrowLeft);
+        this.saddleEnglish.addChild(this.stirrupNarrowRight);
+
+        this.saddleHorn.addChild(this.saddlePomel);
+        this.saddlePad.addChild(this.saddleSideLeft);
+        this.saddlePad.addChild(this.saddleSideRight);
+        this.stirrupWideLeft.addChild(this.stirrup);
+        this.stirrupWideRight.addChild(this.stirrup);
+        this.stirrupNarrowLeft.addChild(this.stirrup);
+        this.stirrupNarrowRight.addChild(this.stirrup);
+        this.collar.addChild(this.collarHardware);
     }
 
     private void resetCubes() {
@@ -663,8 +890,9 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         resetCubes();
 
         if (llama!=null) {
-
             super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+            Map<String, List<Float>> mapOfScale = new HashMap<>();
 
             int maxCoatLength = llamaModelData.growthAmount == 1.0F ? llama.maxCoat : (int)(llama.maxCoat*llamaModelData.growthAmount);
 
@@ -675,8 +903,7 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
             this.neckWool4.show(llamaModelData.coatlength == 3);
             this.neckWool5.show(llamaModelData.coatlength >= 4);
 
-            this.body.show(llamaModelData.coatlength == -1);
-            this.bodyWool1.show(llamaModelData.coatlength == 0);
+            this.bodyWool1.show(llamaModelData.coatlength == 0 || llamaModelData.coatlength == -1);
             this.bodyWool2.show(llamaModelData.coatlength == 1);
             this.bodyWool3.show(llamaModelData.coatlength == 2);
             this.bodyWool4.show(llamaModelData.coatlength == 3);
@@ -712,6 +939,29 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
             this.blanket4.show(llamaModelData.coatlength == 3);
             this.blanket5.show(llamaModelData.coatlength == 4);
 
+            if (llamaModelData.collar) {
+                int i = Math.max(llamaModelData.coatlength, 0);
+                mapOfScale.put("collar", COLLAR_SCALE[i]);
+                mapOfScale.put("collarH", COLLAR_HARDWARE_SCALE[i]);
+            }
+
+            if (llamaModelData.saddle != SaddleType.NONE) {
+                float coatMod = 1.0F;
+
+                switch (llamaModelData.coatlength) {
+                    case 1 -> coatMod = 1.0625F;
+                    case 2 -> coatMod = 1.15F;
+                    case 3 -> coatMod = 1.25F;
+                    case 4 -> coatMod = 1.375F;
+                }
+
+                mapOfScale.put(llamaModelData.saddle.getName(), SADDLE_SCALE);
+                mapOfScale.put("saddlePad", ModelHelper.createScalings(coatMod, 0.875F, 0.875F, 0.0F, -0.00875F, -0.005F));
+                this.saddlePomel.show(llamaModelData.saddle == SaddleType.WESTERN);
+                this.saddleSideLeft.show(llamaModelData.saddle != SaddleType.VANILLA);
+                this.saddleSideRight.show(llamaModelData.saddle != SaddleType.VANILLA);
+            }
+
             poseStack.pushPose();
             poseStack.scale(1.0F, 1.0F, 1.0F);
             poseStack.translate(0.0F, 0.0F, 0.0F);
@@ -722,16 +972,66 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         }
     }
 
-    protected Map<String, Vector3f> saveAnimationValues(LlamaPhenotype llama) {
-        Map<String, Vector3f> map = new HashMap<>();
-        map.put("earTL", new Vector3f(llama.banana ? 0.5F : 0.0F, -1.0F, 0.0F));
-        map.put("earTR", new Vector3f(llama.banana ? -0.5F : 0.0F, -1.0F, 0.0F));
-        map.put("nose", new Vector3f(0.0F, llama.nosePlacement, 0.0F));
+    protected Map<String, Vector3f> saveAnimationValues(LlamaModelData data, LlamaPhenotype llama) {
+        Map<String, Vector3f> map = data.offsets;
+        map.put("bLlama", this.getRotationVector(this.theLlama));
+        map.put("bLlamaPos", this.getPosVector(this.theLlama));
+        map.put("bNeck", this.getRotationVector(this.theNeck));
+        map.put("bNeckPos", this.getPosVector(this.theNeck));
+        map.put("bHead", this.getRotationVector(this.theHead));
+        map.put("bHeadPos", this.getPosVector(this.theHead));
+        map.put("bLlamaFL", this.getRotationVector(this.theLegFrontLeft));
+        map.put("bLlamaFR", this.getRotationVector(this.theLegFrontRight));
+        map.put("bLlamaBL", this.getRotationVector(this.theLegBackLeft));
+        map.put("bLlamaBR", this.getRotationVector(this.theLegBackRight));
+        map.put("bLlamaBFL", this.getRotationVector(this.theLegBottomFrontLeft));
+        map.put("bLlamaBFR", this.getRotationVector(this.theLegBottomFrontRight));
+        map.put("bLlamaBBL", this.getRotationVector(this.theLegBottomBackLeft));
+        map.put("bLlamaBBR", this.getRotationVector(this.theLegBottomBackRight));
+        map.put("bEarL", this.getRotationVector(this.theEarLeft));
+        map.put("bEarR", this.getRotationVector(this.theEarRight));
+        map.put("earT", new Vector3f(this.earTopLeft.getX(), 0.0F, 0.0F));
+        if (data.growthAmount == 1.0F) {
+            map.put("nose", new Vector3f(0.0F, llama.nosePlacement, 0.0F));
+        }
         return map;
     }
 
-    private void setupInitialAnimationValues(T entityIn, LlamaModelData modelData, LlamaPhenotype llama) {
-
+    private void readInitialAnimationValues(LlamaModelData data, LlamaPhenotype llama) {
+        Map<String, Vector3f> map = data.offsets;
+        if (map.isEmpty()) {
+            this.theBody.setY(llama.suri ? Math.max(data.coatlength, 0) -10.0F : -10.0F);
+            this.chests.setY(llama.suri ? -8.0F : -8.0F - (Math.max(data.coatlength, 0)));
+            this.earTopLeft.setX(llama.banana ? 0.5F : 0.0F);
+            this.earTopRight.setX(-this.earTopLeft.getX());
+            this.nose.setPos(0.0F, llama.nosePlacement, 1.0F - data.growthAmount);
+        } else {
+            this.theLlama.setRotation(map.get("bLlama"));
+            this.theLlama.setPos(map.get("bLlamaPos"));
+            this.theBody.setY(llama.suri ? Math.max(data.coatlength, 0) -10.0F : -10.0F);
+            this.theNeck.setRotation(map.get("bNeck"));
+            this.theNeck.setPos(map.get("bNeckPos"));
+            this.theHead.setRotation(map.get("bHead"));
+            this.theHead.setPos(map.get("bHeadPos"));
+            this.theLegFrontLeft.setRotation(map.get("bLlamaFL"));
+            this.theLegFrontRight.setRotation(map.get("bLlamaFR"));
+            this.theLegBackLeft.setRotation(map.get("bLlamaBL"));
+            this.theLegBackRight.setRotation(map.get("bLlamaBR"));
+            this.theLegBottomFrontLeft.setRotation(map.get("bLlamaBFL"));
+            this.theLegBottomFrontRight.setRotation(map.get("bLlamaBFR"));
+            this.theLegBottomBackLeft.setRotation(map.get("bLlamaBBL"));
+            this.theLegBottomBackRight.setRotation(map.get("bLlamaBBR"));
+            this.chests.setY(llama.suri ? -8.0F : -8.0F - (Math.max(data.coatlength, 0)));
+            this.theEarLeft.setRotation(map.get("bEarL"));
+            this.theEarRight.setRotation(map.get("bEarR"));
+            this.earTopLeft.setX(map.get("earT").x());
+            this.earTopRight.setX(-map.get("earT").x());
+            if (map.containsKey("nose")) {
+                this.nose.setPos(map.get("nose"));
+            } else {
+                this.nose.setPos(0.0F, llama.nosePlacement, 1.0F - data.growthAmount);
+            }
+        }
     }
 
     @Override
@@ -742,25 +1042,377 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         float drive = ageInTicks + (1000 * llamaModelData.random);
 
         if (llama != null) {
-            this.earTopLeft.setPos(llamaModelData.offsets.get("earTL"));
-            this.earTopRight.setPos(llamaModelData.offsets.get("earTR"));
-            this.nose.setPos(0.0F, llamaModelData.offsets.get("nose").y(),llamaModelData.growthAmount - 1.0F);
+            readInitialAnimationValues(llamaModelData, llama);
 
-            float bodyY = llama.suri ? Math.max(llamaModelData.coatlength, 0) : 0.0F;
-            this.body.setY(bodyY);
-            this.bodyWool1.setY(bodyY);
-            this.bodyWool2.setY(bodyY);
-            this.bodyWool3.setY(bodyY);
-            this.bodyWool4.setY(bodyY);
-            this.bodyWool5.setY(bodyY);
-            this.chests.setY(llama.suri ? -8.0F : -8.0F - (Math.max(llamaModelData.coatlength, 0)));
+            boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 
+            if (llamaModelData.earTwitchTimer <= ageInTicks) {
+                if (this.theEarLeft.getZRot() != 0.0F || this.theEarRight.getZRot() != 0.0F || this.theEarLeft.getYRot() != 0.0F || this.theEarRight.getYRot() != 0.0F) {
+                    this.theEarLeft.setZRot(this.lerpTo(0.1F, this.theEarLeft.getZRot(), 0.0F));
+                    this.theEarRight.setZRot(this.lerpTo(0.1F,this.theEarRight.getZRot(), 0.0F));
+                    this.theEarLeft.setYRot(this.lerpTo(0.15F, this.theEarLeft.getYRot(), 0.0F));
+                    this.theEarRight.setYRot(this.lerpTo(0.15F, this.theEarRight.getYRot(), 0.0F));
+                } else {
+                    llamaModelData.earTwitchSide = entityIn.getRandom().nextBoolean();
+                    llamaModelData.earTwitchTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(llamaModelData.sleeping ? 60 : 30) * 20) + 30;
+                }
+            } else if (llamaModelData.earTwitchTimer <= ageInTicks + 30) {
+                twitchEarAnimation(llamaModelData.earTwitchSide, (int)ageInTicks);
+            }
+
+            if (!isMoving && llamaModelData.sleeping) {
+                if (llamaModelData.sleepDelay == -1) {
+                    llamaModelData.sleepDelay = (int) ageInTicks + ((entityIn.getRandom().nextInt(10)) * 20) + 10;
+                } else if (llamaModelData.sleepDelay <= ageInTicks+50) {
+                    if (llamaModelData.sleepDelay <= ageInTicks) {
+                        llamaModelData.sleepDelay = 0;
+                        layDownAnimation(true);
+                    } else {
+                        layDownAnimation(false);
+                        headLookingAnimation(netHeadYaw, headPitch);
+                    }
+                }
+            } else {
+                if (llamaModelData.sleepDelay != -1) {
+                    llamaModelData.sleepDelay = -1;
+                }
+                if (this.theLlama.getY() > 12.0F) {
+                    standUpAnimation(isMoving, limbSwing, limbSwingAmount);
+                }
+
+                if (isMoving) {
+                    walkingLegsAnimation(limbSwing, limbSwingAmount);
+                } else if (this.theLlama.getY() <= 12.0F){
+                    standingLegsAnimation();
+                }
+
+                boolean flag = true;
+                if (llamaModelData.isEating != 0) {
+                    if (llamaModelData.isEating == -1) {
+                        llamaModelData.isEating = (int)ageInTicks + 90;
+                    } else if (llamaModelData.isEating < ageInTicks) {
+                        llamaModelData.isEating = 0;
+                    }
+                    flag = grazingAnimation(llamaModelData.isEating - (int)ageInTicks);
+                }
+
+                if (flag) {
+                    if (netHeadYaw == 0 && headPitch == 0) {
+                        moveHeadAnimation();
+                    } else {
+                        headLookingAnimation(netHeadYaw, headPitch);
+                    }
+                }
+            }
+
+            animateLegLinkage();
+
+            if (llamaModelData.saddle != SaddleType.NONE) {
+                orientateSaddle(llamaModelData.coatlength >= 1 ? llamaModelData.coatlength / 1.825F : llamaModelData.coatlength, llamaModelData.saddle);
+            }
+
+            saveAnimationValues(llamaModelData, llama);
         }
 
+    }
+    private void quickUp() {
+        this.theLlama.setY(this.theLlama.getY()-0.05F);
+        if (this.theLlama.getY() <= 12.0F) {
+            this.theLlama.setY(12.0F);
+            this.theLlama.setXRot(0.0F);
+            this.theLegFrontLeft.setXRot(0.0F);
+            this.theLegFrontRight.setXRot(0.0F);
+            this.theLegBackLeft.setXRot(0.0F);
+            this.theLegBackRight.setXRot(0.0F);
+        } else {
+            this.theLlama.setXRot(this.lerpTo(0.1F,this.theLlama.getXRot(), 0.0F));
+            this.theLegFrontLeft.setXRot(this.lerpTo(0.1F, this.theLegFrontLeft.getXRot(), 0.0F));
+            this.theLegFrontRight.setXRot(this.lerpTo(0.1F, this.theLegFrontRight.getXRot(), 0.0F));
+            this.theLegBackLeft.setXRot(this.lerpTo(0.1F,this.theLegBackLeft.getXRot(), 0.0F));
+            this.theLegBackRight.setXRot(this.lerpTo(0.1F,this.theLegBackRight.getXRot(), 0.0F));
+        }
+    }
+
+    private void standUpAnimation(boolean isMoving, float limbSwing, float limbSwingAmount) {
+        if (this.theLlama.getY() <= 16.5F) {
+            //part 2
+            if (this.theLlama.getY() == 16.5F) {
+                float l = this.theLegFrontLeft.getXRot();
+                float r = this.theLegFrontRight.getXRot();
+                if (l <= Mth.HALF_PI * -0.8F || r <= Mth.HALF_PI * -0.8F) {
+                    this.theLlama.setY(this.lerpTo(0.1F, this.theLlama.getY(), 12.0F));
+                    this.theLlama.setXRot(this.lerpTo(0.05F, this.theLlama.getXRot(), 0.0F));
+                    if (isMoving) {
+                        walkingLegsAnimation(limbSwing, limbSwingAmount);
+                    } else {
+                        standingLegsAnimation();
+                    }
+                } else if (l == r) {
+                    if (ThreadLocalRandom.current().nextBoolean()) {
+                        this.theLegFrontLeft.setXRot(l - 0.001F);
+                    } else {
+                        this.theLegFrontRight.setXRot(r - 0.001F);
+                    }
+                } else if (l < r) {
+                    this.theLegFrontLeft.setXRot(this.lerpTo(l, Mth.HALF_PI * -0.9F));
+                } else {
+                    this.theLegFrontRight.setXRot(this.lerpTo(r, Mth.HALF_PI * -0.9F));
+                }
+            } else {
+                this.theLlama.setY(this.lerpTo(0.1F, this.theLlama.getY(), 12.0F));
+                this.theLlama.setXRot(this.lerpTo(0.05F, this.theLlama.getXRot(), 0.0F));
+                if (isMoving) {
+                    walkingLegsAnimation(limbSwing, limbSwingAmount);
+                } else {
+                    standingLegsAnimation();
+                }
+            }
+        } else {
+            //part 1
+        this.theLlama.setY(this.lerpTo(0.1F, this.theLlama.getY(), 15.5F));
+        this.theLlama.setXRot(this.lerpTo(this.theLlama.getXRot(), Mth.HALF_PI * -0.1F));
+        this.theLegFrontLeft.setXRot(this.lerpTo(this.theLegFrontLeft.getXRot(), Mth.HALF_PI * 0.1F));
+        this.theLegFrontRight.setXRot(this.lerpTo(this.theLegFrontRight.getXRot(), Mth.HALF_PI * 0.1F));
+        this.theLegBottomFrontLeft.setXRot(this.lerpTo(this.theLegBottomFrontLeft.getXRot(), Mth.HALF_PI * 0.9F));
+        this.theLegBottomFrontRight.setXRot(this.lerpTo(this.theLegBottomFrontRight.getXRot(), Mth.HALF_PI * 0.9F));
+        this.theLegBackLeft.setXRot(this.lerpTo(this.theLegBackLeft.getXRot(), Mth.HALF_PI * -0.87F));
+        this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), Mth.HALF_PI * -0.87F));
+        this.theLegBottomBackLeft.setXRot(this.lerpTo(this.theLegBottomBackLeft.getXRot(), Mth.HALF_PI * 0.2F));
+        this.theLegBottomBackRight.setXRot(this.lerpTo(this.theLegBottomBackRight.getXRot(), Mth.HALF_PI * 0.2F));
+        if (theLlama.getY() < 16.5F) {
+            this.theLlama.setY(16.5F);
+        }
+        }
+    }
+
+    private void layDownAnimation(boolean asleep) {
+        if (asleep) {
+            this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), 0.0F));
+            this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
+        }
+        float v = this.theLlama.getY();
+        if (v >= 18.75F) {
+            if (v < 21.5F) {
+                this.theLlama.setY(18.75F + ((this.theLegBottomFrontLeft.getXRot()/Mth.PI * 0.85F)*3.25F));
+            } else if (v > 21.5F) {
+                this.theLlama.setY(21.25F);
+            }
+            this.theLlama.setY(21.25F);
+            if (asleep) {
+                this.theNeck.setY(this.lerpTo(this.theNeck.getY(), 6.0F));
+                this.theHead.setY(this.lerpTo(this.theHead.getY(), -13.0F));
+                this.theHead.setZ(this.lerpTo(this.theHead.getZ(), 0.0F));
+                this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI * 1.35F));
+                this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI * -1.35F));
+            }
+                //part 2
+            this.theLlama.setXRot(this.lerpTo(0.05F, this.theLlama.getXRot(), 0.0F));
+            this.theLegFrontLeft.setXRot(this.lerpTo(0.05F, this.theLegFrontLeft.getXRot(), Mth.HALF_PI*-0.7F));
+            this.theLegFrontRight.setXRot(this.lerpTo(0.05F, this.theLegFrontRight.getXRot(), Mth.HALF_PI*-0.7F));
+            this.theLegBottomFrontLeft.setXRot(this.lerpTo(0.05F, this.theLegBottomFrontLeft.getXRot(), Mth.PI * 0.85F));
+            this.theLegBottomFrontRight.setXRot(this.lerpTo(0.05F, this.theLegBottomFrontRight.getXRot(), Mth.PI * 0.85F));
+            this.theLegBackLeft.setXRot(this.lerpTo(0.05F, this.theLegBackLeft.getXRot(), Mth.HALF_PI * -1.3F));
+            this.theLegBackRight.setXRot(this.lerpTo(0.05F, this.theLegBackRight.getXRot(), Mth.HALF_PI * -1.3F));
+            this.theLegBottomBackLeft.setXRot(this.lerpTo(0.05F, this.theLegBottomBackLeft.getXRot(), Mth.HALF_PI * 0.3F));
+            this.theLegBottomBackRight.setXRot(this.lerpTo(0.05F, this.theLegBottomBackRight.getXRot(), Mth.HALF_PI * 0.3F));
+        } else {
+            //part1  -  y starts at 12.0F
+            this.theLlama.setY(12.0F + ((this.theLegBottomFrontLeft.getXRot()/Mth.HALF_PI)*7.8F));
+            this.theLlama.setXRot(this.lerpTo(this.theLlama.getXRot(), Mth.HALF_PI * 0.3F));
+            this.theLegFrontLeft.setXRot(this.lerpTo(this.theLegFrontLeft.getXRot(), Mth.HALF_PI * -0.3F));
+            this.theLegFrontRight.setXRot(this.lerpTo(this.theLegFrontRight.getXRot(), Mth.HALF_PI * -0.3F));
+            this.theLegBottomFrontLeft.setXRot(this.lerpTo(this.theLegBottomFrontLeft.getXRot(), Mth.HALF_PI));
+            this.theLegBottomFrontRight.setXRot(this.lerpTo(this.theLegBottomFrontRight.getXRot(), Mth.HALF_PI));
+            this.theLegBackLeft.setXRot(this.lerpTo(this.theLegBackLeft.getXRot(), Mth.HALF_PI * -0.3F));
+            this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), Mth.HALF_PI * -0.3F));
+            this.theLegBottomBackLeft.setXRot(this.lerpTo(this.theLegBottomBackLeft.getXRot(), 0.0F));
+            this.theLegBottomBackRight.setXRot(this.lerpTo(this.theLegBottomBackRight.getXRot(), 0.0F));
+        }
+    }
+
+    private boolean grazingAnimation(int ticks) {
+        if (ticks < 50) {
+            float neckRot = this.theNeck.getXRot();
+//            this.theNeck.setY(this.lerpTo(this.theNeck.getY(), 0.0F));
+            if (neckRot < Mth.HALF_PI) {
+                this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*1.55F));
+            } else if (neckRot < Mth.HALF_PI*1.25F){
+                this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*1.55F));
+                this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), -Mth.HALF_PI*0.5F));
+                this.theNeck.setY(this.lerpTo(this.theNeck.getY(), 7.0F));
+                this.theHead.setY(this.lerpTo(this.theHead.getY(), -9.0F));
+                this.theHead.setZ(this.lerpTo(this.theHead.getZ(), -2.0F));
+//                this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.1F));
+            } else {
+                float loop = (float) Math.cos(ticks*0.5F);
+                this.theNeck.setY(this.lerpTo(this.theNeck.getY(), 10.0F));
+                this.theHead.setY(this.lerpTo(this.theHead.getY(), -10.0F));
+                this.theHead.setZ(this.lerpTo(this.theHead.getZ(), -3.0F));
+                if (loop > 0) {
+                    this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*1.55F));
+                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), -Mth.HALF_PI));
+//                    this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.2F));
+                } else {
+                    this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*1.5F));
+                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), -Mth.HALF_PI*0.75F));
+//                    this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.05F));
+                }
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void moveHeadAnimation() {
+        this.theNeck.setY(this.lerpTo(this.theNeck.getY(), 3.0F));
+        this.theHead.setY(this.lerpTo(this.theHead.getY(), -8.0F));
+        this.theHead.setZ(this.lerpTo(this.theHead.getZ(), 0.0F));
+        this.lerpPart(this.theNeck, 0.0F, 0.0F, 0.0F);
+        this.lerpPart(this.theHead, 0.0F, 0.0F, 0.0F);
+    }
+
+    private void headLookingAnimation(float netHeadYaw, float headPitch) {
+        netHeadYaw = (netHeadYaw * 0.017453292F);
+        headPitch = ((headPitch * 0.017453292F));
+        float lookRotX = Math.min((headPitch * 0.85F), 0.0F);
+        float lookRotY = netHeadYaw * 0.5F;
+
+        this.theNeck.setY(this.lerpTo(this.theNeck.getY(), 3.0F));
+        this.theHead.setY(this.lerpTo(this.theHead.getY(), -8.0F));
+        this.theHead.setZ(this.lerpTo(this.theHead.getZ(), 0.0F));
+        this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), headPitch - lookRotX));
+        this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), lookRotY));
+        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), lookRotX));
+        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), limit(netHeadYaw - lookRotY, Mth.HALF_PI * 0.75F)));
+    }
+
+    private void walkingLegsAnimation(float limbSwing, float limbSwingAmount) {
+        float f = ((Mth.cos(limbSwing * 0.6662F)) * 1.4F * limbSwingAmount);
+        float f1 = (Mth.cos(limbSwing * 0.6662F + Mth.PI) * 1.4F * limbSwingAmount);
+
+        this.theLegFrontLeft.setXRot(f);
+        this.theLegFrontRight.setXRot(f1);
+        this.theLegBackLeft.setXRot(f);
+        this.theLegBackRight.setXRot(f1);
+        this.theLegBottomFrontLeft.setXRot(this.lerpTo(this.theLegBottomFrontLeft.getXRot(), 0.0F));
+        this.theLegBottomFrontRight.setXRot(this.lerpTo(this.theLegBottomFrontRight.getXRot(), 0.0F));
+        this.theLegBottomBackLeft.setXRot(this.lerpTo(this.theLegBottomBackLeft.getXRot(), 0.0F));
+        this.theLegBottomBackRight.setXRot(this.lerpTo(this.theLegBottomBackRight.getXRot(), 0.0F));
+    }
+
+    private void standingLegsAnimation() {
+        this.theLegFrontLeft.setXRot(this.lerpTo(this.theLegFrontLeft.getXRot(), 0.0F));
+        this.theLegFrontRight.setXRot(this.lerpTo(this.theLegFrontRight.getXRot(), 0.0F));
+        this.theLegBackLeft.setXRot(this.lerpTo(this.theLegBackLeft.getXRot(), 0.0F));
+        this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), 0.0F));
+        this.theLegBottomFrontLeft.setXRot(this.lerpTo(this.theLegBottomFrontLeft.getXRot(), 0.0F));
+        this.theLegBottomFrontRight.setXRot(this.lerpTo(this.theLegBottomFrontRight.getXRot(), 0.0F));
+        this.theLegBottomBackLeft.setXRot(this.lerpTo(this.theLegBottomBackLeft.getXRot(), 0.0F));
+        this.theLegBottomBackRight.setXRot(this.lerpTo(this.theLegBottomBackRight.getXRot(), 0.0F));
+    }
+
+    private void twitchEarAnimation(boolean side, int ticks) {
+        boolean direction = Math.cos(ticks*0.8F) > 0;
+        if (side) {
+            this.theEarLeft.setZRot(this.lerpTo(0.15F, this.theEarLeft.getZRot(), Mth.HALF_PI * 0.5F * (direction?-1F:-0.5F)));
+            this.theEarLeft.setYRot(this.lerpTo(0.15F, this.theEarLeft.getYRot(), Mth.HALF_PI * 0.5F * (direction?1F:0.5F)));
+            this.theEarRight.setZRot(this.lerpTo(0.15F, this.theEarRight.getZRot(), 0.0F));
+            this.theEarRight.setYRot(this.lerpTo(0.15F, this.theEarRight.getYRot(), 0.0F));
+        } else {
+            this.theEarRight.setZRot(this.lerpTo(0.15F, this.theEarRight.getZRot(), Mth.HALF_PI * 0.5F * (direction?1F:0.5F)));
+            this.theEarRight.setYRot(this.lerpTo(0.15F, this.theEarRight.getYRot(), Mth.HALF_PI * 0.5F * (direction?-1F:-0.5F)));
+            this.theEarLeft.setZRot(this.lerpTo(0.15F, this.theEarLeft.getZRot(), 0.0F));
+            this.theEarLeft.setYRot(this.lerpTo(0.15F, this.theEarLeft.getYRot(), 0.0F));
+        }
+    }
+
+    private void orientateSaddle(float coatLength, SaddleType saddleType) {
+        switch (saddleType) {
+            case VANILLA -> {
+                this.saddleVanilla.setY(-0.1F -coatLength);
+                this.stirrupNarrowLeft.setPos(7.5F + coatLength, 0.0F, 0.0F);
+                this.stirrupNarrowRight.setPos(-7.5F - coatLength, 0.0F, 0.0F);
+            }
+            case ENGLISH -> {
+                this.saddleEnglish.setY(-0.1F -coatLength);
+                this.saddleSideLeft.setPos(3.25F, -0.5F, -4.0F);
+                this.saddleSideRight.setPos(-3.25F, -0.5F, -4.0F);
+                this.saddleHorn.setPos(0.0F, -1.0F, -1.0F);
+                this.saddleHorn.setXRot(Mth.PI / 4.5F);
+                this.stirrupNarrowLeft.setPos(7.25F + coatLength, -0.25F, -1.5F);
+                this.stirrupNarrowRight.setPos(-7.25F - coatLength, -0.25F, -1.5F);
+            }
+            case WESTERN -> {
+                this.saddleWestern.setY(-0.1F - coatLength);
+                this.saddleSideLeft.setPos(4.75F, -1.0F, -5.25F);
+                this.saddleSideRight.setPos(-4.75F, -1.0F, -5.25F);
+                this.saddleHorn.setPos(0.0F, -2.0F, -2.0F);
+                this.saddleHorn.setXRot(Mth.PI * 0.125F);
+                this.stirrupWideLeft.setX(7.5F + coatLength);
+                this.stirrupWideRight.setX(-7.5F - coatLength);
+            }
+        }
+    }
+
+    private void animateLegLinkage() {
+        float flag = this.theLegBottomFrontLeft.getXRot();
+        if (flag > 0.0F) {
+            this.theLegBottomFrontLeft.setZ(-3.0F + (6.0F * (Math.min(flag, Mth.PI * 0.7F) / Mth.PI * 0.7F)));
+            this.theToeFrontLeft.setXRot(flag * 0.5F);
+            this.theToeFrontLeft.setZ(2.0F + (-1.0F * flag));
+        } else if (this.theLegBottomFrontLeft.getZ() != -3.0F) {
+            this.theLegBottomFrontLeft.setZ(-3.0F);
+            this.theToeFrontLeft.setXRot(0.0F);
+            this.theToeFrontLeft.setZ(2.0F);
+        }
+        flag = this.theLegBottomFrontRight.getXRot();
+        if (flag > 0.0F) {
+            this.theLegBottomFrontRight.setZ(-3.0F + (6.0F * (Math.min(flag, Mth.PI * 0.7F) / Mth.PI * 0.7F)));
+            this.theToeFrontRight.setXRot(flag * 0.5F);
+            this.theToeFrontRight.setZ(2.0F + (-1.0F * flag));
+        } else if (this.theLegBottomFrontRight.getZ() != -3.0F) {
+            this.theLegBottomFrontRight.setZ(-3.0F);
+            this.theToeFrontRight.setXRot(0.0F);
+            this.theToeFrontRight.setZ(2.0F);
+        }
+        flag = this.theLegBottomBackLeft.getXRot();
+        if (flag > 0.0F) {
+            this.theLegBackLeft.setY(flag * -1.0F);
+            this.theLegBackLeft.setZ(15.0F + (flag * 6.0F));
+            this.theLegBottomBackLeft.setZ(3.0F * flag);
+            this.theLegBottomBackLeft.setY(6.0F - (11.0F * flag));
+            this.theToeBackLeft.setXRot(flag * 3.5F);
+            this.theToeBackLeft.setZ(2.0F + (-3.0F * flag));
+        } else if (flag == 0.0F) {
+            this.theLegBackLeft.setY(0.0F);
+            this.theLegBackLeft.setZ(15.0F);
+            this.theLegBottomBackLeft.setY(6.0F);
+            this.theLegBottomBackLeft.setZ(0.0F);
+            this.theToeBackLeft.setXRot(0.0F);
+            this.theToeBackLeft.setZ(2.0F);
+        }
+        flag = this.theLegBottomBackRight.getXRot();
+        if (flag > 0.0F) {
+            this.theLegBackRight.setY(flag * -1.0F);
+            this.theLegBackRight.setZ(15.0F + (flag * 6.0F));
+            this.theLegBottomBackRight.setY(6.0F - (11.0F * flag));
+            this.theLegBottomBackRight.setZ(3.0F * flag);
+            this.theToeBackRight.setXRot(flag * 3.5F);
+            this.theToeBackRight.setZ(2.0F + (-3.0F * flag));
+        } else if (flag == 0.0F) {
+            this.theLegBackRight.setY(0.0F);
+            this.theLegBackRight.setZ(15.0F);
+            this.theLegBottomBackRight.setY(6.0F);
+            this.theLegBottomBackRight.setZ(0.0F);
+            this.theToeBackRight.setXRot(0.0F);
+            this.theToeBackRight.setZ(2.0F);
+        }
     }
 
     private class LlamaModelData extends AnimalModelData {
         int coatlength;
+        int maxCoat;
         public LlamaPhenotype getPhenotype() {
             return (LlamaPhenotype) this.phenotype;
         }
@@ -779,7 +1431,6 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         LlamaModelData llamaModelData = new LlamaModelData();
         additionalModelDataInfo(llamaModelData, enhancedLlama);
         setBaseInitialModelData(llamaModelData, enhancedLlama);
-        llamaModelData.offsets = saveAnimationValues(llamaModelData.getPhenotype());
     }
 
     @Override
@@ -787,6 +1438,8 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         ((LlamaModelData) animalModelData).coatlength = enhancedAnimal.getCoatLength();
         animalModelData.chests = enhancedAnimal.hasChest();
         animalModelData.blanket = enhancedAnimal.hasBlanket();
+        animalModelData.bridle = enhancedAnimal.hasBridle();
+        animalModelData.saddle = getSaddle(enhancedAnimal.getEnhancedInventory());
     }
 
     @Override

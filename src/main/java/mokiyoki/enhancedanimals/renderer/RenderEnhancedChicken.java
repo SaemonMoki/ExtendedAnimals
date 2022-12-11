@@ -78,11 +78,4 @@ public class RenderEnhancedChicken extends MobRenderer<EnhancedChicken, ModelEnh
 
         return resourcelocation;
     }
-
-    protected float getBob(EnhancedChicken livingBase, float partialTicks)
-    {
-        float f = livingBase.oFlap + (livingBase.wingRotation - livingBase.oFlap) * partialTicks;
-        float f1 = livingBase.oFlapSpeed + (livingBase.destPos - livingBase.oFlapSpeed) * partialTicks;
-        return (Mth.sin(f) + 1.0F) * f1;
-    }
 }

@@ -330,6 +330,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                         .addBox(8.0F, 0.0F, 0.0F, 8, 8, 3),
                 PartPose.offsetAndRotation(0.0F, 8.0F, 3.0F, 0.0F, Mth.HALF_PI, 0.0F)
         );
+        base.addOrReplaceChild("saddle", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 4.0F, 10.0F, -Mth.HALF_PI, 0.0F, 0.0F));
         base.addOrReplaceChild("saddleW", CubeListBuilder.create()
                         .texOffs(210, 0)
                         .addBox(-5.0F, -2.0F, -5.0F, 10, 2, 13)
@@ -348,7 +349,6 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                         .addBox(-3.5F, -2.0F, 7.5F, 7, 2, 2),
                 PartPose.offsetAndRotation(0.0F, 4.0F, 10.0F, -Mth.HALF_PI, 0.0F, 0.0F)
         );
-        base.addOrReplaceChild("saddle", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 4.0F, 10.0F, -Mth.HALF_PI, 0.0F, 0.0F));
         base.addOrReplaceChild("saddleH", CubeListBuilder.create()
                         .texOffs(234, 19)
                         .addBox(-4.0F, -2.0F, -3.0F, 8, 2, 3),
@@ -679,21 +679,22 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         }
     }
 
-    protected Map<String, Vector3f> saveAnimationValues(PigModelData data, PigPhenotype pig) {
+    protected void saveAnimationValues(PigModelData data, PigPhenotype pig) {
         Map<String, Vector3f> map = data.offsets;
         map.put("bPig", this.getRotationVector(this.thePig));
-        map.put("bPigPos", this.getOffsetVector(this.thePig));
+        map.put("bPigPos", this.getPosVector(this.thePig));
         map.put("snout", this.getRotationVector(this.snout));
         map.put("jaw", this.getRotationVector(this.jaw));
         map.put("bNeck", this.getRotationVector(this.theNeck));
         map.put("bHead", this.getRotationVector(this.theHead));
         if (data.growthAmount == 1.0F && !map.containsKey("bMouthPos")) {
-            map.put("bMouthPos",this.getOffsetVector(this.theMouth));
+            map.put("bMouthPos",this.getPosVector(this.theMouth));
+            map.put("tuskPos",new Vector3f(-4.25F - (-2.5F * pig.snoutLength), -4.75F - (-2.5F * pig.snoutLength), 0.0F));
         }
         map.put("bEarL", this.getRotationVector(this.theEarLeft));
         map.put("bEarR", this.getRotationVector(this.theEarRight));
-        map.put("bEarLPos", this.getOffsetVector(this.theEarLeft));
-        map.put("bEarRPos", this.getOffsetVector(this.theEarRight));
+        map.put("bEarLPos", this.getPosVector(this.theEarLeft));
+        map.put("bEarRPos", this.getPosVector(this.theEarRight));
         map.put("bLegFL", this.getRotationVector(this.theLegFrontLeft));
         map.put("bLegFR", this.getRotationVector(this.theLegFrontRight));
         map.put("bLegBL", this.getRotationVector(this.theLegBackLeft));
@@ -704,26 +705,6 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         map.put("tail3", this.getRotationVector(this.tail3));
         map.put("tail4", this.getRotationVector(this.tail4));
         map.put("tail5", this.getRotationVector(this.tail5));
-
-        /*
-            shortest nose Y rotation point:
-                snout = -2.0F
-                topTusks = -4.5F
-                bottomTusks = -5.0F
-
-            longest nose Y rotation point:
-                snout = -7.0F
-                topTusks = -1.0F
-                bottomTusks = -2.0F
-         */
-
-//        map.put("bMouth", new Vector3f(0.0F, -(2.0F + (4.75F * pig.snoutLength)), -3.0F));
-//        map.put("bMouthRot", new Vector3f((Mth.HALF_PI-(pig.snoutLength*Mth.HALF_PI)), 0.0F, 0.0F));
-//        map.put("tuskTL", new Vector3f(0.5F, -(4.5F - (3.5F * pig.snoutLength)), 0.5F));
-//        map.put("tuskTR", new Vector3f(-0.5F, -(4.5F - (3.5F * pig.snoutLength)), 0.5F));
-//        map.put("tuskBL", new Vector3f(0.5F, -(5.0F - (3.0F * pig.snoutLength)), 1.0F));
-//        map.put("tuskBR", new Vector3f(-0.5F, -(5.0F - (3.0F * pig.snoutLength)), 1.0F));
-        return map;
     }
 
     private void readInitialAnimationValues(PigModelData data, PigPhenotype pig) {
@@ -739,6 +720,10 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
             this.theHead.setRotation(map.get("bHead"));
             if (map.containsKey("bMouthPos")) {
                 this.theMouth.setPos(map.get("bMouthPos"));
+                this.tusksTopLeft.setY(map.get("tuskPos").x());
+                this.tusksTopRight.setY(map.get("tuskPos").x());
+                this.tusksBottomLeft.setY(map.get("tuskPos").y());
+                this.tusksBottomRight.setY(map.get("tuskPos").y());
             } else {
                 this.theMouth.setY((-4.0F-data.growthAmount) - ((2.5F + (2.5F * data.growthAmount)) * pig.snoutLength));
             }
@@ -819,25 +804,18 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.currentAnimal = entityIn.getId();
-        PigModelData pigModelData = getCreatePigModelData(entityIn);
-        PigPhenotype pig = pigModelData.getPhenotype();
-        float drive = ageInTicks + (1000 * pigModelData.random);
+        PigModelData data = getCreatePigModelData(entityIn);
+        PigPhenotype pig = data.getPhenotype();
+        float drive = ageInTicks + (1000 * data.random);
 
         if (pig!=null) {
-            readInitialAnimationValues(pigModelData, pig);
+            readInitialAnimationValues(data, pig);
+            boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 
-//            this.neck.xRot = twoPi + ((headPitch * 0.017453292F) / 5.0F) + (this.headRotationAngleX / 2.0F);
-//            this.head.xRot = ((headPitch * 0.017453292F) / 5.0F) + (this.headRotationAngleX / 2.0F);
-//
-//            float headYaw = netHeadYaw - Math.round(netHeadYaw / 180) * 180;
-//            this.head.zRot = headYaw * 0.017453292F * -0.5F;
-
-            boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.getXRot() != entityIn.xRotO || entityIn.getYRot() != entityIn.yRotO || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
-
-            if (pigModelData.earTwitchTimer <= ageInTicks) {
+            if (data.earTwitchTimer <= ageInTicks) {
                 float[] oldRot;
-                boolean flag = false;
-                if (pigModelData.earTwitchSide) {
+                boolean flag;
+                if (data.earTwitchSide) {
                     oldRot = new float[]{this.theEarLeft.getXRot(), this.theEarLeft.getYRot(), this.theEarLeft.getZRot()};
                     calculateEars(pig);
                     flag = oldRot[0] == this.theEarLeft.getXRot() && oldRot[1] == this.theEarLeft.getYRot() && oldRot[2] == this.theEarLeft.getZRot();
@@ -848,10 +826,10 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                 }
 
                 if (flag) {
-                    pigModelData.earTwitchSide = entityIn.getRandom().nextBoolean();
-                    pigModelData.earTwitchTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(pigModelData.sleeping ? 60 : 30) * 20) + 30;
+                    data.earTwitchSide = entityIn.getRandom().nextBoolean();
+                    data.earTwitchTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(data.sleeping ? 60 : 30) * 20) + 30;
                 } else {
-                    if (pigModelData.earTwitchSide) {
+                    if (data.earTwitchSide) {
                         this.theEarLeft.setXRot(this.lerpTo(oldRot[0], this.theEarLeft.getXRot()));
                         this.theEarLeft.setYRot(this.lerpTo(oldRot[1], this.theEarLeft.getYRot()));
                         this.theEarLeft.setZRot(this.lerpTo(oldRot[2], this.theEarLeft.getZRot()));
@@ -861,11 +839,11 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                         this.theEarRight.setZRot(this.lerpTo(oldRot[2], this.theEarRight.getZRot()));
                     }
                 }
-            } else if (pigModelData.earTwitchTimer <= ageInTicks + 30) {
-                twitchEarAnimation(pigModelData.earTwitchSide, (int)ageInTicks);
+            } else if (data.earTwitchTimer <= ageInTicks + 30) {
+                twitchEarAnimation(data.earTwitchSide, (int)ageInTicks);
             }
 
-            if (pigModelData.sleeping && !isMoving) {
+            if (data.sleeping && !isMoving) {
                 if (this.thePig.getY() < 22.0F && this.thePig.getZRot() == 0.0F) {
                     layDownAnimation();
                 } else {
@@ -882,13 +860,13 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                 }
 
                 boolean flag = true;
-                if (pigModelData.isEating != 0) {
-                    if (pigModelData.isEating == -1) {
-                        pigModelData.isEating = (int)ageInTicks + 90;
-                    } else if (pigModelData.isEating < ageInTicks) {
-                        pigModelData.isEating = 0;
+                if (data.isEating != 0) {
+                    if (data.isEating == -1) {
+                        data.isEating = (int)ageInTicks + 90;
+                    } else if (data.isEating < ageInTicks) {
+                        data.isEating = 0;
                     }
-                    flag = grazingAnimation(pigModelData.isEating - (int)ageInTicks);
+                    flag = grazingAnimation(data.isEating - (int)ageInTicks);
                 }
 
                 if (flag) {
@@ -901,13 +879,13 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
 
                 if (isMoving) {
                     walkingLegsAnimation(limbSwing, limbSwingAmount);
-                } else {
+                } else if (this.thePig.getY() == 16.0F ){
                     standingLegsAnimation();
                 }
             }
 
-            if (pigModelData.saddle != SaddleType.NONE) {
-                switch (pigModelData.saddle) {
+            if (data.saddle != SaddleType.NONE) {
+                switch (data.saddle) {
                     case VANILLA -> {
                         this.stirrupNarrowLeft.setPos(8.0F, 0.0F, 0.0F);
                         this.stirrupNarrowRight.setPos(-8.0F, 0.0F, 0.0F);
@@ -929,7 +907,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
                 }
             }
 
-           saveAnimationValues(pigModelData, pig);
+           saveAnimationValues(data, pig);
         }
 
     }
@@ -1035,10 +1013,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         }
         if (this.thePig.getZRot() > 0.0F) {
             this.thePig.setZRot(this.lerpTo(this.thePig.getZRot(), Mth.HALF_PI));
-            this.thePig.setY(this.lerpTo(this.thePig.getY(), 20.0F));
-            this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), 0.0F));
             this.theNeck.setZRot(this.lerpTo(this.theNeck.getZRot(), Mth.HALF_PI * 0.05F));
-            this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), 0.0F));
             this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), Mth.HALF_PI * 0.1F));
             this.theLegFrontLeft.setXRot(this.lerpTo(this.theLegFrontLeft.getXRot(), -Mth.HALF_PI * 0.75F));
             this.theLegFrontRight.setXRot(this.lerpTo(this.theLegFrontRight.getXRot(), -Mth.HALF_PI));
@@ -1049,10 +1024,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
 
         } else {
             this.thePig.setZRot(this.lerpTo(this.thePig.getZRot(), -Mth.HALF_PI));
-            this.thePig.setY(this.lerpTo(this.thePig.getY(), 20.0F));
-            this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), 0.0F));
             this.theNeck.setZRot(this.lerpTo(this.theNeck.getZRot(), -Mth.HALF_PI * 0.05F));
-            this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), 0.0F));
             this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), -Mth.HALF_PI * 0.1F));
             this.theLegFrontLeft.setXRot(this.lerpTo(this.theLegFrontLeft.getXRot(), -Mth.HALF_PI));
             this.theLegFrontLeft.setYRot(this.lerpTo(this.theLegFrontLeft.getYRot(), Mth.HALF_PI * 0.25F));
@@ -1061,6 +1033,9 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
             this.theLegBackLeft.setYRot(this.lerpTo(this.theLegBackLeft.getYRot(), Mth.HALF_PI * 0.25F));
             this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), -Mth.HALF_PI * 1.25F));
         }
+        this.thePig.setY(this.lerpTo(this.thePig.getY(), 20.0F));
+        this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), 0.0F));
+        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), 0.0F));
     }
 
     private void headLookingAnimation(float netHeadYaw, float headPitch) {
@@ -1077,10 +1052,8 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     }
 
     private void moveHeadAnimation() {
-        this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), 0.0F));
-        this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), 0.0F));
-        this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), 0.0F));
-        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
+        this.lerpPart(this.theNeck, 0.0F, 0.0F, 0.0F);
+        this.lerpPart(this.theHead, 0.0F, 0.0F, 0.0F);
         this.snout.setXRot(this.lerpTo(this.snout.getXRot(), 0.0F));
         this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), 0.0F));
     }

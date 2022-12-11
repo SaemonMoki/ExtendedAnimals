@@ -8,6 +8,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedLookRandomlyGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedPanicGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
+import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
 import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
 import mokiyoki.enhancedanimals.ai.general.chicken.ECWanderAvoidWater;
@@ -247,8 +248,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     public float oFlap;
     private float wingRotDelta = 1.0F;
     private int timeUntilNextEgg;
-    private int grassTimer;
-    private int sandBathTimer;
+    protected GrazingGoal grazingGoal;
 
     private String dropMeatType;
     public boolean chickenJockey;
@@ -296,7 +296,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @Override
     protected void registerGoals() {
         int napmod = this.random.nextInt(1200);
-//        this.grazingGoal = new GrazingGoalChicken(this, 1.0D);
+        this.grazingGoal = new GrazingGoalChicken(this, 1.0D);
 //        this.ecSandBath = new ECSandBath(this);
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new EnhancedPanicGoal(this, 1.4D));
@@ -313,7 +313,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         this.goalSelector.addGoal(9, new SeekShelterGoal(this, 1.0D, 6000, 7500, napmod));
         this.goalSelector.addGoal(10, new ECWanderAvoidWater(this, 1.0D));
 //        this.goalSelector.addGoal(11, new EnhancedEatPlantsGoal(this, createGrazingMap()));
-//        this.goalSelector.addGoal(12, this.grazingGoal);
+        this.goalSelector.addGoal(12, this.grazingGoal);
         this.goalSelector.addGoal(14, new EnhancedWanderingGoal(this, 1.0D));
         this.goalSelector.addGoal(15, new EnhancedLookAtGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(16, new EnhancedLookAtGoal(this, EnhancedChicken.class, 6.0F));
@@ -322,7 +322,7 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     }
 
     protected void customServerAiStep() {
-//        this.grassTimer = this.grazingGoal.getEatingGrassTimer();
+        this.animalEatingTimer = this.grazingGoal.getEatingGrassTimer();
 //        this.sandBathTimer = this.ecSandBath.getSandBathTimer();
         super.customServerAiStep();
     }
@@ -381,15 +381,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         }
 
         return super.mobInteract(entityPlayer, hand);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void handleEntityEvent(byte id) {
-        if (id == 10) {
-            this.grassTimer = 40;
-        } else {
-            super.handleEntityEvent(id);
-        }
     }
 
     public void setSharedGenesFromEntityEgg(String genes) {
@@ -2132,14 +2123,14 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
                 }
 
                 //after finished autosomalGenes
-                addTextureToAnimal("new_ground.png");
+//                addTextureToAnimal("new_ground.png");
 //                addTextureToAnimal("new_lace.png");
 //                addTextureToAnimal("new_mottles.png");
-//                addTextureToAnimal(CHICKEN_TEXTURES_GROUND, ground, null);
-//                addTextureToAnimal(CHICKEN_TEXTURES_PATTERN, pattern, p -> p <= 350);
-//                addTextureToAnimal(CHICKEN_TEXTURES_MOORHEAD, moorhead, m -> m != 0);
-//                addTextureToAnimal(CHICKEN_TEXTURES_MOTTLEMARKINGS, mottles, m -> m != 0);
-//                addTextureToAnimal(CHICKEN_TEXTURES_WHITE, white, w -> w != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_GROUND, ground, null);
+                addTextureToAnimal(CHICKEN_TEXTURES_PATTERN, pattern, p -> p <= 350);
+                addTextureToAnimal(CHICKEN_TEXTURES_MOORHEAD, moorhead, m -> m != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_MOTTLEMARKINGS, mottles, m -> m != 0);
+                addTextureToAnimal(CHICKEN_TEXTURES_WHITE, white, w -> w != 0);
 
                 addTextureToAnimal(CHICKEN_TEXTURES_SHANKS, shanks, null);
                 addTextureToAnimal(CHICKEN_TEXTURES_FACE, face, f -> f >= 1);

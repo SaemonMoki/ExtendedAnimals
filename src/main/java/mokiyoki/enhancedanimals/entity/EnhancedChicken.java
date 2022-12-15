@@ -2474,6 +2474,23 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
         return false;
     }
 
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
+
+        compound.putBoolean("IsChickenJockey", this.isChickenJockey());
+
+    }
+
+    /**
+     * (abstract) Protected helper method to read subclass entity assets from NBT.
+     */
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+
+        setChickenJockey(compound.getBoolean("IsChickenJockey"));
+
+    }
+
     @Nullable
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {

@@ -161,7 +161,7 @@ public class CowBreeds {
             ));
 
     public static final Breed ANKOL = new Breed(new Breed.Properties().setData("ankol", Biomes.SAVANNA, Breed.Rarity.COMMON)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "10%1","2|3").add(12, "2","2","2|3|4","_","2","_","25%2","1").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "2","1","1","2","2","2")
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "10%1","2|3").add(12, "2","2","2|3|4","_","2","_","25%2","1").add(38, "1").add(44, "1").add(48, "1").add(54, "2").add(70, "1","1","2").add(80, "2","1","1","2","2","2")
                     .add(92,"9999")
                     .add(94, "56529-677711")
                     .add(96,"39-94")

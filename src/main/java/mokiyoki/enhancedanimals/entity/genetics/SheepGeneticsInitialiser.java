@@ -44,18 +44,18 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
 //            return new Genes(new int[]{4, 6, 1, 2, 3, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1});
 //        }
 
-        //Agouti? [ Dom.White, Grey, Badgerface, Mouflon+, EnglishBlue, Rec.Black ]
+        //Agouti? [ Dom.White, Grey, Blackbelly_0, Mouflon, EnglishBlue, Rec.Black, Blackbelly_1, Blackbelly_2, Blackbelly_3, Blackbelly_4, Blackbelly_5, light_mouflon, WildMouflon, Blue_German, Light_Blue, Paddington_Blue ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(6) + 1);
+            autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(16) + 1);
 
         } else {
-            autosomalGenes[0] = (4);
+            autosomalGenes[0] = (13);
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[1] = (ThreadLocalRandom.current().nextInt(6) + 1);
+            autosomalGenes[1] = (ThreadLocalRandom.current().nextInt(16) + 1);
 
         } else {
-            autosomalGenes[1] = (4);
+            autosomalGenes[1] = (13);
         }
 
         //Chocolate [ Wildtype+, chocolate ]
@@ -580,6 +580,29 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
 
         } else {
             autosomalGenes[71] = 1;
+        }
+
+        // [1:wildtype, 2:darker(dominant), 3:tan, 4:cream, 5:white
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[72] = (ThreadLocalRandom.current().nextInt(5) + 1);
+
+        } else {
+            autosomalGenes[72] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[73] = (ThreadLocalRandom.current().nextInt(5) + 1);
+
+        } else {
+            autosomalGenes[73] = 1;
+        }
+
+        // fine detail rufous genes
+        for (int i = 74; i < 90; i++) {
+            if (ThreadLocalRandom.current().nextInt(100) > WTC*0.6F) {
+                autosomalGenes[i] = ThreadLocalRandom.current().nextInt(2)+1;
+            } else {
+                autosomalGenes[i] = 1;
+            }
         }
 
         return new Genes(autosomalGenes);

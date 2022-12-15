@@ -33,6 +33,8 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
 
     protected WrappedModelPart eyes;
     protected WrappedModelPart chests;
+    protected WrappedModelPart chestsR;
+
     protected WrappedModelPart collar;
     protected WrappedModelPart collarHardware;
     protected WrappedModelPart saddleVanilla;
@@ -155,6 +157,8 @@ public abstract class EnhancedAnimalModel<T extends EnhancedAnimalAbstract & Ler
             }
             if (this.bridle != null) {
                 this.bridle.show(animalModelData.bridle);
+            }
+            if (this.bridleNose != null) {
                 this.bridleNose.show(animalModelData.bridle);
             }
             if (this.chests != null) {

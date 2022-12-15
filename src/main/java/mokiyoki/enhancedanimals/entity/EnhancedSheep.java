@@ -75,14 +75,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     private static final EntityDataAccessor<Byte> DYE_COLOUR = SynchedEntityData.<Byte>defineId(EnhancedSheep.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Integer> MILK_AMOUNT = SynchedEntityData.defineId(EnhancedSheep.class, EntityDataSerializers.INT);
 
-    private static final String[] SHEEP_TEXTURES_UNDER = new String[] {
-            "c_solid_tan.png", "c_solid_black.png", "c_solid_choc.png", "c_solid_lighttan.png",
-            "c_solid_tan_red.png", "c_solid_choc.png", "c_solid_tan", "c_solid_lighttan_red.png"
-    };
-
     private static final String[] SHEEP_TEXTURES_PATTERN = new String[] {
-            "", "c_solid_white.png", "c_badger_black.png", "c_badger_choc.png", "c_mouflonbadger_black.png", "c_mouflonbadger_choc.png", "c_mouflon_black.png", "c_mouflon_choc.png", "c_blue_black.png", "c_blue_choc.png", "c_solid_black.png", "c_solid_choc.png",
-                "c_solid_white.png", "c_badger_black_red.png", "c_badger_choc_red.png", "c_mouflonbadger_black_red.png", "c_mouflonbadger_choc_red.png", "c_mouflon_black_red.png", "c_mouflon_choc_red.png", "c_blue_black_red.png", "c_blue_choc_red.png", "c_solid_black_red.png", "c_solid_choc_red.png"
+            "", "b_blackbelly_0.png", "b_blackandtan_0.png", "b_english_blue.png",
+                "b_blackbelly_1.png", "b_blackbelly_2.png", "b_blackbelly_3.png", "b_blackbelly_4.png", "b_blackbelly_5.png",
+                "b_blackandtan_1.png", "b_blackandtan_2.png",
+                "b_blue_german.png", "b_light_blue.png", "b_paddington_blue.png", "b_solid.png"
     };
 
     private static final String[] SHEEP_TEXTURES_GREY = new String[] {
@@ -1005,7 +1002,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             int[] gene = getSharedGenes().getAutosomalGenes();
 
             int under = 0;
-            int pattern = 0;
+            int pattern1 = 0;
+            int pattern2 = 0;
             int grey = 0;
             int spots = 0;
             int pigmentedHead = 0;
@@ -1018,49 +1016,17 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             if (gene[4] == 1 || gene[5] ==1){
                 //black sheep
-                under = 1;
-            }else {
-                if (gene[0] == 1 || gene[1] == 1) {
-                    //white sheep
-                    pattern = 1;
-                }else if (gene[0] == 2 || gene[1] == 2){
-                    grey = 1;
-                    if (gene[0] == 3 || gene[1] == 3){
-                        pattern = 2;
-                    }else if (gene[0] == 4 || gene[1] == 4){
-                        pattern = 6;
-                    }else{
-                        pattern = 10;
-                    }
-                }else if(gene[0] == 3 || gene[1] == 3){
-                    if(gene[0] == 4 || gene[1] == 4){
-                        pattern = 4;
-                    }else{
-                        pattern = 2;
-                    }
-                }else if (gene[0] == 4 || gene[1] == 4){
-                    pattern = 6;
-                }else if (gene[0] == 5 || gene[1] == 5){
-                    pattern = 8;
-                    under = 3;
-                }else{
-                    pattern = 10;
+                pattern1 = 14;
+            }else if (gene[0] != 1 && gene[1] != 1) {
+                pattern1 = gene[0] <= 2 ? 0 : gene[0]-2;
+                pattern2 = gene[1] <= 2 ? 0 : gene[1]-2;
+                if (pattern1 > 4) {
+                    pattern1 = pattern1 == 5 ? 14 : pattern1-1;
                 }
-
-                //red variant
-                if (gene[4] == 3 && gene[5] == 3){
-                    under = under + 4;
-                    pattern = pattern + 11;
+                if (pattern2 > 4) {
+                    pattern2 = pattern2 == 5 ? 14 : pattern2-1;
                 }
-            }
-
-            //chocolate variant
-            if (gene[2] == 2 && gene[3] == 2){
-                if (pattern == 0) {
-                    under = 2;
-                } else if (pattern!=1 && pattern!=12){
-                    pattern = pattern + 1;
-                }
+                pattern2 = pattern1 == pattern2 ? 0 : pattern2;
             }
 
             //basic spots
@@ -1099,20 +1065,23 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             boolean ticked = !this.isBaby() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHead != 0);
 
-            addTextureToAnimal(SHEEP_TEXTURES_UNDER, under, null);
-            addTextureToAnimal(SHEEP_TEXTURES_PATTERN, pattern, l -> l != 0);
-            addTextureToAnimal(SHEEP_TEXTURES_GREY, grey, l -> l != 0);
-            if (ticked) {
-                this.enhancedAnimalTextures.add("alpha_group_start");
-            }
-            addTextureToAnimal(SHEEP_TEXTURES_SPOTS, spots, l -> l != 0);
-            addTextureToAnimal(SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHead, l -> l != 0);
-            if (ticked) {
-                this.enhancedAnimalTextures.add("alpha_group_end");
-            }
+            addTextureToAnimal("r_solid_white.png");
+//            addTextureToAnimal("self_black.png");
+//            addTextureToAnimal("grey.png");
+            addTextureToAnimal(SHEEP_TEXTURES_PATTERN, pattern1, l -> l != 0);
+            addTextureToAnimal(SHEEP_TEXTURES_PATTERN, pattern2, l -> l != 0);
+//            addTextureToAnimal(SHEEP_TEXTURES_GREY, grey, l -> l != 0);
+//            if (ticked) {
+//                this.enhancedAnimalTextures.add("alpha_group_start");
+//            }
+//            addTextureToAnimal(SHEEP_TEXTURES_SPOTS, spots, l -> l != 0);
+//            addTextureToAnimal(SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHead, l -> l != 0);
+//            if (ticked) {
+//                this.enhancedAnimalTextures.add("alpha_group_end");
+//            }
+            addTextureToAnimal(SHEEP_TEXTURES_FUR, fur, null);
             addTextureToAnimal(SHEEP_TEXTURES_SKIN, skin, null);
             addTextureToAnimal(SHEEP_TEXTURES_HOOVES, hooves, null);
-            addTextureToAnimal(SHEEP_TEXTURES_FUR, fur, null);
             addTextureToAnimal(SHEEP_TEXTURES_EYES, eyes, null);
         }
     }
@@ -1132,7 +1101,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     public Colouration getRgb() {
-        boolean flag = this.colouration.getMelaninColour() == -1;
+        boolean flag = this.colouration.getMelaninColour() == -1 || this.colouration.getPheomelaninColour() == -1;
         this.colouration = super.getRgb();
 
         if(this.colouration == null) {
@@ -1140,16 +1109,104 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         }
 
         if (flag) {
-            float[] melanin = Colouration.getHSBFromABGR(this.colouration.getMelaninColour());
+            int[] gene = getSharedGenes().getAutosomalGenes();
+            float[] melanin = {0.0F, 0.05F, 0.05F};
+            float[] pheomelanin = getBasePheomelanin(gene[72]);
+            float[] f = getBasePheomelanin(gene[73]);
+
+            pheomelanin[0] = (pheomelanin[0] + f[0]) * 0.5F;
+            pheomelanin[1] = (pheomelanin[1] + f[1]) * 0.5F;
+            pheomelanin[2] = (pheomelanin[2] + f[2]) * 0.5F;
+
+            int r = 0;
+            for (int i = 74; i < 90; i++) {
+                if (gene[i] == 2) {
+                    r = i < 82 ? r-1 : r+1;
+                }
+            }
+            if (r != 0) {
+                if (r < 0) {
+                    pheomelanin[0] = (((pheomelanin[0] * (10+r))) + (0.025F * -r)) * 0.1F;
+                    if (pheomelanin[2] > 0.5F) {
+                        pheomelanin[0] = pheomelanin[0] + (0.035F * (1.0F - pheomelanin[2]));
+                    }
+                } else {
+                    pheomelanin[0] = (((pheomelanin[0] * (10-r))) + (0.09F * r)) * 0.1F;
+                }
+            }
+
+            if (gene[4] == 3 && gene[5] == 3) {
+                //sheep is red
+                melanin[0] = pheomelanin[0];
+                melanin[1] = pheomelanin[1];
+                melanin[2] = (pheomelanin[1] + melanin[2]) * 0.5F;
+            } else if (gene[2] == 2 && gene[3] == 2) {
+                //chocolate variant
+                melanin[0] = Colouration.mixHueComponent(melanin[0], 0.1F, 0.3F);
+                melanin[1] = melanin[1] + ((1.0F - melanin[1]) * 0.45F);
+                melanin[2] = melanin[2] + ((1.0F - melanin[2]) * 0.25F);
+            }
+
+            //checks that numbers are within the valid range
+            for (int i = 0; i <= 2; i++) {
+                if (melanin[i] > 1.0F) {
+                    melanin[i] = 1.0F;
+                } else if (melanin[i] < 0.0F) {
+                    melanin[i] = 0.0F;
+                }
+                if (pheomelanin[i] > 1.0F) {
+                    pheomelanin[i] = 1.0F;
+                } else if (pheomelanin[i] < 0.0F) {
+                    pheomelanin[i] = 0.0F;
+                }
+            }
 
             melanin[0] = 0.02F;
             melanin[1] = 0.5F;
             melanin[2] = 0.02F;
 
-            this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], 1F));
+            this.colouration.setMelaninColour(Colouration.HSBAtoABGR(melanin[0], melanin[1], melanin[2], 0.5F));
+            this.colouration.setPheomelaninColour(Colouration.HSBAtoABGR(pheomelanin[0], pheomelanin[1], pheomelanin[2], 0.5F));
         }
 
         return this.colouration;
+    }
+
+    private float[] getBasePheomelanin(int gene) {
+        float[] red = new float[3];
+        switch (gene) {
+            case 1 -> {
+                red[0] = 0.07F;
+                red[1] = 0.6F;
+                red[2] = 0.5F;
+            }
+            case 2 -> {
+                red[0] = 0.05F;
+                red[1] = 0.61F;
+                red[2] = 0.4F;
+            }
+            case 3 -> {
+                red[0] = 0.075F;
+                red[1] = 0.45F;
+                red[2] = 0.6F;
+            }
+            case 4 -> {
+                red[0] = 0.085F;
+                red[1] = 0.35F;
+                red[2] = 0.65F;
+            }
+            case 5 -> {
+                red[0] = 0.085F;
+                red[1] = 0.3F;
+                red[2] = 0.87F;
+            }
+            case 6 -> {
+                red[0] = 0.85F;
+                red[1] = 0.05F;
+                red[2] = 0.95F;
+            }
+        }
+        return red;
     }
 
     @Override

@@ -912,7 +912,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
 
     }
 
-    private boolean grazingAnimation(int ticks) {
+    private boolean grazingAnimation(float ticks) {
         if (ticks < 50) {
             float neckRot = this.theNeck.getXRot();
             if (neckRot < Mth.HALF_PI*0.1F) {
@@ -1075,7 +1075,7 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
         this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), -Mth.HALF_PI));
     }
 
-    private void twitchEarAnimation(boolean side, int ticks) {
+    private void twitchEarAnimation(boolean side, float ticks) {
         boolean direction = Math.cos(ticks*0.8F) > 0;
         if (side) {
             this.theEarLeft.setXRot(this.theEarLeft.getXRot() + (direction ? 0.07F : -0.07F));

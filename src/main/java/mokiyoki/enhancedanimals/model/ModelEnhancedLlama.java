@@ -891,7 +891,6 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
 
         if (llama!=null) {
             super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
             int maxCoatLength = llamaModelData.growthAmount == 1.0F ? llama.maxCoat : (int)(llama.maxCoat*llamaModelData.growthAmount);
@@ -966,7 +965,7 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
             poseStack.scale(1.0F, 1.0F, 1.0F);
             poseStack.translate(0.0F, 0.0F, 0.0F);
 
-            gaRender(this.theLlama, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            gaRender(this.theLlama, mapOfScale, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             poseStack.popPose();
         }
@@ -1037,35 +1036,35 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.currentAnimal = entityIn.getId();
-        LlamaModelData llamaModelData = getCreateLlamaModelData(entityIn);
-        LlamaPhenotype llama = llamaModelData.getPhenotype();
-        float drive = ageInTicks + (1000 * llamaModelData.random);
+        LlamaModelData data = getCreateLlamaModelData(entityIn);
+        LlamaPhenotype llama = data.getPhenotype();
+        float drive = ageInTicks + (1000 * data.random);
 
         if (llama != null) {
-            readInitialAnimationValues(llamaModelData, llama);
+            readInitialAnimationValues(data, llama);
 
             boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 
-            if (llamaModelData.earTwitchTimer <= ageInTicks) {
+            if (data.earTwitchTimer <= ageInTicks) {
                 if (this.theEarLeft.getZRot() != 0.0F || this.theEarRight.getZRot() != 0.0F || this.theEarLeft.getYRot() != 0.0F || this.theEarRight.getYRot() != 0.0F) {
                     this.theEarLeft.setZRot(this.lerpTo(0.1F, this.theEarLeft.getZRot(), 0.0F));
                     this.theEarRight.setZRot(this.lerpTo(0.1F,this.theEarRight.getZRot(), 0.0F));
                     this.theEarLeft.setYRot(this.lerpTo(0.15F, this.theEarLeft.getYRot(), 0.0F));
                     this.theEarRight.setYRot(this.lerpTo(0.15F, this.theEarRight.getYRot(), 0.0F));
                 } else {
-                    llamaModelData.earTwitchSide = entityIn.getRandom().nextBoolean();
-                    llamaModelData.earTwitchTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(llamaModelData.sleeping ? 60 : 30) * 20) + 30;
+                    data.earTwitchSide = entityIn.getRandom().nextBoolean();
+                    data.earTwitchTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(data.sleeping ? 60 : 30) * 20) + 30;
                 }
-            } else if (llamaModelData.earTwitchTimer <= ageInTicks + 30) {
-                twitchEarAnimation(llamaModelData.earTwitchSide, (int)ageInTicks);
+            } else if (data.earTwitchTimer <= ageInTicks + 30) {
+                twitchEarAnimation(data.earTwitchSide, (int)ageInTicks);
             }
 
-            if (!isMoving && llamaModelData.sleeping) {
-                if (llamaModelData.sleepDelay == -1) {
-                    llamaModelData.sleepDelay = (int) ageInTicks + ((entityIn.getRandom().nextInt(10)) * 20) + 10;
-                } else if (llamaModelData.sleepDelay <= ageInTicks+50) {
-                    if (llamaModelData.sleepDelay <= ageInTicks) {
-                        llamaModelData.sleepDelay = 0;
+            if (!isMoving && data.sleeping) {
+                if (data.sleepDelay == -1) {
+                    data.sleepDelay = (int) ageInTicks + ((entityIn.getRandom().nextInt(10)) * 20) + 10;
+                } else if (data.sleepDelay <= ageInTicks+50) {
+                    if (data.sleepDelay <= ageInTicks) {
+                        data.sleepDelay = 0;
                         layDownAnimation(true);
                     } else {
                         layDownAnimation(false);
@@ -1073,8 +1072,8 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
                     }
                 }
             } else {
-                if (llamaModelData.sleepDelay != -1) {
-                    llamaModelData.sleepDelay = -1;
+                if (data.sleepDelay != -1) {
+                    data.sleepDelay = -1;
                 }
                 if (this.theLlama.getY() > 12.0F) {
                     standUpAnimation(isMoving, limbSwing, limbSwingAmount);
@@ -1087,13 +1086,13 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
                 }
 
                 boolean flag = true;
-                if (llamaModelData.isEating != 0) {
-                    if (llamaModelData.isEating == -1) {
-                        llamaModelData.isEating = (int)ageInTicks + 90;
-                    } else if (llamaModelData.isEating < ageInTicks) {
-                        llamaModelData.isEating = 0;
+                if (data.isEating != 0) {
+                    if (data.isEating == -1) {
+                        data.isEating = (int)ageInTicks + 90;
+                    } else if (data.isEating < ageInTicks) {
+                        data.isEating = 0;
                     }
-                    flag = grazingAnimation(llamaModelData.isEating - (int)ageInTicks);
+                    flag = grazingAnimation(data.isEating - (int)ageInTicks);
                 }
 
                 if (flag) {
@@ -1105,13 +1104,13 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
                 }
             }
 
-            animateLegLinkage();
+            articulateLegs();
 
-            if (llamaModelData.saddle != SaddleType.NONE) {
-                orientateSaddle(llamaModelData.coatlength >= 1 ? llamaModelData.coatlength / 1.825F : llamaModelData.coatlength, llamaModelData.saddle);
+            if (data.saddle != SaddleType.NONE) {
+                orientateSaddle(data.coatlength >= 1 ? data.coatlength / 1.825F : data.coatlength, data.saddle);
             }
 
-            saveAnimationValues(llamaModelData, llama);
+            saveAnimationValues(data, llama);
         }
 
     }
@@ -1179,9 +1178,9 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), Mth.HALF_PI * -0.87F));
         this.theLegBottomBackLeft.setXRot(this.lerpTo(this.theLegBottomBackLeft.getXRot(), Mth.HALF_PI * 0.2F));
         this.theLegBottomBackRight.setXRot(this.lerpTo(this.theLegBottomBackRight.getXRot(), Mth.HALF_PI * 0.2F));
-        if (theLlama.getY() < 16.5F) {
-            this.theLlama.setY(16.5F);
-        }
+            if (theLlama.getY() < 16.5F) {
+                this.theLlama.setY(16.5F);
+            }
         }
     }
 
@@ -1197,7 +1196,7 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
             } else if (v > 21.5F) {
                 this.theLlama.setY(21.25F);
             }
-            this.theLlama.setY(21.25F);
+//            this.theLlama.setY(21.25F);
             if (asleep) {
                 this.theNeck.setY(this.lerpTo(this.theNeck.getY(), 6.0F));
                 this.theHead.setY(this.lerpTo(this.theHead.getY(), -13.0F));
@@ -1230,7 +1229,7 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         }
     }
 
-    private boolean grazingAnimation(int ticks) {
+    private boolean grazingAnimation(float ticks) {
         if (ticks < 50) {
             float neckRot = this.theNeck.getXRot();
 //            this.theNeck.setY(this.lerpTo(this.theNeck.getY(), 0.0F));
@@ -1239,13 +1238,13 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
             } else if (neckRot < Mth.HALF_PI*1.25F){
                 this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), Mth.HALF_PI*1.55F));
                 this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), -Mth.HALF_PI*0.5F));
-                this.theNeck.setY(this.lerpTo(this.theNeck.getY(), 7.0F));
+                this.theNeck.setY(this.lerpTo(this.theNeck.getY(), 4.0F));
                 this.theHead.setY(this.lerpTo(this.theHead.getY(), -9.0F));
                 this.theHead.setZ(this.lerpTo(this.theHead.getZ(), -2.0F));
 //                this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.1F));
             } else {
                 float loop = (float) Math.cos(ticks*0.5F);
-                this.theNeck.setY(this.lerpTo(this.theNeck.getY(), 10.0F));
+                this.theNeck.setY(this.lerpTo(this.theNeck.getY(), 7.0F));
                 this.theHead.setY(this.lerpTo(this.theHead.getY(), -10.0F));
                 this.theHead.setZ(this.lerpTo(this.theHead.getZ(), -3.0F));
                 if (loop > 0) {
@@ -1312,7 +1311,7 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         this.theLegBottomBackRight.setXRot(this.lerpTo(this.theLegBottomBackRight.getXRot(), 0.0F));
     }
 
-    private void twitchEarAnimation(boolean side, int ticks) {
+    private void twitchEarAnimation(boolean side, float ticks) {
         boolean direction = Math.cos(ticks*0.8F) > 0;
         if (side) {
             this.theEarLeft.setZRot(this.lerpTo(0.15F, this.theEarLeft.getZRot(), Mth.HALF_PI * 0.5F * (direction?-1F:-0.5F)));
@@ -1355,7 +1354,7 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         }
     }
 
-    private void animateLegLinkage() {
+    private void articulateLegs() {
         float flag = this.theLegBottomFrontLeft.getXRot();
         if (flag > 0.0F) {
             this.theLegBottomFrontLeft.setZ(-3.0F + (6.0F * (Math.min(flag, Mth.PI * 0.7F) / Mth.PI * 0.7F)));

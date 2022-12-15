@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
+import mokiyoki.enhancedanimals.model.util.ModelHelper;
 import mokiyoki.enhancedanimals.model.util.WrappedModelPart;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.client.model.geom.ModelPart;
@@ -17,6 +18,8 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -669,7 +672,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         bRightLeg.addOrReplaceChild("vultureHocksR", CubeListBuilder.create()
                         .mirror(true)
                         .texOffs(33, 32)
-                        .addBox(3.5F, 3.0F, 2.5F, 1, 3, 4, new CubeDeformation(-0.2F)),
+                        .addBox(3.5F, 3.0F, 2.5F, 0, 3, 4, new CubeDeformation(-0.2F)),
                 PartPose.ZERO
         );
 
@@ -708,18 +711,16 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         );
 
         bChicken.addOrReplaceChild("collar", CubeListBuilder.create()
-                        .texOffs(0, 155)
-                        .addBox(-2.5F, -1.0F, -1.5F, 5,  1, 4, new CubeDeformation(0.001F))
-                        .texOffs(30, 156)
-                        .addBox(0.0F, -1.3333F, -2.5F, 0,  2, 2),
-                PartPose.rotation((float)Math.PI/4.0F, 0.0F, 0.0F)
+                        .texOffs(0, 54)
+                        .addBox(-5.0F, -2.0F, -3.0F, 10,  2, 8)
+                        .texOffs(28, 54)
+                        .addBox(0.0F, -2.6666F, -5.0F, 0,  4, 4),
+                PartPose.offsetAndRotation(0.0F, 0.0F, -0.25F, Mth.HALF_PI * 0.5F, 0.0F, 0.0F)
         );
         bChicken.addOrReplaceChild("collarH", CubeListBuilder.create()
-                        .texOffs(18, 154)
-                        .addBox(-1.5F, 0.0F, -1.5F, 3, 3, 3, new CubeDeformation(-1.0F))
-                        .texOffs(0, 22)
-                        .addBox(-4.0F, -12.0F, -4.0F, 8.0F, 6.0F, 4.0F),
-                PartPose.ZERO
+                        .texOffs(30, 52)
+                        .addBox(-1.5F, 0.0F, -1.5F, 3, 3, 3, new CubeDeformation(-1.0F)),
+                PartPose.offsetAndRotation(0.0F, -1.5F, -3.0F, Mth.HALF_PI * -0.5F, 0.0F, 0.0F)
         );
 
         return LayerDefinition.create(meshdefinition, 64, 64);
@@ -974,13 +975,13 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         this.theFootRight.addChild(this.footRight);
 
         this.theSaddle.addChild(this.theTailCoverts);
-        this.theSaddle.addChild(this.cushion);
-
+//        this.theSaddle.addChild(this.cushion);
+//
         this.theTailCoverts.addChild(this.theTail);
-        this.theTailCoverts.addChild(this.tailCoverMedium);
+//        this.theTailCoverts.addChild(this.tailCoverMedium);
 
         this.theTail.addChild(this.tail);
-        this.theTail.addChild(this.tailMedium);
+//        this.theTail.addChild(this.tailMedium);
 
 
         /**
@@ -1090,6 +1091,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 
         if (chicken != null) {
             super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            Map<String, List<Float>> mapOfScale = new HashMap<>();
 
             float size = data.size;
             float finalChickenSize = ((3.0F * size * data.growthAmount) + size) / 4.0F;
@@ -1352,11 +1354,17 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 this.tailMedium.show();
             }
 
+            if (data.growthAmount != 1.0F) {
+                mapOfScale.put("bNeck", ModelHelper.createScalings(1.0F + ((1.0F-data.growthAmount)*0.3F), 0.0F, (1.0F-data.growthAmount)*0.1F, 0.0F));
+            }
+            mapOfScale.put("collar", ModelHelper.createScalings(0.5F, 0.0F, 0.0F, 0.0F));
+            mapOfScale.put("collarH", ModelHelper.createScalings(2.0F, 0.0F, 0.0F, 0.0F));
+
             poseStack.pushPose();
             poseStack.scale(finalChickenSize, finalChickenSize, finalChickenSize);
             poseStack.translate(0.0F, -1.5F + 1.5F / finalChickenSize, 0.0F);
 
-            gaRender(this.theChicken, null, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            gaRender(this.theChicken, mapOfScale, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
             poseStack.popPose();
         }
@@ -1479,7 +1487,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 boolean flag = true;
                 if (data.isEating != 0) {
                     if (data.isEating == -1) {
-                        data.isEating = (int)ageInTicks + 90;
+                        data.isEating = (int)ageInTicks + 140;
                     } else if (data.isEating < ageInTicks) {
                         data.isEating = 0;
                     }
@@ -1596,7 +1604,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         }
     }
 
-    private boolean grazingAnimation(int ticks) {
+    private boolean grazingAnimation(float ticks) {
+        this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
         if (ticks < 50) {
             this.theLegLeft.setXRot(this.lerpTo(this.theLegLeft.getXRot(), 0.0F));
             this.theLegRight.setXRot(this.lerpTo(this.theLegRight.getXRot(), 0.0F));
@@ -1605,13 +1614,13 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI));
                 this.theHead.setY(this.lerpTo(this.theHead.getY(), -3.0F));
             } else {
-                float loop = (float) Math.cos(ticks*0.5F);
+                float loop = (float) Math.cos(ticks*0.75F);
                 if (loop > 0) {
                     this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI * 0.8F));
                     this.theHead.setY(this.lerpTo(this.theHead.getY(), -2.0F));
                 } else {
-                    this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), Mth.HALF_PI * 1.15F));
-                    this.theHead.setY(this.lerpTo(this.theHead.getY(), -0.0F));
+                    this.theHead.setXRot(this.lerpTo(0.08F, this.theHead.getXRot(), Mth.HALF_PI * 1.15F));
+                    this.theHead.setY(this.lerpTo(0.1F, this.theHead.getY(), 0.0F));
                 }
             }
             return false;
@@ -1662,6 +1671,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
         }
         this.theBody.setY(this.lerpTo(this.theBody.getY(), height));
         this.theBody.setXRot(this.lerpTo(this.theBody.getXRot(), 0.0F));
+        standingLegsAnimation();
     }
 
     public void animateFalling(boolean isSilkie, float ageInTicks, float random) {

@@ -260,32 +260,54 @@ public class EventSubscriber {
             } else if (entity instanceof Chicken) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaChickens.get() && EanimodCommonConfig.COMMON.spawnGeneticChickens.get()) {
                     if (entity.getClass().getName().toLowerCase().contains("chicken")) {
-                        EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
-                        if (enhancedChicken != null) {
-                            if (entity.hasCustomName()) {
-                                enhancedChicken.setCustomName(entity.getCustomName());
-                            }
-                            if (((Chicken) entity).isBaby()) {
-                                int age = ((Chicken) entity).getAge();
-                                enhancedChicken.setAge(age);
-                                enhancedChicken.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 60000);
-                            } else {
-                                enhancedChicken.setAge(0);
-                                enhancedChicken.setBirthTime(entity.getCommandSenderWorld(), -500000);
-                            }
-                            if (((Chicken) entity).isLeashed()) {
-                                enhancedChicken.setLeashedTo(((Chicken) entity).getLeashHolder(), true);
-                            }
-                            if (entity.isVehicle()) {
-                                Entity rider = entity.getVehicle();
-                                if (rider != null) {
-                                    enhancedChicken.positionRider(rider);
+                        if (((Chicken)entity).isChickenJockey){
+                            Chicken vanillaChicken = ((Chicken) entity);
+                            if (!vanillaChicken.getPassengers().isEmpty() && entity.tickCount > 1) {
+                                List<Entity> riders = vanillaChicken.getPassengers();
+                                EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.JOCKEY, false, false);
+                                if (enhancedChicken != null) {
+                                    if (entity.hasCustomName()) {
+                                        enhancedChicken.setCustomName(entity.getCustomName());
+                                    }
+                                    if (((Chicken) entity).isBaby()) {
+                                        int age = ((Chicken) entity).getAge();
+                                        enhancedChicken.setAge(age);
+                                        enhancedChicken.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 60000);
+                                    } else {
+                                        enhancedChicken.setAge(0);
+                                        enhancedChicken.setBirthTime(entity.getCommandSenderWorld(), -500000);
+                                    }
+                                    if (((Chicken) entity).isLeashed()) {
+                                        enhancedChicken.setLeashedTo(((Chicken) entity).getLeashHolder(), true);
+                                    }
                                     enhancedChicken.setChickenJockey(true);
+                                    for (Entity rider : riders) {
+                                        rider.startRiding(enhancedChicken);
+                                    }
+                                    entity.remove(Entity.RemovalReason.DISCARDED);
                                 }
                             }
+                        } else {
+                            EnhancedChicken enhancedChicken = ENHANCED_CHICKEN.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                            if (enhancedChicken != null) {
+                                if (entity.hasCustomName()) {
+                                    enhancedChicken.setCustomName(entity.getCustomName());
+                                }
+                                if (((Chicken) entity).isBaby()) {
+                                    int age = ((Chicken) entity).getAge();
+                                    enhancedChicken.setAge(age);
+                                    enhancedChicken.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 60000);
+                                } else {
+                                    enhancedChicken.setAge(0);
+                                    enhancedChicken.setBirthTime(entity.getCommandSenderWorld(), -500000);
+                                }
+                                if (((Chicken) entity).isLeashed()) {
+                                    enhancedChicken.setLeashedTo(((Chicken) entity).getLeashHolder(), true);
+                                }
+                            }
+                            entity.remove(Entity.RemovalReason.DISCARDED);
+                            event.setCanceled(true);
                         }
-                        entity.remove(Entity.RemovalReason.DISCARDED);
-                        event.setCanceled(true);
                     }
                 }
             } else if (entity instanceof Pig) {

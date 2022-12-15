@@ -116,6 +116,8 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
 
     private WrappedModelPart mushroom[] = new WrappedModelPart[8];
 
+    private WrappedModelPart bridleNose[] = new WrappedModelPart[2];
+
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition base = meshdefinition.getRoot().addOrReplaceChild("base", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
@@ -471,152 +473,125 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
          *      Equipment Stuff
          */
 
-        PartDefinition bBlanket = base.addOrReplaceChild("bBlanket", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-
-        bBlanket.addOrReplaceChild("blanketH", CubeListBuilder.create()
-                        .texOffs(28, 8)
-                        .addBox(-4.0F, -6.0F, -3.0F, 8, 10, 6, new CubeDeformation(0.505F)),
-                PartPose.ZERO
-        );
-        bBlanket.addOrReplaceChild("blanket0", CubeListBuilder.create()
-                        .texOffs(28, 23)
-                        .addBox(-4.0F, -2.0F, -1.1F, 8, 10, 6, new CubeDeformation(0.01F)),
-                PartPose.ZERO
-        );
-        bBlanket.addOrReplaceChild("blanket1", CubeListBuilder.create()
-                        .texOffs(28, 23)
-                        .addBox(-4.0F, -3.75F, -2.0F, 8, 10, 6, new CubeDeformation(0.51F)),
-                PartPose.ZERO
-        );
-        bBlanket.addOrReplaceChild("blanket2", CubeListBuilder.create()
-                        .texOffs(28, 23)
-                        .addBox(-4.0F, -2.25F, -2.0F, 8, 10, 6, new CubeDeformation(0.75F)),
-                PartPose.ZERO
-        );
-        bBlanket.addOrReplaceChild("blanket3", CubeListBuilder.create()
-                        .texOffs(28, 23)
-                        .addBox(-4.0F, -3.7F, -2.0F, 8, 10, 6, new CubeDeformation(1.2F)),
-                PartPose.ZERO
-        );
-        bBlanket.addOrReplaceChild("blanket4", CubeListBuilder.create()
-                        .texOffs(28, 23)
-                        .addBox(-4.0F, -3.1F, -2.0F, 8, 10, 6, new CubeDeformation(1.6F)),
-                PartPose.ZERO
-        );
-        bBlanket.addOrReplaceChild("blanket5", CubeListBuilder.create()
-                        .texOffs(28,23)
-                        .addBox(-4.0F, -2.55F, -2.0F, 8, 10, 6, new CubeDeformation(2.05F)),
-                PartPose.ZERO
+        base.addOrReplaceChild("blanket", CubeListBuilder.create()
+                        .texOffs(25, 61)
+                        .addBox(1.0F, 0.0F, -5.0F, 4, 9, 1)
+                        .texOffs(34, 61)
+                        .addBox(1.0F, 0.0F, 4.0F, 4, 9, 1),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, Mth.HALF_PI, 0.0F)
         );
 
         base.addOrReplaceChild("chestL", CubeListBuilder.create()
-                        .texOffs(74, 44)
-                        .addBox(0.0F, 0.0F, 0.0F, 8, 8, 3),
-                PartPose.offsetAndRotation(-8.0F, -8.0F, 16.0F, 0.0F, Mth.HALF_PI, 0.0F)
+                        .texOffs(80, 0)
+                        .addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3),
+                PartPose.offsetAndRotation(-8.75F, 3.0F, 17.0F, 0.0F, Mth.HALF_PI, 0.0F)
         );
         base.addOrReplaceChild("chestR", CubeListBuilder.create()
-                        .texOffs(74, 57)
-                        .addBox(0.0F, 0.0F, -3.0F, 8, 8, 3),
-                PartPose.offset(0.0F, 0.0F, 16.0F)
+                        .texOffs(80, 11)
+                        .addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3),
+                PartPose.offsetAndRotation(0.0F, 0.0F, 14.5F, 0.0F, 0.0F, 0.0F)
         );
 
         base.addOrReplaceChild("collar", CubeListBuilder.create()
-                        .texOffs(88, 84)
-                        .addBox(-5.0F, -4.5F, -3.0F, 10, 2, 8),
-                PartPose.ZERO
+                        .texOffs(80, 68)
+                        .addBox(-3.5F, 1.0F, -0.5F, 7,  2, 9)
+                        .texOffs(81, 71)
+                        .addBox(0.0F, 0.5F, 8.5F, 0,  3, 3)
+                        .texOffs(103, 71)
+                        .addBox(-1.5F, 0.5F, 10.0F, 3, 3, 3, new CubeDeformation(-0.25F)),
+                PartPose.offsetAndRotation(0.0F, 0.0F, -5.0F, -Mth.HALF_PI, 0.0F, 0.0F)
         );
-        base.addOrReplaceChild("collarH", CubeListBuilder.create()
-                        .texOffs(127, 88)
-                        .addBox(0.0F, -5.0F, -5.0F, 0, 3, 3)
-                        .texOffs(116, 84)
-                        .addBox(-1.5F, -2.5F, -5.75F, 3, 3, 3),
-                PartPose.ZERO
-        );
+
         base.addOrReplaceChild("bridle", CubeListBuilder.create()
-                        .texOffs(0, 112)
-                        .addBox(-8.0F, -9.05F, -6.0F, 16, 12, 12, new CubeDeformation(-3.8F, -2.8F, -2.8F)),
-                PartPose.ZERO
+                        .texOffs(0, 92)
+                        .addBox(-8.0F, 0.0F, -14.0F, 16, 14, 12, new CubeDeformation(-3.8F, -3.2F, -2.8F)),
+                PartPose.offset(0.0F, -3.0F, 4.0F)
         );
-        base.addOrReplaceChild("bridleN", CubeListBuilder.create()
-                        .texOffs(0, 96)
-                        .addBox(-4.0F, -6.0F, -9.0F, 8, 8, 8, new CubeDeformation(-1.8F)),
-                PartPose.ZERO
+        base.addOrReplaceChild("bridleM", CubeListBuilder.create()
+                        .texOffs(0, 118)
+                        .addBox(-4.0F, -0.15F, -10.0F, 8, 12, 8, new CubeDeformation(-1.65F, -2.65F, -1.65F)),
+                PartPose.offset(0.0F, 0.0F, -5.0F)
+        );
+        base.addOrReplaceChild("bridleF", CubeListBuilder.create()
+                        .texOffs(0, 118)
+                        .addBox(-4.0F, 0.6F, -10.75F, 8, 12, 8, new CubeDeformation(-2.15F, -3.15F, -2.15F)),
+                PartPose.offset(0.0F, 0.0F, -5.0F)
         );
 
         base.addOrReplaceChild("saddle", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 8.0F));
         base.addOrReplaceChild("saddleW", CubeListBuilder.create()
-                        .texOffs(146, 0)
+                        .texOffs(210, 0)
                         .addBox(-5.0F, -2.0F, -5.0F, 10, 2, 13)
-                        .texOffs(146, 15)
+                        .texOffs(210, 15)
                         .addBox(-4.0F, -3.0F, 5.0F, 8, 2, 4)
-                        .texOffs(222, 15)
+                        .texOffs(230, 15)
                         .addBox(-3.5F, -4.0F, 8.0F, 7, 2, 2),
                 PartPose.offset(0.0F, 0.0F, 8.0F)
         );
         base.addOrReplaceChild("saddleE", CubeListBuilder.create()
-                        .texOffs(147, 1)
+                        .texOffs(211, 1)
                         .addBox(-5.0F, -1.0F, -4.0F, 10, 2, 12)
-                        .texOffs(146, 15)
+                        .texOffs(210, 15)
                         .addBox(-4.0F, -1.5F, 5.0F, 8, 2, 4)
-                        .texOffs(222, 15)
+                        .texOffs(230, 15)
                         .addBox(-3.5F, -2.0F, 7.5F, 7, 2, 2),
                 PartPose.offset(0.0F, 0.0F, 8.0F)
         );
         base.addOrReplaceChild("saddleH", CubeListBuilder.create()
-                        .texOffs(170, 19)
+                        .texOffs(234, 19)
                         .addBox(-4.0F, -2.0F, -3.0F, 8, 2, 3),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("saddleP", CubeListBuilder.create()
-                        .texOffs(179, 0)
+                        .texOffs(243, 0)
                         .addBox(-1.0F, -3.0F, -2.0F, 2, 4, 2, new CubeDeformation(-0.25F)),
-                PartPose.offsetAndRotation(0.0F, -1.5F, -0.5F, -0.2F, 0.0F, 0.0F)
+                PartPose.offset(0.0F, -2.0F, -2.0F)
         );
         base.addOrReplaceChild("saddleL", CubeListBuilder.create()
-                        .texOffs(170, 49)
+                        .texOffs(234, 49)
                         .addBox(0.0F, 0.0F, 0.0F, 3, 4, 8),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("saddleR", CubeListBuilder.create()
-                        .texOffs(170, 61)
+                        .texOffs(234, 61)
                         .addBox(-3.0F, 0.0F, 0.0F, 3, 4, 8),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("stirrupWL", CubeListBuilder.create()
-                        .texOffs(184, 24)
+                        .texOffs(248, 24)
                         .addBox(0.0F, 0.0F, 0.0F, 0, 10, 4),
-                PartPose.offset(0.0F, 0.0F, -3.5F)
+                PartPose.offset(0.0F, 0.0F, 0.0F)
         );
         base.addOrReplaceChild("stirrupWR", CubeListBuilder.create()
-                        .texOffs(184, 24)
+                        .texOffs(248, 24)
                         .addBox(0.0F, 0.0F, 0.0F, 0, 10, 4),
-                PartPose.offset(0.0F, 0.0F, -3.5F)
+                PartPose.offset(0.0F, 0.0F, 0.0F)
         );
         base.addOrReplaceChild("stirrupNL", CubeListBuilder.create()
-                        .texOffs(185, 27)
+                        .texOffs(249, 27)
                         .addBox(-1.0F, 0.0F, 0.0F, 1, 10, 1),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("stirrupNR", CubeListBuilder.create()
-                        .texOffs(187, 27)
+                        .texOffs(251, 27)
                         .addBox(0.0F, 0.0F, 0.0F, 1, 10, 1),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("stirrup", CubeListBuilder.create()
-                        .texOffs(146, 0)
+                        .texOffs(210, 0)
                         .addBox(-0.5F, 9.5F, -1.0F, 1, 1, 1)
-                        .texOffs(150, 0)
+                        .texOffs(214, 0)
                         .addBox(-0.5F, 9.5F, 1.0F, 1, 1, 1)
-                        .texOffs(146, 2)
+                        .texOffs(210, 2)
                         .addBox(-0.5F, 10.5F, -1.5F, 1, 3, 1)
-                        .texOffs(150, 2)
+                        .texOffs(214, 2)
                         .addBox(-0.5F, 10.5F, 1.5F, 1, 3, 1)
-                        .texOffs(147, 7)
+                        .texOffs(211, 7)
                         .addBox(-0.5F, 12.5F, -0.5F, 1, 1, 2),
                 PartPose.ZERO
         );
         base.addOrReplaceChild("saddlePad", CubeListBuilder.create()
-                        .texOffs(130, 24)
+                        .texOffs(194, 24)
                         .addBox(-8.0F, -1.0F, -6.0F, 16, 10, 15, new CubeDeformation(-1.0F)),
                 PartPose.ZERO
         );
@@ -844,6 +819,13 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
          *      Equipment
          */
 
+        this.chests = new WrappedModelPart("chestL", base);
+        this.chestsR = new WrappedModelPart("chestR", base);
+        this.collar = new WrappedModelPart("collar", base);
+        this.blanket = new WrappedModelPart("blanket", base);
+        this.bridle = new WrappedModelPart("bridle", base);
+        this.bridleNose[0] = new WrappedModelPart("bridleM", base);
+        this.bridleNose[1] = new WrappedModelPart("bridleF", base);
         this.saddleWestern = new WrappedModelPart("saddleW", base);
         this.saddleEnglish = new WrappedModelPart("saddleE", base);
         this.saddleVanilla = new WrappedModelPart("saddle", base);
@@ -857,6 +839,41 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         this.stirrupNarrowLeft = new WrappedModelPart("stirrupNL", base);
         this.stirrupNarrowRight = new WrappedModelPart("stirrupNR", base);
         this.stirrup = new WrappedModelPart("stirrup", base);
+
+        this.theBody.addChild(this.saddleVanilla);
+        this.theBody.addChild(this.saddleWestern);
+        this.theBody.addChild(this.saddleEnglish);
+
+        this.saddleVanilla.addChild(this.saddlePad);
+        this.saddleVanilla.addChild(this.stirrupNarrowLeft);
+        this.saddleVanilla.addChild(this.stirrupNarrowRight);
+
+        this.saddleWestern.addChild(this.saddleHorn);
+        this.saddleWestern.addChild(this.saddleSideLeft);
+        this.saddleWestern.addChild(this.saddleSideRight);
+        this.saddleWestern.addChild(this.saddlePad);
+        this.saddleWestern.addChild(this.stirrupWideLeft);
+        this.saddleWestern.addChild(this.stirrupWideRight);
+
+        this.saddleEnglish.addChild(this.saddleHorn);
+        this.saddleEnglish.addChild(this.saddleSideLeft);
+        this.saddleEnglish.addChild(this.saddleSideRight);
+        this.saddleEnglish.addChild(this.saddlePad);
+        this.saddleEnglish.addChild(this.stirrupNarrowLeft);
+        this.saddleEnglish.addChild(this.stirrupNarrowRight);
+
+        this.theNeck.addChild(this.collar);
+        this.theHead.addChild(this.blanket);
+        this.theHead.addChild(this.bridle);
+        this.theBody.addChild(this.chests);
+        this.chests.addChild(this.chestsR);
+        this.bridle.addChild(this.bridleNose[0]);
+        this.bridle.addChild(this.bridleNose[1]);
+        this.saddleHorn.addChild(this.saddlePomel);
+        this.stirrupWideLeft.addChild(this.stirrup);
+        this.stirrupWideRight.addChild(this.stirrup);
+        this.stirrupNarrowLeft.addChild(this.stirrup);
+        this.stirrupNarrowRight.addChild(this.stirrup);
 
     }
 
@@ -901,7 +918,6 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         resetCubes();
         if (cow != null) {
             super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
             if (cow.isFemale) {
@@ -913,6 +929,9 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 this.headMale.show();
                 this.noseMale.show();
             }
+
+            this.bridleNose[0].show(!cow.isFemale);
+            this.bridleNose[1].show(cow.isFemale);
 
             switch (cow.hornNubLength) {
                 default:
@@ -1053,7 +1072,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 this.nipples.hide();
             }
 
-            float babyScale = 1.0F;
+            float babyScale;
 
             if (cowModelData.growthAmount != 1.0F) {
                 babyScale = 2.0F - cowModelData.growthAmount;
@@ -1088,8 +1107,6 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 } else {
                     d = 0.3F * (1.0F - cowModelData.growthAmount);
                 }
-            } else {
-                babyScale = 1.0F;
             }
 
             float finalCowSize = ((((cow.isFemale ? 1.8F : 2.0F) * cowModelData.growthAmount) + 1.0F) / 3.0F) * cowModelData.size;
@@ -1366,7 +1383,9 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 }
             }
 
-//            animateLegLinkage(cow.dwarf);
+            if (data.saddle != SaddleType.NONE) {
+                orientateSaddle(data.saddle);
+            }
 
             saveAnimationValues(data, cow);
         }
@@ -1459,7 +1478,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
     private void headLookingAnimation(float netHeadYaw, float headPitch) {
             netHeadYaw = (netHeadYaw * 0.017453292F);
             headPitch = ((headPitch * 0.017453292F));
-            float lookRotX = Math.min((headPitch * 0.65F)+0.2F, 0.0F);
+            float lookRotX = Math.min((headPitch * 0.65F)-0.2F, 0.0F);
             float lookRotY = netHeadYaw * 0.65F;
 
             this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), headPitch - lookRotX));
@@ -1470,7 +1489,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             this.theHump.setYRot((this.theHead.getYRot()+this.theNeck.getYRot())*0.5F);
     }
 
-    private boolean grazingAnimation(int ticks) {
+    private boolean grazingAnimation(float ticks) {
         if (ticks < 50) {
             float neckRot = this.theNeck.getXRot();
             if (neckRot < Mth.HALF_PI*0.4F) {
@@ -1497,7 +1516,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         }
     }
 
-    private void twitchEarAnimation(boolean side, int ticks) {
+    private void twitchEarAnimation(boolean side, float ticks) {
         boolean direction = Math.cos(ticks*0.8F) > 0;
         if (side) {
             this.theEarLeft.setXRot(this.lerpTo(0.15F, this.theEarLeft.getXRot(), Mth.HALF_PI * 0.5F * (direction?-1F:0.5F)));
@@ -1520,15 +1539,15 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
     }
 
     private void walkingTailAnimation(float limbSwing, float limbSwingAmount) {
-        float f = Mth.cos(limbSwing * 0.6662F);
+        float f = (Mth.cos(limbSwing * 0.6662F)) * limbSwingAmount;
 
-        this.theTail.setZRot(f * (1.3F - 0.9F) * limbSwingAmount);
-        this.tailMiddle.setZRot(f * (1.4F - 0.9F) * limbSwingAmount);
-        this.tailEnd.setZRot(f * (1.4F - 0.9F) * limbSwingAmount);
-        this.tailBrush.setZRot(f * (1.5F - 0.9F) * limbSwingAmount);
+        this.tailBase.setZRot(Mth.HALF_PI * 0.3F * f);
+        this.tailMiddle.setZRot(Mth.HALF_PI * 0.2F * f);
+        this.tailEnd.setZRot(Mth.HALF_PI * 0.1F * f);
+        this.tailBrush.setZRot(Mth.HALF_PI * 0.2F * f);
     }
 
-    private boolean swishTailAnimation(boolean side, int ticks) {
+    private boolean swishTailAnimation(boolean side, float ticks) {
         float loop = (float) Math.cos(ticks*0.05F) + 1.0F;
         int setSide = side?1:-1;
 
@@ -1554,6 +1573,34 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         }
 
         return false;
+    }
+
+    private void orientateSaddle(SaddleType saddleType) {
+        switch (saddleType) {
+            case VANILLA -> {
+                this.saddleVanilla.setY(-0.1F);
+                this.stirrupNarrowLeft.setPos(7.5F, 0.0F, 0.0F);
+                this.stirrupNarrowRight.setPos(-7.5F, 0.0F, 0.0F);
+            }
+            case ENGLISH -> {
+                this.saddleEnglish.setY(-0.1F);
+                this.saddleSideLeft.setPos(3.25F, -0.5F, -4.0F);
+                this.saddleSideRight.setPos(-3.25F, -0.5F, -4.0F);
+                this.saddleHorn.setPos(0.0F, -1.0F, -1.0F);
+                this.saddleHorn.setXRot(Mth.PI / 4.5F);
+                this.stirrupNarrowLeft.setPos(7.25F, -0.25F, -1.5F);
+                this.stirrupNarrowRight.setPos(-7.25F, -0.25F, -1.5F);
+            }
+            case WESTERN -> {
+                this.saddleWestern.setY(-0.1F);
+                this.saddleSideLeft.setPos(4.75F, -1.0F, -5.25F);
+                this.saddleSideRight.setPos(-4.75F, -1.0F, -5.25F);
+                this.saddleHorn.setPos(0.0F, -2.0F, -2.0F);
+                this.saddleHorn.setXRot(Mth.PI * 0.125F);
+                this.stirrupWideLeft.setX(7.5F);
+                this.stirrupWideRight.setX(-7.5F);
+            }
+        }
     }
 
     private void animateLegLinkage(boolean isDwarf) {
@@ -1630,6 +1677,10 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
     protected void additionalUpdateModelDataInfo(AnimalModelData animalModelData, T enhancedAnimal) {
         ((CowModelData)animalModelData).hornGrowth = enhancedAnimal.hornGrowthAmount();
         ((CowModelData) animalModelData).bagSize = (enhancedAnimal.getEntityStatus().equals(EntityState.MOTHER.toString()) || enhancedAnimal.getEntityStatus().equals(EntityState.PREGNANT.toString())) ? enhancedAnimal.getBagSize() : -1.0F;
+        animalModelData.saddle = getSaddle(enhancedAnimal.getEnhancedInventory());
+        animalModelData.bridle = enhancedAnimal.hasBridle();
+        animalModelData.blanket = enhancedAnimal.hasBlanket();
+        animalModelData.chests = enhancedAnimal.hasChest();
     }
 
     @Override

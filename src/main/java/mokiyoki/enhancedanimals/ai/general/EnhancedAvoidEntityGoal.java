@@ -33,7 +33,7 @@ public class EnhancedAvoidEntityGoal<T extends LivingEntity> extends Goal {
 
     public EnhancedAvoidEntityGoal(PathfinderMob entityIn, Class<T> classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn, Map<Temperament, Integer> temperaments) {
         this(entityIn, classToAvoidIn, (p_200828_0_) -> {
-            return true;
+            return p_200828_0_.getPassengers().isEmpty();
         }, avoidDistanceIn, farSpeedIn, nearSpeedIn, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test, temperaments);
     }
 

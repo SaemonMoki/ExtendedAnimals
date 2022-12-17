@@ -5,6 +5,7 @@ import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 
@@ -35,8 +36,9 @@ public class LlamaGeneticsInitialiser extends AbstractGeneticsInitialiser{
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Biome biome, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.LLAMA_AUTOSOMAL_GENES_LENGTH];
+        Biome biome = biomeHolder.value();
         //TODO create biome WTC variable [hot and dry biomes, cold biomes ] WTC is neutral biomes "all others"
 
         //Endurance genes [ wildtype, stronger1, stronger2]

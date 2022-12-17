@@ -75,6 +75,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     private static final EntityDataAccessor<Byte> DYE_COLOUR = SynchedEntityData.<Byte>defineId(EnhancedSheep.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Integer> MILK_AMOUNT = SynchedEntityData.defineId(EnhancedSheep.class, EntityDataSerializers.INT);
 
+    private static final String[] SHEEP_TEXTURES_MEALY = new String[] {
+            "", "c_mealy.png", "c_mealy_male.png", "c_mealy_female.png"
+    };
     private static final String[] SHEEP_TEXTURES_PATTERN = new String[] {
             "", "b_blackbelly_0.png", "b_blackandtan_0.png", "b_english_blue.png",
                 "b_blackbelly_1.png", "b_blackbelly_2.png", "b_blackbelly_3.png", "b_blackbelly_4.png", "b_blackbelly_5.png",
@@ -87,11 +90,24 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     };
 
     private static final String[] SHEEP_TEXTURES_SPOTS = new String[] {
-            "", "c_spot0.png",  "c_spot1.png",  "c_spot2.png", "c_spot3.png",  "c_spot4.png",  "c_spot5.png", "c_spot6.png",  "c_spot7.png",  "c_spot8.png", "c_spot9.png",  "c_spota.png",  "c_spotb.png", "c_spotc.png",  "c_spotd.png",  "c_spote.png",  "c_spotf.png"
+            "", "c_pibald.png"
     };
 
-    private static final String[] SHEEP_TEXTURES_PIGMENTEDHEAD = new String[] {
-            "", "c_solid_white.png", "c_afghan_pied.png", "c_turkish.png", "c_turkish_speckled.png", "c_turkish_pigmented_head.png", "c_pigmented_head.png"
+    private static final String[] SHEEP_TEXTURES_BLAZE = new String[] {
+            "", "c_najdi.png", "c_whiteextrems.png", "c_blaze.png"
+    };
+
+    private static final String[] SHEEP_TEXTURES_ROAN = new String[] {
+            "", "c_roan.png"
+    };
+    private static final String[][] SHEEP_TEXTURES_PIGMENTEDHEAD = new String[][] {
+            {""},
+            {"c_solid_white.png"},
+            {"c_afghanpied.png"},
+            {"c_turkishpied.png"},
+            {"c_turkishspeckled.png"},
+            {"c_turkishpigmentedhead.png"},
+            {"c_pigmentedhead_0.png", "c_pigmentedhead_1.png", "c_pigmentedhead_2.png", "c_pigmentedhead_3.png", "c_pigmentedhead_4.png", "c_pigmentedhead_5.png", "c_pigmentedhead_6.png", "c_pigmentedhead_7.png", "c_pigmentedhead_8.png"}
     };
 
     private static final String[] SHEEP_TEXTURES_TICKED = new String[] {
@@ -342,8 +358,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @Override
     protected void lethalGenes() {
-        int[] genes = this.genetics.getAutosomalGenes();
-        if(genes[68] == 2 && genes[69] == 2) {
+        int[] gene = this.genetics.getAutosomalGenes();
+        if(gene[68] == 2 && gene[69] == 2) {
+            this.remove(RemovalReason.KILLED);
+        }
+        if (gene[100] == 2 && gene[101] == 2) {
             this.remove(RemovalReason.KILLED);
         }
     }
@@ -1001,11 +1020,14 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
         if (this.getSharedGenes() != null) {
             int[] gene = getSharedGenes().getAutosomalGenes();
 
-            int under = 0;
+            boolean mealy = false;
             int pattern1 = 0;
             int pattern2 = 0;
             int grey = 0;
             int spots = 0;
+            int roan = 0;
+            int blaze = 0;
+            int pigmentedHeadCategory = 0;
             int pigmentedHead = 0;
             int skin = 0;
             int hooves = 0;
@@ -1027,6 +1049,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                     pattern2 = pattern2 == 5 ? 14 : pattern2-1;
                 }
                 pattern2 = pattern1 == pattern2 ? 0 : pattern2;
+                if (gene[90] == 1 || gene[91] == 1) {
+                    mealy = pattern1 == 3 || (pattern1 < 14 && pattern1 > 6);
+                }
             }
 
             //basic spots
@@ -1042,40 +1067,60 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             if (gene[68] == 2 || gene[69] == 2) {
                 if (gene[68] == 1 || gene[69] == 1) {
                     //het afghan
-                    pigmentedHead = 2;
+                    pigmentedHeadCategory = 2;
                 } else {
                     //white afghan
-                    pigmentedHead = 1;
+                    pigmentedHeadCategory = 1;
                 }
             } else if (gene[68] == 3 || gene[69] == 3) {
                 if (gene[68] == gene[69]) {
                     //homozygous turkish
-                    pigmentedHead = 3;
+                    pigmentedHeadCategory = 3;
                 } else if (gene[68] == 4 || gene[69] == 4) {
                     //het turkish/pigmented head
-                    pigmentedHead = 5;
+                    pigmentedHeadCategory = 5;
                 } else {
                     //het turkish (speckled)
-                    pigmentedHead = 4;
+                    pigmentedHeadCategory = 4;
                 }
             } else if (gene[68] == 4 && gene[69] == 4) {
                 // pigmented head
-                pigmentedHead = 6;
+                pigmentedHeadCategory = 6;
             }
 
-            boolean ticked = !this.isBaby() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHead != 0);
+            if (pigmentedHeadCategory==6) {
+                pigmentedHead = Math.max(gene[18]-1, gene[19]-1);
+            }
+
+            if (gene[100] == 2 || gene[101] == 2) {
+                roan = 1;
+            }
+
+            if (gene[102] != 1 && gene[103] != 1) {
+                if (gene[102] == 2 || gene[103] == 2) {
+                    blaze = 1;
+                } else {
+                    blaze = gene[102] == 3 || gene[103] == 3 ? 2 : 3;
+                }
+            }
+
+            boolean ticked = !this.isBaby() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHeadCategory != 0);
 
             addTextureToAnimal("r_solid_white.png");
 //            addTextureToAnimal("self_black.png");
 //            addTextureToAnimal("grey.png");
+            addTextureToAnimal(SHEEP_TEXTURES_MEALY, mealy ? 1 : 0, l -> l != 0);
             addTextureToAnimal(SHEEP_TEXTURES_PATTERN, pattern1, l -> l != 0);
             addTextureToAnimal(SHEEP_TEXTURES_PATTERN, pattern2, l -> l != 0);
+            addTextureToAnimal(SHEEP_TEXTURES_MEALY, mealy ? (this.getOrSetIsFemale() ? 3 : 2) : 0, l -> l != 0);
 //            addTextureToAnimal(SHEEP_TEXTURES_GREY, grey, l -> l != 0);
 //            if (ticked) {
 //                this.enhancedAnimalTextures.add("alpha_group_start");
 //            }
 //            addTextureToAnimal(SHEEP_TEXTURES_SPOTS, spots, l -> l != 0);
-//            addTextureToAnimal(SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHead, l -> l != 0);
+            addTextureToAnimal(SHEEP_TEXTURES_ROAN, roan, l -> l != 0);
+            addTextureToAnimal(SHEEP_TEXTURES_BLAZE, blaze, l -> l != 0);
+            addTextureToAnimal(SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead, pigmentedHeadCategory != 0);
 //            if (ticked) {
 //                this.enhancedAnimalTextures.add("alpha_group_end");
 //            }
@@ -1201,9 +1246,9 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 red[2] = 0.87F;
             }
             case 6 -> {
-                red[0] = 0.85F;
-                red[1] = 0.05F;
-                red[2] = 0.95F;
+                red[0] = 0.086F;
+                red[1] = 0.0F;
+                red[2] = 1.0F;
             }
         }
         return red;

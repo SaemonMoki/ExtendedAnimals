@@ -79,7 +79,8 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Biome biome, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
+        Biome biome = biomeHolder.value();
         int[] sexlinkedGenes = new int[Reference.CHICKEN_SEXLINKED_GENES_LENGTH];
         int[] autosomalGenes = new int[Reference.CHICKEN_AUTOSOMAL_GENES_LENGTH];
 

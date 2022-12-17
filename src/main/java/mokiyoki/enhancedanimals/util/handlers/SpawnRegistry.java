@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_LLAMA;
@@ -90,6 +91,11 @@ public class SpawnRegistry {
             if (entry.type == EntityType.TURTLE) {
                 if(config.spawnGeneticTurtles.get()) {
                     addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_TURTLE.get(), config.spawnWeightTurtles.get(), config.minimumTurtleGroup.get(), config.maximumTurtleGroup.get()));
+                }
+            }
+            if (entry.type == EntityType.AXOLOTL) {
+                if(config.spawnGeneticAxolotls.get()) {
+                    addSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_AXOLOTL.get(), config.spawnWeightAxolotls.get(), config.minimumAxolotlGroup.get(), config.maximumAxolotlGroup.get()));
                 }
             }
         }
@@ -168,9 +174,16 @@ public class SpawnRegistry {
                 }
             }
 
-            //remove modded turtles?
+            //remove turtles?
             if (entry.type == EntityType.TURTLE && entry.type.toString().contains("turtle")) {
                 if (!EanimodCommonConfig.COMMON.spawnVanillaTurtles.get()) {
+                    removeSpawns.add(entry);
+                }
+            }
+
+            //remove axolotls
+            if (entry.type == EntityType.AXOLOTL && entry.type.toString().contains("axolotl")) {
+                if (!EanimodCommonConfig.COMMON.spawnVanillaAxolotls.get()) {
                     removeSpawns.add(entry);
                 }
             }

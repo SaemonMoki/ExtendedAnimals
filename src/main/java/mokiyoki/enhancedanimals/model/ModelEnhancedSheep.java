@@ -74,14 +74,11 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
     private WrappedModelPart legBackLeftBottom;
     private WrappedModelPart legBackRightBottom;
 
-    private WrappedModelPart tailBase;
-    private WrappedModelPart tailMiddle;
-    private WrappedModelPart tailTip;
-
     protected WrappedModelPart headWool;
     protected WrappedModelPart noseWool;
     protected WrappedModelPart cheekWool;
 
+    protected WrappedModelPart tail[] = new WrappedModelPart[4];
     protected WrappedModelPart neckWool[] = new WrappedModelPart[7];
 
     private WrappedModelPart hornLeft[] = new WrappedModelPart[19];
@@ -228,18 +225,23 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
                 PartPose.offsetAndRotation(0.0F, 0.0F, 3.0F, Mth.PI, 0.0F, 0.0F)
         );
 
-        bTail.addOrReplaceChild("tailB", CubeListBuilder.create()
+        bTail.addOrReplaceChild("tail0", CubeListBuilder.create()
                         .texOffs(86, 43)
                         .addBox(-1.0F, 0.0F, 0.0F, 2, 3, 2),
                 PartPose.ZERO
         );
-        bTail.addOrReplaceChild("tailM", CubeListBuilder.create()
+        bTail.addOrReplaceChild("tail1", CubeListBuilder.create()
                         .texOffs(94, 43)
                         .addBox(-1.0F, 0.0F, 0.0F, 2, 3, 2),
                 PartPose.offset(0.0F, 3.0F, 0.0F)
         );
-        bTail.addOrReplaceChild("tailT", CubeListBuilder.create()
+        bTail.addOrReplaceChild("tail2", CubeListBuilder.create()
                         .texOffs(102, 43)
+                        .addBox(-1.0F, 0.0F, 0.0F, 2, 3, 2),
+                PartPose.offset(0.0F, 3.0F, 0.0F)
+        );
+        bTail.addOrReplaceChild("tail3", CubeListBuilder.create()
+                        .texOffs(110, 43)
                         .addBox(-1.0F, 0.0F, 0.0F, 2, 3, 2),
                 PartPose.offset(0.0F, 3.0F, 0.0F)
         );
@@ -279,6 +281,12 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             bHornLeft.addOrReplaceChild("hornL"+i, hornBitL, PartPose.ZERO);
             bHornRight.addOrReplaceChild("hornR"+i, hornBitR, PartPose.ZERO);
         }
+
+        /**
+         *      Equipment
+         */
+
+
 
         return LayerDefinition.create(meshdefinition, 128, 64);
     }
@@ -361,9 +369,9 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         this.legBackLeftBottom = new WrappedModelPart("legBBL", bLegBL);
         this.legBackRightBottom = new WrappedModelPart("legBBR", bLegBR);
 
-        this.tailBase = new WrappedModelPart("tailB", bTail);
-        this.tailMiddle = new WrappedModelPart("tailM", bTail);
-        this.tailTip = new WrappedModelPart("tailT", bTail);
+        for (int i = 0; i < 4; i++) {
+            this.tail[i] = new WrappedModelPart("tail"+i, bTail);
+        }
 
         for (int i = 0; i < 7; i++) {
             this.neckWool[i] = new WrappedModelPart("neckW"+i, bNeck);
@@ -415,9 +423,10 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         this.udder.addChild(this.nippleLeft);
         this.udder.addChild(this.nippleRight);
 
-        this.theTail.addChild(this.tailBase);
-        this.tailBase.addChild(this.tailMiddle);
-        this.tailMiddle.addChild(this.tailTip);
+        this.theTail.addChild(this.tail[0]);
+        this.tail[0].addChild(this.tail[1]);
+        this.tail[1].addChild(this.tail[2]);
+        this.tail[2].addChild(this.tail[3]);
 
         this.theLegFrontLeft.addChild(this.legFrontLeft);
         
@@ -534,14 +543,15 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             /**
              *      Tail
              */
-            this.tailBase.show(sheep.tailLength >= 1);
-            this.tailMiddle.show(sheep.tailLength >= 2);
-            this.tailTip.show(sheep.tailLength >= 3);
+            this.tail[0].show(true);
+            this.tail[1].show(sheep.tailLength >= 2);
+            this.tail[2].show(sheep.tailLength >= 3);
+            this.tail[3].show(sheep.tailLength == 4);
 
 
             if (sheep.tailFat > 0.0F) {
                 float tailFat = (sheep.tailFat * 3.5F) + 1.0F;
-                mapOfScale.put("bTail", ModelHelper.createScalings(tailFat, (sheep.tailFat * 0.5F) + 1.0F, tailFat, 0.0F, 0.0F, 10.0F));
+                mapOfScale.put("bTail", ModelHelper.createScalings(tailFat, (sheep.tailFat * 0.5F) + 1.0F, tailFat, 0.0F, 0.0F, 0.0F));
             }
 
             /**
@@ -586,9 +596,10 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         map.put("bLegBR", this.getRotationVector(this.theLegBackRight));
         map.put("bLegBRB", this.getRotationVector(this.theLegBottomBackRight));
         map.put("bTail", this.getRotationVector(this.theTail));
-        map.put("tailB", this.getRotationVector(this.tailBase));
-        map.put("tailM", this.getRotationVector(this.tailMiddle));
-        map.put("tailT", this.getRotationVector(this.tailTip));
+        map.put("tail0", this.getRotationVector(this.tail[0]));
+        map.put("tail1", this.getRotationVector(this.tail[1]));
+        map.put("tail2", this.getRotationVector(this.tail[2]));
+        map.put("tail3", this.getRotationVector(this.tail[3]));
         map.put("bHornL", this.getRotationVector(this.theHornLeft));
         map.put("bHornR", this.getRotationVector(this.theHornRight));
         map.put("jaw", this.getRotationVector(this.jaw));
@@ -643,9 +654,6 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             this.theLegBottomBackLeft.setRotation(v3f);
             this.theLegBottomBackRight.setRotation(v3f);
             this.theTail.setRotation(v3f);
-            this.tailBase.setRotation(v3f);
-            this.tailMiddle.setRotation(v3f);
-            this.tailTip.setRotation(v3f);
             this.jaw.setXRot(Mth.HALF_PI*-0.2F);
             if (!sheep.hornType.equals(HornType.POLLED)) {
                 if (sheep.polyHorns) {
@@ -672,9 +680,10 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             this.setRotationFromVector(this.theLegBackRight, map.get("bLegBR"));
             this.setRotationFromVector(this.theLegBottomBackRight, map.get("bLegBRB"));
             this.setRotationFromVector(this.theTail, map.get("bTail"));
-            this.setRotationFromVector(this.tailBase, map.get("tailB"));
-            this.setRotationFromVector(this.tailMiddle, map.get("tailM"));
-            this.setRotationFromVector(this.tailTip, map.get("tailT"));
+            this.setRotationFromVector(this.tail[0], map.get("tail0"));
+            this.setRotationFromVector(this.tail[1], map.get("tail1"));
+            this.setRotationFromVector(this.tail[2], map.get("tail2"));
+            this.setRotationFromVector(this.tail[3], map.get("tail3"));
             this.jaw.setXRot(map.get("jaw").x());
 
             this.setRotationFromVector(this.theHornLeft, map.get("bHornL"));
@@ -774,14 +783,10 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
 
                 flag = true;
                 if (data.tailSwishTimer <= ageInTicks) {
-                    if (this.tailBase.getXRot() != 0.0F) {
-                        stillTailAnimation();
-                    } else {
-                        data.tailSwishSide = entityIn.getRandom().nextBoolean();
-                        data.tailSwishTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(30) * 20) + 30;
-                    }
+                    data.tailSwishSide = entityIn.getRandom().nextBoolean();
+                    data.tailSwishTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(30) * 20) + 30;
                 } else if (data.tailSwishTimer <= ageInTicks + 30) {
-                    flag = wiggleTailAnimation(data.tailSwishSide, ageInTicks);
+                    flag = wiggleTailAnimation(data.tailSwishSide, ageInTicks, sheep.tailFat);
                 }
 
                 if (isMoving) {
@@ -1002,17 +1007,19 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
     }
 
     private void stillTailAnimation() {
-        this.tailBase.setZRot(this.lerpTo(0.1F, this.theTail.getZRot(), 0.0F));
-        this.tailMiddle.setZRot(this.lerpTo(0.1F, this.tailMiddle.getZRot(), 0.0F));
-        this.tailTip.setZRot(this.lerpTo(0.1F, this.tailTip.getZRot(), 0.0F));
+        this.tail[0].setZRot(this.lerpTo(0.1F, this.tail[0].getZRot(), 0.0F));
+        this.tail[1].setZRot(this.lerpTo(0.1F, this.tail[1].getZRot(), 0.0F));
+        this.tail[2].setZRot(this.lerpTo(0.1F, this.tail[2].getZRot(), 0.0F));
+        this.tail[3].setZRot(this.lerpTo(0.1F, this.tail[3].getZRot(), 0.0F));
     }
 
-    private boolean wiggleTailAnimation(boolean side, float ticks) {
-        float loop = side ? (float)Math.cos(ticks) : -(float)Math.cos(ticks);
+    private boolean wiggleTailAnimation(boolean side, float ticks, float tailFat) {
+        float loop = (side ? (float)Math.cos(ticks) : -(float)Math.cos(ticks)) * (1.0F-tailFat);
 
-        this.tailBase.setZRot(Mth.HALF_PI * 0.7F * loop);
-        this.tailMiddle.setZRot(Mth.HALF_PI * 0.5F * loop);
-        this.tailTip.setZRot(Mth.HALF_PI * 0.3F * loop);
+        this.tail[0].setZRot(Mth.HALF_PI * 0.7F * loop);
+        this.tail[1].setZRot(Mth.HALF_PI * 0.5F * loop);
+        this.tail[2].setZRot(Mth.HALF_PI * 0.3F * loop);
+        this.tail[3].setZRot(Mth.HALF_PI * 0.2F * loop);
 
         return false;
     }
@@ -1020,9 +1027,10 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
     private void walkingTailAnimation(float limbSwing, float limbSwingAmount) {
         float f = (Mth.cos(limbSwing * 0.6662F)) * limbSwingAmount;
 
-        this.tailBase.setZRot(Mth.HALF_PI * 0.3F * f);
-        this.tailMiddle.setZRot(Mth.HALF_PI * 0.2F * f);
-        this.tailTip.setZRot(Mth.HALF_PI * 0.1F * f);
+        this.tail[0].setZRot(Mth.HALF_PI * 0.3F * f);
+        this.tail[1].setZRot(Mth.HALF_PI * 0.2F * f);
+        this.tail[2].setZRot(Mth.HALF_PI * 0.1F * f);
+        this.tail[3].setZRot(Mth.HALF_PI * 0.1F * f);
     }
 
     private void articulateLegs() {
@@ -1109,7 +1117,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
 
     protected class SheepPhenotype implements Phenotype {
         int faceWool;
-        int tailLength = 3;
+        int tailLength = 4;
         float tailFat = 0.0F;
         float hornScale = 1.0F;
         boolean polyHorns;
@@ -1136,6 +1144,14 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
                     faceWool--;
                 }
             }
+
+            this.tailLength = gene[92] == 2 || gene[93] == 2 ? 3 : 2;
+            if (gene[94] == 2 || gene[95] == 2) {
+                this.tailLength-=1;
+                this.tailFat += 0.25F;
+            }
+            this.tailFat += gene[96] == 2 || gene[97] == 2 ? 0.25F : 0.0F;
+            this.tailFat += gene[98] == 2 || gene[99] == 2 ? 0.25F : 0.0F;
 
             if (gene[6] == 2 || gene[7] == 2) {
                 this.hornType = gene[6] == 1 || gene[7] == 1 ? HornType.SCURRED : HornType.HORNED;

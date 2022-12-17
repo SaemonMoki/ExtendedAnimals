@@ -264,7 +264,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     //returns how grown the animal is
     public float growthAmount() {
-        int age = this.getEnhancedAnimalAge();
+        int age = Math.max(this.getEnhancedAnimalAge(), 0);
         return age > this.getFullSizeAge() ? 1.0F : age/(float)this.getFullSizeAge();
     }
 
@@ -1612,6 +1612,14 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         if(check) {
             this.enhancedAnimalTextures.add(texture[geneValue0][geneValue1][geneValue2]);
             this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1)+String.valueOf(geneValue2));
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    protected void addTextureToAnimal(String[][] texture, int geneValue0, int geneValue1, boolean check) {
+        if(check) {
+            this.enhancedAnimalTextures.add(texture[geneValue0][geneValue1]);
+            this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1));
         }
         this.texturesIndexes.add(CACHE_DELIMITER);
     }

@@ -115,6 +115,12 @@ public class EanimodCommonConfig {
         public final ForgeConfigSpec.IntValue minimumTurtleGroup;
         public final ForgeConfigSpec.IntValue maximumTurtleGroup;
 
+        public final ForgeConfigSpec.BooleanValue spawnVanillaAxolotls;
+        public final ForgeConfigSpec.BooleanValue spawnGeneticAxolotls;
+        public final ForgeConfigSpec.IntValue spawnWeightAxolotls;
+        public final ForgeConfigSpec.IntValue minimumAxolotlGroup;
+        public final ForgeConfigSpec.IntValue maximumAxolotlGroup;
+        
         public final ForgeConfigSpec.BooleanValue spawnVanillaHorses;
         public final ForgeConfigSpec.BooleanValue spawnGeneticHorses;
         public final ForgeConfigSpec.IntValue gestationDaysHorse;
@@ -335,6 +341,19 @@ public class EanimodCommonConfig {
                     .define("Allow vanilla minecraft Horses to spawn/exist:", false);
             spawnGeneticHorses = builder
                     .define("Allow Genetic horses to continue to spawn/exist:", true);
+            builder.pop();
+            
+            builder.push("axolotl");
+            spawnVanillaAxolotls = builder
+                    .define("Allow vanilla minecraft axolotls to spawn/exist:", false);
+            spawnGeneticAxolotls = builder
+                    .define("Allow Genetic axolotls to continue to spawn/exist:", true);
+            spawnWeightAxolotls = builder
+                    .defineInRange("How highly axolotl spawning is weighted, larger numbers spawn more. Default is 6", 10, 1, 20);
+            minimumAxolotlGroup = builder
+                    .defineInRange("The minimum number of axolotls you want to find in a group at spawn. Default is 1", 4, 1, 60);
+            maximumAxolotlGroup = builder
+                    .defineInRange("The maximum number of axolotl you want to find in a group at spawn. Default is 3", 6, 1, 60);
             builder.pop();
         }
     }

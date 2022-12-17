@@ -1365,7 +1365,7 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 flag = true;
                 if (data.tailSwishTimer <= ageInTicks) {
                     data.tailSwishSide = entityIn.getRandom().nextBoolean();
-                    data.tailSwishTimer = (int)ageInTicks + (entityIn.getRandom().nextInt(30)*20) + 40;
+                    data.tailSwishTimer = (int) ageInTicks + (entityIn.getRandom().nextInt(30) * 20) + 40;
                 } else if (data.tailSwishTimer <= ageInTicks + 40) {
                     flag = swishTailAnimation(data.tailSwishSide, (int)ageInTicks);
                 }
@@ -1549,25 +1549,30 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
 
     private boolean swishTailAnimation(boolean side, float ticks) {
         float loop = (float) Math.cos(ticks*0.05F) + 1.0F;
-        int setSide = side?1:-1;
+        float setSide = side?Mth.HALF_PI:-Mth.HALF_PI;
 
         if (loop > 1.5F) {
             return true;
         } else if (loop > 1.0F) {
-            this.tailBase.setZRot(this.lerpTo(0.1F, this.theTail.getZRot(), 0.349F * setSide));
-            this.tailMiddle.setZRot(this.lerpTo(0.1F, this.tailMiddle.getZRot(), 0.0436F * setSide));
-            this.tailEnd.setZRot(this.lerpTo(0.1F, this.tailEnd.getZRot(), 0.2618F * setSide));
-            this.tailBrush.setZRot(this.lerpTo(0.1F, this.tailBrush.getZRot(), 0.3054F * setSide));
+            float stage = (loop-1.0F)/0.5F;
+            float inverse = 1.0F-stage;
+            this.tailBase.setZRot(((-0.8726F*inverse) + (0.349F*stage)) * setSide);
+            this.tailMiddle.setZRot(((-0.349F*inverse) + (0.0436F*stage)) * setSide);
+            this.tailEnd.setZRot(((-0.4363F*inverse) + (0.2618F*stage)) * setSide);
+            this.tailBrush.setZRot(((-0.3927F*inverse) + (0.3054F*stage)) * setSide);
         } else if (loop > 0.5417F) {
-            this.tailBase.setZRot(this.lerpTo(0.1F, this.theTail.getZRot(), -0.8726F * setSide));
-            this.tailMiddle.setZRot(this.lerpTo(0.1F, this.tailMiddle.getZRot(), -0.349F * setSide));
-            this.tailEnd.setZRot(this.lerpTo(0.1F, this.tailEnd.getZRot(), -0.4363F * setSide));
-            this.tailBrush.setZRot(this.lerpTo(0.1F, this.tailBrush.getZRot(), -0.3927F * setSide));
+            float stage = (loop-0.5417F)/0.4583F;
+            float inverse = 1.0F-stage;
+            this.tailBase.setZRot(((0.5236F*inverse) + (-0.8726F*stage)) * setSide);
+            this.tailMiddle.setZRot(((0.7854F*inverse) + (-0.349F*stage)) * setSide);
+            this.tailEnd.setZRot(((0.7854F*inverse) + (-0.4363F*stage)) * setSide);
+            this.tailBrush.setZRot(((0.5672F*inverse) + (-0.3927F*stage)) * setSide);
         } else if (loop > 0.25) {
-            this.tailBase.setZRot(this.lerpTo(0.1F, this.theTail.getZRot(), 0.5236F * setSide));
-            this.tailMiddle.setZRot(this.lerpTo(0.1F, this.tailMiddle.getZRot(), 0.7854F * setSide));
-            this.tailEnd.setZRot(this.lerpTo(0.1F, this.tailEnd.getZRot(), 0.7854F * setSide));
-            this.tailBrush.setZRot(this.lerpTo(0.1F, this.tailBrush.getZRot(), 0.5672F * setSide));
+            float stage = (loop-0.25F)/0.2917F;
+            this.tailBase.setZRot(0.5236F*stage * setSide);
+            this.tailMiddle.setZRot(0.7854F*stage * setSide);
+            this.tailEnd.setZRot(0.7854F*stage * setSide);
+            this.tailBrush.setZRot(0.5672F*stage * setSide);
         } else {
             return true;
         }

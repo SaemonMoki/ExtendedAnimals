@@ -8,11 +8,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SmallDripleafBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -119,6 +122,17 @@ public class EnhancedAxolotlEggBlock extends NestBlock {
             }
         }
 
+    }
+
+    public static boolean isProperHabitat(BlockGetter reader, BlockPos pos) {
+        Block block = reader.getBlockState(pos).getBlock();
+        if (Blocks.SEAGRASS.equals(block) || Blocks.TALL_SEAGRASS.equals(block)) {
+            return true;
+        } else if (Blocks.SMALL_DRIPLEAF.equals(block) || Blocks.BIG_DRIPLEAF_STEM.equals(block)) {
+            return reader.getFluidState(pos).isSourceOfType(Fluids.WATER);
+        } else {
+            return false;
+        }
     }
 
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

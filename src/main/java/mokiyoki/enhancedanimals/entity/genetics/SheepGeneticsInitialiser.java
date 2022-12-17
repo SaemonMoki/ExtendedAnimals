@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,25 +38,26 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Biome biome, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.SHEEP_AUTOSOMAL_GENES_LENGTH];
+        Biome biome = biomeHolder.value();
 
 //        if (true) {
 //            return new Genes(new int[]{4, 6, 1, 2, 3, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1});
 //        }
 
         //Agouti? [ Dom.White, Grey, Blackbelly_0, Mouflon, EnglishBlue, Rec.Black, Blackbelly_1, Blackbelly_2, Blackbelly_3, Blackbelly_4, Blackbelly_5, light_mouflon, WildMouflon, Blue_German, Light_Blue, Paddington_Blue ]
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC * 0.9F) {
             autosomalGenes[0] = (ThreadLocalRandom.current().nextInt(16) + 1);
 
         } else {
-            autosomalGenes[0] = (13);
+            autosomalGenes[0] = (Biome.getBiomeCategory(biomeHolder) == Biome.BiomeCategory.PLAINS ? 1 : 13);
         }
-        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+        if (ThreadLocalRandom.current().nextInt(100) > WTC * 0.9F) {
             autosomalGenes[1] = (ThreadLocalRandom.current().nextInt(16) + 1);
 
         } else {
-            autosomalGenes[1] = (13);
+            autosomalGenes[1] = (Biome.getBiomeCategory(biomeHolder) == Biome.BiomeCategory.PLAINS ? 1 : 13);
         }
 
         //Chocolate [ Wildtype+, chocolate ]
@@ -179,15 +181,15 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[17] = 1;
         }
 
-        //face white extension [ wildtype, white extension ]
+        //white spot expansion [ wildtype, white extension ]
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[18] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[18] = (ThreadLocalRandom.current().nextInt(8) + 1);
 
         } else {
             autosomalGenes[18] = 1;
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
-            autosomalGenes[19] = (ThreadLocalRandom.current().nextInt(2) + 1);
+            autosomalGenes[19] = (ThreadLocalRandom.current().nextInt(8) + 1);
 
         } else {
             autosomalGenes[19] = 1;
@@ -534,7 +536,7 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[65] = 1;
         }
 
-        //body type [wildtype, smallest to largest] if mod with lard/fat smallest size has least fat, largest has most fat
+        //body type [wildtype, smallest to largest] if mod with lard/fat smallest size has the least fat, largest has most fat
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[66] = (ThreadLocalRandom.current().nextInt(6) + 1);
 
@@ -582,18 +584,30 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[71] = 1;
         }
 
-        // [1:wildtype, 2:darker(dominant), 3:tan, 4:cream, 5:white
+        // [1:wildtype, 2:darker(dominant), 3:tan, 4:cream, 5:offwhite, 6:white
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[72] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
             autosomalGenes[72] = 1;
+            switch (Biome.getBiomeCategory(biomeHolder)) {
+                case PLAINS, ICY -> autosomalGenes[72] = 6;
+                case DESERT -> autosomalGenes[72] = 3;
+                case SAVANNA -> autosomalGenes[72] = 2;
+                case MOUNTAIN, EXTREME_HILLS -> autosomalGenes[72] = 5;
+            }
         }
         if (ThreadLocalRandom.current().nextInt(100) > WTC) {
             autosomalGenes[73] = (ThreadLocalRandom.current().nextInt(5) + 1);
 
         } else {
             autosomalGenes[73] = 1;
+            switch (Biome.getBiomeCategory(biomeHolder)) {
+                case PLAINS, ICY -> autosomalGenes[73] = 5;
+                case DESERT -> autosomalGenes[73] = 3;
+                case SAVANNA -> autosomalGenes[73] = 2;
+                case MOUNTAIN, EXTREME_HILLS -> autosomalGenes[73] = 4;
+            }
         }
 
         // fine detail rufous genes
@@ -603,6 +617,104 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
             } else {
                 autosomalGenes[i] = 1;
             }
+        }
+
+        // [1 wild mealy, no mealy]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[90] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[90] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[91] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[91] = 1;
+        }
+
+        //HOXB13
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[92] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[92] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[93] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[93] = 1;
+        }
+
+        //TBXT
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[94] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[94] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[95] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[95] = 1;
+        }
+
+        //PDGFD
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[96] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[96] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[97] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[97] = 1;
+        }
+
+        //IBH
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[98] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[98] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[99] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[99] = 1;
+        }
+
+        //Roan
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[100] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[100] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[101] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[101] = 1;
+        }
+
+        //Blaze - nadji, white extremities, blaze
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[102] = (ThreadLocalRandom.current().nextInt(4) + 1);
+
+        } else {
+            autosomalGenes[102] = 1;
+        }
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[103] = (ThreadLocalRandom.current().nextInt(2) + 1);
+
+        } else {
+            autosomalGenes[103] = 1;
         }
 
         return new Genes(autosomalGenes);

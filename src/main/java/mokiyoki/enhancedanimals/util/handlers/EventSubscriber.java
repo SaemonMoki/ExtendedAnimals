@@ -4,6 +4,7 @@ import mokiyoki.enhancedanimals.EnhancedAnimals;
 import mokiyoki.enhancedanimals.blocks.SparseGrassBlock;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
+import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
 import mokiyoki.enhancedanimals.entity.EnhancedCow;
 import mokiyoki.enhancedanimals.entity.EnhancedLlama;
@@ -19,6 +20,8 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.util.EanimodVillagerTrades;
 import mokiyoki.enhancedanimals.util.Genes;
+import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HayBlock;
@@ -96,6 +99,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_LLAMA;
@@ -514,6 +518,67 @@ public class EventSubscriber {
                                 enhancedRabbit.setBirthTime(entity.getCommandSenderWorld(), -500000);
                             }
                             entity.getCommandSenderWorld().addFreshEntity(enhancedRabbit);
+                        }
+                        entity.remove(Entity.RemovalReason.DISCARDED);
+                        event.setCanceled(true);
+                    }
+                }
+            } else if (entity instanceof Turtle) {
+                if (!EanimodCommonConfig.COMMON.spawnVanillaTurtles.get() && EanimodCommonConfig.COMMON.spawnGeneticTurtles.get()) {
+                    if (entity.getClass().getName().toLowerCase().contains("turtle")) {
+                        EnhancedTurtle enhancedTurtle = ENHANCED_TURTLE.get().spawn((ServerLevel) entity.getCommandSenderWorld(), null, null, null, entity.blockPosition(), MobSpawnType.NATURAL, false, false);
+                        if (enhancedTurtle != null) {
+                            if (entity.hasCustomName()) {
+                                enhancedTurtle.setCustomName(entity.getCustomName());
+                            }
+                            if (((Turtle) entity).isBaby()) {
+                                int age = ((Turtle) entity).getAge();
+                                enhancedTurtle.setAge(age);
+                                enhancedTurtle.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 60000);
+                            } else {
+                                enhancedTurtle.setAge(0);
+                                enhancedTurtle.setBirthTime(entity.getCommandSenderWorld(), -500000);
+                            }
+                            if (((Turtle) entity).isLeashed()) {
+                                enhancedTurtle.setLeashedTo(((Turtle) entity).getLeashHolder(), true);
+                            }
+                        }
+                        entity.remove(Entity.RemovalReason.DISCARDED);
+                        event.setCanceled(true);
+                    }
+                }
+            } else if (entity instanceof Axolotl) {
+                if (!EanimodCommonConfig.COMMON.spawnVanillaAxolotls.get() && EanimodCommonConfig.COMMON.spawnGeneticAxolotls.get()) {
+                    if (entity.getClass().getName().toLowerCase().contains("axolotl")) {
+                        EnhancedAxolotl enhancedAxolotl = ENHANCED_AXOLOTL.get().create(entity.getCommandSenderWorld());
+                        if (enhancedAxolotl != null) {
+                            enhancedAxolotl.moveTo(entity.getX(), entity.getY(), entity.getZ(), (entity.getYRot()), entity.getXRot());
+                            enhancedAxolotl.yBodyRot = ((Axolotl) entity).yBodyRot;
+                            String breed = "";
+                            switch (((Axolotl) entity).getVariant()) {
+                                case BLUE -> breed = ThreadLocalRandom.current().nextBoolean() ? "blue" : "azure";
+                                case CYAN -> breed = "leucistic";
+                                case LUCY -> breed = "albino";
+                                case GOLD -> breed = "golden";
+                            }
+                            Genes axolotlGenes = enhancedAxolotl.createInitialBreedGenes(entity.getCommandSenderWorld(), entity.blockPosition(), breed);
+                            enhancedAxolotl.setGenes(axolotlGenes);
+                            enhancedAxolotl.setSharedGenes(axolotlGenes);
+                            enhancedAxolotl.initilizeAnimalSize();
+                            enhancedAxolotl.getReloadTexture();
+
+                            if (entity.hasCustomName()) {
+                                enhancedAxolotl.setCustomName(entity.getCustomName());
+                            }
+                            if (((Axolotl) entity).isBaby()) {
+                                int age = ((Axolotl) entity).getAge();
+                                enhancedAxolotl.setAge(age);
+                                enhancedAxolotl.setBirthTime(entity.getCommandSenderWorld(), (-age / 24000) * 48000);
+                            } else {
+                                enhancedAxolotl.setAge(0);
+                                enhancedAxolotl.setBirthTime(entity.getCommandSenderWorld(), -500000);
+                            }
+                            entity.getCommandSenderWorld().addFreshEntity(enhancedAxolotl);
                         }
                         entity.remove(Entity.RemovalReason.DISCARDED);
                         event.setCanceled(true);

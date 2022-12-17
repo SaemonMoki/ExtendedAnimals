@@ -5,9 +5,12 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import mokiyoki.enhancedanimals.ai.Axolotl.brain.AxolotlBrain;
+import mokiyoki.enhancedanimals.blocks.EnhancedAxolotlEggBlock;
+import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.genetics.AxolotlGeneticsInitialiser;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.breeds.ModSensorTypes;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
@@ -15,14 +18,18 @@ import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -30,9 +37,11 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
@@ -44,6 +53,8 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingLookControl;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
+import net.minecraft.world.entity.ai.goal.BreedGoal;
+import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
@@ -53,6 +64,7 @@ import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -74,6 +86,7 @@ import java.util.Random;
 
 import static mokiyoki.enhancedanimals.EnhancedAnimals.channel;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.axolotlFoodMap;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 import static net.minecraft.world.entity.ai.attributes.AttributeSupplier.*;
 
 public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketable {
@@ -214,6 +227,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     protected void registerGoals() {
+        this.goalSelector.addGoal(1, new EnhancedAxolotl.MateGoal(this, 0.5D));
     }
 
     public static Builder prepareAttributes() {
@@ -374,7 +388,10 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @Override
     protected void createAndSpawnEnhancedChild(Level world) {
-
+        EnhancedAxolotl enhancedAxolotl = ENHANCED_AXOLOTL.get().create(this.level);
+        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
+        defaultCreateAndSpawn(enhancedAxolotl, world, babyGenes, -this.getAdultAge());
+        this.level.addFreshEntity(enhancedAxolotl);
     }
 
     public int getHungerRestored(ItemStack stack) {
@@ -987,6 +1004,66 @@ NBT read/write
 
         public boolean isStableDestination(BlockPos p_149224_) {
             return !this.level.getBlockState(p_149224_.below()).isAir();
+        }
+    }
+
+    /**
+     *      Breeding/Egglaying
+     */
+
+    static class MateGoal extends BreedGoal {
+        private final EnhancedAxolotl axolotl;
+
+        MateGoal(EnhancedAxolotl axolotl, double speedIn) {
+            super(axolotl, speedIn);
+            this.axolotl = axolotl;
+        }
+
+        /**
+         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
+         * method as well.
+         */
+        public boolean canUse() {
+            return super.canUse() && !this.axolotl.hasEgg();
+        }
+
+        /**
+         * Spawns a baby animal of the same type.
+         */
+        protected void breed() {
+            if (this.axolotl.getOrSetIsFemale()) {
+                this.axolotl.handlePartnerBreeding(this.partner);
+            } else {
+                ((EnhancedAxolotl) this.partner).handlePartnerBreeding(this.axolotl);
+            }
+
+            if (this.axolotl.pregnant) {
+                this.axolotl.setHasEgg(true);
+                this.axolotl.pregnant = false;
+            }
+            if (((EnhancedAxolotl) this.partner).pregnant) {
+                ((EnhancedAxolotl) this.partner).setHasEgg(true);
+                ((EnhancedAxolotl) this.partner).pregnant = false;
+            }
+            this.axolotl.setAge(10);
+            this.axolotl.resetLove();
+            this.partner.setAge(10);
+            this.partner.resetLove();
+
+            ServerPlayer entityplayermp = this.axolotl.getLoveCause();
+            if (entityplayermp == null && this.partner.getLoveCause() != null) {
+                entityplayermp = this.partner.getLoveCause();
+            }
+
+            if (entityplayermp != null) {
+                entityplayermp.awardStat(Stats.ANIMALS_BRED);
+                CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this.axolotl, ((EnhancedAnimalAbstract) this.partner), (AgeableMob) null);
+            }
+
+            Random random = this.animal.getRandom();
+            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+                this.level.addFreshEntity(new ExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), random.nextInt(7) + 1));
+            }
         }
     }
 }

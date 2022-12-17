@@ -31,11 +31,11 @@ public class AxolotlBreeds {
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(34, "2","2")));
     public static final Breed GFP = new Breed(new Breed.Properties().setData("gfp", Biomes.LUSH_CAVES, Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(10, "3")));
-    public static final Breed GOLDEN_GFP = new Breed(GOLDEN, new Breed.Properties().setName("goldengfp").setRarity(Breed.Rarity.EXOTIC)
+    public static final Breed GOLDEN_GFP = new Breed(GOLDEN, new Breed.Properties().setName("gol_gfp").setRarity(Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(10, "3")));
     public static final Breed GOLDEN_GLOW_EYES = new Breed(GOLDEN, new Breed.Properties().setName("goldengloweyes").setRarity(Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(20, "6")));
-    public static final Breed ALBINO_GFP = new Breed(ALBINO, new Breed.Properties().setName("albinogfp").setRarity(Breed.Rarity.EXOTIC)
+    public static final Breed ALBINO_GFP = new Breed(ALBINO, new Breed.Properties().setName("albi_gfp").setRarity(Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(10, "3")));
     public static final Breed AXANTHIC_GFP = new Breed(AXANTHIC, new Breed.Properties().setName("axanthicgfp").setRarity(Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(10, "3")));

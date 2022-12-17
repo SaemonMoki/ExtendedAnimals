@@ -38,8 +38,9 @@ public class PigGeneticsInitialiser extends AbstractGeneticsInitialiser {
     }
 
     @Override
-    public Genes generateLocalWildGenetics(Biome biome, boolean isFlat) {
+    public Genes generateLocalWildGenetics(Holder<Biome> biomeHolder, boolean isFlat) {
         int[] autosomalGenes = new int[Reference.PIG_AUTOSOMAL_GENES_LENGTH];
+        Biome biome = biomeHolder.value();
 
         int wildType = 2;
         if (Biome.getBiomeCategory(Holder.direct(biome)).equals(Biome.BiomeCategory.PLAINS)) {

@@ -17,6 +17,8 @@ import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.world.level.block.Block;
@@ -1106,28 +1108,41 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             boolean ticked = !this.isBaby() && (gene[70] == 2 || gene[71] == 2) && (spots != 0 || pigmentedHeadCategory != 0);
 
-            addTextureToAnimal("r_solid_white.png");
+            TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+
+            TextureGrouping foundationGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            addTextureToAnimalTextureGrouping(foundationGroup, TexturingType.APPLY_RED, "r_solid_white.png");
 //            addTextureToAnimal("self_black.png");
 //            addTextureToAnimal("grey.png");
-            addTextureToAnimal(SHEEP_TEXTURES_MEALY, mealy ? 1 : 0, l -> l != 0);
-            addTextureToAnimal(SHEEP_TEXTURES_PATTERN, pattern1, l -> l != 0);
-            addTextureToAnimal(SHEEP_TEXTURES_PATTERN, pattern2, l -> l != 0);
-            addTextureToAnimal(SHEEP_TEXTURES_MEALY, mealy ? (this.getOrSetIsFemale() ? 3 : 2) : 0, l -> l != 0);
+            addTextureToAnimalTextureGrouping(foundationGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? 1 : 0, l -> l != 0);
+            parentGroup.addGrouping(foundationGroup);
+
+            TextureGrouping patternAverageGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
+            addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern1, l -> l != 0);
+            addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern2, l -> l != 0);
+            parentGroup.addGrouping(patternAverageGroup);
+
+            TextureGrouping whiteSpotGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? (this.getOrSetIsFemale() ? 3 : 2) : 0, l -> l != 0);
 //            addTextureToAnimal(SHEEP_TEXTURES_GREY, grey, l -> l != 0);
 //            if (ticked) {
 //                this.enhancedAnimalTextures.add("alpha_group_start");
 //            }
 //            addTextureToAnimal(SHEEP_TEXTURES_SPOTS, spots, l -> l != 0);
-            addTextureToAnimal(SHEEP_TEXTURES_ROAN, roan, l -> l != 0);
-            addTextureToAnimal(SHEEP_TEXTURES_BLAZE, blaze, l -> l != 0);
-            addTextureToAnimal(SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead, pigmentedHeadCategory != 0);
+            addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_ROAN, roan, l -> l != 0);
+            addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_BLAZE, blaze, l -> l != 0);
+            addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead, pigmentedHeadCategory != 0);
+            parentGroup.addGrouping(whiteSpotGroup);
 //            if (ticked) {
 //                this.enhancedAnimalTextures.add("alpha_group_end");
 //            }
-            addTextureToAnimal(SHEEP_TEXTURES_FUR, fur, null);
-            addTextureToAnimal(SHEEP_TEXTURES_SKIN, skin, null);
-            addTextureToAnimal(SHEEP_TEXTURES_HOOVES, hooves, null);
-            addTextureToAnimal(SHEEP_TEXTURES_EYES, eyes, null);
+            TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_FUR, fur, null);
+            addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_SKIN, skin, null);
+            addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_HOOVES, hooves, null);
+            addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_EYES, eyes, null);
+            parentGroup.addGrouping(detailGroup);
+            this.setTextureGrouping(parentGroup);
         }
     }
 

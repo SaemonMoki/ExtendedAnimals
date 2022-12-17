@@ -18,6 +18,9 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
+import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.AnimalScheduledFunction;
@@ -61,7 +64,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -77,12 +79,7 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -157,6 +154,8 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected int timeUntilNextMilk;
 
     //Texture
+    protected TextureGrouping enhancedAnimalTextureGrouping;
+
     protected final List<String> enhancedAnimalTextures = new ArrayList<>();
     protected final List<String> texturesIndexes = new ArrayList<>();
     protected String compiledTexture;
@@ -1638,6 +1637,50 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
+    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup,String[][] texture, int geneValue0, int geneValue1, boolean check) {
+        if(check) {
+            textureGroup.addTextureLayers(new TextureLayer(texture[geneValue0][geneValue1]));
+            this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1));
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String[] texture, int geneValue, Predicate<Integer> check) {
+        if(check == null || check.test(geneValue)) {
+            textureGroup.addTextureLayers(new TextureLayer(texture[geneValue]));
+            this.texturesIndexes.add(String.valueOf(geneValue));
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String texture) {
+        textureGroup.addTextureLayers(new TextureLayer(texture));
+        this.texturesIndexes.add(String.valueOf(0));
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String[][] texture, int geneValue0, int geneValue1, boolean check) {
+        if(check) {
+            textureGroup.addTextureLayers(new TextureLayer(texturingType, texture[geneValue0][geneValue1]));
+            this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1));
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    public void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String[] texture, int geneValue, Predicate<Integer> check) {
+        if(check == null || check.test(geneValue)) {
+            textureGroup.addTextureLayers(new TextureLayer(texturingType, texture[geneValue]));
+            this.texturesIndexes.add(String.valueOf(geneValue));
+        }
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
+    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String texture) {
+        textureGroup.addTextureLayers(new TextureLayer(texturingType, texture));
+        this.texturesIndexes.add(String.valueOf(0));
+        this.texturesIndexes.add(CACHE_DELIMITER);
+    }
+
     @OnlyIn(Dist.CLIENT)
     public String[] getVariantTexturePaths() {
         if (this.enhancedAnimalTextures.isEmpty()) {
@@ -1662,6 +1705,16 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         }
 
         return this.enhancedAnimalAlphaTextures.stream().toArray(String[]::new);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public TextureGrouping getTextureGrouping() {
+        return this.enhancedAnimalTextureGrouping;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void setTextureGrouping(TextureGrouping textureGrouping) {
+        this.enhancedAnimalTextureGrouping = textureGrouping;
     }
 
     protected String getCompiledTextures(String eanimal) {

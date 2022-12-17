@@ -4,6 +4,8 @@ import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedSheep;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
+import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
@@ -45,15 +47,15 @@ public class RenderEnhancedSheep extends MobRenderer<EnhancedSheep, ModelEnhance
 
         if (resourcelocation == null) {
 
-            String[] textures = entity.getVariantTexturePaths();
+            TextureGrouping textureGrouping = entity.getTextureGrouping();
 
-            if (textures == null || textures.length == 0) {
+            if (textureGrouping == null || !textureGrouping.isPopulated()) {
                 return ERROR_TEXTURE_LOCATION;
             }
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexture(ENHANCED_SHEEP_TEXTURE_LOCATION, textures, entity.getVariantAlphaTexturePaths(), colourRGB));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexturer(ENHANCED_SHEEP_TEXTURE_LOCATION, textureGrouping, colourRGB));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

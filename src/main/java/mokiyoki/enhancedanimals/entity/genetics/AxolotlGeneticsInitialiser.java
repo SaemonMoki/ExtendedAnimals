@@ -186,10 +186,16 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         autosomalGenes[41] = ThreadLocalRandom.current().nextInt(17)+1;
 
         /**
-         *      [36,37] - Brindle - Wildtype < Brindle(melanin) < Harlequin(natural+gfp)
+         *      [42,43] - Brindle - Wildtype < Brindle(melanin) < Harlequin(natural+gfp)
          */
         autosomalGenes[42] = getChance() ? ThreadLocalRandom.current().nextInt(2)+2 : 1;
         autosomalGenes[43] = getChance() ? ThreadLocalRandom.current().nextInt(2)+2 : 1;
+
+        /**
+         *      [44,45] - CheekSpots - Wildtype > Cheekspots
+         */
+        autosomalGenes[44] = 1;
+        autosomalGenes[45] = 1;
 
         return new Genes(autosomalGenes);
     }

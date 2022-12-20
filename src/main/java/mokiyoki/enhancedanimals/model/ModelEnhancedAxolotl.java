@@ -334,8 +334,8 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
 
     private void setupInitialAnimationValues(AnimalModelData data, float netHeadYaw, float headPitch, AxolotlPhenotype axolotl) {
         this.theAxolotl.setX(0.0F);
-        this.theAxolotl.setY(20.0F);
-        this.theAxolotl.setZ(0.0F);
+        this.theAxolotl.setY(22.5F);
+        this.theAxolotl.setZ(-6.0F);
         this.theHead.setZ(-4.0F);
         this.theHead.setY(axolotl.isLong ? 2.0F : 0.0F);
         Map<String, Vector3f> map = data.offsets;

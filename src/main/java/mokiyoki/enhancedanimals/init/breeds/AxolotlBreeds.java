@@ -100,5 +100,5 @@ public class AxolotlBreeds {
     public static final Breed MICRO = new Breed(new Breed.Properties().setData("micro", Biomes.LUSH_CAVES, Breed.Rarity.EXOTIC)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(28, "5","10")));
     public static final Breed RAREBLUEVARIENT = new Breed(new Breed.Properties().setData("rarebluevarient", Biomes.LUSH_CAVES, Breed.Rarity.EXOTIC)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(8,"2").add(10, "12%3","2").add(24, "127-169").add(38,"12%3","2","9")));
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(8,"2").add(10, "12%3","2").add(24, "127-169").add(38,"12%3","2","9").add(44, "2")));
 }

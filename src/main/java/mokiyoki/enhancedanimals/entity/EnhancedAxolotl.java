@@ -134,25 +134,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             {"gills_base_purple.png", "gillslong_base_purple.png", "gillsgreater_base_purple.png"},
             {"gills_base_magenta.png", "gillslong_base_magenta.png", "gillsgreater_base_magenta.png"}
     };
-    private static final String[][] AXOLOTL_TEXTURES_GILLS_TOP = new String[][] {
-            {"gills_basetop.png", "gillslong_basetop.png", "gillsgreater_basetop.png"},
-            {"gills_base_whitetop.png", "gillslong_base_whitetop.png", "gillsgreater_base_whitetop.png"},
-            {"gills_base_lightgreytop.png", "gillslong_base_lightgreytop.png", "gillsgreater_base_lightgreytop.png"},
-            {"gills_base_greytop.png", "gillslong_base_greytop.png", "gillsgreater_base_greytop.png"},
-            {"gills_base_blacktop.png", "gillslong_base_blacktop.png", "gillsgreater_base_blacktop.png"},
-            {"gills_base_browntop.png", "gillslong_base_browntop.png", "gillsgreater_base_browntop.png"},
-            {"gills_base_pinktop.png", "gillslong_base_pinktop.png", "gillsgreater_base_pinktop.png"},
-            {"gills_base_redtop.png", "gillslong_base_redtop.png", "gillsgreater_base_redtop.png"},
-            {"gills_base_orangetop.png", "gillslong_base_orangetop.png", "gillsgreater_base_orangetop.png"},
-            {"gills_base_yellowtop.png", "gillslong_base_yellowtop.png", "gillsgreater_base_yellowtop.png"},
-            {"gills_base_limetop.png", "gillslong_base_limetop.png", "gillsgreater_base_limetop.png"},
-            {"gills_base_greentop.png", "gillslong_base_greentop.png", "gillsgreater_base_greentop.png"},
-            {"gills_base_cyantop.png", "gillslong_base_cyantop.png", "gillsgreater_base_cyantop.png"},
-            {"gills_base_lightbluetop.png", "gillslong_base_lightbluetop.png", "gillsgreater_base_lightbluetop.png"},
-            {"gills_base_bluetop.png", "gillslong_base_bluetop.png", "gillsgreater_base_bluetop.png"},
-            {"gills_base_purpletop.png", "gillslong_base_purpletop.png", "gillsgreater_base_purpletop.png"},
-            {"gills_base_magentatop.png", "gillslong_base_magentatop.png", "gillsgreater_base_magentatop.png"}
-    };
 
     private static final String[] AXOLOTL_TEXTURES_XANTHIN = new String[] {
             "", "low_xanthophores.png", "natural_xanthophores.png", "high_xanthophores.png"
@@ -254,6 +235,10 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             {"berkshire8.png"},
             {"berkshire9.png"},
         }
+    };
+
+    private static final String[] CHEEK_SPOTS = new String[] {
+            "cheeks.png", "cheeks_white.png", "cheeks_lightgrey.png", "cheeks_grey.png", "cheeks_black.png", "cheeks_brown.png", "cheeks_pink.png", "cheeks_red.png", "cheeks_orange.png", "cheeks_yellow.png", "cheeks_lime.png", "cheeks_green.png", "cheeks_cyan.png", "cheeks_lightblue.png", "cheeks_blue.png", "cheeks_purple.png", "cheeks_magenta.png",
     };
 
     public EnhancedAxolotl(EntityType<? extends EnhancedAxolotl> type, Level worldIn) {
@@ -595,9 +580,9 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
             TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
 
-            TextureGrouping gillsGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            addTextureToAnimalTextureGrouping(gillsGroup, TexturingType.MERGE_GROUP, AXOLOTL_TEXTURES_GILLS, gillsColour, gills, true);
-            addTextureToAnimalTextureGrouping(gillsGroup, TexturingType.MERGE_GROUP, AXOLOTL_TEXTURES_GILLS_TOP, gillsColour2, gills, true);
+            TextureGrouping gillsGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
+            addTextureToAnimalTextureGrouping(gillsGroup, AXOLOTL_TEXTURES_GILLS, gillsColour, gills, true);
+            addTextureToAnimalTextureGrouping(gillsGroup, AXOLOTL_TEXTURES_GILLS, gillsColour2, gills, true);
             parentGroup.addGrouping(gillsGroup);
 
             TextureGrouping bodyGroup = new TextureGrouping(TexturingType.ALPHA_GROUP);
@@ -608,8 +593,8 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             parentGroup.addGrouping(bodyGroup);
 
             TextureGrouping detailsGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
-            addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_LEFT_COLOUR, "eyel_.png");
-            addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, "eyer_.png");
+            addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_LEFT_COLOUR, "eye_left.png");
+            addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, "eye_right.png");
             parentGroup.addGrouping(detailsGroup);
 
             this.setTextureGrouping(parentGroup);

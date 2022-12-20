@@ -20,6 +20,7 @@ import static com.mojang.blaze3d.platform.NativeImage.getR;
 public class TexturingUtils {
 
     final static Logger LOGGER = LogManager.getLogger();
+    private final static float COLOUR_DEGREE = 1F/255F;
 
     public static void createTexture(TextureLayer layer, String modLocation, ResourceManager manager) {
         layer.setTextureImage(loadNativeImage(layer.getTexture(), manager, modLocation));
@@ -91,14 +92,14 @@ public class TexturingUtils {
     //Blends the base image's and supplied image's pixels together
     private static void blendPixel(NativeImage baseImage, int xIn, int yIn, int colIn) {
         int i = baseImage.getPixelRGBA(xIn, yIn);
-        float layerA = (float)getA(colIn) / 255.0F;
-        float f1 = (float)getB(colIn) / 255.0F;
-        float f2 = (float)getG(colIn) / 255.0F;
-        float f3 = (float)getR(colIn) / 255.0F;
-        float baseA = (float)getA(i) / 255.0F;
-        float baseB = (float)getB(i) / 255.0F;
-        float baseG = (float)getG(i) / 255.0F;
-        float baseR = (float)getR(i) / 255.0F;
+        float layerA = (float)getA(colIn) * COLOUR_DEGREE;
+        float f1 = (float)getB(colIn) * COLOUR_DEGREE;
+        float f2 = (float)getG(colIn) * COLOUR_DEGREE;
+        float f3 = (float)getR(colIn) * COLOUR_DEGREE;
+        float baseA = (float)getA(i) * COLOUR_DEGREE;
+        float baseB = (float)getB(i) * COLOUR_DEGREE;
+        float baseG = (float)getG(i) * COLOUR_DEGREE;
+        float baseR = (float)getR(i) * COLOUR_DEGREE;
         float inverseLayerA = 1.0F - layerA;
         float outAlpha = cleanValue(layerA * layerA + baseA * inverseLayerA);
         float outBlue = cleanValue(f1 * layerA + baseB * inverseLayerA);
@@ -151,13 +152,13 @@ public class TexturingUtils {
     private static void blendBGR(int xIn, int yIn, int rgbDye, NativeImage nativeimage) {
         int i = nativeimage.getPixelRGBA(xIn, yIn);
 
-        float r = (float)(rgbDye >> 16 & 255) / 255.0F;
-        float g = (float)(rgbDye >> 8 & 255) / 255.0F;
-        float b = (float)(rgbDye >> 0 & 255) / 255.0F;
-        float originalAlpha = (float)(i >> 24 & 255) / 255.0F;
-        float originalBlue = (float)(i >> 16 & 255) / 255.0F;
-        float originalGreen = (float)(i >> 8 & 255) / 255.0F;
-        float originalRed = (float)(i >> 0 & 255) / 255.0F;
+        float r = (float)(rgbDye >> 16 & 255) * COLOUR_DEGREE;
+        float g = (float)(rgbDye >> 8 & 255) * COLOUR_DEGREE;
+        float b = (float)(rgbDye >> 0 & 255) * COLOUR_DEGREE;
+        float originalAlpha = (float)(i >> 24 & 255) * COLOUR_DEGREE;
+        float originalBlue = (float)(i >> 16 & 255) * COLOUR_DEGREE;
+        float originalGreen = (float)(i >> 8 & 255) * COLOUR_DEGREE;
+        float originalRed = (float)(i >> 0 & 255) * COLOUR_DEGREE;
 
         if(originalAlpha != 0.0) {
             float f10 = b * 255 * originalBlue;
@@ -177,13 +178,13 @@ public class TexturingUtils {
     private static void blendRGB(int xIn, int yIn, int rgbDye, NativeImage nativeimage) {
         int i = nativeimage.getPixelRGBA(xIn, yIn);
 
-        float f1 = (float)(rgbDye >> 16 & 255) / 255.0F;
-        float f2 = (float)(rgbDye >> 8 & 255) / 255.0F;
-        float f3 = (float)(rgbDye >> 0 & 255) / 255.0F;
-        float originalAlpha = (float)(i >> 24 & 255) / 255.0F;
-        float r = (float)(i >> 16 & 255) / 255.0F;
-        float f6 = (float)(i >> 8 & 255) / 255.0F;
-        float f7 = (float)(i >> 0 & 255) / 255.0F;
+        float f1 = (float)(rgbDye >> 16 & 255) * COLOUR_DEGREE;
+        float f2 = (float)(rgbDye >> 8 & 255) * COLOUR_DEGREE;
+        float f3 = (float)(rgbDye >> 0 & 255) * COLOUR_DEGREE;
+        float originalAlpha = (float)(i >> 24 & 255) * COLOUR_DEGREE;
+        float r = (float)(i >> 16 & 255) * COLOUR_DEGREE;
+        float f6 = (float)(i >> 8 & 255) * COLOUR_DEGREE;
+        float f7 = (float)(i >> 0 & 255) * COLOUR_DEGREE;
 
         if(originalAlpha != 0.0) {
             float f10 = f1 * 255 * r;

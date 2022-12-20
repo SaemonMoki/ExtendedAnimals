@@ -93,8 +93,20 @@ public class TextureGrouping {
             case APPLY_COLLAR_COLOUR:
                 layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getCollarColour()));
                 break;
+            case APPLY_BRIDLE_COLOUR:
+                layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getBridleColour()));
+                break;
+            case APPLY_SADDLE_COLOUR:
+                layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getSaddleColour()));
+                break;
             case APPLY_DYE:
                 layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), colouration.getDyeColour()));
+                break;
+            case APPLY_EYE_LEFT_COLOUR:
+                layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), colouration.getLeftEyeColour()));
+                break;
+            case APPLY_EYE_RIGHT_COLOUR:
+                layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), colouration.getRightEyeColour()));
                 break;
 
         }

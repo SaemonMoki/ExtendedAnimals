@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
-import mokiyoki.enhancedanimals.ai.Axolotl.brain.AxolotlBrain;
+import mokiyoki.enhancedanimals.ai.brain.axolotl.AxolotlBrain;
 import mokiyoki.enhancedanimals.blocks.EnhancedAxolotlEggBlock;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.genetics.AxolotlGeneticsInitialiser;
@@ -368,13 +368,16 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     @Override
-    protected void runExtraIdleTimeTick() {
+    public void baseTick() {
         int i = this.getAirSupply();
         super.baseTick();
         if (!this.isNoAi()) {
             this.handleAirSupply(i);
         }
     }
+
+    @Override
+    protected void runExtraIdleTimeTick() {}
 
     @Override
     protected void lethalGenes() {
@@ -748,6 +751,12 @@ NBT read/write
     }
 
     @Override
+    protected void initializeHealth(EnhancedAnimalAbstract animal, float health) {
+        health = 14.0F;
+        super.initializeHealth(animal, health);
+    }
+
+    @Override
     public Genes createInitialBreedGenes(LevelAccessor world, BlockPos pos, String breed) {
         return new AxolotlGeneticsInitialiser().generateWithBreed(this.level, pos, breed);
     }
@@ -902,6 +911,11 @@ NBT read/write
             this.setAirSupply(this.getMaxAirSupply());
         }
 
+    }
+
+    @Override
+    public int getMaxAirSupply() {
+        return AXOLOTL_TOTAL_AIR_SUPPLY;
     }
 
     public void rehydrate() {

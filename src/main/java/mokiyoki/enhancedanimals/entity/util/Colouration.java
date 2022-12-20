@@ -174,7 +174,7 @@ public class Colouration {
 
         int[] color = getRGBFromHSB(hue, saturation, brightness);
 
-        return 128 << 24 | (Math.min(color[2], 255)) << 16 | (Math.min(color[1], 255)) << 8 | (Math.min(color[0], 255));
+        return 128 << 24 | (Math.min(color[0], 255)) << 16 | (Math.min(color[1], 255)) << 8 | (Math.min(color[2], 255));
     }
 
     public static float[] getAxolotlLightEyes(float hue1, float hue2) {

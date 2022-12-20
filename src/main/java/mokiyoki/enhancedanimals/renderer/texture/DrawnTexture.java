@@ -17,16 +17,16 @@ public class DrawnTexture extends AbstractTexture {
     boolean[][] cuttoutArray;
     private String resourceLocation;
     private ResourceLocation resource;
-    private EnhancedLayeredTexture enhancedLayeredTexture;
+    private EnhancedLayeredTexturer enhancedLayeredTexturer;
 
     public DrawnTexture(int[] imageArray, String baseImageLocation) {
         this.imageArray = imageArray;
         this.resourceLocation = baseImageLocation;
     }
 
-    public DrawnTexture(String baseImageLocation, EnhancedLayeredTexture texture, boolean[][] cuttoutArray) {
+    public DrawnTexture(String baseImageLocation, EnhancedLayeredTexturer texturer, boolean[][] cuttoutArray) {
         this.cuttoutArray = cuttoutArray;
-        this.enhancedLayeredTexture = texture;
+        this.enhancedLayeredTexturer = texturer;
         this.resourceLocation = baseImageLocation;
     }
 
@@ -49,7 +49,7 @@ public class DrawnTexture extends AbstractTexture {
             } else {
                 int w = nativeimage.getWidth();
                 int h = nativeimage.getHeight();
-                NativeImage baseImage = this.enhancedLayeredTexture.getImage();
+                NativeImage baseImage = this.enhancedLayeredTexturer.getImage();
 
                 for (int x = 0; x < w; x++) {
                     for (int y = 0; y < h; y++) {
@@ -62,8 +62,8 @@ public class DrawnTexture extends AbstractTexture {
                 }
             }
 
-            if (this.enhancedLayeredTexture!=null) {
-                this.enhancedLayeredTexture.closeImage();
+            if (this.enhancedLayeredTexturer!=null) {
+                this.enhancedLayeredTexturer.closeImage();
             }
 
             TextureUtil.prepareImage(this.getId(), nativeimage.getWidth(), nativeimage.getHeight());

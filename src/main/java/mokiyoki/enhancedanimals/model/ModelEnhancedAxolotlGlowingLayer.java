@@ -1,41 +1,21 @@
 package mokiyoki.enhancedanimals.model;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.renderer.texture.DrawnTexture;
-import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
+import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
 import mokiyoki.enhancedanimals.util.Genes;
-import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.CatModel;
-import net.minecraft.client.model.EndermanModel;
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.Cat;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 
 public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl, ModelEnhancedAxolotl<EnhancedAxolotl>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
@@ -72,15 +52,15 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
         ResourceLocation resourcelocation = textureCache.getFromCache(s);
 
         if (resourcelocation == null) {
-            String[] textures = entity.getVariantTexturePaths();
+            TextureGrouping textureGrouping = entity.getTextureGrouping();
 
-            if (textures == null || textures.length == 0) {
+            if (textureGrouping == null || !textureGrouping.isPopulated()) {
                 return ERROR_TEXTURE_LOCATION;
             }
 
             try {
                 resourcelocation = new ResourceLocation(s);
-                EnhancedLayeredTexture layeredTexture = new EnhancedLayeredTexture(ENHANCED_AXOLOTL_TEXTURE_LOCATION, textures, null, entity.colouration);
+                EnhancedLayeredTexturer layeredTexture = new EnhancedLayeredTexturer(ENHANCED_AXOLOTL_TEXTURE_LOCATION, textureGrouping, entity.colouration);
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, layeredTexture);
                 DrawnTexture texture = new DrawnTexture("eanimod:textures/entities/axolotl/blank.png", layeredTexture, getGlowingParts(genes));
                 Minecraft.getInstance().getTextureManager().register(resourcelocation, texture);

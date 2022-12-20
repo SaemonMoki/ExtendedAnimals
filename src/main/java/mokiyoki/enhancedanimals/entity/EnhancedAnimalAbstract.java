@@ -1667,9 +1667,9 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         this.texturesIndexes.add(CACHE_DELIMITER);
     }
 
-    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, String[][][] texture, int geneValue0, int geneValue1, int geneValue2, boolean check) {
+    protected void addTextureToAnimalTextureGrouping(TextureGrouping textureGroup, TexturingType texturingType, String[][][] texture, int geneValue0, int geneValue1, int geneValue2, boolean check) {
         if(check) {
-            textureGroup.addTextureLayers(new TextureLayer(texture[geneValue0][geneValue1][geneValue2]));
+            textureGroup.addTextureLayers(new TextureLayer(texturingType, texture[geneValue0][geneValue1][geneValue2]));
             this.texturesIndexes.add(String.valueOf(geneValue0)+String.valueOf(geneValue1)+String.valueOf(geneValue2));
         }
         this.texturesIndexes.add(CACHE_DELIMITER);

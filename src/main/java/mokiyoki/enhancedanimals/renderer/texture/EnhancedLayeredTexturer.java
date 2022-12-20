@@ -296,6 +296,9 @@ public class EnhancedLayeredTexturer extends AbstractTexture {
         TextureUtil.prepareImage(this.getId(), nativeImage.getWidth(), nativeImage.getHeight());
         nativeImage.upload(0, 0, 0, false);
 
+        this.image = new NativeImage(nativeImage.format(), nativeImage.getWidth(), nativeImage.getHeight(), true);
+        this.image.copyFrom(nativeImage);
+        this.hasImage = true;
     }
 
     private void combineAlphaGroup(NativeImage maskingImage, NativeImage baseImage, Iterator<String> iterator, ResourceManager manager) {

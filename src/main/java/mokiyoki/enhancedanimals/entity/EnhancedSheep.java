@@ -996,7 +996,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
-            this.setAlphaTexturePaths();
+//            this.setAlphaTexturePaths();
         } else if (this.resetTexture && !this.isBaby()) {
             this.resetTexture = false;
             this.reloadTextures();
@@ -1131,8 +1131,6 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
             TextureGrouping foundationGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             addTextureToAnimalTextureGrouping(foundationGroup, TexturingType.APPLY_RED, "r_solid_white.png");
-//            addTextureToAnimal("self_black.png");
-//            addTextureToAnimal("grey.png");
             addTextureToAnimalTextureGrouping(foundationGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? 1 : 0, l -> l != 0);
             parentGroup.addGrouping(foundationGroup);
 
@@ -1144,14 +1142,11 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             TextureGrouping whiteSpotGroup = new TextureGrouping(ticked?TexturingType.ALPHA_GROUP:TexturingType.MERGE_GROUP);
             addTextureToAnimalTextureGrouping(whiteSpotGroup, SHEEP_TEXTURES_TICKED, ticked?1:0, l -> l != 0);
             addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? (this.getOrSetIsFemale() ? 3 : 2) : 0, l -> l != 0);
-
             addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_ROAN, roan, l -> l != 0);
             addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_BLAZE, blaze, l -> l != 0);
             addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead, pigmentedHeadCategory != 0);
             parentGroup.addGrouping(whiteSpotGroup);
-//            if (ticked) {
-//                this.enhancedAnimalTextures.add("alpha_group_end");
-//            }
+
             TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_GREY, grey, l -> l != 0);
             addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_FUR, fur, null);
@@ -1160,21 +1155,22 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             addTextureToAnimalTextureGrouping(detailGroup, "eyes_black.png");
             addTextureToAnimalTextureGrouping(detailGroup,"chests.png");
             parentGroup.addGrouping(detailGroup);
+
             this.setTextureGrouping(parentGroup);
         }
     }
 
     @Override
     protected void setAlphaTexturePaths() {
-        Genes genes = getSharedGenes();
-        if (genes != null) {
-            int[] gene = genes.getAutosomalGenes();
-            if (gene != null) {
-                if (!this.isBaby() && (gene[70] == 2 || gene[71] == 2)) {
-                    this.enhancedAnimalAlphaTextures.add(SHEEP_TEXTURES_TICKED[1]);
-                }
-            }
-        }
+//        Genes genes = getSharedGenes();
+//        if (genes != null) {
+//            int[] gene = genes.getAutosomalGenes();
+//            if (gene != null) {
+//                if (!this.isBaby() && (gene[70] == 2 || gene[71] == 2)) {
+//                    this.enhancedAnimalAlphaTextures.add(SHEEP_TEXTURES_TICKED[1]);
+//                }
+//            }
+//        }
     }
 
     @Override

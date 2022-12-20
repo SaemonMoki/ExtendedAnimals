@@ -65,7 +65,7 @@ public class TexturingUtils {
     public static void applyAlphaMaskBlend(NativeImage maskingImage, NativeImage appliedImage) {
         for (int i = 0; i < appliedImage.getHeight(); ++i) {
             for (int j = 0; j < appliedImage.getWidth(); ++j) {
-                blendAlpha(j, i, maskingImage, appliedImage);
+                maskAlpha(j, i, maskingImage, appliedImage);
             }
         }
     }
@@ -112,16 +112,16 @@ public class TexturingUtils {
         baseImage.setPixelRGBA(xIn, yIn, combine(j, k, l, i1));
     }
 
-    private static void blendAlpha(int xIn, int yIn, NativeImage maskingImage, NativeImage nativeImage) {
+    private static void maskAlpha(int xIn, int yIn, NativeImage maskingImage, NativeImage nativeImage) {
         int i = nativeImage.getPixelRGBA(xIn, yIn);
-        int iAlpha = maskingImage.getPixelRGBA(xIn, yIn);
+        int maskRGBA = maskingImage.getPixelRGBA(xIn, yIn);
 
         float originalAlpha = ((float)(i >> 24 & 255))/255F;
-        float maskingAlpha = ((float)(iAlpha >> 24 & 255))/255F;
+        float maskingAlpha = ((float)(maskRGBA >> 24 & 255))/255F;
 
-        int j = (int)(originalAlpha * maskingAlpha * 255F);
+        int j = (int)(maskingAlpha * originalAlpha * 255F);
 
-        maskingImage.setPixelRGBA(xIn, yIn, j << 24 | (i >> 16 & 255) << 16 | (i >> 8 & 255) << 8 | (i >> 0 & 255));
+        maskingImage.setPixelRGBA(xIn, yIn, j << 24 | (i >> 16 & 255) << 16 | (i >> 8 & 255) << 8 | (i & 255));
     }
 
     private static void averagePixel(NativeImage baseImage, int xIn, int yIn, List<Integer> colIns) {
@@ -160,9 +160,9 @@ public class TexturingUtils {
         float originalRed = (float)(i >> 0 & 255) / 255.0F;
 
         if(originalAlpha != 0.0) {
-            float f10 = (b * 255 ) * originalBlue;
-            float f11 = (g * 255 ) * originalGreen;
-            float f12 = (r * 255 ) * originalRed;
+            float f10 = b * 255 * originalBlue;
+            float f11 = g * 255 * originalGreen;
+            float f12 = r * 255 * originalRed;
 
             int j = (int)(originalAlpha * 255.0F);
             int k = (int)(f10);
@@ -186,9 +186,9 @@ public class TexturingUtils {
         float f7 = (float)(i >> 0 & 255) / 255.0F;
 
         if(originalAlpha != 0.0) {
-            float f10 = (f1 * 255 ) * r;
-            float f11 = (f2 * 255 ) * f6;
-            float f12 = (f3 * 255 ) * f7;
+            float f10 = f1 * 255 * r;
+            float f11 = f2 * 255 * f6;
+            float f12 = f3 * 255 * f7;
 
             int j = (int)(originalAlpha * 255.0F);
             int k = (int)(f10);

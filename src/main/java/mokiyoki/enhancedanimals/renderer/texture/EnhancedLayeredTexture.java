@@ -558,40 +558,40 @@ public class EnhancedLayeredTexture extends AbstractTexture {
     }
 
     public void blendPixel(NativeImage baseImage, int xIn, int yIn, int colIn) {
-        int i = baseImage.getPixelRGBA(xIn, yIn);
-        float f = (float)getA(colIn) / 255.0F;
-        float f1 = (float)getB(colIn) / 255.0F;
-        float f2 = (float)getG(colIn) / 255.0F;
-        float f3 = (float)getR(colIn) / 255.0F;
-        float f4 = (float)getA(i) / 255.0F;
-        float f5 = (float)getB(i) / 255.0F;
-        float f6 = (float)getG(i) / 255.0F;
-        float f7 = (float)getR(i) / 255.0F;
-        float f8 = 1.0F - f;
-        float f9 = f * f + f4 * f8;
-        float f10 = f1 * f + f5 * f8;
-        float f11 = f2 * f + f6 * f8;
-        float f12 = f3 * f + f7 * f8;
-        if (f9 > 1.0F) {
-            f9 = 1.0F;
+        int baseI = baseImage.getPixelRGBA(xIn, yIn);
+        float alpha = (float)getA(colIn) / 255.0F;
+        float blue = (float)getB(colIn) / 255.0F;
+        float green = (float)getG(colIn) / 255.0F;
+        float red = (float)getR(colIn) / 255.0F;
+        float baseAlpha = (float)getA(baseI) / 255.0F;
+        float baseBlue = (float)getB(baseI) / 255.0F;
+        float baseGreen = (float)getG(baseI) / 255.0F;
+        float baseRed = (float)getR(baseI) / 255.0F;
+        float inverseAlpha = 1.0F - alpha;
+        float a = alpha * alpha + baseAlpha * inverseAlpha;
+        float b = blue * alpha + baseBlue * inverseAlpha;
+        float g = green * alpha + baseGreen * inverseAlpha;
+        float r = red * alpha + baseRed * inverseAlpha;
+        if (a > 1.0F) {
+            a = 1.0F;
         }
 
-        if (f10 > 1.0F) {
-            f10 = 1.0F;
+        if (b > 1.0F) {
+            b = 1.0F;
         }
 
-        if (f11 > 1.0F) {
-            f11 = 1.0F;
+        if (g > 1.0F) {
+            g = 1.0F;
         }
 
-        if (f12 > 1.0F) {
-            f12 = 1.0F;
+        if (r > 1.0F) {
+            r = 1.0F;
         }
 
-        int j = (int)(f9 * 255.0F);
-        int k = (int)(f10 * 255.0F);
-        int l = (int)(f11 * 255.0F);
-        int i1 = (int)(f12 * 255.0F);
+        int j = (int)(a * 255.0F);
+        int k = (int)(b * 255.0F);
+        int l = (int)(g * 255.0F);
+        int i1 = (int)(r * 255.0F);
         baseImage.setPixelRGBA(xIn, yIn, combine(j, k, l, i1));
     }
 
@@ -643,6 +643,8 @@ public class EnhancedLayeredTexture extends AbstractTexture {
 
     public void closeImage() {
         this.hasImage = false;
-        this.image.close();
+        if (this.image!=null) {
+            this.image.close();
+        }
     }
 }

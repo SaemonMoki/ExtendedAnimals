@@ -62,6 +62,7 @@ public class AxolotlGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(AxolotlBreeds.LAVENDER);
         this.breeds.add(AxolotlBreeds.WHITE);
         this.breeds.add(AxolotlBreeds.MICRO);
+        this.breeds.add(AxolotlBreeds.RAREBLUEVARIENT);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {

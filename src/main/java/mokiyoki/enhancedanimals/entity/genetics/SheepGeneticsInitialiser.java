@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +26,12 @@ public class SheepGeneticsInitialiser extends AbstractGeneticsInitialiser {
         this.breeds.add(SheepBreeds.BLACKBELLY);
         this.breeds.add(SheepBreeds.BABYDOLL);
         this.breeds.add(SheepBreeds.DORPER);
+        this.breeds.add(SheepBreeds.TICKED_DORPER);
+        this.breeds.add(SheepBreeds.ENGLISH_BLUE);
+        this.breeds.add(SheepBreeds.GERMAN_BLUE);
+        this.breeds.add(SheepBreeds.PADDINGTON_BLUE);
+        this.breeds.add(SheepBreeds.GREY);
+        this.breeds.add(SheepBreeds.RECESSIVE_BLACK);
     }
 
     public Genes generateNewGenetics(LevelAccessor world, BlockPos pos, boolean generateBreed) {

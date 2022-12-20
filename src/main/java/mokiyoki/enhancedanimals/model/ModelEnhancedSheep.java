@@ -137,9 +137,9 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
                 PartPose.offset(0.0F, 2.25F, -5.0F)
         );
         bHead.addOrReplaceChild("noseW", CubeListBuilder.create()
-                        .texOffs(0, 47)
+                        .texOffs(0, 50)
                         .addBox(-2.0F, 0.0F, 0.0F, 4, 2, 3, new CubeDeformation(0.5F)),
-                PartPose.offset(0.0F, -0.25F, -2.0F)
+                PartPose.offset(0.0F, 0.25F, -2.0F)
         );
 
         bHead.addOrReplaceChild("jaw", CubeListBuilder.create()
@@ -286,7 +286,40 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
          *      Equipment
          */
 
+        base.addOrReplaceChild("chestL", CubeListBuilder.create()
+                        .texOffs(64, 42)
+                        .addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3, new CubeDeformation(0.01F)),
+                PartPose.offsetAndRotation(-7.0F, -2.0F, 4.0F, 0.0F, Mth.HALF_PI, 0.0F)
+        );
+        base.addOrReplaceChild("chestR", CubeListBuilder.create()
+                        .texOffs(64, 53)
+                        .addBox(-3.0F, 0.0F, 0.0F, 8, 8, 3, new CubeDeformation(0.01F)),
+                PartPose.offset(0.0F, 0.0F, 11.0F)
+        );
 
+        base.addOrReplaceChild("collar", CubeListBuilder.create()
+                        .texOffs(54, 0)
+                        .addBox(-5.0F, 0.0F, -9.0F, 10, 2, 10, new CubeDeformation(-2.5F, -0.5F, -2.5F))
+                        .texOffs(86, 2)
+                        .addBox(0.0F, -0.75F, -8.25F, 0, 4, 4, new CubeDeformation(0.0F, -1.0F, -1.0F)),
+                PartPose.offset(0.0F, -5.0F, 4.0F)
+        );
+        base.addOrReplaceChild("collarH", CubeListBuilder.create()
+                        .texOffs(94, 0)
+                        .addBox(-1.5F, 0.375F, -1.5F, 3, 3, 3, new CubeDeformation(-0.75F, -0.75F, -0.75F)),
+                PartPose.offsetAndRotation(0.0F, 0.0F, -6.5F, -Mth.HALF_PI * 0.5F, 0.0F, 0.0F)
+        );
+
+        base.addOrReplaceChild("bridle", CubeListBuilder.create()
+                        .texOffs(48, 24)
+                        .addBox(-5.0F, 0.0F, -10.0F, 10, 8, 8, new CubeDeformation(-2.4F, -1.9F, -1.9F)),
+                PartPose.offset(0.0F, -2.0F, 4.0F)
+        );
+        base.addOrReplaceChild("bridleN", CubeListBuilder.create()
+                        .texOffs(56, 12)
+                        .addBox(-4.0F, 0.0F, -14.0F, 8, 6, 6, new CubeDeformation(-1.9F, -1.4F, -1.4F)),
+                PartPose.offset(0.0F, 1.0F, 2.0F)
+        );
 
         return LayerDefinition.create(meshdefinition, 128, 64);
     }
@@ -349,7 +382,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         this.neck = new WrappedModelPart("neck", bNeck);
 
         this.body = new WrappedModelPart("body", bBody);
-        this.bodyLongHair = new WrappedModelPart("bodyL", bBody);
+//        this.bodyLongHair = new WrappedModelPart("bodyL", bBody);
 
         this.headWool = new WrappedModelPart("headW", bHead);
         this.cheekWool = new WrappedModelPart("cheekW", bHead);
@@ -417,7 +450,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
         this.theNeck.addChild(this.neck);
 
         this.theBody.addChild(this.body);
-        this.theBody.addChild(this.bodyLongHair);
+//        this.theBody.addChild(this.bodyLongHair);
 
         this.theBody.addChild(this.udder);
         this.udder.addChild(this.nippleLeft);
@@ -457,6 +490,23 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             this.hornLeft[i].addChild(this.hornLeft[i+1]);
             this.hornRight[i].addChild(this.hornRight[i+1]);
         }
+
+        /**
+         *      Equipment
+         */
+        this.chests = new WrappedModelPart("chestL", base);
+        this.chestsR = new WrappedModelPart("chestR", base);
+        this.collar = new WrappedModelPart("collar", base);
+        this.collarHardware = new WrappedModelPart("collarH", base);
+        this.bridle = new WrappedModelPart("bridle", base);
+        this.bridleNose = new WrappedModelPart("bridleN", base);
+
+        this.theBody.addChild(this.chests);
+        this.chests.addChild(this.chestsR);
+        this.theNeck.addChild(this.collar);
+        this.collar.addChild(this.collarHardware);
+        this.theHead.addChild(this.bridle);
+        this.bridle.addChild(this.bridleNose);
     }
 
     private void resetCubes() {
@@ -465,8 +515,8 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        SheepModelData sheepModelData = getSheepModelData();
-        SheepPhenotype sheep = sheepModelData.getPhenotype();
+        SheepModelData data = getSheepModelData();
+        SheepPhenotype sheep = data.getPhenotype();
 
         resetCubes();
 
@@ -477,22 +527,14 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             /**
              *      Wool
              */
-            if (sheepModelData.bridle) {
-                this.body.hide();
-                this.bodyLongHair.show();
-            } else {
-                this.body.show();
-                this.bodyLongHair.hide();
-            }
-
-            float woolScale = 1.0F + (sheepModelData.coatLength/22.5F);
-            float woolScale2 = 1.0F + (sheepModelData.coatLength/45F);
-            mapOfScale.put(this.body.boxIsRendered ? "body" : "bodyL", ModelHelper.createScalings(woolScale, woolScale, woolScale2, 0.0F, 0.0F, 0.0F));
+            float woolScale = 1.0F + (data.coatLength/22.5F);
+            float woolScale2 = 1.0F + (data.coatLength/45F);
+            mapOfScale.put("body", ModelHelper.createScalings(woolScale, woolScale, woolScale2, 0.0F, 0.0F, 0.0F));
 
             for (int i = 0, l = neckWool.length; i < l; i++) {
                 this.neckWool[i].hide();
             }
-            switch (sheepModelData.coatLength) {
+            switch (data.coatLength) {
                 case 1, 2 -> this.neckWool[0].show();
                 case 3, 4 -> this.neckWool[1].show();
                 case 5, 6 -> this.neckWool[2].show();
@@ -502,20 +544,32 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
                 case 13, 14, 15 -> this.neckWool[6].show();
             }
 
-            this.headWool.show(sheep.faceWool >= 1);
-            this.cheekWool.show(sheep.faceWool >= 2);
-            this.noseWool.show(sheep.faceWool >= 3);
+            if (data.coatLength > 2) {
+                this.headWool.show(sheep.faceWool >= 1);
+                this.cheekWool.show(sheep.faceWool >= 2);
+                this.noseWool.show(sheep.faceWool >= 3);
+                if (this.headWool.boxIsRendered) {
+                    mapOfScale.put("bridle", ModelHelper.createScalings(1.2F, 1.2F, 1.5F, 0.0F, -0.05F, 0.14F));
+                    if (this.noseWool.boxIsRendered) {
+                        mapOfScale.put("bridleN", ModelHelper.createScalings(1.0F, 1.0F, 0.6F, 0.0F, -0.01F, -0.35F));
+                    }
+                }
+            } else {
+                this.headWool.show(false);
+                this.cheekWool.show(false);
+                this.noseWool.show(false);
+            }
 
             /**
              *      Udder
              */
-            if (sheepModelData.bagSize != -1.0F) {
+            if (data.bagSize != -1.0F) {
                 this.udder.show();
-                float bagthickness = sheepModelData.bagSize * sheepModelData.bagSize;
-                mapOfScale.put("Udder", ModelHelper.createScalings(bagthickness, sheepModelData.bagSize, bagthickness, 0.0F, 0.0F, 0.0F));
+                float bagthickness = data.bagSize * data.bagSize;
+                mapOfScale.put("Udder", ModelHelper.createScalings(bagthickness, data.bagSize, bagthickness, 0.0F, 0.0F, 0.0F));
                 if (bagthickness != 0.0F) {
-                    mapOfScale.put("NippleL", ModelHelper.createScalings(1.0F / bagthickness, -sheepModelData.bagSize, 1.0F / bagthickness, 0.0F, 0.0F, 0.0F));
-                    mapOfScale.put("NippleR", ModelHelper.createScalings(1.0F / bagthickness, -sheepModelData.bagSize, 1.0F / bagthickness, 0.0F, 0.0F, 0.0F));
+                    mapOfScale.put("NippleL", ModelHelper.createScalings(1.0F / bagthickness, -data.bagSize, 1.0F / bagthickness, 0.0F, 0.0F, 0.0F));
+                    mapOfScale.put("NippleR", ModelHelper.createScalings(1.0F / bagthickness, -data.bagSize, 1.0F / bagthickness, 0.0F, 0.0F, 0.0F));
                 }
             } else {
                 this.udder.hide();
@@ -535,8 +589,8 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
                 this.theHornPolyLeft.show(sheep.polyHorns);
                 this.theHornPolyRight.show(sheep.polyHorns);
                 for (int i = 0; i < 19; i++) {
-                    this.hornLeft[i].boxIsRendered = sheepModelData.offsets.containsKey("hL" + i);
-                    this.hornRight[i].boxIsRendered = sheepModelData.offsets.containsKey("hR" + i);
+                    this.hornLeft[i].boxIsRendered = data.offsets.containsKey("hL" + i);
+                    this.hornRight[i].boxIsRendered = data.offsets.containsKey("hR" + i);
                 }
             }
 
@@ -557,11 +611,11 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
             /**
              *      Growth scaling
              */
-            float sheepSize = ((2.0F * sheepModelData.size * sheepModelData.growthAmount) + sheepModelData.size) / 3.0F;
+            float sheepSize = ((2.0F * data.size * data.growthAmount) + data.size) / 3.0F;
             float d = 0.0F;
-            if (!sheepModelData.sleeping && sheepModelData.growthAmount != 1.0F) {
-                float babySize = (3.0F - sheepModelData.growthAmount) * 0.5F;
-                d = 0.33333F * (1.0F - sheepModelData.growthAmount);
+            if (!data.sleeping && data.growthAmount != 1.0F) {
+                float babySize = (3.0F - data.growthAmount) * 0.5F;
+                d = 0.33333F * (1.0F - data.growthAmount);
                 mapOfScale.put("bLegFL", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
                 mapOfScale.put("bLegFR", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
                 mapOfScale.put("bLegBL", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));

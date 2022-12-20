@@ -1042,17 +1042,36 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
                 //black sheep
                 pattern1 = 14;
             }else if (gene[0] != 1 && gene[1] != 1) {
-                pattern1 = gene[0] <= 2 ? 0 : gene[0]-2;
-                pattern2 = gene[1] <= 2 ? 0 : gene[1]-2;
-                if (pattern1 > 4) {
-                    pattern1 = pattern1 == 5 ? 14 : pattern1-1;
+                if (gene[0] == 2 || gene[1] == 2) {
+                    grey = 1;
+                    pattern1 = gene[0] == 2 ? 14 : 0;
+                    pattern2 = gene[1] == 2 ? 14 : 0;
                 }
-                if (pattern2 > 4) {
-                    pattern2 = pattern2 == 5 ? 14 : pattern2-1;
-                }
-                pattern2 = pattern1 == pattern2 ? 0 : pattern2;
-                if (gene[90] == 1 || gene[91] == 1) {
-                    mealy = pattern1 == 3 || (pattern1 < 14 && pattern1 > 6);
+                if (pattern1 == 0 || pattern2 == 0) {
+                    if (pattern1 == 0) {
+                        pattern1 = gene[0] <= 2 ? 0 : gene[0] - 2;
+                        if (pattern1 > 3) {
+                            pattern1 = pattern1 == 4 ? 14 : pattern1 - 1;
+                        }
+                    }
+                    if (pattern2 == 0) {
+                        pattern2 = gene[1] <= 2 ? 0 : gene[1] - 2;
+                        if (pattern2 > 3) {
+                            pattern2 = pattern2 == 4 ? 14 : pattern2 - 1;
+                        }
+                    }
+                    if (pattern1 == 14 && pattern2 != 14) {
+                        pattern1 = pattern2;
+                        pattern2 = 0;
+                    } else if (pattern2 == 14 && pattern1!=14) {
+                        pattern2 = 0;
+                    }
+
+                    pattern2 = pattern1 == pattern2 ? 0 : pattern2;
+
+                    if (gene[90] == 1 || gene[91] == 1) {
+                        mealy = pattern1 == 3 || (pattern1 < 14 && pattern1 > 6);
+                    }
                 }
             }
 
@@ -1122,13 +1141,10 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
             addTextureToAnimalTextureGrouping(patternAverageGroup, TexturingType.APPLY_BLACK, SHEEP_TEXTURES_PATTERN, pattern2, l -> l != 0);
             parentGroup.addGrouping(patternAverageGroup);
 
-            TextureGrouping whiteSpotGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            TextureGrouping whiteSpotGroup = new TextureGrouping(ticked?TexturingType.ALPHA_GROUP:TexturingType.MERGE_GROUP);
+            addTextureToAnimalTextureGrouping(whiteSpotGroup, SHEEP_TEXTURES_TICKED, ticked?1:0, l -> l != 0);
             addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_MEALY, mealy ? (this.getOrSetIsFemale() ? 3 : 2) : 0, l -> l != 0);
-//            addTextureToAnimal(SHEEP_TEXTURES_GREY, grey, l -> l != 0);
-//            if (ticked) {
-//                this.enhancedAnimalTextures.add("alpha_group_start");
-//            }
-//            addTextureToAnimal(SHEEP_TEXTURES_SPOTS, spots, l -> l != 0);
+
             addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_ROAN, roan, l -> l != 0);
             addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_BLAZE, blaze, l -> l != 0);
             addTextureToAnimalTextureGrouping(whiteSpotGroup, TexturingType.APPLY_DYE, SHEEP_TEXTURES_PIGMENTEDHEAD, pigmentedHeadCategory, pigmentedHead, pigmentedHeadCategory != 0);
@@ -1137,10 +1153,12 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 //                this.enhancedAnimalTextures.add("alpha_group_end");
 //            }
             TextureGrouping detailGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_GREY, grey, l -> l != 0);
             addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_FUR, fur, null);
             addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_SKIN, skin, null);
-            addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_HOOVES, hooves, null);
-            addTextureToAnimalTextureGrouping(detailGroup, SHEEP_TEXTURES_EYES, eyes, null);
+            addTextureToAnimalTextureGrouping(detailGroup, "hooves_black.png");
+            addTextureToAnimalTextureGrouping(detailGroup, "eyes_black.png");
+            addTextureToAnimalTextureGrouping(detailGroup,"chests.png");
             parentGroup.addGrouping(detailGroup);
             this.setTextureGrouping(parentGroup);
         }

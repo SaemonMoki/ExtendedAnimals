@@ -126,8 +126,6 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
     private WrappedModelPart tail3;
     private WrappedModelPart tail4;
 
-    private WrappedModelPart chestR;
-
     private WrappedModelPart blanketH;
     private WrappedModelPart blanket0;
     private WrappedModelPart blanket1;
@@ -820,7 +818,7 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         this.blanket.addChild(this.blanket0, this.blanket1, this.blanket2, this.blanket3, this.blanket4, this.blanket5);
 
         this.chests = new WrappedModelPart("chestL", base);
-        this.chestR = new WrappedModelPart("chestR", base);
+        this.chestsR = new WrappedModelPart("chestR", base);
 
         this.collar = new WrappedModelPart("collar", base);
         this.collarHardware = new WrappedModelPart("collarH", base);
@@ -851,7 +849,7 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
         this.theHead.addChild(this.blanketH);
         this.theHead.addChild(this.bridle);
 
-        this.chests.addChild(this.chestR);
+        this.chests.addChild(this.chestsR);
         this.nose.addChild(this.bridleNose);
 
         this.saddleVanilla.addChild(this.saddlePad);
@@ -884,8 +882,8 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        LlamaModelData llamaModelData = getLlamaModelData();
-        LlamaPhenotype llama = llamaModelData.getPhenotype();
+        LlamaModelData data = getLlamaModelData();
+        LlamaPhenotype llama = data.getPhenotype();
 
         resetCubes();
 
@@ -893,20 +891,20 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
             super.renderToBuffer(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             Map<String, List<Float>> mapOfScale = new HashMap<>();
 
-            int maxCoatLength = llamaModelData.growthAmount == 1.0F ? llama.maxCoat : (int)(llama.maxCoat*llamaModelData.growthAmount);
+            int maxCoatLength = data.growthAmount == 1.0F ? llama.maxCoat : (int)(llama.maxCoat*data.growthAmount);
 
-            this.neck.show(llamaModelData.coatlength == -1);
-            this.neckWool1.show(llamaModelData.coatlength == 0);
-            this.neckWool2.show(llamaModelData.coatlength == 1);
-            this.neckWool3.show(llamaModelData.coatlength == 2);
-            this.neckWool4.show(llamaModelData.coatlength == 3);
-            this.neckWool5.show(llamaModelData.coatlength >= 4);
+            this.neck.show(data.coatlength == -1);
+            this.neckWool1.show(data.coatlength == 0);
+            this.neckWool2.show(data.coatlength == 1);
+            this.neckWool3.show(data.coatlength == 2);
+            this.neckWool4.show(data.coatlength == 3);
+            this.neckWool5.show(data.coatlength >= 4);
 
-            this.bodyWool1.show(llamaModelData.coatlength == 0 || llamaModelData.coatlength == -1);
-            this.bodyWool2.show(llamaModelData.coatlength == 1);
-            this.bodyWool3.show(llamaModelData.coatlength == 2);
-            this.bodyWool4.show(llamaModelData.coatlength == 3);
-            this.bodyWool5.show(llamaModelData.coatlength >= 4);
+            this.bodyWool1.show(data.coatlength == 0 || data.coatlength == -1);
+            this.bodyWool2.show(data.coatlength == 1);
+            this.bodyWool3.show(data.coatlength == 2);
+            this.bodyWool4.show(data.coatlength == 3);
+            this.bodyWool5.show(data.coatlength >= 4);
 
             this.legWool1FrontLeft.show(maxCoatLength == 1);
             this.legWool2FrontLeft.show(maxCoatLength == 2);
@@ -931,39 +929,54 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
             this.tail3.show(llama.maxCoat == 3);
             this.tail4.show(llama.maxCoat >= 4);
 
-            this.blanket0.show(llamaModelData.coatlength == -1);
-            this.blanket1.show(llamaModelData.coatlength == 0);
-            this.blanket2.show(llamaModelData.coatlength == 1);
-            this.blanket3.show(llamaModelData.coatlength == 2);
-            this.blanket4.show(llamaModelData.coatlength == 3);
-            this.blanket5.show(llamaModelData.coatlength == 4);
+            this.blanket0.show(data.coatlength == -1);
+            this.blanket1.show(data.coatlength == 0);
+            this.blanket2.show(data.coatlength == 1);
+            this.blanket3.show(data.coatlength == 2);
+            this.blanket4.show(data.coatlength == 3);
+            this.blanket5.show(data.coatlength == 4);
 
-            if (llamaModelData.collar) {
-                int i = Math.max(llamaModelData.coatlength, 0);
+            if (data.collar) {
+                int i = Math.max(data.coatlength, 0);
                 mapOfScale.put("collar", COLLAR_SCALE[i]);
                 mapOfScale.put("collarH", COLLAR_HARDWARE_SCALE[i]);
             }
 
-            if (llamaModelData.saddle != SaddleType.NONE) {
+            if (data.saddle != SaddleType.NONE) {
                 float coatMod = 1.0F;
 
-                switch (llamaModelData.coatlength) {
+                switch (data.coatlength) {
                     case 1 -> coatMod = 1.0625F;
                     case 2 -> coatMod = 1.15F;
                     case 3 -> coatMod = 1.25F;
                     case 4 -> coatMod = 1.375F;
                 }
 
-                mapOfScale.put(llamaModelData.saddle.getName(), SADDLE_SCALE);
+                mapOfScale.put(data.saddle.getName(), SADDLE_SCALE);
                 mapOfScale.put("saddlePad", ModelHelper.createScalings(coatMod, 0.875F, 0.875F, 0.0F, -0.00875F, -0.005F));
-                this.saddlePomel.show(llamaModelData.saddle == SaddleType.WESTERN);
-                this.saddleSideLeft.show(llamaModelData.saddle != SaddleType.VANILLA);
-                this.saddleSideRight.show(llamaModelData.saddle != SaddleType.VANILLA);
+                this.saddlePomel.show(data.saddle == SaddleType.WESTERN);
+                this.saddleSideLeft.show(data.saddle != SaddleType.VANILLA);
+                this.saddleSideRight.show(data.saddle != SaddleType.VANILLA);
+            }
+
+            /**
+             *      Growth scaling
+             */
+            float llamaSize = ((2.0F * data.size * data.growthAmount) + data.size) / 3.0F;
+            float d = 0.0F;
+            if (!data.sleeping && data.growthAmount != 1.0F) {
+                float babySize = (3.0F - data.growthAmount) * 0.5F;
+                d = 0.33333F * (1.0F - data.growthAmount);
+                mapOfScale.put("bNeck", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
+                mapOfScale.put("bLegFL", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
+                mapOfScale.put("bLegFR", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
+                mapOfScale.put("bLegBL", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
+                mapOfScale.put("bLegBR", ModelHelper.createScalings(1.0F, babySize,1.0F,0.0F, 0.0F, 0.0F));
             }
 
             poseStack.pushPose();
-            poseStack.scale(1.0F, 1.0F, 1.0F);
-            poseStack.translate(0.0F, 0.0F, 0.0F);
+            poseStack.scale(llamaSize, llamaSize, llamaSize);
+            poseStack.translate(0.0F, (-1.45F + 1.45F / (llamaSize))-d, 0.0F);
 
             gaRender(this.theLlama, mapOfScale, poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 

@@ -1076,12 +1076,6 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
 
             if (cowModelData.growthAmount != 1.0F) {
                 babyScale = 2.0F - cowModelData.growthAmount;
-                float scale = 1.0F - (0.1F * cowModelData.growthAmount);
-                float translate = 0.05F - (0.05F * cowModelData.growthAmount);
-                mapOfScale.put("bNeck", ModelHelper.createScalings(scale, 0.0F, translate, translate));
-                scale = 1.25F - (0.25F * cowModelData.growthAmount);
-                translate = 0.125F - (0.125F * cowModelData.growthAmount);
-                mapOfScale.put("bHead", ModelHelper.createScalings(scale, 0.0F, 0.0F, translate));
                 mapOfScale.put("bLegFL", ModelHelper.createScalings(1.0F, babyScale, 1.0F, 0.0F, 0.0F, 0.0F));
                 mapOfScale.put("bLegFR", ModelHelper.createScalings(1.0F, babyScale, 1.0F, 0.0F, 0.0F, 0.0F));
                 mapOfScale.put("bLegBL", ModelHelper.createScalings(1.0F, babyScale, 1.0F, 0.0F, 0.0F, 0.0F));

@@ -16,6 +16,9 @@ import mokiyoki.enhancedanimals.init.breeds.ModSensorTypes;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
+import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -112,8 +115,43 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             "c_natural.png", "c_natural_xanthic.png", "natural.png", "natural_xanthic.png"
     };
 
-    private static final String[] AXOLOTL_TEXTURES_GILLS = new String[] {
-            "gills_base.png", "longgills_base.png", "greatergills_base.png"
+    private static final String[][] AXOLOTL_TEXTURES_GILLS = new String[][] {
+            {"gills_base.png", "gillslong_base.png", "gillsgreater_base.png"},
+            {"gills_base_white.png", "gillslong_base_white.png", "gillsgreater_base_white.png"},
+            {"gills_base_lightgrey.png", "gillslong_base_lightgrey.png", "gillsgreater_base_lightgrey.png"},
+            {"gills_base_grey.png", "gillslong_base_grey.png", "gillsgreater_base_grey.png"},
+            {"gills_base_black.png", "gillslong_base_black.png", "gillsgreater_base_black.png"},
+            {"gills_base_brown.png", "gillslong_base_brown.png", "gillsgreater_base_brown.png"},
+            {"gills_base_pink.png", "gillslong_base_pink.png", "gillsgreater_base_pink.png"},
+            {"gills_base_red.png", "gillslong_base_red.png", "gillsgreater_base_red.png"},
+            {"gills_base_orange.png", "gillslong_base_orange.png", "gillsgreater_base_orange.png"},
+            {"gills_base_yellow.png", "gillslong_base_yellow.png", "gillsgreater_base_yellow.png"},
+            {"gills_base_lime.png", "gillslong_base_lime.png", "gillsgreater_base_lime.png"},
+            {"gills_base_green.png", "gillslong_base_green.png", "gillsgreater_base_green.png"},
+            {"gills_base_cyan.png", "gillslong_base_cyan.png", "gillsgreater_base_cyan.png"},
+            {"gills_base_lightblue.png", "gillslong_base_lightblue.png", "gillsgreater_base_lightblue.png"},
+            {"gills_base_blue.png", "gillslong_base_blue.png", "gillsgreater_base_blue.png"},
+            {"gills_base_purple.png", "gillslong_base_purple.png", "gillsgreater_base_purple.png"},
+            {"gills_base_magenta.png", "gillslong_base_magenta.png", "gillsgreater_base_magenta.png"}
+    };
+    private static final String[][] AXOLOTL_TEXTURES_GILLS_TOP = new String[][] {
+            {"gills_basetop.png", "gillslong_basetop.png", "gillsgreater_basetop.png"},
+            {"gills_base_whitetop.png", "gillslong_base_whitetop.png", "gillsgreater_base_whitetop.png"},
+            {"gills_base_lightgreytop.png", "gillslong_base_lightgreytop.png", "gillsgreater_base_lightgreytop.png"},
+            {"gills_base_greytop.png", "gillslong_base_greytop.png", "gillsgreater_base_greytop.png"},
+            {"gills_base_blacktop.png", "gillslong_base_blacktop.png", "gillsgreater_base_blacktop.png"},
+            {"gills_base_browntop.png", "gillslong_base_browntop.png", "gillsgreater_base_browntop.png"},
+            {"gills_base_pinktop.png", "gillslong_base_pinktop.png", "gillsgreater_base_pinktop.png"},
+            {"gills_base_redtop.png", "gillslong_base_redtop.png", "gillsgreater_base_redtop.png"},
+            {"gills_base_orangetop.png", "gillslong_base_orangetop.png", "gillsgreater_base_orangetop.png"},
+            {"gills_base_yellowtop.png", "gillslong_base_yellowtop.png", "gillsgreater_base_yellowtop.png"},
+            {"gills_base_limetop.png", "gillslong_base_limetop.png", "gillsgreater_base_limetop.png"},
+            {"gills_base_greentop.png", "gillslong_base_greentop.png", "gillsgreater_base_greentop.png"},
+            {"gills_base_cyantop.png", "gillslong_base_cyantop.png", "gillsgreater_base_cyantop.png"},
+            {"gills_base_lightbluetop.png", "gillslong_base_lightbluetop.png", "gillsgreater_base_lightbluetop.png"},
+            {"gills_base_bluetop.png", "gillslong_base_bluetop.png", "gillsgreater_base_bluetop.png"},
+            {"gills_base_purpletop.png", "gillslong_base_purpletop.png", "gillsgreater_base_purpletop.png"},
+            {"gills_base_magentatop.png", "gillslong_base_magentatop.png", "gillsgreater_base_magentatop.png"}
     };
 
     private static final String[] AXOLOTL_TEXTURES_XANTHIN = new String[] {
@@ -482,6 +520,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     public String getTexture() {
         if (this.enhancedAnimalTextures.isEmpty()) {
             this.setTexturePaths();
+            this.setAlphaTexturePaths();
         } else if (this.getReloadTexture() ^ this.reload) {
             this.reload=!this.reload;
             this.reloadTextures();
@@ -496,6 +535,8 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         if (this.getSharedGenes() != null) {
             int[] gene = getSharedGenes().getAutosomalGenes();
             int gills = 0;
+            int gillsColour = 0;
+            int gillsColour2 = 0;
             int base = 2;
             int copper = gene[6] == 1 || gene[7] == 1 ? 0 : 1;
             int pattern = 0;
@@ -548,14 +589,42 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
                 }
             }
 
-            addTextureToAnimal(AXOLOTL_TEXTURES_GILLS, gills, null);
-            this.enhancedAnimalTextures.add("alpha_group_start");
-            addTextureToAnimal(AXOLOTL_TEXTURES_BASE, base, null);
-            addTextureToAnimal(AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid, gene[0] == 1 || gene[1] == 1);
-            addTextureToAnimal(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
-            this.enhancedAnimalTextures.add("alpha_group_end");
-            addTextureToAnimal("eyel_.png");
-            addTextureToAnimal("eyer_.png");
+            if (gene[38] != 1 || gene[39] != 1) {
+                gillsColour = gene[40] - 1;
+                gillsColour2 = gene[41] - 1;
+            }
+
+            TextureGrouping parentGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+
+            TextureGrouping gillsGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            addTextureToAnimalTextureGrouping(gillsGroup, TexturingType.MERGE_GROUP, AXOLOTL_TEXTURES_GILLS, gillsColour, gills, true);
+            addTextureToAnimalTextureGrouping(gillsGroup, TexturingType.MERGE_GROUP, AXOLOTL_TEXTURES_GILLS_TOP, gillsColour2, gills, true);
+            parentGroup.addGrouping(gillsGroup);
+
+            TextureGrouping bodyGroup = new TextureGrouping(TexturingType.ALPHA_GROUP);
+            addTextureToAnimalTextureGrouping(bodyGroup, "alpha_mask.png");
+            addTextureToAnimalTextureGrouping(bodyGroup, TexturingType.APPLY_DYE, AXOLOTL_TEXTURES_BASE, base, null);
+            addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid, gene[0] == 1 || gene[1] == 1);
+            addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
+            parentGroup.addGrouping(bodyGroup);
+
+            TextureGrouping detailsGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_LEFT_COLOUR, "eyel_.png");
+            addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, "eyer_.png");
+            parentGroup.addGrouping(detailsGroup);
+
+            this.setTextureGrouping(parentGroup);
+
+//            addTextureToAnimal(AXOLOTL_TEXTURES_GILLS, gillsColour, gills, true);
+//            addTextureToAnimal(AXOLOTL_TEXTURES_GILLS_TOP, gillsColour2, gills, true);
+//            this.enhancedAnimalTextures.add("alpha_group_start");
+//            addTextureToAnimal(AXOLOTL_TEXTURES_BASE, base, null);
+//            addTextureToAnimal(AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid, gene[0] == 1 || gene[1] == 1);
+//            addTextureToAnimal(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
+//            this.enhancedAnimalTextures.add("alpha_group_end");
+//            addTextureToAnimal("cheeks_orange.png");
+//            addTextureToAnimal("eyel_.png");
+//            addTextureToAnimal("eyer_.png");
         }
     }
 
@@ -569,7 +638,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         this.colouration = super.getRgb();
         Genes genes = getSharedGenes();
         if (genes != null) {
-            if (this.colouration.getDyeColour() == -1 || this.colouration.getLeftEyeColour() == -1 || this.colouration.getRightEyeColour() == -1) {
+            if (this.colouration.getDyeColour() == -1 || this.colouration.getLeftEyeColour() == -1 || this.colouration.getRightEyeColour() == -1 || this.colouration.getBridleColour() == -1) {
                 int[] gene = genes.getAutosomalGenes();
 
                 if (gene[10] != 1 || gene[11] != 1) {
@@ -700,7 +769,7 @@ NBT read/write
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void setBucketImageData(EnhancedLayeredTexture texture) {
+    public void setBucketImageData(EnhancedLayeredTexturer texture) {
         if (this.isAlive()) {
             if (this.getSharedGenes() != null && texture.hasImage()) {
                 boolean g = this.getSharedGenes().isHomozygousFor(34, 2) ^ this.getSharedGenes().isHomozygousFor(36, 2);
@@ -952,7 +1021,7 @@ NBT read/write
     }
 
     public boolean removeWhenFarAway(double p_149183_) {
-        return !this.fromBucket() && !this.hasCustomName();
+        return false;
     }
 
     public static boolean checkAxolotlSpawnRules(EntityType<? extends LivingEntity> p_186250_, ServerLevelAccessor p_186251_, MobSpawnType p_186252_, BlockPos p_186253_, Random p_186254_) {

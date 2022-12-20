@@ -39,7 +39,16 @@ public class TexturingUtils {
     public static NativeImage applyRGBBlend(NativeImage textureImage, int rgb) {
         for(int i = 0; i < textureImage.getHeight(); ++i) {
             for (int j = 0; j < textureImage.getWidth(); ++j) {
-                blendDye(j, i, rgb, textureImage);
+                blendRGB(j, i, rgb, textureImage);
+            }
+        }
+        return textureImage;
+    }
+
+    public static NativeImage applyBGRBlend(NativeImage textureImage, int rgb) {
+        for(int i = 0; i < textureImage.getHeight(); ++i) {
+            for (int j = 0; j < textureImage.getWidth(); ++j) {
+                blendBGR(j, i, rgb, textureImage);
             }
         }
         return textureImage;
@@ -82,24 +91,24 @@ public class TexturingUtils {
     //Blends the base image's and supplied image's pixels together
     private static void blendPixel(NativeImage baseImage, int xIn, int yIn, int colIn) {
         int i = baseImage.getPixelRGBA(xIn, yIn);
-        float f = (float)getA(colIn) / 255.0F;
+        float layerA = (float)getA(colIn) / 255.0F;
         float f1 = (float)getB(colIn) / 255.0F;
         float f2 = (float)getG(colIn) / 255.0F;
         float f3 = (float)getR(colIn) / 255.0F;
-        float f4 = (float)getA(i) / 255.0F;
-        float f5 = (float)getB(i) / 255.0F;
-        float f6 = (float)getG(i) / 255.0F;
-        float f7 = (float)getR(i) / 255.0F;
-        float f8 = 1.0F - f;
-        float f9 = cleanValue(f * f + f4 * f8);
-        float f10 = cleanValue(f1 * f + f5 * f8);
-        float f11 = cleanValue(f2 * f + f6 * f8);
-        float f12 = cleanValue(f3 * f + f7 * f8);
+        float baseA = (float)getA(i) / 255.0F;
+        float baseB = (float)getB(i) / 255.0F;
+        float baseG = (float)getG(i) / 255.0F;
+        float baseR = (float)getR(i) / 255.0F;
+        float inverseLayerA = 1.0F - layerA;
+        float outAlpha = cleanValue(layerA * layerA + baseA * inverseLayerA);
+        float outBlue = cleanValue(f1 * layerA + baseB * inverseLayerA);
+        float outGreen = cleanValue(f2 * layerA + baseG * inverseLayerA);
+        float outRed = cleanValue(f3 * layerA + baseR * inverseLayerA);
 
-        int j = (int)(f9 * 255.0F);
-        int k = (int)(f10 * 255.0F);
-        int l = (int)(f11 * 255.0F);
-        int i1 = (int)(f12 * 255.0F);
+        int j = (int)(outAlpha * 255.0F);
+        int k = (int)(outBlue * 255.0F);
+        int l = (int)(outGreen * 255.0F);
+        int i1 = (int)(outRed * 255.0F);
         baseImage.setPixelRGBA(xIn, yIn, combine(j, k, l, i1));
     }
 
@@ -107,23 +116,12 @@ public class TexturingUtils {
         int i = nativeImage.getPixelRGBA(xIn, yIn);
         int iAlpha = maskingImage.getPixelRGBA(xIn, yIn);
 
-        float originalAlpha = (float)(i >> 24 & 255) / 255.0F;
-        float maskingAlpha = (float)(iAlpha >> 24 & 255) / 255.0F;
-        float f5 = (float)(i >> 16 & 255) / 255.0F;
-        float f6 = (float)(i >> 8 & 255) / 255.0F;
-        float f7 = (float)(i >> 0 & 255) / 255.0F;
+        float originalAlpha = ((float)(i >> 24 & 255))/255F;
+        float maskingAlpha = ((float)(iAlpha >> 24 & 255))/255F;
 
-        //TODO bgr doesn't need to be unpacked and repacked here
+        int j = (int)(originalAlpha * maskingAlpha * 255F);
 
-        if(originalAlpha != 0.0) {
-
-            int j = (int)(maskingAlpha * 255.0F);
-            int k = (int)(f5*255);
-            int l = (int)(f6*255);
-            int i1 = (int)(f7*255);
-
-            nativeImage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1);
-        }
+        maskingImage.setPixelRGBA(xIn, yIn, j << 24 | (i >> 16 & 255) << 16 | (i >> 8 & 255) << 8 | (i >> 0 & 255));
     }
 
     private static void averagePixel(NativeImage baseImage, int xIn, int yIn, List<Integer> colIns) {
@@ -149,20 +147,46 @@ public class TexturingUtils {
         baseImage.setPixelRGBA(xIn, yIn, combine((int)(f), (int)(f1), (int)(f2), (int)(f3)));
     }
 
+    //Blends the supplied image with a specified bgr
+    private static void blendBGR(int xIn, int yIn, int rgbDye, NativeImage nativeimage) {
+        int i = nativeimage.getPixelRGBA(xIn, yIn);
+
+        float r = (float)(rgbDye >> 16 & 255) / 255.0F;
+        float g = (float)(rgbDye >> 8 & 255) / 255.0F;
+        float b = (float)(rgbDye >> 0 & 255) / 255.0F;
+        float originalAlpha = (float)(i >> 24 & 255) / 255.0F;
+        float originalBlue = (float)(i >> 16 & 255) / 255.0F;
+        float originalGreen = (float)(i >> 8 & 255) / 255.0F;
+        float originalRed = (float)(i >> 0 & 255) / 255.0F;
+
+        if(originalAlpha != 0.0) {
+            float f10 = (b * 255 ) * originalBlue;
+            float f11 = (g * 255 ) * originalGreen;
+            float f12 = (r * 255 ) * originalRed;
+
+            int j = (int)(originalAlpha * 255.0F);
+            int k = (int)(f10);
+            int l = (int)(f11);
+            int i1 = (int)(f12);
+
+            nativeimage.setPixelRGBA(xIn, yIn, j << 24 | k << 16 | l << 8 | i1 << 0);
+        }
+    }
+
     //Blends the supplied image with a specified rbg
-    private static void blendDye(int xIn, int yIn, int rgbDye, NativeImage nativeimage) {
+    private static void blendRGB(int xIn, int yIn, int rgbDye, NativeImage nativeimage) {
         int i = nativeimage.getPixelRGBA(xIn, yIn);
 
         float f1 = (float)(rgbDye >> 16 & 255) / 255.0F;
         float f2 = (float)(rgbDye >> 8 & 255) / 255.0F;
         float f3 = (float)(rgbDye >> 0 & 255) / 255.0F;
         float originalAlpha = (float)(i >> 24 & 255) / 255.0F;
-        float f5 = (float)(i >> 16 & 255) / 255.0F;
+        float r = (float)(i >> 16 & 255) / 255.0F;
         float f6 = (float)(i >> 8 & 255) / 255.0F;
         float f7 = (float)(i >> 0 & 255) / 255.0F;
 
         if(originalAlpha != 0.0) {
-            float f10 = (f1 * 255 ) * f5;
+            float f10 = (f1 * 255 ) * r;
             float f11 = (f2 * 255 ) * f6;
             float f12 = (f3 * 255 ) * f7;
 

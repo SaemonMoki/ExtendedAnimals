@@ -69,7 +69,7 @@ public class TextureGrouping {
         //First merge image groups
         if (groupImages.size() > 1) {
             NativeImage baseImage = groupImages.get(0);
-            for (int i = 1; i <= groupImages.size(); i++) {
+            for (int i = 1; i < groupImages.size(); i++) {
                 applyPixelBlend(baseImage, groupImages.get(i));
             }
             mergeGroup = baseImage;
@@ -90,8 +90,11 @@ public class TextureGrouping {
             case APPLY_BLACK:
                 layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getMelaninColour()));
                 break;
+            case APPLY_COLLAR_COLOUR:
+                layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getCollarColour()));
+                break;
             case APPLY_DYE:
-                layer.setTextureImage(applyRGBBlend(layer.getTextureImage(), colouration.getDyeColour()));
+                layer.setTextureImage(applyBGRBlend(layer.getTextureImage(), colouration.getDyeColour()));
                 break;
 
         }

@@ -1773,7 +1773,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 if (gene[60] == 1 || gene[61] == 1) {
                     if (gene[58] == 2 && gene[59] == 2) {
                         this.footFeatherType = FootFeathers.BIG_TOEFEATHERS;
-                    } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[58] == 1)) {
+                    } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
                         this.footFeatherType = FootFeathers.TOEFEATHERS;
                     } else if (gene[58] == 1 || gene[59] == 1) {
                         this.footFeatherType = FootFeathers.FOOTFEATHERS;
@@ -1781,7 +1781,7 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 } else {
                     if (gene[58] == 2 && gene[59] == 2) {
                         this.footFeatherType = FootFeathers.TOEFEATHERS;
-                    } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[58] == 1)) {
+                    } else if (gene[58] == 2 || gene[59] == 2 || (gene[58] == 1 && gene[59] == 1)) {
                         this.footFeatherType = FootFeathers.FOOTFEATHERS;
                     } else if (gene[58] == 1 || gene[59] == 1) {
                         this.footFeatherType = FootFeathers.LEGFEATHERS;
@@ -1890,9 +1890,9 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                 this.bodyType = 0;
             }
 
-            if (gene[90] == 1 || gene[91] == 1){
+            if (gene[90] == 1 || gene[91] == 1) {
                 this.wingSize = 2;
-            } else if (gene[92] == 1 || gene[93] == 1){
+            } else if (gene[92] == 1 || gene[93] == 1) {
                 this.wingSize = 1;
             }
 
@@ -1904,14 +1904,14 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
             }
 
             //      wingAngle  [ 0 to 1.5 ]
-            if(gene[88] == 2){
+            if (gene[88] == 2) {
                 this.wingAngle = this.wingAngle + 0.1F;
-            }else if(gene[88] == 3) {
+            } else if (gene[88] == 3) {
                 this.wingAngle = this.wingAngle + 0.15F;
             }
-            if(gene[89] == 2){
+            if (gene[89] == 2) {
                 this.wingAngle = this.wingAngle + 0.1F;
-            }else if(gene[89] == 3) {
+            } else if (gene[89] == 3) {
                 this.wingAngle = this.wingAngle + 0.15F;
             }
 //            if(gene[86] == 2){
@@ -1925,19 +1925,19 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
 //                this.wingAngle = this.wingAngle + 0.15F;
 //            }
 
-            if(gene[94] == 2 && gene[95] == 2){
+            if (gene[94] == 2 && gene[95] == 2) {
                 this.wingAngle = this.wingAngle * 1.2F;
-            }else if(gene[94] == 3 && gene[95] == 3) {
+            } else if (gene[94] == 3 && gene[95] == 3) {
                 this.wingAngle = this.wingAngle * 1.5F;
-            }else if(gene[94] != 1 && gene[95] != 1) {
+            } else if (gene[94] != 1 && gene[95] != 1) {
                 this.wingAngle = this.wingAngle * 1.1F;
             }
 
-            if(gene[96] == 2 && gene[97] == 2){
+            if (gene[96] == 2 && gene[97] == 2) {
                 this.wingAngle = this.wingAngle * 1.2F;
-            }else if(gene[96] == 3 && gene[97] == 3) {
+            } else if(gene[96] == 3 && gene[97] == 3) {
                 this.wingAngle = this.wingAngle * 1.5F;
-            }else if(gene[96] != 1 || gene[97] != 1) {
+            } else if(gene[96] != 1 || gene[97] != 1) {
                 this.wingAngle = this.wingAngle * 1.1F;
             }
 

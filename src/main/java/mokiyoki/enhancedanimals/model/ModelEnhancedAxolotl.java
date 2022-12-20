@@ -379,8 +379,8 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), 0.0F));
         this.theTail.setZRot(this.lerpTo(this.theTail.getZRot(), -0.1F + 0.1F * f3));
         this.gillsTop.setXRot(this.lerpTo(this.gillsTop.getXRot(), (0.6F + 0.05F * f4)-Mth.HALF_PI));
-        this.gillsLeft.setZRot(this.lerpTo(this.gillsLeft.getZRot(), this.gillsTop.getXRot()+Mth.PI));
-        this.gillsRight.setZRot(this.lerpTo(this.gillsRight.getZRot(), -this.gillsLeft.getZRot()+Mth.PI));
+        this.gillsLeft.setZRot(this.lerpTo(this.gillsLeft.getZRot(), this.gillsTop.getXRot()-Mth.PI));
+        this.gillsRight.setZRot(this.lerpTo(this.gillsRight.getZRot(), -this.gillsLeft.getZRot()-Mth.PI));
         this.lerpPart(this.theLegBackRight, 1.1F+Mth.HALF_PI, 0.0F, 1.0F);
         this.lerpPart(this.theLegFrontRight, 0.8F+Mth.HALF_PI, -0.5F, 2.3F);
         this.applyMirrorLegRotations();

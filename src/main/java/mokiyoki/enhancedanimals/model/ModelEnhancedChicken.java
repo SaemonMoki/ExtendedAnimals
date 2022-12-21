@@ -1458,9 +1458,8 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.currentAnimal = entityIn.getId();
         ChickenModelData data = getCreateChickenModelData(entityIn);
-        ChickenPhenotype chicken = ((ChickenPhenotype) (data.phenotype));
-
-        if (chicken!= null) {
+        if (data!= null) {
+            ChickenPhenotype chicken = data.getPhenotype();
             readInitialAnimationValues(data, chicken);
             boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 
@@ -1531,9 +1530,10 @@ public class ModelEnhancedChicken<T extends EnhancedChicken> extends EnhancedAni
                     this.theWingRight.setXRot(this.lerpTo(this.theWingRight.getXRot(), 0.0F));
                 }
             }
+
+            saveAnimationValues(data, chicken);
         }
 
-        saveAnimationValues(data, chicken);
 
 //        this.theRightLeg.modelPart.y = -5.0F;
 

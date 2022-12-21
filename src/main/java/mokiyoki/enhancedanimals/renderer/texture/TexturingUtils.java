@@ -55,10 +55,10 @@ public class TexturingUtils {
         return textureImage;
     }
 
-    public static void applyPixelBlend(NativeImage baseImage, NativeImage appliedImage) {
+    public static void applyPixelLayer(NativeImage baseImage, NativeImage appliedImage) {
         for(int i = 0; i < appliedImage.getHeight(); ++i) {
             for(int j = 0; j < appliedImage.getWidth(); ++j) {
-                blendPixel(baseImage, j, i, appliedImage.getPixelRGBA(j, i));
+                layerPixel(baseImage, j, i, appliedImage.getPixelRGBA(j, i));
             }
         }
     }
@@ -89,22 +89,23 @@ public class TexturingUtils {
         return colColours;
     }
 
-    //Blends the base image's and supplied image's pixels together
-    private static void blendPixel(NativeImage baseImage, int xIn, int yIn, int colIn) {
+    //Layers the base image's and supplied image's pixels together
+    private static void layerPixel(NativeImage baseImage, int xIn, int yIn, int colIn) {
         int i = baseImage.getPixelRGBA(xIn, yIn);
         float layerA = (float)getA(colIn) * COLOUR_DEGREE;
-        float f1 = (float)getB(colIn) * COLOUR_DEGREE;
-        float f2 = (float)getG(colIn) * COLOUR_DEGREE;
-        float f3 = (float)getR(colIn) * COLOUR_DEGREE;
+        float layerB = (float)getB(colIn) * COLOUR_DEGREE;
+        float layerG = (float)getG(colIn) * COLOUR_DEGREE;
+        float layerR = (float)getR(colIn) * COLOUR_DEGREE;
         float baseA = (float)getA(i) * COLOUR_DEGREE;
         float baseB = (float)getB(i) * COLOUR_DEGREE;
         float baseG = (float)getG(i) * COLOUR_DEGREE;
         float baseR = (float)getR(i) * COLOUR_DEGREE;
+        float inverseBaseA = 1.0F - baseA;
         float inverseLayerA = 1.0F - layerA;
-        float outAlpha = cleanValue(layerA * layerA + baseA * inverseLayerA);
-        float outBlue = cleanValue(f1 * layerA + baseB * inverseLayerA);
-        float outGreen = cleanValue(f2 * layerA + baseG * inverseLayerA);
-        float outRed = cleanValue(f3 * layerA + baseR * inverseLayerA);
+        float outAlpha = cleanValue(baseA+(inverseBaseA * layerA));
+        float outBlue = cleanValue((layerB * layerA) + (inverseLayerA * baseB));
+        float outGreen = cleanValue((layerG * layerA) + (inverseLayerA * baseG));
+        float outRed = cleanValue((layerR * layerA) + (inverseLayerA * baseR));
 
         int j = (int)(outAlpha * 255.0F);
         int k = (int)(outBlue * 255.0F);

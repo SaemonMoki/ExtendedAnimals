@@ -644,7 +644,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected void tickLeash() {
         if (this.leashNBTTag != null) {
             super.tickLeash();
-            leashNBTTag = null;
+            this.leashNBTTag = null;
         }
 
         if (this.getLeashHolder() != null) {

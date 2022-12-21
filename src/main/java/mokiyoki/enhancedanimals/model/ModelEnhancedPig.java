@@ -805,10 +805,9 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.currentAnimal = entityIn.getId();
         PigModelData data = getCreatePigModelData(entityIn);
-        PigPhenotype pig = data.getPhenotype();
-        float drive = ageInTicks + (1000 * data.random);
 
-        if (pig!=null) {
+        if (data!=null) {
+            PigPhenotype pig = data.getPhenotype();
             readInitialAnimationValues(data, pig);
             boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 

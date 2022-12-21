@@ -15,7 +15,6 @@ import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.init.breeds.ModSensorTypes;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
-import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
 import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
 import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
@@ -107,12 +106,11 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     private static final int REHYDRATE_AIR_SUPPLY = 1800;
     private static final int REGEN_BUFF_MAX_DURATION = 2400;
     private static final int REGEN_BUFF_BASE_DURATION = 100;
-
-    private int sleepTimer;
     private boolean isTempted = false;
+    private int eggLayingTimer = -1;
 
     private static final String[] AXOLOTL_TEXTURES_BASE = new String[] {
-            "c_natural.png", "c_natural_xanthic.png", "natural.png", "natural_xanthic.png"
+            "natural.png", "natural_xanthic.png", "highgold_xanthic.png"
     };
 
     private static final String[][] AXOLOTL_TEXTURES_GILLS = new String[][] {
@@ -250,6 +248,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     protected void registerGoals() {
+        this.goalSelector.addGoal(1, new EnhancedAxolotl.LayEggGoal(this, 1.0D));
         this.goalSelector.addGoal(1, new EnhancedAxolotl.MateGoal(this, 0.5D));
     }
 
@@ -326,7 +325,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @Override
     public Boolean isAnimalSleeping() {
-        if (!this.isInWater() || this.hasEgg()) {
+        if (!this.isInWaterRainOrBubble() || this.hasEgg()) {
             return false;
         } else if (!(this.getLeashHolder() instanceof LeashFenceKnotEntity) && this.getLeashHolder() != null) {
             return false;
@@ -338,15 +337,12 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @Override
     public boolean sleepingConditional() {
-        this.sleepTimer = this.sleepTimer > 0 ? this.sleepTimer-- : this.sleepTimer++;
-        if (this.sleepTimer == 0) {
-            //finished sleeping
-            this.sleepTimer = -(this.random.nextInt(6000)+8000);
-        } else if (this.sleepTimer==-1 && !(this.hasEgg())) {
-            //is tired
-            this.sleepTimer = this.random.nextInt(6000)+1200;
-        }
-        return (this.sleepTimer > 0) && this.awokenTimer == 0 && !this.sleeping;
+        return this.awokenTimer == 0 && !this.sleeping;
+    }
+
+    @Override
+    protected boolean ableToMoveWhileLeashed() {
+        return true;
     }
 
     @Override
@@ -414,10 +410,10 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @Override
     protected void createAndSpawnEnhancedChild(Level world) {
-        EnhancedAxolotl enhancedAxolotl = ENHANCED_AXOLOTL.get().create(this.level);
-        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
-        defaultCreateAndSpawn(enhancedAxolotl, world, babyGenes, -this.getAdultAge());
-        this.level.addFreshEntity(enhancedAxolotl);
+//        EnhancedAxolotl enhancedAxolotl = ENHANCED_AXOLOTL.get().create(this.level);
+//        Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
+//        defaultCreateAndSpawn(enhancedAxolotl, world, babyGenes, -this.getAdultAge());
+//        this.level.addFreshEntity(enhancedAxolotl);
     }
 
     public int getHungerRestored(ItemStack stack) {
@@ -524,7 +520,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             int gills = 0;
             int gillsColour = 0;
             int gillsColour2 = 0;
-            int base = 2;
+            int base = 0;
             int copper = gene[6] == 1 || gene[7] == 1 ? 0 : 1;
             int pattern = 0;
 //            char[] uuidArry = getCachedUniqueIdString().toCharArray();
@@ -539,20 +535,10 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
             if (gene[8] == 1 || gene[9] == 1) {
                 //Non-Leucistic (wildtype)
-                if (gene[2] == 1 || gene[3] == 1) {
-                    //xanthic (wildtype)
-                    base = gene[10] == 1 && gene[11] == 1 ? 3 : 1;
-                } else {
-                    //axanthic
-                    base = gene[10] == 1 && gene[11] == 1 ? 2 : 0;
-                }
-
+                base = gene[2] == 1 || gene[3] == 1 ? 1 : 0;
             } else if (gene[0] == 1 || gene[1] == 1) {
                 //Leucistic
-                base = gene[10] == 1 && gene[11] == 1 ? 2 : 0;
                 pattern = 1;
-            } else {
-                base = gene[10] == 1 && gene[11] == 1 ? 2 : 0;
             }
 
             int melanoid = 0;
@@ -595,23 +581,17 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
             addTextureToAnimalTextureGrouping(bodyGroup, AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
             parentGroup.addGrouping(bodyGroup);
 
+            TextureGrouping cheekGroup = new TextureGrouping(TexturingType.AVERAGE_GROUP);
+            addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour, gene[44] == 2 || gene[45] == 2);
+            addTextureToAnimalTextureGrouping(cheekGroup, CHEEK_SPOTS, gillsColour2, gene[44] == 2 || gene[45] == 2);
+            parentGroup.addGrouping(cheekGroup);
+
             TextureGrouping detailsGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
             addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_LEFT_COLOUR, "eye_left.png");
             addTextureToAnimalTextureGrouping(detailsGroup, TexturingType.APPLY_EYE_RIGHT_COLOUR, "eye_right.png");
             parentGroup.addGrouping(detailsGroup);
 
             this.setTextureGrouping(parentGroup);
-
-//            addTextureToAnimal(AXOLOTL_TEXTURES_GILLS, gillsColour, gills, true);
-//            addTextureToAnimal(AXOLOTL_TEXTURES_GILLS_TOP, gillsColour2, gills, true);
-//            this.enhancedAnimalTextures.add("alpha_group_start");
-//            addTextureToAnimal(AXOLOTL_TEXTURES_BASE, base, null);
-//            addTextureToAnimal(AXOLOTL_TEXTURES_MELANIN, copper, pattern, melanoid, gene[0] == 1 || gene[1] == 1);
-//            addTextureToAnimal(AXOLOTL_TEXTURES_PIED, pied-1, piedStrength, piedSplotchy, pied!=0);
-//            this.enhancedAnimalTextures.add("alpha_group_end");
-//            addTextureToAnimal("cheeks_orange.png");
-//            addTextureToAnimal("eyel_.png");
-//            addTextureToAnimal("eyer_.png");
         }
     }
 
@@ -771,8 +751,8 @@ NBT read/write
                 int[] x = new int[]{
                         g?40:39, 40, 41, 46, 47, g?47:48,
                         37, 38, 41, 41, 46, 46, 49, 50,
-                        38, 40, 2, 6, 7, 8, 9, 10, 11, 15, 47, 49,
-                        g?36:37, 39, 5, 6, 7, 8, 9, 10, 11, 12, 48, g?51:50,
+                        38, 40, 1, 6, 7, 8, 9, 10, 11, 16, 47, 49,
+                        g?36:37, 2, 5, 6, 7, 8, 9, 10, 11, 12, 15, g?51:50,
                         38, 39, 5, 6, 7, 8, 9, 10, 11, 12, 48, 49,
                         36, 37, 5, 6, 7, 8, 9, 10, 11, 12, 50, 51,
                         59, -1, -1, -1, -1, 59,
@@ -784,8 +764,8 @@ NBT read/write
                 int[] y = new int[]{
                         1, 2, 1, 1, 2, 1,
                         g?6:5, 6, 3, 4, 4, 3, 6, g?6:5, 
-                        7, 8, 6, 1, 1, 0, 0, 1, 1, 6, 8, 7, 
-                        10, 12, 2, 2, 2, 2, 2, 2, 2, 2, 12, 10, 
+                        7, 8, 5, 1, 1, 0, 0, 1, 1, 5, 8, 7,
+                        10, 6, 2, 2, 2, 2, 2, 2, 2, 2, 6, 10,
                         10, 11, 3, 3, 3, 3, 3, 3, 3, 3, 11, 10, 
                         10, 12, 4, 6, 6, 5, 5, 6, 6, 4, 12, 10,
                         l?2:3, 62, 62, 62, 62, l?10:11,
@@ -1077,6 +1057,68 @@ NBT read/write
     /**
      *      Breeding/Egglaying
      */
+
+    static class LayEggGoal extends MoveToBlockGoal {
+        private final EnhancedAxolotl axolotl;
+
+        LayEggGoal(EnhancedAxolotl axolotl, double speedIn) {
+            super(axolotl, speedIn, 16);
+            this.axolotl = axolotl;
+        }
+
+        public boolean canUse() {
+            if (this.axolotl.mateGenetics==null) {
+                this.axolotl.setHasEgg(false);
+                return false;
+            }
+            return this.axolotl.hasEgg() && super.canUse();
+        }
+
+        public boolean canContinueToUse() {
+            if (this.axolotl.mateGenetics==null) {
+                this.axolotl.setHasEgg(false);
+                return false;
+            }
+            return super.canContinueToUse() && this.axolotl.hasEgg();
+        }
+
+        public void tick() {
+            super.tick();
+            BlockPos blockpos = this.axolotl.blockPosition();
+            if (this.axolotl.isInWater() && this.isReachedTarget()) {
+                if (this.axolotl.eggLayingTimer == -1) {
+                    this.axolotl.eggLayingTimer = 0;
+                } else if (this.axolotl.eggLayingTimer > 200) {
+                    Level world = this.axolotl.level;
+                    world.playSound((Player)null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundSource.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
+                    int numberOfEggs = this.axolotl.random.nextInt(4) + 1;
+                    BlockPos pos = this.blockPos.above();
+                    String mateName = this.axolotl.mateName.isEmpty() ? "???" : this.axolotl.mateName;
+                    String name = this.axolotl.hasCustomName() ? this.axolotl.getName().getString() : "???";
+                    for (int i = 0; i < numberOfEggs;i++) {
+                        Genes eggGenes = new Genes(this.axolotl.getGenes()).makeChild(true, true, this.axolotl.mateGenetics);
+                        world.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).addNestEggPos(pos, mateName,name, eggGenes, true);
+                    }
+                    world.setBlock(pos, ModBlocks.AXOLOTL_EGG.get().defaultBlockState().setValue(EnhancedAxolotlEggBlock.EGGS, Integer.valueOf(numberOfEggs)), 3);
+                    this.axolotl.setHasEgg(false);
+                    this.axolotl.eggLayingTimer = -1;
+//                    this.axolotl.setInLove(600);
+                }
+
+                if (this.axolotl.eggLayingTimer != -1) {
+                    this.axolotl.eggLayingTimer++;
+                }
+            }
+
+        }
+
+        /**
+         * Return true to set given position as destination
+         */
+        protected boolean isValidTarget(LevelReader worldIn, BlockPos pos) {
+            return EnhancedAxolotlEggBlock.isProperHabitat(worldIn, pos);
+        }
+    }
 
     static class MateGoal extends BreedGoal {
         private final EnhancedAxolotl axolotl;

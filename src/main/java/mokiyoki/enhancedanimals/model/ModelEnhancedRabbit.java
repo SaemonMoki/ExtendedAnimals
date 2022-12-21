@@ -553,17 +553,17 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.currentAnimal = entityIn.getId();
-        RabbitModelData rabbitModelData = getCreateRabbitModelData(entityIn);
-        RabbitPhenotype rabbit = rabbitModelData.getPhenotype();
+        RabbitModelData data = getCreateRabbitModelData(entityIn);
 
-        if (rabbit != null) {
-            readInitialAnimationValues(rabbitModelData, rabbit);
+        if (data != null) {
+            RabbitPhenotype rabbit = data.getPhenotype();
+            readInitialAnimationValues(data, rabbit);
 
             this.theNeck.setXRot(headPitch * 0.017453292F * 0.5F);
             this.theNeck.setYRot(netHeadYaw * 0.017453292F * 0.5F);
             this.theHead.setXRot(headPitch * 0.017453292F * 0.5F);
             this.theHead.setYRot(netHeadYaw * 0.017453292F * 0.5F);
-            this.nose.setY(1.6F+rabbitModelData.noseTwitch);
+            this.nose.setY(1.6F+data.noseTwitch);
 
             boolean fallState = entityIn.getY() < entityIn.yOld;
             float health = entityIn.getHealth()/entityIn.getMaxHealth();
@@ -571,7 +571,7 @@ public class ModelEnhancedRabbit<T extends EnhancedRabbit> extends EnhancedAnima
 
             animateHop((float) Math.sin(entityIn.getJumpCompletion(ageInTicks-(int)ageInTicks) * Mth.PI));
 
-            saveAnimationValues(rabbitModelData);
+            saveAnimationValues(data);
         }
 
     }

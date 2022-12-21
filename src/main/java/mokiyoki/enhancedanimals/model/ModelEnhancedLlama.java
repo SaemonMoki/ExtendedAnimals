@@ -1050,10 +1050,9 @@ public class ModelEnhancedLlama<T extends EnhancedLlama> extends EnhancedAnimalM
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.currentAnimal = entityIn.getId();
         LlamaModelData data = getCreateLlamaModelData(entityIn);
-        LlamaPhenotype llama = data.getPhenotype();
-        float drive = ageInTicks + (1000 * data.random);
 
-        if (llama != null) {
+        if (data != null) {
+            LlamaPhenotype llama = data.getPhenotype();
             readInitialAnimationValues(data, llama);
 
             boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();

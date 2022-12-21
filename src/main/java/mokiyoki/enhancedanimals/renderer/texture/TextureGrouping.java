@@ -47,8 +47,8 @@ public class TextureGrouping {
             groupImages.remove(0);
 
             switch(texturingType) {
-                case MERGE_GROUP -> blendGroups(baseImage, groupImages);
-                case ALPHA_GROUP -> blendAlpha(baseImage, groupImages);
+                case MERGE_GROUP -> layerGroups(baseImage, groupImages);
+                case ALPHA_GROUP -> maskAlpha(baseImage, groupImages);
                 case AVERAGE_GROUP -> blendAverage(baseImage, groupImages);
             }
 
@@ -58,19 +58,19 @@ public class TextureGrouping {
         return null;
     }
 
-    private void blendGroups(NativeImage compiledImage, List<NativeImage> groupImages) {
+    private void layerGroups(NativeImage compiledImage, List<NativeImage> groupImages) {
         for (NativeImage applyImage : groupImages) {
-            applyPixelBlend(compiledImage, applyImage);
+            applyPixelLayer(compiledImage, applyImage);
         }
     }
 
-    private void blendAlpha(NativeImage alphaMaskImage, List<NativeImage> groupImages) {
+    private void maskAlpha(NativeImage alphaMaskImage, List<NativeImage> groupImages) {
         NativeImage mergeGroup = groupImages.get(0);
         //First merge image groups
         if (groupImages.size() > 1) {
             NativeImage baseImage = groupImages.get(0);
             for (int i = 1; i < groupImages.size(); i++) {
-                applyPixelBlend(baseImage, groupImages.get(i));
+                applyPixelLayer(baseImage, groupImages.get(i));
             }
             mergeGroup = baseImage;
         }

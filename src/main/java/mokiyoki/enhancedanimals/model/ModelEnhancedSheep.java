@@ -771,9 +771,9 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.currentAnimal = entityIn.getId();
         SheepModelData data = getCreateSheepModelData(entityIn);
-        SheepPhenotype sheep = data.getPhenotype();
 
-        if (sheep != null) {
+        if (data != null) {
+            SheepPhenotype sheep = data.getPhenotype();
             setupInitialAnimationValues(data, sheep, data.hornGrowth);
 
             boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();

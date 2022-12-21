@@ -222,11 +222,9 @@ public class ModelEnhancedTurtle<T extends EnhancedTurtle> extends EnhancedAnima
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.currentAnimal = entityIn.getId();
-        TurtleModelData turtleModelData = getCreateTurtleModelData(entityIn);
-        TurtlePhenotype turtle = turtleModelData.getPhenotype();
-//        float drive = ageInTicks + (1000 * turtleModelData.random);
+        TurtleModelData data = getCreateTurtleModelData(entityIn);
 
-        if (turtle != null) {
+        if (data != null) {
             this.theHead.setXRot((headPitch * (Mth.PI / 180F))-Mth.HALF_PI);
             this.theHead.setZRot(-netHeadYaw * (Mth.PI / 180F));
 

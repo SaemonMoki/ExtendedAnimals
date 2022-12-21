@@ -76,7 +76,7 @@ public class ClientEventRegistry {
 
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.SPARSEGRASS_BLOCK.get(), RenderType.cutoutMipped());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PATCHYMYCELIUM_BLOCK.get(), RenderType.cutoutMipped());
-//        ItemBlockRenderTypes.setRenderLayer(ModBlocks.TURTLE_ EGG.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.AXOLOTL_EGG.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.UNBOUNDHAY_BLOCK.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_ALLIUM.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.GROWABLE_AZURE_BLUET.get(), RenderType.cutout());
@@ -100,9 +100,12 @@ public class ClientEventRegistry {
 
     @SubscribeEvent
     public static void onBlockColouredEvent(ColorHandlerEvent.Block event) {
-        event.getBlockColors().register((state, world, pos, tintIndex) ->
-                world != null && pos != null ? BiomeColors.getAverageGrassColor(world, pos) : GrassColor.get(0.5D, 1.0D),
+        event.getBlockColors().register((state, blockAndTintGetter, pos, tintIndex) ->
+                blockAndTintGetter != null && pos != null ? BiomeColors.getAverageGrassColor(blockAndTintGetter, pos) : GrassColor.get(0.5D, 1.0D),
                 ModBlocks.SPARSEGRASS_BLOCK.get(), ModBlocks.GROWABLE_GRASS.get(), ModBlocks.GROWABLE_TALL_GRASS.get(), ModBlocks.GROWABLE_FERN.get(), ModBlocks.GROWABLE_LARGE_FERN.get());
+//        event.getBlockColors().register((state, blockAndTintGetter, pos, tintIndex) ->
+//                        pos != null ? EnhancedAxolotlEggBlock.getEggColour(state, pos, tintIndex) : -1,
+//                ModBlocks.AXOLOTL_EGG.get());
     }
 
     @SubscribeEvent

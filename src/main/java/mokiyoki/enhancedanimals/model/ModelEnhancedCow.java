@@ -1301,9 +1301,9 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.currentAnimal = entityIn.getId();
         CowModelData data = getCreateCowModelData(entityIn);
-        CowPhenotype cow = data.getPhenotype();
 
-        if (cow!=null) {
+        if (data!=null) {
+            CowPhenotype cow = data.getPhenotype();
             readInitialAnimationValues(data, cow);
             boolean isMoving = entityIn.getDeltaMovement().horizontalDistanceSqr() > 1.0E-7D || entityIn.xOld != entityIn.getX() || entityIn.zOld != entityIn.getZ();
 

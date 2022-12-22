@@ -281,7 +281,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @Override
     public EntityDimensions getDimensions(Pose poseIn) {
-        //0.75F, 0.42F
         return EntityDimensions.scalable(0.75F, 0.42F).scale(this.getScale());
     }
 
@@ -854,9 +853,10 @@ NBT read/write
             EnhancedAxolotlBucket.setGenes(stack, getSharedGenes());
             EnhancedAxolotlBucket.setParentNames(stack, this.sireName, this.damName);
             EnhancedAxolotlBucket.setEquipment(stack, this.animalInventory.getItem(1));
+            EnhancedAxolotlBucket.setIsFemale(stack, this.getOrSetIsFemale());
             if (this.mateGenetics != null) {
                 EnhancedAxolotlBucket.setMateGenes(stack, this.mateGenetics);
-                EnhancedAxolotlBucket.mateIsFemale(stack, this.mateGender);
+                EnhancedAxolotlBucket.setMateIsFemale(stack, this.mateGender);
             }
             EnhancedAxolotlBucket.setAxolotlUUID(stack, this.getUUID());
             EnhancedAxolotlBucket.setBirthTime(stack, this.getBirthTime());
@@ -866,6 +866,8 @@ NBT read/write
     @Override
     public void loadFromBucketTag(CompoundTag tag) {
         Bucketable.loadDefaultDataFromBucketTag(this, tag);
+        this.setIsFemale(tag.getCompound("Genetics"));
+        this.toggleReloadTexture();
     }
 
     @Override

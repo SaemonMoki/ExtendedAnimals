@@ -1475,9 +1475,9 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             float lookRotX = Math.min((headPitch * 0.65F)-0.2F, 0.0F);
             float lookRotY = netHeadYaw * 0.65F;
 
-            this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), headPitch - lookRotX));
+            this.theNeck.setXRot(this.lerpTo(this.theNeck.getXRot(), lookRotX));
             this.theNeck.setYRot(this.lerpTo(this.theNeck.getYRot(), lookRotY));
-            this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), lookRotX));
+            this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), (headPitch - lookRotX) + Mth.HALF_PI*0.2F));
             this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), limit(netHeadYaw - lookRotY, Mth.HALF_PI * 0.75F)));
             this.jaw.setXRot(this.lerpTo(this.jaw.getXRot(), Mth.HALF_PI*-0.2F));
             this.theHump.setYRot((this.theHead.getYRot()+this.theNeck.getYRot())*0.5F);

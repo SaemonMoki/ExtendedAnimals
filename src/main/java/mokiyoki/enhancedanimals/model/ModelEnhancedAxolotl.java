@@ -66,10 +66,10 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
             base.addOrReplaceChild("bGillsL", CubeListBuilder.create(), PartPose.offset(-4.0F, 2.0F, -1.0F));
             base.addOrReplaceChild("bGillsR", CubeListBuilder.create(), PartPose.offset(4.0F, 2.0F, -1.0F));
         PartDefinition bBody = base.addOrReplaceChild("bBody", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -8.0F));
-        PartDefinition bLegFrontLeft = base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(-3.5F, 1.0F, -1.0F));
-        PartDefinition bLegFrontRight = base.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(3.5F, 1.0F, -1.0F));
-        PartDefinition bLegBackLeft = base.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(-3.5F, 1.0F, -8.0F));
-        PartDefinition bLegBackRight = base.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(3.5F, 1.0F, -8.0F));
+        PartDefinition bLegFrontLeft = base.addOrReplaceChild("bLegFL", CubeListBuilder.create(), PartPose.offset(-3.5F, 1.0F, -8.0F));
+        PartDefinition bLegFrontRight = base.addOrReplaceChild("bLegFR", CubeListBuilder.create(), PartPose.offset(3.5F, 1.0F, -8.0F));
+        PartDefinition bLegBackLeft = base.addOrReplaceChild("bLegBL", CubeListBuilder.create(), PartPose.offset(-3.5F, 1.0F, -1.0F));
+        PartDefinition bLegBackRight = base.addOrReplaceChild("bLegBR", CubeListBuilder.create(), PartPose.offset(3.5F, 1.0F, -1.0F));
         PartDefinition bTail = base.addOrReplaceChild("bTail", CubeListBuilder.create(), PartPose.offset(0.0F, 2.0F, 10.0F));
 
         bBody.addOrReplaceChild("body", CubeListBuilder.create()
@@ -94,7 +94,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         );
         bHead.addOrReplaceChild("headLong", CubeListBuilder.create()
                 .texOffs(0, 0)
-                .addBox(-4.0F, -3.0F, -4.0F, 8.0F, 6.0F, 5.0F, new CubeDeformation(0.01F)),
+                .addBox(-4.0F, -6.0F, -2.0F, 8.0F, 6.0F, 5.0F, new CubeDeformation(0.01F)),
                 PartPose.rotation(Mth.HALF_PI, 0.0F, 0.0F)
         );
 
@@ -416,7 +416,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         map.put("left_gills", this.getRotationVector(this.theGillsLeft));
         map.put("right_gills", this.getRotationVector(this.theGillsRight));
         map.put("bTail", this.getRotationVector(this.theTail));
-        map.put("backLegs", new Vector3f(0.0F, this.theLegBackLeft.getY(), 0.0F));
+        map.put("backLegs", new Vector3f(0.0F, 0.0F, this.theLegBackLeft.getZ()));
     }
 
     private void setupInitialAnimationValues(AnimalModelData data, float netHeadYaw, float headPitch, AxolotlPhenotype axolotl) {
@@ -424,10 +424,10 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         if (map.isEmpty()) {
             this.theAxolotl.setRotation(headPitch * -Mth.DEG_TO_RAD, netHeadYaw * Mth.DEG_TO_RAD, 0.0F);
             this.theAxolotl.setPos(0.0F, 20.0F, 0.0F);
-            this.theHead.setPos(0.0F, 0.0F, axolotl.isLong ? -2.0F : 0.0F);
+            this.theHead.setPos(0.0F, 0.0F, 0.0F);
             this.theTail.setRotation(0.0F, 0.0F, 0.0F);
-            this.theLegBackLeft.setZ(axolotl.isLong ? -10.0F : -8.0F);
-            this.theLegBackRight.setZ(axolotl.isLong ? -10.0F : -8.0F);
+            this.theLegBackLeft.setZ(axolotl.isLong ? 3.0F : -1.0F);
+            this.theLegBackRight.setZ(axolotl.isLong ? 3.0F : -1.0F);
         } else {
             this.setRotationFromVector(this.theAxolotl, map.get("bAxolotl"));
             this.setOffsetFromVector(this.theAxolotl, map.get("bAxolotlPos"));
@@ -441,8 +441,8 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
             this.setRotationFromVector(this.theGillsLeft, map.get("left_gills"));
             this.setRotationFromVector(this.theGillsRight, map.get("right_gills"));
             this.setRotationFromVector(this.theTail, map.get("bTail"));
-            this.theLegBackLeft.setY(map.get("backLegs").y());
-            this.theLegBackRight.setY(map.get("backLegs").y());
+            this.theLegBackLeft.setZ(map.get("backLegs").z());
+            this.theLegBackRight.setZ(map.get("backLegs").z());
         }
     }
 
@@ -501,7 +501,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         float f2 = Mth.sin(f) * 0.15F;
         this.theAxolotl.setXRot(this.lerpTo(this.theAxolotl.getXRot(), -0.15F + 0.075F * f1));
         this.theAxolotl.setYRot(this.lerpTo(this.theAxolotl.getYRot(), 0.0F));
-        this.theAxolotl.setY(this.theAxolotl.getY() - f2);
+        this.theAxolotl.setY(22.0F - f2);
         this.theHead.setXRot(this.lerpTo(this.theHead.getXRot(), -this.theAxolotl.getXRot()));
         this.theGillsTop.setXRot(this.lerpTo(this.theGillsTop.getXRot(), 0.2F * f1));
         this.theGillsLeft.setYRot(this.lerpTo(this.theGillsLeft.getYRot(), -0.3F * f1 - 0.19F));
@@ -522,7 +522,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
         this.theAxolotl.setXRot(this.lerpTo(0.1F, this.theAxolotl.getXRot(), headPitch * ((float)Math.PI / 180F) + f3));
         this.theAxolotl.setYRot(this.lerpTo(this.theAxolotl.getYRot(), 0.0F));
         this.theHead.setXRot(-f3 * 1.8F);
-        this.theAxolotl.setY(20.0F - (0.45F * f2));
+        this.theAxolotl.setY(20.0F - (0.2F * f2));
         this.theGillsTop.setXRot(this.lerpTo(this.theGillsTop.getXRot(), -0.5F * f1 - 0.8F));
         this.theGillsLeft.setYRot(this.lerpTo(this.theGillsLeft.getYRot(), 0.3F * f1 + 0.9F));
         this.theGillsRight.setYRot(this.lerpTo(this.theGillsRight.getYRot(), -this.theGillsLeft.getYRot()));

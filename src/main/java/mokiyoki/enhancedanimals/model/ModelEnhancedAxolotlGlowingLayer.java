@@ -98,9 +98,7 @@ public class ModelEnhancedAxolotlGlowingLayer extends EyesLayer<EnhancedAxolotl,
                 cutout[2][5] = true;
             }
             if (genes.has(38, 3) && !genes.has(38, 2)) {
-                int[] gillsList = new int[]{
-                        36, 51, 0, 12
-                };
+                int[] gillsList = new int[]{39,48,0,4,36,40,5,12,47,51,5,13};
                 for (int i = 0, l = gillsList.length; i < l; i+=4) {
                     for (int x = gillsList[i], w = gillsList[i+1]; x <= w; x++) {
                         for (int y = gillsList[i+2], h = gillsList[i+3]; y <= h; y++) {

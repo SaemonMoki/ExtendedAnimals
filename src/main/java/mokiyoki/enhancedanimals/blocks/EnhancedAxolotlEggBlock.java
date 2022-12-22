@@ -86,23 +86,23 @@ public class EnhancedAxolotlEggBlock extends NestBlock {
     /**
      * Performs a random tick on a block.
      */
-    public void randomTick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
-        if (random.nextFloat() < 0.001F) {
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+        if (random.nextFloat() < Math.max(level.getBiome(pos).value().getBaseTemperature(), 0.01F)) {
             int i = state.getValue(HATCH);
             if (i < 2) {
-                world.playSound((Player)null, pos, SoundEvents.SLIME_SQUISH_SMALL, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
-                world.setBlock(pos, state.setValue(HATCH, Integer.valueOf(i + 1)), 2);
+                level.playSound((Player)null, pos, SoundEvents.SLIME_SQUISH_SMALL, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
+                level.setBlock(pos, state.setValue(HATCH, Integer.valueOf(i + 1)), 2);
             } else {
-                world.playSound((Player) null, pos, SoundEvents.SLIME_SQUISH, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
-                world.removeBlock(pos, false);
+                level.playSound((Player) null, pos, SoundEvents.SLIME_SQUISH, SoundSource.BLOCKS, 0.7F, 0.9F + random.nextFloat() * 0.2F);
+                level.removeBlock(pos, false);
 
-                List<EggHolder> eggList = getEggsRemoveNestCapability(world, pos);
+                List<EggHolder> eggList = getEggsRemoveNestCapability(level, pos);
                 int j = 1;
 
                 if (eggList!=null) {
                     for (EggHolder egg : eggList) {
-                        world.levelEvent(2001, pos, Block.getId(state));
-                        EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(world);
+                        level.levelEvent(2001, pos, Block.getId(state));
+                        EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(level);
                         axolotl.setGenes(egg.getGenes());
                         axolotl.setSharedGenes(egg.getGenes());
                         axolotl.setSireName(egg.getSire());
@@ -111,12 +111,12 @@ public class EnhancedAxolotlEggBlock extends NestBlock {
                         axolotl.initilizeAnimalSize();
                         axolotl.setBirthTime();
                         axolotl.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
-                        world.addFreshEntity(axolotl);
+                        level.addFreshEntity(axolotl);
                     }
                 } else {
                     for (int k = 0; k < state.getValue(EGGS); k++) {
-                        world.levelEvent(2001, pos, Block.getId(state));
-                        EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(world);
+                        level.levelEvent(2001, pos, Block.getId(state));
+                        EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(level);
                         Genes axolotlGenes = axolotl.createInitialBreedGenes(axolotl.getCommandSenderWorld(), axolotl.blockPosition(), "WanderingTrader");
                         axolotl.setGenes(axolotlGenes);
                         axolotl.setSharedGenes(axolotlGenes);
@@ -126,7 +126,7 @@ public class EnhancedAxolotlEggBlock extends NestBlock {
                         axolotl.initilizeAnimalSize();
                         axolotl.setBirthTime();
                         axolotl.moveTo((double) pos.getX() + 0.3D + (double) j++ * 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
-                        world.addFreshEntity(axolotl);
+                        level.addFreshEntity(axolotl);
                     }
                 }
             }

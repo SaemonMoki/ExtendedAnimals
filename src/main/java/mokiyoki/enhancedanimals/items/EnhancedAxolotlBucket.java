@@ -1,36 +1,16 @@
 package mokiyoki.enhancedanimals.items;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
-import mokiyoki.enhancedanimals.entity.genetics.AxolotlGeneticsInitialiser;
-import mokiyoki.enhancedanimals.entity.util.Colouration;
-import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.model.EnhancedAxolotlBucketModel;
 import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.util.Genes;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.animal.Bucketable;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.item.TooltipFlag;
@@ -38,11 +18,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -143,6 +121,8 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         stack.getOrCreateTagElement("display").putString("DamName", damName);
     }
 
+
+
     public static void setMateGenes(ItemStack stack, Genes genes) {
         if (genes != null) {
             stack.getOrCreateTagElement("MateGenetics").putIntArray("SGenes", genes.getSexlinkedGenes());
@@ -155,7 +135,15 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         return new Genes(genetics.getIntArray("SGenes"), genetics.getIntArray("AGenes"));
     }
 
-    public static void mateIsFemale(ItemStack stack, boolean isFemale) {
+    public static void setIsFemale(ItemStack stack, boolean isFemale) {
+        stack.getOrCreateTagElement("Genetics").putBoolean("IsFemale", isFemale);
+    }
+
+    private boolean getIsFemale(ItemStack stack) {
+        return stack.getOrCreateTagElement("Genetics").getBoolean("IsFemale");
+    }
+
+    public static void setMateIsFemale(ItemStack stack, boolean isFemale) {
         stack.getOrCreateTagElement("MateGenetics").putBoolean("MateIsFemale", isFemale);
     }
 
@@ -163,7 +151,7 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         stack.getOrCreateTagElement("display").putUUID("originalUUID", uuid);
     }
 
-    private boolean mateIsFemale(ItemStack stack) {
+    private boolean getMateIsFemale(ItemStack stack) {
         return stack.getOrCreateTagElement("MateGenetics").getBoolean("MateIsFemale");
     }
 
@@ -284,7 +272,6 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
 
     private void spawnAxolotl(ServerLevel level, ItemStack stack, BlockPos pos) {
         EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(level);
-        axolotl.loadFromBucketTag(stack.getOrCreateTag());
         axolotl.setFromBucket(true);
         CompoundTag data = stack.getOrCreateTagElement("display");
 //        axolotl.setUUID(data.getUUID("originalUUID"));
@@ -294,8 +281,8 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
             axolotl.setGenes(this.getGenes(stack));
             axolotl.setSharedGenes(this.getGenes(stack));
             if (this.getMateGenes(stack).isValid()) {
+                axolotl.setMateGender(this.getMateIsFemale(stack));
                 axolotl.setMateGenes(this.getMateGenes(stack));
-                axolotl.setMateGender(this.mateIsFemale(stack));
             }
         }
         if (data.contains("collar")) {
@@ -306,6 +293,8 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
             axolotl.setCustomName(stack.getHoverName());
         }
         axolotl.setBirthTime(data.getString("BirthTime"));
+        axolotl.initilizeAnimalSize();
+        axolotl.loadFromBucketTag(stack.getOrCreateTag());
         axolotl.moveTo((double) pos.getX() + 0.3D + 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
         level.addFreshEntity(axolotl);
     }

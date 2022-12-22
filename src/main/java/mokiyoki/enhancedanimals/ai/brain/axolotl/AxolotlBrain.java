@@ -5,6 +5,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.entity.EnhancedAxolotl;
+import mokiyoki.enhancedanimals.init.ModActivities;
+import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.Entity;
@@ -53,6 +55,7 @@ public class AxolotlBrain {
         initIdleActivity(p_149291_);
         initFightActivity(p_149291_);
         initPlayDeadActivity(p_149291_);
+        initPauseBrainActivity(p_149291_);
         p_149291_.setCoreActivities(ImmutableSet.of(Activity.CORE));
         p_149291_.setDefaultActivity(Activity.IDLE);
         p_149291_.useDefaultActivity();
@@ -60,7 +63,31 @@ public class AxolotlBrain {
     }
 
     private static void initPlayDeadActivity(Brain<EnhancedAxolotl> p_149297_) {
-        p_149297_.addActivityAndRemoveMemoriesWhenStopped(Activity.PLAY_DEAD, ImmutableList.of(Pair.of(0, new PlayDead()), Pair.of(1, new EraseMemoryIf<>(AxolotlBrain::isBreeding, MemoryModuleType.PLAY_DEAD_TICKS))), ImmutableSet.of(Pair.of(MemoryModuleType.PLAY_DEAD_TICKS, MemoryStatus.VALUE_PRESENT)), ImmutableSet.of(MemoryModuleType.PLAY_DEAD_TICKS));
+        p_149297_.addActivityAndRemoveMemoriesWhenStopped(
+                Activity.PLAY_DEAD,
+                ImmutableList.of(
+                        Pair.of(0, new PlayDead()),
+                        Pair.of(1, new EraseMemoryIf<>(AxolotlBrain::isBreeding, MemoryModuleType.PLAY_DEAD_TICKS))
+                ),
+                ImmutableSet.of(
+                        Pair.of(MemoryModuleType.PLAY_DEAD_TICKS, MemoryStatus.VALUE_PRESENT)
+                ),
+                ImmutableSet.of(MemoryModuleType.PLAY_DEAD_TICKS)
+        );
+    }
+
+    private static void initPauseBrainActivity(Brain<EnhancedAxolotl> p_149297_) {
+        p_149297_.addActivityAndRemoveMemoriesWhenStopped(
+                ModActivities.PAUSE_BRAIN.get(),
+                ImmutableList.of(
+                        Pair.of(0, new PauseBrain()),
+                        Pair.of(1, new EraseMemoryIf<>(AxolotlBrain::hasNoEgg, ModMemoryModuleTypes.HAS_EGG.get()))
+                ),
+                ImmutableSet.of(
+                        Pair.of(ModMemoryModuleTypes.HAS_EGG.get(), MemoryStatus.VALUE_PRESENT)
+                ),
+                ImmutableSet.of(ModMemoryModuleTypes.HAS_EGG.get())
+        );
     }
 
     private static void initFightActivity(Brain<EnhancedAxolotl> p_149303_) {
@@ -126,8 +153,8 @@ public class AxolotlBrain {
     public static void updateActivity(EnhancedAxolotl axolotl) {
         Brain<EnhancedAxolotl> brain = axolotl.getBrain();
         Activity activity = brain.getActiveNonCoreActivity().orElse((Activity) null);
-        if (activity != Activity.PLAY_DEAD) {
-            brain.setActiveActivityToFirstValid(ImmutableList.of(Activity.PLAY_DEAD, Activity.FIGHT, Activity.IDLE));
+        if (activity != Activity.PLAY_DEAD && activity != ModActivities.PAUSE_BRAIN.get()) {
+            brain.setActiveActivityToFirstValid(ImmutableList.of(Activity.PLAY_DEAD, ModActivities.PAUSE_BRAIN.get(), Activity.FIGHT, Activity.IDLE));
             if (activity == Activity.FIGHT && brain.getActiveNonCoreActivity().orElse((Activity) null) != Activity.FIGHT) {
                 brain.setMemoryWithExpiry(MemoryModuleType.HAS_HUNTING_COOLDOWN, true, 2400L);
             }
@@ -153,5 +180,9 @@ public class AxolotlBrain {
 
     private static boolean isBreeding(EnhancedAxolotl axolotl) {
         return axolotl.getBrain().hasMemoryValue(MemoryModuleType.BREED_TARGET);
+    }
+
+    private static boolean hasNoEgg(EnhancedAxolotl axolotl) {
+        return !axolotl.getBrain().hasMemoryValue(ModMemoryModuleTypes.HAS_EGG.get());
     }
 }

@@ -1,10 +1,7 @@
 package mokiyoki.enhancedanimals;
 
-import mokiyoki.enhancedanimals.init.ModBlocks;
-import mokiyoki.enhancedanimals.init.ModEntities;
-import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.init.ModTileEntities;
-import mokiyoki.enhancedanimals.init.breeds.ModSensorTypes;
+import mokiyoki.enhancedanimals.init.*;
+import mokiyoki.enhancedanimals.init.ModSensorTypes;
 import mokiyoki.enhancedanimals.network.EAEquipmentPacket;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.util.handlers.CapabilityEvents;
@@ -67,6 +64,8 @@ public class EnhancedAnimals {
         ModEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModTileEntities.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModSensorTypes.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModActivities.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModMemoryModuleTypes.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     private void setup(final FMLCommonSetupEvent event) {

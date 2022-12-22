@@ -12,7 +12,8 @@ import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.init.breeds.ModSensorTypes;
+import mokiyoki.enhancedanimals.init.ModMemoryModuleTypes;
+import mokiyoki.enhancedanimals.init.ModSensorTypes;
 import mokiyoki.enhancedanimals.items.EnhancedAxolotlBucket;
 import mokiyoki.enhancedanimals.network.axolotl.AxolotlBucketTexturePacket;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexturer;
@@ -88,7 +89,6 @@ import java.util.Random;
 
 import static mokiyoki.enhancedanimals.EnhancedAnimals.channel;
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.axolotlFoodMap;
-import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 import static net.minecraft.world.entity.ai.attributes.AttributeSupplier.*;
 
 public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketable {
@@ -102,7 +102,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     private static final int AXOLOTL_TOTAL_AIR_SUPPLY = 6000;
     public static final double PLAYER_REGEN_DETECTION_RANGE = 20.0D;
     protected static final ImmutableList<? extends SensorType<? extends Sensor<? super EnhancedAxolotl>>> SENSOR_TYPES = ImmutableList.of(SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_ADULT, SensorType.HURT_BY, SensorType.AXOLOTL_ATTACKABLES, ModSensorTypes.AXOLOTL_FOOD_TEMPTATIONS.get());
-    protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.PLAY_DEAD_TICKS, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED, MemoryModuleType.HAS_HUNTING_COOLDOWN);
+    protected static final ImmutableList<? extends MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(MemoryModuleType.BREED_TARGET, ModMemoryModuleTypes.HAS_EGG.get(), MemoryModuleType.NEAREST_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES, MemoryModuleType.NEAREST_VISIBLE_PLAYER, MemoryModuleType.NEAREST_VISIBLE_ATTACKABLE_PLAYER, MemoryModuleType.LOOK_TARGET, MemoryModuleType.WALK_TARGET, MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, MemoryModuleType.PATH, MemoryModuleType.ATTACK_TARGET, MemoryModuleType.ATTACK_COOLING_DOWN, MemoryModuleType.NEAREST_VISIBLE_ADULT, MemoryModuleType.HURT_BY_ENTITY, MemoryModuleType.PLAY_DEAD_TICKS, MemoryModuleType.NEAREST_ATTACKABLE, MemoryModuleType.TEMPTING_PLAYER, MemoryModuleType.TEMPTATION_COOLDOWN_TICKS, MemoryModuleType.IS_TEMPTED, MemoryModuleType.HAS_HUNTING_COOLDOWN);
     private static final int REHYDRATE_AIR_SUPPLY = 1800;
     private static final int REGEN_BUFF_MAX_DURATION = 2400;
     private static final int REGEN_BUFF_BASE_DURATION = 100;
@@ -269,6 +269,12 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
         if (!this.isNoAi()) {
             Optional<Integer> optional = this.getBrain().getMemory(MemoryModuleType.PLAY_DEAD_TICKS);
             this.setPlayingDead(optional.isPresent() && optional.get() > 0);
+
+            if (this.hasEgg()) {
+                this.getBrain().setMemory(ModMemoryModuleTypes.HAS_EGG.get(), true);
+            } else {
+                this.getBrain().eraseMemory(ModMemoryModuleTypes.HAS_EGG.get());
+            }
         }
 
     }
@@ -1101,6 +1107,7 @@ NBT read/write
                     }
                     world.setBlock(pos, ModBlocks.AXOLOTL_EGG.get().defaultBlockState().setValue(EnhancedAxolotlEggBlock.EGGS, Integer.valueOf(numberOfEggs)), 3);
                     this.axolotl.setHasEgg(false);
+                    this.axolotl.pregnant = false;
                     this.axolotl.eggLayingTimer = -1;
 //                    this.axolotl.setInLove(600);
                 }

@@ -1,7 +1,6 @@
-package mokiyoki.enhancedanimals.ai.sensor;
+package mokiyoki.enhancedanimals.ai.brain.sensor;
 
 import com.google.common.collect.ImmutableSet;
-import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.PathfinderMob;

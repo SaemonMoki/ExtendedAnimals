@@ -15,15 +15,15 @@ public class PlayDead extends Behavior<EnhancedAxolotl> {
         super(ImmutableMap.of(MemoryModuleType.PLAY_DEAD_TICKS, MemoryStatus.VALUE_PRESENT, MemoryModuleType.HURT_BY_ENTITY, MemoryStatus.VALUE_PRESENT), 200);
     }
 
-    protected boolean checkExtraStartConditions(ServerLevel p_149319_, EnhancedAxolotl p_149320_) {
-        return p_149320_.isInWaterOrBubble();
+    protected boolean checkExtraStartConditions(ServerLevel serverLevel, EnhancedAxolotl axolotl) {
+        return axolotl.isInWaterOrBubble();
     }
 
-    protected boolean canStillUse(ServerLevel p_149322_, EnhancedAxolotl p_149323_, long p_149324_) {
-        return p_149323_.isInWaterOrBubble() && p_149323_.getBrain().hasMemoryValue(MemoryModuleType.PLAY_DEAD_TICKS);
+    protected boolean canStillUse(ServerLevel serverLevel, EnhancedAxolotl axolotl, long p_149324_) {
+        return axolotl.isInWaterOrBubble() && axolotl.getBrain().hasMemoryValue(MemoryModuleType.PLAY_DEAD_TICKS);
     }
 
-    protected void start(ServerLevel p_149330_, EnhancedAxolotl p_149331_, long p_149332_) {
+    protected void start(ServerLevel serverLevel, EnhancedAxolotl p_149331_, long p_149332_) {
         Brain<EnhancedAxolotl> brain = p_149331_.getBrain();
         brain.eraseMemory(MemoryModuleType.WALK_TARGET);
         brain.eraseMemory(MemoryModuleType.LOOK_TARGET);

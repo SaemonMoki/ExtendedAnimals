@@ -248,7 +248,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
     }
 
     protected void registerGoals() {
-        this.goalSelector.addGoal(1, new EnhancedAxolotl.LayEggGoal(this, 1.0D));
+        this.goalSelector.addGoal(1, new EnhancedAxolotl.LayEggGoal(this, 0.3D));
         this.goalSelector.addGoal(1, new EnhancedAxolotl.MateGoal(this, 0.5D));
     }
 
@@ -272,8 +272,6 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
             if (this.hasEgg()) {
                 this.getBrain().setMemory(ModMemoryModuleTypes.HAS_EGG.get(), true);
-            } else {
-                this.getBrain().eraseMemory(ModMemoryModuleTypes.HAS_EGG.get());
             }
         }
 
@@ -1070,8 +1068,13 @@ NBT read/write
         private final EnhancedAxolotl axolotl;
 
         LayEggGoal(EnhancedAxolotl axolotl, double speedIn) {
-            super(axolotl, speedIn, 16);
+            super(axolotl, speedIn, 16, 5);
             this.axolotl = axolotl;
+        }
+
+        @Override
+        public double acceptedDistance() {
+            return 2.0D;
         }
 
         public boolean canUse() {

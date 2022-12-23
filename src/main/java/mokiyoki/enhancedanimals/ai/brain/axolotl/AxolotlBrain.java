@@ -50,16 +50,16 @@ public class AxolotlBrain {
     private static final float SPEED_MULTIPLIER_WHEN_CHASING_IN_WATER = 0.6F;
     private static final float SPEED_MULTIPLIER_WHEN_FOLLOWING_ADULT_IN_WATER = 0.6F;
 
-    public static Brain<?> makeBrain(Brain<EnhancedAxolotl> p_149291_) {
-        initCoreActivity(p_149291_);
-        initIdleActivity(p_149291_);
-        initFightActivity(p_149291_);
-        initPlayDeadActivity(p_149291_);
-        initPauseBrainActivity(p_149291_);
-        p_149291_.setCoreActivities(ImmutableSet.of(Activity.CORE));
-        p_149291_.setDefaultActivity(Activity.IDLE);
-        p_149291_.useDefaultActivity();
-        return p_149291_;
+    public static Brain<?> makeBrain(Brain<EnhancedAxolotl> axolotlBrain) {
+        initCoreActivity(axolotlBrain);
+        initIdleActivity(axolotlBrain);
+        initFightActivity(axolotlBrain);
+        initPlayDeadActivity(axolotlBrain);
+        initPauseBrainActivity(axolotlBrain);
+        axolotlBrain.setCoreActivities(ImmutableSet.of(Activity.CORE));
+        axolotlBrain.setDefaultActivity(Activity.IDLE);
+        axolotlBrain.useDefaultActivity();
+        return axolotlBrain;
     }
 
     private static void initPlayDeadActivity(Brain<EnhancedAxolotl> p_149297_) {
@@ -81,7 +81,7 @@ public class AxolotlBrain {
                 ModActivities.PAUSE_BRAIN.get(),
                 ImmutableList.of(
                         Pair.of(0, new PauseBrain()),
-                        Pair.of(1, new EraseMemoryIf<>(AxolotlBrain::hasNoEgg, ModMemoryModuleTypes.HAS_EGG.get()))
+                        Pair.of(1, new EraseMemoryIf<>(AxolotlBrain::isBreeding, ModMemoryModuleTypes.HAS_EGG.get()))
                 ),
                 ImmutableSet.of(
                         Pair.of(ModMemoryModuleTypes.HAS_EGG.get(), MemoryStatus.VALUE_PRESENT)
@@ -109,6 +109,7 @@ public class AxolotlBrain {
                 new LookAtTargetSink(45, 90),
                 new MoveToTargetSink(),
                 new ValidatePlayDead(),
+                new ValidatePauseBrain(),
                 new CountDownCooldownTicks(MemoryModuleType.TEMPTATION_COOLDOWN_TICKS))
         );
     }
@@ -180,9 +181,5 @@ public class AxolotlBrain {
 
     private static boolean isBreeding(EnhancedAxolotl axolotl) {
         return axolotl.getBrain().hasMemoryValue(MemoryModuleType.BREED_TARGET);
-    }
-
-    private static boolean hasNoEgg(EnhancedAxolotl axolotl) {
-        return !axolotl.getBrain().hasMemoryValue(ModMemoryModuleTypes.HAS_EGG.get());
     }
 }

@@ -349,11 +349,11 @@ public class EanimodCommonConfig {
             spawnGeneticAxolotls = builder
                     .define("Allow Genetic axolotls to continue to spawn/exist:", true);
             spawnWeightAxolotls = builder
-                    .defineInRange("How highly axolotl spawning is weighted, larger numbers spawn more. Default is 6", 10, 1, 20);
+                    .defineInRange("How highly axolotl spawning is weighted, larger numbers spawn more. Default is 3", 3, 1, 20);
             minimumAxolotlGroup = builder
-                    .defineInRange("The minimum number of axolotls you want to find in a group at spawn. Default is 1", 4, 1, 60);
+                    .defineInRange("The minimum number of axolotls you want to find in a group at spawn. Default is 1", 1, 1, 60);
             maximumAxolotlGroup = builder
-                    .defineInRange("The maximum number of axolotl you want to find in a group at spawn. Default is 3", 6, 1, 60);
+                    .defineInRange("The maximum number of axolotl you want to find in a group at spawn. Default is 3", 3, 1, 60);
             builder.pop();
         }
     }

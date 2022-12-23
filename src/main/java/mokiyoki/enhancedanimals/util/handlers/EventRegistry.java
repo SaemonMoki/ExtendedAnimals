@@ -27,54 +27,24 @@ import mokiyoki.enhancedanimals.entity.EnhancedPig;
 import mokiyoki.enhancedanimals.entity.EnhancedSheep;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.gui.EnhancedAnimalContainer;
-import mokiyoki.enhancedanimals.init.ModBlocks;
-import mokiyoki.enhancedanimals.init.ModItems;
-import mokiyoki.enhancedanimals.init.ModTileEntities;
-//import mokiyoki.enhancedanimals.renderer.EggCartonTileEntityRenderer;
-//import mokiyoki.enhancedanimals.renderer.EnhancedLlamaSpitRenderer;
-import mokiyoki.enhancedanimals.renderer.RenderEnhancedChicken;
-//import mokiyoki.enhancedanimals.renderer.RenderEnhancedCow;
-//import mokiyoki.enhancedanimals.renderer.RenderEnhancedHorse;
-//import mokiyoki.enhancedanimals.renderer.RenderEnhancedLlama;
-//import mokiyoki.enhancedanimals.renderer.RenderEnhancedMoobloom;
-//import mokiyoki.enhancedanimals.renderer.RenderEnhancedMooshroom;
-//import mokiyoki.enhancedanimals.renderer.RenderEnhancedPig;
-//import mokiyoki.enhancedanimals.renderer.RenderEnhancedRabbit;
-//import mokiyoki.enhancedanimals.renderer.RenderEnhancedSheep;
-//import mokiyoki.enhancedanimals.renderer.RenderEnhancedTurtle;
-import mokiyoki.enhancedanimals.renderer.RenderEnhancedAxolotl;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
-import net.minecraft.world.entity.animal.Pig;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.core.dispenser.ShearsDispenseItemBehavior;
 import net.minecraft.core.BlockSource;
-import net.minecraft.core.Position;
-import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.client.ClientRegistry;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -82,15 +52,11 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static mokiyoki.enhancedanimals.init.ModBlocks.EGG_CARTON;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_AXOLOTL;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
 import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_COW;
@@ -230,13 +196,13 @@ public class EventRegistry {
 
     @SubscribeEvent
     public static void onEntitiesRegistry(RegistryEvent.Register<EntityType<?>> event) {
-        SpawnPlacements.register(ENHANCED_AXOLOTL.get(), SpawnPlacements.Type.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+        SpawnPlacements.register(ENHANCED_AXOLOTL.get(), SpawnPlacements.Type.IN_WATER, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedAxolotl::checkAxolotlSpawnRules);
         SpawnPlacements.register(ENHANCED_PIG.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
         SpawnPlacements.register(ENHANCED_SHEEP.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
         SpawnPlacements.register(ENHANCED_COW.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
         SpawnPlacements.register(ENHANCED_LLAMA.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
         SpawnPlacements.register(ENHANCED_CHICKEN.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
-        SpawnPlacements.register(ENHANCED_RABBIT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Animal::checkAnimalSpawnRules);
+        SpawnPlacements.register(ENHANCED_RABBIT.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedRabbit::checkRabbitSpawnRules);
         SpawnPlacements.register(ENHANCED_MOOSHROOM.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedMooshroom::canMooshroomSpawn);
         SpawnPlacements.register(ENHANCED_TURTLE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, EnhancedTurtle::canTurtleSpawn);
     }

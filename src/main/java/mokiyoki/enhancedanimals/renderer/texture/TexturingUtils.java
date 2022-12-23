@@ -31,10 +31,8 @@ public class TexturingUtils {
             Resource iresource = manager.getResource(new ResourceLocation(modLocation+texture));
             return NativeImage.read(iresource.getInputStream());
         } catch (IOException e) {
-            LOGGER.error("Couldn't load layered image", (Throwable)e);
+            throw new IllegalStateException("Couldn't load layered image", e);
         }
-
-        return null;
     }
 
     public static NativeImage applyRGBBlend(NativeImage textureImage, int rgb) {

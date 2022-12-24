@@ -408,7 +408,7 @@ public class ModItems {
     public static final RegistryObject<Item> COLLAR_BASIC_LEATHER_DIAMONDRING = ITEMS_DEFERRED_REGISTRY.register("collar_basic_leather_diamondring", () -> new CustomizableCollar(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1),10511680, false));
     public static final RegistryObject<Item> COLLAR_BASIC_LEATHER_DIAMONDBELL = ITEMS_DEFERRED_REGISTRY.register("collar_basic_leather_diamondbell", () -> new CustomizableCollar(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1),10511680, true));
 
-    public static final RegistryObject<Item> ENHANCED_AXOLOTL_BUCKET = ITEMS_DEFERRED_REGISTRY.register("enhanced_axolotl_bucket", () -> new EnhancedAxolotlBucket(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1), ModEntities.ENHANCED_AXOLOTL, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_AXOLOTL));
+    public static final RegistryObject<Item> ENHANCED_AXOLOTL_BUCKET = ITEMS_DEFERRED_REGISTRY.register("enhanced_axolotl_bucket", () -> new EnhancedAxolotlBucket(new Item.Properties().stacksTo(1), ModEntities.ENHANCED_AXOLOTL, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_AXOLOTL));
 
     public static final RegistryObject<Item> GENETICS_ENCYCLOPEDIA = ITEMS_DEFERRED_REGISTRY.register("genetics_encyclopedia", () -> new GeneticsEncyclopedia(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1)));
     public static final RegistryObject<Item> DEBUG_GENE_BOOK = ITEMS_DEFERRED_REGISTRY.register("debug_gene_book", () -> new DebugGenesBook(new Item.Properties().tab(EnhancedAnimals.GENETICS_ANIMALS_GROUP).stacksTo(1)));

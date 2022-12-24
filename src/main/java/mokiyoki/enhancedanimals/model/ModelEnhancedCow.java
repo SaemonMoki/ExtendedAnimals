@@ -1381,6 +1381,8 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
                 orientateSaddle(data.saddle);
             }
 
+            articulateLegs(isMoving);
+
             saveAnimationValues(data, cow);
         }
     }
@@ -1407,13 +1409,9 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
             this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), -0.3F));
         }
 
-        this.theLegFrontLeft.setY(this.lerpTo(this.theLegFrontLeft.getY(), 3.0F));
-        this.theLegFrontRight.setY(this.lerpTo(this.theLegFrontRight.getY(), 3.0F));
         this.theLegFrontLeft.setXRot(this.lerpTo(this.theLegFrontLeft.getXRot(), Mth.HALF_PI));
         this.theLegFrontRight.setXRot(this.lerpTo(this.theLegFrontRight.getXRot(), Mth.HALF_PI));
 
-        this.theLegBackLeft.setZ(this.lerpTo(this.theLegBackLeft.getZ(), 12.0F));
-        this.theLegBackRight.setZ(this.lerpTo(this.theLegBackRight.getZ(), 12.0F));
         this.theLegBackLeft.setXRot(this.lerpTo(this.theLegBackLeft.getXRot(), -Mth.HALF_PI));
         this.theLegBackRight.setXRot(this.lerpTo(this.theLegBackRight.getXRot(), -Mth.HALF_PI));
 
@@ -1428,11 +1426,6 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
 
         this.theHead.setYRot(this.lerpTo(this.theHead.getYRot(), 0.0F));
         this.theHead.setZRot(this.lerpTo(this.theHead.getZRot(), 0.0F));
-
-        this.theLegFrontLeft.setY(this.lerpTo(this.theLegFrontLeft.getY(), 0.0F));
-        this.theLegFrontRight.setY(this.lerpTo(this.theLegFrontRight.getY(), 0.0F));
-        this.theLegBackLeft.setZ(this.lerpTo(this.theLegBackLeft.getZ(), 9.0F));
-        this.theLegBackRight.setZ(this.lerpTo(this.theLegBackRight.getZ(), 9.0F));
     }
 
     private void standingAnimation() {
@@ -1602,46 +1595,24 @@ public class ModelEnhancedCow<T extends EnhancedCow> extends EnhancedAnimalModel
         }
     }
 
-    private void animateLegLinkage(boolean isDwarf) {
-        float flag = this.theLegBottomFrontLeft.getXRot();
-        float d = isDwarf?3.0F:5.0F;
-        if (flag > 0.0F) {
-            this.theLegBottomFrontLeft.setZ(d * (Math.min(flag, Mth.PI * 0.7F) / Mth.PI * 0.7F));
-        } else if (this.theLegBottomFrontLeft.getZ() != 0.0F) {
-            this.theLegBottomFrontLeft.setZ(0.0F);
+    private void articulateLegs(boolean isMoving) {
+        float f = isMoving ? -1.0F : this.theLegFrontLeft.getXRot();
+        if (f < 0.0F) {
+            this.theLegFrontLeft.setY(0.0F);
+            this.theLegFrontRight.setY(0.0F);
+        } else if (f > 0.0F){
+            f *= HALF_PI_FRACTION;
+            this.theLegFrontLeft.setY(f * 3.0F);
+            this.theLegFrontRight.setY(f * 3.0F);
         }
-        flag = this.theLegBottomFrontRight.getXRot();
-        if (flag > 0.0F) {
-            this.theLegBottomFrontRight.setZ(d * (Math.min(flag, Mth.PI * 0.7F) / Mth.PI * 0.7F));
-        } else if (this.theLegBottomFrontRight.getZ() != 0.0F) {
-            this.theLegBottomFrontRight.setZ(0.0F);
-        }
-
-//        PartPose.offset(3.0F, 0.0F, 9.0F));
-//        PartPose.offset(-3.0F, 0.0F, 9.0F));
-        flag = this.theLegBottomBackLeft.getXRot();
-        if (flag > 0.0F) {
-            this.theLegBackLeft.setY(flag * -1.0F);
-            this.theLegBackLeft.setZ(9.0F + (flag * 6.0F));
-            this.theLegBottomBackLeft.setY(-5.0F * flag);
-            this.theLegBottomBackLeft.setZ(3.0F * flag);
-        } else if (flag == 0.0F) {
-            this.theLegBackLeft.setY(0.0F);
+        f = isMoving ? 1.0F : theLegBackLeft.getXRot();
+        if (f > 0.0F) {
             this.theLegBackLeft.setZ(9.0F);
-            this.theLegBottomBackLeft.setY(0.0F);
-            this.theLegBottomBackLeft.setZ(0.0F);
-        }
-        flag = this.theLegBottomBackRight.getXRot();
-        if (flag > 0.0F) {
-            this.theLegBackRight.setY(flag * -1.0F);
-            this.theLegBackRight.setZ(9.0F + (flag * 6.0F));
-            this.theLegBottomBackRight.setY(-5.0F * flag);
-            this.theLegBottomBackRight.setZ(3.0F * flag);
-        } else if (flag == 0.0F) {
-            this.theLegBackRight.setY(0.0F);
             this.theLegBackRight.setZ(9.0F);
-            this.theLegBottomBackRight.setY(0.0F);
-            this.theLegBottomBackRight.setZ(0.0F);
+        } else if (f < 0.0F){
+            f *= HALF_PI_FRACTION;
+            this.theLegBackLeft.setZ(9.0F - (f * 3.0F));
+            this.theLegBackRight.setZ(9.0F - (f * 3.0F));
         }
     }
 

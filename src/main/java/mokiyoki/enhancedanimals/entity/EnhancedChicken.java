@@ -340,8 +340,8 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     @Override
     public float getScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
-        float newbornSize = 0.2F;
-        return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
+        float nbSize = 0.2F;
+        return this.isGrowing() ? (nbSize + ((size-nbSize) * (this.growthAmount()))) : size;
     }
 
     @Override
@@ -560,8 +560,6 @@ public class EnhancedChicken extends EnhancedAnimalAbstract {
     /**
      * Chicken grass eating and sand bathing
     */
-
-    //TODO make the grass eating actions
     //TODO make the sand bathing actions
 
     //also provides sand bath bonus

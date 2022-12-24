@@ -55,7 +55,7 @@ public class SparseGrassBlock extends SpreadingSnowyDirtBlock {
 
     @Override
     public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, net.minecraftforge.common.IPlantable plantable) {
-        if (plantable instanceof GrowablePlant) return true;
+        if (plantable instanceof GrowablePlant || plantable instanceof GrowableDoubleHigh) return true;
         PlantType type = plantable.getPlantType(world, pos.relative(facing));
 
         if (DESERT.equals(type) || NETHER.equals(type) || CROP.equals(type) || WATER.equals(type)) {

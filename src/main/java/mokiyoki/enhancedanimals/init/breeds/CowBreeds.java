@@ -118,7 +118,7 @@ public class CowBreeds {
             ));
 
     public static final Breed GLOUCESTER = new Breed(new Breed.Properties().setData("gloucester", Biomes.PLAINS, Breed.Rarity.EXOTIC)
-            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "4","1","5","2","1").add(12, "2","2","3","4","1","_","1","2").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "4","1","5","2","1").add(12, "2","2","2","4","2","3","1","2").add(38, "1").add(44, "1").add(54, "2").add(70, "1","1","2").add(80, "4","1").add(88, "1","1")
                     .add(84, "2-4")
                     .add(92,"1988")/*.add(92,"1-9999")*/  //170-199, 1091, 2091,
                     .add(94, "244349")/*.add(94, "1-999999")*/

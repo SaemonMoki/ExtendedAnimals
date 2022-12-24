@@ -580,7 +580,6 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
     @Override
     protected void setInitialModelData(T enhancedAxolotl) {
         AxolotlModelData axolotlModelData = new AxolotlModelData();
-        axolotlModelData.hasEggs = enhancedAxolotl.hasEgg();
         setBaseInitialModelData(axolotlModelData, enhancedAxolotl);
     }
 

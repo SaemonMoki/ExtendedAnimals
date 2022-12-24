@@ -605,7 +605,7 @@ public class ModelEnhancedSheep<T extends EnhancedSheep> extends EnhancedAnimalM
 
             if (sheep.tailFat > 0.0F) {
                 float tailFat = (sheep.tailFat * 3.5F) + 1.0F;
-                mapOfScale.put("bTail", ModelHelper.createScalings(tailFat, (sheep.tailFat * 0.5F) + 1.0F, tailFat, 0.0F, 0.0F, 0.0F));
+                mapOfScale.put("bTail", ModelHelper.createScalings(tailFat, (sheep.tailFat * 0.5F) + 1.0F, (sheep.tailFat * 0.75F) + 1.0F, 0.0F, 0.0F, 0.0F));
             }
 
             /**

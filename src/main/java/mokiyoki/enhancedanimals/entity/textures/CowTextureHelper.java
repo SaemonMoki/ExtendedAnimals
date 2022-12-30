@@ -48,7 +48,7 @@ public class CowTextureHelper {
             "", "spot_whiteface0.png",
             "spot_hetwhiteface0.png",
             "spot_wfcoloursided0.png",
-            "spot_coloursided0.png",
+            "spot_gloucester.png", "spot_pingauzer.png", "spot_pingauzer1.png",
             "spot_pibald0.png", "spot_pibald1.png", "spot_pibald2.png", "spot_pibald3.png", "spot_pibald4.png", "spot_pibald5.png", "spot_pibald6.png", "spot_pibald7.png", "spot_pibald8.png", "spot_pibald9.png","spot_pibalda.png", "spot_pibaldb.png", "spot_pibaldc.png", "spot_pibaldd.png", "spot_pibalde.png", "spot_pibaldf.png",
     };
 
@@ -251,11 +251,20 @@ public class CowTextureHelper {
                 }
             }else if (gene[16] == 2 || gene[17] == 2){
                 //border spots (Pinzgauer) this genes might be incomplete dominant with wildtype but I dont see it
-                whiteface = 4;
+                if (gene[22] != 4 || gene[23] != 4) {
+                    if (gene[22] == 2 || gene[23] == 2) {
+                        whiteface = 5;
+                    } else if (gene[22] != gene[23]){
+                        whiteface = 5;
+                    } else {
+                        whiteface = gene[22] + gene[23] == 2 ? 6 : 4;
+                    }
+                } else {
+                    whiteface = 5;
+                }
             }else if (gene[16] == 4 && gene[17] == 4){
                 //piebald
-                whiteface = 5;
-
+                whiteface = 7;
             }
 
             // Legacy belt/blaze
@@ -299,7 +308,7 @@ public class CowTextureHelper {
                 }
             }
 
-            if (whiteface == 5){
+            if (whiteface == 7){
                 //selects body piebalding texture
                 if (Character.isDigit(uuidArry[1])) {
                     whiteface = whiteface + (1 + (uuidArry[1] - 48));
@@ -326,7 +335,7 @@ public class CowTextureHelper {
                             whiteface = whiteface + 15;
                             break;
                         default:
-                            whiteface = 5;
+                            whiteface = 6;
                     }
                 }
 

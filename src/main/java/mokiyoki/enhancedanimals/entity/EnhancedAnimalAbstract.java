@@ -155,6 +155,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     //Texture
     protected TextureGrouping enhancedAnimalTextureGrouping;
+    protected Map<Equipment, TextureGrouping> enhancedAnimalEquipmentGrouping = new HashMap<>();
 
     protected final List<String> enhancedAnimalTextures = new ArrayList<>();
     protected final List<String> texturesIndexes = new ArrayList<>();
@@ -300,6 +301,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     protected void reloadTextures() {
         this.texturesIndexes.clear();
         this.enhancedAnimalTextures.clear();
+        this.enhancedAnimalTextureGrouping = null;
         this.compiledTexture = null;
         this.setTexturePaths();
     }
@@ -589,10 +591,22 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
         if(collared) {
             if(previousCollarTextures == null || !previousCollarTextures.containsAll(newCollarTextures)){
                 this.equipmentTextures.put(Equipment.COLLAR, newCollarTextures);
+                TextureGrouping collarGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+                for(int i = 0; i < newCollarTextures.size(); ++i) {
+                    if (i == 0) {
+                        collarGroup.addTextureLayers(new TextureLayer(TexturingType.APPLY_COLLAR_COLOUR, newCollarTextures.get(0)));
+                    } else {
+                        collarGroup.addTextureLayers(new TextureLayer(newCollarTextures.get(i)));
+                    }
+                }
+
+
+                this.enhancedAnimalEquipmentGrouping.put(Equipment.COLLAR, collarGroup);
             }
         } else {
             if(previousCollarTextures != null){
                 this.equipmentTextures.remove(Equipment.COLLAR);
+                this.enhancedAnimalEquipmentGrouping.remove(Equipment.COLLAR);
             }
         }
         this.compiledEquipmentTexture = null; //reset compiled string
@@ -1733,7 +1747,13 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
 
     @OnlyIn(Dist.CLIENT)
     public TextureGrouping getTextureGrouping() {
-        return this.enhancedAnimalTextureGrouping;
+        TextureGrouping compiledGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+        compiledGroup.addGrouping(this.enhancedAnimalTextureGrouping);
+        for (Equipment equipmentKey : this.enhancedAnimalEquipmentGrouping.keySet()) {
+            compiledGroup.addGrouping(this.enhancedAnimalEquipmentGrouping.get(equipmentKey));
+        }
+
+        return compiledGroup;
     }
 
     @OnlyIn(Dist.CLIENT)

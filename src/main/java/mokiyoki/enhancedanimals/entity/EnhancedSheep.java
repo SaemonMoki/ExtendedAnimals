@@ -994,9 +994,8 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
-//            this.setAlphaTexturePaths();
         } else if (this.resetTexture && !this.isBaby()) {
             this.resetTexture = false;
             this.reloadTextures();
@@ -1010,6 +1009,7 @@ public class EnhancedSheep extends EnhancedAnimalChestedAbstract implements net.
     protected void reloadTextures() {
         this.texturesIndexes.clear();
         this.enhancedAnimalTextures.clear();
+        this.enhancedAnimalTextureGrouping = null;
         this.compiledTexture = null;
         this.colouration.setMelaninColour(-1);
         this.colouration.setPheomelaninColour(-1);

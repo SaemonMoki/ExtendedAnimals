@@ -505,7 +505,7 @@ public class EnhancedAxolotl extends EnhancedAnimalAbstract implements Bucketabl
 
     @OnlyIn(Dist.CLIENT)
     public String getTexture() {
-        if (this.enhancedAnimalTextures.isEmpty()) {
+        if (this.enhancedAnimalTextureGrouping == null) {
             this.setTexturePaths();
         } else if (this.getReloadTexture() ^ this.reload) {
             this.reload=!this.reload;

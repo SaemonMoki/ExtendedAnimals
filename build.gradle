@@ -127,7 +127,7 @@ dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.92'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.2.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
 
     // Real mod deobf dependency examples - these get remapped to your current mappings

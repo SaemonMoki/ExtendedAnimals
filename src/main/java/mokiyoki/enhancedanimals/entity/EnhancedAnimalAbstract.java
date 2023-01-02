@@ -1517,7 +1517,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (ANIMAL_SIZE.equals(key)) {
+        if (ANIMAL_SIZE.equals(key) && this.level.isClientSide) {
             this.scheduledToRun.add(new AnimalScheduledFunction(50, (eaa) -> {
                 if (eaa.getEnhancedAnimalAge() > 0 && eaa.level.getLevelData().getGameTime() > 0  ) {
                     eaa.refreshDimensions();

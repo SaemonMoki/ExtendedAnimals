@@ -107,6 +107,27 @@ public class SpawnRegistry {
             spawns.addAll(addSpawns);
         }
 
+        ArrayList<MobSpawnSettings.SpawnerData> addAxolotlSpawns = new ArrayList<>();
+
+        Iterator<MobSpawnSettings.SpawnerData> currentAxolotlSpawns = event.getSpawns().getSpawner(MobCategory.AXOLOTLS).iterator();
+        while (currentAxolotlSpawns.hasNext()) {
+            MobSpawnSettings.SpawnerData entry = currentAxolotlSpawns.next();
+
+            EanimodCommonConfig.CommonConfig config = EanimodCommonConfig.COMMON;
+
+            if (entry.type == EntityType.AXOLOTL) {
+                if(config.spawnGeneticAxolotls.get()) {
+                    addAxolotlSpawns.add(new MobSpawnSettings.SpawnerData(ENHANCED_AXOLOTL.get(), config.spawnWeightAxolotls.get(), config.minimumAxolotlGroup.get(), config.maximumAxolotlGroup.get()));
+                }
+            }
+        }
+
+        List<MobSpawnSettings.SpawnerData> axolotlSpawns = event.getSpawns().getSpawner(MobCategory.AXOLOTLS);
+
+        if (!axolotlSpawns.isEmpty()) {
+            axolotlSpawns.addAll(addAxolotlSpawns);
+        }
+
         //documentation says this miiiiight be null on super rare occurances
         if (event.getName() != null) {
             if (EanimodCommonConfig.COMMON.spawnGeneticRabbits.get() && (event.getName().equals(Biomes.SNOWY_TAIGA.getRegistryName()) || event.getName().equals(Biomes.WINDSWEPT_HILLS.getRegistryName()))) {
@@ -180,18 +201,30 @@ public class SpawnRegistry {
                     removeSpawns.add(entry);
                 }
             }
-
-            //remove axolotls
-            if (entry.type == EntityType.AXOLOTL && entry.type.toString().contains("axolotl")) {
-                if (!EanimodCommonConfig.COMMON.spawnVanillaAxolotls.get()) {
-                    removeSpawns.add(entry);
-                }
-            }
         }
 
         List<MobSpawnSettings.SpawnerData> spawns = event.getSpawns().getSpawner(MobCategory.CREATURE);
         if (!removeSpawns.isEmpty()) {
             spawns.removeAll(removeSpawns);
+        }
+
+        ArrayList<MobSpawnSettings.SpawnerData> removeAxolotlSpawns = new ArrayList<>();
+
+        Iterator<MobSpawnSettings.SpawnerData> currentAxolotlSpawns = event.getSpawns().getSpawner(MobCategory.AXOLOTLS).iterator();
+        while (currentAxolotlSpawns.hasNext()) {
+            MobSpawnSettings.SpawnerData entry = currentAxolotlSpawns.next();
+
+            //remove axolotls
+            if (entry.type == EntityType.AXOLOTL && entry.type.toString().contains("axolotl")) {
+                if (!EanimodCommonConfig.COMMON.spawnVanillaAxolotls.get()) {
+                    removeAxolotlSpawns.add(entry);
+                }
+            }
+        }
+
+        List<MobSpawnSettings.SpawnerData> waterSpawns = event.getSpawns().getSpawner(MobCategory.AXOLOTLS);
+        if (!removeAxolotlSpawns.isEmpty()) {
+            waterSpawns.removeAll(removeAxolotlSpawns);
         }
     }
 }

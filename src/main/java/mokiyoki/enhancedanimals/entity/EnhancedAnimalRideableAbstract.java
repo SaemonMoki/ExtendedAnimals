@@ -11,6 +11,9 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.items.MilkBottleHalf;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
+import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -276,10 +279,22 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         if(saddled) {
 //            if(previousSaddleTextures == null || !previousSaddleTextures.containsAll(newSaddleTextures)){
                 equipmentTextures.put(Equipment.SADDLE, newSaddleTextures);
+            TextureGrouping saddleGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            for(int i = 0; i < newSaddleTextures.size(); ++i) {
+                if (i == 0) {
+                    saddleGroup.addTextureLayers(new TextureLayer(TexturingType.APPLY_SADDLE_COLOUR, newSaddleTextures.get(0)));
+                } else {
+                    saddleGroup.addTextureLayers(new TextureLayer(newSaddleTextures.get(i)));
+                }
+            }
+
+
+            this.enhancedAnimalEquipmentGrouping.put(Equipment.SADDLE, saddleGroup);
 //            }
         } else {
             if(previousSaddleTextures != null){
                 equipmentTextures.remove(Equipment.SADDLE);
+                this.enhancedAnimalEquipmentGrouping.remove(Equipment.SADDLE);
             }
         }
         this.compiledEquipmentTexture = null; //reset compiled string

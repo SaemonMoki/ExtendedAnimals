@@ -4,6 +4,9 @@ import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModItems;
 import mokiyoki.enhancedanimals.items.CustomizableBridle;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
+import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -111,10 +114,18 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         if(blanketed) {
 //            if(previousBlanketTextures == null || !previousBlanketTextures.containsAll(newBlanketTextures)){
                 this.equipmentTextures.put(Equipment.BLANKET, newBlanketTextures);
+            TextureGrouping blanketGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            for(int i = 0; i < newBlanketTextures.size(); ++i) {
+                blanketGroup.addTextureLayers(new TextureLayer(newBlanketTextures.get(i)));
+            }
+
+
+            this.enhancedAnimalEquipmentGrouping.put(Equipment.BLANKET, blanketGroup);
 //            }
         } else {
             if(previousBlanketTextures != null){
                 this.equipmentTextures.remove(Equipment.BLANKET);
+                this.enhancedAnimalEquipmentGrouping.remove(Equipment.BLANKET);
             }
         }
         this.compiledEquipmentTexture = null; //reset compiled string
@@ -153,10 +164,22 @@ public abstract class EnhancedAnimalChestedAbstract extends EnhancedAnimalAbstra
         if(bridled) {
 //            if(previousBridleTextures == null || !previousBridleTextures.containsAll(newBridleTextures)){
                 equipmentTextures.put(Equipment.BRIDLE, newBridleTextures);
+            TextureGrouping bridleGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            for(int i = 0; i < newBridleTextures.size(); ++i) {
+                if (i == 0) {
+                    bridleGroup.addTextureLayers(new TextureLayer(TexturingType.APPLY_BRIDLE_COLOUR, newBridleTextures.get(0)));
+                } else {
+                    bridleGroup.addTextureLayers(new TextureLayer(newBridleTextures.get(i)));
+                }
+            }
+
+
+            this.enhancedAnimalEquipmentGrouping.put(Equipment.COLLAR, bridleGroup);
 //            }
         } else {
             if(previousBridleTextures != null){
-                equipmentTextures.remove(Equipment.BRIDLE);
+                this.equipmentTextures.remove(Equipment.BRIDLE);
+                this.enhancedAnimalEquipmentGrouping.remove(Equipment.BRIDLE);
             }
         }
         this.compiledEquipmentTexture = null; //reset compiled string

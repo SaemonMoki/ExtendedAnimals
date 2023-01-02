@@ -55,12 +55,12 @@ public class FoodSerialiser extends SimpleJsonResourceReloadListener {
 
     private static void createOrReplaceConfig(ResourceLocation file, JsonObject jsonFromData) {
         Boolean replaceConfig = jsonFromData.get("replaceDefault").getAsBoolean();
-        if (replaceConfig || (!new File(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\" + file.getPath() + ".json").isFile())) {
+        if (replaceConfig || (!new File(FMLPaths.CONFIGDIR.get().toString() + File.separator + "genetic_animals" + File.separator + file.getPath() + ".json").isFile())) {
             Gson gson = new GsonBuilder()
                     .setPrettyPrinting()
                     .create();
             try {
-                File newFile = new File(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\" + file.getPath() + ".json");
+                File newFile = new File(FMLPaths.CONFIGDIR.get().toString() + File.separator + "genetic_animals" + File.separator + file.getPath() + ".json");
                 if (!newFile.exists()) {
                     newFile.getParentFile().mkdir();
                     newFile.createNewFile();
@@ -80,7 +80,7 @@ public class FoodSerialiser extends SimpleJsonResourceReloadListener {
 
     private static void readFoodConfig(ResourceLocation file) {
         try {
-            FileInputStream configPath = new FileInputStream(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\" + file.getPath() + ".json");
+            FileInputStream configPath = new FileInputStream(FMLPaths.CONFIGDIR.get().toString() + File.separator + "genetic_animals" + File.separator + file.getPath() + ".json");
 
             InputStreamReader in_strm = new InputStreamReader(configPath);
 

@@ -706,6 +706,7 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
                 scheduledFunction.tick();
                 if (scheduledFunction.getTicksToWait() <= 0) {
                     scheduledFunction.runFunction(this);
+                    scheduledFunction.runRepeatCondition(this);
                 }
             });
             scheduledToRun.removeIf(scheduledFunction -> scheduledFunction.getTicksToWait() <= 0);
@@ -1516,12 +1517,12 @@ public abstract class EnhancedAnimalAbstract extends Animal implements Container
     }
 
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (ANIMAL_SIZE.equals(key) && this.level.isClientSide) {
+        if (ANIMAL_SIZE.equals(key)) {
             this.scheduledToRun.add(new AnimalScheduledFunction(50, (eaa) -> {
                 if (eaa.getEnhancedAnimalAge() > 0 && eaa.level.getLevelData().getGameTime() > 0  ) {
                     eaa.refreshDimensions();
                 }
-            }));
+            }, (eaa) -> eaa.isGrowing()));
         }
 
         super.onSyncedDataUpdated(key);

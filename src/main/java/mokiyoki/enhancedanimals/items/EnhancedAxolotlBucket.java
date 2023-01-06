@@ -147,8 +147,8 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         stack.getOrCreateTagElement("MateGenetics").putBoolean("MateIsFemale", isFemale);
     }
 
-    public static void setAxolotlUUID(ItemStack stack, UUID uuid) {
-        stack.getOrCreateTagElement("display").putUUID("originalUUID", uuid);
+    public static void setAxolotlUUID(ItemStack stack, String uuid) {
+        stack.getOrCreateTagElement("display").putString("UUID", uuid);
     }
 
     private boolean getMateIsFemale(ItemStack stack) {
@@ -274,7 +274,9 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         EnhancedAxolotl axolotl = ENHANCED_AXOLOTL.get().create(level);
         axolotl.setFromBucket(true);
         CompoundTag data = stack.getOrCreateTagElement("display");
-//        axolotl.setUUID(data.getUUID("originalUUID"));
+        if (level.getEntity(UUID.fromString(data.getString("UUID"))) == null) {
+            axolotl.setUUID(UUID.fromString(data.getString("UUID")));
+        }
         axolotl.setSireName(data.getString("SireName"));
         axolotl.setDamName(data.getString("DamName"));
         if (this.getGenes(stack).isValid()) {
@@ -295,7 +297,7 @@ public class EnhancedAxolotlBucket extends MobBucketItem {
         axolotl.setBirthTime(data.getString("BirthTime"));
         axolotl.initilizeAnimalSize();
         axolotl.loadFromBucketTag(stack.getOrCreateTag());
-        axolotl.moveTo((double) pos.getX() + 0.3D + 0.2D, (double) pos.getY(), (double) pos.getZ() + 0.3D, 0.0F, 0.0F);
+        axolotl.moveTo((double) pos.getX() + 0.5D, (double) pos.getY(), (double) pos.getZ() + 0.5D, 0.0F, 0.0F);
         level.addFreshEntity(axolotl);
     }
 

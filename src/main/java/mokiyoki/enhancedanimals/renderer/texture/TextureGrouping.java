@@ -24,6 +24,7 @@ public class TextureGrouping {
         List<NativeImage> groupImages = new ArrayList<>();
 
         for (TextureGrouping group : textureGroupings) {
+
             NativeImage groupCompiledImage = group.processGrouping(modLocation, manager, colouration);
             if (groupCompiledImage != null) groupImages.add(groupCompiledImage);
         }
@@ -36,12 +37,12 @@ public class TextureGrouping {
             }
         }
 
-        NativeImage mergedGroupImage = applyGroupMerging(groupImages);
+        NativeImage mergedGroupImage = applyGroupMerging(groupImages, colouration);
 
         return mergedGroupImage;
     }
 
-    private NativeImage applyGroupMerging(List<NativeImage> groupImages) {
+    private NativeImage applyGroupMerging(List<NativeImage> groupImages, Colouration colouration) {
         if (!groupImages.isEmpty()) {
             NativeImage baseImage = groupImages.get(0);
             groupImages.remove(0);
@@ -65,17 +66,19 @@ public class TextureGrouping {
     }
 
     private void maskAlpha(NativeImage alphaMaskImage, List<NativeImage> groupImages) {
-        NativeImage mergeGroup = groupImages.get(0);
-        //First merge image groups
-        if (groupImages.size() > 1) {
-            NativeImage baseImage = groupImages.get(0);
-            for (int i = 1; i < groupImages.size(); i++) {
-                applyPixelLayer(baseImage, groupImages.get(i));
+        if (!groupImages.isEmpty()) {
+            NativeImage mergeGroup = groupImages.get(0);
+            //First merge image groups
+            if (groupImages.size() > 1) {
+                NativeImage baseImage = groupImages.get(0);
+                for (int i = 1; i < groupImages.size(); i++) {
+                    applyPixelLayer(baseImage, groupImages.get(i));
+                }
+                mergeGroup = baseImage;
             }
-            mergeGroup = baseImage;
-        }
 
-        applyAlphaMaskBlend(alphaMaskImage, mergeGroup);
+            applyAlphaMaskBlend(alphaMaskImage, mergeGroup);
+        }
     }
 
     private void blendAverage(NativeImage compiledImage, List<NativeImage> groupImages) {

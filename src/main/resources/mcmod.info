@@ -1,16 +1,16 @@
 [
-{
-  "modid": "eanimod",
-  "name": "Genetic Animals Mod",
-  "description": "Add real-to-life animal genetics, improved animal behaviour and content adding mod.",
-  "version": "0.7.4",
-  "mcversion": "1.18.2",
-  "url": "https://github.com/SaemonMoki/ExtendedAnimals/issues",
-  "updateUrl": "",
-  "authorList": ["MokiYoki and Saemon"],
-  "credits": "Moki and Saemon",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+    "modid": "eanimod",
+    "name": "Genetic Animals Mod",
+    "description": "Add real-to-life animal genetics, improved animal behaviour and content adding mod.",
+    "version": "0.7.9",
+    "mcversion": "1.18.2",
+    "url": "https://github.com/SaemonMoki/ExtendedAnimals/issues",
+    "updateUrl": "",
+    "authorList": ["MokiYoki and Saemon"],
+    "credits": "Moki and Saemon",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]

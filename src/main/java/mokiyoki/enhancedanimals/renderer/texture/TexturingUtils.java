@@ -72,7 +72,7 @@ public class TexturingUtils {
     public static void applyAverageBlend(NativeImage baseImage, List<NativeImage> appliedImages) {
         for(int i = 0; i < baseImage.getHeight(); ++i) {
             for(int j = 0; j < baseImage.getWidth(); ++j) {
-                averagePixel(baseImage, j, i, retrieveColColours(appliedImages, j, i));
+                averageAlpha(baseImage, j, i, retrieveColColours(appliedImages, j, i));
             }
         }
     }
@@ -124,27 +124,24 @@ public class TexturingUtils {
         maskingImage.setPixelRGBA(xIn, yIn, j << 24 | (i >> 16 & 255) << 16 | (i >> 8 & 255) << 8 | (i & 255));
     }
 
-    private static void averagePixel(NativeImage baseImage, int xIn, int yIn, List<Integer> colIns) {
+    private static void averageAlpha(NativeImage baseImage, int xIn, int yIn, List<Integer> colIns) {
         int i = baseImage.getPixelRGBA(xIn, yIn);
 
-        float f = (float)getA(i);
-        float f1 = (float)getB(i);
-        float f2 = (float)getG(i);
-        float f3 = (float)getR(i);
+        float size = 1.0F / (colIns.size()+1.0F);
+        float alpha = getA(i) * size * COLOUR_DEGREE;
+        float red = getR(i) * alpha;
+        float green = getG(i) * alpha;
+        float blue = getB(i) * alpha;
 
-        for (Integer colIn: colIns) {
-            f = f + (float)getA(colIn);
-            f1 = f1 + (float)getB(colIn);
-            f2 = f2 + (float)getG(colIn);
-            f3 = f3 + (float)getR(colIn);
+        for (Integer layerColor : colIns) {
+            float layerAlpha = getA(layerColor) * size * COLOUR_DEGREE;
+            alpha += layerAlpha;
+            red += getR(layerColor) * layerAlpha;
+            green += getG(layerColor) * layerAlpha;
+            blue += getB(layerColor) * layerAlpha;
         }
 
-        f = cleanColourValue(f / (colIns.size()+1));
-        f1 = cleanColourValue(f1 / (colIns.size()+1));
-        f2 = cleanColourValue(f2 / (colIns.size()+1));
-        f3 = cleanColourValue(f3 / (colIns.size()+1));
-
-        baseImage.setPixelRGBA(xIn, yIn, combine((int)(f), (int)(f1), (int)(f2), (int)(f3)));
+        baseImage.setPixelRGBA(xIn, yIn, combine((int)(cleanColourValue(alpha*255.0F)), (int)cleanColourValue(blue), (int)cleanColourValue(green), (int)cleanColourValue(red)));
     }
 
     //Blends the supplied image with a specified bgr
@@ -210,7 +207,7 @@ public class TexturingUtils {
         if (value > 255.0F) {
             return 255.0F;
         }
-        return value;
+        return Math.max(value, 0.0F);
     }
 
 }

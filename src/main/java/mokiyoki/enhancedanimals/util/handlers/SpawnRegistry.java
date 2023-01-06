@@ -124,7 +124,7 @@ public class SpawnRegistry {
 
         List<MobSpawnSettings.SpawnerData> axolotlSpawns = event.getSpawns().getSpawner(MobCategory.AXOLOTLS);
 
-        if (!axolotlSpawns.isEmpty()) {
+        if (!addAxolotlSpawns.isEmpty()) {
             axolotlSpawns.addAll(addAxolotlSpawns);
         }
 
@@ -222,9 +222,9 @@ public class SpawnRegistry {
             }
         }
 
-        List<MobSpawnSettings.SpawnerData> waterSpawns = event.getSpawns().getSpawner(MobCategory.AXOLOTLS);
+        List<MobSpawnSettings.SpawnerData> axolotlSpawns = event.getSpawns().getSpawner(MobCategory.AXOLOTLS);
         if (!removeAxolotlSpawns.isEmpty()) {
-            waterSpawns.removeAll(removeAxolotlSpawns);
+            axolotlSpawns.removeAll(removeAxolotlSpawns);
         }
     }
 }

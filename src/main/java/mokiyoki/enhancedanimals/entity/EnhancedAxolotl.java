@@ -1012,6 +1012,10 @@ NBT read/write
         return p_186251_.getBlockState(p_186253_.below()).is(BlockTags.AXOLOTLS_SPAWNABLE_ON);
     }
 
+    public boolean checkSpawnObstruction(LevelReader levelReader) {
+        return levelReader.isUnobstructed(this);
+    }
+
     class AxolotlLookControl extends SmoothSwimmingLookControl {
         public AxolotlLookControl(EnhancedAxolotl p_149210_, int p_149211_) {
             super(p_149210_, p_149211_);

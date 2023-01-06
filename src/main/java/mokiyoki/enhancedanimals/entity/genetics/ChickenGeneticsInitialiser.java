@@ -1867,6 +1867,71 @@ public class ChickenGeneticsInitialiser extends AbstractGeneticsInitialiser {
             autosomalGenes[185] = (1);
         }
 
+        //Body Angle1 [wildtype, angled ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[186] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[186] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[187] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[187] = (1);
+        }
+
+        //Body Angle2 [wildtype, angled ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[188] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[188] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[189] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[189] = (1);
+        }
+
+        //Body Angle3 [wildtype, angled ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[190] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[190] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[191] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[191] = (1);
+        }
+
+        //Body Angle4 [wildtype, angled ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[192] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[192] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[193] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[193] = (1);
+        }
+
+        //Body Angle5 [wildtype, angled ]
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[194] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[194] = (1);
+        }
+
+        if (ThreadLocalRandom.current().nextInt(100) > WTC) {
+            autosomalGenes[195] = (ThreadLocalRandom.current().nextInt(2) + 1);
+        } else {
+            autosomalGenes[195] = (1);
+        }
+
         return new Genes(sexlinkedGenes, autosomalGenes);
 
     }

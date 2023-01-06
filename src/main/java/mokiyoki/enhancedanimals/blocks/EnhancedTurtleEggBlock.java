@@ -4,6 +4,7 @@ package mokiyoki.enhancedanimals.blocks;
 import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
+import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.util.Genes;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -91,7 +92,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
         if (this.canTrample(worldIn, trampler)) {
             if (!worldIn.isClientSide && worldIn.random.nextInt(chances) == 0) {
                 BlockState blockstate = worldIn.getBlockState(pos);
-                if (blockstate.is(Blocks.TURTLE_EGG)) {
+                if (blockstate.is(ModBlocks.TURTLE_EGG.get())) {
                     this.removeOneEgg(worldIn, pos, blockstate);
                 }
             }
@@ -215,9 +216,7 @@ public class EnhancedTurtleEggBlock extends NestBlock {
     }
 
     private boolean canTrample(Level worldIn, Entity trampler) {
-        if (!(trampler instanceof Turtle) && !(trampler instanceof Bat)
-       && !(trampler instanceof EnhancedTurtle)
-    ) {
+        if (!(trampler instanceof Turtle) && !(trampler instanceof Bat) && !(trampler instanceof EnhancedTurtle)) {
             if (!(trampler instanceof LivingEntity)) {
                 return false;
             } else {

@@ -33,4 +33,8 @@ public class SheepBreeds {
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "2")));
     public static final Breed RECESSIVE_BLACK = new Breed(new Breed.Properties().setData("recessiveblack", Biomes.PLAINS, Breed.Rarity.RARE)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "6")));
+    public static final Breed MOORIT = new Breed(new Breed.Properties().setData("moorit", Biomes.PLAINS, Breed.Rarity.RARE)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(2, "2")));
+    public static final Breed RED = new Breed(new Breed.Properties().setData("red", Biomes.PLAINS, Breed.Rarity.RARE)
+            .setGeneSketch(new GeneSketch(), new GeneSketch().add(4, "3")));
 }

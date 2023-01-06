@@ -208,7 +208,7 @@ public class ModelEnhancedAxolotl<T extends EnhancedAxolotl> extends EnhancedAni
                         .addBox(0.0F, -1.5F, 3.5F, 0,  3, 3)
                         .texOffs(12, 37)
                         .addBox(-1.5F, -1.5F, 5.0F, 3, 3, 3, new CubeDeformation(-0.5F)),
-                PartPose.offset(0.0F, -2.0F, -4.0F)
+                PartPose.offsetAndRotation(0.0F, -2.0F, 0.0F, -Mth.HALF_PI, 0.0F, 0.0F)
         );
 
         return LayerDefinition.create(meshdefinition, 64, 64);

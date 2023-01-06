@@ -171,9 +171,9 @@ public class CowTextureHelper {
                         //fawn
                         red = 3;
                         if (gene[0] == 5 || gene[1] == 5) {
-                            black = cow.getOrSetIsFemale() ? 10 : 3;
+                            black = cow.getOrSetIsFemale() ? 10 : 2;
                         } else {
-                            black = cow.getOrSetIsFemale() ? 8 : 2;
+                            black = cow.getOrSetIsFemale() ? 8 : 3;
                         }
                     } else {
                         //recessive black

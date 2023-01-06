@@ -713,6 +713,10 @@ public class ModelEnhancedPig<T extends EnhancedPig> extends EnhancedAnimalModel
             calculateEars(pig);
             calculateTail(pig);
             this.theMouth.setY((-4.0F-data.growthAmount) - ((2.5F + (2.5F * data.growthAmount)) * pig.snoutLength));
+            this.theLegFrontLeft.setX(-Mth.HALF_PI);
+            this.theLegFrontRight.setX(-Mth.HALF_PI);
+            this.theLegBackLeft.setX(-Mth.HALF_PI);
+            this.theLegBackRight.setX(-Mth.HALF_PI);
         } else {
             this.thePig.setRotation(map.get("bPig"));
             this.thePig.setPos(map.get("bPigPos"));

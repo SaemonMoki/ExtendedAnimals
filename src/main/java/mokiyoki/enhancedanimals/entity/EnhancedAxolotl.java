@@ -836,11 +836,7 @@ NBT read/write
 
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
-        if (getSharedGenes().isValid()) {
-            return Bucketable.bucketMobPickup(player, hand, this).orElse(super.mobInteract(player, hand));
-        } else {
-            return super.mobInteract(player, hand);
-        }
+        return Bucketable.bucketMobPickup(player, hand, this).orElse(super.mobInteract(player, hand));
     }
 
     @Override
@@ -848,7 +844,7 @@ NBT read/write
         Bucketable.saveDefaultDataToBucketTag(this, stack);
         if (stack.getItem() instanceof EnhancedAxolotlBucket) {
             EnhancedAxolotlBucket.setImage(stack, getImageArrayFromString(this.getBucketImage()));
-            EnhancedAxolotlBucket.setGenes(stack, getSharedGenes());
+            EnhancedAxolotlBucket.setGenes(stack, this.genetics!=null? this.genetics : getSharedGenes());
             EnhancedAxolotlBucket.setParentNames(stack, this.sireName, this.damName);
             EnhancedAxolotlBucket.setEquipment(stack, this.animalInventory.getItem(1));
             EnhancedAxolotlBucket.setIsFemale(stack, this.getOrSetIsFemale());
@@ -856,7 +852,7 @@ NBT read/write
                 EnhancedAxolotlBucket.setMateGenes(stack, this.mateGenetics);
                 EnhancedAxolotlBucket.setMateIsFemale(stack, this.mateGender);
             }
-            EnhancedAxolotlBucket.setAxolotlUUID(stack, this.getUUID());
+            EnhancedAxolotlBucket.setAxolotlUUID(stack, this.getUUID().toString());
             EnhancedAxolotlBucket.setBirthTime(stack, this.getBirthTime());
         }
     }

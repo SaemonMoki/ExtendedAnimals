@@ -161,10 +161,10 @@ public class EnhancedCow extends EnhancedAnimalRideableAbstract {
         return EanimodCommonConfig.COMMON.gestationDaysCow.get();
     }
 
-    protected void setMooshroomUUID(String status) {
-        if (!status.equals("")) {
-            this.entityData.set(MOOSHROOM_UUID, status);
-            this.mooshroomUUID = status;
+    protected void setMooshroomUUID(String uuid) {
+        if (!uuid.equals("")) {
+            this.entityData.set(MOOSHROOM_UUID, uuid);
+            this.mooshroomUUID = uuid;
         }
     }
 

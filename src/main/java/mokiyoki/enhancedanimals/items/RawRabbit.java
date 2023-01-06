@@ -1,6 +1,8 @@
 package mokiyoki.enhancedanimals.items;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class RawRabbit extends Item {
 

@@ -4,18 +4,18 @@ import mokiyoki.enhancedanimals.blocks.UnboundHayBlock;
 import mokiyoki.enhancedanimals.capability.hay.HayCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.init.ModBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.pattern.BlockStateMatcher;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.predicate.BlockStatePredicate;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.util.LandRandomPos;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -23,9 +23,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingRandomWalkingGoal {
+public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingRandomStrollGoal {
 
-    protected final CreatureEntity creature;
+    protected final PathfinderMob creature;
     public final double movementSpeed;
     protected int eatDelay;
     protected int timeoutCounter;
@@ -33,10 +33,10 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     protected BlockPos destinationBlock = BlockPos.ZERO;
     private boolean isAtDestination = false;
     private final int searchLength;
-    private final int field_203113_j;
-    protected int field_203112_e;
+    private final int verticalSearchRange;
+    protected int verticalSearchStart;
     protected final float probability;
-    protected final World entityWorld;
+    protected final Level entityWorld;
     private int hungerModifier;
 
     private int hayHungerRestore = 6000;
@@ -60,32 +60,32 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     private int expireCacheTimer = 12000;
 
 
-    protected static final Predicate<BlockState> IS_GRASS = BlockStateMatcher.forBlock(Blocks.GRASS);
-    protected static final Predicate<BlockState> IS_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.GRASS_BLOCK);
-    protected static final Predicate<BlockState> IS_SPARSE_GRASS_BLOCK = BlockStateMatcher.forBlock(ModBlocks.SPARSEGRASS_BLOCK);
-    protected static final Predicate<BlockState> IS_TALL_GRASS_BLOCK = BlockStateMatcher.forBlock(Blocks.TALL_GRASS);
+    protected static final Predicate<BlockState> IS_GRASS = BlockStatePredicate.forBlock(Blocks.GRASS);
+    protected static final Predicate<BlockState> IS_GRASS_BLOCK = BlockStatePredicate.forBlock(Blocks.GRASS_BLOCK);
+    protected static final Predicate<BlockState> IS_SPARSE_GRASS_BLOCK = BlockStatePredicate.forBlock(ModBlocks.SPARSEGRASS_BLOCK.get());
+    protected static final Predicate<BlockState> IS_TALL_GRASS_BLOCK = BlockStatePredicate.forBlock(Blocks.TALL_GRASS);
 
-    public EnhancedWaterAvoidingRandomWalkingEatingGoal(CreatureEntity creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth, int hungerModifier) {
+    public EnhancedWaterAvoidingRandomWalkingEatingGoal(PathfinderMob creature, double speedIn, int length, float probabilityIn, int wanderExecutionChance, int depth, int hungerModifier) {
         super(creature, speedIn);
         this.creature = creature; //the entity
         this.movementSpeed = speedIn; //speed to move
         this.searchLength = length; //how long to search
-        this.field_203112_e = 0;
-        this.field_203113_j = depth;
-        this.entityWorld = creature.world;
+        this.verticalSearchStart = 0;
+        this.verticalSearchRange = depth;
+        this.entityWorld = creature.level;
         this.probability = probabilityIn; //probably to pick block???
         this.wanderExecutionChance = wanderExecutionChance; //chance to wander
         this.hungerModifier = hungerModifier; //the amount to divide the hunger timer by to then take away from the 1/1000 chance to eat
-        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.JUMP));
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.JUMP));
     }
 
     @Override
-    public boolean shouldExecute() {
-        if (this.creature.isBeingRidden() || ((EnhancedAnimalAbstract)this.creature).isAnimalSleeping()) {
+    public boolean canUse() {
+        if (this.creature.isVehicle() || ((EnhancedAnimalAbstract)this.creature).isAnimalSleeping()) {
             return false;
         } else {
 
-            if (this.creature.getIdleTime() >= 100) {
+            if (this.creature.getNoActionTime() >= 100) {
                 return false;
             }
 
@@ -114,18 +114,18 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                 }
 
 
-                if (this.creature.getRNG().nextInt(Math.round(chanceToEat)) == 0) {
+                if (this.creature.getRandom().nextInt(Math.round(chanceToEat)) == 0) {
                     return eatingRoute();
                 }
 
 
                 //wander checks
-                if (this.creature.getRNG().nextInt(this.wanderExecutionChance) != 0) {
+                if (this.creature.getRandom().nextInt(this.wanderExecutionChance) != 0) {
                     return false;
                 }
 //            }
 
-            Vector3d lvt_1_1_ = this.getPosition();
+            Vec3 lvt_1_1_ = this.getPosition();
             if (lvt_1_1_ == null) {
                 return false;
             } else {
@@ -155,12 +155,12 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     }
 
     @Nullable
-    protected Vector3d getPosition() {
-        if (this.creature.isInWaterOrBubbleColumn()) {
-            Vector3d vec3d = RandomPositionGenerator.getLandPos(this.creature, 15, 7);
+    protected Vec3 getPosition() {
+        if (this.creature.isInWaterOrBubble()) {
+            Vec3 vec3d = LandRandomPos.getPos(this.creature, 15, 7);
             return vec3d == null ? super.getPosition() : vec3d;
         } else {
-            return this.creature.getRNG().nextFloat() >= this.probability ? RandomPositionGenerator.getLandPos(this.creature, 5, 5) : super.getPosition();
+            return this.creature.getRandom().nextFloat() >= this.probability ? LandRandomPos.getPos(this.creature, 5, 5) : super.getPosition();
         }
     }
 
@@ -168,7 +168,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         return this.eatingGrassTimer;
     }
 
-    public boolean shouldContinueExecuting() {
+    public boolean canContinueToUse() {
 
         if (this.timeoutCounter > this.maxTicks) {
             this.invalidBlockPosCache.add(this.destinationBlock.toString());
@@ -177,14 +177,14 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
         if (eatingSearch) {
             if (searchHay) {
-                if (this.destinationBlock.withinDistance(this.creature.getPositionVec(), getHayBlockTargetDistanceSq())) {
+                if (this.destinationBlock.closerToCenterThan(this.creature.position(), getHayBlockTargetDistanceSq())) {
                     eatingHay = true;
                     searchHay = false;
                     eatingSearch = false;
                     ((EnhancedAnimalAbstract)this.creature).decreaseHunger(hayHungerRestore);
                     this.eatingGrassTimer = 40;
-                    this.entityWorld.setEntityState(this.creature, (byte)10);
-                    this.creature.getNavigator().clearPath();
+                    this.entityWorld.broadcastEntityEvent(this.creature, (byte)10);
+                    this.creature.getNavigation().stop();
                     return true;
                 } else {
                     return true;
@@ -195,8 +195,8 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
                 eatingSearch = false;
                 ((EnhancedAnimalAbstract)this.creature).decreaseHunger(otherHungerRestore);
                 this.eatingGrassTimer = 40;
-                this.entityWorld.setEntityState(this.creature, (byte)10);
-                this.creature.getNavigator().clearPath();
+                this.entityWorld.broadcastEntityEvent(this.creature, (byte)10);
+                this.creature.getNavigation().stop();
                 return true;
             } else {
                 return true;
@@ -206,53 +206,53 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
             return this.eatingGrassTimer > 0;
         } else {
             //keep wandering to wander location
-            return !this.creature.getNavigator().noPath();
+            return !this.creature.getNavigation().isDone();
         }
     }
 
     /**
      * Execute a one shot task or start executing a continuous task
      */
-    public void startExecuting() {
+    public void start() {
         if (eatingSearch) {
             this.createNavigation();
             this.timeoutCounter = 0;
         } else {
             //wander
-            this.creature.getNavigator().tryMoveToXYZ(this.x, this.y, this.z, this.speed);
+            this.creature.getNavigation().moveTo(this.x, this.y, this.z, this.speedModifier);
         }
     }
 
     /**
      * Makes task to bypass chance
      */
-    public void makeUpdate() {
+    public void trigger() {
         this.mustUpdate = true;
     }
 
     /**
      * Changes task random possibility for execution
      */
-    public void setExecutionChance(int newchance) {
+    public void setInterval(int newchance) {
         this.wanderExecutionChance = newchance;
     }
 
     protected boolean checkForFood() {
-        BlockPos blockpos = new BlockPos(this.creature.getPosition());
+        BlockPos blockpos = new BlockPos(this.creature.blockPosition());
 
         //TODO add the predicate for different blocks to eat based on temperaments and animal type.
         BlockState blockState = this.entityWorld.getBlockState(blockpos);
         if (IS_GRASS.test(blockState) || IS_TALL_GRASS_BLOCK.test(blockState)) {
             return true;
         } else {
-            BlockState blockStateDown = this.entityWorld.getBlockState(blockpos.down());
-            return blockStateDown.getBlock() == Blocks.GRASS_BLOCK || blockStateDown.getBlock() == ModBlocks.SPARSEGRASS_BLOCK;
+            BlockState blockStateDown = this.entityWorld.getBlockState(blockpos.below());
+            return blockStateDown.getBlock() == Blocks.GRASS_BLOCK || blockStateDown.getBlock() == ModBlocks.SPARSEGRASS_BLOCK.get();
         }
     }
 
 
-    protected int getEatDelay(CreatureEntity creatureIn) {
-        int delayInt = 300 + creatureIn.getRNG().nextInt(300) - Math.round(((EnhancedAnimalAbstract)creatureIn).getHunger()/50);
+    protected int getEatDelay(PathfinderMob creatureIn) {
+        int delayInt = 300 + creatureIn.getRandom().nextInt(300) - Math.round(((EnhancedAnimalAbstract)creatureIn).getHunger()/50);
         if (delayInt < 0) {
             delayInt = 0;
         }
@@ -264,7 +264,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         if (!searchHay) {
             y= y+1;
         }
-        this.creature.getNavigator().tryMoveToXYZ((double)((float)this.destinationBlock.getX()), (double)(y), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
+        this.creature.getNavigation().moveTo((double)((float)this.destinationBlock.getX()), (double)(y), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
     }
 
     public double getGoundBlockTargetDistanceSq() {
@@ -282,16 +282,16 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         if (eatingSearch) {
             ++this.timeoutCounter;
             if(searchHay) {
-                if (!this.destinationBlock.withinDistance(this.creature.getPositionVec(), getHayBlockTargetDistanceSq())) {
+                if (!this.destinationBlock.closerToCenterThan(this.creature.position(), getHayBlockTargetDistanceSq())) {
                     if (this.shouldMove()) {
-                        this.creature.getNavigator().tryMoveToXYZ((double)((float)this.destinationBlock.getX()), (double)(this.destinationBlock.getY()), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
+                        this.creature.getNavigation().moveTo((double)((float)this.destinationBlock.getX()), (double)(this.destinationBlock.getY()), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
                     }
                 } else {
                     this.isAtDestination = true;
                 }
-            } else if (!this.destinationBlock.up().withinDistance(this.creature.getPositionVec(), this.getGoundBlockTargetDistanceSq())) {
+            } else if (!this.destinationBlock.above().closerToCenterThan(this.creature.position(), this.getGoundBlockTargetDistanceSq())) {
                 if (this.shouldMove()) {
-                    this.creature.getNavigator().tryMoveToXYZ((double)((float)this.destinationBlock.getX()), (double)(this.destinationBlock.getY() + 1), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
+                    this.creature.getNavigation().moveTo((double)((float)this.destinationBlock.getX()), (double)(this.destinationBlock.getY() + 1), (double)((float)this.destinationBlock.getZ()), this.movementSpeed);
                 }
             } else {
                 this.isAtDestination = true;
@@ -316,28 +316,28 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
     }
 
     protected void eatBlocks() {
-        BlockPos blockpos = new BlockPos(this.creature.getPosition());
+        BlockPos blockpos = new BlockPos(this.creature.blockPosition());
         if (IS_GRASS.test(this.entityWorld.getBlockState(blockpos)) || IS_TALL_GRASS_BLOCK.test(this.entityWorld.getBlockState(blockpos))) {
             if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
                 this.entityWorld.destroyBlock(blockpos, false);
             }
-            this.creature.eatGrassBonus();
+            this.creature.ate();
         } else {
-            BlockPos blockposDown = blockpos.down();
+            BlockPos blockposDown = blockpos.below();
             if (this.entityWorld.getBlockState(blockposDown).getBlock() == Blocks.GRASS_BLOCK) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
-                    this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                    this.entityWorld.setBlockState(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.getDefaultState(), 2);
+                    this.entityWorld.levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
+                    this.entityWorld.setBlock(blockposDown, ModBlocks.SPARSEGRASS_BLOCK.get().defaultBlockState(), 2);
                 }
 
-                this.creature.eatGrassBonus();
-            } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK) {
+                this.creature.ate();
+            } else if (this.entityWorld.getBlockState(blockposDown).getBlock() == ModBlocks.SPARSEGRASS_BLOCK.get()) {
                 if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.entityWorld, this.creature)) {
-                    this.entityWorld.playEvent(2001, blockposDown, Block.getStateId(Blocks.GRASS_BLOCK.getDefaultState()));
-                    this.entityWorld.setBlockState(blockposDown, Blocks.DIRT.getDefaultState(), 2);
+                    this.entityWorld.levelEvent(2001, blockposDown, Block.getId(Blocks.GRASS_BLOCK.defaultBlockState()));
+                    this.entityWorld.setBlock(blockposDown, Blocks.DIRT.defaultBlockState(), 2);
                 }
 
-                this.creature.eatGrassBonus();
+                this.creature.ate();
             }
         }
     }
@@ -348,7 +348,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
 
     protected boolean searchForDestination() {
         int i = this.searchLength;
-        int j = this.field_203113_j;
+        int j = this.verticalSearchRange;
 
         if (findIfNearbyHay()) {
             searchHay = true;
@@ -356,15 +356,15 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
             return true;
         }
 
-        BlockPos blockpos = new BlockPos(this.creature.getPosition());
-        BlockPos.Mutable blockpos$mutableblockpos = new BlockPos.Mutable();
+        BlockPos blockpos = new BlockPos(this.creature.blockPosition());
+        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
 
-        for(int k = this.field_203112_e; k <= j; k = k > 0 ? -k : 1 - k) {
+        for(int k = this.verticalSearchStart; k <= j; k = k > 0 ? -k : 1 - k) {
             for(int l = 0; l < i; ++l) {
                 for(int i1 = 0; i1 <= l; i1 = i1 > 0 ? -i1 : 1 - i1) {
                     for(int j1 = i1 < l && i1 > -l ? l : 0; j1 <= l; j1 = j1 > 0 ? -j1 : 1 - j1) {
-                        blockpos$mutableblockpos.setPos(blockpos).move(i1, k - 1, j1);
-                        if (!invalidBlockPosCache.contains(blockpos$mutableblockpos) && this.creature.isWithinHomeDistanceFromPosition(blockpos$mutableblockpos) && this.shouldMoveTo(this.entityWorld, blockpos$mutableblockpos)) {
+                        blockpos$mutableblockpos.set(blockpos).move(i1, k - 1, j1);
+                        if (!invalidBlockPosCache.contains(blockpos$mutableblockpos) && this.creature.isWithinRestriction(blockpos$mutableblockpos) && this.shouldMoveTo(this.entityWorld, blockpos$mutableblockpos)) {
                             this.destinationBlock = blockpos$mutableblockpos;
                             return true;
                         }
@@ -381,7 +381,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         double closestDistance = 128;
         boolean found = false;
         for (BlockPos pos : hayList) {
-            double distance = pos.distanceSq(creature.getPosition());
+            double distance = pos.distSqr(creature.blockPosition());
             if (distance < closestDistance) {
                 closestDistance = distance;
                 this.destinationBlock = pos;
@@ -391,7 +391,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         return found;
     }
 
-    protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
+    protected boolean shouldMoveTo(LevelReader worldIn, BlockPos pos) {
         BlockState blockstate = worldIn.getBlockState(pos);
         if (IS_GRASS_BLOCK.test(blockstate) || IS_GRASS.test(blockstate) || IS_SPARSE_GRASS_BLOCK.test(blockstate) || IS_TALL_GRASS_BLOCK.test(blockstate)) {
             return true;
@@ -399,7 +399,7 @@ public class EnhancedWaterAvoidingRandomWalkingEatingGoal extends WaterAvoidingR
         return false;
     }
 
-    public void resetTask() {
+    public void stop() {
         eatingSearch = false;
         eating = false;
         searchHay = false;

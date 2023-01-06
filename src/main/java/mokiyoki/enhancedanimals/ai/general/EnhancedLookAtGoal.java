@@ -1,21 +1,21 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 
-public class EnhancedLookAtGoal extends LookAtGoal {
+public class EnhancedLookAtGoal extends LookAtPlayerGoal {
 
-    public EnhancedLookAtGoal(MobEntity entityIn, Class<? extends LivingEntity> watchTargetClass, float maxDistance) {
+    public EnhancedLookAtGoal(Mob entityIn, Class<? extends LivingEntity> watchTargetClass, float maxDistance) {
         super(entityIn, watchTargetClass, maxDistance);
     }
 
-    public boolean shouldExecute() {
-        if(((EnhancedAnimalAbstract)entity).isAnimalSleeping()) {
+    public boolean canUse() {
+        if(((EnhancedAnimalAbstract)mob).isAnimalSleeping()) {
             return false;
         }
 
-        return super.shouldExecute();
+        return super.canUse();
     }
 }

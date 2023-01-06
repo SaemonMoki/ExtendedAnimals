@@ -1,34 +1,32 @@
 package mokiyoki.enhancedanimals.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
 import mokiyoki.enhancedanimals.items.CustomizableCollar;
 import mokiyoki.enhancedanimals.util.EnhancedAnimalInfo;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 @OnlyIn(Dist.CLIENT)
-public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContainer> {
+public class EnhancedAnimalScreen extends AbstractContainerScreen<EnhancedAnimalContainer> {
     private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("eanimod:textures/gui/genetic_animal_gui.png");
-    private IInventory inventory;
+    private Container inventory;
     /** The mouse x-position recorded during the last rendered frame. */
     private float mousePosx;
     /** The mouse y-position recorded during the last renderered frame. */
@@ -40,91 +38,91 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 
     public static EnhancedAnimalInfo enhancedAnimalInfo = new EnhancedAnimalInfo();
 
-    public EnhancedAnimalScreen(EnhancedAnimalContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public EnhancedAnimalScreen(EnhancedAnimalContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         setAnimalInfo();
-        if (this.getContainer().getEnhancedAnimalInventory().getStackInSlot(0).getItem() == Items.CHEST) {
+        if (this.getMenu().getEnhancedAnimalInventory().getItem(0).getItem() == Items.CHEST) {
             chestTabEnabled = true;
         }
         toggleSlots();
     }
 
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float p_render_3_) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float p_render_3_) {
         if (!enhancedAnimalInfo.created) {setAnimalInfo();}
         toggleSlots();
         this.renderBackground(matrixStack);
         this.mousePosx = (float)mouseX;
         this.mousePosY = (float)mouseY;
         super.render(matrixStack, mouseX, mouseY, p_render_3_);
-        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
         this.renderInfoToolTip(matrixStack, mouseX, mouseY);
     }
 
-    private void renderInfoToolTip(MatrixStack matrixStack, int mouseX, int mouseY) {
-        if (this.isPointInRegion(127, 5, 7, 9, (double)mouseX, (double)mouseY)) {
+    private void renderInfoToolTip(PoseStack matrixStack, int mouseX, int mouseY) {
+        if (this.isHovering(127, 5, 7, 9, (double)mouseX, (double)mouseY)) {
             if (EanimodCommonConfig.COMMON.omnigenders.get()) {
                 if (this.enhancedAnimalInfo.pregnant > 0) {
                     if (this.omniToggle) {
-                        this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
                     } else {
-                        this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
                     }
                 } else {
                     if (this.omniToggle) {
-                        this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.female"), mouseX, mouseY);
                     } else {
-                        this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+                        this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
                     }
                 }
             } else if (this.enhancedAnimalInfo.isFemale) {
                 if (this.enhancedAnimalInfo.pregnant > 0) {
-                    this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.femalepregnant"), mouseX, mouseY);
                 } else {
-                    this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.female"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.female"), mouseX, mouseY);
                 }
             } else {
                 if (this.enhancedAnimalInfo.pregnant > 0) {
-                    this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.malepregnant"), mouseX, mouseY);
                 } else {
-                    this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.male"), mouseX, mouseY);
                 }
             }
         } else {
             this.omniToggle = !this.omniToggle;
         }
-        if (this.isPointInRegion(136, 5, 8, 9, (double)mouseX, (double)mouseY)) {
-            this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.health"), mouseX, mouseY);
+        if (this.isHovering(136, 5, 8, 9, (double)mouseX, (double)mouseY)) {
+            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.health"), mouseX, mouseY);
         }
-        if (this.isPointInRegion(147, 5, 7, 9, (double)mouseX, (double)mouseY)) {
-            this.renderTooltip(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
+        if (this.isHovering(147, 5, 7, 9, (double)mouseX, (double)mouseY)) {
+            this.renderTooltip(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.hunger"), mouseX, mouseY);
         }
     }
 
-    protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
+    protected void slotClicked(Slot slotIn, int slotId, int mouseButton, ClickType type) {
         /**
          *  slotIn.slotNumber = slotId
          */
-        if (type == ClickType.QUICK_MOVE && slotIn != null && slotIn.getHasStack()) {
-            Item itemIn = slotIn.getStack().getItem();
-            Item chestInSlot = this.container.getEnhancedAnimalInventory().getStackInSlot(0).getItem();
+        if (type == ClickType.QUICK_MOVE && slotIn != null && slotIn.hasItem()) {
+            Item itemIn = slotIn.getItem().getItem();
+            Item chestInSlot = this.menu.getEnhancedAnimalInventory().getItem(0).getItem();
 
             boolean hasChestEquipped = chestInSlot == Items.CHEST;
-            boolean slotIDIsAnEquipmentSlot = slotId <= this.container.numberOfEquipmentSlots;
+            boolean slotIDIsAnEquipmentSlot = slotId <= this.menu.numberOfEquipmentSlots;
 
             if (slotIDIsAnEquipmentSlot) {
 
-            } else if (!hasChestEquipped && !(itemIn == Items.CHEST) && !this.container.isQuickTransferable(itemIn)) {
+            } else if (!hasChestEquipped && !(itemIn == Items.CHEST) && !this.menu.isQuickTransferable(itemIn)) {
                 return;
             }
         }
 
-        super.handleMouseClick(slotIn, slotId, mouseButton, type);
+        super.slotClicked(slotIn, slotId, mouseButton, type);
     }
 
     public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
-        if (this.container.enhancedAnimal.canHaveChest()) {
-            int i = (this.width - this.xSize) / 2;
-            int j = (this.height - this.ySize) / 2;
+        if (this.menu.enhancedAnimal.canHaveChest()) {
+            int i = (this.width - this.imageWidth) / 2;
+            int j = (this.height - this.imageHeight) / 2;
 
             if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
                 double d0 = p_mouseClicked_1_ - (double) (i + 140);
@@ -165,27 +163,27 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     }
 
     private void toggleSlots() {
-        IInventory retrievedInventory = this.container.getEnhancedAnimalInventory();
-        for (Slot slot : this.container.inventorySlots) {
+        Container retrievedInventory = this.menu.getEnhancedAnimalInventory();
+        for (Slot slot : this.menu.slots) {
             if (slot instanceof EnhancedSlot) {
                 if (!chestTabEnabled) {
                     ((EnhancedSlot)slot).setEnabled(false);
                 } else {
                     if (slot.getSlotIndex() == 0){
-                        if (!isHasItemsInChest(this.container.getEnhancedAnimalInventory())){
+                        if (!isHasItemsInChest(this.menu.getEnhancedAnimalInventory())){
                             ((EnhancedSlot)slot).setEnabled(true);
                         } else {
                             ((EnhancedSlot)slot).setEnabled(false);
                         }
                     } else {
                         if (slot.getSlotIndex() == 14) {
-                            if (isHasItemsInChest(this.container.getEnhancedAnimalInventory())) {
+                            if (isHasItemsInChest(this.menu.getEnhancedAnimalInventory())) {
                                 ((EnhancedSlot)slot).setEnabled(true);
                             } else {
                                 ((EnhancedSlot)slot).setEnabled(false);
                             }
                         } else {
-                            if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
+                            if (retrievedInventory.getItem(0).getItem() == Items.CHEST) {
                                 ((EnhancedSlot)slot).setEnabled(true);
                             } else {
                                 ((EnhancedSlot)slot).setEnabled(false);
@@ -201,14 +199,14 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     /**
      * Draw the foreground layer for the GuiContainer (everything in front of the items)
      */
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
-        IInventory retrievedInventory = this.container.getEnhancedAnimalInventory();
+    protected void renderLabels(PoseStack matrixStack, int mouseX, int mouseY) {
+        Container retrievedInventory = this.menu.getEnhancedAnimalInventory();
         int collarSlot = getCollarSlot(retrievedInventory);
         String name = enhancedAnimalInfo.name;
         boolean flag = true;
 
         if (collarSlot != 0) {
-            ItemStack collarStack = retrievedInventory.getStackInSlot(collarSlot);
+            ItemStack collarStack = retrievedInventory.getItem(collarSlot);
             String collarName = ((CustomizableCollar)collarStack.getItem()).getCollarName(collarStack);
             if (!collarName.equals("")) {
                 name = collarName;
@@ -217,17 +215,17 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         }
 
         if (flag && name.startsWith("entity.eanimod")) {
-            name = I18n.format(name);
+            name = I18n.get(name);
         }
 
         if (!enhancedAnimalInfo.agePrefix.equals("ADULT")) {
             String age = enhancedAnimalInfo.agePrefix;
             if (age.equals("YOUNG")) {
-                age = new TranslationTextComponent("eanimod.animalinfocontainer.young").getString();
+                age = new TranslatableComponent("eanimod.animalinfocontainer.young").getString();
             } else if (age.equals("BABY")) {
-                age = new TranslationTextComponent("eanimod.animalinfocontainer.baby").getString();
+                age = new TranslatableComponent("eanimod.animalinfocontainer.baby").getString();
             } else {
-                age = new TranslationTextComponent("eanimod.animalinfocontainer.newborn").getString();
+                age = new TranslatableComponent("eanimod.animalinfocontainer.newborn").getString();
             }
             name = age+" "+name;
         }
@@ -236,8 +234,9 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
             name = name.substring(0, 20);
         }
 
-        this.font.drawString(matrixStack, name, 8.0F, (float)(this.ySize - 160), 4210752);
-        this.font.drawString(matrixStack, this.playerInventory.getDisplayName().getString(), 8.0F, (float)(this.ySize - 94), 4210752);
+        this.font.draw(matrixStack, name, 8.0F, (float)(this.imageHeight - 160), 4210752);
+        //TODO how to get the correct inventory name? old : this.inventory.toString().getDisplayName().getString()
+        this.font.draw(matrixStack, "Inventory", 8.0F, (float)(this.imageHeight - 94), 4210752);
 
         //(health points / max health points * 10) + "/" + "10"
         /**
@@ -253,16 +252,17 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
-        IInventory retrievedInventory = this.container.getEnhancedAnimalInventory();
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
+    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, GUI_TEXTURE);
+        Container retrievedInventory = this.menu.getEnhancedAnimalInventory();
+        int i = (this.width - this.imageWidth) / 2;
+        int j = (this.height - this.imageHeight) / 2;
         int invSize = 5;
         int shiftY = 17;
         int shiftX = 7;
-        this.blit(matrixStack, i, j, 0, 0, this.xSize, this.ySize);
+        this.blit(matrixStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
 
         /**
          *  screenPlacementFromX : X coordinate of where you want the top left corner of the image to be placed on the screen in game. start with int i and + || - what you need to place it.
@@ -278,65 +278,53 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
          */
 
         if (EanimodCommonConfig.COMMON.omnigenders.get()) {
-            this.blit(matrixStack, i + 126, j + 5, 125, this.ySize + 74, 8, 10); // pregnancy icon
+            this.blit(matrixStack, i + 126, j + 5, 125, this.imageHeight + 74, 8, 10); // pregnancy icon
             int pregnancy = enhancedAnimalInfo.pregnant;
-            this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 133, this.ySize + 74 + (10 - pregnancy), 8, pregnancy); // pregnancy icon
+            this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 133, this.imageHeight + 74 + (10 - pregnancy), 8, pregnancy); // pregnancy icon
         } else {
             if (enhancedAnimalInfo.isFemale) {
-                this.blit(matrixStack, i + 126, j + 5, 117, this.ySize + 54, 8, 10); // female icon
+                this.blit(matrixStack, i + 126, j + 5, 117, this.imageHeight + 54, 8, 10); // female icon
                 int pregnancy = enhancedAnimalInfo.pregnant;
-                this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 117, this.ySize + 64 + (10 - pregnancy), 8, pregnancy); // female icon
+                this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 117, this.imageHeight + 64 + (10 - pregnancy), 8, pregnancy); // female icon
             } else {
-                this.blit(matrixStack, i + 126, j + 5, 108, this.ySize + 54, 8, 10); // male icon
+                this.blit(matrixStack, i + 126, j + 5, 108, this.imageHeight + 54, 8, 10); // male icon
                 int pregnancy = enhancedAnimalInfo.pregnant;
-                this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 108, this.ySize + 64 + (10 - pregnancy), 8, pregnancy); // male icon
+                this.blit(matrixStack, i + 126, j + 4 + (11 - pregnancy), 108, this.imageHeight + 64 + (10 - pregnancy), 8, pregnancy); // male icon
             }
         }
 
-        this.blit(matrixStack, i + 136, j + 5, 125, this.ySize + 54, 9, 10); // health icon
-        this.blit(matrixStack, i + 147, j + 5, 134, this.ySize + 54, 9, 10); // hunger icon
-        this.blit(matrixStack, i + 158, j + 5, 143, this.ySize + 54, 10, 10); // tameness icon
+        this.blit(matrixStack, i + 136, j + 5, 125, this.imageHeight + 54, 9, 10); // health icon
+        this.blit(matrixStack, i + 147, j + 5, 134, this.imageHeight + 54, 9, 10); // hunger icon
+        this.blit(matrixStack, i + 158, j + 5, 143, this.imageHeight + 54, 10, 10); // tameness icon
 
         int health = Math.min(enhancedAnimalInfo.health, 10);
         int hunger = 10 - enhancedAnimalInfo.hunger;
 //        int tameness = enhancedAnimalInfo.tameness;
-        this.blit(matrixStack, i + 136, j + 5 + (10-health), 125, this.ySize + 64 + (10-health), 9, health); // health icon
-        this.blit(matrixStack, i + 147, j + 5 + (10-hunger), 134, this.ySize + 64 + (10-hunger), 9, hunger); // hunger icon
+        this.blit(matrixStack, i + 136, j + 5 + (10-health), 125, this.imageHeight + 64 + (10-health), 9, health); // health icon
+        this.blit(matrixStack, i + 147, j + 5 + (10-hunger), 134, this.imageHeight + 64 + (10-hunger), 9, hunger); // hunger icon
 //        this.blit(i + 158, j + 5 + (10-tameness), 143, this.ySize + 64 + (10-tameness), 10, tameness); // tameness icon
 
-        if (this.container.enhancedAnimal.canHaveSaddle()) {
-            if (retrievedInventory.getStackInSlot(1).isEmpty()) {
-                this.blit(matrixStack, i + shiftX, j + shiftY, 0, this.ySize + 54, 18, 18);
+        if (this.menu.enhancedAnimal.canHaveSaddle()) {
+            if (retrievedInventory.getItem(1).isEmpty()) {
+                this.blit(matrixStack, i + shiftX, j + shiftY, 0, this.imageHeight + 54, 18, 18);
             } else {
-                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
             }
             shiftY = shiftY + 18;
         }
-        if (this.container.enhancedAnimal.canHaveBridle()) {
-            if (retrievedInventory.getStackInSlot(3).isEmpty()) {
-                this.blit(matrixStack, i + shiftX, j + shiftY, 18, this.ySize + 54, 18, 18);
+        if (this.menu.enhancedAnimal.canHaveBridle()) {
+            if (retrievedInventory.getItem(3).isEmpty()) {
+                this.blit(matrixStack, i + shiftX, j + shiftY, 18, this.imageHeight + 54, 18, 18);
             } else {
-                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
             }
             shiftY = shiftY + 18;
         }
-        if (this.container.enhancedAnimal.canHaveArmour()) {
-            if (retrievedInventory.getStackInSlot(2).isEmpty()) {
-                this.blit(matrixStack, i + shiftX, j + shiftY, 36, this.ySize + 54, 18, 18);
+        if (this.menu.enhancedAnimal.canHaveArmour()) {
+            if (retrievedInventory.getItem(2).isEmpty()) {
+                this.blit(matrixStack, i + shiftX, j + shiftY, 36, this.imageHeight + 54, 18, 18);
             } else {
-                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
-            }
-            shiftY = shiftY + 18;
-            if (shiftY >= 69) {
-                shiftY = 17;
-                shiftX = 79;
-            }
-        }
-        if (this.container.enhancedAnimal.canHaveBlanket() && (shiftX == 7 || !this.chestTabEnabled)) {
-            if (retrievedInventory.getStackInSlot(4).isEmpty()) {
-                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 54, 18, 18);
-            } else {
-                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
             }
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -344,11 +332,11 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                 shiftX = 79;
             }
         }
-        if (this.container.enhancedAnimal.canHaveBanner() && (shiftX == 7 || !this.chestTabEnabled)) {
-            if (retrievedInventory.getStackInSlot(6).isEmpty()) {
-                this.blit(matrixStack, i + shiftX, j + shiftY, 72, this.ySize + 54, 18, 18);
+        if (this.menu.enhancedAnimal.canHaveBlanket() && (shiftX == 7 || !this.chestTabEnabled)) {
+            if (retrievedInventory.getItem(4).isEmpty()) {
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 54, 18, 18);
             } else {
-                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
             }
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -356,11 +344,23 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                 shiftX = 79;
             }
         }
-        if (this.container.enhancedAnimal.canHaveHarness() && (shiftX == 7 || !this.chestTabEnabled)) {
-            if (retrievedInventory.getStackInSlot(5).isEmpty()) {
-                this.blit(matrixStack, i + shiftX, j + shiftY, 90, this.ySize + 54, 18, 18);
+        if (this.menu.enhancedAnimal.canHaveBanner() && (shiftX == 7 || !this.chestTabEnabled)) {
+            if (retrievedInventory.getItem(6).isEmpty()) {
+                this.blit(matrixStack, i + shiftX, j + shiftY, 72, this.imageHeight + 54, 18, 18);
             } else {
-                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.ySize + 36, 18, 18);
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
+            }
+            shiftY = shiftY + 18;
+            if (shiftY >= 69) {
+                shiftY = 17;
+                shiftX = 79;
+            }
+        }
+        if (this.menu.enhancedAnimal.canHaveHarness() && (shiftX == 7 || !this.chestTabEnabled)) {
+            if (retrievedInventory.getItem(5).isEmpty()) {
+                this.blit(matrixStack, i + shiftX, j + shiftY, 90, this.imageHeight + 54, 18, 18);
+            } else {
+                this.blit(matrixStack, i + shiftX, j + shiftY, 54, this.imageHeight + 36, 18, 18);
             }
             shiftY = shiftY + 18;
             if (shiftY >= 69) {
@@ -370,12 +370,12 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         }
 
         if (shiftY==17 && shiftX==7) {
-            this.blit(matrixStack, i + 7, j + 17, 0, this.ySize + 72, 18, 18);
+            this.blit(matrixStack, i + 7, j + 17, 0, this.imageHeight + 72, 18, 18);
         }
 
         boolean hasItemsInChest = isHasItemsInChest(retrievedInventory);
 
-        if (this.container.enhancedAnimal.canHaveChest()) {
+        if (this.menu.enhancedAnimal.canHaveChest()) {
             if (this.chestTabEnabled) {
                 if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
                     this.blit(matrixStack, i + 111, j - 28, 209, 100, 28, 31); //highlight tab
@@ -386,15 +386,15 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
                     this.blit(matrixStack, i + 173, j + 13, 209, 16, 31, 28); //highlight chest
                     this.blit(matrixStack, i + 173, j + 41, 177, 44, 30, 28); //shadow info
                 }
-                if (retrievedInventory.getStackInSlot(0).getItem() == Items.CHEST) {
+                if (retrievedInventory.getItem(0).getItem() == Items.CHEST) {
                     if (hasItemsInChest) {
-                        this.blit(matrixStack, i + 79, j + 17, 0, this.ySize, 18*invSize, 54);
+                        this.blit(matrixStack, i + 79, j + 17, 0, this.imageHeight, 18*invSize, 54);
                     } else {
-                        this.blit(matrixStack, i + 79, j + 17, 90, this.ySize, 90, 54);
+                        this.blit(matrixStack, i + 79, j + 17, 90, this.imageHeight, 90, 54);
 //                        this.blit(matrixStack, i + 112, j + 31, 180, this.ySize, 24, 26);
                     }
                 } else {
-                    this.blit(matrixStack, i + 79, j + 17, 90, this.ySize, 90, 54);
+                    this.blit(matrixStack, i + 79, j + 17, 90, this.imageHeight, 90, 54);
                 }
             } else {
                 if (EanimodCommonConfig.COMMON.tabsOnTop.get()) {
@@ -410,7 +410,7 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
         }
 
         if (this.enhancedAnimalInfo.created) {
-            InventoryScreen.drawEntityOnScreen(i + 51, j + 60, 17, (float)(i + 51) - this.mousePosx, (float)(j + 75 - 50) - this.mousePosY, (LivingEntity) this.container.getAnimal());
+            InventoryScreen.renderEntityInInventory(i + 51, j + 60, 17, (float)(i + 51) - this.mousePosx, (float)(j + 75 - 50) - this.mousePosY, (LivingEntity) this.menu.getAnimal());
         }
 
         if (!this.chestTabEnabled) {
@@ -418,46 +418,46 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
 //            Float ageFloat = ageInt >= 20 ? (float)(ageInt/10) : (float)ageInt/10.0F;
             String age = "";
             if (ageInt < 8) {
-                age = ageInt.toString() + (new TranslationTextComponent("eanimod.animalinfocontainer.days").getString());
+                age = ageInt.toString() + (new TranslatableComponent("eanimod.animalinfocontainer.days").getString());
             } else if (ageInt < 96) {
                 ageInt = ageInt/8;
-                age = ageInt.toString() + (new TranslationTextComponent("eanimod.animalinfocontainer.months").getString());
+                age = ageInt.toString() + (new TranslatableComponent("eanimod.animalinfocontainer.months").getString());
             } else if (ageInt < 959040) {
                 ageInt = ageInt/96;
-                age = ageInt.toString() + (new TranslationTextComponent("eanimod.animalinfocontainer.years").getString());
+                age = ageInt.toString() + (new TranslatableComponent("eanimod.animalinfocontainer.years").getString());
             } else {
-                age = new TranslationTextComponent("eanimod.animalinfocontainer.ancient").getString();
+                age = new TranslatableComponent("eanimod.animalinfocontainer.ancient").getString();
             }
-            this.font.drawString(matrixStack, (new TranslationTextComponent("eanimod.animalinfocontainer.age").getString()) + ":" + age, i + 99, j + 20, 4210752);
+            this.font.draw(matrixStack, (new TranslatableComponent("eanimod.animalinfocontainer.age").getString()) + ":" + age, i + 99, j + 20, 4210752);
 
             String sireName = this.enhancedAnimalInfo.sire;
             int s = sireName.length();
             String damName = this.enhancedAnimalInfo.dam;
             int d = damName.length();
             if (s > 8) {
-                this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.sire").getString()+":", i + 99, j + 30, 4210752);
-                this.font.drawString(matrixStack, s > 12 ? sireName.substring(0, 12) : sireName, i + 99, j + 40, 4210752);
+                this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.sire").getString()+":", i + 99, j + 30, 4210752);
+                this.font.draw(matrixStack, s > 12 ? sireName.substring(0, 12) : sireName, i + 99, j + 40, 4210752);
                 if (d > 8) {
-                    this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 51, 4210752);
-                    this.font.drawString(matrixStack, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 60, 4210752);
+                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 51, 4210752);
+                    this.font.draw(matrixStack, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 60, 4210752);
                 } else {
-                    this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 50, 4210752);
+                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 50, 4210752);
                 }
             } else {
-                this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.sire").getString()+":" + sireName, i + 99, j + 30, 4210752);
+                this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.sire").getString()+":" + sireName, i + 99, j + 30, 4210752);
                 if (d > 8) {
-                    this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 41, 4210752);
-                    this.font.drawString(matrixStack, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 50, 4210752);
+                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":", i + 99, j + 41, 4210752);
+                    this.font.draw(matrixStack, d > 12 ? damName.substring(0, 12) : damName, i + 99, j + 50, 4210752);
                 } else {
-                    this.font.drawString(matrixStack, new TranslationTextComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 40, 4210752);
+                    this.font.draw(matrixStack, new TranslatableComponent("eanimod.animalinfocontainer.dam").getString()+":" + damName, i + 99, j + 40, 4210752);
                 }
             }
         }
     }
 
-    private boolean isHasItemsInChest(IInventory retrievedInventory) {
-        for (int a = 7; a <= retrievedInventory.getSizeInventory(); a++) {
-            if (!retrievedInventory.getStackInSlot(a).isEmpty() && !(retrievedInventory.getStackInSlot(a).getItem() == Items.AIR)) {
+    private boolean isHasItemsInChest(Container retrievedInventory) {
+        for (int a = 7; a <= retrievedInventory.getContainerSize(); a++) {
+            if (!retrievedInventory.getItem(a).isEmpty() && !(retrievedInventory.getItem(a).getItem() == Items.AIR)) {
                 return true;
             }
         }
@@ -465,12 +465,12 @@ public class EnhancedAnimalScreen extends ContainerScreen<EnhancedAnimalContaine
     }
 
     private void setAnimalInfo() {
-        this.enhancedAnimalInfo = this.container.animalInfo;
+        this.enhancedAnimalInfo = this.menu.animalInfo;
     }
 
-    private int getCollarSlot(IInventory retrievedInventory) {
+    private int getCollarSlot(Container retrievedInventory) {
         for (int i = 1; i <= 6; i++) {
-            if (retrievedInventory.getStackInSlot(i).getItem() instanceof CustomizableCollar) {
+            if (retrievedInventory.getItem(i).getItem() instanceof CustomizableCollar) {
                 return i;
             }
         }

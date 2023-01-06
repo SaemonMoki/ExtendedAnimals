@@ -1,38 +1,42 @@
 package mokiyoki.enhancedanimals.renderer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mokiyoki.enhancedanimals.entity.EnhancedTurtle;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.model.ModelEnhancedTurtle;
 import mokiyoki.enhancedanimals.renderer.texture.EnhancedLayeredTexture;
 import mokiyoki.enhancedanimals.renderer.util.LayeredTextureCacher;
+import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class RenderEnhancedTurtle extends MobRenderer<EnhancedTurtle, ModelEnhancedTurtle<EnhancedTurtle>> {
     private static final LayeredTextureCacher textureCache = new LayeredTextureCacher();
     private static final String ENHANCED_TURTLE_TEXTURE_LOCATION = "eanimod:textures/entities/turtle/";
     private static final ResourceLocation ERROR_TEXTURE_LOCATION = new ResourceLocation("eanimod:textures/entities/turtle/turtlebase.png");
+    public static final ModelLayerLocation TURTLE_LAYER = new ModelLayerLocation(new ResourceLocation(Reference.MODID, "turtle"), "turtle_layer");
 
-    public RenderEnhancedTurtle(EntityRendererManager render) {
-        super(render, new ModelEnhancedTurtle<>(0.0F), 0.5F);
+    public RenderEnhancedTurtle(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new ModelEnhancedTurtle<>(renderManager.bakeLayer(TURTLE_LAYER)), 0.5F);
     }
 
-    public void render(EnhancedTurtle entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        if (entityIn.isChild()) {
-            this.shadowSize *= 0.5F;
-        }
-
-        super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-    }
+//    public void render(EnhancedTurtle entityIn, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
+//        if (entityIn.isBaby()) {
+//            this.shadowRadius *= 0.5F;
+//        }
+//
+//        super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+//    }
 
     /**
      * Returns the location of an entity's texture. Doesn't seem to be called unless you call Render.bindEntityTexture.
      */
-    public ResourceLocation getEntityTexture(EnhancedTurtle entity) {
+    public ResourceLocation getTextureLocation(EnhancedTurtle entity) {
         String s = entity.getTexture();
         Colouration colourRGB = entity.getRgb();
 
@@ -54,7 +58,7 @@ public class RenderEnhancedTurtle extends MobRenderer<EnhancedTurtle, ModelEnhan
             try {
                 resourcelocation = new ResourceLocation(s);
 
-                Minecraft.getInstance().getTextureManager().loadTexture(resourcelocation, new EnhancedLayeredTexture(ENHANCED_TURTLE_TEXTURE_LOCATION, textures, null, entity.colouration));
+                Minecraft.getInstance().getTextureManager().register(resourcelocation, new EnhancedLayeredTexture(ENHANCED_TURTLE_TEXTURE_LOCATION, textures, null, entity.colouration));
 
                 textureCache.putInCache(s, resourcelocation);
             } catch (IllegalStateException e) {

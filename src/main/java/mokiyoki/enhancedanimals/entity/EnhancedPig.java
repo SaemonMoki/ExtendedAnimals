@@ -8,7 +8,7 @@ import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWaterAvoidingRandomWalkingEatingGoal;
 import mokiyoki.enhancedanimals.ai.general.SeekShelterGoal;
 import mokiyoki.enhancedanimals.ai.general.StayShelteredGoal;
-import mokiyoki.enhancedanimals.entity.Genetics.PigGeneticsInitialiser;
+import mokiyoki.enhancedanimals.entity.genetics.PigGeneticsInitialiser;
 import mokiyoki.enhancedanimals.ai.general.EnhancedWanderingGoal;
 import mokiyoki.enhancedanimals.ai.general.GrazingGoal;
 import mokiyoki.enhancedanimals.ai.general.pig.GrazingGoalPig;
@@ -20,39 +20,39 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.EnhancedEgg;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.FollowParentGoal;
-import net.minecraft.entity.ai.goal.HurtByTargetGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.SwimGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FollowParentGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -63,7 +63,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.pigFoodMap;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_PIG;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_PIG;
 
 public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
@@ -109,7 +109,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     };
 
     private static final String[] PIG_TEXTURES_SPOT_BERKSHIRE = new String[] {
-            "", "spot_tux.png", "spot_berkshire.png", "spot_extended_berkshire"
+            "", "spot_tux.png", "spot_berkshire.png", "spot_extended_berkshire.png"
     };
 
     private static final String[] PIG_TEXTURES_COAT = new String[] {
@@ -143,7 +143,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 //    private int boostTime;
 //    private int totalBoostTime;
 
-    public EnhancedPig(EntityType<? extends EnhancedPig> entityType, World worldIn) {
+    public EnhancedPig(EntityType<? extends EnhancedPig> entityType, Level worldIn) {
         super(entityType, worldIn, SEXLINKED_GENES_LENGTH, Reference.PIG_AUTOSOMAL_GENES_LENGTH, true);
         this.initilizeAnimalSize();
     }
@@ -152,23 +152,23 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         Map<Block, EnhancedEatPlantsGoal.EatValues> ediblePlants = new HashMap<>();
         ediblePlants.put(Blocks.WHEAT, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
         ediblePlants.put(Blocks.AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET, new EnhancedEatPlantsGoal.EatValues(7, 2, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_AZURE_BLUET.get(), new EnhancedEatPlantsGoal.EatValues(7, 2, 750));
         ediblePlants.put(Blocks.BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
-        ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_BLUE_ORCHID.get(), new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
         ediblePlants.put(Blocks.CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
-        ediblePlants.put(ModBlocks.GROWABLE_CORNFLOWER, new EnhancedEatPlantsGoal.EatValues(7, 7, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_CORNFLOWER.get(), new EnhancedEatPlantsGoal.EatValues(7, 7, 375));
         ediblePlants.put(Blocks.DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_DANDELION, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_DANDELION.get(), new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
         ediblePlants.put(Blocks.SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
-        ediblePlants.put(ModBlocks.GROWABLE_SUNFLOWER, new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
+        ediblePlants.put(ModBlocks.GROWABLE_SUNFLOWER.get(), new EnhancedEatPlantsGoal.EatValues(3, 7, 375));
         ediblePlants.put(Blocks.GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_GRASS.get(), new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
         ediblePlants.put(Blocks.TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_TALL_GRASS.get(), new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
         ediblePlants.put(Blocks.FERN, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_FERN, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_FERN.get(), new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
         ediblePlants.put(Blocks.LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
-        ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN, new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
+        ediblePlants.put(ModBlocks.GROWABLE_LARGE_FERN.get(), new EnhancedEatPlantsGoal.EatValues(3, 7, 750));
         ediblePlants.put(Blocks.SWEET_BERRY_BUSH, new EnhancedEatPlantsGoal.EatValues(1, 1, 500));
         ediblePlants.put(Blocks.PUMPKIN, new EnhancedEatPlantsGoal.EatValues(1, 1, 10000));
         ediblePlants.put(Blocks.MELON, new EnhancedEatPlantsGoal.EatValues(1, 1, 10000));
@@ -179,9 +179,9 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        int napmod = this.rand.nextInt(1200);
+        int napmod = this.random.nextInt(1200);
         this.grazingGoal = new GrazingGoalPig(this, 1.0D);
-        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new EnhancedBreedGoal(this, 1.0D));
         this.targetSelector.addGoal(2, new EnhancedPig.HurtByAggressorGoal(this));
         this.targetSelector.addGoal(3, new EnhancedPig.TargetAggressorGoal(this));
@@ -194,7 +194,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         this.goalSelector.addGoal(10, this.grazingGoal);
         this.goalSelector.addGoal(9, new EnhancedWaterAvoidingRandomWalkingEatingGoal(this, 1.0D, 7, 0.001F, 120, 2, 50));
         this.goalSelector.addGoal(11, new EnhancedWanderingGoal(this, 1.0D));
-        this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, PlayerEntity.class, 6.0F));
+        this.goalSelector.addGoal(12, new EnhancedLookAtGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(13, new EnhancedLookAtGoal(this, EnhancedAnimalAbstract.class, 6.0F));
         this.goalSelector.addGoal(14, new EnhancedLookRandomlyGoal(this));
     }
@@ -210,17 +210,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected void updateAITasks() {
+    protected void customServerAiStep() {
 
-        LivingEntity livingentity = this.getRevengeTarget();
+        LivingEntity livingentity = this.getLastHurtByMob();
         if (this.isAngry()) {
 
             --this.angerLevel;
-            LivingEntity livingentity1 = livingentity != null ? livingentity : this.getAttackTarget();
+            LivingEntity livingentity1 = livingentity != null ? livingentity : this.getTarget();
             if (!this.isAngry() && livingentity1 != null) {
-                if (!this.canEntityBeSeen(livingentity1)) {
-                    this.setRevengeTarget((LivingEntity)null);
-                    this.setAttackTarget((LivingEntity)null);
+                if (!this.hasLineOfSight(livingentity1)) {
+                    this.setLastHurtByMob((LivingEntity)null);
+                    this.setTarget((LivingEntity)null);
                 } else {
                     this.angerLevel = this.angerAmount();
                 }
@@ -229,18 +229,18 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
 
         if (this.isAngry() && this.angerTargetUUID != null && livingentity == null) {
-            PlayerEntity playerentity = this.world.getPlayerByUuid(this.angerTargetUUID);
-            this.setRevengeTarget(playerentity);
-            this.attackingPlayer = playerentity;
-            this.recentlyHit = this.getRevengeTimer();
+            Player playerentity = this.level.getPlayerByUUID(this.angerTargetUUID);
+            this.setLastHurtByMob(playerentity);
+            this.lastHurtByPlayer = playerentity;
+            this.lastHurtByPlayerTime = this.getLastHurtByMobTimestamp();
         }
         this.animalEatingTimer = this.grazingGoal.getEatingGrassTimer();
-        super.updateAITasks();
+        super.customServerAiStep();
     }
 
     @Override
-    public double getMountedYOffset() {
-        ItemStack saddleSlot = this.getEnhancedInventory().getStackInSlot(1);
+    public double getPassengersRidingOffset() {
+        ItemStack saddleSlot = this.getEnhancedInventory().getItem(1);
         double yPos;
         if (saddleSlot.getItem() instanceof CustomizableSaddleWestern) {
             yPos = 0.87D;
@@ -257,19 +257,19 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(0.9F, 1.0F).scale(this.getRenderScale());
+    public EntityDimensions getDimensions(Pose poseIn) {
+        return EntityDimensions.scalable(0.9F, 1.0F).scale(this.getScale());
     }
 
     @Override
-    public float getRenderScale() {
+    public float getScale() {
         float size = this.getAnimalSize() > 0.0F ? this.getAnimalSize() : 1.0F;
         float newbornSize = 0.4F;
         return this.isGrowing() ? (newbornSize + ((size-newbornSize) * (this.growthAmount()))) : size;
     }
 
-    protected void registerData() {
-        super.registerData();
+    protected void defineSynchedData() {
+        super.defineSynchedData();
     }
 
     @Override
@@ -286,17 +286,17 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
-        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
+        ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
 
         if (item == Items.NAME_TAG) {
-            itemStack.interactWithEntity(entityPlayer, this, hand);
-            return ActionResultType.SUCCESS;
-        }else if ((!this.isChild() || !bottleFeedable) && item instanceof EnhancedEgg && hunger >= 6000) {
+            itemStack.interactLivingEntity(entityPlayer, this, hand);
+            return InteractionResult.SUCCESS;
+        }else if ((!this.isBaby() || !bottleFeedable) && item instanceof EnhancedEgg && hunger >= 6000) {
             //enhancedegg egg eating
             decreaseHunger(100);
-            if (!entityPlayer.abilities.isCreativeMode) {
+            if (!entityPlayer.getAbilities().instabuild) {
                 itemStack.shrink(1);
             } else {
                 if (itemStack.getCount() > 1) {
@@ -305,33 +305,29 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             }
         }
 
-        return super.func_230254_b_(entityPlayer, hand);
-    }
-
-    protected void dropInventory() {
-        super.dropInventory();
+        return super.mobInteract(entityPlayer, hand);
     }
 
     protected SoundEvent getAmbientSound() {
         if (isAnimalSleeping()) {
             return null;
         }
-        return SoundEvents.ENTITY_PIG_AMBIENT;
+        return SoundEvents.PIG_AMBIENT;
     }
 
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-        return SoundEvents.ENTITY_PIG_HURT;
+        return SoundEvents.PIG_HURT;
     }
 
     protected SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_PIG_DEATH;
+        return SoundEvents.PIG_DEATH;
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         super.playStepSound(pos, blockIn);
-        this.playSound(SoundEvents.ENTITY_PIG_STEP, 0.15F, 1.0F);
+        this.playSound(SoundEvents.PIG_STEP, 0.15F, 1.0F);
         if (!this.isSilent() && this.getBells()) {
-            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.5F, 0.5F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.5F, 0.5F);
         }
     }
 
@@ -339,16 +335,16 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         return 0.4F;
     }
 
-    public static AttributeModifierMap.MutableAttribute prepareAttributes() {
-        return MobEntity.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 10.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D)
-                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 2.0D)
-                .createMutableAttribute(JUMP_STRENGTH);
+    public static AttributeSupplier.Builder prepareAttributes() {
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 10.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.25D)
+                .add(Attributes.ATTACK_DAMAGE, 2.0D)
+                .add(JUMP_STRENGTH);
     }
 
-    public void livingTick() {
-        super.livingTick();
+    public void aiStep() {
+        super.aiStep();
     }
 
     @Override
@@ -373,7 +369,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         int[] genes = this.genetics.getAutosomalGenes();
         int pigletAverage = 11;
         int pigletRange = 4;
-        int age = getAge();
+        int age = this.getEnhancedAnimalAge();
 
         if (genes[58] == 1 || genes[59] == 1) {
             pigletAverage = 4;
@@ -404,12 +400,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         return (ThreadLocalRandom.current().nextInt(pigletRange*2) - (pigletRange)) + pigletAverage;
     }
 
-    protected void createAndSpawnEnhancedChild(World inWorld) {
-        EnhancedPig enhancedpig = ENHANCED_PIG.create(this.world);
+    protected void createAndSpawnEnhancedChild(Level inWorld) {
+        EnhancedPig enhancedpig = ENHANCED_PIG.get().create(this.level);
         Genes babyGenes = new Genes(this.genetics).makeChild(this.getOrSetIsFemale(), this.mateGender, this.mateGenetics);
         defaultCreateAndSpawn(enhancedpig, inWorld, babyGenes, -this.getAdultAge());
 
-        this.world.addEntity(enhancedpig);
+        this.level.addFreshEntity(enhancedpig);
     }
 
     @Override
@@ -426,51 +422,51 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     static class HurtByAggressorGoal extends HurtByTargetGoal {
         public HurtByAggressorGoal(EnhancedPig entity) {
             super(entity);
-            this.setCallsForHelp(new Class[]{EnhancedPig.class});
+            this.setAlertOthers(new Class[]{EnhancedPig.class});
         }
 
-        protected void setAttackTarget(MobEntity mobIn, LivingEntity targetIn) {
-            if (mobIn instanceof EnhancedPig && this.goalOwner.canEntityBeSeen(targetIn) && ((EnhancedPig)mobIn).becomeAngryAt(targetIn)) {
-                mobIn.setAttackTarget(targetIn);
+        protected void alertOther(Mob mobIn, LivingEntity targetIn) {
+            if (mobIn instanceof EnhancedPig && this.mob.hasLineOfSight(targetIn) && ((EnhancedPig)mobIn).becomeAngryAt(targetIn)) {
+                mobIn.setTarget(targetIn);
             }
 
         }
     }
 
-    static class TargetAggressorGoal extends NearestAttackableTargetGoal<PlayerEntity> {
+    static class TargetAggressorGoal extends NearestAttackableTargetGoal<Player> {
         public TargetAggressorGoal(EnhancedPig entity) {
-            super(entity, PlayerEntity.class, true);
+            super(entity, Player.class, true);
         }
 
         /**
          * Returns whether the EntityAIBase should begin execution.
          */
-        public boolean shouldExecute() {
-            return ((EnhancedPig)this.goalOwner).isAngry() && super.shouldExecute();
+        public boolean canUse() {
+            return ((EnhancedPig)this.mob).isAngry() && super.canUse();
         }
     }
 
     @Override
-    public boolean attackEntityAsMob(Entity entityIn) {
-        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), (float)((int)this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
+    public boolean doHurtTarget(Entity entityIn) {
+        boolean flag = entityIn.hurt(DamageSource.mobAttack(this), (float)((int)this.getAttribute(Attributes.ATTACK_DAMAGE).getValue()));
         if (flag) {
-            this.applyEnchantments(this, entityIn);
+            this.doEnchantDamageEffects(this, entityIn);
         }
 
         return flag;
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
         if (this.isInvulnerableTo(source)) {
             return false;
         } else {
-            Entity entity = source.getTrueSource();
-            if (entity instanceof PlayerEntity && !((PlayerEntity)entity).isCreative() && this.canEntityBeSeen(entity)) {
+            Entity entity = source.getEntity();
+            if (entity instanceof Player && !((Player)entity).isCreative() && this.hasLineOfSight(entity)) {
                 this.becomeAngryAt(entity);
             }
 
-            return super.attackEntityFrom(source, amount);
+            return super.hurt(source, amount);
         }
     }
 
@@ -478,23 +474,23 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         this.angerLevel = this.angerAmount();
 //        this.randomSoundDelay = this.rand.nextInt(40);
         if (entity instanceof LivingEntity) {
-            this.setRevengeTarget((LivingEntity)entity);
+            this.setLastHurtByMob((LivingEntity)entity);
         }
 
         return true;
     }
 
     @Override
-    public void setRevengeTarget(@Nullable LivingEntity livingBase) {
-        super.setRevengeTarget(livingBase);
+    public void setLastHurtByMob(@Nullable LivingEntity livingBase) {
+        super.setLastHurtByMob(livingBase);
         if (livingBase != null) {
-            this.angerTargetUUID = livingBase.getUniqueID();
+            this.angerTargetUUID = livingBase.getUUID();
         }
 
     }
 
     private int angerAmount() {
-        return 400 + this.rand.nextInt(400);
+        return 400 + this.random.nextInt(400);
     }
 
     private boolean isAngry() {
@@ -519,7 +515,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
         }
 
         float chestMod = 0.0F;
-        ItemStack chestSlot = this.getEnhancedInventory().getStackInSlot(0);
+        ItemStack chestSlot = this.getEnhancedInventory().getItem(0);
         if (chestSlot.getItem() == Items.CHEST) {
             chestMod = (1.0F-((size-0.7F)*1.25F)) * 0.4F;
         }
@@ -528,74 +524,70 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected boolean canDropLoot() { return true; }
+    protected boolean shouldDropExperience() { return true; }
 
-    protected void dropSpecialItems(DamageSource source, int looting, boolean recentlyHitIn) {
-        super.dropSpecialItems(source, looting, recentlyHitIn);
+    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
+        super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         int[] genes = this.genetics.getAutosomalGenes();
         int size = (int)((this.getAnimalSize()-0.7F)*10);
-        int age = this.getAge();
+        int age = this.getEnhancedAnimalAge();
         int meatDrop;
         int meatChanceMod;
 
         // max of 4
         meatDrop = size/2;
 
-        if (genes[45] != 1 && genes[46] != 1) {
-            meatChanceMod = (genes[45] + genes[46]) - 4;
+        if (genes[44] != 3 && genes[45] != 3) {
+            meatChanceMod = (genes[56] + genes[57]) - 6;
             if (meatChanceMod > 4) {
                 if (meatChanceMod == 8) {
                     //100% chance to + 1
-                    if (this.rand.nextInt(4) == 0) {
+                    if (this.random.nextInt(4) == 0) {
                         // 25% chance to + 1
                         meatDrop = meatDrop + 2;
                     } else {
                         meatDrop++;
                     }
                 } else if (meatChanceMod == 7) {
-                    if (this.rand.nextInt(4) != 0) {
+                    if (this.random.nextInt(4) != 0) {
                         //75% chance to + 1
                         meatDrop++;
                     }
-                    if (this.rand.nextInt(4) == 0) {
+                    if (this.random.nextInt(4) == 0) {
                         //25% chance to + 1
                         meatDrop++;
                     }
                 } else if (meatChanceMod == 6) {
                     // 50% chance to + 1
-                    if (this.rand.nextInt(2) == 0) {
+                    if (this.random.nextInt(2) == 0) {
                         meatDrop++;
                     }
                 } else {
                     // 25% chance to + 1
-                    if (this.rand.nextInt(4) == 0) {
+                    if (this.random.nextInt(4) == 0) {
                         meatDrop++;
                     }
                 }
             } else if (meatChanceMod < 4){
                 if (meatChanceMod == 3) {
                     // 25% chance to - 1
-                    if (this.rand.nextInt(4) == 0) {
+                    if (this.random.nextInt(4) == 0) {
                         meatDrop--;
                     }
                 } else if (meatChanceMod == 2) {
                     // 50% chance to - 1
-                    if (this.rand.nextInt(2) == 0) {
+                    if (this.random.nextInt(2) == 0) {
                         meatDrop--;
                     }
                 } else if (meatChanceMod == 1) {
-                    if (this.rand.nextInt(4) != 0) {
+                    if (this.random.nextInt(4) != 0) {
                         //75% chance to - 1
-                        meatDrop--;
-                    }
-                    if (this.rand.nextInt(4) == 0) {
-                        //25% chance to - 1
                         meatDrop--;
                     }
                 } else {
                     //100% chance to - 1
                     meatDrop--;
-                    if (this.rand.nextInt(4) == 0) {
+                    if (this.random.nextInt(4) == 0) {
                         // 25% chance to - 1
                         meatDrop--;
                     }
@@ -628,7 +620,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 meatChanceMod = age/180;
             }
 
-            int i = this.rand.nextInt(100);
+            int i = this.random.nextInt(100);
             if (meatChanceMod > i) {
                 meatDrop++;
             }
@@ -640,22 +632,22 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             meatDrop = 0;
         }
 
-        if (this.isBurning()){
+        if (this.isOnFire()){
             ItemStack cookedPorkStack = new ItemStack(Items.COOKED_PORKCHOP, meatDrop);
-            this.entityDropItem(cookedPorkStack);
+            this.spawnAtLocation(cookedPorkStack);
         }else {
             ItemStack porkStack = new ItemStack(Items.PORKCHOP, meatDrop);
-            this.entityDropItem(porkStack);
+            this.spawnAtLocation(porkStack);
         }
     }
 
     public void lethalGenes(){
 
         //TODO lethal genes go here
-        
+
     }
 
-    public void eatGrassBonus() {
+    public void ate() {
 //        if (this.isChild()) {
 //            this.addGrowth(60);
 //        }
@@ -692,7 +684,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             int hooves = 0;
             boolean tusks = false;
 
-            char[] uuidArry = getCachedUniqueIdString().toCharArray();
+            char[] uuidArry = getStringUUID().toCharArray();
 
             if (genesForText[0] == 1 || genesForText[1] == 1 || genesForText[0] == 5 || genesForText[1] == 5){
                 //solid black
@@ -856,7 +848,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
                 }
             }
 
-            if (!isChild()) {
+            if (!isBaby()) {
                 if ((Character.isLetter(uuidArry[0]) || uuidArry[0] - 48 >= 8)) {
                     //tusks if "male"
                     tusks = true;
@@ -921,6 +913,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             addTextureToAnimal(PIG_TEXTURES_EYES, eyes, null);
             addTextureToAnimal(PIG_TEXTURES_HOOVES, hooves, null);
             addTextureToAnimal(PIG_TEXTURES_TUSKS, tusks ? 1 : 0, t -> t == 1);
+//            addTextureToAnimal("pigbase.png");
         }
     }
 
@@ -959,12 +952,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
             }
         }
     }
-    
+
     //TODO put item interactable stuff here like saddling pigs
 
 
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
 
         compound.putShort("Anger", (short)this.angerLevel);
         if (this.angerTargetUUID != null) {
@@ -979,26 +972,26 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     /**
      * (abstract) Protected helper method to read subclass entity assets from NBT.
      */
-    public void readAdditional(CompoundNBT compound) {
+    public void readAdditionalSaveData(CompoundTag compound) {
 
-        super.readAdditional(compound);
+        super.readAdditionalSaveData(compound);
 
         this.angerLevel = compound.getShort("Anger");
         String s = compound.getString("HurtBy");
         if (!s.isEmpty()) {
             this.angerTargetUUID = UUID.fromString(s);
-            PlayerEntity playerentity = this.world.getPlayerByUuid(this.angerTargetUUID);
-            this.setRevengeTarget(playerentity);
+            Player playerentity = this.level.getPlayerByUUID(this.angerTargetUUID);
+            this.setLastHurtByMob(playerentity);
             if (playerentity != null) {
-                this.attackingPlayer = playerentity;
-                this.recentlyHit = this.getRevengeTimer();
+                this.lastHurtByPlayer = playerentity;
+                this.lastHurtByPlayerTime = this.getLastHurtByMobTimestamp();
             }
         }
     }
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld inWorld, DifficultyInstance difficulty, SpawnReason spawnReason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT itemNbt) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor inWorld, DifficultyInstance difficulty, MobSpawnType spawnReason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag itemNbt) {
         registerAnimalAttributes();
         return commonInitialSpawnSetup(inWorld, livingdata, 60000, 30000, 80000, spawnReason);
     }
@@ -1026,12 +1019,12 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
     }
 
     @Override
-    protected Genes createInitialGenes(IWorld world, BlockPos pos, boolean isDomestic) {
+    protected Genes createInitialGenes(LevelAccessor world, BlockPos pos, boolean isDomestic) {
         return new PigGeneticsInitialiser().generateNewGenetics(world, pos, isDomestic);
     }
 
     @Override
-    public Genes createInitialBreedGenes(IWorld world, BlockPos pos, String breed) {
+    public Genes createInitialBreedGenes(LevelAccessor world, BlockPos pos, String breed) {
         return new PigGeneticsInitialiser().generateWithBreed(world, pos, breed);
     }
 
@@ -1096,7 +1089,7 @@ public class EnhancedPig extends EnhancedAnimalRideableAbstract {
 
         size = size + 0.7F;
 
-        //        0.7F <= size <= 1.5F
+        // 0.7F <= size <= 1.5F
         this.setAnimalSize(size);
     }
 }

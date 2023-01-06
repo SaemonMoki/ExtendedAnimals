@@ -149,7 +149,7 @@
 //        }
 //
 //        if (this.bodyPitch > 0.0F) {
-//            this.body.rotateAngleX = ModelUtils.func_228283_a_(this.body.rotateAngleX, 3.0915928F, this.bodyPitch);
+//            this.body.rotateAngleX = ModelUtils.rotlerpRad(this.body.rotateAngleX, 3.0915928F, this.bodyPitch);
 //        }
 //    }
 //

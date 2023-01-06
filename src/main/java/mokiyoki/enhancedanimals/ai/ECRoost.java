@@ -2,9 +2,9 @@ package mokiyoki.enhancedanimals.ai;
 
 import mokiyoki.enhancedanimals.capability.post.PostCapabilityProvider;
 import mokiyoki.enhancedanimals.entity.EnhancedChicken;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.core.BlockPos;
 
 import java.util.List;
 
@@ -16,14 +16,14 @@ public class ECRoost extends Goal {
 
 
 
-    public ECRoost(CreatureEntity entityIn) {
+    public ECRoost(PathfinderMob entityIn) {
         this.enhancedChicken = (EnhancedChicken) entityIn;
     }
 
-    public boolean shouldExecute() {
-        if (!this.enhancedChicken.world.isDaytime()) {
+    public boolean canUse() {
+        if (!this.enhancedChicken.level.isDay()) {
             if (!this.enhancedChicken.isRoosting()) {
-                List<BlockPos> allPostPos = this.enhancedChicken.world.getCapability(PostCapabilityProvider.POST_CAP, null).orElseGet(null).getAllPostPos();
+                List<BlockPos> allPostPos = this.enhancedChicken.level.getCapability(PostCapabilityProvider.POST_CAP, null).orElseGet(null).getAllPostPos();
                 if (allPostPos != null && !allPostPos.isEmpty()) {
                     BlockPos blockPosToGoTo = calculateClosestPost(allPostPos);
                     postPos = blockPosToGoTo;
@@ -60,28 +60,28 @@ public class ECRoost extends Goal {
 
     public int getDistanceToPostBlockSq(BlockPos pos)
     {
-        return (int)pos.distanceSq(this.enhancedChicken.getPosition());
+        return (int)pos.distSqr(this.enhancedChicken.blockPosition());
     }
 
-    public boolean shouldContinueExecuting() {
-        if (this.enhancedChicken.getNavigator().noPath()) {
+    public boolean canContinueToUse() {
+        if (this.enhancedChicken.getNavigation().isDone()) {
             this.enhancedChicken.setRoosting(true);
             return false;
         }
         return true;
     }
 
-    public void startExecuting()
+    public void start()
     {
         if(postPos!=null) {
             int i = postPos.getX();
             int j = postPos.getY();
             int k = postPos.getZ();
-            this.enhancedChicken.getNavigator().tryMoveToXYZ((double)i, (double)j+1, (double)k, 1.0D);
+            this.enhancedChicken.getNavigation().moveTo((double)i, (double)j+1, (double)k, 1.0D);
         }
     }
 
-    public void resetTask()
+    public void stop()
     {
         postPos = null;
     }

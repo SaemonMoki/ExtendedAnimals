@@ -1,0 +1,46 @@
+{
+  "multipart": [
+    {   "when": { "eggs": "1" },
+      "apply": { "model": "eanimod:block/one_axolotl_eggshell"}
+    },
+    {   "when": { "eggs": "1" },
+      "apply": { "model": "eanimod:block/one_axolotl_0"}
+    },
+    {   "when": { "eggs": "2" },
+      "apply": { "model": "eanimod:block/two_axolotl_eggshells"}
+    },
+    {   "when": { "eggs": "2" },
+      "apply": { "model": "eanimod:block/two_axolotls_0"}
+    },
+    {   "when": { "eggs": "3" },
+      "apply": { "model": "eanimod:block/three_axolotl_eggshells"}
+    },
+    {   "when": { "eggs": "3" },
+      "apply": { "model": "eanimod:block/three_axolotls_0"}
+    },
+    {   "when": { "eggs": "4" },
+      "apply": { "model": "eanimod:block/four_axolotl_eggshells"}
+    },
+    {   "when": { "eggs": "4" },
+      "apply": { "model": "eanimod:block/four_axolotls_0"}
+    },
+    {   "when": { "bites": "1"},
+      "apply": { "model": "minecraft:block/big_dripleaf_stem"}
+    },
+    {   "when": { "bites": "2"},
+      "apply": { "model": "minecraft:block/small_dripleaf_bottom"}
+    },
+    {   "when": { "bites": "3"},
+      "apply": { "model": "minecraft:block/small_dripleaf_top"}
+    },
+    {   "when": { "bites": "4"},
+      "apply": { "model": "minecraft:block/seagrass"}
+    },
+    {   "when": { "bites": "5"},
+      "apply": { "model": "minecraft:block/tall_seagrass_bottom"}
+    },
+    {   "when": { "bites": "6"},
+      "apply": { "model": "minecraft:block/tall_seagrass_top"}
+    }
+  ]
+}

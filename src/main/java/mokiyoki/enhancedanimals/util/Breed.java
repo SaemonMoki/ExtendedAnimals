@@ -1,11 +1,9 @@
 package mokiyoki.enhancedanimals.util;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeRegistry;
-import net.minecraft.world.biome.Biomes;
-import net.minecraftforge.common.BiomeManager;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
@@ -123,7 +121,7 @@ public class Breed {
             return (rarity + 1.0F)/2.0F;
         }
 
-        float temp = (0.5F + biome.getTemperature())*0.4F;
+        float temp = (0.5F + biome.getBaseTemperature())*0.4F;
         float rain = biome.getDownfall()*1.1111F;
 
         temp = 1.0F - Math.abs(((0.5F + this.temperature)*0.4F)-temp);
@@ -137,7 +135,7 @@ public class Breed {
     }
 
     public final Float likelyhood(boolean forTrader) {
-        return likelyhood(ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.getLocation()), true);
+        return likelyhood(ForgeRegistries.BIOMES.getValue(Biomes.THE_VOID.location()), true);
     }
 
     public final Genes generateGenes(Float accuracy, Genes genes){
@@ -179,10 +177,10 @@ public class Breed {
         private GeneSketch autosomalGeneSketch;
         private VarientHolder varieties;
 
-        public Breed.Properties setData(String name, RegistryKey<Biome> biome, Breed.Rarity rarity) {
+        public Breed.Properties setData(String name, ResourceKey<Biome> biome, Breed.Rarity rarity) {
             this.breedName = name.toLowerCase();
-            this.temperature = ForgeRegistries.BIOMES.getValue(biome.getLocation()).getTemperature();
-            this.rain = ForgeRegistries.BIOMES.getValue(biome.getLocation()).getDownfall();
+            this.temperature = ForgeRegistries.BIOMES.getValue(biome.location()).getBaseTemperature();
+            this.rain = ForgeRegistries.BIOMES.getValue(biome.location()).getDownfall();
             this.rarity = rarity;
             return this;
         }
@@ -203,9 +201,9 @@ public class Breed {
             return this;
         }
 
-        public Breed.Properties setBiome(RegistryKey<Biome> biome) {
-            this.temperature = ForgeRegistries.BIOMES.getValue(biome.getLocation()).getTemperature();
-            this.rain = ForgeRegistries.BIOMES.getValue(biome.getLocation()).getDownfall();
+        public Breed.Properties setBiome(ResourceKey<Biome> biome) {
+            this.temperature = ForgeRegistries.BIOMES.getValue(biome.location()).getBaseTemperature();
+            this.rain = ForgeRegistries.BIOMES.getValue(biome.location()).getDownfall();
             return this;
         }
 

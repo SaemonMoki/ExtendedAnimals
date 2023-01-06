@@ -1,19 +1,19 @@
 package mokiyoki.enhancedanimals.gui;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class EnhancedSlot extends Slot {
 
     boolean enabled = true;
 
-    public EnhancedSlot(IInventory inventoryIn, int index, int xPosition, int yPosition) {
+    public EnhancedSlot(Container inventoryIn, int index, int xPosition, int yPosition) {
         super(inventoryIn, index, xPosition, yPosition);
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isActive() {
         return enabled;
     }
 
@@ -22,9 +22,9 @@ public class EnhancedSlot extends Slot {
     }
 
     @Override
-    public ItemStack getStack() {
+    public ItemStack getItem() {
         if(this.enabled) {
-            return super.getStack();
+            return super.getItem();
         }
         return ItemStack.EMPTY;
     }

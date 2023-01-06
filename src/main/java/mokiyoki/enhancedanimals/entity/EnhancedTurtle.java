@@ -1,91 +1,85 @@
 package mokiyoki.enhancedanimals.entity;
 
-import com.google.common.collect.Sets;
 import mokiyoki.enhancedanimals.blocks.EnhancedTurtleEggBlock;
-import mokiyoki.enhancedanimals.capability.turtleegg.NestCapabilityProvider;
+import mokiyoki.enhancedanimals.capability.nestegg.NestCapabilityProvider;
 import mokiyoki.enhancedanimals.config.EanimodCommonConfig;
-import mokiyoki.enhancedanimals.entity.Genetics.TurtleGeneticsInitialiser;
+import mokiyoki.enhancedanimals.entity.genetics.TurtleGeneticsInitialiser;
 import mokiyoki.enhancedanimals.init.FoodSerialiser;
 import mokiyoki.enhancedanimals.init.ModBlocks;
 import mokiyoki.enhancedanimals.util.Genes;
 import mokiyoki.enhancedanimals.util.Reference;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.BreedGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.ai.goal.MoveToBlockGoal;
-import net.minecraft.entity.ai.goal.RandomWalkingGoal;
-import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.item.LeashKnotEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathFinder;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.pathfinding.SwimmerPathNavigator;
-import net.minecraft.pathfinding.WalkAndSwimNodeProcessor;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.BreedGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.level.pathfinder.AmphibiousNodeEvaluator;
+import net.minecraft.world.level.pathfinder.PathFinder;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.function.Predicate;
 
 import static mokiyoki.enhancedanimals.init.FoodSerialiser.turtleFoodMap;
 
 public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
-    private static final DataParameter<BlockPos> HOME_POS = EntityDataManager.createKey(EnhancedTurtle.class, DataSerializers.BLOCK_POS);
-    private static final DataParameter<Boolean> HAS_EGG = EntityDataManager.createKey(EnhancedTurtle.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> IS_DIGGING = EntityDataManager.createKey(EnhancedTurtle.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<BlockPos> TRAVEL_POS = EntityDataManager.createKey(EnhancedTurtle.class, DataSerializers.BLOCK_POS);
-    private static final DataParameter<Boolean> GOING_HOME = EntityDataManager.createKey(EnhancedTurtle.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> TRAVELLING = EntityDataManager.createKey(EnhancedTurtle.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<BlockPos> HOME_POS = SynchedEntityData.defineId(EnhancedTurtle.class, EntityDataSerializers.BLOCK_POS);
+    private static final EntityDataAccessor<Boolean> HAS_EGG = SynchedEntityData.defineId(EnhancedTurtle.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_DIGGING = SynchedEntityData.defineId(EnhancedTurtle.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<BlockPos> TRAVEL_POS = SynchedEntityData.defineId(EnhancedTurtle.class, EntityDataSerializers.BLOCK_POS);
+    private static final EntityDataAccessor<Boolean> GOING_HOME = SynchedEntityData.defineId(EnhancedTurtle.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> TRAVELLING = SynchedEntityData.defineId(EnhancedTurtle.class, EntityDataSerializers.BOOLEAN);
 
     private int isDigging;
     private int sleepTimer;
@@ -94,7 +88,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     private boolean hasScute = false;
 
     public static final Predicate<LivingEntity> TARGET_DRY_BABY = (turtle) -> {
-        return turtle.isChild() && !turtle.isInWater();
+        return turtle.isBaby() && !turtle.isInWater();
     };
 
     private static final String[] TURTLE_TEXTURES_BASE = new String[] {
@@ -108,11 +102,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             "pibald_turtle.png", "pibald_turtle1.png", "pibald_turtle2.png", "pibald_turtle3.png"
     };
 
-    public EnhancedTurtle(EntityType<? extends EnhancedTurtle> type, World worldIn) {
+    public EnhancedTurtle(EntityType<? extends EnhancedTurtle> type, Level worldIn) {
         super(type, worldIn, 2, Reference.TURTLE_AUTOSOMAL_GENES_LENGTH, false);
-        this.setPathPriority(PathNodeType.WATER, 0.0F);
-        this.moveController = new EnhancedTurtle.MoveHelperController(this);
-        this.stepHeight = 1.0F;
+        this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+        this.moveControl = new EnhancedTurtle.MoveHelperController(this);
+        this.maxUpStep = 1.0F;
     }
 
     protected void registerGoals() {
@@ -123,27 +117,27 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         this.goalSelector.addGoal(3, new EnhancedTurtle.GoToWaterGoal(this, 1.0D));
         this.goalSelector.addGoal(4, new EnhancedTurtle.GoHomeGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new EnhancedTurtle.TravelGoal(this, 1.0D));
-        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(9, new EnhancedTurtle.WanderGoal(this, 1.0D, 100));
     }
 
     @Override
-    public EntitySize getSize(Pose poseIn) {
-        return EntitySize.flexible(1.2F, 0.4F).scale(this.getRenderScale());
+    public EntityDimensions getDimensions(Pose poseIn) {
+        return EntityDimensions.scalable(1.2F, 0.4F).scale(this.getScale());
     }
 
-    public float getRenderScale() {
+    public float getScale() {
         return this.isGrowing() ? (0.2F + (0.8F * (this.growthAmount()))) : 1.0F;
     }
 
-    public static AttributeModifierMap.MutableAttribute prepareAttributes() {
-        return MobEntity.func_233666_p_()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 30.0D)
-                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.25D);
+    public static AttributeSupplier.Builder prepareAttributes() {
+        return Mob.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 30.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.25D);
     }
 
     @Override
-    protected PathNavigator createNavigator(World worldIn) {
+    protected PathNavigation createNavigation(Level worldIn) {
         return new EnhancedTurtle.Navigator(this, worldIn);
     }
 
@@ -157,55 +151,55 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     public void setHome(BlockPos position) {
-        this.dataManager.set(HOME_POS, position);
+        this.entityData.set(HOME_POS, position);
     }
 
     private BlockPos getHome() {
-        return this.dataManager.get(HOME_POS);
+        return this.entityData.get(HOME_POS);
     }
 
     private void setTravelPos(BlockPos position) {
-        this.dataManager.set(TRAVEL_POS, position);
+        this.entityData.set(TRAVEL_POS, position);
     }
 
     private BlockPos getTravelPos() {
-        return this.dataManager.get(TRAVEL_POS);
+        return this.entityData.get(TRAVEL_POS);
     }
 
     public boolean hasEgg() {
-        return this.dataManager.get(HAS_EGG) || this.pregnant;
+        return this.entityData.get(HAS_EGG) || this.pregnant;
     }
 
     private void setHasEgg(boolean hasEgg) {
-        this.dataManager.set(HAS_EGG, hasEgg);
+        this.entityData.set(HAS_EGG, hasEgg);
     }
 
     public boolean isDigging() {
-        return this.dataManager.get(IS_DIGGING);
+        return this.entityData.get(IS_DIGGING);
     }
 
     private void setDigging(boolean isDigging) {
         this.isDigging = isDigging ? 1 : 0;
-        this.dataManager.set(IS_DIGGING, isDigging);
+        this.entityData.set(IS_DIGGING, isDigging);
     }
 
     private boolean isGoingHome() {
-        return this.dataManager.get(GOING_HOME);
+        return this.entityData.get(GOING_HOME);
     }
 
     private void setGoingHome(boolean isGoingHome) {
-        this.dataManager.set(GOING_HOME, isGoingHome);
+        this.entityData.set(GOING_HOME, isGoingHome);
     }
 
     private boolean isTravelling() {
-        return this.dataManager.get(TRAVELLING);
+        return this.entityData.get(TRAVELLING);
     }
 
     private void setTravelling(boolean isTravelling) {
-        this.dataManager.set(TRAVELLING, isTravelling);
+        this.entityData.set(TRAVELLING, isTravelling);
     }
 
-    public boolean canBeLeashedTo(PlayerEntity player) {
+    public boolean canBeLeashed(Player player) {
         return false;
     }
 
@@ -214,7 +208,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         if (!this.isInWater() || this.hasEgg() || this.isGoingHome()) {
             return false;
         } else {
-            this.sleeping = this.dataManager.get(SLEEPING);
+            this.sleeping = this.entityData.get(SLEEPING);
             return this.sleeping;
         }
     }
@@ -224,10 +218,10 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         this.sleepTimer = this.sleepTimer > 0 ? this.sleepTimer-- : this.sleepTimer++;
         if (this.sleepTimer == 0) {
             //finished sleeping
-            this.sleepTimer = -(this.rand.nextInt(6000)+8000);
+            this.sleepTimer = -(this.random.nextInt(6000)+8000);
         } else if (this.sleepTimer==-1 && !(this.hasEgg() || this.isGoingHome())) {
             //is tired
-            this.sleepTimer = this.rand.nextInt(6000)+1200;
+            this.sleepTimer = this.random.nextInt(6000)+1200;
         }
         return (this.sleepTimer > 0) && this.awokenTimer == 0 && !this.sleeping;
     }
@@ -246,11 +240,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     protected int getAdultAge() { return EanimodCommonConfig.COMMON.adultAgeTurtle.get();}
 
     public void setHasScute() {
-        this.hasScute = getAge() < 24000;
+        this.hasScute = this.getEnhancedAnimalAge() < 24000;
     }
 
     public boolean canDropScute() {
-        return this.hasScute && this.isAddedToWorld() && EanimodCommonConfig.COMMON.turtleScuteDropAge.get() <= this.getAge();
+        return this.hasScute && this.isAddedToWorld() && EanimodCommonConfig.COMMON.turtleScuteDropAge.get() <= this.getEnhancedAnimalAge();
     }
 
     @Override
@@ -267,11 +261,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     protected void runExtraIdleTimeTick() {
         if (this.homePosFixer && this.isAddedToWorld()) {
             this.homePosFixer = false;
-            this.setHome(this.getPosition());
+            this.setHome(this.blockPosition());
         }
         if (this.canDropScute()) {
-            if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
-                this.entityDropItem(Items.SCUTE, 1);
+            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+                this.spawnAtLocation(Items.SCUTE, 1);
             }
             this.hasScute = false;
         }
@@ -284,11 +278,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Override
     public void initilizeAnimalSize() {
-
+        this.setAnimalSize(1.0F);
     }
 
     @Override
-    protected void createAndSpawnEnhancedChild(World world) {
+    protected void createAndSpawnEnhancedChild(Level world) {
 
     }
 
@@ -302,7 +296,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         return false;
     }
 
-    public boolean isPushedByWater() {
+    public boolean isPushedByFluid() {
         return false;
     }
 
@@ -310,20 +304,20 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         return true;
     }
 
-    public CreatureAttribute getCreatureAttribute() {
-        return CreatureAttribute.WATER;
+    public MobType getMobType() {
+        return MobType.WATER;
     }
 
     /**
      * Get number of ticks, at least during which the living entity will be silent.
      */
-    public int getTalkInterval() {
+    public int getAmbientSoundInterval() {
         return 200;
     }
 
     @Nullable
     protected SoundEvent getAmbientSound() {
-        return !this.isInWater() && this.onGround && !this.isChild() ? SoundEvents.ENTITY_TURTLE_AMBIENT_LAND : super.getAmbientSound();
+        return !this.isInWater() && this.onGround && !this.isBaby() ? SoundEvents.TURTLE_AMBIENT_LAND : super.getAmbientSound();
     }
 
     protected void playSwimSound(float volume) {
@@ -331,30 +325,30 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     protected SoundEvent getSwimSound() {
-        return SoundEvents.ENTITY_TURTLE_SWIM;
+        return SoundEvents.TURTLE_SWIM;
     }
 
     @Nullable
     protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
-        return this.isChild() ? SoundEvents.ENTITY_TURTLE_HURT_BABY : SoundEvents.ENTITY_TURTLE_HURT;
+        return this.isBaby() ? SoundEvents.TURTLE_HURT_BABY : SoundEvents.TURTLE_HURT;
     }
 
     @Nullable
     protected SoundEvent getDeathSound() {
-        return this.isChild() ? SoundEvents.ENTITY_TURTLE_DEATH_BABY : SoundEvents.ENTITY_TURTLE_DEATH;
+        return this.isBaby() ? SoundEvents.TURTLE_DEATH_BABY : SoundEvents.TURTLE_DEATH;
     }
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
-        SoundEvent soundevent = this.isChild() ? SoundEvents.ENTITY_TURTLE_SHAMBLE_BABY : SoundEvents.ENTITY_TURTLE_SHAMBLE;
+        SoundEvent soundevent = this.isBaby() ? SoundEvents.TURTLE_SHAMBLE_BABY : SoundEvents.TURTLE_SHAMBLE;
         this.playSound(soundevent, 0.15F, 1.0F);
-        if (!this.isSilent() && this.getBells() && this.rand.nextBoolean()) {
-            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, 0.5F, 0.2F);
-            this.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 1.4F, 0.155F);
+        if (!this.isSilent() && this.getBells() && this.random.nextBoolean()) {
+            this.playSound(SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE, 0.5F, 0.2F);
+            this.playSound(SoundEvents.NOTE_BLOCK_CHIME, 1.4F, 0.155F);
         }
     }
 
-    protected float determineNextStepDistance() {
-        return this.distanceWalkedOnStepModified + 0.15F;
+    protected float nextStep() {
+        return this.moveDist + 0.15F;
     }
 
 //    public float getRenderScale() {
@@ -381,7 +375,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             int base = 0;
             int pibald = 0;
 
-            char[] uuidArry = getCachedUniqueIdString().toCharArray();
+            char[] uuidArry = getStringUUID().toCharArray();
 
             if (gene[0] == 1 || gene[1] == 1) {
                 //non-albino
@@ -463,18 +457,18 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         return this.hasEgg() ? 10 : 0;
     }
 
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(HOME_POS, BlockPos.ZERO);
-        this.dataManager.register(HAS_EGG, false);
-        this.dataManager.register(TRAVEL_POS, BlockPos.ZERO);
-        this.dataManager.register(GOING_HOME, false);
-        this.dataManager.register(TRAVELLING, false);
-        this.dataManager.register(IS_DIGGING, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(HOME_POS, BlockPos.ZERO);
+        this.entityData.define(HAS_EGG, false);
+        this.entityData.define(TRAVEL_POS, BlockPos.ZERO);
+        this.entityData.define(GOING_HOME, false);
+        this.entityData.define(TRAVELLING, false);
+        this.entityData.define(IS_DIGGING, false);
     }
 
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
         compound.putInt("HomePosX", this.getHome().getX());
         compound.putInt("HomePosY", this.getHome().getY());
         compound.putInt("HomePosZ", this.getHome().getZ());
@@ -488,8 +482,8 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
         int i = compound.getInt("HomePosX");
         int j = compound.getInt("HomePosY");
         int k = compound.getInt("HomePosZ");
@@ -510,39 +504,39 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, @Nullable ILivingEntityData livingdata, @Nullable CompoundNBT dataTag) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor worldIn, DifficultyInstance difficultyIn, MobSpawnType reason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag dataTag) {
         return commonInitialSpawnSetup(worldIn, livingdata, getAdultAge(), 48000, 800000, reason);
     }
 
     @Override
     public void setInitialDefaults() {
         super.setInitialDefaults();
-        this.setHome(new BlockPos(this.getPosition()));
+        this.setHome(new BlockPos(this.blockPosition()));
         this.setTravelPos(BlockPos.ZERO);
         this.setHasScute();
     }
 
-    public static boolean canTurtleSpawn(EntityType<EnhancedTurtle> p_223322_0_, IWorld p_223322_1_, SpawnReason reason, BlockPos p_223322_3_, Random p_223322_4_) {
-        return p_223322_3_.getY() < p_223322_1_.getSeaLevel() + 4 && EnhancedTurtleEggBlock.hasProperHabitat(p_223322_1_, p_223322_3_) && p_223322_1_.getLightSubtracted(p_223322_3_, 0) > 8;
+    public static boolean canTurtleSpawn(EntityType<EnhancedTurtle> p_223322_0_, LevelAccessor p_223322_1_, MobSpawnType reason, BlockPos p_223322_3_, Random p_223322_4_) {
+        return p_223322_3_.getY() < p_223322_1_.getSeaLevel() + 4 && EnhancedTurtleEggBlock.hasProperHabitat(p_223322_1_, p_223322_3_) && p_223322_1_.getRawBrightness(p_223322_3_, 0) > 8;
     }
 
     @Override
-    protected Genes createInitialGenes(IWorld inWorld, BlockPos pos, boolean isDomestic) {
-        return new TurtleGeneticsInitialiser().generateNewGenetics(this.world, pos, isDomestic);
+    protected Genes createInitialGenes(LevelAccessor inWorld, BlockPos pos, boolean isDomestic) {
+        return new TurtleGeneticsInitialiser().generateNewGenetics(this.level, pos, isDomestic);
     }
 
     @Override
-    public Genes createInitialBreedGenes(IWorld inWorld, BlockPos pos, String breed) {
-        return new TurtleGeneticsInitialiser().generateWithBreed(this.world, pos, breed);
+    public Genes createInitialBreedGenes(LevelAccessor inWorld, BlockPos pos, String breed) {
+        return new TurtleGeneticsInitialiser().generateWithBreed(this.level, pos, breed);
     }
 
-    public void travel(Vector3d travelVector) {
-        if (this.isServerWorld() && this.isInWater()) {
+    public void travel(Vec3 travelVector) {
+        if (this.isEffectiveAi() && this.isInWater()) {
             this.moveRelative(0.1F, travelVector);
-            this.move(MoverType.SELF, this.getMotion());
-            this.setMotion(this.getMotion().scale(0.9D));
-            if (this.getAttackTarget() == null && (!this.isGoingHome() || !this.getHome().withinDistance(this.getPositionVec(), 20.0D))) {
-                this.setMotion(this.getMotion().add(0.0D, -0.005D, 0.0D));
+            this.move(MoverType.SELF, this.getDeltaMovement());
+            this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
+            if (this.getTarget() == null && (!this.isGoingHome() || !this.getHome().closerToCenterThan(this.position(), 20.0D))) {
+                this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.005D, 0.0D));
             }
         } else {
             super.travel(travelVector);
@@ -550,15 +544,15 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
     }
 
-    public void func_241841_a(ServerWorld p_241841_1_, LightningBoltEntity p_241841_2_) {
-        this.attackEntityFrom(DamageSource.LIGHTNING_BOLT, Float.MAX_VALUE);
+    public void thunderHit(ServerLevel p_241841_1_, LightningBolt p_241841_2_) {
+        this.hurt(DamageSource.LIGHTNING_BOLT, Float.MAX_VALUE);
     }
 
     static class GoHomeGoal extends Goal {
         private final EnhancedTurtle turtle;
         private final double speed;
-        private boolean field_203129_c;
-        private int field_203130_d;
+        private boolean stuck;
+        private int closeToHomeTryTicks;
 
         GoHomeGoal(EnhancedTurtle turtle, double speedIn) {
             this.turtle = turtle;
@@ -569,39 +563,39 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
          * method as well.
          */
-        public boolean shouldExecute() {
-            if (this.turtle.isChild()) {
+        public boolean canUse() {
+            if (this.turtle.isBaby()) {
                 return false;
             } else if (this.turtle.hasEgg()) {
                 return true;
-            } else if (this.turtle.getRNG().nextInt(700) != 0) {
+            } else if (this.turtle.getRandom().nextInt(700) != 0) {
                 return false;
             } else {
-                return !this.turtle.getHome().withinDistance(this.turtle.getPositionVec(), 64.0D);
+                return !this.turtle.getHome().closerToCenterThan(this.turtle.position(), 64.0D);
             }
         }
 
         /**
          * Execute a one shot task or start executing a continuous task
          */
-        public void startExecuting() {
+        public void start() {
             this.turtle.setGoingHome(true);
-            this.field_203129_c = false;
-            this.field_203130_d = 0;
+            this.stuck = false;
+            this.closeToHomeTryTicks = 0;
         }
 
         /**
          * Reset the task's internal state. Called when this task is interrupted by another one
          */
-        public void resetTask() {
+        public void stop() {
             this.turtle.setGoingHome(false);
         }
 
         /**
          * Returns whether an in-progress EntityAIBase should continue executing
          */
-        public boolean shouldContinueExecuting() {
-            return !this.turtle.getHome().withinDistance(this.turtle.getPositionVec(), 7.0D) && !this.field_203129_c && this.field_203130_d <= 600;
+        public boolean canContinueToUse() {
+            return !this.turtle.getHome().closerToCenterThan(this.turtle.position(), 7.0D) && !this.stuck && this.closeToHomeTryTicks <= 600;
         }
 
         /**
@@ -609,28 +603,28 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          */
         public void tick() {
             BlockPos blockpos = this.turtle.getHome();
-            boolean flag = blockpos.withinDistance(this.turtle.getPositionVec(), 16.0D);
+            boolean flag = blockpos.closerToCenterThan(this.turtle.position(), 16.0D);
             if (flag) {
-                ++this.field_203130_d;
+                ++this.closeToHomeTryTicks;
             }
 
-            if (this.turtle.getNavigator().noPath()) {
-                Vector3d vector3d = Vector3d.copyCenteredHorizontally(blockpos);
-                Vector3d vector3d1 = RandomPositionGenerator.findRandomTargetTowardsScaled(this.turtle, 16, 3, vector3d, (double)((float)Math.PI / 10F));
-                if (vector3d1 == null) {
-                    vector3d1 = RandomPositionGenerator.findRandomTargetBlockTowards(this.turtle, 8, 7, vector3d);
+            if (this.turtle.getNavigation().isDone()) {
+                Vec3 vec3 = Vec3.atBottomCenterOf(blockpos);
+                Vec3 vec31 = DefaultRandomPos.getPosTowards(this.turtle, 16, 3, vec3, (double)((float)Math.PI / 10F));
+                if (vec31 == null) {
+                    vec31 = DefaultRandomPos.getPosTowards(this.turtle, 8, 7, vec3, (double)((float)Math.PI / 2F));
                 }
 
-                if (vector3d1 != null && !flag && !this.turtle.world.getBlockState(new BlockPos(vector3d1)).isIn(Blocks.WATER)) {
-                    vector3d1 = RandomPositionGenerator.findRandomTargetBlockTowards(this.turtle, 16, 5, vector3d);
+                if (vec31 != null && !flag && !this.turtle.level.getBlockState(new BlockPos(vec31)).is(Blocks.WATER)) {
+                    vec31 = DefaultRandomPos.getPosTowards(this.turtle, 16, 5, vec3, (double)((float)Math.PI / 2F));
                 }
 
-                if (vector3d1 == null) {
-                    this.field_203129_c = true;
+                if (vec31 == null) {
+                    this.stuck = true;
                     return;
                 }
 
-                this.turtle.getNavigator().tryMoveToXYZ(vector3d1.x, vector3d1.y, vector3d1.z, this.speed);
+                this.turtle.getNavigation().moveTo(vec31.x, vec31.y, vec31.z, this.speed);
             }
 
         }
@@ -640,39 +634,39 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         private final EnhancedTurtle turtle;
 
         private GoToWaterGoal(EnhancedTurtle turtle, double speedIn) {
-            super(turtle, turtle.isChild() ? 2.0D : speedIn, 24);
+            super(turtle, turtle.isBaby() ? 2.0D : speedIn, 24);
             this.turtle = turtle;
-            this.field_203112_e = -1;
+            this.verticalSearchStart = -1;
         }
 
         /**
          * Returns whether an in-progress EntityAIBase should continue executing
          */
-        public boolean shouldContinueExecuting() {
-            return !this.turtle.isInWater() && this.timeoutCounter <= 1200 && this.shouldMoveTo(this.turtle.world, this.destinationBlock);
+        public boolean canContinueToUse() {
+            return !this.turtle.isInWater() && this.tryTicks <= 1200 && this.isValidTarget(this.turtle.level, this.getMoveToTarget());
         }
 
         /**
          * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
          * method as well.
          */
-        public boolean shouldExecute() {
-            if (this.turtle.isChild() && !this.turtle.isInWater()) {
-                return super.shouldExecute();
+        public boolean canUse() {
+            if (this.turtle.isBaby() && !this.turtle.isInWater()) {
+                return super.canUse();
             } else {
-                return !this.turtle.isGoingHome() && !this.turtle.isInWater() && !this.turtle.hasEgg() ? super.shouldExecute() : false;
+                return !this.turtle.isGoingHome() && !this.turtle.isInWater() && !this.turtle.hasEgg() && super.canUse();
             }
         }
 
-        public boolean shouldMove() {
-            return this.timeoutCounter % 160 == 0;
+        public boolean shouldRecalculatePath() {
+            return this.tryTicks % 160 == 0;
         }
 
         /**
          * Return true to set given position as destination
          */
-        protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
-            return worldIn.getBlockState(pos).isIn(Blocks.WATER);
+        protected boolean isValidTarget(LevelReader worldIn, BlockPos pos) {
+            return worldIn.getBlockState(pos).is(Blocks.WATER);
         }
     }
 
@@ -684,50 +678,40 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
             this.turtle = turtle;
         }
 
-        /**
-         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
-         * method as well.
-         */
-        public boolean shouldExecute() {
+        public boolean canUse() {
             if (this.turtle.mateGenetics==null) {
                 this.turtle.setHasEgg(false);
                 return false;
             }
-            return (this.turtle.hasEgg()) && this.turtle.getHome().withinDistance(this.turtle.getPositionVec(), 9.0D) ? super.shouldExecute() : false;
+            return (this.turtle.hasEgg()) && this.turtle.getHome().closerToCenterThan(this.turtle.position(), 9.0D) ? super.canUse() : false;
         }
 
-        /**
-         * Returns whether an in-progress EntityAIBase should continue executing
-         */
-        public boolean shouldContinueExecuting() {
+        public boolean canContinueToUse() {
             if (this.turtle.mateGenetics==null) {
                 this.turtle.setHasEgg(false);
                 return false;
             }
-            return super.shouldContinueExecuting() && this.turtle.hasEgg() && this.turtle.getHome().withinDistance(this.turtle.getPositionVec(), 9.0D);
+            return super.canContinueToUse() && this.turtle.hasEgg() && this.turtle.getHome().closerToCenterThan(this.turtle.position(), 9.0D);
         }
 
-        /**
-         * Keep ticking a continuous task that has already been started
-         */
         public void tick() {
             super.tick();
-            BlockPos blockpos = this.turtle.getPosition();
-            if (!this.turtle.isInWater() && this.getIsAboveDestination()) {
+            BlockPos blockpos = this.turtle.blockPosition();
+            if (!this.turtle.isInWater() && this.isReachedTarget()) {
                 if (this.turtle.isDigging < 1) {
                     this.turtle.setDigging(true);
                 } else if (this.turtle.isDigging > 200) {
-                    World world = this.turtle.world;
-                    world.playSound((PlayerEntity)null, blockpos, SoundEvents.ENTITY_TURTLE_LAY_EGG, SoundCategory.BLOCKS, 0.3F, 0.9F + world.rand.nextFloat() * 0.2F);
-                    int numberOfEggs = this.turtle.rand.nextInt(4) + 1;
-                    BlockPos pos = this.destinationBlock.up();
+                    Level world = this.turtle.level;
+                    world.playSound((Player)null, blockpos, SoundEvents.TURTLE_LAY_EGG, SoundSource.BLOCKS, 0.3F, 0.9F + world.random.nextFloat() * 0.2F);
+                    int numberOfEggs = this.turtle.random.nextInt(4) + 1;
+                    BlockPos pos = this.blockPos.above();
                     String mateName = this.turtle.mateName.isEmpty() ? "???" : this.turtle.mateName;
                     String name = this.turtle.hasCustomName() ? this.turtle.getName().getString() : "???";
                     for (int i = 0; i < numberOfEggs;i++) {
                         Genes eggGenes = new Genes(this.turtle.getGenes()).makeChild(true, true, this.turtle.mateGenetics);
                         world.getCapability(NestCapabilityProvider.NEST_CAP, null).orElse(new NestCapabilityProvider()).addNestEggPos(pos, mateName,name, eggGenes, true);
                     }
-                    world.setBlockState(pos, ModBlocks.TURTLE_EGG.getDefaultState().with(EnhancedTurtleEggBlock.EGGS, Integer.valueOf(numberOfEggs)), 3);
+                    world.setBlock(pos, ModBlocks.TURTLE_EGG.get().defaultBlockState().setValue(EnhancedTurtleEggBlock.EGGS, Integer.valueOf(numberOfEggs)), 3);
                     this.turtle.setHasEgg(false);
                     this.turtle.setDigging(false);
 //                    this.turtle.setInLove(600);
@@ -743,8 +727,8 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         /**
          * Return true to set given position as destination
          */
-        protected boolean shouldMoveTo(IWorldReader worldIn, BlockPos pos) {
-            return !worldIn.isAirBlock(pos.up()) ? false : EnhancedTurtleEggBlock.isProperHabitat(worldIn, pos);
+        protected boolean isValidTarget(LevelReader worldIn, BlockPos pos) {
+            return !worldIn.isEmptyBlock(pos.above()) ? false : EnhancedTurtleEggBlock.isProperHabitat(worldIn, pos);
         }
     }
 
@@ -760,46 +744,51 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
          * method as well.
          */
-        public boolean shouldExecute() {
-            return super.shouldExecute() && !this.turtle.hasEgg();
+        public boolean canUse() {
+            return super.canUse() && !this.turtle.hasEgg();
         }
 
         /**
          * Spawns a baby animal of the same type.
          */
-        protected void spawnBaby() {
-            this.turtle.handlePartnerBreeding(this.targetMate);
+        protected void breed() {
+            if (this.turtle.getOrSetIsFemale()) {
+                this.turtle.handlePartnerBreeding(this.partner);
+            } else {
+                ((EnhancedTurtle) this.partner).handlePartnerBreeding(this.turtle);
+            }
+
             if (this.turtle.pregnant) {
                 this.turtle.setHasEgg(true);
                 this.turtle.pregnant = false;
             }
-            if (((EnhancedTurtle) this.targetMate).pregnant) {
-                ((EnhancedTurtle) this.targetMate).setHasEgg(true);
-                ((EnhancedTurtle) this.targetMate).pregnant = false;
+            if (((EnhancedTurtle) this.partner).pregnant) {
+                ((EnhancedTurtle) this.partner).setHasEgg(true);
+                ((EnhancedTurtle) this.partner).pregnant = false;
             }
-            this.turtle.setGrowingAge(10);
-            this.turtle.resetInLove();
-            this.targetMate.setGrowingAge(10);
-            this.targetMate.resetInLove();
+            this.turtle.setAge(10);
+            this.turtle.resetLove();
+            this.partner.setAge(10);
+            this.partner.resetLove();
 
-            ServerPlayerEntity entityplayermp = this.turtle.getLoveCause();
-            if (entityplayermp == null && this.targetMate.getLoveCause() != null) {
-                entityplayermp = this.targetMate.getLoveCause();
+            ServerPlayer entityplayermp = this.turtle.getLoveCause();
+            if (entityplayermp == null && this.partner.getLoveCause() != null) {
+                entityplayermp = this.partner.getLoveCause();
             }
 
             if (entityplayermp != null) {
-                entityplayermp.addStat(Stats.ANIMALS_BRED);
-                CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this.turtle, ((EnhancedAnimalAbstract) this.targetMate), (AgeableEntity) null);
+                entityplayermp.awardStat(Stats.ANIMALS_BRED);
+                CriteriaTriggers.BRED_ANIMALS.trigger(entityplayermp, this.turtle, ((EnhancedAnimalAbstract) this.partner), (AgeableMob) null);
             }
 
-            Random random = this.animal.getRNG();
-            if (this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT)) {
-                this.world.addEntity(new ExperienceOrbEntity(this.world, this.animal.getPosX(), this.animal.getPosY(), this.animal.getPosZ(), random.nextInt(7) + 1));
+            Random random = this.animal.getRandom();
+            if (this.level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+                this.level.addFreshEntity(new ExperienceOrb(this.level, this.animal.getX(), this.animal.getY(), this.animal.getZ(), random.nextInt(7) + 1));
             }
         }
     }
 
-    static class MoveHelperController extends MovementController {
+    static class MoveHelperController extends MoveControl {
         private final EnhancedTurtle turtle;
 
         MoveHelperController(EnhancedTurtle turtleIn) {
@@ -809,70 +798,70 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
 
         private void updateSpeed() {
             if (this.turtle.isInWater()) {
-                this.turtle.setMotion(this.turtle.getMotion().add(0.0D, 0.005D, 0.0D));
-                if (!this.turtle.getHome().withinDistance(this.turtle.getPositionVec(), 16.0D)) {
-                    this.turtle.setAIMoveSpeed(Math.max(this.turtle.getAIMoveSpeed() / 2.0F, 0.08F));
+                this.turtle.setDeltaMovement(this.turtle.getDeltaMovement().add(0.0D, 0.005D, 0.0D));
+                if (!this.turtle.getHome().closerToCenterThan(this.turtle.position(), 16.0D)) {
+                    this.turtle.setSpeed(Math.max(this.turtle.getSpeed() / 2.0F, 0.08F));
                 }
 
-                if (this.turtle.isChild()) {
-                    this.turtle.setAIMoveSpeed(Math.max(this.turtle.getAIMoveSpeed() / 3.0F, 0.06F));
+                if (this.turtle.isBaby()) {
+                    this.turtle.setSpeed(Math.max(this.turtle.getSpeed() / 3.0F, 0.06F));
                 }
             } else if (this.turtle.onGround) {
-                this.turtle.setAIMoveSpeed(Math.max(this.turtle.getAIMoveSpeed() / 2.0F, 0.06F));
+                this.turtle.setSpeed(Math.max(this.turtle.getSpeed() / 2.0F, 0.06F));
             }
 
         }
 
         public void tick() {
             this.updateSpeed();
-            if (this.action == MovementController.Action.MOVE_TO && !this.turtle.getNavigator().noPath()) {
-                double d0 = this.posX - this.turtle.getPosX();
-                double d1 = this.posY - this.turtle.getPosY();
-                double d2 = this.posZ - this.turtle.getPosZ();
-                double d3 = (double)MathHelper.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+            if (this.operation == MoveControl.Operation.MOVE_TO && !this.turtle.getNavigation().isDone()) {
+                double d0 = this.wantedX - this.turtle.getX();
+                double d1 = this.wantedY - this.turtle.getY();
+                double d2 = this.wantedZ - this.turtle.getZ();
+                double d3 = (double)Mth.sqrt((float) (d0 * d0 + d1 * d1 + d2 * d2));
                 d1 = d1 / d3;
-                float f = (float)(MathHelper.atan2(d2, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
-                this.turtle.rotationYaw = this.limitAngle(this.turtle.rotationYaw, f, 90.0F);
-                this.turtle.renderYawOffset = this.turtle.rotationYaw;
-                float f1 = (float)(this.speed * this.turtle.getAttributeValue(Attributes.MOVEMENT_SPEED));
-                this.turtle.setAIMoveSpeed(MathHelper.lerp(0.125F, this.turtle.getAIMoveSpeed(), f1));
-                this.turtle.setMotion(this.turtle.getMotion().add(0.0D, (double)this.turtle.getAIMoveSpeed() * d1 * 0.1D, 0.0D));
+                float f = (float)(Mth.atan2(d2, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
+                this.turtle.setYRot(this.rotlerp(this.turtle.getYRot(), f, 90.0F));
+                this.turtle.setYBodyRot(this.turtle.getYRot());
+                float f1 = (float)(this.speedModifier * this.turtle.getAttributeValue(Attributes.MOVEMENT_SPEED));
+                this.turtle.setSpeed(Mth.lerp(0.125F, this.turtle.getSpeed(), f1));
+                this.turtle.setDeltaMovement(this.turtle.getDeltaMovement().add(0.0D, (double)this.turtle.getSpeed() * d1 * 0.1D, 0.0D));
             } else {
-                this.turtle.setAIMoveSpeed(0.0F);
+                this.turtle.setSpeed(0.0F);
             }
         }
     }
 
-    static class Navigator extends SwimmerPathNavigator {
-        Navigator(EnhancedTurtle turtle, World worldIn) {
+    static class Navigator extends WaterBoundPathNavigation {
+        Navigator(EnhancedTurtle turtle, Level worldIn) {
             super(turtle, worldIn);
         }
 
         /**
          * If on ground or swimming and can swim
          */
-        protected boolean canNavigate() {
+        protected boolean canUpdatePath() {
             return true;
         }
 
-        protected PathFinder getPathFinder(int p_179679_1_) {
-            this.nodeProcessor = new WalkAndSwimNodeProcessor();
-            return new PathFinder(this.nodeProcessor, p_179679_1_);
+        protected PathFinder createPathFinder(int p_179679_1_) {
+            this.nodeEvaluator = new AmphibiousNodeEvaluator(true);
+            return new PathFinder(this.nodeEvaluator, p_179679_1_);
         }
 
-        public boolean canEntityStandOnPos(BlockPos pos) {
-            if (this.entity instanceof EnhancedTurtle) {
-                EnhancedTurtle turtleentity = (EnhancedTurtle)this.entity;
+        public boolean isStableDestination(BlockPos pos) {
+            if (this.mob instanceof EnhancedTurtle) {
+                EnhancedTurtle turtleentity = (EnhancedTurtle)this.mob;
                 if (turtleentity.isTravelling()) {
-                    return this.world.getBlockState(pos).isIn(Blocks.WATER);
+                    return this.level.getBlockState(pos).is(Blocks.WATER);
                 }
             }
 
-            return !this.world.getBlockState(pos.down()).isAir();
+            return !this.level.getBlockState(pos.below()).isAir();
         }
     }
 
-    static class PanicGoal extends net.minecraft.entity.ai.goal.PanicGoal {
+    static class PanicGoal extends net.minecraft.world.entity.ai.goal.PanicGoal {
         PanicGoal(EnhancedTurtle turtle, double speedIn) {
             super(turtle, speedIn);
         }
@@ -881,15 +870,15 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
          * method as well.
          */
-        public boolean shouldExecute() {
-            if (this.creature.getRevengeTarget() == null && !this.creature.isBurning()) {
+        public boolean canUse() {
+            if (this.mob.getLastHurtByMob() == null && !this.mob.isOnFire()) {
                 return false;
             } else {
-                BlockPos blockpos = this.getRandPos(this.creature.world, this.creature, 7, 4);
+                BlockPos blockpos = this.lookForWater(this.mob.level, this.mob, 7);
                 if (blockpos != null) {
-                    this.randPosX = (double)blockpos.getX();
-                    this.randPosY = (double)blockpos.getY();
-                    this.randPosZ = (double)blockpos.getZ();
+                    this.posX = (double)blockpos.getX();
+                    this.posY = (double)blockpos.getY();
+                    this.posZ = (double)blockpos.getZ();
                     return true;
                 } else {
                     return this.findRandomPosition();
@@ -899,32 +888,32 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     }
 
     static class PlayerTemptGoal extends Goal {
-        private static final EntityPredicate field_220834_a = (new EntityPredicate()).setDistance(10.0D).allowFriendlyFire().allowInvulnerable();
+        private static final TargetingConditions TEMPT_TARGETING = TargetingConditions.forNonCombat().range(10.0D).ignoreLineOfSight();
         private final EnhancedTurtle turtle;
         private final double speed;
-        private PlayerEntity tempter;
+        private Player tempter;
         private int cooldown;
 
         PlayerTemptGoal(EnhancedTurtle turtle, double speedIn, Item temptItem) {
             this.turtle = turtle;
             this.speed = speedIn;
-            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+            this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
         }
 
         /**
          * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
          * method as well.
          */
-        public boolean shouldExecute() {
+        public boolean canUse() {
             if (this.cooldown > 0) {
                 --this.cooldown;
                 return this.turtle.getHunger() < 3000;
             } else {
-                this.tempter = this.turtle.world.getClosestPlayer(field_220834_a, this.turtle);
+                this.tempter = this.turtle.level.getNearestPlayer(TEMPT_TARGETING, this.turtle);
                 if (this.tempter == null) {
                     return false;
                 } else {
-                    return this.turtle.isTempted(this.isTemptedBy(this.tempter.getHeldItemMainhand()) || this.isTemptedBy(this.tempter.getHeldItemOffhand()));
+                    return this.turtle.isTempted(this.isTemptedBy(this.tempter.getMainHandItem()) || this.isTemptedBy(this.tempter.getOffhandItem()));
                 }
             }
         }
@@ -936,16 +925,16 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         /**
          * Returns whether an in-progress EntityAIBase should continue executing
          */
-        public boolean shouldContinueExecuting() {
-            return this.shouldExecute();
+        public boolean canContinueToUse() {
+            return this.canUse();
         }
 
         /**
          * Reset the task's internal state. Called when this task is interrupted by another one
          */
-        public void resetTask() {
+        public void stop() {
             this.tempter = null;
-            this.turtle.getNavigator().clearPath();
+            this.turtle.getNavigation().stop();
             this.turtle.isTempted(false);
         }
 
@@ -953,11 +942,11 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          * Keep ticking a continuous task that has already been started
          */
         public void tick() {
-            this.turtle.getLookController().setLookPositionWithEntity(this.tempter, (float)(this.turtle.getHorizontalFaceSpeed() + 20), (float)this.turtle.getVerticalFaceSpeed());
-            if (this.turtle.getDistanceSq(this.tempter) < 6.25D) {
-                this.turtle.getNavigator().clearPath();
+            this.turtle.getLookControl().setLookAt(this.tempter, (float)(this.turtle.getMaxHeadYRot() + 20), (float)this.turtle.getMaxHeadXRot());
+            if (this.turtle.distanceToSqr(this.tempter) < 6.25D) {
+                this.turtle.getNavigation().stop();
             } else {
-                this.turtle.getNavigator().tryMoveToEntityLiving(this.tempter, this.speed);
+                this.turtle.getNavigation().moveTo(this.tempter, this.speed);
             }
 
         }
@@ -966,7 +955,7 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
     static class TravelGoal extends Goal {
         private final EnhancedTurtle turtle;
         private final double speed;
-        private boolean field_203139_c;
+        private boolean stuck;
 
         TravelGoal(EnhancedTurtle turtle, double speedIn) {
             this.turtle = turtle;
@@ -977,56 +966,56 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
          * method as well.
          */
-        public boolean shouldExecute() {
+        public boolean canUse() {
             return !this.turtle.isGoingHome() && !this.turtle.hasEgg() && !this.turtle.isAnimalSleeping() && this.turtle.isInWater() && !this.turtle.getIsTempted();
         }
 
         /**
          * Execute a one shot task or start executing a continuous task
          */
-        public void startExecuting() {
+        public void start() {
             int i = 512;
             int j = 4;
-            Random random = this.turtle.rand;
+            Random random = this.turtle.random;
             int k = random.nextInt(1025) - 512;
             int l = random.nextInt(9) - 4;
             int i1 = random.nextInt(1025) - 512;
-            if ((double)l + this.turtle.getPosY() > (double)(this.turtle.world.getSeaLevel() - 1)) {
+            if ((double)l + this.turtle.getY() > (double)(this.turtle.level.getSeaLevel() - 1)) {
                 l = 0;
             }
 
-            BlockPos blockpos = new BlockPos((double)k + this.turtle.getPosX(), (double)l + this.turtle.getPosY(), (double)i1 + this.turtle.getPosZ());
+            BlockPos blockpos = new BlockPos((double)k + this.turtle.getX(), (double)l + this.turtle.getY(), (double)i1 + this.turtle.getZ());
             this.turtle.setTravelPos(blockpos);
             this.turtle.setTravelling(true);
-            this.field_203139_c = false;
+            this.stuck = false;
         }
 
         /**
          * Keep ticking a continuous task that has already been started
          */
         public void tick() {
-            if (this.turtle.getNavigator().noPath()) {
-                Vector3d vector3d = Vector3d.copyCenteredHorizontally(this.turtle.getTravelPos());
-                Vector3d vector3d1 = RandomPositionGenerator.findRandomTargetTowardsScaled(this.turtle, 16, 3, vector3d, (double)((float)Math.PI / 10F));
-                if (vector3d1 == null) {
-                    vector3d1 = RandomPositionGenerator.findRandomTargetBlockTowards(this.turtle, 8, 7, vector3d);
+            if (this.turtle.getNavigation().isDone()) {
+                Vec3 vec3 = Vec3.atBottomCenterOf(this.turtle.getTravelPos());
+                Vec3 vec31 = DefaultRandomPos.getPosTowards(this.turtle, 16, 3, vec3, (double)((float)Math.PI / 10F));
+                if (vec31 == null) {
+                    vec31 = DefaultRandomPos.getPosTowards(this.turtle, 8, 7, vec3, (double)((float)Math.PI / 2F));
                 }
 
-                if (vector3d1 != null) {
-                    int i = MathHelper.floor(vector3d1.x);
-                    int j = MathHelper.floor(vector3d1.z);
+                if (vec31 != null) {
+                    int i = Mth.floor(vec31.x);
+                    int j = Mth.floor(vec31.z);
                     int k = 34;
-                    if (!this.turtle.world.isAreaLoaded(i - 34, 0, j - 34, i + 34, 0, j + 34)) {
-                        vector3d1 = null;
+                    if (!this.turtle.level.hasChunksAt(i - 34, j - 34, i + 34, j + 34)) {
+                        vec31 = null;
                     }
                 }
 
-                if (vector3d1 == null) {
-                    this.field_203139_c = true;
+                if (vec31 == null) {
+                    this.stuck = true;
                     return;
                 }
 
-                this.turtle.getNavigator().tryMoveToXYZ(vector3d1.x, vector3d1.y, vector3d1.z, this.speed);
+                this.turtle.getNavigation().moveTo(vec31.x, vec31.y, vec31.z, this.speed);
             }
 
         }
@@ -1034,20 +1023,20 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
         /**
          * Returns whether an in-progress EntityAIBase should continue executing
          */
-        public boolean shouldContinueExecuting() {
-            return !this.turtle.getNavigator().noPath() && !this.field_203139_c && !this.turtle.isGoingHome() && !this.turtle.isAnimalSleeping() && !this.turtle.isInLove() && !this.turtle.hasEgg() && !this.turtle.getIsTempted();
+        public boolean canContinueToUse() {
+            return !this.turtle.getNavigation().isDone() && !this.stuck && !this.turtle.isGoingHome() && !this.turtle.isAnimalSleeping() && !this.turtle.isInLove() && !this.turtle.hasEgg() && !this.turtle.getIsTempted();
         }
 
         /**
          * Reset the task's internal state. Called when this task is interrupted by another one
          */
-        public void resetTask() {
+        public void stop() {
             this.turtle.setTravelling(false);
-            super.resetTask();
+            super.stop();
         }
     }
 
-    static class WanderGoal extends RandomWalkingGoal {
+    static class WanderGoal extends RandomStrollGoal {
         private final EnhancedTurtle turtle;
 
         private WanderGoal(EnhancedTurtle turtle, double speedIn, int chance) {
@@ -1059,8 +1048,8 @@ public class EnhancedTurtle  extends EnhancedAnimalAbstract {
          * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
          * method as well.
          */
-        public boolean shouldExecute() {
-            return !this.creature.isInWater() && !this.turtle.isGoingHome() && !this.turtle.hasEgg() && !this.turtle.isAnimalSleeping() && super.shouldExecute();
+        public boolean canUse() {
+            return !this.mob.isInWater() && !this.turtle.isGoingHome() && !this.turtle.hasEgg() && !this.turtle.isAnimalSleeping() && super.canUse();
         }
     }
 }

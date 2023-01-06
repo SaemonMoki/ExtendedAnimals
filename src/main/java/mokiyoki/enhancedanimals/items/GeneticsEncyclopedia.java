@@ -1,26 +1,25 @@
 package mokiyoki.enhancedanimals.items;
 
 import mokiyoki.enhancedanimals.EnhancedAnimals;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.WritableBookItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.StringUtils;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponentUtils;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.WritableBookItem;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.util.StringUtil;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -35,8 +34,8 @@ public class GeneticsEncyclopedia extends Item {
         super(builder);
     }
 
-    public static boolean validBookTagContents(@Nullable CompoundNBT nbt) {
-        if (!WritableBookItem.isNBTValid(nbt)) {
+    public static boolean validBookTagContents(@Nullable CompoundTag nbt) {
+        if (!WritableBookItem.makeSureTagIsValid(nbt)) {
             return false;
         } else if (!nbt.contains("title", 8)) {
             return false;
@@ -46,69 +45,65 @@ public class GeneticsEncyclopedia extends Item {
         }
     }
 
-    public ITextComponent getDisplayName(ItemStack stack) {
+    public Component getName(ItemStack stack) {
         if (stack.hasTag()) {
-            CompoundNBT compoundnbt = stack.getTag();
+            CompoundTag compoundnbt = stack.getTag();
             String s = compoundnbt.getString("title");
-            if (!StringUtils.isNullOrEmpty(s)) {
-                return new StringTextComponent(s);
+            if (!StringUtil.isNullOrEmpty(s)) {
+                return new TextComponent(s);
             }
         }
 
-        return super.getDisplayName(stack);
+        return super.getName(stack);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (stack.hasTag()) {
-            CompoundNBT compoundnbt = stack.getTag();
+            CompoundTag compoundnbt = stack.getTag();
             String s = compoundnbt.getString("author");
-            if (!StringUtils.isNullOrEmpty(s)) {
-                tooltip.add((new TranslationTextComponent("book.byAuthor", s)).mergeStyle(TextFormatting.GRAY));
+            if (!StringUtil.isNullOrEmpty(s)) {
+                tooltip.add((new TranslatableComponent("book.byAuthor", s)).withStyle(ChatFormatting.GRAY));
             }
         }
 
     }
 
-    /**
-     * Called to trigger the item's "innate" right click behavior. To handle when this item is used on a Block, see
-     * {@link #onItemUse}.
-     */
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        ItemStack itemstack = playerIn.getHeldItem(handIn);
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+        ItemStack itemstack = playerIn.getItemInHand(handIn);
 
         testString = "SUCCESS";
 
-        EnhancedAnimals.proxy.setEncylopediaInfo(itemstack);
+//        EnhancedAnimals.proxy.setEncylopediaInfo(itemstack);
 
-        if(worldIn.isRemote) {
-            EnhancedAnimals.proxy.openEncyclodepia();
+        if(worldIn.isClientSide) {
+//            EnhancedAnimals.proxy.openEncyclodepia();
         }
 
-        return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemstack);
     }
 
-    public static boolean resolveContents(ItemStack stack, @Nullable CommandSource resolvingSource, @Nullable PlayerEntity resolvingPlayer) {
-        CompoundNBT compoundnbt = stack.getTag();
+    public static boolean resolveContents(ItemStack stack, @Nullable CommandSourceStack resolvingSource, @Nullable Player resolvingPlayer) {
+        CompoundTag compoundnbt = stack.getTag();
         if (compoundnbt != null && !compoundnbt.getBoolean("resolved")) {
             compoundnbt.putBoolean("resolved", true);
             if (!validBookTagContents(compoundnbt)) {
                 return false;
             } else {
-                ListNBT listnbt = compoundnbt.getList("pages", 8);
+                ListTag listnbt = compoundnbt.getList("pages", 8);
 
                 for(int i = 0; i < listnbt.size(); ++i) {
                     String s = listnbt.getString(i);
 
-                    ITextComponent itextcomponent;
+                    Component itextcomponent;
                     try {
-                        itextcomponent = ITextComponent.Serializer.getComponentFromJsonLenient(s);
-                        itextcomponent = TextComponentUtils.func_240645_a_(resolvingSource, itextcomponent, resolvingPlayer, 0);
+                        itextcomponent = Component.Serializer.fromJsonLenient(s);
+                        itextcomponent = ComponentUtils.updateForEntity(resolvingSource, itextcomponent, resolvingPlayer, 0);
                     } catch (Exception var9) {
-                        itextcomponent = new StringTextComponent(s);
+                        itextcomponent = new TextComponent(s);
                     }
 
-                    listnbt.set(i, (StringNBT.valueOf(ITextComponent.Serializer.toJson(itextcomponent))));
+                    listnbt.set(i, (StringTag.valueOf(Component.Serializer.toJson(itextcomponent))));
                 }
 
                 compoundnbt.put("pages", listnbt);
@@ -120,7 +115,7 @@ public class GeneticsEncyclopedia extends Item {
     }
 
     @Override
-    public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt) {
+    public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
 
     }
 }

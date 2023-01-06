@@ -1,67 +1,70 @@
 package mokiyoki.enhancedanimals.blocks;
 
 import mokiyoki.enhancedanimals.init.ModBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CropsBlock;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.state.properties.DoubleBlockHalf;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 import java.util.Random;
 
-public class GrowableDoubleHigh extends CropsBlock {
+import net.minecraft.world.level.block.state.BlockBehaviour.OffsetType;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
+public class GrowableDoubleHigh extends CropBlock {
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 //    private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[]{Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 2.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 4.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 5.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 6.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 7.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 8.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 9.0D, 11.0D), Block.makeCuboidShape(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D)};
-    private IItemProvider plantType;
+    private ItemLike plantType;
     private boolean onlyGrowsOnGrass;
-    public GrowableDoubleHigh(Properties properties, IItemProvider plant, boolean growsOnDirt) {
+    public GrowableDoubleHigh(Properties properties, ItemLike plant, boolean growsOnDirt) {
         super(properties);
-        this.setDefaultState(this.stateContainer.getBaseState().with(HALF, DoubleBlockHalf.LOWER));
+        this.registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER));
         setPlantType(plant);
         setOnlyGrowsOnGrass(growsOnDirt);
     }
 
     @Nullable
-    public BlockState getStateForPlacement(BlockItemUseContext context) {
-        BlockPos blockpos = context.getPos();
-        return blockpos.getY() < context.getWorld().getDimensionType().getLogicalHeight() - 1 && context.getWorld().getBlockState(blockpos.up()).isReplaceable(context) ? super.getStateForPlacement(context) : null;
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockPos blockpos = context.getClickedPos();
+        return blockpos.getY() < context.getLevel().dimensionType().logicalHeight() - 1 && context.getLevel().getBlockState(blockpos.above()).canBeReplaced(context) ? super.getStateForPlacement(context) : null;
     }
 
 
     /**
      * Called by ItemBlocks after a block is set in the world, to allow post-place logic
      */
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        worldIn.setBlockState(pos.up(), this.getDefaultState().with(HALF, DoubleBlockHalf.UPPER).with(AGE, 0));
+    public void setPlacedBy(Level worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        worldIn.setBlockAndUpdate(pos.above(), this.defaultBlockState().setValue(HALF, DoubleBlockHalf.UPPER).setValue(AGE, 0));
     }
 
-    public void placeAt(IWorld worldIn, BlockPos pos, int flags) {
-        worldIn.setBlockState(pos, this.getDefaultState().with(HALF, DoubleBlockHalf.LOWER), flags);
-        worldIn.setBlockState(pos.up(), this.getDefaultState().with(HALF, DoubleBlockHalf.UPPER), flags);
+    public void placeAt(LevelAccessor worldIn, BlockPos pos, int flags) {
+        worldIn.setBlock(pos, this.defaultBlockState().setValue(HALF, DoubleBlockHalf.LOWER), flags);
+        worldIn.setBlock(pos.above(), this.defaultBlockState().setValue(HALF, DoubleBlockHalf.UPPER), flags);
     }
 
     /**
      * Spawns the block's drops in the world. By the time this is called the Block has possibly been set to air via
      * Block.removedByPlayer
      */
-    public void harvestBlock(World worldIn, PlayerEntity player, BlockPos pos, BlockState state, @Nullable TileEntity te, ItemStack stack) {
-        super.harvestBlock(worldIn, player, pos, Blocks.AIR.getDefaultState(), te, stack);
+    public void playerDestroy(Level worldIn, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity te, ItemStack stack) {
+        super.playerDestroy(worldIn, player, pos, Blocks.AIR.defaultBlockState(), te, stack);
     }
 
     /**
@@ -69,24 +72,24 @@ public class GrowableDoubleHigh extends CropsBlock {
      * this block
      */
 
-    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
-        DoubleBlockHalf doubleblockhalf = state.get(HALF);
-        BlockPos blockpos = doubleblockhalf == DoubleBlockHalf.LOWER ? pos.up() : pos.down();
+    public void playerWillDestroy(Level worldIn, BlockPos pos, BlockState state, Player player) {
+        DoubleBlockHalf doubleblockhalf = state.getValue(HALF);
+        BlockPos blockpos = doubleblockhalf == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
         BlockState blockstate = worldIn.getBlockState(blockpos);
-        if (blockstate.getBlock() == this && blockstate.get(HALF) != doubleblockhalf) {
-            worldIn.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 35);
-            worldIn.playEvent(player, 2001, blockpos, Block.getStateId(blockstate));
-            if (!worldIn.isRemote && !player.isCreative()) {
-                spawnDrops(state, worldIn, pos, (TileEntity)null, player, player.getHeldItemMainhand());
-                spawnDrops(blockstate, worldIn, blockpos, (TileEntity)null, player, player.getHeldItemMainhand());
+        if (blockstate.getBlock() == this && blockstate.getValue(HALF) != doubleblockhalf) {
+            worldIn.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
+            worldIn.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
+            if (!worldIn.isClientSide && !player.isCreative()) {
+                dropResources(state, worldIn, pos, (BlockEntity)null, player, player.getMainHandItem());
+                dropResources(blockstate, worldIn, blockpos, (BlockEntity)null, player, player.getMainHandItem());
             }
         }
 
-        super.onBlockHarvested(worldIn, pos, state, player);
+        super.playerWillDestroy(worldIn, pos, state, player);
     }
 
     @Override
-    public void grow(World worldIn, BlockPos pos, BlockState state) {
+    public void growCrops(Level worldIn, BlockPos pos, BlockState state) {
 //        int i = this.getAge(state) + this.getBonemealAgeIncrease(worldIn);
 //        int j = this.getMaxAge();
 //
@@ -102,29 +105,29 @@ public class GrowableDoubleHigh extends CropsBlock {
     }
 
     @Override
-    public void tick(BlockState state, ServerWorld worldIn, BlockPos pos, Random rand) {
-        if (state.get(HALF) != DoubleBlockHalf.UPPER) {
-            Block groundType = worldIn.getBlockState(pos.down()).getBlock();
+    public void tick(BlockState state, ServerLevel worldIn, BlockPos pos, Random rand) {
+        if (state.getValue(HALF) != DoubleBlockHalf.UPPER) {
+            Block groundType = worldIn.getBlockState(pos.below()).getBlock();
             if (!getOnlyGrowsOnGrass() || groundType == Blocks.GRASS_BLOCK || groundType == Blocks.FARMLAND) {
                 int bottomAge = getAge(worldIn.getBlockState(pos));
                 if (bottomAge < 5) {
                     super.tick(state, worldIn, pos, rand);
                 } else {
-                    if (worldIn.getBlockState(pos.up()).getBlock() != this) {
-                        worldIn.setBlockState(pos.up(), this.getDefaultState().with(AGE, 0).with(HALF, DoubleBlockHalf.UPPER));
+                    if (worldIn.getBlockState(pos.above()).getBlock() != this) {
+                        worldIn.setBlockAndUpdate(pos.above(), this.defaultBlockState().setValue(AGE, 0).setValue(HALF, DoubleBlockHalf.UPPER));
                     }
-                    int topAge = getAge(worldIn.getBlockState(pos.up()));
+                    int topAge = getAge(worldIn.getBlockState(pos.above()));
                     if (topAge < 5) {
-                        super.tick(worldIn.getBlockState(pos.up()), worldIn, pos.up(), rand);
+                        super.tick(worldIn.getBlockState(pos.above()), worldIn, pos.above(), rand);
 //                        int ageUpdate = getAge(worldIn.getBlockState(pos.up()));
 //                        if (topAge != ageUpdate) {
 //                            this.setHalfToUpper(worldIn, pos, ageUpdate);
 //                        }
                     } else if (topAge >= 7 && bottomAge >= 7) {
-                        worldIn.setBlockState(pos.up(), getBlockFromItem(getPlantType().asItem()).getDefaultState().with(HALF, DoubleBlockHalf.UPPER));
-                        worldIn.setBlockState(pos, getBlockFromItem(getPlantType().asItem()).getDefaultState().with(HALF, DoubleBlockHalf.LOWER));
+                        worldIn.setBlockAndUpdate(pos.above(), byItem(getPlantType().asItem()).defaultBlockState().setValue(HALF, DoubleBlockHalf.UPPER));
+                        worldIn.setBlockAndUpdate(pos, byItem(getPlantType().asItem()).defaultBlockState().setValue(HALF, DoubleBlockHalf.LOWER));
                     } else {
-                        super.tick(worldIn.getBlockState(pos.up()), worldIn, pos.up(), rand);
+                        super.tick(worldIn.getBlockState(pos.above()), worldIn, pos.above(), rand);
 //                        int ageUpdate = getAge(worldIn.getBlockState(pos.up()));
 //                        if (topAge != ageUpdate) {
 //                            this.setHalfToUpper(worldIn, pos, ageUpdate);
@@ -134,23 +137,23 @@ public class GrowableDoubleHigh extends CropsBlock {
                 }
             }
         } else {
-            int age = state.get(AGE);
+            int age = state.getValue(AGE);
             if (age != 0) {
-                BlockState bottomState = worldIn.getBlockState(pos.down());
+                BlockState bottomState = worldIn.getBlockState(pos.below());
                 Block bottomBlock = bottomState.getBlock();
-                if (bottomBlock instanceof GrowableDoubleHigh && bottomState.get(AGE) < 7) {
-                    int bottomAge = bottomState.get(AGE);
+                if (bottomBlock instanceof GrowableDoubleHigh && bottomState.getValue(AGE) < 7) {
+                    int bottomAge = bottomState.getValue(AGE);
                     age = bottomAge + age;
-                    worldIn.setBlockState(pos.down(), this.getDefaultState().with(HALF, DoubleBlockHalf.LOWER).with(AGE, age > 7 ? 7 : age));
+                    worldIn.setBlockAndUpdate(pos.below(), this.defaultBlockState().setValue(HALF, DoubleBlockHalf.LOWER).setValue(AGE, age > 7 ? 7 : age));
                     age = age - 7;
-                    worldIn.setBlockState(pos, this.getDefaultState().with(HALF, DoubleBlockHalf.UPPER).with(AGE, age < 0 ? 0 : age));
+                    worldIn.setBlockAndUpdate(pos, this.defaultBlockState().setValue(HALF, DoubleBlockHalf.UPPER).setValue(AGE, age < 0 ? 0 : age));
                 }
             }
         }
     }
 
-    public void setHalfToUpper(World world, BlockPos pos, int age) {
-            world.setBlockState(pos.up(), this.withAge(age).with(HALF, DoubleBlockHalf.UPPER));
+    public void setHalfToUpper(Level world, BlockPos pos, int age) {
+            world.setBlockAndUpdate(pos.above(), this.getStateForAge(age).setValue(HALF, DoubleBlockHalf.UPPER));
     }
 
 //    @Override
@@ -167,11 +170,11 @@ public class GrowableDoubleHigh extends CropsBlock {
     }
 
     @Override
-    public IItemProvider getSeedsItem() { return this.plantType; }
+    public ItemLike getBaseSeedId() { return this.plantType; }
 
-    protected IItemProvider getPlantType() { return this.plantType; }
+    protected ItemLike getPlantType() { return this.plantType; }
 
-    protected void setPlantType(IItemProvider plant) {
+    protected void setPlantType(ItemLike plant) {
         this.plantType = plant;
     }
 
@@ -184,21 +187,21 @@ public class GrowableDoubleHigh extends CropsBlock {
     }
 
     @Override
-    protected boolean isValidGround(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    protected boolean mayPlaceOn(BlockState state, BlockGetter worldIn, BlockPos pos) {
         Block block = state.getBlock();
-        return block == Blocks.GRASS_BLOCK || block == Blocks.DIRT || block == Blocks.COARSE_DIRT || block == Blocks.PODZOL || block == Blocks.FARMLAND || block == ModBlocks.SPARSEGRASS_BLOCK;
+        return block == Blocks.GRASS_BLOCK || block == Blocks.DIRT || block == Blocks.COARSE_DIRT || block == Blocks.PODZOL || block == Blocks.FARMLAND || block == ModBlocks.SPARSEGRASS_BLOCK.get();
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
-        if (state.get(HALF) != DoubleBlockHalf.UPPER) {
-            return (super.isValidPosition(state, worldIn, pos) || worldIn.getBlockState(pos.up()).getBlock() == this);
+    public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos) {
+        if (state.getValue(HALF) != DoubleBlockHalf.UPPER) {
+            return (super.canSurvive(state, worldIn, pos) || worldIn.getBlockState(pos.above()).getBlock() == this);
         } else {
-            BlockState blockstate = worldIn.getBlockState(pos.down());
+            BlockState blockstate = worldIn.getBlockState(pos.below());
             if (state.getBlock() != this) {
-                return super.isValidPosition(state, worldIn, pos); //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
+                return super.canSurvive(state, worldIn, pos); //Forge: This function is called during world gen and placement, before this block is set, so if we are not 'here' then assume it's the pre-check.
             }
-            return blockstate.getBlock() == this && blockstate.get(HALF) == DoubleBlockHalf.LOWER;
+            return blockstate.getBlock() == this && blockstate.getValue(HALF) == DoubleBlockHalf.LOWER;
         }
     }
 
@@ -208,8 +211,8 @@ public class GrowableDoubleHigh extends CropsBlock {
 //    }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(HALF);
     }
 

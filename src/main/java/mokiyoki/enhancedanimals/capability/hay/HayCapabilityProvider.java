@@ -1,27 +1,27 @@
 package mokiyoki.enhancedanimals.capability.hay;
 
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
  * Created by saemon on 29/09/2018.
  */
-public class HayCapabilityProvider implements IHayCapability, ICapabilitySerializable<INBT> {
+public class HayCapabilityProvider implements IHayCapability, ICapabilitySerializable<Tag> {
 
-    @CapabilityInject(IHayCapability.class)
-    public static final Capability<IHayCapability> HAY_CAP = null;
+    public static Capability<IHayCapability> HAY_CAP = CapabilityManager.get(new CapabilityToken<>() {});
 
     private final LazyOptional<IHayCapability> holder = LazyOptional.of(() -> this);
 
@@ -53,14 +53,39 @@ public class HayCapabilityProvider implements IHayCapability, ICapabilitySeriali
         return HAY_CAP.orEmpty(capability, holder);
     }
 
-
     @Override
-    public INBT serializeNBT() {
-        return HAY_CAP.getStorage().writeNBT(HAY_CAP, this, null);
+    public Tag serializeNBT() {
+        CompoundTag compound = new CompoundTag();
+        Set<BlockPos> allHayBlockPos = this.getAllHayPos();
+
+        ListTag nbttaglist = new ListTag();
+
+        for (BlockPos blockPos : allHayBlockPos)
+        {
+            CompoundTag nbttagcompound = new CompoundTag();
+            nbttagcompound.putInt("X", blockPos.getX());
+            nbttagcompound.putInt("Y", blockPos.getY());
+            nbttagcompound.putInt("Z", blockPos.getZ());
+            nbttaglist.add(nbttagcompound);
+        }
+
+        compound.put("HaysPos", nbttaglist);
+
+        return compound;
     }
 
     @Override
-    public void deserializeNBT(INBT nbt) {
-        HAY_CAP.getStorage().readNBT(HAY_CAP, this, null, nbt);
+    public void deserializeNBT(Tag nbt) {
+        CompoundTag compound = (CompoundTag) nbt;
+        Set<BlockPos> allHayBlockPos = new HashSet<>();
+        ListTag nbttaglist = compound.getList("HaysPos", 10);
+
+        for (int i = 0; i < nbttaglist.size(); ++i) {
+            CompoundTag nbttagcompound = nbttaglist.getCompound(i);
+            BlockPos blockPosOfHay = new BlockPos(nbttagcompound.getInt("X"), nbttagcompound.getInt("Y"), nbttagcompound.getInt("Z"));
+            allHayBlockPos.add(blockPosOfHay);
+        }
+
+        this.setAllHayPos(allHayBlockPos);
     }
 }

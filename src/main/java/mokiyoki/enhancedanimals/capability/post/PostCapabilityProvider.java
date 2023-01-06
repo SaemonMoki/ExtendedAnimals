@@ -1,10 +1,13 @@
 package mokiyoki.enhancedanimals.capability.post;
 
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -16,10 +19,9 @@ import java.util.List;
 /**
  * Created by saemon on 29/09/2018.
  */
-public class PostCapabilityProvider implements IPostCapability, ICapabilitySerializable<INBT> {
+public class PostCapabilityProvider implements IPostCapability, ICapabilitySerializable<Tag> {
 
-    @CapabilityInject(IPostCapability.class)
-    public static final Capability<IPostCapability> POST_CAP = null;
+    public static Capability<IPostCapability> POST_CAP = CapabilityManager.get(new CapabilityToken<>() {});
 
     private final LazyOptional<IPostCapability> holder = LazyOptional.of(() -> this);
 
@@ -53,12 +55,38 @@ public class PostCapabilityProvider implements IPostCapability, ICapabilitySeria
 
 
     @Override
-    public INBT serializeNBT() {
-        return POST_CAP.getStorage().writeNBT(POST_CAP, this, null);
+    public Tag serializeNBT() {
+        CompoundTag compound = new CompoundTag();
+        List<BlockPos> allPostBlockPos = this.getAllPostPos();
+
+        ListTag nbttaglist = new ListTag();
+
+        for (BlockPos blockPos : allPostBlockPos)
+        {
+            CompoundTag nbttagcompound = new CompoundTag();
+            nbttagcompound.putInt("X", blockPos.getX());
+            nbttagcompound.putInt("Y", blockPos.getY());
+            nbttagcompound.putInt("Z", blockPos.getZ());
+            nbttaglist.add(nbttagcompound);
+        }
+
+        compound.put("PostsPos", nbttaglist);
+
+        return compound;
     }
 
     @Override
-    public void deserializeNBT(INBT nbt) {
-        POST_CAP.getStorage().readNBT(POST_CAP, this, null, nbt);
+    public void deserializeNBT(Tag nbt) {
+        CompoundTag compound = (CompoundTag) nbt;
+        List<BlockPos> allPostBlockPos = new ArrayList<BlockPos>();
+        ListTag nbttaglist = compound.getList("PostsPos", 10);
+
+        for (int i = 0; i < nbttaglist.size(); ++i) {
+            CompoundTag nbttagcompound = nbttaglist.getCompound(i);
+            BlockPos blockPosOfPost = new BlockPos(nbttagcompound.getInt("X"), nbttagcompound.getInt("Y"), nbttagcompound.getInt("Z"));
+            allPostBlockPos.add(blockPosOfPost);
+        }
+
+        this.setAllPostPos(allPostBlockPos);
     }
 }

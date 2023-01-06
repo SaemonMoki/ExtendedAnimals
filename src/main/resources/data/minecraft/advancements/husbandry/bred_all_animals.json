@@ -19,7 +19,7 @@
     "experience": 100
   },
   "criteria": {
-    "eanimod:enhanced_chicken": {
+    "enhanced_chicken": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {
@@ -27,7 +27,15 @@
         }
       }
     },
-    "eanimod:enhanced_sheep": {
+    "chicken": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:chicken"
+        }
+      }
+    },
+    "enhanced_sheep": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {
@@ -35,7 +43,15 @@
         }
       }
     },
-    "eanimod:enhanced_cow": {
+    "sheep": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:sheep"
+        }
+      }
+    },
+    "enhanced_cow": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {
@@ -43,7 +59,31 @@
         }
       }
     },
-    "eanimod:enhanced_rabbit": {
+    "cow": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:cow"
+        }
+      }
+    },
+    "enhanced_mooshroom": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "eanimod:enhanced_mooshroom"
+        }
+      }
+    },
+    "mooshroom": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:mooshroom"
+        }
+      }
+    },
+    "enhanced_rabbit": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {
@@ -51,7 +91,15 @@
         }
       }
     },
-    "eanimod:enhanced_llama": {
+    "rabbit": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:rabbit"
+        }
+      }
+    },
+    "enhanced_llama": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {
@@ -59,7 +107,23 @@
         }
       }
     },
-    "minecraft:turtle": {
+    "llama": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:llama"
+        }
+      }
+    },
+    "enhanced_turtle": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "eanimod:enhanced_turtle"
+        }
+      }
+    },
+    "turtle": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {
@@ -67,11 +131,85 @@
         }
       }
     },
-    "minecraft:ocelot": {
+    "enhanced_pig": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {
-          "type": "minecraft:ocelot"
+          "type": "eanimod:enhanced_pig"
+        }
+      }
+    },
+    "pig": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:pig"
+        }
+      }
+    },
+    "enhanced_axolotl": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "eanimod:enhanced_axolotl"
+        }
+      }
+    },
+    "axolotl": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:axolotl"
+        }
+      }
+    },
+    "minecraft:horse": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "child": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:horse"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "minecraft:donkey": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "child": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:donkey"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "minecraft:mule": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "child": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:mule"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "minecraft:fox": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "parent": {
+          "type": "minecraft:fox"
         }
       }
     },
@@ -83,75 +221,156 @@
         }
       }
     },
-    "eanimod:enhanced_pig": {
+    "minecraft:cat": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {
-          "type": "eanimod:enhanced_pig"
+          "type": "minecraft:cat"
         }
       }
     },
-    "eanimod:enhanced_mooshroom": {
+    "minecraft:ocelot": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
         "parent": {
-          "type": "eanimod:enhanced_mooshroom"
+          "type": "minecraft:ocelot"
         }
       }
     },
-    "minecraft:fox": {
+    "minecraft:panda": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
-        "parent": {
-          "type": "minecraft:fox"
-        }
+        "child": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:panda"
+            },
+            "entity": "this"
+          }
+        ]
       }
     },
-    "minecraft:horse": {
+    "minecraft:bee": {
       "trigger": "minecraft:bred_animals",
       "conditions": {
-        "parent": {
-          "type": "minecraft:horse"
-        }
+        "child": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:bee"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "minecraft:hoglin": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "child": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:hoglin"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "minecraft:strider": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "child": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:strider"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "minecraft:goat": {
+      "trigger": "minecraft:bred_animals",
+      "conditions": {
+        "child": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:goat"
+            },
+            "entity": "this"
+          }
+        ]
       }
     }
   },
   "requirements": [
     [
-      "eanimod:enhanced_chicken"
+      "enhanced_chicken", "chicken"
     ],
     [
-      "eanimod:enhanced_sheep"
+      "enhanced_sheep", "sheep"
     ],
     [
-      "eanimod:enhanced_cow"
+      "enhanced_cow", "cow"
     ],
     [
-      "eanimod:enhanced_rabbit"
+      "enhanced_mooshroom", "mooshroom"
     ],
     [
-      "eanimod:enhanced_llama"
+      "enhanced_rabbit", "rabbit"
     ],
     [
-      "minecraft:turtle"
+      "enhanced_llama", "llama"
     ],
     [
-      "minecraft:ocelot"
+      "enhanced_turtle", "turtle"
     ],
     [
-      "minecraft:wolf"
+      "enhanced_pig", "pig"
     ],
     [
-      "eanimod:enhanced_mooshroom"
+      "enhanced_axolotl", "axolotl"
     ],
     [
-      "eanimod:enhanced_pig"
+      "minecraft:horse"
+    ],
+    [
+      "minecraft:donkey"
+    ],
+    [
+      "minecraft:mule"
     ],
     [
       "minecraft:fox"
     ],
     [
-      "minecraft:horse"
+      "minecraft:wolf"
+    ],
+    [
+      "minecraft:cat"
+    ],
+    [
+      "minecraft:ocelot"
+    ],
+    [
+      "minecraft:bee"
+    ],
+    [
+      "minecraft:hoglin"
+    ],
+    [
+      "minecraft:strider"
+    ],
+    [
+      "minecraft:goat"
+    ],
+    [
+      "minecraft:panda"
     ]
   ]
 }

@@ -2,54 +2,55 @@ package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
 import mokiyoki.enhancedanimals.entity.Temperament;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.util.DefaultRandomPos;
+import net.minecraft.world.entity.ai.util.RandomPos;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.function.Predicate;
 
 public class EnhancedAvoidEntityGoal<T extends LivingEntity> extends Goal {
-    protected final CreatureEntity entity;
+    protected final PathfinderMob entity;
     private final double farSpeed;
     private final double nearSpeed;
-    protected T field_75376_d;
+    protected T toAvoid;
     protected final float avoidDistance;
     protected Path path;
-    protected final PathNavigator navigation;
+    protected final PathNavigation navigation;
     protected final Class<T> classToAvoid;
     protected final Predicate<LivingEntity> avoidTargetSelector;
-    protected final Predicate<LivingEntity> field_203784_k;
-    private final EntityPredicate field_220872_k;
+    protected final Predicate<LivingEntity> predicateOnAvoidEntity;
+    private final TargetingConditions avoidEntityTargeting;
     Map<Temperament, Integer> temperaments;
 
-    public EnhancedAvoidEntityGoal(CreatureEntity entityIn, Class<T> classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn, Map<Temperament, Integer> temperaments) {
+    public EnhancedAvoidEntityGoal(PathfinderMob entityIn, Class<T> classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn, Map<Temperament, Integer> temperaments) {
         this(entityIn, classToAvoidIn, (p_200828_0_) -> {
-            return true;
-        }, avoidDistanceIn, farSpeedIn, nearSpeedIn, EntityPredicates.CAN_AI_TARGET::test, temperaments);
+            return p_200828_0_.getPassengers().isEmpty();
+        }, avoidDistanceIn, farSpeedIn, nearSpeedIn, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test, temperaments);
     }
 
-    public EnhancedAvoidEntityGoal(CreatureEntity entityIn, Class<T> avoidClass, Predicate<LivingEntity> targetPredicate, float distance, double nearSpeedIn, double farSpeedIn, Predicate<LivingEntity> p_i48859_9_, Map<Temperament, Integer> temperaments) {
+    public EnhancedAvoidEntityGoal(PathfinderMob entityIn, Class<T> avoidClass, Predicate<LivingEntity> targetPredicate, float distance, double nearSpeedIn, double farSpeedIn, Predicate<LivingEntity> p_i48859_9_, Map<Temperament, Integer> temperaments) {
         this.entity = entityIn;
         this.classToAvoid = avoidClass;
         this.avoidTargetSelector = targetPredicate;
         this.avoidDistance = distance;
         this.farSpeed = nearSpeedIn;
         this.nearSpeed = farSpeedIn;
-        this.field_203784_k = p_i48859_9_;
-        this.navigation = entityIn.getNavigator();
-        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
-        this.field_220872_k = (new EntityPredicate()).setDistance((double)distance).setCustomPredicate(p_i48859_9_.and(targetPredicate));
+        this.predicateOnAvoidEntity = p_i48859_9_;
+        this.navigation = entityIn.getNavigation();
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+        this.avoidEntityTargeting = TargetingConditions.forCombat().range((double)distance).selector(p_i48859_9_.and(targetPredicate));
     }
 
-    public EnhancedAvoidEntityGoal(CreatureEntity p_i48860_1_, Class<T> p_i48860_2_, float p_i48860_3_, double p_i48860_4_, double p_i48860_6_, Predicate<LivingEntity> p_i48860_8_, Map<Temperament, Integer> temperaments) {
+    public EnhancedAvoidEntityGoal(PathfinderMob p_i48860_1_, Class<T> p_i48860_2_, float p_i48860_3_, double p_i48860_4_, double p_i48860_6_, Predicate<LivingEntity> p_i48860_8_, Map<Temperament, Integer> temperaments) {
         this(p_i48860_1_, p_i48860_2_, (p_203782_0_) -> {
             return true;
         }, p_i48860_3_, p_i48860_4_, p_i48860_6_, p_i48860_8_, temperaments);
@@ -58,19 +59,19 @@ public class EnhancedAvoidEntityGoal<T extends LivingEntity> extends Goal {
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
-    public boolean shouldExecute() {
-        this.field_75376_d = this.entity.world.func_225318_b(this.classToAvoid, this.field_220872_k, this.entity, this.entity.getPosX(), this.entity.getPosY(), this.entity.getPosZ(), this.entity.getBoundingBox().grow((double)this.avoidDistance, 3.0D, (double)this.avoidDistance));
-        if (this.field_75376_d == null) {
+    public boolean canUse() {
+        this.toAvoid = this.entity.level.getNearestEntity(this.classToAvoid, this.avoidEntityTargeting, this.entity, this.entity.getX(), this.entity.getY(), this.entity.getZ(), this.entity.getBoundingBox().inflate((double)this.avoidDistance, 3.0D, (double)this.avoidDistance));
+        if (this.toAvoid == null) {
             return false;
         } else {
-            Vector3d vec3d = RandomPositionGenerator.findRandomTargetBlockAwayFrom(this.entity, 16, 7, new Vector3d(this.field_75376_d.getPosX(), this.field_75376_d.getPosY(), this.field_75376_d.getPosZ()));
+            Vec3 vec3d = DefaultRandomPos.getPosAway(this.entity, 16, 7, new Vec3(this.toAvoid.getX(), this.toAvoid.getY(), this.toAvoid.getZ()));
             if (vec3d == null) {
                 return false;
-            } else if (this.field_75376_d.getDistanceSq(vec3d.x, vec3d.y, vec3d.z) < this.field_75376_d.getDistanceSq(this.entity)) {
+            } else if (this.toAvoid.distanceToSqr(vec3d.x, vec3d.y, vec3d.z) < this.toAvoid.distanceToSqr(this.entity)) {
                 return false;
             } else {
                 ((EnhancedAnimalAbstract)this.entity).awaken();
-                this.path = this.navigation.getPathToPos(vec3d.x, vec3d.y, vec3d.z, 0);
+                this.path = this.navigation.createPath(vec3d.x, vec3d.y, vec3d.z, 0);
                 return this.path != null;
             }
         }
@@ -79,32 +80,32 @@ public class EnhancedAvoidEntityGoal<T extends LivingEntity> extends Goal {
     /**
      * Returns whether an in-progress EntityAIBase should continue executing
      */
-    public boolean shouldContinueExecuting() {
-        return !this.navigation.noPath();
+    public boolean canContinueToUse() {
+        return !this.navigation.isDone();
     }
 
     /**
      * Execute a one shot task or start executing a continuous task
      */
-    public void startExecuting() {
-        this.navigation.setPath(this.path, this.farSpeed);
+    public void start() {
+        this.navigation.moveTo(this.path, this.farSpeed);
     }
 
     /**
      * Reset the task's internal state. Called when this task is interrupted by another one
      */
-    public void resetTask() {
-        this.field_75376_d = null;
+    public void stop() {
+        this.toAvoid = null;
     }
 
     /**
      * Keep ticking a continuous task that has already been started
      */
     public void tick() {
-        if (this.entity.getDistanceSq(this.field_75376_d) < 49.0D) {
-            this.entity.getNavigator().setSpeed(this.nearSpeed);
+        if (this.entity.distanceToSqr(this.toAvoid) < 49.0D) {
+            this.entity.getNavigation().setSpeedModifier(this.nearSpeed);
         } else {
-            this.entity.getNavigator().setSpeed(this.farSpeed);
+            this.entity.getNavigation().setSpeedModifier(this.farSpeed);
         }
 
     }

@@ -2,7 +2,7 @@ package mokiyoki.enhancedanimals.init.breeds;
 
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.GeneSketch;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.level.biome.Biomes;
 
 public class PigBreeds {
     public static final Breed LARGEWHITE = new Breed(new Breed.Properties().setData("LargeWhite", Biomes.FOREST, Breed.Rarity.ORDINARY)
@@ -17,6 +17,7 @@ public class PigBreeds {
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "1", "1").add(12, "3","1").add(32, "2","1","2","2").add(68, "2","2","1","2","1","1")));
     public static final Breed MULEFOOT = new Breed(new Breed.Properties().setData("Mulefoot", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "5","1").add(12, "3","1").add(32, "2","1","2","2").add(60, "2")));
+
     public static final Breed GLOUCESTERSHIRE = new Breed(new Breed.Properties().setData("GloucestershireOldSpot", Biomes.FOREST, Breed.Rarity.ORDINARY)
             .setGeneSketch(new GeneSketch(), new GeneSketch().add(0, "3").add(12, "3","1").add(32, "2","1","2","2")));
     public static final Breed KUNEKUNE = new Breed(new Breed.Properties().setData("KuneKune", Biomes.FOREST, Breed.Rarity.RARE)

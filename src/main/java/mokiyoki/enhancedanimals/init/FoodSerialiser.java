@@ -5,12 +5,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.JsonReloadListener;
-import net.minecraft.item.Item;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.world.item.Item;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.IReverseTag;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -26,8 +28,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
-public class FoodSerialiser  extends JsonReloadListener {
+public class FoodSerialiser extends SimpleJsonResourceReloadListener {
 
     private static Map<String, AnimalFoodMap> compiledAnimalFoodMap = new HashMap<>();
 
@@ -36,7 +39,7 @@ public class FoodSerialiser  extends JsonReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> dataMap, IResourceManager resourceManagerIn, IProfiler profilerIn) {
+    protected void apply(Map<ResourceLocation, JsonElement> dataMap, ResourceManager resourceManagerIn, ProfilerFiller profilerIn) {
         loadFoodMappingFile(dataMap);
     }
 
@@ -52,12 +55,12 @@ public class FoodSerialiser  extends JsonReloadListener {
 
     private static void createOrReplaceConfig(ResourceLocation file, JsonObject jsonFromData) {
         Boolean replaceConfig = jsonFromData.get("replaceDefault").getAsBoolean();
-        if (replaceConfig || (!new File(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\" + file.getPath() + ".json").isFile())) {
+        if (replaceConfig || (!new File(FMLPaths.CONFIGDIR.get().toString() + File.separator + "genetic_animals" + File.separator + file.getPath() + ".json").isFile())) {
             Gson gson = new GsonBuilder()
                     .setPrettyPrinting()
                     .create();
             try {
-                File newFile = new File(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\" + file.getPath() + ".json");
+                File newFile = new File(FMLPaths.CONFIGDIR.get().toString() + File.separator + "genetic_animals" + File.separator + file.getPath() + ".json");
                 if (!newFile.exists()) {
                     newFile.getParentFile().mkdir();
                     newFile.createNewFile();
@@ -77,7 +80,7 @@ public class FoodSerialiser  extends JsonReloadListener {
 
     private static void readFoodConfig(ResourceLocation file) {
         try {
-            FileInputStream configPath = new FileInputStream(FMLPaths.CONFIGDIR.get().toString()+"\\genetic_animals\\" + file.getPath() + ".json");
+            FileInputStream configPath = new FileInputStream(FMLPaths.CONFIGDIR.get().toString() + File.separator + "genetic_animals" + File.separator + file.getPath() + ".json");
 
             InputStreamReader in_strm = new InputStreamReader(configPath);
 
@@ -146,6 +149,10 @@ public class FoodSerialiser  extends JsonReloadListener {
         return compiledAnimalFoodMap.get("turtle");
     }
 
+    public static AnimalFoodMap axolotlFoodMap() {
+        return compiledAnimalFoodMap.get("axolotl");
+    }
+
     public static class AnimalFoodMap {
 
         private List<FoodMap> foodMapList = new ArrayList<>();
@@ -195,7 +202,7 @@ public class FoodSerialiser  extends JsonReloadListener {
         }
 
         private boolean findTags(Item item, String foodTag) {
-            return item.getTags().stream().anyMatch(tag -> tag.toString().equals(foodTag));
+            return ForgeRegistries.ITEMS.tags().getReverseTag(item).map(IReverseTag::getTagKeys).orElseGet(Stream::of).anyMatch(tag -> tag.toString().equals(foodTag));
         }
     }
 }

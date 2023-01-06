@@ -1,0 +1,10 @@
+{
+  "replaceDefault": false,
+  "values": [
+    {
+      "registryName": "minecraft:tropical_fish_bucket",
+      "hungerRestored": 6000,
+      "isBreedingItem": true
+    }
+  ]
+}

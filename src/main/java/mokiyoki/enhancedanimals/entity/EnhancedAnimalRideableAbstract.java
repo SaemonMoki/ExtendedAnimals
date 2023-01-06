@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.entity;
 
-import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
+//import mokiyoki.enhancedanimals.ai.general.EnhancedTemptGoal;
 import mokiyoki.enhancedanimals.entity.util.Colouration;
 import mokiyoki.enhancedanimals.entity.util.Equipment;
 import mokiyoki.enhancedanimals.init.ModItems;
@@ -11,63 +11,60 @@ import mokiyoki.enhancedanimals.items.CustomizableSaddleVanilla;
 import mokiyoki.enhancedanimals.items.CustomizableSaddleWestern;
 import mokiyoki.enhancedanimals.items.DebugGenesBook;
 import mokiyoki.enhancedanimals.items.MilkBottleHalf;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IJumpingMount;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.RangedAttribute;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.MilkBucketItem;
-import net.minecraft.item.NameTagItem;
-import net.minecraft.item.SaddleItem;
-import net.minecraft.item.ShootableItem;
-import net.minecraft.item.TieredItem;
-import net.minecraft.item.ToolItem;
-import net.minecraft.item.TridentItem;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import mokiyoki.enhancedanimals.renderer.texture.TextureGrouping;
+import mokiyoki.enhancedanimals.renderer.texture.TextureLayer;
+import mokiyoki.enhancedanimals.renderer.texture.TexturingType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PlayerRideableJumping;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.RangedAttribute;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SaddleItem;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.TridentItem;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChestedAbstract implements IJumpingMount {
+public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChestedAbstract implements PlayerRideableJumping {
     //TODO needs something universal to tell the model that what the equipment is
 
-    private static final DataParameter<Byte> STATUS = EntityDataManager.createKey(EnhancedAnimalRideableAbstract.class, DataSerializers.BYTE);
-    protected static final Attribute JUMP_STRENGTH = (new RangedAttribute( "ea.jumpStrength", 0.7D, 0.0D, 2.0D)).setShouldWatch(true);
-    private static final DataParameter<Boolean> HAS_SADDLE = EntityDataManager.createKey(EnhancedAnimalRideableAbstract.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> BOOST_TIME = EntityDataManager.createKey(EnhancedAnimalRideableAbstract.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Byte> STATUS = SynchedEntityData.defineId(EnhancedAnimalRideableAbstract.class, EntityDataSerializers.BYTE);
+    protected static final Attribute JUMP_STRENGTH = (new RangedAttribute( "ea.jumpStrength", 0.7D, 0.0D, 2.0D)).setSyncable(true);
+    private static final EntityDataAccessor<Boolean> HAS_SADDLE = SynchedEntityData.defineId(EnhancedAnimalRideableAbstract.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> BOOST_TIME = SynchedEntityData.defineId(EnhancedAnimalRideableAbstract.class, EntityDataSerializers.INT);
 
     private static final String[] TEXTURES_SADDLE = new String[] {
             "d_saddle_vanilla.png", "d_saddle_western.png", "d_saddle_english.png"
@@ -94,95 +91,96 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     private int totalBoostTime;
     private int maxRideTime;
     private int rideTime;
+    protected float playerJumpPendingScale;
+    protected int gallopSoundCounter;
     protected float dwarf = -1.0F;
 
     protected int temper;
 
-    protected EnhancedAnimalRideableAbstract(EntityType<? extends EnhancedAnimalAbstract> type, World worldIn, int SgenesSize, int AgenesSize, boolean bottleFeedable) {
+    protected EnhancedAnimalRideableAbstract(EntityType<? extends EnhancedAnimalAbstract> type, Level worldIn, int SgenesSize, int AgenesSize, boolean bottleFeedable) {
         super(type, worldIn, SgenesSize, AgenesSize, bottleFeedable);
-        this.stepHeight = 1.1F;
+        this.maxUpStep = 1.1F;
     }
 
     protected static void registerAnimalAttributes() {
-        MobEntity.func_233666_p_().createMutableAttribute(JUMP_STRENGTH);
+        Mob.createMobAttributes().add(JUMP_STRENGTH);
     }
 
-//    public static AttributeModifierMap.MutableAttribute func_234237_fg_() {
-//        return MobEntity.func_233666_p_().createMutableAttribute(JUMP_STRENGTH);
+//    public static AttributeModifierMap.MutableAttribute createBaseHorseAttributes() {
+//        return MobEntity.createMobAttributes().createMutableAttribute(JUMP_STRENGTH);
 //    }
 
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(4, new EnhancedTemptGoal(this, 1.0D, 1.2D, false, Items.CARROT_ON_A_STICK));
     }
 
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(STATUS, (byte)0);
-        this.dataManager.register(HAS_SADDLE, false);
-        this.dataManager.register(BOOST_TIME, 0);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(STATUS, (byte)0);
+        this.entityData.define(HAS_SADDLE, false);
+        this.entityData.define(BOOST_TIME, 0);
     }
 
-    public void notifyDataManagerChange(DataParameter<?> key) {
-        if (BOOST_TIME.equals(key) && this.world.isRemote) {
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        if (BOOST_TIME.equals(key) && this.level.isClientSide) {
             this.boosting = true;
             this.boostTime = 0;
-            this.totalBoostTime = this.dataManager.get(BOOST_TIME);
+            this.totalBoostTime = this.entityData.get(BOOST_TIME);
         }
 
-        super.notifyDataManagerChange(key);
+        super.onSyncedDataUpdated(key);
     }
 
     @Override
     public Boolean isAnimalSleeping() {
-        if (this.dataManager.get(HAS_SADDLE)) {
+        if (this.entityData.get(HAS_SADDLE)) {
             return false;
-        } else if (this.isBeingRidden()) {
+        } else if (this.isVehicle()) {
             return false;
         }
             return super.isAnimalSleeping();
     }
 
     protected boolean getRideableWatchableBoolean(int byteNumber) {
-        return (this.dataManager.get(STATUS) & byteNumber) != 0;
+        return (this.entityData.get(STATUS) & byteNumber) != 0;
     }
 
     protected void setRideableWatchableBoolean(int byteNumber, boolean p_110208_2_) {
-        byte b0 = this.dataManager.get(STATUS);
+        byte b0 = this.entityData.get(STATUS);
         if (p_110208_2_) {
-            this.dataManager.set(STATUS, (byte)(b0 | byteNumber));
+            this.entityData.set(STATUS, (byte)(b0 | byteNumber));
         } else {
-            this.dataManager.set(STATUS, (byte)(b0 & ~byteNumber));
+            this.entityData.set(STATUS, (byte)(b0 & ~byteNumber));
         }
     }
 
     @Override
-    public boolean onLivingFall(float distance, float damageMultiplier) {
+    public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource damageSource) {
         if (distance > 1.0F) {
-            this.playSound(SoundEvents.ENTITY_HORSE_LAND, 0.4F, 1.0F);
+            this.playSound(SoundEvents.HORSE_LAND, 0.4F, 1.0F);
         }
 
         int i = this.calculateFallDamage(distance, damageMultiplier);
         if (i <= 0) {
             return false;
         } else {
-            if (this.isBeingRidden()) {
-                for(Entity entity : this.getRecursivePassengers()) {
-                    entity.attackEntityFrom(DamageSource.FALL, (float)i);
+            if (this.isVehicle()) {
+                for(Entity entity : this.getIndirectPassengers()) {
+                    entity.hurt(DamageSource.FALL, (float)i);
                 }
             } else {
-                this.attackEntityFrom(DamageSource.FALL, (float)i);
+                this.hurt(DamageSource.FALL, (float)i);
             }
 
-            this.playFallSound();
+            this.playBlockFallSound();
             return false;
         }
     }
 
     @Override
     protected int calculateFallDamage(float distance, float damageMultiplier) {
-        return MathHelper.ceil((distance * 0.5F - 3.0F) * damageMultiplier);
+        return Mth.ceil((distance * 0.5F - 3.0F) * damageMultiplier);
     }
 
     public boolean isAnimalJumping() {
@@ -199,8 +197,8 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
 
     @Override
-    public void setJumpPower(int jumpPowerIn) {
-        if (this.dataManager.get(HAS_SADDLE)) {
+    public void onPlayerJump(int jumpPowerIn) {
+        if (this.entityData.get(HAS_SADDLE)) {
             if (jumpPowerIn < 0) {
                 jumpPowerIn = 0;
             } else {
@@ -217,7 +215,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     }
 
     public boolean canJump() {
-        return this.dataManager.get(HAS_SADDLE);
+        return this.entityData.get(HAS_SADDLE);
     }
 
     public void handleStartJump(int p_184775_1_) {
@@ -229,7 +227,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     }
 
     private void makeRear() {
-        if (this.canPassengerSteer() || this.isServerWorld()) {
+        if (this.isControlledByLocalInstance() || this.isEffectiveAi()) {
             this.jumpRearingCounter = 1;
             this.setRearing(true);
         }
@@ -247,44 +245,56 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     protected void playStepSound(BlockPos pos, BlockState blockIn) {
         if (!blockIn.getMaterial().isLiquid()) {
-            BlockState blockstate = this.world.getBlockState(pos.up());
-            SoundType soundtype = blockIn.getSoundType(world, pos, this);
+            BlockState blockstate = this.level.getBlockState(pos.above());
+            SoundType soundtype = blockIn.getSoundType(level, pos, this);
             if (blockstate.getBlock() == Blocks.SNOW) {
-                soundtype = blockstate.getSoundType(world, pos, this);
+                soundtype = blockstate.getSoundType(level, pos, this);
             }
 
-            if (this.isBeingRidden()) {
+            if (this.isVehicle()) {
                 ++this.gallopTime;
                 if (this.gallopTime > 5 && this.gallopTime % 3 == 0) {
                     this.playGallopSound(soundtype);
                 } else if (this.gallopTime <= 5) {
-                    this.playSound(SoundEvents.ENTITY_HORSE_STEP_WOOD, soundtype.getVolume() * 0.15F, soundtype.getPitch());
+                    this.playSound(SoundEvents.HORSE_STEP_WOOD, soundtype.getVolume() * 0.15F, soundtype.getPitch());
                 }
             }
         }
     }
 
     protected void playGallopSound(SoundType soundtype) {
-        this.playSound(SoundEvents.ENTITY_HORSE_GALLOP, soundtype.getVolume() * 0.15F, soundtype.getPitch());
+        this.playSound(SoundEvents.HORSE_GALLOP, soundtype.getVolume() * 0.15F, soundtype.getPitch());
     }
 
     @Override
     public boolean canHaveSaddle() {
-        return getAge() >= (3*getAdultAge()/4);
+        return getEnhancedAnimalAge() >= (3*getAdultAge()/4);
     }
 
     public void setSaddled(boolean saddled) {
-        this.dataManager.set(HAS_SADDLE, saddled);
+        this.entityData.set(HAS_SADDLE, saddled);
         List<String> previousSaddleTextures = equipmentTextures.get(Equipment.SADDLE);
         List<String> newSaddleTextures = getSaddleTextures();
 
         if(saddled) {
 //            if(previousSaddleTextures == null || !previousSaddleTextures.containsAll(newSaddleTextures)){
                 equipmentTextures.put(Equipment.SADDLE, newSaddleTextures);
+            TextureGrouping saddleGroup = new TextureGrouping(TexturingType.MERGE_GROUP);
+            for(int i = 0; i < newSaddleTextures.size(); ++i) {
+                if (i == 0) {
+                    saddleGroup.addTextureLayers(new TextureLayer(TexturingType.APPLY_SADDLE_COLOUR, newSaddleTextures.get(0)));
+                } else {
+                    saddleGroup.addTextureLayers(new TextureLayer(newSaddleTextures.get(i)));
+                }
+            }
+
+
+            this.enhancedAnimalEquipmentGrouping.put(Equipment.SADDLE, saddleGroup);
 //            }
         } else {
             if(previousSaddleTextures != null){
                 equipmentTextures.remove(Equipment.SADDLE);
+                this.enhancedAnimalEquipmentGrouping.remove(Equipment.SADDLE);
             }
         }
         this.compiledEquipmentTexture = null; //reset compiled string
@@ -292,7 +302,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
 
     @Override
     protected void updateInventorySlots() {
-        ItemStack saddleStack = this.animalInventory.getStackInSlot(1);
+        ItemStack saddleStack = this.animalInventory.getItem(1);
         this.setSaddled(!saddleStack.isEmpty() && !(saddleStack.getItem() instanceof CustomizableCollar) && this.canHaveSaddle());
         super.updateInventorySlots();
     }
@@ -300,7 +310,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     public void makeMad() {
         SoundEvent soundevent = this.getAngrySound();
         if (soundevent != null) {
-            this.playSound(soundevent, this.getSoundVolume(), this.getSoundPitch());
+            this.playSound(soundevent, this.getSoundVolume(), this.getVoicePitch());
         }
 
     }
@@ -312,7 +322,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     }
 
     public int increaseTemper(int p_110198_1_) {
-        int i = MathHelper.clamp(this.getTemper() + p_110198_1_, 0, this.getMaxTemper());
+        int i = Mth.clamp(this.getTemper() + p_110198_1_, 0, this.getMaxTemper());
         this.setTemper(i);
         return i;
     }
@@ -330,70 +340,70 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     }
 
     @Override
-    public ActionResultType func_230254_b_(PlayerEntity entityPlayer, Hand hand) {
-        ItemStack itemStack = entityPlayer.getHeldItem(hand);
+    public InteractionResult mobInteract(Player entityPlayer, InteractionHand hand) {
+        ItemStack itemStack = entityPlayer.getItemInHand(hand);
         Item item = itemStack.getItem();
-        int age = getAge();
+        int age = getEnhancedAnimalAge();
         int adultAge = getAdultAge();
 
         if (age >= (3*adultAge)/4 && (item == Items.SADDLE || item instanceof CustomizableSaddleVanilla || item instanceof CustomizableSaddleWestern || item instanceof CustomizableSaddleEnglish)){
-            return ActionResultType.func_233537_a_(this.saddleAnimal(itemStack, entityPlayer, hand, this));
+            return InteractionResult.sidedSuccess(this.saddleAnimal(itemStack, entityPlayer, hand, this));
         }
 
-        if ((!this.world.isRemote && this.isFoodItem(itemStack)) || (!this.world.isRemote && isBreedingItem(itemStack)) || item instanceof DebugGenesBook || (this.canHaveBridle() && item instanceof CustomizableBridle) || (this.canHaveBlanket() && isCarpet(itemStack)) || item instanceof CustomizableCollar) {
-            return super.func_230254_b_(entityPlayer, hand);
+        if ((!this.level.isClientSide && this.isFoodItem(itemStack)) || (!this.level.isClientSide && isBreedingItem(itemStack)) || item instanceof DebugGenesBook || (this.canHaveBridle() && item instanceof CustomizableBridle) || (this.canHaveBlanket() && isCarpet(itemStack)) || item instanceof CustomizableCollar) {
+            return super.mobInteract(entityPlayer, hand);
         }
 
-        if (this.isBeingRidden()) {
-            return super.func_230254_b_(entityPlayer, hand);
-        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge && !(hand.equals(Hand.OFF_HAND)) && (itemStack == ItemStack.EMPTY || itemStack.isEmpty() || item instanceof TieredItem || item instanceof TridentItem || item instanceof ShootableItem)) {
+        if (this.isVehicle()) {
+            return super.mobInteract(entityPlayer, hand);
+        } else if (!entityPlayer.isSecondaryUseActive() && age >= adultAge && !(hand.equals(InteractionHand.OFF_HAND)) && (itemStack == ItemStack.EMPTY || itemStack.isEmpty() || item instanceof TieredItem || item instanceof TridentItem || item instanceof ProjectileWeaponItem)) {
             this.mountTo(entityPlayer);
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return super.func_230254_b_(entityPlayer, hand);
+        return super.mobInteract(entityPlayer, hand);
     }
 
     public void equipAnimal(boolean hasChest, boolean hasSaddle, DyeColor blanketColour) {
         if (hasSaddle) {
-            this.animalInventory.setInventorySlotContents(1, new ItemStack(Items.SADDLE, 1));
+            this.animalInventory.setItem(1, new ItemStack(Items.SADDLE, 1));
             this.setSaddled(true);
         }
         super.equipAnimal(hasChest, blanketColour);
     }
 
-    public boolean saddleAnimal(ItemStack saddleItemStack, PlayerEntity player, Hand hand, LivingEntity target) {
+    public boolean saddleAnimal(ItemStack saddleItemStack, Player player, InteractionHand hand, LivingEntity target) {
         EnhancedAnimalRideableAbstract enhancedAnimal = (EnhancedAnimalRideableAbstract) target;
-        if (enhancedAnimal.isAlive() && !enhancedAnimal.isChild()) {
-            ItemStack otherSaddle = this.getEnhancedInventory().getStackInSlot(1);
+        if (enhancedAnimal.isAlive() && !enhancedAnimal.isBaby()) {
+            ItemStack otherSaddle = this.getEnhancedInventory().getItem(1);
             if (saddleItemStack.getItem() == Items.SADDLE) {
-                this.animalInventory.setInventorySlotContents(1, new ItemStack(saddleItemStack.getItem(), 1));
+                this.animalInventory.setItem(1, new ItemStack(saddleItemStack.getItem(), 1));
             } else {
-                this.animalInventory.setInventorySlotContents(1, getReplacementItemWithColour(saddleItemStack));
+                this.animalInventory.setItem(1, getReplacementItemWithColour(saddleItemStack));
             }
-            this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
+            this.playSound(SoundEvents.HORSE_SADDLE, 0.5F, 1.0F);
             saddleItemStack.shrink(1);
             if (!otherSaddle.isEmpty()) {
-                player.setHeldItem(hand, otherSaddle);
+                player.setItemInHand(hand, otherSaddle);
             }
         }
         return true;
     }
 
-    public void onInventoryChanged(IInventory invBasic) {
-        boolean flag = this.dataManager.get(HAS_SADDLE);
+    public void containerChanged(Container invBasic) {
+        boolean flag = this.entityData.get(HAS_SADDLE);
         this.updateInventorySlots();
-        if (this.ticksExisted > 20 && !flag && this.dataManager.get(HAS_SADDLE)) {
-            this.playSound(SoundEvents.ENTITY_HORSE_SADDLE, 0.5F, 1.0F);
+        if (this.tickCount > 20 && !flag && this.entityData.get(HAS_SADDLE)) {
+            this.playSound(SoundEvents.HORSE_SADDLE, 0.5F, 1.0F);
         }
     }
 
     @Override
-    public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
+    public boolean setSlot(int inventorySlot, ItemStack itemStackIn) {
         int i = inventorySlot - 400;
-        if (i >= 0 && i < 2 && i < this.animalInventory.getSizeInventory()) {
+        if (i >= 0 && i < 2 && i < this.animalInventory.getContainerSize()) {
             if (i != 1 && (itemStackIn.getItem() instanceof CustomizableSaddleVanilla || itemStackIn.getItem() == Items.SADDLE)) {
-                this.animalInventory.setInventorySlotContents(i, itemStackIn);
+                this.animalInventory.setItem(i, itemStackIn);
                 this.updateInventorySlots();
                 return true;
             } else {
@@ -401,7 +411,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
             }
         }
 
-        return super.replaceItemInInventory(inventorySlot, itemStackIn);
+        return super.setSlot(inventorySlot, itemStackIn);
     }
 
     @Nullable
@@ -409,85 +419,85 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
     }
 
-    protected void mountTo(PlayerEntity player) {
+    protected void mountTo(Player player) {
         this.setRearing(false);
-        if (!this.world.isRemote) {
-            player.rotationYaw = this.rotationYaw;
-            player.rotationPitch = this.rotationPitch;
+        if (!this.level.isClientSide) {
+            player.setYRot(this.getYRot());
+            player.setXRot(this.getXRot());
             player.startRiding(this);
         }
     }
 
     @Override
-    public boolean canBeSteered() {
+    public boolean canBeControlledByRider() {
         Entity entity = this.getControllingPassenger();
-        if (!(entity instanceof PlayerEntity)) {
+        if (!(entity instanceof Player)) {
             return false;
         } else {
-            PlayerEntity playerentity = (PlayerEntity)entity;
-            if (playerentity.getHeldItemMainhand().getItem() == Items.CARROT_ON_A_STICK || playerentity.getHeldItemOffhand().getItem() == Items.CARROT_ON_A_STICK) {
+            Player playerentity = (Player)entity;
+            if (playerentity.getMainHandItem().getItem() == Items.CARROT_ON_A_STICK || playerentity.getOffhandItem().getItem() == Items.CARROT_ON_A_STICK) {
                 return true;
             }
-            return super.canBeSteered();
+            return super.canBeControlledByRider();
         }
     }
 
     @Override
-    public void travel(Vector3d p_213352_1_) {
+    public void travel(Vec3 p_213352_1_) {
         //TODO bareback and blankets need to be options for riding with a drawback for how long you can ride.
         //TODO maybe create some different effects on speed, jump height and ride time based on the saddle.
         //TODO different animals (especially equines) should make more or less of a bobbing animation depending on the individual animal
         if (this.isAlive()) {
-            if (this.isBeingRidden() && this.canBeSteered()) {
+            if (this.isVehicle() && this.canBeControlledByRider()) {
                 LivingEntity livingentity = (LivingEntity) this.getControllingPassenger();
                 if (this.hasBridle()) {
-                    this.rotationYaw = livingentity.rotationYaw;
-                    this.prevRotationYaw = this.rotationYaw;
-                    this.rotationPitch = livingentity.rotationPitch * 0.5F;
-                    this.setRotation(this.rotationYaw, this.rotationPitch);
-                    this.renderYawOffset = this.rotationYaw;
-                    this.rotationYawHead = this.renderYawOffset;
-                    float f = livingentity.moveStrafing * 0.5F;
-                    float f1 = livingentity.moveForward;
+                    this.setYRot(livingentity.getYRot());
+                    this.yRotO = this.getYRot();
+                    this.setXRot(livingentity.getXRot() * 0.5F);
+                    this.setRot(this.getYRot(), this.getXRot());
+                    this.yBodyRot = this.getYRot();
+                    this.yHeadRot = this.yBodyRot;
+                    float f = livingentity.xxa * 0.5F;
+                    float f1 = livingentity.zza;
                     if (f1 <= 0.0F) {
                         f1 *= 0.25F;
-                        this.gallopTime = 0;
+                        this.gallopSoundCounter = 0;
                     }
 
-                    if (this.onGround && this.jumpPower == 0.0F && this.isRearing() && !this.allowStandSliding) {
+                    if (this.onGround && this.playerJumpPendingScale == 0.0F && !this.allowStandSliding) {
                         f = 0.0F;
                         f1 = 0.0F;
                     }
 
                     if (this.jumpPower > 0.0F && !this.isAnimalJumping() && this.onGround) {
-                        double d0 = this.getJumpHeight() * (double) this.jumpPower * (double) this.getJumpFactor();
+                        double d0 = this.getJumpHeight() * (double) this.jumpPower * (double) this.getBlockJumpFactor();
                         double d1;
-                        if (this.isPotionActive(Effects.JUMP_BOOST)) {
-                            d1 = d0 + (double) ((float) (this.getActivePotionEffect(Effects.JUMP_BOOST).getAmplifier() + 1) * 0.1F);
+                        if (this.hasEffect(MobEffects.JUMP)) {
+                            d1 = d0 + (double) ((float) (this.getEffect(MobEffects.JUMP).getAmplifier() + 1) * 0.1F);
                         } else {
                             d1 = d0;
                         }
 
-                        Vector3d vec3d = this.getMotion();
-                        this.setMotion(vec3d.x, d1, vec3d.z);
+                        Vec3 vec3d = this.getDeltaMovement();
+                        this.setDeltaMovement(vec3d.x, d1, vec3d.z);
                         this.setAnimalJumping(true);
-                        this.isAirBorne = true;
+                        this.hasImpulse = true;
                         if (f1 > 0.0F) {
-                            float f2 = MathHelper.sin(this.rotationYaw * ((float) Math.PI / 180F));
-                            float f3 = MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F));
-                            this.setMotion(this.getMotion().add((double) (-0.4F * f2 * this.jumpPower), 0.0D, (double) (0.4F * f3 * this.jumpPower)));
+                            float f2 = Mth.sin(this.getYRot() * ((float) Math.PI / 180F));
+                            float f3 = Mth.cos(this.getYRot() * ((float) Math.PI / 180F));
+                            this.setDeltaMovement(this.getDeltaMovement().add((double) (-0.4F * f2 * this.jumpPower), 0.0D, (double) (0.4F * f3 * this.jumpPower)));
                             this.playJumpSound();
                         }
 
                         this.jumpPower = 0.0F;
                     }
 
-                    this.jumpMovementFactor = this.getAIMoveSpeed() * getJumpFactorModifier();
-                    if (this.canPassengerSteer()) {
-                        this.setAIMoveSpeed((float) this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() * getMovementFactorModifier());
-                        super.travel(new Vector3d((double) f, p_213352_1_.y, (double) f1));
-                    } else if (livingentity instanceof PlayerEntity) {
-                        this.setMotion(Vector3d.ZERO);
+                    this.flyingSpeed = this.getSpeed() * getJumpFactorModifier();
+                    if (this.isControlledByLocalInstance()) {
+                        this.setSpeed((float) this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() * getMovementFactorModifier());
+                        super.travel(new Vec3((double) f, p_213352_1_.y, (double) f1));
+                    } else if (livingentity instanceof Player) {
+                        this.setDeltaMovement(Vec3.ZERO);
                     }
 
                     if (this.onGround) {
@@ -495,56 +505,56 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
                         this.setAnimalJumping(false);
                     }
 
-                    this.prevLimbSwingAmount = this.limbSwingAmount;
-                    double d2 = this.getPosX() - this.prevPosX;
-                    double d3 = this.getPosZ() - this.prevPosZ;
-                    float f4 = MathHelper.sqrt(d2 * d2 + d3 * d3) * 4.0F;
+                    this.animationSpeedOld = this.animationSpeed;
+                    double d2 = this.getX() - this.xo;
+                    double d3 = this.getZ() - this.zo;
+                    float f4 = Mth.sqrt((float) (d2 * d2 + d3 * d3)) * 4.0F;
                     if (f4 > 1.0F) {
                         f4 = 1.0F;
                     }
 
-                    this.limbSwingAmount += (f4 - this.limbSwingAmount) * 0.4F;
-                    this.limbSwing += this.limbSwingAmount;
+                    this.animationSpeed += (f4 - this.animationSpeed) * 0.4F;
+                    this.animationPosition += this.animationSpeed;
                 } else {
-                    this.rotationYaw = livingentity.rotationYaw;
-                    this.prevRotationYaw = this.rotationYaw;
-                    this.rotationPitch = livingentity.rotationPitch * 0.5F;
-                    this.setRotation(this.rotationYaw, this.rotationPitch);
-                    this.renderYawOffset = this.rotationYaw;
-                    this.rotationYawHead = this.rotationYaw;
-                    this.stepHeight = 1.1F;
-                    this.jumpMovementFactor = this.getAIMoveSpeed() * getJumpFactorModifier();
+                    this.setYRot(livingentity.getYRot());
+                    this.yRotO = this.getYRot();
+                    this.setXRot(livingentity.getXRot() * 0.5F);
+                    this.setRot(this.getYRot(), this.getXRot());
+                    this.yBodyRot = this.getYRot();
+                    this.yHeadRot = this.getYRot();
+                    this.maxUpStep = 1.1F;
+                    this.flyingSpeed = this.getSpeed() * getJumpFactorModifier();
                     if (this.boosting && this.boostTime++ > this.totalBoostTime) {
                         this.boosting = false;
                     }
 
-                    if (this.canPassengerSteer()) {
+                    if (this.isControlledByLocalInstance()) {
                         float f = (float)this.getAttribute(Attributes.MOVEMENT_SPEED).getValue() * getMovementFactorModifier() * 0.225F;
                         if (this.boosting) {
-                            f += f * 1.15F * MathHelper.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
+                            f += f * 1.15F * Mth.sin((float)this.boostTime / (float)this.totalBoostTime * (float)Math.PI);
                         }
 
-                        this.setAIMoveSpeed(f);
-                        super.travel(new Vector3d(0.0D, 0.0D, 1.0D));
-                        this.newPosRotationIncrements = 0;
+                        this.setSpeed(f);
+                        super.travel(new Vec3(0.0D, 0.0D, 1.0D));
+                        this.lerpSteps = 0;
                     } else {
-                        this.setMotion(Vector3d.ZERO);
+                        this.setDeltaMovement(Vec3.ZERO);
                     }
 
-                    this.prevLimbSwingAmount = this.limbSwingAmount;
-                    double d1 = this.getPosX() - this.prevPosX;
-                    double d0 = this.getPosZ() - this.prevPosZ;
-                    float f1 = MathHelper.sqrt(d1 * d1 + d0 * d0) * 4.0F;
+                    this.animationSpeedOld = this.animationSpeed;
+                    double d1 = this.getX() - this.xo;
+                    double d0 = this.getZ() - this.zo;
+                    float f1 = Mth.sqrt((float) (d1 * d1 + d0 * d0)) * 4.0F;
                     if (f1 > 1.0F) {
                         f1 = 1.0F;
                     }
 
-                    this.limbSwingAmount += (f1 - this.limbSwingAmount) * 0.4F;
-                    this.limbSwing += this.limbSwingAmount;
+                    this.animationSpeed += (f1 - this.animationSpeed) * 0.4F;
+                    this.animationPosition += this.animationSpeed;
                 }
             } else {
-                this.stepHeight = 1.1F;
-                this.jumpMovementFactor = 0.02F;
+                this.maxUpStep = 1.1F;
+                this.flyingSpeed = 0.02F;
                 super.travel(p_213352_1_);
             }
         }
@@ -568,36 +578,36 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         } else {
             this.boosting = true;
             this.boostTime = 0;
-            this.totalBoostTime = this.getRNG().nextInt(841) + 140;
-            this.getDataManager().set(BOOST_TIME, this.totalBoostTime);
+            this.totalBoostTime = this.getRandom().nextInt(841) + 140;
+            this.getEntityData().set(BOOST_TIME, this.totalBoostTime);
             return true;
         }
     }
 
     protected void playJumpSound() {
-        this.playSound(SoundEvents.ENTITY_HORSE_JUMP, 0.4F, 1.0F);
+        this.playSound(SoundEvents.HORSE_JUMP, 0.4F, 1.0F);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id) {
+    public void handleEntityEvent(byte id) {
         if (id == 7) {
             this.spawnParticles(true);
         } else if (id == 6) {
             this.spawnParticles(false);
         } else {
-            super.handleStatusUpdate(id);
+            super.handleEntityEvent(id);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     protected void spawnParticles(boolean p_110216_1_) {
-        IParticleData iparticledata = p_110216_1_ ? ParticleTypes.HEART : ParticleTypes.SMOKE;
+        ParticleOptions iparticledata = p_110216_1_ ? ParticleTypes.HEART : ParticleTypes.SMOKE;
 
         for(int i = 0; i < 7; ++i) {
-            double d0 = this.rand.nextGaussian() * 0.02D;
-            double d1 = this.rand.nextGaussian() * 0.02D;
-            double d2 = this.rand.nextGaussian() * 0.02D;
-            this.world.addParticle(iparticledata, this.getPosXRandom(1.0D), this.getPosYRandom() + 0.5D, this.getPosZRandom(1.0D), d0, d1, d2);
+            double d0 = this.random.nextGaussian() * 0.02D;
+            double d1 = this.random.nextGaussian() * 0.02D;
+            double d2 = this.random.nextGaussian() * 0.02D;
+            this.level.addParticle(iparticledata, this.getRandomX(1.0D), this.getRandomY() + 0.5D, this.getRandomZ(1.0D), d0, d1, d2);
         }
     }
 
@@ -605,7 +615,7 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
     @OnlyIn(Dist.CLIENT)
     public Colouration getRgb() {
         this.colouration = super.getRgb();
-        ItemStack saddle = this.getEnhancedInventory().getStackInSlot(1);
+        ItemStack saddle = this.getEnhancedInventory().getItem(1);
         if (saddle.getItem() instanceof SaddleItem) {
             this.colouration.setSaddleColour(Colouration.getEquipmentColor(saddle));
         }
@@ -621,80 +631,80 @@ public abstract class EnhancedAnimalRideableAbstract extends EnhancedAnimalChest
         List<String> saddleTextures = new ArrayList<>();
 
         if (this.getEnhancedInventory() != null) {
-            ItemStack saddleSlot = this.animalInventory.getStackInSlot(1);
+            ItemStack saddleSlot = this.animalInventory.getItem(1);
             if (saddleSlot != ItemStack.EMPTY) {
                 Item saddle = saddleSlot.getItem();
-                if (saddle == ModItems.SADDLE_BASIC_CLOTH) {
+                if (saddle == ModItems.SADDLE_BASIC_CLOTH.get()) {
                     setSaddledTextures(saddleTextures, 0, -1, 0);
-                } else if (saddle == ModItems.SADDLE_BASIC_CLOTH_GOLD) {
+                } else if (saddle == ModItems.SADDLE_BASIC_CLOTH_GOLD.get()) {
                     setSaddledTextures(saddleTextures, 0, -1, 1);
-                } else if (saddle == ModItems.SADDLE_BASIC_CLOTH_DIAMOND) {
+                } else if (saddle == ModItems.SADDLE_BASIC_CLOTH_DIAMOND.get()) {
                     setSaddledTextures(saddleTextures, 0, -1, 2);
-                } else if (saddle == ModItems.SADDLE_BASIC_CLOTH_WOOD) {
+                } else if (saddle == ModItems.SADDLE_BASIC_CLOTH_WOOD.get()) {
                     setSaddledTextures(saddleTextures, 0, -1, 3);
-                } else if (saddle == ModItems.SADDLE_BASIC_LEATHER || saddle == Items.SADDLE) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHER.get() || saddle == Items.SADDLE) {
                     setSaddledTextures(saddleTextures,0,0, 0 );
-                } else if (saddle == ModItems.SADDLE_BASIC_LEATHER_GOLD) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHER_GOLD.get()) {
                     setSaddledTextures(saddleTextures,0,0, 1 );
-                } else if (saddle == ModItems.SADDLE_BASIC_LEATHER_DIAMOND) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHER_DIAMOND.get()) {
                     setSaddledTextures(saddleTextures,0,0, 2 );
-                } else if (saddle == ModItems.SADDLE_BASIC_LEATHER_WOOD) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHER_WOOD.get()) {
                     setSaddledTextures(saddleTextures,0,0, 3 );
-                } else if (saddle == ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT.get()) {
                     setSaddledTextures(saddleTextures,0,3, 0 );
-                } else if (saddle == ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_GOLD) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_GOLD.get()) {
                     setSaddledTextures(saddleTextures,0,3, 1 );
-                } else if (saddle == ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_DIAMOND) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_DIAMOND.get()) {
                     setSaddledTextures(saddleTextures,0,3, 2 );
-                } else if (saddle == ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_WOOD) {
+                } else if (saddle == ModItems.SADDLE_BASIC_LEATHERCLOTHSEAT_WOOD.get()) {
                     setSaddledTextures(saddleTextures,0,3, 3 );
-                } else if (saddle == ModItems.SADDLE_BASICPOMEL_CLOTH) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_CLOTH.get()) {
                     setSaddledTextures(saddleTextures, 1, -1, 4);
-                } else if (saddle == ModItems.SADDLE_BASICPOMEL_CLOTH_GOLD) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_CLOTH_GOLD.get()) {
                     setSaddledTextures(saddleTextures, 1, -1, 5);
-                } else if (saddle == ModItems.SADDLE_BASICPOMEL_CLOTH_DIAMOND) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_CLOTH_DIAMOND.get()) {
                     setSaddledTextures(saddleTextures, 1, -1, 6);
-                } else if (saddle == ModItems.SADDLE_BASICPOMEL_CLOTH_WOOD) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_CLOTH_WOOD.get()) {
                     setSaddledTextures(saddleTextures, 1, -1, 7);
-                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHER) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHER.get()) {
                     setSaddledTextures(saddleTextures,1,1, 4 );
-                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHER_GOLD) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHER_GOLD.get()) {
                     setSaddledTextures(saddleTextures,1,1, 5 );
-                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHER_DIAMOND) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHER_DIAMOND.get()) {
                     setSaddledTextures(saddleTextures,1,1, 6 );
-                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHER_WOOD) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHER_WOOD.get()) {
                     setSaddledTextures(saddleTextures,1,1, 7 );
-                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT.get()) {
                     setSaddledTextures(saddleTextures,1,4, 4 );
-                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_GOLD) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_GOLD.get()) {
                     setSaddledTextures(saddleTextures,1,4, 5 );
-                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_DIAMOND) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_DIAMOND.get()) {
                     setSaddledTextures(saddleTextures,1,4, 6 );
-                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_WOOD) {
+                } else if (saddle == ModItems.SADDLE_BASICPOMEL_LEATHERCLOTHSEAT_WOOD.get()) {
                     setSaddledTextures(saddleTextures,1,4, 7 );
-                }if (saddle == ModItems.SADDLE_ENGLISH_CLOTH) {
+                }if (saddle == ModItems.SADDLE_ENGLISH_CLOTH.get()) {
                     setSaddledTextures(saddleTextures, 2, -1, 0);
-                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_GOLD) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_GOLD.get()) {
                     setSaddledTextures(saddleTextures, 2, -1, 1);
-                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_DIAMOND) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_DIAMOND.get()) {
                     setSaddledTextures(saddleTextures, 2, -1, 2);
-                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_WOOD) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_CLOTH_WOOD.get()) {
                     setSaddledTextures(saddleTextures, 2, -1, 3);
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER.get()) {
                     setSaddledTextures(saddleTextures,2,2, 0 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_GOLD) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_GOLD.get()) {
                     setSaddledTextures(saddleTextures,2,2, 1 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_DIAMOND) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_DIAMOND.get()) {
                     setSaddledTextures(saddleTextures,2,2, 2 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_WOOD) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHER_WOOD.get()) {
                     setSaddledTextures(saddleTextures,2,2, 3 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT.get()) {
                     setSaddledTextures(saddleTextures,2,5, 0 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_GOLD) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_GOLD.get()) {
                     setSaddledTextures(saddleTextures,2,5, 1 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_DIAMOND) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_DIAMOND.get()) {
                     setSaddledTextures(saddleTextures,2,5, 2 );
-                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_WOOD) {
+                } else if (saddle == ModItems.SADDLE_ENGLISH_LEATHERCLOTHSEAT_WOOD.get()) {
                     setSaddledTextures(saddleTextures,2,5, 3 );
                 }
 

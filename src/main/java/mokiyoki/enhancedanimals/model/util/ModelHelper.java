@@ -1,6 +1,6 @@
 package mokiyoki.enhancedanimals.model.util;
 
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.model.geom.ModelPart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,20 @@ public class ModelHelper {
         return scalings;
     }
 
+    public static List<Float> createScalings(Float scaling, Float translateX, Float translateY, Float translateZ) {
+        List<Float> scalings = new ArrayList<>();
+        //scaling
+        scalings.add(scaling);
+        scalings.add(scaling);
+        scalings.add(scaling);
+
+        //translations
+        scalings.add(translateX);
+        scalings.add(translateY);
+        scalings.add(translateZ);
+        return scalings;
+    }
+
     public static List<Float> mirrorX(List<Float> scalings) {
         List<Float> reversedNegative = new ArrayList<>();
         reversedNegative.add(scalings.get(0));
@@ -33,53 +47,53 @@ public class ModelHelper {
         return reversedNegative;
     }
 
-    public static void copyModelRotations(ModelRenderer source, ModelRenderer dest) {
-        dest.rotateAngleX = source.rotateAngleX;
-        dest.rotateAngleY = source.rotateAngleY;
-        dest.rotateAngleZ = source.rotateAngleZ;
+    public static void copyModelRotations(ModelPart source, ModelPart dest) {
+        dest.xRot = source.xRot;
+        dest.yRot = source.yRot;
+        dest.zRot = source.zRot;
     }
 
-    public static void copyModelRotations(ModelRenderer source, ModelRenderer ... dest) {
-        for (ModelRenderer destination : dest) {
-            destination.rotateAngleX = source.rotateAngleX;
-            destination.rotateAngleY = source.rotateAngleY;
-            destination.rotateAngleZ = source.rotateAngleZ;
+    public static void copyModelRotations(ModelPart source, ModelPart ... dest) {
+        for (ModelPart destination : dest) {
+            destination.xRot = source.xRot;
+            destination.yRot = source.yRot;
+            destination.zRot = source.zRot;
         }
     }
 
-    public static void copyModelRotations(ModelRenderer source, ModelRenderer dest, float percent) {
-        dest.rotateAngleX = source.rotateAngleX * percent;
-        dest.rotateAngleY = source.rotateAngleY * percent;
-        dest.rotateAngleZ = source.rotateAngleZ * percent;
+    public static void copyModelRotations(ModelPart source, ModelPart dest, float percent) {
+        dest.xRot = source.xRot * percent;
+        dest.yRot = source.yRot * percent;
+        dest.zRot = source.zRot * percent;
     }
 
-    public static void copyModelPositioning(ModelRenderer source, ModelRenderer dest) {
-        dest.rotateAngleX = source.rotateAngleX;
-        dest.rotateAngleY = source.rotateAngleY;
-        dest.rotateAngleZ = source.rotateAngleZ;
-        dest.rotationPointX = source.rotationPointX;
-        dest.rotationPointY = source.rotationPointY;
-        dest.rotationPointZ = source.rotationPointZ;
+    public static void copyModelPositioning(ModelPart source, ModelPart dest) {
+        dest.xRot = source.xRot;
+        dest.yRot = source.yRot;
+        dest.zRot = source.zRot;
+        dest.x = source.x;
+        dest.y = source.y;
+        dest.z = source.z;
     }
 
-    public static void copyModelPositioning(ModelRenderer source, ModelRenderer ... dest) {
-        for (ModelRenderer destination : dest) {
-            destination.rotateAngleX = source.rotateAngleX;
-            destination.rotateAngleY = source.rotateAngleY;
-            destination.rotateAngleZ = source.rotateAngleZ;
-            destination.rotationPointX = source.rotationPointX;
-            destination.rotationPointY = source.rotationPointY;
-            destination.rotationPointZ = source.rotationPointZ;
+    public static void copyModelPositioning(ModelPart source, ModelPart ... dest) {
+        for (ModelPart destination : dest) {
+            destination.xRot = source.xRot;
+            destination.yRot = source.yRot;
+            destination.zRot = source.zRot;
+            destination.x = source.x;
+            destination.y = source.y;
+            destination.z = source.z;
         }
     }
 
-    public static void copyModelPositioning(ModelRenderer source, ModelRenderer dest, float percent) {
-        dest.rotateAngleX = source.rotateAngleX * percent;
-        dest.rotateAngleY = source.rotateAngleY * percent;
-        dest.rotateAngleZ = source.rotateAngleZ * percent;
-        dest.rotationPointX = source.rotationPointX;
-        dest.rotationPointY = source.rotationPointY;
-        dest.rotationPointZ = source.rotationPointZ;
+    public static void copyModelPositioning(ModelPart source, ModelPart dest, float percent) {
+        dest.xRot = source.xRot * percent;
+        dest.yRot = source.yRot * percent;
+        dest.zRot = source.zRot * percent;
+        dest.x = source.x;
+        dest.y = source.y;
+        dest.z = source.z;
     }
 
 }

@@ -1,24 +1,24 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 
-public class EnhancedLookRandomlyGoal extends LookRandomlyGoal {
+public class EnhancedLookRandomlyGoal extends RandomLookAroundGoal {
 
-    protected MobEntity entityIn;
+    protected Mob entityIn;
 
-    public EnhancedLookRandomlyGoal(MobEntity entitylivingIn) {
+    public EnhancedLookRandomlyGoal(Mob entitylivingIn) {
         super(entitylivingIn);
         entityIn = entitylivingIn;
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         if (((EnhancedAnimalAbstract)entityIn).isAnimalSleeping()) {
             return false;
         } else {
-            return super.shouldExecute();
+            return super.canUse();
         }
     }
 

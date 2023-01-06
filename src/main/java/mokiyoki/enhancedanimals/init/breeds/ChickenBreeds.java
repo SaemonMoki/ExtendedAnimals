@@ -3,7 +3,7 @@ package mokiyoki.enhancedanimals.init.breeds;
 import com.mojang.datafixers.util.Pair;
 import mokiyoki.enhancedanimals.util.Breed;
 import mokiyoki.enhancedanimals.util.GeneSketch;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.level.biome.Biomes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +108,7 @@ public final class ChickenBreeds {
     public static final Breed SILVER_CHOCOLATE_LACED_ORPINGTON = new Breed(ORPINGTON, new Breed.Properties().setData("SilverChocolateLacedOrpington", Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.SILVER,GeneSet.LACED,GeneSet.CHOCOLATE).get()));
 
-    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_TUNDRA, Breed.Rarity.UNCOMMON)
+    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.WINDSWEPT_SAVANNA, Breed.Rarity.UNCOMMON)
             .setGeneSketch(new GeneSketch().add(14, "2"), new GeneSketch().add(20, "1").add(44, "1").add(52, "2").add(68, "2","1","1","1","3","1","1","2","1","1","2|3").add(94, "1-3", "1-3").add(172, "1", "1", "1", "1", "1", "1", "1")));
 
     public static final Breed BELGIUM_D_UCCLE = new Breed(BELGIUMBANTAM, new Breed.Properties().setName("BelgiumDUccle")
@@ -168,7 +168,6 @@ public final class ChickenBreeds {
     public static final Breed EASTEREGGER = new Breed(new Breed.Properties().setData("EasterEgger", Biomes.PLAINS, Breed.Rarity.UNCOMMON)
             .setGeneSketch(new NewGeneSet(GeneSet.GOLD, GeneSet.DUCKWING, GeneSet.CLEANLEGS, GeneSet.PEA, GeneSet.EASTEREGGER).get()));
 
-
     public static final Breed SPANISH = new Breed(new Breed.Properties().setData("Spanish", Biomes.SAVANNA, Breed.Rarity.RARE)
             .setGeneSketch(new GeneSketch().add(4, "6", "1", "2", "2", "6").add(18, "1"),
                     new GeneSketch().add(20, "1", "1","5").add(38, "2").add(44, "1", "3", "2", "1").add(52, "2","3","2","3","2").add(70, "1", "1").add(80, "2","1","2","2").add(146, "1", "2").add(152, "10|12","10|12","10|12","4|6","22|24","22|24","5")));
@@ -181,8 +180,11 @@ public final class ChickenBreeds {
             .setGeneSketch(new GeneSketch().add(0, "2","25%2","1", "6", "1", "1", "1", "6", "1-2", "1-2", "1"),
                     new GeneSketch().add(20, "2","1","5").add(38, "2").add(42, "1").add(44, "1", "1", "1", "1").add(52, "2","1","1","2","1","2").add(70, "1", "1").add(80, "2","1","1","2").add(102, "1","1","2,1|2").add(146, "2", "1").add(152, "12","12","12","6","24","24","5","2","1","2")));
 
-    public static final Breed SCOTS_DUMPY = new Breed(new Breed.Properties().setData("ScotsDumpy", Biomes.TAIGA_MOUNTAINS, Breed.Rarity.EXOTIC)
+    public static final Breed SCOTS_DUMPY = new Breed(new Breed.Properties().setData("ScotsDumpy", Biomes.WINDSWEPT_HILLS, Breed.Rarity.EXOTIC)
             .setGeneSketch(new NewGeneSet(GeneSet.BARRED, GeneSet.SOLIDBLACK, GeneSet.CLEANLEGS, GeneSet.GREYLEGS, GeneSet.SINGLE, GeneSet.CRESTLESS, GeneSet.BEARDEDLESS, GeneSet.CREEPER, GeneSet.BIG_COMB).get()));
+
+    public static final Breed LA_FLECHE = new Breed(BLACK_LEGHORN, new Breed.Properties().setData("lafleche", Biomes.SAVANNA, Breed.Rarity.EXOTIC)
+            .setGeneSketch(new NewGeneSet(GeneSet.GREYLEGS, GeneSet.V).get()));
 
 //    public static final Breed BELGIUMBANTAM = new Breed(new Breed.Properties().setData("Belgian", Biomes.SNOWY_TAIGA_MOUNTAINS, Breed.Rarity.UNCOMMON)
 //            .setVarieties(new Breed.VarientHolder(
@@ -211,6 +213,7 @@ public final class ChickenBreeds {
         SILVER(new GeneSketch().add(0, "2"), new GeneSketch().add(170, "2")),
         BARRED(new GeneSketch().add(6, "2"), "empty"),
         SINGLE("empty", new GeneSketch().add(46, "3", "2", "1")),
+        V("empty", new GeneSketch().add(46, "3", "2", "2")),
         POINTEDROSE("empty", new GeneSketch().add(46, "1", "2", "1")),
         FLATROSE("empty", new GeneSketch().add(46, "2", "2", "1")),
         PEA("empty", new GeneSketch().add(46, "3", "1", "1")),

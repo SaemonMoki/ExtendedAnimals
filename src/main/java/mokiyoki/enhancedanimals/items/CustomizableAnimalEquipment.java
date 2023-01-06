@@ -1,11 +1,11 @@
 package mokiyoki.enhancedanimals.items;
 
-import net.minecraft.item.IDyeableArmorItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.DyeableLeatherItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
-public class CustomizableAnimalEquipment extends Item implements IDyeableArmorItem {
+public class CustomizableAnimalEquipment extends Item implements DyeableLeatherItem {
     private int defaultColour;
 
     public CustomizableAnimalEquipment(Properties builder, int originalColour) {
@@ -23,7 +23,7 @@ public class CustomizableAnimalEquipment extends Item implements IDyeableArmorIt
 
     @Override
     public int getColor(ItemStack stack) {
-        CompoundNBT compoundnbt = stack.getChildTag("display");
+        CompoundTag compoundnbt = stack.getTagElement("display");
         return compoundnbt != null && compoundnbt.contains("color", 99) ? compoundnbt.getInt("color") : getDefaultColour();
     }
 

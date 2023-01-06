@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
-import net.minecraft.entity.ai.goal.FollowParentGoal;
+import net.minecraft.world.entity.ai.goal.FollowParentGoal;
 
 public class EnhancedFollowParentGoal extends FollowParentGoal {
 
@@ -12,12 +12,12 @@ public class EnhancedFollowParentGoal extends FollowParentGoal {
         this.enhancedChild = animal;
     }
 
-    public boolean shouldExecute() {
-        if (this.enhancedChild.isBeingRidden() || this.enhancedChild.isAnimalSleeping()) {
+    public boolean canUse() {
+        if (this.enhancedChild.isVehicle() || this.enhancedChild.isAnimalSleeping()) {
             return false;
         }
 
-        return super.shouldExecute();
+        return super.canUse();
     }
 
 }

@@ -1,20 +1,20 @@
 package mokiyoki.enhancedanimals.ai.general;
 
 import mokiyoki.enhancedanimals.entity.EnhancedAnimalAbstract;
-import net.minecraft.block.GrassBlock;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.GrassBlock;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.EnumSet;
 
 public class EnhancedTemptGoal extends Goal {
-    private static final EntityPredicate CLOSE_SEARCH_ENTITY_PREDICATE = (new EntityPredicate()).setDistance(5.0D).allowInvulnerable().allowFriendlyFire().setSkipAttackChecks().setLineOfSiteRequired();
-    private static final EntityPredicate REGULAR_ENTITY_PREDICATE = (new EntityPredicate()).setDistance(10.0D).allowInvulnerable().allowFriendlyFire().setSkipAttackChecks().setLineOfSiteRequired();
+    private static final TargetingConditions CLOSE_SEARCH_ENTITY_PREDICATE = TargetingConditions.forNonCombat().range(5.0D).ignoreLineOfSight();
+    private static final TargetingConditions REGULAR_ENTITY_PREDICATE = TargetingConditions.forNonCombat().range(10.0D).ignoreLineOfSight();
 
     private final double speed;
     private final double fastspeed;
@@ -23,7 +23,7 @@ public class EnhancedTemptGoal extends Goal {
     private double targetZ;
     private double pitch;
     private double yaw;
-    protected PlayerEntity closestPlayer;
+    protected Player closestPlayer;
     private int delayTemptCounter;
     private boolean isRunning;
     private final Item temptItem;
@@ -39,31 +39,31 @@ public class EnhancedTemptGoal extends Goal {
         this.fastspeed = fastspeed;
         this.temptItem = item;
         this.scaredByPlayerMovement = scaredByPlayerMovementIn;
-        this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
-    public boolean shouldExecute() {
+    public boolean canUse() {
         if (this.delayTemptCounter > 0) {
             --this.delayTemptCounter;
             return false;
         } else if (eanimal.isAnimalSleeping()) {
             return false;
         } else {
-            this.closestPlayer = this.eanimal.world.getClosestPlayer(getSearchPredicate(), this.eanimal);
+            this.closestPlayer = this.eanimal.level.getNearestPlayer(getSearchPredicate(), this.eanimal);
             if (this.closestPlayer == null) {
                 return false;
-            } else if (this.temptItem != Items.AIR && (this.temptItem == this.closestPlayer.getHeldItemMainhand().getItem() || this.temptItem == this.closestPlayer.getHeldItemOffhand().getItem())) {
+            } else if (this.temptItem != Items.AIR && (this.temptItem == this.closestPlayer.getMainHandItem().getItem() || this.temptItem == this.closestPlayer.getOffhandItem().getItem())) {
                 return true;
             } else {
-                 if (this.eanimal.world.getBlockState(this.eanimal.getPosition().down()).getBlock() instanceof GrassBlock) {
-                     return this.eanimal.isFoodItem(this.closestPlayer.getHeldItemMainhand()) || this.eanimal.isFoodItem(this.closestPlayer.getHeldItemOffhand());
+                 if (this.eanimal.level.getBlockState(this.eanimal.blockPosition().below()).getBlock() instanceof GrassBlock) {
+                     return this.eanimal.isFoodItem(this.closestPlayer.getMainHandItem()) || this.eanimal.isFoodItem(this.closestPlayer.getOffhandItem());
                 }
-                return this.isTempting(this.closestPlayer.getHeldItemMainhand()) || this.isTempting(this.closestPlayer.getHeldItemOffhand());
+                return this.isTempting(this.closestPlayer.getMainHandItem()) || this.isTempting(this.closestPlayer.getOffhandItem());
             }
         }
     }
 
-    private EntityPredicate getSearchPredicate() {
+    private TargetingConditions getSearchPredicate() {
         if (this.eanimal.getHunger() > REGULAR_HUNGRY) {
             return REGULAR_ENTITY_PREDICATE;
         } else {
@@ -78,27 +78,27 @@ public class EnhancedTemptGoal extends Goal {
         return this.eanimal.isFoodItem(stack);
     }
 
-    public boolean shouldContinueExecuting() {
+    public boolean canContinueToUse() {
         if (this.isScaredByPlayerMovement()) {
-            if (this.eanimal.getDistanceSq(this.closestPlayer) < getDistanceFromPlayer()) {
-                if (this.closestPlayer.getDistanceSq(this.targetX, this.targetY, this.targetZ) > 0.010000000000000002D) {
+            if (this.eanimal.distanceToSqr(this.closestPlayer) < getDistanceFromPlayer()) {
+                if (this.closestPlayer.distanceToSqr(this.targetX, this.targetY, this.targetZ) > 0.010000000000000002D) {
                     return false;
                 }
 
-                if (Math.abs((double)this.closestPlayer.rotationPitch - this.pitch) > 5.0D || Math.abs((double)this.closestPlayer.rotationYaw - this.yaw) > 5.0D) {
+                if (Math.abs((double)this.closestPlayer.getXRot() - this.pitch) > 5.0D || Math.abs((double)this.closestPlayer.getYRot() - this.yaw) > 5.0D) {
                     return false;
                 }
             } else {
-                this.targetX = this.closestPlayer.getPosX();
-                this.targetY = this.closestPlayer.getPosY();
-                this.targetZ = this.closestPlayer.getPosZ();
+                this.targetX = this.closestPlayer.getX();
+                this.targetY = this.closestPlayer.getY();
+                this.targetZ = this.closestPlayer.getZ();
             }
 
-            this.pitch = (double)this.closestPlayer.rotationPitch;
-            this.yaw = (double)this.closestPlayer.rotationYaw;
+            this.pitch = (double)this.closestPlayer.getXRot();
+            this.yaw = (double)this.closestPlayer.getYRot();
         }
 
-        return this.shouldExecute();
+        return this.canUse();
     }
 
     private double getDistanceFromPlayer() {
@@ -116,26 +116,26 @@ public class EnhancedTemptGoal extends Goal {
         return this.scaredByPlayerMovement;
     }
 
-    public void startExecuting() {
-        this.targetX = this.closestPlayer.getPosX();
-        this.targetY = this.closestPlayer.getPosY();
-        this.targetZ = this.closestPlayer.getPosZ();
+    public void start() {
+        this.targetX = this.closestPlayer.getX();
+        this.targetY = this.closestPlayer.getY();
+        this.targetZ = this.closestPlayer.getZ();
         this.isRunning = true;
     }
 
-    public void resetTask() {
+    public void stop() {
         this.closestPlayer = null;
-        this.eanimal.getNavigator().clearPath();
+        this.eanimal.getNavigation().stop();
         this.delayTemptCounter = 100;
         this.isRunning = false;
     }
 
     public void tick() {
-        this.eanimal.getLookController().setLookPositionWithEntity(this.closestPlayer, (float)(this.eanimal.getHorizontalFaceSpeed() + 20), (float)this.eanimal.getVerticalFaceSpeed());
-        if (this.eanimal.getDistanceSq(this.closestPlayer) < 6.25D) {
-            this.eanimal.getNavigator().clearPath();
+        this.eanimal.getLookControl().setLookAt(this.closestPlayer, (float)(this.eanimal.getMaxHeadYRot() + 20), (float)this.eanimal.getMaxHeadXRot());
+        if (this.eanimal.distanceToSqr(this.closestPlayer) < 6.25D) {
+            this.eanimal.getNavigation().stop();
         } else {
-            this.eanimal.getNavigator().tryMoveToEntityLiving(this.closestPlayer, getWalkingToPlayerSpeed());
+            this.eanimal.getNavigation().moveTo(this.closestPlayer, getWalkingToPlayerSpeed());
         }
 
     }

@@ -1,49 +1,47 @@
 package mokiyoki.enhancedanimals.entity;
 
 import com.google.common.collect.Lists;
-import mokiyoki.enhancedanimals.capability.turtleegg.EggHolder;
+import mokiyoki.enhancedanimals.capability.nestegg.EggHolder;
 import mokiyoki.enhancedanimals.util.Genes;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileItemEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.FireworkRocketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ItemParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.FireworkRocketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.List;
 
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_CHICKEN;
-import static mokiyoki.enhancedanimals.util.handlers.EventRegistry.ENHANCED_ENTITY_EGG_ENTITY_TYPE;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_CHICKEN;
+import static mokiyoki.enhancedanimals.init.ModEntities.ENHANCED_ENTITY_EGG_ENTITY_TYPE;
 
-public class EnhancedEntityEgg extends ProjectileItemEntity {
+public class EnhancedEntityEgg extends ThrowableItemProjectile {
 
-    private static final DataParameter<String> GENES = EntityDataManager.<String>createKey(EnhancedEntityEgg.class, DataSerializers.STRING);
-    private static final DataParameter<String> SIRE = EntityDataManager.<String>createKey(EnhancedEntityEgg.class, DataSerializers.STRING);
-    private static final DataParameter<String> DAM = EntityDataManager.<String>createKey(EnhancedEntityEgg.class, DataSerializers.STRING);
+    private static final EntityDataAccessor<String> GENES = SynchedEntityData.<String>defineId(EnhancedEntityEgg.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> SIRE = SynchedEntityData.<String>defineId(EnhancedEntityEgg.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<String> DAM = SynchedEntityData.<String>defineId(EnhancedEntityEgg.class, EntityDataSerializers.STRING);
 
     private boolean hasParents = false;
 
-    public EnhancedEntityEgg(EntityType<? extends EnhancedEntityEgg> entityIn, World worldIn) {
+    public EnhancedEntityEgg(EntityType<? extends EnhancedEntityEgg> entityIn, Level worldIn) {
         super(entityIn, worldIn);
     }
 
@@ -51,49 +49,49 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
         return Items.EGG;
     }
 
-    public EnhancedEntityEgg(World worldIn, double x, double y, double z, Item egg) {
-        super(ENHANCED_ENTITY_EGG_ENTITY_TYPE, x, y, z,worldIn);
+    public EnhancedEntityEgg(Level worldIn, double x, double y, double z, Item egg) {
+        super(ENHANCED_ENTITY_EGG_ENTITY_TYPE.get(), x, y, z,worldIn);
         this.setItem(new ItemStack(egg, 1));
     }
 
-    public EnhancedEntityEgg(World worldIn, PlayerEntity playerIn, Genes eggGenes, String sireName, String damName, Item egg, boolean hasParents) {
-        super(ENHANCED_ENTITY_EGG_ENTITY_TYPE, playerIn, worldIn);
+    public EnhancedEntityEgg(Level worldIn, Player playerIn, Genes eggGenes, String sireName, String damName, Item egg, boolean hasParents) {
+        super(ENHANCED_ENTITY_EGG_ENTITY_TYPE.get(), playerIn, worldIn);
         this.setGenes(eggGenes);
         this.setParentNames(sireName, damName);
         this.setItem(new ItemStack(egg, 1));
         this.hasParents = hasParents;
     }
 
-    protected void registerData() {
-        super.registerData();
-        this.getDataManager().register(GENES, new String());
-        this.getDataManager().register(SIRE, new String());
-        this.getDataManager().register(DAM, new String());
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.getEntityData().define(GENES, new String());
+        this.getEntityData().define(SIRE, new String());
+        this.getEntityData().define(DAM, new String());
     }
 
     public void setGenes(Genes eggGenes) {
         if (eggGenes != null) {
-            this.getDataManager().set(GENES, eggGenes.getGenesAsString());
+            this.getEntityData().set(GENES, eggGenes.getGenesAsString());
         } else {
-            this.getDataManager().set(GENES, "INFERTILE");
+            this.getEntityData().set(GENES, "INFERTILE");
         }
     }
 
     public String getGenes() {
-        return this.dataManager.get(GENES);
+        return this.entityData.get(GENES);
     }
 
     public void setParentNames(String sireName, String damName) {
         if (sireName!=null && !sireName.equals("")) {
-            this.getDataManager().set(SIRE, sireName);
+            this.getEntityData().set(SIRE, sireName);
         }
         if (damName!=null && !damName.equals("")) {
-            this.getDataManager().set(DAM, damName);
+            this.getEntityData().set(DAM, damName);
         }
     }
 
     public String getSire() {
-        String sireName = this.dataManager.get(SIRE);
+        String sireName = this.entityData.get(SIRE);
         if (sireName!=null && !sireName.equals("")) {
             return sireName;
         } else {
@@ -102,7 +100,7 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
     }
 
     public String getDam() {
-        String damName = this.dataManager.get(DAM);
+        String damName = this.entityData.get(DAM);
         if (damName!=null && !damName.equals("")) {
             return damName;
         } else {
@@ -113,107 +111,104 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
     public void setEggData(EggHolder eggHolder) {
         this.setGenes(eggHolder.getGenes());
         this.setParentNames(eggHolder.getSire(), eggHolder.getDam());
+        this.hasParents = eggHolder.hasParents();
     }
 
-    /**
-     * Handler for {@link World#setEntityState}
-     */
     @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id) {
+    public void handleEntityEvent(byte id) {
         if (id == 3) {
             double d0 = 0.08D;
 
             for (int i = 0; i < 8; ++i) {
-                this.world.addParticle(new ItemParticleData(ParticleTypes.ITEM, this.getItem()), this.getPosX(), this.getPosY(), this.getPosZ(), ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D, ((double)this.rand.nextFloat() - 0.5D) * 0.08D);
+                this.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, this.getItem()), this.getX(), this.getY(), this.getZ(), ((double)this.random.nextFloat() - 0.5D) * 0.08D, ((double)this.random.nextFloat() - 0.5D) * 0.08D, ((double)this.random.nextFloat() - 0.5D) * 0.08D);
             }
         }
     }
 
-    protected void onEntityHit(EntityRayTraceResult p_213868_1_) {
-        super.onEntityHit(p_213868_1_);
-        p_213868_1_.getEntity().attackEntityFrom(DamageSource.causeThrownDamage(this, this.func_234616_v_()), 0.0F);
+    protected void onHitEntity(EntityHitResult p_213868_1_) {
+        super.onHitEntity(p_213868_1_);
+        p_213868_1_.getEntity().hurt(DamageSource.thrown(this, this.getOwner()), 0.0F);
     }
 
     /**
      * Called when this EntityThrowable hits a block or entity.
      */
-    protected void onImpact(RayTraceResult result) {
-        super.onImpact(result);
+    protected void onHit(HitResult result) {
+        super.onHit(result);
 
-        if(this.world.isRemote) {
+        if(this.level.isClientSide) {
             int i =0;
         }
 
         boolean isCreeper = false;
-        if (!getGenes().equals("INFERTILE")) {
+        if (!getGenes().equals("INFERTILE") && !getGenes().isEmpty()) {
             Genes genetics = new Genes(getGenes());
             if (genetics.isHomozygousFor(70, 2)) {
                 isCreeper = true;
-                if (this.world.isRemote) {
-                    this.world.makeFireworks(this.getPosX(), this.getPosY(), this.getPosZ(), 1.0D, 1.0D, 1.0D, this.makeCreeperFirework());
+                if (this.level.isClientSide) {
+                    this.level.createFireworks(this.getX(), this.getY(), this.getZ(), 1.0D, 1.0D, 1.0D, this.makeCreeperFirework());
                 }
             }
-        } else if (this.world instanceof ServerWorld && !this.hasParents) {
-            EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.create(this.world);
-            Genes chickenGenes = enhancedchicken.createInitialBreedGenes((ServerWorld) this.world, this.getPosition(), "WanderingTrader");
+        } else if (this.level instanceof ServerLevel && !this.hasParents) {
+            EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
+            Genes chickenGenes = enhancedchicken.createInitialBreedGenes((ServerLevel) this.level, this.blockPosition(), "WanderingTrader");
             enhancedchicken.setGenes(chickenGenes);
             enhancedchicken.setSharedGenesFromEntityEgg(chickenGenes.getGenesAsString());
             enhancedchicken.setGrowingAge();
             enhancedchicken.initilizeAnimalSize();
             enhancedchicken.setBirthTime();
-            enhancedchicken.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
+            enhancedchicken.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
             enhancedchicken.setSireName(getSire());
             enhancedchicken.setDamName(getDam());
-            this.world.addEntity(enhancedchicken);
+            this.level.addFreshEntity(enhancedchicken);
         }
 
-        if (!this.world.isRemote) {
-            if (!getGenes().equals("INFERTILE")) {
+        if (!this.level.isClientSide) {
+            if (!getGenes().equals("INFERTILE") && !getGenes().isEmpty()) {
                 if (!isCreeper) {
-                    EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.create(this.world);
+                    EnhancedChicken enhancedchicken = ENHANCED_CHICKEN.get().create(this.level);
                     enhancedchicken.setGenes(new Genes(getGenes()));
                     enhancedchicken.setSharedGenesFromEntityEgg(getGenes());
                     enhancedchicken.setGrowingAge();
                     enhancedchicken.initilizeAnimalSize();
                     enhancedchicken.setBirthTime();
-                    enhancedchicken.setLocationAndAngles(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, 0.0F);
+                    enhancedchicken.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
                     enhancedchicken.setSireName(getSire());
                     enhancedchicken.setDamName(getDam());
-                    this.world.addEntity(enhancedchicken);
+                    this.level.addFreshEntity(enhancedchicken);
                 }
             }
-            this.world.setEntityState(this, (byte)3);
-            this.remove();
+            this.level.broadcastEntityEvent(this, (byte)3);
+            this.remove(RemovalReason.DISCARDED);
         }
     }
 
     @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
         String genes = compound.getString("genes");
-        this.getDataManager().set(GENES, genes);
-        this.getDataManager().set(SIRE, compound.getString("SireName"));
-        this.getDataManager().set(DAM, compound.getString("DamName"));
-
+        this.getEntityData().set(GENES, genes);
+        this.getEntityData().set(SIRE, compound.getString("SireName"));
+        this.getEntityData().set(DAM, compound.getString("DamName"));
+        this.hasParents = compound.getBoolean("hasParents");
     }
 
     @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    public void addAdditionalSaveData(CompoundTag compound) {
+        super.addAdditionalSaveData(compound);
         String genes = this.getGenes();
         if (!genes.isEmpty()) {
             compound.putString("genes", genes);
         }
         compound.putString("SireName", this.getSire());
         compound.putString("DamName", this.getDam());
-
-
+        compound.putBoolean("hasParents", this.hasParents);
     }
 
-    private CompoundNBT makeCreeperFirework() {
+    private CompoundTag makeCreeperFirework() {
         ItemStack itemstack = new ItemStack(Items.FIREWORK_ROCKET, 1);
         ItemStack itemstack1 = new ItemStack(Items.FIREWORK_STAR);
-        CompoundNBT compoundnbt = itemstack1.getOrCreateChildTag("Explosion");
+        CompoundTag compoundnbt = itemstack1.getOrCreateTagElement("Explosion");
 
         List<Integer> list = Lists.newArrayList();
         list.add(DyeColor.LIME.getFireworkColor());
@@ -233,10 +228,10 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
 
         compoundnbt.putBoolean("Flicker", true);
 
-        compoundnbt.putByte("Type", (byte) FireworkRocketItem.Shape.CREEPER.getIndex());
-        CompoundNBT compoundnbt1 = itemstack.getOrCreateChildTag("Fireworks");
-        ListNBT listnbt = new ListNBT();
-        CompoundNBT compoundnbt2 = itemstack1.getChildTag("Explosion");
+        compoundnbt.putByte("Type", (byte) FireworkRocketItem.Shape.CREEPER.getId());
+        CompoundTag compoundnbt1 = itemstack.getOrCreateTagElement("Fireworks");
+        ListTag listnbt = new ListTag();
+        CompoundTag compoundnbt2 = itemstack1.getTagElement("Explosion");
         if (compoundnbt2 != null) {
             listnbt.add(compoundnbt2);
         }
@@ -246,11 +241,11 @@ public class EnhancedEntityEgg extends ProjectileItemEntity {
             compoundnbt1.put("Explosions", listnbt);
         }
 
-        return itemstack.getChildTag("Fireworks");
+        return itemstack.getTagElement("Fireworks");
     }
 
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

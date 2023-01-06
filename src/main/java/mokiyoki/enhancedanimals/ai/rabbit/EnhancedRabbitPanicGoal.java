@@ -12,12 +12,9 @@ public class EnhancedRabbitPanicGoal extends EnhancedPanicGoal {
         this.rabbit = rabbit;
     }
 
-    /**
-     * Keep ticking a continuous task that has already been started
-     */
     public void tick() {
         super.tick();
-        this.rabbit.setMovementSpeed(this.speed);
+        this.rabbit.setMovementSpeed(this.speedModifier);
     }
 
 }

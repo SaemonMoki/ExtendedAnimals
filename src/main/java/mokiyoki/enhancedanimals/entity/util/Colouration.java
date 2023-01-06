@@ -1,8 +1,8 @@
 package mokiyoki.enhancedanimals.entity.util;
 
 import mokiyoki.enhancedanimals.items.CustomizableAnimalEquipment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
 import java.awt.*;
 
@@ -154,6 +154,40 @@ public class Colouration {
         return colour1;
     }
 
+    public static int mixAxolotlHue(float hue1, float hue2) {
+//        int[] color1 = getRGBFromHSB(hue1, 0.8F, 0.6F);
+//        int[] color2 = getRGBFromHSB(hue2, 0.8F, 0.6F);
+
+//        int r = color1[0] + color2[0];
+//        int g = color2[1] + color2[1];
+//        int b = color3[2] + color2[2];
+
+        float hue = Math.abs(hue1-hue2);
+        float degreesDif = Math.min(hue, 1.0F-hue);
+        float saturation = 0.75F;
+        float brightness = 0.65F;
+            hue = hue!=degreesDif? Math.min(hue1, hue2)-(degreesDif*0.5F) : Math.min(hue1, hue2)+(degreesDif*0.5F);
+        if (degreesDif > 0.3333F){
+            saturation = saturation * (1.0F-((degreesDif-0.3333F)/0.1667F));
+            brightness = brightness + (((degreesDif-0.3333F)/0.1667F)*0.35F);
+        }
+
+        int[] color = getRGBFromHSB(hue, saturation, brightness);
+
+        return 128 << 24 | (Math.min(color[0], 255)) << 16 | (Math.min(color[1], 255)) << 8 | (Math.min(color[2], 255));
+    }
+
+    public static float[] getAxolotlLightEyes(float hue1, float hue2) {
+        int[] color1 = getRGBFromHSB(hue1, 0.8F, 0.6F);
+        int[] color2 = getRGBFromHSB(hue2, 0.8F, 0.6F);
+
+        int r = color1[0] + color2[0];
+        int g = color1[1] + color2[1];
+        int b = color1[2] + color2[2];
+
+        return Color.RGBtoHSB(r, g, b, null);
+    }
+
     public static float mixHueComponent(float colour1, float colour2, float percentage) {
         if (colour2 > colour1) {
             if (colour2 > 0.1F) {
@@ -184,6 +218,31 @@ public class Colouration {
     }
 
     public static int HSBAtoABGR(float hue, float saturation, float brightness, float alpha) {
+        int[] rgb = getRGBFromHSB(hue, saturation, brightness);
+
+        int a = (int)(alpha * 255.0f);
+
+        return a << 24 | rgb[2] << 16 | rgb[1] << 8 | rgb[0];
+    }
+
+    public static float[] getHSBFromABGR(int colourABGR) {
+        int colour[] = getRGBFromABGR(colourABGR);
+        int r = colour[0];
+        int g = colour[1];
+        int b = colour[2];
+        return Color.RGBtoHSB(r, g, b, null);
+    }
+
+    private static int[] getRGBFromABGR(int colourABGR) {
+        int[] colour = {0,0,0};
+        colour[0] = colourABGR & 255;
+        colour[1] = colourABGR >> 8 & 255;
+        colour[2] = colourABGR >> 16 & 255;
+
+        return colour;
+    }
+
+    private static int[] getRGBFromHSB(float hue, float saturation, float brightness) {
         int r = 0, g = 0, b = 0;
         if (saturation == 0) {
             r = g = b = (int) (brightness * 255.0f + 0.5f);
@@ -227,26 +286,7 @@ public class Colouration {
             }
         }
 
-        int a = (int)(alpha * 255.0f);
-
-        return a << 24 | b << 16 | g << 8 | r;
-    }
-
-    public static float[] getHSBFromABGR(int colourABGR) {
-        int colour[] = getRGBFromABGR(colourABGR);
-        int r = colour[0];
-        int g = colour[1];
-        int b = colour[2];
-        return Color.RGBtoHSB(r, g, b, null);
-    }
-
-    private static int[] getRGBFromABGR(int colourABGR) {
-        int[] colour = {0,0,0};
-        colour[0] = colourABGR & 255;
-        colour[1] = colourABGR >> 8 & 255;
-        colour[2] = colourABGR >> 16 & 255;
-
-        return colour;
+        return new int[]{r,g,b};
     }
 
     private static int[] getRGBAFromABGR(int colourABGR) {
@@ -262,7 +302,7 @@ public class Colouration {
     public static int getEquipmentColor(ItemStack stack) {
         int colour = 0;
         if (stack.getItem() instanceof CustomizableAnimalEquipment) {
-            CompoundNBT compoundnbt = stack.getChildTag("display");
+            CompoundTag compoundnbt = stack.getTagElement("display");
             if (compoundnbt != null && compoundnbt.contains("color", 99)) {
                 colour = compoundnbt.getInt("color");
             } else {
@@ -282,6 +322,18 @@ public class Colouration {
         int r = colour >> 16 & 0xFF;
         int g = colour >> 8 & 0xFF;
         int b = colour & 0xFF;
+
+        return a << 24 | b << 16 | g << 8 | r;
+    }
+
+    public static int getABGRFromBGR(float[] bgr) {
+        return getABGRFromBGR(bgr[0], bgr[1], bgr[2]);
+    }
+    public static int getABGRFromBGR(float blue, float green, float red) {
+        int b = (int) (blue * 255.0f + 0.5f);
+        int g = (int) (green * 255.0f + 0.5f);
+        int r = (int) (red * 255.0f + 0.5f);
+        int a = 255;
 
         return a << 24 | b << 16 | g << 8 | r;
     }

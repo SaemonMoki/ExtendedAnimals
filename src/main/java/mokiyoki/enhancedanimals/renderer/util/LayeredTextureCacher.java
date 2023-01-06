@@ -1,7 +1,7 @@
 package mokiyoki.enhancedanimals.renderer.util;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class LayeredTextureCacher {
             if (layeredTexture.recentlyAccessed) {
                 layeredTexture.recentlyAccessed = false; // for removal next refresh if not used
             } else {
-                Minecraft.getInstance().getTextureManager().deleteTexture(layeredTexture.layeredTexture);
+                Minecraft.getInstance().getTextureManager().release(layeredTexture.layeredTexture);
                 deleteKeys.add(key);
             }
         }
